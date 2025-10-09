@@ -95,6 +95,7 @@
   - Titanium pressure plate block now accept any titanium ingots.
   - Titanium tool set now accepts any titanium ingots.
   - Titanium trapdoor block now accept any titanium ingots.
+  - Tools now accept any wooden rods (sticks).
   - Uranium blocks now accept any uranium ingots.
   - Uranium ingot now accepts any uranium nuggets.
   - Uranium ingots now accept any autunite dust.

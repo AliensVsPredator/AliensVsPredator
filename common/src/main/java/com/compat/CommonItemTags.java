@@ -104,6 +104,8 @@ public class CommonItemTags {
 
     public static final TagKey<Item> RAW_MATERIALS_ZINC = create("raw_materials/zinc");
 
+    public static final TagKey<Item> RODS_WOODEN = create("rods/wooden");
+
     public static final TagKey<Item> SILICON = create("silicon");
 
     public static final TagKey<Item> STORAGE_BLOCKS = create("storage_blocks");

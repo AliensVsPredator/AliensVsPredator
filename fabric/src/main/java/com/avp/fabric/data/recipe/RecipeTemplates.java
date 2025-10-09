@@ -4,7 +4,6 @@ import com.compat.CommonItemTags;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 
 import java.util.function.BiFunction;
@@ -19,10 +18,10 @@ public class RecipeTemplates {
         itemTagKey -> builder -> builder
             .withCategory(RecipeCategory.TOOLS)
             .define('A', itemTagKey)
-            .define('B', Items.STICK)
-            .pattern("AA ")
-            .pattern("AB ")
-            .pattern(" B ");
+            .define('B', CommonItemTags.RODS_WOODEN)
+            .pattern("AA")
+            .pattern("AB")
+            .pattern(" B");
 
     public static final Function<TagKey<Item>, UnaryOperator<ShapedRecipeBuilder>> BARS_BLOCK =
         itemTagKey -> builder -> builder
@@ -115,10 +114,10 @@ public class RecipeTemplates {
         itemTagKey -> builder -> builder
             .withCategory(RecipeCategory.TOOLS)
             .define('A', itemTagKey)
-            .define('B', Items.STICK)
-            .pattern("AA ")
-            .pattern(" B ")
-            .pattern(" B ");
+            .define('B', CommonItemTags.RODS_WOODEN)
+            .pattern("AA")
+            .pattern(" B")
+            .pattern(" B");
 
     public static final Function<ItemLike, UnaryOperator<ShapedRecipeBuilder>> LEGGINGS =
         itemLike -> builder -> builder
@@ -140,7 +139,7 @@ public class RecipeTemplates {
         itemTagKey -> builder -> builder
             .withCategory(RecipeCategory.TOOLS)
             .define('A', itemTagKey)
-            .define('B', Items.STICK)
+            .define('B', CommonItemTags.RODS_WOODEN)
             .pattern("AAA")
             .pattern(" B ")
             .pattern(" B ");
@@ -161,10 +160,10 @@ public class RecipeTemplates {
         itemTagKey -> builder -> builder
             .withCategory(RecipeCategory.TOOLS)
             .define('A', itemTagKey)
-            .define('B', Items.STICK)
-            .pattern(" A ")
-            .pattern(" B ")
-            .pattern(" B ");
+            .define('B', CommonItemTags.RODS_WOODEN)
+            .pattern("A")
+            .pattern("B")
+            .pattern("B");
 
     public static final Function<ItemLike, UnaryOperator<ShapedRecipeBuilder>> SLAB_BLOCK =
         itemLike -> builder -> builder
@@ -182,10 +181,10 @@ public class RecipeTemplates {
         itemTagKey -> builder -> builder
             .withCategory(RecipeCategory.TOOLS)
             .define('A', itemTagKey)
-            .define('B', Items.STICK)
-            .pattern(" A ")
-            .pattern(" A ")
-            .pattern(" B ");
+            .define('B', CommonItemTags.RODS_WOODEN)
+            .pattern("A")
+            .pattern("A")
+            .pattern("B");
 
     public static final Function<ItemLike, UnaryOperator<ShapedRecipeBuilder>> TRAP_DOOR_BLOCK =
         itemLike -> builder -> builder
