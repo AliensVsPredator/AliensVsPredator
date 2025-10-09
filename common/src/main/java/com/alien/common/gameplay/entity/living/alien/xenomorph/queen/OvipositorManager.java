@@ -1,5 +1,6 @@
 package com.alien.common.gameplay.entity.living.alien.xenomorph.queen;
 
+import com.alien.common.data.AlienVariantTypes;
 import com.alien.common.gameplay.entity.living.alien.ovipositor.Ovipositor;
 import com.alien.common.registry.init.AlienEntityTypes;
 import com.just.core.functional.option.Option;
@@ -101,7 +102,7 @@ public class OvipositorManager implements NBTSerializable {
 
     private boolean canCreateOvipositor() {
         return queen.getTarget() == null
-            && !queen.isIrradiated()
+            && AlienVariantTypes.getFor(queen.getVariant()).canReproduce()
             && !queen.isPoisoned()
             && !ovipositorCreationCooldown.isActive()
             && queen.getHiveManager()
