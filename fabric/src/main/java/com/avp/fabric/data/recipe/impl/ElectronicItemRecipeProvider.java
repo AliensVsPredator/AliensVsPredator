@@ -29,7 +29,7 @@ public class ElectronicItemRecipeProvider {
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
             .define('B', CommonItemTags.NUGGETS_BRASS)
-            .define('C', Items.COPPER_INGOT)
+            .define('C', CommonItemTags.INGOTS_COPPER)
             .define('N', AVPItems.NEODYMIUM_MAGNET)
             .define('I', AVPItems.INTEGRATED_CIRCUIT)
             .pattern("BCB")

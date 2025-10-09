@@ -1,5 +1,6 @@
 package com.avp.fabric.data.recipe;
 
+import com.compat.CommonItemTags;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;

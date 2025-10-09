@@ -1,5 +1,6 @@
 package com.avp.fabric.data.recipe.impl.vanilla;
 
+import com.compat.CommonItemTags;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;

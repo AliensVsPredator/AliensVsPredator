@@ -74,6 +74,7 @@
   - Raw zinc blocks now accept any raw zinc.
   - Razor wire now accepts any iron nuggets.
   - Regulators now accept any lead ingots.
+  - Servo now accepts any copper ingot.
   - Speakers now accept any aluminum ingots.
   - Steel armor set now accepts any steel ingots.
   - Steel bars block now accept any steel ingots.
