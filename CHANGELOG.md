@@ -55,6 +55,7 @@
   - MK50 leggings now accepts any leather.
   - Nuclear battery now accepts any autunite dust.
   - Nuclear battery now accepts any diamonds.
+  - Nuclear battery now accepts any gold ingot.
   - Nuke blocks now accept any lead ingots.
   - Padding blocks now accept any leather.
   - Pressure armor set now accepts any aluminum ingots.

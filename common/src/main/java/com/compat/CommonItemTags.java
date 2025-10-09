@@ -28,6 +28,8 @@ public class CommonItemTags {
 
     public static final TagKey<Item> INGOTS_FERROALUMINUM = create("ingots/ferroaluminum");
 
+    public static final TagKey<Item> INGOTS_GOLD = create("ingots/gold");
+
     public static final TagKey<Item> INGOTS_LEAD = create("ingots/lead");
 
     public static final TagKey<Item> INGOTS_STEEL = create("ingots/steel");

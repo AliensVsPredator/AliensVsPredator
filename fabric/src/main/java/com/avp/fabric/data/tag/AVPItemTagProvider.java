@@ -470,6 +470,10 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             .setReplace(false)
             .add(AVPItems.BRASS_INGOT.get());
 
+        getOrCreateTagBuilder(CommonItemTags.INGOTS_GOLD)
+            .setReplace(false)
+            .add(Items.GOLD_INGOT);
+
         getOrCreateTagBuilder(CommonItemTags.INGOTS_LEAD)
             .setReplace(false)
             .add(AVPItems.LEAD_INGOT.get());

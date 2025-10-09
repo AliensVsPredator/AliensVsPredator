@@ -67,9 +67,9 @@ public class MiscellaneousRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
-            .define('G', Items.GOLD_INGOT)
             .define('A', CommonItemTags.DUSTS_AUTUNITE)
             .define('D', CommonItemTags.GEMS_DIAMOND)
+            .define('G', CommonItemTags.INGOTS_GOLD)
             .pattern("GDG")
             .pattern("AAA")
             .pattern("GDG")
