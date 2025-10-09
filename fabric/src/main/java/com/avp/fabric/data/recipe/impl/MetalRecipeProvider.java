@@ -56,7 +56,7 @@ public class MetalRecipeProvider {
         builder.shaped()
             .withCustomName(name -> "uranium_ingot_normal")
             .withCategory(RecipeCategory.MISC)
-            .define('A', AVPItems.AUTUNITE_DUST.get())
+            .define('A', CommonItemTags.DUSTS_AUTUNITE)
             .define('T', CommonItemTags.INGOTS_TITANIUM)
             .pattern(" A ")
             .pattern("ATA")

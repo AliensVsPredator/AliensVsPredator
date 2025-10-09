@@ -8,6 +8,8 @@ public class CommonItemTags {
 
     public static final TagKey<Item> DIAMONDS = create("diamonds");
 
+    public static final TagKey<Item> DUSTS_AUTUNITE = create("dusts/autunite");
+
     public static final TagKey<Item> DUSTS_COAL = create("dusts/coal");
 
     public static final TagKey<Item> DUSTS_REDSTONE = create("dusts/redstone");

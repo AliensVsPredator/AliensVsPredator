@@ -94,6 +94,7 @@
   - Titanium trapdoor block now accept any titanium ingots.
   - Uranium blocks now accept any uranium ingots.
   - Uranium ingot now accepts any uranium nuggets.
+  - Uranium ingots now accept any autunite dust.
   - Uranium ingots now accept any titanium ingots.
   - Zinc blocks now accept any zinc ingots.
   - Zinc ingot now accepts any zinc nuggets.
