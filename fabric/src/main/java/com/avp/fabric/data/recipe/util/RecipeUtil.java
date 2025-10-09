@@ -60,19 +60,6 @@ public class RecipeUtil {
             .into(4, item);
     }
 
-    public static void createCompressedBlockRecipes3x3(RecipeBuilder builder, Item item, Block block) {
-        builder.shaped()
-            .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.COMPRESSED_BLOCK_3x3.apply(item))
-            .into(1, block);
-
-        builder.shapeless()
-            .withCategory(RecipeCategory.MISC)
-            .requires(1, block)
-            .withCustomName(name -> name + "_from_block")
-            .into(9, item);
-    }
-
     public static void createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
         RecipeBuilder builder,
         Item item,

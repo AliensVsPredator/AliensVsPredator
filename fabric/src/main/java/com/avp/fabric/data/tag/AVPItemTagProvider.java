@@ -635,6 +635,10 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             .setReplace(false)
             .add(AVPItems.RAW_GALENA.get());
 
+        getOrCreateTagBuilder(CommonItemTags.RAW_MATERIALS_MONAZITE)
+            .setReplace(false)
+            .add(AVPItems.RAW_MONAZITE.get());
+
         getOrCreateTagBuilder(CommonItemTags.RAW_MATERIALS_STEEL)
             .setReplace(false)
             .add(AVPItems.RAW_CRUDE_IRON.get());

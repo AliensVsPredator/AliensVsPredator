@@ -12,6 +12,8 @@ public class CommonItemTags {
 
     public static final TagKey<Item> DUSTS_COAL = create("dusts/coal");
 
+    public static final TagKey<Item> DUSTS_LITHIUM = create("dusts/lithium");
+
     public static final TagKey<Item> DUSTS_REDSTONE = create("dusts/redstone");
 
     public static final TagKey<Item> GEMS_DIAMOND = create("gems/diamond");
@@ -97,6 +99,8 @@ public class CommonItemTags {
     public static final TagKey<Item> RAW_MATERIALS_IRON = create("raw_materials/iron");
 
     public static final TagKey<Item> RAW_MATERIALS_LEAD = create("raw_materials/lead");
+
+    public static final TagKey<Item> RAW_MATERIALS_MONAZITE = create("raw_materials/monazite");
 
     public static final TagKey<Item> RAW_MATERIALS_STEEL = create("raw_materials/steel");
 

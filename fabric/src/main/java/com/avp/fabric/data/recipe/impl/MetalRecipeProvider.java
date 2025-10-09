@@ -127,8 +127,18 @@ public class MetalRecipeProvider {
             CoreBlocks.ZINC_BLOCK.get()
         );
 
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.AUTUNITE_DUST.get(), CoreBlocks.AUTUNITE_BLOCK.get());
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.LITHIUM_DUST.get(), CoreBlocks.LITHIUM_BLOCK.get());
+        RecipeUtil.createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
+            builder,
+            AVPItems.AUTUNITE_DUST.get(),
+            CommonItemTags.DUSTS_AUTUNITE,
+            CoreBlocks.AUTUNITE_BLOCK.get()
+        );
+        RecipeUtil.createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
+            builder,
+            AVPItems.LITHIUM_DUST.get(),
+            CommonItemTags.DUSTS_LITHIUM,
+            CoreBlocks.LITHIUM_BLOCK.get()
+        );
         RecipeUtil.createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
             builder,
             AVPItems.RAW_BAUXITE.get(),
@@ -141,7 +151,12 @@ public class MetalRecipeProvider {
             CommonItemTags.RAW_MATERIALS_LEAD,
             CoreBlocks.RAW_GALENA_BLOCK.get()
         );
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.RAW_MONAZITE.get(), CoreBlocks.RAW_MONAZITE_BLOCK.get());
+        RecipeUtil.createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
+            builder,
+            AVPItems.RAW_MONAZITE.get(),
+            CommonItemTags.RAW_MATERIALS_MONAZITE,
+            CoreBlocks.RAW_MONAZITE_BLOCK.get()
+        );
         RecipeUtil.createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
             builder,
             AVPItems.RAW_TITANIUM.get(),
@@ -154,7 +169,12 @@ public class MetalRecipeProvider {
             CommonItemTags.RAW_MATERIALS_ZINC,
             CoreBlocks.RAW_ZINC_BLOCK.get()
         );
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.SILICON.get(), CoreBlocks.SILICON_BLOCK.get());
+        RecipeUtil.createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
+            builder,
+            AVPItems.SILICON.get(),
+            CommonItemTags.SILICON,
+            CoreBlocks.SILICON_BLOCK.get()
+        );
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)

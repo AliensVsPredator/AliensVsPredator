@@ -28,10 +28,12 @@
   - Ammo chests now accept any steel ingots.
   - Armor cases now accept any aluminum ingots.
   - Battery packs now accept any aluminum ingots.
+  - Battery packs now accept any lithium dust.
   - Brass blocks now accept any brass ingots.
   - Brass ingot now accepts any brass nuggets.
   - Bullets now accept any aluminum, brass, lead or steel nuggets (where applicable).
   - Canisters now accept any titanium ingots.
+  - Capacitor now accepts any lithium dust.
   - Electronic parts now accept any brass nuggets or gold nuggets (where applicable).
   - Electronic parts now accept any redstone dust (where applicable).
   - Electronic parts now accept any silicon (where applicable).
@@ -49,6 +51,7 @@
   - Lead blocks now accept any lead ingots.
   - Lead chests now accept any lead ingots.
   - Lead ingot now accepts any lead nuggets.
+  - LED display now accepts any lithium dust.
   - MK50 armor set now accepts any lead ingots and any aluminum ingots.
   - MK50 chestplate now accepts any leather.
   - MK50 helmet now accepts any coal dust.
