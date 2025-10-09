@@ -717,5 +717,9 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
         getOrCreateTagBuilder(CommonItemTags.STORAGE_BLOCKS_ZINC)
             .setReplace(false)
             .add(AVPBlockItems.ZINC_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonItemTags.STRINGS)
+            .setReplace(false)
+            .add(Items.STRING);
     }
 }

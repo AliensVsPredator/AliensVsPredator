@@ -21,7 +21,7 @@ public class VanillaMiscellaneousRecipeProvider {
         builder.shapeless()
             .withCategory(RecipeCategory.MISC)
             .requires(1, Items.PAPER)
-            .requires(1, Items.STRING)
+            .requires(1, CommonItemTags.STRINGS)
             .into(1, Items.NAME_TAG);
     }
 }

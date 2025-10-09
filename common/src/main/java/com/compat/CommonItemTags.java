@@ -134,6 +134,8 @@ public class CommonItemTags {
 
     public static final TagKey<Item> STORAGE_BLOCKS_ZINC = create("storage_blocks/zinc");
 
+    public static final TagKey<Item> STRINGS = create("strings");
+
     private static TagKey<Item> create(String name) {
         return TagKey.create(Registries.ITEM, CommonConstants.location(name));
     }
