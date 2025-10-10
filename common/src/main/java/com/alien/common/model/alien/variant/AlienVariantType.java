@@ -42,5 +42,6 @@ public record AlienVariantType(
 
     // Miscellaneous
     BossEvent.BossBarColor bossBarColor,
-    ChatFormatting chatColor
+    ChatFormatting chatColor,
+    boolean canReproduce
 ) {}

@@ -1,5 +1,6 @@
-package com.human.common.gameplay.item;
+package com.human.common.gameplay.item.canister;
 
+import com.human.common.data.HumanAdvancements;
 import com.human.common.registry.init.HumanDataComponents;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -15,6 +16,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ClipContext;
@@ -146,7 +148,7 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
         ItemStack resultStack;
 
         if (this.content != Fluids.EMPTY) {
-            resultStack = updateCapacity(filledStack, 1);
+            resultStack = updateCapacity(player, filledStack, 1);
         } else {
             resultStack = ItemUtils.createFilledResult(canisterStack, player, filledStack);
         }
@@ -184,7 +186,7 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
         ItemStack resultStack;
 
         if (canisterStack.getOrDefault(HumanDataComponents.CANISTER_CAPACITY.get(), 0) > 1 && !player.isCreative()) {
-            resultStack = updateCapacity(canisterStack, -1);
+            resultStack = updateCapacity(player, canisterStack, -1);
         } else {
             resultStack = ItemUtils.createFilledResult(canisterStack, player, getEmptySuccessItem(canisterStack, player));
         }
@@ -192,9 +194,13 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
         return InteractionResultHolder.sidedSuccess(resultStack, level.isClientSide());
     }
 
-    public static ItemStack updateCapacity(ItemStack stack, int amount) {
+    public static ItemStack updateCapacity(LivingEntity livingEntity, ItemStack stack, int amount) {
         int currentContentAmount = stack.getOrDefault(HumanDataComponents.CANISTER_CAPACITY.get(), 0);
         int newAmount = Mth.clamp(currentContentAmount + amount, 0, MAX_CAPACITY);
+
+        if (newAmount >= MAX_CAPACITY && livingEntity instanceof ServerPlayer serverPlayer) {
+            HumanAdvancements.FILL_CANISTER.grant(serverPlayer);
+        }
 
         stack.applyComponents(
             DataComponentPatch.builder()

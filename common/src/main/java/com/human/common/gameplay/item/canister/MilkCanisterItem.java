@@ -1,4 +1,4 @@
-package com.human.common.gameplay.item;
+package com.human.common.gameplay.item.canister;
 
 import com.human.common.registry.init.HumanDataComponents;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -24,7 +24,12 @@ public class MilkCanisterItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    public void appendHoverText(
+        @NotNull ItemStack stack,
+        @NotNull TooltipContext context,
+        @NotNull List<Component> tooltipComponents,
+        @NotNull TooltipFlag tooltipFlag
+    ) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 
         int currentContentAmount = stack.getOrDefault(HumanDataComponents.CANISTER_CAPACITY.get(), 0);
@@ -39,7 +44,7 @@ public class MilkCanisterItem extends Item {
     }
 
     @Override
-    public @NotNull ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity livingEntity) {
+    public @NotNull ItemStack finishUsingItem(@NotNull ItemStack stack, @NotNull Level level, @NotNull LivingEntity livingEntity) {
         if (livingEntity instanceof ServerPlayer serverPlayer) {
             CriteriaTriggers.CONSUME_ITEM.trigger(serverPlayer, stack);
             serverPlayer.awardStat(Stats.ITEM_USED.get(this));
@@ -53,13 +58,13 @@ public class MilkCanisterItem extends Item {
 
         if (livingEntity instanceof Player player) {
             if (canDeplete && !player.isCreative()) {
-                return CanisterItem.updateCapacity(stack, -1);
+                return CanisterItem.updateCapacity(player, stack, -1);
             }
 
             return ItemUtils.createFilledResult(stack, player, new ItemStack(AVPItems.CANISTER.get()), false);
         } else {
             if (canDeplete) {
-                return CanisterItem.updateCapacity(stack, -1);
+                return CanisterItem.updateCapacity(livingEntity, stack, -1);
             }
 
             stack.consume(1, livingEntity);
@@ -68,17 +73,21 @@ public class MilkCanisterItem extends Item {
     }
 
     @Override
-    public int getUseDuration(ItemStack stack, LivingEntity entity) {
+    public int getUseDuration(@NotNull ItemStack stack, @NotNull LivingEntity entity) {
         return 32;
     }
 
     @Override
-    public @NotNull UseAnim getUseAnimation(ItemStack stack) {
+    public @NotNull UseAnim getUseAnimation(@NotNull ItemStack stack) {
         return UseAnim.DRINK;
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+    public @NotNull InteractionResultHolder<ItemStack> use(
+        @NotNull Level level,
+        @NotNull Player player,
+        @NotNull InteractionHand usedHand
+    ) {
         return ItemUtils.startUsingInstantly(level, player, usedHand);
     }
 }

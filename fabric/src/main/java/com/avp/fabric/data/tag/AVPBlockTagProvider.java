@@ -2,6 +2,7 @@ package com.avp.fabric.data.tag;
 
 import com.alien.common.registry.init.block.AlienChitinBlocks;
 import com.alien.common.registry.init.block.AlienResinBlocks;
+import com.compat.CommonBlockTags;
 import com.compat.gigeresque.common.registry.tag.GigBlockTags;
 import com.human.common.registry.init.block.HumanFerroaluminumBlocks;
 import com.human.common.registry.init.block.HumanIndustrialConcreteBlocks;
@@ -35,7 +36,6 @@ import java.util.stream.Stream;
 import com.avp.common.registry.init.block.AVPBlocks;
 import com.avp.common.registry.init.block.CoreBlocks;
 import com.avp.common.registry.tag.AVPBlockTags;
-import com.avp.fabric.data.compatibility.common.CommonConstants;
 
 public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
@@ -776,24 +776,121 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         getOrCreateTagBuilder(AVPBlockTags.ACID_IMMUNE)
             .addOptionalTag(GigBlockTags.ACID_RESISTANT);
 
-        getOrCreateTagBuilder(CommonConstants.CHESTS)
+        getOrCreateTagBuilder(CommonBlockTags.CHESTS)
             .setReplace(false)
             .add(
                 AVPBlocks.AMMO_CHEST.get(),
                 AVPBlocks.LEAD_CHEST.get()
             );
 
-        getOrCreateTagBuilder(CommonConstants.ORES_BLOCKS)
+        getOrCreateTagBuilder(CommonBlockTags.ORES)
             .setReplace(false)
-            .add(
-                CoreBlocks.AUTUNITE_ORE.get(),
-                CoreBlocks.BAUXITE_ORE.get(),
-                CoreBlocks.DEEPSLATE_TITANIUM_ORE.get(),
-                CoreBlocks.DEEPSLATE_ZINC_ORE.get(),
-                CoreBlocks.GALENA_ORE.get(),
-                CoreBlocks.LITHIUM_ORE.get(),
-                CoreBlocks.MONAZITE_ORE.get(),
-                CoreBlocks.ZINC_ORE.get()
-            );
+            .addTag(CommonBlockTags.ORES_ALUMINUM)
+            .addTag(CommonBlockTags.ORES_AUTUNITE)
+            .addTag(CommonBlockTags.ORES_LEAD)
+            .addTag(CommonBlockTags.ORES_LITHIUM)
+            .addTag(CommonBlockTags.ORES_MONAZITE)
+            .addTag(CommonBlockTags.ORES_TITANIUM)
+            .addTag(CommonBlockTags.ORES_ZINC);
+
+        getOrCreateTagBuilder(CommonBlockTags.ORES_ALUMINUM)
+            .setReplace(false)
+            .addTag(CommonBlockTags.ORES_BAUXITE);
+
+        getOrCreateTagBuilder(CommonBlockTags.ORES_AUTUNITE)
+            .setReplace(false)
+            .add(CoreBlocks.AUTUNITE_ORE.get());
+
+        getOrCreateTagBuilder(CommonBlockTags.ORES_BAUXITE)
+            .setReplace(false)
+            .add(CoreBlocks.BAUXITE_ORE.get());
+
+        getOrCreateTagBuilder(CommonBlockTags.ORES_GALENA)
+            .setReplace(false)
+            .add(CoreBlocks.GALENA_ORE.get());
+
+        getOrCreateTagBuilder(CommonBlockTags.ORES_LEAD)
+            .setReplace(false)
+            .addTag(CommonBlockTags.ORES_GALENA);
+
+        getOrCreateTagBuilder(CommonBlockTags.ORES_LITHIUM)
+            .setReplace(false)
+            .add(CoreBlocks.LITHIUM_ORE.get());
+
+        getOrCreateTagBuilder(CommonBlockTags.ORES_MONAZITE)
+            .setReplace(false)
+            .add(CoreBlocks.MONAZITE_ORE.get());
+
+        getOrCreateTagBuilder(CommonBlockTags.ORES_TITANIUM)
+            .setReplace(false)
+            .add(CoreBlocks.DEEPSLATE_TITANIUM_ORE.get());
+
+        getOrCreateTagBuilder(CommonBlockTags.ORES_ZINC)
+            .setReplace(false)
+            .add(CoreBlocks.ZINC_ORE.get())
+            .add(CoreBlocks.DEEPSLATE_ZINC_ORE.get());
+
+        getOrCreateTagBuilder(CommonBlockTags.STORAGE_BLOCKS)
+            .setReplace(false)
+            .addTag(CommonBlockTags.STORAGE_BLOCKS_ALUMINUM)
+            .addTag(CommonBlockTags.STORAGE_BLOCKS_BRASS)
+            .addTag(CommonBlockTags.STORAGE_BLOCKS_FERROALUMINUM)
+            .addTag(CommonBlockTags.STORAGE_BLOCKS_LEAD)
+            .addTag(CommonBlockTags.STORAGE_BLOCKS_RAW_ALUMINUM)
+            .addTag(CommonBlockTags.STORAGE_BLOCKS_RAW_LEAD)
+            .addTag(CommonBlockTags.STORAGE_BLOCKS_RAW_TITANIUM)
+            .addTag(CommonBlockTags.STORAGE_BLOCKS_RAW_ZINC)
+            .addTag(CommonBlockTags.STORAGE_BLOCKS_STEEL)
+            .addTag(CommonBlockTags.STORAGE_BLOCKS_TITANIUM)
+            .addTag(CommonBlockTags.STORAGE_BLOCKS_URANIUM)
+            .addTag(CommonBlockTags.STORAGE_BLOCKS_ZINC);
+
+        getOrCreateTagBuilder(CommonBlockTags.STORAGE_BLOCKS_ALUMINUM)
+            .setReplace(false)
+            .add(CoreBlocks.ALUMINUM_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonBlockTags.STORAGE_BLOCKS_BRASS)
+            .setReplace(false)
+            .add(CoreBlocks.BRASS_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonBlockTags.STORAGE_BLOCKS_FERROALUMINUM)
+            .setReplace(false)
+            .add(HumanFerroaluminumBlocks.FERROALUMINUM_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonBlockTags.STORAGE_BLOCKS_LEAD)
+            .setReplace(false)
+            .add(CoreBlocks.LEAD_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonBlockTags.STORAGE_BLOCKS_RAW_ALUMINUM)
+            .setReplace(false)
+            .add(CoreBlocks.RAW_BAUXITE_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonBlockTags.STORAGE_BLOCKS_RAW_LEAD)
+            .setReplace(false)
+            .add(CoreBlocks.RAW_GALENA_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonBlockTags.STORAGE_BLOCKS_RAW_TITANIUM)
+            .setReplace(false)
+            .add(CoreBlocks.RAW_TITANIUM_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonBlockTags.STORAGE_BLOCKS_RAW_ZINC)
+            .setReplace(false)
+            .add(CoreBlocks.RAW_ZINC_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonBlockTags.STORAGE_BLOCKS_STEEL)
+            .setReplace(false)
+            .add(HumanSteelBlocks.STEEL_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonBlockTags.STORAGE_BLOCKS_TITANIUM)
+            .setReplace(false)
+            .add(HumanTitaniumBlocks.TITANIUM_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonBlockTags.STORAGE_BLOCKS_URANIUM)
+            .setReplace(false)
+            .add(CoreBlocks.URANIUM_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonBlockTags.STORAGE_BLOCKS_ZINC)
+            .setReplace(false)
+            .add(CoreBlocks.ZINC_BLOCK.get());
     }
 }

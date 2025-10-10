@@ -1,53 +1,44 @@
 package com.alien.client.render.entity;
 
 import com.alien.client.animation.entity.PraetorianAnimator;
+import com.alien.client.render.AlienRenderResourceCache;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.praetorian.Praetorian;
+import com.alien.common.model.alien.variant.AlienVariant;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 
-import com.avp.AVPResources;
 import com.avp.client.render.layer.RadiationGlowLayer;
 
 public class PraetorianRenderer extends AzEntityRenderer<Praetorian> {
 
     private static final String NAME = "praetorian";
 
-    private static final ResourceLocation MODEL = AVPResources.entityGeoModelLocation(NAME);
-
-    private static final ResourceLocation TEXTURE = AVPResources.entityTextureLocation(NAME);
-
-    private static final ResourceLocation ABERRANT_TEXTURE = AVPResources.entityTextureLocation("aberrant_" + NAME);
-
-    private static final ResourceLocation IRRADIATED_TEXTURE = AVPResources.entityTextureLocation("irradiated_" + NAME);
-
-    private static final ResourceLocation NETHER_TEXTURE = AVPResources.entityTextureLocation("nether_" + NAME);
+    private static final AlienRenderResourceCache RESOURCE_CACHE = new AlienRenderResourceCache(NAME, RenderType::entityCutoutNoCull);
 
     public PraetorianRenderer(EntityRendererProvider.Context context) {
         super(
-            AzEntityRendererConfig.builder($ -> MODEL, PraetorianRenderer::textureLocation)
+            AzEntityRendererConfig.builder(PraetorianRenderer::modelLocation, PraetorianRenderer::textureLocation)
+                .setRenderType(PraetorianRenderer::renderType)
                 .setAnimatorProvider(PraetorianAnimator::new)
                 .addRenderLayer(new RadiationGlowLayer<>())
+                .setShadowRadius(0.5F)
                 .build(),
             context
         );
-        this.shadowRadius = 0.5F;
+    }
+
+    private static ResourceLocation modelLocation(Praetorian praetorian) {
+        return RESOURCE_CACHE.getOrCreateModelLocationForVariant(AlienVariant.NORMAL);
+    }
+
+    private static RenderType renderType(Praetorian praetorian) {
+        return RESOURCE_CACHE.getOrCreateRenderTypeForVariant(praetorian.getVariant());
     }
 
     public static ResourceLocation textureLocation(Praetorian praetorian) {
-        if (praetorian.isNetherAfflicted()) {
-            return NETHER_TEXTURE;
-        }
-
-        if (praetorian.isIrradiated()) {
-            return IRRADIATED_TEXTURE;
-        }
-
-        if (praetorian.isAberrant()) {
-            return ABERRANT_TEXTURE;
-        }
-
-        return TEXTURE;
+        return RESOURCE_CACHE.getOrCreateTextureLocationForVariant(praetorian.getVariant());
     }
 }

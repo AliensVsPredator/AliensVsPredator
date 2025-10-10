@@ -10,6 +10,8 @@ public enum GeneOperationType {
     ADDITIVE,
     MULTIPLICATIVE;
 
+    public static final GeneOperationType[] VALUES = values();
+
     public static final Codec<GeneOperationType> CODEC = Codec.STRING.xmap(
         GeneOperationType::valueOf,
         GeneOperationType::name
@@ -19,12 +21,13 @@ public enum GeneOperationType {
 
         @Override
         public @NotNull <T> GeneOperationType decode(@NotNull StreamCodecSchema<T> streamCodecSchema, @NotNull T input) {
-            int ordinal = streamCodecSchema.readVarInt(input);
-            GeneOperationType[] values = GeneOperationType.values();
-            if (ordinal < 0 || ordinal >= values.length) {
+            var ordinal = streamCodecSchema.readVarInt(input);
+
+            if (ordinal < 0 || ordinal >= VALUES.length) {
                 throw new IllegalArgumentException("Invalid GeneOperationType ordinal: " + ordinal);
             }
-            return values[ordinal];
+
+            return VALUES[ordinal];
         }
 
         @Override

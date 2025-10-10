@@ -14,6 +14,8 @@ public enum AlienVariant {
     ABERRANT(2),
     IRRADIATED(3);
 
+    public static final AlienVariant[] VALUES = values();
+
     private static final Map<Integer, AlienVariant> BY_ID = Arrays.stream(values())
         .collect(Collectors.toMap(AlienVariant::getId, Function.identity()));
 

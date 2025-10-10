@@ -1,7 +1,6 @@
 package com.lib.common.util;
 
 import com.lib.common.gameplay.entity.manager.GeneContainer;
-import com.lib.common.gameplay.gene.GeneOperationType;
 import com.lib.common.gameplay.gene.Genes;
 import com.lib.common.model.GeneCarrier;
 import com.lib.common.registry.GeneBonusDataRegistry;
@@ -25,12 +24,8 @@ public class EmbryoUtil {
         var embryoList = new ArrayList<Entity>();
 
         // 1 added here to guarantee 1 birth by default.
-        var birthBonus = baseBirthCount + Math.clamp(
-            parentGeneContainer.getActiveGeneMap()
-                .getValue(Genes.BONUS_EMBRYO_COUNT, GeneOperationType.ADDITIVE),
-            0.0,
-            3.0
-        );
+        var birthBonus = baseBirthCount + parentGeneContainer.getActiveGeneMap()
+            .getValue(Genes.BONUS_EMBRYO_COUNT);
         var baseOffspring = (int) birthBonus;
         var fractionalChance = birthBonus - baseOffspring;
 

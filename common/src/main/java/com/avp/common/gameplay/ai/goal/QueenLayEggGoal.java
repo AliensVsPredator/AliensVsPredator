@@ -1,5 +1,6 @@
 package com.avp.common.gameplay.ai.goal;
 
+import com.alien.common.data.AlienVariantTypes;
 import com.alien.common.gameplay.entity.living.alien.ovomorph.Ovomorph;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.queen.Queen;
 import com.alien.common.model.alien.variant.AlienVariant;
@@ -41,8 +42,8 @@ public class QueenLayEggGoal extends Goal {
         return queen.isAlive()
             // AND Queen must have an ovipositor.
             && queen.getOvipositorManager().hasOvipositor()
-            // AND Queen must not be irradiated.
-            && !queen.isIrradiated()
+            // AND Queen's variant is able to reproduce.
+            && AlienVariantTypes.getFor(queen.getVariant()).canReproduce()
             && queen.getHiveManager()
                 .hive()
                 // AND Queen must have a hive...

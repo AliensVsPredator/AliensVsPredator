@@ -2,6 +2,7 @@ package com.human.common.gameplay.block.power;
 
 import com.human.common.gameplay.power.PowerNode;
 import com.human.common.gameplay.power.PowerSystem;
+import com.lib.common.util.DirectionUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -154,9 +155,9 @@ public class CableBlock extends Block {
 
         var state = this.defaultBlockState();
 
-        for (var dir : Direction.values()) {
-            var neighborPos = pos.relative(dir);
-            state = state.setValue(PROPERTY_BY_DIRECTION.get(dir), canConnectTo(level, neighborPos));
+        for (var direction : DirectionUtil.VALUES) {
+            var neighborPos = pos.relative(direction);
+            state = state.setValue(PROPERTY_BY_DIRECTION.get(direction), canConnectTo(level, neighborPos));
         }
 
         return state;
@@ -241,7 +242,7 @@ public class CableBlock extends Block {
 
         var manager = PowerSystem.get((ServerLevel) level);
 
-        for (var direction : Direction.values()) {
+        for (var direction : DirectionUtil.VALUES) {
             var neighbor = blockPos.relative(direction);
 
             if (canConnectTo(level, neighbor)) {

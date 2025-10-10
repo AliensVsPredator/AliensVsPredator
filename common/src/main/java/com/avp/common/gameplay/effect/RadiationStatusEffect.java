@@ -37,17 +37,15 @@ public class RadiationStatusEffect extends MobEffect {
 
     @Override
     public boolean applyEffectTick(@NotNull LivingEntity livingEntity, int amplifier) {
-        var currentDuration = EFFECT_TRACKER.getOrDefault(livingEntity, 0);
-
         if (
-            AVPPredicates.IS_IMMORTAL.test(livingEntity) || livingEntity.getType()
-                .is(
-                    AVPEntityTypeTags.RADIATION_RESISTANT
-                )
+            AVPPredicates.IS_IMMORTAL.test(livingEntity)
+                || livingEntity.getType().is(AVPEntityTypeTags.RADIATION_RESISTANT)
         ) {
             livingEntity.removeEffect(AVPMobEffects.RADIATION.getHolder());
             return false;
         }
+
+        var currentDuration = EFFECT_TRACKER.getOrDefault(livingEntity, 0);
 
         switch (amplifier) {
             case 0:

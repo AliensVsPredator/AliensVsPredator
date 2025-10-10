@@ -1,5 +1,6 @@
 package com.avp.common.gameplay.explosion;
 
+import com.lib.common.util.DirectionUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -72,7 +73,7 @@ public class ExplosionBuilder {
     }
 
     public ExplosionBuilder withRadius(int radius) {
-        for (var direction : Direction.values()) {
+        for (var direction : DirectionUtil.VALUES) {
             withRadius(direction, radius);
         }
 
