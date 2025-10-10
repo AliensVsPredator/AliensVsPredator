@@ -2,6 +2,7 @@ package com.avp.fabric.data.recipe.util;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
@@ -59,10 +60,15 @@ public class RecipeUtil {
             .into(4, item);
     }
 
-    public static void createCompressedBlockRecipes3x3(RecipeBuilder builder, Item item, Block block) {
+    public static void createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
+        RecipeBuilder builder,
+        Item item,
+        TagKey<Item> itemTagKey,
+        Block block
+    ) {
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.COMPRESSED_BLOCK_3x3.apply(item))
+            .apply(RecipeTemplates.COMPRESSED_BLOCK_3x3_TAG_FRIENDLY.apply(item, itemTagKey))
             .into(1, block);
 
         builder.shapeless()

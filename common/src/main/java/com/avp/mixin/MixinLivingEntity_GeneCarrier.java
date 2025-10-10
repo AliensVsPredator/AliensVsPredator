@@ -87,11 +87,16 @@ public abstract class MixinLivingEntity_GeneCarrier extends Entity implements Ge
 
     @Inject(at = @At("HEAD"), method = "hurt", cancellable = true)
     public void avp$preHurtEffects(DamageSource damageSource, float damage, CallbackInfoReturnable<Boolean> cir) {
-        if (
-            avp$hasWarpEffect.get()
-                && (damageSource.is(DamageTypeTags.IS_PROJECTILE)
-                    || random.nextInt(10) == 0)
-        ) {
+        if (!avp$hasWarpEffect.get()) {
+            return;
+        }
+
+        // TODO: Factor in multiplicative in here.
+        var warpStrength = getOrCreateGeneManager().getGeneContainer()
+            .getActiveGeneMap()
+            .getValue(Genes.WARP, GeneOperationType.ADDITIVE);
+
+        if (shouldTeleportToDodgeProjectile(damageSource, warpStrength) || shouldTeleportRandomly(warpStrength)) {
             var self = LivingEntity.class.cast(this);
 
             for (var i = 0; i < 64; ++i) {
@@ -101,6 +106,24 @@ public abstract class MixinLivingEntity_GeneCarrier extends Entity implements Ge
                 }
             }
         }
+    }
+
+    private boolean shouldTeleportRandomly(double warpStrength) {
+        // If warp strength is 0.1, then this is 1.
+        // If warp strength is 0.5, then this is 0.6.
+        // If warp strength is 1, then this is 0.1.
+        var randomTeleportPoolSizeMultiplier = Math.clamp(1.1 - warpStrength, 0, 1.0);
+        var randomTeleportPoolSize = (int) (100 * randomTeleportPoolSizeMultiplier);
+
+        return random.nextInt(randomTeleportPoolSize) == 0;
+    }
+
+    private boolean shouldTeleportToDodgeProjectile(DamageSource damageSource, double warpStrength) {
+        var projectileTeleportPoolSizeMultiplier = Math.clamp(1.1 - warpStrength, 0, 1.0);
+        var projectileTeleportPoolSize = (int) (10 * projectileTeleportPoolSizeMultiplier);
+
+        return damageSource.is(DamageTypeTags.IS_PROJECTILE)
+            && random.nextInt(projectileTeleportPoolSize) == 0;
     }
 
     @Inject(at = @At("RETURN"), method = "hurt")

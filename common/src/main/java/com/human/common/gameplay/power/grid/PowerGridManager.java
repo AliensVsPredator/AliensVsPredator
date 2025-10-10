@@ -1,8 +1,8 @@
 package com.human.common.gameplay.power.grid;
 
 import com.human.common.gameplay.power.PowerNode;
+import com.lib.common.util.DirectionUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 
 import java.util.HashMap;
@@ -65,8 +65,8 @@ public class PowerGridManager {
 
         var visited = new HashSet<BlockPos>();
 
-        for (var dir : Direction.values()) {
-            var neighbor = removedPos.relative(dir);
+        for (var direction : DirectionUtil.VALUES) {
+            var neighbor = removedPos.relative(direction);
 
             if (!visited.contains(neighbor) && PowerGridExploreUtil.isConnectable(level, neighbor)) {
                 // BFS from this neighbor.

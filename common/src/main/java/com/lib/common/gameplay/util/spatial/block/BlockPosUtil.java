@@ -1,5 +1,6 @@
 package com.lib.common.gameplay.util.spatial.block;
 
+import com.lib.common.util.DirectionUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
@@ -15,7 +16,7 @@ public class BlockPosUtil {
     public static List<BlockPos> getNeighborsMatching(Level level, BlockPos centerPos, Predicate<BlockState> predicate) {
         var matchingNeighbors = new ArrayList<BlockPos>();
 
-        for (var direction : Direction.values()) {
+        for (var direction : DirectionUtil.VALUES) {
             var neighborPos = centerPos.relative(direction);
             var state = level.getBlockState(neighborPos);
 

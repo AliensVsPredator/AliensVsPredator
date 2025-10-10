@@ -1,5 +1,6 @@
 package com.avp.fabric.data.recipe.impl.vanilla;
 
+import com.compat.CommonItemTags;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
@@ -19,7 +20,7 @@ public class VanillaIronLikeRecipeProvider {
             .withCategory(RecipeCategory.TRANSPORTATION)
             .define('I', AVPItemTags.IRON_INGOT_LIKE)
             .define('R', Items.REDSTONE_TORCH)
-            .define('S', Items.STICK)
+            .define('S', CommonItemTags.RODS_WOODEN)
             .pattern("ISI")
             .pattern("IRI")
             .pattern("ISI")
@@ -64,7 +65,7 @@ public class VanillaIronLikeRecipeProvider {
             .define('C', Blocks.CRAFTING_TABLE)
             .define('D', Blocks.DROPPER)
             .define('I', AVPItemTags.IRON_INGOT_LIKE)
-            .define('R', Items.REDSTONE)
+            .define('R', CommonItemTags.DUSTS_REDSTONE)
             .pattern("III")
             .pattern("ICI")
             .pattern("RDR")
@@ -73,8 +74,8 @@ public class VanillaIronLikeRecipeProvider {
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
             .define('I', AVPItemTags.IRON_INGOT_LIKE)
-            .define('S', Items.STRING)
-            .define('T', Items.STICK)
+            .define('S', CommonItemTags.STRINGS)
+            .define('T', CommonItemTags.RODS_WOODEN)
             .define('W', Blocks.TRIPWIRE_HOOK)
             .pattern("TIT")
             .pattern("SWS")
@@ -85,7 +86,7 @@ public class VanillaIronLikeRecipeProvider {
             .withCategory(RecipeCategory.TRANSPORTATION)
             .define('I', AVPItemTags.IRON_INGOT_LIKE)
             .define('P', Blocks.STONE_PRESSURE_PLATE)
-            .define('R', Items.REDSTONE)
+            .define('R', CommonItemTags.DUSTS_REDSTONE)
             .pattern("I I")
             .pattern("IPI")
             .pattern("IRI")
@@ -118,7 +119,7 @@ public class VanillaIronLikeRecipeProvider {
             .define('I', AVPItemTags.IRON_INGOT_LIKE)
             .define('C', Items.COBBLESTONE)
             .define('P', ItemTags.PLANKS)
-            .define('R', Items.REDSTONE)
+            .define('R', CommonItemTags.DUSTS_REDSTONE)
             .pattern("PPP")
             .pattern("CIC")
             .pattern("CRC")
@@ -127,7 +128,7 @@ public class VanillaIronLikeRecipeProvider {
         builder.shaped()
             .withCategory(RecipeCategory.TRANSPORTATION)
             .define('I', AVPItemTags.IRON_INGOT_LIKE)
-            .define('S', Items.STICK)
+            .define('S', CommonItemTags.RODS_WOODEN)
             .pattern("I I")
             .pattern("ISI")
             .pattern("I I")
@@ -170,7 +171,7 @@ public class VanillaIronLikeRecipeProvider {
             .withCategory(RecipeCategory.REDSTONE)
             .define('I', AVPItemTags.IRON_INGOT_LIKE)
             .define('P', ItemTags.PLANKS)
-            .define('S', Items.STICK)
+            .define('S', CommonItemTags.RODS_WOODEN)
             .pattern("I")
             .pattern("S")
             .pattern("P")

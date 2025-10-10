@@ -3,8 +3,8 @@ package com.human.common.gameplay.entity.projectile;
 import com.alien.common.data.AlienVariantTypes;
 import com.human.common.registry.init.entity_type.HumanEntityTypes;
 import com.just.core.traversal.BFS;
+import com.lib.common.util.DirectionUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -104,7 +104,7 @@ public class Flamethrow extends ThrowableProjectile {
 
         BFS.traverse(
             originPos,
-            pos -> Arrays.stream(Direction.values()).map(pos::relative).filter(this::shouldPlaceFireAt).toList(),
+            pos -> Arrays.stream(DirectionUtil.VALUES).map(pos::relative).filter(this::shouldPlaceFireAt).toList(),
             pos -> level().setBlockAndUpdate(pos, Blocks.FIRE.defaultBlockState()),
             pos -> originPos.distManhattan(pos) > radius + 1
         );

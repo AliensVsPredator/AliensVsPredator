@@ -11,6 +11,7 @@ import com.alien.common.util.AlienTransitionUtil;
 import com.just.core.functional.option.Option;
 import com.lib.common.gameplay.entity.manager.GeneManager;
 import com.lib.common.gameplay.entity.manager.VibrationSystemManager;
+import com.lib.common.gameplay.gene.Genes;
 import com.lib.common.model.GeneCarrier;
 import com.lib.common.network.DataAccessor;
 import com.lib.common.network.DataUser;
@@ -336,14 +337,25 @@ public abstract class Alien extends Monster implements DataUser {
     public boolean killedEntity(@NotNull ServerLevel level, @NotNull LivingEntity entity) {
         var killedEntity = super.killedEntity(level, entity);
 
-        if (killedEntity) {
+        if (
+            // If entity was successfully killed...
+            killedEntity
+                // AND this alien type can reproduce...
+                && AlienVariantTypes.getFor(getVariant()).canReproduce()
+                // AND the entity killed was not an alien (hive wars shouldn't result in endless growth)...
+                && !entity.getType().is(AVPEntityTypeTags.ALIENS)
+            // TODO: Only "wild" hives should have spontaneous growth from mob kills.
+        ) {
             hiveManager.hive().ifSome(hive -> {
-                var isDrone = hive.getRandom().nextBoolean();
-                var type = isDrone
-                    ? Drone.getType(hive.getVariant())
-                    : Runner.getType(hive.getVariant());
+                var wasRunnerHostKilled = entity.getType().is(AVPEntityTypeTags.RUNNER_HOSTS);
+                var bonusCount = 1 + (int) getGeneManager().getGeneContainer()
+                    .getActiveGeneMap()
+                    .getValue(Genes.BONUS_EMBRYO_COUNT);
+                var alienEntityType = wasRunnerHostKilled
+                    ? Runner.getType(hive.getVariant())
+                    : Drone.getType(hive.getVariant());
 
-                hive.getReserveManager().add(type, 1);
+                hive.getReserveManager().add(alienEntityType, bonusCount);
             });
         }
 

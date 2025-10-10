@@ -1,53 +1,44 @@
 package com.alien.client.render.entity;
 
 import com.alien.client.animation.entity.QueenAnimator;
+import com.alien.client.render.AlienRenderResourceCache;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.queen.Queen;
+import com.alien.common.model.alien.variant.AlienVariant;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 
-import com.avp.AVPResources;
 import com.avp.client.render.layer.RadiationGlowLayer;
 
 public class QueenRenderer extends AzEntityRenderer<Queen> {
 
     private static final String NAME = "queen";
 
-    private static final ResourceLocation MODEL = AVPResources.entityGeoModelLocation(NAME);
-
-    private static final ResourceLocation TEXTURE = AVPResources.entityTextureLocation(NAME);
-
-    private static final ResourceLocation ABERRANT_TEXTURE = AVPResources.entityTextureLocation("aberrant_" + NAME);
-
-    private static final ResourceLocation IRRADIATED_TEXTURE = AVPResources.entityTextureLocation("irradiated_" + NAME);
-
-    private static final ResourceLocation NETHER_TEXTURE = AVPResources.entityTextureLocation("nether_" + NAME);
+    private static final AlienRenderResourceCache RESOURCE_CACHE = new AlienRenderResourceCache(NAME, RenderType::entityCutoutNoCull);
 
     public QueenRenderer(EntityRendererProvider.Context context) {
         super(
-            AzEntityRendererConfig.builder($ -> MODEL, QueenRenderer::textureLocation)
+            AzEntityRendererConfig.builder(QueenRenderer::modelLocation, QueenRenderer::textureLocation)
+                .setRenderType(QueenRenderer::renderType)
                 .setAnimatorProvider(QueenAnimator::new)
                 .addRenderLayer(new RadiationGlowLayer<>())
+                .setShadowRadius(1F)
                 .build(),
             context
         );
-        this.shadowRadius = 1F;
+    }
+
+    private static ResourceLocation modelLocation(Queen queen) {
+        return RESOURCE_CACHE.getOrCreateModelLocationForVariant(AlienVariant.NORMAL);
+    }
+
+    private static RenderType renderType(Queen queen) {
+        return RESOURCE_CACHE.getOrCreateRenderTypeForVariant(queen.getVariant());
     }
 
     private static ResourceLocation textureLocation(Queen queen) {
-        if (queen.isNetherAfflicted()) {
-            return NETHER_TEXTURE;
-        }
-
-        if (queen.isIrradiated()) {
-            return IRRADIATED_TEXTURE;
-        }
-
-        if (queen.isAberrant()) {
-            return ABERRANT_TEXTURE;
-        }
-
-        return TEXTURE;
+        return RESOURCE_CACHE.getOrCreateTextureLocationForVariant(queen.getVariant());
     }
 }

@@ -1,5 +1,6 @@
 package com.human.common.gameplay.item;
 
+import com.human.common.data.HumanAdvancements;
 import com.human.common.gameplay.component.ArmorCaseContainerContents;
 import com.human.common.gameplay.menu.armor_case.ArmorCaseMenu;
 import com.human.common.registry.init.HumanDataComponents;
@@ -8,6 +9,7 @@ import com.lib.common.model.TooltipCategoryType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.MenuProvider;
@@ -105,6 +107,14 @@ public class ArmorCaseItem extends Item {
         livingEntity.setItemSlot(EquipmentSlot.FEET, container.feet());
 
         var newContainer = new ArmorCaseContainerContents(headItemStack, chestItemStack, legsItemStack, feetItemStack);
+
+        if (
+            livingEntity instanceof ServerPlayer serverPlayer
+                && container.isFull()
+                && newContainer.isFull()
+        ) {
+            HumanAdvancements.EQUIP_FULL_ARMOR_SET_WITH_ARMOR_CASE.grant(serverPlayer);
+        }
 
         itemStack.set(HumanDataComponents.ARMOR_CASE_CONTAINER.get(), newContainer);
     }

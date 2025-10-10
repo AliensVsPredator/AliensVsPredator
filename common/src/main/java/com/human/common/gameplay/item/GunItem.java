@@ -1,5 +1,6 @@
 package com.human.common.gameplay.item;
 
+import com.compat.CommonItemTags;
 import com.human.common.gameplay.item.gun.GunConfig;
 import com.human.common.gameplay.item.gun.pipeline.GunShootContext;
 import com.human.common.gameplay.item.old_painless.OldPainlessAnimationRefs;
@@ -27,8 +28,6 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-
-import com.avp.common.registry.init.item.AVPItems;
 
 public class GunItem extends Item {
 
@@ -86,7 +85,7 @@ public class GunItem extends Item {
 
     @Override
     public boolean isValidRepairItem(@NotNull ItemStack toRepair, ItemStack repairIngredient) {
-        return repairIngredient.is(AVPItems.STEEL_INGOT.get());
+        return repairIngredient.is(CommonItemTags.INGOTS_STEEL);
     }
 
     @Override

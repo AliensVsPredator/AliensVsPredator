@@ -2,8 +2,8 @@ package com.human.common.gameplay.power.grid;
 
 import com.human.common.gameplay.power.PowerNode;
 import com.just.core.traversal.BFS;
+import com.lib.common.util.DirectionUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 
 import java.util.*;
@@ -23,7 +23,7 @@ public class PowerGridExploreUtil {
 
         BFS.traverse(
             start,
-            current -> Arrays.stream(Direction.values())
+            current -> Arrays.stream(DirectionUtil.VALUES)
                 .map(current::relative)
                 .filter(relPos -> isConnectable(level, relPos))
                 .toList(),

@@ -2,6 +2,7 @@ package com.avp.fabric.data.recipe.impl;
 
 import com.alien.common.registry.init.AlienBlocks;
 import com.alien.common.registry.init.AlienItems;
+import com.compat.CommonItemTags;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
@@ -19,7 +20,7 @@ public class MiscellaneousRecipeProvider {
     public static void provide(RecipeBuilder builder) {
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
-            .define('A', AVPItems.ALUMINUM_INGOT)
+            .define('A', CommonItemTags.INGOTS_ALUMINUM)
             .define('B', AVPItems.SYRINGE)
             .define('C', AVPItems.INTEGRATED_CIRCUIT)
             .define('D', AVPItems.LED_DISPLAY)
@@ -31,7 +32,7 @@ public class MiscellaneousRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
-            .define('A', Items.IRON_NUGGET)
+            .define('A', CommonItemTags.NUGGETS_IRON)
             .define('B', Items.GLASS_BOTTLE)
             .define('C', AVPItems.POLYMER)
             .pattern("A  ")
@@ -66,9 +67,9 @@ public class MiscellaneousRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
-            .define('A', AVPItems.AUTUNITE_DUST)
-            .define('G', Items.GOLD_INGOT)
-            .define('D', Items.DIAMOND)
+            .define('A', CommonItemTags.DUSTS_AUTUNITE)
+            .define('D', CommonItemTags.GEMS_DIAMOND)
+            .define('G', CommonItemTags.INGOTS_GOLD)
             .pattern("GDG")
             .pattern("AAA")
             .pattern("GDG")
@@ -92,7 +93,7 @@ public class MiscellaneousRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
-            .define('A', AVPItems.ALUMINUM_INGOT)
+            .define('A', CommonItemTags.INGOTS_ALUMINUM)
             .define('B', AVPItems.POLYMER)
             .define('C', Items.CHEST)
             .pattern("ABA")
@@ -133,7 +134,7 @@ public class MiscellaneousRecipeProvider {
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
             .define('I', AVPItemTags.IRON_INGOT_LIKE)
-            .define('N', Items.IRON_NUGGET)
+            .define('N', CommonItemTags.NUGGETS_IRON)
             .pattern("INI")
             .pattern("NIN")
             .pattern("INI")
@@ -154,7 +155,7 @@ public class MiscellaneousRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
-            .define('T', AVPItems.TITANIUM_INGOT)
+            .define('T', CommonItemTags.INGOTS_TITANIUM)
             .define('R', AVPItems.REDSTONE_CRYSTAL)
             .define('P', Items.PISTON)
             .define('B', Items.BUCKET)
@@ -174,7 +175,7 @@ public class MiscellaneousRecipeProvider {
             .define('C', Items.CLOCK)
             .define('S', AVPItems.LED_DISPLAY)
             .define('P', AVPItems.CPU)
-            .define('L', AVPItems.LEAD_INGOT)
+            .define('L', CommonItemTags.INGOTS_LEAD)
             .define('N', AVPItems.NEODYMIUM_MAGNET)
             .define('T', Items.TNT)
             .pattern("CSP")

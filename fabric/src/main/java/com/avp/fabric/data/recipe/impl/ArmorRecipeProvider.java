@@ -2,10 +2,11 @@ package com.avp.fabric.data.recipe.impl;
 
 import com.alien.common.registry.init.AlienItems;
 import com.alien.common.registry.init.item.AlienArmorItems;
+import com.compat.CommonItemTags;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 
 import java.util.function.Supplier;
@@ -64,7 +65,7 @@ public class ArmorRecipeProvider {
         );
         createStandardArmorSetRecipes(
             builder,
-            AVPItems.STEEL_INGOT.get(),
+            CommonItemTags.INGOTS_STEEL,
             AVPArmorItems.STEEL_HELMET.get(),
             AVPArmorItems.STEEL_CHESTPLATE.get(),
             AVPArmorItems.STEEL_LEGGINGS.get(),
@@ -72,7 +73,7 @@ public class ArmorRecipeProvider {
         );
         createStandardArmorSetRecipes(
             builder,
-            AVPItems.TITANIUM_INGOT.get(),
+            CommonItemTags.INGOTS_TITANIUM,
             AVPArmorItems.TITANIUM_HELMET.get(),
             AVPArmorItems.TITANIUM_CHESTPLATE.get(),
             AVPArmorItems.TITANIUM_LEGGINGS.get(),
@@ -175,26 +176,26 @@ public class ArmorRecipeProvider {
     private static void createMk50ArmorSetRecipes(RecipeBuilder builder) {
         Supplier<ShapedRecipeBuilder> mk50ArmorBuilder = () -> builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', AVPItems.ALUMINUM_INGOT)
-            .define('C', AVPItems.LEAD_INGOT);
+            .define('A', CommonItemTags.INGOTS_ALUMINUM)
+            .define('C', CommonItemTags.INGOTS_LEAD);
 
         mk50ArmorBuilder.get()
             .define('B', AVPItemTags.INDUSTRIAL_GLASS_PANE)
-            .define('E', AVPItems.CARBON_DUST)
+            .define('E', CommonItemTags.DUSTS_COAL)
             .pattern("CAC")
             .pattern("B B")
             .pattern("AEA")
             .into(1, AVPArmorItems.MK50_HELMET);
 
         mk50ArmorBuilder.get()
-            .define('D', Items.LEATHER)
+            .define('D', CommonItemTags.LEATHERS)
             .pattern("A A")
             .pattern("CAC")
             .pattern("DAD")
             .into(1, AVPArmorItems.MK50_CHESTPLATE);
 
         mk50ArmorBuilder.get()
-            .define('D', Items.LEATHER)
+            .define('D', CommonItemTags.LEATHERS)
             .pattern("CDC")
             .pattern("D D")
             .pattern("A A")
@@ -209,11 +210,11 @@ public class ArmorRecipeProvider {
     private static void createPressureArmorSetRecipes(RecipeBuilder builder) {
         Supplier<ShapedRecipeBuilder> pressureArmorBuilder = () -> builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', AVPItems.ALUMINUM_INGOT);
+            .define('A', CommonItemTags.INGOTS_ALUMINUM);
 
         pressureArmorBuilder.get()
             .define('B', AVPItemTags.INDUSTRIAL_GLASS_PANE)
-            .define('E', AVPItems.CARBON_DUST)
+            .define('E', CommonItemTags.DUSTS_COAL)
             .pattern("AAA")
             .pattern("B B")
             .pattern("EEE")
@@ -243,7 +244,7 @@ public class ArmorRecipeProvider {
     private static void createTacticalArmorSetRecipes(RecipeBuilder builder) {
         Supplier<ShapedRecipeBuilder> tacticalArmorBuilder = () -> builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', AVPItems.STEEL_INGOT)
+            .define('A', CommonItemTags.INGOTS_STEEL)
             .define('B', ItemTags.WOOL);
 
         tacticalArmorBuilder.get()
@@ -294,6 +295,31 @@ public class ArmorRecipeProvider {
 
         builder.shaped()
             .apply(RecipeTemplates.BOOTS.apply(base))
+            .into(1, boots);
+    }
+
+    private static void createStandardArmorSetRecipes(
+        RecipeBuilder builder,
+        TagKey<Item> base,
+        Item helmet,
+        Item chestplate,
+        Item leggings,
+        Item boots
+    ) {
+        builder.shaped()
+            .apply(RecipeTemplates.HELMET_TAG_FRIENDLY.apply(base))
+            .into(1, helmet);
+
+        builder.shaped()
+            .apply(RecipeTemplates.CHESTPLATE_TAG_FRIENDLY.apply(base))
+            .into(1, chestplate);
+
+        builder.shaped()
+            .apply(RecipeTemplates.LEGGINGS_TAG_FRIENDLY.apply(base))
+            .into(1, leggings);
+
+        builder.shaped()
+            .apply(RecipeTemplates.BOOTS_TAG_FRIENDLY.apply(base))
             .into(1, boots);
     }
 }

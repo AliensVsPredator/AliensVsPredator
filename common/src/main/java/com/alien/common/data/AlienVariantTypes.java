@@ -51,7 +51,8 @@ public class AlienVariantTypes {
         AlienParticleTypes.ACID,
 
         BossEvent.BossBarColor.YELLOW,
-        ChatFormatting.YELLOW
+        ChatFormatting.YELLOW,
+        true
     );
 
     public static final AlienVariantType IRRADIATED = new AlienVariantType(
@@ -77,7 +78,8 @@ public class AlienVariantTypes {
         AlienParticleTypes.IRRADIATED_ACID,
 
         BossEvent.BossBarColor.BLUE,
-        ChatFormatting.BLUE
+        ChatFormatting.BLUE,
+        false
     );
 
     public static final AlienVariantType NETHER = new AlienVariantType(
@@ -103,7 +105,8 @@ public class AlienVariantTypes {
         AlienParticleTypes.BLUE_ACID,
 
         BossEvent.BossBarColor.RED,
-        ChatFormatting.RED
+        ChatFormatting.RED,
+        true
     );
 
     public static final AlienVariantType NORMAL = new AlienVariantType(
@@ -129,7 +132,8 @@ public class AlienVariantTypes {
         AlienParticleTypes.ACID,
 
         BossEvent.BossBarColor.GREEN,
-        ChatFormatting.GREEN
+        ChatFormatting.GREEN,
+        true
     );
 
     private static final Map<AlienVariant, AlienVariantType> TYPE_BY_VARIANT = Util.make(() -> {

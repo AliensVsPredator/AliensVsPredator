@@ -5,8 +5,8 @@ import com.human.common.gameplay.block.entity.power.PowerNodeBlockEntity;
 import com.human.common.gameplay.power.PowerNode;
 import com.just.core.functional.function.Function;
 import com.just.core.functional.function.Lazy;
+import com.lib.common.util.DirectionUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.BlastFurnaceBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -58,7 +58,7 @@ public class ThermalGeneratorBlockEntity extends PowerNodeBlockEntity implements
 
         var totalHeat = 0;
 
-        for (var direction : Direction.values()) {
+        for (var direction : DirectionUtil.VALUES) {
             var neighborPos = worldPosition.relative(direction);
             var neighborState = level.getBlockState(neighborPos);
             var neighborBlock = neighborState.getBlock();

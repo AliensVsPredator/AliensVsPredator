@@ -1,5 +1,6 @@
 package com.avp.common.gameplay.explosion;
 
+import com.lib.common.util.DirectionUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
@@ -23,7 +24,7 @@ public class ExplosionProcessor {
     public ExplosionProcessor(Explosion explosion) {
         this.explosion = explosion;
         this.directionToExplosionCursorMap = new EnumMap<>(
-            Arrays.stream(Direction.values())
+            Arrays.stream(DirectionUtil.VALUES)
                 .collect(Collectors.toMap(Function.identity(), direction -> new ExplosionCursor(explosion, direction)))
         );
     }
