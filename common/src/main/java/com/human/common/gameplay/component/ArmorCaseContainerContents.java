@@ -42,4 +42,8 @@ public record ArmorCaseContainerContents(
         ArmorCaseContainerContents::feet,
         ArmorCaseContainerContents::new
     );
+
+    public boolean isEmpty() {
+        return head.isEmpty() && chest.isEmpty() && legs.isEmpty() && feet.isEmpty();
+    }
 }
