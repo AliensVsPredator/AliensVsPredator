@@ -20,6 +20,8 @@ public class AVPArmorItems {
 
     private static final int TITANIUM_DURABILITY_MULTIPLIER = 27;
 
+    private static final int WY_COMMANDO_DURABILITY_MULTIPLIER = 18;
+
     public static final AVPDeferredHolder<Item> MK50_BOOTS = register("mk50_boots", () -> new MK50ArmorItem(ArmorItem.Type.BOOTS));
 
     public static final AVPDeferredHolder<Item> MK50_CHESTPLATE = register(
@@ -161,6 +163,34 @@ public class AVPArmorItems {
         AVPArmorMaterials.TITANIUM::getHolder,
         ArmorItem.Type.LEGGINGS,
         TITANIUM_DURABILITY_MULTIPLIER
+    );
+
+    public static final AVPDeferredHolder<Item> WY_COMMANDO_BOOTS = register(
+        "wy_commando_boots",
+        AVPArmorMaterials.WY_COMMANDO::getHolder,
+        ArmorItem.Type.BOOTS,
+        WY_COMMANDO_DURABILITY_MULTIPLIER
+    );
+
+    public static final AVPDeferredHolder<Item> WY_COMMANDO_CHESTPLATE = register(
+        "wy_commando_chestplate",
+        AVPArmorMaterials.WY_COMMANDO::getHolder,
+        ArmorItem.Type.CHESTPLATE,
+        WY_COMMANDO_DURABILITY_MULTIPLIER
+    );
+
+    public static final AVPDeferredHolder<Item> WY_COMMANDO_HELMET = register(
+        "wy_commando_helmet",
+        AVPArmorMaterials.WY_COMMANDO::getHolder,
+        ArmorItem.Type.HELMET,
+        WY_COMMANDO_DURABILITY_MULTIPLIER
+    );
+
+    public static final AVPDeferredHolder<Item> WY_COMMANDO_LEGGINGS = register(
+        "wy_commando_leggings",
+        AVPArmorMaterials.WY_COMMANDO::getHolder,
+        ArmorItem.Type.LEGGINGS,
+        WY_COMMANDO_DURABILITY_MULTIPLIER
     );
 
     public static AVPDeferredHolder<Item> register(

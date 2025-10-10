@@ -4,6 +4,7 @@ import com.human.client.render.armor.MK50ArmorRenderer;
 import com.human.client.render.armor.PressureArmorRenderer;
 import com.human.client.render.armor.TacticalArmorRenderer;
 import com.human.client.render.armor.TacticalCamoArmorRenderer;
+import com.human.client.render.armor.WYCommandoArmorRenderer;
 import com.human.client.render.block.DeskTerminalRenderer;
 import com.human.client.render.block.ResonatorRenderer;
 import com.human.client.render.block.SolarPanelRenderer;
@@ -99,6 +100,15 @@ public class HumanClient {
                 AVPArmorItems.TACTICAL_CAMO_CHESTPLATE,
                 AVPArmorItems.TACTICAL_CAMO_LEGGINGS,
                 AVPArmorItems.TACTICAL_CAMO_BOOTS
+            )
+        );
+        Services.CLIENT_REGISTRY.registerArmorRenderer(
+            WYCommandoArmorRenderer::new,
+            List.of(
+                AVPArmorItems.WY_COMMANDO_HELMET,
+                AVPArmorItems.WY_COMMANDO_CHESTPLATE,
+                AVPArmorItems.WY_COMMANDO_LEGGINGS,
+                AVPArmorItems.WY_COMMANDO_BOOTS
             )
         );
     }

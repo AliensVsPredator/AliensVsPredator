@@ -24,6 +24,7 @@ public class ArmorRecipeProvider {
         createMk50ArmorSetRecipes(builder);
         createPressureArmorSetRecipes(builder);
         createTacticalArmorSetRecipes(builder);
+        createWYCommandoArmorSetRecipes(builder);
         createPlatedChitinArmorSetRecipes(builder);
         createPlatedAberrantChitinArmorSetRecipes(builder);
         // TODO: Re-implement these at some point in the future.
@@ -271,6 +272,39 @@ public class ArmorRecipeProvider {
             .pattern("B B")
             .pattern("A A")
             .into(1, AVPArmorItems.TACTICAL_BOOTS);
+    }
+
+    private static void createWYCommandoArmorSetRecipes(RecipeBuilder builder) {
+        Supplier<ShapedRecipeBuilder> wyCommandoArmorBuilder = () -> builder.shaped()
+            .withCategory(RecipeCategory.COMBAT)
+            .define('A', CommonItemTags.INGOTS_STEEL)
+            .define('B', AVPItemTags.PLASTIC);
+
+        wyCommandoArmorBuilder.get()
+            .define('C', AVPItems.POLYMER)
+            .define('D', AVPItemTags.INDUSTRIAL_GLASS_PANE)
+            .pattern("ABA")
+            .pattern("CDC")
+            .into(1, AVPArmorItems.WY_COMMANDO_HELMET);
+
+        wyCommandoArmorBuilder.get()
+            .define('C', AVPItems.POLYMER)
+            .pattern("C C")
+            .pattern("ABA")
+            .pattern("CAC")
+            .into(1, AVPArmorItems.WY_COMMANDO_CHESTPLATE);
+
+        wyCommandoArmorBuilder.get()
+            .define('C', AVPItems.POLYMER)
+            .pattern("CBC")
+            .pattern("A A")
+            .pattern("C C")
+            .into(1, AVPArmorItems.WY_COMMANDO_LEGGINGS);
+
+        wyCommandoArmorBuilder.get()
+            .pattern("B B")
+            .pattern("A A")
+            .into(1, AVPArmorItems.WY_COMMANDO_BOOTS);
     }
 
     private static void createStandardArmorSetRecipes(

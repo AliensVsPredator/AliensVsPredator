@@ -109,6 +109,10 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, AVPArmorItems.TITANIUM_CHESTPLATE);
         generateStandardItem(generators, AVPArmorItems.TITANIUM_HELMET);
         generateStandardItem(generators, AVPArmorItems.TITANIUM_LEGGINGS);
+        generateStandardItem(generators, AVPArmorItems.WY_COMMANDO_BOOTS);
+        generateStandardItem(generators, AVPArmorItems.WY_COMMANDO_CHESTPLATE);
+        generateStandardItem(generators, AVPArmorItems.WY_COMMANDO_HELMET);
+        generateStandardItem(generators, AVPArmorItems.WY_COMMANDO_LEGGINGS);
 
         generateStandardItem(generators, AlienItems.IRRADIATED_CHITIN);
         generateStandardItem(generators, AlienItems.PLATED_IRRADIATED_CHITIN);

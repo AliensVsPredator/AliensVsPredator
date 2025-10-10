@@ -108,6 +108,22 @@ public class AVPArmorMaterials {
         false
     );
 
+    public static final AVPDeferredHolder<ArmorMaterial> WY_COMMANDO = register(
+        "wy_commando",
+        Map.ofEntries(
+            Map.entry(ArmorItem.Type.HELMET, 2),
+            Map.entry(ArmorItem.Type.CHESTPLATE, 6),
+            Map.entry(ArmorItem.Type.LEGGINGS, 3),
+            Map.entry(ArmorItem.Type.BOOTS, 2)
+        ),
+        5,
+        AVPSoundEvents.ITEM_ARMOR_EQUIP_TACTICAL::getHolder,
+        () -> Ingredient.of(CommonItemTags.INGOTS_STEEL),
+        0,
+        0,
+        false
+    );
+
     public static AVPDeferredHolder<ArmorMaterial> register(
         String id,
         Map<ArmorItem.Type, Integer> defensePoints,

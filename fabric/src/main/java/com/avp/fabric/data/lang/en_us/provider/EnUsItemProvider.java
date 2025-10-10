@@ -107,6 +107,10 @@ public class EnUsItemProvider {
         addItem(builder, AVPArmorItems.TITANIUM_CHESTPLATE, "Titanium Chestplate");
         addItem(builder, AVPArmorItems.TITANIUM_HELMET, "Titanium Helmet");
         addItem(builder, AVPArmorItems.TITANIUM_LEGGINGS, "Titanium Leggings");
+        addItem(builder, AVPArmorItems.WY_COMMANDO_BOOTS, "WY Commando Boots");
+        addItem(builder, AVPArmorItems.WY_COMMANDO_CHESTPLATE, "WY Commando Chestplate");
+        addItem(builder, AVPArmorItems.WY_COMMANDO_HELMET, "WY Commando Helmet");
+        addItem(builder, AVPArmorItems.WY_COMMANDO_LEGGINGS, "WY Commando Leggings");
         addItem(builder, HumanGunItems.ZX_76_SHOTGUN, "ZX-76 Shotgun");
 
         // Ingredient Items
