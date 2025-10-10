@@ -50,6 +50,8 @@ public class AVPItemTags {
 
     public static final TagKey<Item> NORMAL_CHITIN_ARMOR = create("normal_chitin_armor");
 
+    public static final TagKey<Item> PLASTIC = create("plastic");
+
     public static final TagKey<Item> PLATED_ABERRANT_CHITIN_ARMOR = create("plated_aberrant_chitin_armor");
 
     public static final TagKey<Item> PLATED_CHITIN_ARMORS = create("plated_chitin_armors");

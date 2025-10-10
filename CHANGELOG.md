@@ -29,7 +29,7 @@
 - N/A
 
 ## 🛠 Data Pack
-- N/A
+- Added `#avp:plastic` item tag.
 
 ## 🔬 Technical Changes
 - N/A

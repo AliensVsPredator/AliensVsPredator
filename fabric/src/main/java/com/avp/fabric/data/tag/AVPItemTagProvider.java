@@ -22,6 +22,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ButtonBlock;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.FenceBlock;
@@ -109,6 +110,12 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             .addTag(CommonItemTags.INGOTS_FERROALUMINUM)
             .addTag(CommonItemTags.INGOTS_STEEL)
             .addTag(CommonItemTags.INGOTS_ZINC);
+
+        var plasticTagBuilder = getOrCreateTagBuilder(AVPItemTags.PLASTIC);
+
+        TagProviderUtil.getPlasticBlockStream()
+            .map(Block::asItem)
+            .forEach(plasticTagBuilder::add);
 
         var industrialGlassBlockTagBuilder = getOrCreateTagBuilder(AVPItemTags.INDUSTRIAL_GLASS_BLOCK);
 
