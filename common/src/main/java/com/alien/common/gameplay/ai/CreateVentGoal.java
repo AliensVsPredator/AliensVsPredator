@@ -3,6 +3,7 @@ package com.alien.common.gameplay.ai;
 import com.alien.common.data.AlienVariantTypes;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.Xenomorph;
 import com.lib.common.data.Cooldown;
+import com.lib.common.util.DirectionUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -117,12 +118,12 @@ public class CreateVentGoal extends Goal {
 
             level.setBlock(tunnelPos, resinWebHolder.get().defaultBlockState(), Block.UPDATE_ALL);
 
-            for (var adj : Direction.values()) {
-                if (adj == direction || adj == direction.getOpposite()) {
+            for (var relativeDirection : DirectionUtil.VALUES) {
+                if (relativeDirection == direction || relativeDirection == direction.getOpposite()) {
                     continue;
                 }
 
-                var tunnelWallPos = tunnelPos.relative(adj);
+                var tunnelWallPos = tunnelPos.relative(relativeDirection);
 
                 level.setBlock(tunnelWallPos, resinHolder.get().defaultBlockState(), Block.UPDATE_ALL);
             }
@@ -182,7 +183,7 @@ public class CreateVentGoal extends Goal {
                 return false;
             }
 
-            for (var adj : Direction.values()) {
+            for (var adj : DirectionUtil.VALUES) {
                 if (adj == direction || adj == direction.getOpposite()) {
                     continue;
                 }
