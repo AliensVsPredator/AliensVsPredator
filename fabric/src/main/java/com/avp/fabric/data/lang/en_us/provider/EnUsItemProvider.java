@@ -111,6 +111,10 @@ public class EnUsItemProvider {
         addItem(builder, AVPArmorItems.WY_COMMANDO_CHESTPLATE, "WY Commando Chestplate");
         addItem(builder, AVPArmorItems.WY_COMMANDO_HELMET, "WY Commando Helmet");
         addItem(builder, AVPArmorItems.WY_COMMANDO_LEGGINGS, "WY Commando Leggings");
+        addItem(builder, AVPArmorItems.WY_ELITE_BOOTS, "WY Elite Boots");
+        addItem(builder, AVPArmorItems.WY_ELITE_CHESTPLATE, "WY Elite Chestplate");
+        addItem(builder, AVPArmorItems.WY_ELITE_HELMET, "WY Elite Helmet");
+        addItem(builder, AVPArmorItems.WY_ELITE_LEGGINGS, "WY Elite Leggings");
         addItem(builder, HumanGunItems.ZX_76_SHOTGUN, "ZX-76 Shotgun");
 
         // Ingredient Items

@@ -5,6 +5,7 @@ import com.human.client.render.armor.PressureArmorRenderer;
 import com.human.client.render.armor.TacticalArmorRenderer;
 import com.human.client.render.armor.TacticalCamoArmorRenderer;
 import com.human.client.render.armor.WYCommandoArmorRenderer;
+import com.human.client.render.armor.WYEliteArmorRenderer;
 import com.human.client.render.block.DeskTerminalRenderer;
 import com.human.client.render.block.ResonatorRenderer;
 import com.human.client.render.block.SolarPanelRenderer;
@@ -109,6 +110,15 @@ public class HumanClient {
                 AVPArmorItems.WY_COMMANDO_CHESTPLATE,
                 AVPArmorItems.WY_COMMANDO_LEGGINGS,
                 AVPArmorItems.WY_COMMANDO_BOOTS
+            )
+        );
+        Services.CLIENT_REGISTRY.registerArmorRenderer(
+            WYEliteArmorRenderer::new,
+            List.of(
+                AVPArmorItems.WY_ELITE_HELMET,
+                AVPArmorItems.WY_ELITE_CHESTPLATE,
+                AVPArmorItems.WY_ELITE_LEGGINGS,
+                AVPArmorItems.WY_ELITE_BOOTS
             )
         );
     }

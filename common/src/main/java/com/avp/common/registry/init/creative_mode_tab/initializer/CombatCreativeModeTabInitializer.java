@@ -76,6 +76,11 @@ public class CombatCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, AVPArmorItems.WY_COMMANDO_LEGGINGS);
         CreativeModeTabUtil.accept(output, AVPArmorItems.WY_COMMANDO_BOOTS);
 
+        CreativeModeTabUtil.accept(output, AVPArmorItems.WY_ELITE_HELMET);
+        CreativeModeTabUtil.accept(output, AVPArmorItems.WY_ELITE_CHESTPLATE);
+        CreativeModeTabUtil.accept(output, AVPArmorItems.WY_ELITE_LEGGINGS);
+        CreativeModeTabUtil.accept(output, AVPArmorItems.WY_ELITE_BOOTS);
+
         CreativeModeTabUtil.accept(output, AlienArmorItems.CHITIN_HELMET);
         CreativeModeTabUtil.accept(output, AlienArmorItems.CHITIN_CHESTPLATE);
         CreativeModeTabUtil.accept(output, AlienArmorItems.CHITIN_LEGGINGS);
