@@ -1,11 +1,11 @@
 package com.avp.common.registry.init.item;
 
 import com.human.common.gameplay.item.ArmorCaseItem;
-import com.human.common.gameplay.item.CanisterItem;
 import com.human.common.gameplay.item.GeneReaderItem;
-import com.human.common.gameplay.item.MilkCanisterItem;
-import com.human.common.gameplay.item.SolidCanisterItem;
 import com.human.common.gameplay.item.SyringeItem;
+import com.human.common.gameplay.item.canister.CanisterItem;
+import com.human.common.gameplay.item.canister.MilkCanisterItem;
+import com.human.common.gameplay.item.canister.SolidCanisterItem;
 import com.human.common.gameplay.item.grenade.GrenadeItem;
 import com.human.common.registry.init.HumanDataComponents;
 import com.human.common.registry.init.item.HumanGunItems;

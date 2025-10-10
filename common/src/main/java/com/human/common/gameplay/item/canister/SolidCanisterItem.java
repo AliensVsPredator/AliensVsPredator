@@ -1,4 +1,4 @@
-package com.human.common.gameplay.item;
+package com.human.common.gameplay.item.canister;
 
 import com.human.common.registry.init.HumanDataComponents;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -74,7 +74,7 @@ public class SolidCanisterItem extends BlockItem {
             int contentAmount = context.getItemInHand().getOrDefault(HumanDataComponents.CANISTER_CAPACITY.get(), 0);
 
             if (contentAmount > 1 && !player.isCreative()) {
-                CanisterItem.updateCapacity(context.getItemInHand(), -1);
+                CanisterItem.updateCapacity(player, context.getItemInHand(), -1);
                 return result;
             }
 
@@ -124,7 +124,7 @@ public class SolidCanisterItem extends BlockItem {
         bucketPickup.getPickupSound().ifPresent(sound -> player.playSound(sound, 1.0F, 1.0F));
         level.gameEvent(player, GameEvent.FLUID_PICKUP, hitPos);
 
-        CanisterItem.updateCapacity(canisterStack, 1);
+        CanisterItem.updateCapacity(player, canisterStack, 1);
 
         if (!level.isClientSide) {
             CriteriaTriggers.FILLED_BUCKET.trigger((ServerPlayer) player, canisterStack);

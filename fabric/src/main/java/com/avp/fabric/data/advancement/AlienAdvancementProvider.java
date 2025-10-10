@@ -103,7 +103,7 @@ public class AlienAdvancementProvider {
         AlienEntityTypes.ROYAL_NETHER_OVOMORPH.get()
     );
 
-    public static void generateAdvancement(HolderLookup.Provider registryLookup, Consumer<AdvancementHolder> consumer) {
+    public static void generateAdvancements(HolderLookup.Provider registryLookup, Consumer<AdvancementHolder> consumer) {
         var root = Advancement.Builder.advancement()
             .display(
                 AlienResinBlocks.RESIN.get(),

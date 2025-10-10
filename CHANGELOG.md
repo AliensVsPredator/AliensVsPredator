@@ -10,6 +10,13 @@
 ## ✨ What's New
 - [Fabric] AVP now requires Fabric API `0.116.7+1.21.1`.
 - AVP now requires AzureLib `3.0.39`.
+- Added `Steel Yourselves` advancement, rewarded when the player makes steel ingots.
+- Added `I am Titanium` advancement, rewarded when the player makes titanium ingots.
+- Added `It's Fantastic` advancement, rewarded when the player makes polymer.
+- Added `Hot Swap` advancement, rewarded when the player uses an armor case to swap a full set of equipped armor with a different armor set.
+- Added `Topped Off` advancement, rewarded when the player completely fills a canister with a single fluid.
+- Added `Brass Ring` advancement, rewarded when the player makes brass ingots.
+- Added `Lock & Load` advancement, rewarded when the player obtains a gun.
 - Added a new recipe for raw ferrobauxite (1 raw crude iron + 1 raw bauxite).
   - Existing raw crude iron and raw ferrobauxite recipes have 2 overlapping ingredients, so it made sense to have another recipe where the overlapping ingredients are substituted with raw crude iron.
   - Shoutout to Davianortis in our Discord server for this suggestion!

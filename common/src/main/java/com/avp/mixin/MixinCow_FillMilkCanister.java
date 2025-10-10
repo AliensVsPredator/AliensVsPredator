@@ -1,6 +1,6 @@
 package com.avp.mixin;
 
-import com.human.common.gameplay.item.CanisterItem;
+import com.human.common.gameplay.item.canister.CanisterItem;
 import com.human.common.registry.init.HumanDataComponents;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
@@ -43,8 +43,8 @@ public abstract class MixinCow_FillMilkCanister extends Animal {
 
         if (contentAmount == 0) {
             updatedStack = ItemUtils.createFilledResult(itemStack, player, AVPItems.MILK_CANISTER.get().getDefaultInstance());
-        } else if (contentAmount < 8) {
-            updatedStack = CanisterItem.updateCapacity(itemStack, 1);
+        } else if (contentAmount < CanisterItem.MAX_CAPACITY) {
+            updatedStack = CanisterItem.updateCapacity(player, itemStack, 1);
         } else {
             cir.setReturnValue(InteractionResult.PASS);
             return;
