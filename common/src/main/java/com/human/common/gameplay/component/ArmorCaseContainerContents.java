@@ -46,4 +46,8 @@ public record ArmorCaseContainerContents(
     public boolean isEmpty() {
         return head.isEmpty() && chest.isEmpty() && legs.isEmpty() && feet.isEmpty();
     }
+
+    public boolean isFull() {
+        return !head.isEmpty() && !chest.isEmpty() && !legs.isEmpty() && !feet.isEmpty();
+    }
 }
