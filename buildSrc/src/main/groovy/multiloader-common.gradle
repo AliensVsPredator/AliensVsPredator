@@ -45,7 +45,7 @@ repositories {
         name = 'BlameJared'
         url = 'https://maven.blamejared.com'
     }
-    maven { url = "https://jitpack.io" }
+    maven { url = "https://maven.bvanseghi.dev/just" }
     maven { url = "https://maven.azuredoom.com/mods" }
     maven { url = "https://maven.terraformersmc.com/releases" }
     maven { url = "https://maven.parchmentmc.org" }
