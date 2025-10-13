@@ -1,5 +1,6 @@
 package com.human;
 
+import com.human.common.gameplay.entity.living.human.marine.ai.MarineGOAP;
 import com.human.common.registry.init.HumanDataComponents;
 import com.human.common.registry.init.HumanMenuTypes;
 import com.human.common.registry.init.block.HumanFerroaluminumBlocks;
@@ -46,5 +47,8 @@ public class Human {
         HumanEntityTypes.initialize();
         HumanMenuTypes.initialize();
         HumanDataComponents.initialize();
+
+        // AI
+        MarineGOAP.initialize();
     }
 }

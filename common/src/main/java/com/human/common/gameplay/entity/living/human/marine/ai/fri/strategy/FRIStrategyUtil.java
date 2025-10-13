@@ -1,18 +1,25 @@
-package com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance;
+package com.human.common.gameplay.entity.living.human.marine.ai.fri.strategy;
 
-import com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance.strategy.FireResistanceItemStrategy;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class FireResistanceItemStrategyUtil {
+import com.avp.common.model.inventory.AVPInventory;
+
+public class FRIStrategyUtil {
+
+    public static int fireResistanceTicksFromStack(AVPInventory.Entry entry) {
+        var mobEffectInstance = getMobEffectInstanceOrNull(entry, MobEffects.FIRE_RESISTANCE);
+        return mobEffectInstance == null
+            ? 0
+            : mobEffectInstance.getDuration();
+    }
 
     public static int fireResistanceTicksFromStack(ItemStack itemStack) {
         var mobEffectInstance = getMobEffectInstanceOrNull(itemStack, MobEffects.FIRE_RESISTANCE);
@@ -21,13 +28,9 @@ public class FireResistanceItemStrategyUtil {
             : mobEffectInstance.getDuration();
     }
 
-    public static int useDurationTicks(LivingEntity livingEntity, ItemStack stack) {
-        return stack.getUseDuration(livingEntity);
-    }
-
-    public static double urgencyTerm(FireResistanceItemStrategy.Context<?> context) {
-        var onFire = context.isOnFire() ? 1.0 : 0.0;
-        var lowHp = 1.0 - clamp01(context.healthRatio());
+    public static double urgencyTerm(boolean isOnFire, double healthRatio) {
+        var onFire = isOnFire ? 1.0 : 0.0;
+        var lowHp = 1.0 - clamp01(healthRatio);
 
         return 0.5 * onFire + 0.35 * lowHp;
     }
@@ -39,9 +42,9 @@ public class FireResistanceItemStrategyUtil {
         return clamp01(secs / 180.0);
     }
 
-    public static double overlapWasteTerm(FireResistanceItemStrategy.Context<?> context, int newTicks) {
-        // If you already have long remaining, discourage stacking.
-        var remain = context.fireResTicksRemaining();
+    public static double overlapWasteTerm(int fireResTicksRemaining, int newTicks) {
+        // If entity already has long remaining, discourage stacking.
+        var remain = fireResTicksRemaining;
 
         if (remain <= 0) {
             return 0.0;
@@ -61,6 +64,26 @@ public class FireResistanceItemStrategyUtil {
 
     public static double clamp01(double value) {
         return Math.max(0.0, Math.min(1.0, value));
+    }
+
+    private static @Nullable MobEffectInstance getMobEffectInstanceOrNull(AVPInventory.Entry entry, Holder<MobEffect> mobEffectHolder) {
+        for (var mobEffectInstance : getMobEffects(entry)) {
+            if (mobEffectInstance.getEffect() == mobEffectHolder) {
+                return mobEffectInstance;
+            }
+        }
+
+        return null;
+    }
+
+    private static Iterable<MobEffectInstance> getMobEffects(AVPInventory.Entry entry) {
+        var potionContents = entry.get(DataComponents.POTION_CONTENTS);
+
+        if (potionContents == null) {
+            return List.of();
+        }
+
+        return potionContents.getAllEffects();
     }
 
     private static @Nullable MobEffectInstance getMobEffectInstanceOrNull(ItemStack itemStack, Holder<MobEffect> mobEffectHolder) {

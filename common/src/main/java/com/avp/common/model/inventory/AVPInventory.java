@@ -6,6 +6,7 @@ import com.just.core.functional.result.Result;
 import com.lib.common.util.codec.impl.MojangCodecs;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -267,9 +268,14 @@ public class AVPInventory {
             : RemoveResult.InventoryEmpty.INSTANCE;
     }
 
-    public List<Item> filterItems(Predicate<Item> predicate) {
-        return itemToEntriesMap.keySet()
-            .stream()
+    public ItemStack removeItemStack(Entry entry) {
+        var itemStack = entry.itemStack;
+        setItemStack(entry, ItemStack.EMPTY);
+        return itemStack;
+    }
+
+    public List<Entry> filterEntries(Predicate<Entry> predicate) {
+        return Arrays.stream(entries)
             .filter(predicate)
             .toList();
     }
@@ -288,6 +294,17 @@ public class AVPInventory {
             .flatMap(Set::stream)
             .filter(entry -> predicate.test(entry.itemStack))
             .toList();
+    }
+
+    public List<Item> filterItems(Predicate<Item> predicate) {
+        return itemToEntriesMap.keySet()
+            .stream()
+            .filter(predicate)
+            .toList();
+    }
+
+    public Set<Entry> selectEntries(Item item) {
+        return itemToEntriesMap.getOrDefault(item, Set.of());
     }
 
     public void clear() {
@@ -433,6 +450,10 @@ public class AVPInventory {
 
         public int getItemCount() {
             return itemStack.getCount();
+        }
+
+        public int getUseDuration(LivingEntity livingEntity) {
+            return itemStack.getUseDuration(livingEntity);
         }
 
         public int getSlotIndex() {

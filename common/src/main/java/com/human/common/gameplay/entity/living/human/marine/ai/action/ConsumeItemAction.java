@@ -8,15 +8,13 @@ import net.minecraft.world.entity.LivingEntity;
 
 import java.util.function.Supplier;
 
-import com.avp.common.model.inventory.AVPInventoryHolder;
-
 public class ConsumeItemAction {
 
     private static final StateKey<Integer> CONSUME_TICK_DURATION = StateKey.sensed("consume_tick_duration");
 
-    public static <T extends LivingEntity & AVPInventoryHolder> Action.Signal perform(
+    public static Action.Signal perform(
         SoundEvent soundEvent,
-        T entity,
+        LivingEntity entity,
         Blackboard blackboard,
         Supplier<Action.Signal> onConsume
     ) {

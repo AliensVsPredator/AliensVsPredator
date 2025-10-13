@@ -11,6 +11,8 @@ import java.util.List;
 
 import com.avp.common.registry.tag.AVPBiomeTags;
 import com.avp.common.util.AVPPredicates;
+import net.minecraft.world.entity.item.ItemEntity;
+import org.jetbrains.annotations.NotNull;
 
 public class GOAPSensors {
 
@@ -72,6 +74,15 @@ public class GOAPSensors {
         (entity, nearbyEntities) -> nearbyEntities.stream()
             .filter(e -> e instanceof LivingEntity)
             .map(e -> (LivingEntity) e)
+            .toList()
+    );
+
+    public static final Sensor.Mono<Entity, List<ItemEntity>> NEARBY_ITEM_ENTITIES = Sensor.compose(
+        NEARBY_ENTITIES.key(),
+        StateKey.sensed("nearby_item_entities"),
+        (entity, nearbyEntities) -> nearbyEntities.stream()
+            .filter(e -> e instanceof ItemEntity)
+            .map(e -> (ItemEntity) e)
             .toList()
     );
 
