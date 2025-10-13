@@ -11,11 +11,6 @@ public class MarineGOAPGoals {
         .addDesiredCondition(GOAPSensors.IS_ON_FIRE.key().asDerived(), Expressions.Boolean.isFalse())
         .build();
 
-    public static final Goal ACQUIRE_FIRE_RESISTANCE_GOAL = Goal.builder("AcquireFireResistanceGoal")
-        .addPrecondition(GOAPSensors.IS_ON_FIRE.key(), Expressions.Boolean.isTrue())
-        .addDesiredCondition(GOAPSensors.HAS_FIRE_RESISTANCE.key().asDerived(), Expressions.Boolean.isTrue())
-        .build();
-
     private MarineGOAPGoals() {
         throw new UnsupportedOperationException();
     }

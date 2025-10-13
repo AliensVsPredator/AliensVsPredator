@@ -2,6 +2,7 @@ package com.human.common.gameplay.entity.living.human.marine.ai;
 
 import com.human.common.gameplay.entity.living.human.marine.Marine;
 import com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.FRIActions;
+import com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.FRIGoals;
 import com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.FRISensors;
 import com.just.goap.graph.Graph;
 import com.lib.common.gameplay.goap.GOAPSensors;
@@ -33,7 +34,7 @@ public class MarineGOAP {
 
     private static void addAcquireFireResistancePackage(Graph.Builder<Marine> graphBuilder) {
         // The goal we want to complete.
-        graphBuilder.addGoal(MarineGOAPGoals.ACQUIRE_FIRE_RESISTANCE_GOAL);
+        graphBuilder.addGoal(FRIGoals.ACQUIRE_FIRE_RESISTANCE_GOAL);
 
         // Actions that can complete the goal.
         graphBuilder.addAction(FRIActions.MOVE_TO_BEST_FRI);
