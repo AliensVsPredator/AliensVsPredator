@@ -1,8 +1,8 @@
 package com.human.common.gameplay.entity.living.human.marine.ai;
 
 import com.human.common.gameplay.entity.living.human.marine.Marine;
-import com.human.common.gameplay.entity.living.human.marine.ai.fri.FRIActions;
-import com.human.common.gameplay.entity.living.human.marine.ai.fri.FRISensors;
+import com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.FRIActions;
+import com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.FRISensors;
 import com.just.goap.graph.Graph;
 import com.lib.common.gameplay.goap.GOAPSensors;
 

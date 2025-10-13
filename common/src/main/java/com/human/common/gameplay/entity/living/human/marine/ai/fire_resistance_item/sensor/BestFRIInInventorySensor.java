@@ -1,9 +1,9 @@
-package com.human.common.gameplay.entity.living.human.marine.ai.fri.sensor;
+package com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.sensor;
 
 import com.human.common.gameplay.entity.living.human.marine.Marine;
+import com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.strategy.FRIStrategies;
+import com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.strategy.FRIStrategy;
 import com.human.common.gameplay.entity.living.human.marine.ai.model.ItemTarget;
-import com.human.common.gameplay.entity.living.human.marine.ai.fri.strategy.FRIStrategies;
-import com.human.common.gameplay.entity.living.human.marine.ai.fri.strategy.FRIStrategy;
 import com.just.core.functional.option.Option;
 import com.just.goap.StateKey;
 import com.just.goap.state.ReadableWorldState;
@@ -15,9 +15,9 @@ import com.avp.common.model.inventory.AVPInventory;
 
 public class BestFRIInInventorySensor {
 
-    public static final StateKey.Sensed<Option<ItemTarget.Inventory>> KEY = StateKey.sensed("best_fri_in_inventory");
+    public static final StateKey.Sensed<Option<ItemTarget.Inventory<FRIStrategy>>> KEY = StateKey.sensed("best_fri_in_inventory");
 
-    public static @NotNull Map<StateKey<?>, Option<ItemTarget.Inventory>> sense(Marine marine, ReadableWorldState worldState) {
+    public static @NotNull Map<StateKey<?>, Option<ItemTarget.Inventory<FRIStrategy>>> sense(Marine marine, ReadableWorldState worldState) {
         var bestScore = Double.MIN_VALUE;
         AVPInventory.Entry bestEntry = null;
         FRIStrategy bestStrategy = null;
@@ -46,9 +46,9 @@ public class BestFRIInInventorySensor {
             }
         }
 
-        Option<ItemTarget.Inventory> itemTarget = bestEntry == null
+        Option<ItemTarget.Inventory<FRIStrategy>> itemTarget = bestEntry == null
             ? Option.none()
-            : Option.some(new ItemTarget.Inventory(bestEntry, bestScore, bestStrategy));
+            : Option.some(new ItemTarget.Inventory<>(bestEntry, bestScore, bestStrategy));
 
         return Map.of(KEY, itemTarget);
     }

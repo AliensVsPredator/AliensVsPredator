@@ -1,9 +1,9 @@
-package com.human.common.gameplay.entity.living.human.marine.ai.fri.sensor;
+package com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.sensor;
 
 import com.human.common.gameplay.entity.living.human.marine.Marine;
+import com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.strategy.FRIStrategies;
+import com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.strategy.FRIStrategy;
 import com.human.common.gameplay.entity.living.human.marine.ai.model.ItemTarget;
-import com.human.common.gameplay.entity.living.human.marine.ai.fri.strategy.FRIStrategies;
-import com.human.common.gameplay.entity.living.human.marine.ai.fri.strategy.FRIStrategy;
 import com.just.core.functional.option.Option;
 import com.just.goap.StateKey;
 import com.just.goap.state.ReadableWorldState;
@@ -14,9 +14,9 @@ import java.util.Map;
 
 public class BestFRIInHandsSensor {
 
-    public static final StateKey.Sensed<Option<ItemTarget.Hands>> KEY = StateKey.sensed("best_fri_in_hands");
+    public static final StateKey.Sensed<Option<ItemTarget.Hands<FRIStrategy>>> KEY = StateKey.sensed("best_fri_in_hands");
 
-    public static @NotNull Map<StateKey<?>, Option<ItemTarget.Hands>> sense(Marine marine, ReadableWorldState worldState) {
+    public static @NotNull Map<StateKey<?>, Option<ItemTarget.Hands<FRIStrategy>>> sense(Marine marine, ReadableWorldState worldState) {
         var bestScore = Double.MIN_VALUE;
         InteractionHand bestHand = null;
         FRIStrategy bestStrategy = null;
@@ -39,9 +39,9 @@ public class BestFRIInHandsSensor {
             }
         }
 
-        Option<ItemTarget.Hands> itemTarget = bestHand == null
+        Option<ItemTarget.Hands<FRIStrategy>> itemTarget = bestHand == null
             ? Option.none()
-            : Option.some(new ItemTarget.Hands(bestHand, bestScore, bestStrategy));
+            : Option.some(new ItemTarget.Hands<>(bestHand, bestScore, bestStrategy));
 
         return Map.of(KEY, itemTarget);
     }

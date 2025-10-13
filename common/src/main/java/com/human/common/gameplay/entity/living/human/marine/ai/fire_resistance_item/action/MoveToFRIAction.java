@@ -1,7 +1,7 @@
-package com.human.common.gameplay.entity.living.human.marine.ai.fri.action;
+package com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.action;
 
 import com.human.common.gameplay.entity.living.human.marine.Marine;
-import com.human.common.gameplay.entity.living.human.marine.ai.fri.FRISensors;
+import com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.FRISensors;
 import com.just.core.functional.option.Option;
 import com.just.goap.Action;
 import com.just.goap.StateKey;
@@ -38,7 +38,6 @@ public class MoveToFRIAction {
     public static void onFinish(Marine marine, ReadableWorldState worldState, Blackboard blackboard) {
         marine.getNavigation().stop();
     }
-
 
     private MoveToFRIAction() {
         throw new UnsupportedOperationException();

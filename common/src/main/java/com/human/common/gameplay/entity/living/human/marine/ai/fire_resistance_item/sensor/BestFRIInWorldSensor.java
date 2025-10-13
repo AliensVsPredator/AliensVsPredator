@@ -1,9 +1,9 @@
-package com.human.common.gameplay.entity.living.human.marine.ai.fri.sensor;
+package com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.sensor;
 
 import com.human.common.gameplay.entity.living.human.marine.Marine;
+import com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.strategy.FRIStrategies;
+import com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.strategy.FRIStrategy;
 import com.human.common.gameplay.entity.living.human.marine.ai.model.ItemTarget;
-import com.human.common.gameplay.entity.living.human.marine.ai.fri.strategy.FRIStrategies;
-import com.human.common.gameplay.entity.living.human.marine.ai.fri.strategy.FRIStrategy;
 import com.just.core.functional.option.Option;
 import com.just.goap.StateKey;
 import com.just.goap.state.ReadableWorldState;
@@ -16,9 +16,9 @@ import java.util.Map;
 
 public class BestFRIInWorldSensor {
 
-    public static final StateKey.Sensed<Option<ItemTarget.World>> KEY = StateKey.sensed("best_fri_in_world");
+    public static final StateKey.Sensed<Option<ItemTarget.World<FRIStrategy>>> KEY = StateKey.sensed("best_fri_in_world");
 
-    public static @NotNull Map<StateKey<?>, Option<ItemTarget.World>> sense(Marine marine, ReadableWorldState worldState) {
+    public static @NotNull Map<StateKey<?>, Option<ItemTarget.World<FRIStrategy>>> sense(Marine marine, ReadableWorldState worldState) {
         var bestScore = Double.MIN_VALUE;
         ItemEntity bestItemEntity = null;
         FRIStrategy bestStrategy = null;
@@ -36,7 +36,7 @@ public class BestFRIInWorldSensor {
                 if (!strategy.canUseItemStack(itemStack)) {
                     continue;
                 }
-                
+
                 var newScore = strategy.score(marine, worldState, itemStack);
 
                 if (newScore > bestScore) {
@@ -47,9 +47,9 @@ public class BestFRIInWorldSensor {
             }
         }
 
-        Option<ItemTarget.World> itemTarget = bestItemEntity == null
+        Option<ItemTarget.World<FRIStrategy>> itemTarget = bestItemEntity == null
             ? Option.none()
-            : Option.some(new ItemTarget.World(bestItemEntity, bestScore, bestStrategy));
+            : Option.some(new ItemTarget.World<>(bestItemEntity, bestScore, bestStrategy));
 
         return Map.of(KEY, itemTarget);
     }

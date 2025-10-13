@@ -1,4 +1,4 @@
-package com.human.common.gameplay.entity.living.human.marine.ai.fri.strategy;
+package com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.strategy;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;

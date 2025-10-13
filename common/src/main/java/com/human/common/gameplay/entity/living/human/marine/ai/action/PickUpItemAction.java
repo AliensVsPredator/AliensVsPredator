@@ -1,9 +1,10 @@
 package com.human.common.gameplay.entity.living.human.marine.ai.action;
 
-import com.avp.common.model.inventory.AVPInventoryHolder;
 import com.just.goap.Action;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
+
+import com.avp.common.model.inventory.AVPInventoryHolder;
 
 public class PickUpItemAction {
 

@@ -6,13 +6,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 
 import java.util.List;
 
 import com.avp.common.registry.tag.AVPBiomeTags;
 import com.avp.common.util.AVPPredicates;
-import net.minecraft.world.entity.item.ItemEntity;
-import org.jetbrains.annotations.NotNull;
 
 public class GOAPSensors {
 

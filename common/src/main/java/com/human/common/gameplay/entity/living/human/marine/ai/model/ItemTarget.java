@@ -1,51 +1,50 @@
 package com.human.common.gameplay.entity.living.human.marine.ai.model;
 
-import com.human.common.gameplay.entity.living.human.marine.ai.fri.strategy.FRIStrategy;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.item.ItemEntity;
 
 import com.avp.common.model.inventory.AVPInventory;
 
-public sealed interface ItemTarget {
+public sealed interface ItemTarget<T> {
 
     Location location();
 
-    FRIStrategy strategy();
+    T strategy();
 
     double score();
 
-    record Hands(
+    record Hands<T>(
         Location location,
         InteractionHand interactionHand,
         double score,
-        FRIStrategy strategy
-    ) implements ItemTarget {
+        T strategy
+    ) implements ItemTarget<T> {
 
-        public Hands(InteractionHand interactionHand, double score, FRIStrategy strategy) {
+        public Hands(InteractionHand interactionHand, double score, T strategy) {
             this(Location.HANDS, interactionHand, score, strategy);
         }
     }
 
-    record Inventory(
+    record Inventory<T>(
         Location location,
         AVPInventory.Entry entry,
         double score,
-        FRIStrategy strategy
-    ) implements ItemTarget {
+        T strategy
+    ) implements ItemTarget<T> {
 
-        public Inventory(AVPInventory.Entry entry, double score, FRIStrategy strategy) {
+        public Inventory(AVPInventory.Entry entry, double score, T strategy) {
             this(Location.INVENTORY, entry, score, strategy);
         }
     }
 
-    record World(
+    record World<T>(
         Location location,
         ItemEntity itemEntity,
         double score,
-        FRIStrategy strategy
-    ) implements ItemTarget {
+        T strategy
+    ) implements ItemTarget<T> {
 
-        public World(ItemEntity itemEntity, double score, FRIStrategy strategy) {
+        public World(ItemEntity itemEntity, double score, T strategy) {
             this(Location.WORLD, itemEntity, score, strategy);
         }
     }
