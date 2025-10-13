@@ -1,11 +1,11 @@
-package com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item;
+package com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance;
 
 import com.human.common.gameplay.entity.living.human.marine.Marine;
-import com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.sensor.BestFRIInHandsSensor;
-import com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.sensor.BestFRIInInventorySensor;
-import com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.sensor.BestFRIInWorldSensor;
-import com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.sensor.BestFRISensor;
-import com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.strategy.FRIStrategy;
+import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.sensor.BestFRIInHandsSensor;
+import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.sensor.BestFRIInInventorySensor;
+import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.sensor.BestFRIInWorldSensor;
+import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.sensor.BestFRISensor;
+import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.strategy.FRIStrategy;
 import com.human.common.gameplay.entity.living.human.marine.ai.model.ItemTarget;
 import com.just.core.functional.option.Option;
 import com.just.goap.StateKey;

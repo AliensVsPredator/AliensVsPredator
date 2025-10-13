@@ -1,8 +1,8 @@
-package com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.strategy.impl;
+package com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.strategy.impl;
 
+import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.strategy.FRIStrategy;
+import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.strategy.FRIStrategyUtil;
 import com.human.common.gameplay.entity.living.human.marine.ai.action.ConsumeItemAction;
-import com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.strategy.FRIStrategy;
-import com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.strategy.FRIStrategyUtil;
 import com.just.goap.Action;
 import com.just.goap.state.Blackboard;
 import com.just.goap.state.ReadableWorldState;

@@ -2,7 +2,7 @@ package com.human.common.gameplay.entity.living.human.marine;
 
 import com.human.common.gameplay.entity.living.human.AbstractHuman;
 import com.human.common.gameplay.entity.living.human.marine.ai.MarineGOAP;
-import com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.strategy.FRIStrategies;
+import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.strategy.FRIStrategies;
 import com.human.common.registry.init.item.HumanGunItems;
 import com.just.core.functional.option.Option;
 import com.just.goap.graph.Graph;

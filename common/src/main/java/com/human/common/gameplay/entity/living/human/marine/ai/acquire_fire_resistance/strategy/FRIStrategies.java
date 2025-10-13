@@ -1,9 +1,9 @@
-package com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.strategy;
+package com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.strategy;
 
-import com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.strategy.impl.DrinkablePotionFRIStrategy;
-import com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.strategy.impl.EnchantedGoldenAppleFRIStrategy;
-import com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.strategy.impl.LingeringPotionFRIStrategy;
-import com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.strategy.impl.SplashPotionFRIStrategy;
+import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.strategy.impl.DrinkablePotionFRIStrategy;
+import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.strategy.impl.EnchantedGoldenAppleFRIStrategy;
+import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.strategy.impl.LingeringPotionFRIStrategy;
+import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.strategy.impl.SplashPotionFRIStrategy;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;

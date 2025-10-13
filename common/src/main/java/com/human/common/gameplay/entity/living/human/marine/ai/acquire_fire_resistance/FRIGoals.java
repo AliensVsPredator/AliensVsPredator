@@ -1,4 +1,4 @@
-package com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item;
+package com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance;
 
 import com.just.goap.Goal;
 import com.just.goap.condition.expression.Expressions;

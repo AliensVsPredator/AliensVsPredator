@@ -1,4 +1,4 @@
-package com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.strategy;
+package com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.strategy;
 
 import com.just.goap.Action;
 import com.just.goap.state.Blackboard;

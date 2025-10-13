@@ -1,7 +1,7 @@
-package com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.sensor;
+package com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.sensor;
 
 import com.human.common.gameplay.entity.living.human.marine.Marine;
-import com.human.common.gameplay.entity.living.human.marine.ai.fire_resistance_item.strategy.FRIStrategy;
+import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.strategy.FRIStrategy;
 import com.human.common.gameplay.entity.living.human.marine.ai.model.ItemTarget;
 import com.just.core.functional.option.Option;
 import com.just.goap.StateKey;
