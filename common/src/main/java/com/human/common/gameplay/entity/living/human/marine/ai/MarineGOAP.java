@@ -38,8 +38,8 @@ public class MarineGOAP {
 
         // Actions that can complete the goal.
         graphBuilder.addAction(FRIActions.MOVE_TO_BEST_FRI);
-        graphBuilder.addAction(FRIActions.PICK_UP_BEST_FRI);
-        graphBuilder.addAction(FRIActions.EQUIP_BEST_FRI);
+        graphBuilder.addAction(FRIActions.pickUpBestFRIFactory());
+        graphBuilder.addAction(FRIActions.equipBestFRIFactory());
         graphBuilder.addAction(FRIActions.USE_BEST_FRI);
 
         // General usage.

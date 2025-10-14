@@ -7,15 +7,9 @@ import com.just.goap.state.Blackboard;
 import com.just.goap.state.ReadableWorldState;
 import net.minecraft.world.entity.LivingEntity;
 
-import com.avp.common.model.inventory.AVPInventoryHolder;
-
 public class UseFRIAction {
 
-    public static <T extends LivingEntity & AVPInventoryHolder> Action.Signal perform(
-        T livingEntity,
-        ReadableWorldState worldState,
-        Blackboard blackboard
-    ) {
+    public static Action.Signal perform(LivingEntity livingEntity, ReadableWorldState worldState, Blackboard blackboard) {
         var itemTargetOption = worldState.getOrDefault(FRISensors.BEST_FRI.key(), Option.none());
 
         if (itemTargetOption.isNone()) {

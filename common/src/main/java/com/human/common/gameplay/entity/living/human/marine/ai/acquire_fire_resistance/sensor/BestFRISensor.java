@@ -1,11 +1,11 @@
 package com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.sensor;
 
-import com.human.common.gameplay.entity.living.human.marine.Marine;
 import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.strategy.FRIStrategy;
 import com.human.common.gameplay.entity.living.human.marine.ai.model.ItemTarget;
 import com.just.core.functional.option.Option;
 import com.just.goap.StateKey;
 import com.just.goap.state.ReadableWorldState;
+import net.minecraft.world.entity.LivingEntity;
 
 import java.util.Map;
 
@@ -13,7 +13,7 @@ public class BestFRISensor {
 
     public static final StateKey.Sensed<Option<? extends ItemTarget<FRIStrategy>>> KEY = StateKey.sensed("best_fri");
 
-    public static Map<StateKey<?>, ?> sense(Marine marine, ReadableWorldState worldState) {
+    public static Map<StateKey<?>, ?> sense(LivingEntity ignored, ReadableWorldState worldState) {
         var handsOption = worldState.getOrDefault(BestFRIInHandsSensor.KEY, Option.none());
         var inventoryOption = worldState.getOrDefault(BestFRIInInventorySensor.KEY, Option.none());
         var worldOption = worldState.getOrDefault(BestFRIInWorldSensor.KEY, Option.none());

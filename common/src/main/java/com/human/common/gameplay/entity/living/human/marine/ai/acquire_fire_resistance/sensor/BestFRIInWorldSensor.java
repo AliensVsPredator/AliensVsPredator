@@ -1,6 +1,5 @@
 package com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.sensor;
 
-import com.human.common.gameplay.entity.living.human.marine.Marine;
 import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.strategy.FRIStrategies;
 import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.strategy.FRIStrategy;
 import com.human.common.gameplay.entity.living.human.marine.ai.model.ItemTarget;
@@ -8,6 +7,7 @@ import com.just.core.functional.option.Option;
 import com.just.goap.StateKey;
 import com.just.goap.state.ReadableWorldState;
 import com.lib.common.gameplay.goap.GOAPSensors;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,13 +18,16 @@ public class BestFRIInWorldSensor {
 
     public static final StateKey.Sensed<Option<ItemTarget.World<FRIStrategy>>> KEY = StateKey.sensed("best_fri_in_world");
 
-    public static @NotNull Map<StateKey<?>, Option<ItemTarget.World<FRIStrategy>>> sense(Marine marine, ReadableWorldState worldState) {
+    public static @NotNull Map<StateKey<?>, Option<ItemTarget.World<FRIStrategy>>> sense(
+        LivingEntity livingEntity,
+        ReadableWorldState worldState
+    ) {
         var bestScore = Double.MIN_VALUE;
         ItemEntity bestItemEntity = null;
         FRIStrategy bestStrategy = null;
 
         for (var strategy : FRIStrategies.STRATEGIES) {
-            if (!strategy.isValid(marine, worldState)) {
+            if (!strategy.isValid(livingEntity, worldState)) {
                 continue;
             }
 
@@ -37,7 +40,7 @@ public class BestFRIInWorldSensor {
                     continue;
                 }
 
-                var newScore = strategy.score(marine, worldState, itemStack);
+                var newScore = strategy.score(livingEntity, worldState, itemStack);
 
                 if (newScore > bestScore) {
                     bestScore = newScore;
