@@ -7,26 +7,36 @@ import com.just.goap.sensor.Sensor;
 
 import com.avp.common.registry.tag.AVPBiomeTags;
 
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
+
 public class MarineGOAPSensors {
 
-    // TODO: There are cases where there may be multiple intents. Ex. if in a nuclear biome and underwater.
-    public static final Sensor.Mono<Marine, ArmorIntent> ARMOR_INTENT = Sensor.map(
+    public static final Sensor.Mono<Marine, Collection<ArmorIntent>> ARMOR_INTENT = Sensor.map(
         StateKey.sensed("armor_intent"),
         marine -> {
+            var armorIntentSet = EnumSet.noneOf(ArmorIntent.class);
+
             // TODO: Fix this check to check nearby blocks.
             if (marine.level().getBiome(marine.blockPosition()).is(AVPBiomeTags.IS_IRRADIATED)) {
-                return ArmorIntent.RADIATION_PROTECTION;
+                armorIntentSet.add(ArmorIntent.RADIATION_PROTECTION);
             }
 
             if (marine.isOnFire()) {
-                return ArmorIntent.FIRE_PROTECTION;
+                armorIntentSet.add(ArmorIntent.FIRE_PROTECTION);
             }
 
             if (marine.isUnderWater()) {
-                return ArmorIntent.DROWNING_PROTECTION;
+                armorIntentSet.add(ArmorIntent.DROWNING_PROTECTION);
             }
 
-            return ArmorIntent.BEST_DEFENSE;
+            if (armorIntentSet.isEmpty()) {
+                armorIntentSet.add(ArmorIntent.BEST_DEFENSE);
+            }
+
+            return armorIntentSet;
         }
     );
 

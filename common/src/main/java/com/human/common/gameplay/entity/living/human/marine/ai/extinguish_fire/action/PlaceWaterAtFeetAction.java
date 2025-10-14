@@ -1,10 +1,11 @@
-package com.human.common.gameplay.entity.living.human.marine.ai.action;
+package com.human.common.gameplay.entity.living.human.marine.ai.extinguish_fire.action;
 
 import com.human.common.gameplay.entity.living.human.marine.Marine;
 import com.just.core.functional.option.Option;
 import com.just.goap.Action;
 import com.just.goap.StateKey;
 import com.just.goap.state.Blackboard;
+import com.just.goap.state.ReadableWorldState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Item;
@@ -23,7 +24,7 @@ public class PlaceWaterAtFeetAction {
 
     private static final StateKey.Derived<Option<BlockPos>> WATER_POS_OPTION = StateKey.derived("water_pos_option");
 
-    public static Action.Signal perform(Marine marine, Blackboard blackboard) {
+    public static Action.Signal perform(Marine marine, ReadableWorldState worldState, Blackboard blackboard) {
         var mainhandItemStack = marine.getMainHandItem();
         var isWaterBucketEquipped = mainhandItemStack.is(WATER_BUCKET_ITEM);
 
@@ -39,7 +40,7 @@ public class PlaceWaterAtFeetAction {
         return Action.Signal.CONTINUE;
     }
 
-    public static void onFinish(Marine marine, Blackboard blackboard) {
+    public static void onFinish(Marine marine, ReadableWorldState worldState, Blackboard blackboard) {
         var waterPosOption = blackboard.getOrDefault(WATER_POS_OPTION, Option.none());
 
         waterPosOption.ifSome(blockPos -> {
