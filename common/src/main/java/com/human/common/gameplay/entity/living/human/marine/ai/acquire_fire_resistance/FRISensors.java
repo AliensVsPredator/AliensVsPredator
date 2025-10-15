@@ -9,42 +9,44 @@ import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resi
 import com.human.common.gameplay.entity.living.human.marine.ai.model.ItemTarget;
 import com.just.core.functional.option.Option;
 import com.just.goap.StateKey;
+import com.just.goap.sensor.Compose;
 import com.just.goap.sensor.Sensor;
+import com.just.goap.sensor.Sensors;
 import net.minecraft.world.entity.LivingEntity;
 
 public class FRISensors {
 
-    public static final Sensor.Mono<LivingEntity, Option<ItemTarget.Hands<FRIStrategy>>> BEST_FRI_IN_HANDS = new Sensor.Mono.LazyCompose<>(
+    public static final Sensor.Mono<LivingEntity, Option<ItemTarget.Hands<FRIStrategy>>> BEST_FRI_IN_HANDS = Sensors.lazyCompose(
         BestFRIInHandsSensor.KEY,
         BestFRIInHandsSensor::sense
     );
 
     public static final Sensor.Mono<Marine, Option<ItemTarget.Inventory<FRIStrategy>>> BEST_FRI_IN_INVENTORY =
-        new Sensor.Mono.LazyCompose<>(
+        Sensors.lazyCompose(
             BestFRIInInventorySensor.KEY,
             BestFRIInInventorySensor::sense
         );
 
-    public static final Sensor.Mono<LivingEntity, Option<ItemTarget.World<FRIStrategy>>> BEST_FRI_IN_WORLD = new Sensor.Mono.LazyCompose<>(
+    public static final Sensor.Mono<LivingEntity, Option<ItemTarget.World<FRIStrategy>>> BEST_FRI_IN_WORLD = Sensors.lazyCompose(
         BestFRIInWorldSensor.KEY,
         BestFRIInWorldSensor::sense
     );
 
-    public static final Sensor.Mono<LivingEntity, Option<? extends ItemTarget<FRIStrategy>>> BEST_FRI = new Sensor.Mono.LazyCompose<>(
+    public static final Sensor.Mono<LivingEntity, Option<? extends ItemTarget<FRIStrategy>>> BEST_FRI = Sensors.lazyCompose(
         BestFRISensor.KEY,
         BestFRISensor::sense
     );
 
     // TODO: We don't need the marine here, GOAP should support this case.
-    public static final Sensor.Mono.Compose<Object, Option<? extends ItemTarget<FRIStrategy>>, ItemTarget.Location> BEST_FRI_LOCATION =
-        Sensor.compose(
+    public static final Compose<Object, Option<? extends ItemTarget<FRIStrategy>>, ItemTarget.Location> BEST_FRI_LOCATION =
+        Sensors.compose(
             BestFRISensor.KEY,
             StateKey.sensed("best_fri_location"),
             ($1, bfriOption) -> bfriOption.map(ItemTarget::location).unwrapOr(ItemTarget.Location.NONE)
         );
 
-    public static final Sensor.Mono.Compose<LivingEntity, Option<ItemTarget.World<FRIStrategy>>, Boolean> IS_BEST_WORLD_FRI_IN_RANGE =
-        Sensor
+    public static final Compose<LivingEntity, Option<ItemTarget.World<FRIStrategy>>, Boolean> IS_BEST_WORLD_FRI_IN_RANGE =
+        Sensors
             .compose(
                 BestFRIInWorldSensor.KEY,
                 StateKey.sensed("is_best_world_fri_in_range"),

@@ -9,8 +9,6 @@ import com.just.goap.state.ReadableWorldState;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
-
 import com.avp.common.model.inventory.AVPInventory;
 import com.avp.common.model.inventory.AVPInventoryHolder;
 
@@ -18,7 +16,7 @@ public class BestFRIInInventorySensor {
 
     public static final StateKey.Sensed<Option<ItemTarget.Inventory<FRIStrategy>>> KEY = StateKey.sensed("best_fri_in_inventory");
 
-    public static <T extends LivingEntity & AVPInventoryHolder> @NotNull Map<StateKey<?>, Option<ItemTarget.Inventory<FRIStrategy>>> sense(
+    public static <T extends LivingEntity & AVPInventoryHolder> @NotNull Option<ItemTarget.Inventory<FRIStrategy>> sense(
         T livingEntityWithInventory,
         ReadableWorldState worldState
     ) {
@@ -50,10 +48,8 @@ public class BestFRIInInventorySensor {
             }
         }
 
-        Option<ItemTarget.Inventory<FRIStrategy>> itemTarget = bestEntry == null
+        return bestEntry == null
             ? Option.none()
             : Option.some(new ItemTarget.Inventory<>(bestEntry, bestScore, bestStrategy));
-
-        return Map.of(KEY, itemTarget);
     }
 }

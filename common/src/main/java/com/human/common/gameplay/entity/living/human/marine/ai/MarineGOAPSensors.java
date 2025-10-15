@@ -4,17 +4,16 @@ import com.human.common.gameplay.entity.living.human.marine.Marine;
 import com.human.common.gameplay.entity.living.human.marine.ai.model.ArmorIntent;
 import com.just.goap.StateKey;
 import com.just.goap.sensor.Sensor;
-
-import com.avp.common.registry.tag.AVPBiomeTags;
+import com.just.goap.sensor.Sensors;
 
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.Set;
+
+import com.avp.common.registry.tag.AVPBiomeTags;
 
 public class MarineGOAPSensors {
 
-    public static final Sensor.Mono<Marine, Collection<ArmorIntent>> ARMOR_INTENT = Sensor.map(
+    public static final Sensor.Mono<Marine, Collection<ArmorIntent>> ARMOR_INTENT = Sensors.map(
         StateKey.sensed("armor_intent"),
         marine -> {
             var armorIntentSet = EnumSet.noneOf(ArmorIntent.class);
@@ -40,7 +39,7 @@ public class MarineGOAPSensors {
         }
     );
 
-    public static final Sensor.Mono<Marine, Boolean> IS_CURRENT_BLOCK_POS_REPLACEABLE = Sensor.map(
+    public static final Sensor.Mono<Marine, Boolean> IS_CURRENT_BLOCK_POS_REPLACEABLE = Sensors.map(
         StateKey.sensed("is_current_block_pos_replaceable"),
         marine -> marine.level().getBlockState(marine.blockPosition()).canBeReplaced()
     );

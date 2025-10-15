@@ -12,13 +12,12 @@ import net.minecraft.world.entity.item.ItemEntity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Map;
 
 public class BestFRIInWorldSensor {
 
     public static final StateKey.Sensed<Option<ItemTarget.World<FRIStrategy>>> KEY = StateKey.sensed("best_fri_in_world");
 
-    public static @NotNull Map<StateKey<?>, Option<ItemTarget.World<FRIStrategy>>> sense(
+    public static @NotNull Option<ItemTarget.World<FRIStrategy>> sense(
         LivingEntity livingEntity,
         ReadableWorldState worldState
     ) {
@@ -50,10 +49,8 @@ public class BestFRIInWorldSensor {
             }
         }
 
-        Option<ItemTarget.World<FRIStrategy>> itemTarget = bestItemEntity == null
+        return bestItemEntity == null
             ? Option.none()
             : Option.some(new ItemTarget.World<>(bestItemEntity, bestScore, bestStrategy));
-
-        return Map.of(KEY, itemTarget);
     }
 }

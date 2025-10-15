@@ -7,13 +7,11 @@ import com.just.goap.StateKey;
 import com.just.goap.state.ReadableWorldState;
 import net.minecraft.world.entity.LivingEntity;
 
-import java.util.Map;
-
 public class BestFRISensor {
 
     public static final StateKey.Sensed<Option<? extends ItemTarget<FRIStrategy>>> KEY = StateKey.sensed("best_fri");
 
-    public static Map<StateKey<?>, ?> sense(LivingEntity ignored, ReadableWorldState worldState) {
+    public static Option<? extends ItemTarget<FRIStrategy>> sense(LivingEntity ignored, ReadableWorldState worldState) {
         var handsOption = worldState.getOrDefault(BestFRIInHandsSensor.KEY, Option.none());
         var inventoryOption = worldState.getOrDefault(BestFRIInInventorySensor.KEY, Option.none());
         var worldOption = worldState.getOrDefault(BestFRIInWorldSensor.KEY, Option.none());
@@ -32,6 +30,6 @@ public class BestFRISensor {
             }
         }
 
-        return Map.of(KEY, bestOption);
+        return bestOption;
     }
 }

@@ -10,13 +10,11 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
-
 public class BestFRIInHandsSensor {
 
     public static final StateKey.Sensed<Option<ItemTarget.Hands<FRIStrategy>>> KEY = StateKey.sensed("best_fri_in_hands");
 
-    public static @NotNull Map<StateKey<?>, Option<ItemTarget.Hands<FRIStrategy>>> sense(
+    public static @NotNull Option<ItemTarget.Hands<FRIStrategy>> sense(
         LivingEntity livingEntity,
         ReadableWorldState worldState
     ) {
@@ -42,10 +40,8 @@ public class BestFRIInHandsSensor {
             }
         }
 
-        Option<ItemTarget.Hands<FRIStrategy>> itemTarget = bestHand == null
+        return bestHand == null
             ? Option.none()
             : Option.some(new ItemTarget.Hands<>(bestHand, bestScore, bestStrategy));
-
-        return Map.of(KEY, itemTarget);
     }
 }
