@@ -39,6 +39,16 @@ public sealed interface ItemTarget {
         }
     }
 
+    enum None implements ItemTarget {
+
+        INSTANCE;
+
+        @Override
+        public Location location() {
+            return Location.NONE;
+        }
+    }
+
     enum Location {
         EQUIPPED,
         INVENTORY,
