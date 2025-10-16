@@ -4,9 +4,9 @@ import com.human.common.gameplay.entity.living.human.marine.Marine;
 import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.FRIActions;
 import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.FRIGoals;
 import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.FRISensors;
+import com.human.common.gameplay.entity.living.human.marine.ai.extinguish_fire.ExtinguishFireActions;
 import com.human.common.gameplay.entity.living.human.marine.ai.extinguish_fire.ExtinguishFireGoals;
 import com.human.common.gameplay.entity.living.human.marine.ai.extinguish_fire.ExtinguishFireSensors;
-import com.human.common.gameplay.entity.living.human.marine.ai.extinguish_fire.ExtinguishFireActions;
 import com.just.goap.graph.Graph;
 import com.lib.common.gameplay.goap.GOAPSensors;
 
@@ -18,9 +18,7 @@ public class MarineGOAP {
         .apply(MarineGOAP::addExtinguishSelfPackage)
         .build();
 
-    private static void addEquipBestArmorPackage(Graph.Builder<Marine> graphBuilder) {
-
-    }
+    private static void addEquipBestArmorPackage(Graph.Builder<Marine> graphBuilder) {}
 
     private static void addExtinguishSelfPackage(Graph.Builder<Marine> graphBuilder) {
         graphBuilder.addGoal(ExtinguishFireGoals.EXTINGUISH_SELF_GOAL);

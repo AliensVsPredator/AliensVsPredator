@@ -6,7 +6,7 @@ import com.just.core.functional.option.Option;
 import com.just.goap.Action;
 import com.just.goap.state.Blackboard;
 import com.just.goap.state.ReadableWorldState;
-import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 
 import com.avp.common.model.inventory.AVPInventoryHolder;
@@ -24,7 +24,7 @@ public class EquipFRIAction {
             return Action.Signal.ABORT;
         }
 
-        return EquipItemAction.perform(livingEntityWithInventory, inventoryItemTargetOption.unwrap().entry(), InteractionHand.MAIN_HAND);
+        return EquipItemAction.perform(livingEntityWithInventory, inventoryItemTargetOption.unwrap().entry(), EquipmentSlot.MAINHAND);
     }
 
     private EquipFRIAction() {

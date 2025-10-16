@@ -1,6 +1,5 @@
 package com.human.common.gameplay.entity.living.human.marine.ai;
 
-import com.human.common.gameplay.entity.living.human.marine.Marine;
 import com.just.goap.StateKey;
 import com.just.goap.sensor.Sensor;
 import com.just.goap.sensor.Sensors;

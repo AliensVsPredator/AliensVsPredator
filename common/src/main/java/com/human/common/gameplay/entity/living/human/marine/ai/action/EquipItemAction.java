@@ -1,7 +1,7 @@
 package com.human.common.gameplay.entity.living.human.marine.ai.action;
 
 import com.just.goap.Action;
-import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
@@ -13,9 +13,9 @@ public class EquipItemAction {
     public static <T extends LivingEntity & AVPInventoryHolder> Action.Signal perform(
         T livingEntityWithInventory,
         AVPInventory.Entry entry,
-        InteractionHand interactionHand
+        EquipmentSlot equipmentSlot
     ) {
-        var targetHandItemStack = livingEntityWithInventory.getItemInHand(interactionHand);
+        var targetSlotItemStack = livingEntityWithInventory.getItemBySlot(equipmentSlot);
 
         // Remove the item from the entity's inventory.
         var itemStack = livingEntityWithInventory.getInventory().removeItemStack(entry);
@@ -24,12 +24,12 @@ public class EquipItemAction {
             return Action.Signal.ABORT;
         }
 
-        // Put target hand item in inventory.
-        livingEntityWithInventory.getInventory().addItemStack(targetHandItemStack);
-        // Remove previously held item from hand.
-        livingEntityWithInventory.setItemInHand(interactionHand, ItemStack.EMPTY);
+        // Put target slot item in inventory.
+        livingEntityWithInventory.getInventory().addItemStack(targetSlotItemStack);
+        // Remove previously equipped item from slot.
+        livingEntityWithInventory.setItemSlot(equipmentSlot, ItemStack.EMPTY);
         // Equip item.
-        livingEntityWithInventory.setItemInHand(interactionHand, itemStack);
+        livingEntityWithInventory.setItemSlot(equipmentSlot, itemStack);
 
         return Action.Signal.CONTINUE;
     }
