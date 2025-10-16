@@ -5,7 +5,7 @@ import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resi
 import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.sensor.BestFRIInInventorySensor;
 import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.sensor.BestFRIInWorldSensor;
 import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.sensor.BestFRISensor;
-import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.strategy.FRIStrategy;
+import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.strategy.FRIStrategyResult;
 import com.human.common.gameplay.entity.living.human.marine.ai.model.ItemTarget;
 import com.just.core.functional.option.Option;
 import com.just.goap.StateKey;
@@ -16,40 +16,42 @@ import net.minecraft.world.entity.LivingEntity;
 
 public class FRISensors {
 
-    public static final Sensor.Mono<LivingEntity, Option<ItemTarget.Hands<FRIStrategy>>> BEST_FRI_IN_HANDS = Sensors.lazyCompose(
+    public static final Sensor.Mono<LivingEntity, Option<FRIStrategyResult<ItemTarget.Equipped>>> BEST_FRI_IN_HANDS = Sensors.lazyCompose(
         BestFRIInHandsSensor.KEY,
         BestFRIInHandsSensor::sense
     );
 
-    public static final Sensor.Mono<Marine, Option<ItemTarget.Inventory<FRIStrategy>>> BEST_FRI_IN_INVENTORY =
+    public static final Sensor.Mono<Marine, Option<FRIStrategyResult<ItemTarget.Inventory>>> BEST_FRI_IN_INVENTORY =
         Sensors.lazyCompose(
             BestFRIInInventorySensor.KEY,
             BestFRIInInventorySensor::sense
         );
 
-    public static final Sensor.Mono<LivingEntity, Option<ItemTarget.World<FRIStrategy>>> BEST_FRI_IN_WORLD = Sensors.lazyCompose(
+    public static final Sensor.Mono<LivingEntity, Option<FRIStrategyResult<ItemTarget.World>>> BEST_FRI_IN_WORLD = Sensors.lazyCompose(
         BestFRIInWorldSensor.KEY,
         BestFRIInWorldSensor::sense
     );
 
-    public static final Sensor.Mono<LivingEntity, Option<? extends ItemTarget<FRIStrategy>>> BEST_FRI = Sensors.lazyCompose(
+    public static final Sensor.Mono<LivingEntity, Option<FRIStrategyResult<? extends ItemTarget>>> BEST_FRI = Sensors.lazyCompose(
         BestFRISensor.KEY,
         BestFRISensor::sense
     );
 
     // TODO: We don't need the marine here, GOAP should support this case.
-    public static final Compose<Object, Option<? extends ItemTarget<FRIStrategy>>, ItemTarget.Location> BEST_FRI_LOCATION =
+    public static final Compose<Object, Option<FRIStrategyResult<? extends ItemTarget>>, ItemTarget.Location> BEST_FRI_LOCATION =
         Sensors.compose(
             BestFRISensor.KEY,
             StateKey.sensed("best_fri_location"),
-            ($1, bfriOption) -> bfriOption.map(ItemTarget::location).unwrapOr(ItemTarget.Location.NONE)
+            ($1, bfriOption) -> bfriOption.map(result -> result.itemTarget().location()).unwrapOr(ItemTarget.Location.NONE)
         );
 
-    public static final Compose<LivingEntity, Option<ItemTarget.World<FRIStrategy>>, Boolean> IS_BEST_WORLD_FRI_IN_RANGE =
+    public static final Compose<LivingEntity, Option<FRIStrategyResult<ItemTarget.World>>, Boolean> IS_BEST_WORLD_FRI_IN_RANGE =
         Sensors
             .compose(
                 BestFRIInWorldSensor.KEY,
                 StateKey.sensed("is_best_world_fri_in_range"),
-                (livingEntity, bfriOption) -> bfriOption.isSomeAnd(world -> livingEntity.distanceToSqr(world.itemEntity()) < 4)
+                (livingEntity, bfriOption) -> bfriOption.isSomeAnd(
+                    result -> livingEntity.distanceToSqr(result.itemTarget().itemEntity()) < 4
+                )
             );
 }

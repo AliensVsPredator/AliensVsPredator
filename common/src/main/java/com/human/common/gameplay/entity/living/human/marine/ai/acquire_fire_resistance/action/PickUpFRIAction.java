@@ -23,7 +23,7 @@ public class PickUpFRIAction {
             return Action.Signal.ABORT;
         }
 
-        return PickUpItemAction.perform(livingEntityWithInventory, worldItemTargetOption.unwrap().itemEntity());
+        return PickUpItemAction.perform(livingEntityWithInventory, worldItemTargetOption.unwrap().itemTarget().itemEntity());
     }
 
     private PickUpFRIAction() {

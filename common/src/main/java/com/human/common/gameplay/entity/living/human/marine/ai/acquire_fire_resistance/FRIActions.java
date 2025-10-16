@@ -35,13 +35,13 @@ public class FRIActions {
     public static <T extends LivingEntity & AVPInventoryHolder> Action<T> equipBestFRIFactory() {
         return Action.<T>builder("EquipBestFRIAction")
             .addPrecondition(FRISensors.BEST_FRI_LOCATION.key(), Expressions.Compare.equalTo(ItemTarget.Location.INVENTORY))
-            .addEffect(FRISensors.BEST_FRI_LOCATION.key().asDerived(), ItemTarget.Location.HANDS)
+            .addEffect(FRISensors.BEST_FRI_LOCATION.key().asDerived(), ItemTarget.Location.EQUIPPED)
             .withPerformCallback(EquipFRIAction::perform)
             .build();
     }
 
     public static final Action<LivingEntity> USE_BEST_FRI = Action.<LivingEntity>builder("UseBestFRIAction")
-        .addPrecondition(FRISensors.BEST_FRI_LOCATION.key(), Expressions.Compare.equalTo(ItemTarget.Location.HANDS))
+        .addPrecondition(FRISensors.BEST_FRI_LOCATION.key(), Expressions.Compare.equalTo(ItemTarget.Location.EQUIPPED))
         .addEffect(GOAPSensors.HAS_FIRE_RESISTANCE.key().asDerived(), true)
         .withPerformCallback(UseFRIAction::perform)
         .build();

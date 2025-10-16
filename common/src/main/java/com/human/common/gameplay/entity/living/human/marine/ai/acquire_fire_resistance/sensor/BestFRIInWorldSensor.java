@@ -2,6 +2,7 @@ package com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_res
 
 import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.strategy.FRIStrategies;
 import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.strategy.FRIStrategy;
+import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.strategy.FRIStrategyResult;
 import com.human.common.gameplay.entity.living.human.marine.ai.model.ItemTarget;
 import com.just.core.functional.option.Option;
 import com.just.goap.StateKey;
@@ -15,9 +16,9 @@ import java.util.List;
 
 public class BestFRIInWorldSensor {
 
-    public static final StateKey.Sensed<Option<ItemTarget.World<FRIStrategy>>> KEY = StateKey.sensed("best_fri_in_world");
+    public static final StateKey.Sensed<Option<FRIStrategyResult<ItemTarget.World>>> KEY = StateKey.sensed("best_fri_in_world");
 
-    public static @NotNull Option<ItemTarget.World<FRIStrategy>> sense(
+    public static @NotNull Option<FRIStrategyResult<ItemTarget.World>> sense(
         LivingEntity livingEntity,
         ReadableWorldState worldState
     ) {
@@ -51,6 +52,6 @@ public class BestFRIInWorldSensor {
 
         return bestItemEntity == null
             ? Option.none()
-            : Option.some(new ItemTarget.World<>(bestItemEntity, bestScore, bestStrategy));
+            : Option.some(new FRIStrategyResult<>(new ItemTarget.World(bestItemEntity), bestStrategy, bestScore));
     }
 }

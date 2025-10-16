@@ -2,6 +2,7 @@ package com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_res
 
 import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.strategy.FRIStrategies;
 import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.strategy.FRIStrategy;
+import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.strategy.FRIStrategyResult;
 import com.human.common.gameplay.entity.living.human.marine.ai.model.ItemTarget;
 import com.just.core.functional.option.Option;
 import com.just.goap.StateKey;
@@ -14,9 +15,9 @@ import com.avp.common.model.inventory.AVPInventoryHolder;
 
 public class BestFRIInInventorySensor {
 
-    public static final StateKey.Sensed<Option<ItemTarget.Inventory<FRIStrategy>>> KEY = StateKey.sensed("best_fri_in_inventory");
+    public static final StateKey.Sensed<Option<FRIStrategyResult<ItemTarget.Inventory>>> KEY = StateKey.sensed("best_fri_in_inventory");
 
-    public static <T extends LivingEntity & AVPInventoryHolder> @NotNull Option<ItemTarget.Inventory<FRIStrategy>> sense(
+    public static <T extends LivingEntity & AVPInventoryHolder> @NotNull Option<FRIStrategyResult<ItemTarget.Inventory>> sense(
         T livingEntityWithInventory,
         ReadableWorldState worldState
     ) {
@@ -50,6 +51,6 @@ public class BestFRIInInventorySensor {
 
         return bestEntry == null
             ? Option.none()
-            : Option.some(new ItemTarget.Inventory<>(bestEntry, bestScore, bestStrategy));
+            : Option.some(new FRIStrategyResult<>(new ItemTarget.Inventory(bestEntry), bestStrategy, bestScore));
     }
 }

@@ -20,7 +20,7 @@ public class MoveToFRIAction {
             return Action.Signal.ABORT;
         }
 
-        var itemEntity = worldItemTargetOption.unwrap().itemEntity();
+        var itemEntity = worldItemTargetOption.unwrap().itemTarget().itemEntity();
 
         var path = blackboard.getOrNull(PATH_TO_FRI);
 

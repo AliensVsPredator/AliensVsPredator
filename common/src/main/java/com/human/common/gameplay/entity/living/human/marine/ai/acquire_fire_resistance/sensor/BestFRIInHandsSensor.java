@@ -2,28 +2,31 @@ package com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_res
 
 import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.strategy.FRIStrategies;
 import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.strategy.FRIStrategy;
+import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.strategy.FRIStrategyResult;
 import com.human.common.gameplay.entity.living.human.marine.ai.model.ItemTarget;
 import com.just.core.functional.option.Option;
 import com.just.goap.StateKey;
 import com.just.goap.state.ReadableWorldState;
-import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 
 public class BestFRIInHandsSensor {
 
-    public static final StateKey.Sensed<Option<ItemTarget.Hands<FRIStrategy>>> KEY = StateKey.sensed("best_fri_in_hands");
+    private static final EquipmentSlot[] HAND_SLOTS = new EquipmentSlot[] { EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND };
 
-    public static @NotNull Option<ItemTarget.Hands<FRIStrategy>> sense(
+    public static final StateKey.Sensed<Option<FRIStrategyResult<ItemTarget.Equipped>>> KEY = StateKey.sensed("best_fri_in_hands");
+
+    public static @NotNull Option<FRIStrategyResult<ItemTarget.Equipped>> sense(
         LivingEntity livingEntity,
         ReadableWorldState worldState
     ) {
         var bestScore = Double.MIN_VALUE;
-        InteractionHand bestHand = null;
+        EquipmentSlot bestEquipmentSlot = null;
         FRIStrategy bestStrategy = null;
 
-        for (var interactionHand : InteractionHand.values()) {
-            var itemStack = livingEntity.getItemInHand(interactionHand);
+        for (var equipmentSlot : HAND_SLOTS) {
+            var itemStack = livingEntity.getItemBySlot(equipmentSlot);
 
             for (var strategy : FRIStrategies.STRATEGIES) {
                 if (!strategy.canUseItemStack(itemStack) || !strategy.isValid(livingEntity, worldState)) {
@@ -34,14 +37,14 @@ public class BestFRIInHandsSensor {
 
                 if (newScore > bestScore) {
                     bestScore = newScore;
-                    bestHand = interactionHand;
+                    bestEquipmentSlot = equipmentSlot;
                     bestStrategy = strategy;
                 }
             }
         }
 
-        return bestHand == null
+        return bestEquipmentSlot == null
             ? Option.none()
-            : Option.some(new ItemTarget.Hands<>(bestHand, bestScore, bestStrategy));
+            : Option.some(new FRIStrategyResult<>(new ItemTarget.Equipped(bestEquipmentSlot), bestStrategy, bestScore));
     }
 }

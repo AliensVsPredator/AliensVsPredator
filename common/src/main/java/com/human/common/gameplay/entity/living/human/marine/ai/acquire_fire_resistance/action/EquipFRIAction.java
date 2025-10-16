@@ -24,7 +24,11 @@ public class EquipFRIAction {
             return Action.Signal.ABORT;
         }
 
-        return EquipItemAction.perform(livingEntityWithInventory, inventoryItemTargetOption.unwrap().entry(), EquipmentSlot.MAINHAND);
+        return EquipItemAction.perform(
+            livingEntityWithInventory,
+            inventoryItemTargetOption.unwrap().itemTarget().entry(),
+            EquipmentSlot.MAINHAND
+        );
     }
 
     private EquipFRIAction() {

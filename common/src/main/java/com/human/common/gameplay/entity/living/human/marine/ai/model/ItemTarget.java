@@ -1,56 +1,46 @@
 package com.human.common.gameplay.entity.living.human.marine.ai.model;
 
-import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.item.ItemEntity;
 
 import com.avp.common.model.inventory.AVPInventory;
 
-public sealed interface ItemTarget<T> {
+public sealed interface ItemTarget {
 
     Location location();
 
-    T strategy();
+    record Equipped(
+        EquipmentSlot equipmentSlot
+    ) implements ItemTarget {
 
-    double score();
-
-    record Hands<T>(
-        Location location,
-        InteractionHand interactionHand,
-        double score,
-        T strategy
-    ) implements ItemTarget<T> {
-
-        public Hands(InteractionHand interactionHand, double score, T strategy) {
-            this(Location.HANDS, interactionHand, score, strategy);
+        @Override
+        public Location location() {
+            return Location.EQUIPPED;
         }
     }
 
-    record Inventory<T>(
-        Location location,
-        AVPInventory.Entry entry,
-        double score,
-        T strategy
-    ) implements ItemTarget<T> {
+    record Inventory(
+        AVPInventory.Entry entry
+    ) implements ItemTarget {
 
-        public Inventory(AVPInventory.Entry entry, double score, T strategy) {
-            this(Location.INVENTORY, entry, score, strategy);
+        @Override
+        public Location location() {
+            return Location.INVENTORY;
         }
     }
 
-    record World<T>(
-        Location location,
-        ItemEntity itemEntity,
-        double score,
-        T strategy
-    ) implements ItemTarget<T> {
+    record World(
+        ItemEntity itemEntity
+    ) implements ItemTarget {
 
-        public World(ItemEntity itemEntity, double score, T strategy) {
-            this(Location.WORLD, itemEntity, score, strategy);
+        @Override
+        public Location location() {
+            return Location.WORLD;
         }
     }
 
     enum Location {
-        HANDS,
+        EQUIPPED,
         INVENTORY,
         WORLD,
         NONE
