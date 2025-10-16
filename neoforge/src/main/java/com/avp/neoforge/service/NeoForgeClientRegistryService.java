@@ -36,7 +36,7 @@ import com.avp.service.ClientRegistryService;
 
 public class NeoForgeClientRegistryService implements ClientRegistryService {
 
-    private final List<Tuple2<Supplier<AzArmorRenderer>, List<Supplier<Item>>>> armorRendererPairs;
+    private final List<Tuple2<Supplier<AzArmorRenderer>, List<Supplier<? extends Item>>>> armorRendererPairs;
 
     private final List<Tuple2<Supplier<? extends BlockEntityType<? extends BlockEntity>>, BlockEntityRendererProvider<? extends BlockEntity>>> blockEntityRendererPairs;
 
@@ -44,7 +44,7 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
 
     private final List<Tuple2<Supplier<? extends EntityType<?>>, EntityRendererProvider<?>>> entityRendererPairs;
 
-    private final List<Tuple2<ItemColor, List<Supplier<Item>>>> itemColorPairs;
+    private final List<Tuple2<ItemColor, List<Supplier<? extends Item>>>> itemColorPairs;
 
     private final List<Tuple2<Supplier<? extends Item>, Function<String, Supplier<AzItemRenderer>>>> itemRendererPairs;
 
@@ -67,7 +67,7 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
     }
 
     @Override
-    public void registerArmorRenderer(Supplier<AzArmorRenderer> armorRendererSupplier, List<Supplier<Item>> itemSuppliers) {
+    public void registerArmorRenderer(Supplier<AzArmorRenderer> armorRendererSupplier, List<Supplier<? extends Item>> itemSuppliers) {
         armorRendererPairs.add(new Tuple2<>(armorRendererSupplier, itemSuppliers));
     }
 
@@ -93,7 +93,7 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
     }
 
     @Override
-    public void registerItemColor(ItemColor itemColor, List<Supplier<Item>> itemSuppliers) {
+    public void registerItemColor(ItemColor itemColor, List<Supplier<? extends Item>> itemSuppliers) {
         itemColorPairs.add(new Tuple2<>(itemColor, itemSuppliers));
     }
 
@@ -133,7 +133,7 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
         particleProviderFactoryPairs.add(new Tuple2<>(particleTypeSupplier, spriteParticleRegistration));
     }
 
-    public List<Tuple2<Supplier<AzArmorRenderer>, List<Supplier<Item>>>> getArmorRendererPairs() {
+    public List<Tuple2<Supplier<AzArmorRenderer>, List<Supplier<? extends Item>>>> getArmorRendererPairs() {
         return armorRendererPairs;
     }
 
@@ -149,7 +149,7 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
         return entityRendererPairs;
     }
 
-    public List<Tuple2<ItemColor, List<Supplier<Item>>>> getItemColorPairs() {
+    public List<Tuple2<ItemColor, List<Supplier<? extends Item>>>> getItemColorPairs() {
         return itemColorPairs;
     }
 

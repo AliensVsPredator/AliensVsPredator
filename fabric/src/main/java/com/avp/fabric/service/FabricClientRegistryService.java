@@ -43,7 +43,7 @@ import com.avp.service.ClientRegistryService;
 public class FabricClientRegistryService implements ClientRegistryService {
 
     @Override
-    public void registerArmorRenderer(Supplier<AzArmorRenderer> armorRendererSupplier, List<Supplier<Item>> itemSuppliers) {
+    public void registerArmorRenderer(Supplier<AzArmorRenderer> armorRendererSupplier, List<Supplier<? extends Item>> itemSuppliers) {
         registerArmorRendererImmediately(armorRendererSupplier, itemSuppliers);
     }
 
@@ -69,7 +69,7 @@ public class FabricClientRegistryService implements ClientRegistryService {
     }
 
     @Override
-    public void registerItemColor(ItemColor itemColor, List<Supplier<Item>> itemSuppliers) {
+    public void registerItemColor(ItemColor itemColor, List<Supplier<? extends Item>> itemSuppliers) {
         itemSuppliers.forEach(itemSupplier -> ColorProviderRegistry.ITEM.register(itemColor, itemSupplier.get()));
     }
 

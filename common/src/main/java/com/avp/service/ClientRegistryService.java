@@ -40,9 +40,12 @@ public interface ClientRegistryService {
         name
     );
 
-    void registerArmorRenderer(Supplier<AzArmorRenderer> armorRendererSupplier, List<Supplier<Item>> itemSuppliers);
+    void registerArmorRenderer(Supplier<AzArmorRenderer> armorRendererSupplier, List<Supplier<? extends Item>> itemSuppliers);
 
-    default void registerArmorRendererImmediately(Supplier<AzArmorRenderer> armorRendererSupplier, List<Supplier<Item>> itemSuppliers) {
+    default void registerArmorRendererImmediately(
+        Supplier<AzArmorRenderer> armorRendererSupplier,
+        List<Supplier<? extends Item>> itemSuppliers
+    ) {
         itemSuppliers.forEach(itemSupplier -> AzArmorRendererRegistry.register(armorRendererSupplier, itemSupplier.get()));
     }
 
@@ -58,7 +61,7 @@ public interface ClientRegistryService {
         EntityRendererProvider<E> entityRendererFactory
     );
 
-    void registerItemColor(ItemColor itemColor, List<Supplier<Item>> itemSuppliers);
+    void registerItemColor(ItemColor itemColor, List<Supplier<? extends Item>> itemSuppliers);
 
     default void registerItemRenderer(Supplier<? extends Item> itemSupplier) {
         registerItemRenderer(itemSupplier, ITEM_RENDERER_SUPPLIER_FACTORY);
