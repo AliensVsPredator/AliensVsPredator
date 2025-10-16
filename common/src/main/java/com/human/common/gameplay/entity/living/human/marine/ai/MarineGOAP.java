@@ -6,22 +6,27 @@ import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resi
 import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.FRISensors;
 import com.human.common.gameplay.entity.living.human.marine.ai.extinguish_fire.ExtinguishFireGoals;
 import com.human.common.gameplay.entity.living.human.marine.ai.extinguish_fire.ExtinguishFireSensors;
+import com.human.common.gameplay.entity.living.human.marine.ai.extinguish_fire.ExtinguishFireActions;
 import com.just.goap.graph.Graph;
 import com.lib.common.gameplay.goap.GOAPSensors;
 
 public class MarineGOAP {
 
     public static final Graph<Marine> GRAPH = Graph.<Marine>builder()
-        .apply(MarineGOAP::addExtinguishSelfPackage)
         .apply(MarineGOAP::addAcquireFireResistancePackage)
+        .apply(MarineGOAP::addEquipBestArmorPackage)
+        .apply(MarineGOAP::addExtinguishSelfPackage)
         .build();
 
-    // TODO:
+    private static void addEquipBestArmorPackage(Graph.Builder<Marine> graphBuilder) {
+
+    }
+
     private static void addExtinguishSelfPackage(Graph.Builder<Marine> graphBuilder) {
         graphBuilder.addGoal(ExtinguishFireGoals.EXTINGUISH_SELF_GOAL);
 
-        graphBuilder.addAction(MarineGOAPActions.EQUIP_WATER_BUCKET_ACTION);
-        graphBuilder.addAction(MarineGOAPActions.PLACE_WATER_AT_FEET_ACTION);
+        graphBuilder.addAction(ExtinguishFireActions.EQUIP_WATER_BUCKET_ACTION);
+        graphBuilder.addAction(ExtinguishFireActions.PLACE_WATER_AT_FEET_ACTION);
 
         graphBuilder.addSensor(GOAPSensors.HAS_FIRE_RESISTANCE);
         graphBuilder.addSensor(ExtinguishFireSensors.HAS_WATER_BUCKET_EQUIPPED);
