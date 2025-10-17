@@ -4,7 +4,7 @@ import com.just.codec.Codec;
 import com.just.codec.schema.CodecSchema;
 import com.just.core.functional.result.Result;
 import com.lib.common.util.codec.impl.MojangCodecs;
-import it.unimi.dsi.fastutil.objects.ObjectArraySet;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
@@ -17,11 +17,19 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SequencedSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
 public class AVPInventory {
+
+    private static final SequencedSet<?> EMPTY = Collections.unmodifiableSequencedSet(new ObjectLinkedOpenHashSet<>());
+
+    @SuppressWarnings("unchecked")
+    private static <T> SequencedSet<T> emptySet() {
+        return (SequencedSet<T>) EMPTY;
+    }
 
     public static final Codec<AVPInventory> CODEC = new Codec<>() {
 
@@ -71,12 +79,12 @@ public class AVPInventory {
 
     private final Entry[] entries;
 
-    private final Set<Entry> emptyEntries;
+    private final SequencedSet<Entry> emptyEntries;
 
-    private final Map<Item, Set<Entry>> itemToEntriesMap;
+    private final Map<Item, SequencedSet<Entry>> itemToEntriesMap;
 
     public AVPInventory(int size) {
-        this.emptyEntries = new ObjectArraySet<>();
+        this.emptyEntries = new ObjectLinkedOpenHashSet<>();
         this.itemToEntriesMap = new HashMap<>();
 
         this.entries = new Entry[size];
@@ -128,7 +136,7 @@ public class AVPInventory {
         var remaining = incomingStack.getCount();
         var maxStackSize = incomingStack.getMaxStackSize();
 
-        var matchingEntries = itemToEntriesMap.getOrDefault(incomingStack.getItem(), Set.of());
+        var matchingEntries = itemToEntriesMap.getOrDefault(incomingStack.getItem(), emptySet());
 
         // Merge with existing compatible stacks
         for (var entry : matchingEntries) {
@@ -180,7 +188,7 @@ public class AVPInventory {
             return true;
         }
 
-        var entries = itemToEntriesMap.getOrDefault(item, Set.of());
+        var entries = itemToEntriesMap.getOrDefault(item, emptySet());
 
         for (var entry : entries) {
             var stack = entry.itemStack;
@@ -207,7 +215,7 @@ public class AVPInventory {
         }
 
         // We create a copy here because entry.setItemStack can mutate the inventory.
-        var entries = Set.copyOf(itemToEntriesMap.getOrDefault(item, Set.of()));
+        var entries = Set.copyOf(itemToEntriesMap.getOrDefault(item, emptySet()));
 
         if (entries.isEmpty()) {
             return RemoveResult.InventoryEmpty.INSTANCE;
@@ -246,7 +254,7 @@ public class AVPInventory {
         var remaining = itemStack.getCount();
         var removed = 0;
 
-        var entries = Set.copyOf(itemToEntriesMap.getOrDefault(itemStack.getItem(), Set.of()));
+        var entries = Set.copyOf(itemToEntriesMap.getOrDefault(itemStack.getItem(), emptySet()));
 
         for (var entry : entries) {
             var stack = entry.itemStack;
@@ -303,8 +311,8 @@ public class AVPInventory {
             .toList();
     }
 
-    public Set<Entry> selectEntries(Item item) {
-        return itemToEntriesMap.getOrDefault(item, Set.of());
+    public SequencedSet<Entry> selectEntries(Item item) {
+        return itemToEntriesMap.getOrDefault(item, emptySet());
     }
 
     public void clear() {
@@ -379,7 +387,7 @@ public class AVPInventory {
         entry.itemStack = newStack;
 
         if (!newStack.isEmpty()) {
-            itemToEntriesMap.computeIfAbsent(newStack.getItem(), k -> new ObjectArraySet<>()).add(entry);
+            itemToEntriesMap.computeIfAbsent(newStack.getItem(), k -> new ObjectLinkedOpenHashSet<>()).add(entry);
         } else {
             emptyEntries.add(entry);
         }
