@@ -4,6 +4,9 @@ import com.human.common.gameplay.entity.living.human.marine.Marine;
 import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.FRIActions;
 import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.FRIGoals;
 import com.human.common.gameplay.entity.living.human.marine.ai.acquire_fire_resistance.FRISensors;
+import com.human.common.gameplay.entity.living.human.marine.ai.equip_best_armor.EquipBestArmorActions;
+import com.human.common.gameplay.entity.living.human.marine.ai.equip_best_armor.EquipBestArmorGoals;
+import com.human.common.gameplay.entity.living.human.marine.ai.equip_best_armor.EquipBestArmorSensors;
 import com.human.common.gameplay.entity.living.human.marine.ai.extinguish_fire.ExtinguishFireActions;
 import com.human.common.gameplay.entity.living.human.marine.ai.extinguish_fire.ExtinguishFireGoals;
 import com.human.common.gameplay.entity.living.human.marine.ai.extinguish_fire.ExtinguishFireSensors;
@@ -18,7 +21,31 @@ public class MarineGOAP {
         .apply(MarineGOAP::addExtinguishSelfPackage)
         .build();
 
-    private static void addEquipBestArmorPackage(Graph.Builder<Marine> graphBuilder) {}
+    private static void addEquipBestArmorPackage(Graph.Builder<Marine> graphBuilder) {
+        graphBuilder.addGoal(EquipBestArmorGoals.EQUIP_BEST_ARMOR_GOAL);
+
+        graphBuilder.addAction(EquipBestArmorActions.EQUIP_BEST_ARMOR_PIECES);
+
+        // Best armor set sensor.
+        graphBuilder.addSensor(EquipBestArmorSensors.BEST_ARMOR_SET_TARGET);
+        graphBuilder.addSensor(EquipBestArmorSensors.IS_ANY_BEST_ARMOR_SET_PIECE_IN_WORLD);
+        graphBuilder.addSensor(EquipBestArmorSensors.IS_ANY_BEST_ARMOR_SET_PIECE_IN_INVENTORY);
+        graphBuilder.addSensor(EquipBestArmorSensors.ARE_ALL_BEST_ARMOR_SET_PIECES_EQUIPPED);
+        // Full set armor sensors.
+        graphBuilder.addSensor(EquipBestArmorSensors.MK50_ARMOR_SET_TARGET);
+        graphBuilder.addSensor(EquipBestArmorSensors.NETHER_CHITIN_ARMOR_SET_TARGET);
+        graphBuilder.addSensor(EquipBestArmorSensors.PLATED_NETHER_CHITIN_ARMOR_SET_TARGET);
+        graphBuilder.addSensor(EquipBestArmorSensors.PRESSURE_SUIT_ARMOR_SET_TARGET);
+        // Sensors to find armor item pieces on the ground.
+        graphBuilder.addSensor(GOAPSensors.NEARBY_ENTITIES);
+        graphBuilder.addSensor(GOAPSensors.NEARBY_ITEM_ENTITIES);
+        // Environment sensors for deciding which armor set is best.
+        graphBuilder.addSensor(GOAPSensors.NEARBY_BLOCK_POSITIONS);
+        graphBuilder.addSensor(GOAPSensors.IS_NEAR_RADIOACTIVE_BIOME);
+        graphBuilder.addSensor(GOAPSensors.IS_UNDERWATER);
+        graphBuilder.addSensor(GOAPSensors.IS_ON_FIRE);
+        graphBuilder.addSensor(GOAPSensors.HAS_FIRE_RESISTANCE);
+    }
 
     private static void addExtinguishSelfPackage(Graph.Builder<Marine> graphBuilder) {
         graphBuilder.addGoal(ExtinguishFireGoals.EXTINGUISH_SELF_GOAL);

@@ -52,7 +52,7 @@ public class GOAPSensors {
 
     public static final Sensor.Mono<Entity, List<BlockPos>> NEARBY_BLOCK_POSITIONS = Sensors.map(
         StateKey.sensed("nearby_block_positions"),
-        entity -> BlockPos.betweenClosedStream(entity.getBoundingBox().inflate(1)).toList()
+        entity -> BlockPos.betweenClosedStream(entity.blockPosition().offset(-1, 0, -1), entity.blockPosition().offset(1, 0, 1)).toList()
     );
 
     public static final Sensor.Mono<Entity, Boolean> IS_NEAR_RADIOACTIVE_BIOME = Sensors.compose(
