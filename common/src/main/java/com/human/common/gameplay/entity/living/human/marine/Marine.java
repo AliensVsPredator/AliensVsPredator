@@ -53,7 +53,7 @@ public class Marine extends AbstractHuman implements AVPInventoryHolder, GOAPUse
     @Deprecated
     private static final String NBT_PRIMARY_INVENTORY = "primaryInventory";
 
-    private static final List<List<Supplier<Item>>> DEFAULT_ARMOR_SETS = List.of(
+    private static final List<List<Supplier<ArmorItem>>> DEFAULT_ARMOR_SETS = List.of(
         List.of(
             AVPArmorItems.TACTICAL_HELMET,
             AVPArmorItems.TACTICAL_CHESTPLATE,

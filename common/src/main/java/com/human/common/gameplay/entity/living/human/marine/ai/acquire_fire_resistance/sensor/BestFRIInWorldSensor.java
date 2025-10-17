@@ -33,6 +33,7 @@ public class BestFRIInWorldSensor {
 
             var itemEntities = worldState.getOrDefault(GOAPSensors.NEARBY_ITEM_ENTITIES.key(), List.of());
 
+            // TODO: Access by item -> item entities map first, then filter item entities as current impl does.
             for (var entry : itemEntities) {
                 var itemStack = entry.getItem();
 
