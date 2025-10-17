@@ -44,6 +44,8 @@ public class GOAPSensors {
         entity -> entity.getHealth() / entity.getMaxHealth()
     );
 
+    public static final Sensor.Mono<Entity, Boolean> IS_IN_LAVA = Sensors.map(StateKey.sensed("is_in_lava"), Entity::isInLava);
+
     public static final Sensor.Mono<Entity, Boolean> IS_ON_FIRE = Sensors.map(StateKey.sensed("is_on_fire"), Entity::isOnFire);
 
     public static final Sensor.Mono<Entity, Boolean> IS_ON_GROUND = Sensors.map(StateKey.sensed("is_on_ground"), Entity::onGround);
