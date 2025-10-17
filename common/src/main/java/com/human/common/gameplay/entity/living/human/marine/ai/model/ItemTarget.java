@@ -47,6 +47,11 @@ public sealed interface ItemTarget {
         public Location location() {
             return Location.NONE;
         }
+
+        @Override
+        public String toString() {
+            return "NONE";
+        }
     }
 
     enum Location {
