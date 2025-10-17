@@ -68,6 +68,17 @@ public class EquipBestArmorSensors {
     public static final Sensor.Mono<LivingEntity, ArmorSetTarget> BEST_ARMOR_SET_TARGET = Sensors.lazyCompose(
         StateKey.sensed("best_armor_set"),
         (livingEntity, worldState) -> {
+
+            if (
+                worldState.getOrDefault(GOAPSensors.IS_IN_LAVA.key(), false)
+                    && !worldState.getOrDefault(GOAPSensors.HAS_FIRE_RESISTANCE.key(), false)
+            ) {
+                return worldState.getOrDefault(
+                    PLATED_NETHER_CHITIN_ARMOR_SET_TARGET.key(),
+                    worldState.getOrDefault(NETHER_CHITIN_ARMOR_SET_TARGET.key(), ArmorSetTarget.EMPTY)
+                );
+            }
+
             if (worldState.getOrDefault(GOAPSensors.IS_NEAR_RADIOACTIVE_BIOME.key(), false)) {
                 return worldState.getOrDefault(MK50_ARMOR_SET_TARGET.key(), ArmorSetTarget.EMPTY);
             }
