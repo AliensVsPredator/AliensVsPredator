@@ -16,10 +16,29 @@ import com.lib.common.gameplay.goap.GOAPSensors;
 public class MarineGOAP {
 
     public static final Graph<Marine> GRAPH = Graph.<Marine>builder()
+        .apply(MarineGOAP::addSensorsPackage)
         .apply(MarineGOAP::addAcquireFireResistancePackage)
         .apply(MarineGOAP::addEquipBestArmorPackage)
         .apply(MarineGOAP::addExtinguishSelfPackage)
         .build();
+
+    private static void addSensorsPackage(Graph.Builder<Marine> graphBuilder) {
+        // Entities.
+        graphBuilder.addSensor(GOAPSensors.NEARBY_ENTITIES);
+        graphBuilder.addSensor(GOAPSensors.NEARBY_ITEM_ENTITIES);
+        // Environment.
+        graphBuilder.addSensor(GOAPSensors.NEARBY_BLOCK_POSITIONS);
+        graphBuilder.addSensor(MarineGOAPSensors.IS_CURRENT_BLOCK_POS_REPLACEABLE);
+        graphBuilder.addSensor(GOAPSensors.IS_NEAR_RADIOACTIVE_BIOME);
+        graphBuilder.addSensor(GOAPSensors.IS_IN_LAVA);
+        graphBuilder.addSensor(GOAPSensors.IS_ON_GROUND);
+        graphBuilder.addSensor(GOAPSensors.IS_UNDERWATER);
+        // Self state.
+        graphBuilder.addSensor(GOAPSensors.FIRE_RESISTANCE_REMAINING_TICKS);
+        graphBuilder.addSensor(GOAPSensors.HAS_FIRE_RESISTANCE);
+        graphBuilder.addSensor(GOAPSensors.HEALTH_RATIO);
+        graphBuilder.addSensor(GOAPSensors.IS_ON_FIRE);
+    }
 
     private static void addEquipBestArmorPackage(Graph.Builder<Marine> graphBuilder) {
         graphBuilder.addGoal(EquipBestArmorGoals.EQUIP_BEST_ARMOR_GOAL);
@@ -36,15 +55,6 @@ public class MarineGOAP {
         graphBuilder.addSensor(EquipBestArmorSensors.NETHER_CHITIN_ARMOR_SET_TARGET);
         graphBuilder.addSensor(EquipBestArmorSensors.PLATED_NETHER_CHITIN_ARMOR_SET_TARGET);
         graphBuilder.addSensor(EquipBestArmorSensors.PRESSURE_SUIT_ARMOR_SET_TARGET);
-        // Sensors to find armor item pieces on the ground.
-        graphBuilder.addSensor(GOAPSensors.NEARBY_ENTITIES);
-        graphBuilder.addSensor(GOAPSensors.NEARBY_ITEM_ENTITIES);
-        // Environment sensors for deciding which armor set is best.
-        graphBuilder.addSensor(GOAPSensors.NEARBY_BLOCK_POSITIONS);
-        graphBuilder.addSensor(GOAPSensors.IS_NEAR_RADIOACTIVE_BIOME);
-        graphBuilder.addSensor(GOAPSensors.IS_UNDERWATER);
-        graphBuilder.addSensor(GOAPSensors.IS_ON_FIRE);
-        graphBuilder.addSensor(GOAPSensors.HAS_FIRE_RESISTANCE);
     }
 
     private static void addExtinguishSelfPackage(Graph.Builder<Marine> graphBuilder) {
@@ -53,15 +63,8 @@ public class MarineGOAP {
         graphBuilder.addAction(ExtinguishFireActions.EQUIP_WATER_BUCKET_ACTION);
         graphBuilder.addAction(ExtinguishFireActions.PLACE_WATER_AT_FEET_ACTION);
 
-        graphBuilder.addSensor(GOAPSensors.HAS_FIRE_RESISTANCE);
         graphBuilder.addSensor(ExtinguishFireSensors.HAS_WATER_BUCKET_EQUIPPED);
         graphBuilder.addSensor(ExtinguishFireSensors.WATER_BUCKET_IN_INVENTORY);
-        graphBuilder.addSensor(MarineGOAPSensors.IS_CURRENT_BLOCK_POS_REPLACEABLE);
-        graphBuilder.addSensor(GOAPSensors.IS_ON_FIRE);
-        graphBuilder.addSensor(GOAPSensors.IS_ON_GROUND);
-
-        // For water bucket usage validity.
-        graphBuilder.addSensor(MarineGOAPSensors.IS_CURRENT_BLOCK_POS_REPLACEABLE);
     }
 
     private static void addAcquireFireResistancePackage(Graph.Builder<Marine> graphBuilder) {
@@ -74,9 +77,6 @@ public class MarineGOAP {
         graphBuilder.addAction(FRIActions.equipBestFRIFactory());
         graphBuilder.addAction(FRIActions.USE_BEST_FRI);
 
-        // General usage.
-        graphBuilder.addSensor(GOAPSensors.IS_ON_FIRE);
-        graphBuilder.addSensor(GOAPSensors.HAS_FIRE_RESISTANCE);
         // Used for locating best FRI.
         graphBuilder.addSensor(FRISensors.BEST_FRI);
         graphBuilder.addSensor(FRISensors.BEST_FRI_LOCATION);
@@ -86,14 +86,6 @@ public class MarineGOAP {
         // Used for locating best FRI in world.
         graphBuilder.addSensor(FRISensors.BEST_FRI_IN_WORLD);
         graphBuilder.addSensor(FRISensors.IS_BEST_WORLD_FRI_IN_RANGE);
-        graphBuilder.addSensor(GOAPSensors.NEARBY_ENTITIES);
-        graphBuilder.addSensor(GOAPSensors.NEARBY_ITEM_ENTITIES);
-        // Used for utility scoring.
-        graphBuilder.addSensor(GOAPSensors.HEALTH_RATIO);
-        graphBuilder.addSensor(GOAPSensors.FIRE_RESISTANCE_REMAINING_TICKS);
-
-        // For throwable potion usage validity.
-        graphBuilder.addSensor(GOAPSensors.IS_ON_GROUND);
     }
 
     public static void initialize() {}
