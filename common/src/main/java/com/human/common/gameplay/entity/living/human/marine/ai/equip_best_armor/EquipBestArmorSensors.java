@@ -1,6 +1,7 @@
 package com.human.common.gameplay.entity.living.human.marine.ai.equip_best_armor;
 
 import com.alien.common.registry.init.item.AlienArmorItems;
+import com.human.common.gameplay.entity.living.human.marine.ai.equip_best_armor.sensor.BestArmorSetTargetSensor;
 import com.human.common.gameplay.entity.living.human.marine.ai.model.ArmorSet;
 import com.human.common.gameplay.entity.living.human.marine.ai.model.ArmorSetTarget;
 import com.human.common.gameplay.entity.living.human.marine.ai.model.ItemTarget;
@@ -9,7 +10,6 @@ import com.just.goap.StateKey;
 import com.just.goap.sensor.Sensor;
 import com.just.goap.sensor.Sensors;
 import com.just.goap.state.ReadableWorldState;
-import com.lib.common.gameplay.goap.GOAPSensors;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 
@@ -67,42 +67,7 @@ public class EquipBestArmorSensors {
 
     public static final Sensor.Mono<LivingEntity, ArmorSetTarget> BEST_ARMOR_SET_TARGET = Sensors.lazyCompose(
         StateKey.sensed("best_armor_set"),
-        (livingEntity, worldState) -> {
-
-            if (
-                worldState.getOrDefault(GOAPSensors.IS_IN_LAVA.key(), false)
-                    && !worldState.getOrDefault(GOAPSensors.HAS_FIRE_RESISTANCE.key(), false)
-            ) {
-                return worldState.getOrDefault(
-                    PLATED_NETHER_CHITIN_ARMOR_SET_TARGET.key(),
-                    worldState.getOrDefault(NETHER_CHITIN_ARMOR_SET_TARGET.key(), ArmorSetTarget.EMPTY)
-                );
-            }
-
-            if (worldState.getOrDefault(GOAPSensors.IS_NEAR_RADIOACTIVE_BIOME.key(), false)) {
-                return worldState.getOrDefault(MK50_ARMOR_SET_TARGET.key(), ArmorSetTarget.EMPTY);
-            }
-
-            if (
-                worldState.getOrDefault(GOAPSensors.IS_ON_FIRE.key(), false)
-                    && !worldState.getOrDefault(GOAPSensors.HAS_FIRE_RESISTANCE.key(), false)
-            ) {
-                return worldState.getOrDefault(
-                    PLATED_NETHER_CHITIN_ARMOR_SET_TARGET.key(),
-                    worldState.getOrDefault(NETHER_CHITIN_ARMOR_SET_TARGET.key(), ArmorSetTarget.EMPTY)
-                );
-            }
-
-            if (
-                worldState.getOrDefault(GOAPSensors.IS_UNDERWATER.key(), false)
-                    && !worldState.getOrDefault(GOAPSensors.HAS_WATER_BREATHING.key(), false)
-            ) {
-                return worldState.getOrDefault(PRESSURE_SUIT_ARMOR_SET_TARGET.key(), ArmorSetTarget.EMPTY);
-            }
-
-            // TODO: Equip facehugger-resistant helmets if facehuggers are nearby.
-            return ArmorSetTarget.EMPTY;
-        }
+        BestArmorSetTargetSensor::sense
     );
 
     public static final Sensor.Mono<LivingEntity, Boolean> IS_ANY_BEST_ARMOR_SET_PIECE_IN_WORLD = Sensors.compose(
