@@ -7,6 +7,7 @@
 - N/A
 
 ## ✨ What's New
+- [Fabric] AVP now requires Fabric Loader `0.17.3`.
 - Marines can now be given armor items.
 - Marines can now use armor items:
   - Marines will now automatically figure out what armor is best to wear depending on their situation.
