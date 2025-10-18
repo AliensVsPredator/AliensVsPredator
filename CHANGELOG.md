@@ -22,7 +22,8 @@
   - If not at full health, marines will now consider drinking an instant health potion.
 
 ## ♻️ Changes
-- N/A
+- Irradiated chitin armor now glows.
+- Plated irradiated chitin armor now glows.
 
 ## 🐞 Fixes
 - N/A
