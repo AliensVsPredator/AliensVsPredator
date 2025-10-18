@@ -5,15 +5,20 @@ import com.alien.client.render.entity.parasite.EntityHeadOffsetData;
 import com.alien.common.gameplay.entity.living.alien.parasite.facehugger.Facehugger;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import mod.azure.azurelib.rewrite.render.AzLayerRenderer;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityModelRenderer;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererPipeline;
+import mod.azure.azurelib.common.render.AzLayerRenderer;
+import mod.azure.azurelib.common.render.entity.AzEntityModelRenderer;
+import mod.azure.azurelib.common.render.entity.AzEntityRendererPipeline;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 
+import java.util.UUID;
+
 public class FacehuggerModelRenderer extends AzEntityModelRenderer<Facehugger> {
 
-    public FacehuggerModelRenderer(AzEntityRendererPipeline<Facehugger> entityRendererPipeline, AzLayerRenderer<Facehugger> layerRenderer) {
+    public FacehuggerModelRenderer(
+        AzEntityRendererPipeline<Facehugger> entityRendererPipeline,
+        AzLayerRenderer<UUID, Facehugger> layerRenderer
+    ) {
         super(entityRendererPipeline, layerRenderer);
     }
 

@@ -1,16 +1,18 @@
 package com.human.client.render.layer.human;
 
 import com.human.common.gameplay.entity.living.human.AbstractHuman;
-import mod.azure.azurelib.rewrite.render.AzRendererPipelineContext;
+import mod.azure.azurelib.common.render.AzRendererPipelineContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.UUID;
+
 public class HumanRenderLayerUtil {
 
     public static <T extends AbstractHuman> void applyColorWithInvisibility(
-        AzRendererPipelineContext<T> context,
+        AzRendererPipelineContext<UUID, T> context,
         @Nullable ResourceLocation textureLocation,
         int fallbackColor
     ) {

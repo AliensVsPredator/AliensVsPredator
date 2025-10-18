@@ -2,8 +2,8 @@ package com.avp.neoforge.service;
 
 import com.just.core.functional.function.Lazy;
 import com.just.core.functional.tuple.Tuple2;
-import mod.azure.azurelib.rewrite.render.armor.AzArmorRenderer;
-import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
+import mod.azure.azurelib.common.render.armor.AzArmorRenderer;
+import mod.azure.azurelib.common.render.item.AzItemRenderer;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.gui.screens.MenuScreens;

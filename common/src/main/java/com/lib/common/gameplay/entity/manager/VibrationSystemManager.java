@@ -1,7 +1,7 @@
 package com.lib.common.gameplay.entity.manager;
 
-import mod.azure.azurelib.common.api.common.entities.AzureVibrationUser;
-import mod.azure.azurelib.common.api.common.interfaces.AzureTicker;
+import mod.azure.azurelib.common.vibration.AzureTicker;
+import mod.azure.azurelib.common.vibration.AzureVibrationUser;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.gameevent.DynamicGameEventListener;

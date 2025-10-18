@@ -1,7 +1,7 @@
 package com.human.common.gameplay.block.entity.power.impl;
 
-import mod.azure.azurelib.rewrite.animation.dispatch.command.AzCommand;
-import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
+import mod.azure.azurelib.common.animation.dispatch.command.AzCommand;
+import mod.azure.azurelib.common.animation.play_behavior.AzPlayBehaviors;
 
 public class ResonatorAnimationDispatcher {
 
