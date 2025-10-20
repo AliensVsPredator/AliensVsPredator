@@ -35,7 +35,7 @@ dependencies {
     compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
 
     // Compats
-    compileOnly "maven.modrinth:gigeresque:0.8.14"
+    compileOnly "maven.modrinth:gigeresque:${project.gigeresque_version}"
 }
 
 configurations.configureEach {

@@ -85,7 +85,7 @@ dependencies {
     //modImplementation "maven.modrinth:modernfix:5.21.0+mc1.21.1"
 
     // Compats
-    modImplementation "maven.modrinth:gigeresque:KjtmZFf9"
+    modImplementation "maven.modrinth:gigeresque:${project.gigeresque_modrinth_version}"
 }
 
 loom {
