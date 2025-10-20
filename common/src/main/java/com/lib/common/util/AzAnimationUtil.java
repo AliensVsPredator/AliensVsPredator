@@ -1,8 +1,8 @@
 package com.lib.common.util;
 
-import mod.azure.azurelib.rewrite.animation.dispatch.command.AzCommand;
-import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehavior;
-import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
+import mod.azure.azurelib.common.animation.dispatch.command.AzCommand;
+import mod.azure.azurelib.common.animation.play_behavior.AzPlayBehavior;
+import mod.azure.azurelib.common.animation.play_behavior.AzPlayBehaviors;
 
 import java.util.List;
 

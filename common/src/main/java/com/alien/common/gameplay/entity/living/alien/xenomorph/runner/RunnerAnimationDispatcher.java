@@ -3,8 +3,8 @@ package com.alien.common.gameplay.entity.living.alien.xenomorph.runner;
 import com.alien.common.constant.animation.RunnerAnimationRefs;
 import com.alien.common.util.AzAlienAnimationUtil;
 import com.lib.common.util.AzAnimationUtil;
-import mod.azure.azurelib.rewrite.animation.dispatch.command.AzCommand;
-import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
+import mod.azure.azurelib.common.animation.dispatch.command.AzCommand;
+import mod.azure.azurelib.common.animation.play_behavior.AzPlayBehaviors;
 
 public class RunnerAnimationDispatcher {
 

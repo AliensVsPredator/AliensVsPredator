@@ -1,14 +1,16 @@
 package com.human.client.render.layer.human;
 
 import com.human.common.gameplay.entity.living.human.AbstractHuman;
-import mod.azure.azurelib.rewrite.model.AzBone;
-import mod.azure.azurelib.rewrite.render.AzRendererPipelineContext;
-import mod.azure.azurelib.rewrite.render.layer.AzArmorLayer;
+import mod.azure.azurelib.common.model.AzBone;
+import mod.azure.azurelib.common.render.AzRendererPipelineContext;
+import mod.azure.azurelib.common.render.layer.AzArmorLayer;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.UUID;
 
 public class HumanArmorLayer<T extends AbstractHuman> extends AzArmorLayer<T> {
 
@@ -29,7 +31,7 @@ public class HumanArmorLayer<T extends AbstractHuman> extends AzArmorLayer<T> {
     private static final String HELMET = "armorBipedHead";
 
     @Override
-    protected ItemStack getArmorItemForBone(AzRendererPipelineContext<T> context, AzBone bone) {
+    protected ItemStack getArmorItemForBone(AzRendererPipelineContext<UUID, T> context, AzBone bone) {
         return switch (bone.getName()) {
             case LEFT_BOOT, RIGHT_BOOT -> this.bootsStack;
             case LEFT_ARMOR_LEG, RIGHT_ARMOR_LEG -> this.leggingsStack;
@@ -40,7 +42,7 @@ public class HumanArmorLayer<T extends AbstractHuman> extends AzArmorLayer<T> {
     }
 
     @Override
-    protected @NotNull EquipmentSlot getEquipmentSlotForBone(AzRendererPipelineContext<T> context, AzBone bone, ItemStack stack) {
+    protected @NotNull EquipmentSlot getEquipmentSlotForBone(AzRendererPipelineContext<UUID, T> context, AzBone bone, ItemStack stack) {
         var animatable = context.animatable();
         return switch (bone.getName()) {
             case LEFT_BOOT, RIGHT_BOOT -> EquipmentSlot.FEET;
@@ -54,7 +56,7 @@ public class HumanArmorLayer<T extends AbstractHuman> extends AzArmorLayer<T> {
     }
 
     @Override
-    protected @NotNull ModelPart getModelPartForBone(AzRendererPipelineContext<T> context, AzBone bone, HumanoidModel<?> baseModel) {
+    protected @NotNull ModelPart getModelPartForBone(AzRendererPipelineContext<UUID, T> context, AzBone bone, HumanoidModel<?> baseModel) {
         return switch (bone.getName()) {
             case HELMET -> baseModel.head;
             case CHESTPLATE -> baseModel.body;

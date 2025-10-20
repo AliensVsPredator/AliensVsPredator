@@ -1,9 +1,9 @@
 package com.human.client.render.item.gun.muzzled;
 
 import com.human.common.registry.init.HumanDataComponents;
-import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
-import mod.azure.azurelib.rewrite.render.item.AzItemRendererConfig;
-import mod.azure.azurelib.rewrite.render.layer.AzAutoGlowingLayer;
+import mod.azure.azurelib.common.render.item.AzItemRenderer;
+import mod.azure.azurelib.common.render.item.AzItemRendererConfig;
+import mod.azure.azurelib.common.render.layer.AzAutoGlowingLayer;
 
 import java.util.List;
 import java.util.function.UnaryOperator;

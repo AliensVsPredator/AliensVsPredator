@@ -1,6 +1,6 @@
 package com.avp.client.animation;
 
-import mod.azure.azurelib.rewrite.animation.AzAnimationContext;
+import mod.azure.azurelib.common.animation.AzAnimationContext;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 

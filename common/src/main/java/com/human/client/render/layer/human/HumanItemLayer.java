@@ -2,14 +2,16 @@ package com.human.client.render.layer.human;
 
 import com.human.common.gameplay.entity.living.human.AbstractHuman;
 import com.mojang.math.Axis;
-import mod.azure.azurelib.rewrite.model.AzBone;
-import mod.azure.azurelib.rewrite.render.AzRendererPipelineContext;
-import mod.azure.azurelib.rewrite.render.layer.AzBlockAndItemLayer;
+import mod.azure.azurelib.common.model.AzBone;
+import mod.azure.azurelib.common.render.AzRendererPipelineContext;
+import mod.azure.azurelib.common.render.layer.AzBlockAndItemLayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
-public class HumanItemLayer<T extends AbstractHuman> extends AzBlockAndItemLayer<T> {
+import java.util.UUID;
+
+public class HumanItemLayer<T extends AbstractHuman> extends AzBlockAndItemLayer<UUID, T> {
 
     private static final String LEFT_HAND = "leftHand_Item";
 
@@ -30,7 +32,7 @@ public class HumanItemLayer<T extends AbstractHuman> extends AzBlockAndItemLayer
     }
 
     @Override
-    protected void renderItemForBone(AzRendererPipelineContext<T> context, AzBone bone, ItemStack itemStack, T animatable) {
+    protected void renderItemForBone(AzRendererPipelineContext<UUID, T> context, AzBone bone, ItemStack itemStack, T animatable) {
         context.poseStack().mulPose(Axis.XP.rotationDegrees(270));
         context.poseStack().mulPose(Axis.YP.rotationDegrees(0));
         context.poseStack().mulPose(Axis.ZP.rotationDegrees(0f));

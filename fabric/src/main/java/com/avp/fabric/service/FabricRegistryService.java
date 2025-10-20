@@ -2,7 +2,7 @@ package com.avp.fabric.service;
 
 import com.lib.common.util.codec.stream.adapter.JustStreamCodecToMojangStreamCodecAdapter;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
+import mod.azure.azurelib.common.animation.cache.AzIdentityRegistry;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;

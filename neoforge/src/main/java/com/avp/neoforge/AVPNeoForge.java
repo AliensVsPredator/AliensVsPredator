@@ -4,7 +4,7 @@ import com.lib.common.network.DataContainer;
 import com.lib.common.network.DataUser;
 import com.lib.common.util.codec.stream.adapter.JustStreamCodecToMojangStreamCodecAdapter;
 import com.predator.common.registry.init.PredatorEntityTypes;
-import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
+import mod.azure.azurelib.common.animation.cache.AzIdentityRegistry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;

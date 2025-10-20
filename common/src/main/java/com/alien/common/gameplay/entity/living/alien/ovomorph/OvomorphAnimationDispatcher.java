@@ -1,8 +1,8 @@
 package com.alien.common.gameplay.entity.living.alien.ovomorph;
 
 import com.alien.common.constant.animation.OvomorphAnimationRefs;
-import mod.azure.azurelib.rewrite.animation.dispatch.command.AzCommand;
-import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
+import mod.azure.azurelib.common.animation.dispatch.command.AzCommand;
+import mod.azure.azurelib.common.animation.play_behavior.AzPlayBehaviors;
 
 public class OvomorphAnimationDispatcher {
 

@@ -7,8 +7,8 @@ import com.human.client.render.layer.human.HumanHairLayer;
 import com.human.client.render.layer.human.HumanItemLayer;
 import com.human.client.render.layer.human.HumanSkinLayer;
 import com.human.common.gameplay.entity.living.human.AbstractHuman;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
+import mod.azure.azurelib.common.render.entity.AzEntityRenderer;
+import mod.azure.azurelib.common.render.entity.AzEntityRendererConfig;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 

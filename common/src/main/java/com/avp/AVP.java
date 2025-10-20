@@ -5,12 +5,12 @@ import com.human.Human;
 import com.human.common.gameplay.level.patrol.MarinePatrolSpawner;
 import com.lib.common.gameplay.gene.Genes;
 import com.predator.Predator;
-import mod.azure.azurelib.common.api.common.config.Config;
-import mod.azure.azurelib.common.internal.common.config.ConfigHolder;
-import mod.azure.azurelib.common.internal.common.config.ConfigHolderRegistry;
-import mod.azure.azurelib.common.internal.common.config.format.ConfigFormats;
-import mod.azure.azurelib.common.internal.common.config.format.IConfigFormatHandler;
-import mod.azure.azurelib.common.internal.common.config.io.ConfigIO;
+import mod.azure.azurelib.common.config.Config;
+import mod.azure.azurelib.common.config.ConfigHolder;
+import mod.azure.azurelib.common.config.ConfigHolderRegistry;
+import mod.azure.azurelib.common.config.format.ConfigFormats;
+import mod.azure.azurelib.common.config.format.IConfigFormatHandler;
+import mod.azure.azurelib.common.config.io.ConfigIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
