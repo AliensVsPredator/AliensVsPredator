@@ -8,7 +8,7 @@
 
 ## ✨ What's New
 - [Fabric] AVP now requires Fabric Loader `0.17.3`.
-- AVP now requires AzureLib `3.1.0`.
+- AVP now requires AzureLib `3.1.1`.
 
 ## ♻️ Changes
 - N/A
