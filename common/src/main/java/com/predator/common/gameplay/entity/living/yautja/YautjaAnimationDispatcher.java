@@ -1,8 +1,8 @@
 package com.predator.common.gameplay.entity.living.yautja;
 
 import com.human.common.gameplay.entity.living.human.marine.MarineAnimationRefs;
-import mod.azure.azurelib.rewrite.animation.dispatch.command.AzCommand;
-import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
+import mod.azure.azurelib.common.animation.dispatch.command.AzCommand;
+import mod.azure.azurelib.common.animation.play_behavior.AzPlayBehaviors;
 
 public class YautjaAnimationDispatcher {
 

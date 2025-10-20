@@ -1,7 +1,7 @@
 package com.avp.common.config;
 
-import mod.azure.azurelib.common.api.common.config.Config;
-import mod.azure.azurelib.common.internal.common.config.Configurable;
+import mod.azure.azurelib.common.config.Config;
+import mod.azure.azurelib.common.config.Configurable;
 
 import com.avp.AVP;
 import com.avp.common.constant.ArmorConstants;

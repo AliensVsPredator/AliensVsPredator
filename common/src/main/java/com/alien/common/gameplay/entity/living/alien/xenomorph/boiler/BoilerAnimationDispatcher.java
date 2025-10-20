@@ -1,8 +1,8 @@
 package com.alien.common.gameplay.entity.living.alien.xenomorph.boiler;
 
 import com.alien.common.constant.animation.BoilerAnimationRefs;
-import mod.azure.azurelib.rewrite.animation.dispatch.command.AzCommand;
-import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
+import mod.azure.azurelib.common.animation.dispatch.command.AzCommand;
+import mod.azure.azurelib.common.animation.play_behavior.AzPlayBehaviors;
 
 public class BoilerAnimationDispatcher {
 

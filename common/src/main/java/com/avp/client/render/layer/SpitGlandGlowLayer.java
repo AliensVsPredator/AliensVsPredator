@@ -1,12 +1,14 @@
 package com.avp.client.render.layer;
 
-import mod.azure.azurelib.rewrite.render.AzRendererPipelineContext;
-import mod.azure.azurelib.rewrite.render.layer.AzAutoGlowingLayer;
+import mod.azure.azurelib.common.render.AzRendererPipelineContext;
+import mod.azure.azurelib.common.render.layer.AzAutoGlowingLayer;
 
-public class SpitGlandGlowLayer<T> extends AzAutoGlowingLayer<T> {
+import java.util.UUID;
+
+public class SpitGlandGlowLayer<T> extends AzAutoGlowingLayer<UUID, T> {
 
     @Override
-    public void render(AzRendererPipelineContext<T> context) {
+    public void render(AzRendererPipelineContext<UUID, T> context) {
         super.render(context);
     }
 }

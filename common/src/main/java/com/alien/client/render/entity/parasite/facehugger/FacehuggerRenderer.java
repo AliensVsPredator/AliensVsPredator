@@ -4,14 +4,16 @@ import com.alien.client.animation.entity.FacehuggerAnimator;
 import com.alien.client.render.AlienRenderResourceCache;
 import com.alien.common.gameplay.entity.living.alien.parasite.facehugger.Facehugger;
 import com.alien.common.model.alien.variant.AlienVariant;
-import mod.azure.azurelib.rewrite.render.AzLayerRenderer;
-import mod.azure.azurelib.rewrite.render.AzModelRenderer;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererPipeline;
+import mod.azure.azurelib.common.render.AzLayerRenderer;
+import mod.azure.azurelib.common.render.AzModelRenderer;
+import mod.azure.azurelib.common.render.entity.AzEntityRenderer;
+import mod.azure.azurelib.common.render.entity.AzEntityRendererConfig;
+import mod.azure.azurelib.common.render.entity.AzEntityRendererPipeline;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+
+import java.util.UUID;
 
 public class FacehuggerRenderer extends AzEntityRenderer<Facehugger> {
 
@@ -36,7 +38,7 @@ public class FacehuggerRenderer extends AzEntityRenderer<Facehugger> {
         return new AzEntityRendererPipeline<>(config, this) {
 
             @Override
-            protected AzModelRenderer<Facehugger> createModelRenderer(AzLayerRenderer<Facehugger> layerRenderer) {
+            protected AzModelRenderer<UUID, Facehugger> createModelRenderer(AzLayerRenderer<UUID, Facehugger> layerRenderer) {
                 return new FacehuggerModelRenderer(this, layerRenderer);
             }
         };
