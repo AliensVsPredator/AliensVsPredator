@@ -1,8 +1,7 @@
-# v0.2.8
+# v0.2.9
 
 ## ✍️ Developer Notes
 - For help or other questions, concerns, etc. check out our Discord server: https://discord.gg/wp7mvmbkVb
-- This is a hotfix for the previous version missing data files... sorry about that. :(
 
 ## ☢️ Breaking Changes
 - N/A
