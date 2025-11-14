@@ -1,14 +1,14 @@
-# v0.2.7
+# v0.2.8
 
 ## ✍️ Developer Notes
 - For help or other questions, concerns, etc. check out our Discord server: https://discord.gg/wp7mvmbkVb
+- This is a hotfix for the previous version missing data files... sorry about that. :(
 
 ## ☢️ Breaking Changes
 - N/A
 
 ## ✨ What's New
-- [Fabric] AVP now requires Fabric Loader `0.17.3`.
-- AVP now requires AzureLib `3.1.1`.
+- N/A
 
 ## ♻️ Changes
 - N/A
