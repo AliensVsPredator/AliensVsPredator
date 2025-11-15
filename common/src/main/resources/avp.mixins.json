@@ -31,7 +31,6 @@
     "MixinLivingEntity_NukedRadiation",
     "MixinMob_GeneCarrier",
     "MixinMob_IncapacitateHost",
-    "MixinMobCategory_InjectCustomAlienCategory",
     "MixinPlayer_CrawlPosing",
     "MixinProjectileUtil_AllowHittingVehicle",
     "MixinRegistry_ApplyDataFixes",

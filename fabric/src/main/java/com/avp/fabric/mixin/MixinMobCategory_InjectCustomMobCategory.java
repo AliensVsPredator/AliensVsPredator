@@ -1,4 +1,4 @@
-package com.avp.mixin;
+package com.avp.fabric.mixin;
 
 import net.minecraft.world.entity.MobCategory;
 import org.spongepowered.asm.mixin.Final;
@@ -14,11 +14,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import com.avp.common.registry.init.AVPMobCategories;
+import com.avp.common.registry.init.AVPMobCategoryData;
+import com.avp.fabric.service.FabricBridgeService;
+import com.avp.service.Services;
 
 // TODO: Rename this.
 @Mixin(MobCategory.class)
-public abstract class MixinMobCategory_InjectCustomAlienCategory {
+public abstract class MixinMobCategory_InjectCustomMobCategory {
 
     @Unique
     private static final int OPCODE_PUTSTATIC = 179;
@@ -37,6 +39,22 @@ public abstract class MixinMobCategory_InjectCustomAlienCategory {
         throw new AssertionError();
     }
 
+    private static MobCategory newMobCategory(
+        String internalName,
+        int internalId,
+        AVPMobCategoryData.Data data
+    ) {
+        return newMobCategory(
+            internalName,
+            internalId,
+            data.name(),
+            data.max(),
+            data.isFriendly(),
+            data.isPersistent(),
+            data.despawnDistance()
+        );
+    }
+
     @Shadow
     private static @Final @Mutable MobCategory[] $VALUES;
 
@@ -49,14 +67,17 @@ public abstract class MixinMobCategory_InjectCustomAlienCategory {
     private static void addCustomMobCategory(CallbackInfo ci) {
         var categories = new ArrayList<>(Arrays.asList($VALUES));
         var last = categories.get(categories.size() - 1);
+        var nextOrdinal = last.ordinal() + 1;
 
-        var alien = newMobCategory("ALIENS", last.ordinal() + 1, "alien", 75, false, false, 128);
-        var ovomorph = newMobCategory("OVOMORPHS", last.ordinal() + 1, "ovomorph", 60, false, false, 128);
-        var predator = newMobCategory("PREDATOR", last.ordinal() + 1, "predator", 75, false, false, 128);
+        var alien = newMobCategory("AVP_ALIEN", nextOrdinal++, AVPMobCategoryData.ALIEN);
+        var ovomorph = newMobCategory("AVP_OVOMORPH", nextOrdinal++, AVPMobCategoryData.OVOMORPH);
+        var predator = newMobCategory("AVP_PREDATOR", nextOrdinal++, AVPMobCategoryData.PREDATOR);
 
-        AVPMobCategories.ALIENS = alien;
-        AVPMobCategories.OVOMORPHS = ovomorph;
-        AVPMobCategories.PREDATOR = predator;
+        var fabricBridgeService = (FabricBridgeService) Services.BRIDGE;
+
+        fabricBridgeService.setAlienMobCategory(alien);
+        fabricBridgeService.setOvomorphMobCategory(ovomorph);
+        fabricBridgeService.setPredatorMobCategory(predator);
 
         categories.add(alien);
         categories.add(ovomorph);

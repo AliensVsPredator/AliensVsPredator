@@ -3,6 +3,9 @@ loaderVersion = "${neoforge_loader_version_range}"
 license       = "${license}"
 #issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/"
 [[mods]]
+# The file is relative to the output directory of the resources, or the root path inside the jar when compiled
+# The 'resources' directory represents the root output directory of the resources.
+enumExtensions= "META-INF/enum.extensions.json"
 modId         = "${mod_id}"
 version       = "${version}"
 displayName   = "${mod_name}"
