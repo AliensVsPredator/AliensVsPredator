@@ -444,6 +444,21 @@ public class AVPConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Modifying any of these will require restarting the game.")
+        public AdvancedStats PREDALIEN_CHESTBURSTER_STATS = new AdvancedStats(
+            HealthConstants.PREDALIEN_CHESTBURSTER_HEALTH,
+            AttackDamageConstants.PREDALIEN_CHESTBURSTER_ATTACK_DAMAGE,
+            HealthRegenConstants.PREDALIEN_CHESTBURSTER_HEALTH_REGEN,
+            KnockbackResistanceConstants.PREDALIEN_CHESTBURSTER_KNOCKBACK_RESISTANCE,
+            MoveSpeedConstants.PREDALIEN_CHESTBURSTER_SPEED,
+            0.0F,
+            0.0f,
+            750,
+            FollowRangeConstants.PREDALIEN_CHESTBURSTER_FOLLOW_RANGE
+        );
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Modifying any of these will require restarting the game.")
         public AdvancedStats PROWLER_STATS = new AdvancedStats(
             HealthConstants.PROWLER_HEALTH,
             AttackDamageConstants.PROWLER_ATTACK_DAMAGE,

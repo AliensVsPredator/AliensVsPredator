@@ -20,6 +20,7 @@ import com.alien.client.render.entity.DroneRenderer;
 import com.alien.client.render.entity.OvipositorRenderer;
 import com.alien.client.render.entity.OvomorphRenderer;
 import com.alien.client.render.entity.PraetorianRenderer;
+import com.alien.client.render.entity.PredalienChestbursterRenderer;
 import com.alien.client.render.entity.PredalienRenderer;
 import com.alien.client.render.entity.ProwlerRenderer;
 import com.alien.client.render.entity.QueenRenderer;
@@ -144,6 +145,10 @@ public class AlienClient {
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ABERRANT_OVOMORPH, OvomorphRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ABERRANT_PRAETORIAN, PraetorianRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ABERRANT_PREDALIEN, PredalienRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(
+            AlienEntityTypes.ABERRANT_PREDALIEN_CHESTBURSTER,
+            PredalienChestbursterRenderer::new
+        );
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ABERRANT_PROWLER, ProwlerRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ABERRANT_QUEEN, QueenRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ABERRANT_RUNNER, RunnerRenderer::new);
@@ -173,6 +178,7 @@ public class AlienClient {
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.NETHER_OVOMORPH, OvomorphRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.NETHER_PRAETORIAN, PraetorianRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.NETHER_PREDALIEN, PredalienRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.NETHER_PREDALIEN_CHESTBURSTER, PredalienChestbursterRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.NETHER_PROWLER, ProwlerRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.NETHER_QUEEN, QueenRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.NETHER_RUNNER, RunnerRenderer::new);
@@ -182,6 +188,7 @@ public class AlienClient {
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.OVOMORPH, OvomorphRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.PRAETORIAN, PraetorianRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.PREDALIEN, PredalienRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.PREDALIEN_CHESTBURSTER, PredalienChestbursterRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.PROWLER, ProwlerRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.QUEEN, QueenRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ROYAL_ABERRANT_ADOLESCENT, AdolescentRenderer::new);

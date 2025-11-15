@@ -64,6 +64,13 @@ public class AlienSpawnEggItems {
         0xD7D7DF
     );
 
+    public static final AVPDeferredHolder<Item> ABERRANT_PREDALIEN_CHESTBURSTER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "aberrant_predalien_chestburster",
+        AlienEntityTypes.ABERRANT_PREDALIEN_CHESTBURSTER,
+        0xD9D9B8,
+        0xBFBF88
+    );
+
     public static final AVPDeferredHolder<Item> ABERRANT_PREDALIEN_SPAWN_EGG = AVPSpawnEggItems.register(
         "aberrant_predalien",
         AlienEntityTypes.ABERRANT_PREDALIEN,
@@ -260,6 +267,13 @@ public class AlienSpawnEggItems {
         0x5d1f1f
     );
 
+    public static final AVPDeferredHolder<Item> NETHER_PREDALIEN_CHESTBURSTER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "nether_predalien_chestburster",
+        AlienEntityTypes.NETHER_PREDALIEN_CHESTBURSTER,
+        0x360101,
+        0x803232
+    );
+
     public static final AVPDeferredHolder<Item> NETHER_PREDALIEN_SPAWN_EGG = AVPSpawnEggItems.register(
         "nether_predalien",
         AlienEntityTypes.NETHER_PREDALIEN,
@@ -314,6 +328,13 @@ public class AlienSpawnEggItems {
         AlienEntityTypes.PRAETORIAN,
         0x010202,
         0x363534
+    );
+
+    public static final AVPDeferredHolder<Item> PREDALIEN_CHESTBURSTER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "predalien_chestburster",
+        AlienEntityTypes.PREDALIEN_CHESTBURSTER,
+        0xD8B877,
+        0xF7E2B4
     );
 
     public static final AVPDeferredHolder<Item> PREDALIEN_SPAWN_EGG = AVPSpawnEggItems.register(

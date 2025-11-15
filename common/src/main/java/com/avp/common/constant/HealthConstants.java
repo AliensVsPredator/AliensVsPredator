@@ -20,6 +20,8 @@ public record HealthConstants() {
 
     public static final float OVOMORPH_HEALTH = PLAYER_HEALTH * 1.5F;
 
+    public static final float PREDALIEN_CHESTBURSTER_HEALTH = PLAYER_HEALTH * 0.25F;
+
     public static final float PREDALIEN_HEALTH = PLAYER_HEALTH * 10F;
 
     public static final float PRAETORIAN_HEALTH = PLAYER_HEALTH * 5F;

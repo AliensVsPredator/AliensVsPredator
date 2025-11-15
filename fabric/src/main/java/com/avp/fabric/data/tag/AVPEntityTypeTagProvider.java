@@ -28,6 +28,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
         addAdolescents();
         addAliens();
         addAnswersXenomorphCriesForHelp();
+        addPredalienChestbursters();
         addChestbursters();
         addCrushers();
         addDrones();
@@ -195,6 +196,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
 
     private void addChestbursters() {
         getOrCreateTagBuilder(AVPEntityTypeTags.CHESTBURSTERS)
+            .addTag(AVPEntityTypeTags.PREDALIEN_CHESTBURSTERS)
             .add(
                 AlienEntityTypes.ABERRANT_CHESTBURSTER.get(),
                 AlienEntityTypes.CHESTBURSTER.get(),
@@ -202,6 +204,15 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 AlienEntityTypes.ROYAL_ABERRANT_CHESTBURSTER.get(),
                 AlienEntityTypes.ROYAL_CHESTBURSTER.get(),
                 AlienEntityTypes.ROYAL_NETHER_CHESTBURSTER.get()
+            );
+    }
+
+    private void addPredalienChestbursters() {
+        getOrCreateTagBuilder(AVPEntityTypeTags.PREDALIEN_CHESTBURSTERS)
+            .add(
+                AlienEntityTypes.ABERRANT_PREDALIEN_CHESTBURSTER.get(),
+                AlienEntityTypes.NETHER_PREDALIEN_CHESTBURSTER.get(),
+                AlienEntityTypes.PREDALIEN_CHESTBURSTER.get()
             );
     }
 
@@ -265,6 +276,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
     private void addRoyalAliens() {
         getOrCreateTagBuilder(AVPEntityTypeTags.ROYAL_ALIENS)
             .addTag(AVPEntityTypeTags.ROYAL_XENOMORPHS)
+            .addTag(AVPEntityTypeTags.PREDALIEN_CHESTBURSTERS)
             .add(
                 AlienEntityTypes.ROYAL_ABERRANT_ADOLESCENT.get(),
                 AlienEntityTypes.ROYAL_ABERRANT_CHESTBURSTER.get(),
@@ -319,6 +331,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 AlienEntityTypes.ABERRANT_OVOMORPH.get(),
                 AlienEntityTypes.ABERRANT_PRAETORIAN.get(),
                 AlienEntityTypes.ABERRANT_PREDALIEN.get(),
+                AlienEntityTypes.ABERRANT_PREDALIEN_CHESTBURSTER.get(),
                 AlienEntityTypes.ABERRANT_PROWLER.get(),
                 AlienEntityTypes.ABERRANT_QUEEN.get(),
                 AlienEntityTypes.ABERRANT_RUNNER.get(),
@@ -343,6 +356,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 AlienEntityTypes.NETHER_OVOMORPH.get(),
                 AlienEntityTypes.NETHER_PRAETORIAN.get(),
                 AlienEntityTypes.NETHER_PREDALIEN.get(),
+                AlienEntityTypes.NETHER_PREDALIEN_CHESTBURSTER.get(),
                 AlienEntityTypes.NETHER_PROWLER.get(),
                 AlienEntityTypes.NETHER_QUEEN.get(),
                 AlienEntityTypes.NETHER_RUNNER.get(),
