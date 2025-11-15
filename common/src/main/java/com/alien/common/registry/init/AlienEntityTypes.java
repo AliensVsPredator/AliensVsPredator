@@ -6,6 +6,7 @@ import com.alien.common.gameplay.entity.living.alien.chestburster.Chestburster;
 import com.alien.common.gameplay.entity.living.alien.ovipositor.Ovipositor;
 import com.alien.common.gameplay.entity.living.alien.ovomorph.Ovomorph;
 import com.alien.common.gameplay.entity.living.alien.parasite.facehugger.Facehugger;
+import com.alien.common.gameplay.entity.living.alien.predalien_adolescent.PredalienAdolescent;
 import com.alien.common.gameplay.entity.living.alien.predalien_chestburster.PredalienChestburster;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.boiler.Boiler;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.crusher.Crusher;
@@ -78,6 +79,12 @@ public class AlienEntityTypes {
         "aberrant_predalien",
         EntityType.Builder.of(Predalien::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.98f, 3.98f)
+    );
+
+    public static final AVPDeferredHolder<EntityType<PredalienAdolescent>> ABERRANT_PREDALIEN_ADOLESCENT = AVPEntityTypes.register(
+        "aberrant_predalien_adolescent",
+        EntityType.Builder.of(PredalienAdolescent::new, AVPEntityTypes.ALIEN_CATEGORY)
+            .sized(0.5f, 0.5f)
     );
 
     public static final AVPDeferredHolder<EntityType<PredalienChestburster>> ABERRANT_PREDALIEN_CHESTBURSTER = AVPEntityTypes.register(
@@ -260,6 +267,12 @@ public class AlienEntityTypes {
             .sized(0.98f, 3.98f)
     );
 
+    public static final AVPDeferredHolder<EntityType<PredalienAdolescent>> NETHER_PREDALIEN_ADOLESCENT = AVPEntityTypes.register(
+        "nether_predalien_adolescent",
+        EntityType.Builder.of(PredalienAdolescent::new, AVPEntityTypes.ALIEN_CATEGORY)
+            .sized(0.5f, 0.5f)
+    );
+
     public static final AVPDeferredHolder<EntityType<PredalienChestburster>> NETHER_PREDALIEN_CHESTBURSTER = AVPEntityTypes.register(
         "nether_predalien_chestburster",
         EntityType.Builder.of(PredalienChestburster::new, AVPEntityTypes.ALIEN_CATEGORY)
@@ -318,6 +331,12 @@ public class AlienEntityTypes {
         "predalien",
         EntityType.Builder.of(Predalien::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.98f, 3.98f)
+    );
+
+    public static final AVPDeferredHolder<EntityType<PredalienAdolescent>> PREDALIEN_ADOLESCENT = AVPEntityTypes.register(
+        "predalien_adolescent",
+        EntityType.Builder.of(PredalienAdolescent::new, AVPEntityTypes.ALIEN_CATEGORY)
+            .sized(0.5f, 0.5f)
     );
 
     public static final AVPDeferredHolder<EntityType<PredalienChestburster>> PREDALIEN_CHESTBURSTER = AVPEntityTypes.register(
@@ -438,6 +457,7 @@ public class AlienEntityTypes {
         Services.REGISTRY.registerEntityAttributes(ABERRANT_OVOMORPH, Ovomorph::createOvomorphAttributes);
         Services.REGISTRY.registerEntityAttributes(ABERRANT_PRAETORIAN, Praetorian::createPraetorianAttributes);
         Services.REGISTRY.registerEntityAttributes(ABERRANT_PREDALIEN, Predalien::createPredalienAttributes);
+        Services.REGISTRY.registerEntityAttributes(ABERRANT_PREDALIEN_ADOLESCENT, PredalienAdolescent::createPredalienAdolescentAttributes);
         Services.REGISTRY.registerEntityAttributes(
             ABERRANT_PREDALIEN_CHESTBURSTER,
             PredalienChestburster::createPredalienChestbursterAttributes
@@ -470,6 +490,7 @@ public class AlienEntityTypes {
         Services.REGISTRY.registerEntityAttributes(NETHER_OVOMORPH, Ovomorph::createOvomorphAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_PRAETORIAN, Praetorian::createPraetorianAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_PREDALIEN, Predalien::createPredalienAttributes);
+        Services.REGISTRY.registerEntityAttributes(NETHER_PREDALIEN_ADOLESCENT, PredalienAdolescent::createPredalienAdolescentAttributes);
         Services.REGISTRY.registerEntityAttributes(
             NETHER_PREDALIEN_CHESTBURSTER,
             PredalienChestburster::createPredalienChestbursterAttributes
@@ -483,6 +504,7 @@ public class AlienEntityTypes {
         Services.REGISTRY.registerEntityAttributes(OVOMORPH, Ovomorph::createOvomorphAttributes);
         Services.REGISTRY.registerEntityAttributes(PRAETORIAN, Praetorian::createPraetorianAttributes);
         Services.REGISTRY.registerEntityAttributes(PREDALIEN, Predalien::createPredalienAttributes);
+        Services.REGISTRY.registerEntityAttributes(PREDALIEN_ADOLESCENT, PredalienAdolescent::createPredalienAdolescentAttributes);
         Services.REGISTRY.registerEntityAttributes(PREDALIEN_CHESTBURSTER, PredalienChestburster::createPredalienChestbursterAttributes);
         Services.REGISTRY.registerEntityAttributes(PROWLER, Prowler::createProwlerAttributes);
         Services.REGISTRY.registerEntityAttributes(QUEEN, Queen::createQueenAttributes);

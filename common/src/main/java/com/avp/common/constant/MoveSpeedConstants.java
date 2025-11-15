@@ -26,6 +26,8 @@ public record MoveSpeedConstants() {
 
     public static final float PRAETORIAN_SPEED = PLAYER_WALK_SPEED * 1.2F;
 
+    public static final float PREDALIEN_ADOLESCENT_SPEED = PLAYER_WALK_SPEED * 1.025F;
+
     public static final float PREDALIEN_CHESTBURSTER_SPEED = PLAYER_WALK_SPEED * 1.05F;
 
     public static final float PREDALIEN_SPEED = PLAYER_WALK_SPEED * 1.2F;

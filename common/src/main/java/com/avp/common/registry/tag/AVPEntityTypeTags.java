@@ -48,6 +48,8 @@ public class AVPEntityTypeTags {
 
     public static final TagKey<EntityType<?>> PRAETORIANS = create("praetorians");
 
+    public static final TagKey<EntityType<?>> PREDALIEN_ADOLESCENTS = create("predalien_adolescents");
+
     public static final TagKey<EntityType<?>> PREDALIEN_CHESTBURSTERS = create("predalien_chestbursters");
 
     public static final TagKey<EntityType<?>> PREDALIENS = create("predaliens");

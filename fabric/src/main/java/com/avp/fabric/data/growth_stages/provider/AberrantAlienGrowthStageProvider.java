@@ -52,6 +52,23 @@ public class AberrantAlienGrowthStageProvider {
                 GrowthConstants.ADOLESCENT_GROWTH_TIME_IN_TICKS / 2
             )
         );
+
+        biConsumer.accept(
+            "aberrant_predalien_chestburster_to_aberrant_predalien_adolescent",
+            new GrowthStage(
+                AlienEntityTypes.ABERRANT_PREDALIEN_CHESTBURSTER.get(),
+                AlienEntityTypes.ABERRANT_PREDALIEN_ADOLESCENT.get(),
+                GrowthConstants.CHESTBURSTER_GROWTH_TIME_IN_TICKS
+            )
+        );
+        biConsumer.accept(
+            "aberrant_predalien_adolescent_to_aberrant_predalien",
+            new GrowthStage(
+                AlienEntityTypes.ABERRANT_PREDALIEN_ADOLESCENT.get(),
+                AlienEntityTypes.ABERRANT_PREDALIEN.get(),
+                GrowthConstants.ADOLESCENT_GROWTH_TIME_IN_TICKS
+            )
+        );
     }
 
     private static void provideBaseAberrantGrowthStages(BiConsumer<String, GrowthStage> biConsumer) {

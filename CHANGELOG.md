@@ -8,6 +8,7 @@
 
 ## ✨ What's New
 - Added predalien.
+- Added predalien adolescent.
 - Added predalien chestburster.
 - Marines can now be given armor items.
 - Marines can now use armor items:
@@ -33,6 +34,9 @@
 
 ## 🛠 Data Pack
 - Added `#avp:plastic` item tag.
+- Added `#avp:predalien_adolescents` entity type tag.
+- Added `#avp:predalien_chestbursters` entity type tag.
+- Added `#avp:predaliens` entity type tag.
 
 ## 🔬 Technical Changes
 - N/A

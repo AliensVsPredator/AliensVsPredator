@@ -27,6 +27,7 @@ public class EnUsEntityProvider {
         addEntity(builder, AlienEntityTypes.ABERRANT_OVOMORPH, "Aberrant Ovomorph");
         addEntity(builder, AlienEntityTypes.ABERRANT_PRAETORIAN, "Aberrant Praetorian");
         addEntity(builder, AlienEntityTypes.ABERRANT_PREDALIEN, "Aberrant Predalien");
+        addEntity(builder, AlienEntityTypes.ABERRANT_PREDALIEN_ADOLESCENT, "Aberrant Predalien Adolescent");
         addEntity(builder, AlienEntityTypes.ABERRANT_PREDALIEN_CHESTBURSTER, "Aberrant Predalien Chestburster");
         addEntity(builder, AlienEntityTypes.ABERRANT_PROWLER, "Aberrant Prowler");
         addEntity(builder, AlienEntityTypes.ABERRANT_QUEEN, "Aberrant Queen");
@@ -57,6 +58,7 @@ public class EnUsEntityProvider {
         addEntity(builder, AlienEntityTypes.NETHER_OVOMORPH, "Nether Ovomorph");
         addEntity(builder, AlienEntityTypes.NETHER_PRAETORIAN, "Nether Praetorian");
         addEntity(builder, AlienEntityTypes.NETHER_PREDALIEN, "Nether Predalien");
+        addEntity(builder, AlienEntityTypes.NETHER_PREDALIEN_ADOLESCENT, "Nether Predalien Adolescent");
         addEntity(builder, AlienEntityTypes.NETHER_PREDALIEN_CHESTBURSTER, "Nether Predalien Chestburster");
         addEntity(builder, AlienEntityTypes.NETHER_PROWLER, "Nether Prowler");
         addEntity(builder, AlienEntityTypes.NETHER_QUEEN, "Nether Queen");
@@ -67,6 +69,7 @@ public class EnUsEntityProvider {
         addEntity(builder, AlienEntityTypes.OVIPOSITOR, "Ovipositor");
         addEntity(builder, AlienEntityTypes.PRAETORIAN, "Praetorian");
         addEntity(builder, AlienEntityTypes.PREDALIEN, "Predalien");
+        addEntity(builder, AlienEntityTypes.PREDALIEN_ADOLESCENT, "Predalien Adolescent");
         addEntity(builder, AlienEntityTypes.PREDALIEN_CHESTBURSTER, "Predalien Chestburster");
         addEntity(builder, AlienEntityTypes.PROWLER, "Prowler");
         addEntity(builder, AlienEntityTypes.QUEEN, "Queen");

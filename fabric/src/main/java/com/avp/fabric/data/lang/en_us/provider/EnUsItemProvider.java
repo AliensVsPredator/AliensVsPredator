@@ -241,6 +241,7 @@ public class EnUsItemProvider {
         addItem(builder, AlienSpawnEggItems.ABERRANT_FACEHUGGER_SPAWN_EGG, "Aberrant Facehugger Spawn Egg");
         addItem(builder, AlienSpawnEggItems.ABERRANT_OVOMORPH_SPAWN_EGG, "Aberrant Ovomorph Spawn Egg");
         addItem(builder, AlienSpawnEggItems.ABERRANT_PRAETORIAN_SPAWN_EGG, "Aberrant Praetorian Spawn Egg");
+        addItem(builder, AlienSpawnEggItems.ABERRANT_PREDALIEN_ADOLESCENT_SPAWN_EGG, "Aberrant Predalien Adolescent Spawn Egg");
         addItem(builder, AlienSpawnEggItems.ABERRANT_PREDALIEN_CHESTBURSTER_SPAWN_EGG, "Aberrant Predalien Chestburster Spawn Egg");
         addItem(builder, AlienSpawnEggItems.ABERRANT_PREDALIEN_SPAWN_EGG, "Aberrant Predalien Spawn Egg");
         addItem(builder, AlienSpawnEggItems.ABERRANT_PROWLER_SPAWN_EGG, "Aberrant Prowler Spawn Egg");
@@ -262,6 +263,7 @@ public class EnUsItemProvider {
         addItem(builder, AlienSpawnEggItems.NETHER_FACEHUGGER_SPAWN_EGG, "Nether Facehugger Spawn Egg");
         addItem(builder, AlienSpawnEggItems.NETHER_OVOMORPH_SPAWN_EGG, "Nether Ovomorph Spawn Egg");
         addItem(builder, AlienSpawnEggItems.NETHER_PRAETORIAN_SPAWN_EGG, "Nether Praetorian Spawn Egg");
+        addItem(builder, AlienSpawnEggItems.NETHER_PREDALIEN_ADOLESCENT_SPAWN_EGG, "Nether Predalien Adolescent Spawn Egg");
         addItem(builder, AlienSpawnEggItems.NETHER_PREDALIEN_CHESTBURSTER_SPAWN_EGG, "Nether Predalien Chestburster Spawn Egg");
         addItem(builder, AlienSpawnEggItems.NETHER_PREDALIEN_SPAWN_EGG, "Nether Predalien Spawn Egg");
         addItem(builder, AlienSpawnEggItems.NETHER_PROWLER_SPAWN_EGG, "Nether Prowler Spawn Egg");
@@ -279,6 +281,7 @@ public class EnUsItemProvider {
         addItem(builder, AlienSpawnEggItems.IRRADIATED_WARRIOR_SPAWN_EGG, "Irradiated Warrior Spawn Egg");
         addItem(builder, AlienSpawnEggItems.OVOMORPH_SPAWN_EGG, "Ovomorph Spawn Egg");
         addItem(builder, AlienSpawnEggItems.PRAETORIAN_SPAWN_EGG, "Praetorian Spawn Egg");
+        addItem(builder, AlienSpawnEggItems.PREDALIEN_ADOLESCENT_SPAWN_EGG, "Predalien Adolescent Spawn Egg");
         addItem(builder, AlienSpawnEggItems.PREDALIEN_CHESTBURSTER_SPAWN_EGG, "Predalien Chestburster Spawn Egg");
         addItem(builder, AlienSpawnEggItems.PREDALIEN_SPAWN_EGG, "Predalien Spawn Egg");
         addItem(builder, AlienSpawnEggItems.PROWLER_SPAWN_EGG, "Prowler Spawn Egg");

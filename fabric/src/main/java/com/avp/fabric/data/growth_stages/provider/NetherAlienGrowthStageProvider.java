@@ -52,6 +52,23 @@ public class NetherAlienGrowthStageProvider {
                 GrowthConstants.ADOLESCENT_GROWTH_TIME_IN_TICKS / 2
             )
         );
+
+        biConsumer.accept(
+            "nether_predalien_chestburster_to_nether_predalien_adolescent",
+            new GrowthStage(
+                AlienEntityTypes.NETHER_PREDALIEN_CHESTBURSTER.get(),
+                AlienEntityTypes.NETHER_PREDALIEN_ADOLESCENT.get(),
+                GrowthConstants.CHESTBURSTER_GROWTH_TIME_IN_TICKS
+            )
+        );
+        biConsumer.accept(
+            "nether_predalien_adolescent_to_nether_predalien",
+            new GrowthStage(
+                AlienEntityTypes.NETHER_PREDALIEN_ADOLESCENT.get(),
+                AlienEntityTypes.NETHER_PREDALIEN.get(),
+                GrowthConstants.ADOLESCENT_GROWTH_TIME_IN_TICKS
+            )
+        );
     }
 
     private static void provideBaseNetherGrowthStages(BiConsumer<String, GrowthStage> biConsumer) {

@@ -15,6 +15,7 @@ import com.lib.common.gameplay.gene.Genes;
 import com.lib.common.model.GeneCarrier;
 import com.lib.common.network.DataAccessor;
 import com.lib.common.network.DataUser;
+import com.predator.common.registry.init.PredatorEntityTypes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -122,6 +123,8 @@ public abstract class Alien extends Monster implements DataUser {
             return EntityType.PIG;
         } else if (entityType.is(AVPEntityTypeTags.SPITTERS)) {
             return EntityType.LLAMA;
+        } else if (entityType.is(AVPEntityTypeTags.PREDALIENS)) {
+            return PredatorEntityTypes.YAUTJA.get();
         }
 
         return EntityType.VILLAGER;

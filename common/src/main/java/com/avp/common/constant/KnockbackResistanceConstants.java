@@ -19,6 +19,8 @@ public record KnockbackResistanceConstants() {
 
     public static final float PRAETORIAN_KNOCKBACK_RESISTANCE = 0.7f;
 
+    public static final float PREDALIEN_ADOLESCENT_KNOCKBACK_RESISTANCE = 0;
+
     public static final float PREDALIEN_CHESTBURSTER_KNOCKBACK_RESISTANCE = 0;
 
     public static final float PREDALIEN_KNOCKBACK_RESISTANCE = 0.7f;

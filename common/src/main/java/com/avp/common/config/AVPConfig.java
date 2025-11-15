@@ -429,16 +429,16 @@ public class AVPConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Modifying any of these will require restarting the game.")
-        public AdvancedStats PREDALIEN_STATS = new AdvancedStats(
-            HealthConstants.PREDALIEN_HEALTH,
-            AttackDamageConstants.PREDALIEN_ATTACK_DAMAGE,
-            HealthRegenConstants.PREDALIEN_HEALTH_REGEN,
-            KnockbackResistanceConstants.PREDALIEN_KNOCKBACK_RESISTANCE,
-            MoveSpeedConstants.PREDALIEN_SPEED,
-            ArmorConstants.PREDALIEN_ARMOR,
-            ArmorToughnessConstants.PREDALIEN_ARMOR_TOUGHNESS,
-            80,
-            FollowRangeConstants.PREDALIEN_FOLLOW_RANGE
+        public AdvancedStats PREDALIEN_ADOLESCENT_STATS = new AdvancedStats(
+            HealthConstants.PREDALIEN_ADOLESCENT_HEALTH,
+            AttackDamageConstants.PREDALIEN_ADOLESCENT_ATTACK_DAMAGE,
+            HealthRegenConstants.PREDALIEN_ADOLESCENT_HEALTH_REGEN,
+            KnockbackResistanceConstants.PREDALIEN_ADOLESCENT_KNOCKBACK_RESISTANCE,
+            MoveSpeedConstants.PREDALIEN_ADOLESCENT_SPEED,
+            0.0F,
+            0.0f,
+            750,
+            FollowRangeConstants.PREDALIEN_ADOLESCENT_FOLLOW_RANGE
         );
 
         @Configurable
@@ -454,6 +454,21 @@ public class AVPConfig {
             0.0f,
             750,
             FollowRangeConstants.PREDALIEN_CHESTBURSTER_FOLLOW_RANGE
+        );
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Modifying any of these will require restarting the game.")
+        public AdvancedStats PREDALIEN_STATS = new AdvancedStats(
+            HealthConstants.PREDALIEN_HEALTH,
+            AttackDamageConstants.PREDALIEN_ATTACK_DAMAGE,
+            HealthRegenConstants.PREDALIEN_HEALTH_REGEN,
+            KnockbackResistanceConstants.PREDALIEN_KNOCKBACK_RESISTANCE,
+            MoveSpeedConstants.PREDALIEN_SPEED,
+            ArmorConstants.PREDALIEN_ARMOR,
+            ArmorToughnessConstants.PREDALIEN_ARMOR_TOUGHNESS,
+            80,
+            FollowRangeConstants.PREDALIEN_FOLLOW_RANGE
         );
 
         @Configurable

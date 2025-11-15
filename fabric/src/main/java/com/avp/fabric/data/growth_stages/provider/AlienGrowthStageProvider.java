@@ -52,11 +52,28 @@ public class AlienGrowthStageProvider {
                 GrowthConstants.ADOLESCENT_GROWTH_TIME_IN_TICKS / 2
             )
         );
+
+        biConsumer.accept(
+            "predalien_chestburster_to_predalien_adolescent",
+            new GrowthStage(
+                AlienEntityTypes.PREDALIEN_CHESTBURSTER.get(),
+                AlienEntityTypes.PREDALIEN_ADOLESCENT.get(),
+                GrowthConstants.CHESTBURSTER_GROWTH_TIME_IN_TICKS
+            )
+        );
+        biConsumer.accept(
+            "predalien_adolescent_to_predalien",
+            new GrowthStage(
+                AlienEntityTypes.PREDALIEN_ADOLESCENT.get(),
+                AlienEntityTypes.PREDALIEN.get(),
+                GrowthConstants.ADOLESCENT_GROWTH_TIME_IN_TICKS
+            )
+        );
     }
 
     private static void providerBaseGrowthStages(BiConsumer<String, GrowthStage> biConsumer) {
         biConsumer.accept(
-            "chestburster_to_adolecsent",
+            "chestburster_to_adolescent",
             new GrowthStage(
                 AlienEntityTypes.CHESTBURSTER.get(),
                 AlienEntityTypes.ADOLESCENT.get(),
