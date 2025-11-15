@@ -10,16 +10,15 @@ import java.util.Collections;
 import java.util.List;
 
 import com.avp.common.registry.AVPDeferredHolder;
-import com.avp.common.registry.init.AVPMobCategories;
 import com.avp.service.Services;
 
 public class AVPEntityTypes {
 
-    public static final MobCategory ALIEN_CATEGORY = AVPMobCategories.ALIENS;
+    public static final MobCategory ALIEN_CATEGORY = Services.BRIDGE.getAlienMobCategory();
 
-    public static final MobCategory OVOMORPH_CATEGORY = AVPMobCategories.OVOMORPHS;
+    public static final MobCategory OVOMORPH_CATEGORY = Services.BRIDGE.getOvomorphMobCategory();
 
-    public static final MobCategory PREDATOR_CATEGORY = AVPMobCategories.PREDATOR;
+    public static final MobCategory PREDATOR_CATEGORY = Services.BRIDGE.getPredatorMobCategory();
 
     private static final List<AVPDeferredHolder<? extends EntityType<?>>> ENTITY_TYPE_HOLDERS = new ArrayList<>();
 

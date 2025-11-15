@@ -1,0 +1,31 @@
+{
+  "entries": [
+    {
+      "enum": "net/minecraft/world/entity/MobCategory",
+      "name": "AVP_ALIEN",
+      "constructor": "(Ljava/lang/String;IZZI)V",
+      "parameters": {
+        "class": "com/avp/neoforge/service/NeoForgeBridgeService",
+        "field": "ALIEN_MOB_CATEGORY_ENUM_PROXY"
+      }
+    },
+    {
+      "enum": "net/minecraft/world/entity/MobCategory",
+      "name": "AVP_OVOMORPH",
+      "constructor": "(Ljava/lang/String;IZZI)V",
+      "parameters": {
+        "class": "com/avp/neoforge/service/NeoForgeBridgeService",
+        "field": "OVOMORPH_MOB_CATEGORY_ENUM_PROXY"
+      }
+    },
+    {
+      "enum": "net/minecraft/world/entity/MobCategory",
+      "name": "AVP_PREDATOR",
+      "constructor": "(Ljava/lang/String;IZZI)V",
+      "parameters": {
+        "class": "com/avp/neoforge/service/NeoForgeBridgeService",
+        "field": "PREDATOR_MOB_CATEGORY_ENUM_PROXY"
+      }
+    }
+  ]
+}
