@@ -10,6 +10,8 @@ public record ArmorConstants() {
 
     public static final float PRAETORIAN_ARMOR = 12.0F;
 
+    public static final float PREDALIEN_ARMOR = 12.0F;
+
     public static final float PROWLER_ARMOR = 8.0F;
 
     public static final float QUEEN_ARMOR = 16.0F;

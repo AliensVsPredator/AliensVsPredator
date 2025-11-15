@@ -19,8 +19,10 @@ public class HiveLeaderDispositionUtil {
             return 1;
         } else if (entityType.is(AVPEntityTypeTags.PRAETORIANS) || entityType.is(AVPEntityTypeTags.CRUSHERS)) {
             return 2;
-        } else if (entityType.is(AVPEntityTypeTags.QUEENS)) {
+        } else if (entityType.is(AVPEntityTypeTags.PREDALIENS)) {
             return 3;
+        } else if (entityType.is(AVPEntityTypeTags.QUEENS)) {
+            return 4;
         }
 
         return -1;

@@ -16,6 +16,8 @@ public record FollowRangeConstants() {
 
     public static final float PRAETORIAN_FOLLOW_RANGE = 35F;
 
+    public static final float PREDALIEN_FOLLOW_RANGE = 35F;
+
     public static final float PROWLER_FOLLOW_RANGE = 35F;
 
     public static final float QUEEN_FOLLOW_RANGE = 35F;

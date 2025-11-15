@@ -45,6 +45,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
         addOvomorphs();
         addParasites();
         addPraetorians();
+        addPredaliens();
         addPredators();
         addProwlers();
         addQueens();
@@ -158,6 +159,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
             .addTag(AVPEntityTypeTags.CRUSHERS)
             .addTag(AVPEntityTypeTags.DRONES)
             .addTag(AVPEntityTypeTags.PRAETORIANS)
+            .addTag(AVPEntityTypeTags.PREDALIENS)
             .addTag(AVPEntityTypeTags.PROWLERS)
             .addTag(AVPEntityTypeTags.QUEENS)
             .addTag(AVPEntityTypeTags.RUNNERS)
@@ -240,6 +242,16 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
             );
     }
 
+    private void addPredaliens() {
+        getOrCreateTagBuilder(AVPEntityTypeTags.PREDALIENS)
+            .add(
+                AlienEntityTypes.ABERRANT_PREDALIEN.get(),
+                AlienEntityTypes.IRRADIATED_PREDALIEN.get(),
+                AlienEntityTypes.NETHER_PREDALIEN.get(),
+                AlienEntityTypes.PREDALIEN.get()
+            );
+    }
+
     private void addQueens() {
         getOrCreateTagBuilder(AVPEntityTypeTags.QUEENS)
             .add(
@@ -272,6 +284,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
     private void addRoyalXenomorphs() {
         getOrCreateTagBuilder(AVPEntityTypeTags.ROYAL_XENOMORPHS)
             .addTag(AVPEntityTypeTags.PRAETORIANS)
+            .addTag(AVPEntityTypeTags.PREDALIENS)
             .addTag(AVPEntityTypeTags.QUEENS);
     }
 
@@ -286,6 +299,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 AlienEntityTypes.IRRADIATED_CRUSHER.get(),
                 AlienEntityTypes.IRRADIATED_DRONE.get(),
                 AlienEntityTypes.IRRADIATED_PRAETORIAN.get(),
+                AlienEntityTypes.IRRADIATED_PREDALIEN.get(),
                 AlienEntityTypes.IRRADIATED_PROWLER.get(),
                 AlienEntityTypes.IRRADIATED_QUEEN.get(),
                 AlienEntityTypes.IRRADIATED_RUNNER.get(),
@@ -304,6 +318,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 AlienEntityTypes.ABERRANT_FACEHUGGER.get(),
                 AlienEntityTypes.ABERRANT_OVOMORPH.get(),
                 AlienEntityTypes.ABERRANT_PRAETORIAN.get(),
+                AlienEntityTypes.ABERRANT_PREDALIEN.get(),
                 AlienEntityTypes.ABERRANT_PROWLER.get(),
                 AlienEntityTypes.ABERRANT_QUEEN.get(),
                 AlienEntityTypes.ABERRANT_RUNNER.get(),
@@ -327,6 +342,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 AlienEntityTypes.NETHER_FACEHUGGER.get(),
                 AlienEntityTypes.NETHER_OVOMORPH.get(),
                 AlienEntityTypes.NETHER_PRAETORIAN.get(),
+                AlienEntityTypes.NETHER_PREDALIEN.get(),
                 AlienEntityTypes.NETHER_PROWLER.get(),
                 AlienEntityTypes.NETHER_QUEEN.get(),
                 AlienEntityTypes.NETHER_RUNNER.get(),
@@ -350,6 +366,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 AlienEntityTypes.FACEHUGGER.get(),
                 AlienEntityTypes.OVOMORPH.get(),
                 AlienEntityTypes.PRAETORIAN.get(),
+                AlienEntityTypes.PREDALIEN.get(),
                 AlienEntityTypes.PROWLER.get(),
                 AlienEntityTypes.QUEEN.get(),
                 AlienEntityTypes.ROYAL_ADOLESCENT.get(),
@@ -440,7 +457,8 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
         getOrCreateTagBuilder(AVPEntityTypeTags.SPAWNS_IN_HIVE_PRAETORIAN_LAYER)
             .addTag(AVPEntityTypeTags.SPAWNS_IN_HIVE_DRONE_LAYER)
             .addTag(AVPEntityTypeTags.CRUSHERS)
-            .addTag(AVPEntityTypeTags.PRAETORIANS);
+            .addTag(AVPEntityTypeTags.PRAETORIANS)
+            .addTag(AVPEntityTypeTags.PREDALIENS);
 
         getOrCreateTagBuilder(AVPEntityTypeTags.SPAWNS_IN_HIVE_QUEEN_LAYER)
             .addTag(AVPEntityTypeTags.SPAWNS_IN_HIVE_PRAETORIAN_LAYER)

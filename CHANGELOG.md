@@ -7,6 +7,7 @@
 - N/A
 
 ## ✨ What's New
+- Added predalien.
 - Marines can now be given armor items.
 - Marines can now use armor items:
   - Marines will now automatically figure out what armor is best to wear depending on their situation.

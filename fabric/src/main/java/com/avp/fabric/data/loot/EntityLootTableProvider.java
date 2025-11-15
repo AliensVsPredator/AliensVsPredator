@@ -4,6 +4,7 @@ import com.alien.common.data.AlienVariantTypes;
 import com.alien.common.data.loot.DroneLootTable;
 import com.alien.common.data.loot.OvipositorLootTable;
 import com.alien.common.data.loot.PraetorianLootTable;
+import com.alien.common.data.loot.PredalienLootTable;
 import com.alien.common.data.loot.QueenLootTable;
 import com.alien.common.data.loot.WarriorLootTable;
 import com.alien.common.registry.init.AlienEntityTypes;
@@ -44,6 +45,10 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
             PraetorianLootTable.create(provider, AlienVariantTypes.NORMAL)
         );
         biConsumer.accept(
+            AlienEntityTypes.PREDALIEN.get().getDefaultLootTable(),
+            PredalienLootTable.create(provider, AlienVariantTypes.NORMAL)
+        );
+        biConsumer.accept(
             AlienEntityTypes.PROWLER.get().getDefaultLootTable(),
             WarriorLootTable.create(provider, AlienVariantTypes.NORMAL)
         );
@@ -73,6 +78,10 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
         biConsumer.accept(
             AlienEntityTypes.NETHER_PRAETORIAN.get().getDefaultLootTable(),
             PraetorianLootTable.create(provider, AlienVariantTypes.NETHER)
+        );
+        biConsumer.accept(
+            AlienEntityTypes.NETHER_PREDALIEN.get().getDefaultLootTable(),
+            PredalienLootTable.create(provider, AlienVariantTypes.NETHER)
         );
         biConsumer.accept(
             AlienEntityTypes.NETHER_PROWLER.get().getDefaultLootTable(),
@@ -109,6 +118,10 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
             PraetorianLootTable.create(provider, AlienVariantTypes.ABERRANT)
         );
         biConsumer.accept(
+            AlienEntityTypes.ABERRANT_PREDALIEN.get().getDefaultLootTable(),
+            PredalienLootTable.create(provider, AlienVariantTypes.ABERRANT)
+        );
+        biConsumer.accept(
             AlienEntityTypes.ABERRANT_PROWLER.get().getDefaultLootTable(),
             WarriorLootTable.create(provider, AlienVariantTypes.ABERRANT)
         );
@@ -137,6 +150,10 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
         biConsumer.accept(
             AlienEntityTypes.IRRADIATED_PRAETORIAN.get().getDefaultLootTable(),
             PraetorianLootTable.create(provider, AlienVariantTypes.IRRADIATED)
+        );
+        biConsumer.accept(
+            AlienEntityTypes.IRRADIATED_PREDALIEN.get().getDefaultLootTable(),
+            PredalienLootTable.create(provider, AlienVariantTypes.IRRADIATED)
         );
         biConsumer.accept(
             AlienEntityTypes.IRRADIATED_PROWLER.get().getDefaultLootTable(),

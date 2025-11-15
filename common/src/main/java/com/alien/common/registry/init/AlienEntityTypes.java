@@ -10,6 +10,7 @@ import com.alien.common.gameplay.entity.living.alien.xenomorph.boiler.Boiler;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.crusher.Crusher;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.drone.Drone;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.praetorian.Praetorian;
+import com.alien.common.gameplay.entity.living.alien.xenomorph.predalien.Predalien;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.prowler.Prowler;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.queen.Queen;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.runner.Runner;
@@ -69,6 +70,12 @@ public class AlienEntityTypes {
     public static final AVPDeferredHolder<EntityType<Praetorian>> ABERRANT_PRAETORIAN = AVPEntityTypes.register(
         "aberrant_praetorian",
         EntityType.Builder.of(Praetorian::new, AVPEntityTypes.ALIEN_CATEGORY)
+            .sized(0.98f, 3.98f)
+    );
+
+    public static final AVPDeferredHolder<EntityType<Predalien>> ABERRANT_PREDALIEN = AVPEntityTypes.register(
+        "aberrant_predalien",
+        EntityType.Builder.of(Predalien::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.98f, 3.98f)
     );
 
@@ -158,7 +165,13 @@ public class AlienEntityTypes {
 
     public static final AVPDeferredHolder<EntityType<Praetorian>> IRRADIATED_PRAETORIAN = AVPEntityTypes.register(
         "irradiated_praetorian",
-        EntityType.Builder.<Praetorian>of(Praetorian::new, AVPEntityTypes.ALIEN_CATEGORY)
+        EntityType.Builder.of(Praetorian::new, AVPEntityTypes.ALIEN_CATEGORY)
+            .sized(0.98f, 3.98f)
+    );
+
+    public static final AVPDeferredHolder<EntityType<Predalien>> IRRADIATED_PREDALIEN = AVPEntityTypes.register(
+        "irradiated_predalien",
+        EntityType.Builder.of(Predalien::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.98f, 3.98f)
     );
 
@@ -234,6 +247,12 @@ public class AlienEntityTypes {
             .sized(0.98f, 3.98f)
     );
 
+    public static final AVPDeferredHolder<EntityType<Predalien>> NETHER_PREDALIEN = AVPEntityTypes.register(
+        "nether_predalien",
+        EntityType.Builder.of(Predalien::new, AVPEntityTypes.ALIEN_CATEGORY)
+            .sized(0.98f, 3.98f)
+    );
+
     public static final AVPDeferredHolder<EntityType<Prowler>> NETHER_PROWLER = AVPEntityTypes.register(
         "nether_prowler",
         EntityType.Builder.of(Prowler::new, AVPEntityTypes.ALIEN_CATEGORY)
@@ -279,6 +298,12 @@ public class AlienEntityTypes {
     public static final AVPDeferredHolder<EntityType<Praetorian>> PRAETORIAN = AVPEntityTypes.register(
         "praetorian",
         EntityType.Builder.of(Praetorian::new, AVPEntityTypes.ALIEN_CATEGORY)
+            .sized(0.98f, 3.98f)
+    );
+
+    public static final AVPDeferredHolder<EntityType<Predalien>> PREDALIEN = AVPEntityTypes.register(
+        "predalien",
+        EntityType.Builder.of(Predalien::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.98f, 3.98f)
     );
 
@@ -393,6 +418,7 @@ public class AlienEntityTypes {
         Services.REGISTRY.registerEntityAttributes(ABERRANT_FACEHUGGER, Facehugger::createFacehuggerAttributes);
         Services.REGISTRY.registerEntityAttributes(ABERRANT_OVOMORPH, Ovomorph::createOvomorphAttributes);
         Services.REGISTRY.registerEntityAttributes(ABERRANT_PRAETORIAN, Praetorian::createPraetorianAttributes);
+        Services.REGISTRY.registerEntityAttributes(ABERRANT_PREDALIEN, Predalien::createPredalienAttributes);
         Services.REGISTRY.registerEntityAttributes(ABERRANT_PROWLER, Prowler::createProwlerAttributes);
         Services.REGISTRY.registerEntityAttributes(ABERRANT_QUEEN, Queen::createQueenAttributes);
         Services.REGISTRY.registerEntityAttributes(ABERRANT_RUNNER, Runner::createRunnerAttributes);
@@ -407,6 +433,7 @@ public class AlienEntityTypes {
         Services.REGISTRY.registerEntityAttributes(IRRADIATED_CRUSHER, Crusher::createCrusherAttributes);
         Services.REGISTRY.registerEntityAttributes(IRRADIATED_DRONE, Drone::createDroneAttributes);
         Services.REGISTRY.registerEntityAttributes(IRRADIATED_PRAETORIAN, Praetorian::createPraetorianAttributes);
+        Services.REGISTRY.registerEntityAttributes(IRRADIATED_PREDALIEN, Predalien::createPredalienAttributes);
         Services.REGISTRY.registerEntityAttributes(IRRADIATED_PROWLER, Prowler::createProwlerAttributes);
         Services.REGISTRY.registerEntityAttributes(IRRADIATED_QUEEN, Queen::createQueenAttributes);
         Services.REGISTRY.registerEntityAttributes(IRRADIATED_RUNNER, Runner::createRunnerAttributes);
@@ -419,6 +446,7 @@ public class AlienEntityTypes {
         Services.REGISTRY.registerEntityAttributes(NETHER_FACEHUGGER, Facehugger::createFacehuggerAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_OVOMORPH, Ovomorph::createOvomorphAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_PRAETORIAN, Praetorian::createPraetorianAttributes);
+        Services.REGISTRY.registerEntityAttributes(NETHER_PREDALIEN, Predalien::createPredalienAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_PROWLER, Prowler::createProwlerAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_QUEEN, Queen::createQueenAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_RUNNER, Runner::createRunnerAttributes);
@@ -427,6 +455,7 @@ public class AlienEntityTypes {
         Services.REGISTRY.registerEntityAttributes(OVIPOSITOR, Ovipositor::createOvipositorAttributes);
         Services.REGISTRY.registerEntityAttributes(OVOMORPH, Ovomorph::createOvomorphAttributes);
         Services.REGISTRY.registerEntityAttributes(PRAETORIAN, Praetorian::createPraetorianAttributes);
+        Services.REGISTRY.registerEntityAttributes(PREDALIEN, Predalien::createPredalienAttributes);
         Services.REGISTRY.registerEntityAttributes(PROWLER, Prowler::createProwlerAttributes);
         Services.REGISTRY.registerEntityAttributes(QUEEN, Queen::createQueenAttributes);
         Services.REGISTRY.registerEntityAttributes(ROYAL_ABERRANT_ADOLESCENT, Adolescent::createAdolescentAttributes);

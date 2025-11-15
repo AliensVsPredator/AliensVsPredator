@@ -64,6 +64,13 @@ public class AlienSpawnEggItems {
         0xD7D7DF
     );
 
+    public static final AVPDeferredHolder<Item> ABERRANT_PREDALIEN_SPAWN_EGG = AVPSpawnEggItems.register(
+        "aberrant_predalien",
+        AlienEntityTypes.ABERRANT_PREDALIEN,
+        0xF1C810,
+        0xD7D7DF
+    );
+
     public static final AVPDeferredHolder<Item> ABERRANT_PROWLER_SPAWN_EGG = AVPSpawnEggItems.register(
         "aberrant_prowler",
         AlienEntityTypes.ABERRANT_PROWLER,
@@ -162,6 +169,13 @@ public class AlienSpawnEggItems {
         0x73D9CF
     );
 
+    public static final AVPDeferredHolder<Item> IRRADIATED_PREDALIEN_SPAWN_EGG = AVPSpawnEggItems.register(
+        "irradiated_predalien",
+        AlienEntityTypes.IRRADIATED_PREDALIEN,
+        0xD5F2ED,
+        0x73D9CF
+    );
+
     public static final AVPDeferredHolder<Item> IRRADIATED_PROWLER_SPAWN_EGG = AVPSpawnEggItems.register(
         "irradiated_prowler",
         AlienEntityTypes.IRRADIATED_PROWLER,
@@ -246,6 +260,13 @@ public class AlienSpawnEggItems {
         0x5d1f1f
     );
 
+    public static final AVPDeferredHolder<Item> NETHER_PREDALIEN_SPAWN_EGG = AVPSpawnEggItems.register(
+        "nether_predalien",
+        AlienEntityTypes.NETHER_PREDALIEN,
+        0x310808,
+        0x5d1f1f
+    );
+
     public static final AVPDeferredHolder<Item> NETHER_PROWLER_SPAWN_EGG = AVPSpawnEggItems.register(
         "nether_prowler",
         AlienEntityTypes.NETHER_PROWLER,
@@ -291,6 +312,14 @@ public class AlienSpawnEggItems {
     public static final AVPDeferredHolder<Item> PRAETORIAN_SPAWN_EGG = AVPSpawnEggItems.register(
         "praetorian",
         AlienEntityTypes.PRAETORIAN,
+        0x010202,
+        0x363534
+    );
+
+    public static final AVPDeferredHolder<Item> PREDALIEN_SPAWN_EGG = AVPSpawnEggItems.register(
+        "predalien",
+        AlienEntityTypes.PREDALIEN,
+        // FIXME:
         0x010202,
         0x363534
     );

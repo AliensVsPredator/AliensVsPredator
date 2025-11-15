@@ -26,6 +26,7 @@ public class EnUsEntityProvider {
         addEntity(builder, AlienEntityTypes.ABERRANT_FACEHUGGER, "Aberrant Facehugger");
         addEntity(builder, AlienEntityTypes.ABERRANT_OVOMORPH, "Aberrant Ovomorph");
         addEntity(builder, AlienEntityTypes.ABERRANT_PRAETORIAN, "Aberrant Praetorian");
+        addEntity(builder, AlienEntityTypes.ABERRANT_PREDALIEN, "Aberrant Predalien");
         addEntity(builder, AlienEntityTypes.ABERRANT_PROWLER, "Aberrant Prowler");
         addEntity(builder, AlienEntityTypes.ABERRANT_QUEEN, "Aberrant Queen");
         addEntity(builder, AlienEntityTypes.ABERRANT_RUNNER, "Aberrant Runner");
@@ -41,6 +42,7 @@ public class EnUsEntityProvider {
         addEntity(builder, AlienEntityTypes.IRRADIATED_CRUSHER, "Irradiated Crusher");
         addEntity(builder, AlienEntityTypes.IRRADIATED_DRONE, "Irradiated Drone");
         addEntity(builder, AlienEntityTypes.IRRADIATED_PRAETORIAN, "Irradiated Praetorian");
+        addEntity(builder, AlienEntityTypes.IRRADIATED_PREDALIEN, "Irradiated Predalien");
         addEntity(builder, AlienEntityTypes.IRRADIATED_PROWLER, "Irradiated Prowler");
         addEntity(builder, AlienEntityTypes.IRRADIATED_QUEEN, "Irradiated Queen");
         addEntity(builder, AlienEntityTypes.IRRADIATED_RUNNER, "Irradiated Runner");
@@ -53,6 +55,7 @@ public class EnUsEntityProvider {
         addEntity(builder, AlienEntityTypes.NETHER_FACEHUGGER, "Nether Facehugger");
         addEntity(builder, AlienEntityTypes.NETHER_OVOMORPH, "Nether Ovomorph");
         addEntity(builder, AlienEntityTypes.NETHER_PRAETORIAN, "Nether Praetorian");
+        addEntity(builder, AlienEntityTypes.NETHER_PREDALIEN, "Nether Predalien");
         addEntity(builder, AlienEntityTypes.NETHER_PROWLER, "Nether Prowler");
         addEntity(builder, AlienEntityTypes.NETHER_QUEEN, "Nether Queen");
         addEntity(builder, AlienEntityTypes.NETHER_RUNNER, "Nether Runner");
@@ -61,6 +64,7 @@ public class EnUsEntityProvider {
         addEntity(builder, AlienEntityTypes.OVOMORPH, "Ovomorph");
         addEntity(builder, AlienEntityTypes.OVIPOSITOR, "Ovipositor");
         addEntity(builder, AlienEntityTypes.PRAETORIAN, "Praetorian");
+        addEntity(builder, AlienEntityTypes.PREDALIEN, "Predalien");
         addEntity(builder, AlienEntityTypes.PROWLER, "Prowler");
         addEntity(builder, AlienEntityTypes.QUEEN, "Queen");
         addEntity(builder, AlienEntityTypes.ROYAL_ABERRANT_ADOLESCENT, "Royal Aberrant Adolescent");
