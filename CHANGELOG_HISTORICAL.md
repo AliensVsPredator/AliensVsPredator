@@ -1,3 +1,75 @@
+# v0.2.9
+
+## ✍️ Developer Notes
+- For help or other questions, concerns, etc. check out our Discord server: https://discord.gg/wp7mvmbkVb
+- Starting now, this changelog and future changelogs will no longer include sections like "Features" or "Changes" if there were no notable changes in them.
+
+## 🐞 Fixes
+- [NeoForge] Fixed queens not spawning when AVP is used with Lithium. Thanks Halita Silverblood for catching this bug!
+
+## 🔬 Technical Changes
+- Custom mob categories for aliens, ovomorphs and predators have been reworked:
+  - Changed alien enum name `ALIENS` -> `AVP_ALIEN`.
+  - Changed ovomorph enum name `OVOMORPHS` -> `AVP_OVOMORPH`.
+  - Changed predator enum name `PREDATOR` -> `AVP_PREDATOR`.
+  - Custom mob category names are now prefixed with `avp:` in case of overlap with other mods.
+  - [Fabric] Fixed custom mob categories using the same ordinal value.
+  - [NeoForge] Custom mob categories in NeoForge now use NeoForge's enum extensions feature.
+
+# v0.2.8
+
+## ✍️ Developer Notes
+- For help or other questions, concerns, etc. check out our Discord server: https://discord.gg/wp7mvmbkVb
+- This is a hotfix for the previous version missing data files... sorry about that. :(
+
+## ☢️ Breaking Changes
+- N/A
+
+## ✨ What's New
+- N/A
+
+## ♻️ Changes
+- N/A
+
+## 🐞 Fixes
+- N/A
+
+## 🧪 Experimental
+- N/A
+
+## 🛠 Data Pack
+- N/A
+
+## 🔬 Technical Changes
+- N/A
+
+# v0.2.7
+
+## ✍️ Developer Notes
+- For help or other questions, concerns, etc. check out our Discord server: https://discord.gg/wp7mvmbkVb
+
+## ☢️ Breaking Changes
+- N/A
+
+## ✨ What's New
+- [Fabric] AVP now requires Fabric Loader `0.17.3`.
+- AVP now requires AzureLib `3.1.1`.
+
+## ♻️ Changes
+- N/A
+
+## 🐞 Fixes
+- N/A
+
+## 🧪 Experimental
+- N/A
+
+## 🛠 Data Pack
+- N/A
+
+## 🔬 Technical Changes
+- N/A
+
 # v0.2.6
 
 ## ✍️ Developer Notes
