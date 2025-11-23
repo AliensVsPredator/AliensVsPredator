@@ -28,12 +28,6 @@ public class ToolsAndUtilitiesCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, AVPItems.TITANIUM_PICKAXE);
         CreativeModeTabUtil.accept(output, AVPItems.TITANIUM_SHOVEL);
         CreativeModeTabUtil.accept(output, AVPItems.TITANIUM_SWORD);
-        CreativeModeTabUtil.accept(output, AVPItems.VERITANIUM_AXE);
-        CreativeModeTabUtil.accept(output, AVPItems.VERITANIUM_HOE);
-        CreativeModeTabUtil.accept(output, AVPItems.VERITANIUM_PICKAXE);
-        CreativeModeTabUtil.accept(output, AVPItems.VERITANIUM_SHOVEL);
-        CreativeModeTabUtil.accept(output, AVPItems.VERITANIUM_SWORD);
         CreativeModeTabUtil.accept(output, AlienItems.ALIEN_MUSIC_DISC_1);
-        CreativeModeTabUtil.accept(output, AVPItems.PREDATOR_MUSIC_DISC_1);
     };
 }

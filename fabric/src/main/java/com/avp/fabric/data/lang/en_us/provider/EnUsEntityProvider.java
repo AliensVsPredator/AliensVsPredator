@@ -2,7 +2,6 @@ package com.avp.fabric.data.lang.en_us.provider;
 
 import com.alien.common.registry.init.AlienEntityTypes;
 import com.human.common.registry.init.entity_type.HumanEntityTypes;
-import com.predator.common.registry.init.PredatorEntityTypes;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.minecraft.world.entity.EntityType;
 
@@ -96,10 +95,6 @@ public class EnUsEntityProvider {
         addEntity(builder, HumanEntityTypes.NUKE, "Nuke");
         addEntity(builder, HumanEntityTypes.ROCKET, "Rocket");
         addEntity(builder, HumanEntityTypes.SENTRY_TURRET, "Sentry Turret");
-
-        addEntity(builder, PredatorEntityTypes.SHURIKEN, "Shuriken");
-        addEntity(builder, PredatorEntityTypes.SMART_DISC, "Smart Disc");
-        addEntity(builder, PredatorEntityTypes.YAUTJA, "Yautja");
 
         AVPRegistryValidation.throwIfMissingEntries(
             AVPEntityTypes.getAll(),

@@ -35,6 +35,4 @@ public record AttackDamageConstants() {
     public static final float SPITTER_ATTACK_DAMAGE = PLAYER_HEALTH * 0.5F;
 
     public static final float WARRIOR_ATTACK_DAMAGE = PLAYER_HEALTH * 0.5F;
-
-    public static final float YAUTJA_ATTACK_DAMAGE = PLAYER_HEALTH * 0.75F;
 }

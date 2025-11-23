@@ -22,7 +22,5 @@ public record ArmorConstants() {
 
     public static final float WARRIOR_ARMOR = 8.0F;
 
-    public static final float YAUTJA_ARMOR = 16.0F;
-
     public static final float MARINE_ARMOR = 2.0F;
 }

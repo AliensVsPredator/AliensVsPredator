@@ -1,22 +1,5 @@
 package com.avp.fabric;
 
-import com.lib.common.network.DataContainer;
-import com.lib.common.network.DataUser;
-import com.predator.common.registry.init.PredatorEntityTypes;
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.GameRules;
-
 import com.avp.AVP;
 import com.avp.common.AVPEvents;
 import com.avp.common.data.worldgen.AVPVillageInjection;
@@ -28,8 +11,21 @@ import com.avp.fabric.common.worldgen.WorldGen;
 import com.avp.fabric.data.loot.LootTableModifier;
 import com.avp.fabric.service.FabricRegistryService;
 import com.avp.mixin.GiveGiftToHeroAccessor;
-import com.avp.mixin.ParrotSoundMapAccessor;
 import com.avp.service.Services;
+import com.lib.common.network.DataContainer;
+import com.lib.common.network.DataUser;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.GameRules;
 
 public class AVPFabric implements ModInitializer {
 
@@ -81,16 +77,6 @@ public class AVPFabric implements ModInitializer {
         AVP.CUSTOM_SPAWNER.tick(serverLevel, serverLevel.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING), true);
         AVP.NUKED_ASH_PLACEMENT.tick(serverLevel);
         modifyGifts();
-        modifyParrotSounds();
-    }
-
-    public static void modifyParrotSounds() {
-        var sounds = ParrotSoundMapAccessor.getSoundMap();
-
-        /*
-         * TODO: Use Yautja sound when added
-         */
-        sounds.put(PredatorEntityTypes.YAUTJA.get(), SoundEvents.ALLAY_AMBIENT_WITH_ITEM);
     }
 
     public static void modifyGifts() {

@@ -2,7 +2,6 @@ package com.avp.common.registry.init.creative_mode_tab.initializer;
 
 import com.alien.common.registry.init.item.AlienSpawnEggItems;
 import com.human.common.registry.init.item.HumanSpawnEggItems;
-import com.predator.common.registry.init.item.PredatorSpawnEggItems;
 import net.minecraft.world.item.CreativeModeTab;
 
 import java.util.function.Consumer;
@@ -86,7 +85,5 @@ public class SpawnEggsCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, AlienSpawnEggItems.ROYAL_ABERRANT_FACEHUGGER_SPAWN_EGG);
         CreativeModeTabUtil.accept(output, AlienSpawnEggItems.ROYAL_ABERRANT_CHESTBURSTER_SPAWN_EGG);
         CreativeModeTabUtil.accept(output, AlienSpawnEggItems.ROYAL_ABERRANT_ADOLESCENT_SPAWN_EGG);
-
-        CreativeModeTabUtil.accept(output, PredatorSpawnEggItems.YAUTJA_SPAWN_EGG);
     };
 }

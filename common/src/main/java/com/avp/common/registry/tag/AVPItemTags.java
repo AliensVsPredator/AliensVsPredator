@@ -24,8 +24,6 @@ public class AVPItemTags {
 
     public static final TagKey<Item> GUNS = create("guns");
 
-    public static final TagKey<Item> HOSTILE_WEAPONS = create("hostile_weapons");
-
     public static final TagKey<Item> INDUSTRIAL_GLASS = create("industrial_glass");
 
     public static final TagKey<Item> INDUSTRIAL_GLASS_BLOCK = create("industrial_glass_block");
@@ -37,8 +35,6 @@ public class AVPItemTags {
     public static final TagKey<Item> IRON_INGOT_LIKE = create("iron_ingot_like");
 
     public static final TagKey<Item> IRRADIATED_CHITIN_ARMOR = create("irradiated_chitin_armor");
-
-    public static final TagKey<Item> JUNGLE_PREDATOR_ARMOR = create("jungle_predator_armor");
 
     public static final TagKey<Item> LITHIUM = create("lithium");
 
@@ -61,8 +57,6 @@ public class AVPItemTags {
     public static final TagKey<Item> PLATED_NETHER_CHITIN_ARMOR = create("plated_nether_chitin_armor");
 
     public static final TagKey<Item> PLATED_NORMAL_CHITIN_ARMOR = create("plated_normal_chitin_armor");
-
-    public static final TagKey<Item> PREDATOR_ARMORS = create("predator_armors");
 
     public static final TagKey<Item> PRESSURE_ARMOR = create("pressure_armor");
 

@@ -5,8 +5,6 @@ import com.alien.common.registry.init.item.AlienArmorItems;
 import com.alien.common.registry.init.item.AlienSpawnEggItems;
 import com.human.common.registry.init.item.HumanGunItems;
 import com.human.common.registry.init.item.HumanSpawnEggItems;
-import com.predator.common.registry.init.item.PredatorArmorItems;
-import com.predator.common.registry.init.item.PredatorSpawnEggItems;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -25,8 +23,6 @@ public class EnUsItemProvider {
 
     public static final Consumer<FabricLanguageProvider.TranslationBuilder> CONSUMER = builder -> {
         // Combat Items
-        addItem(builder, AVPItems.SHURIKEN, "Shuriken");
-        addItem(builder, AVPItems.SMART_DISC, "Smart Disc");
         addItem(builder, AVPItems.GRENADE, "Grenade");
         addItem(builder, AVPItems.GRENADE_INCENDIARY, "Incendiary Grenade");
         addItem(builder, AVPItems.GRENADE_IRRADIATED, "Irradiated Grenade");
@@ -47,10 +43,6 @@ public class EnUsItemProvider {
         addItem(builder, HumanGunItems.FLAMETHROWER_SEVASTOPOL, "Flamethrower (Sevastopol)");
         addItem(builder, AVPItems.FUEL_TANK, "Fuel Tank");
         addItem(builder, AVPItems.HEAVY_BULLET, "Heavy Bullet");
-        addItem(builder, PredatorArmorItems.JUNGLE_PREDATOR_BOOTS, "Predator Boots");
-        addItem(builder, PredatorArmorItems.JUNGLE_PREDATOR_CHESTPLATE, "Predator Chestplate");
-        addItem(builder, PredatorArmorItems.JUNGLE_PREDATOR_HELMET, "Predator Helmet");
-        addItem(builder, PredatorArmorItems.JUNGLE_PREDATOR_LEGGINGS, "Predator Leggings");
         addItem(builder, HumanGunItems.M37_12_SHOTGUN, "M37-12 Shotgun");
         addItem(builder, HumanGunItems.M41A_PULSE_RIFLE, "M41A Pulse Rifle");
         addItem(builder, HumanGunItems.M42A3_SNIPER_RIFLE, "M42A3 Sniper Rifle");
@@ -124,11 +116,8 @@ public class EnUsItemProvider {
         addItem(builder, AVPItems.SPEAKER, "Speaker");
         addItem(builder, AVPItems.ALUMINUM_INGOT, "Aluminum Ingot");
         addItem(builder, AlienItems.ALIEN_MUSIC_DISC_1, "Music Disc");
-        addItem(builder, AVPItems.PREDATOR_MUSIC_DISC_1, "Music Disc");
         addItem(builder, AlienItems.ALIEN_MUSIC_DISC_1_FRAGMENT, "Disc Fragment");
-        addItem(builder, AVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT, "Disc Fragment");
         builder.add(AlienItems.ALIEN_MUSIC_DISC_1_FRAGMENT.get().getDescriptionId() + ".desc", "Music Disc - Silver Smile");
-        builder.add(AVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT.get().getDescriptionId() + ".desc", "Music Disc - Hunter");
         addItem(builder, AVPItems.AUTUNITE_DUST, "Autunite Dust");
         addItem(builder, AVPItems.BARREL, "Barrel");
         addItem(builder, AVPItems.BATTERY_PACK, "Battery Pack");
@@ -190,7 +179,6 @@ public class EnUsItemProvider {
         addItem(builder, AVPItems.TRANSISTOR, "Transistor");
         addItem(builder, AVPItems.URANIUM_INGOT, "Uranium Ingot");
         addItem(builder, AlienItems.VECTOR_POTTERY_SHERD, "Vector Pottery Sherd");
-        addItem(builder, AVPItems.VERITANIUM_SHARD, "Veritanium Shard");
         addItem(builder, AVPItems.ZINC_INGOT, "Zinc Ingot");
         addItem(builder, AVPItems.ALUMINUM_NUGGET, "Aluminum Nugget");
         addItem(builder, AVPItems.BRASS_NUGGET, "Brass Nugget");
@@ -226,11 +214,6 @@ public class EnUsItemProvider {
         addItem(builder, AVPItems.TITANIUM_PICKAXE, "Titanium Pickaxe");
         addItem(builder, AVPItems.TITANIUM_SHOVEL, "Titanium Shovel");
         addItem(builder, AVPItems.TITANIUM_SWORD, "Titanium Sword");
-        addItem(builder, AVPItems.VERITANIUM_AXE, "Veritanium Axe");
-        addItem(builder, AVPItems.VERITANIUM_HOE, "Veritanium Hoe");
-        addItem(builder, AVPItems.VERITANIUM_PICKAXE, "Veritanium Pickaxe");
-        addItem(builder, AVPItems.VERITANIUM_SHOVEL, "Veritanium Shovel");
-        addItem(builder, AVPItems.VERITANIUM_SWORD, "Veritanium Sword");
 
         // Spawn Egg Items
         addItem(builder, AlienSpawnEggItems.ABERRANT_ADOLESCENT_SPAWN_EGG, "Aberrant Adolescent Spawn Egg");
@@ -289,7 +272,6 @@ public class EnUsItemProvider {
         addItem(builder, AlienSpawnEggItems.RUNNER_SPAWN_EGG, "Runner Spawn Egg");
         addItem(builder, AlienSpawnEggItems.SPITTER_SPAWN_EGG, "Spitter Spawn Egg");
         addItem(builder, AlienSpawnEggItems.WARRIOR_SPAWN_EGG, "Warrior Spawn Egg");
-        addItem(builder, PredatorSpawnEggItems.YAUTJA_SPAWN_EGG, "Yautja Spawn Egg");
         addItem(builder, HumanSpawnEggItems.MARINE_SPAWN_EGG, "Marine Spawn Egg");
         addItem(builder, AlienSpawnEggItems.ROYAL_ABERRANT_ADOLESCENT_SPAWN_EGG, "Royal Aberrant Adolescent Spawn Egg");
         addItem(builder, AlienSpawnEggItems.ROYAL_ADOLESCENT_SPAWN_EGG, "Royal Adolescent Spawn Egg");

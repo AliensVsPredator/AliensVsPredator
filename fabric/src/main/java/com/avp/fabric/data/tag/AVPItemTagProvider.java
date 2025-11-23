@@ -9,7 +9,6 @@ import com.human.common.registry.init.item.HumanFerroaluminumBlockItems;
 import com.human.common.registry.init.item.HumanIndustrialGlassBlockItems;
 import com.human.common.registry.init.item.HumanSteelBlockItems;
 import com.human.common.registry.init.item.HumanTitaniumBlockItems;
-import com.predator.common.registry.init.item.PredatorArmorItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
@@ -60,15 +59,6 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AVPItems.SHOTGUN_SHELL.get(),
                 AVPItems.ROCKET.get(),
                 AVPItems.FUEL_TANK.get()
-            );
-
-        getOrCreateTagBuilder(AVPItemTags.HOSTILE_WEAPONS)
-            .addTag(AVPItemTags.GUNS)
-            .addTag(ItemTags.AXES)
-            .addTag(ItemTags.SWORDS)
-            .add(
-                Items.BOW,
-                Items.CROSSBOW
             );
 
         // Acid-resistant items
@@ -144,9 +134,6 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
         getOrCreateTagBuilder(ItemTags.DYEABLE)
             .addTag(AVPItemTags.MK50_ARMOR);
-
-        getOrCreateTagBuilder(ItemTags.FREEZE_IMMUNE_WEARABLES)
-            .addTag(AVPItemTags.PREDATOR_ARMORS);
 
         getOrCreateTagBuilder(AVPItemTags.MELEE_WEAPONS)
             .addOptionalTag(ItemTags.AXES)
@@ -302,14 +289,6 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AVPArmorItems.MK50_BOOTS.get()
             );
 
-        getOrCreateTagBuilder(AVPItemTags.JUNGLE_PREDATOR_ARMOR)
-            .add(
-                PredatorArmorItems.JUNGLE_PREDATOR_BOOTS.get(),
-                PredatorArmorItems.JUNGLE_PREDATOR_CHESTPLATE.get(),
-                PredatorArmorItems.JUNGLE_PREDATOR_HELMET.get(),
-                PredatorArmorItems.JUNGLE_PREDATOR_LEGGINGS.get()
-            );
-
         getOrCreateTagBuilder(AVPItemTags.MK50_ARMOR)
             .add(
                 AVPArmorItems.MK50_BOOTS.get(),
@@ -423,14 +402,6 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             .addTag(AVPItemTags.PLATED_IRRADIATED_CHITIN_ARMOR)
             .addTag(AVPItemTags.PLATED_NETHER_CHITIN_ARMOR)
             .addTag(AVPItemTags.PLATED_NORMAL_CHITIN_ARMOR);
-
-        getOrCreateTagBuilder(AVPItemTags.PREDATOR_ARMORS)
-            .addTag(AVPItemTags.JUNGLE_PREDATOR_ARMOR);
-
-        getOrCreateTagBuilder(AVPItemTags.FACEHUGGER_RESISTANT_HELMETS)
-            .add(
-                PredatorArmorItems.JUNGLE_PREDATOR_HELMET.get()
-            );
     }
 
     private void addCompatibilityTags() {
@@ -512,8 +483,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
         getOrCreateTagBuilder(CommonItemTags.MUSIC_DISCS)
             .setReplace(false)
             .add(
-                AlienItems.ALIEN_MUSIC_DISC_1.get(),
-                AVPItems.PREDATOR_MUSIC_DISC_1.get()
+                AlienItems.ALIEN_MUSIC_DISC_1.get()
             );
 
         getOrCreateTagBuilder(CommonItemTags.NUGGETS)

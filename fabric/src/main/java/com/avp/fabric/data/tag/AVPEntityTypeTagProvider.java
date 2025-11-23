@@ -3,7 +3,6 @@ package com.avp.fabric.data.tag;
 import com.alien.common.registry.init.AlienEntityTypes;
 import com.compat.gigeresque.common.registry.tag.GigEntityTags;
 import com.human.common.registry.init.entity_type.HumanEntityTypes;
-import com.predator.common.registry.init.PredatorEntityTypes;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
@@ -48,7 +47,6 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
         addParasites();
         addPraetorians();
         addPredaliens();
-        addPredators();
         addProwlers();
         addQueens();
         addRadiationResistant();
@@ -64,22 +62,15 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
 
     private void addHatedByXenomorphs() {
         getOrCreateTagBuilder(AVPEntityTypeTags.HATED_BY_XENOMORPHS)
-            .addTag(AVPEntityTypeTags.PREDATORS)
             .add(EntityType.PLAYER)
             // TODO: Add a "humans" tag here that includes the marine.
             .add(HumanEntityTypes.MARINE.get());
-    }
-
-    private void addPredators() {
-        getOrCreateTagBuilder(AVPEntityTypeTags.PREDATORS)
-            .add(PredatorEntityTypes.YAUTJA.get());
     }
 
     private void addRadiationResistant() {
         getOrCreateTagBuilder(AVPEntityTypeTags.RADIATION_RESISTANT)
             .addOptionalTag(EntityTypeTags.UNDEAD)
             .addTag(AVPEntityTypeTags.XENOMORPHS)
-            .addTag(AVPEntityTypeTags.PREDATORS)
             .add(EntityType.CREEPER);
     }
 
@@ -453,8 +444,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 EntityType.VILLAGER,
                 EntityType.WANDERING_TRADER,
                 EntityType.WITCH,
-                HumanEntityTypes.MARINE.get(),
-                PredatorEntityTypes.YAUTJA.get()
+                HumanEntityTypes.MARINE.get()
             );
     }
 

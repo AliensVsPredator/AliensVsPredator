@@ -2,7 +2,6 @@ package com.alien.client.render.entity.parasite;
 
 import com.human.common.registry.init.entity_type.HumanEntityTypes;
 import com.just.core.functional.function.Lazy;
-import com.predator.common.registry.init.PredatorEntityTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
@@ -120,22 +119,10 @@ public record EntityHeadOffsetData(
                 Map.entry(
                     HumanEntityTypes.MARINE.get(),
                     new EntityHeadOffsetData(EntityHeadOffsetData::marineVerticalOffset, EntityHeadOffsetData::marineFaceOffset)
-                ),
-                Map.entry(
-                    PredatorEntityTypes.YAUTJA.get(),
-                    new EntityHeadOffsetData(EntityHeadOffsetData::yautjaVerticalOffset, EntityHeadOffsetData::yautjaFaceOffset)
                 )
             )
         )
     );
-
-    private static double yautjaVerticalOffset(EntityHeadData data, Entity parasite) {
-        return -data.size().y - (data.size().y * 2);
-    }
-
-    private static double yautjaFaceOffset(EntityHeadData data, Entity parasite) {
-        return data.size().z - (data.size().z / 24);
-    }
 
     private static double marineVerticalOffset(EntityHeadData data, Entity parasite) {
         return -data.size().y - (data.size().y / 4);

@@ -8,8 +8,6 @@ import com.alien.common.data.loot.PredalienLootTable;
 import com.alien.common.data.loot.QueenLootTable;
 import com.alien.common.data.loot.WarriorLootTable;
 import com.alien.common.registry.init.AlienEntityTypes;
-import com.predator.common.gameplay.entity.living.yautja.YautjaLootTable;
-import com.predator.common.registry.init.PredatorEntityTypes;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
 import net.minecraft.core.HolderLookup;
@@ -167,7 +165,5 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
             AlienEntityTypes.IRRADIATED_RUNNER.get().getDefaultLootTable(),
             DroneLootTable.create(provider, AlienVariantTypes.IRRADIATED)
         );
-
-        biConsumer.accept(PredatorEntityTypes.YAUTJA.get().getDefaultLootTable(), YautjaLootTable.LOOT_TABLE.apply(provider));
     }
 }

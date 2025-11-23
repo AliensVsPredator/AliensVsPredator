@@ -10,7 +10,6 @@ import com.human.common.registry.init.block.HumanPaddingBlocks;
 import com.human.common.registry.init.block.HumanPlasticBlocks;
 import com.human.common.registry.init.block.HumanSteelBlocks;
 import com.human.common.registry.init.block.HumanTitaniumBlocks;
-import com.predator.common.registry.init.PredatorBlocks;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.minecraft.world.level.block.Block;
 
@@ -32,7 +31,6 @@ public class EnUsBlockProvider {
         addBlock(builder, AVPBlocks.CABLE, "Cable");
         addBlock(builder, AVPBlocks.REDSTONE_GENERATOR, "Redstone Generator");
         addBlock(builder, AVPBlocks.DESK_TERMINAL_BLOCK, "Desk Terminal");
-        addBlock(builder, PredatorBlocks.TRIP_MINE_BLOCK, "Trip Mine");
         addBlock(builder, AVPBlocks.RESONATOR_BLOCK, "Resonator");
         addBlock(builder, AVPBlocks.AMMO_CHEST, "Ammo Chest");
         addBlock(builder, AVPBlocks.SENTRY_TURRET, "Sentry Turret");

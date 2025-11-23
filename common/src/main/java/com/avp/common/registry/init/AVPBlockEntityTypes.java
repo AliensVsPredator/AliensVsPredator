@@ -13,8 +13,6 @@ import com.human.common.gameplay.block.entity.power.impl.ResonatorBlockEntity;
 import com.human.common.gameplay.block.entity.power.impl.SolarPanelBlockEntity;
 import com.human.common.gameplay.block.entity.power.impl.ThermalGeneratorBlockEntity;
 import com.human.common.gameplay.block.entity.power.impl.WindTurbineBlockEntity;
-import com.predator.common.gameplay.block.entity.TripMineBlockEntity;
-import com.predator.common.registry.init.PredatorBlocks;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -92,11 +90,6 @@ public class AVPBlockEntityTypes {
     public static final AVPDeferredHolder<BlockEntityType<ThermalGeneratorBlockEntity>> THERMAL_GENERATOR = register(
         "thermal_generator",
         () -> BlockEntityType.Builder.of(ThermalGeneratorBlockEntity::new, AVPBlocks.THERMAL_GENERATOR.get())
-    );
-
-    public static final AVPDeferredHolder<BlockEntityType<TripMineBlockEntity>> TRIP_MINE = register(
-        "trip_mine",
-        () -> BlockEntityType.Builder.of(TripMineBlockEntity::new, PredatorBlocks.TRIP_MINE_BLOCK.get())
     );
 
     public static final AVPDeferredHolder<BlockEntityType<WindTurbineBlockEntity>> WIND_TURBINE = register(

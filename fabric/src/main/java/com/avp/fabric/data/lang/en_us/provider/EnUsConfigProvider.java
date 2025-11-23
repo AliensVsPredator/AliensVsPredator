@@ -58,15 +58,11 @@ public class EnUsConfigProvider {
         );
         builder.add(
             "config.avp.option.ALIEN_CUSTOM_MOB_CATEGORY_ENABLED",
-            "Enable separate spawn cap for aliens and predators."
+            "Enable separate spawn cap for aliens."
         );
         builder.add(
             "config.avp.option.ALIEN_CUSTOM_MOB_CATEGORY_LIMIT",
             "Maximum spawn count for aliens in the custom mob category."
-        );
-        builder.add(
-            "config.avp.option.PREDATOR_CUSTOM_MOB_CATEGORY_LIMIT",
-            "Maximum spawn count for predators in the custom mob category."
         );
         builder.add("config.avp.option.CHESTBURSTER_SPAWN", "Chestburster spawn settings");
         builder.add("config.avp.option.DRONE_SPAWN", "Drone spawn settings");
@@ -80,7 +76,6 @@ public class EnUsConfigProvider {
         builder.add("config.avp.option.PRAETORIAN_SPAWN", "Praetorian spawn settings");
         builder.add("config.avp.option.QUEEN_SPAWN", "Queen spawn settings");
         builder.add("config.avp.option.WARRIOR_SPAWN", "Warrior spawn settings");
-        builder.add("config.avp.option.YAUTJA_SPAWN", "Yautja spawn settings");
         builder.add("config.avp.option.enabled", "Enable spawning");
         builder.add("config.avp.option.maxY", "Maximum Y-level at for spawn");
         builder.add("config.avp.option.minY", "Minimum Y-level at for spawn");
@@ -108,7 +103,6 @@ public class EnUsConfigProvider {
         builder.add("config.avp.option.PRAETORIAN_STATS", "Praetorian stats");
         builder.add("config.avp.option.QUEEN_STATS", "Queen stats");
         builder.add("config.avp.option.WARRIOR_STATS", "Warrior stats");
-        builder.add("config.avp.option.YAUTJA_STATS", "Yautja stats");
         builder.add("config.avp.option.MARINE_STATS", "Marine stats");
         builder.add("config.avp.option.FACEHUGGER_STATS", "Facehugger stats");
 

@@ -39,9 +39,6 @@ public abstract class MixinLivingEntity_ApplyArmorEffects extends Entity {
             supplyAir = true;
         } else if (isWearingFullFireResistantArmor(self)) {
             self.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 5, 0, true, false, true));
-        } else if (isWearingFullPredatorArmor(self)) {
-            self.addEffect(new MobEffectInstance(MobEffects.JUMP, 5, 0, true, false, true));
-            self.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 5, 0, true, false, true));
         }
 
         if (supplyAir) {
@@ -52,11 +49,6 @@ public abstract class MixinLivingEntity_ApplyArmorEffects extends Entity {
     @Unique
     private boolean isWearingFullFireResistantArmor(LivingEntity self) {
         return AVPPredicates.hasFullArmorSetMatching(self, (itemStack -> itemStack.is(AVPItemTags.FIRE_RESISTANT_ARMORS)));
-    }
-
-    @Unique
-    private boolean isWearingFullPredatorArmor(LivingEntity self) {
-        return AVPPredicates.hasFullArmorSetMatching(self, (itemStack -> itemStack.is(AVPItemTags.PREDATOR_ARMORS)));
     }
 
     @Unique

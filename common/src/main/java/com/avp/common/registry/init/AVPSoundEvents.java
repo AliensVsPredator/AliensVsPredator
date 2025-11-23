@@ -77,8 +77,6 @@ public class AVPSoundEvents {
 
     public static final AVPDeferredHolder<SoundEvent> ITEM_ARMOR_EQUIP_TITANIUM = register("item.armor.equip_titanium");
 
-    public static final AVPDeferredHolder<SoundEvent> ITEM_ARMOR_EQUIP_VERITANIUM = register("item.armor.equip_veritanium");
-
     public static final AVPDeferredHolder<SoundEvent> WEAPON_FLAMETHROWER_SEVASTOPOL_RELOAD_FINISH = register(
         "item.weapon.flamethrower_sevastopol.reload_finish"
     );
@@ -146,8 +144,6 @@ public class AVPSoundEvents {
     public static final AVPDeferredHolder<SoundEvent> WEAPON_ZX_76_SHOTGUN_SHOOT = register("item.weapon.zx_76_shotgun.shoot");
 
     public static final AVPDeferredHolder<SoundEvent> JUKEBOX_SOUNDS_ALIEN_MUSIC_1 = register("jukebox_sounds.alien_music_1");
-
-    public static final AVPDeferredHolder<SoundEvent> JUKEBOX_SOUNDS_PREDATOR_MUSIC_1 = register("jukebox_sounds.predator_music_1");
 
     private static AVPDeferredHolder<SoundEvent> register(String id) {
         return Services.REGISTRY.register(

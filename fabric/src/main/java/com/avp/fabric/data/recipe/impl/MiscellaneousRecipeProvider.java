@@ -400,10 +400,5 @@ public class MiscellaneousRecipeProvider {
             .withCategory(RecipeCategory.MISC)
             .requires(9, AlienItems.ALIEN_MUSIC_DISC_1_FRAGMENT)
             .into(1, AlienItems.ALIEN_MUSIC_DISC_1);
-
-        builder.shapeless()
-            .withCategory(RecipeCategory.MISC)
-            .requires(9, AVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT)
-            .into(1, AVPItems.PREDATOR_MUSIC_DISC_1);
     }
 }

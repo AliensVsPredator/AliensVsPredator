@@ -18,8 +18,6 @@ public class AVPEntityTypes {
 
     public static final MobCategory OVOMORPH_CATEGORY = Services.BRIDGE.getOvomorphMobCategory();
 
-    public static final MobCategory PREDATOR_CATEGORY = Services.BRIDGE.getPredatorMobCategory();
-
     private static final List<AVPDeferredHolder<? extends EntityType<?>>> ENTITY_TYPE_HOLDERS = new ArrayList<>();
 
     public static List<AVPDeferredHolder<? extends EntityType<?>>> getAll() {

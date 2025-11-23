@@ -7,7 +7,6 @@ import com.human.common.registry.init.block.HumanFerroaluminumBlocks;
 import com.human.common.registry.init.block.HumanIndustrialGlassBlocks;
 import com.human.common.registry.init.block.HumanSteelBlocks;
 import com.human.common.registry.init.block.HumanTitaniumBlocks;
-import com.predator.common.registry.init.PredatorBlocks;
 import net.minecraft.world.item.CreativeModeTab;
 
 import java.util.function.Consumer;
@@ -181,7 +180,6 @@ public class BlocksCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, AVPBlocks.THERMAL_GENERATOR);
         CreativeModeTabUtil.accept(output, AVPBlocks.WIND_TURBINE);
         CreativeModeTabUtil.accept(output, AVPBlocks.DESK_TERMINAL_BLOCK);
-        CreativeModeTabUtil.accept(output, PredatorBlocks.TRIP_MINE_BLOCK);
         CreativeModeTabUtil.accept(output, AVPBlocks.RESONATOR_BLOCK);
 
         // Alien blocks

@@ -10,8 +10,6 @@ public class AVPJukeboxSongKeys {
 
     public static final ResourceKey<JukeboxSong> ALIEN_MUSIC_1 = register("alien_music_1");
 
-    public static final ResourceKey<JukeboxSong> PREDATOR_MUSIC_1 = register("predator_music_1");
-
     private static ResourceKey<JukeboxSong> register(String id) {
         var resourceLocation = AVPResources.location(id);
         return ResourceKey.create(Registries.JUKEBOX_SONG, resourceLocation);

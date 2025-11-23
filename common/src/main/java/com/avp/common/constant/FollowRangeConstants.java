@@ -32,7 +32,5 @@ public record FollowRangeConstants() {
 
     public static final float WARRIOR_FOLLOW_RANGE = 35F;
 
-    public static final float YAUTJA_FOLLOW_RANGE = 35F;
-
     public static final float MARINE_FOLLOW_RANGE = 20F;
 }

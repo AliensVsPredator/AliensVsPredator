@@ -6,7 +6,6 @@ import com.alien.common.registry.init.item.AlienArmorItems;
 import com.human.common.registry.init.item.HumanFerroaluminumBlockItems;
 import com.human.common.registry.init.item.HumanSteelBlockItems;
 import com.human.common.registry.init.item.HumanTitaniumBlockItems;
-import com.predator.common.registry.init.item.PredatorArmorItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.data.models.BlockModelGenerators;
@@ -37,8 +36,6 @@ public class ItemModelProvider extends FabricModelProvider {
 
     @Override
     public void generateItemModels(ItemModelGenerators generators) {
-        generateStandardItem(generators, AVPItems.SHURIKEN);
-        generateStandardItem(generators, AVPItems.SMART_DISC);
         generateStandardItem(generators, AVPItems.GRENADE);
         generateStandardItem(generators, AVPItems.GRENADE_INCENDIARY);
         generateStandardItem(generators, AVPItems.GRENADE_IRRADIATED);
@@ -60,10 +57,6 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, AlienArmorItems.IRRADIATED_CHITIN_HELMET);
         generateStandardItem(generators, AlienArmorItems.IRRADIATED_CHITIN_LEGGINGS);
         generateStandardItem(generators, AVPItems.FUEL_TANK);
-        generateStandardItem(generators, PredatorArmorItems.JUNGLE_PREDATOR_BOOTS);
-        generateStandardItem(generators, PredatorArmorItems.JUNGLE_PREDATOR_CHESTPLATE);
-        generateStandardItem(generators, PredatorArmorItems.JUNGLE_PREDATOR_HELMET);
-        generateStandardItem(generators, PredatorArmorItems.JUNGLE_PREDATOR_LEGGINGS);
         generateStandardItem(generators, AVPArmorItems.MK50_BOOTS);
         generateStandardItem(generators, AVPArmorItems.MK50_CHESTPLATE);
         generateStandardItem(generators, AVPArmorItems.MK50_HELMET);
@@ -126,9 +119,7 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, AlienItems.PLATED_ABERRANT_CHITIN);
         generateStandardItem(generators, AVPItems.ALUMINUM_INGOT);
         generateStandardItem(generators, AlienItems.ALIEN_MUSIC_DISC_1);
-        generateStandardItem(generators, AVPItems.PREDATOR_MUSIC_DISC_1);
         generateStandardItem(generators, AlienItems.ALIEN_MUSIC_DISC_1_FRAGMENT);
-        generateStandardItem(generators, AVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT);
         generateStandardItem(generators, AVPItems.AUTUNITE_DUST);
         generateStandardItem(generators, AVPItems.BARREL);
         generateStandardItem(generators, AVPItems.BATTERY_PACK);
@@ -205,15 +196,9 @@ public class ItemModelProvider extends FabricModelProvider {
         generateHandheldItem(generators, AVPItems.TITANIUM_PICKAXE);
         generateHandheldItem(generators, AVPItems.TITANIUM_SHOVEL);
         generateHandheldItem(generators, AVPItems.TITANIUM_SWORD);
-        generateHandheldItem(generators, AVPItems.VERITANIUM_AXE);
-        generateHandheldItem(generators, AVPItems.VERITANIUM_HOE);
-        generateHandheldItem(generators, AVPItems.VERITANIUM_PICKAXE);
-        generateHandheldItem(generators, AVPItems.VERITANIUM_SHOVEL);
-        generateHandheldItem(generators, AVPItems.VERITANIUM_SWORD);
         generateStandardItem(generators, AVPItems.TRANSISTOR);
         generateStandardItem(generators, AVPItems.URANIUM_INGOT);
         generateStandardItem(generators, AlienItems.VECTOR_POTTERY_SHERD);
-        generateStandardItem(generators, AVPItems.VERITANIUM_SHARD);
         generateStandardItem(generators, AVPItems.ZINC_INGOT);
 
         generateStandardItem(generators, AVPItems.FERROALUMINUM_NUGGET);

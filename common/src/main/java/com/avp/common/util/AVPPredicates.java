@@ -1,7 +1,6 @@
 package com.avp.common.util;
 
 import com.alien.common.model.alien.Host;
-import com.predator.common.gameplay.entity.living.yautja.Yautja;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -103,6 +102,8 @@ public class AVPPredicates {
         EquipmentSlot.HEAD
     ).is(AVPItemTags.FACEHUGGER_RESISTANT_HELMETS);
 
-    public static final Predicate<LivingEntity> HAS_MASK = livingEntity -> livingEntity instanceof Yautja yautja
-        && yautja.hasMask();
+    public static final Predicate<LivingEntity> HAS_MASK = (a) -> true;
+    // FIXME:
+//    livingEntity -> livingEntity instanceof Yautja yautja
+//        && yautja.hasMask();
 }

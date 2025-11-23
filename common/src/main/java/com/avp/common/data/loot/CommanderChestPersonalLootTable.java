@@ -66,21 +66,7 @@ public class CommanderChestPersonalLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(AVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT.get())
-                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 8)))
-                        .setWeight(10)
-                )
-        )
-        .withPool(
-            LootPool.lootPool()
-                .setRolls(ConstantValue.exactly(1))
-                .add(
                     LootItem.lootTableItem(AlienItems.ALIEN_MUSIC_DISC_1_FRAGMENT.get())
-                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4)))
-                        .setWeight(1)
-                )
-                .add(
-                    LootItem.lootTableItem(AVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4)))
                         .setWeight(1)
                 )

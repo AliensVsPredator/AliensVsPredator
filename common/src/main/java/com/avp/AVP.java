@@ -4,7 +4,6 @@ import com.alien.Alien;
 import com.human.Human;
 import com.human.common.gameplay.level.patrol.MarinePatrolSpawner;
 import com.lib.common.gameplay.gene.Genes;
-import com.predator.Predator;
 import mod.azure.azurelib.common.config.Config;
 import mod.azure.azurelib.common.config.ConfigHolder;
 import mod.azure.azurelib.common.config.ConfigHolderRegistry;
@@ -64,7 +63,6 @@ public class AVP {
 
         Alien.initialize();
         Human.initialize();
-        Predator.initialize();
 
         AVPBlockEntityTypes.initialize();
         CoreBlocks.initialize();

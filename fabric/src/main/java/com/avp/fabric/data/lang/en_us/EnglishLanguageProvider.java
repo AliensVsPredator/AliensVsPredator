@@ -57,7 +57,6 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
 
         // Jukebox Sounds
         builder.add("jukebox_song.avp.alien_music_1", "Rotch Gwylt - Silver Smile");
-        builder.add("jukebox_song.avp.predator_music_1", "Rotch Gwylt - Hunter");
 
         // Tooltips
         EnUsTooltipProvider.CONSUMER.accept(builder);

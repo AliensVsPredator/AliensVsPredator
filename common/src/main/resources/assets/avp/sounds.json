@@ -461,11 +461,5 @@
       "avp:jukebox_sounds/alien_music_1"
     ],
     "subtitle": "subtitles.jukebox_sounds.alien_music_1"
-  },
-  "jukebox_sounds.predator_music_1": {
-    "sounds": [
-      "avp:jukebox_sounds/predator_music_1"
-    ],
-    "subtitle": "subtitles.jukebox_sounds.predator_music_1"
   }
 }

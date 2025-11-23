@@ -11,7 +11,6 @@ import com.human.common.registry.init.block.HumanPaddingBlocks;
 import com.human.common.registry.init.block.HumanPlasticBlocks;
 import com.human.common.registry.init.block.HumanSteelBlocks;
 import com.human.common.registry.init.block.HumanTitaniumBlocks;
-import com.predator.common.registry.init.PredatorBlocks;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
@@ -639,7 +638,6 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AVPBlocks.SENTRY_TURRET.get(),
                 CoreBlocks.SILICON_BLOCK.get(),
                 CoreBlocks.TRINITITE_BLOCK.get(),
-                PredatorBlocks.TRIP_MINE_BLOCK.get(),
                 CoreBlocks.URANIUM_BLOCK.get(),
                 CoreBlocks.ZINC_BLOCK.get(),
                 CoreBlocks.ZINC_ORE.get()
@@ -687,7 +685,6 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AVPBlocks.THERMAL_GENERATOR.get(),
                 AVPBlocks.WIND_TURBINE.get(),
                 CoreBlocks.TRINITITE_BLOCK.get(),
-                PredatorBlocks.TRIP_MINE_BLOCK.get(),
                 CoreBlocks.URANIUM_BLOCK.get()
             );
 

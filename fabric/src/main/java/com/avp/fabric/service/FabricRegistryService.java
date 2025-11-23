@@ -62,29 +62,28 @@ public class FabricRegistryService implements RegistryService {
     }
 
     @Override
-    public <T> AVPDeferredHolder<T> register(Registry<? super T> registry, String id, Supplier<? extends T> supplier) {
+    public <T> AVPDeferredHolder<T> register(Registry<? super T> registry, ResourceLocation resourceLocation, Supplier<? extends T> supplier) {
         var object = supplier.get();
 
         if (object instanceof PoiType poiType) {
             // We have to do special handling for PoiType registration on the Fabric side, since Fabric wants
             // Poi registrations to go through their "PointOfInterestHelper" type.
-            return registerPoiType(id, poiType);
+            return registerPoiType(resourceLocation, poiType);
         }
 
-        var reference = Registry.registerForHolder(registry, AVPResources.location(id), object);
+        var reference = Registry.registerForHolder(registry, resourceLocation, object);
         @SuppressWarnings("unchecked")
         var holder = (Holder<T>) reference;
         return new AVPDeferredHolder<>(holder::value, () -> holder);
     }
 
-    private <T> @NotNull AVPDeferredHolder<T> registerPoiType(String id, PoiType poiType) {
-        var location = AVPResources.location(id);
-        PointOfInterestHelper.register(location, poiType.maxTickets(), poiType.validRange(), poiType.matchingStates());
+    private <T> @NotNull AVPDeferredHolder<T> registerPoiType(ResourceLocation resourceLocation, PoiType poiType) {
+        PointOfInterestHelper.register(resourceLocation, poiType.maxTickets(), poiType.validRange(), poiType.matchingStates());
         // Immediately get the holder or throw. This should be safe to do since we registered the PoiType in the last
         // line. This is necessary because PointOfInterestHelper doesn't return back a holder (which we need for
         // AVPDeferredHolder) after registration.
         @SuppressWarnings("unchecked")
-        var holder = (Holder<T>) BuiltInRegistries.POINT_OF_INTEREST_TYPE.getHolder(location).orElseThrow();
+        var holder = (Holder<T>) BuiltInRegistries.POINT_OF_INTEREST_TYPE.getHolder(resourceLocation).orElseThrow();
         return new AVPDeferredHolder<>(holder::value, () -> holder);
     }
 

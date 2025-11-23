@@ -24,7 +24,7 @@ public class AlienPredicates {
         return canContinueTargeting(alien, potentialTarget)
             // AND the target is either an enemy alien...
             && (isAlienTarget(alien, potentialTarget)
-                // ...OR is hated (predator, player or entity targeting a fellow hive member).
+                // ...OR is hated.
                 || isHated(alien, potentialTarget)
                 // ...OR is standing on resin (any mob or monster).
                 || isStandingOnResin(potentialTarget)

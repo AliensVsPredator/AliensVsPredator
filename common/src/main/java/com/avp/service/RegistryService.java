@@ -1,9 +1,11 @@
 package com.avp.service;
 
+import com.avp.AVPResources;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,7 +26,11 @@ import com.avp.common.registry.AVPDeferredHolder;
 
 public interface RegistryService {
 
-    <T> AVPDeferredHolder<T> register(Registry<? super T> registry, String id, Supplier<? extends T> supplier);
+    default <T> AVPDeferredHolder<T> register(Registry<? super T> registry, String id, Supplier<? extends T> supplier) {
+        return register(registry, AVPResources.location(id), supplier);
+    }
+
+    <T> AVPDeferredHolder<T> register(Registry<? super T> registry, ResourceLocation resourceLocation, Supplier<? extends T> supplier);
 
     void registerCommand(LiteralArgumentBuilder<CommandSourceStack> literalArgumentBuilder);
 

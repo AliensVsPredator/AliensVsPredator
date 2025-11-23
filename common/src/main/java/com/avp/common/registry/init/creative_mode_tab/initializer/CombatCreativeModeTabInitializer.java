@@ -2,7 +2,6 @@ package com.avp.common.registry.init.creative_mode_tab.initializer;
 
 import com.alien.common.registry.init.item.AlienArmorItems;
 import com.human.common.registry.init.item.HumanGunItems;
-import com.predator.common.registry.init.item.PredatorArmorItems;
 import net.minecraft.world.item.CreativeModeTab;
 
 import java.util.function.Consumer;
@@ -37,9 +36,6 @@ public class CombatCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, HumanGunItems.M88MOD4_COMBAT_PISTOL);
         CreativeModeTabUtil.accept(output, HumanGunItems.OLD_PAINLESS);
         CreativeModeTabUtil.accept(output, HumanGunItems.ZX_76_SHOTGUN);
-
-        CreativeModeTabUtil.accept(output, AVPItems.SHURIKEN);
-        CreativeModeTabUtil.accept(output, AVPItems.SMART_DISC);
 
         CreativeModeTabUtil.accept(output, AVPArmorItems.MK50_HELMET);
         CreativeModeTabUtil.accept(output, AVPArmorItems.MK50_CHESTPLATE);
@@ -122,10 +118,5 @@ public class CombatCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, AlienArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE);
         CreativeModeTabUtil.accept(output, AlienArmorItems.PLATED_NETHER_CHITIN_LEGGINGS);
         CreativeModeTabUtil.accept(output, AlienArmorItems.PLATED_NETHER_CHITIN_BOOTS);
-
-        CreativeModeTabUtil.accept(output, PredatorArmorItems.JUNGLE_PREDATOR_HELMET);
-        CreativeModeTabUtil.accept(output, PredatorArmorItems.JUNGLE_PREDATOR_CHESTPLATE);
-        CreativeModeTabUtil.accept(output, PredatorArmorItems.JUNGLE_PREDATOR_LEGGINGS);
-        CreativeModeTabUtil.accept(output, PredatorArmorItems.JUNGLE_PREDATOR_BOOTS);
     };
 }

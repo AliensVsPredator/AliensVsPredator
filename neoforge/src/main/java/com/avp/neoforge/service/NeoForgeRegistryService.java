@@ -8,6 +8,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -97,14 +98,14 @@ public class NeoForgeRegistryService implements RegistryService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> AVPDeferredHolder<T> register(Registry<? super T> registry, String id, Supplier<? extends T> supplier) {
+    public <T> AVPDeferredHolder<T> register(Registry<? super T> registry, ResourceLocation resourceLocation, Supplier<? extends T> supplier) {
         var deferredRegister = (DeferredRegister<T>) registryToDeferredRegisterMap.get(registry);
 
         if (deferredRegister == null) {
             throw new IllegalArgumentException("Unhandled registry: " + registry);
         }
 
-        return adapt(deferredRegister.register(id, supplier));
+        return adapt(deferredRegister.register(resourceLocation.getPath(), supplier));
     }
 
     @Override

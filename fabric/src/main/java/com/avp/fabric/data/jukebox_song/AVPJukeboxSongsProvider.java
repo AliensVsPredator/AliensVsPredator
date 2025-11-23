@@ -21,7 +21,6 @@ public class AVPJukeboxSongsProvider extends FabricDynamicRegistryProvider {
     @Override
     protected void configure(HolderLookup.Provider registries, Entries entries) {
         entries.add(AVPJukeboxSongKeys.ALIEN_MUSIC_1, createAlienMusic1Song());
-        entries.add(AVPJukeboxSongKeys.PREDATOR_MUSIC_1, createPredatorMusic1Song());
     }
 
     private JukeboxSong createAlienMusic1Song() {
@@ -29,15 +28,6 @@ public class AVPJukeboxSongsProvider extends FabricDynamicRegistryProvider {
             AVPSoundEvents.JUKEBOX_SOUNDS_ALIEN_MUSIC_1.getHolder(),
             Component.translatable("jukebox_song.avp.alien_music_1"),
             180,
-            12
-        );
-    }
-
-    private JukeboxSong createPredatorMusic1Song() {
-        return new JukeboxSong(
-            AVPSoundEvents.JUKEBOX_SOUNDS_PREDATOR_MUSIC_1.getHolder(),
-            Component.translatable("jukebox_song.avp.predator_music_1"),
-            184,
             12
         );
     }

@@ -32,15 +32,6 @@ public class AVPTiers {
         () -> Ingredient.of(CommonItemTags.INGOTS_TITANIUM)
     );
 
-    public static final Tier VERITANIUM = create(
-        2640,
-        10.0F,
-        5F,
-        BlockTags.INCORRECT_FOR_NETHERITE_TOOL,
-        11,
-        () -> Ingredient.of(AVPItems.VERITANIUM_SHARD.get())
-    );
-
     private static Tier create(
         int uses,
         float speed,

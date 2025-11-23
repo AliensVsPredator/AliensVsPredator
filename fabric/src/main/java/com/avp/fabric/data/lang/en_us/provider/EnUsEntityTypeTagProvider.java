@@ -27,7 +27,6 @@ public class EnUsEntityTypeTagProvider {
         builder.add(AVPEntityTypeTags.PARASITES, "Parasites");
         builder.add(AVPEntityTypeTags.PRAETORIANS, "Praetorians");
         builder.add(AVPEntityTypeTags.PREDALIENS, "Predaliens");
-        builder.add(AVPEntityTypeTags.PREDATORS, "Predators");
         builder.add(AVPEntityTypeTags.QUEENS, "Queens");
         builder.add(AVPEntityTypeTags.RADIATION_RESISTANT, "Radiation Resistant");
         builder.add(AVPEntityTypeTags.ROYAL_ALIENS, "Royal Aliens");

@@ -243,11 +243,6 @@ public class AVPConfig {
         @Configurable.Comment("Warrior spawn settings. Modifying these will require restarting the game.")
         public SpawnSettings WARRIOR_SPAWN = new SpawnSettings(true, 1, 2, 25);
 
-        @Configurable
-        @Configurable.Synchronized
-        @Configurable.Comment("Yautja spawn settings. Modifying these will require restarting the game.")
-        public SpawnSettings YAUTJA_SPAWN = new SpawnSettings(true, 1, 1, 10);
-
         public static class SpawnSettings {
 
             @Configurable
@@ -544,21 +539,6 @@ public class AVPConfig {
             0.0f,
             40,
             FollowRangeConstants.WARRIOR_FOLLOW_RANGE
-        );
-
-        @Configurable
-        @Configurable.Synchronized
-        @Configurable.Comment("Modifying any of these will require restarting the game.")
-        public AdvancedStats YAUTJA_STATS = new AdvancedStats(
-            HealthConstants.YAUTJA_HEALTH,
-            AttackDamageConstants.YAUTJA_ATTACK_DAMAGE,
-            0.0f,
-            KnockbackResistanceConstants.YAUTJA_KNOCKBACK_RESISTANCE,
-            MoveSpeedConstants.YAUTJA_SPEED,
-            ArmorConstants.YAUTJA_ARMOR,
-            ArmorToughnessConstants.YAUTJA_ARMOR_TOUGHNESS,
-            0,
-            FollowRangeConstants.YAUTJA_FOLLOW_RANGE
         );
 
         @Configurable

@@ -3,7 +3,6 @@ package com.avp.neoforge;
 import com.lib.common.network.DataContainer;
 import com.lib.common.network.DataUser;
 import com.lib.common.util.codec.stream.adapter.JustStreamCodecToMojangStreamCodecAdapter;
-import com.predator.common.registry.init.PredatorEntityTypes;
 import mod.azure.azurelib.common.animation.cache.AzIdentityRegistry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -181,15 +180,10 @@ public class AVPNeoForge {
             return;
 
         var serverLevel = (ServerLevel) event.getLevel();
-        var sounds = ParrotSoundMapAccessor.getSoundMap();
         var gifts = GiveGiftToHeroAccessor.getGifts();
 
         AVP.CUSTOM_SPAWNER.tick(serverLevel, serverLevel.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING), true);
         AVP.NUKED_ASH_PLACEMENT.tick(serverLevel);
-        /*
-         * TODO: Use Yautja sound when added
-         */
-        sounds.put(PredatorEntityTypes.YAUTJA.get(), SoundEvents.ALLAY_AMBIENT_WITH_ITEM);
         gifts.put(AVPVillagerProfessions.COMMISSARY.get(), AVPVillagerGiftKeys.COMMISSARY_GIFT_LOOT_TABLE);
     }
 

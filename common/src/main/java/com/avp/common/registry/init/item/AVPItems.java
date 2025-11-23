@@ -9,8 +9,6 @@ import com.human.common.gameplay.item.canister.SolidCanisterItem;
 import com.human.common.gameplay.item.grenade.GrenadeItem;
 import com.human.common.registry.init.HumanDataComponents;
 import com.human.common.registry.init.item.HumanGunItems;
-import com.predator.common.gameplay.item.ShurikenItem;
-import com.predator.common.gameplay.item.SmartDiscItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.AxeItem;
@@ -162,16 +160,6 @@ public class AVPItems {
         )
     );
 
-    public static final AVPDeferredHolder<Item> PREDATOR_MUSIC_DISC_1 = register(
-        "predator_music_disc_1",
-        new Item.Properties().stacksTo(1).rarity(Rarity.RARE).jukeboxPlayable(AVPJukeboxSongKeys.PREDATOR_MUSIC_1)
-    );
-
-    public static final AVPDeferredHolder<Item> PREDATOR_MUSIC_DISC_1_FRAGMENT = register(
-        "predator_music_disc_1_fragment",
-        () -> new DiscFragmentItem(new Item.Properties())
-    );
-
     public static final AVPDeferredHolder<Item> RAW_BAUXITE = register("raw_bauxite");
 
     public static final AVPDeferredHolder<Item> RAW_BRASS = register("raw_brass");
@@ -204,16 +192,12 @@ public class AVPItems {
 
     public static final AVPDeferredHolder<Item> SHOTGUN_SHELL = register("shotgun_shell");
 
-    public static final AVPDeferredHolder<Item> SHURIKEN = register("shuriken", ShurikenItem::new);
-
     // TODO: Change this to "silicon" with 0.2.0.
     public static final AVPDeferredHolder<Item> SILICON = register("raw_silica");
 
     public static final AVPDeferredHolder<Item> SMALL_BULLET = register("small_bullet");
 
     public static final AVPDeferredHolder<Item> SMART_BARREL = register("smart_barrel");
-
-    public static final AVPDeferredHolder<Item> SMART_DISC = register("smart_disc", SmartDiscItem::new);
 
     public static final AVPDeferredHolder<Item> SMART_RECEIVER = register("smart_receiver");
 
@@ -292,48 +276,6 @@ public class AVPItems {
     public static final AVPDeferredHolder<Item> URANIUM_INGOT = register("uranium_ingot");
 
     public static final AVPDeferredHolder<Item> URANIUM_NUGGET = register("uranium_nugget");
-
-    public static final AVPDeferredHolder<Item> VERITANIUM_AXE = register(
-        "veritanium_axe",
-        () -> new AxeItem(
-            AVPTiers.VERITANIUM,
-            new Item.Properties().fireResistant().attributes(AxeItem.createAttributes(AVPTiers.VERITANIUM, 6.0F, -3.1F))
-        )
-    );
-
-    public static final AVPDeferredHolder<Item> VERITANIUM_HOE = register(
-        "veritanium_hoe",
-        () -> new HoeItem(
-            AVPTiers.VERITANIUM,
-            new Item.Properties().fireResistant().attributes(HoeItem.createAttributes(AVPTiers.VERITANIUM, -2.0F, -1.0F))
-        )
-    );
-
-    public static final AVPDeferredHolder<Item> VERITANIUM_PICKAXE = register(
-        "veritanium_pickaxe",
-        () -> new PickaxeItem(
-            AVPTiers.VERITANIUM,
-            new Item.Properties().fireResistant().attributes(PickaxeItem.createAttributes(AVPTiers.VERITANIUM, 1.0F, -2.8F))
-        )
-    );
-
-    public static final AVPDeferredHolder<Item> VERITANIUM_SHARD = register("veritanium_shard", new Item.Properties().fireResistant());
-
-    public static final AVPDeferredHolder<Item> VERITANIUM_SHOVEL = register(
-        "veritanium_shovel",
-        () -> new ShovelItem(
-            AVPTiers.VERITANIUM,
-            new Item.Properties().fireResistant().attributes(ShovelItem.createAttributes(AVPTiers.VERITANIUM, 1.5F, -3.0F))
-        )
-    );
-
-    public static final AVPDeferredHolder<Item> VERITANIUM_SWORD = register(
-        "veritanium_sword",
-        () -> new SwordItem(
-            AVPTiers.VERITANIUM,
-            new Item.Properties().fireResistant().attributes(SwordItem.createAttributes(AVPTiers.VERITANIUM, 3, -2.4F))
-        )
-    );
 
     public static final AVPDeferredHolder<Item> WATER_CANISTER = register(
         "water_canister",

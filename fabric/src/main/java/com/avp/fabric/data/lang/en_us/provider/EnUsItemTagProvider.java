@@ -18,14 +18,12 @@ public class EnUsItemTagProvider {
         builder.add(AVPItemTags.FACEHUGGER_RESISTANT_HELMETS, "Facehugger-Resistant Helmets");
         builder.add(AVPItemTags.FIRE_RESISTANT_ARMORS, "Fire-Resistant Armors");
         builder.add(AVPItemTags.GUNS, "Guns");
-        builder.add(AVPItemTags.HOSTILE_WEAPONS, "Hostile Weapons");
         builder.add(AVPItemTags.INDUSTRIAL_GLASS, "Industrial Glass");
         builder.add(AVPItemTags.INDUSTRIAL_GLASS_BLOCK, "Industrial Glass Blocks");
         builder.add(AVPItemTags.INDUSTRIAL_GLASS_PANE, "Industrial Glass Panes");
         builder.add(AVPItemTags.IRON_BLOCK_LIKE, "Iron Block Like");
         builder.add(AVPItemTags.IRON_INGOT_LIKE, "Iron Ingot Like");
         builder.add(AVPItemTags.IRRADIATED_CHITIN_ARMOR, "Irradiated Chitin Armor");
-        builder.add(AVPItemTags.JUNGLE_PREDATOR_ARMOR, "Jungle Predator Armor");
         builder.add(AVPItemTags.LITHIUM, "Lithium");
         builder.add(AVPItemTags.MELEE_WEAPONS, "Melee Weapons");
         builder.add(AVPItemTags.MK50_ARMOR, "MK50 Armor");
@@ -36,7 +34,6 @@ public class EnUsItemTagProvider {
         builder.add(AVPItemTags.PLATED_IRRADIATED_CHITIN_ARMOR, "Plated Irradiated Chitin Armor");
         builder.add(AVPItemTags.PLATED_NETHER_CHITIN_ARMOR, "Plated Nether Chitin Armor");
         builder.add(AVPItemTags.PLATED_NORMAL_CHITIN_ARMOR, "Plated Normal Chitin Armor");
-        builder.add(AVPItemTags.PREDATOR_ARMORS, "Predator Armors");
         builder.add(AVPItemTags.PRESSURE_ARMOR, "Pressure Armor");
         builder.add(AVPItemTags.RADIATION_CURE_ITEMS, "Radiation Cure Items");
         builder.add(AVPItemTags.RADIATION_RESISTANT_ARMORS, "Radiation-Resistant Armors");

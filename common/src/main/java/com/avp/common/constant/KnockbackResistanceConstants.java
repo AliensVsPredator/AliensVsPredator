@@ -34,6 +34,4 @@ public record KnockbackResistanceConstants() {
     public static final float SPITTER_KNOCKBACK_RESISTANCE = 0.5f;
 
     public static final float WARRIOR_KNOCKBACK_RESISTANCE = 0.5f;
-
-    public static final float YAUTJA_KNOCKBACK_RESISTANCE = 1f;
 }

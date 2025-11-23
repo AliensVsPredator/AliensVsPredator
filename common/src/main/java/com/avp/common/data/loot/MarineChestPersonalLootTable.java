@@ -92,10 +92,5 @@ public class MarineChestPersonalLootTable {
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2)))
                         .setWeight(1)
                 )
-                .add(
-                    LootItem.lootTableItem(AVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT.get())
-                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2)))
-                        .setWeight(1)
-                )
         );
 }

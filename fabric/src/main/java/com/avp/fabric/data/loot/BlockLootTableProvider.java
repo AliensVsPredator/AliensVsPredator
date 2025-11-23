@@ -11,7 +11,6 @@ import com.human.common.registry.init.block.HumanPaddingBlocks;
 import com.human.common.registry.init.block.HumanPlasticBlocks;
 import com.human.common.registry.init.block.HumanSteelBlocks;
 import com.human.common.registry.init.block.HumanTitaniumBlocks;
-import com.predator.common.registry.init.PredatorBlocks;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.minecraft.core.HolderLookup;
@@ -240,7 +239,6 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(HumanTitaniumBlocks.TITANIUM_TREAD);
         dropSelf(HumanTitaniumBlocks.TITANIUM_TREAD_STAIRS);
         dropSelf(CoreBlocks.TRINITITE_BLOCK);
-        dropSelf(PredatorBlocks.TRIP_MINE_BLOCK);
         dropSelf(CoreBlocks.URANIUM_BLOCK);
         dropSelf(CoreBlocks.ZINC_BLOCK);
 
