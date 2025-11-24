@@ -1,6 +1,5 @@
 package com.avp.mixin;
 
-import com.avp.common.registry.init.AVPDataKeys;
 import com.lib.common.gameplay.entity.manager.GeneManager;
 import com.lib.common.gameplay.gene.GeneOperationType;
 import com.lib.common.gameplay.gene.Genes;
@@ -26,6 +25,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import com.avp.common.registry.init.AVPDataKeys;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity_GeneCarrier extends Entity implements GeneCarrier, DataUser {
@@ -157,9 +158,9 @@ public abstract class MixinLivingEntity_GeneCarrier extends Entity implements Ge
 
         if (getRandom().nextDouble() < acidBloodChance && damageSource != damageSources().genericKill()) {
             // FIXME:
-//            var self = LivingEntity.class.cast(this);
-//            var randomPos = AcidBleedUtil.computeRandomPosFromBoundingBox(self);
-//            AcidBleedUtil.spawnAcid(self, damage, randomPos);
+            // var self = LivingEntity.class.cast(this);
+            // var randomPos = AcidBleedUtil.computeRandomPosFromBoundingBox(self);
+            // AcidBleedUtil.spawnAcid(self, damage, randomPos);
         }
     }
 

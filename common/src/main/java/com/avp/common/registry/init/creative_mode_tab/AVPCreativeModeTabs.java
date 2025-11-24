@@ -1,5 +1,17 @@
 package com.avp.common.registry.init.creative_mode_tab;
 
+import com.human.common.registry.init.block.HumanPlasticBlocks;
+import com.human.common.registry.init.item.HumanSpawnEggItems;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import com.avp.AVP;
 import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.common.registry.init.block.AVPBlocks;
@@ -13,17 +25,6 @@ import com.avp.common.registry.init.item.AVPArmorItems;
 import com.avp.common.registry.init.item.AVPItems;
 import com.avp.common.registry.key.AVPCreativeModeTabKeys;
 import com.avp.service.Services;
-import com.human.common.registry.init.block.HumanPlasticBlocks;
-import com.human.common.registry.init.item.HumanSpawnEggItems;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.ItemStack;
-
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class AVPCreativeModeTabs {
 

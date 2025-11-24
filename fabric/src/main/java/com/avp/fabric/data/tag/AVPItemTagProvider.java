@@ -1,10 +1,5 @@
 package com.avp.fabric.data.tag;
 
-import com.avp.common.registry.init.block.CoreBlocks;
-import com.avp.common.registry.init.item.AVPArmorItems;
-import com.avp.common.registry.init.item.AVPBlockItems;
-import com.avp.common.registry.init.item.AVPItems;
-import com.avp.common.registry.tag.AVPItemTags;
 import com.compat.CommonItemTags;
 import com.human.common.gameplay.item.GunItem;
 import com.human.common.registry.init.item.HumanFerroaluminumBlockItems;
@@ -33,6 +28,12 @@ import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.WallBlock;
 
 import java.util.concurrent.CompletableFuture;
+
+import com.avp.common.registry.init.block.CoreBlocks;
+import com.avp.common.registry.init.item.AVPArmorItems;
+import com.avp.common.registry.init.item.AVPBlockItems;
+import com.avp.common.registry.init.item.AVPItems;
+import com.avp.common.registry.tag.AVPItemTags;
 
 public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 

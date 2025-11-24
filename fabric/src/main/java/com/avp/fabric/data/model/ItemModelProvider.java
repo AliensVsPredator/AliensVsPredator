@@ -1,8 +1,5 @@
 package com.avp.fabric.data.model;
 
-import com.avp.common.registry.init.block.AVPBlocks;
-import com.avp.common.registry.init.item.AVPArmorItems;
-import com.avp.common.registry.init.item.AVPItems;
 import com.human.common.registry.init.item.HumanFerroaluminumBlockItems;
 import com.human.common.registry.init.item.HumanSteelBlockItems;
 import com.human.common.registry.init.item.HumanTitaniumBlockItems;
@@ -16,6 +13,10 @@ import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
+
+import com.avp.common.registry.init.block.AVPBlocks;
+import com.avp.common.registry.init.item.AVPArmorItems;
+import com.avp.common.registry.init.item.AVPItems;
 
 public class ItemModelProvider extends FabricModelProvider {
 
@@ -158,7 +159,6 @@ public class ItemModelProvider extends FabricModelProvider {
         generateHandheldItem(generators, HumanFerroaluminumBlockItems.FERROALUMINUM_DOOR);
         generateHandheldItem(generators, HumanSteelBlockItems.STEEL_DOOR);
         generateHandheldItem(generators, HumanTitaniumBlockItems.TITANIUM_DOOR);
-
     }
 
     private void generateHandheldItem(ItemModelGenerators generators, Supplier<? extends Item> itemSupplier) {

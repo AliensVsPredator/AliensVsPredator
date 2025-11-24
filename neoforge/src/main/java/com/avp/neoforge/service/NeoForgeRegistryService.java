@@ -98,7 +98,11 @@ public class NeoForgeRegistryService implements RegistryService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> AVPDeferredHolder<T> register(Registry<? super T> registry, ResourceLocation resourceLocation, Supplier<? extends T> supplier) {
+    public <T> AVPDeferredHolder<T> register(
+        Registry<? super T> registry,
+        ResourceLocation resourceLocation,
+        Supplier<? extends T> supplier
+    ) {
         var deferredRegister = (DeferredRegister<T>) registryToDeferredRegisterMap.get(registry);
 
         if (deferredRegister == null) {

@@ -23,10 +23,10 @@ public class DecoratedPotPatternKeys {
     public static final Lazy<Map<Item, ResourceKey<DecoratedPotPattern>>> ITEM_TO_POT_TEXTURE = Lazy.of(
         () -> Map.ofEntries(
             // FIXME:
-//            Map.entry(AlienItems.OVOID_POTTERY_SHERD.get(), OVOID),
-//            Map.entry(AlienItems.PARASITE_POTTERY_SHERD.get(), PARASITE),
-//            Map.entry(AlienItems.ROYALTY_POTTERY_SHERD.get(), ROYALTY),
-//            Map.entry(AlienItems.VECTOR_POTTERY_SHERD.get(), VECTOR)
+            // Map.entry(AlienItems.OVOID_POTTERY_SHERD.get(), OVOID),
+            // Map.entry(AlienItems.PARASITE_POTTERY_SHERD.get(), PARASITE),
+            // Map.entry(AlienItems.ROYALTY_POTTERY_SHERD.get(), ROYALTY),
+            // Map.entry(AlienItems.VECTOR_POTTERY_SHERD.get(), VECTOR)
         )
     );
 

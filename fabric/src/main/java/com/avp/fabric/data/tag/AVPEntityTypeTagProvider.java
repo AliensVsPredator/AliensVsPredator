@@ -1,6 +1,5 @@
 package com.avp.fabric.data.tag;
 
-import com.avp.common.registry.tag.AVPEntityTypeTags;
 import com.human.common.registry.init.entity_type.HumanEntityTypes;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
@@ -9,6 +8,8 @@ import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
 
 import java.util.concurrent.CompletableFuture;
+
+import com.avp.common.registry.tag.AVPEntityTypeTags;
 
 public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagProvider {
 

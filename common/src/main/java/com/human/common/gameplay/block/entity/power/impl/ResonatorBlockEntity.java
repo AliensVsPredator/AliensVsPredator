@@ -1,7 +1,5 @@
 package com.human.common.gameplay.block.entity.power.impl;
 
-import com.avp.AVP;
-import com.avp.common.registry.init.AVPBlockEntityTypes;
 import com.human.common.gameplay.block.entity.power.PowerConsumerBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -14,6 +12,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.avp.AVP;
+import com.avp.common.registry.init.AVPBlockEntityTypes;
 
 public class ResonatorBlockEntity extends PowerConsumerBlockEntity {
 
@@ -59,33 +60,33 @@ public class ResonatorBlockEntity extends PowerConsumerBlockEntity {
                 var currentState = level.getBlockState(currentPos);
 
                 // FIXME:
-//                AlienVariantTypes.getFor(currentState)
-//                    .ifSome(alienVariantType -> {
-//                        // TODO: Use variant-specific tag here.
-//                        if (currentState.is(AVPBlockTags.RESIN_VEINS)) {
-//                            level.setBlockAndUpdate(currentPos, Blocks.AIR.defaultBlockState());
-//
-//                            var resinBallItem = alienVariantType.resinBall().get();
-//                            addResinBallItem(resinBallItem);
-//
-//                            setChanged();
-//
-//                            return;
-//                        }
-//
-//                        // TODO: Use variant-specific tag here.
-//                        if (currentState.is(AVPBlockTags.RESIN)) {
-//                            // TODO: This is not a safe assumption to make!
-//                            var replacementBlock = currentPos.getY() <= 0 ? Blocks.DEEPSLATE : Blocks.STONE;
-//
-//                            level.setBlockAndUpdate(currentPos, replacementBlock.defaultBlockState());
-//
-//                            var resinBallItem = alienVariantType.resinBall().get();
-//                            addResinBallItem(resinBallItem);
-//
-//                            setChanged();
-//                        }
-//                    });
+                // AlienVariantTypes.getFor(currentState)
+                // .ifSome(alienVariantType -> {
+                // // TODO: Use variant-specific tag here.
+                // if (currentState.is(AVPBlockTags.RESIN_VEINS)) {
+                // level.setBlockAndUpdate(currentPos, Blocks.AIR.defaultBlockState());
+                //
+                // var resinBallItem = alienVariantType.resinBall().get();
+                // addResinBallItem(resinBallItem);
+                //
+                // setChanged();
+                //
+                // return;
+                // }
+                //
+                // // TODO: Use variant-specific tag here.
+                // if (currentState.is(AVPBlockTags.RESIN)) {
+                // // TODO: This is not a safe assumption to make!
+                // var replacementBlock = currentPos.getY() <= 0 ? Blocks.DEEPSLATE : Blocks.STONE;
+                //
+                // level.setBlockAndUpdate(currentPos, replacementBlock.defaultBlockState());
+                //
+                // var resinBallItem = alienVariantType.resinBall().get();
+                // addResinBallItem(resinBallItem);
+                //
+                // setChanged();
+                // }
+                // });
             });
     }
 

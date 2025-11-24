@@ -1,9 +1,5 @@
 package com.avp.fabric.data.loot;
 
-import com.avp.common.registry.AVPRegistryValidation;
-import com.avp.common.registry.init.block.AVPBlocks;
-import com.avp.common.registry.init.block.CoreBlocks;
-import com.avp.common.registry.init.item.AVPItems;
 import com.human.common.registry.init.block.HumanFerroaluminumBlocks;
 import com.human.common.registry.init.block.HumanIndustrialConcreteBlocks;
 import com.human.common.registry.init.block.HumanIndustrialGlassBlocks;
@@ -33,6 +29,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+
+import com.avp.common.registry.AVPRegistryValidation;
+import com.avp.common.registry.init.block.AVPBlocks;
+import com.avp.common.registry.init.block.CoreBlocks;
+import com.avp.common.registry.init.item.AVPItems;
 
 public class BlockLootTableProvider extends FabricBlockLootTableProvider {
 
@@ -260,8 +261,7 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         add(AVPBlocks.WIND_TURBINE, this::createNameableBlockEntityTable);
     }
 
-    private void generateOtherDrops() {
-    }
+    private void generateOtherDrops() {}
 
     public void add(Supplier<? extends Block> blockSupplier, Function<Block, LootTable.Builder> factory) {
         var block = blockSupplier.get();

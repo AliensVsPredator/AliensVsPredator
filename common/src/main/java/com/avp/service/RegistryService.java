@@ -1,6 +1,5 @@
 package com.avp.service;
 
-import com.avp.AVPResources;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
@@ -19,6 +18,7 @@ import net.minecraft.world.level.ItemLike;
 import java.util.List;
 import java.util.function.Supplier;
 
+import com.avp.AVPResources;
 import com.avp.common.model.spawning.AVPEntitySpawnData;
 import com.avp.common.network.NetworkHandler;
 import com.avp.common.network.PacketDirection;

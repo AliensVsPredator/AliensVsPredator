@@ -4,6 +4,6 @@ public class AVPEvents {
 
     public static void onTagsUpdated() {
         // FIXME:
-//        AlienEvents.onTagsUpdated();
+        // AlienEvents.onTagsUpdated();
     }
 }

@@ -1,7 +1,8 @@
 package com.avp.client;
 
-import com.avp.client.input.keybind.AVPKeybindingRegistry;
 import com.human.client.HumanClient;
+
+import com.avp.client.input.keybind.AVPKeybindingRegistry;
 
 public class AVPClient {
 

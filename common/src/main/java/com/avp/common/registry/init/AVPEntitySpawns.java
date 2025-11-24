@@ -1,10 +1,11 @@
 package com.avp.common.registry.init;
 
+import com.human.common.gameplay.entity.living.human.marine.MarineSpawning;
+import com.human.common.registry.init.entity_type.HumanEntityTypes;
+
 import com.avp.AVP;
 import com.avp.common.model.spawning.AVPEntitySpawnData;
 import com.avp.service.Services;
-import com.human.common.gameplay.entity.living.human.marine.MarineSpawning;
-import com.human.common.registry.init.entity_type.HumanEntityTypes;
 
 public class AVPEntitySpawns {
 

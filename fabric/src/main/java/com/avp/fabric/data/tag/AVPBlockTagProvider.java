@@ -1,8 +1,5 @@
 package com.avp.fabric.data.tag;
 
-import com.avp.common.registry.init.block.AVPBlocks;
-import com.avp.common.registry.init.block.CoreBlocks;
-import com.avp.common.registry.tag.AVPBlockTags;
 import com.compat.CommonBlockTags;
 import com.human.common.registry.init.block.HumanFerroaluminumBlocks;
 import com.human.common.registry.init.block.HumanIndustrialConcreteBlocks;
@@ -31,6 +28,10 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+
+import com.avp.common.registry.init.block.AVPBlocks;
+import com.avp.common.registry.init.block.CoreBlocks;
+import com.avp.common.registry.tag.AVPBlockTags;
 
 public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 

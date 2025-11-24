@@ -1,6 +1,5 @@
 package com.avp.fabric.data.gene_bonus_data;
 
-import com.avp.common.data.GeneBonusDataReloadListener;
 import com.lib.common.gameplay.gene.GeneBonusData;
 import com.mojang.serialization.JsonOps;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -14,6 +13,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import com.avp.AVPResources;
+import com.avp.common.data.GeneBonusDataReloadListener;
 
 public abstract class GeneBonusDataProvider implements DataProvider {
 

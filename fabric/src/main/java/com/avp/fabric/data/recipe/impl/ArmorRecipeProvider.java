@@ -1,11 +1,5 @@
 package com.avp.fabric.data.recipe.impl;
 
-import com.avp.common.registry.init.item.AVPArmorItems;
-import com.avp.common.registry.init.item.AVPItems;
-import com.avp.common.registry.tag.AVPItemTags;
-import com.avp.fabric.data.recipe.RecipeTemplates;
-import com.avp.fabric.data.recipe.builder.RecipeBuilder;
-import com.avp.fabric.data.recipe.builder.ShapedRecipeBuilder;
 import com.compat.CommonItemTags;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.tags.ItemTags;
@@ -13,6 +7,13 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 import java.util.function.Supplier;
+
+import com.avp.common.registry.init.item.AVPArmorItems;
+import com.avp.common.registry.init.item.AVPItems;
+import com.avp.common.registry.tag.AVPItemTags;
+import com.avp.fabric.data.recipe.RecipeTemplates;
+import com.avp.fabric.data.recipe.builder.RecipeBuilder;
+import com.avp.fabric.data.recipe.builder.ShapedRecipeBuilder;
 
 public class ArmorRecipeProvider {
 

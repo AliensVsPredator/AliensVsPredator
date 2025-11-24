@@ -1,12 +1,13 @@
 package com.avp.common.registry.init.creative_mode_tab.initializer;
 
-import com.avp.common.registry.init.block.AVPBlocks;
-import com.avp.common.registry.init.item.AVPArmorItems;
-import com.avp.common.registry.init.item.AVPItems;
 import com.human.common.registry.init.item.HumanGunItems;
 import net.minecraft.world.item.CreativeModeTab;
 
 import java.util.function.Consumer;
+
+import com.avp.common.registry.init.block.AVPBlocks;
+import com.avp.common.registry.init.item.AVPArmorItems;
+import com.avp.common.registry.init.item.AVPItems;
 
 public class CombatCreativeModeTabInitializer {
 

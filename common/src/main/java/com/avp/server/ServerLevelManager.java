@@ -22,8 +22,8 @@ public class ServerLevelManager {
         queenSpawnCooldown.tick();
 
         // FIXME:
-//        HiveLevelData.getOrCreate(serverLevel)
-//            .ifSome(HiveLevelData::tick);
+        // HiveLevelData.getOrCreate(serverLevel)
+        // .ifSome(HiveLevelData::tick);
 
         BlockBreakProgressManager.tick(serverLevel);
 

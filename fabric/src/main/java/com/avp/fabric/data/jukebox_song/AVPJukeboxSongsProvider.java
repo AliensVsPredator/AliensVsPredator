@@ -14,8 +14,7 @@ public class AVPJukeboxSongsProvider extends FabricDynamicRegistryProvider {
     }
 
     @Override
-    protected void configure(HolderLookup.Provider registries, Entries entries) {
-    }
+    protected void configure(HolderLookup.Provider registries, Entries entries) {}
 
     @Override
     public @NotNull String getName() {

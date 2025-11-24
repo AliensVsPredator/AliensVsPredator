@@ -1,9 +1,10 @@
 package com.avp.common.registry.init.creative_mode_tab.initializer;
 
-import com.avp.common.registry.init.item.AVPItems;
 import net.minecraft.world.item.CreativeModeTab;
 
 import java.util.function.Consumer;
+
+import com.avp.common.registry.init.item.AVPItems;
 
 public class ToolsAndUtilitiesCreativeModeTabInitializer {
 

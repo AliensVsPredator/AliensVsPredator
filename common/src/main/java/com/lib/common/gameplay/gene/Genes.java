@@ -1,7 +1,5 @@
 package com.lib.common.gameplay.gene;
 
-import com.avp.AVPResources;
-import com.avp.common.registry.AVPDeferredHolder;
 import com.just.core.functional.function.Function2;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.LivingEntity;
@@ -9,6 +7,9 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
 import java.util.function.Consumer;
+
+import com.avp.AVPResources;
+import com.avp.common.registry.AVPDeferredHolder;
 
 public class Genes {
 
@@ -189,23 +190,23 @@ public class Genes {
 
     // FIXME:
     private static void handleBonusParasiteCount(LivingEntity entity) {
-//        if (!(entity instanceof Ovomorph ovomorph)) {
-//            return;
-//        }
-//
-//        var scaleAttribute = ovomorph.getAttribute(Attributes.SCALE);
-//
-//        if (scaleAttribute != null) {
-//            var geneContainer = ((GeneCarrier) ovomorph).getOrCreateGeneManager().getGeneContainer();
-//            var totalParasiteCount = geneContainer.getActiveGeneMap().getValue(Genes.BONUS_PARASITE_COUNT);
-//            var modifier = new AttributeModifier(
-//                Genes.BONUS_PARASITE_COUNT.get().id(),
-//                totalParasiteCount / 2.0,
-//                AttributeModifier.Operation.ADD_VALUE
-//            );
-//
-//            ovomorph.maxSpawnCount.set((byte) (1 + totalParasiteCount));
-//            scaleAttribute.addOrReplacePermanentModifier(modifier);
-//        }
+        // if (!(entity instanceof Ovomorph ovomorph)) {
+        // return;
+        // }
+        //
+        // var scaleAttribute = ovomorph.getAttribute(Attributes.SCALE);
+        //
+        // if (scaleAttribute != null) {
+        // var geneContainer = ((GeneCarrier) ovomorph).getOrCreateGeneManager().getGeneContainer();
+        // var totalParasiteCount = geneContainer.getActiveGeneMap().getValue(Genes.BONUS_PARASITE_COUNT);
+        // var modifier = new AttributeModifier(
+        // Genes.BONUS_PARASITE_COUNT.get().id(),
+        // totalParasiteCount / 2.0,
+        // AttributeModifier.Operation.ADD_VALUE
+        // );
+        //
+        // ovomorph.maxSpawnCount.set((byte) (1 + totalParasiteCount));
+        // scaleAttribute.addOrReplacePermanentModifier(modifier);
+        // }
     }
 }

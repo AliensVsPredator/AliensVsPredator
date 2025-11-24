@@ -1,8 +1,5 @@
 package com.avp.fabric.data.lang.en_us.provider;
 
-import com.avp.common.registry.AVPRegistryValidation;
-import com.avp.common.registry.init.block.AVPBlocks;
-import com.avp.common.registry.init.block.CoreBlocks;
 import com.human.common.registry.init.block.HumanFerroaluminumBlocks;
 import com.human.common.registry.init.block.HumanIndustrialConcreteBlocks;
 import com.human.common.registry.init.block.HumanIndustrialGlassBlocks;
@@ -17,6 +14,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import com.avp.common.registry.AVPRegistryValidation;
+import com.avp.common.registry.init.block.AVPBlocks;
+import com.avp.common.registry.init.block.CoreBlocks;
 
 public class EnUsBlockProvider {
 

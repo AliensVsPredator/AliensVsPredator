@@ -62,7 +62,11 @@ public class FabricRegistryService implements RegistryService {
     }
 
     @Override
-    public <T> AVPDeferredHolder<T> register(Registry<? super T> registry, ResourceLocation resourceLocation, Supplier<? extends T> supplier) {
+    public <T> AVPDeferredHolder<T> register(
+        Registry<? super T> registry,
+        ResourceLocation resourceLocation,
+        Supplier<? extends T> supplier
+    ) {
         var object = supplier.get();
 
         if (object instanceof PoiType poiType) {

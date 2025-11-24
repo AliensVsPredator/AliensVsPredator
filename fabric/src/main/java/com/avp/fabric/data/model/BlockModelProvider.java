@@ -1,10 +1,5 @@
 package com.avp.fabric.data.model;
 
-import com.avp.common.gameplay.block.property.BlockProperties;
-import com.avp.common.registry.init.block.AVPBlocks;
-import com.avp.common.registry.init.block.CoreBlocks;
-import com.avp.common.registry.init.item.AVPSpawnEggItems;
-import com.avp.fabric.data.model.generator.BarsGenerator;
 import com.human.common.registry.init.block.HumanFerroaluminumBlocks;
 import com.human.common.registry.init.block.HumanIndustrialConcreteBlocks;
 import com.human.common.registry.init.block.HumanIndustrialGlassBlocks;
@@ -30,6 +25,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jetbrains.annotations.NotNull;
+
+import com.avp.common.gameplay.block.property.BlockProperties;
+import com.avp.common.registry.init.block.AVPBlocks;
+import com.avp.common.registry.init.block.CoreBlocks;
+import com.avp.common.registry.init.item.AVPSpawnEggItems;
+import com.avp.fabric.data.model.generator.BarsGenerator;
 
 public class BlockModelProvider extends FabricModelProvider {
 

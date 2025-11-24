@@ -1,7 +1,5 @@
 package com.avp.fabric.data.lang.en_us.provider;
 
-import com.avp.common.registry.AVPRegistryValidation;
-import com.avp.common.registry.init.entity_type.AVPEntityTypes;
 import com.human.common.registry.init.entity_type.HumanEntityTypes;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.minecraft.world.entity.EntityType;
@@ -9,6 +7,9 @@ import net.minecraft.world.entity.EntityType;
 import java.util.HashSet;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import com.avp.common.registry.AVPRegistryValidation;
+import com.avp.common.registry.init.entity_type.AVPEntityTypes;
 
 public class EnUsEntityProvider {
 

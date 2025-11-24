@@ -1,8 +1,5 @@
 package com.avp.common.registry.init;
 
-import com.avp.common.registry.AVPDeferredHolder;
-import com.avp.common.registry.init.block.AVPBlocks;
-import com.avp.service.Services;
 import com.human.common.gameplay.block.entity.AmmoChestBlockEntity;
 import com.human.common.gameplay.block.entity.IndustrialFurnaceBlockEntity;
 import com.human.common.gameplay.block.entity.LeadChestBlockEntity;
@@ -18,6 +15,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import java.util.function.Supplier;
+
+import com.avp.common.registry.AVPDeferredHolder;
+import com.avp.common.registry.init.block.AVPBlocks;
+import com.avp.service.Services;
 
 public class AVPBlockEntityTypes {
 

@@ -15,6 +15,5 @@ public class AVPMobEffectTagProvider extends FabricTagProvider<MobEffect> {
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider wrapperLookup) {
-    }
+    protected void addTags(HolderLookup.Provider wrapperLookup) {}
 }

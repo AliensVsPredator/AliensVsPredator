@@ -1,8 +1,5 @@
 package com.avp.fabric.data.lang.en_us.provider;
 
-import com.avp.common.registry.AVPRegistryValidation;
-import com.avp.common.registry.init.item.AVPArmorItems;
-import com.avp.common.registry.init.item.AVPItems;
 import com.human.common.registry.init.item.HumanGunItems;
 import com.human.common.registry.init.item.HumanSpawnEggItems;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
@@ -12,6 +9,10 @@ import net.minecraft.world.item.Item;
 import java.util.HashSet;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import com.avp.common.registry.AVPRegistryValidation;
+import com.avp.common.registry.init.item.AVPArmorItems;
+import com.avp.common.registry.init.item.AVPItems;
 
 public class EnUsItemProvider {
 

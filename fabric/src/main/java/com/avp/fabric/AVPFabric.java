@@ -1,16 +1,5 @@
 package com.avp.fabric;
 
-import com.avp.AVP;
-import com.avp.common.AVPEvents;
-import com.avp.common.data.worldgen.AVPVillageInjection;
-import com.avp.common.registry.init.AVPVillagerProfessions;
-import com.avp.common.registry.key.AVPVillagerGiftKeys;
-import com.avp.fabric.common.DispenserBlockBehaviors;
-import com.avp.fabric.common.worldgen.WorldGen;
-import com.avp.fabric.data.loot.LootTableModifier;
-import com.avp.fabric.service.FabricRegistryService;
-import com.avp.mixin.GiveGiftToHeroAccessor;
-import com.avp.service.Services;
 import com.lib.common.network.DataContainer;
 import com.lib.common.network.DataUser;
 import net.fabricmc.api.ModInitializer;
@@ -25,6 +14,18 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.GameRules;
+
+import com.avp.AVP;
+import com.avp.common.AVPEvents;
+import com.avp.common.data.worldgen.AVPVillageInjection;
+import com.avp.common.registry.init.AVPVillagerProfessions;
+import com.avp.common.registry.key.AVPVillagerGiftKeys;
+import com.avp.fabric.common.DispenserBlockBehaviors;
+import com.avp.fabric.common.worldgen.WorldGen;
+import com.avp.fabric.data.loot.LootTableModifier;
+import com.avp.fabric.service.FabricRegistryService;
+import com.avp.mixin.GiveGiftToHeroAccessor;
+import com.avp.service.Services;
 
 public class AVPFabric implements ModInitializer {
 

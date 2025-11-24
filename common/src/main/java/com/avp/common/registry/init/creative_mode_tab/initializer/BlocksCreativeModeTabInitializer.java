@@ -1,7 +1,5 @@
 package com.avp.common.registry.init.creative_mode_tab.initializer;
 
-import com.avp.common.registry.init.block.AVPBlocks;
-import com.avp.common.registry.init.block.CoreBlocks;
 import com.human.common.registry.init.block.HumanFerroaluminumBlocks;
 import com.human.common.registry.init.block.HumanIndustrialGlassBlocks;
 import com.human.common.registry.init.block.HumanSteelBlocks;
@@ -9,6 +7,9 @@ import com.human.common.registry.init.block.HumanTitaniumBlocks;
 import net.minecraft.world.item.CreativeModeTab;
 
 import java.util.function.Consumer;
+
+import com.avp.common.registry.init.block.AVPBlocks;
+import com.avp.common.registry.init.block.CoreBlocks;
 
 public class BlocksCreativeModeTabInitializer {
 

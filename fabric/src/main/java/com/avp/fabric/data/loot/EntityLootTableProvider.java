@@ -20,6 +20,5 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
     }
 
     @Override
-    public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> biConsumer) {
-    }
+    public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> biConsumer) {}
 }

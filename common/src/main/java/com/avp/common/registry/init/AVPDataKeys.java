@@ -1,12 +1,13 @@
 package com.avp.common.registry.init;
 
-import com.avp.AVPResources;
 import com.just.codec.stream.impl.StreamCodecs;
 import com.lib.common.network.DataKey;
 import com.lib.common.registry.DataKeyRegistry;
 import com.mojang.serialization.Codec;
 
 import java.util.function.Function;
+
+import com.avp.AVPResources;
 
 public class AVPDataKeys {
 
@@ -109,12 +110,12 @@ public class AVPDataKeys {
     );
 
     // FIXME:
-//    public static final DataKey<Byte> OVOMORPH_HATCH_STATE = register(
-//        "ovomorph_hatch_state",
-//        builder -> builder.networkSynchronized(StreamCodecs.BYTE)
-//            .persistent("hatchState", Codec.BYTE)
-//            .build((byte) Ovomorph.DEFAULT_HATCH_STATE.getId())
-//    );
+    // public static final DataKey<Byte> OVOMORPH_HATCH_STATE = register(
+    // "ovomorph_hatch_state",
+    // builder -> builder.networkSynchronized(StreamCodecs.BYTE)
+    // .persistent("hatchState", Codec.BYTE)
+    // .build((byte) Ovomorph.DEFAULT_HATCH_STATE.getId())
+    // );
 
     public static final DataKey<Boolean> OVOMORPH_IS_ROOTED = register(
         "ovomorph_is_rooted",

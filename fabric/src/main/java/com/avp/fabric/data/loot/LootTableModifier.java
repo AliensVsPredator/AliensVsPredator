@@ -1,6 +1,5 @@
 package com.avp.fabric.data.loot;
 
-import com.avp.common.registry.init.item.AVPItems;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
@@ -10,6 +9,8 @@ import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 
 import java.util.List;
+
+import com.avp.common.registry.init.item.AVPItems;
 
 public class LootTableModifier {
 

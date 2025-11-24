@@ -10,8 +10,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
-import com.avp.common.registry.init.item.AVPItems;
-
 public class AVPTiers {
 
     public static final Tier STEEL = create(

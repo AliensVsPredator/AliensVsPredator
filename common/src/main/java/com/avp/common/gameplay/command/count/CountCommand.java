@@ -34,23 +34,23 @@ public class CountCommand {
                     })
             );
         // FIXME:
-//            .then(
-//                Commands.literal(HIVE_ARGUMENT_NAME)
-//                    .executes(context -> {
-//                        int count = HiveLevelData.getOrCreate(context.getSource().getLevel())
-//                            .map(hiveLevelData -> hiveLevelData.allHives().size())
-//                            .unwrapOr(0);
-//
-//                        context.getSource().sendSuccess(() -> {
-//                            var areOrIs = count == 1 ? "is" : "are";
-//                            var pluralHive = count == 1 ? "hive" : "hives";
-//                            return Component.literal(
-//                                "There " + areOrIs + " " + count + " " + pluralHive + " in the world."
-//                            );
-//                        }, false);
-//
-//                        return 1;
-//                    })
-//            );
+        // .then(
+        // Commands.literal(HIVE_ARGUMENT_NAME)
+        // .executes(context -> {
+        // int count = HiveLevelData.getOrCreate(context.getSource().getLevel())
+        // .map(hiveLevelData -> hiveLevelData.allHives().size())
+        // .unwrapOr(0);
+        //
+        // context.getSource().sendSuccess(() -> {
+        // var areOrIs = count == 1 ? "is" : "are";
+        // var pluralHive = count == 1 ? "hive" : "hives";
+        // return Component.literal(
+        // "There " + areOrIs + " " + count + " " + pluralHive + " in the world."
+        // );
+        // }, false);
+        //
+        // return 1;
+        // })
+        // );
     }
 }

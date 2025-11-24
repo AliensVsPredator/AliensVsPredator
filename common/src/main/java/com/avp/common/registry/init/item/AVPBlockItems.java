@@ -1,9 +1,5 @@
 package com.avp.common.registry.init.item;
 
-import com.avp.common.registry.AVPDeferredHolder;
-import com.avp.common.registry.init.block.AVPBlocks;
-import com.avp.common.registry.init.block.CoreBlocks;
-import com.avp.service.Services;
 import com.human.common.gameplay.block_item.AmmoChestBlockItem;
 import com.human.common.gameplay.block_item.LeadChestBlockItem;
 import com.human.common.gameplay.block_item.SentryTurretBlockItem;
@@ -18,6 +14,11 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import com.avp.common.registry.AVPDeferredHolder;
+import com.avp.common.registry.init.block.AVPBlocks;
+import com.avp.common.registry.init.block.CoreBlocks;
+import com.avp.service.Services;
 
 public class AVPBlockItems {
 
