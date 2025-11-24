@@ -1,6 +1,6 @@
 package com.avp.fabric.data.gene_bonus_data;
 
-import com.alien.common.data.GeneBonusDataReloadListener;
+import com.avp.common.data.GeneBonusDataReloadListener;
 import com.lib.common.gameplay.gene.GeneBonusData;
 import com.mojang.serialization.JsonOps;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;

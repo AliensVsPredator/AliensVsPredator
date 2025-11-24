@@ -28,7 +28,6 @@ import com.avp.common.registry.init.item.AVPArmorItems;
 import com.avp.common.registry.init.item.AVPBlockItems;
 import com.avp.common.registry.init.item.AVPItems;
 import com.avp.common.registry.key.AVPBiomeKeys;
-import com.avp.common.registry.key.AVPJukeboxSongKeys;
 import com.avp.service.Services;
 import com.human.Human;
 import com.human.common.gameplay.level.patrol.MarinePatrolSpawner;
@@ -73,7 +72,6 @@ public class AVP {
         AVPCommands.initialize();
         AVPDecoratedPotPatterns.initialize();
         AVPSoundEvents.initialize();
-        AVPJukeboxSongKeys.initialize();
         AVPPacketDirectionRegistry.initialize();
         AVPDataKeys.initialize();
         AVPServerPacketHandlerRegistry.initialize();

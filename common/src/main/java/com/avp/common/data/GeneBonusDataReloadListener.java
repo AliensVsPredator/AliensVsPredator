@@ -1,4 +1,4 @@
-package com.alien.common.data;
+package com.avp.common.data;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
