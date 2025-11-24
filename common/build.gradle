@@ -33,9 +33,6 @@ dependencies {
     compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${project.jei_version}"
     compileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:${project.rei_version}"
     compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
-
-    // Compats
-    compileOnly "maven.modrinth:gigeresque:${project.gigeresque_version}"
 }
 
 configurations.configureEach {

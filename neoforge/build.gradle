@@ -75,9 +75,6 @@ dependencies {
 
     jarJar(implementation("com.just:just-goap:${project.just_goap_version}"))
     additionalRuntimeClasspath "com.just:just-goap:${project.just_goap_version}"
-
-    // Compats
-    implementation "maven.modrinth:gigeresque:${project.gigeresque_version}"
 }
 
 configurations.configureEach {
