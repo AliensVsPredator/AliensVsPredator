@@ -29,7 +29,6 @@ import java.util.function.Supplier;
 
 import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.common.registry.init.AVPTiers;
-import com.avp.common.registry.key.AVPJukeboxSongKeys;
 import com.avp.service.Services;
 
 public class AVPItems {
