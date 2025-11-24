@@ -1,6 +1,5 @@
 package com.avp.server;
 
-import com.alien.common.gameplay.level.saveddata.HiveLevelData;
 import com.human.common.gameplay.power.PowerSystem;
 import com.lib.common.data.Cooldown;
 import net.minecraft.server.level.ServerLevel;
@@ -22,8 +21,9 @@ public class ServerLevelManager {
 
         queenSpawnCooldown.tick();
 
-        HiveLevelData.getOrCreate(serverLevel)
-            .ifSome(HiveLevelData::tick);
+        // FIXME:
+//        HiveLevelData.getOrCreate(serverLevel)
+//            .ifSome(HiveLevelData::tick);
 
         BlockBreakProgressManager.tick(serverLevel);
 

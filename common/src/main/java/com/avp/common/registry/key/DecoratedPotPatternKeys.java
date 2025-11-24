@@ -1,6 +1,5 @@
 package com.avp.common.registry.key;
 
-import com.alien.common.registry.init.AlienItems;
 import com.just.core.functional.function.Lazy;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -23,10 +22,11 @@ public class DecoratedPotPatternKeys {
 
     public static final Lazy<Map<Item, ResourceKey<DecoratedPotPattern>>> ITEM_TO_POT_TEXTURE = Lazy.of(
         () -> Map.ofEntries(
-            Map.entry(AlienItems.OVOID_POTTERY_SHERD.get(), OVOID),
-            Map.entry(AlienItems.PARASITE_POTTERY_SHERD.get(), PARASITE),
-            Map.entry(AlienItems.ROYALTY_POTTERY_SHERD.get(), ROYALTY),
-            Map.entry(AlienItems.VECTOR_POTTERY_SHERD.get(), VECTOR)
+            // FIXME:
+//            Map.entry(AlienItems.OVOID_POTTERY_SHERD.get(), OVOID),
+//            Map.entry(AlienItems.PARASITE_POTTERY_SHERD.get(), PARASITE),
+//            Map.entry(AlienItems.ROYALTY_POTTERY_SHERD.get(), ROYALTY),
+//            Map.entry(AlienItems.VECTOR_POTTERY_SHERD.get(), VECTOR)
         )
     );
 

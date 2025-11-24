@@ -11,41 +11,6 @@ import com.avp.common.registry.init.AVPSoundEvents;
 public class EnUsSoundEventProvider {
 
     public static final Consumer<FabricLanguageProvider.TranslationBuilder> CONSUMER = builder -> {
-        addSound(builder, AVPSoundEvents.BLOCK_ACID_BURN, "Acid burns");
-        addSound(builder, AVPSoundEvents.BLOCK_RESIN_SPREAD, "Xenomorph spreads resin");
-
-        addSound(builder, AVPSoundEvents.EFFECT_BONE_CRUNCH, "Bones crunching");
-        addSound(builder, AVPSoundEvents.EFFECT_HEARTBEAT_0, "Heart beats");
-        addSound(builder, AVPSoundEvents.EFFECT_HEARTBEAT_1, "Heart beats quickly");
-        addSound(builder, AVPSoundEvents.EFFECT_HEARTBEAT_2, "Heart beats rapidly");
-        addSound(builder, AVPSoundEvents.EFFECT_HEARTBEAT_3, "Heart beats fatally");
-
-        addSound(builder, AVPSoundEvents.ENTITY_CHESTBURSTER_BURST, "Chestburster bursting");
-
-        addSound(builder, AVPSoundEvents.ENTITY_OVOMORPH_HATCH, "Ovomorph hatches");
-        addSound(builder, AVPSoundEvents.ENTITY_OVOMORPH_LAID, "Queen lays egg");
-        addSound(builder, AVPSoundEvents.ENTITY_OVOMORPH_ROOT, "Ovomorph takes root");
-        addSound(builder, AVPSoundEvents.ENTITY_OVOMORPH_SHEAR, "Ovomorph de-roots");
-
-        addSound(builder, AVPSoundEvents.ENTITY_QUEEN_ARM_ATTACK, "Queen attacks");
-        addSound(builder, AVPSoundEvents.ENTITY_QUEEN_BACK_HAND_ATTACK, "Queen back hand attacks");
-        addSound(builder, AVPSoundEvents.ENTITY_QUEEN_RAM_ATTACK, "Queen ram attacks");
-        addSound(builder, AVPSoundEvents.ENTITY_QUEEN_SCREAM, "Queen screams");
-        addSound(builder, AVPSoundEvents.ENTITY_QUEEN_TAIL_ATTACK, "Queen tail attacks");
-        addSound(builder, AVPSoundEvents.ENTITY_QUEEN_DEATH, "Queen dies");
-        addSound(builder, AVPSoundEvents.ENTITY_QUEEN_HURT, "Queen hurts");
-        addSound(builder, AVPSoundEvents.ENTITY_QUEEN_IDLE, "Queen breathes");
-        addSound(builder, AVPSoundEvents.ENTITY_QUEEN_STEP_THUMP, "Queen steps");
-        addSound(builder, AVPSoundEvents.ENTITY_QUEEN_STEP_THUMP_ROCK, "Queen steps");
-
-        addSound(builder, AVPSoundEvents.ENTITY_XENOMORPH_ATTACK, "Xenomorph attacks");
-        addSound(builder, AVPSoundEvents.ENTITY_XENOMORPH_DEATH, "Xenomorph dies");
-        addSound(builder, AVPSoundEvents.ENTITY_XENOMORPH_HISS, "Xenomorph hisses");
-        addSound(builder, AVPSoundEvents.ENTITY_XENOMORPH_HURT, "Xenomorph hurts");
-        addSound(builder, AVPSoundEvents.ENTITY_XENOMORPH_IDLE, "Xenomorph breathes");
-        addSound(builder, AVPSoundEvents.ENTITY_XENOMORPH_LUNGE, "Xenomorph lunges");
-
-        addSound(builder, AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN, "Chitin armor squishes");
         addSound(builder, AVPSoundEvents.ITEM_ARMOR_EQUIP_MK50, "MK50 armor rustles");
         addSound(builder, AVPSoundEvents.ITEM_ARMOR_EQUIP_PRESSURE, "Pressure armor rustles");
         addSound(builder, AVPSoundEvents.ITEM_ARMOR_EQUIP_STEEL, "Steel armor clanks");
@@ -77,7 +42,6 @@ public class EnUsSoundEventProvider {
         addSound(builder, AVPSoundEvents.WEAPON_OLD_PAINLESS_SHOOT_SPINNING, "Old Painless barrel spins");
         addSound(builder, AVPSoundEvents.WEAPON_OLD_PAINLESS_SHOOT_START, "Old Painless barrel starts spinning");
         addSound(builder, AVPSoundEvents.WEAPON_ZX_76_SHOTGUN_SHOOT, "ZX-76 Shotgun shoots");
-        addSound(builder, AVPSoundEvents.JUKEBOX_SOUNDS_ALIEN_MUSIC_1, "Silver Smile plays");
     };
 
     private static void addSound(

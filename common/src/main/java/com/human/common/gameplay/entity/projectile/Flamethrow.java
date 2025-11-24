@@ -1,6 +1,6 @@
 package com.human.common.gameplay.entity.projectile;
 
-import com.alien.common.data.AlienVariantTypes;
+import com.avp.common.registry.key.AVPDamageTypeKeys;
 import com.human.common.registry.init.entity_type.HumanEntityTypes;
 import com.just.core.traversal.BFS;
 import com.lib.common.util.DirectionUtil;
@@ -22,8 +22,6 @@ import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-
-import com.avp.common.registry.key.AVPDamageTypeKeys;
 
 public class Flamethrow extends ThrowableProjectile {
 
@@ -112,12 +110,13 @@ public class Flamethrow extends ThrowableProjectile {
 
     private boolean shouldPlaceFireAt(BlockPos pos) {
         var state = level().getBlockState(pos);
-        var alienVariantType = AlienVariantTypes.getForOrNull(state);
-
-        if (alienVariantType == AlienVariantTypes.NETHER) {
-            // If the state being replaced is a nether variant type (nether resin), then don't replace it with fire.
-            return false;
-        }
+        // FIXME:
+//        var alienVariantType = AlienVariantTypes.getForOrNull(state);
+//
+//        if (alienVariantType == AlienVariantTypes.NETHER) {
+//            // If the state being replaced is a nether variant type (nether resin), then don't replace it with fire.
+//            return false;
+//        }
 
         return state.canBeReplaced() && state.getFluidState().isEmpty();
     }

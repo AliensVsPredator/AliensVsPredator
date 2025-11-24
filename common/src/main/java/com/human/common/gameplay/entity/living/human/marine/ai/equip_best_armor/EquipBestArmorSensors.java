@@ -1,6 +1,6 @@
 package com.human.common.gameplay.entity.living.human.marine.ai.equip_best_armor;
 
-import com.alien.common.registry.init.item.AlienArmorItems;
+import com.avp.common.registry.init.item.AVPArmorItems;
 import com.human.common.gameplay.entity.living.human.marine.ai.equip_best_armor.sensor.BestArmorSetTargetSensor;
 import com.human.common.gameplay.entity.living.human.marine.ai.model.ArmorSet;
 import com.human.common.gameplay.entity.living.human.marine.ai.model.ArmorSetTarget;
@@ -13,8 +13,6 @@ import com.just.goap.state.ReadableWorldState;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.common.registry.init.item.AVPArmorItems;
-
 public class EquipBestArmorSensors {
 
     private static final ArmorSet MK50_ARMOR_SET = new ArmorSet(
@@ -24,19 +22,20 @@ public class EquipBestArmorSensors {
         AVPArmorItems.MK50_BOOTS
     );
 
-    private static final ArmorSet NETHER_CHITIN_ARMOR_SET = new ArmorSet(
-        AlienArmorItems.NETHER_CHITIN_HELMET,
-        AlienArmorItems.NETHER_CHITIN_CHESTPLATE,
-        AlienArmorItems.NETHER_CHITIN_LEGGINGS,
-        AlienArmorItems.NETHER_CHITIN_BOOTS
-    );
-
-    private static final ArmorSet PLATED_NETHER_CHITIN_ARMOR_SET = new ArmorSet(
-        AlienArmorItems.PLATED_NETHER_CHITIN_HELMET,
-        AlienArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE,
-        AlienArmorItems.PLATED_NETHER_CHITIN_LEGGINGS,
-        AlienArmorItems.PLATED_NETHER_CHITIN_BOOTS
-    );
+    // FIXME:
+//    private static final ArmorSet NETHER_CHITIN_ARMOR_SET = new ArmorSet(
+//        AlienArmorItems.NETHER_CHITIN_HELMET,
+//        AlienArmorItems.NETHER_CHITIN_CHESTPLATE,
+//        AlienArmorItems.NETHER_CHITIN_LEGGINGS,
+//        AlienArmorItems.NETHER_CHITIN_BOOTS
+//    );
+//
+//    private static final ArmorSet PLATED_NETHER_CHITIN_ARMOR_SET = new ArmorSet(
+//        AlienArmorItems.PLATED_NETHER_CHITIN_HELMET,
+//        AlienArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE,
+//        AlienArmorItems.PLATED_NETHER_CHITIN_LEGGINGS,
+//        AlienArmorItems.PLATED_NETHER_CHITIN_BOOTS
+//    );
 
     private static final ArmorSet PRESSURE_SUIT_ARMOR_SET = new ArmorSet(
         AVPArmorItems.PRESSURE_HELMET,
@@ -52,12 +51,16 @@ public class EquipBestArmorSensors {
 
     public static final Sensor.Mono<LivingEntity, ArmorSetTarget> NETHER_CHITIN_ARMOR_SET_TARGET = Sensors.lazyCompose(
         StateKey.sensed("nether_chitin_armor_set"),
-        (livingEntity, worldState) -> getFullArmorSetOrEmpty(livingEntity, worldState, NETHER_CHITIN_ARMOR_SET)
+        (livingEntity, worldState) -> ArmorSetTarget.EMPTY
+        // FIXME:
+//        (livingEntity, worldState) -> getFullArmorSetOrEmpty(livingEntity, worldState, NETHER_CHITIN_ARMOR_SET)
     );
 
     public static final Sensor.Mono<LivingEntity, ArmorSetTarget> PLATED_NETHER_CHITIN_ARMOR_SET_TARGET = Sensors.lazyCompose(
         StateKey.sensed("plated_nether_chitin_armor_set"),
-        (livingEntity, worldState) -> getFullArmorSetOrEmpty(livingEntity, worldState, PLATED_NETHER_CHITIN_ARMOR_SET)
+        (livingEntity, worldState) -> ArmorSetTarget.EMPTY
+            // FIXME:
+//        (livingEntity, worldState) -> getFullArmorSetOrEmpty(livingEntity, worldState, PLATED_NETHER_CHITIN_ARMOR_SET)
     );
 
     public static final Sensor.Mono<LivingEntity, ArmorSetTarget> PRESSURE_SUIT_ARMOR_SET_TARGET = Sensors.lazyCompose(

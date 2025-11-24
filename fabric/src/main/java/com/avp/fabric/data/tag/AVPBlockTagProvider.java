@@ -1,9 +1,9 @@
 package com.avp.fabric.data.tag;
 
-import com.alien.common.registry.init.block.AlienChitinBlocks;
-import com.alien.common.registry.init.block.AlienResinBlocks;
+import com.avp.common.registry.init.block.AVPBlocks;
+import com.avp.common.registry.init.block.CoreBlocks;
+import com.avp.common.registry.tag.AVPBlockTags;
 import com.compat.CommonBlockTags;
-import com.compat.gigeresque.common.registry.tag.GigBlockTags;
 import com.human.common.registry.init.block.HumanFerroaluminumBlocks;
 import com.human.common.registry.init.block.HumanIndustrialConcreteBlocks;
 import com.human.common.registry.init.block.HumanIndustrialGlassBlocks;
@@ -31,10 +31,6 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-
-import com.avp.common.registry.init.block.AVPBlocks;
-import com.avp.common.registry.init.block.CoreBlocks;
-import com.avp.common.registry.tag.AVPBlockTags;
 
 public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
@@ -176,239 +172,6 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         TagProviderUtil.getPlasticBlockStream()
             .forEach(plasticTagBuilder::add);
 
-        getOrCreateTagBuilder(AVPBlockTags.IRRADIATED_RESIN)
-            .add(
-                AlienResinBlocks.IRRADIATED_RESIN.get(),
-                AlienResinBlocks.IRRADIATED_RESIN_NODE.get(),
-                AlienResinBlocks.IRRADIATED_RESIN_VEIN.get(),
-                AlienResinBlocks.IRRADIATED_RESIN_WEB.get(),
-
-                AlienResinBlocks.IRRADIATED_RESIN_BRICKS.get(),
-                AlienResinBlocks.IRRADIATED_RESIN_BRICK_SLAB.get(),
-                AlienResinBlocks.IRRADIATED_RESIN_BRICK_STAIRS.get(),
-                AlienResinBlocks.IRRADIATED_RESIN_BRICK_WALL.get(),
-                AlienResinBlocks.IRRADIATED_RESIN_VENT.get(),
-                AlienResinBlocks.RIBBED_IRRADIATED_RESIN.get(),
-                AlienResinBlocks.SMOOTH_IRRADIATED_RESIN.get(),
-                AlienResinBlocks.SMOOTH_IRRADIATED_RESIN_SLAB.get(),
-                AlienResinBlocks.SMOOTH_IRRADIATED_RESIN_STAIRS.get(),
-                AlienResinBlocks.SMOOTH_IRRADIATED_RESIN_WALL.get()
-            );
-
-        getOrCreateTagBuilder(AVPBlockTags.ABERRANT_RESIN)
-            .add(
-                AlienResinBlocks.ABERRANT_RESIN.get(),
-                AlienResinBlocks.ABERRANT_RESIN_SLAB.get(),
-                AlienResinBlocks.ABERRANT_RESIN_STAIRS.get(),
-                AlienResinBlocks.ABERRANT_RESIN_NODE.get(),
-                AlienResinBlocks.ABERRANT_RESIN_VEIN.get(),
-                AlienResinBlocks.ABERRANT_RESIN_WEB.get(),
-
-                AlienResinBlocks.ABERRANT_RESIN_BRICKS.get(),
-                AlienResinBlocks.ABERRANT_RESIN_BRICK_SLAB.get(),
-                AlienResinBlocks.ABERRANT_RESIN_BRICK_STAIRS.get(),
-                AlienResinBlocks.ABERRANT_RESIN_BRICK_WALL.get(),
-                AlienResinBlocks.ABERRANT_RESIN_VENT.get(),
-                AlienResinBlocks.RIBBED_ABERRANT_RESIN.get(),
-                AlienResinBlocks.SMOOTH_ABERRANT_RESIN.get(),
-                AlienResinBlocks.SMOOTH_ABERRANT_RESIN_SLAB.get(),
-                AlienResinBlocks.SMOOTH_ABERRANT_RESIN_STAIRS.get(),
-                AlienResinBlocks.SMOOTH_ABERRANT_RESIN_WALL.get()
-            );
-
-        getOrCreateTagBuilder(AVPBlockTags.NETHER_RESIN)
-            .add(
-                AlienResinBlocks.NETHER_RESIN.get(),
-                AlienResinBlocks.NETHER_RESIN_SLAB.get(),
-                AlienResinBlocks.NETHER_RESIN_STAIRS.get(),
-                AlienResinBlocks.NETHER_RESIN_NODE.get(),
-                AlienResinBlocks.NETHER_RESIN_VEIN.get(),
-                AlienResinBlocks.NETHER_RESIN_WEB.get(),
-
-                AlienResinBlocks.NETHER_RESIN_BRICKS.get(),
-                AlienResinBlocks.NETHER_RESIN_BRICK_SLAB.get(),
-                AlienResinBlocks.NETHER_RESIN_BRICK_STAIRS.get(),
-                AlienResinBlocks.NETHER_RESIN_BRICK_WALL.get(),
-                AlienResinBlocks.NETHER_RESIN_VENT.get(),
-                AlienResinBlocks.RIBBED_NETHER_RESIN.get(),
-                AlienResinBlocks.SMOOTH_NETHER_RESIN.get(),
-                AlienResinBlocks.SMOOTH_NETHER_RESIN_SLAB.get(),
-                AlienResinBlocks.SMOOTH_NETHER_RESIN_STAIRS.get(),
-                AlienResinBlocks.SMOOTH_NETHER_RESIN_WALL.get()
-            );
-
-        getOrCreateTagBuilder(AVPBlockTags.NORMAL_RESIN)
-            .add(
-                AlienResinBlocks.RESIN.get(),
-                AlienResinBlocks.RESIN_SLAB.get(),
-                AlienResinBlocks.RESIN_STAIRS.get(),
-                AlienResinBlocks.RESIN_NODE.get(),
-                AlienResinBlocks.RESIN_VEIN.get(),
-                AlienResinBlocks.RESIN_WEB.get(),
-
-                AlienResinBlocks.RESIN_BRICKS.get(),
-                AlienResinBlocks.RESIN_BRICK_SLAB.get(),
-                AlienResinBlocks.RESIN_BRICK_STAIRS.get(),
-                AlienResinBlocks.RESIN_BRICK_WALL.get(),
-                AlienResinBlocks.RESIN_VENT.get(),
-                AlienResinBlocks.RIBBED_RESIN.get(),
-                AlienResinBlocks.SMOOTH_RESIN.get(),
-                AlienResinBlocks.SMOOTH_RESIN_SLAB.get(),
-                AlienResinBlocks.SMOOTH_RESIN_STAIRS.get(),
-                AlienResinBlocks.SMOOTH_RESIN_WALL.get()
-            );
-
-        getOrCreateTagBuilder(AVPBlockTags.ABERRANT_CHITIN)
-            .add(
-                AlienChitinBlocks.ABERRANT_CHITIN_BLOCK.get(),
-                AlienChitinBlocks.ABERRANT_CHITIN_BLOCK_SLAB.get(),
-                AlienChitinBlocks.ABERRANT_CHITIN_BLOCK_STAIRS.get(),
-                AlienChitinBlocks.ABERRANT_CHITIN_BLOCK_WALL.get(),
-                AlienChitinBlocks.ABERRANT_CHITIN_BRICKS.get(),
-                AlienChitinBlocks.ABERRANT_CHITIN_BRICK_SLAB.get(),
-                AlienChitinBlocks.ABERRANT_CHITIN_BRICK_STAIRS.get(),
-                AlienChitinBlocks.ABERRANT_CHITIN_BRICK_WALL.get(),
-                AlienChitinBlocks.CHISELED_ABERRANT_CHITIN_BRICKS.get(),
-                AlienChitinBlocks.CHISELED_ABERRANT_CHITIN_BRICKS_EMBRYO.get(),
-                AlienChitinBlocks.POLISHED_ABERRANT_CHITIN.get(),
-                AlienChitinBlocks.POLISHED_ABERRANT_CHITIN_SLAB.get(),
-                AlienChitinBlocks.POLISHED_ABERRANT_CHITIN_STAIRS.get(),
-                AlienChitinBlocks.POLISHED_ABERRANT_CHITIN_WALL.get()
-            );
-
-        getOrCreateTagBuilder(AVPBlockTags.NETHER_CHITIN)
-            .add(
-
-                AlienChitinBlocks.NETHER_CHITIN_BLOCK.get(),
-                AlienChitinBlocks.NETHER_CHITIN_BLOCK_SLAB.get(),
-                AlienChitinBlocks.NETHER_CHITIN_BLOCK_STAIRS.get(),
-                AlienChitinBlocks.NETHER_CHITIN_BLOCK_WALL.get(),
-                AlienChitinBlocks.NETHER_CHITIN_BRICKS.get(),
-                AlienChitinBlocks.NETHER_CHITIN_BRICK_SLAB.get(),
-                AlienChitinBlocks.NETHER_CHITIN_BRICK_STAIRS.get(),
-                AlienChitinBlocks.NETHER_CHITIN_BRICK_WALL.get(),
-                AlienChitinBlocks.CHISELED_NETHER_CHITIN_BRICKS.get(),
-                AlienChitinBlocks.CHISELED_NETHER_CHITIN_BRICKS_EMBRYO.get(),
-                AlienChitinBlocks.POLISHED_NETHER_CHITIN.get(),
-                AlienChitinBlocks.POLISHED_NETHER_CHITIN_SLAB.get(),
-                AlienChitinBlocks.POLISHED_NETHER_CHITIN_STAIRS.get(),
-                AlienChitinBlocks.POLISHED_NETHER_CHITIN_WALL.get()
-            );
-
-        getOrCreateTagBuilder(AVPBlockTags.NORMAL_CHITIN)
-            .add(
-                AlienChitinBlocks.CHITIN_BLOCK.get(),
-                AlienChitinBlocks.CHITIN_BLOCK_SLAB.get(),
-                AlienChitinBlocks.CHITIN_BLOCK_STAIRS.get(),
-                AlienChitinBlocks.CHITIN_BLOCK_WALL.get(),
-                AlienChitinBlocks.CHITIN_BRICKS.get(),
-                AlienChitinBlocks.CHITIN_BRICK_SLAB.get(),
-                AlienChitinBlocks.CHITIN_BRICK_STAIRS.get(),
-                AlienChitinBlocks.CHITIN_BRICK_WALL.get(),
-                AlienChitinBlocks.CHISELED_CHITIN_BRICKS.get(),
-                AlienChitinBlocks.CHISELED_CHITIN_BRICKS_EMBRYO.get(),
-                AlienChitinBlocks.POLISHED_CHITIN.get(),
-                AlienChitinBlocks.POLISHED_CHITIN_SLAB.get(),
-                AlienChitinBlocks.POLISHED_CHITIN_STAIRS.get(),
-                AlienChitinBlocks.POLISHED_CHITIN_WALL.get()
-            );
-
-        getOrCreateTagBuilder(AVPBlockTags.CHITIN)
-            .addTag(AVPBlockTags.ABERRANT_CHITIN)
-            .addTag(AVPBlockTags.NETHER_CHITIN)
-            .addTag(AVPBlockTags.NORMAL_CHITIN);
-
-        getOrCreateTagBuilder(AVPBlockTags.RESIN)
-            .addTag(AVPBlockTags.ABERRANT_RESIN)
-            .addTag(AVPBlockTags.IRRADIATED_RESIN)
-            .addTag(AVPBlockTags.NETHER_RESIN)
-            .addTag(AVPBlockTags.NORMAL_RESIN);
-
-        getOrCreateTagBuilder(AVPBlockTags.RESIN_BLOCKS)
-            .add(
-                AlienResinBlocks.ABERRANT_RESIN.get(),
-                AlienResinBlocks.IRRADIATED_RESIN.get(),
-                AlienResinBlocks.NETHER_RESIN.get(),
-                AlienResinBlocks.RESIN.get()
-            );
-
-        getOrCreateTagBuilder(AVPBlockTags.RESIN_NODES)
-            .add(
-                AlienResinBlocks.ABERRANT_RESIN_NODE.get(),
-                AlienResinBlocks.IRRADIATED_RESIN_NODE.get(),
-                AlienResinBlocks.NETHER_RESIN_NODE.get(),
-                AlienResinBlocks.RESIN_NODE.get()
-            );
-
-        getOrCreateTagBuilder(AVPBlockTags.RESIN_REPLACEABLE)
-            .addOptionalTag(BlockTags.BASE_STONE_NETHER)
-            .addOptionalTag(BlockTags.BASE_STONE_OVERWORLD)
-            .addOptionalTag(BlockTags.DIRT)
-            .addOptionalTag(BlockTags.NYLIUM)
-            .addOptionalTag(BlockTags.TERRACOTTA)
-            .add(
-                Blocks.CALCITE,
-                Blocks.CLAY,
-                Blocks.DRIPSTONE_BLOCK,
-                Blocks.END_STONE,
-                Blocks.GRAVEL,
-                Blocks.RED_SAND,
-                Blocks.RED_SANDSTONE,
-                Blocks.SAND,
-                Blocks.SANDSTONE,
-                Blocks.SMOOTH_BASALT,
-                Blocks.SOUL_SAND,
-                Blocks.SOUL_SOIL
-            );
-
-        getOrCreateTagBuilder(AVPBlockTags.ABERRANT_RESIN_REPLACEABLE)
-            .addTag(AVPBlockTags.RESIN_REPLACEABLE)
-            .addTag(AVPBlockTags.IRRADIATED_RESIN)
-            .addTag(AVPBlockTags.NETHER_RESIN)
-            .addTag(AVPBlockTags.NORMAL_RESIN);
-
-        getOrCreateTagBuilder(AVPBlockTags.IRRADIATED_RESIN_REPLACEABLE)
-            .addTag(AVPBlockTags.RESIN_REPLACEABLE)
-            .addTag(AVPBlockTags.ABERRANT_RESIN)
-            .addTag(AVPBlockTags.NETHER_RESIN)
-            .addTag(AVPBlockTags.NORMAL_RESIN);
-
-        getOrCreateTagBuilder(AVPBlockTags.NETHER_RESIN_REPLACEABLE)
-            .addTag(AVPBlockTags.RESIN_REPLACEABLE)
-            .addTag(AVPBlockTags.ABERRANT_RESIN)
-            .addTag(AVPBlockTags.IRRADIATED_RESIN)
-            .addTag(AVPBlockTags.NORMAL_RESIN);
-
-        getOrCreateTagBuilder(AVPBlockTags.NORMAL_RESIN_REPLACEABLE)
-            .addTag(AVPBlockTags.RESIN_REPLACEABLE)
-            .addTag(AVPBlockTags.ABERRANT_RESIN)
-            .addTag(AVPBlockTags.IRRADIATED_RESIN)
-            .addTag(AVPBlockTags.NETHER_RESIN);
-
-        getOrCreateTagBuilder(AVPBlockTags.RESIN_VEINS)
-            .add(
-                AlienResinBlocks.ABERRANT_RESIN_VEIN.get(),
-                AlienResinBlocks.IRRADIATED_RESIN_VEIN.get(),
-                AlienResinBlocks.NETHER_RESIN_VEIN.get(),
-                AlienResinBlocks.RESIN_VEIN.get()
-            );
-
-        getOrCreateTagBuilder(AVPBlockTags.RESIN_VENTS)
-            .add(
-                AlienResinBlocks.ABERRANT_RESIN_VENT.get(),
-                AlienResinBlocks.IRRADIATED_RESIN_VENT.get(),
-                AlienResinBlocks.NETHER_RESIN_VENT.get(),
-                AlienResinBlocks.RESIN_VENT.get()
-            );
-
-        getOrCreateTagBuilder(AVPBlockTags.RESIN_WEBS)
-            .add(
-                AlienResinBlocks.ABERRANT_RESIN_WEB.get(),
-                AlienResinBlocks.IRRADIATED_RESIN_WEB.get(),
-                AlienResinBlocks.NETHER_RESIN_WEB.get(),
-                AlienResinBlocks.RESIN_WEB.get()
-            );
-
         getOrCreateTagBuilder(AVPBlockTags.STEEL)
             .add(
                 HumanSteelBlocks.CHISELED_STEEL.get(),
@@ -488,35 +251,6 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 HumanTitaniumBlocks.TITANIUM_TREAD_STAIRS.get()
             );
 
-        // Acid-immune blocks
-        getOrCreateTagBuilder(AVPBlockTags.ACID_IMMUNE)
-            .addTag(AVPBlockTags.CHITIN)
-            .addTag(AVPBlockTags.INDUSTRIAL_GLASS)
-            .addTag(AVPBlockTags.PLASTIC)
-            .addTag(AVPBlockTags.RESIN)
-            .addTag(AVPBlockTags.SHOULD_NOT_BE_DESTROYED)
-            .add(Blocks.AIR)
-            .add(Blocks.FIRE)
-            .add(Blocks.SOUL_FIRE);
-
-        getOrCreateTagBuilder(AVPBlockTags.NETHER_ACID_IMMUNE)
-            .addOptionalTag(BlockTags.INFINIBURN_NETHER)
-            .addTag(AVPBlockTags.ACID_IMMUNE);
-
-        getOrCreateTagBuilder(AVPBlockTags.IRRADIATED_ACID_IMMUNE)
-            .addTag(AVPBlockTags.ACID_IMMUNE)
-            .add(
-                Blocks.BLUE_ICE
-            );
-
-        getOrCreateTagBuilder(AVPBlockTags.XENOMORPH_IMMUNE)
-            .addTag(AVPBlockTags.INDUSTRIAL_CONCRETE)
-            .addTag(AVPBlockTags.INDUSTRIAL_GLASS)
-            .addTag(AVPBlockTags.PLASTIC)
-            .addTag(AVPBlockTags.SHOULD_NOT_BE_DESTROYED)
-            .addTag(AVPBlockTags.RESIN_VENTS)
-            .addTag(AVPBlockTags.RESIN_WEBS);
-
         getOrCreateTagBuilder(BlockTags.CLIMBABLE)
             .add(
                 HumanFerroaluminumBlocks.FERROALUMINUM_CHAIN_FENCE.get(),
@@ -525,15 +259,12 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             );
 
         getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_AXE)
-            .addTag(AVPBlockTags.RESIN_VEINS)
-            .addTag(AVPBlockTags.RESIN_WEBS)
             .add(
                 AVPBlocks.BLUEPRINT_BLOCK.get(),
                 AVPBlocks.CABLE.get()
             );
 
         getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
-            .addTag(AVPBlockTags.CHITIN)
             .addTag(AVPBlockTags.CONCRETE)
             .addTag(AVPBlockTags.FERROALUMINUM)
             .addTag(AVPBlockTags.INDUSTRIAL_CONCRETE)
@@ -543,20 +274,6 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .addTag(AVPBlockTags.STEEL)
             .addTag(AVPBlockTags.TITANIUM)
             .add(
-                AlienResinBlocks.ABERRANT_RESIN.get(),
-                AlienResinBlocks.ABERRANT_RESIN_SLAB.get(),
-                AlienResinBlocks.ABERRANT_RESIN_STAIRS.get(),
-                AlienResinBlocks.ABERRANT_RESIN_BRICKS.get(),
-                AlienResinBlocks.ABERRANT_RESIN_BRICK_SLAB.get(),
-                AlienResinBlocks.ABERRANT_RESIN_BRICK_STAIRS.get(),
-                AlienResinBlocks.ABERRANT_RESIN_BRICK_WALL.get(),
-                AlienResinBlocks.ABERRANT_RESIN_NODE.get(),
-                AlienResinBlocks.ABERRANT_RESIN_VENT.get(),
-                AlienResinBlocks.RIBBED_ABERRANT_RESIN.get(),
-                AlienResinBlocks.SMOOTH_ABERRANT_RESIN.get(),
-                AlienResinBlocks.SMOOTH_ABERRANT_RESIN_SLAB.get(),
-                AlienResinBlocks.SMOOTH_ABERRANT_RESIN_STAIRS.get(),
-                AlienResinBlocks.SMOOTH_ABERRANT_RESIN_WALL.get(),
 
                 CoreBlocks.ALUMINUM_BLOCK.get(),
                 AVPBlocks.AMMO_CHEST.get(),
@@ -571,41 +288,11 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AVPBlocks.INDUSTRIAL_FURNACE.get(),
                 AVPBlocks.INFINITE_POWER_GENERATOR.get(),
 
-                AlienResinBlocks.IRRADIATED_RESIN.get(),
-                AlienResinBlocks.IRRADIATED_RESIN_SLAB.get(),
-                AlienResinBlocks.IRRADIATED_RESIN_STAIRS.get(),
-                AlienResinBlocks.IRRADIATED_RESIN_BRICKS.get(),
-                AlienResinBlocks.IRRADIATED_RESIN_BRICK_SLAB.get(),
-                AlienResinBlocks.IRRADIATED_RESIN_BRICK_STAIRS.get(),
-                AlienResinBlocks.IRRADIATED_RESIN_BRICK_WALL.get(),
-                AlienResinBlocks.IRRADIATED_RESIN_NODE.get(),
-                AlienResinBlocks.IRRADIATED_RESIN_VENT.get(),
-                AlienResinBlocks.RIBBED_IRRADIATED_RESIN.get(),
-                AlienResinBlocks.SMOOTH_IRRADIATED_RESIN.get(),
-                AlienResinBlocks.SMOOTH_IRRADIATED_RESIN_SLAB.get(),
-                AlienResinBlocks.SMOOTH_IRRADIATED_RESIN_STAIRS.get(),
-                AlienResinBlocks.SMOOTH_IRRADIATED_RESIN_WALL.get(),
-
                 CoreBlocks.LEAD_BLOCK.get(),
                 AVPBlocks.LEAD_CHEST.get(),
                 CoreBlocks.LITHIUM_BLOCK.get(),
                 CoreBlocks.LITHIUM_ORE.get(),
                 CoreBlocks.MONAZITE_ORE.get(),
-
-                AlienResinBlocks.NETHER_RESIN.get(),
-                AlienResinBlocks.NETHER_RESIN_SLAB.get(),
-                AlienResinBlocks.NETHER_RESIN_STAIRS.get(),
-                AlienResinBlocks.NETHER_RESIN_BRICKS.get(),
-                AlienResinBlocks.NETHER_RESIN_BRICK_SLAB.get(),
-                AlienResinBlocks.NETHER_RESIN_BRICK_STAIRS.get(),
-                AlienResinBlocks.NETHER_RESIN_BRICK_WALL.get(),
-                AlienResinBlocks.NETHER_RESIN_NODE.get(),
-                AlienResinBlocks.NETHER_RESIN_VENT.get(),
-                AlienResinBlocks.RIBBED_NETHER_RESIN.get(),
-                AlienResinBlocks.SMOOTH_NETHER_RESIN.get(),
-                AlienResinBlocks.SMOOTH_NETHER_RESIN_SLAB.get(),
-                AlienResinBlocks.SMOOTH_NETHER_RESIN_STAIRS.get(),
-                AlienResinBlocks.SMOOTH_NETHER_RESIN_WALL.get(),
 
                 AVPBlocks.BATTERY.get(),
                 AVPBlocks.SOLAR_PANEL.get(),
@@ -618,21 +305,6 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 CoreBlocks.RAW_MONAZITE_BLOCK.get(),
                 CoreBlocks.RAW_ZINC_BLOCK.get(),
                 AVPBlocks.REDSTONE_GENERATOR.get(),
-
-                AlienResinBlocks.RESIN.get(),
-                AlienResinBlocks.RESIN_SLAB.get(),
-                AlienResinBlocks.RESIN_STAIRS.get(),
-                AlienResinBlocks.RESIN_BRICKS.get(),
-                AlienResinBlocks.RESIN_BRICK_SLAB.get(),
-                AlienResinBlocks.RESIN_BRICK_STAIRS.get(),
-                AlienResinBlocks.RESIN_BRICK_WALL.get(),
-                AlienResinBlocks.RESIN_NODE.get(),
-                AlienResinBlocks.RESIN_VENT.get(),
-                AlienResinBlocks.RIBBED_RESIN.get(),
-                AlienResinBlocks.SMOOTH_RESIN.get(),
-                AlienResinBlocks.SMOOTH_RESIN_SLAB.get(),
-                AlienResinBlocks.SMOOTH_RESIN_STAIRS.get(),
-                AlienResinBlocks.SMOOTH_RESIN_WALL.get(),
 
                 AVPBlocks.RESONATOR_BLOCK.get(),
                 AVPBlocks.SENTRY_TURRET.get(),
@@ -650,11 +322,9 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             );
 
         getOrCreateTagBuilder(BlockTags.NEEDS_STONE_TOOL)
-            .addTag(AVPBlockTags.CHITIN)
             .addTag(AVPBlockTags.FERROALUMINUM)
             .addTag(AVPBlockTags.PADDING)
             .addTag(AVPBlockTags.PLASTIC)
-            .addTag(AVPBlockTags.RESIN)
             .add(
                 CoreBlocks.BAUXITE_ORE.get(),
                 AVPBlocks.BLUEPRINT_BLOCK.get(),
@@ -753,9 +423,6 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
     }
 
     private void addCompatibilityTags() {
-        getOrCreateTagBuilder(AVPBlockTags.ACID_IMMUNE)
-            .addOptionalTag(GigBlockTags.ACID_RESISTANT);
-
         getOrCreateTagBuilder(CommonBlockTags.CHESTS)
             .setReplace(false)
             .add(

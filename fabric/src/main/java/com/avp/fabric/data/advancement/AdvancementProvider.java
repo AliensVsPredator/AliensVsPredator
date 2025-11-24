@@ -16,7 +16,6 @@ public class AdvancementProvider extends FabricAdvancementProvider {
 
     @Override
     public void generateAdvancement(HolderLookup.Provider registryLookup, Consumer<AdvancementHolder> consumer) {
-        AlienAdvancementProvider.generateAdvancements(registryLookup, consumer);
         HumanAdvancementProvider.generateAdvancements(registryLookup, consumer);
     }
 }

@@ -1,19 +1,16 @@
 package com.avp.fabric.data.recipe.impl;
 
-import com.alien.common.registry.init.AlienBlocks;
-import com.alien.common.registry.init.AlienItems;
-import com.compat.CommonItemTags;
-import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Blocks;
-
 import com.avp.common.registry.init.block.AVPBlocks;
 import com.avp.common.registry.init.block.CoreBlocks;
 import com.avp.common.registry.init.item.AVPItems;
 import com.avp.common.registry.tag.AVPItemTags;
 import com.avp.fabric.data.recipe.RecipeConstants;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
+import com.compat.CommonItemTags;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 
 public class MiscellaneousRecipeProvider {
 
@@ -44,16 +41,6 @@ public class MiscellaneousRecipeProvider {
             .withCategory(RecipeCategory.MISC)
             .withExperience(RecipeConstants.VERY_COMMON_SMELT_EXPERIENCE)
             .into(AVPItems.REDSTONE_CRYSTAL);
-
-        builder.blast(AlienItems.IRRADIATED_CHITIN)
-            .withCategory(RecipeCategory.MISC)
-            .withExperience(RecipeConstants.UNCOMMON_MATERIAL_SMELT_EXPERIENCE)
-            .into(AlienItems.CHITIN);
-
-        builder.blast(AlienItems.PLATED_IRRADIATED_CHITIN)
-            .withCategory(RecipeCategory.MISC)
-            .withExperience(RecipeConstants.UNCOMMON_MATERIAL_SMELT_EXPERIENCE)
-            .into(AlienItems.PLATED_CHITIN);
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
@@ -101,26 +88,6 @@ public class MiscellaneousRecipeProvider {
             .pattern("ABA")
             .into(1, AVPItems.ARMOR_CASE);
 
-        builder.smelt(AlienItems.IRRADIATED_RESIN_BALL)
-            .withCategory(RecipeCategory.MISC)
-            .withExperience(RecipeConstants.VERY_COMMON_SMELT_EXPERIENCE)
-            .into(Items.SLIME_BALL);
-
-        builder.smelt(AlienItems.ABERRANT_RESIN_BALL)
-            .withCategory(RecipeCategory.MISC)
-            .withExperience(RecipeConstants.VERY_COMMON_SMELT_EXPERIENCE)
-            .into(Items.SLIME_BALL);
-
-        builder.smelt(AlienItems.RESIN_BALL)
-            .withCategory(RecipeCategory.MISC)
-            .withExperience(RecipeConstants.VERY_COMMON_SMELT_EXPERIENCE)
-            .into(Items.SLIME_BALL);
-
-        builder.smelt(AlienItems.NETHER_RESIN_BALL)
-            .withCategory(RecipeCategory.MISC)
-            .withExperience(RecipeConstants.VERY_COMMON_SMELT_EXPERIENCE)
-            .into(Items.SLIME_BALL);
-
         builder.smelt(Items.SLIME_BALL)
             .withCategory(RecipeCategory.MISC)
             .withExperience(RecipeConstants.VERY_COMMON_SMELT_EXPERIENCE)
@@ -142,19 +109,6 @@ public class MiscellaneousRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
-            .define('I', AlienItems.RAW_ROYAL_JELLY)
-            .pattern("III")
-            .pattern("III")
-            .pattern("III")
-            .into(1, AlienBlocks.ROYAL_JELLY_BLOCK);
-
-        builder.shapeless()
-            .withCategory(RecipeCategory.MISC)
-            .requires(1, AlienBlocks.ROYAL_JELLY_BLOCK)
-            .into(9, AlienItems.RAW_ROYAL_JELLY);
-
-        builder.shaped()
-            .withCategory(RecipeCategory.MISC)
             .define('T', CommonItemTags.INGOTS_TITANIUM)
             .define('R', AVPItems.REDSTONE_CRYSTAL)
             .define('P', Items.PISTON)
@@ -163,12 +117,6 @@ public class MiscellaneousRecipeProvider {
             .pattern("TPT")
             .pattern("TBT")
             .into(1, AVPItems.CANISTER);
-
-        builder.shapeless()
-            .withCategory(RecipeCategory.MISC)
-            .requires(1, Items.POISONOUS_POTATO)
-            .requires(1, AlienItems.RAW_ROYAL_JELLY)
-            .into(1, AlienItems.POISON_JELLY);
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
@@ -395,10 +343,5 @@ public class MiscellaneousRecipeProvider {
             .withExperience(0.35f)
             .withCookingTime(100)
             .into(Items.TERRACOTTA);
-
-        builder.shapeless()
-            .withCategory(RecipeCategory.MISC)
-            .requires(9, AlienItems.ALIEN_MUSIC_DISC_1_FRAGMENT)
-            .into(1, AlienItems.ALIEN_MUSIC_DISC_1);
     }
 }

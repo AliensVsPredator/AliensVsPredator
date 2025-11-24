@@ -1,6 +1,5 @@
 package com.avp.common.gameplay.command.count;
 
-import com.alien.common.gameplay.level.saveddata.HiveLevelData;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -33,24 +32,25 @@ public class CountCommand {
 
                         return 1;
                     })
-            )
-            .then(
-                Commands.literal(HIVE_ARGUMENT_NAME)
-                    .executes(context -> {
-                        int count = HiveLevelData.getOrCreate(context.getSource().getLevel())
-                            .map(hiveLevelData -> hiveLevelData.allHives().size())
-                            .unwrapOr(0);
-
-                        context.getSource().sendSuccess(() -> {
-                            var areOrIs = count == 1 ? "is" : "are";
-                            var pluralHive = count == 1 ? "hive" : "hives";
-                            return Component.literal(
-                                "There " + areOrIs + " " + count + " " + pluralHive + " in the world."
-                            );
-                        }, false);
-
-                        return 1;
-                    })
             );
+        // FIXME:
+//            .then(
+//                Commands.literal(HIVE_ARGUMENT_NAME)
+//                    .executes(context -> {
+//                        int count = HiveLevelData.getOrCreate(context.getSource().getLevel())
+//                            .map(hiveLevelData -> hiveLevelData.allHives().size())
+//                            .unwrapOr(0);
+//
+//                        context.getSource().sendSuccess(() -> {
+//                            var areOrIs = count == 1 ? "is" : "are";
+//                            var pluralHive = count == 1 ? "hive" : "hives";
+//                            return Component.literal(
+//                                "There " + areOrIs + " " + count + " " + pluralHive + " in the world."
+//                            );
+//                        }, false);
+//
+//                        return 1;
+//                    })
+//            );
     }
 }

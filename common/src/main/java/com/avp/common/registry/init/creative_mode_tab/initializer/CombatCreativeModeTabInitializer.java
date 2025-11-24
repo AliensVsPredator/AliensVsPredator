@@ -1,14 +1,12 @@
 package com.avp.common.registry.init.creative_mode_tab.initializer;
 
-import com.alien.common.registry.init.item.AlienArmorItems;
+import com.avp.common.registry.init.block.AVPBlocks;
+import com.avp.common.registry.init.item.AVPArmorItems;
+import com.avp.common.registry.init.item.AVPItems;
 import com.human.common.registry.init.item.HumanGunItems;
 import net.minecraft.world.item.CreativeModeTab;
 
 import java.util.function.Consumer;
-
-import com.avp.common.registry.init.block.AVPBlocks;
-import com.avp.common.registry.init.item.AVPArmorItems;
-import com.avp.common.registry.init.item.AVPItems;
 
 public class CombatCreativeModeTabInitializer {
 
@@ -76,47 +74,5 @@ public class CombatCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, AVPArmorItems.WY_ELITE_CHESTPLATE);
         CreativeModeTabUtil.accept(output, AVPArmorItems.WY_ELITE_LEGGINGS);
         CreativeModeTabUtil.accept(output, AVPArmorItems.WY_ELITE_BOOTS);
-
-        CreativeModeTabUtil.accept(output, AlienArmorItems.CHITIN_HELMET);
-        CreativeModeTabUtil.accept(output, AlienArmorItems.CHITIN_CHESTPLATE);
-        CreativeModeTabUtil.accept(output, AlienArmorItems.CHITIN_LEGGINGS);
-        CreativeModeTabUtil.accept(output, AlienArmorItems.CHITIN_BOOTS);
-
-        CreativeModeTabUtil.accept(output, AlienArmorItems.PLATED_CHITIN_HELMET);
-        CreativeModeTabUtil.accept(output, AlienArmorItems.PLATED_CHITIN_CHESTPLATE);
-        CreativeModeTabUtil.accept(output, AlienArmorItems.PLATED_CHITIN_LEGGINGS);
-        CreativeModeTabUtil.accept(output, AlienArmorItems.PLATED_CHITIN_BOOTS);
-
-        CreativeModeTabUtil.accept(output, AlienArmorItems.ABERRANT_CHITIN_HELMET);
-        CreativeModeTabUtil.accept(output, AlienArmorItems.ABERRANT_CHITIN_CHESTPLATE);
-        CreativeModeTabUtil.accept(output, AlienArmorItems.ABERRANT_CHITIN_LEGGINGS);
-        CreativeModeTabUtil.accept(output, AlienArmorItems.ABERRANT_CHITIN_BOOTS);
-
-        // TODO: Re-implement these at some point in the future.
-        // CreativeModeTabUtil.accept(output, AlienArmorItems.IRRADIATED_CHITIN_HELMET);
-        // CreativeModeTabUtil.accept(output, AlienArmorItems.IRRADIATED_CHITIN_CHESTPLATE);
-        // CreativeModeTabUtil.accept(output, AlienArmorItems.IRRADIATED_CHITIN_LEGGINGS);
-        // CreativeModeTabUtil.accept(output, AlienArmorItems.IRRADIATED_CHITIN_BOOTS);
-
-        CreativeModeTabUtil.accept(output, AlienArmorItems.PLATED_ABERRANT_CHITIN_HELMET);
-        CreativeModeTabUtil.accept(output, AlienArmorItems.PLATED_ABERRANT_CHITIN_CHESTPLATE);
-        CreativeModeTabUtil.accept(output, AlienArmorItems.PLATED_ABERRANT_CHITIN_LEGGINGS);
-        CreativeModeTabUtil.accept(output, AlienArmorItems.PLATED_ABERRANT_CHITIN_BOOTS);
-
-        // TODO: Re-implement these at some point in the future.
-        // CreativeModeTabUtil.accept(output, AlienArmorItems.PLATED_IRRADIATED_CHITIN_HELMET);
-        // CreativeModeTabUtil.accept(output, AlienArmorItems.PLATED_IRRADIATED_CHITIN_CHESTPLATE);
-        // CreativeModeTabUtil.accept(output, AlienArmorItems.PLATED_IRRADIATED_CHITIN_LEGGINGS);
-        // CreativeModeTabUtil.accept(output, AlienArmorItems.PLATED_IRRADIATED_CHITIN_BOOTS);
-
-        CreativeModeTabUtil.accept(output, AlienArmorItems.NETHER_CHITIN_HELMET);
-        CreativeModeTabUtil.accept(output, AlienArmorItems.NETHER_CHITIN_CHESTPLATE);
-        CreativeModeTabUtil.accept(output, AlienArmorItems.NETHER_CHITIN_LEGGINGS);
-        CreativeModeTabUtil.accept(output, AlienArmorItems.NETHER_CHITIN_BOOTS);
-
-        CreativeModeTabUtil.accept(output, AlienArmorItems.PLATED_NETHER_CHITIN_HELMET);
-        CreativeModeTabUtil.accept(output, AlienArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE);
-        CreativeModeTabUtil.accept(output, AlienArmorItems.PLATED_NETHER_CHITIN_LEGGINGS);
-        CreativeModeTabUtil.accept(output, AlienArmorItems.PLATED_NETHER_CHITIN_BOOTS);
     };
 }

@@ -1,19 +1,18 @@
 package com.human.common.gameplay.recipe;
 
-import com.alien.common.registry.init.item.AlienResinBlockItems;
-import com.human.common.registry.init.item.HumanPlasticBlockItems;
+import com.avp.common.registry.init.AVPRecipes;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe;
+import net.minecraft.world.item.crafting.CookingBookCategory;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import com.avp.common.registry.init.AVPRecipes;
 
 public class IndustrialFurnaceRecipe extends AbstractCookingRecipe {
 
@@ -57,19 +56,20 @@ public class IndustrialFurnaceRecipe extends AbstractCookingRecipe {
         registerMeltingRecipe(Items.MUD, Items.CLAY);
         registerMeltingRecipe(Items.CLAY, Items.TERRACOTTA);
         // TODO: Remove these, these break the balance of smelting. We can have these be smelted in electrical furnaces.
-        registerMeltingRecipe(AlienResinBlockItems.RESIN.get(), HumanPlasticBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get());
-        registerMeltingRecipe(
-            AlienResinBlockItems.NETHER_RESIN.get(),
-            HumanPlasticBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get()
-        );
-        registerMeltingRecipe(
-            AlienResinBlockItems.IRRADIATED_RESIN.get(),
-            HumanPlasticBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get()
-        );
-        registerMeltingRecipe(
-            AlienResinBlockItems.ABERRANT_RESIN.get(),
-            HumanPlasticBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get()
-        );
+        // FIXME:
+//        registerMeltingRecipe(AlienResinBlockItems.RESIN.get(), HumanPlasticBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get());
+//        registerMeltingRecipe(
+//            AlienResinBlockItems.NETHER_RESIN.get(),
+//            HumanPlasticBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get()
+//        );
+//        registerMeltingRecipe(
+//            AlienResinBlockItems.IRRADIATED_RESIN.get(),
+//            HumanPlasticBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get()
+//        );
+//        registerMeltingRecipe(
+//            AlienResinBlockItems.ABERRANT_RESIN.get(),
+//            HumanPlasticBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get()
+//        );
     }
 
     private static void registerMeltingRecipe(Item input, Item output) {

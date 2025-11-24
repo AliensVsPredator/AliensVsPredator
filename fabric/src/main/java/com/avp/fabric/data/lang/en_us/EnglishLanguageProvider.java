@@ -1,12 +1,5 @@
 package com.avp.fabric.data.lang.en_us;
 
-import com.alien.common.gameplay.hive.HiveBossBarManager;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
-import net.minecraft.core.HolderLookup;
-
-import java.util.concurrent.CompletableFuture;
-
 import com.avp.fabric.data.lang.en_us.provider.EnUsAdvancementProvider;
 import com.avp.fabric.data.lang.en_us.provider.EnUsBiomeTagProvider;
 import com.avp.fabric.data.lang.en_us.provider.EnUsBlockProvider;
@@ -24,6 +17,11 @@ import com.avp.fabric.data.lang.en_us.provider.EnUsKeybindProvider;
 import com.avp.fabric.data.lang.en_us.provider.EnUsMobEffectTagProvider;
 import com.avp.fabric.data.lang.en_us.provider.EnUsSoundEventProvider;
 import com.avp.fabric.data.lang.en_us.provider.EnUsTooltipProvider;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
+import net.minecraft.core.HolderLookup;
+
+import java.util.concurrent.CompletableFuture;
 
 public class EnglishLanguageProvider extends FabricLanguageProvider {
 
@@ -55,9 +53,6 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         // Sounds
         EnUsSoundEventProvider.CONSUMER.accept(builder);
 
-        // Jukebox Sounds
-        builder.add("jukebox_song.avp.alien_music_1", "Rotch Gwylt - Silver Smile");
-
         // Tooltips
         EnUsTooltipProvider.CONSUMER.accept(builder);
 
@@ -78,18 +73,6 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
 
         // Advancements
         EnUsAdvancementProvider.CONSUMER.accept(builder);
-
-        // Hive boss bars
-        HiveBossBarManager.ALIEN_VARIANT_TO_TRANSLATABLE_STRING_MAP.forEach((alienVariant, translationKey) -> {
-            var prefix = switch (alienVariant) {
-                case ABERRANT -> "Aberrant ";
-                case IRRADIATED -> "Irradiated ";
-                case NETHER -> "Nether ";
-                case NORMAL -> "";
-            };
-
-            builder.add(translationKey, prefix + "Hive");
-        });
 
         builder.add("avp.industrialfurnace.displayName", "Industrial Furnace");
         builder.add("effect.avp.radiation", "Radiation");

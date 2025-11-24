@@ -1,11 +1,9 @@
 package com.avp.common.registry.init.creative_mode_tab.initializer;
 
-import com.alien.common.registry.init.AlienItems;
+import com.avp.common.registry.init.item.AVPItems;
 import net.minecraft.world.item.CreativeModeTab;
 
 import java.util.function.Consumer;
-
-import com.avp.common.registry.init.item.AVPItems;
 
 public class ToolsAndUtilitiesCreativeModeTabInitializer {
 
@@ -28,6 +26,5 @@ public class ToolsAndUtilitiesCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, AVPItems.TITANIUM_PICKAXE);
         CreativeModeTabUtil.accept(output, AVPItems.TITANIUM_SHOVEL);
         CreativeModeTabUtil.accept(output, AVPItems.TITANIUM_SWORD);
-        CreativeModeTabUtil.accept(output, AlienItems.ALIEN_MUSIC_DISC_1);
     };
 }

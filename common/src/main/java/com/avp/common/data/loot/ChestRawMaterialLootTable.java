@@ -1,6 +1,6 @@
 package com.avp.common.data.loot;
 
-import com.alien.common.registry.init.AlienItems;
+import com.avp.common.registry.init.item.AVPItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -11,8 +11,6 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 import java.util.function.Function;
-
-import com.avp.common.registry.init.item.AVPItems;
 
 public class ChestRawMaterialLootTable {
 
@@ -62,15 +60,16 @@ public class ChestRawMaterialLootTable {
                         .setWeight(25)
                 )
         )
-        .withPool(
-            LootPool.lootPool()
-                .setRolls(ConstantValue.exactly(1))
-                .add(
-                    LootItem.lootTableItem(AlienItems.ALIEN_MUSIC_DISC_1_FRAGMENT.get())
-                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4)))
-                        .setWeight(5)
-                )
-        )
+        // FIXME:
+//        .withPool(
+//            LootPool.lootPool()
+//                .setRolls(ConstantValue.exactly(1))
+//                .add(
+//                    LootItem.lootTableItem(AlienItems.ALIEN_MUSIC_DISC_1_FRAGMENT.get())
+//                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4)))
+//                        .setWeight(5)
+//                )
+//        )
         .withPool(
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))

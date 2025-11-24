@@ -39,7 +39,6 @@ import com.avp.common.network.NetworkHandler;
 import com.avp.common.registry.init.AVPVillagerProfessions;
 import com.avp.common.registry.key.AVPVillagerGiftKeys;
 import com.avp.mixin.GiveGiftToHeroAccessor;
-import com.avp.mixin.ParrotSoundMapAccessor;
 import com.avp.neoforge.service.NeoForgeRegistryService;
 import com.avp.service.Services;
 

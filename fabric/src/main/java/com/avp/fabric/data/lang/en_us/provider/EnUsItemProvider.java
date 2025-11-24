@@ -1,8 +1,8 @@
 package com.avp.fabric.data.lang.en_us.provider;
 
-import com.alien.common.registry.init.AlienItems;
-import com.alien.common.registry.init.item.AlienArmorItems;
-import com.alien.common.registry.init.item.AlienSpawnEggItems;
+import com.avp.common.registry.AVPRegistryValidation;
+import com.avp.common.registry.init.item.AVPArmorItems;
+import com.avp.common.registry.init.item.AVPItems;
 import com.human.common.registry.init.item.HumanGunItems;
 import com.human.common.registry.init.item.HumanSpawnEggItems;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
@@ -12,10 +12,6 @@ import net.minecraft.world.item.Item;
 import java.util.HashSet;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
-import com.avp.common.registry.AVPRegistryValidation;
-import com.avp.common.registry.init.item.AVPArmorItems;
-import com.avp.common.registry.init.item.AVPItems;
 
 public class EnUsItemProvider {
 
@@ -27,18 +23,6 @@ public class EnUsItemProvider {
         addItem(builder, AVPItems.GRENADE_INCENDIARY, "Incendiary Grenade");
         addItem(builder, AVPItems.GRENADE_IRRADIATED, "Irradiated Grenade");
         addItem(builder, AVPItems.CASELESS_BULLET, "Caseless Bullet");
-        addItem(builder, AlienArmorItems.ABERRANT_CHITIN_BOOTS, "Aberrant Chitin Boots");
-        addItem(builder, AlienArmorItems.ABERRANT_CHITIN_CHESTPLATE, "Aberrant Chitin Chestplate");
-        addItem(builder, AlienArmorItems.ABERRANT_CHITIN_HELMET, "Aberrant Chitin Helmet");
-        addItem(builder, AlienArmorItems.ABERRANT_CHITIN_LEGGINGS, "Aberrant Chitin Leggings");
-        addItem(builder, AlienArmorItems.CHITIN_BOOTS, "Chitin Boots");
-        addItem(builder, AlienArmorItems.CHITIN_CHESTPLATE, "Chitin Chestplate");
-        addItem(builder, AlienArmorItems.CHITIN_HELMET, "Chitin Helmet");
-        addItem(builder, AlienArmorItems.CHITIN_LEGGINGS, "Chitin Leggings");
-        addItem(builder, AlienArmorItems.IRRADIATED_CHITIN_BOOTS, "Irradiated Chitin Boots");
-        addItem(builder, AlienArmorItems.IRRADIATED_CHITIN_CHESTPLATE, "Irradiated Chitin Chestplate");
-        addItem(builder, AlienArmorItems.IRRADIATED_CHITIN_HELMET, "Irradiated Chitin Helmet");
-        addItem(builder, AlienArmorItems.IRRADIATED_CHITIN_LEGGINGS, "Irradiated Chitin Leggings");
         addItem(builder, HumanGunItems.F903WE_RIFLE, "F903WE Rifle");
         addItem(builder, HumanGunItems.FLAMETHROWER_SEVASTOPOL, "Flamethrower (Sevastopol)");
         addItem(builder, AVPItems.FUEL_TANK, "Fuel Tank");
@@ -55,27 +39,7 @@ public class EnUsItemProvider {
         addItem(builder, AVPArmorItems.MK50_CHESTPLATE, "MK50 Chestplate");
         addItem(builder, AVPArmorItems.MK50_HELMET, "MK50 Helmet");
         addItem(builder, AVPArmorItems.MK50_LEGGINGS, "MK50 Leggings");
-        addItem(builder, AlienArmorItems.NETHER_CHITIN_BOOTS, "Nether Chitin Boots");
-        addItem(builder, AlienArmorItems.NETHER_CHITIN_CHESTPLATE, "Nether Chitin Chestplate");
-        addItem(builder, AlienArmorItems.NETHER_CHITIN_HELMET, "Nether Chitin Helmet");
-        addItem(builder, AlienArmorItems.NETHER_CHITIN_LEGGINGS, "Nether Chitin Leggings");
         addItem(builder, HumanGunItems.OLD_PAINLESS, "Old Painless");
-        addItem(builder, AlienArmorItems.PLATED_ABERRANT_CHITIN_BOOTS, "Plated Aberrant Chitin Boots");
-        addItem(builder, AlienArmorItems.PLATED_ABERRANT_CHITIN_CHESTPLATE, "Plated Aberrant Chitin Chestplate");
-        addItem(builder, AlienArmorItems.PLATED_ABERRANT_CHITIN_HELMET, "Plated Aberrant Chitin Helmet");
-        addItem(builder, AlienArmorItems.PLATED_ABERRANT_CHITIN_LEGGINGS, "Plated Aberrant Chitin Leggings");
-        addItem(builder, AlienArmorItems.PLATED_CHITIN_BOOTS, "Plated Chitin Boots");
-        addItem(builder, AlienArmorItems.PLATED_CHITIN_CHESTPLATE, "Plated Chitin Chestplate");
-        addItem(builder, AlienArmorItems.PLATED_CHITIN_HELMET, "Plated Chitin Helmet");
-        addItem(builder, AlienArmorItems.PLATED_CHITIN_LEGGINGS, "Plated Chitin Leggings");
-        addItem(builder, AlienArmorItems.PLATED_IRRADIATED_CHITIN_BOOTS, "Plated Irradiated Chitin Boots");
-        addItem(builder, AlienArmorItems.PLATED_IRRADIATED_CHITIN_CHESTPLATE, "Plated Irradiated Chitin Chestplate");
-        addItem(builder, AlienArmorItems.PLATED_IRRADIATED_CHITIN_HELMET, "Plated Irradiated Chitin Helmet");
-        addItem(builder, AlienArmorItems.PLATED_IRRADIATED_CHITIN_LEGGINGS, "Plated Irradiated Chitin Leggings");
-        addItem(builder, AlienArmorItems.PLATED_NETHER_CHITIN_BOOTS, "Plated Nether Chitin Boots");
-        addItem(builder, AlienArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE, "Plated Nether Chitin Chestplate");
-        addItem(builder, AlienArmorItems.PLATED_NETHER_CHITIN_HELMET, "Plated Nether Chitin Helmet");
-        addItem(builder, AlienArmorItems.PLATED_NETHER_CHITIN_LEGGINGS, "Plated Nether Chitin Leggings");
         addItem(builder, AVPArmorItems.PRESSURE_BOOTS, "Pressure Boots");
         addItem(builder, AVPArmorItems.PRESSURE_CHESTPLATE, "Pressure Chestplate");
         addItem(builder, AVPArmorItems.PRESSURE_HELMET, "Pressure Helmet");
@@ -115,9 +79,6 @@ public class EnUsItemProvider {
         addItem(builder, AVPItems.SERVO, "Servo");
         addItem(builder, AVPItems.SPEAKER, "Speaker");
         addItem(builder, AVPItems.ALUMINUM_INGOT, "Aluminum Ingot");
-        addItem(builder, AlienItems.ALIEN_MUSIC_DISC_1, "Music Disc");
-        addItem(builder, AlienItems.ALIEN_MUSIC_DISC_1_FRAGMENT, "Disc Fragment");
-        builder.add(AlienItems.ALIEN_MUSIC_DISC_1_FRAGMENT.get().getDescriptionId() + ".desc", "Music Disc - Silver Smile");
         addItem(builder, AVPItems.AUTUNITE_DUST, "Autunite Dust");
         addItem(builder, AVPItems.BARREL, "Barrel");
         addItem(builder, AVPItems.BATTERY_PACK, "Battery Pack");
@@ -135,7 +96,6 @@ public class EnUsItemProvider {
         addItem(builder, AVPItems.BRASS_INGOT, "Brass Ingot");
         addItem(builder, AVPItems.CAPACITOR, "Capacitor");
         addItem(builder, AVPItems.CARBON_DUST, "Carbon Dust");
-        addItem(builder, AlienItems.CHITIN, "Chitin");
         addItem(builder, AVPItems.CPU, "CPU");
         addItem(builder, AVPItems.DIODE, "Diode");
         addItem(builder, AVPItems.FERROALUMINUM_INGOT, "Ferroaluminum Ingot");
@@ -147,13 +107,6 @@ public class EnUsItemProvider {
         addItem(builder, AVPItems.LITHIUM_DUST, "Lithium Dust");
         addItem(builder, AVPItems.MINIGUN_BARREL, "Minigun Barrel");
         addItem(builder, AVPItems.NEODYMIUM_MAGNET, "Neodymium Magnet");
-        addItem(builder, AlienItems.NETHER_CHITIN, "Nether Chitin");
-        addItem(builder, AlienItems.NETHER_RESIN_BALL, "Nether Resin Ball");
-        addItem(builder, AlienItems.OVOID_POTTERY_SHERD, "Ovoid Pottery Sherd");
-        addItem(builder, AlienItems.PARASITE_POTTERY_SHERD, "Parasite Pottery Sherd");
-        addItem(builder, AlienItems.ROYALTY_POTTERY_SHERD, "Royalty Pottery Sherd");
-        addItem(builder, AlienItems.PLATED_CHITIN, "Plated Chitin");
-        addItem(builder, AlienItems.PLATED_NETHER_CHITIN, "Plated Nether Chitin");
         addItem(builder, AVPItems.POLYMER, "Polymer");
         addItem(builder, AVPItems.RAW_BAUXITE, "Raw Bauxite");
         addItem(builder, AVPItems.RAW_BRASS, "Raw Brass");
@@ -161,14 +114,11 @@ public class EnUsItemProvider {
         addItem(builder, AVPItems.RAW_FERROBAUXITE, "Raw Ferrobauxite");
         addItem(builder, AVPItems.RAW_GALENA, "Raw Galena");
         addItem(builder, AVPItems.RAW_MONAZITE, "Raw Monazite");
-        addItem(builder, AlienItems.RAW_ROYAL_JELLY, "Raw Royal Jelly");
-        addItem(builder, AlienItems.POISON_JELLY, "Poison Jelly");
         addItem(builder, AVPItems.SILICON, "Silicon");
         addItem(builder, AVPItems.RAW_TITANIUM, "Raw Titanium");
         addItem(builder, AVPItems.RAW_ZINC, "Raw Zinc");
         addItem(builder, AVPItems.RECEIVER, "Receiver");
         addItem(builder, AVPItems.REGULATOR, "Regulator");
-        addItem(builder, AlienItems.RESIN_BALL, "Resin Ball");
         addItem(builder, AVPItems.RESISTOR, "Resistor");
         addItem(builder, AVPItems.ROCKET_BARREL, "Rocket Barrel");
         addItem(builder, AVPItems.SMART_BARREL, "Smart Barrel");
@@ -178,7 +128,6 @@ public class EnUsItemProvider {
         addItem(builder, AVPItems.TITANIUM_INGOT, "Titanium Ingot");
         addItem(builder, AVPItems.TRANSISTOR, "Transistor");
         addItem(builder, AVPItems.URANIUM_INGOT, "Uranium Ingot");
-        addItem(builder, AlienItems.VECTOR_POTTERY_SHERD, "Vector Pottery Sherd");
         addItem(builder, AVPItems.ZINC_INGOT, "Zinc Ingot");
         addItem(builder, AVPItems.ALUMINUM_NUGGET, "Aluminum Nugget");
         addItem(builder, AVPItems.BRASS_NUGGET, "Brass Nugget");
@@ -188,12 +137,6 @@ public class EnUsItemProvider {
         addItem(builder, AVPItems.TITANIUM_NUGGET, "Titanium Nugget");
         addItem(builder, AVPItems.URANIUM_NUGGET, "Uranium Nugget");
         addItem(builder, AVPItems.ZINC_NUGGET, "Zinc Nugget");
-        addItem(builder, AlienItems.ABERRANT_RESIN_BALL, "Aberrant Resin Ball");
-        addItem(builder, AlienItems.ABERRANT_CHITIN, "Aberrant Chitin");
-        addItem(builder, AlienItems.PLATED_ABERRANT_CHITIN, "Plated Aberrant Chitin");
-        addItem(builder, AlienItems.IRRADIATED_RESIN_BALL, "Irradiated Resin Ball");
-        addItem(builder, AlienItems.IRRADIATED_CHITIN, "Irradiated Chitin");
-        addItem(builder, AlienItems.PLATED_IRRADIATED_CHITIN, "Plated Irradiated Chitin");
 
         // Tools & Utilities Items
         addItem(builder, AVPItems.ARMOR_CASE, "Armor Case");
@@ -216,75 +159,7 @@ public class EnUsItemProvider {
         addItem(builder, AVPItems.TITANIUM_SWORD, "Titanium Sword");
 
         // Spawn Egg Items
-        addItem(builder, AlienSpawnEggItems.ABERRANT_ADOLESCENT_SPAWN_EGG, "Aberrant Adolescent Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.ABERRANT_BOILER_SPAWN_EGG, "Aberrant Boiler Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.ABERRANT_CHESTBURSTER_SPAWN_EGG, "Aberrant Chestburster Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.ABERRANT_CRUSHER_SPAWN_EGG, "Aberrant Crusher Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.ABERRANT_DRONE_SPAWN_EGG, "Aberrant Drone Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.ABERRANT_FACEHUGGER_SPAWN_EGG, "Aberrant Facehugger Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.ABERRANT_OVOMORPH_SPAWN_EGG, "Aberrant Ovomorph Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.ABERRANT_PRAETORIAN_SPAWN_EGG, "Aberrant Praetorian Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.ABERRANT_PREDALIEN_ADOLESCENT_SPAWN_EGG, "Aberrant Predalien Adolescent Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.ABERRANT_PREDALIEN_CHESTBURSTER_SPAWN_EGG, "Aberrant Predalien Chestburster Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.ABERRANT_PREDALIEN_SPAWN_EGG, "Aberrant Predalien Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.ABERRANT_PROWLER_SPAWN_EGG, "Aberrant Prowler Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.ABERRANT_WARRIOR_SPAWN_EGG, "Aberrant Warrior Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.ABERRANT_QUEEN_SPAWN_EGG, "Aberrant Queen Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.ABERRANT_RUNNER_SPAWN_EGG, "Aberrant Runner Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.ABERRANT_SPITTER_SPAWN_EGG, "Aberrant Spitter Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.ADOLESCENT_SPAWN_EGG, "Adolescent Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.BOILER_SPAWN_EGG, "Boiler Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.CHESTBURSTER_SPAWN_EGG, "Chestburster Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.CRUSHER_SPAWN_EGG, "Crusher Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.DRONE_SPAWN_EGG, "Drone Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.FACEHUGGER_SPAWN_EGG, "Facehugger Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.NETHER_ADOLESCENT_SPAWN_EGG, "Nether Adolescent Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.NETHER_BOILER_SPAWN_EGG, "Nether Boiler Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.NETHER_CHESTBURSTER_SPAWN_EGG, "Nether Chestburster Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.NETHER_CRUSHER_SPAWN_EGG, "Nether Crusher Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.NETHER_DRONE_SPAWN_EGG, "Nether Drone Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.NETHER_FACEHUGGER_SPAWN_EGG, "Nether Facehugger Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.NETHER_OVOMORPH_SPAWN_EGG, "Nether Ovomorph Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.NETHER_PRAETORIAN_SPAWN_EGG, "Nether Praetorian Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.NETHER_PREDALIEN_ADOLESCENT_SPAWN_EGG, "Nether Predalien Adolescent Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.NETHER_PREDALIEN_CHESTBURSTER_SPAWN_EGG, "Nether Predalien Chestburster Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.NETHER_PREDALIEN_SPAWN_EGG, "Nether Predalien Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.NETHER_PROWLER_SPAWN_EGG, "Nether Prowler Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.NETHER_RUNNER_SPAWN_EGG, "Nether Runner Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.NETHER_SPITTER_SPAWN_EGG, "Nether Spitter Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.NETHER_WARRIOR_SPAWN_EGG, "Nether Warrior Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.NETHER_QUEEN_SPAWN_EGG, "Nether Queen Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.IRRADIATED_CRUSHER_SPAWN_EGG, "Irradiated Crusher Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.IRRADIATED_DRONE_SPAWN_EGG, "Irradiated Drone Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.IRRADIATED_PRAETORIAN_SPAWN_EGG, "Irradiated Praetorian Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.IRRADIATED_PREDALIEN_SPAWN_EGG, "Irradiated Predalien Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.IRRADIATED_PROWLER_SPAWN_EGG, "Irradiated Prowler Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.IRRADIATED_QUEEN_SPAWN_EGG, "Irradiated Queen Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.IRRADIATED_RUNNER_SPAWN_EGG, "Irradiated Runner Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.IRRADIATED_WARRIOR_SPAWN_EGG, "Irradiated Warrior Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.OVOMORPH_SPAWN_EGG, "Ovomorph Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.PRAETORIAN_SPAWN_EGG, "Praetorian Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.PREDALIEN_ADOLESCENT_SPAWN_EGG, "Predalien Adolescent Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.PREDALIEN_CHESTBURSTER_SPAWN_EGG, "Predalien Chestburster Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.PREDALIEN_SPAWN_EGG, "Predalien Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.PROWLER_SPAWN_EGG, "Prowler Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.QUEEN_SPAWN_EGG, "Queen Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.RUNNER_SPAWN_EGG, "Runner Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.SPITTER_SPAWN_EGG, "Spitter Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.WARRIOR_SPAWN_EGG, "Warrior Spawn Egg");
         addItem(builder, HumanSpawnEggItems.MARINE_SPAWN_EGG, "Marine Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.ROYAL_ABERRANT_ADOLESCENT_SPAWN_EGG, "Royal Aberrant Adolescent Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.ROYAL_ADOLESCENT_SPAWN_EGG, "Royal Adolescent Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.ROYAL_NETHER_ADOLESCENT_SPAWN_EGG, "Royal Nether Adolescent Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.ROYAL_OVOMORPH_SPAWN_EGG, "Royal Ovomorph Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.ROYAL_FACEHUGGER_SPAWN_EGG, "Royal Facehugger Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.ROYAL_CHESTBURSTER_SPAWN_EGG, "Royal Chestburster Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.ROYAL_NETHER_OVOMORPH_SPAWN_EGG, "Royal Nether Ovomorph Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.ROYAL_NETHER_FACEHUGGER_SPAWN_EGG, "Royal Nether Facehugger Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.ROYAL_NETHER_CHESTBURSTER_SPAWN_EGG, "Royal Nether Chestburster Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.ROYAL_ABERRANT_OVOMORPH_SPAWN_EGG, "Royal Aberrant Ovomorph Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.ROYAL_ABERRANT_FACEHUGGER_SPAWN_EGG, "Royal Aberrant Facehugger Spawn Egg");
-        addItem(builder, AlienSpawnEggItems.ROYAL_ABERRANT_CHESTBURSTER_SPAWN_EGG, "Royal Aberrant Chestburster Spawn Egg");
 
         AVPRegistryValidation.throwIfMissingEntries(
             AVPItems.getAll()

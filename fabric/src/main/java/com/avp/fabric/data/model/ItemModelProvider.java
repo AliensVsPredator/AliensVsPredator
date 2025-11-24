@@ -1,8 +1,8 @@
 package com.avp.fabric.data.model;
 
-import com.alien.common.registry.init.AlienItems;
-import com.alien.common.registry.init.block.AlienResinBlocks;
-import com.alien.common.registry.init.item.AlienArmorItems;
+import com.avp.common.registry.init.block.AVPBlocks;
+import com.avp.common.registry.init.item.AVPArmorItems;
+import com.avp.common.registry.init.item.AVPItems;
 import com.human.common.registry.init.item.HumanFerroaluminumBlockItems;
 import com.human.common.registry.init.item.HumanSteelBlockItems;
 import com.human.common.registry.init.item.HumanTitaniumBlockItems;
@@ -17,10 +17,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
-import com.avp.common.registry.init.block.AVPBlocks;
-import com.avp.common.registry.init.item.AVPArmorItems;
-import com.avp.common.registry.init.item.AVPItems;
-
 public class ItemModelProvider extends FabricModelProvider {
 
     public ItemModelProvider(FabricDataOutput output) {
@@ -29,9 +25,7 @@ public class ItemModelProvider extends FabricModelProvider {
 
     @Override
     public void generateBlockStateModels(BlockModelGenerators generators) {
-        generators.createSimpleFlatItemModel(AlienResinBlocks.NETHER_RESIN_WEB.get());
         generators.createSimpleFlatItemModel(AVPBlocks.RAZOR_WIRE.get());
-        generators.createSimpleFlatItemModel(AlienResinBlocks.RESIN_WEB.get());
     }
 
     @Override
@@ -44,43 +38,11 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, AVPItems.SMALL_BULLET);
         generateStandardItem(generators, AVPItems.MEDIUM_BULLET);
         generateStandardItem(generators, AVPItems.SHOTGUN_SHELL);
-        generateStandardItem(generators, AlienArmorItems.ABERRANT_CHITIN_BOOTS);
-        generateStandardItem(generators, AlienArmorItems.ABERRANT_CHITIN_CHESTPLATE);
-        generateStandardItem(generators, AlienArmorItems.ABERRANT_CHITIN_HELMET);
-        generateStandardItem(generators, AlienArmorItems.ABERRANT_CHITIN_LEGGINGS);
-        generateStandardItem(generators, AlienArmorItems.CHITIN_BOOTS);
-        generateStandardItem(generators, AlienArmorItems.CHITIN_CHESTPLATE);
-        generateStandardItem(generators, AlienArmorItems.CHITIN_HELMET);
-        generateStandardItem(generators, AlienArmorItems.CHITIN_LEGGINGS);
-        generateStandardItem(generators, AlienArmorItems.IRRADIATED_CHITIN_BOOTS);
-        generateStandardItem(generators, AlienArmorItems.IRRADIATED_CHITIN_CHESTPLATE);
-        generateStandardItem(generators, AlienArmorItems.IRRADIATED_CHITIN_HELMET);
-        generateStandardItem(generators, AlienArmorItems.IRRADIATED_CHITIN_LEGGINGS);
         generateStandardItem(generators, AVPItems.FUEL_TANK);
         generateStandardItem(generators, AVPArmorItems.MK50_BOOTS);
         generateStandardItem(generators, AVPArmorItems.MK50_CHESTPLATE);
         generateStandardItem(generators, AVPArmorItems.MK50_HELMET);
         generateStandardItem(generators, AVPArmorItems.MK50_LEGGINGS);
-        generateStandardItem(generators, AlienArmorItems.NETHER_CHITIN_BOOTS);
-        generateStandardItem(generators, AlienArmorItems.NETHER_CHITIN_CHESTPLATE);
-        generateStandardItem(generators, AlienArmorItems.NETHER_CHITIN_HELMET);
-        generateStandardItem(generators, AlienArmorItems.NETHER_CHITIN_LEGGINGS);
-        generateStandardItem(generators, AlienArmorItems.PLATED_ABERRANT_CHITIN_BOOTS);
-        generateStandardItem(generators, AlienArmorItems.PLATED_ABERRANT_CHITIN_CHESTPLATE);
-        generateStandardItem(generators, AlienArmorItems.PLATED_ABERRANT_CHITIN_HELMET);
-        generateStandardItem(generators, AlienArmorItems.PLATED_ABERRANT_CHITIN_LEGGINGS);
-        generateStandardItem(generators, AlienArmorItems.PLATED_CHITIN_BOOTS);
-        generateStandardItem(generators, AlienArmorItems.PLATED_CHITIN_CHESTPLATE);
-        generateStandardItem(generators, AlienArmorItems.PLATED_CHITIN_HELMET);
-        generateStandardItem(generators, AlienArmorItems.PLATED_CHITIN_LEGGINGS);
-        generateStandardItem(generators, AlienArmorItems.PLATED_IRRADIATED_CHITIN_BOOTS);
-        generateStandardItem(generators, AlienArmorItems.PLATED_IRRADIATED_CHITIN_CHESTPLATE);
-        generateStandardItem(generators, AlienArmorItems.PLATED_IRRADIATED_CHITIN_HELMET);
-        generateStandardItem(generators, AlienArmorItems.PLATED_IRRADIATED_CHITIN_LEGGINGS);
-        generateStandardItem(generators, AlienArmorItems.PLATED_NETHER_CHITIN_BOOTS);
-        generateStandardItem(generators, AlienArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE);
-        generateStandardItem(generators, AlienArmorItems.PLATED_NETHER_CHITIN_HELMET);
-        generateStandardItem(generators, AlienArmorItems.PLATED_NETHER_CHITIN_LEGGINGS);
         generateStandardItem(generators, AVPArmorItems.PRESSURE_BOOTS);
         generateStandardItem(generators, AVPArmorItems.PRESSURE_CHESTPLATE);
         generateStandardItem(generators, AVPArmorItems.PRESSURE_HELMET);
@@ -111,15 +73,7 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, AVPArmorItems.WY_ELITE_HELMET);
         generateStandardItem(generators, AVPArmorItems.WY_ELITE_LEGGINGS);
 
-        generateStandardItem(generators, AlienItems.IRRADIATED_CHITIN);
-        generateStandardItem(generators, AlienItems.PLATED_IRRADIATED_CHITIN);
-        generateStandardItem(generators, AlienItems.IRRADIATED_RESIN_BALL);
-        generateStandardItem(generators, AlienItems.ABERRANT_CHITIN);
-        generateStandardItem(generators, AlienItems.ABERRANT_RESIN_BALL);
-        generateStandardItem(generators, AlienItems.PLATED_ABERRANT_CHITIN);
         generateStandardItem(generators, AVPItems.ALUMINUM_INGOT);
-        generateStandardItem(generators, AlienItems.ALIEN_MUSIC_DISC_1);
-        generateStandardItem(generators, AlienItems.ALIEN_MUSIC_DISC_1_FRAGMENT);
         generateStandardItem(generators, AVPItems.AUTUNITE_DUST);
         generateStandardItem(generators, AVPItems.BARREL);
         generateStandardItem(generators, AVPItems.BATTERY_PACK);
@@ -146,7 +100,6 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, AVPItems.SERVO);
         generateStandardItem(generators, AVPItems.SPEAKER);
         generateStandardItem(generators, AVPItems.CARBON_DUST);
-        generateStandardItem(generators, AlienItems.CHITIN);
         generateStandardItem(generators, AVPItems.CPU);
         generateStandardItem(generators, AVPItems.DIODE);
         generateStandardItem(generators, AVPItems.FERROALUMINUM_INGOT);
@@ -158,12 +111,6 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, AVPItems.LITHIUM_DUST);
         generateStandardItem(generators, AVPItems.MINIGUN_BARREL);
         generateStandardItem(generators, AVPItems.NEODYMIUM_MAGNET);
-        generateStandardItem(generators, AlienItems.NETHER_CHITIN);
-        generateStandardItem(generators, AlienItems.NETHER_RESIN_BALL);
-        generateStandardItem(generators, AlienItems.OVOID_POTTERY_SHERD);
-        generateStandardItem(generators, AlienItems.PARASITE_POTTERY_SHERD);
-        generateStandardItem(generators, AlienItems.PLATED_CHITIN);
-        generateStandardItem(generators, AlienItems.PLATED_NETHER_CHITIN);
         generateStandardItem(generators, AVPItems.POLYMER);
         generateStandardItem(generators, AVPItems.RAW_BAUXITE);
         generateStandardItem(generators, AVPItems.RAW_BRASS);
@@ -171,15 +118,12 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, AVPItems.RAW_FERROBAUXITE);
         generateStandardItem(generators, AVPItems.RAW_GALENA);
         generateStandardItem(generators, AVPItems.RAW_MONAZITE);
-        generateStandardItem(generators, AlienItems.RAW_ROYAL_JELLY);
         generateStandardItem(generators, AVPItems.RAW_TITANIUM);
         generateStandardItem(generators, AVPItems.RAW_ZINC);
         generateStandardItem(generators, AVPItems.RECEIVER);
         generateStandardItem(generators, AVPItems.REGULATOR);
-        generateStandardItem(generators, AlienItems.RESIN_BALL);
         generateStandardItem(generators, AVPItems.RESISTOR);
         generateStandardItem(generators, AVPItems.ROCKET_BARREL);
-        generateStandardItem(generators, AlienItems.ROYALTY_POTTERY_SHERD);
         generateStandardItem(generators, AVPItems.SILICON);
         generateStandardItem(generators, AVPItems.SMART_BARREL);
         generateStandardItem(generators, AVPItems.SMART_RECEIVER);
@@ -198,7 +142,6 @@ public class ItemModelProvider extends FabricModelProvider {
         generateHandheldItem(generators, AVPItems.TITANIUM_SWORD);
         generateStandardItem(generators, AVPItems.TRANSISTOR);
         generateStandardItem(generators, AVPItems.URANIUM_INGOT);
-        generateStandardItem(generators, AlienItems.VECTOR_POTTERY_SHERD);
         generateStandardItem(generators, AVPItems.ZINC_INGOT);
 
         generateStandardItem(generators, AVPItems.FERROALUMINUM_NUGGET);
@@ -216,7 +159,6 @@ public class ItemModelProvider extends FabricModelProvider {
         generateHandheldItem(generators, HumanSteelBlockItems.STEEL_DOOR);
         generateHandheldItem(generators, HumanTitaniumBlockItems.TITANIUM_DOOR);
 
-        generateStandardItem(generators, AlienItems.POISON_JELLY);
     }
 
     private void generateHandheldItem(ItemModelGenerators generators, Supplier<? extends Item> itemSupplier) {

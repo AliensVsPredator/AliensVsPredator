@@ -1,6 +1,9 @@
 package com.avp.common.registry.init.item;
 
-import com.alien.common.gameplay.item.RoyalJellyBlockItem;
+import com.avp.common.registry.AVPDeferredHolder;
+import com.avp.common.registry.init.block.AVPBlocks;
+import com.avp.common.registry.init.block.CoreBlocks;
+import com.avp.service.Services;
 import com.human.common.gameplay.block_item.AmmoChestBlockItem;
 import com.human.common.gameplay.block_item.LeadChestBlockItem;
 import com.human.common.gameplay.block_item.SentryTurretBlockItem;
@@ -15,11 +18,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
-import com.avp.common.registry.AVPDeferredHolder;
-import com.avp.common.registry.init.block.AVPBlocks;
-import com.avp.common.registry.init.block.CoreBlocks;
-import com.avp.service.Services;
 
 public class AVPBlockItems {
 
@@ -94,11 +92,6 @@ public class AVPBlockItems {
     public static final AVPDeferredHolder<BlockItem> REDSTONE_GENERATOR = register("redstone_generator", AVPBlocks.REDSTONE_GENERATOR);
 
     public static final AVPDeferredHolder<BlockItem> RESONATOR_BLOCK = register("resonator", AVPBlocks.RESONATOR_BLOCK);
-
-    public static final AVPDeferredHolder<BlockItem> ROYAL_JELLY_BLOCK = registerWithSupplier(
-        "royal_jelly_block",
-        RoyalJellyBlockItem::new
-    );
 
     public static final AVPDeferredHolder<BlockItem> SENTRY_TURRET = registerWithSupplier("sentry_turret", SentryTurretBlockItem::new);
 

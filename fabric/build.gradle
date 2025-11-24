@@ -10,7 +10,9 @@ plugins {
 }
 
 fabricApi {
-    configureDataGeneration()
+    configureDataGeneration({
+        modId = project.mod_id
+    })
 }
 
 // ##################################################################################

@@ -1,8 +1,9 @@
 package com.avp.common.util;
 
-import com.alien.common.gameplay.entity.living.alien.Alien;
-import com.alien.common.model.alien.variant.AlienVariant;
-import com.alien.common.util.AlienTransitionUtil;
+import com.avp.AVP;
+import com.avp.common.gameplay.explosion.Explosion;
+import com.avp.common.gameplay.explosion.ExplosionProgressTracker;
+import com.avp.common.gameplay.explosion.nuke.NuclearExplosionEffects;
 import com.human.common.gameplay.entity.nuke.MushroomCloudEntity;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -12,11 +13,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
-
-import com.avp.AVP;
-import com.avp.common.gameplay.explosion.Explosion;
-import com.avp.common.gameplay.explosion.ExplosionProgressTracker;
-import com.avp.common.gameplay.explosion.nuke.NuclearExplosionEffects;
 
 public class ExplosionUtil {
 
@@ -88,9 +84,10 @@ public class ExplosionUtil {
                     var distance = entity.distanceToSqr(center);
                     var damage = computeDamage(radius, 5, 1000, distance);
 
-                    if (entity instanceof Alien alien) {
-                        AlienTransitionUtil.transitionIntoVariant(alien, AlienVariant.IRRADIATED);
-                    }
+                    // FIXME:
+//                    if (entity instanceof Alien alien) {
+//                        AlienTransitionUtil.transitionIntoVariant(alien, AlienVariant.IRRADIATED);
+//                    }
 
                     entity.igniteForSeconds(15);
                     entity.hurt(level.damageSources().explosion(null), (float) damage);

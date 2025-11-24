@@ -1,18 +1,5 @@
 package com.avp;
 
-import com.alien.Alien;
-import com.human.Human;
-import com.human.common.gameplay.level.patrol.MarinePatrolSpawner;
-import com.lib.common.gameplay.gene.Genes;
-import mod.azure.azurelib.common.config.Config;
-import mod.azure.azurelib.common.config.ConfigHolder;
-import mod.azure.azurelib.common.config.ConfigHolderRegistry;
-import mod.azure.azurelib.common.config.format.ConfigFormats;
-import mod.azure.azurelib.common.config.format.IConfigFormatHandler;
-import mod.azure.azurelib.common.config.io.ConfigIO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.avp.common.config.AVPConfig;
 import com.avp.common.data.AVPReloadListeners;
 import com.avp.common.data.fixer.migration.AVPDataMigrations;
@@ -43,6 +30,17 @@ import com.avp.common.registry.init.item.AVPItems;
 import com.avp.common.registry.key.AVPBiomeKeys;
 import com.avp.common.registry.key.AVPJukeboxSongKeys;
 import com.avp.service.Services;
+import com.human.Human;
+import com.human.common.gameplay.level.patrol.MarinePatrolSpawner;
+import com.lib.common.gameplay.gene.Genes;
+import mod.azure.azurelib.common.config.Config;
+import mod.azure.azurelib.common.config.ConfigHolder;
+import mod.azure.azurelib.common.config.ConfigHolderRegistry;
+import mod.azure.azurelib.common.config.format.ConfigFormats;
+import mod.azure.azurelib.common.config.format.IConfigFormatHandler;
+import mod.azure.azurelib.common.config.io.ConfigIO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AVP {
 
@@ -61,7 +59,6 @@ public class AVP {
 
         LOGGER.info("Initializing AVP for platform '{}'", Services.PLATFORM.getPlatformName());
 
-        Alien.initialize();
         Human.initialize();
 
         AVPBlockEntityTypes.initialize();

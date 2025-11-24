@@ -1,8 +1,8 @@
 package com.avp.common.registry.init;
 
-import com.alien.common.gameplay.block.entity.resin.node.ResinNodeBlockEntity;
-import com.alien.common.gameplay.block.entity.resin.vent.ResinVentBlockEntity;
-import com.alien.common.registry.init.block.AlienResinBlocks;
+import com.avp.common.registry.AVPDeferredHolder;
+import com.avp.common.registry.init.block.AVPBlocks;
+import com.avp.service.Services;
 import com.human.common.gameplay.block.entity.AmmoChestBlockEntity;
 import com.human.common.gameplay.block.entity.IndustrialFurnaceBlockEntity;
 import com.human.common.gameplay.block.entity.LeadChestBlockEntity;
@@ -19,33 +19,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import java.util.function.Supplier;
 
-import com.avp.common.registry.AVPDeferredHolder;
-import com.avp.common.registry.init.block.AVPBlocks;
-import com.avp.service.Services;
-
 public class AVPBlockEntityTypes {
-
-    public static final AVPDeferredHolder<BlockEntityType<ResinNodeBlockEntity>> RESIN_NODE = register(
-        "resin_node",
-        () -> BlockEntityType.Builder.of(
-            ResinNodeBlockEntity::new,
-            AlienResinBlocks.IRRADIATED_RESIN_NODE.get(),
-            AlienResinBlocks.ABERRANT_RESIN_NODE.get(),
-            AlienResinBlocks.NETHER_RESIN_NODE.get(),
-            AlienResinBlocks.RESIN_NODE.get()
-        )
-    );
-
-    public static final AVPDeferredHolder<BlockEntityType<ResinVentBlockEntity>> RESIN_VENT = register(
-        "resin_vent",
-        () -> BlockEntityType.Builder.of(
-            ResinVentBlockEntity::new,
-            AlienResinBlocks.IRRADIATED_RESIN_VENT.get(),
-            AlienResinBlocks.ABERRANT_RESIN_VENT.get(),
-            AlienResinBlocks.NETHER_RESIN_VENT.get(),
-            AlienResinBlocks.RESIN_VENT.get()
-        )
-    );
 
     public static final AVPDeferredHolder<BlockEntityType<IndustrialFurnaceBlockEntity>> INDUSTRIAL_FURNACE = register(
         "industrial_furnace",

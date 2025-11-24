@@ -1,6 +1,8 @@
 package com.avp.common.util;
 
-import com.alien.common.model.alien.Host;
+import com.avp.common.registry.init.AVPMobEffects;
+import com.avp.common.registry.tag.AVPEntityTypeTags;
+import com.avp.common.registry.tag.AVPItemTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -9,10 +11,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 import java.util.function.Predicate;
-
-import com.avp.common.registry.init.AVPMobEffects;
-import com.avp.common.registry.tag.AVPEntityTypeTags;
-import com.avp.common.registry.tag.AVPItemTags;
 
 public class AVPPredicates {
 
@@ -61,7 +59,9 @@ public class AVPPredicates {
     }
 
     public static boolean hasEmbryo(Entity target) {
-        return target instanceof Host host && host.getEmbryoType().isSome();
+        return false;
+        // FIXME:
+//        return target instanceof Host host && host.getEmbryoType().isSome();
     }
 
     public static boolean isFreeHost(Entity parasite, Entity hostTarget) {
@@ -74,20 +74,26 @@ public class AVPPredicates {
     }
 
     public static boolean isHost(Entity target) {
-        return target.getType().is(AVPEntityTypeTags.HOSTS) &&
-            AVPPredicates.isLiving(target) &&
-            !AVPPredicates.isBaby(target) &&
-            !AVPPredicates.IS_IMMORTAL.test((LivingEntity) target);
+        return false;
+        // FIXME:
+//        return target.getType().is(AVPEntityTypeTags.HOSTS) &&
+//            AVPPredicates.isLiving(target) &&
+//            !AVPPredicates.isBaby(target) &&
+//            !AVPPredicates.IS_IMMORTAL.test((LivingEntity) target);
     }
 
     public static boolean isParasiteAttached(Entity target) {
-        return target.hasPassenger(passenger -> passenger.getType().is(AVPEntityTypeTags.PARASITES));
+        return false;
+        // FIXME:
+//        return target.hasPassenger(passenger -> passenger.getType().is(AVPEntityTypeTags.PARASITES));
     }
 
     public static boolean isSelfOrOtherParasiteAttached(Entity parasite, Entity target) {
-        return target.hasPassenger(
-            passenger -> passenger.equals(parasite) || passenger.getType().is(AVPEntityTypeTags.PARASITES)
-        );
+        return false;
+        // FIXME:
+//        return target.hasPassenger(
+//            passenger -> passenger.equals(parasite) || passenger.getType().is(AVPEntityTypeTags.PARASITES)
+//        );
     }
 
     public static boolean isBaby(Entity target) {
@@ -98,9 +104,11 @@ public class AVPPredicates {
         return target instanceof LivingEntity livingEntity && livingEntity.isAlive() && !livingEntity.isDeadOrDying();
     }
 
-    public static final Predicate<LivingEntity> HAS_FACE_MASK = livingEntity -> livingEntity.getItemBySlot(
-        EquipmentSlot.HEAD
-    ).is(AVPItemTags.FACEHUGGER_RESISTANT_HELMETS);
+    public static final Predicate<LivingEntity> HAS_FACE_MASK = $ -> false;
+    // FIXME:
+//        livingEntity -> livingEntity.getItemBySlot(
+//        EquipmentSlot.HEAD
+//    ).is(AVPItemTags.FACEHUGGER_RESISTANT_HELMETS);
 
     public static final Predicate<LivingEntity> HAS_MASK = (a) -> true;
     // FIXME:
