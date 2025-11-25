@@ -17,29 +17,24 @@ import java.util.function.Supplier;
 
 public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
 
-    private final Map<BLibMod, NeoForgeBLibModRegistryContainer> modIdToRegistryContainerMap;
+    private final Map<BLibMod, NeoForgeBLibModContainer> modToContainerMap;
 
     public NeoForgeBLibRegistryServiceImpl() {
-        modIdToRegistryContainerMap = new ConcurrentHashMap<>();
+        modToContainerMap = new ConcurrentHashMap<>();
     }
 
-    public void finalize(BLibMod mod, IEventBus modBus) {
-        getRegistryContainer(mod)
+    public void finalize(BLibMod mod, IEventBus eventBus) {
+        getModContainer(mod)
             .getDeferredRegisters()
-            .forEach(deferredRegister -> deferredRegister.register(modBus));
+            .forEach(deferredRegister -> deferredRegister.register(eventBus));
 
-        modBus.<EntityAttributeCreationEvent>addListener(event -> registerEntityAttributes(mod, event));
-    }
-
-    public void registerEntityAttributes(BLibMod mod, EntityAttributeCreationEvent event) {
-        getRegistryContainer(mod).getEntityAttributeSupplierPairs()
-            .forEach(pair -> event.put(pair.v1().get(), pair.v2().get().build()));
+        eventBus.<EntityAttributeCreationEvent>addListener(event -> onRegisterEntityAttributes(mod, event));
     }
 
     @Override
     public <T> Holder<T> register(BLibHolder<T> holder) {
         var blibRegistry = holder.getRegistry();
-        var modContainer = getRegistryContainer(blibRegistry.getMod());
+        var modContainer = getModContainer(blibRegistry.getMod());
         var backingRegistry = blibRegistry.getBackingRegistry();
         @SuppressWarnings("unchecked")
         var deferredRegister = (DeferredRegister<T>) modContainer.getDeferredRegister(backingRegistry);
@@ -56,15 +51,20 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
         BLibHolder<? extends EntityType<? extends LivingEntity>> holder,
         Supplier<AttributeSupplier.Builder> attributeSupplierBuilderSupplier
     ) {
-        getRegistryContainer(holder)
+        getModContainer(holder)
             .registerEntityAttribute(holder, attributeSupplierBuilderSupplier);
     }
 
-    private NeoForgeBLibModRegistryContainer getRegistryContainer(BLibHolder<?> holder) {
-        return getRegistryContainer(holder.getRegistry().getMod());
+    private void onRegisterEntityAttributes(BLibMod mod, EntityAttributeCreationEvent event) {
+        getModContainer(mod).getEntityAttributeSupplierPairs()
+            .forEach(pair -> event.put(pair.v1().get(), pair.v2().get().build()));
     }
 
-    private NeoForgeBLibModRegistryContainer getRegistryContainer(BLibMod mod) {
-        return modIdToRegistryContainerMap.computeIfAbsent(mod, $ -> new NeoForgeBLibModRegistryContainer(mod));
+    private NeoForgeBLibModContainer getModContainer(BLibHolder<?> holder) {
+        return getModContainer(holder.getRegistry().getMod());
+    }
+
+    private NeoForgeBLibModContainer getModContainer(BLibMod mod) {
+        return modToContainerMap.computeIfAbsent(mod, $ -> new NeoForgeBLibModContainer(mod));
     }
 }

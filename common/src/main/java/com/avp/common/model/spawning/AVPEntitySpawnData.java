@@ -1,6 +1,5 @@
 package com.avp.common.model.spawning;
 
-import com.avp.common.config.AVPConfig;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
@@ -12,6 +11,8 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 import java.util.function.Supplier;
+
+import com.avp.common.config.AVPConfig;
 
 public final class AVPEntitySpawnData<T extends Mob> {
 

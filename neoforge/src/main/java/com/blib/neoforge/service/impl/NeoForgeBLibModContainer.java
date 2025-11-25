@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-class NeoForgeBLibModRegistryContainer {
+class NeoForgeBLibModContainer {
 
     private static <T> @NotNull DeferredRegister<T> createDeferredRegistry(String modId, Registry<T> registry) {
         return DeferredRegister.create(registry, modId);
@@ -33,7 +33,7 @@ class NeoForgeBLibModRegistryContainer {
 
     private final List<Tuple2<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>>> entityAttributeSupplierPairs;
 
-    public NeoForgeBLibModRegistryContainer(BLibMod mod) {
+    public NeoForgeBLibModContainer(BLibMod mod) {
         this.mod = mod;
         this.registryToDeferredRegisterMap = Stream.of(
             BuiltInRegistries.ARMOR_MATERIAL,
@@ -58,7 +58,10 @@ class NeoForgeBLibModRegistryContainer {
         this.entityAttributeSupplierPairs = new ArrayList<>();
     }
 
-    public void registerEntityAttribute(BLibHolder<? extends EntityType<? extends LivingEntity>> holder, Supplier<AttributeSupplier.Builder> attributeSupplierBuilderSupplier) {
+    public void registerEntityAttribute(
+        BLibHolder<? extends EntityType<? extends LivingEntity>> holder,
+        Supplier<AttributeSupplier.Builder> attributeSupplierBuilderSupplier
+    ) {
         entityAttributeSupplierPairs.add(new Tuple2<>(holder, attributeSupplierBuilderSupplier));
     }
 
