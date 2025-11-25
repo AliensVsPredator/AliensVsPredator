@@ -1,17 +1,15 @@
-package com.avp.neoforge.service;
+package com.blib.neoforge.service.impl;
 
+import com.blib.service.BLibModLoaderService;
 import com.lib.common.util.Version;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLLoader;
 import org.jetbrains.annotations.Nullable;
 
-import com.avp.AVP;
-import com.avp.service.PlatformService;
-
-public class NeoForgePlatformService implements PlatformService {
+public class NeoForgeBLibModLoaderServiceImpl implements BLibModLoaderService {
 
     @Override
-    public String getPlatformName() {
+    public String getModLoaderName() {
         return "NeoForge";
     }
 
@@ -26,9 +24,9 @@ public class NeoForgePlatformService implements PlatformService {
     }
 
     @Override
-    public @Nullable Version getModVersion() {
+    public @Nullable Version getModVersion(String modId) {
         return ModList.get()
-            .getModContainerById(AVP.MOD_ID)
+            .getModContainerById(modId)
             .map(mod -> mod.getModInfo().getVersion().toString())
             .map(Version::parse)
             .orElse(null);

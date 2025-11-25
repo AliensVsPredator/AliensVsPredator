@@ -1,16 +1,14 @@
-package com.avp.fabric.service;
+package com.blib.fabric.service.impl;
 
+import com.blib.service.BLibModLoaderService;
 import com.lib.common.util.Version;
 import net.fabricmc.loader.api.FabricLoader;
 import org.jetbrains.annotations.Nullable;
 
-import com.avp.AVP;
-import com.avp.service.PlatformService;
-
-public class FabricPlatformService implements PlatformService {
+public class FabricBLibModLoaderServiceImpl implements BLibModLoaderService {
 
     @Override
-    public String getPlatformName() {
+    public String getModLoaderName() {
         return "Fabric";
     }
 
@@ -25,8 +23,8 @@ public class FabricPlatformService implements PlatformService {
     }
 
     @Override
-    public @Nullable Version getModVersion() {
-        var container = FabricLoader.getInstance().getModContainer(AVP.MOD_ID);
+    public @Nullable Version getModVersion(String modId) {
+        var container = FabricLoader.getInstance().getModContainer(modId);
 
         return container
             .map(modContainer -> modContainer.getMetadata().getVersion().getFriendlyString())
