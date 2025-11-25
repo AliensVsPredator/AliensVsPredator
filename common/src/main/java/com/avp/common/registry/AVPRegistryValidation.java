@@ -3,20 +3,21 @@ package com.avp.common.registry;
 import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import com.avp.AVP;
 
 public class AVPRegistryValidation {
 
     public static <T> void throwIfMissingEntries(
-        Collection<AVPDeferredHolder<? extends T>> entries,
+        Collection<? extends Supplier<? extends T>> entries,
         Predicate<T> contains,
         Function<T, String> descriptionIdSupplier,
         String message
     ) {
         var unhandledEntries = entries
             .stream()
-            .map(AVPDeferredHolder::get)
+            .map(Supplier::get)
             .filter(Predicate.not(contains))
             .toList();
 
