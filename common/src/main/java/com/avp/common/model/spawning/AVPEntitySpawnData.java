@@ -1,5 +1,6 @@
 package com.avp.common.model.spawning;
 
+import com.avp.common.config.AVPConfig;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
@@ -10,16 +11,15 @@ import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.Heightmap;
 
-import com.avp.common.config.AVPConfig;
-import com.avp.common.registry.AVPDeferredHolder;
+import java.util.function.Supplier;
 
 public final class AVPEntitySpawnData<T extends Mob> {
 
-    public static <T extends Mob> Builder<T> builder(AVPDeferredHolder<EntityType<T>> entityTypeDeferredHolder) {
+    public static <T extends Mob> Builder<T> builder(Supplier<EntityType<T>> entityTypeDeferredHolder) {
         return new Builder<>(entityTypeDeferredHolder);
     }
 
-    private final AVPDeferredHolder<EntityType<T>> entityTypeDeferredHolder;
+    private final Supplier<EntityType<T>> entityTypeDeferredHolder;
 
     private final AVPEntitySpawnConfigData configData;
 
@@ -30,7 +30,7 @@ public final class AVPEntitySpawnData<T extends Mob> {
     private final boolean placementDisabled;
 
     private AVPEntitySpawnData(
-        AVPDeferredHolder<EntityType<T>> entityTypeDeferredHolder,
+        Supplier<EntityType<T>> entityTypeDeferredHolder,
         AVPEntitySpawnConfigData configData,
         AVPEntitySpawnPlacementData<T> placementData,
         boolean configDisabled,
@@ -65,7 +65,7 @@ public final class AVPEntitySpawnData<T extends Mob> {
 
     public static class Builder<T extends Mob> {
 
-        private final AVPDeferredHolder<EntityType<T>> entityTypeDeferredHolder;
+        private final Supplier<EntityType<T>> entityTypeDeferredHolder;
 
         private TagKey<Biome> biomeTagKey;
 
@@ -81,7 +81,7 @@ public final class AVPEntitySpawnData<T extends Mob> {
 
         private boolean placementDisabled;
 
-        public Builder(AVPDeferredHolder<EntityType<T>> entityTypeDeferredHolder) {
+        public Builder(Supplier<EntityType<T>> entityTypeDeferredHolder) {
             this.entityTypeDeferredHolder = entityTypeDeferredHolder;
             this.biomeTagKey = BiomeTags.IS_OVERWORLD;
             this.heightmapType = Heightmap.Types.MOTION_BLOCKING_NO_LEAVES;
