@@ -34,6 +34,7 @@ import java.util.function.Supplier;
 import com.avp.client.model.KeyInteractType;
 import com.avp.client.render.item.SimpleItemRenderer;
 
+@Deprecated(forRemoval = true)
 public interface ClientRegistryService {
 
     Function<String, Supplier<AzItemRenderer>> ITEM_RENDERER_SUPPLIER_FACTORY = name -> () -> new SimpleItemRenderer(

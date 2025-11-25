@@ -4,6 +4,7 @@ import java.util.ServiceLoader;
 
 import com.avp.AVP;
 
+@Deprecated(forRemoval = true)
 public class Services {
 
     public static final BridgeService BRIDGE = load(BridgeService.class);

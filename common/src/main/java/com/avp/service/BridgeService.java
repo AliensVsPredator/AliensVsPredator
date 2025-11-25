@@ -9,6 +9,7 @@ import net.minecraft.world.item.SpawnEggItem;
 
 import java.util.function.Supplier;
 
+@Deprecated(forRemoval = true)
 public interface BridgeService {
 
     Supplier<Item> createGunSupplier(GunConfig gunConfig);

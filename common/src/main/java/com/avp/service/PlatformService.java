@@ -3,6 +3,7 @@ package com.avp.service;
 import com.lib.common.util.Version;
 import org.jetbrains.annotations.Nullable;
 
+@Deprecated(forRemoval = true)
 public interface PlatformService {
 
     /**

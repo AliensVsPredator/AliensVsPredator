@@ -24,6 +24,7 @@ import com.avp.common.network.NetworkHandler;
 import com.avp.common.network.PacketDirection;
 import com.avp.common.registry.AVPDeferredHolder;
 
+@Deprecated(forRemoval = true)
 public interface RegistryService {
 
     default <T> AVPDeferredHolder<T> register(Registry<? super T> registry, String id, Supplier<? extends T> supplier) {
