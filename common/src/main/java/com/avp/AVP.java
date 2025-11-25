@@ -1,5 +1,6 @@
 package com.avp;
 
+import com.blib.service.BLibServices;
 import com.human.Human;
 import com.human.common.gameplay.level.patrol.MarinePatrolSpawner;
 import com.lib.common.gameplay.gene.Genes;
@@ -40,7 +41,6 @@ import com.avp.common.registry.init.item.AVPArmorItems;
 import com.avp.common.registry.init.item.AVPBlockItems;
 import com.avp.common.registry.init.item.AVPItems;
 import com.avp.common.registry.key.AVPBiomeKeys;
-import com.avp.service.Services;
 
 public class AVP {
 
@@ -57,7 +57,7 @@ public class AVP {
     public static void initialize() {
         AVP.config = registerConfig(AVPConfig.class, ConfigFormats.json()).getConfigInstance();
 
-        LOGGER.info("Initializing AVP for platform '{}'", Services.PLATFORM.getPlatformName());
+        LOGGER.info("Initializing AVP for platform '{}'", BLibServices.MOD_LOADER.getModLoaderName());
 
         Human.initialize();
 

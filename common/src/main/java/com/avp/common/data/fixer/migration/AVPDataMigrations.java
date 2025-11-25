@@ -1,10 +1,11 @@
 package com.avp.common.data.fixer.migration;
 
-import java.util.List;
-
+import com.avp.AVP;
 import com.avp.common.data.fixer.migration.impl.AVP_Migrate_0_1_9_To_0_2_0;
 import com.avp.common.data.fixer.migration.impl.AVP_Migrate_0_2_2_To_0_2_3;
-import com.avp.service.Services;
+import com.blib.service.BLibServices;
+
+import java.util.List;
 
 public class AVPDataMigrations {
 
@@ -14,7 +15,7 @@ public class AVPDataMigrations {
     );
 
     static {
-        var version = Services.PLATFORM.getModVersion();
+        var version = BLibServices.MOD_LOADER.getModVersion(AVP.MOD_ID);
 
         if (version != null) {
             MIGRATIONS.forEach(AVPDataMigration::apply);

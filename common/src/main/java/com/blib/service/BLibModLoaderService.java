@@ -1,17 +1,16 @@
-package com.avp.service;
+package com.blib.service;
 
 import com.lib.common.util.Version;
 import org.jetbrains.annotations.Nullable;
 
-@Deprecated(forRemoval = true)
-public interface PlatformService {
+public interface BLibModLoaderService {
 
     /**
-     * Gets the name of the current platform
+     * Gets the name of the current mod loader.
      *
-     * @return The name of the current platform.
+     * @return The name of the current mod loader..
      */
-    String getPlatformName();
+    String getModLoaderName();
 
     /**
      * Checks if a mod with the given id is loaded.
@@ -38,5 +37,5 @@ public interface PlatformService {
     }
 
     @Nullable
-    Version getModVersion();
+    Version getModVersion(String modId);
 }
