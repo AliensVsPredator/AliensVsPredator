@@ -4,10 +4,13 @@ import com.blib.service.BLibServices;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class BLibRegistry<T> {
@@ -18,10 +21,13 @@ public class BLibRegistry<T> {
 
     private final Registry<? super T> registry;
 
-    public BLibRegistry(BLibMod mod, Registry<? super T> registry) {
+    private final List<Consumer<BLibHolder<? extends T>>> listeners;
+
+    /* package-private */ BLibRegistry(BLibMod mod, Registry<? super T> registry) {
         this.pathToHolderMap = new ConcurrentHashMap<>();
         this.mod = mod;
         this.registry = registry;
+        this.listeners = new ArrayList<>();
     }
 
     public <U extends T> BLibHolder<U> createHolder(String path, Supplier<U> valueSupplier) {
@@ -37,7 +43,12 @@ public class BLibRegistry<T> {
     public <U extends T> Holder<U> register(BLibHolder<U> holder) {
         var registeredHolder = BLibServices.REGISTRY.register(holder);
         holder.setHolderSupplier(() -> registeredHolder);
+        listeners.forEach(listener -> listener.accept(holder));
         return registeredHolder;
+    }
+
+    public void addListener(Consumer<BLibHolder<? extends T>> listener) {
+        listeners.add(listener);
     }
 
     public Collection<BLibHolder<? extends T>> getAll() {
