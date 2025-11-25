@@ -6,6 +6,8 @@ import com.avp.AVP;
 
 public class BLibServices {
 
+    public static final BLibEventService EVENT = load(BLibEventService.class);
+
     public static final BLibRegistryService REGISTRY = load(BLibRegistryService.class);
 
     public static <T> T load(Class<T> clazz) {
