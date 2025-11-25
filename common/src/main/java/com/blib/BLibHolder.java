@@ -1,36 +1,32 @@
 package com.blib;
 
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Supplier;
 
 public class BLibHolder<T> implements Supplier<T> {
 
-    public static <T> BLibHolder<T> create(String path, Supplier<? extends T> valueSupplier) {
-        return new BLibHolder<>(path, valueSupplier);
-    }
+    private final BLibRegistry<? super T> registry;
 
     private final String path;
 
-    private final Supplier<? extends T> valueSupplier;
+    private final Supplier<? extends T> valueFactory;
 
-    private Supplier<? extends Holder<? extends T>> holderSupplier;
+    private Supplier<? extends Holder<T>> holderSupplier;
 
-    private BLibHolder(String path, Supplier<? extends T> valueSupplier) {
+    /* package-private */ BLibHolder(BLibRegistry<? super T> registry, String path, Supplier<? extends T> valueFactory) {
+        this.registry = registry;
         this.path = path;
-        this.valueSupplier = valueSupplier;
+        this.valueFactory = valueFactory;
     }
 
     @Override
     public T get() {
-        if (holderSupplier == null) {
-            throw new IllegalStateException("Attempted to access unregistered BLibHolder's value. Path: %s".formatted(path));
-        }
-
-        return valueSupplier.get();
+        return getHolder().value();
     }
 
-    public Holder<? extends T> getHolder() {
+    public Holder<T> getHolder() {
         if (holderSupplier == null) {
             throw new IllegalStateException("Attempted to access unregistered BLibHolder's holder. Path: %s".formatted(path));
         }
@@ -42,11 +38,15 @@ public class BLibHolder<T> implements Supplier<T> {
         return path;
     }
 
-    /* package-private */ Supplier<? extends T> getValueSupplier() {
-        return valueSupplier;
+    public BLibRegistry<? super T> getRegistry() {
+        return registry;
     }
 
-    /* package-private */ void setHolderSupplier(Supplier<? extends Holder<? extends T>> holderSupplier) {
+    public Supplier<? extends T> getValueFactory() {
+        return valueFactory;
+    }
+
+    /* package-private */ void setHolderSupplier(Supplier<? extends Holder<T>> holderSupplier) {
         if (this.holderSupplier != null) {
             throw new IllegalStateException(
                 "Cannot overwrite existing holder supplier for BLibHolder. Holder: %s".formatted(this.holderSupplier.get())
@@ -54,5 +54,9 @@ public class BLibHolder<T> implements Supplier<T> {
         }
 
         this.holderSupplier = holderSupplier;
+    }
+
+    public ResourceLocation getResourceLocation() {
+        return getRegistry().getMod().createResourceLocation(path);
     }
 }
