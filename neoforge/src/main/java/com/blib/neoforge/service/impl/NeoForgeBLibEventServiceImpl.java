@@ -1,10 +1,10 @@
 package com.blib.neoforge.service.impl;
 
 import com.blib.BLibMod;
+import com.blib.event.BLibLevelTickEvent;
 import com.blib.event.BLibTagsUpdatedEvent;
 import com.blib.event.key.BLibEventKey;
 import com.blib.event.key.BLibEventKeys;
-import com.blib.event.BLibLevelTickEvent;
 import com.blib.service.BLibEventService;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
@@ -36,7 +36,10 @@ public class NeoForgeBLibEventServiceImpl implements BLibEventService {
             consumers.forEach(consumer -> consumer.accept(wrappedEvent));
         });
         NeoForge.EVENT_BUS.<TagsUpdatedEvent>addListener(event -> {
-            var wrappedEvent = new BLibTagsUpdatedEvent(event.getRegistryAccess(), event.getUpdateCause() == TagsUpdatedEvent.UpdateCause.CLIENT_PACKET_RECEIVED);
+            var wrappedEvent = new BLibTagsUpdatedEvent(
+                event.getRegistryAccess(),
+                event.getUpdateCause() == TagsUpdatedEvent.UpdateCause.CLIENT_PACKET_RECEIVED
+            );
             var consumers = getEventListeners(BLibEventKeys.TAGS_UPDATED);
             consumers.forEach(consumer -> consumer.accept(wrappedEvent));
         });

@@ -1,11 +1,12 @@
 package com.avp.common.data.fixer.migration;
 
-import com.avp.AVP;
-import com.avp.common.data.fixer.migration.impl.AVP_Migrate_0_1_9_To_0_2_0;
-import com.avp.common.data.fixer.migration.impl.AVP_Migrate_0_2_2_To_0_2_3;
 import com.blib.service.BLibServices;
 
 import java.util.List;
+
+import com.avp.AVP;
+import com.avp.common.data.fixer.migration.impl.AVP_Migrate_0_1_9_To_0_2_0;
+import com.avp.common.data.fixer.migration.impl.AVP_Migrate_0_2_2_To_0_2_3;
 
 public class AVPDataMigrations {
 
