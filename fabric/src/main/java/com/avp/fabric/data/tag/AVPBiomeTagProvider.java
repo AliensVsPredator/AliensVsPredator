@@ -1,17 +1,15 @@
 package com.avp.fabric.data.tag;
 
+import com.avp.common.registry.key.AVPBiomeKeys;
+import com.avp.common.registry.tag.AVPBiomeTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 
 import java.util.concurrent.CompletableFuture;
-
-import com.avp.common.registry.key.AVPBiomeKeys;
-import com.avp.common.registry.tag.AVPBiomeTags;
 
 public class AVPBiomeTagProvider extends FabricTagProvider<Biome> {
 
@@ -21,24 +19,6 @@ public class AVPBiomeTagProvider extends FabricTagProvider<Biome> {
 
     @Override
     protected void addTags(HolderLookup.Provider wrapperLookup) {
-        getOrCreateTagBuilder(AVPBiomeTags.HAS_BADLANDS_ALTAR)
-            .add(Biomes.BADLANDS);
-
-        getOrCreateTagBuilder(AVPBiomeTags.HAS_DESERT_ALTAR)
-            .add(Biomes.DESERT);
-
-        getOrCreateTagBuilder(AVPBiomeTags.HAS_DEEPSLATE_ALTAR)
-            .addOptionalTag(BiomeTags.IS_OVERWORLD);
-
-        getOrCreateTagBuilder(AVPBiomeTags.HAS_JUNGLE_ALTAR)
-            .add(Biomes.JUNGLE)
-            .add(Biomes.BAMBOO_JUNGLE)
-            .add(Biomes.SPARSE_JUNGLE);
-
-        getOrCreateTagBuilder(AVPBiomeTags.HAS_NETHER_ALTAR)
-            .add(Biomes.NETHER_WASTES)
-            .add(Biomes.CRIMSON_FOREST);
-
         getOrCreateTagBuilder(AVPBiomeTags.HAS_MARINE_CAMP_GRASS)
             .add(Biomes.MEADOW)
             .add(Biomes.PLAINS)
@@ -68,15 +48,6 @@ public class AVPBiomeTagProvider extends FabricTagProvider<Biome> {
 
         getOrCreateTagBuilder(AVPBiomeTags.HAS_OUTPOST_SUPPLY_DESERT)
             .add(Biomes.DESERT);
-
-        getOrCreateTagBuilder(AVPBiomeTags.HAS_ALTAR)
-            .addTag(AVPBiomeTags.HAS_BADLANDS_ALTAR)
-            .addTag(AVPBiomeTags.HAS_DESERT_ALTAR);
-
-        getOrCreateTagBuilder(AVPBiomeTags.HAS_XENOMORPHS)
-            .addOptionalTag(BiomeTags.IS_END)
-            .addOptionalTag(BiomeTags.IS_NETHER)
-            .addOptionalTag(BiomeTags.IS_OVERWORLD);
 
         getOrCreateTagBuilder(AVPBiomeTags.IS_IRRADIATED)
             .addOptional(AVPBiomeKeys.NUKED_BIOME);

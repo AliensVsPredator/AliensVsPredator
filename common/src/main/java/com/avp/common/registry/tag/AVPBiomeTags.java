@@ -1,24 +1,11 @@
 package com.avp.common.registry.tag;
 
+import com.avp.AVPResources;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 
-import com.avp.AVPResources;
-
 public class AVPBiomeTags {
-
-    public static final TagKey<Biome> HAS_ALTAR = create("has_altar");
-
-    public static final TagKey<Biome> HAS_BADLANDS_ALTAR = create("has_badlands_altar");
-
-    public static final TagKey<Biome> HAS_DESERT_ALTAR = create("has_desert_altar");
-
-    public static final TagKey<Biome> HAS_DEEPSLATE_ALTAR = create("has_deepslate_altar");
-
-    public static final TagKey<Biome> HAS_JUNGLE_ALTAR = create("has_jungle_altar");
-
-    public static final TagKey<Biome> HAS_NETHER_ALTAR = create("has_nether_altar");
 
     public static final TagKey<Biome> HAS_MARINE_CAMP_GRASS = create("has_marine_camp_grass");
 
@@ -31,8 +18,6 @@ public class AVPBiomeTags {
     public static final TagKey<Biome> HAS_OUTPOST_SUPPLY_BADLAND = create("has_outpost_supply_badland");
 
     public static final TagKey<Biome> HAS_OUTPOST_SUPPLY_DESERT = create("has_outpost_supply_desert");
-
-    public static final TagKey<Biome> HAS_XENOMORPHS = create("has_xenomorphs");
 
     public static final TagKey<Biome> IS_IRRADIATED = create("is_irradiated");
 
