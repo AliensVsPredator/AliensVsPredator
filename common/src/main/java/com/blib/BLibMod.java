@@ -5,6 +5,7 @@ import com.blib.event.key.BLibEventKey;
 import com.blib.service.BLibServices;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
@@ -33,6 +34,10 @@ public class BLibMod {
         }
 
         return newRegistry;
+    }
+
+    public <T> ResourceKey<T> createResourceKey(ResourceKey<? extends Registry<T>> registryKey, String path) {
+        return ResourceKey.create(registryKey, createResourceLocation(path));
     }
 
     public ResourceLocation createResourceLocation(String path) {
