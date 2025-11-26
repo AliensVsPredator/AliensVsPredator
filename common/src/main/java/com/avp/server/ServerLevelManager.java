@@ -1,29 +1,14 @@
 package com.avp.server;
 
 import com.human.common.gameplay.power.PowerSystem;
-import com.lib.common.data.Cooldown;
 import net.minecraft.server.level.ServerLevel;
-
-import java.time.Duration;
 
 public class ServerLevelManager {
 
-    private final Cooldown queenSpawnCooldown;
-
-    public ServerLevelManager() {
-        this.queenSpawnCooldown = Cooldown.withCooldownTime("queenSpawnCooldownInTicks", Duration.ofMinutes(5));
-
-        queenSpawnCooldown.reset();
-    }
+    public ServerLevelManager() {}
 
     public void tick(ServerLevel serverLevel) {
         tickScheduledRunnables();
-
-        queenSpawnCooldown.tick();
-
-        // FIXME:
-        // HiveLevelData.getOrCreate(serverLevel)
-        // .ifSome(HiveLevelData::tick);
 
         BlockBreakProgressManager.tick(serverLevel);
 
@@ -41,9 +26,5 @@ public class ServerLevelManager {
 
             return false;
         });
-    }
-
-    public Cooldown getQueenSpawnCooldown() {
-        return queenSpawnCooldown;
     }
 }
