@@ -4,7 +4,6 @@ import com.lib.common.network.DataContainer;
 import com.lib.common.network.DataUser;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
@@ -16,7 +15,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.GameRules;
 
 import com.avp.AVP;
-import com.avp.common.AVPEvents;
 import com.avp.common.data.worldgen.AVPVillageInjection;
 import com.avp.common.registry.init.AVPVillagerProfessions;
 import com.avp.common.registry.key.AVPVillagerGiftKeys;
@@ -56,8 +54,6 @@ public class AVPFabric implements ModInitializer {
             (dispatcher, registryAccess, environment) -> REGISTRY.getLiteralArgumentBuilders()
                 .forEach(dispatcher::register)
         );
-
-        CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> AVPEvents.onTagsUpdated());
 
         // TODO: Add a command for enabling/disabling server lag, this is very useful for testing purposes.
         // ServerTickEvents.START_SERVER_TICK.register(server -> {
