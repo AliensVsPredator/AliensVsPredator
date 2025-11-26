@@ -1,5 +1,6 @@
 package com.avp.mixin;
 
+import com.blib.common.data.fixer.BLibDataFixerRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.WritableRegistry;
@@ -16,8 +17,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Map;
 import java.util.Optional;
-
-import com.avp.common.data.fixer.AVPDataFixerRegistry;
 
 @Mixin(MappedRegistry.class)
 public abstract class MixinRegistry_ApplyDataFixes<T> implements WritableRegistry<T> {
@@ -98,7 +97,7 @@ public abstract class MixinRegistry_ApplyDataFixes<T> implements WritableRegistr
     @Unique
     private T convertResourceLocation(@Nullable ResourceLocation name, @Nullable T original) {
         if (name != null) {
-            var fixed = AVPDataFixerRegistry.getFixedValueInRegistry(this, name);
+            var fixed = BLibDataFixerRegistry.getFixedValueInRegistry(this, name);
 
             // don't override if the "fixed" version is missing
             if (fixed != null) {
@@ -113,7 +112,7 @@ public abstract class MixinRegistry_ApplyDataFixes<T> implements WritableRegistr
     @Unique
     private Holder.Reference<T> convertResourceLocationHolder(@Nullable ResourceLocation name, @Nullable Holder.Reference<T> original) {
         if (name != null) {
-            var fixed = AVPDataFixerRegistry.getFixedValueInRegistry(this, name);
+            var fixed = BLibDataFixerRegistry.getFixedValueInRegistry(this, name);
 
             // don't override if the "fixed" version is missing
             if (fixed != null) {

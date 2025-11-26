@@ -1,8 +1,8 @@
-package com.avp.common.data.fixer.migration;
+package com.blib.common.data.fixer.migration;
 
 import com.lib.common.util.Version;
 
-public interface AVPDataMigration {
+public interface BLibDataMigration {
 
     // Inclusive
     Version fromVersion();
