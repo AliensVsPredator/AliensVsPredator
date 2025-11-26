@@ -1,9 +1,10 @@
 package com.avp.common.registry.tag;
 
-import com.avp.AVPResources;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
+
+import com.avp.AVPResources;
 
 public class AVPBiomeTags {
 

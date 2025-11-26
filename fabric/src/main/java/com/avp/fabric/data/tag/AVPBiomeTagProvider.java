@@ -1,7 +1,5 @@
 package com.avp.fabric.data.tag;
 
-import com.avp.common.registry.key.AVPBiomeKeys;
-import com.avp.common.registry.tag.AVPBiomeTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
@@ -10,6 +8,9 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 
 import java.util.concurrent.CompletableFuture;
+
+import com.avp.common.registry.key.AVPBiomeKeys;
+import com.avp.common.registry.tag.AVPBiomeTags;
 
 public class AVPBiomeTagProvider extends FabricTagProvider<Biome> {
 
