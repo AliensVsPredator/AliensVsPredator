@@ -53,7 +53,7 @@ public abstract class MixinRegistry_ApplyDataFixes<T> implements WritableRegistr
     private void fixedGet(@Nullable ResourceKey<T> key, CallbackInfoReturnable<@Nullable T> cir) {
         if (key != null) {
             var original = cir.getReturnValue();
-            var fixed = convertResourceLocation(key.location(), original);
+            var fixed = convertResourceLocation(key.registry(), key.location(), original);
 
             if (fixed != original) {
                 cir.setReturnValue(fixed);
@@ -95,9 +95,24 @@ public abstract class MixinRegistry_ApplyDataFixes<T> implements WritableRegistr
 
     @Nullable
     @Unique
-    private T convertResourceLocation(@Nullable ResourceLocation name, @Nullable T original) {
-        if (name != null) {
-            var fixed = BLibDataFixerRegistry.getFixedValueInRegistry(this, name);
+    private T convertResourceLocation(ResourceLocation registryResourceLocation, @Nullable ResourceLocation resourceLocation, @Nullable T original) {
+        if (resourceLocation != null) {
+            var fixed = BLibDataFixerRegistry.getFixedValueInRegistry(registryResourceLocation, resourceLocation);
+
+            // don't override if the "fixed" version is missing
+            if (fixed != null) {
+                return getValueFromNullable(this.byLocation.get(fixed));
+            }
+        }
+
+        return original;
+    }
+
+    @Nullable
+    @Unique
+    private T convertResourceLocation(@Nullable ResourceLocation resourceLocation, @Nullable T original) {
+        if (resourceLocation != null) {
+            var fixed = BLibDataFixerRegistry.getFixedValueInRegistry(this, resourceLocation);
 
             // don't override if the "fixed" version is missing
             if (fixed != null) {

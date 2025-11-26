@@ -9,11 +9,11 @@ import com.avp.AVPResources;
 public class AVPDataFixerEntryUtil {
 
     public static BLibDataFixerRegistry.Entry avpToAvp(Registry<?> registry, String from, String to) {
-        return new BLibDataFixerRegistry.Entry(registry, AVPResources.location(from), AVPResources.location(to));
+        return new BLibDataFixerRegistry.Entry.Direct(registry, AVPResources.location(from), AVPResources.location(to));
     }
 
     public static BLibDataFixerRegistry.Entry avpToMc(Registry<?> registry, String from, String to) {
-        return new BLibDataFixerRegistry.Entry(
+        return new BLibDataFixerRegistry.Entry.Direct(
             registry,
             AVPResources.location(from),
             ResourceLocation.fromNamespaceAndPath("minecraft", to)
