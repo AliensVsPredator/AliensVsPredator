@@ -7,9 +7,9 @@ import net.minecraft.core.Registry;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -24,7 +24,7 @@ public class BLibRegistry<T> {
     private final List<Consumer<BLibHolder<? extends T>>> listeners;
 
     /* package-private */ BLibRegistry(BLibMod mod, Registry<? super T> registry) {
-        this.pathToHolderMap = new ConcurrentHashMap<>();
+        this.pathToHolderMap = Collections.synchronizedMap(new LinkedHashMap<>());
         this.mod = mod;
         this.registry = registry;
         this.listeners = new ArrayList<>();
