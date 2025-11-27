@@ -1,8 +1,15 @@
 package com.avp;
 
+import com.avp.server.BlockBreakProgressManager;
+import com.avp.server.ServerScheduler;
+import com.blib.BLib;
+import com.blib.BLibMod;
+import com.blib.event.BLibLevelTickEvent;
+import com.blib.event.key.BLibEventKeys;
 import com.blib.service.BLibServices;
 import com.human.Human;
 import com.human.common.gameplay.level.patrol.MarinePatrolSpawner;
+import com.human.common.gameplay.power.PowerSystem;
 import com.lib.common.gameplay.gene.Genes;
 import mod.azure.azurelib.common.config.Config;
 import mod.azure.azurelib.common.config.ConfigHolder;
@@ -10,6 +17,7 @@ import mod.azure.azurelib.common.config.ConfigHolderRegistry;
 import mod.azure.azurelib.common.config.format.ConfigFormats;
 import mod.azure.azurelib.common.config.format.IConfigFormatHandler;
 import mod.azure.azurelib.common.config.io.ConfigIO;
+import net.minecraft.server.level.ServerLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +53,8 @@ import com.avp.common.registry.key.AVPBiomeKeys;
 public class AVP {
 
     public static final String MOD_ID = "avp";
+
+    public static final BLibMod MOD = BLib.createMod(MOD_ID);
 
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
@@ -94,6 +104,33 @@ public class AVP {
 
         // Data Migration
         AVPDataMigrations.initialize();
+
+        MOD.addEventListener(BLibEventKeys.LEVEL_TICK_POST, event -> tickScheduledRunnables());
+        MOD.addEventListener(BLibEventKeys.LEVEL_TICK_POST, AVP::updatePowerSystem);
+        MOD.addEventListener(BLibEventKeys.LEVEL_TICK_POST, event -> BlockBreakProgressManager.tick(event.level()));
+    }
+
+    private static void tickScheduledRunnables() {
+        ServerScheduler.getScheduledTasks().removeIf(entry -> {
+            var runTime = entry.getKey();
+
+            if (System.currentTimeMillis() >= runTime) {
+                entry.getValue().run();
+                return true;
+            }
+
+            return false;
+        });
+    }
+
+    private static void updatePowerSystem(BLibLevelTickEvent.Post event) {
+        var level = event.level();
+
+        if (level.isClientSide) {
+            return;
+        }
+
+        PowerSystem.get((ServerLevel) level).tick();
     }
 
     /**
