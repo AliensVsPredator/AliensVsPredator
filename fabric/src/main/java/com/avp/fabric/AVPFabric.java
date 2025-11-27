@@ -1,9 +1,11 @@
 package com.avp.fabric;
 
+import com.avp.common.AVPEvents;
 import com.lib.common.network.DataContainer;
 import com.lib.common.network.DataUser;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
@@ -55,17 +57,7 @@ public class AVPFabric implements ModInitializer {
                 .forEach(dispatcher::register)
         );
 
-        // TODO: Add a command for enabling/disabling server lag, this is very useful for testing purposes.
-        // ServerTickEvents.START_SERVER_TICK.register(server -> {
-        // // Simulate 2 seconds of lag every 20 ticks (once per second)
-        // if (server.getTickCount() % 5 == 0) {
-        // try {
-        // Thread.sleep(300); // 2000 ms = 2 seconds
-        // } catch (InterruptedException e) {
-        // e.printStackTrace();
-        // }
-        // }
-        // });
+        CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> AVPEvents.onTagsUpdated());
     }
 
     private void onWorldTick(ServerLevel serverLevel) {
