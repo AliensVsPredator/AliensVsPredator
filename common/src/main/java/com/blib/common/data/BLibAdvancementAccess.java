@@ -1,18 +1,17 @@
-package com.lib.common.data;
+package com.blib.common.data;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-import com.avp.AVPResources;
-
-public record AdvancementAccess(
+public record BLibAdvancementAccess(
+    String modId,
     String group,
     String path
 ) {
 
     public ResourceLocation getResourceLocation() {
-        return AVPResources.location(group + "/" + path);
+        return ResourceLocation.fromNamespaceAndPath(modId, group + "/" + path);
     }
 
     public String getTitleTranslationKey() {
