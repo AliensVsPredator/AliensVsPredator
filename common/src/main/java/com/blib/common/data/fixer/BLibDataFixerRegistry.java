@@ -1,54 +1,42 @@
 package com.blib.common.data.fixer;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class BLibDataFixerRegistry {
 
-    private static final Map<Key, Entry> DATA_FIXER_KEY_TO_ENTRY = new HashMap<>();
+    private static final Int2ObjectMap<Entry> DATA_FIXER_KEY_TO_ENTRY = new Int2ObjectOpenHashMap<>();
 
     public static void register(Entry entry) {
-        DATA_FIXER_KEY_TO_ENTRY.put(entry.asKey(), entry);
+        var hash = computeHash(entry.registryResourceLocation(), entry.from());
+        DATA_FIXER_KEY_TO_ENTRY.put(hash, entry);
     }
 
-    public static ResourceLocation getFixedValueInRegistry(ResourceLocation registryResourceLocation, @Nullable ResourceLocation resourceLocation) {
-        var key = new Key.Resource(registryResourceLocation, resourceLocation);
-        return getFixedValueInRegistry(key);
-    }
+    public static @Nullable ResourceLocation getFixedValueInRegistry(
+        ResourceLocation registryResourceLocation,
+        @Nullable ResourceLocation resourceLocation
+    ) {
+        if (resourceLocation == null) {
+            return null;
+        }
 
-    public static <T> ResourceLocation getFixedValueInRegistry(Registry<T> registry, @Nullable ResourceLocation resourceLocation) {
-        var key = new Key.Direct(registry, resourceLocation);
-        return getFixedValueInRegistry(key);
-    }
+        var hash = computeHash(registryResourceLocation, resourceLocation);
+        var entry = DATA_FIXER_KEY_TO_ENTRY.get(hash);
 
-    private static @Nullable ResourceLocation getFixedValueInRegistry(Key key) {
-        var entry = DATA_FIXER_KEY_TO_ENTRY.get(key);
         return entry == null ? null : entry.to();
     }
 
-    public sealed interface Key {
-
-        ResourceLocation from();
-
-        record Direct(
-            Registry<?> registry,
-            ResourceLocation from
-        ) implements Key {}
-
-        record Resource(
-            ResourceLocation registryResourceLocation,
-            ResourceLocation from
-        ) implements Key {}
+    private static int computeHash(ResourceLocation registryResourceLocation, ResourceLocation resourceLocation) {
+        return 31 * registryResourceLocation.hashCode() + resourceLocation.hashCode();
     }
 
     public sealed interface Entry {
 
-        Key asKey();
+        ResourceLocation registryResourceLocation();
 
         ResourceLocation from();
 
@@ -61,8 +49,8 @@ public class BLibDataFixerRegistry {
         ) implements Entry {
 
             @Override
-            public Key asKey() {
-                return new Key.Direct(registry, from);
+            public ResourceLocation registryResourceLocation() {
+                return registry.key().location();
             }
         }
 
@@ -78,11 +66,6 @@ public class BLibDataFixerRegistry {
                 ResourceLocation to
             ) {
                 this(registryResourceKey.location(), from, to);
-            }
-
-            @Override
-            public Key asKey() {
-                return new Key.Resource(registryResourceLocation, from);
             }
         }
     }
