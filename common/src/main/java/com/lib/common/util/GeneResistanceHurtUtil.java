@@ -10,7 +10,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 
 import com.avp.common.registry.AVPDeferredHolder;
-import com.avp.common.registry.key.AVPDamageTypeKeys;
 
 public class GeneResistanceHurtUtil {
 
@@ -21,9 +20,10 @@ public class GeneResistanceHurtUtil {
     ) {
         var geneContainer = geneCarrier.getOrCreateGeneManager().getGeneContainer();
 
-        if (damageSource.is(AVPDamageTypeKeys.ACID)) {
-            return applyGeneResistanceToDamage(geneContainer, Genes.ACID_RESISTANCE, damage);
-        }
+        // FIXME:
+//        if (damageSource.is(AVPDamageTypeKeys.ACID)) {
+//            return applyGeneResistanceToDamage(geneContainer, Genes.ACID_RESISTANCE, damage);
+//        }
 
         if (damageSource.is(DamageTypeTags.IS_FIRE)) {
             return applyGeneResistanceToDamage(geneContainer, Genes.FIRE_RESISTANCE, damage);

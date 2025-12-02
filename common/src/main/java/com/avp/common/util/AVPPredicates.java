@@ -9,10 +9,6 @@ import net.minecraft.world.item.Items;
 
 import java.util.function.Predicate;
 
-import com.avp.common.registry.init.AVPMobEffects;
-import com.avp.common.registry.tag.AVPEntityTypeTags;
-import com.avp.common.registry.tag.AVPItemTags;
-
 public class AVPPredicates {
 
     public static final Predicate<LivingEntity> IS_IMMORTAL = livingEntity -> livingEntity instanceof Player player && (player.isCreative()
@@ -20,32 +16,6 @@ public class AVPPredicates {
 
     public static <T> Predicate<T> alwaysTrue() {
         return $ -> true;
-    }
-
-    public static boolean canBeIrradiated(Entity entity) {
-        if (
-            // If this is not a living entity...
-            !(entity instanceof LivingEntity livingEntity)
-                // Or if the entity is radiation-resistant...
-                || livingEntity.getType().is(AVPEntityTypeTags.RADIATION_RESISTANT)
-                // Or if the living entity is immortal...
-                || IS_IMMORTAL.test(livingEntity)
-                // Or if the living entity already has the radiation effect...
-                || livingEntity.hasEffect(AVPMobEffects.RADIATION.getHolder())
-                // Or if the entity is no longer alive...
-                || !livingEntity.isAlive()
-        ) {
-            // Then we don't want to or can't reasonably apply the radiation effect. Abort.
-            return false;
-        }
-
-        var hasFullRadiationResistantArmor = hasFullArmorSetMatching(
-            livingEntity,
-            itemStack -> itemStack.is(AVPItemTags.RADIATION_RESISTANT_ARMORS)
-        );
-
-        // Entity should not have a full set of radiation-resistant armor.
-        return !hasFullRadiationResistantArmor;
     }
 
     public static boolean hasFullArmorSetMatching(LivingEntity livingEntity, Predicate<ItemStack> itemStackPredicate) {

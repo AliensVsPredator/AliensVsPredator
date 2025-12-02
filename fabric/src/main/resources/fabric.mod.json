@@ -35,12 +35,8 @@
 		"fabric-datagen": [
 			"com.avp.fabric.data.AVPDataGenerator"
 		],
-		"rei_client": [
-			"com.avp.client.compat.rei.AVPREIClient"
-		],
-		"jei_mod_plugin": [
-			"com.avp.client.compat.jei.AVPJEIPlugin"
-		]
+		"rei_client": [],
+		"jei_mod_plugin": []
 	},
 	"mixins": [
 		"${mod_id}.mixins.json",

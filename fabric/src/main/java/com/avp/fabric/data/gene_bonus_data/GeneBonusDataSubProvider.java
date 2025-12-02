@@ -1,6 +1,7 @@
 package com.avp.fabric.data.gene_bonus_data;
 
-import com.human.common.registry.init.entity_type.HumanEntityTypes;
+import com.avp.AVP;
+import com.avp.common.registry.AVPDeferredHolder;
 import com.just.core.functional.tuple.Tuple2;
 import com.lib.common.data.EntityTypePredicate;
 import com.lib.common.gameplay.gene.Gene;
@@ -18,10 +19,6 @@ import net.minecraft.world.entity.MobCategory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-
-import com.avp.AVP;
-import com.avp.common.registry.AVPDeferredHolder;
-import com.avp.common.registry.init.entity_type.AVPEntityTypes;
 
 public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
 
@@ -168,14 +165,6 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
             )
         );
         add(EntityType.LLAMA, llamaGeneBonuses);
-        add(
-            HumanEntityTypes.MARINE.get(),
-            List.of(
-                // Positives
-                new Tuple2<>(Genes.ATTACK_DAMAGE, new GeneModifier(GeneOperationType.ADDITIVE, 1.0)),
-                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 30.0))
-            )
-        );
         add(
             EntityType.MOOSHROOM,
             List.of(
@@ -421,7 +410,7 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
 
         BuiltInRegistries.ENTITY_TYPE.stream()
             .filter(Predicate.not(touchedEntries::contains))
-            .filter(entityType -> entityType.getCategory() != MobCategory.MISC && entityType.getCategory() != AVPEntityTypes.ALIEN_CATEGORY)
+            .filter(entityType -> entityType.getCategory() != MobCategory.MISC)
             .forEach(entityType -> AVP.LOGGER.warn("No gene bonuses provided for {}", BuiltInRegistries.ENTITY_TYPE.getKey(entityType)));
     }
 

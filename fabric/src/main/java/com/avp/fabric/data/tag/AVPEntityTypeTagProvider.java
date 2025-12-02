@@ -1,6 +1,6 @@
 package com.avp.fabric.data.tag;
 
-import com.human.common.registry.init.entity_type.HumanEntityTypes;
+import com.avp.common.registry.tag.AVPEntityTypeTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
@@ -8,8 +8,6 @@ import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
 
 import java.util.concurrent.CompletableFuture;
-
-import com.avp.common.registry.tag.AVPEntityTypeTags;
 
 public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagProvider {
 
@@ -21,7 +19,6 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
     protected void addTags(HolderLookup.Provider wrapperLookup) {
         addHumanoids();
         addNetherCreatures();
-        addRadiationResistant();
     }
 
     private void addHumanoids() {
@@ -33,8 +30,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 EntityType.PLAYER,
                 EntityType.VILLAGER,
                 EntityType.WANDERING_TRADER,
-                EntityType.WITCH,
-                HumanEntityTypes.MARINE.get()
+                EntityType.WITCH
             );
     }
 
@@ -46,11 +42,5 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 EntityType.PIGLIN_BRUTE,
                 EntityType.STRIDER
             );
-    }
-
-    private void addRadiationResistant() {
-        getOrCreateTagBuilder(AVPEntityTypeTags.RADIATION_RESISTANT)
-            .addOptionalTag(EntityTypeTags.UNDEAD)
-            .add(EntityType.CREEPER);
     }
 }

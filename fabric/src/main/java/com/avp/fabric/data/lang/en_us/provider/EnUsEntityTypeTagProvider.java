@@ -11,6 +11,5 @@ public class EnUsEntityTypeTagProvider {
     public static final Consumer<FabricLanguageProvider.TranslationBuilder> CONSUMER = builder -> {
         builder.add(AVPEntityTypeTags.HUMANOIDS, "Humanoids");
         builder.add(AVPEntityTypeTags.NETHER_CREATURES, "Nether Creatures");
-        builder.add(AVPEntityTypeTags.RADIATION_RESISTANT, "Radiation Resistant");
     };
 }

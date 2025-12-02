@@ -1,6 +1,7 @@
 package com.avp.neoforge.service;
 
-import com.human.common.gameplay.item.gun.GunConfig;
+import com.avp.common.registry.init.AVPMobCategoryData;
+import com.avp.service.BridgeService;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
@@ -11,11 +12,6 @@ import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
-
-import com.avp.common.registry.init.AVPMobCategoryData;
-import com.avp.neoforge.common.item.NeoForgeGunItem;
-import com.avp.neoforge.common.item.NeoForgeOldPainlessItem;
-import com.avp.service.BridgeService;
 
 public class NeoForgeBridgeService implements BridgeService {
 
@@ -34,16 +30,6 @@ public class NeoForgeBridgeService implements BridgeService {
             data.isPersistent(),
             data.despawnDistance()
         );
-    }
-
-    @Override
-    public Supplier<Item> createGunSupplier(GunConfig gunConfig) {
-        return () -> new NeoForgeGunItem(gunConfig);
-    }
-
-    @Override
-    public Supplier<Item> createOldPainlessSupplier() {
-        return NeoForgeOldPainlessItem::new;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.lib.common.gameplay.goap;
 
+import com.avp.common.util.AVPPredicates;
 import com.just.goap.StateKey;
 import com.just.goap.sensor.Sensor;
 import com.just.goap.sensor.Sensors;
@@ -10,9 +11,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 
 import java.util.List;
-
-import com.avp.common.registry.tag.AVPBiomeTags;
-import com.avp.common.util.AVPPredicates;
 
 public class GOAPSensors {
 
@@ -55,13 +53,6 @@ public class GOAPSensors {
     public static final Sensor.Mono<Entity, List<BlockPos>> NEARBY_BLOCK_POSITIONS = Sensors.map(
         StateKey.sensed("nearby_block_positions"),
         entity -> BlockPos.betweenClosedStream(entity.blockPosition().offset(-1, 0, -1), entity.blockPosition().offset(1, 0, 1)).toList()
-    );
-
-    public static final Sensor.Mono<Entity, Boolean> IS_NEAR_RADIOACTIVE_BIOME = Sensors.compose(
-        NEARBY_BLOCK_POSITIONS.key(),
-        StateKey.sensed("is_near_radioactive_biome"),
-        (entity, nearbyBlockPositions) -> nearbyBlockPositions.stream()
-            .anyMatch(blockPos -> entity.level().getBiome(blockPos).is(AVPBiomeTags.IS_IRRADIATED))
     );
 
     public static final Sensor.Mono<Entity, List<Entity>> NEARBY_ENTITIES = Sensors.map(
