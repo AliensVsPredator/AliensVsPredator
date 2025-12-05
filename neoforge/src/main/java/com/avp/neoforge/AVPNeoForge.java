@@ -1,7 +1,6 @@
 package com.avp.neoforge;
 
 import com.avp.AVP;
-import com.avp.common.AVPEvents;
 import com.avp.common.network.NetworkHandler;
 import com.avp.neoforge.service.NeoForgeRegistryService;
 import com.avp.service.Services;
@@ -10,17 +9,12 @@ import com.lib.common.network.DataUser;
 import com.lib.common.util.codec.stream.adapter.JustStreamCodecToMojangStreamCodecAdapter;
 import mod.azure.azurelib.common.animation.cache.AzIdentityRegistry;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.SpawnPlacements;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
-import net.neoforged.neoforge.event.TagsUpdatedEvent;
-import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
@@ -43,7 +37,6 @@ public class AVPNeoForge {
         // Game bus events.
         NeoForge.EVENT_BUS.addListener(AVPNeoForge::registerDataReloadListeners);
         NeoForge.EVENT_BUS.addListener(AVPNeoForge::registerPlayerTrackingEntityHandler);
-        NeoForge.EVENT_BUS.addListener(AVPNeoForge::registerTagUpdateHandler);
     }
 
     public static void registerMiscellaneous(FMLCommonSetupEvent event) {
@@ -62,11 +55,6 @@ public class AVPNeoForge {
         if (event.getTarget() instanceof LivingEntity livingEntity) {
             ((DataUser) livingEntity).getDataContainer().syncToClient(livingEntity, DataContainer.SyncType.ALL);
         }
-    }
-
-    // Game event
-    public static void registerTagUpdateHandler(TagsUpdatedEvent event) {
-        AVPEvents.onTagsUpdated();
     }
 
     public static void registerPayloadHandlers(RegisterPayloadHandlersEvent event) {
