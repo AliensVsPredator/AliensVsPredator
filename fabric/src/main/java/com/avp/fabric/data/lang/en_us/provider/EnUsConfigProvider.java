@@ -56,14 +56,6 @@ public class EnUsConfigProvider {
             "config.avp.option.REMOVE_VANILLA_SPAWNS",
             "Removes certain hostile monster spawns, allowing others like Xenomorphs to spawn more frequently."
         );
-        builder.add(
-            "config.avp.option.ALIEN_CUSTOM_MOB_CATEGORY_ENABLED",
-            "Enable separate spawn cap for aliens."
-        );
-        builder.add(
-            "config.avp.option.ALIEN_CUSTOM_MOB_CATEGORY_LIMIT",
-            "Maximum spawn count for aliens in the custom mob category."
-        );
         builder.add("config.avp.option.CHESTBURSTER_SPAWN", "Chestburster spawn settings");
         builder.add("config.avp.option.DRONE_SPAWN", "Drone spawn settings");
         builder.add("config.avp.option.NETHER_CHESTBURSTER_SPAWN", "Nether Chestburster spawn settings");

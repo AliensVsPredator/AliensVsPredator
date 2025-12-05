@@ -2,7 +2,6 @@ package com.avp.service;
 
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
 
@@ -17,10 +16,4 @@ public interface BridgeService {
         int secondaryEggColour,
         Item.Properties itemProperties
     );
-
-    MobCategory getAlienMobCategory();
-
-    MobCategory getOvomorphMobCategory();
-
-    MobCategory getPredatorMobCategory();
 }
