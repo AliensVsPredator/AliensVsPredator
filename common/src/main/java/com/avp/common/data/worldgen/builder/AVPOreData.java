@@ -3,6 +3,7 @@ package com.avp.common.data.worldgen.builder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
@@ -19,10 +20,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import com.avp.AVPResources;
-
 public record AVPOreData(
-    String name,
+    ResourceLocation resourceLocation,
     ResourceKey<ConfiguredFeature<?, ?>> configuredFeatureKey,
     ResourceKey<PlacedFeature> placedFeatureKey,
     OreConfiguration oreConfiguration,
@@ -46,22 +45,21 @@ public record AVPOreData(
         return new PlacedFeature(holder.getOrThrow(configuredFeatureKey), modifiers);
     }
 
-    @Override
     public String name() {
-        return name;
+        return resourceLocation.getPath();
     }
 
-    public static Builder builder(String name, OreConfiguration.TargetBlockState targetBlockState) {
-        return builder(name, List.of(targetBlockState));
+    public static Builder builder(ResourceLocation resourceLocation, OreConfiguration.TargetBlockState targetBlockState) {
+        return builder(resourceLocation, List.of(targetBlockState));
     }
 
-    public static Builder builder(String name, List<OreConfiguration.TargetBlockState> targetBlockStates) {
-        return new Builder(name, targetBlockStates);
+    public static Builder builder(ResourceLocation resourceLocation, List<OreConfiguration.TargetBlockState> targetBlockStates) {
+        return new Builder(resourceLocation, targetBlockStates);
     }
 
     public static class Builder {
 
-        private final String name;
+        private final ResourceLocation resourceLocation;
 
         private final List<OreConfiguration.TargetBlockState> targetBlockStates;
 
@@ -71,8 +69,8 @@ public record AVPOreData(
 
         private float normalizedAirDiscardChance;
 
-        private Builder(String name, List<OreConfiguration.TargetBlockState> targetBlockStates) {
-            this.name = name;
+        private Builder(ResourceLocation resourceLocation, List<OreConfiguration.TargetBlockState> targetBlockStates) {
+            this.resourceLocation = resourceLocation;
             this.targetBlockStates = new ArrayList<>(targetBlockStates);
             this.modifiers = new ArrayList<>();
             this.normalizedAirDiscardChance = 0F;
@@ -123,7 +121,6 @@ public record AVPOreData(
         }
 
         public AVPOreData build() {
-            var resourceLocation = AVPResources.location(name);
             var configuredFeatureKey = ResourceKey.create(Registries.CONFIGURED_FEATURE, resourceLocation);
             var placedFeatureKey = ResourceKey.create(Registries.PLACED_FEATURE, resourceLocation);
 
@@ -132,7 +129,7 @@ public record AVPOreData(
             // Sorting the modifiers
             modifiers.sort(MODIFIER_COMPARATOR);
 
-            return new AVPOreData(name, configuredFeatureKey, placedFeatureKey, oreConfiguration, modifiers);
+            return new AVPOreData(resourceLocation, configuredFeatureKey, placedFeatureKey, oreConfiguration, modifiers);
         }
     }
 }
