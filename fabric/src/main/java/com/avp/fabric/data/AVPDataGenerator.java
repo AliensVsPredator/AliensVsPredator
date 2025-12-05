@@ -1,6 +1,5 @@
 package com.avp.fabric.data;
 
-import com.avp.fabric.data.gene_bonus_data.GeneBonusDataSubProvider;
 import com.avp.fabric.data.lang.en_us.EnglishLanguageProvider;
 import com.avp.fabric.data.recipe.RecipeProvider;
 import com.avp.fabric.data.tag.AVPEntityTypeTagProvider;
@@ -23,8 +22,5 @@ public class AVPDataGenerator implements DataGeneratorEntrypoint {
         // Tag providers
         pack.addProvider(AVPEntityTypeTagProvider::new);
         pack.addProvider(AVPItemTagProvider::new);
-
-        // Custom Providers
-        pack.addProvider(GeneBonusDataSubProvider::new);
     }
 }

@@ -1,7 +1,6 @@
 package com.avp;
 
 import com.avp.common.config.AVPConfig;
-import com.avp.common.data.AVPReloadListeners;
 import com.avp.common.data.fixer.migration.AVPDataMigrations;
 import com.avp.common.network.AVPPacketDirectionRegistry;
 import com.avp.common.network.AVPServerPacketHandlerRegistry;
@@ -43,9 +42,6 @@ public class AVP {
 
         // Functionality
         Genes.initialize();
-
-        // Listeners/Events
-        AVPReloadListeners.initialize();
 
         // Data Migration
         AVPDataMigrations.initialize();
