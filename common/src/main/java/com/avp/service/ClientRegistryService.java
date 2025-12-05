@@ -1,5 +1,6 @@
 package com.avp.service;
 
+import com.avp.client.model.KeyInteractType;
 import com.just.core.functional.tuple.Tuple2;
 import mod.azure.azurelib.common.render.armor.AzArmorRenderer;
 import mod.azure.azurelib.common.render.armor.AzArmorRendererRegistry;
@@ -31,15 +32,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import com.avp.client.model.KeyInteractType;
-import com.avp.client.render.item.SimpleItemRenderer;
-
 @Deprecated(forRemoval = true)
 public interface ClientRegistryService {
-
-    Function<String, Supplier<AzItemRenderer>> ITEM_RENDERER_SUPPLIER_FACTORY = name -> () -> new SimpleItemRenderer(
-        name
-    );
 
     void registerArmorRenderer(Supplier<AzArmorRenderer> armorRendererSupplier, List<Supplier<? extends Item>> itemSuppliers);
 
@@ -63,10 +57,6 @@ public interface ClientRegistryService {
     );
 
     void registerItemColor(ItemColor itemColor, List<Supplier<? extends Item>> itemSuppliers);
-
-    default void registerItemRenderer(Supplier<? extends Item> itemSupplier) {
-        registerItemRenderer(itemSupplier, ITEM_RENDERER_SUPPLIER_FACTORY);
-    }
 
     void registerItemRenderer(Supplier<? extends Item> itemSupplier, Function<String, Supplier<AzItemRenderer>> rendererFactory);
 
