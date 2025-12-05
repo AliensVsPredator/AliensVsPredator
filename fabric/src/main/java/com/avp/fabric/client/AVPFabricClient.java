@@ -7,7 +7,6 @@ import net.minecraft.world.entity.player.Player;
 
 import java.util.function.BiConsumer;
 
-import com.avp.client.AVPClient;
 import com.avp.common.network.NetworkHandler;
 import com.avp.fabric.service.FabricRegistryService;
 import com.avp.service.Services;
@@ -18,8 +17,6 @@ public class AVPFabricClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        AVPClient.initialize();
-
         registerClientBoundNetworkHandlers();
     }
 

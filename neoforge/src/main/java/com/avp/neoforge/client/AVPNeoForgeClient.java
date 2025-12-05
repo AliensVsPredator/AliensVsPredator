@@ -23,7 +23,6 @@ import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
 import com.avp.AVP;
-import com.avp.client.AVPClient;
 import com.avp.client.input.keybind.KeyPressHandler;
 import com.avp.neoforge.service.NeoForgeClientRegistryService;
 import com.avp.service.Services;
@@ -34,10 +33,6 @@ public class AVPNeoForgeClient {
     private static final NeoForgeClientRegistryService CLIENT_REGISTRY = ((NeoForgeClientRegistryService) Services.CLIENT_REGISTRY);
 
     static {
-        // We want this to run before any of the other events, as this sets up queues of data pairs (for example, pairs
-        // of item suppliers to item renderers) prior the registration events firing.
-        AVPClient.initialize();
-
         // Client game bus events.
         NeoForge.EVENT_BUS.addListener(AVPNeoForgeClient::onClientTick);
     }
