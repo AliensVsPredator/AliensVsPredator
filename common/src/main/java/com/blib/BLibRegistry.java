@@ -11,6 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class BLibRegistry<T> {
@@ -49,6 +50,14 @@ public class BLibRegistry<T> {
 
     public void addListener(Consumer<BLibHolder<? extends T>> listener) {
         listeners.add(listener);
+    }
+
+    public List<? extends T> computeMissingEntries(Collection<T> entries) {
+        return mod.<T>getAllHolders(getBackingRegistry())
+            .stream()
+            .map(Supplier::get)
+            .filter(Predicate.not(entries::contains))
+            .toList();
     }
 
     public Collection<BLibHolder<? extends T>> getAll() {

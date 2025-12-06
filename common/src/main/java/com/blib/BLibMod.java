@@ -62,7 +62,7 @@ public class BLibMod {
         return ResourceLocation.fromNamespaceAndPath(id, path);
     }
 
-    public <T> Collection<BLibHolder<? extends T>> getAllHolders(Registry<T> registry) {
+    public <T> Collection<BLibHolder<? extends T>> getAllHolders(Registry<? super T> registry) {
         @SuppressWarnings("unchecked")
         var subRegistries = (List<BLibRegistry<T>>) (List<?>) registryToRegistriesMap.getOrDefault(registry, List.of());
 
