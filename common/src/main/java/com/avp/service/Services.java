@@ -1,8 +1,8 @@
 package com.avp.service;
 
-import java.util.ServiceLoader;
-
 import com.avp.AVP;
+
+import java.util.ServiceLoader;
 
 @Deprecated(forRemoval = true)
 public class Services {
@@ -12,8 +12,6 @@ public class Services {
     public static final ClientNetworkingService CLIENT_NETWORKING = load(ClientNetworkingService.class);
 
     public static final ClientRegistryService CLIENT_REGISTRY = load(ClientRegistryService.class);
-
-    public static final EventService EVENT = load(EventService.class);
 
     public static final RegistryService REGISTRY = load(RegistryService.class);
 

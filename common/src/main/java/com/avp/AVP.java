@@ -8,7 +8,6 @@ import com.avp.server.BlockBreakProgressManager;
 import com.avp.server.ServerScheduler;
 import com.blib.BLib;
 import com.blib.BLibMod;
-import com.blib.event.key.BLibEventKeys;
 import com.blib.service.BLibServices;
 import mod.azure.azurelib.common.config.Config;
 import mod.azure.azurelib.common.config.ConfigHolder;
@@ -16,6 +15,7 @@ import mod.azure.azurelib.common.config.ConfigHolderRegistry;
 import mod.azure.azurelib.common.config.format.ConfigFormats;
 import mod.azure.azurelib.common.config.format.IConfigFormatHandler;
 import mod.azure.azurelib.common.config.io.ConfigIO;
+import net.minecraft.world.level.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,11 +38,13 @@ public class AVP {
         AVPDataKeys.initialize();
         AVPServerPacketHandlerRegistry.initialize();
 
-        MOD.addEventListener(BLibEventKeys.LEVEL_TICK_POST, event -> tickScheduledRunnables());
-        MOD.addEventListener(BLibEventKeys.LEVEL_TICK_POST, event -> BlockBreakProgressManager.tick(event.level()));
+        // TODO: There's a small bug here. This runs for both client and server levels!
+        BLibServices.EVENT.afterLevelTick().register(AVP::tickScheduledRunnables);
+        // TODO: There's a small bug here. This runs for both client and server levels!
+        BLibServices.EVENT.afterLevelTick().register(BlockBreakProgressManager::tick);
     }
 
-    private static void tickScheduledRunnables() {
+    private static void tickScheduledRunnables(Level level) {
         ServerScheduler.getScheduledTasks().removeIf(entry -> {
             var runTime = entry.getKey();
 
