@@ -11,9 +11,6 @@ import java.util.function.Predicate;
 
 public class AVPPredicates {
 
-    public static final Predicate<LivingEntity> IS_IMMORTAL = livingEntity -> livingEntity instanceof Player player && (player.isCreative()
-        || player.isSpectator());
-
     public static <T> Predicate<T> alwaysTrue() {
         return $ -> true;
     }
@@ -29,11 +26,15 @@ public class AVPPredicates {
         return target instanceof LivingEntity livingEntity && livingEntity.getUseItem().is(Items.SHIELD);
     }
 
+    public static boolean isAlive(Entity target) {
+        return target instanceof LivingEntity livingEntity && livingEntity.isAlive() && !livingEntity.isDeadOrDying();
+    }
+
     public static boolean isBaby(Entity target) {
         return target instanceof LivingEntity livingEntity && livingEntity.isBaby();
     }
 
-    public static boolean isLiving(Entity target) {
-        return target instanceof LivingEntity livingEntity && livingEntity.isAlive() && !livingEntity.isDeadOrDying();
+    public static boolean isInvulnerable(Entity target) {
+        return target.isInvulnerable() || (target instanceof Player player && (player.isCreative() || player.isSpectator()));
     }
 }

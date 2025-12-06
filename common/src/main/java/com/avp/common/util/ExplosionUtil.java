@@ -4,7 +4,6 @@ import com.avp.common.gameplay.explosion.Explosion;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -13,13 +12,15 @@ import java.util.List;
 public class ExplosionUtil {
 
     public static void applyKnockback(Vec3 center, double radius, Entity entity, double maxKnockback, double distance) {
+        if (AVPPredicates.isInvulnerable(entity)) {
+            return;
+        }
+
         var direction = entity.position().subtract(center).normalize();
         var knockbackStrength = maxKnockback * (1.0 - (distance / (radius * radius)));
         // Prevent excessive knockback (cap velocity)
         var knockbackVelocity = direction.scale(Math.max(maxKnockback, knockbackStrength));
-        if (entity instanceof LivingEntity livingEntity && AVPPredicates.IS_IMMORTAL.test(livingEntity)) {
-            return;
-        }
+
         entity.setDeltaMovement(knockbackVelocity);
         entity.hurtMarked = true; // Ensure physics applies immediately
     }
