@@ -3,7 +3,6 @@ package com.avp.fabric.data.lang.en_us;
 import com.avp.fabric.data.lang.en_us.provider.EnUsBlockTagProvider;
 import com.avp.fabric.data.lang.en_us.provider.EnUsConfigProvider;
 import com.avp.fabric.data.lang.en_us.provider.EnUsEntityTypeTagProvider;
-import com.avp.fabric.data.lang.en_us.provider.EnUsGeneProvider;
 import com.avp.fabric.data.lang.en_us.provider.EnUsItemTagProvider;
 import com.avp.fabric.data.lang.en_us.provider.EnUsTooltipProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -20,9 +19,6 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
 
     @Override
     public void generateTranslations(HolderLookup.Provider registryLookup, TranslationBuilder builder) {
-        // Genes
-        EnUsGeneProvider.CONSUMER.accept(builder);
-
         // Tooltips
         EnUsTooltipProvider.CONSUMER.accept(builder);
 

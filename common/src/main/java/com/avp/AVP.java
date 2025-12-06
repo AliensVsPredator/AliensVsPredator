@@ -11,7 +11,6 @@ import com.blib.BLib;
 import com.blib.BLibMod;
 import com.blib.event.key.BLibEventKeys;
 import com.blib.service.BLibServices;
-import com.lib.common.gameplay.gene.Genes;
 import mod.azure.azurelib.common.config.Config;
 import mod.azure.azurelib.common.config.ConfigHolder;
 import mod.azure.azurelib.common.config.ConfigHolderRegistry;
@@ -39,9 +38,6 @@ public class AVP {
         AVPPacketDirectionRegistry.initialize();
         AVPDataKeys.initialize();
         AVPServerPacketHandlerRegistry.initialize();
-
-        // Functionality
-        Genes.initialize();
 
         // Data Migration
         AVPDataMigrations.initialize();

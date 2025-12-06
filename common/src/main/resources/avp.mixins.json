@@ -7,14 +7,11 @@
   "mixins": [
     "BlockBehaviourInvoker",
     "MixinDataComponentPatch",
-    "MixinAnimal_GeneCarrier",
     "MixinDecoratedPotPatterns_GetPatternForCustomSherds",
     "MixinEntity_DataUser",
     "MixinEntityTypeBuilder_SilenceDataFixerError",
     "MixinLivingEntity_ApplyArmorEffects",
-    "MixinLivingEntity_GeneCarrier",
     "MixinLivingEntity_GOAPUser",
-    "MixinMob_GeneCarrier",
     "MixinRegistry_ApplyDataFixes",
     "StructurePoolAccessor",
     "server.MixinServerLevel"
