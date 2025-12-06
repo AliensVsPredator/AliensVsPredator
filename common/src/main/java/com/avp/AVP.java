@@ -1,7 +1,6 @@
 package com.avp;
 
 import com.avp.common.config.AVPConfig;
-import com.avp.common.data.fixer.migration.AVPDataMigrations;
 import com.avp.common.network.AVPPacketDirectionRegistry;
 import com.avp.common.network.AVPServerPacketHandlerRegistry;
 import com.avp.common.registry.init.AVPDataKeys;
@@ -38,9 +37,6 @@ public class AVP {
         AVPPacketDirectionRegistry.initialize();
         AVPDataKeys.initialize();
         AVPServerPacketHandlerRegistry.initialize();
-
-        // Data Migration
-        AVPDataMigrations.initialize();
 
         MOD.addEventListener(BLibEventKeys.LEVEL_TICK_POST, event -> tickScheduledRunnables());
         MOD.addEventListener(BLibEventKeys.LEVEL_TICK_POST, event -> BlockBreakProgressManager.tick(event.level()));
