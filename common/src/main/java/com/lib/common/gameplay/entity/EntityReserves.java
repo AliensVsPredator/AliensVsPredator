@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import com.avp.common.util.AVPPredicates;
+import com.blib.common.gameplay.util.BLibEntityPredicates;
 
 public class EntityReserves {
 
@@ -53,7 +53,7 @@ public class EntityReserves {
     }
 
     public int getCount() {
-        return getCountMatching(AVPPredicates.alwaysTrue());
+        return getCountMatching(BLibEntityPredicates.alwaysTrue());
     }
 
     public int getCountMatching(Predicate<EntityType<?>> predicate) {

@@ -1,6 +1,6 @@
 package com.lib.common.gameplay.goap;
 
-import com.avp.common.util.AVPPredicates;
+import com.blib.common.gameplay.util.BLibEntityPredicates;
 import com.just.goap.StateKey;
 import com.just.goap.sensor.Sensor;
 import com.just.goap.sensor.Sensors;
@@ -58,7 +58,7 @@ public class GOAPSensors {
     public static final Sensor.Mono<Entity, List<Entity>> NEARBY_ENTITIES = Sensors.map(
         StateKey.sensed("nearby_entities"),
         entity -> entity.level()
-            .getEntitiesOfClass(Entity.class, entity.getBoundingBox().inflate(16), AVPPredicates.alwaysTrue())
+            .getEntitiesOfClass(Entity.class, entity.getBoundingBox().inflate(16), BLibEntityPredicates.alwaysTrue())
     );
 
     public static final Sensor.Mono<Entity, List<LivingEntity>> NEARBY_LIVING_ENTITIES = Sensors.compose(

@@ -1,4 +1,4 @@
-package com.avp.common.util;
+package com.blib.common.gameplay.util;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -9,7 +9,7 @@ import net.minecraft.world.item.Items;
 
 import java.util.function.Predicate;
 
-public class AVPPredicates {
+public class BLibEntityPredicates {
 
     public static <T> Predicate<T> alwaysTrue() {
         return $ -> true;

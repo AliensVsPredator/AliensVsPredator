@@ -1,6 +1,7 @@
 package com.avp.common.util;
 
 import com.avp.common.gameplay.explosion.Explosion;
+import com.blib.common.gameplay.util.BLibEntityPredicates;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -12,7 +13,7 @@ import java.util.List;
 public class ExplosionUtil {
 
     public static void applyKnockback(Vec3 center, double radius, Entity entity, double maxKnockback, double distance) {
-        if (AVPPredicates.isInvulnerable(entity)) {
+        if (BLibEntityPredicates.isInvulnerable(entity)) {
             return;
         }
 

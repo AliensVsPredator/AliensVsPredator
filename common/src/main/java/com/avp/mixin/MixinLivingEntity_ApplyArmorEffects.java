@@ -1,7 +1,7 @@
 package com.avp.mixin;
 
 import com.avp.common.registry.tag.AVPItemTags;
-import com.avp.common.util.AVPPredicates;
+import com.blib.common.gameplay.util.BLibEntityPredicates;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -32,6 +32,6 @@ public abstract class MixinLivingEntity_ApplyArmorEffects extends Entity {
 
     @Unique
     private boolean isWearingFullFireResistantArmor(LivingEntity self) {
-        return AVPPredicates.hasFullArmorSetMatching(self, (itemStack -> itemStack.is(AVPItemTags.FIRE_RESISTANT_ARMORS)));
+        return BLibEntityPredicates.hasFullArmorSetMatching(self, (itemStack -> itemStack.is(AVPItemTags.FIRE_RESISTANT_ARMORS)));
     }
 }
