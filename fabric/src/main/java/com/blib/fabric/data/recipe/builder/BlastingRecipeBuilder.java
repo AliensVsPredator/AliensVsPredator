@@ -1,4 +1,4 @@
-package com.avp.fabric.data.recipe.builder;
+package com.blib.fabric.data.recipe.builder;
 
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
@@ -7,8 +7,7 @@ import net.minecraft.world.level.ItemLike;
 
 import java.util.function.Supplier;
 
-import com.avp.AVP;
-import com.avp.fabric.data.recipe.util.RecipeProviderProxy;
+import com.blib.fabric.data.recipe.util.RecipeProviderProxy;
 
 public class BlastingRecipeBuilder {
 
@@ -55,6 +54,6 @@ public class BlastingRecipeBuilder {
 
         SimpleCookingRecipeBuilder.blasting(ingredient, recipeCategory, destination, experience, cookTime)
             .unlockedBy("has_" + sourceName, RecipeProviderProxy.has(source))
-            .save(recipeBuilder.getRecipeOutput(), AVP.MOD_ID + ":" + destinationName + "_from_blasting_" + sourceName);
+            .save(recipeBuilder.getRecipeOutput(), recipeBuilder.getMod().getId() + ":" + destinationName + "_from_blasting_" + sourceName);
     }
 }

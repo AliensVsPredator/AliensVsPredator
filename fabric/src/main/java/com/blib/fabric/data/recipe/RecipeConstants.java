@@ -1,4 +1,4 @@
-package com.avp.fabric.data.recipe;
+package com.blib.fabric.data.recipe;
 
 public class RecipeConstants {
 

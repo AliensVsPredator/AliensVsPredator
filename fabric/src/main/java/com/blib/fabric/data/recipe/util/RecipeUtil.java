@@ -1,4 +1,4 @@
-package com.avp.fabric.data.recipe.util;
+package com.blib.fabric.data.recipe.util;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -6,8 +6,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
-import com.avp.fabric.data.recipe.RecipeTemplates;
-import com.avp.fabric.data.recipe.builder.RecipeBuilder;
+import com.blib.fabric.data.recipe.RecipeTemplates;
+import com.blib.fabric.data.recipe.builder.RecipeBuilder;
 
 public class RecipeUtil {
 

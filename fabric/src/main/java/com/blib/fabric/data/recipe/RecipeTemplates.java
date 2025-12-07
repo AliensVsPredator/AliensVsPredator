@@ -1,4 +1,4 @@
-package com.avp.fabric.data.recipe;
+package com.blib.fabric.data.recipe;
 
 import com.compat.CommonItemTags;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -10,7 +10,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-import com.avp.fabric.data.recipe.builder.ShapedRecipeBuilder;
+import com.blib.fabric.data.recipe.builder.ShapedRecipeBuilder;
 
 public class RecipeTemplates {
 

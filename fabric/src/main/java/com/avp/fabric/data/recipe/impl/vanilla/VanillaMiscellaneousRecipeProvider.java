@@ -4,7 +4,7 @@ import com.compat.CommonItemTags;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.Items;
 
-import com.avp.fabric.data.recipe.builder.RecipeBuilder;
+import com.blib.fabric.data.recipe.builder.RecipeBuilder;
 
 public class VanillaMiscellaneousRecipeProvider {
 

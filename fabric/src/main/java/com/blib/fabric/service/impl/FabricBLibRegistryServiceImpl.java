@@ -48,8 +48,7 @@ public class FabricBLibRegistryServiceImpl implements BLibRegistryService {
     private <T> @NotNull Holder<T> registerPoiType(ResourceLocation resourceLocation, PoiType poiType) {
         PointOfInterestHelper.register(resourceLocation, poiType.maxTickets(), poiType.validRange(), poiType.matchingStates());
         // Immediately get the holder or throw. This should be safe to do since we registered the PoiType in the last
-        // line. This is necessary because PointOfInterestHelper doesn't return back a holder (which we need for
-        // AVPDeferredHolder) after registration.
+        // line. This is necessary because PointOfInterestHelper doesn't return back a holder after registration.
         @SuppressWarnings("unchecked")
         var registeredHolder = (Holder<T>) BuiltInRegistries.POINT_OF_INTEREST_TYPE.getHolder(resourceLocation).orElseThrow();
         return registeredHolder;

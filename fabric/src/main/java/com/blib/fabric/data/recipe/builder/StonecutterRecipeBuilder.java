@@ -1,4 +1,4 @@
-package com.avp.fabric.data.recipe.builder;
+package com.blib.fabric.data.recipe.builder;
 
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.level.ItemLike;

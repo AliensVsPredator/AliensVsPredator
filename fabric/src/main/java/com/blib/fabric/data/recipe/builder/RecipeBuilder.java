@@ -1,5 +1,6 @@
-package com.avp.fabric.data.recipe.builder;
+package com.blib.fabric.data.recipe.builder;
 
+import com.blib.BLibMod;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.level.ItemLike;
 
@@ -7,13 +8,16 @@ import java.util.function.Supplier;
 
 public class RecipeBuilder {
 
-    public static RecipeBuilder with(RecipeOutput recipeOutput) {
-        return new RecipeBuilder(recipeOutput);
+    public static RecipeBuilder with(BLibMod mod, RecipeOutput recipeOutput) {
+        return new RecipeBuilder(mod, recipeOutput);
     }
+
+    private final BLibMod mod;
 
     private final RecipeOutput recipeOutput;
 
-    private RecipeBuilder(RecipeOutput recipeOutput) {
+    private RecipeBuilder(BLibMod mod, RecipeOutput recipeOutput) {
+        this.mod = mod;
         this.recipeOutput = recipeOutput;
     }
 
@@ -47,6 +51,10 @@ public class RecipeBuilder {
 
     public StonecutterRecipeBuilder stonecut(ItemLike source) {
         return new StonecutterRecipeBuilder(this, source);
+    }
+
+    public BLibMod getMod() {
+        return mod;
     }
 
     public RecipeOutput getRecipeOutput() {

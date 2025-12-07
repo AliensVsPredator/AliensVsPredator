@@ -1,4 +1,4 @@
-package com.avp.fabric.data.recipe.util;
+package com.blib.fabric.data.recipe.util;
 
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
