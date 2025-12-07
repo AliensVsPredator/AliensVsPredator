@@ -7,6 +7,8 @@ public class BLib {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(BLib.class);
 
+    public static final BLibMod MOD = createMod("blib");
+
     public static BLibMod createMod(String modId) {
         return new BLibMod(modId);
     }
