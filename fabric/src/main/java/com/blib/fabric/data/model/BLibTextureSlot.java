@@ -1,8 +1,8 @@
-package com.avp.fabric.data.model;
+package com.blib.fabric.data.model;
 
 import net.minecraft.data.models.model.TextureSlot;
 
-public class AVPTextureSlot {
+public class BLibTextureSlot {
 
     public static final TextureSlot BARS = create("bars", TextureSlot.ALL);
 

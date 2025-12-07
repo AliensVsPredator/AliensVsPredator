@@ -1,4 +1,4 @@
-package com.avp.fabric.data.model.generator;
+package com.blib.fabric.data.model.generator;
 
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.blockstates.Condition;
@@ -10,23 +10,23 @@ import net.minecraft.data.models.model.TextureSlot;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-import com.avp.fabric.data.model.AVPModelTemplates;
-import com.avp.fabric.data.model.AVPTextureSlot;
+import com.blib.fabric.data.model.BLibModelTemplates;
+import com.blib.fabric.data.model.BLibTextureSlot;
 
 public class BarsGenerator {
 
     public static void generate(BlockModelGenerators generator, Block block) {
         var baseResourceLocation = TextureMapping.getBlockTexture(block);
         var textureMapping = new TextureMapping()
-            .put(AVPTextureSlot.BARS, baseResourceLocation)
+            .put(BLibTextureSlot.BARS, baseResourceLocation)
             .put(TextureSlot.EDGE, baseResourceLocation)
             .put(TextureSlot.PARTICLE, baseResourceLocation);
-        var postEndsResourceLocation = AVPModelTemplates.BARS_POST_ENDS.create(block, textureMapping, generator.modelOutput);
-        var postResourceLocation = AVPModelTemplates.BARS_POST.create(block, textureMapping, generator.modelOutput);
-        var capResourceLocation = AVPModelTemplates.BARS_CAP.create(block, textureMapping, generator.modelOutput);
-        var capAltResourceLocation = AVPModelTemplates.BARS_CAP_ALT.create(block, textureMapping, generator.modelOutput);
-        var sideResourceLocation = AVPModelTemplates.BARS_SIDE.create(block, textureMapping, generator.modelOutput);
-        var sideAltResourceLocation = AVPModelTemplates.BARS_SIDE_ALT.create(block, textureMapping, generator.modelOutput);
+        var postEndsResourceLocation = BLibModelTemplates.BARS_POST_ENDS.create(block, textureMapping, generator.modelOutput);
+        var postResourceLocation = BLibModelTemplates.BARS_POST.create(block, textureMapping, generator.modelOutput);
+        var capResourceLocation = BLibModelTemplates.BARS_CAP.create(block, textureMapping, generator.modelOutput);
+        var capAltResourceLocation = BLibModelTemplates.BARS_CAP_ALT.create(block, textureMapping, generator.modelOutput);
+        var sideResourceLocation = BLibModelTemplates.BARS_SIDE.create(block, textureMapping, generator.modelOutput);
+        var sideAltResourceLocation = BLibModelTemplates.BARS_SIDE_ALT.create(block, textureMapping, generator.modelOutput);
 
         generator.blockStateOutput
             .accept(

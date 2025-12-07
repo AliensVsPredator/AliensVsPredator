@@ -1,4 +1,4 @@
-package com.avp.fabric.data.model.generator;
+package com.blib.fabric.data.model.generator;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.Util;

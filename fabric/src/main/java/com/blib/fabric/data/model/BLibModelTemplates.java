@@ -1,25 +1,24 @@
-package com.avp.fabric.data.model;
+package com.blib.fabric.data.model;
 
+import com.blib.BLib;
 import net.minecraft.data.models.model.ModelTemplate;
 import net.minecraft.data.models.model.TextureSlot;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Optional;
 
-import com.avp.AVPResources;
+public class BLibModelTemplates {
 
-public class AVPModelTemplates {
-
-    public static final ModelTemplate BARS_CAP = createVanilla("iron_bars_cap", "_cap", AVPTextureSlot.BARS, TextureSlot.PARTICLE);
+    public static final ModelTemplate BARS_CAP = createVanilla("iron_bars_cap", "_cap", BLibTextureSlot.BARS, TextureSlot.PARTICLE);
 
     public static final ModelTemplate BARS_CAP_ALT = createVanilla(
         "iron_bars_cap_alt",
         "_cap_alt",
-        AVPTextureSlot.BARS,
+        BLibTextureSlot.BARS,
         TextureSlot.PARTICLE
     );
 
-    public static final ModelTemplate BARS_POST = createVanilla("iron_bars_post", "_post", AVPTextureSlot.BARS, TextureSlot.PARTICLE);
+    public static final ModelTemplate BARS_POST = createVanilla("iron_bars_post", "_post", BLibTextureSlot.BARS, TextureSlot.PARTICLE);
 
     public static final ModelTemplate BARS_POST_ENDS = createVanilla(
         "iron_bars_post_ends",
@@ -31,7 +30,7 @@ public class AVPModelTemplates {
     public static final ModelTemplate BARS_SIDE = createVanilla(
         "iron_bars_side",
         "_side",
-        AVPTextureSlot.BARS,
+        BLibTextureSlot.BARS,
         TextureSlot.EDGE,
         TextureSlot.PARTICLE
     );
@@ -39,7 +38,7 @@ public class AVPModelTemplates {
     public static final ModelTemplate BARS_SIDE_ALT = createVanilla(
         "iron_bars_side_alt",
         "_side_alt",
-        AVPTextureSlot.BARS,
+        BLibTextureSlot.BARS,
         TextureSlot.EDGE,
         TextureSlot.PARTICLE
     );
@@ -55,6 +54,6 @@ public class AVPModelTemplates {
     }
 
     private static ModelTemplate create(String string, String string2, TextureSlot... textureSlots) {
-        return new ModelTemplate(Optional.of(AVPResources.location("block/" + string)), Optional.of(string2), textureSlots);
+        return new ModelTemplate(Optional.of(BLib.MOD.createResourceLocation("block/" + string)), Optional.of(string2), textureSlots);
     }
 }
