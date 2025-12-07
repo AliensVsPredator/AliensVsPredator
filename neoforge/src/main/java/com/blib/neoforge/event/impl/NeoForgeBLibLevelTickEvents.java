@@ -2,9 +2,7 @@ package com.blib.neoforge.event.impl;
 
 import com.blib.neoforge.event.NeoForgeBLibEventRouter;
 import com.blib.service.BLibEventService;
-import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 
 public class NeoForgeBLibLevelTickEvents {
@@ -12,8 +10,9 @@ public class NeoForgeBLibLevelTickEvents {
     public static final NeoForgeBLibEventRouter<BLibEventService.LevelTickEvent> AFTER = new NeoForgeBLibEventRouter<>() {
 
         // TODO: See if we can pass something other than () -> true for this event in the future.
-        private final BLibEventService.LevelTickEvent dispatcher = (level) ->
-            NeoForge.EVENT_BUS.post(new LevelTickEvent.Post(() -> true, level));
+        private final BLibEventService.LevelTickEvent dispatcher = (level) -> NeoForge.EVENT_BUS.post(
+            new LevelTickEvent.Post(() -> true, level)
+        );
 
         @Override
         public void initialize() {
@@ -33,8 +32,9 @@ public class NeoForgeBLibLevelTickEvents {
     public static final NeoForgeBLibEventRouter<BLibEventService.LevelTickEvent> BEFORE = new NeoForgeBLibEventRouter<>() {
 
         // TODO: See if we can pass something other than () -> true for this event in the future.
-        private final BLibEventService.LevelTickEvent dispatcher = (level) ->
-            NeoForge.EVENT_BUS.post(new LevelTickEvent.Pre(() -> true, level));
+        private final BLibEventService.LevelTickEvent dispatcher = (level) -> NeoForge.EVENT_BUS.post(
+            new LevelTickEvent.Pre(() -> true, level)
+        );
 
         @Override
         public void initialize() {

@@ -4,5 +4,5 @@ public interface BLibEventRouter<Dispatcher> {
 
     Dispatcher dispatcher();
 
-     void register(Dispatcher dispatcher);
+    void register(Dispatcher dispatcher);
 }

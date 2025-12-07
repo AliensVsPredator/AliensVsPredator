@@ -1,5 +1,6 @@
 package com.blib.fabric.data.recipe.builder;
 
+import com.blib.fabric.data.recipe.util.RecipeProviderProxy;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -11,8 +12,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
-
-import com.blib.fabric.data.recipe.util.RecipeProviderProxy;
 
 public class ShapedRecipeBuilder {
 

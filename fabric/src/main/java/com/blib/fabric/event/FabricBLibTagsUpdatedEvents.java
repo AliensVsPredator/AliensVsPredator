@@ -8,8 +8,9 @@ public class FabricBLibTagsUpdatedEvents {
 
     public static final BLibEventRouter<BLibEventService.TagsUpdatedEvent> ROUTER = new BLibEventRouter<>() {
 
-        private final BLibEventService.TagsUpdatedEvent dispatcher = (registryAccess, fromClientPacket) ->
-            CommonLifecycleEvents.TAGS_LOADED.invoker().onTagsLoaded(registryAccess, fromClientPacket);
+        private final BLibEventService.TagsUpdatedEvent dispatcher = (registryAccess, fromClientPacket) -> CommonLifecycleEvents.TAGS_LOADED
+            .invoker()
+            .onTagsLoaded(registryAccess, fromClientPacket);
 
         @Override
         public BLibEventService.TagsUpdatedEvent dispatcher() {

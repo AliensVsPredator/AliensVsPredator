@@ -1,10 +1,5 @@
 package com.avp;
 
-import com.avp.common.network.AVPPacketDirectionRegistry;
-import com.avp.common.network.AVPServerPacketHandlerRegistry;
-import com.avp.common.registry.init.AVPDataKeys;
-import com.avp.server.BlockBreakProgressManager;
-import com.avp.server.ServerScheduler;
 import com.blib.BLib;
 import com.blib.BLibMod;
 import com.blib.service.BLibServices;
@@ -17,6 +12,12 @@ import mod.azure.azurelib.common.config.io.ConfigIO;
 import net.minecraft.world.level.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.avp.common.network.AVPPacketDirectionRegistry;
+import com.avp.common.network.AVPServerPacketHandlerRegistry;
+import com.avp.common.registry.init.AVPDataKeys;
+import com.avp.server.BlockBreakProgressManager;
+import com.avp.server.ServerScheduler;
 
 public class AVP {
 
@@ -62,6 +63,7 @@ public class AVP {
      * @return Config holder containing your config instance. You obtain it by calling
      *         {@link ConfigHolder#getConfigInstance()} method.
      */
+    @Deprecated(forRemoval = true)
     public static <C> ConfigHolder<C> registerConfig(Class<C> configClass, IConfigFormatHandler formatFactory) {
         var config = configClass.getAnnotation(Config.class);
 

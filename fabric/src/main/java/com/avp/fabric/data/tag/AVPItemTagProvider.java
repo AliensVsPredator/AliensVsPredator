@@ -1,6 +1,5 @@
 package com.avp.fabric.data.tag;
 
-import com.avp.common.registry.tag.AVPItemTags;
 import com.compat.CommonItemTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
@@ -9,6 +8,8 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 
 import java.util.concurrent.CompletableFuture;
+
+import com.avp.common.registry.tag.AVPItemTags;
 
 public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
@@ -59,7 +60,6 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             .setReplace(false)
             .addTag(CommonItemTags.INGOTS_GOLD)
             .addTag(CommonItemTags.INGOTS_COPPER);
-
 
         getOrCreateTagBuilder(CommonItemTags.INGOTS_COPPER)
             .setReplace(false)

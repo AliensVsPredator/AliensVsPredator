@@ -1,5 +1,7 @@
 package com.blib.fabric.data.model.generator;
 
+import com.blib.fabric.data.model.BLibModelTemplates;
+import com.blib.fabric.data.model.BLibTextureSlot;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.blockstates.Condition;
 import net.minecraft.data.models.blockstates.MultiPartGenerator;
@@ -9,9 +11,6 @@ import net.minecraft.data.models.model.TextureMapping;
 import net.minecraft.data.models.model.TextureSlot;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-
-import com.blib.fabric.data.model.BLibModelTemplates;
-import com.blib.fabric.data.model.BLibTextureSlot;
 
 public class BarsGenerator {
 

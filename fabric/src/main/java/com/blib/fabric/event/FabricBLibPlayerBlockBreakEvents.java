@@ -8,8 +8,9 @@ public class FabricBLibPlayerBlockBreakEvents {
 
     public static final BLibEventRouter<BLibEventService.BlockBreakEvent> BEFORE = new BLibEventRouter<>() {
 
-        private final BLibEventService.BlockBreakEvent dispatcher = (level, player, blockPos, blockState) ->
-            PlayerBlockBreakEvents.BEFORE.invoker().beforeBlockBreak(level, player, blockPos, blockState, null);
+        private final BLibEventService.BlockBreakEvent dispatcher = (level, player, blockPos, blockState) -> PlayerBlockBreakEvents.BEFORE
+            .invoker()
+            .beforeBlockBreak(level, player, blockPos, blockState, null);
 
         @Override
         public BLibEventService.BlockBreakEvent dispatcher() {
@@ -19,8 +20,7 @@ public class FabricBLibPlayerBlockBreakEvents {
         @Override
         public void register(BLibEventService.BlockBreakEvent blockBreakEvent) {
             PlayerBlockBreakEvents.BEFORE.register(
-                (level, player, pos, state, blockEntity) ->
-                    blockBreakEvent.invoke(level, player, pos, state)
+                (level, player, pos, state, blockEntity) -> blockBreakEvent.invoke(level, player, pos, state)
             );
         }
     };

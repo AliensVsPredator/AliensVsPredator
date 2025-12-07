@@ -1,11 +1,12 @@
 package com.avp.fabric;
 
-import com.avp.AVP;
 import com.lib.common.network.DataContainer;
 import com.lib.common.network.DataUser;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
 import net.minecraft.world.entity.LivingEntity;
+
+import com.avp.AVP;
 
 public class AVPFabric implements ModInitializer {
 

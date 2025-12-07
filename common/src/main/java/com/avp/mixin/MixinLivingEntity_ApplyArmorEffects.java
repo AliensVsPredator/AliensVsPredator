@@ -1,6 +1,5 @@
 package com.avp.mixin;
 
-import com.avp.common.registry.tag.AVPItemTags;
 import com.blib.common.gameplay.util.BLibEntityPredicates;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -13,6 +12,8 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import com.avp.common.registry.tag.AVPItemTags;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity_ApplyArmorEffects extends Entity {

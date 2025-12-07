@@ -10,8 +10,9 @@ public class NeoForgeBLibPlayerBlockBreakEvents {
 
     public static final NeoForgeBLibEventRouter<BLibEventService.BlockBreakEvent> BEFORE = new NeoForgeBLibEventRouter<>() {
 
-        private final BLibEventService.BlockBreakEvent dispatcher = (level, player, blockPos, blockState) ->
-            !NeoForge.EVENT_BUS.post(new BlockEvent.BreakEvent(level, blockPos, blockState, player)).isCanceled();
+        private final BLibEventService.BlockBreakEvent dispatcher = (level, player, blockPos, blockState) -> !NeoForge.EVENT_BUS.post(
+            new BlockEvent.BreakEvent(level, blockPos, blockState, player)
+        ).isCanceled();
 
         @Override
         public void initialize() {

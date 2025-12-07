@@ -10,8 +10,9 @@ public class NeoForgeBLibTagsUpdatedEvents {
     public static final NeoForgeBLibEventRouter<BLibEventService.TagsUpdatedEvent> ROUTER = new NeoForgeBLibEventRouter<>() {
 
         // TODO: See if we can determine integrated server connection here in the future.
-        private final BLibEventService.TagsUpdatedEvent dispatcher = (registryAccess, fromClientPacket) ->
-            NeoForge.EVENT_BUS.post(new TagsUpdatedEvent(registryAccess, fromClientPacket, false));
+        private final BLibEventService.TagsUpdatedEvent dispatcher = (registryAccess, fromClientPacket) -> NeoForge.EVENT_BUS.post(
+            new TagsUpdatedEvent(registryAccess, fromClientPacket, false)
+        );
 
         @Override
         public void initialize() {

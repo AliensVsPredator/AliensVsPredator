@@ -1,5 +1,6 @@
 package com.lib.common.gameplay.entity;
 
+import com.blib.common.gameplay.util.BLibEntityPredicates;
 import com.just.codec.Codec;
 import com.just.codec.impl.Codecs;
 import com.lib.common.util.codec.impl.MojangCodecs;
@@ -10,8 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
-
-import com.blib.common.gameplay.util.BLibEntityPredicates;
 
 public class EntityReserves {
 

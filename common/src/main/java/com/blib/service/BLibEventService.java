@@ -18,14 +18,17 @@ public interface BLibEventService {
     BLibEventRouter<TagsUpdatedEvent> onTagsUpdated();
 
     interface BlockBreakEvent {
+
         boolean invoke(Level level, Player player, BlockPos blockPos, BlockState blockState);
     }
 
     interface LevelTickEvent {
+
         void invoke(Level level);
     }
 
     interface TagsUpdatedEvent {
+
         void invoke(RegistryAccess registryAccess, boolean fromClientPacket);
     }
 }

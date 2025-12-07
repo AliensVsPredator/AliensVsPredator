@@ -1,8 +1,8 @@
 package com.avp.service;
 
-import com.avp.AVP;
-
 import java.util.ServiceLoader;
+
+import com.avp.AVP;
 
 @Deprecated(forRemoval = true)
 public class Services {

@@ -1,5 +1,6 @@
 package com.avp.fabric.data.recipe.impl.vanilla;
 
+import com.blib.fabric.data.recipe.builder.RecipeBuilder;
 import com.compat.CommonItemTags;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.tags.ItemTags;
@@ -7,7 +8,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
 import com.avp.common.registry.tag.AVPItemTags;
-import com.blib.fabric.data.recipe.builder.RecipeBuilder;
 
 public class VanillaIronLikeRecipeProvider {
 

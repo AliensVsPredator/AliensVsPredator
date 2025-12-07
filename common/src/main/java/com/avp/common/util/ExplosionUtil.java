@@ -1,6 +1,5 @@
 package com.avp.common.util;
 
-import com.avp.common.gameplay.explosion.Explosion;
 import com.blib.common.gameplay.util.BLibEntityPredicates;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -9,6 +8,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
+
+import com.avp.common.gameplay.explosion.Explosion;
 
 public class ExplosionUtil {
 

@@ -1,9 +1,10 @@
 package com.avp.fabric.data.lang.en_us.provider;
 
-import com.avp.common.registry.tag.AVPBlockTags;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 
 import java.util.function.Consumer;
+
+import com.avp.common.registry.tag.AVPBlockTags;
 
 public class EnUsBlockTagProvider {
 
