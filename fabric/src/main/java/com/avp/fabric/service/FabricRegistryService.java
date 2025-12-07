@@ -136,9 +136,9 @@ public class FabricRegistryService implements RegistryService {
                 spawnData.getConfigData().biomeTagKey()
             );
             var spawnGroup = entityType.getCategory();
-            var weight = spawnSettings.weight;
-            var minGroupSize = spawnSettings.minGroupSize;
-            var maxGroupSize = spawnSettings.maxGroupSize;
+            var weight = spawnSettings.weight();
+            var minGroupSize = spawnSettings.minGroupSize();
+            var maxGroupSize = spawnSettings.maxGroupSize();
 
             BiomeModifications.addSpawn(biomeSelector, spawnGroup, entityType, weight, minGroupSize, maxGroupSize);
         }

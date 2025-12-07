@@ -12,8 +12,6 @@ import net.minecraft.world.level.levelgen.Heightmap;
 
 import java.util.function.Supplier;
 
-import com.avp.common.config.AVPConfig;
-
 public final class AVPEntitySpawnData<T extends Mob> {
 
     public static <T extends Mob> Builder<T> builder(Supplier<EntityType<T>> entityTypeDeferredHolder) {
@@ -70,7 +68,7 @@ public final class AVPEntitySpawnData<T extends Mob> {
 
         private TagKey<Biome> biomeTagKey;
 
-        private AVPConfig.SpawnConfigs.SpawnSettings spawnSettings;
+        private SpawnSettings spawnSettings;
 
         private Heightmap.Types heightmapType;
 
@@ -87,7 +85,7 @@ public final class AVPEntitySpawnData<T extends Mob> {
             this.biomeTagKey = BiomeTags.IS_OVERWORLD;
             this.heightmapType = Heightmap.Types.MOTION_BLOCKING_NO_LEAVES;
             this.spawnPlacementType = SpawnPlacementTypes.ON_GROUND;
-            this.spawnSettings = new AVPConfig.SpawnConfigs.SpawnSettings(true, 1, 3, 10);
+            this.spawnSettings = new SpawnSettings(true, 1, 3, 10);
             this.spawnPredicate = Mob::checkMobSpawnRules;
             this.configDisabled = false;
             this.placementDisabled = false;
@@ -108,7 +106,7 @@ public final class AVPEntitySpawnData<T extends Mob> {
             return this;
         }
 
-        public Builder<T> withSpawnSettings(AVPConfig.SpawnConfigs.SpawnSettings spawnSettings) {
+        public Builder<T> withSpawnSettings(SpawnSettings spawnSettings) {
             this.spawnSettings = spawnSettings;
             return this;
         }
@@ -135,7 +133,7 @@ public final class AVPEntitySpawnData<T extends Mob> {
                 mobSpawnType,
                 blockPos,
                 randomSource
-            ) -> spawnSettings.enabled && spawnPredicate.test(entityType, serverLevelAccessor, mobSpawnType, blockPos, randomSource);
+            ) -> spawnSettings.enabled() && spawnPredicate.test(entityType, serverLevelAccessor, mobSpawnType, blockPos, randomSource);
 
             return new AVPEntitySpawnData<>(
                 entityTypeDeferredHolder,

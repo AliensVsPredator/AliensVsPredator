@@ -1,6 +1,5 @@
 package com.avp;
 
-import com.avp.common.config.AVPConfig;
 import com.avp.common.network.AVPPacketDirectionRegistry;
 import com.avp.common.network.AVPServerPacketHandlerRegistry;
 import com.avp.common.registry.init.AVPDataKeys;
@@ -27,11 +26,7 @@ public class AVP {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-    public static AVPConfig config;
-
     public static void initialize() {
-        AVP.config = registerConfig(AVPConfig.class, ConfigFormats.json()).getConfigInstance();
-
         LOGGER.info("Initializing AVP for platform '{}'", BLibServices.MOD_LOADER.getModLoaderName());
 
         AVPPacketDirectionRegistry.initialize();
