@@ -88,7 +88,7 @@ public class EnUsConfigProvider {
         builder.add("config.avp.option.moveSpeed", "Movement speed");
         builder.add("config.avp.option.armorToughness", "Armor toughness.");
         builder.add("config.avp.option.armor", "Armor value");
-        builder.add("config.avp.option.nestTickrate", "Nest tickrate");
+        builder.add("config.avp.option.nestTickRate", "Nest tickrate");
         builder.add("config.avp.option.followRange", "Follow range");
         builder.add("config.avp.option.DRONE_STATS", "Drone stats");
         builder.add("config.avp.option.OVOMORPH_STATS", "Ovomorph stats");
