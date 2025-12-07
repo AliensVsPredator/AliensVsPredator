@@ -1,10 +1,9 @@
 package com.avp.fabric.data.lang.en_us.provider;
 
+import com.blib.common.registry.tag.BLibItemTags;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 
 import java.util.function.Consumer;
-
-import com.blib.common.registry.tag.BLibItemTags;
 
 public class EnUsItemTagProvider {
 

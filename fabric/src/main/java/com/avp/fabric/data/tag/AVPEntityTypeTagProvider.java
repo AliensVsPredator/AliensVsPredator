@@ -1,5 +1,6 @@
 package com.avp.fabric.data.tag;
 
+import com.blib.common.registry.tag.BLibEntityTypeTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
@@ -7,8 +8,6 @@ import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
 
 import java.util.concurrent.CompletableFuture;
-
-import com.blib.common.registry.tag.BLibEntityTypeTags;
 
 public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagProvider {
 

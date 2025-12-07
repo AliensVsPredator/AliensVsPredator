@@ -1,5 +1,6 @@
 package com.avp.mixin;
 
+import com.blib.common.registry.tag.BLibItemTags;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.DecoratedPotPattern;
@@ -10,7 +11,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.avp.common.registry.key.DecoratedPotPatternKeys;
-import com.blib.common.registry.tag.BLibItemTags;
 
 @Mixin(DecoratedPotPatterns.class)
 public abstract class MixinDecoratedPotPatterns_GetPatternForCustomSherds {

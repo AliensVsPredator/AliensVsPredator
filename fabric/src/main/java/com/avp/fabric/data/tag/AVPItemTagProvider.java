@@ -1,5 +1,6 @@
 package com.avp.fabric.data.tag;
 
+import com.blib.common.registry.tag.BLibItemTags;
 import com.compat.CommonItemTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
@@ -8,8 +9,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 
 import java.util.concurrent.CompletableFuture;
-
-import com.blib.common.registry.tag.BLibItemTags;
 
 public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
