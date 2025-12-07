@@ -6,6 +6,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.block.DispenserBlock;
@@ -54,6 +55,10 @@ public class BLibMod {
 
     public ResourceLocation createResourceLocation(String path) {
         return ResourceLocation.fromNamespaceAndPath(id, path);
+    }
+
+    public <T> TagKey<T> createTagKey(ResourceKey<? extends Registry<T>> registryKey, String path) {
+        return TagKey.create(registryKey, createResourceLocation(path));
     }
 
     public <T> Collection<BLibHolder<? extends T>> getAllHolders(Registry<? super T> registry) {
