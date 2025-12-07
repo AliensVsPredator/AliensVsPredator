@@ -1,5 +1,7 @@
 package com.blib.neoforge.service.impl;
 
+import com.blib.common.model.DistributionEnvironmentType;
+import com.blib.common.model.ReleaseEnvironmentType;
 import com.blib.service.BLibModLoaderService;
 import com.lib.common.util.Version;
 import net.neoforged.fml.ModList;
@@ -19,8 +21,18 @@ public class NeoForgeBLibModLoaderServiceImpl implements BLibModLoaderService {
     }
 
     @Override
-    public boolean isDevelopmentEnvironment() {
-        return !FMLLoader.isProduction();
+    public DistributionEnvironmentType getDistributionEnvironmentType() {
+        return switch (FMLLoader.getDist()) {
+            case CLIENT -> DistributionEnvironmentType.CLIENT;
+            case DEDICATED_SERVER -> DistributionEnvironmentType.DEDICATED_SERVER;
+        };
+    }
+
+    @Override
+    public ReleaseEnvironmentType getReleaseEnvironmentType() {
+        return !FMLLoader.isProduction()
+            ? ReleaseEnvironmentType.DEVELOPMENT
+            : ReleaseEnvironmentType.PRODUCTION;
     }
 
     @Override

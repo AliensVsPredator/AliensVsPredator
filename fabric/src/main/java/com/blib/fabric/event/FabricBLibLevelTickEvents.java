@@ -1,7 +1,9 @@
 package com.blib.fabric.event;
 
+import com.blib.common.model.DistributionEnvironmentType;
 import com.blib.event.BLibEventRouter;
 import com.blib.service.BLibEventService;
+import com.blib.service.BLibServices;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -26,7 +28,10 @@ public class FabricBLibLevelTickEvents {
 
         @Override
         public void register(BLibEventService.LevelTickEvent levelTickEvent) {
-            ClientTickEvents.END_WORLD_TICK.register(levelTickEvent::invoke);
+            if (BLibServices.MOD_LOADER.getDistributionEnvironmentType() == DistributionEnvironmentType.CLIENT) {
+                ClientTickEvents.END_WORLD_TICK.register(levelTickEvent::invoke);
+            }
+
             ServerTickEvents.END_WORLD_TICK.register(levelTickEvent::invoke);
         }
     };
@@ -48,7 +53,10 @@ public class FabricBLibLevelTickEvents {
 
         @Override
         public void register(BLibEventService.LevelTickEvent levelTickEvent) {
-            ClientTickEvents.START_WORLD_TICK.register(levelTickEvent::invoke);
+            if (BLibServices.MOD_LOADER.getDistributionEnvironmentType() == DistributionEnvironmentType.CLIENT) {
+                ClientTickEvents.START_WORLD_TICK.register(levelTickEvent::invoke);
+            }
+
             ServerTickEvents.START_WORLD_TICK.register(levelTickEvent::invoke);
         }
     };

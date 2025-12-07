@@ -1,5 +1,7 @@
 package com.blib.fabric.service.impl;
 
+import com.blib.common.model.DistributionEnvironmentType;
+import com.blib.common.model.ReleaseEnvironmentType;
 import com.blib.service.BLibModLoaderService;
 import com.lib.common.util.Version;
 import net.fabricmc.loader.api.FabricLoader;
@@ -18,11 +20,6 @@ public class FabricBLibModLoaderServiceImpl implements BLibModLoaderService {
     }
 
     @Override
-    public boolean isDevelopmentEnvironment() {
-        return FabricLoader.getInstance().isDevelopmentEnvironment();
-    }
-
-    @Override
     public @Nullable Version getModVersion(String modId) {
         var container = FabricLoader.getInstance().getModContainer(modId);
 
@@ -32,4 +29,18 @@ public class FabricBLibModLoaderServiceImpl implements BLibModLoaderService {
             .orElse(null);
     }
 
+    @Override
+    public DistributionEnvironmentType getDistributionEnvironmentType() {
+        return switch (FabricLoader.getInstance().getEnvironmentType()) {
+            case CLIENT -> DistributionEnvironmentType.CLIENT;
+            case SERVER -> DistributionEnvironmentType.DEDICATED_SERVER;
+        };
+    }
+
+    @Override
+    public ReleaseEnvironmentType getReleaseEnvironmentType() {
+        return FabricLoader.getInstance().isDevelopmentEnvironment()
+            ? ReleaseEnvironmentType.DEVELOPMENT
+            : ReleaseEnvironmentType.PRODUCTION;
+    }
 }
