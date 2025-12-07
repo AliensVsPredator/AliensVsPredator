@@ -4,12 +4,12 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 
 import java.util.function.Consumer;
 
-import com.avp.common.registry.tag.AVPEntityTypeTags;
+import com.blib.common.registry.tag.BLibEntityTypeTags;
 
 public class EnUsEntityTypeTagProvider {
 
     public static final Consumer<FabricLanguageProvider.TranslationBuilder> CONSUMER = builder -> {
-        builder.add(AVPEntityTypeTags.HUMANOIDS, "Humanoids");
-        builder.add(AVPEntityTypeTags.NETHER_CREATURES, "Nether Creatures");
+        builder.add(BLibEntityTypeTags.HUMANOIDS, "Humanoids");
+        builder.add(BLibEntityTypeTags.NETHER_CREATURES, "Nether Creatures");
     };
 }

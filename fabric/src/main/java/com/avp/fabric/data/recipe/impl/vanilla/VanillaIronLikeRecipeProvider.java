@@ -7,7 +7,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
-import com.avp.common.registry.tag.AVPItemTags;
+import com.blib.common.registry.tag.BLibItemTags;
 
 public class VanillaIronLikeRecipeProvider {
 
@@ -18,7 +18,7 @@ public class VanillaIronLikeRecipeProvider {
     private static void createIronLikeRecipes(RecipeBuilder builder) {
         builder.shaped()
             .withCategory(RecipeCategory.TRANSPORTATION)
-            .define('I', AVPItemTags.IRON_INGOT_LIKE)
+            .define('I', BLibItemTags.IRON_INGOT_LIKE)
             .define('R', Items.REDSTONE_TORCH)
             .define('S', CommonItemTags.RODS_WOODEN)
             .pattern("ISI")
@@ -28,8 +28,8 @@ public class VanillaIronLikeRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.DECORATIONS)
-            .define('B', AVPItemTags.IRON_BLOCK_LIKE)
-            .define('I', AVPItemTags.IRON_INGOT_LIKE)
+            .define('B', BLibItemTags.IRON_BLOCK_LIKE)
+            .define('I', BLibItemTags.IRON_INGOT_LIKE)
             .pattern("BBB")
             .pattern(" I ")
             .pattern("III")
@@ -38,7 +38,7 @@ public class VanillaIronLikeRecipeProvider {
         builder.shaped()
             .withCategory(RecipeCategory.DECORATIONS)
             .define('F', Blocks.FURNACE)
-            .define('I', AVPItemTags.IRON_INGOT_LIKE)
+            .define('I', BLibItemTags.IRON_INGOT_LIKE)
             .define('S', Blocks.SMOOTH_STONE)
             .pattern("III")
             .pattern("IFI")
@@ -47,14 +47,14 @@ public class VanillaIronLikeRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
-            .define('I', AVPItemTags.IRON_INGOT_LIKE)
+            .define('I', BLibItemTags.IRON_INGOT_LIKE)
             .pattern("I I")
             .pattern(" I ")
             .into(1, Items.BUCKET);
 
         builder.shaped()
             .withCategory(RecipeCategory.BREWING)
-            .define('I', AVPItemTags.IRON_INGOT_LIKE)
+            .define('I', BLibItemTags.IRON_INGOT_LIKE)
             .pattern("I I")
             .pattern("I I")
             .pattern("III")
@@ -64,7 +64,7 @@ public class VanillaIronLikeRecipeProvider {
             .withCategory(RecipeCategory.REDSTONE)
             .define('C', Blocks.CRAFTING_TABLE)
             .define('D', Blocks.DROPPER)
-            .define('I', AVPItemTags.IRON_INGOT_LIKE)
+            .define('I', BLibItemTags.IRON_INGOT_LIKE)
             .define('R', CommonItemTags.DUSTS_REDSTONE)
             .pattern("III")
             .pattern("ICI")
@@ -73,7 +73,7 @@ public class VanillaIronLikeRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('I', AVPItemTags.IRON_INGOT_LIKE)
+            .define('I', BLibItemTags.IRON_INGOT_LIKE)
             .define('S', CommonItemTags.STRINGS)
             .define('T', CommonItemTags.RODS_WOODEN)
             .define('W', Blocks.TRIPWIRE_HOOK)
@@ -84,7 +84,7 @@ public class VanillaIronLikeRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.TRANSPORTATION)
-            .define('I', AVPItemTags.IRON_INGOT_LIKE)
+            .define('I', BLibItemTags.IRON_INGOT_LIKE)
             .define('P', Blocks.STONE_PRESSURE_PLATE)
             .define('R', CommonItemTags.DUSTS_REDSTONE)
             .pattern("I I")
@@ -94,13 +94,13 @@ public class VanillaIronLikeRecipeProvider {
 
         builder.shapeless()
             .withCategory(RecipeCategory.TOOLS)
-            .requires(1, AVPItemTags.IRON_INGOT_LIKE)
+            .requires(1, BLibItemTags.IRON_INGOT_LIKE)
             .requires(1, Items.FLINT)
             .into(1, Items.FLINT_AND_STEEL);
 
         builder.shaped()
             .withCategory(RecipeCategory.REDSTONE)
-            .define('I', AVPItemTags.IRON_INGOT_LIKE)
+            .define('I', BLibItemTags.IRON_INGOT_LIKE)
             .define('C', Items.CHEST)
             .pattern("I I")
             .pattern("ICI")
@@ -109,14 +109,14 @@ public class VanillaIronLikeRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.TRANSPORTATION)
-            .define('I', AVPItemTags.IRON_INGOT_LIKE)
+            .define('I', BLibItemTags.IRON_INGOT_LIKE)
             .pattern("I I")
             .pattern("III")
             .into(1, Items.MINECART);
 
         builder.shaped()
             .withCategory(RecipeCategory.REDSTONE)
-            .define('I', AVPItemTags.IRON_INGOT_LIKE)
+            .define('I', BLibItemTags.IRON_INGOT_LIKE)
             .define('C', Items.COBBLESTONE)
             .define('P', ItemTags.PLANKS)
             .define('R', CommonItemTags.DUSTS_REDSTONE)
@@ -127,7 +127,7 @@ public class VanillaIronLikeRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.TRANSPORTATION)
-            .define('I', AVPItemTags.IRON_INGOT_LIKE)
+            .define('I', BLibItemTags.IRON_INGOT_LIKE)
             .define('S', CommonItemTags.RODS_WOODEN)
             .pattern("I I")
             .pattern("ISI")
@@ -136,14 +136,14 @@ public class VanillaIronLikeRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.TOOLS)
-            .define('I', AVPItemTags.IRON_INGOT_LIKE)
+            .define('I', BLibItemTags.IRON_INGOT_LIKE)
             .pattern(" I")
             .pattern("I ")
             .into(1, Items.SHEARS);
 
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('I', AVPItemTags.IRON_INGOT_LIKE)
+            .define('I', BLibItemTags.IRON_INGOT_LIKE)
             .define('P', ItemTags.PLANKS)
             .pattern("PIP")
             .pattern("PPP")
@@ -152,7 +152,7 @@ public class VanillaIronLikeRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.DECORATIONS)
-            .define('I', AVPItemTags.IRON_INGOT_LIKE)
+            .define('I', BLibItemTags.IRON_INGOT_LIKE)
             .define('P', ItemTags.PLANKS)
             .pattern("II")
             .pattern("PP")
@@ -161,7 +161,7 @@ public class VanillaIronLikeRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.DECORATIONS)
-            .define('I', AVPItemTags.IRON_INGOT_LIKE)
+            .define('I', BLibItemTags.IRON_INGOT_LIKE)
             .define('S', Blocks.STONE)
             .pattern(" I ")
             .pattern("SSS")
@@ -169,7 +169,7 @@ public class VanillaIronLikeRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.REDSTONE)
-            .define('I', AVPItemTags.IRON_INGOT_LIKE)
+            .define('I', BLibItemTags.IRON_INGOT_LIKE)
             .define('P', ItemTags.PLANKS)
             .define('S', CommonItemTags.RODS_WOODEN)
             .pattern("I")

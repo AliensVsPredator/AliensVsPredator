@@ -1,12 +1,11 @@
-package com.avp.common.registry.tag;
+package com.blib.common.registry.tag;
 
+import com.blib.BLib;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
-import com.avp.AVPResources;
-
-public class AVPItemTags {
+public class BLibItemTags {
 
     public static final TagKey<Item> DECORATIVE_POT_SHERDS = create("decorative_pot_sherds");
 
@@ -22,7 +21,7 @@ public class AVPItemTags {
 
     public static final TagKey<Item> WATER_BREATHING_ARMORS = create("water_breathing_armors");
 
-    private static TagKey<Item> create(String name) {
-        return TagKey.create(Registries.ITEM, AVPResources.location(name));
+    private static TagKey<Item> create(String path) {
+        return BLib.MOD.createTagKey(Registries.ITEM, path);
     }
 }

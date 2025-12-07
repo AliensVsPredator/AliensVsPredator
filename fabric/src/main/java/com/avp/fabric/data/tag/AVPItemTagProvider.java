@@ -9,7 +9,7 @@ import net.minecraft.world.item.Items;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.avp.common.registry.tag.AVPItemTags;
+import com.blib.common.registry.tag.BLibItemTags;
 
 public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
@@ -19,19 +19,19 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider wrapperLookup) {
-        getOrCreateTagBuilder(AVPItemTags.DECORATIVE_POT_SHERDS);
+        getOrCreateTagBuilder(BLibItemTags.DECORATIVE_POT_SHERDS);
 
         getOrCreateTagBuilder(ItemTags.DECORATED_POT_SHERDS)
-            .addTag(AVPItemTags.DECORATIVE_POT_SHERDS);
+            .addTag(BLibItemTags.DECORATIVE_POT_SHERDS);
 
-        getOrCreateTagBuilder(AVPItemTags.MELEE_WEAPONS)
+        getOrCreateTagBuilder(BLibItemTags.MELEE_WEAPONS)
             .addOptionalTag(ItemTags.AXES)
             .addOptionalTag(ItemTags.SWORDS)
             .add(
                 Items.MACE
             );
 
-        getOrCreateTagBuilder(AVPItemTags.RANGED_WEAPONS)
+        getOrCreateTagBuilder(BLibItemTags.RANGED_WEAPONS)
             .add(
                 Items.BOW,
                 Items.CROSSBOW

@@ -8,7 +8,7 @@ import net.minecraft.world.entity.EntityType;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.avp.common.registry.tag.AVPEntityTypeTags;
+import com.blib.common.registry.tag.BLibEntityTypeTags;
 
 public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagProvider {
 
@@ -23,7 +23,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
     }
 
     private void addHumanoids() {
-        getOrCreateTagBuilder(AVPEntityTypeTags.HUMANOIDS)
+        getOrCreateTagBuilder(BLibEntityTypeTags.HUMANOIDS)
             .addOptionalTag(EntityTypeTags.ILLAGER)
             .add(
                 EntityType.PIGLIN,
@@ -36,7 +36,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
     }
 
     private void addNetherCreatures() {
-        getOrCreateTagBuilder(AVPEntityTypeTags.NETHER_CREATURES)
+        getOrCreateTagBuilder(BLibEntityTypeTags.NETHER_CREATURES)
             .add(
                 EntityType.HOGLIN,
                 EntityType.PIGLIN,

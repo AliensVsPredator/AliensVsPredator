@@ -4,7 +4,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import com.avp.common.registry.tag.AVPItemTags;
+import com.blib.common.registry.tag.BLibItemTags;
 
 public sealed interface ItemType {
 
@@ -18,12 +18,12 @@ public sealed interface ItemType {
         }
 
         // Melee weapon checks
-        if (itemStack.is(AVPItemTags.MELEE_WEAPONS)) {
+        if (itemStack.is(BLibItemTags.MELEE_WEAPONS)) {
             return MeleeWeapon.INSTANCE;
         }
 
         // Ranged weapon checks
-        if (itemStack.is(AVPItemTags.RANGED_WEAPONS)) {
+        if (itemStack.is(BLibItemTags.RANGED_WEAPONS)) {
             return RangedWeapon.INSTANCE;
         }
 
