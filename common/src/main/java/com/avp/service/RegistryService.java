@@ -5,14 +5,9 @@ import com.blib.common.network.model.NetworkHandler;
 import com.blib.common.network.model.PacketDirection;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.core.Registry;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.Item;
@@ -21,17 +16,8 @@ import net.minecraft.world.level.ItemLike;
 import java.util.List;
 import java.util.function.Supplier;
 
-import com.avp.AVPResources;
-import com.avp.common.registry.AVPDeferredHolder;
-
 @Deprecated(forRemoval = true)
 public interface RegistryService {
-
-    default <T> AVPDeferredHolder<T> register(Registry<? super T> registry, String id, Supplier<? extends T> supplier) {
-        return register(registry, AVPResources.location(id), supplier);
-    }
-
-    <T> AVPDeferredHolder<T> register(Registry<? super T> registry, ResourceLocation resourceLocation, Supplier<? extends T> supplier);
 
     void registerCommand(LiteralArgumentBuilder<CommandSourceStack> literalArgumentBuilder);
 
@@ -42,11 +28,6 @@ public interface RegistryService {
         float chance,
         boolean villagersCanCompost,
         boolean replace
-    );
-
-    void registerEntityAttributes(
-        Supplier<? extends EntityType<? extends LivingEntity>> entityTypeSupplier,
-        Supplier<AttributeSupplier.Builder> attributeSupplierBuilderSupplier
     );
 
     <T extends Mob> void registerEntitySpawnData(BLibEntitySpawnData<T> spawnData);

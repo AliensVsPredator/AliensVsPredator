@@ -1,5 +1,8 @@
 package com.avp.neoforge.service;
 
+import com.avp.AVP;
+import com.avp.common.registry.AVPDeferredHolder;
+import com.avp.service.RegistryService;
 import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
 import com.blib.common.network.model.NetworkHandler;
 import com.blib.common.network.model.PacketDirection;
@@ -11,7 +14,6 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -33,10 +35,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import com.avp.AVP;
-import com.avp.common.registry.AVPDeferredHolder;
-import com.avp.service.RegistryService;
 
 public class NeoForgeRegistryService implements RegistryService {
 
@@ -97,22 +95,6 @@ public class NeoForgeRegistryService implements RegistryService {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <T> AVPDeferredHolder<T> register(
-        Registry<? super T> registry,
-        ResourceLocation resourceLocation,
-        Supplier<? extends T> supplier
-    ) {
-        var deferredRegister = (DeferredRegister<T>) registryToDeferredRegisterMap.get(registry);
-
-        if (deferredRegister == null) {
-            throw new IllegalArgumentException("Unhandled registry: " + registry);
-        }
-
-        return adapt(deferredRegister.register(resourceLocation.getPath(), supplier));
-    }
-
-    @Override
     public void registerCommand(LiteralArgumentBuilder<CommandSourceStack> literalArgumentBuilder) {
         literalArgumentBuilders.add(literalArgumentBuilder);
     }
@@ -130,14 +112,6 @@ public class NeoForgeRegistryService implements RegistryService {
         boolean replace
     ) {
         compostableData.add(new Tuple4<>(itemLikeSupplier, chance, villagersCanCompost, replace));
-    }
-
-    @Override
-    public void registerEntityAttributes(
-        Supplier<? extends EntityType<? extends LivingEntity>> entityTypeSupplier,
-        Supplier<AttributeSupplier.Builder> attributeSupplierBuilderSupplier
-    ) {
-        entityAttributeSupplierPairs.add(new Tuple2<>(entityTypeSupplier, attributeSupplierBuilderSupplier));
     }
 
     @Override

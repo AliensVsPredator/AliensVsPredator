@@ -1,5 +1,7 @@
 package com.blib.fabric.service;
 
+import com.avp.AVPResources;
+import com.avp.service.RegistryService;
 import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
 import com.blib.common.network.model.NetworkHandler;
 import com.blib.common.network.model.PacketDirection;
@@ -10,29 +12,20 @@ import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
-import net.fabricmc.fabric.api.object.builder.v1.world.poi.PointOfInterestHelper;
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnPlacements;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.Item;
@@ -46,10 +39,6 @@ import java.util.concurrent.Executor;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import com.avp.AVPResources;
-import com.avp.common.registry.AVPDeferredHolder;
-import com.avp.service.RegistryService;
-
 public class FabricRegistryService implements RegistryService {
 
     private final List<NetworkHandler<?>> clientBoundPacketHandlers;
@@ -59,36 +48,6 @@ public class FabricRegistryService implements RegistryService {
     public FabricRegistryService() {
         this.clientBoundPacketHandlers = new ArrayList<>();
         this.literalArgumentBuilders = new ArrayList<>();
-    }
-
-    @Override
-    public <T> AVPDeferredHolder<T> register(
-        Registry<? super T> registry,
-        ResourceLocation resourceLocation,
-        Supplier<? extends T> supplier
-    ) {
-        var object = supplier.get();
-
-        if (object instanceof PoiType poiType) {
-            // We have to do special handling for PoiType registration on the Fabric side, since Fabric wants
-            // Poi registrations to go through their "PointOfInterestHelper" type.
-            return registerPoiType(resourceLocation, poiType);
-        }
-
-        var reference = Registry.registerForHolder(registry, resourceLocation, object);
-        @SuppressWarnings("unchecked")
-        var holder = (Holder<T>) reference;
-        return new AVPDeferredHolder<>(holder::value, () -> holder);
-    }
-
-    private <T> @NotNull AVPDeferredHolder<T> registerPoiType(ResourceLocation resourceLocation, PoiType poiType) {
-        PointOfInterestHelper.register(resourceLocation, poiType.maxTickets(), poiType.validRange(), poiType.matchingStates());
-        // Immediately get the holder or throw. This should be safe to do since we registered the PoiType in the last
-        // line. This is necessary because PointOfInterestHelper doesn't return back a holder (which we need for
-        // AVPDeferredHolder) after registration.
-        @SuppressWarnings("unchecked")
-        var holder = (Holder<T>) BuiltInRegistries.POINT_OF_INTEREST_TYPE.getHolder(resourceLocation).orElseThrow();
-        return new AVPDeferredHolder<>(holder::value, () -> holder);
     }
 
     @Override
@@ -109,13 +68,6 @@ public class FabricRegistryService implements RegistryService {
         boolean replace
     ) {
         CompostingChanceRegistry.INSTANCE.add(itemLikeSupplier.get(), chance);
-    }
-
-    public void registerEntityAttributes(
-        Supplier<? extends EntityType<? extends LivingEntity>> entityTypeSupplier,
-        Supplier<AttributeSupplier.Builder> attributeSupplierBuilderSupplier
-    ) {
-        FabricDefaultAttributeRegistry.register(entityTypeSupplier.get(), attributeSupplierBuilderSupplier.get());
     }
 
     @Override
