@@ -1,14 +1,13 @@
-package com.blib.fabric.service;
+package com.blib.fabric.service.impl;
 
+import com.blib.service.BLibServerNetworkingService;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
-import com.avp.service.ServerNetworkingService;
-
-public class FabricServerNetworkingService implements ServerNetworkingService {
+public class FabricBLibServerNetworkingServiceImpl implements BLibServerNetworkingService {
 
     @Override
     public void sendToClient(ServerPlayer serverPlayer, CustomPacketPayload payload) {

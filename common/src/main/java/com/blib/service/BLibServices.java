@@ -6,6 +6,10 @@ import java.util.ServiceLoader;
 
 public class BLibServices {
 
+    public static final BLibClientNetworkingService CLIENT_NETWORKING = load(BLibClientNetworkingService.class);
+
+    public static final BLibClientRegistryService CLIENT_REGISTRY = load(BLibClientRegistryService.class);
+
     public static final BLibEventService EVENT = load(BLibEventService.class);
 
     public static final BLibFactoryService FACTORY = load(BLibFactoryService.class);
@@ -13,6 +17,8 @@ public class BLibServices {
     public static final BLibModLoaderService MOD_LOADER = load(BLibModLoaderService.class);
 
     public static final BLibRegistryService REGISTRY = load(BLibRegistryService.class);
+
+    public static final BLibServerNetworkingService SERVER_NETWORKING = load(BLibServerNetworkingService.class);
 
     private static <T> T load(Class<T> clazz) {
         var loadedService = ServiceLoader.load(clazz)

@@ -1,7 +1,5 @@
 package com.blib.fabric.service;
 
-import com.avp.AVPResources;
-import com.avp.service.RegistryService;
 import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
 import com.blib.common.network.model.NetworkHandler;
 import com.blib.common.network.model.PacketDirection;
@@ -38,6 +36,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+
+import com.avp.AVPResources;
+import com.avp.service.RegistryService;
 
 public class FabricRegistryService implements RegistryService {
 

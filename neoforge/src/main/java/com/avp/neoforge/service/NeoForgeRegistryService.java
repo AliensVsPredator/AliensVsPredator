@@ -1,8 +1,5 @@
 package com.avp.neoforge.service;
 
-import com.avp.AVP;
-import com.avp.common.registry.AVPDeferredHolder;
-import com.avp.service.RegistryService;
 import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
 import com.blib.common.network.model.NetworkHandler;
 import com.blib.common.network.model.PacketDirection;
@@ -35,6 +32,10 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import com.avp.AVP;
+import com.avp.common.registry.AVPDeferredHolder;
+import com.avp.service.RegistryService;
 
 public class NeoForgeRegistryService implements RegistryService {
 

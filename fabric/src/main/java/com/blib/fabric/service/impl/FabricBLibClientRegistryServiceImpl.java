@@ -1,8 +1,9 @@
-package com.blib.fabric.service;
+package com.blib.fabric.service.impl;
 
 import com.blib.client.input.keybind.KeyPressHandler;
 import com.blib.client.input.keybind.util.KeyMappingUtil;
 import com.blib.client.model.KeyInteractType;
+import com.blib.service.BLibClientRegistryService;
 import com.just.core.functional.tuple.Tuple2;
 import mod.azure.azurelib.common.render.armor.AzArmorRenderer;
 import mod.azure.azurelib.common.render.item.AzItemRenderer;
@@ -39,9 +40,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import com.avp.service.ClientRegistryService;
-
-public class FabricClientRegistryService implements ClientRegistryService {
+public class FabricBLibClientRegistryServiceImpl implements BLibClientRegistryService {
 
     @Override
     public void registerArmorRenderer(Supplier<AzArmorRenderer> armorRendererSupplier, List<Supplier<? extends Item>> itemSuppliers) {

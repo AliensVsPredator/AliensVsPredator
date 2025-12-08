@@ -1,11 +1,10 @@
-package com.avp.neoforge.service;
+package com.blib.neoforge.service.impl;
 
+import com.blib.service.BLibClientNetworkingService;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-import com.avp.service.ClientNetworkingService;
-
-public class NeoForgeClientNetworkingService implements ClientNetworkingService {
+public class NeoForgeBLibClientNetworkingServiceImpl implements BLibClientNetworkingService {
 
     @Override
     public void sendToServer(CustomPacketPayload payload) {

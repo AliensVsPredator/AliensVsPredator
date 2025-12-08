@@ -7,13 +7,7 @@ import com.avp.AVP;
 @Deprecated(forRemoval = true)
 public class Services {
 
-    public static final ClientNetworkingService CLIENT_NETWORKING = load(ClientNetworkingService.class);
-
-    public static final ClientRegistryService CLIENT_REGISTRY = load(ClientRegistryService.class);
-
     public static final RegistryService REGISTRY = load(RegistryService.class);
-
-    public static final ServerNetworkingService SERVER_NETWORKING = load(ServerNetworkingService.class);
 
     public static <T> T load(Class<T> clazz) {
         var loadedService = ServiceLoader.load(clazz)

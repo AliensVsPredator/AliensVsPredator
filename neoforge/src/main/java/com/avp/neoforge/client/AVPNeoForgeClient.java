@@ -1,6 +1,8 @@
 package com.avp.neoforge.client;
 
 import com.blib.client.input.keybind.KeyPressHandler;
+import com.blib.neoforge.service.impl.NeoForgeBLibClientRegistryServiceImpl;
+import com.blib.service.BLibServices;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -24,13 +26,12 @@ import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
 import com.avp.AVP;
-import com.avp.neoforge.service.NeoForgeClientRegistryService;
-import com.avp.service.Services;
 
 @EventBusSubscriber(modid = AVP.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class AVPNeoForgeClient {
 
-    private static final NeoForgeClientRegistryService CLIENT_REGISTRY = ((NeoForgeClientRegistryService) Services.CLIENT_REGISTRY);
+    private static final NeoForgeBLibClientRegistryServiceImpl CLIENT_REGISTRY =
+        (NeoForgeBLibClientRegistryServiceImpl) BLibServices.CLIENT_REGISTRY;
 
     static {
         // Client game bus events.

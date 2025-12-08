@@ -1,11 +1,10 @@
-package com.avp.service;
+package com.blib.service;
 
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
-@Deprecated(forRemoval = true)
-public interface ServerNetworkingService {
+public interface BLibServerNetworkingService {
 
     void sendToClient(ServerPlayer serverPlayer, CustomPacketPayload payload);
 

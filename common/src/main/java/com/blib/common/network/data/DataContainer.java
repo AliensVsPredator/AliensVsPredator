@@ -5,6 +5,7 @@ import com.blib.common.gameplay.model.NBTSerializable;
 import com.blib.common.network.packet.S2CEntityDataSyncPayload;
 import com.blib.common.registry.DataKeyRegistry;
 import com.blib.common.util.codec.stream.schema.StreamCodecSchemas;
+import com.blib.service.BLibServices;
 import com.just.codec.stream.StreamCodec;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBufUtil;
@@ -21,8 +22,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-
-import com.avp.service.Services;
 
 public class DataContainer implements NBTSerializable {
 
@@ -121,7 +120,7 @@ public class DataContainer implements NBTSerializable {
 
         var rawDataSyncMap = new RawDataSyncMap(dataMap);
 
-        Services.SERVER_NETWORKING.sendToAllClients(
+        BLibServices.SERVER_NETWORKING.sendToAllClients(
             entity.level().getServer(),
             new S2CEntityDataSyncPayload(entity.getId(), rawDataSyncMap)
         );

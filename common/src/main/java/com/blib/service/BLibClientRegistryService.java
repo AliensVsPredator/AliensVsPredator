@@ -1,4 +1,4 @@
-package com.avp.service;
+package com.blib.service;
 
 import com.blib.client.model.KeyInteractType;
 import com.just.core.functional.tuple.Tuple2;
@@ -33,8 +33,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-@Deprecated(forRemoval = true)
-public interface ClientRegistryService {
+public interface BLibClientRegistryService {
 
     void registerArmorRenderer(Supplier<AzArmorRenderer> armorRendererSupplier, List<Supplier<? extends Item>> itemSuppliers);
 
