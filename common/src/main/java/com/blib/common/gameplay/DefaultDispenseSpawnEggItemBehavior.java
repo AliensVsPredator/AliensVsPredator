@@ -1,4 +1,4 @@
-package com.blib.common;
+package com.blib.common.gameplay;
 
 import com.blib.BLib;
 import net.minecraft.core.Direction;

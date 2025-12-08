@@ -1,6 +1,6 @@
 package com.blib;
 
-import com.blib.common.DefaultDispenseSpawnEggItemBehavior;
+import com.blib.common.gameplay.DefaultDispenseSpawnEggItemBehavior;
 import com.blib.service.BLibServices;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
