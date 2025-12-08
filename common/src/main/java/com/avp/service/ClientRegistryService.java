@@ -1,5 +1,6 @@
 package com.avp.service;
 
+import com.blib.client.model.KeyInteractType;
 import com.just.core.functional.tuple.Tuple2;
 import mod.azure.azurelib.common.render.armor.AzArmorRenderer;
 import mod.azure.azurelib.common.render.armor.AzArmorRendererRegistry;
@@ -17,6 +18,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -30,8 +32,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-
-import com.avp.client.model.KeyInteractType;
 
 @Deprecated(forRemoval = true)
 public interface ClientRegistryService {
@@ -68,7 +68,7 @@ public interface ClientRegistryService {
     }
 
     Supplier<Tuple2<KeyMapping, Consumer<KeyInteractType>>> registerKeyMapping(
-        String id,
+        ResourceLocation resourceLocation,
         String category,
         int key,
         Consumer<KeyInteractType> keyInteractTypeConsumer

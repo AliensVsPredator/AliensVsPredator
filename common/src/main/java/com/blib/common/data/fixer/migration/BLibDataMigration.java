@@ -1,6 +1,6 @@
 package com.blib.common.data.fixer.migration;
 
-import com.lib.common.util.Version;
+import com.blib.common.model.Version;
 
 public interface BLibDataMigration {
 

@@ -1,8 +1,8 @@
 package com.blib.service;
 
-import com.blib.common.model.DistributionEnvironmentType;
-import com.blib.common.model.ReleaseEnvironmentType;
-import com.lib.common.util.Version;
+import com.blib.common.model.Version;
+import com.blib.service.model.DistributionEnvironmentType;
+import com.blib.service.model.ReleaseEnvironmentType;
 import org.jetbrains.annotations.Nullable;
 
 public interface BLibModLoaderService {

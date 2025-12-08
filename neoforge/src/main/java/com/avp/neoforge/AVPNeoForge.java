@@ -1,8 +1,9 @@
 package com.avp.neoforge;
 
-import com.lib.common.network.DataContainer;
-import com.lib.common.network.DataUser;
-import com.lib.common.util.codec.stream.adapter.JustStreamCodecToMojangStreamCodecAdapter;
+import com.blib.common.network.data.DataContainer;
+import com.blib.common.network.data.DataUser;
+import com.blib.common.network.model.NetworkHandler;
+import com.blib.common.util.codec.stream.adapter.JustStreamCodecToMojangStreamCodecAdapter;
 import mod.azure.azurelib.common.animation.cache.AzIdentityRegistry;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,7 +18,6 @@ import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
 import net.neoforged.neoforge.network.registration.HandlerThread;
 
 import com.avp.AVP;
-import com.avp.common.network.NetworkHandler;
 import com.avp.neoforge.service.NeoForgeRegistryService;
 import com.avp.service.Services;
 

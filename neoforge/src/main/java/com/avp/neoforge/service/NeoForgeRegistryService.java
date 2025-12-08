@@ -1,5 +1,8 @@
 package com.avp.neoforge.service;
 
+import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
+import com.blib.common.network.model.NetworkHandler;
+import com.blib.common.network.model.PacketDirection;
 import com.just.core.functional.tuple.Tuple2;
 import com.just.core.functional.tuple.Tuple3;
 import com.just.core.functional.tuple.Tuple4;
@@ -32,9 +35,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.avp.AVP;
-import com.avp.common.model.spawning.AVPEntitySpawnData;
-import com.avp.common.network.NetworkHandler;
-import com.avp.common.network.PacketDirection;
 import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.service.RegistryService;
 
@@ -52,7 +52,7 @@ public class NeoForgeRegistryService implements RegistryService {
 
     private final List<Tuple2<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>>> entityAttributeSupplierPairs;
 
-    private final List<AVPEntitySpawnData<?>> entitySpawnDataEntries;
+    private final List<BLibEntitySpawnData<?>> entitySpawnDataEntries;
 
     private final List<Tuple2<Supplier<? extends ItemLike>, Integer>> furnaceFuelPairs;
 
@@ -141,7 +141,7 @@ public class NeoForgeRegistryService implements RegistryService {
     }
 
     @Override
-    public <T extends Mob> void registerEntitySpawnData(AVPEntitySpawnData<T> spawnData) {
+    public <T extends Mob> void registerEntitySpawnData(BLibEntitySpawnData<T> spawnData) {
         entitySpawnDataEntries.add(spawnData);
     }
 
@@ -195,7 +195,7 @@ public class NeoForgeRegistryService implements RegistryService {
         return entityAttributeSupplierPairs;
     }
 
-    public List<AVPEntitySpawnData<?>> getEntitySpawnDataEntries() {
+    public List<BLibEntitySpawnData<?>> getEntitySpawnDataEntries() {
         return entitySpawnDataEntries;
     }
 

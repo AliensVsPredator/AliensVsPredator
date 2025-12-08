@@ -1,8 +1,8 @@
 package com.blib.service;
 
-import java.util.ServiceLoader;
+import com.blib.BLib;
 
-import com.avp.AVP;
+import java.util.ServiceLoader;
 
 public class BLibServices {
 
@@ -17,7 +17,7 @@ public class BLibServices {
             .findFirst()
             .orElseThrow(() -> new NullPointerException("Failed to load service for " + clazz.getName()));
 
-        AVP.LOGGER.debug("Loaded {} for service {}", loadedService, clazz);
+        BLib.LOGGER.debug("Loaded {} for service {}", loadedService, clazz);
 
         return loadedService;
     }

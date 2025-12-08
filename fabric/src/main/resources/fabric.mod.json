@@ -27,13 +27,13 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.avp.fabric.AVPFabric"
+			"com.blib.fabric.BLibFabric"
 		],
 		"client": [
-			"com.avp.fabric.client.AVPFabricClient"
+			"com.blib.fabric.client.BLibFabricClient"
 		],
 		"fabric-datagen": [
-			"com.avp.fabric.data.AVPDataGenerator"
+			"com.blib.fabric.data.BLibDataGenerator"
 		],
 		"rei_client": [],
 		"jei_mod_plugin": []

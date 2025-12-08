@@ -1,9 +1,9 @@
 package com.blib.fabric.event;
 
-import com.blib.common.model.DistributionEnvironmentType;
 import com.blib.event.BLibEventRouter;
 import com.blib.service.BLibEventService;
 import com.blib.service.BLibServices;
+import com.blib.service.model.DistributionEnvironmentType;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.client.multiplayer.ClientLevel;

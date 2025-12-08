@@ -1,9 +1,9 @@
 package com.blib.neoforge.service.impl;
 
-import com.blib.common.model.DistributionEnvironmentType;
-import com.blib.common.model.ReleaseEnvironmentType;
+import com.blib.common.model.Version;
 import com.blib.service.BLibModLoaderService;
-import com.lib.common.util.Version;
+import com.blib.service.model.DistributionEnvironmentType;
+import com.blib.service.model.ReleaseEnvironmentType;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLLoader;
 import org.jetbrains.annotations.Nullable;

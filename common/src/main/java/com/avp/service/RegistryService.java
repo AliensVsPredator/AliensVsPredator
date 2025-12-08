@@ -1,5 +1,8 @@
 package com.avp.service;
 
+import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
+import com.blib.common.network.model.NetworkHandler;
+import com.blib.common.network.model.PacketDirection;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
@@ -19,9 +22,6 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import com.avp.AVPResources;
-import com.avp.common.model.spawning.AVPEntitySpawnData;
-import com.avp.common.network.NetworkHandler;
-import com.avp.common.network.PacketDirection;
 import com.avp.common.registry.AVPDeferredHolder;
 
 @Deprecated(forRemoval = true)
@@ -49,7 +49,7 @@ public interface RegistryService {
         Supplier<AttributeSupplier.Builder> attributeSupplierBuilderSupplier
     );
 
-    <T extends Mob> void registerEntitySpawnData(AVPEntitySpawnData<T> spawnData);
+    <T extends Mob> void registerEntitySpawnData(BLibEntitySpawnData<T> spawnData);
 
     void registerFurnaceFuel(Supplier<? extends ItemLike> itemLikeSupplier, int burnTimeInTicks);
 

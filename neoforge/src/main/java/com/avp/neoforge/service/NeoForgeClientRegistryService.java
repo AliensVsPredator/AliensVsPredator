@@ -1,5 +1,7 @@
 package com.avp.neoforge.service;
 
+import com.blib.client.input.keybind.util.KeyMappingUtil;
+import com.blib.client.model.KeyInteractType;
 import com.just.core.functional.function.Lazy;
 import com.just.core.functional.tuple.Tuple2;
 import mod.azure.azurelib.common.render.armor.AzArmorRenderer;
@@ -15,6 +17,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -30,8 +33,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import com.avp.client.input.keybind.util.KeyMappingUtil;
-import com.avp.client.model.KeyInteractType;
 import com.avp.service.ClientRegistryService;
 
 public class NeoForgeClientRegistryService implements ClientRegistryService {
@@ -104,14 +105,14 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
 
     @Override
     public Supplier<Tuple2<KeyMapping, Consumer<KeyInteractType>>> registerKeyMapping(
-        String id,
+        ResourceLocation resourceLocation,
         String category,
         int key,
         Consumer<KeyInteractType> keyInteractTypeConsumer
     ) {
         // Note the use of Lazy.of(...) here. This is deliberate so that the key mapping is only created once.
         Supplier<Tuple2<KeyMapping, Consumer<KeyInteractType>>> supplier = Lazy.of(
-            () -> new Tuple2<>(KeyMappingUtil.createKeyMapping(id, category, key), keyInteractTypeConsumer)
+            () -> new Tuple2<>(KeyMappingUtil.createKeyMapping(resourceLocation, category, key), keyInteractTypeConsumer)
         );
         keyMappingHandlerPairSuppliers.add(supplier);
         return supplier;

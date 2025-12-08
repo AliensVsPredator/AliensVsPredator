@@ -1,8 +1,8 @@
 package com.avp.common.registry.init;
 
+import com.blib.common.network.data.DataKey;
+import com.blib.common.registry.DataKeyRegistry;
 import com.just.codec.stream.impl.StreamCodecs;
-import com.lib.common.network.DataKey;
-import com.lib.common.registry.DataKeyRegistry;
 
 import java.util.function.Function;
 

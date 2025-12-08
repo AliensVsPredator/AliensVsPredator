@@ -2,6 +2,10 @@ package com.avp;
 
 import com.blib.BLib;
 import com.blib.BLibMod;
+import com.blib.common.network.BLibPacketDirections;
+import com.blib.common.network.BLibServerPacketHandlers;
+import com.blib.server.BlockBreakProgressManager;
+import com.blib.server.ServerScheduler;
 import com.blib.service.BLibServices;
 import mod.azure.azurelib.common.config.Config;
 import mod.azure.azurelib.common.config.ConfigHolder;
@@ -13,11 +17,7 @@ import net.minecraft.world.level.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.avp.common.network.AVPPacketDirectionRegistry;
-import com.avp.common.network.AVPServerPacketHandlerRegistry;
 import com.avp.common.registry.init.AVPDataKeys;
-import com.avp.server.BlockBreakProgressManager;
-import com.avp.server.ServerScheduler;
 
 public class AVP {
 
@@ -30,9 +30,9 @@ public class AVP {
     public static void initialize() {
         LOGGER.info("Initializing AVP for platform '{}'", BLibServices.MOD_LOADER.getModLoaderName());
 
-        AVPPacketDirectionRegistry.initialize();
+        BLibPacketDirections.initialize();
         AVPDataKeys.initialize();
-        AVPServerPacketHandlerRegistry.initialize();
+        BLibServerPacketHandlers.initialize();
 
         // TODO: There's a small bug here. This runs for both client and server levels!
         BLibServices.EVENT.afterLevelTick().register(AVP::tickScheduledRunnables);

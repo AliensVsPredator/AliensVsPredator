@@ -1,9 +1,9 @@
 package com.blib.fabric.service.impl;
 
-import com.blib.common.model.DistributionEnvironmentType;
-import com.blib.common.model.ReleaseEnvironmentType;
+import com.blib.common.model.Version;
 import com.blib.service.BLibModLoaderService;
-import com.lib.common.util.Version;
+import com.blib.service.model.DistributionEnvironmentType;
+import com.blib.service.model.ReleaseEnvironmentType;
 import net.fabricmc.loader.api.FabricLoader;
 import org.jetbrains.annotations.Nullable;
 

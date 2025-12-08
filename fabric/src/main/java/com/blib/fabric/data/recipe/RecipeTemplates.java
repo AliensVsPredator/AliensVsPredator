@@ -1,7 +1,7 @@
 package com.blib.fabric.data.recipe;
 
 import com.blib.fabric.data.recipe.builder.ShapedRecipeBuilder;
-import com.compat.CommonItemTags;
+import com.compatibility.CommonItemTags;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;

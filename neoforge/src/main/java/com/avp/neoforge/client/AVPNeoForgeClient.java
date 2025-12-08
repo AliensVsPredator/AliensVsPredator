@@ -1,5 +1,6 @@
 package com.avp.neoforge.client;
 
+import com.blib.client.input.keybind.KeyPressHandler;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -23,7 +24,6 @@ import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
 import com.avp.AVP;
-import com.avp.client.input.keybind.KeyPressHandler;
 import com.avp.neoforge.service.NeoForgeClientRegistryService;
 import com.avp.service.Services;
 
