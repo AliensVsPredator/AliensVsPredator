@@ -8,11 +8,13 @@ public class BLibServices {
 
     public static final BLibEventService EVENT = load(BLibEventService.class);
 
+    public static final BLibFactoryService FACTORY = load(BLibFactoryService.class);
+
     public static final BLibModLoaderService MOD_LOADER = load(BLibModLoaderService.class);
 
     public static final BLibRegistryService REGISTRY = load(BLibRegistryService.class);
 
-    public static <T> T load(Class<T> clazz) {
+    private static <T> T load(Class<T> clazz) {
         var loadedService = ServiceLoader.load(clazz)
             .findFirst()
             .orElseThrow(() -> new NullPointerException("Failed to load service for " + clazz.getName()));

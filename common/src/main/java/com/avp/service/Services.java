@@ -1,13 +1,11 @@
 package com.avp.service;
 
-import java.util.ServiceLoader;
-
 import com.avp.AVP;
+
+import java.util.ServiceLoader;
 
 @Deprecated(forRemoval = true)
 public class Services {
-
-    public static final BridgeService BRIDGE = load(BridgeService.class);
 
     public static final ClientNetworkingService CLIENT_NETWORKING = load(ClientNetworkingService.class);
 

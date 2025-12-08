@@ -1,15 +1,15 @@
-package com.blib.fabric.service;
+package com.blib.neoforge.service.impl;
 
+import com.blib.service.BLibFactoryService;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
+import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 
 import java.util.function.Supplier;
 
-import com.avp.service.BridgeService;
-
-public class FabricBridgeService implements BridgeService {
+public class NeoForgeBLibFactoryServiceImpl implements BLibFactoryService {
 
     @Override
     public <E extends Mob> Supplier<SpawnEggItem> createSpawnEggSupplier(
@@ -18,6 +18,6 @@ public class FabricBridgeService implements BridgeService {
         int secondaryEggColour,
         Item.Properties itemProperties
     ) {
-        return () -> new SpawnEggItem(entityType.get(), primaryEggColour, secondaryEggColour, itemProperties);
+        return () -> new DeferredSpawnEggItem(entityType, primaryEggColour, secondaryEggColour, itemProperties);
     }
 }

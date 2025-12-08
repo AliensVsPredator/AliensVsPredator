@@ -1,4 +1,4 @@
-package com.avp.service;
+package com.blib.service;
 
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -7,8 +7,7 @@ import net.minecraft.world.item.SpawnEggItem;
 
 import java.util.function.Supplier;
 
-@Deprecated(forRemoval = true)
-public interface BridgeService {
+public interface BLibFactoryService {
 
     <E extends Mob> Supplier<SpawnEggItem> createSpawnEggSupplier(
         Supplier<EntityType<E>> entityType,
