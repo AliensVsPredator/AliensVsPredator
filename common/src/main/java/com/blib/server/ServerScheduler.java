@@ -1,8 +1,9 @@
 package com.blib.server;
 
+import net.minecraft.world.level.Level;
+
 import java.time.Duration;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ServerScheduler {
@@ -14,8 +15,17 @@ public class ServerScheduler {
         SCHEDULED_TASKS.put(runTime, runnable);
     }
 
-    public static Set<Map.Entry<Long, Runnable>> getScheduledTasks() {
-        return SCHEDULED_TASKS.entrySet();
+    public static void tick(Level level) {
+        SCHEDULED_TASKS.entrySet().removeIf(entry -> {
+            var runTime = entry.getKey();
+
+            if (System.currentTimeMillis() >= runTime) {
+                entry.getValue().run();
+                return true;
+            }
+
+            return false;
+        });
     }
 
     private ServerScheduler() {

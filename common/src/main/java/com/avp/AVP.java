@@ -13,7 +13,6 @@ import mod.azure.azurelib.common.config.ConfigHolderRegistry;
 import mod.azure.azurelib.common.config.format.ConfigFormats;
 import mod.azure.azurelib.common.config.format.IConfigFormatHandler;
 import mod.azure.azurelib.common.config.io.ConfigIO;
-import net.minecraft.world.level.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,22 +34,9 @@ public class AVP {
         BLibServerPacketHandlers.initialize();
 
         // TODO: There's a small bug here. This runs for both client and server levels!
-        BLibServices.EVENT.afterLevelTick().register(AVP::tickScheduledRunnables);
+        BLibServices.EVENT.afterLevelTick().register(ServerScheduler::tick);
         // TODO: There's a small bug here. This runs for both client and server levels!
         BLibServices.EVENT.afterLevelTick().register(BlockBreakProgressManager::tick);
-    }
-
-    private static void tickScheduledRunnables(Level level) {
-        ServerScheduler.getScheduledTasks().removeIf(entry -> {
-            var runTime = entry.getKey();
-
-            if (System.currentTimeMillis() >= runTime) {
-                entry.getValue().run();
-                return true;
-            }
-
-            return false;
-        });
     }
 
     /**
