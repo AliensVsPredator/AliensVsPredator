@@ -40,7 +40,12 @@ public class BLibHolder<T> implements Holder<T>, HolderExtension<T>, Supplier<T>
     @Override
     public @NotNull T value() {
         bind(true);
-        return getHolder().value();
+
+        if (this.holder == null) {
+            throw new NullPointerException("Trying to access unbound value: %s".formatted(key));
+        } else {
+            return holder.value();
+        }
     }
 
     @Override
@@ -113,14 +118,6 @@ public class BLibHolder<T> implements Holder<T>, HolderExtension<T>, Supplier<T>
     @SuppressWarnings("unchecked")
     public Registry<T> getBackingRegistry() {
         return (Registry<T>) registry.getBackingRegistry();
-    }
-
-    public Holder<T> getHolder() {
-        if (this.holder == null) {
-            throw new IllegalStateException("Attempted to access unregistered BLibHolder. Path: %s".formatted(getPath()));
-        }
-
-        return holder;
     }
 
     public String getPath() {
