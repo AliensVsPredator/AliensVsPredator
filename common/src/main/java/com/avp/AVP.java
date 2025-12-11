@@ -29,9 +29,11 @@ public class AVP {
     public static void initialize() {
         LOGGER.info("Initializing AVP for platform '{}'", BLibServices.MOD_LOADER.getModLoaderName());
 
-        BLibPacketDirections.initialize();
-        AVPDataKeys.initialize();
-        BLibServerPacketHandlers.initialize();
+        MOD.initialize(() -> {
+            BLibPacketDirections.initialize();
+            AVPDataKeys.initialize();
+            BLibServerPacketHandlers.initialize();
+        });
 
         // TODO: There's a small bug here. This runs for both client and server levels!
         BLibServices.EVENT.afterLevelTick().register(ServerScheduler::tick);
