@@ -5,7 +5,6 @@ import com.mojang.datafixers.util.Either;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderOwner;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -112,8 +111,8 @@ public class BLibHolder<T> implements Holder<T>, HolderExtension<T>, Supplier<T>
     }
 
     @SuppressWarnings("unchecked")
-    public @Nullable Registry<T> getBackingRegistry() {
-        return (Registry<T>) BuiltInRegistries.REGISTRY.get(key.registry());
+    public Registry<T> getBackingRegistry() {
+        return (Registry<T>) registry.getBackingRegistry();
     }
 
     public Holder<T> getHolder() {

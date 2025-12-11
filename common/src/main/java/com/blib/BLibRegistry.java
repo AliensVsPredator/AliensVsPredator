@@ -56,7 +56,10 @@ public class BLibRegistry<T> {
 
         var path = holder.getPath();
         @SuppressWarnings("unchecked")
-        var valueFactory = (Supplier<U>) Objects.requireNonNull(pathToValueFactoryMap.get(path), "Attempted to register BLibHolder with no backing value factory. Path: %s".formatted(path));
+        var valueFactory = (Supplier<U>) Objects.requireNonNull(
+            pathToValueFactoryMap.get(path),
+            "Attempted to register BLibHolder with no backing value factory. Path: %s".formatted(path)
+        );
         var registeredHolder = BLibServices.REGISTRY.register(holder, valueFactory);
 
         listeners.forEach(listener -> listener.accept(holder));
