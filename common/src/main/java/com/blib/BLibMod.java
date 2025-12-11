@@ -1,6 +1,8 @@
 package com.blib;
 
 import com.blib.common.gameplay.DefaultDispenseSpawnEggItemBehavior;
+import com.blib.internal.service.BLibInternalServices;
+import com.blib.mod.BLibModState;
 import com.blib.service.BLibServices;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -35,6 +37,7 @@ public class BLibMod {
     public void initialize(Runnable runnable) {
         this.state = BLibModState.INITIALIZING;
         runnable.run();
+        BLibInternalServices.MOD.postInitialize(this);
         this.state = BLibModState.INITIALIZED;
     }
 

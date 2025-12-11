@@ -1,6 +1,7 @@
 package com.blib;
 
 import com.blib.exception.BLibModInitializationException;
+import com.blib.mod.BLibModState;
 import com.blib.service.BLibServices;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;

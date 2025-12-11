@@ -1,4 +1,4 @@
-package com.blib;
+package com.blib.mod;
 
 public enum BLibModState {
     INITIALIZED,
