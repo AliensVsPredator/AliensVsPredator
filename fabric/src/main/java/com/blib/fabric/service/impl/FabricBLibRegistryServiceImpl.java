@@ -2,6 +2,7 @@ package com.blib.fabric.service.impl;
 
 import com.blib.BLibHolder;
 import com.blib.BLibMod;
+import com.blib.internal.registry.BLibRegistries;
 import com.blib.service.BLibRegistryService;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.world.poi.PointOfInterestHelper;
@@ -15,26 +16,46 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 public class FabricBLibRegistryServiceImpl implements BLibRegistryService {
 
+    private final List<Runnable> deferredEntityAttributeRegistrations;
+
+    private final Map<Registry<?>, List<Runnable>> deferredRegistrations;
+
+    public FabricBLibRegistryServiceImpl() {
+        this.deferredEntityAttributeRegistrations = new ArrayList<>();
+        this.deferredRegistrations = new HashMap<>();
+    }
+
     @Override
     public <T> Holder<T> register(BLibHolder<T> holder, Supplier<? extends T> valueFactory) {
-        var object = valueFactory.get();
-        var resourceLocation = holder.getResourceLocation();
-        var registry = holder.getBackingRegistry();
+        deferredRegistrations.compute(holder.getBackingRegistry(), ($1, list) -> {
+            var nonNullList = list == null ? new ArrayList<Runnable>() : list;
 
-        if (object instanceof PoiType poiType) {
-            // We have to do special handling for PoiType registration on the Fabric side, since Fabric wants
-            // Poi registrations to go through their "PointOfInterestHelper" type.
-            return registerPoiType(resourceLocation, poiType);
-        }
+            nonNullList.add(() -> {
+                var object = valueFactory.get();
+                var resourceLocation = holder.getResourceLocation();
+                var registry = holder.getBackingRegistry();
 
-        var reference = Registry.registerForHolder(registry, resourceLocation, object);
-        @SuppressWarnings("unchecked")
-        var registeredHolder = (Holder<T>) reference;
-        return registeredHolder;
+                if (object instanceof PoiType poiType) {
+                    // We have to do special handling for PoiType registration on the Fabric side, since Fabric wants
+                    // Poi registrations to go through their "PointOfInterestHelper" type.
+                    registerPoiType(resourceLocation, poiType);
+                }
+
+                Registry.registerForHolder(registry, resourceLocation, object);
+            });
+
+            return nonNullList;
+        });
+
+        return holder;
     }
 
     @Override
@@ -42,7 +63,19 @@ public class FabricBLibRegistryServiceImpl implements BLibRegistryService {
         BLibHolder<? extends EntityType<? extends LivingEntity>> holder,
         Supplier<AttributeSupplier.Builder> attributeSupplierBuilderSupplier
     ) {
-        FabricDefaultAttributeRegistry.register(holder.get(), attributeSupplierBuilderSupplier.get());
+        deferredEntityAttributeRegistrations.add(
+            () -> FabricDefaultAttributeRegistry.register(holder.get(), attributeSupplierBuilderSupplier.get())
+        );
+    }
+
+    public void finalize(BLibMod mod) {
+        BLibRegistries.REGISTRATION_ORDER.forEach(this::runRegistrationsFor);
+        // Run entity attribute registrations after primary registries are ran.
+        deferredEntityAttributeRegistrations.forEach(Runnable::run);
+    }
+
+    private void runRegistrationsFor(Registry<?> registry) {
+        deferredRegistrations.getOrDefault(registry, List.of()).forEach(Runnable::run);
     }
 
     private <T> @NotNull Holder<T> registerPoiType(ResourceLocation resourceLocation, PoiType poiType) {
