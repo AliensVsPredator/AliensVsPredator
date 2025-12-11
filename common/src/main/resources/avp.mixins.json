@@ -10,6 +10,7 @@
     "MixinDecoratedPotPatterns_GetPatternForCustomSherds",
     "MixinEntity_DataUser",
     "MixinEntityTypeBuilder_SilenceDataFixerError",
+    "MixinHolder",
     "MixinLivingEntity_ApplyArmorEffects",
     "MixinLivingEntity_GOAPUser",
     "MixinRegistry_ApplyDataFixes",

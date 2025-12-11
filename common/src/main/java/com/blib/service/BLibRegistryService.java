@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 
 public interface BLibRegistryService {
 
-    <T> Holder<T> register(BLibHolder<T> holder);
+    <T> Holder<T> register(BLibHolder<T> holder, Supplier<? extends T> valueFactory);
 
     void registerEntityAttributes(
         BLibHolder<? extends EntityType<? extends LivingEntity>> holder,

@@ -41,8 +41,8 @@ public class BLibMod {
         this.state = BLibModState.INITIALIZED;
     }
 
-    public <T> BLibRegistry<T> createRegistry(Registry<? super T> registry) {
-        var newRegistry = new BLibRegistry<T>(this, registry);
+    public <T> BLibRegistry<T> createRegistry(Registry<T> registry) {
+        var newRegistry = new BLibRegistry<>(this, registry);
 
         registryToRegistriesMap.compute(registry, ($, registries) -> {
             var nonNullRegistries = registries == null

@@ -1,6 +1,7 @@
 package com.blib.fabric.service.impl;
 
 import com.blib.BLibHolder;
+import com.blib.BLibMod;
 import com.blib.service.BLibRegistryService;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.world.poi.PointOfInterestHelper;
@@ -19,11 +20,10 @@ import java.util.function.Supplier;
 public class FabricBLibRegistryServiceImpl implements BLibRegistryService {
 
     @Override
-    public <T> Holder<T> register(BLibHolder<T> holder) {
-        var supplier = holder.getValueFactory();
-        var object = supplier.get();
+    public <T> Holder<T> register(BLibHolder<T> holder, Supplier<? extends T> valueFactory) {
+        var object = valueFactory.get();
         var resourceLocation = holder.getResourceLocation();
-        var registry = holder.getRegistry().getBackingRegistry();
+        var registry = holder.getBackingRegistry();
 
         if (object instanceof PoiType poiType) {
             // We have to do special handling for PoiType registration on the Fabric side, since Fabric wants

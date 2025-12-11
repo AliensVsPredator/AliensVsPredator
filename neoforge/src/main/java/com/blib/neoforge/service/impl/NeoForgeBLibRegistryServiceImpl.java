@@ -32,7 +32,7 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
     }
 
     @Override
-    public <T> Holder<T> register(BLibHolder<T> holder) {
+    public <T> Holder<T> register(BLibHolder<T> holder, Supplier<? extends T> valueFactory) {
         var blibRegistry = holder.getRegistry();
         var modContainer = getModContainer(blibRegistry.getMod());
         var backingRegistry = blibRegistry.getBackingRegistry();
@@ -43,7 +43,7 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
             throw new IllegalArgumentException("Unhandled registry: " + backingRegistry);
         }
 
-        return deferredRegister.register(holder.getPath(), holder.getValueFactory());
+        return deferredRegister.register(holder.getPath(), valueFactory);
     }
 
     @Override

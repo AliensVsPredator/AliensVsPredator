@@ -9,9 +9,11 @@ import net.minecraft.core.Registry;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -19,6 +21,8 @@ import java.util.function.Supplier;
 public class BLibRegistry<T> {
 
     private final Map<String, BLibHolder<? extends T>> pathToHolderMap;
+
+    private final Map<String, Supplier<? extends T>> pathToValueFactoryMap;
 
     private final BLibMod mod;
 
@@ -28,14 +32,16 @@ public class BLibRegistry<T> {
 
     /* package-private */ BLibRegistry(BLibMod mod, Registry<? super T> registry) {
         this.pathToHolderMap = Collections.synchronizedMap(new LinkedHashMap<>());
+        this.pathToValueFactoryMap = new HashMap<>();
         this.mod = mod;
         this.registry = registry;
         this.listeners = new ArrayList<>();
     }
 
     public <U extends T> BLibHolder<U> createHolder(String path, Supplier<U> valueSupplier) {
-        var holder = new BLibHolder<>(this, path, valueSupplier);
+        var holder = new BLibHolder<U>(this, path);
         pathToHolderMap.put(path, holder);
+        pathToValueFactoryMap.put(path, valueSupplier);
         return holder;
     }
 
@@ -48,9 +54,13 @@ public class BLibRegistry<T> {
             throw new BLibModInitializationException();
         }
 
-        var registeredHolder = BLibServices.REGISTRY.register(holder);
-        holder.setHolderSupplier(() -> registeredHolder);
+        var path = holder.getPath();
+        @SuppressWarnings("unchecked")
+        var valueFactory = (Supplier<U>) Objects.requireNonNull(pathToValueFactoryMap.get(path), "Attempted to register BLibHolder with no backing value factory. Path: %s".formatted(path));
+        var registeredHolder = BLibServices.REGISTRY.register(holder, valueFactory);
+
         listeners.forEach(listener -> listener.accept(holder));
+
         return registeredHolder;
     }
 
