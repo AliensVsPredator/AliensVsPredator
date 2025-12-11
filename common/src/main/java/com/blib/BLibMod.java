@@ -1,23 +1,16 @@
 package com.blib;
 
-import com.blib.common.gameplay.DefaultDispenseSpawnEggItemBehavior;
 import com.blib.internal.service.BLibInternalServices;
 import com.blib.mod.BLibModState;
-import com.blib.service.BLibServices;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.SpawnEggItem;
-import net.minecraft.world.level.block.DispenserBlock;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BLibMod {
@@ -54,10 +47,6 @@ public class BLibMod {
             return nonNullRegistries;
         });
 
-        if (registry == BuiltInRegistries.ITEM && Objects.equals("Fabric", BLibServices.MOD_LOADER.getModLoaderName())) {
-            newRegistry.addListener(this::autoRegisterDispenserBehavior);
-        }
-
         return newRegistry;
     }
 
@@ -90,16 +79,5 @@ public class BLibMod {
 
     public BLibModState getState() {
         return state;
-    }
-
-    private <T> void autoRegisterDispenserBehavior(BLibHolder<? super T> holder) {
-        @SuppressWarnings("unchecked")
-        var itemHolder = (BLibHolder<Item>) holder;
-
-        if (!(itemHolder.get() instanceof SpawnEggItem spawnEggItem)) {
-            return;
-        }
-
-        DispenserBlock.registerBehavior(spawnEggItem, DefaultDispenseSpawnEggItemBehavior.INSTANCE);
     }
 }
