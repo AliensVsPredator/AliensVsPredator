@@ -1,5 +1,6 @@
 package com.blib;
 
+import com.blib.exception.BLibModInitializationException;
 import com.blib.service.BLibServices;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -42,6 +43,10 @@ public class BLibRegistry<T> {
     }
 
     public <U extends T> Holder<U> register(BLibHolder<U> holder) {
+        if (mod.getState() != BLibModState.INITIALIZING) {
+            throw new BLibModInitializationException();
+        }
+
         var registeredHolder = BLibServices.REGISTRY.register(holder);
         holder.setHolderSupplier(() -> registeredHolder);
         listeners.forEach(listener -> listener.accept(holder));

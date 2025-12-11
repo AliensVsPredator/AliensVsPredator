@@ -24,9 +24,18 @@ public class BLibMod {
 
     private final Map<Registry<?>, List<BLibRegistry<?>>> registryToRegistriesMap;
 
+    private volatile BLibModState state;
+
     /* package-private */ BLibMod(String id) {
         this.id = id;
         this.registryToRegistriesMap = new ConcurrentHashMap<>();
+        this.state = BLibModState.UNINITIALIZED;
+    }
+
+    public void initialize(Runnable runnable) {
+        this.state = BLibModState.INITIALIZING;
+        runnable.run();
+        this.state = BLibModState.INITIALIZED;
     }
 
     public <T> BLibRegistry<T> createRegistry(Registry<? super T> registry) {
@@ -74,6 +83,10 @@ public class BLibMod {
 
     public String getId() {
         return id;
+    }
+
+    public BLibModState getState() {
+        return state;
     }
 
     private <T> void autoRegisterDispenserBehavior(BLibHolder<? super T> holder) {
