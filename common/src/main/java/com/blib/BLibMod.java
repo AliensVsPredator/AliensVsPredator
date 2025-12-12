@@ -84,4 +84,8 @@ public class BLibMod {
     public BLibModState getState() {
         return state;
     }
+
+    public @Nullable Version getVersion() {
+        return BLibInternalServices.MOD_LOADER.getModVersion(id);
+    }
 }
