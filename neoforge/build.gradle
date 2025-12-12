@@ -4,7 +4,6 @@ plugins {
     id 'multiloader-loader'
     id 'net.neoforged.moddev'
     id 'me.modmuss50.mod-publish-plugin'
-    id 'org.moddedmc.wiki.toolkit'
 }
 
 neoForge {
@@ -61,8 +60,6 @@ dependencies {
 
     implementation "dev.architectury:architectury-neoforge:${project.architectury_version}"
     implementation "me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_version}"
-
-    compileOnly "org.sinytra:item-asset-export-neoforge:${project.asset_export}"
 
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${project.jei_version}")
     runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${project.jei_version}")

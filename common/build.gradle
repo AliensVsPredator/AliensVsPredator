@@ -3,7 +3,6 @@ plugins {
     id 'idea'
     id 'multiloader-common'
     id 'net.neoforged.moddev'
-    id 'org.moddedmc.wiki.toolkit'
 }
 
 neoForge {
@@ -101,17 +100,3 @@ artifacts {
     }
 }
 // END
-
-wiki {
-    def releaseProp = new Properties()
-    def keyPropsFile = new File(rootProject.projectDir, "key.properties")
-    if (keyPropsFile.exists()) {
-        releaseProp.load(new FileInputStream(keyPropsFile))
-        wikiAccessToken = releaseProp.getProperty("wikiKey")
-    }
-    docs {
-        avp {
-            root = file('../docs/avp')
-        }
-    }
-}
