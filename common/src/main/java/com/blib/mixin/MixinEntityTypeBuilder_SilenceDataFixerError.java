@@ -1,6 +1,6 @@
 package com.blib.mixin;
 
-import com.blib.common.registry.init.entity_type.SilencedEntityTypeBuilder;
+import com.blib.common.registry.SilencedEntityTypeBuilder;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityAttachments;

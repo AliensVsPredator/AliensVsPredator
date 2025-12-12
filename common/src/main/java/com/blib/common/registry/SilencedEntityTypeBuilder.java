@@ -1,4 +1,4 @@
-package com.blib.common.registry.init.entity_type;
+package com.blib.common.registry;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;

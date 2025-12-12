@@ -1,4 +1,4 @@
-package com.blib.internal.registry.impl;
+package com.blib.common.registry.impl;
 
 import com.blib.BLibHolder;
 import com.blib.BLibMod;

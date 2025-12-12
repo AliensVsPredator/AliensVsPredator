@@ -2,7 +2,7 @@ package com.blib.neoforge.internal.service.impl;
 
 import com.blib.BLibHolder;
 import com.blib.BLibMod;
-import com.blib.internal.registry.BLibRegistries;
+import com.blib.internal.common.registry.BLibRegistries;
 import com.just.core.functional.tuple.Tuple2;
 import net.minecraft.core.Registry;
 import net.minecraft.world.entity.EntityType;

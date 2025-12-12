@@ -1,4 +1,4 @@
-package com.blib.internal.registry;
+package com.blib.internal.common.registry;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;

@@ -1,9 +1,9 @@
 package com.blib;
 
 import com.blib.common.model.Version;
+import com.blib.common.registry.impl.BLibEntityTypeRegistry;
+import com.blib.common.registry.impl.BLibItemRegistry;
 import com.blib.exception.BLibModInitializationException;
-import com.blib.internal.registry.impl.BLibEntityTypeRegistry;
-import com.blib.internal.registry.impl.BLibItemRegistry;
 import com.blib.internal.service.BLibInternalServices;
 import com.blib.mod.BLibModState;
 import net.minecraft.core.Registry;
