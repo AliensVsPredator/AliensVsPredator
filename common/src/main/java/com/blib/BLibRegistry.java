@@ -1,6 +1,6 @@
 package com.blib;
 
-import com.blib.exception.BLibModInitializationException;
+import com.blib.exception.BLibRegistrationException;
 import com.blib.mod.BLibModState;
 import com.blib.internal.service.BLibInternalServices;
 import net.minecraft.core.Holder;
@@ -51,7 +51,7 @@ public class BLibRegistry<T> {
 
     public <U extends T> Holder<U> register(BLibHolder<U> holder) {
         if (mod.getState() != BLibModState.INITIALIZING) {
-            throw new BLibModInitializationException();
+            throw new BLibRegistrationException("Attempted to register a BLibHolder outside of mod's initialization window. BLibHolder: %s Mod State: %s".formatted(holder, mod.getState()));
         }
 
         var path = holder.getPath();

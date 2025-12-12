@@ -28,6 +28,10 @@ public class BLibMod {
     }
 
     public void initialize(Runnable runnable) {
+        if (state != BLibModState.UNINITIALIZED) {
+            throw new BLibModInitializationException("Attempted to initialize a mod that is either initializing or already initialized. Mod State: %s".formatted(state));
+        }
+
         this.state = BLibModState.INITIALIZING;
         runnable.run();
         BLibInternalServices.MOD.postInitialize(this);
