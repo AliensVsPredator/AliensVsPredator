@@ -22,7 +22,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-class NeoForgeBLibModContainer {
+class BLibNeoForgeModContainer {
 
     private static <T> @NotNull DeferredRegister<T> createDeferredRegistry(String modId, Registry<T> registry) {
         return DeferredRegister.create(registry, modId);
@@ -36,7 +36,7 @@ class NeoForgeBLibModContainer {
 
     private final List<BLibEntitySpawnData<?>> entitySpawnDataEntries;
 
-    public NeoForgeBLibModContainer(BLibMod mod) {
+    public BLibNeoForgeModContainer(BLibMod mod) {
         this.mod = mod;
         this.registryToDeferredRegisterMap = BLibRegistries.REGISTRATION_ORDER
             .stream()
@@ -77,9 +77,5 @@ class NeoForgeBLibModContainer {
 
     public List<BLibEntitySpawnData<?>> getEntitySpawnDataEntries() {
         return Collections.unmodifiableList(entitySpawnDataEntries);
-    }
-
-    public BLibMod getMod() {
-        return mod;
     }
 }

@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 
 public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
 
-    private final Map<BLibMod, NeoForgeBLibModContainer> modToContainerMap;
+    private final Map<BLibMod, BLibNeoForgeModContainer> modToContainerMap;
 
     public NeoForgeBLibRegistryServiceImpl() {
         modToContainerMap = new ConcurrentHashMap<>();
@@ -96,11 +96,11 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
             });
     }
 
-    private NeoForgeBLibModContainer getModContainer(BLibHolder<?> holder) {
+    private BLibNeoForgeModContainer getModContainer(BLibHolder<?> holder) {
         return getModContainer(holder.getRegistry().getMod());
     }
 
-    private NeoForgeBLibModContainer getModContainer(BLibMod mod) {
-        return modToContainerMap.computeIfAbsent(mod, $ -> new NeoForgeBLibModContainer(mod));
+    private BLibNeoForgeModContainer getModContainer(BLibMod mod) {
+        return modToContainerMap.computeIfAbsent(mod, $ -> new BLibNeoForgeModContainer(mod));
     }
 }
