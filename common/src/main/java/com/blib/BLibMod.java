@@ -35,7 +35,9 @@ public class BLibMod {
 
     public void initialize(Runnable runnable) {
         if (state != BLibModState.UNINITIALIZED) {
-            throw new BLibModInitializationException("Attempted to initialize a mod that is either initializing or already initialized. Mod State: %s".formatted(state));
+            throw new BLibModInitializationException(
+                "Attempted to initialize a mod that is either initializing or already initialized. Mod State: %s".formatted(state)
+            );
         }
 
         this.state = BLibModState.INITIALIZING;
@@ -67,7 +69,7 @@ public class BLibMod {
             @SuppressWarnings("unchecked")
             var itemRegistry = (BLibRegistry<T>) createItemRegistry();
             blibRegistry = itemRegistry;
-        }  else {
+        } else {
             blibRegistry = new BLibRegistry<>(this, registry);
         }
 
