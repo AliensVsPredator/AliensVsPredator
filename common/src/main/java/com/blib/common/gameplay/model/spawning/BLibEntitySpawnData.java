@@ -1,5 +1,6 @@
 package com.blib.common.gameplay.model.spawning;
 
+import com.blib.BLibHolder;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
@@ -10,15 +11,14 @@ import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.Heightmap;
 
-import java.util.function.Supplier;
-
+// TODO: Change how this works.
 public final class BLibEntitySpawnData<T extends Mob> {
 
-    public static <T extends Mob> Builder<T> builder(Supplier<EntityType<T>> entityTypeDeferredHolder) {
+    public static <T extends Mob> Builder<T> builder(BLibHolder<EntityType<T>> entityTypeDeferredHolder) {
         return new Builder<>(entityTypeDeferredHolder);
     }
 
-    private final Supplier<EntityType<T>> entityTypeDeferredHolder;
+    private final BLibHolder<EntityType<T>> entityTypeHolder;
 
     private final BLibEntitySpawnConfigData configData;
 
@@ -29,21 +29,21 @@ public final class BLibEntitySpawnData<T extends Mob> {
     private final boolean placementDisabled;
 
     private BLibEntitySpawnData(
-        Supplier<EntityType<T>> entityTypeDeferredHolder,
+        BLibHolder<EntityType<T>> entityTypeHolder,
         BLibEntitySpawnConfigData configData,
         BLibEntitySpawnPlacementData<T> placementData,
         boolean configDisabled,
         boolean placementDisabled
     ) {
-        this.entityTypeDeferredHolder = entityTypeDeferredHolder;
+        this.entityTypeHolder = entityTypeHolder;
         this.configData = configData;
         this.placementData = placementData;
         this.configDisabled = configDisabled;
         this.placementDisabled = placementDisabled;
     }
 
-    public EntityType<T> getEntityType() {
-        return entityTypeDeferredHolder.get();
+    public BLibHolder<EntityType<T>> getEntityTypeHolder() {
+        return entityTypeHolder;
     }
 
     public BLibEntitySpawnConfigData getConfigData() {
@@ -64,7 +64,7 @@ public final class BLibEntitySpawnData<T extends Mob> {
 
     public static class Builder<T extends Mob> {
 
-        private final Supplier<EntityType<T>> entityTypeDeferredHolder;
+        private final BLibHolder<EntityType<T>> entityTypeDeferredHolder;
 
         private TagKey<Biome> biomeTagKey;
 
@@ -80,7 +80,7 @@ public final class BLibEntitySpawnData<T extends Mob> {
 
         private boolean placementDisabled;
 
-        public Builder(Supplier<EntityType<T>> entityTypeDeferredHolder) {
+        private Builder(BLibHolder<EntityType<T>> entityTypeDeferredHolder) {
             this.entityTypeDeferredHolder = entityTypeDeferredHolder;
             this.biomeTagKey = BiomeTags.IS_OVERWORLD;
             this.heightmapType = Heightmap.Types.MOTION_BLOCKING_NO_LEAVES;

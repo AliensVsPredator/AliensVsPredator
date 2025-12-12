@@ -2,11 +2,13 @@ package com.blib.neoforge.internal.service.impl;
 
 import com.blib.BLibHolder;
 import com.blib.BLibMod;
+import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
 import com.blib.internal.common.registry.BLibRegistries;
 import com.just.core.functional.tuple.Tuple2;
 import net.minecraft.core.Registry;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.NotNull;
@@ -32,6 +34,8 @@ class NeoForgeBLibModContainer {
 
     private final List<Tuple2<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>>> entityAttributeSupplierPairs;
 
+    private final List<BLibEntitySpawnData<?>> entitySpawnDataEntries;
+
     public NeoForgeBLibModContainer(BLibMod mod) {
         this.mod = mod;
         this.registryToDeferredRegisterMap = BLibRegistries.REGISTRATION_ORDER
@@ -44,6 +48,7 @@ class NeoForgeBLibModContainer {
             );
 
         this.entityAttributeSupplierPairs = new ArrayList<>();
+        this.entitySpawnDataEntries = new ArrayList<>();
     }
 
     public void registerEntityAttribute(
@@ -51,6 +56,10 @@ class NeoForgeBLibModContainer {
         Supplier<AttributeSupplier.Builder> attributeSupplierBuilderSupplier
     ) {
         entityAttributeSupplierPairs.add(new Tuple2<>(holder, attributeSupplierBuilderSupplier));
+    }
+
+    public <T extends Mob> void registerEntitySpawnData(BLibEntitySpawnData<T> spawnData) {
+        entitySpawnDataEntries.add(spawnData);
     }
 
     @SuppressWarnings("unchecked")
@@ -64,6 +73,10 @@ class NeoForgeBLibModContainer {
 
     public List<Tuple2<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>>> getEntityAttributeSupplierPairs() {
         return Collections.unmodifiableList(entityAttributeSupplierPairs);
+    }
+
+    public List<BLibEntitySpawnData<?>> getEntitySpawnDataEntries() {
+        return Collections.unmodifiableList(entitySpawnDataEntries);
     }
 
     public BLibMod getMod() {

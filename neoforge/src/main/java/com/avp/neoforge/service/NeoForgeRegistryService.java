@@ -1,6 +1,5 @@
 package com.avp.neoforge.service;
 
-import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
 import com.blib.common.network.model.NetworkHandler;
 import com.blib.common.network.model.PacketDirection;
 import com.just.core.functional.tuple.Tuple2;
@@ -12,16 +11,11 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,7 +28,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.avp.AVP;
-import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.service.RegistryService;
 
 public class NeoForgeRegistryService implements RegistryService {
@@ -48,10 +41,6 @@ public class NeoForgeRegistryService implements RegistryService {
     private final List<Supplier<? extends Item>> azureLibItemIdentitySuppliers;
 
     private final List<Tuple4<Supplier<? extends ItemLike>, Float, Boolean, Boolean>> compostableData;
-
-    private final List<Tuple2<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>>> entityAttributeSupplierPairs;
-
-    private final List<BLibEntitySpawnData<?>> entitySpawnDataEntries;
 
     private final List<Tuple2<Supplier<? extends ItemLike>, Integer>> furnaceFuelPairs;
 
@@ -86,8 +75,6 @@ public class NeoForgeRegistryService implements RegistryService {
 
         this.azureLibItemIdentitySuppliers = new ArrayList<>();
         this.compostableData = new ArrayList<>();
-        this.entityAttributeSupplierPairs = new ArrayList<>();
-        this.entitySpawnDataEntries = new ArrayList<>();
         this.furnaceFuelPairs = new ArrayList<>();
         this.literalArgumentBuilders = new ArrayList<>();
         this.networkHandlers = new ArrayList<>();
@@ -113,11 +100,6 @@ public class NeoForgeRegistryService implements RegistryService {
         boolean replace
     ) {
         compostableData.add(new Tuple4<>(itemLikeSupplier, chance, villagersCanCompost, replace));
-    }
-
-    @Override
-    public <T extends Mob> void registerEntitySpawnData(BLibEntitySpawnData<T> spawnData) {
-        entitySpawnDataEntries.add(spawnData);
     }
 
     @Override
@@ -150,10 +132,6 @@ public class NeoForgeRegistryService implements RegistryService {
         villagerTradeData.add(new Tuple3<>(villagerProfessionSupplier, level, villagerTradeItemListings));
     }
 
-    private <T> AVPDeferredHolder<T> adapt(DeferredHolder<T, T> deferredHolder) {
-        return new AVPDeferredHolder<>(deferredHolder, () -> deferredHolder);
-    }
-
     public void initialize(IEventBus modBus) {
         registryToDeferredRegisterMap.values().forEach(deferredRegister -> deferredRegister.register(modBus));
     }
@@ -164,14 +142,6 @@ public class NeoForgeRegistryService implements RegistryService {
 
     public List<Tuple4<Supplier<? extends ItemLike>, Float, Boolean, Boolean>> getCompostableData() {
         return compostableData;
-    }
-
-    public List<Tuple2<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>>> getEntityAttributeSupplierPairs() {
-        return entityAttributeSupplierPairs;
-    }
-
-    public List<BLibEntitySpawnData<?>> getEntitySpawnDataEntries() {
-        return entitySpawnDataEntries;
     }
 
     public List<Tuple2<Supplier<? extends ItemLike>, Integer>> getFurnaceFuelPairs() {

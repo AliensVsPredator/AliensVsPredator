@@ -1,13 +1,11 @@
 package com.avp.service;
 
-import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
 import com.blib.common.network.model.NetworkHandler;
 import com.blib.common.network.model.PacketDirection;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.Item;
@@ -29,8 +27,6 @@ public interface RegistryService {
         boolean villagersCanCompost,
         boolean replace
     );
-
-    <T extends Mob> void registerEntitySpawnData(BLibEntitySpawnData<T> spawnData);
 
     void registerFurnaceFuel(Supplier<? extends ItemLike> itemLikeSupplier, int burnTimeInTicks);
 

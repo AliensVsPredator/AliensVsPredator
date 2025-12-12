@@ -2,8 +2,11 @@ package com.blib.fabric.internal.service.impl;
 
 import com.blib.BLibHolder;
 import com.blib.BLibMod;
+import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
 import com.blib.internal.common.registry.BLibRegistries;
 import com.blib.internal.service.BLibRegistryService;
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.world.poi.PointOfInterestHelper;
 import net.minecraft.core.Holder;
@@ -12,6 +15,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 import org.jetbrains.annotations.NotNull;
@@ -20,16 +25,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class FabricBLibRegistryServiceImpl implements BLibRegistryService {
 
+    // TODO: These fields need to be per-mod.
+
     private final List<Runnable> deferredEntityAttributeRegistrations;
+
+    private final List<Runnable> deferredEntitySpawnDataRegistrations;
 
     private final Map<Registry<?>, List<Runnable>> deferredRegistrations;
 
     public FabricBLibRegistryServiceImpl() {
         this.deferredEntityAttributeRegistrations = new ArrayList<>();
+        this.deferredEntitySpawnDataRegistrations = new ArrayList<>();
         this.deferredRegistrations = new HashMap<>();
     }
 
@@ -68,10 +79,40 @@ public class FabricBLibRegistryServiceImpl implements BLibRegistryService {
         );
     }
 
+    @Override
+    public <T extends Mob> void registerEntitySpawnData(BLibEntitySpawnData<T> spawnData) {
+        deferredEntitySpawnDataRegistrations.add(() -> {
+            var spawnSettings = spawnData.getConfigData().spawnSettings();
+            var entityType = spawnData.getEntityTypeHolder().get();
+
+            if (!spawnData.isPlacementDisabled()) {
+                var placement = spawnData.getPlacementData().type();
+                var heightMap = spawnData.getPlacementData().heightmapType();
+                var spawnPredicate = spawnData.getPlacementData().spawnPredicate();
+
+                SpawnPlacements.register(entityType, placement, heightMap, spawnPredicate);
+            }
+
+            if (!spawnData.isConfigDisabled()) {
+                Predicate<BiomeSelectionContext> biomeSelector = biomeSelectionContext -> biomeSelectionContext.hasTag(
+                    spawnData.getConfigData().biomeTagKey()
+                );
+                var spawnGroup = entityType.getCategory();
+                var weight = spawnSettings.weight();
+                var minGroupSize = spawnSettings.minGroupSize();
+                var maxGroupSize = spawnSettings.maxGroupSize();
+
+                BiomeModifications.addSpawn(biomeSelector, spawnGroup, entityType, weight, minGroupSize, maxGroupSize);
+            }
+        });
+    }
+
     public void finalize(BLibMod mod) {
         BLibRegistries.REGISTRATION_ORDER.forEach(this::runRegistrationsFor);
         // Run entity attribute registrations after primary registries are ran.
         deferredEntityAttributeRegistrations.forEach(Runnable::run);
+        // Run entity spawn data registrations after entity attribute registrations.
+        deferredEntitySpawnDataRegistrations.forEach(Runnable::run);
     }
 
     private void runRegistrationsFor(Registry<?> registry) {

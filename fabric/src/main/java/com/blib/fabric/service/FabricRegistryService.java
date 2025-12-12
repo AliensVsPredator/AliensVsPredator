@@ -1,13 +1,10 @@
 package com.blib.fabric.service;
 
-import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
 import com.blib.common.network.model.NetworkHandler;
 import com.blib.common.network.model.PacketDirection;
 import com.blib.common.util.codec.stream.adapter.JustStreamCodecToMojangStreamCodecAdapter;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import mod.azure.azurelib.common.animation.cache.AzIdentityRegistry;
-import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
-import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
@@ -22,8 +19,6 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.Item;
@@ -34,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import com.avp.AVPResources;
@@ -69,32 +63,6 @@ public class FabricRegistryService implements RegistryService {
         boolean replace
     ) {
         CompostingChanceRegistry.INSTANCE.add(itemLikeSupplier.get(), chance);
-    }
-
-    @Override
-    public <T extends Mob> void registerEntitySpawnData(BLibEntitySpawnData<T> spawnData) {
-        var spawnSettings = spawnData.getConfigData().spawnSettings();
-        var entityType = spawnData.getEntityType();
-
-        if (!spawnData.isPlacementDisabled()) {
-            var placement = spawnData.getPlacementData().type();
-            var heightMap = spawnData.getPlacementData().heightmapType();
-            var spawnPredicate = spawnData.getPlacementData().spawnPredicate();
-
-            SpawnPlacements.register(entityType, placement, heightMap, spawnPredicate);
-        }
-
-        if (!spawnData.isConfigDisabled()) {
-            Predicate<BiomeSelectionContext> biomeSelector = biomeSelectionContext -> biomeSelectionContext.hasTag(
-                spawnData.getConfigData().biomeTagKey()
-            );
-            var spawnGroup = entityType.getCategory();
-            var weight = spawnSettings.weight();
-            var minGroupSize = spawnSettings.minGroupSize();
-            var maxGroupSize = spawnSettings.maxGroupSize();
-
-            BiomeModifications.addSpawn(biomeSelector, spawnGroup, entityType, weight, minGroupSize, maxGroupSize);
-        }
     }
 
     @Override

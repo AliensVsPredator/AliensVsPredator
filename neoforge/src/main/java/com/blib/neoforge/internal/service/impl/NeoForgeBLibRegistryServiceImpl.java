@@ -2,13 +2,17 @@ package com.blib.neoforge.internal.service.impl;
 
 import com.blib.BLibHolder;
 import com.blib.BLibMod;
+import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
 import com.blib.internal.service.BLibRegistryService;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.Map;
@@ -29,6 +33,7 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
             .forEach(deferredRegister -> deferredRegister.register(eventBus));
 
         eventBus.<EntityAttributeCreationEvent>addListener(event -> onRegisterEntityAttributes(mod, event));
+        eventBus.<RegisterSpawnPlacementsEvent>addListener(event -> onRegisterEntitySpawnPlacements(mod, event));
     }
 
     @Override
@@ -55,9 +60,40 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
             .registerEntityAttribute(holder, attributeSupplierBuilderSupplier);
     }
 
+    @Override
+    public <T extends Mob> void registerEntitySpawnData(BLibEntitySpawnData<T> spawnData) {
+        getModContainer(spawnData.getEntityTypeHolder())
+            .registerEntitySpawnData(spawnData);
+    }
+
     private void onRegisterEntityAttributes(BLibMod mod, EntityAttributeCreationEvent event) {
         getModContainer(mod).getEntityAttributeSupplierPairs()
             .forEach(pair -> event.put(pair.v1().get(), pair.v2().get().build()));
+    }
+
+    private void onRegisterEntitySpawnPlacements(BLibMod mod, RegisterSpawnPlacementsEvent event) {
+        getModContainer(mod).getEntitySpawnDataEntries()
+            .forEach(spawnData -> {
+                if (spawnData.isPlacementDisabled()) {
+                    return;
+                }
+
+                @SuppressWarnings("unchecked")
+                var entityType = (EntityType<Mob>) spawnData.getEntityTypeHolder().get();
+                var placementData = spawnData.getPlacementData();
+                var placement = placementData.type();
+                var heightMap = placementData.heightmapType();
+                @SuppressWarnings("unchecked")
+                var spawnPredicate = (SpawnPlacements.SpawnPredicate<Mob>) placementData.spawnPredicate();
+
+                event.register(
+                    entityType,
+                    placement,
+                    heightMap,
+                    spawnPredicate,
+                    RegisterSpawnPlacementsEvent.Operation.AND
+                );
+            });
     }
 
     private NeoForgeBLibModContainer getModContainer(BLibHolder<?> holder) {
