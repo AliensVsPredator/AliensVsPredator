@@ -27,7 +27,7 @@ public class AVP {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     public static void initialize() {
-        LOGGER.info("Initializing AVP for platform '{}'", BLibServices.MOD_LOADER.getModLoaderName());
+        LOGGER.info("Initializing AVP for platform '{}'", BLib.getModLoaderType());
 
         MOD.initialize(() -> {
             BLibPacketDirections.initialize();
