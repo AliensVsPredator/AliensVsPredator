@@ -30,7 +30,7 @@ public class BLibRegistry<T> {
 
     private final List<Consumer<BLibHolder<? extends T>>> listeners;
 
-    /* package-private */ BLibRegistry(BLibMod mod, Registry<? super T> registry) {
+    protected BLibRegistry(BLibMod mod, Registry<? super T> registry) {
         this.pathToHolderMap = Collections.synchronizedMap(new LinkedHashMap<>());
         this.pathToValueFactoryMap = new HashMap<>();
         this.mod = mod;

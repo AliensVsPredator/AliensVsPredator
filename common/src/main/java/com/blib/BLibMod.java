@@ -1,11 +1,17 @@
 package com.blib;
 
+import com.blib.common.model.Version;
+import com.blib.exception.BLibModInitializationException;
+import com.blib.internal.registry.impl.BLibEntityTypeRegistry;
+import com.blib.internal.registry.impl.BLibItemRegistry;
 import com.blib.internal.service.BLibInternalServices;
 import com.blib.mod.BLibModState;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,20 +48,44 @@ public class BLibMod {
         return BLib.isModLoaded(id);
     }
 
-    public <T> BLibRegistry<T> createRegistry(Registry<T> registry) {
-        var newRegistry = new BLibRegistry<>(this, registry);
+    public BLibEntityTypeRegistry createEntityTypeRegistry() {
+        return bind(new BLibEntityTypeRegistry(this));
+    }
 
-        registryToRegistriesMap.compute(registry, ($, registries) -> {
+    public BLibItemRegistry createItemRegistry() {
+        return bind(new BLibItemRegistry(this));
+    }
+
+    public <T> BLibRegistry<T> createRegistry(Registry<T> registry) {
+        BLibRegistry<T> blibRegistry;
+
+        if (registry == BuiltInRegistries.ENTITY_TYPE) {
+            @SuppressWarnings("unchecked")
+            var entityTypeRegistry = (BLibRegistry<T>) createEntityTypeRegistry();
+            blibRegistry = entityTypeRegistry;
+        } else if (registry == BuiltInRegistries.ITEM) {
+            @SuppressWarnings("unchecked")
+            var itemRegistry = (BLibRegistry<T>) createItemRegistry();
+            blibRegistry = itemRegistry;
+        }  else {
+            blibRegistry = new BLibRegistry<>(this, registry);
+        }
+
+        return bind(blibRegistry);
+    }
+
+    private <T, U extends BLibRegistry<T>> U bind(U blibRegistry) {
+        registryToRegistriesMap.compute(blibRegistry.getBackingRegistry(), ($, registries) -> {
             var nonNullRegistries = registries == null
                 ? new ArrayList<BLibRegistry<?>>()
                 : registries;
 
-            nonNullRegistries.add(newRegistry);
+            nonNullRegistries.add(blibRegistry);
 
             return nonNullRegistries;
         });
 
-        return newRegistry;
+        return blibRegistry;
     }
 
     public <T> ResourceKey<T> createResourceKey(ResourceKey<? extends Registry<T>> registryKey, String path) {
