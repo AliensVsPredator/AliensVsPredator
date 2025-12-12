@@ -5,19 +5,7 @@
 	"name": "${mod_name}",
 	"description": "${description}",
 	"accessWidener": "avp.accesswidener",
-	"authors": [
-		"AzureDoom",
-		"Boston Vanseghi",
-		"Caution",
-		"gorblegorble",
-		"Gothic Lycan",
-		"Hossaurus",
-		"Pheonix Atredes",
-		"Shift",
-		"Spookyboo117",
-		"Whiteshark01",
-		"Xavier"
-	],
+	"authors": ["Stargazer Studios"],
 	"contact": {
 		"homepage": "https://www.curseforge.com/minecraft/mc-mods/avp-regenesis",
 		"sources": "https://github.com/AliensVsPredator/AliensVsPredator"
