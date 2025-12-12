@@ -17,7 +17,7 @@ public class BLibEntityTypeRegistry extends BLibRegistry<EntityType<?>> {
         super(mod, BuiltInRegistries.ENTITY_TYPE);
     }
 
-    public void registerEntityAttributes(
+    public void registerAttributes(
         BLibHolder<? extends EntityType<? extends LivingEntity>> holder,
         Supplier<AttributeSupplier.Builder> attributeSupplierBuilderSupplier
     ) {
