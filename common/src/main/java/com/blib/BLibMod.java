@@ -38,6 +38,10 @@ public class BLibMod {
         this.state = BLibModState.INITIALIZED;
     }
 
+    public boolean isLoaded() {
+        return BLib.isModLoaded(id);
+    }
+
     public <T> BLibRegistry<T> createRegistry(Registry<T> registry) {
         var newRegistry = new BLibRegistry<>(this, registry);
 
