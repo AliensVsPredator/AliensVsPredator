@@ -12,10 +12,6 @@ public class BLibServices {
 
     public static final BLibFactoryService FACTORY = BLibServiceLoader.load(BLibFactoryService.class);
 
-    public static final BLibModLoaderService MOD_LOADER = BLibServiceLoader.load(BLibModLoaderService.class);
-
-    public static final BLibRegistryService REGISTRY = BLibServiceLoader.load(BLibRegistryService.class);
-
     public static final BLibServerNetworkingService SERVER_NETWORKING = BLibServiceLoader.load(BLibServerNetworkingService.class);
 
 }

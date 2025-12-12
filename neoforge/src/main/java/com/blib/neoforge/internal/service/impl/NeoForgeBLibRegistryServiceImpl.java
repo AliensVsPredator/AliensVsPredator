@@ -1,8 +1,8 @@
-package com.blib.neoforge.service.impl;
+package com.blib.neoforge.internal.service.impl;
 
 import com.blib.BLibHolder;
 import com.blib.BLibMod;
-import com.blib.service.BLibRegistryService;
+import com.blib.internal.service.BLibRegistryService;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;

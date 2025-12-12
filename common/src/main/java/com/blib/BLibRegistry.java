@@ -2,7 +2,7 @@ package com.blib;
 
 import com.blib.exception.BLibModInitializationException;
 import com.blib.mod.BLibModState;
-import com.blib.service.BLibServices;
+import com.blib.internal.service.BLibInternalServices;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 
@@ -60,7 +60,7 @@ public class BLibRegistry<T> {
             pathToValueFactoryMap.get(path),
             "Attempted to register BLibHolder with no backing value factory. Path: %s".formatted(path)
         );
-        var registeredHolder = BLibServices.REGISTRY.register(holder, valueFactory);
+        var registeredHolder = BLibInternalServices.REGISTRY.register(holder, valueFactory);
 
         listeners.forEach(listener -> listener.accept(holder));
 

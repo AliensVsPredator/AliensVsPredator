@@ -1,7 +1,8 @@
-package com.blib.fabric.service.impl;
+package com.blib.fabric.internal.service.impl;
 
 import com.blib.common.model.Version;
-import com.blib.service.BLibModLoaderService;
+import com.blib.mod.loader.model.ModLoaderType;
+import com.blib.internal.service.BLibModLoaderService;
 import com.blib.service.model.DistributionEnvironmentType;
 import com.blib.service.model.ReleaseEnvironmentType;
 import net.fabricmc.loader.api.FabricLoader;
@@ -10,8 +11,8 @@ import org.jetbrains.annotations.Nullable;
 public class FabricBLibModLoaderServiceImpl implements BLibModLoaderService {
 
     @Override
-    public String getModLoaderName() {
-        return "Fabric";
+    public ModLoaderType getModLoaderType() {
+        return ModLoaderType.FABRIC;
     }
 
     @Override

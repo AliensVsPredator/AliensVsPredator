@@ -1,7 +1,8 @@
-package com.blib.neoforge.service.impl;
+package com.blib.neoforge.internal.service.impl;
 
 import com.blib.common.model.Version;
-import com.blib.service.BLibModLoaderService;
+import com.blib.mod.loader.model.ModLoaderType;
+import com.blib.internal.service.BLibModLoaderService;
 import com.blib.service.model.DistributionEnvironmentType;
 import com.blib.service.model.ReleaseEnvironmentType;
 import net.neoforged.fml.ModList;
@@ -11,8 +12,8 @@ import org.jetbrains.annotations.Nullable;
 public class NeoForgeBLibModLoaderServiceImpl implements BLibModLoaderService {
 
     @Override
-    public String getModLoaderName() {
-        return "NeoForge";
+    public ModLoaderType getModLoaderType() {
+        return ModLoaderType.NEOFORGE;
     }
 
     @Override

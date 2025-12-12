@@ -1,9 +1,9 @@
-package com.blib.fabric.service.impl;
+package com.blib.fabric.internal.service.impl;
 
 import com.blib.BLibHolder;
 import com.blib.BLibMod;
 import com.blib.internal.registry.BLibRegistries;
-import com.blib.service.BLibRegistryService;
+import com.blib.internal.service.BLibRegistryService;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.world.poi.PointOfInterestHelper;
 import net.minecraft.core.Holder;

@@ -1,4 +1,4 @@
-package com.blib.neoforge.service.impl;
+package com.blib.neoforge.internal.service.impl;
 
 import com.blib.BLibHolder;
 import com.blib.BLibMod;

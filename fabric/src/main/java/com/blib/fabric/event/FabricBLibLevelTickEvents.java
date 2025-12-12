@@ -1,8 +1,8 @@
 package com.blib.fabric.event;
 
 import com.blib.event.BLibEventRouter;
+import com.blib.internal.service.BLibInternalServices;
 import com.blib.service.BLibEventService;
-import com.blib.service.BLibServices;
 import com.blib.service.model.DistributionEnvironmentType;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -28,7 +28,7 @@ public class FabricBLibLevelTickEvents {
 
         @Override
         public void register(BLibEventService.LevelTickEvent levelTickEvent) {
-            if (BLibServices.MOD_LOADER.getDistributionEnvironmentType() == DistributionEnvironmentType.CLIENT) {
+            if (BLibInternalServices.MOD_LOADER.getDistributionEnvironmentType() == DistributionEnvironmentType.CLIENT) {
                 ClientTickEvents.END_WORLD_TICK.register(levelTickEvent::invoke);
             }
 
@@ -53,7 +53,7 @@ public class FabricBLibLevelTickEvents {
 
         @Override
         public void register(BLibEventService.LevelTickEvent levelTickEvent) {
-            if (BLibServices.MOD_LOADER.getDistributionEnvironmentType() == DistributionEnvironmentType.CLIENT) {
+            if (BLibInternalServices.MOD_LOADER.getDistributionEnvironmentType() == DistributionEnvironmentType.CLIENT) {
                 ClientTickEvents.START_WORLD_TICK.register(levelTickEvent::invoke);
             }
 

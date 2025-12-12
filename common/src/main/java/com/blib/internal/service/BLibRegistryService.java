@@ -1,4 +1,4 @@
-package com.blib.service;
+package com.blib.internal.service;
 
 import com.blib.BLibHolder;
 import net.minecraft.core.Holder;
