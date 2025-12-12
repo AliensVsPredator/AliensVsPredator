@@ -10,12 +10,10 @@ import net.neoforged.fml.ModList;
 
 public class BLibNeoForgeModServiceImpl implements BLibModService {
 
-    private static final NeoForgeBLibEventServiceImpl EVENT = ((NeoForgeBLibEventServiceImpl) BLibServices.EVENT);
-
-    private static final NeoForgeBLibRegistryServiceImpl REGISTRY = (NeoForgeBLibRegistryServiceImpl) BLibInternalServices.REGISTRY;
-
     @Override
     public void postInitialize(BLibMod mod) {
+        var event = ((NeoForgeBLibEventServiceImpl) BLibServices.EVENT);
+        var registry = (NeoForgeBLibRegistryServiceImpl) BLibInternalServices.REGISTRY;
         var modContainerOptional = ModList.get().getModContainerById(mod.getId());
 
         if (modContainerOptional.isEmpty()) {
@@ -28,11 +26,11 @@ public class BLibNeoForgeModServiceImpl implements BLibModService {
         var eventBus = modContainer.getEventBus();
 
         if (eventBus != null) {
-            REGISTRY.finalize(mod, modContainer.getEventBus());
+            registry.finalize(mod, modContainer.getEventBus());
         } else {
             BLib.LOGGER.warn("Unable to finalize registration for mod '{}' because its event bus is null.", mod.getId());
         }
 
-        EVENT.finalize(mod);
+        event.finalize(mod);
     }
 }

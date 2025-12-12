@@ -6,10 +6,9 @@ import com.blib.internal.service.BLibModService;
 
 public class BLibFabricModServiceImpl implements BLibModService {
 
-    private static final FabricBLibRegistryServiceImpl REGISTRY = (FabricBLibRegistryServiceImpl) BLibInternalServices.REGISTRY;
-
     @Override
     public void postInitialize(BLibMod mod) {
-        REGISTRY.finalize(mod);
+        var registry = (FabricBLibRegistryServiceImpl) BLibInternalServices.REGISTRY;
+        registry.finalize(mod);
     }
 }
