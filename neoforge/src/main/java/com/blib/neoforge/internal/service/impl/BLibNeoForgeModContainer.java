@@ -51,31 +51,31 @@ class BLibNeoForgeModContainer {
         this.entitySpawnDataEntries = new ArrayList<>();
     }
 
-    public void registerEntityAttribute(
+    /* package-private */ void registerEntityAttributes(
         BLibHolder<? extends EntityType<? extends LivingEntity>> holder,
         Supplier<AttributeSupplier.Builder> attributeSupplierBuilderSupplier
     ) {
         entityAttributeSupplierPairs.add(new Tuple2<>(holder, attributeSupplierBuilderSupplier));
     }
 
-    public <T extends Mob> void registerEntitySpawnData(BLibEntitySpawnData<T> spawnData) {
+    /* package-private */ <T extends Mob> void registerEntitySpawnData(BLibEntitySpawnData<T> spawnData) {
         entitySpawnDataEntries.add(spawnData);
     }
 
     @SuppressWarnings("unchecked")
-    public <T> DeferredRegister<T> getDeferredRegister(Registry<T> registry) {
+    /* package-private */ <T> DeferredRegister<T> getDeferredRegister(Registry<T> registry) {
         return (DeferredRegister<T>) registryToDeferredRegisterMap.get(registry);
     }
 
-    public Collection<DeferredRegister<?>> getDeferredRegisters() {
+    /* package-private */ Collection<DeferredRegister<?>> getDeferredRegisters() {
         return Collections.unmodifiableCollection(registryToDeferredRegisterMap.values());
     }
 
-    public List<Tuple2<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>>> getEntityAttributeSupplierPairs() {
+    /* package-private */ List<Tuple2<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>>> getEntityAttributeSupplierPairs() {
         return Collections.unmodifiableList(entityAttributeSupplierPairs);
     }
 
-    public List<BLibEntitySpawnData<?>> getEntitySpawnDataEntries() {
+    /* package-private */ List<BLibEntitySpawnData<?>> getEntitySpawnDataEntries() {
         return Collections.unmodifiableList(entitySpawnDataEntries);
     }
 }

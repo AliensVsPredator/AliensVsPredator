@@ -24,16 +24,7 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
     private final Map<BLibMod, BLibNeoForgeModContainer> modToContainerMap;
 
     public NeoForgeBLibRegistryServiceImpl() {
-        modToContainerMap = new ConcurrentHashMap<>();
-    }
-
-    public void finalize(BLibMod mod, IEventBus eventBus) {
-        getModContainer(mod)
-            .getDeferredRegisters()
-            .forEach(deferredRegister -> deferredRegister.register(eventBus));
-
-        eventBus.<EntityAttributeCreationEvent>addListener(event -> onRegisterEntityAttributes(mod, event));
-        eventBus.<RegisterSpawnPlacementsEvent>addListener(event -> onRegisterEntitySpawnPlacements(mod, event));
+        this.modToContainerMap = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -57,13 +48,22 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
         Supplier<AttributeSupplier.Builder> attributeSupplierBuilderSupplier
     ) {
         getModContainer(holder)
-            .registerEntityAttribute(holder, attributeSupplierBuilderSupplier);
+            .registerEntityAttributes(holder, attributeSupplierBuilderSupplier);
     }
 
     @Override
     public <T extends Mob> void registerEntitySpawnData(BLibEntitySpawnData<T> spawnData) {
         getModContainer(spawnData.getEntityTypeHolder())
             .registerEntitySpawnData(spawnData);
+    }
+
+    /* package-private */ void finalize(BLibMod mod, IEventBus eventBus) {
+        getModContainer(mod)
+            .getDeferredRegisters()
+            .forEach(deferredRegister -> deferredRegister.register(eventBus));
+
+        eventBus.<EntityAttributeCreationEvent>addListener(event -> onRegisterEntityAttributes(mod, event));
+        eventBus.<RegisterSpawnPlacementsEvent>addListener(event -> onRegisterEntitySpawnPlacements(mod, event));
     }
 
     private void onRegisterEntityAttributes(BLibMod mod, EntityAttributeCreationEvent event) {
