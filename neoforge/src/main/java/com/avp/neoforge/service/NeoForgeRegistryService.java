@@ -6,35 +6,19 @@ import com.just.core.functional.tuple.Tuple2;
 import com.just.core.functional.tuple.Tuple3;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredRegister;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import com.avp.AVP;
 import com.avp.service.RegistryService;
 
 public class NeoForgeRegistryService implements RegistryService {
-
-    private static <T> @NotNull DeferredRegister<T> createDeferredRegistry(Registry<T> registry) {
-        return DeferredRegister.create(registry, AVP.MOD_ID);
-    }
-
-    private final Map<Registry<?>, DeferredRegister<?>> registryToDeferredRegisterMap;
 
     private final List<Supplier<? extends Item>> azureLibItemIdentitySuppliers;
 
@@ -47,26 +31,6 @@ public class NeoForgeRegistryService implements RegistryService {
     private final List<Tuple3<Supplier<VillagerProfession>, Integer, List<VillagerTrades.ItemListing>>> villagerTradeData;
 
     public NeoForgeRegistryService() {
-        this.registryToDeferredRegisterMap = Stream.of(
-            BuiltInRegistries.ARMOR_MATERIAL,
-            BuiltInRegistries.BLOCK,
-            BuiltInRegistries.BLOCK_ENTITY_TYPE,
-            BuiltInRegistries.CREATIVE_MODE_TAB,
-            BuiltInRegistries.DATA_COMPONENT_TYPE,
-            BuiltInRegistries.DECORATED_POT_PATTERN,
-            BuiltInRegistries.ENTITY_TYPE,
-            BuiltInRegistries.GAME_EVENT,
-            BuiltInRegistries.ITEM,
-            BuiltInRegistries.MENU,
-            BuiltInRegistries.MOB_EFFECT,
-            BuiltInRegistries.PARTICLE_TYPE,
-            BuiltInRegistries.POINT_OF_INTEREST_TYPE,
-            BuiltInRegistries.RECIPE_SERIALIZER,
-            BuiltInRegistries.RECIPE_TYPE,
-            BuiltInRegistries.SOUND_EVENT,
-            BuiltInRegistries.VILLAGER_PROFESSION
-        ).collect(Collectors.toMap(Function.identity(), NeoForgeRegistryService::createDeferredRegistry));
-
         this.azureLibItemIdentitySuppliers = new ArrayList<>();
         this.furnaceFuelPairs = new ArrayList<>();
         this.literalArgumentBuilders = new ArrayList<>();
@@ -106,10 +70,6 @@ public class NeoForgeRegistryService implements RegistryService {
         List<VillagerTrades.ItemListing> villagerTradeItemListings
     ) {
         villagerTradeData.add(new Tuple3<>(villagerProfessionSupplier, level, villagerTradeItemListings));
-    }
-
-    public void initialize(IEventBus modBus) {
-        registryToDeferredRegisterMap.values().forEach(deferredRegister -> deferredRegister.register(modBus));
     }
 
     public List<Supplier<? extends Item>> getAzureLibItemIdentitySuppliers() {

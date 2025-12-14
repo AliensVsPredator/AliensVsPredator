@@ -28,8 +28,6 @@ public class AVPNeoForge {
     public AVPNeoForge(IEventBus modBus) {
         AVP.initialize();
 
-        REGISTRY.initialize(modBus);
-
         // Mod bus events.
         modBus.addListener(AVPNeoForge::registerPayloadHandlers);
         modBus.addListener(AVPNeoForge::registerMiscellaneous);
