@@ -1,7 +1,7 @@
 package com.blib.common.util.codec.stream.impl;
 
 import com.blib.common.gameplay.model.DataComponentPatchAccessor;
-import com.blib.mixin.MixinDataComponentPatch;
+import com.blib.internal.mixin.MixinDataComponentPatch;
 import com.just.codec.stream.StreamCodec;
 import com.just.codec.stream.impl.StreamCodecs;
 import com.just.codec.stream.schema.StreamCodecSchema;

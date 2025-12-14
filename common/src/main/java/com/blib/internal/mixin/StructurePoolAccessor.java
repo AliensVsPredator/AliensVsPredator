@@ -1,4 +1,4 @@
-package com.blib.mixin;
+package com.blib.internal.mixin;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;

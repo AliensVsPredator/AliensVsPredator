@@ -1,4 +1,4 @@
-package com.blib.mixin.server;
+package com.blib.internal.mixin.server;
 
 import com.blib.server.BlockBreakProgressManager;
 import net.minecraft.core.BlockPos;

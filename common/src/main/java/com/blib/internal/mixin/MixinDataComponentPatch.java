@@ -1,4 +1,4 @@
-package com.blib.mixin;
+package com.blib.internal.mixin;
 
 import com.blib.common.gameplay.model.DataComponentPatchAccessor;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;

@@ -1,6 +1,6 @@
 package com.blib.common.gameplay.entity.projectile;
 
-import com.blib.mixin.BlockBehaviourInvoker;
+import com.blib.internal.mixin.BlockBehaviourInvoker;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvent;

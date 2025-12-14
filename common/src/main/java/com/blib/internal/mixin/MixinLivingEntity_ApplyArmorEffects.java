@@ -1,4 +1,4 @@
-package com.blib.mixin;
+package com.blib.internal.mixin;
 
 import com.blib.common.data.tag.BLibItemTags;
 import com.blib.common.gameplay.util.BLibEntityPredicates;

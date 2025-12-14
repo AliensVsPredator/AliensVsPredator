@@ -1,4 +1,4 @@
-package com.blib.mixin;
+package com.blib.internal.mixin;
 
 import com.blib.common.gameplay.goap.GOAPUser;
 import com.blib.common.gameplay.goap.LivingEntityAgent;
