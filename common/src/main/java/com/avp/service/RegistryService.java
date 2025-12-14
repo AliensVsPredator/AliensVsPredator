@@ -21,13 +21,6 @@ public interface RegistryService {
 
     void registerAzureLibIdentity(Supplier<? extends Item> itemSupplier);
 
-    void registerCompostableItem(
-        Supplier<? extends ItemLike> itemLikeSupplier,
-        float chance,
-        boolean villagersCanCompost,
-        boolean replace
-    );
-
     void registerFurnaceFuel(Supplier<? extends ItemLike> itemLikeSupplier, int burnTimeInTicks);
 
     <T extends CustomPacketPayload> void registerPacketHandlers(NetworkHandler<T> networkHandler);

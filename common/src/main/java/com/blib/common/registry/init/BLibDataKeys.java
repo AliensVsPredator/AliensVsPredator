@@ -9,6 +9,7 @@ import java.util.function.Function;
 
 public class BLibDataKeys {
 
+    // TODO: Move to human module.
     public static final DataKey<Boolean> ENTITY_HAS_WARP_EFFECT = register(
         "entity_has_warp_effect",
         builder -> builder.networkSynchronized(StreamCodecs.BOOLEAN)

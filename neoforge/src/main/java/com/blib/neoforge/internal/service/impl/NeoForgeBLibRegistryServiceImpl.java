@@ -4,13 +4,17 @@ import com.blib.BLibHolder;
 import com.blib.BLibMod;
 import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
 import com.blib.internal.service.BLibRegistryService;
+import com.blib.neoforge.data.BLibNeoForgeCompostableDataMapProvider;
+import com.just.core.functional.tuple.Tuple4;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.level.ItemLike;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -43,6 +47,12 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
     }
 
     @Override
+    public void registerCompostable(BLibHolder<? extends ItemLike> holder, float chance, boolean villagersCanCompost, boolean replace) {
+        getModContainer(holder)
+            .registerCompostable(new Tuple4<>(holder, chance, villagersCanCompost, replace));
+    }
+
+    @Override
     public void registerEntityAttributes(
         BLibHolder<? extends EntityType<? extends LivingEntity>> holder,
         Supplier<AttributeSupplier.Builder> attributeSupplierBuilderSupplier
@@ -64,6 +74,15 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
 
         eventBus.<EntityAttributeCreationEvent>addListener(event -> onRegisterEntityAttributes(mod, event));
         eventBus.<RegisterSpawnPlacementsEvent>addListener(event -> onRegisterEntitySpawnPlacements(mod, event));
+
+        eventBus.<GatherDataEvent>addListener(event -> {
+            var generator = event.getGenerator();
+            var packOutput = generator.getPackOutput();
+            var lookupProvider = event.getLookupProvider();
+            var run = event.includeServer();
+
+            generator.addProvider(run, new BLibNeoForgeCompostableDataMapProvider(mod, packOutput, lookupProvider));
+        });
     }
 
     private void onRegisterEntityAttributes(BLibMod mod, EntityAttributeCreationEvent event) {
@@ -100,7 +119,7 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
         return getModContainer(holder.getRegistry().getMod());
     }
 
-    private BLibNeoForgeModContainer getModContainer(BLibMod mod) {
+    public BLibNeoForgeModContainer getModContainer(BLibMod mod) {
         return modToContainerMap.computeIfAbsent(mod, $ -> new BLibNeoForgeModContainer(mod));
     }
 }

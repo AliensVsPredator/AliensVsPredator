@@ -7,12 +7,15 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.level.ItemLike;
 
 import java.util.function.Supplier;
 
 public interface BLibRegistryService {
 
     <T> Holder<T> register(BLibHolder<T> holder, Supplier<? extends T> valueFactory);
+
+    void registerCompostable(BLibHolder<? extends ItemLike> holder, float chance, boolean villagersCanCompost, boolean replace);
 
     void registerEntityAttributes(
         BLibHolder<? extends EntityType<? extends LivingEntity>> holder,

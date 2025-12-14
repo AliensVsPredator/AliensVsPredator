@@ -5,11 +5,13 @@ import com.blib.BLibMod;
 import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
 import com.blib.internal.common.registry.BLibRegistries;
 import com.just.core.functional.tuple.Tuple2;
+import com.just.core.functional.tuple.Tuple4;
 import net.minecraft.core.Registry;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,13 +24,15 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-class BLibNeoForgeModContainer {
+public class BLibNeoForgeModContainer {
 
     private static <T> @NotNull DeferredRegister<T> createDeferredRegistry(String modId, Registry<T> registry) {
         return DeferredRegister.create(registry, modId);
     }
 
     private final BLibMod mod;
+
+    private final List<Tuple4<BLibHolder<? extends ItemLike>, Float, Boolean, Boolean>> compostableData;
 
     private final Map<Registry<?>, DeferredRegister<?>> registryToDeferredRegisterMap;
 
@@ -47,8 +51,13 @@ class BLibNeoForgeModContainer {
                 )
             );
 
+        this.compostableData = new ArrayList<>();
         this.entityAttributeSupplierPairs = new ArrayList<>();
         this.entitySpawnDataEntries = new ArrayList<>();
+    }
+
+    public void registerCompostable(Tuple4<BLibHolder<? extends ItemLike>, Float, Boolean, Boolean> tuple) {
+        compostableData.add(tuple);
     }
 
     /* package-private */ void registerEntityAttributes(
@@ -60,6 +69,10 @@ class BLibNeoForgeModContainer {
 
     /* package-private */ <T extends Mob> void registerEntitySpawnData(BLibEntitySpawnData<T> spawnData) {
         entitySpawnDataEntries.add(spawnData);
+    }
+
+    public List<Tuple4<BLibHolder<? extends ItemLike>, Float, Boolean, Boolean>> getCompostableData() {
+        return Collections.unmodifiableList(compostableData);
     }
 
     @SuppressWarnings("unchecked")

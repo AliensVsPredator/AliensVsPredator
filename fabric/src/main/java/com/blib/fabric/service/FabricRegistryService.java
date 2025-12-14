@@ -8,7 +8,6 @@ import mod.azure.azurelib.common.animation.cache.AzIdentityRegistry;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
-import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
@@ -53,16 +52,6 @@ public class FabricRegistryService implements RegistryService {
     @Override
     public void registerAzureLibIdentity(Supplier<? extends Item> itemSupplier) {
         AzIdentityRegistry.register(itemSupplier.get());
-    }
-
-    @Override
-    public void registerCompostableItem(
-        Supplier<? extends ItemLike> itemLikeSupplier,
-        float chance,
-        boolean villagersCanCompost,
-        boolean replace
-    ) {
-        CompostingChanceRegistry.INSTANCE.add(itemLikeSupplier.get(), chance);
     }
 
     @Override

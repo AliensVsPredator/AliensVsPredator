@@ -9,6 +9,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.level.ItemLike;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,6 +29,17 @@ public class FabricBLibRegistryServiceImpl implements BLibRegistryService {
             .deferRegistration(holder, valueFactory);
 
         return holder;
+    }
+
+    @Override
+    public void registerCompostable(
+        BLibHolder<? extends ItemLike> holder,
+        float chance,
+        boolean villagersCanCompost,
+        boolean replace
+    ) {
+        getModContainer(holder)
+            .deferCompostableRegistration(holder, chance);
     }
 
     @Override

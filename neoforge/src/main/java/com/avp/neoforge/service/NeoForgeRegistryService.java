@@ -4,7 +4,6 @@ import com.blib.common.network.model.NetworkHandler;
 import com.blib.common.network.model.PacketDirection;
 import com.just.core.functional.tuple.Tuple2;
 import com.just.core.functional.tuple.Tuple3;
-import com.just.core.functional.tuple.Tuple4;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
@@ -40,8 +39,6 @@ public class NeoForgeRegistryService implements RegistryService {
 
     private final List<Supplier<? extends Item>> azureLibItemIdentitySuppliers;
 
-    private final List<Tuple4<Supplier<? extends ItemLike>, Float, Boolean, Boolean>> compostableData;
-
     private final List<Tuple2<Supplier<? extends ItemLike>, Integer>> furnaceFuelPairs;
 
     private final List<LiteralArgumentBuilder<CommandSourceStack>> literalArgumentBuilders;
@@ -74,7 +71,6 @@ public class NeoForgeRegistryService implements RegistryService {
         ).collect(Collectors.toMap(Function.identity(), NeoForgeRegistryService::createDeferredRegistry));
 
         this.azureLibItemIdentitySuppliers = new ArrayList<>();
-        this.compostableData = new ArrayList<>();
         this.furnaceFuelPairs = new ArrayList<>();
         this.literalArgumentBuilders = new ArrayList<>();
         this.networkHandlers = new ArrayList<>();
@@ -90,16 +86,6 @@ public class NeoForgeRegistryService implements RegistryService {
     @Override
     public void registerAzureLibIdentity(Supplier<? extends Item> itemSupplier) {
         azureLibItemIdentitySuppliers.add(itemSupplier);
-    }
-
-    @Override
-    public void registerCompostableItem(
-        Supplier<? extends ItemLike> itemLikeSupplier,
-        float chance,
-        boolean villagersCanCompost,
-        boolean replace
-    ) {
-        compostableData.add(new Tuple4<>(itemLikeSupplier, chance, villagersCanCompost, replace));
     }
 
     @Override
@@ -138,10 +124,6 @@ public class NeoForgeRegistryService implements RegistryService {
 
     public List<Supplier<? extends Item>> getAzureLibItemIdentitySuppliers() {
         return azureLibItemIdentitySuppliers;
-    }
-
-    public List<Tuple4<Supplier<? extends ItemLike>, Float, Boolean, Boolean>> getCompostableData() {
-        return compostableData;
     }
 
     public List<Tuple2<Supplier<? extends ItemLike>, Integer>> getFurnaceFuelPairs() {

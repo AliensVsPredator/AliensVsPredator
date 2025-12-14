@@ -1,6 +1,7 @@
 package com.blib;
 
 import com.blib.common.model.Version;
+import com.blib.common.registry.impl.BLibCompostableRegistry;
 import com.blib.common.registry.impl.BLibEntityTypeRegistry;
 import com.blib.common.registry.impl.BLibItemRegistry;
 import com.blib.exception.BLibModInitializationException;
@@ -48,6 +49,10 @@ public class BLibMod {
 
     public boolean isLoaded() {
         return BLib.isModLoaded(id);
+    }
+
+    public BLibCompostableRegistry createCompostableRegistry() {
+        return new BLibCompostableRegistry(this);
     }
 
     public BLibEntityTypeRegistry createEntityTypeRegistry() {

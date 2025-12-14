@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.world.poi.PointOfInterestHelper;
+import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -18,6 +19,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
+import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -29,6 +31,8 @@ import java.util.function.Supplier;
 
 class BLibFabricModContainer {
 
+    private final List<Runnable> deferredCompostableRegistrations;
+
     private final List<Runnable> deferredEntityAttributeRegistrations;
 
     private final List<Runnable> deferredEntitySpawnDataRegistrations;
@@ -36,6 +40,7 @@ class BLibFabricModContainer {
     private final Map<Registry<?>, List<Runnable>> deferredRegistrations;
 
     public BLibFabricModContainer(BLibMod mod) {
+        this.deferredCompostableRegistrations = new ArrayList<>();
         this.deferredEntityAttributeRegistrations = new ArrayList<>();
         this.deferredEntitySpawnDataRegistrations = new ArrayList<>();
         this.deferredRegistrations = new HashMap<>();
@@ -101,6 +106,8 @@ class BLibFabricModContainer {
 
     /* package-private */ void runDeferredRegistrations() {
         BLibRegistries.REGISTRATION_ORDER.forEach(this::runRegistrationsFor);
+        // Run compostable registrations after primary registries are ran.
+        deferredCompostableRegistrations.forEach(Runnable::run);
         // Run entity attribute registrations after primary registries are ran.
         deferredEntityAttributeRegistrations.forEach(Runnable::run);
         // Run entity spawn data registrations after entity attribute registrations.
@@ -118,5 +125,9 @@ class BLibFabricModContainer {
         @SuppressWarnings("unchecked")
         var registeredHolder = (Holder<T>) BuiltInRegistries.POINT_OF_INTEREST_TYPE.getHolder(resourceLocation).orElseThrow();
         return registeredHolder;
+    }
+
+    public void deferCompostableRegistration(BLibHolder<? extends ItemLike> itemLikeSupplier, float chance) {
+        deferredCompostableRegistrations.add(() -> CompostingChanceRegistry.INSTANCE.add(itemLikeSupplier.get(), chance));
     }
 }
