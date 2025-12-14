@@ -1,4 +1,4 @@
-package com.avp.neoforge.data;
+package com.blib.neoforge.data.model;
 
 import com.mojang.serialization.Lifecycle;
 import net.minecraft.core.Holder;
