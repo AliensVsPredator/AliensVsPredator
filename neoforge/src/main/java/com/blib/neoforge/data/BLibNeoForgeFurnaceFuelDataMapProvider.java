@@ -6,17 +6,17 @@ import com.blib.neoforge.internal.service.impl.NeoForgeBLibRegistryServiceImpl;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.DataMapProvider;
-import net.neoforged.neoforge.registries.datamaps.builtin.Compostable;
+import net.neoforged.neoforge.registries.datamaps.builtin.FurnaceFuel;
 import net.neoforged.neoforge.registries.datamaps.builtin.NeoForgeDataMaps;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 
-public class BLibNeoForgeCompostableDataMapProvider extends DataMapProvider {
+public class BLibNeoForgeFurnaceFuelDataMapProvider extends DataMapProvider {
 
     private final BLibMod mod;
 
-    public BLibNeoForgeCompostableDataMapProvider(
+    public BLibNeoForgeFurnaceFuelDataMapProvider(
         BLibMod mod,
         PackOutput packOutput,
         CompletableFuture<HolderLookup.Provider> lookupProvider
@@ -28,15 +28,15 @@ public class BLibNeoForgeCompostableDataMapProvider extends DataMapProvider {
     @Override
     protected void gather(@NotNull HolderLookup.Provider provider) {
         var registry = (NeoForgeBLibRegistryServiceImpl) BLibInternalServices.REGISTRY;
-        var builder = builder(NeoForgeDataMaps.COMPOSTABLES);
+        var builder = builder(NeoForgeDataMaps.FURNACE_FUELS);
 
         registry.getModContainer(mod)
-            .getCompostableData()
+            .getFurnaceFuelData()
             .forEach(
                 compostableData -> builder.add(
                     compostableData.v1().get().asItem().builtInRegistryHolder(),
-                    new Compostable(compostableData.v2(), compostableData.v3()),
-                    compostableData.v4()
+                    new FurnaceFuel(compostableData.v2()),
+                    false
                 )
             );
     }

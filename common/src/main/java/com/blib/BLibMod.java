@@ -4,6 +4,7 @@ import com.blib.common.model.Version;
 import com.blib.common.registry.impl.BLibCompostableRegistry;
 import com.blib.common.registry.impl.BLibDecoratedPotPatternRegistry;
 import com.blib.common.registry.impl.BLibEntityTypeRegistry;
+import com.blib.common.registry.impl.BLibFurnaceFuelRegistry;
 import com.blib.common.registry.impl.BLibItemRegistry;
 import com.blib.common.registry.impl.BLibReloadListenerRegistry;
 import com.blib.exception.BLibModInitializationException;
@@ -63,6 +64,10 @@ public class BLibMod {
 
     public BLibEntityTypeRegistry createEntityTypeRegistry() {
         return bind(new BLibEntityTypeRegistry(this));
+    }
+
+    public BLibFurnaceFuelRegistry createFurnaceFuelRegistry() {
+        return new BLibFurnaceFuelRegistry(this);
     }
 
     public BLibItemRegistry createItemRegistry() {

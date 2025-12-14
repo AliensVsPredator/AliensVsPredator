@@ -76,6 +76,12 @@ public class FabricBLibRegistryServiceImpl implements BLibRegistryService {
     }
 
     @Override
+    public void registerFurnaceFuel(BLibHolder<? extends ItemLike> holder, int burnTimeInTicks) {
+        getModContainer(holder)
+            .deferFurnaceFuelRegistration(holder, burnTimeInTicks);
+    }
+
+    @Override
     public void registerReloadListener(BLibMod mod, String path, PreparableReloadListener listener) {
         var resourceLocation = mod.createResourceLocation(path);
         var adaptedListener = new IdentifiableResourceReloadListener() {

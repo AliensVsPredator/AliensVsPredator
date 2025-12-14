@@ -38,13 +38,15 @@ public class BLibNeoForgeModContainer {
 
     private final BLibMod mod;
 
+    private final Map<Registry<?>, DeferredRegister<?>> registryToDeferredRegisterMap;
+
     private final List<Tuple4<BLibHolder<? extends ItemLike>, Float, Boolean, Boolean>> compostableData;
 
     private final List<Runnable> deferredDecoratedPotPatternRegistrations;
 
-    private final Map<Registry<?>, DeferredRegister<?>> registryToDeferredRegisterMap;
-
     private final List<Tuple2<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>>> entityAttributeSupplierPairs;
+
+    private final List<Tuple2<BLibHolder<? extends ItemLike>, Integer>> furnaceFuelData;
 
     private final List<BLibEntitySpawnData<?>> entitySpawnDataEntries;
 
@@ -65,6 +67,7 @@ public class BLibNeoForgeModContainer {
         this.deferredDecoratedPotPatternRegistrations = new ArrayList<>();
         this.entityAttributeSupplierPairs = new ArrayList<>();
         this.entitySpawnDataEntries = new ArrayList<>();
+        this.furnaceFuelData = new ArrayList<>();
         this.reloadListeners = new ArrayList<>();
     }
 
@@ -80,8 +83,16 @@ public class BLibNeoForgeModContainer {
         return Collections.unmodifiableList(entitySpawnDataEntries);
     }
 
+    public List<Tuple2<BLibHolder<? extends ItemLike>, Integer>> getFurnaceFuelData() {
+        return Collections.unmodifiableList(furnaceFuelData);
+    }
+
     /* package-private */ void registerCompostable(Tuple4<BLibHolder<? extends ItemLike>, Float, Boolean, Boolean> tuple) {
         compostableData.add(tuple);
+    }
+
+    /* package-private */ void registerFurnaceFuel(Tuple2<BLibHolder<? extends ItemLike>, Integer> tuple) {
+        furnaceFuelData.add(tuple);
     }
 
     /* package-private */ void registerDecoratedPotPattern(String path, BLibHolder<? extends Item> holder) {

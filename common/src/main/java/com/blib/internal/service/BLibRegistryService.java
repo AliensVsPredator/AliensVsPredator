@@ -31,5 +31,7 @@ public interface BLibRegistryService {
 
     <T extends Mob> void registerEntitySpawnData(BLibEntitySpawnData<T> spawnData);
 
+    void registerFurnaceFuel(BLibHolder<? extends ItemLike> holder, int burnTimeInTicks);
+
     void registerReloadListener(BLibMod mod, String path, PreparableReloadListener listener);
 }

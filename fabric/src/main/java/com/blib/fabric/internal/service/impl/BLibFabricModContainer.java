@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.world.poi.PointOfInterestHelper;
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
+import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -46,6 +47,8 @@ class BLibFabricModContainer {
 
     private final List<Runnable> deferredEntitySpawnDataRegistrations;
 
+    private final List<Runnable> deferredFurnaceFuelRegistrations;
+
     private final Map<Registry<?>, List<Runnable>> deferredRegistrations;
 
     public BLibFabricModContainer(BLibMod mod) {
@@ -54,6 +57,7 @@ class BLibFabricModContainer {
         this.deferredDecoratedPotPatternRegistrations = new ArrayList<>();
         this.deferredEntityAttributeRegistrations = new ArrayList<>();
         this.deferredEntitySpawnDataRegistrations = new ArrayList<>();
+        this.deferredFurnaceFuelRegistrations = new ArrayList<>();
         this.deferredRegistrations = new HashMap<>();
     }
 
@@ -123,11 +127,27 @@ class BLibFabricModContainer {
         deferredCompostableRegistrations.forEach(Runnable::run);
         // Run decorated pot pattern registrations after primary registries are ran.
         deferredDecoratedPotPatternRegistrations.forEach(Runnable::run);
+        // Run furnace fuel registrations after primary registries are ran.
+        deferredFurnaceFuelRegistrations.forEach(Runnable::run);
 
         // Run entity attribute registrations after primary registries are ran.
         deferredEntityAttributeRegistrations.forEach(Runnable::run);
         // Run entity spawn data registrations after entity attribute registrations.
         deferredEntitySpawnDataRegistrations.forEach(Runnable::run);
+    }
+
+    /* package-private */ void deferCompostableRegistration(BLibHolder<? extends ItemLike> holder, float chance) {
+        deferredCompostableRegistrations.add(() -> CompostingChanceRegistry.INSTANCE.add(holder.get(), chance));
+    }
+
+    /* package-private */ void deferDecoratedPotPatternRegistration(String path, BLibHolder<? extends Item> holder) {
+        deferredDecoratedPotPatternRegistrations.add(
+            () -> BLibDecoratedPotPatternCache.put(holder.get(), mod.createResourceKey(Registries.DECORATED_POT_PATTERN, path))
+        );
+    }
+
+    /* package-private */ void deferFurnaceFuelRegistration(BLibHolder<? extends ItemLike> holder, int burnTimeInTicks) {
+        deferredFurnaceFuelRegistrations.add(() -> FuelRegistry.INSTANCE.add(holder.get(), burnTimeInTicks));
     }
 
     private void runRegistrationsFor(Registry<?> registry) {
@@ -141,15 +161,5 @@ class BLibFabricModContainer {
         @SuppressWarnings("unchecked")
         var registeredHolder = (Holder<T>) BuiltInRegistries.POINT_OF_INTEREST_TYPE.getHolder(resourceLocation).orElseThrow();
         return registeredHolder;
-    }
-
-    public void deferCompostableRegistration(BLibHolder<? extends ItemLike> holder, float chance) {
-        deferredCompostableRegistrations.add(() -> CompostingChanceRegistry.INSTANCE.add(holder.get(), chance));
-    }
-
-    public void deferDecoratedPotPatternRegistration(String path, BLibHolder<? extends Item> holder) {
-        deferredDecoratedPotPatternRegistrations.add(
-            () -> BLibDecoratedPotPatternCache.put(holder.get(), mod.createResourceKey(Registries.DECORATED_POT_PATTERN, path))
-        );
     }
 }

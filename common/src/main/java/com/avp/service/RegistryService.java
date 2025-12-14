@@ -8,7 +8,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.ItemLike;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -19,8 +18,6 @@ public interface RegistryService {
     void registerCommand(LiteralArgumentBuilder<CommandSourceStack> literalArgumentBuilder);
 
     void registerAzureLibIdentity(Supplier<? extends Item> itemSupplier);
-
-    void registerFurnaceFuel(Supplier<? extends ItemLike> itemLikeSupplier, int burnTimeInTicks);
 
     <T extends CustomPacketPayload> void registerPacketHandlers(NetworkHandler<T> networkHandler);
 

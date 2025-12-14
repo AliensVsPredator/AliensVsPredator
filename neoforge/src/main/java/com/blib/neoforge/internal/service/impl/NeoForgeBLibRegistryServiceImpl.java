@@ -6,6 +6,8 @@ import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
 import com.blib.internal.service.BLibRegistryService;
 import com.blib.neoforge.data.BLibNeoForgeCompostableDataMapProvider;
 import com.blib.neoforge.data.BLibNeoForgeEntitySpawnDataProvider;
+import com.blib.neoforge.data.BLibNeoForgeFurnaceFuelDataMapProvider;
+import com.just.core.functional.tuple.Tuple2;
 import com.just.core.functional.tuple.Tuple4;
 import net.minecraft.core.Holder;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
@@ -82,6 +84,12 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
     }
 
     @Override
+    public void registerFurnaceFuel(BLibHolder<? extends ItemLike> holder, int burnTimeInTicks) {
+        getModContainer(holder)
+            .registerFurnaceFuel(new Tuple2<>(holder, burnTimeInTicks));
+    }
+
+    @Override
     public void registerReloadListener(BLibMod mod, String path, PreparableReloadListener listener) {
         getModContainer(mod)
             .registerReloadListener(listener);
@@ -109,6 +117,7 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
 
             generator.addProvider(run, new BLibNeoForgeCompostableDataMapProvider(mod, packOutput, lookupProvider));
             generator.addProvider(run, new BLibNeoForgeEntitySpawnDataProvider(mod, lookupProvider));
+            generator.addProvider(run, new BLibNeoForgeFurnaceFuelDataMapProvider(mod, packOutput, lookupProvider));
         });
 
         NeoForge.EVENT_BUS.<AddReloadListenerEvent>addListener(

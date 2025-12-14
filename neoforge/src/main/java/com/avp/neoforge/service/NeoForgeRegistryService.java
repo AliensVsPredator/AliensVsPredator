@@ -49,11 +49,6 @@ public class NeoForgeRegistryService implements RegistryService {
     }
 
     @Override
-    public void registerFurnaceFuel(Supplier<? extends ItemLike> itemLikeSupplier, int burnTimeInTicks) {
-        furnaceFuelPairs.add(new Tuple2<>(itemLikeSupplier, burnTimeInTicks));
-    }
-
-    @Override
     public <T extends CustomPacketPayload> void registerPacketHandlers(NetworkHandler<T> networkHandler) {
         networkHandlers.add(networkHandler);
     }
