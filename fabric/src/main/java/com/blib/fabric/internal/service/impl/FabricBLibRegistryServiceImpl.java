@@ -4,7 +4,14 @@ import com.blib.BLibHolder;
 import com.blib.BLibMod;
 import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
 import com.blib.internal.service.BLibRegistryService;
+import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -12,9 +19,12 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
 @ApiStatus.Internal
@@ -63,6 +73,40 @@ public class FabricBLibRegistryServiceImpl implements BLibRegistryService {
     public <T extends Mob> void registerEntitySpawnData(BLibEntitySpawnData<T> spawnData) {
         getModContainer(spawnData.getEntityTypeHolder())
             .deferEntitySpawnDataRegistration(spawnData);
+    }
+
+    @Override
+    public void registerReloadListener(BLibMod mod, String path, PreparableReloadListener listener) {
+        var resourceLocation = mod.createResourceLocation(path);
+        var adaptedListener = new IdentifiableResourceReloadListener() {
+
+            @Override
+            public ResourceLocation getFabricId() {
+                return resourceLocation;
+            }
+
+            @Override
+            public @NotNull CompletableFuture<Void> reload(
+                PreparationBarrier preparationBarrier,
+                ResourceManager resourceManager,
+                ProfilerFiller preparationsProfiler,
+                ProfilerFiller reloadProfiler,
+                Executor backgroundExecutor,
+                Executor gameExecutor
+            ) {
+                return listener.reload(
+                    preparationBarrier,
+                    resourceManager,
+                    preparationsProfiler,
+                    reloadProfiler,
+                    backgroundExecutor,
+                    gameExecutor
+                );
+            }
+        };
+
+        ResourceManagerHelper.get(PackType.SERVER_DATA)
+            .registerReloadListener(adaptedListener);
     }
 
     /* package-private */ void finalize(BLibMod mod) {

@@ -5,6 +5,7 @@ import com.blib.common.registry.impl.BLibCompostableRegistry;
 import com.blib.common.registry.impl.BLibDecoratedPotPatternRegistry;
 import com.blib.common.registry.impl.BLibEntityTypeRegistry;
 import com.blib.common.registry.impl.BLibItemRegistry;
+import com.blib.common.registry.impl.BLibReloadListenerRegistry;
 import com.blib.exception.BLibModInitializationException;
 import com.blib.internal.service.BLibInternalServices;
 import com.blib.mod.BLibModState;
@@ -66,6 +67,10 @@ public class BLibMod {
 
     public BLibItemRegistry createItemRegistry() {
         return bind(new BLibItemRegistry(this));
+    }
+
+    public BLibReloadListenerRegistry createReloadListenerRegistry() {
+        return new BLibReloadListenerRegistry(this);
     }
 
     public <T> BLibRegistry<T> createRegistry(Registry<T> registry) {

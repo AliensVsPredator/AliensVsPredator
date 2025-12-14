@@ -9,28 +9,17 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.resources.PreparableReloadListener;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
-import com.avp.AVPResources;
 import com.avp.service.RegistryService;
 
 public class FabricRegistryService implements RegistryService {
@@ -102,41 +91,6 @@ public class FabricRegistryService implements RegistryService {
         if (handleServer) {
             PayloadTypeRegistry.playC2S().register(type, codec);
         }
-    }
-
-    @Override
-    public PreparableReloadListener registerReloadListener(String id, PreparableReloadListener listener) {
-        var adaptedListener = new IdentifiableResourceReloadListener() {
-
-            @Override
-            public ResourceLocation getFabricId() {
-                return AVPResources.location(id);
-            }
-
-            @Override
-            public @NotNull CompletableFuture<Void> reload(
-                PreparationBarrier preparationBarrier,
-                ResourceManager resourceManager,
-                ProfilerFiller preparationsProfiler,
-                ProfilerFiller reloadProfiler,
-                Executor backgroundExecutor,
-                Executor gameExecutor
-            ) {
-                return listener.reload(
-                    preparationBarrier,
-                    resourceManager,
-                    preparationsProfiler,
-                    reloadProfiler,
-                    backgroundExecutor,
-                    gameExecutor
-                );
-            }
-        };
-
-        ResourceManagerHelper.get(PackType.SERVER_DATA)
-            .registerReloadListener(adaptedListener);
-
-        return listener;
     }
 
     @Override

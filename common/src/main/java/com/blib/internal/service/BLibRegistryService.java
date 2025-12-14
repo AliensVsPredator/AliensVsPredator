@@ -1,8 +1,10 @@
 package com.blib.internal.service;
 
 import com.blib.BLibHolder;
+import com.blib.BLibMod;
 import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
 import net.minecraft.core.Holder;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -28,4 +30,6 @@ public interface BLibRegistryService {
     );
 
     <T extends Mob> void registerEntitySpawnData(BLibEntitySpawnData<T> spawnData);
+
+    void registerReloadListener(BLibMod mod, String path, PreparableReloadListener listener);
 }

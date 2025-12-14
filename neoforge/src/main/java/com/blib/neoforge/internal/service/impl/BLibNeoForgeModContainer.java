@@ -9,6 +9,7 @@ import com.just.core.functional.tuple.Tuple2;
 import com.just.core.functional.tuple.Tuple4;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -47,6 +48,8 @@ public class BLibNeoForgeModContainer {
 
     private final List<BLibEntitySpawnData<?>> entitySpawnDataEntries;
 
+    private final List<PreparableReloadListener> reloadListeners;
+
     public BLibNeoForgeModContainer(BLibMod mod) {
         this.mod = mod;
         this.registryToDeferredRegisterMap = BLibRegistries.REGISTRATION_ORDER
@@ -62,6 +65,7 @@ public class BLibNeoForgeModContainer {
         this.deferredDecoratedPotPatternRegistrations = new ArrayList<>();
         this.entityAttributeSupplierPairs = new ArrayList<>();
         this.entitySpawnDataEntries = new ArrayList<>();
+        this.reloadListeners = new ArrayList<>();
     }
 
     public List<Tuple4<BLibHolder<? extends ItemLike>, Float, Boolean, Boolean>> getCompostableData() {
@@ -97,6 +101,10 @@ public class BLibNeoForgeModContainer {
         entitySpawnDataEntries.add(spawnData);
     }
 
+    /* package-private */ void registerReloadListener(PreparableReloadListener listener) {
+        reloadListeners.add(listener);
+    }
+
     @SuppressWarnings("unchecked")
     /* package-private */ <T> DeferredRegister<T> getDeferredRegister(Registry<T> registry) {
         return (DeferredRegister<T>) registryToDeferredRegisterMap.get(registry);
@@ -108,5 +116,9 @@ public class BLibNeoForgeModContainer {
 
     /* package-private */ List<Tuple2<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>>> getEntityAttributeSupplierPairs() {
         return Collections.unmodifiableList(entityAttributeSupplierPairs);
+    }
+
+    /* package-private */ List<PreparableReloadListener> getReloadListeners() {
+        return reloadListeners;
     }
 }

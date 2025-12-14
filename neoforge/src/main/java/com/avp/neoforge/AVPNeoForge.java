@@ -11,7 +11,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
@@ -36,7 +35,6 @@ public class AVPNeoForge {
         modBus.addListener(AVPNeoForge::registerMiscellaneous);
 
         // Game bus events.
-        NeoForge.EVENT_BUS.addListener(AVPNeoForge::registerDataReloadListeners);
         NeoForge.EVENT_BUS.addListener(AVPNeoForge::registerPlayerTrackingEntityHandler);
     }
 
@@ -44,12 +42,6 @@ public class AVPNeoForge {
         // Register AzureLib item identities.
         REGISTRY.getAzureLibItemIdentitySuppliers()
             .forEach(itemSupplier -> AzIdentityRegistry.register(itemSupplier.get()));
-    }
-
-    // Game event
-    public static void registerDataReloadListeners(AddReloadListenerEvent event) {
-        REGISTRY.getReloadListeners()
-            .forEach(event::addListener);
     }
 
     public static void registerPlayerTrackingEntityHandler(PlayerEvent.StartTracking event) {

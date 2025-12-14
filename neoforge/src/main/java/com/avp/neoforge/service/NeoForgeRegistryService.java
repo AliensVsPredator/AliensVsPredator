@@ -9,7 +9,6 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.Item;
@@ -45,8 +44,6 @@ public class NeoForgeRegistryService implements RegistryService {
 
     private final List<NetworkHandler<?>> networkHandlers;
 
-    private final List<PreparableReloadListener> reloadListeners;
-
     private final List<Tuple3<Supplier<VillagerProfession>, Integer, List<VillagerTrades.ItemListing>>> villagerTradeData;
 
     public NeoForgeRegistryService() {
@@ -74,7 +71,6 @@ public class NeoForgeRegistryService implements RegistryService {
         this.furnaceFuelPairs = new ArrayList<>();
         this.literalArgumentBuilders = new ArrayList<>();
         this.networkHandlers = new ArrayList<>();
-        this.reloadListeners = new ArrayList<>();
         this.villagerTradeData = new ArrayList<>();
     }
 
@@ -104,12 +100,6 @@ public class NeoForgeRegistryService implements RegistryService {
     }
 
     @Override
-    public PreparableReloadListener registerReloadListener(String id, PreparableReloadListener listener) {
-        reloadListeners.add(listener);
-        return listener;
-    }
-
-    @Override
     public void registerVillagerTrade(
         Supplier<VillagerProfession> villagerProfessionSupplier,
         int level,
@@ -136,10 +126,6 @@ public class NeoForgeRegistryService implements RegistryService {
 
     public List<NetworkHandler<?>> getNetworkHandlers() {
         return networkHandlers;
-    }
-
-    public List<PreparableReloadListener> getReloadListeners() {
-        return reloadListeners;
     }
 
     public List<Tuple3<Supplier<VillagerProfession>, Integer, List<VillagerTrades.ItemListing>>> getVillagerTradeData() {

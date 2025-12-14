@@ -5,7 +5,6 @@ import com.blib.common.network.model.PacketDirection;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.Item;
@@ -26,8 +25,6 @@ public interface RegistryService {
     <T extends CustomPacketPayload> void registerPacketHandlers(NetworkHandler<T> networkHandler);
 
     <T extends CustomPacketPayload> void registerPacketDirection(PacketDirection<T> packetDirection);
-
-    PreparableReloadListener registerReloadListener(String id, PreparableReloadListener listener);
 
     void registerVillagerTrade(
         Supplier<VillagerProfession> villagerProfessionSupplier,

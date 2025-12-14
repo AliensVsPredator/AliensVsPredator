@@ -8,6 +8,7 @@ import com.blib.neoforge.data.BLibNeoForgeCompostableDataMapProvider;
 import com.blib.neoforge.data.BLibNeoForgeEntitySpawnDataProvider;
 import com.just.core.functional.tuple.Tuple4;
 import net.minecraft.core.Holder;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -17,7 +18,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -78,6 +81,12 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
             .registerEntitySpawnData(spawnData);
     }
 
+    @Override
+    public void registerReloadListener(BLibMod mod, String path, PreparableReloadListener listener) {
+        getModContainer(mod)
+            .registerReloadListener(listener);
+    }
+
     /* package-private */ void finalize(BLibMod mod, IEventBus eventBus) {
         getModContainer(mod)
             .getDeferredRegisters()
@@ -101,6 +110,10 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
             generator.addProvider(run, new BLibNeoForgeCompostableDataMapProvider(mod, packOutput, lookupProvider));
             generator.addProvider(run, new BLibNeoForgeEntitySpawnDataProvider(mod, lookupProvider));
         });
+
+        NeoForge.EVENT_BUS.<AddReloadListenerEvent>addListener(
+            event -> getModContainer(mod).getReloadListeners().forEach(event::addListener)
+        );
     }
 
     private void onRegisterEntityAttributes(BLibMod mod, EntityAttributeCreationEvent event) {
