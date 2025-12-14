@@ -85,7 +85,8 @@ public class BLibHolder<T> implements Holder<T>, HolderExtension<T>, Supplier<T>
     @Override
     public boolean is(@NotNull Holder<T> holder) {
         bind(false);
-        return this.holder != null && holder.is(holder);
+        // DO NOT REMOVE 'this' HERE! YOU WILL CAUSE A STACK OVERFLOW BY DOING SO.
+        return this.holder != null && this.holder.is(holder);
     }
 
     @Override
