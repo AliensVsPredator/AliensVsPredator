@@ -6,8 +6,10 @@ import com.blib.mod.loader.model.ModLoaderType;
 import com.blib.service.model.DistributionEnvironmentType;
 import com.blib.service.model.ReleaseEnvironmentType;
 import net.fabricmc.loader.api.FabricLoader;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+@ApiStatus.Internal
 public class FabricBLibModLoaderServiceImpl implements BLibModLoaderService {
 
     @Override

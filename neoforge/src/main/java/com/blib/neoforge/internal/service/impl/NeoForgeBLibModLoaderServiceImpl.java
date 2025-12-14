@@ -7,8 +7,10 @@ import com.blib.service.model.DistributionEnvironmentType;
 import com.blib.service.model.ReleaseEnvironmentType;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLLoader;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+@ApiStatus.Internal
 public class NeoForgeBLibModLoaderServiceImpl implements BLibModLoaderService {
 
     @Override

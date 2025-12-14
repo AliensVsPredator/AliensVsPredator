@@ -7,7 +7,9 @@ import com.blib.internal.service.BLibModService;
 import com.blib.neoforge.service.impl.NeoForgeBLibEventServiceImpl;
 import com.blib.service.BLibServices;
 import net.neoforged.fml.ModList;
+import org.jetbrains.annotations.ApiStatus;
 
+@ApiStatus.Internal
 public class BLibNeoForgeModServiceImpl implements BLibModService {
 
     @Override

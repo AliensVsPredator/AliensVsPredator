@@ -2,9 +2,11 @@ package com.blib.internal.common.registry;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
 
+@ApiStatus.Internal
 public class BLibRegistries {
 
     public static final List<Registry<?>> REGISTRATION_ORDER = List.of(

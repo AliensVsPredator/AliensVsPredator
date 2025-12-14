@@ -8,9 +8,11 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.level.ItemLike;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.Supplier;
 
+@ApiStatus.Internal
 public interface BLibRegistryService {
 
     <T> Holder<T> register(BLibHolder<T> holder, Supplier<? extends T> valueFactory);

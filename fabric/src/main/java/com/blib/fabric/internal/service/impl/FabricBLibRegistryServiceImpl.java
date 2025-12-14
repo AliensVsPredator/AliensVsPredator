@@ -10,11 +10,13 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.level.ItemLike;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
+@ApiStatus.Internal
 public class FabricBLibRegistryServiceImpl implements BLibRegistryService {
 
     private final Map<BLibMod, BLibFabricModContainer> modToContainerMap;

@@ -1,9 +1,11 @@
 package com.blib.internal.service;
 
 import com.blib.BLib;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ServiceLoader;
 
+@ApiStatus.Internal
 public class BLibInternalServices {
 
     public static final BLibModService MOD = load(BLibModService.class);

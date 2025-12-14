@@ -19,11 +19,13 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
+@ApiStatus.Internal
 public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
 
     private final Map<BLibMod, BLibNeoForgeModContainer> modToContainerMap;

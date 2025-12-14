@@ -3,7 +3,9 @@ package com.blib.fabric.internal.service.impl;
 import com.blib.BLibMod;
 import com.blib.internal.service.BLibInternalServices;
 import com.blib.internal.service.BLibModService;
+import org.jetbrains.annotations.ApiStatus;
 
+@ApiStatus.Internal
 public class BLibFabricModServiceImpl implements BLibModService {
 
     @Override
