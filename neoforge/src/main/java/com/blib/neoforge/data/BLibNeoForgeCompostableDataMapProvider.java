@@ -26,10 +26,10 @@ public class BLibNeoForgeCompostableDataMapProvider extends DataMapProvider {
     }
 
     @Override
-    protected void gather(HolderLookup.@NotNull Provider provider) {
+    protected void gather(@NotNull HolderLookup.Provider provider) {
+        var registry = (NeoForgeBLibRegistryServiceImpl) BLibInternalServices.REGISTRY;
         var compostablesBuilder = builder(NeoForgeDataMaps.COMPOSTABLES);
 
-        var registry = (NeoForgeBLibRegistryServiceImpl) BLibInternalServices.REGISTRY;
         registry.getModContainer(mod)
             .getCompostableData()
             .forEach(

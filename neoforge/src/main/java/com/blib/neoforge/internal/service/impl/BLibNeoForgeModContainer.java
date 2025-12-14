@@ -56,7 +56,15 @@ public class BLibNeoForgeModContainer {
         this.entitySpawnDataEntries = new ArrayList<>();
     }
 
-    public void registerCompostable(Tuple4<BLibHolder<? extends ItemLike>, Float, Boolean, Boolean> tuple) {
+    public List<Tuple4<BLibHolder<? extends ItemLike>, Float, Boolean, Boolean>> getCompostableData() {
+        return Collections.unmodifiableList(compostableData);
+    }
+
+    public List<BLibEntitySpawnData<?>> getEntitySpawnDataEntries() {
+        return Collections.unmodifiableList(entitySpawnDataEntries);
+    }
+
+    /* package-private */ void registerCompostable(Tuple4<BLibHolder<? extends ItemLike>, Float, Boolean, Boolean> tuple) {
         compostableData.add(tuple);
     }
 
@@ -71,10 +79,6 @@ public class BLibNeoForgeModContainer {
         entitySpawnDataEntries.add(spawnData);
     }
 
-    public List<Tuple4<BLibHolder<? extends ItemLike>, Float, Boolean, Boolean>> getCompostableData() {
-        return Collections.unmodifiableList(compostableData);
-    }
-
     @SuppressWarnings("unchecked")
     /* package-private */ <T> DeferredRegister<T> getDeferredRegister(Registry<T> registry) {
         return (DeferredRegister<T>) registryToDeferredRegisterMap.get(registry);
@@ -86,9 +90,5 @@ public class BLibNeoForgeModContainer {
 
     /* package-private */ List<Tuple2<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>>> getEntityAttributeSupplierPairs() {
         return Collections.unmodifiableList(entityAttributeSupplierPairs);
-    }
-
-    /* package-private */ List<BLibEntitySpawnData<?>> getEntitySpawnDataEntries() {
-        return Collections.unmodifiableList(entitySpawnDataEntries);
     }
 }

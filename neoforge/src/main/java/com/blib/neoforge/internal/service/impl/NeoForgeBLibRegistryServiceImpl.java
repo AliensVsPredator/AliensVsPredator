@@ -5,6 +5,7 @@ import com.blib.BLibMod;
 import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
 import com.blib.internal.service.BLibRegistryService;
 import com.blib.neoforge.data.BLibNeoForgeCompostableDataMapProvider;
+import com.blib.neoforge.data.BLibNeoForgeEntitySpawnDataProvider;
 import com.just.core.functional.tuple.Tuple4;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.EntityType;
@@ -82,6 +83,7 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
             var run = event.includeServer();
 
             generator.addProvider(run, new BLibNeoForgeCompostableDataMapProvider(mod, packOutput, lookupProvider));
+            generator.addProvider(run, new BLibNeoForgeEntitySpawnDataProvider(mod, lookupProvider));
         });
     }
 
