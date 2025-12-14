@@ -4,6 +4,7 @@ import com.blib.BLib;
 import com.blib.BLibMod;
 import com.blib.common.network.BLibPacketDirections;
 import com.blib.common.network.BLibServerPacketHandlers;
+import com.blib.common.registry.init.BLibDataKeys;
 import com.blib.server.BlockBreakProgressManager;
 import com.blib.server.ServerScheduler;
 import com.blib.service.BLibServices;
@@ -15,8 +16,6 @@ import mod.azure.azurelib.common.config.format.IConfigFormatHandler;
 import mod.azure.azurelib.common.config.io.ConfigIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.avp.common.registry.init.AVPDataKeys;
 
 public class AVP {
 
@@ -31,7 +30,7 @@ public class AVP {
 
         MOD.initialize(() -> {
             BLibPacketDirections.initialize();
-            AVPDataKeys.initialize();
+            BLibDataKeys.initialize();
             BLibServerPacketHandlers.initialize();
         });
 

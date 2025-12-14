@@ -1,14 +1,13 @@
-package com.avp.common.registry.init;
+package com.blib.common.registry.init;
 
+import com.blib.BLib;
 import com.blib.common.network.data.DataKey;
 import com.blib.common.registry.DataKeyRegistry;
 import com.just.codec.stream.impl.StreamCodecs;
 
 import java.util.function.Function;
 
-import com.avp.AVPResources;
-
-public class AVPDataKeys {
+public class BLibDataKeys {
 
     public static final DataKey<Boolean> ENTITY_HAS_WARP_EFFECT = register(
         "entity_has_warp_effect",
@@ -29,7 +28,7 @@ public class AVPDataKeys {
     );
 
     private static <T> DataKey<T> register(String id, Function<DataKey.Builder<T>, DataKey<T>> factory) {
-        var resourceLocation = AVPResources.location(id);
+        var resourceLocation = BLib.MOD.createResourceLocation(id);
         var dataAccessor = factory.apply(new DataKey.Builder<>(resourceLocation));
         return DataKeyRegistry.register(resourceLocation, dataAccessor);
     }
