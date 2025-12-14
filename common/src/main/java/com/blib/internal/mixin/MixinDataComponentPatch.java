@@ -4,12 +4,14 @@ import com.blib.common.gameplay.model.DataComponentPatchAccessor;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
+import org.jetbrains.annotations.ApiStatus;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
 import java.util.Optional;
 
+@ApiStatus.Internal
 @Mixin(DataComponentPatch.class)
 public interface MixinDataComponentPatch extends DataComponentPatchAccessor {
 
