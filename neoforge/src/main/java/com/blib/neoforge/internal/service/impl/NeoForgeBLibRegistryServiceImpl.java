@@ -13,8 +13,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
@@ -56,6 +58,12 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
     }
 
     @Override
+    public void registerDecoratedPotPattern(String path, BLibHolder<? extends Item> holder) {
+        getModContainer(holder)
+            .registerDecoratedPotPattern(path, holder);
+    }
+
+    @Override
     public void registerEntityAttributes(
         BLibHolder<? extends EntityType<? extends LivingEntity>> holder,
         Supplier<AttributeSupplier.Builder> attributeSupplierBuilderSupplier
@@ -77,6 +85,12 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
 
         eventBus.<EntityAttributeCreationEvent>addListener(event -> onRegisterEntityAttributes(mod, event));
         eventBus.<RegisterSpawnPlacementsEvent>addListener(event -> onRegisterEntitySpawnPlacements(mod, event));
+
+        eventBus.<FMLCommonSetupEvent>addListener(
+            event -> getModContainer(mod)
+                .getDeferredDecoratedPotPatternRegistrations()
+                .forEach(Runnable::run)
+        );
 
         eventBus.<GatherDataEvent>addListener(event -> {
             var generator = event.getGenerator();

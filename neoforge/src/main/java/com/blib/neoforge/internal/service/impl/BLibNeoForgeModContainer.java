@@ -3,14 +3,17 @@ package com.blib.neoforge.internal.service.impl;
 import com.blib.BLibHolder;
 import com.blib.BLibMod;
 import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
+import com.blib.internal.common.BLibDecoratedPotPatternCache;
 import com.blib.internal.common.registry.BLibRegistries;
 import com.just.core.functional.tuple.Tuple2;
 import com.just.core.functional.tuple.Tuple4;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.ApiStatus;
@@ -36,6 +39,8 @@ public class BLibNeoForgeModContainer {
 
     private final List<Tuple4<BLibHolder<? extends ItemLike>, Float, Boolean, Boolean>> compostableData;
 
+    private final List<Runnable> deferredDecoratedPotPatternRegistrations;
+
     private final Map<Registry<?>, DeferredRegister<?>> registryToDeferredRegisterMap;
 
     private final List<Tuple2<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>>> entityAttributeSupplierPairs;
@@ -54,6 +59,7 @@ public class BLibNeoForgeModContainer {
             );
 
         this.compostableData = new ArrayList<>();
+        this.deferredDecoratedPotPatternRegistrations = new ArrayList<>();
         this.entityAttributeSupplierPairs = new ArrayList<>();
         this.entitySpawnDataEntries = new ArrayList<>();
     }
@@ -62,12 +68,22 @@ public class BLibNeoForgeModContainer {
         return Collections.unmodifiableList(compostableData);
     }
 
+    public List<Runnable> getDeferredDecoratedPotPatternRegistrations() {
+        return deferredDecoratedPotPatternRegistrations;
+    }
+
     public List<BLibEntitySpawnData<?>> getEntitySpawnDataEntries() {
         return Collections.unmodifiableList(entitySpawnDataEntries);
     }
 
     /* package-private */ void registerCompostable(Tuple4<BLibHolder<? extends ItemLike>, Float, Boolean, Boolean> tuple) {
         compostableData.add(tuple);
+    }
+
+    /* package-private */ void registerDecoratedPotPattern(String path, BLibHolder<? extends Item> holder) {
+        deferredDecoratedPotPatternRegistrations.add(
+            () -> BLibDecoratedPotPatternCache.put(holder.get(), mod.createResourceKey(Registries.DECORATED_POT_PATTERN, path))
+        );
     }
 
     /* package-private */ void registerEntityAttributes(

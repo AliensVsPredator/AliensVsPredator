@@ -9,6 +9,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -42,6 +43,11 @@ public class FabricBLibRegistryServiceImpl implements BLibRegistryService {
     ) {
         getModContainer(holder)
             .deferCompostableRegistration(holder, chance);
+    }
+
+    public void registerDecoratedPotPattern(String path, BLibHolder<? extends Item> holder) {
+        getModContainer(holder)
+            .deferDecoratedPotPatternRegistration(path, holder);
     }
 
     @Override

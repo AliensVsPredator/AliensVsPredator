@@ -2,6 +2,7 @@ package com.blib;
 
 import com.blib.common.model.Version;
 import com.blib.common.registry.impl.BLibCompostableRegistry;
+import com.blib.common.registry.impl.BLibDecoratedPotPatternRegistry;
 import com.blib.common.registry.impl.BLibEntityTypeRegistry;
 import com.blib.common.registry.impl.BLibItemRegistry;
 import com.blib.exception.BLibModInitializationException;
@@ -53,6 +54,10 @@ public class BLibMod {
 
     public BLibCompostableRegistry createCompostableRegistry() {
         return new BLibCompostableRegistry(this);
+    }
+
+    public BLibDecoratedPotPatternRegistry createDecoratedPotPatternRegistry() {
+        return new BLibDecoratedPotPatternRegistry(this);
     }
 
     public BLibEntityTypeRegistry createEntityTypeRegistry() {
