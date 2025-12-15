@@ -15,10 +15,10 @@ public class NeoForgeBLibFactoryServiceImpl implements BLibFactoryService {
     @Override
     public <E extends Mob> Supplier<SpawnEggItem> createSpawnEggSupplier(
         Supplier<EntityType<E>> entityType,
-        int primaryEggColour,
-        int secondaryEggColour,
+        int primaryEggColor,
+        int secondaryEggColor,
         Item.Properties itemProperties
     ) {
-        return () -> new DeferredSpawnEggItem(entityType, primaryEggColour, secondaryEggColour, itemProperties);
+        return () -> new DeferredSpawnEggItem(entityType, primaryEggColor, secondaryEggColor, itemProperties);
     }
 }

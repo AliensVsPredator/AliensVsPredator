@@ -14,10 +14,10 @@ public class FabricBLibFactoryServiceImpl implements BLibFactoryService {
     @Override
     public <E extends Mob> Supplier<SpawnEggItem> createSpawnEggSupplier(
         Supplier<EntityType<E>> entityType,
-        int primaryEggColour,
-        int secondaryEggColour,
+        int primaryEggColor,
+        int secondaryEggColor,
         Item.Properties itemProperties
     ) {
-        return () -> new SpawnEggItem(entityType.get(), primaryEggColour, secondaryEggColour, itemProperties);
+        return () -> new SpawnEggItem(entityType.get(), primaryEggColor, secondaryEggColor, itemProperties);
     }
 }

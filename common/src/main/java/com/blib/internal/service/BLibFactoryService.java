@@ -13,8 +13,8 @@ public interface BLibFactoryService {
 
     <E extends Mob> Supplier<SpawnEggItem> createSpawnEggSupplier(
         Supplier<EntityType<E>> entityType,
-        int primaryEggColour,
-        int secondaryEggColour,
+        int primaryEggColor,
+        int secondaryEggColor,
         Item.Properties itemProperties
     );
 }
