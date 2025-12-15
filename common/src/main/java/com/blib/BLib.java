@@ -5,6 +5,8 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blib.common.model.DistributionEnvironmentType;
+import com.blib.common.model.ReleaseEnvironmentType;
 import com.blib.common.model.Version;
 import com.blib.common.model.loader.ModLoaderType;
 import com.blib.common.network.BLibPacketDirections;
@@ -13,8 +15,6 @@ import com.blib.common.registry.init.BLibDataKeys;
 import com.blib.internal.service.BLibInternalServices;
 import com.blib.server.BlockBreakProgressManager;
 import com.blib.server.ServerScheduler;
-import com.blib.service.model.DistributionEnvironmentType;
-import com.blib.service.model.ReleaseEnvironmentType;
 
 public class BLib {
 

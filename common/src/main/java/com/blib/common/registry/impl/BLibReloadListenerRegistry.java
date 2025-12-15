@@ -1,6 +1,7 @@
 package com.blib.common.registry.impl;
 
 import net.minecraft.server.packs.resources.PreparableReloadListener;
+import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.BLibMod;
 import com.blib.common.exception.BLibRegistrationException;
@@ -11,6 +12,7 @@ public class BLibReloadListenerRegistry {
 
     private final BLibMod mod;
 
+    @ApiStatus.Internal
     public BLibReloadListenerRegistry(BLibMod mod) {
         this.mod = mod;
     }

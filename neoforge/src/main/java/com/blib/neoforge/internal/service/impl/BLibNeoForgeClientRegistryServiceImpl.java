@@ -1,0 +1,230 @@
+package com.blib.neoforge.internal.service.impl;
+
+import com.just.core.functional.function.Lazy;
+import com.just.core.functional.tuple.Tuple2;
+import mod.azure.azurelib.common.render.armor.AzArmorRenderer;
+import mod.azure.azurelib.common.render.item.AzItemRenderer;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.client.particle.ParticleEngine;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import org.jetbrains.annotations.ApiStatus;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import com.blib.client.BLibClientMod;
+import com.blib.client.input.keybind.KeyPressHandler;
+import com.blib.client.input.keybind.util.KeyMappingUtil;
+import com.blib.client.model.KeyInteractType;
+import com.blib.internal.service.BLibClientRegistryService;
+
+@ApiStatus.Internal
+public class BLibNeoForgeClientRegistryServiceImpl implements BLibClientRegistryService {
+
+    private final List<Tuple2<Supplier<AzArmorRenderer>, List<Supplier<? extends Item>>>> armorRendererPairs;
+
+    private final List<Tuple2<Supplier<? extends BlockEntityType<? extends BlockEntity>>, BlockEntityRendererProvider<? extends BlockEntity>>> blockEntityRendererPairs;
+
+    private final List<Tuple2<Supplier<? extends Block>, RenderType>> blockRenderLayerPairs;
+
+    private final List<Tuple2<Supplier<? extends EntityType<?>>, EntityRendererProvider<?>>> entityRendererPairs;
+
+    private final List<Tuple2<ItemColor, List<Supplier<? extends Item>>>> itemColorPairs;
+
+    private final List<Tuple2<Supplier<? extends Item>, Function<String, Supplier<AzItemRenderer>>>> itemRendererPairs;
+
+    private final List<Supplier<Tuple2<KeyMapping, Consumer<KeyInteractType>>>> keyMappingHandlerPairSuppliers;
+
+    private final List<Tuple2<Supplier<? extends MenuType<?>>, MenuScreens.ScreenConstructor<?, ?>>> menuScreenConstructorPairs;
+
+    private final List<Tuple2<Supplier<? extends ParticleType<?>>, ParticleEngine.SpriteParticleRegistration<?>>> particleProviderFactoryPairs;
+
+    public BLibNeoForgeClientRegistryServiceImpl() {
+        this.armorRendererPairs = new ArrayList<>();
+        this.blockEntityRendererPairs = new ArrayList<>();
+        this.blockRenderLayerPairs = new ArrayList<>();
+        this.entityRendererPairs = new ArrayList<>();
+        this.itemColorPairs = new ArrayList<>();
+        this.itemRendererPairs = new ArrayList<>();
+        this.keyMappingHandlerPairSuppliers = new ArrayList<>();
+        this.menuScreenConstructorPairs = new ArrayList<>();
+        this.particleProviderFactoryPairs = new ArrayList<>();
+    }
+
+    @Override
+    public void registerArmorRenderer(Supplier<AzArmorRenderer> armorRendererSupplier, List<Supplier<? extends Item>> itemSuppliers) {
+        armorRendererPairs.add(new Tuple2<>(armorRendererSupplier, itemSuppliers));
+    }
+
+    @Override
+    public <T extends BlockEntity> void registerBlockEntityRenderer(
+        Supplier<BlockEntityType<T>> blockEntityTypeSupplier,
+        BlockEntityRendererProvider<T> renderProvider
+    ) {
+        blockEntityRendererPairs.add(new Tuple2<>(blockEntityTypeSupplier, renderProvider));
+    }
+
+    @Override
+    public void registerBlockRenderLayer(Supplier<? extends Block> blockSupplier, RenderType renderType) {
+        blockRenderLayerPairs.add(new Tuple2<>(blockSupplier, renderType));
+    }
+
+    @Override
+    public <E extends Entity> void registerEntityRenderer(
+        Supplier<EntityType<E>> entityTypeSupplier,
+        EntityRendererProvider<E> entityRendererFactory
+    ) {
+        entityRendererPairs.add(new Tuple2<>(entityTypeSupplier, entityRendererFactory));
+    }
+
+    @Override
+    public void registerItemColor(ItemColor itemColor, List<Supplier<? extends Item>> itemSuppliers) {
+        itemColorPairs.add(new Tuple2<>(itemColor, itemSuppliers));
+    }
+
+    @Override
+    public void registerItemRenderer(Supplier<? extends Item> itemSupplier, Function<String, Supplier<AzItemRenderer>> rendererFactory) {
+        itemRendererPairs.add(new Tuple2<>(itemSupplier, rendererFactory));
+    }
+
+    @Override
+    public Supplier<Tuple2<KeyMapping, Consumer<KeyInteractType>>> registerKeyMapping(
+        ResourceLocation resourceLocation,
+        String category,
+        int key,
+        Consumer<KeyInteractType> keyInteractTypeConsumer
+    ) {
+        // Note the use of Lazy.of(...) here. This is deliberate so that the key mapping is only created once.
+        Supplier<Tuple2<KeyMapping, Consumer<KeyInteractType>>> supplier = Lazy.of(
+            () -> new Tuple2<>(KeyMappingUtil.createKeyMapping(resourceLocation, category, key), keyInteractTypeConsumer)
+        );
+        keyMappingHandlerPairSuppliers.add(supplier);
+        return supplier;
+    }
+
+    @Override
+    public <T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>> void registerMenuScreen(
+        Supplier<? extends MenuType<T>> menuTypeSupplier,
+        MenuScreens.ScreenConstructor<T, U> screenConstructor
+    ) {
+        menuScreenConstructorPairs.add(new Tuple2<>(menuTypeSupplier, screenConstructor));
+    }
+
+    @Override
+    public <T extends ParticleOptions> void registerParticleProviderFactory(
+        Supplier<? extends ParticleType<T>> particleTypeSupplier,
+        ParticleEngine.SpriteParticleRegistration<T> spriteParticleRegistration
+    ) {
+        particleProviderFactoryPairs.add(new Tuple2<>(particleTypeSupplier, spriteParticleRegistration));
+    }
+
+    /* package-private */ void finalize(BLibClientMod mod, IEventBus eventBus) {
+        eventBus.<FMLClientSetupEvent>addListener(event -> {
+            armorRendererPairs
+                .forEach(pair -> registerArmorRendererImmediately(pair.v1(), pair.v2()));
+
+            itemRendererPairs
+                .forEach(pair -> registerItemRendererImmediately(pair.v1().get(), pair.v2()));
+
+            blockRenderLayerPairs
+                .forEach(pair -> ItemBlockRenderTypes.setRenderLayer(pair.v1().get(), pair.v2()));
+        });
+
+        eventBus.<RegisterColorHandlersEvent.Item>addListener(
+            event -> itemColorPairs
+                .forEach(
+                    pair -> pair.v2()
+                        .forEach(
+                            itemSupplier -> event.getItemColors()
+                                .register(pair.v1(), itemSupplier.get())
+                        )
+                )
+        );
+
+        eventBus.<EntityRenderersEvent.RegisterRenderers>addListener(event -> {
+            // Entities
+            entityRendererPairs
+                .forEach(pair -> {
+                    var entityType = pair.v1().get();
+                    @SuppressWarnings("unchecked")
+                    var entityRendererProvider = (EntityRendererProvider<Entity>) pair.v2();
+                    event.registerEntityRenderer(entityType, entityRendererProvider);
+                });
+
+            // Block Entities
+            blockEntityRendererPairs
+                .forEach(pair -> {
+                    var blockEntityType = pair.v1().get();
+                    @SuppressWarnings("unchecked")
+                    var blockEntityRendererProvider = (BlockEntityRendererProvider<BlockEntity>) pair.v2();
+                    event.registerBlockEntityRenderer(blockEntityType, blockEntityRendererProvider);
+                });
+        });
+
+        eventBus.<RegisterKeyMappingsEvent>addListener(
+            event -> keyMappingHandlerPairSuppliers
+                .forEach(keyMappingSupplier -> event.register(keyMappingSupplier.get().v1()))
+        );
+
+        eventBus.<RegisterMenuScreensEvent>addListener(event -> {
+            menuScreenConstructorPairs
+                .forEach(pair -> {
+                    var menuType = pair.v1().get();
+                    @SuppressWarnings("unchecked")
+                    var screenConstructor = (MenuScreens.ScreenConstructor<AbstractContainerMenu, ?>) pair.v2();
+                    event.register(menuType, screenConstructor);
+                });
+        });
+
+        eventBus.<RegisterParticleProvidersEvent>addListener(event -> {
+            particleProviderFactoryPairs
+                .forEach(pair -> {
+                    @SuppressWarnings("unchecked")
+                    var particleType = (ParticleType<ParticleOptions>) pair.v1().get();
+                    @SuppressWarnings("unchecked")
+                    var spriteParticleRegistration = (ParticleEngine.SpriteParticleRegistration<ParticleOptions>) pair.v2();
+                    event.registerSpriteSet(particleType, spriteParticleRegistration);
+                });
+        });
+
+        NeoForge.EVENT_BUS.<ClientTickEvent.Post>addListener(
+            event -> keyMappingHandlerPairSuppliers
+                .forEach(keyMappingSupplier -> {
+                    var keyMapping = keyMappingSupplier.get().v1();
+                    var keyInteractTypeConsumer = keyMappingSupplier.get().v2();
+
+                    KeyPressHandler.handle(keyMapping, keyInteractTypeConsumer);
+                })
+        );
+    }
+}

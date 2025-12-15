@@ -1,1 +1,1 @@
-com.blib.fabric.service.impl.FabricBLibEventServiceImpl
+com.blib.fabric.internal.service.impl.FabricBLibEventServiceImpl

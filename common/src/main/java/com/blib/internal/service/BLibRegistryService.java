@@ -1,6 +1,7 @@
 package com.blib.internal.service;
 
 import net.minecraft.core.Holder;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -14,6 +15,8 @@ import java.util.function.Supplier;
 
 import com.blib.BLibMod;
 import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
+import com.blib.common.network.model.NetworkHandler;
+import com.blib.common.network.model.PacketDirection;
 import com.blib.common.registry.BLibHolder;
 
 @ApiStatus.Internal
@@ -35,6 +38,10 @@ public interface BLibRegistryService {
     <T extends Mob> void registerEntitySpawnData(BLibEntitySpawnData<T> spawnData);
 
     void registerFurnaceFuel(BLibHolder<? extends ItemLike> holder, int burnTimeInTicks);
+
+    <T extends CustomPacketPayload> void registerPacketHandler(BLibMod mod, NetworkHandler<T> networkHandler);
+
+    <T extends CustomPacketPayload> void registerPacketDirection(BLibMod mod, PacketDirection<T> packetDirection);
 
     void registerReloadListener(BLibMod mod, String path, PreparableReloadListener listener);
 }

@@ -11,6 +11,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -32,14 +33,17 @@ import java.util.function.Supplier;
 
 import com.blib.BLibMod;
 import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
+import com.blib.common.network.model.NetworkHandler;
 import com.blib.common.registry.BLibHolder;
 import com.blib.internal.common.BLibDecoratedPotPatternCache;
 import com.blib.internal.common.registry.BLibRegistries;
 
 @ApiStatus.Internal
-class BLibFabricModContainer {
+public class BLibFabricModContainer {
 
     private final BLibMod mod;
+
+    private final List<NetworkHandler<?>> clientBoundPacketHandlers;
 
     private final List<Runnable> deferredAzureLibIdentityRegistrations;
 
@@ -57,6 +61,7 @@ class BLibFabricModContainer {
 
     public BLibFabricModContainer(BLibMod mod) {
         this.mod = mod;
+        this.clientBoundPacketHandlers = new ArrayList<>();
         this.deferredAzureLibIdentityRegistrations = new ArrayList<>();
         this.deferredCompostableRegistrations = new ArrayList<>();
         this.deferredDecoratedPotPatternRegistrations = new ArrayList<>();
@@ -64,6 +69,10 @@ class BLibFabricModContainer {
         this.deferredEntitySpawnDataRegistrations = new ArrayList<>();
         this.deferredFurnaceFuelRegistrations = new ArrayList<>();
         this.deferredRegistrations = new HashMap<>();
+    }
+
+    public List<NetworkHandler<?>> getClientBoundPacketHandlers() {
+        return clientBoundPacketHandlers;
     }
 
     /* package-private */ <T> void deferRegistration(BLibHolder<T> holder, Supplier<? extends T> valueFactory) {
@@ -124,7 +133,7 @@ class BLibFabricModContainer {
         });
     }
 
-    /* package-private */ void runDeferredRegistrations() {
+    /* package-private */ void finalizeRegistrations() {
         // Run primary registries.
         BLibRegistries.REGISTRATION_ORDER.forEach(this::runRegistrationsFor);
         // Run AzureLib identity registrations after primary registries are ran.
@@ -158,6 +167,10 @@ class BLibFabricModContainer {
 
     /* package-private */ void deferFurnaceFuelRegistration(BLibHolder<? extends ItemLike> holder, int burnTimeInTicks) {
         deferredFurnaceFuelRegistrations.add(() -> FuelRegistry.INSTANCE.add(holder.get(), burnTimeInTicks));
+    }
+
+    /* package-private */ <T extends CustomPacketPayload> void registerNetworkHandler(NetworkHandler<T> networkHandler) {
+        clientBoundPacketHandlers.add(networkHandler);
     }
 
     private void runRegistrationsFor(Registry<?> registry) {

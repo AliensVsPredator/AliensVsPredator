@@ -1,6 +1,7 @@
 package com.blib.common.registry.impl;
 
 import net.minecraft.world.level.ItemLike;
+import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.BLibMod;
 import com.blib.common.exception.BLibRegistrationException;
@@ -12,6 +13,7 @@ public class BLibFurnaceFuelRegistry {
 
     private final BLibMod mod;
 
+    @ApiStatus.Internal
     public BLibFurnaceFuelRegistry(BLibMod mod) {
         this.mod = mod;
     }

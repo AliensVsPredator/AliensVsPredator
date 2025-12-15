@@ -17,6 +17,7 @@ import com.blib.common.registry.impl.BLibDecoratedPotPatternRegistry;
 import com.blib.common.registry.impl.BLibEntityAttributeRegistry;
 import com.blib.common.registry.impl.BLibEntitySpawnRegistry;
 import com.blib.common.registry.impl.BLibFurnaceFuelRegistry;
+import com.blib.common.registry.impl.BLibNetworkRegistry;
 import com.blib.common.registry.impl.BLibReloadListenerRegistry;
 import com.blib.internal.common.registry.impl.BLibItemRegistry;
 
@@ -49,6 +50,10 @@ public class BLibRegistryAccess {
 
     public BLibFurnaceFuelRegistry createFurnaceFuelRegistry() {
         return new BLibFurnaceFuelRegistry(mod);
+    }
+
+    public BLibNetworkRegistry createNetworkRegistry() {
+        return new BLibNetworkRegistry(mod);
     }
 
     public BLibReloadListenerRegistry createReloadListenerRegistry() {

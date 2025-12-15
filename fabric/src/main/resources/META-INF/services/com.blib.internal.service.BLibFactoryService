@@ -1,1 +1,1 @@
-com.blib.fabric.service.impl.FabricBLibFactoryServiceImpl
+com.blib.fabric.internal.service.impl.FabricBLibFactoryServiceImpl

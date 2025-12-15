@@ -4,6 +4,7 @@ import com.just.core.functional.tuple.Tuple2;
 import com.just.core.functional.tuple.Tuple4;
 import mod.azure.azurelib.common.animation.cache.AzIdentityRegistry;
 import net.minecraft.core.Holder;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -19,6 +20,9 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
+import net.neoforged.neoforge.network.registration.HandlerThread;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -28,11 +32,17 @@ import java.util.function.Supplier;
 
 import com.blib.BLibMod;
 import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
+import com.blib.common.network.model.NetworkHandler;
+import com.blib.common.network.model.PacketDirection;
 import com.blib.common.registry.BLibHolder;
+import com.blib.common.util.codec.stream.adapter.JustStreamCodecToMojangStreamCodecAdapter;
 import com.blib.internal.service.BLibRegistryService;
-import com.blib.neoforge.data.BLibNeoForgeCompostableDataMapProvider;
-import com.blib.neoforge.data.BLibNeoForgeEntitySpawnDataProvider;
-import com.blib.neoforge.data.BLibNeoForgeFurnaceFuelDataMapProvider;
+import com.blib.neoforge.internal.data.BLibNeoForgeCompostableDataMapProvider;
+import com.blib.neoforge.internal.data.BLibNeoForgeEntitySpawnDataProvider;
+import com.blib.neoforge.internal.data.BLibNeoForgeFurnaceFuelDataMapProvider;
+import com.blib.neoforge.internal.event.impl.NeoForgeBLibLevelTickEvents;
+import com.blib.neoforge.internal.event.impl.NeoForgeBLibPlayerBlockBreakEvents;
+import com.blib.neoforge.internal.event.impl.NeoForgeBLibTagsUpdatedEvents;
 
 @ApiStatus.Internal
 public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
@@ -98,6 +108,17 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
     }
 
     @Override
+    public <T extends CustomPacketPayload> void registerPacketHandler(BLibMod mod, NetworkHandler<T> networkHandler) {
+        getModContainer(mod)
+            .registerPacketHandlers(networkHandler);
+    }
+
+    @Override
+    public <T extends CustomPacketPayload> void registerPacketDirection(BLibMod mod, PacketDirection<T> packetDirection) {
+        /* NO-OP */
+    }
+
+    @Override
     public void registerReloadListener(BLibMod mod, String path, PreparableReloadListener listener) {
         getModContainer(mod)
             .registerReloadListener(listener);
@@ -134,9 +155,50 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
             generator.addProvider(run, new BLibNeoForgeFurnaceFuelDataMapProvider(mod, packOutput, lookupProvider));
         });
 
+        eventBus.<RegisterPayloadHandlersEvent>addListener(event -> {
+            var registrar = event.registrar("1")
+                .executesOn(HandlerThread.NETWORK);
+
+            getModContainer(mod).getNetworkHandlers()
+                .forEach(networkHandler -> {
+                    @SuppressWarnings("unchecked")
+                    var typedNetworkHandler = (NetworkHandler<CustomPacketPayload>) networkHandler;
+
+                    switch (typedNetworkHandler) {
+                        case NetworkHandler.FromClient<CustomPacketPayload> handler -> registrar.playToServer(
+                            handler.type(),
+                            new JustStreamCodecToMojangStreamCodecAdapter<>(handler.codec()),
+                            (payload, context) -> context.enqueueWork(() -> handler.payloadConsumer().accept(payload, context.player()))
+                        );
+                        case NetworkHandler.FromEither<CustomPacketPayload> handler -> registrar.playBidirectional(
+                            handler.type(),
+                            new JustStreamCodecToMojangStreamCodecAdapter<>(handler.codec()),
+                            new DirectionalPayloadHandler<>(
+                                (payload, context) -> context.enqueueWork(
+                                    () -> handler.fromServerPayloadConsumer().accept(payload, context.player())
+                                ),
+                                (payload, context) -> context.enqueueWork(
+                                    () -> handler.fromClientPayloadConsumer().accept(payload, context.player())
+                                )
+                            )
+                        );
+                        case NetworkHandler.FromServer<CustomPacketPayload> handler -> registrar.playToClient(
+                            handler.type(),
+                            new JustStreamCodecToMojangStreamCodecAdapter<>(handler.codec()),
+                            (payload, context) -> context.enqueueWork(() -> handler.payloadConsumer().accept(payload, context.player()))
+                        );
+                    }
+                });
+        });
+
         NeoForge.EVENT_BUS.<AddReloadListenerEvent>addListener(
             event -> getModContainer(mod).getReloadListeners().forEach(event::addListener)
         );
+
+        NeoForgeBLibLevelTickEvents.AFTER.initialize();
+        NeoForgeBLibLevelTickEvents.BEFORE.initialize();
+        NeoForgeBLibPlayerBlockBreakEvents.BEFORE.initialize();
+        NeoForgeBLibTagsUpdatedEvents.ROUTER.initialize();
     }
 
     private void onRegisterEntityAttributes(BLibMod mod, EntityAttributeCreationEvent event) {

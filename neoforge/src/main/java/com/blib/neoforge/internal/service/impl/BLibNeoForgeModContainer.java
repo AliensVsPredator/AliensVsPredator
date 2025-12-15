@@ -4,6 +4,7 @@ import com.just.core.functional.tuple.Tuple2;
 import com.just.core.functional.tuple.Tuple4;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 
 import com.blib.BLibMod;
 import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
+import com.blib.common.network.model.NetworkHandler;
 import com.blib.common.registry.BLibHolder;
 import com.blib.internal.common.BLibDecoratedPotPatternCache;
 import com.blib.internal.common.registry.BLibRegistries;
@@ -53,6 +55,8 @@ public class BLibNeoForgeModContainer {
 
     private final List<BLibEntitySpawnData<?>> entitySpawnDataEntries;
 
+    private final List<NetworkHandler<?>> networkHandlers;
+
     private final List<PreparableReloadListener> reloadListeners;
 
     public BLibNeoForgeModContainer(BLibMod mod) {
@@ -72,6 +76,7 @@ public class BLibNeoForgeModContainer {
         this.entityAttributeSupplierPairs = new ArrayList<>();
         this.entitySpawnDataEntries = new ArrayList<>();
         this.furnaceFuelData = new ArrayList<>();
+        this.networkHandlers = new ArrayList<>();
         this.reloadListeners = new ArrayList<>();
     }
 
@@ -108,6 +113,10 @@ public class BLibNeoForgeModContainer {
         return Collections.unmodifiableList(entityAttributeSupplierPairs);
     }
 
+    /* package-private */ List<NetworkHandler<?>> getNetworkHandlers() {
+        return networkHandlers;
+    }
+
     /* package-private */ List<PreparableReloadListener> getReloadListeners() {
         return reloadListeners;
     }
@@ -139,6 +148,10 @@ public class BLibNeoForgeModContainer {
 
     /* package-private */ <T extends Mob> void registerEntitySpawnData(BLibEntitySpawnData<T> spawnData) {
         entitySpawnDataEntries.add(spawnData);
+    }
+
+    /* package-private */ <T extends CustomPacketPayload> void registerPacketHandlers(NetworkHandler<T> networkHandler) {
+        networkHandlers.add(networkHandler);
     }
 
     /* package-private */ void registerReloadListener(PreparableReloadListener listener) {

@@ -1,0 +1,25 @@
+package com.blib.fabric.internal.service.impl;
+
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SpawnEggItem;
+import org.jetbrains.annotations.ApiStatus;
+
+import java.util.function.Supplier;
+
+import com.blib.internal.service.BLibFactoryService;
+
+@ApiStatus.Internal
+public class FabricBLibFactoryServiceImpl implements BLibFactoryService {
+
+    @Override
+    public <E extends Mob> Supplier<SpawnEggItem> createSpawnEggSupplier(
+        Supplier<EntityType<E>> entityType,
+        int primaryEggColor,
+        int secondaryEggColor,
+        Item.Properties itemProperties
+    ) {
+        return () -> new SpawnEggItem(entityType.get(), primaryEggColor, secondaryEggColor, itemProperties);
+    }
+}

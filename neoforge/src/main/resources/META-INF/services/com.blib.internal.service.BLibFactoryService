@@ -1,1 +1,1 @@
-com.blib.neoforge.service.impl.NeoForgeBLibFactoryServiceImpl
+com.blib.neoforge.internal.service.impl.NeoForgeBLibFactoryServiceImpl

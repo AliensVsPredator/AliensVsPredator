@@ -7,14 +7,12 @@ import com.blib.BLib;
 import com.blib.BLibMod;
 import com.blib.internal.service.BLibInternalServices;
 import com.blib.internal.service.BLibModService;
-import com.blib.neoforge.service.impl.NeoForgeBLibEventServiceImpl;
 
 @ApiStatus.Internal
 public class BLibNeoForgeModServiceImpl implements BLibModService {
 
     @Override
     public void postInitialize(BLibMod mod) {
-        var event = ((NeoForgeBLibEventServiceImpl) BLibInternalServices.EVENT);
         var registry = (NeoForgeBLibRegistryServiceImpl) BLibInternalServices.REGISTRY;
         var modContainerOptional = ModList.get().getModContainerById(mod.id());
 
@@ -28,11 +26,9 @@ public class BLibNeoForgeModServiceImpl implements BLibModService {
         var eventBus = modContainer.getEventBus();
 
         if (eventBus != null) {
-            registry.finalize(mod, modContainer.getEventBus());
+            registry.finalize(mod, eventBus);
         } else {
             BLib.LOGGER.warn("Unable to finalize registration for mod '{}' because its event bus is null.", mod.id());
         }
-
-        event.finalize(mod);
     }
 }

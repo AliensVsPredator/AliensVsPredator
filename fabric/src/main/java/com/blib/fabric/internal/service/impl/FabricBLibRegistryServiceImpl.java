@@ -1,8 +1,11 @@
 package com.blib.fabric.internal.service.impl;
 
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.core.Holder;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
@@ -25,7 +28,10 @@ import java.util.function.Supplier;
 
 import com.blib.BLibMod;
 import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
+import com.blib.common.network.model.NetworkHandler;
+import com.blib.common.network.model.PacketDirection;
 import com.blib.common.registry.BLibHolder;
+import com.blib.common.util.codec.stream.adapter.JustStreamCodecToMojangStreamCodecAdapter;
 import com.blib.internal.service.BLibRegistryService;
 
 @ApiStatus.Internal
@@ -89,6 +95,51 @@ public class FabricBLibRegistryServiceImpl implements BLibRegistryService {
     }
 
     @Override
+    public <T extends CustomPacketPayload> void registerPacketHandler(BLibMod mod, NetworkHandler<T> networkHandler) {
+        switch (networkHandler) {
+            case NetworkHandler.FromClient<T> handler -> ServerPlayNetworking.registerGlobalReceiver(
+                networkHandler.type(),
+                (payload, context) -> context.server().execute(() -> handler.payloadConsumer().accept(payload, context.player()))
+            );
+            case NetworkHandler.FromEither<T> handler -> {
+                ServerPlayNetworking.registerGlobalReceiver(
+                    networkHandler.type(),
+                    (payload, context) -> context.server()
+                        .execute(() -> handler.fromClientPayloadConsumer().accept(payload, context.player()))
+                );
+
+                getModContainer(mod).registerNetworkHandler(networkHandler);
+            }
+            case NetworkHandler.FromServer<T> handler -> getModContainer(mod).registerNetworkHandler(networkHandler);
+        }
+    }
+
+    @Override
+    public <T extends CustomPacketPayload> void registerPacketDirection(BLibMod mod, PacketDirection<T> packetDirection) {
+        var handleClient = false;
+        var handleServer = false;
+        var codec = new JustStreamCodecToMojangStreamCodecAdapter<>(packetDirection.codec());
+        var type = packetDirection.type();
+
+        switch (packetDirection) {
+            case PacketDirection.BI<T> ignored -> {
+                handleClient = true;
+                handleServer = true;
+            }
+            case PacketDirection.C2S<T> ignored -> handleServer = true;
+            case PacketDirection.S2C<T> ignored -> handleClient = true;
+        }
+
+        if (handleClient) {
+            PayloadTypeRegistry.playS2C().register(type, codec);
+        }
+
+        if (handleServer) {
+            PayloadTypeRegistry.playC2S().register(type, codec);
+        }
+    }
+
+    @Override
     public void registerReloadListener(BLibMod mod, String path, PreparableReloadListener listener) {
         var resourceLocation = mod.resources().createLocation(path);
         var adaptedListener = new IdentifiableResourceReloadListener() {
@@ -122,16 +173,16 @@ public class FabricBLibRegistryServiceImpl implements BLibRegistryService {
             .registerReloadListener(adaptedListener);
     }
 
-    /* package-private */ void finalize(BLibMod mod) {
-        getModContainer(mod)
-            .runDeferredRegistrations();
-    }
-
-    private BLibFabricModContainer getModContainer(BLibHolder<?> holder) {
+    public BLibFabricModContainer getModContainer(BLibHolder<?> holder) {
         return getModContainer(holder.getRegistry().getMod());
     }
 
-    private BLibFabricModContainer getModContainer(BLibMod mod) {
+    public BLibFabricModContainer getModContainer(BLibMod mod) {
         return modToContainerMap.computeIfAbsent(mod, $ -> new BLibFabricModContainer(mod));
+    }
+
+    /* package-private */ void finalize(BLibMod mod) {
+        getModContainer(mod)
+            .finalizeRegistrations();
     }
 }

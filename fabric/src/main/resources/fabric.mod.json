@@ -15,13 +15,13 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.blib.fabric.BLibFabric"
+			"com.blib.fabric.internal.BLibFabric"
 		],
 		"client": [
-			"com.blib.fabric.client.BLibFabricClient"
+			"com.blib.fabric.internal.client.BLibFabricClient"
 		],
 		"fabric-datagen": [
-			"com.blib.fabric.data.BLibDataGenerator"
+			"com.blib.fabric.internal.data.BLibDataGenerator"
 		],
 		"rei_client": [],
 		"jei_mod_plugin": []
