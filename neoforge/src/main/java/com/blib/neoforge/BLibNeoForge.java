@@ -1,4 +1,4 @@
-package com.avp.neoforge;
+package com.blib.neoforge;
 
 import com.avp.neoforge.service.NeoForgeRegistryService;
 import com.avp.service.Services;
@@ -19,18 +19,18 @@ import com.blib.common.network.model.NetworkHandler;
 import com.blib.common.util.codec.stream.adapter.JustStreamCodecToMojangStreamCodecAdapter;
 
 @Mod(BLib.MOD_ID)
-public class AVPNeoForge {
+public class BLibNeoForge {
 
     private static final NeoForgeRegistryService REGISTRY = (NeoForgeRegistryService) Services.REGISTRY;
 
-    public AVPNeoForge(IEventBus modBus) {
+    public BLibNeoForge(IEventBus modBus) {
         BLib.initialize();
 
         // Mod bus events.
-        modBus.addListener(AVPNeoForge::registerPayloadHandlers);
+        modBus.addListener(BLibNeoForge::registerPayloadHandlers);
 
         // Game bus events.
-        NeoForge.EVENT_BUS.addListener(AVPNeoForge::registerPlayerTrackingEntityHandler);
+        NeoForge.EVENT_BUS.addListener(BLibNeoForge::registerPlayerTrackingEntityHandler);
     }
 
     public static void registerPlayerTrackingEntityHandler(PlayerEvent.StartTracking event) {
