@@ -115,11 +115,6 @@ processResources {
 
     inputs.properties(expandProps)
 
-    from("$rootDir/docs/avp/") {
-        into "assets/avp/books/avp/"
-        exclude '.assets/item/**'
-    }
-
     doLast {
         def jsonMinifyStart = System.currentTimeMillis()
         def jsonMinified = 0
