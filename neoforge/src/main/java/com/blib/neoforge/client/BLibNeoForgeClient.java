@@ -1,4 +1,4 @@
-package com.avp.neoforge.client;
+package com.blib.neoforge.client;
 
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.particle.ParticleEngine;
@@ -28,14 +28,14 @@ import com.blib.neoforge.service.impl.NeoForgeBLibClientRegistryServiceImpl;
 import com.blib.service.BLibServices;
 
 @EventBusSubscriber(modid = BLib.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-public class AVPNeoForgeClient {
+public class BLibNeoForgeClient {
 
     private static final NeoForgeBLibClientRegistryServiceImpl CLIENT_REGISTRY =
         (NeoForgeBLibClientRegistryServiceImpl) BLibServices.CLIENT_REGISTRY;
 
     static {
         // Client game bus events.
-        NeoForge.EVENT_BUS.addListener(AVPNeoForgeClient::onClientTick);
+        NeoForge.EVENT_BUS.addListener(BLibNeoForgeClient::onClientTick);
     }
 
     @SubscribeEvent
