@@ -1,4 +1,4 @@
-package com.blib.config;
+package com.blib.common.config;
 
 import mod.azure.azurelib.common.config.Config;
 import mod.azure.azurelib.common.config.ConfigHolder;

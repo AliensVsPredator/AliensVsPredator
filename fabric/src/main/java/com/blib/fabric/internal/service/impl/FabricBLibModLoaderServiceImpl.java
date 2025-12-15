@@ -4,8 +4,8 @@ import net.fabricmc.loader.api.FabricLoader;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import com.blib.common.mod.loader.model.ModLoaderType;
 import com.blib.common.model.Version;
+import com.blib.common.model.loader.ModLoaderType;
 import com.blib.internal.service.BLibModLoaderService;
 import com.blib.service.model.DistributionEnvironmentType;
 import com.blib.service.model.ReleaseEnvironmentType;

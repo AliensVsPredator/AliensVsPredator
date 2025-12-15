@@ -1,4 +1,4 @@
-package com.blib.event;
+package com.blib.common.event;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;

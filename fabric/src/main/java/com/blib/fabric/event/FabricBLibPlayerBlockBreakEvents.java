@@ -2,8 +2,8 @@ package com.blib.fabric.event;
 
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 
-import com.blib.event.BLibBlockBreakEvent;
-import com.blib.event.BLibEventRouter;
+import com.blib.common.event.BLibBlockBreakEvent;
+import com.blib.common.event.BLibEventRouter;
 
 public class FabricBLibPlayerBlockBreakEvents {
 

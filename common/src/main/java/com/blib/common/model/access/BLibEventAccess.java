@@ -1,10 +1,10 @@
-package com.blib.common.registry;
+package com.blib.common.model.access;
 
 import com.blib.BLibMod;
-import com.blib.event.BLibBlockBreakEvent;
-import com.blib.event.BLibEventRouter;
-import com.blib.event.BLibLevelTickEvent;
-import com.blib.event.BLibTagsUpdatedEvent;
+import com.blib.common.event.BLibBlockBreakEvent;
+import com.blib.common.event.BLibEventRouter;
+import com.blib.common.event.BLibLevelTickEvent;
+import com.blib.common.event.BLibTagsUpdatedEvent;
 import com.blib.internal.service.BLibInternalServices;
 
 public class BLibEventAccess {

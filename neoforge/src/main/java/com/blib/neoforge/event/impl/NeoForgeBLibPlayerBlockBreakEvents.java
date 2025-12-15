@@ -4,7 +4,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.level.BlockEvent;
 
-import com.blib.event.BLibBlockBreakEvent;
+import com.blib.common.event.BLibBlockBreakEvent;
 import com.blib.neoforge.event.NeoForgeBLibEventRouter;
 
 public class NeoForgeBLibPlayerBlockBreakEvents {

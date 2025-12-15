@@ -1,4 +1,4 @@
-package com.blib.common.registry;
+package com.blib.common.model.access;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;

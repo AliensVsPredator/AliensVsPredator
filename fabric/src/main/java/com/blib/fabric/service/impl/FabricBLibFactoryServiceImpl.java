@@ -7,7 +7,7 @@ import net.minecraft.world.item.SpawnEggItem;
 
 import java.util.function.Supplier;
 
-import com.blib.service.BLibFactoryService;
+import com.blib.internal.service.BLibFactoryService;
 
 public class FabricBLibFactoryServiceImpl implements BLibFactoryService {
 

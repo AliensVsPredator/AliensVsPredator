@@ -5,8 +5,8 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.server.level.ServerLevel;
 
-import com.blib.event.BLibEventRouter;
-import com.blib.event.BLibLevelTickEvent;
+import com.blib.common.event.BLibEventRouter;
+import com.blib.common.event.BLibLevelTickEvent;
 import com.blib.internal.service.BLibInternalServices;
 import com.blib.service.model.DistributionEnvironmentType;
 

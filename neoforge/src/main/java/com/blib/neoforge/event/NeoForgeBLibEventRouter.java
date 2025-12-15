@@ -3,7 +3,7 @@ package com.blib.neoforge.event;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.blib.event.BLibEventRouter;
+import com.blib.common.event.BLibEventRouter;
 
 public abstract class NeoForgeBLibEventRouter<Dispatcher> implements BLibEventRouter<Dispatcher> {
 

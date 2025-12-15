@@ -1,4 +1,4 @@
-package com.blib.common.mod;
+package com.blib.common.model;
 
 public enum BLibModState {
     INITIALIZED,

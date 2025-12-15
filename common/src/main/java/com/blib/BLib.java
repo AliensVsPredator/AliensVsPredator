@@ -5,8 +5,8 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blib.common.mod.loader.model.ModLoaderType;
 import com.blib.common.model.Version;
+import com.blib.common.model.loader.ModLoaderType;
 import com.blib.common.network.BLibPacketDirections;
 import com.blib.common.network.BLibServerPacketHandlers;
 import com.blib.common.registry.init.BLibDataKeys;

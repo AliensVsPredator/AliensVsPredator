@@ -2,6 +2,7 @@ package com.blib.common.registry;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,7 +18,7 @@ import java.util.function.Supplier;
 
 import com.blib.BLibMod;
 import com.blib.common.exception.BLibRegistrationException;
-import com.blib.common.mod.BLibModState;
+import com.blib.common.model.BLibModState;
 import com.blib.internal.service.BLibInternalServices;
 
 public class BLibRegistry<T> {
@@ -32,7 +33,8 @@ public class BLibRegistry<T> {
 
     private final List<Consumer<BLibHolder<? extends T>>> listeners;
 
-    protected BLibRegistry(BLibMod mod, Registry<? super T> registry) {
+    @ApiStatus.Internal
+    public BLibRegistry(BLibMod mod, Registry<? super T> registry) {
         this.pathToHolderMap = Collections.synchronizedMap(new LinkedHashMap<>());
         this.pathToValueFactoryMap = new HashMap<>();
         this.mod = mod;

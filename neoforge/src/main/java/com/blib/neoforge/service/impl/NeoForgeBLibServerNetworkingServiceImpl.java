@@ -5,7 +5,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-import com.blib.service.BLibServerNetworkingService;
+import com.blib.internal.service.BLibServerNetworkingService;
 
 public class NeoForgeBLibServerNetworkingServiceImpl implements BLibServerNetworkingService {
 

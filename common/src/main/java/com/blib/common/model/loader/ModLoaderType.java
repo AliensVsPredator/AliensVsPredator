@@ -1,4 +1,4 @@
-package com.blib.common.mod.loader.model;
+package com.blib.common.model.loader;
 
 public enum ModLoaderType {
     FABRIC,

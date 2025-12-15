@@ -8,7 +8,7 @@ import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 
 import java.util.function.Supplier;
 
-import com.blib.service.BLibFactoryService;
+import com.blib.internal.service.BLibFactoryService;
 
 public class NeoForgeBLibFactoryServiceImpl implements BLibFactoryService {
 

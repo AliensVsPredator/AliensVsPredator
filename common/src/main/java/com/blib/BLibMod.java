@@ -3,11 +3,11 @@ package com.blib;
 import org.jetbrains.annotations.Nullable;
 
 import com.blib.common.exception.BLibModInitializationException;
-import com.blib.common.mod.BLibModState;
+import com.blib.common.model.BLibModState;
 import com.blib.common.model.Version;
-import com.blib.common.registry.BLibEventAccess;
-import com.blib.common.registry.BLibRegistryAccess;
-import com.blib.common.registry.BLibResourceAccess;
+import com.blib.common.model.access.BLibEventAccess;
+import com.blib.common.model.access.BLibRegistryAccess;
+import com.blib.common.model.access.BLibResourceAccess;
 import com.blib.internal.service.BLibInternalServices;
 
 public class BLibMod {

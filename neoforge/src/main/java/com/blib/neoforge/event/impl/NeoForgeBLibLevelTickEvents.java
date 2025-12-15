@@ -3,7 +3,7 @@ package com.blib.neoforge.event.impl;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 
-import com.blib.event.BLibLevelTickEvent;
+import com.blib.common.event.BLibLevelTickEvent;
 import com.blib.neoforge.event.NeoForgeBLibEventRouter;
 
 public class NeoForgeBLibLevelTickEvents {

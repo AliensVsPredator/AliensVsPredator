@@ -4,7 +4,7 @@ import net.minecraft.world.level.ItemLike;
 
 import com.blib.BLibMod;
 import com.blib.common.exception.BLibRegistrationException;
-import com.blib.common.mod.BLibModState;
+import com.blib.common.model.BLibModState;
 import com.blib.common.registry.BLibHolder;
 import com.blib.internal.service.BLibInternalServices;
 

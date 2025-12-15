@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 import com.blib.BLib;
 import com.blib.BLibMod;
 import com.blib.common.gameplay.DefaultDispenseSpawnEggItemBehavior;
-import com.blib.common.mod.loader.model.ModLoaderType;
+import com.blib.common.model.loader.ModLoaderType;
 import com.blib.common.registry.BLibHolder;
 import com.blib.common.registry.BLibRegistry;
 
