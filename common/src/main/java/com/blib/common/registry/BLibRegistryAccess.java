@@ -3,7 +3,8 @@ package com.blib.common.registry;
 import com.blib.BLibMod;
 import com.blib.common.registry.impl.BLibCompostableRegistry;
 import com.blib.common.registry.impl.BLibDecoratedPotPatternRegistry;
-import com.blib.common.registry.impl.BLibEntityTypeRegistry;
+import com.blib.common.registry.impl.BLibEntityAttributeRegistry;
+import com.blib.common.registry.impl.BLibEntitySpawnRegistry;
 import com.blib.common.registry.impl.BLibFurnaceFuelRegistry;
 import com.blib.common.registry.impl.BLibItemRegistry;
 import com.blib.common.registry.impl.BLibReloadListenerRegistry;
@@ -35,8 +36,12 @@ public class BLibRegistryAccess {
         return new BLibDecoratedPotPatternRegistry(mod);
     }
 
-    public BLibEntityTypeRegistry createEntityTypeRegistry() {
-        return bind(new BLibEntityTypeRegistry(mod));
+    public BLibEntityAttributeRegistry createEntityAttributeRegistry() {
+        return new BLibEntityAttributeRegistry(mod);
+    }
+
+    public BLibEntitySpawnRegistry createEntitySpawnRegistry() {
+        return new BLibEntitySpawnRegistry(mod);
     }
 
     public BLibFurnaceFuelRegistry createFurnaceFuelRegistry() {
@@ -54,11 +59,7 @@ public class BLibRegistryAccess {
     public <T> BLibRegistry<T> create(Registry<T> registry) {
         BLibRegistry<T> blibRegistry;
 
-        if (registry == BuiltInRegistries.ENTITY_TYPE) {
-            @SuppressWarnings("unchecked")
-            var entityTypeRegistry = (BLibRegistry<T>) createEntityTypeRegistry();
-            blibRegistry = entityTypeRegistry;
-        } else if (registry == BuiltInRegistries.ITEM) {
+        if (registry == BuiltInRegistries.ITEM) {
             @SuppressWarnings("unchecked")
             var itemRegistry = (BLibRegistry<T>) createItemRegistry();
             blibRegistry = itemRegistry;
