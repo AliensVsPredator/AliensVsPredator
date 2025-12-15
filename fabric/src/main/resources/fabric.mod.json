@@ -7,8 +7,8 @@
 	"accessWidener": "blib.accesswidener",
 	"authors": ["Stargazer Studios"],
 	"contact": {
-		"homepage": "https://www.curseforge.com/minecraft/mc-mods/avp-regenesis",
-		"sources": "https://github.com/AliensVsPredator/AliensVsPredator"
+		"homepage": "https://www.curseforge.com/minecraft/mc-mods/blib",
+		"sources": "https://github.com/Stargazer-Studios/BLib"
 	},
 	"license": "${license}",
 	"icon": "${icon}",
