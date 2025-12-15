@@ -40,4 +40,9 @@ public class BLibNeoForgeFurnaceFuelDataMapProvider extends DataMapProvider {
                 )
             );
     }
+
+    @Override
+    public @NotNull String getName() {
+        return mod.getId() + " Furnace Fuel Data Maps";
+    }
 }

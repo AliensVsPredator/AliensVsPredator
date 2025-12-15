@@ -38,44 +38,62 @@ public class BLibNeoForgeEntitySpawnDataProvider implements DataProvider.Factory
     public @NotNull DatapackBuiltinEntriesProvider create(@NotNull PackOutput packOutput) {
         var registry = (NeoForgeBLibRegistryServiceImpl) BLibInternalServices.REGISTRY;
 
-        return new DatapackBuiltinEntriesProvider(
-            packOutput,
-            lookupProvider,
-            new RegistrySetBuilder()
-                .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, bootstrap -> {
-                    var biomes = bootstrap.lookup(Registries.BIOME);
-                    for (var spawnData : registry.getModContainer(mod).getEntitySpawnDataEntries()) {
-                        if (spawnData.isConfigDisabled()) {
-                            continue;
-                        }
+        var registrySetBuilder = new RegistrySetBuilder()
+            .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, bootstrap -> {
+                var biomes = bootstrap.lookup(Registries.BIOME);
 
-                        var holder = spawnData.getEntityTypeHolder();
-                        var entityType = holder.get();
-                        var entityTypePath = BuiltInRegistries.ENTITY_TYPE.getKey(entityType).getPath();
-                        var spawnKey = ResourceKey.create(
-                            NeoForgeRegistries.Keys.BIOME_MODIFIERS,
-                            mod.createResourceLocation("add_spawns_" + entityTypePath)
-                        );
-                        var config = spawnData.getConfigData();
-                        var spawnSettings = config.spawnSettings();
+                for (var spawnData : registry.getModContainer(mod).getEntitySpawnDataEntries()) {
+                    if (spawnData.isConfigDisabled()) {
+                        continue;
+                    }
 
-                        bootstrap.register(
-                            spawnKey,
-                            new BiomeModifiers.AddSpawnsBiomeModifier(
-                                biomes.getOrThrow(config.biomeTagKey()),
-                                List.of(
-                                    new MobSpawnSettings.SpawnerData(
-                                        entityType,
-                                        spawnSettings.weight(),
-                                        spawnSettings.minGroupSize(),
-                                        spawnSettings.maxGroupSize()
-                                    )
+                    var holder = spawnData.getEntityTypeHolder();
+                    var entityType = holder.get();
+                    var entityTypePath = BuiltInRegistries.ENTITY_TYPE.getKey(entityType).getPath();
+                    var spawnKey = ResourceKey.create(
+                        NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+                        mod.createResourceLocation("add_spawns_" + entityTypePath)
+                    );
+                    var config = spawnData.getConfigData();
+                    var spawnSettings = config.spawnSettings();
+
+                    bootstrap.register(
+                        spawnKey,
+                        new BiomeModifiers.AddSpawnsBiomeModifier(
+                            biomes.getOrThrow(config.biomeTagKey()),
+                            List.of(
+                                new MobSpawnSettings.SpawnerData(
+                                    entityType,
+                                    spawnSettings.weight(),
+                                    spawnSettings.minGroupSize(),
+                                    spawnSettings.maxGroupSize()
                                 )
                             )
-                        );
-                    }
-                }),
-            Set.of(mod.getId())
-        );
+                        )
+                    );
+                }
+            });
+
+        return new Provider(mod, packOutput, lookupProvider, registrySetBuilder);
+    }
+
+    static class Provider extends DatapackBuiltinEntriesProvider {
+
+        private final BLibMod mod;
+
+        public Provider(
+            BLibMod mod,
+            PackOutput output,
+            CompletableFuture<HolderLookup.Provider> registries,
+            RegistrySetBuilder datapackEntriesBuilder
+        ) {
+            super(output, registries, datapackEntriesBuilder, Set.of(mod.getId()));
+            this.mod = mod;
+        }
+
+        @Override
+        public @NotNull String getName() {
+            return mod.getId() + " Entity Spawn Data Registries";
+        }
     }
 }
