@@ -1,8 +1,10 @@
 package com.blib.common.registry;
 
 import com.blib.BLibMod;
+import com.blib.event.BLibBlockBreakEvent;
 import com.blib.event.BLibEventRouter;
-import com.blib.internal.service.BLibEventService;
+import com.blib.event.BLibLevelTickEvent;
+import com.blib.event.BLibTagsUpdatedEvent;
 import com.blib.internal.service.BLibInternalServices;
 
 public class BLibEventAccess {
@@ -13,19 +15,19 @@ public class BLibEventAccess {
         this.mod = mod;
     }
 
-    public BLibEventRouter<BLibEventService.LevelTickEvent> afterLevelTick() {
+    public BLibEventRouter<BLibLevelTickEvent> afterLevelTick() {
         return BLibInternalServices.EVENT.afterLevelTick();
     }
 
-    public BLibEventRouter<BLibEventService.BlockBreakEvent> beforeBlockBreak() {
+    public BLibEventRouter<BLibBlockBreakEvent> beforeBlockBreak() {
         return BLibInternalServices.EVENT.beforeBlockBreak();
     }
 
-    public BLibEventRouter<BLibEventService.LevelTickEvent> beforeLevelTick() {
+    public BLibEventRouter<BLibLevelTickEvent> beforeLevelTick() {
         return BLibInternalServices.EVENT.beforeLevelTick();
     }
 
-    public BLibEventRouter<BLibEventService.TagsUpdatedEvent> onTagsUpdated() {
+    public BLibEventRouter<BLibTagsUpdatedEvent> onTagsUpdated() {
         return BLibInternalServices.EVENT.onTagsUpdated();
     }
 }

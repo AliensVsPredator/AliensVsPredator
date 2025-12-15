@@ -3,15 +3,15 @@ package com.blib.neoforge.event.impl;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 
-import com.blib.internal.service.BLibEventService;
+import com.blib.event.BLibLevelTickEvent;
 import com.blib.neoforge.event.NeoForgeBLibEventRouter;
 
 public class NeoForgeBLibLevelTickEvents {
 
-    public static final NeoForgeBLibEventRouter<BLibEventService.LevelTickEvent> AFTER = new NeoForgeBLibEventRouter<>() {
+    public static final NeoForgeBLibEventRouter<BLibLevelTickEvent> AFTER = new NeoForgeBLibEventRouter<>() {
 
         // TODO: See if we can pass something other than () -> true for this event in the future.
-        private final BLibEventService.LevelTickEvent dispatcher = (level) -> NeoForge.EVENT_BUS.post(
+        private final BLibLevelTickEvent dispatcher = (level) -> NeoForge.EVENT_BUS.post(
             new LevelTickEvent.Post(() -> true, level)
         );
 
@@ -25,15 +25,15 @@ public class NeoForgeBLibLevelTickEvents {
         }
 
         @Override
-        public BLibEventService.LevelTickEvent dispatcher() {
+        public BLibLevelTickEvent dispatcher() {
             return dispatcher;
         }
     };
 
-    public static final NeoForgeBLibEventRouter<BLibEventService.LevelTickEvent> BEFORE = new NeoForgeBLibEventRouter<>() {
+    public static final NeoForgeBLibEventRouter<BLibLevelTickEvent> BEFORE = new NeoForgeBLibEventRouter<>() {
 
         // TODO: See if we can pass something other than () -> true for this event in the future.
-        private final BLibEventService.LevelTickEvent dispatcher = (level) -> NeoForge.EVENT_BUS.post(
+        private final BLibLevelTickEvent dispatcher = (level) -> NeoForge.EVENT_BUS.post(
             new LevelTickEvent.Pre(() -> true, level)
         );
 
@@ -47,7 +47,7 @@ public class NeoForgeBLibLevelTickEvents {
         }
 
         @Override
-        public BLibEventService.LevelTickEvent dispatcher() {
+        public BLibLevelTickEvent dispatcher() {
             return dispatcher;
         }
     };

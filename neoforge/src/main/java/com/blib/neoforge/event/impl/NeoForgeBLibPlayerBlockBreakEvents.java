@@ -4,14 +4,14 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.level.BlockEvent;
 
-import com.blib.internal.service.BLibEventService;
+import com.blib.event.BLibBlockBreakEvent;
 import com.blib.neoforge.event.NeoForgeBLibEventRouter;
 
 public class NeoForgeBLibPlayerBlockBreakEvents {
 
-    public static final NeoForgeBLibEventRouter<BLibEventService.BlockBreakEvent> BEFORE = new NeoForgeBLibEventRouter<>() {
+    public static final NeoForgeBLibEventRouter<BLibBlockBreakEvent> BEFORE = new NeoForgeBLibEventRouter<>() {
 
-        private final BLibEventService.BlockBreakEvent dispatcher = (level, player, blockPos, blockState) -> !NeoForge.EVENT_BUS.post(
+        private final BLibBlockBreakEvent dispatcher = (level, player, blockPos, blockState) -> !NeoForge.EVENT_BUS.post(
             new BlockEvent.BreakEvent(level, blockPos, blockState, player)
         ).isCanceled();
 
@@ -25,7 +25,7 @@ public class NeoForgeBLibPlayerBlockBreakEvents {
         }
 
         @Override
-        public BLibEventService.BlockBreakEvent dispatcher() {
+        public BLibBlockBreakEvent dispatcher() {
             return dispatcher;
         }
     };

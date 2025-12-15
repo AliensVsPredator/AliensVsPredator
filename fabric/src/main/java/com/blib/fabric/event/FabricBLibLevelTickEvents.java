@@ -6,15 +6,15 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.server.level.ServerLevel;
 
 import com.blib.event.BLibEventRouter;
-import com.blib.internal.service.BLibEventService;
+import com.blib.event.BLibLevelTickEvent;
 import com.blib.internal.service.BLibInternalServices;
 import com.blib.service.model.DistributionEnvironmentType;
 
 public class FabricBLibLevelTickEvents {
 
-    public static final BLibEventRouter<BLibEventService.LevelTickEvent> AFTER = new BLibEventRouter<>() {
+    public static final BLibEventRouter<BLibLevelTickEvent> AFTER = new BLibEventRouter<>() {
 
-        private final BLibEventService.LevelTickEvent dispatcher = (level) -> {
+        private final BLibLevelTickEvent dispatcher = (level) -> {
             if (level.isClientSide) {
                 ClientTickEvents.END_WORLD_TICK.invoker().onEndTick((ClientLevel) level);
             } else {
@@ -23,12 +23,12 @@ public class FabricBLibLevelTickEvents {
         };
 
         @Override
-        public BLibEventService.LevelTickEvent dispatcher() {
+        public BLibLevelTickEvent dispatcher() {
             return dispatcher;
         }
 
         @Override
-        public void register(BLibEventService.LevelTickEvent levelTickEvent) {
+        public void register(BLibLevelTickEvent levelTickEvent) {
             if (BLibInternalServices.MOD_LOADER.getDistributionEnvironmentType() == DistributionEnvironmentType.CLIENT) {
                 ClientTickEvents.END_WORLD_TICK.register(levelTickEvent::invoke);
             }
@@ -37,9 +37,9 @@ public class FabricBLibLevelTickEvents {
         }
     };
 
-    public static final BLibEventRouter<BLibEventService.LevelTickEvent> BEFORE = new BLibEventRouter<>() {
+    public static final BLibEventRouter<BLibLevelTickEvent> BEFORE = new BLibEventRouter<>() {
 
-        private final BLibEventService.LevelTickEvent dispatcher = (level) -> {
+        private final BLibLevelTickEvent dispatcher = (level) -> {
             if (level.isClientSide) {
                 ClientTickEvents.START_WORLD_TICK.invoker().onStartTick((ClientLevel) level);
             } else {
@@ -48,12 +48,12 @@ public class FabricBLibLevelTickEvents {
         };
 
         @Override
-        public BLibEventService.LevelTickEvent dispatcher() {
+        public BLibLevelTickEvent dispatcher() {
             return dispatcher;
         }
 
         @Override
-        public void register(BLibEventService.LevelTickEvent levelTickEvent) {
+        public void register(BLibLevelTickEvent levelTickEvent) {
             if (BLibInternalServices.MOD_LOADER.getDistributionEnvironmentType() == DistributionEnvironmentType.CLIENT) {
                 ClientTickEvents.START_WORLD_TICK.register(levelTickEvent::invoke);
             }

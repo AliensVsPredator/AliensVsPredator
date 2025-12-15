@@ -1,7 +1,10 @@
 package com.blib.neoforge.service.impl;
 
 import com.blib.BLibMod;
+import com.blib.event.BLibBlockBreakEvent;
 import com.blib.event.BLibEventRouter;
+import com.blib.event.BLibLevelTickEvent;
+import com.blib.event.BLibTagsUpdatedEvent;
 import com.blib.internal.service.BLibEventService;
 import com.blib.neoforge.event.impl.NeoForgeBLibLevelTickEvents;
 import com.blib.neoforge.event.impl.NeoForgeBLibPlayerBlockBreakEvents;
@@ -17,22 +20,22 @@ public class NeoForgeBLibEventServiceImpl implements BLibEventService {
     }
 
     @Override
-    public BLibEventRouter<LevelTickEvent> afterLevelTick() {
+    public BLibEventRouter<BLibLevelTickEvent> afterLevelTick() {
         return NeoForgeBLibLevelTickEvents.AFTER;
     }
 
     @Override
-    public BLibEventRouter<BlockBreakEvent> beforeBlockBreak() {
+    public BLibEventRouter<BLibBlockBreakEvent> beforeBlockBreak() {
         return NeoForgeBLibPlayerBlockBreakEvents.BEFORE;
     }
 
     @Override
-    public BLibEventRouter<LevelTickEvent> beforeLevelTick() {
+    public BLibEventRouter<BLibLevelTickEvent> beforeLevelTick() {
         return NeoForgeBLibLevelTickEvents.BEFORE;
     }
 
     @Override
-    public BLibEventRouter<TagsUpdatedEvent> onTagsUpdated() {
+    public BLibEventRouter<BLibTagsUpdatedEvent> onTagsUpdated() {
         return NeoForgeBLibTagsUpdatedEvents.ROUTER;
     }
 }
