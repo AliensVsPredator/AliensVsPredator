@@ -12,6 +12,6 @@ public class BLibEntityTypeTags {
     public static final TagKey<EntityType<?>> NETHER_CREATURES = create("nether_creatures");
 
     private static TagKey<EntityType<?>> create(String path) {
-        return BLib.MOD.createTagKey(Registries.ENTITY_TYPE, path);
+        return BLib.MOD.resources().createTagKey(Registries.ENTITY_TYPE, path);
     }
 }

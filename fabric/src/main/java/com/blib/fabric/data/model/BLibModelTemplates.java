@@ -54,6 +54,6 @@ public class BLibModelTemplates {
     }
 
     private static ModelTemplate create(String string, String string2, TextureSlot... textureSlots) {
-        return new ModelTemplate(Optional.of(BLib.MOD.createResourceLocation("block/" + string)), Optional.of(string2), textureSlots);
+        return new ModelTemplate(Optional.of(BLib.MOD.resources().createLocation("block/" + string)), Optional.of(string2), textureSlots);
     }
 }

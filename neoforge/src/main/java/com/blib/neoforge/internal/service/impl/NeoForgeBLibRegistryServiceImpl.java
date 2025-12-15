@@ -1,8 +1,8 @@
 package com.blib.neoforge.internal.service.impl;
 
-import com.blib.BLibHolder;
 import com.blib.BLibMod;
 import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
+import com.blib.common.registry.BLibHolder;
 import com.blib.internal.service.BLibRegistryService;
 import com.blib.neoforge.data.BLibNeoForgeCompostableDataMapProvider;
 import com.blib.neoforge.data.BLibNeoForgeEntitySpawnDataProvider;

@@ -1,8 +1,8 @@
 package com.blib.neoforge.internal.service.impl;
 
-import com.blib.BLibHolder;
 import com.blib.BLibMod;
 import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
+import com.blib.common.registry.BLibHolder;
 import com.blib.internal.common.BLibDecoratedPotPatternCache;
 import com.blib.internal.common.registry.BLibRegistries;
 import com.just.core.functional.tuple.Tuple2;
@@ -59,7 +59,7 @@ public class BLibNeoForgeModContainer {
             .collect(
                 Collectors.toMap(
                     Function.identity(),
-                    registry -> createDeferredRegistry(mod.getId(), registry)
+                    registry -> createDeferredRegistry(mod.id(), registry)
                 )
             );
 
@@ -97,7 +97,7 @@ public class BLibNeoForgeModContainer {
 
     /* package-private */ void registerDecoratedPotPattern(String path, BLibHolder<? extends Item> holder) {
         deferredDecoratedPotPatternRegistrations.add(
-            () -> BLibDecoratedPotPatternCache.put(holder.get(), mod.createResourceKey(Registries.DECORATED_POT_PATTERN, path))
+            () -> BLibDecoratedPotPatternCache.put(holder.get(), mod.resources().createKey(Registries.DECORATED_POT_PATTERN, path))
         );
     }
 

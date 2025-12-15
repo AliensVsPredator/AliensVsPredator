@@ -1,8 +1,9 @@
-package com.blib;
+package com.blib.common.registry;
 
-import com.blib.exception.BLibRegistrationException;
+import com.blib.BLibMod;
+import com.blib.common.exception.BLibRegistrationException;
+import com.blib.common.mod.BLibModState;
 import com.blib.internal.service.BLibInternalServices;
-import com.blib.mod.BLibModState;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 
@@ -50,11 +51,11 @@ public class BLibRegistry<T> {
     }
 
     public <U extends T> Holder<U> register(BLibHolder<U> holder) {
-        if (mod.getState() != BLibModState.INITIALIZING) {
+        if (mod.state() != BLibModState.INITIALIZING) {
             throw new BLibRegistrationException(
                 "Attempted to register a BLibHolder outside of mod's initialization window. BLibHolder: %s Mod State: %s".formatted(
                     holder,
-                    mod.getState()
+                    mod.state()
                 )
             );
         }
@@ -77,7 +78,8 @@ public class BLibRegistry<T> {
     }
 
     public List<? extends T> computeMissingEntries(Collection<T> entries) {
-        return mod.<T>getAllHolders(getBackingRegistry())
+        return mod.registries()
+            .<T>getAllHolders(getBackingRegistry())
             .stream()
             .map(Supplier::get)
             .filter(Predicate.not(entries::contains))

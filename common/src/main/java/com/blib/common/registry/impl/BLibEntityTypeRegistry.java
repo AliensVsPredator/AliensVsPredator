@@ -1,9 +1,9 @@
 package com.blib.common.registry.impl;
 
-import com.blib.BLibHolder;
 import com.blib.BLibMod;
-import com.blib.BLibRegistry;
 import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
+import com.blib.common.registry.BLibHolder;
+import com.blib.common.registry.BLibRegistry;
 import com.blib.internal.service.BLibInternalServices;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityType;

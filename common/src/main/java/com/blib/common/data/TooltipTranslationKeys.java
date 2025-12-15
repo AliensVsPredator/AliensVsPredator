@@ -18,6 +18,6 @@ public class TooltipTranslationKeys {
     public static final String EFFECT_WATER_BREATHING = create("water_breathing");
 
     private static @NotNull String create(String name) {
-        return "tooltip." + BLib.MOD.getId() + "." + name;
+        return "tooltip." + BLib.MOD.id() + "." + name;
     }
 }

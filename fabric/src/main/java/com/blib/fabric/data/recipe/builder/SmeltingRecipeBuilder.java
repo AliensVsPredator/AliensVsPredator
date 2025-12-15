@@ -64,6 +64,6 @@ public class SmeltingRecipeBuilder {
 
         SimpleCookingRecipeBuilder.smelting(ingredient, recipeCategory, destination, experience, cookTime)
             .unlockedBy("has_" + sourceName, RecipeProviderProxy.has(source))
-            .save(recipeBuilder.getRecipeOutput(), recipeBuilder.getMod().getId() + ":" + customName);
+            .save(recipeBuilder.getRecipeOutput(), recipeBuilder.getMod().id() + ":" + customName);
     }
 }

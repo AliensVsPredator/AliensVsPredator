@@ -52,7 +52,7 @@ public class BLibNeoForgeEntitySpawnDataProvider implements DataProvider.Factory
                     var entityTypePath = BuiltInRegistries.ENTITY_TYPE.getKey(entityType).getPath();
                     var spawnKey = ResourceKey.create(
                         NeoForgeRegistries.Keys.BIOME_MODIFIERS,
-                        mod.createResourceLocation("add_spawns_" + entityTypePath)
+                        mod.resources().createLocation("add_spawns_" + entityTypePath)
                     );
                     var config = spawnData.getConfigData();
                     var spawnSettings = config.spawnSettings();
@@ -87,13 +87,13 @@ public class BLibNeoForgeEntitySpawnDataProvider implements DataProvider.Factory
             CompletableFuture<HolderLookup.Provider> registries,
             RegistrySetBuilder datapackEntriesBuilder
         ) {
-            super(output, registries, datapackEntriesBuilder, Set.of(mod.getId()));
+            super(output, registries, datapackEntriesBuilder, Set.of(mod.id()));
             this.mod = mod;
         }
 
         @Override
         public @NotNull String getName() {
-            return mod.getId() + " Entity Spawn Data Registries";
+            return mod.id() + " Entity Spawn Data Registries";
         }
     }
 }

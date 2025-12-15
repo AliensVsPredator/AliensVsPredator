@@ -1,8 +1,8 @@
 package com.blib.fabric.internal.service.impl;
 
-import com.blib.BLibHolder;
 import com.blib.BLibMod;
 import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
+import com.blib.common.registry.BLibHolder;
 import com.blib.internal.service.BLibRegistryService;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
@@ -83,7 +83,7 @@ public class FabricBLibRegistryServiceImpl implements BLibRegistryService {
 
     @Override
     public void registerReloadListener(BLibMod mod, String path, PreparableReloadListener listener) {
-        var resourceLocation = mod.createResourceLocation(path);
+        var resourceLocation = mod.resources().createLocation(path);
         var adaptedListener = new IdentifiableResourceReloadListener() {
 
             @Override

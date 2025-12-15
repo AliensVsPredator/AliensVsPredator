@@ -16,10 +16,10 @@ public class BLibNeoForgeModServiceImpl implements BLibModService {
     public void postInitialize(BLibMod mod) {
         var event = ((NeoForgeBLibEventServiceImpl) BLibServices.EVENT);
         var registry = (NeoForgeBLibRegistryServiceImpl) BLibInternalServices.REGISTRY;
-        var modContainerOptional = ModList.get().getModContainerById(mod.getId());
+        var modContainerOptional = ModList.get().getModContainerById(mod.id());
 
         if (modContainerOptional.isEmpty()) {
-            BLib.LOGGER.warn("Unable to post-initialize mod '{}'. No NeoForge mod container was found for the mod.", mod.getId());
+            BLib.LOGGER.warn("Unable to post-initialize mod '{}'. No NeoForge mod container was found for the mod.", mod.id());
             return;
         }
 
@@ -30,7 +30,7 @@ public class BLibNeoForgeModServiceImpl implements BLibModService {
         if (eventBus != null) {
             registry.finalize(mod, modContainer.getEventBus());
         } else {
-            BLib.LOGGER.warn("Unable to finalize registration for mod '{}' because its event bus is null.", mod.getId());
+            BLib.LOGGER.warn("Unable to finalize registration for mod '{}' because its event bus is null.", mod.id());
         }
 
         event.finalize(mod);

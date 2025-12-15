@@ -29,7 +29,7 @@ public class BLibDataKeys {
     );
 
     private static <T> DataKey<T> register(String id, Function<DataKey.Builder<T>, DataKey<T>> factory) {
-        var resourceLocation = BLib.MOD.createResourceLocation(id);
+        var resourceLocation = BLib.MOD.resources().createLocation(id);
         var dataAccessor = factory.apply(new DataKey.Builder<>(resourceLocation));
         return DataKeyRegistry.register(resourceLocation, dataAccessor);
     }

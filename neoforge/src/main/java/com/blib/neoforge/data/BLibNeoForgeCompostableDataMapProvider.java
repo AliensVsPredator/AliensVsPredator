@@ -43,6 +43,6 @@ public class BLibNeoForgeCompostableDataMapProvider extends DataMapProvider {
 
     @Override
     public @NotNull String getName() {
-        return mod.getId() + " Compostable Data Maps";
+        return mod.id() + " Compostable Data Maps";
     }
 }

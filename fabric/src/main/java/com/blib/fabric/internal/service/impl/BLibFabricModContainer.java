@@ -1,8 +1,8 @@
 package com.blib.fabric.internal.service.impl;
 
-import com.blib.BLibHolder;
 import com.blib.BLibMod;
 import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
+import com.blib.common.registry.BLibHolder;
 import com.blib.internal.common.BLibDecoratedPotPatternCache;
 import com.blib.internal.common.registry.BLibRegistries;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
@@ -142,7 +142,7 @@ class BLibFabricModContainer {
 
     /* package-private */ void deferDecoratedPotPatternRegistration(String path, BLibHolder<? extends Item> holder) {
         deferredDecoratedPotPatternRegistrations.add(
-            () -> BLibDecoratedPotPatternCache.put(holder.get(), mod.createResourceKey(Registries.DECORATED_POT_PATTERN, path))
+            () -> BLibDecoratedPotPatternCache.put(holder.get(), mod.resources().createKey(Registries.DECORATED_POT_PATTERN, path))
         );
     }
 

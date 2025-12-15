@@ -22,6 +22,6 @@ public class BLibItemTags {
     public static final TagKey<Item> WATER_BREATHING_ARMORS = create("water_breathing_armors");
 
     private static TagKey<Item> create(String path) {
-        return BLib.MOD.createTagKey(Registries.ITEM, path);
+        return BLib.MOD.resources().createTagKey(Registries.ITEM, path);
     }
 }

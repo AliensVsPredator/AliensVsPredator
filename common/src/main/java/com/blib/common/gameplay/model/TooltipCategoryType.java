@@ -16,7 +16,7 @@ public enum TooltipCategoryType {
 
     TooltipCategoryType(String translationKey) {
         // FIXME:
-        this.translationKey = "tooltip." + BLib.MOD.getId() + "." + translationKey;
+        this.translationKey = "tooltip." + BLib.MOD.id() + "." + translationKey;
     }
 
     public String getTranslationKey() {

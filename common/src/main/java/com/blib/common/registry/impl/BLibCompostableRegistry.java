@@ -1,10 +1,10 @@
 package com.blib.common.registry.impl;
 
-import com.blib.BLibHolder;
 import com.blib.BLibMod;
-import com.blib.exception.BLibRegistrationException;
+import com.blib.common.exception.BLibRegistrationException;
+import com.blib.common.mod.BLibModState;
+import com.blib.common.registry.BLibHolder;
 import com.blib.internal.service.BLibInternalServices;
-import com.blib.mod.BLibModState;
 import net.minecraft.world.level.ItemLike;
 
 public class BLibCompostableRegistry {
@@ -21,11 +21,11 @@ public class BLibCompostableRegistry {
         boolean villagersCanCompost,
         boolean replace
     ) {
-        if (mod.getState() != BLibModState.INITIALIZING) {
+        if (mod.state() != BLibModState.INITIALIZING) {
             throw new BLibRegistrationException(
                 "Attempted to register a BLibHolder outside of mod's initialization window. BLibHolder: %s Mod State: %s".formatted(
                     holder,
-                    mod.getState()
+                    mod.state()
                 )
             );
         }

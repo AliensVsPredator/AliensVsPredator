@@ -53,6 +53,6 @@ public class BlastingRecipeBuilder {
 
         SimpleCookingRecipeBuilder.blasting(ingredient, recipeCategory, destination, experience, cookTime)
             .unlockedBy("has_" + sourceName, RecipeProviderProxy.has(source))
-            .save(recipeBuilder.getRecipeOutput(), recipeBuilder.getMod().getId() + ":" + destinationName + "_from_blasting_" + sourceName);
+            .save(recipeBuilder.getRecipeOutput(), recipeBuilder.getMod().id() + ":" + destinationName + "_from_blasting_" + sourceName);
     }
 }

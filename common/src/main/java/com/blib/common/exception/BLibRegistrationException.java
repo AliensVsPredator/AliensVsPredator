@@ -1,4 +1,4 @@
-package com.blib.exception;
+package com.blib.common.exception;
 
 public class BLibRegistrationException extends RuntimeException {
 

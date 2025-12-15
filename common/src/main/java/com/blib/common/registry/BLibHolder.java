@@ -1,4 +1,4 @@
-package com.blib;
+package com.blib.common.registry;
 
 import com.blib.common.gameplay.model.HolderExtension;
 import com.mojang.datafixers.util.Either;
@@ -29,7 +29,7 @@ public class BLibHolder<T> implements Holder<T>, HolderExtension<T>, Supplier<T>
         this.registry = registry;
         @SuppressWarnings("unchecked")
         var backingRegistry = (Registry<T>) registry.getBackingRegistry();
-        this.key = ResourceKey.create(backingRegistry.key(), registry.getMod().createResourceLocation(path));
+        this.key = ResourceKey.create(backingRegistry.key(), registry.getMod().resources().createLocation(path));
     }
 
     @Override

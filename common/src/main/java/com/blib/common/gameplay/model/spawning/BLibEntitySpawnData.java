@@ -1,6 +1,6 @@
 package com.blib.common.gameplay.model.spawning;
 
-import com.blib.BLibHolder;
+import com.blib.common.registry.BLibHolder;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;

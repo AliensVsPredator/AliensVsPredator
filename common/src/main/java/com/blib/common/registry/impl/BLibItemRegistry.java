@@ -1,11 +1,11 @@
 package com.blib.common.registry.impl;
 
 import com.blib.BLib;
-import com.blib.BLibHolder;
 import com.blib.BLibMod;
-import com.blib.BLibRegistry;
 import com.blib.common.gameplay.DefaultDispenseSpawnEggItemBehavior;
-import com.blib.mod.loader.model.ModLoaderType;
+import com.blib.common.mod.loader.model.ModLoaderType;
+import com.blib.common.registry.BLibHolder;
+import com.blib.common.registry.BLibRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;

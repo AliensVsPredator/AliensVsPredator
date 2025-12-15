@@ -14,7 +14,7 @@ public record S2CEntityDataSyncPayload(
     RawDataSyncMap rawDataSyncMap
 ) implements CustomPacketPayload {
 
-    public static final ResourceLocation PAYLOAD_ID = BLib.MOD.createResourceLocation("entity_data_sync");
+    public static final ResourceLocation PAYLOAD_ID = BLib.MOD.resources().createLocation("entity_data_sync");
 
     public static final Type<S2CEntityDataSyncPayload> TYPE = new Type<>(PAYLOAD_ID);
 

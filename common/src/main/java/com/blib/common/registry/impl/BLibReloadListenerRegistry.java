@@ -1,9 +1,9 @@
 package com.blib.common.registry.impl;
 
 import com.blib.BLibMod;
-import com.blib.exception.BLibRegistrationException;
+import com.blib.common.exception.BLibRegistrationException;
+import com.blib.common.mod.BLibModState;
 import com.blib.internal.service.BLibInternalServices;
-import com.blib.mod.BLibModState;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 
 public class BLibReloadListenerRegistry {
@@ -15,12 +15,12 @@ public class BLibReloadListenerRegistry {
     }
 
     public void register(String path, PreparableReloadListener reloadListener) {
-        if (mod.getState() != BLibModState.INITIALIZING) {
+        if (mod.state() != BLibModState.INITIALIZING) {
             throw new BLibRegistrationException(
                 "Attempted to register a reload listener outside of mod's initialization window. Reload Listener: %s Mod State: %s"
                     .formatted(
                         reloadListener,
-                        mod.getState()
+                        mod.state()
                     )
             );
         }
