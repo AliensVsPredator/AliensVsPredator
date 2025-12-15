@@ -22,7 +22,6 @@ import com.blib.common.gameplay.model.NBTSerializable;
 import com.blib.common.network.packet.S2CEntityDataSyncPayload;
 import com.blib.common.registry.DataKeyRegistry;
 import com.blib.common.util.codec.stream.schema.StreamCodecSchemas;
-import com.blib.service.BLibServices;
 
 public class DataContainer implements NBTSerializable {
 
@@ -121,10 +120,11 @@ public class DataContainer implements NBTSerializable {
 
         var rawDataSyncMap = new RawDataSyncMap(dataMap);
 
-        BLibServices.SERVER_NETWORKING.sendToAllClients(
-            entity.level().getServer(),
-            new S2CEntityDataSyncPayload(entity.getId(), rawDataSyncMap)
-        );
+        BLib.MOD.networking()
+            .sendToAllClients(
+                entity.level().getServer(),
+                new S2CEntityDataSyncPayload(entity.getId(), rawDataSyncMap)
+            );
 
         dirtyKeys.clear();
     }

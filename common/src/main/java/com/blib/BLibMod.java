@@ -6,6 +6,7 @@ import com.blib.common.exception.BLibModInitializationException;
 import com.blib.common.model.BLibModState;
 import com.blib.common.model.Version;
 import com.blib.common.model.access.BLibEventAccess;
+import com.blib.common.model.access.BLibNetworkAccess;
 import com.blib.common.model.access.BLibRegistryAccess;
 import com.blib.common.model.access.BLibResourceAccess;
 import com.blib.internal.service.BLibInternalServices;
@@ -15,6 +16,8 @@ public class BLibMod {
     private final String id;
 
     private final BLibEventAccess eventAccess;
+
+    private final BLibNetworkAccess networkAccess;
 
     private final BLibRegistryAccess registryAccess;
 
@@ -27,6 +30,7 @@ public class BLibMod {
     /* package-private */ BLibMod(String id) {
         this.id = id;
         this.eventAccess = new BLibEventAccess(this);
+        this.networkAccess = new BLibNetworkAccess(this);
         this.registryAccess = new BLibRegistryAccess(this);
         this.resourceAccess = new BLibResourceAccess(this);
         this.version = BLibInternalServices.MOD_LOADER.getModVersion(id);
@@ -56,6 +60,10 @@ public class BLibMod {
 
     public String id() {
         return id;
+    }
+
+    public BLibNetworkAccess networking() {
+        return networkAccess;
     }
 
     public BLibRegistryAccess registries() {

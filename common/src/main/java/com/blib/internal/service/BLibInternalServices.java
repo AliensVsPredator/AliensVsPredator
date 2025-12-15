@@ -10,13 +10,19 @@ import com.blib.service.BLibServices;
 @ApiStatus.Internal
 public class BLibInternalServices {
 
+    public static final BLibClientNetworkingService CLIENT_NETWORKING = BLibServices.load(BLibClientNetworkingService.class);
+
     public static final BLibEventService EVENT = BLibServices.load(BLibEventService.class);
+
+    public static final BLibFactoryService FACTORY = BLibServices.load(BLibFactoryService.class);
 
     public static final BLibModService MOD = load(BLibModService.class);
 
     public static final BLibModLoaderService MOD_LOADER = load(BLibModLoaderService.class);
 
     public static final BLibRegistryService REGISTRY = load(BLibRegistryService.class);
+
+    public static final BLibServerNetworkingService SERVER_NETWORKING = BLibServices.load(BLibServerNetworkingService.class);
 
     public static <T> T load(Class<T> clazz) {
         var loadedService = ServiceLoader.load(clazz)
