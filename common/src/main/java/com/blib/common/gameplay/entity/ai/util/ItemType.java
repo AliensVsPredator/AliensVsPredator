@@ -1,9 +1,10 @@
 package com.blib.common.gameplay.entity.ai.util;
 
-import com.blib.common.data.tag.BLibItemTags;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+
+import com.blib.common.data.tag.BLibItemTags;
 
 public sealed interface ItemType {
 

@@ -1,9 +1,10 @@
 package com.blib.common.data.tag;
 
-import com.blib.BLib;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
+
+import com.blib.BLib;
 
 public class BLibBlockTags {
 

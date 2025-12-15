@@ -1,12 +1,16 @@
 package com.blib.internal.service;
 
-import com.blib.BLib;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ServiceLoader;
 
+import com.blib.BLib;
+import com.blib.service.BLibServices;
+
 @ApiStatus.Internal
 public class BLibInternalServices {
+
+    public static final BLibEventService EVENT = BLibServices.load(BLibEventService.class);
 
     public static final BLibModService MOD = load(BLibModService.class);
 

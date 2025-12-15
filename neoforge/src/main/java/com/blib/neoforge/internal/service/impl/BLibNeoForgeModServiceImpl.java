@@ -1,20 +1,20 @@
 package com.blib.neoforge.internal.service.impl;
 
+import net.neoforged.fml.ModList;
+import org.jetbrains.annotations.ApiStatus;
+
 import com.blib.BLib;
 import com.blib.BLibMod;
 import com.blib.internal.service.BLibInternalServices;
 import com.blib.internal.service.BLibModService;
 import com.blib.neoforge.service.impl.NeoForgeBLibEventServiceImpl;
-import com.blib.service.BLibServices;
-import net.neoforged.fml.ModList;
-import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Internal
 public class BLibNeoForgeModServiceImpl implements BLibModService {
 
     @Override
     public void postInitialize(BLibMod mod) {
-        var event = ((NeoForgeBLibEventServiceImpl) BLibServices.EVENT);
+        var event = ((NeoForgeBLibEventServiceImpl) BLibInternalServices.EVENT);
         var registry = (NeoForgeBLibRegistryServiceImpl) BLibInternalServices.REGISTRY;
         var modContainerOptional = ModList.get().getModContainerById(mod.id());
 

@@ -1,16 +1,20 @@
 package com.blib;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.blib.common.exception.BLibModInitializationException;
 import com.blib.common.mod.BLibModState;
 import com.blib.common.model.Version;
+import com.blib.common.registry.BLibEventAccess;
 import com.blib.common.registry.BLibRegistryAccess;
 import com.blib.common.registry.BLibResourceAccess;
 import com.blib.internal.service.BLibInternalServices;
-import org.jetbrains.annotations.Nullable;
 
 public class BLibMod {
 
     private final String id;
+
+    private final BLibEventAccess eventAccess;
 
     private final BLibRegistryAccess registryAccess;
 
@@ -22,6 +26,7 @@ public class BLibMod {
 
     /* package-private */ BLibMod(String id) {
         this.id = id;
+        this.eventAccess = new BLibEventAccess(this);
         this.registryAccess = new BLibRegistryAccess(this);
         this.resourceAccess = new BLibResourceAccess(this);
         this.version = BLibInternalServices.MOD_LOADER.getModVersion(id);
@@ -43,6 +48,10 @@ public class BLibMod {
 
     public boolean isLoaded() {
         return BLib.isModLoaded(id);
+    }
+
+    public BLibEventAccess events() {
+        return eventAccess;
     }
 
     public String id() {

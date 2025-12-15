@@ -1,9 +1,5 @@
 package com.blib.common.registry;
 
-import com.blib.BLibMod;
-import com.blib.common.exception.BLibRegistrationException;
-import com.blib.common.mod.BLibModState;
-import com.blib.internal.service.BLibInternalServices;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 
@@ -18,6 +14,11 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+
+import com.blib.BLibMod;
+import com.blib.common.exception.BLibRegistrationException;
+import com.blib.common.mod.BLibModState;
+import com.blib.internal.service.BLibInternalServices;
 
 public class BLibRegistry<T> {
 

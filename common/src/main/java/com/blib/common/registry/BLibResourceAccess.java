@@ -1,10 +1,11 @@
 package com.blib.common.registry;
 
-import com.blib.BLibMod;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+
+import com.blib.BLibMod;
 
 public class BLibResourceAccess {
 

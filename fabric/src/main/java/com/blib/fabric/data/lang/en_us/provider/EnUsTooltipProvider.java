@@ -1,10 +1,11 @@
 package com.blib.fabric.data.lang.en_us.provider;
 
-import com.blib.common.data.TooltipTranslationKeys;
-import com.blib.common.gameplay.model.TooltipCategoryType;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 
 import java.util.function.Consumer;
+
+import com.blib.common.data.TooltipTranslationKeys;
+import com.blib.common.gameplay.model.TooltipCategoryType;
 
 public class EnUsTooltipProvider {
 

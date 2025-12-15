@@ -1,9 +1,10 @@
 package com.blib.common.util.codec.schema;
 
-import com.blib.common.util.codec.adapter.DynamicOpsToCodecSchemaAdapter;
 import com.just.codec.schema.CodecSchema;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+
+import com.blib.common.util.codec.adapter.DynamicOpsToCodecSchemaAdapter;
 
 public class CodecSchemas {
 

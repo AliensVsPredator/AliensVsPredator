@@ -1,7 +1,8 @@
 package com.blib.common.gameplay.util.spatial.block;
 
-import com.blib.common.gameplay.util.spatial.Vec3Like;
 import net.minecraft.core.BlockPos;
+
+import com.blib.common.gameplay.util.spatial.Vec3Like;
 
 public record BlockPosVec3(BlockPos pos) implements Vec3Like {
 

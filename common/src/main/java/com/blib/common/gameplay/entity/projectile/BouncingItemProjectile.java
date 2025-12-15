@@ -1,6 +1,5 @@
 package com.blib.common.gameplay.entity.projectile;
 
-import com.blib.internal.mixin.BlockBehaviourInvoker;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvent;
@@ -13,6 +12,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+
+import com.blib.internal.mixin.BlockBehaviourInvoker;
 
 /**
  * Modified version of MrCrayfish's <a href=

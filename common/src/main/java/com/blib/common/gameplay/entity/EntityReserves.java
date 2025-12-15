@@ -1,7 +1,5 @@
 package com.blib.common.gameplay.entity;
 
-import com.blib.common.gameplay.util.BLibEntityPredicates;
-import com.blib.common.util.codec.impl.MojangCodecs;
 import com.just.codec.Codec;
 import com.just.codec.impl.Codecs;
 import net.minecraft.world.entity.EntityType;
@@ -11,6 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+
+import com.blib.common.gameplay.util.BLibEntityPredicates;
+import com.blib.common.util.codec.impl.MojangCodecs;
 
 public class EntityReserves {
 

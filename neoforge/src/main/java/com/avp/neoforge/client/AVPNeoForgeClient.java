@@ -1,9 +1,5 @@
 package com.avp.neoforge.client;
 
-import com.blib.BLib;
-import com.blib.client.input.keybind.KeyPressHandler;
-import com.blib.neoforge.service.impl.NeoForgeBLibClientRegistryServiceImpl;
-import com.blib.service.BLibServices;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -25,6 +21,11 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.common.NeoForge;
+
+import com.blib.BLib;
+import com.blib.client.input.keybind.KeyPressHandler;
+import com.blib.neoforge.service.impl.NeoForgeBLibClientRegistryServiceImpl;
+import com.blib.service.BLibServices;
 
 @EventBusSubscriber(modid = BLib.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class AVPNeoForgeClient {

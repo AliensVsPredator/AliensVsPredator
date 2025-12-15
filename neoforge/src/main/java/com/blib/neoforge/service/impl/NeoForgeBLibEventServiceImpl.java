@@ -2,10 +2,10 @@ package com.blib.neoforge.service.impl;
 
 import com.blib.BLibMod;
 import com.blib.event.BLibEventRouter;
+import com.blib.internal.service.BLibEventService;
 import com.blib.neoforge.event.impl.NeoForgeBLibLevelTickEvents;
 import com.blib.neoforge.event.impl.NeoForgeBLibPlayerBlockBreakEvents;
 import com.blib.neoforge.event.impl.NeoForgeBLibTagsUpdatedEvents;
-import com.blib.service.BLibEventService;
 
 public class NeoForgeBLibEventServiceImpl implements BLibEventService {
 

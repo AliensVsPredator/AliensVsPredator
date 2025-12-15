@@ -1,8 +1,8 @@
 package com.avp.service;
 
-import com.blib.BLib;
-
 import java.util.ServiceLoader;
+
+import com.blib.BLib;
 
 @Deprecated(forRemoval = true)
 public class Services {

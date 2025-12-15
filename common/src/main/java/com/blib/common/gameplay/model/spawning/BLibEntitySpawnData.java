@@ -1,6 +1,5 @@
 package com.blib.common.gameplay.model.spawning;
 
-import com.blib.common.registry.BLibHolder;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
@@ -10,6 +9,8 @@ import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.Heightmap;
+
+import com.blib.common.registry.BLibHolder;
 
 // TODO: Change how this works.
 public final class BLibEntitySpawnData<T extends Mob> {

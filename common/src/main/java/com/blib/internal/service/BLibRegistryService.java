@@ -1,8 +1,5 @@
 package com.blib.internal.service;
 
-import com.blib.BLibMod;
-import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
-import com.blib.common.registry.BLibHolder;
 import net.minecraft.core.Holder;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.entity.EntityType;
@@ -14,6 +11,10 @@ import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.Supplier;
+
+import com.blib.BLibMod;
+import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
+import com.blib.common.registry.BLibHolder;
 
 @ApiStatus.Internal
 public interface BLibRegistryService {

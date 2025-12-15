@@ -1,7 +1,5 @@
 package com.blib.internal.mixin;
 
-import com.blib.common.network.data.DataContainer;
-import com.blib.common.network.data.DataUser;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.ApiStatus;
@@ -11,6 +9,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import com.blib.common.network.data.DataContainer;
+import com.blib.common.network.data.DataUser;
 
 @ApiStatus.Internal
 @Mixin(Entity.class)

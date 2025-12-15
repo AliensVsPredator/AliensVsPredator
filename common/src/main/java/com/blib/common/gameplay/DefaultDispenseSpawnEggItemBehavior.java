@@ -1,6 +1,5 @@
 package com.blib.common.gameplay;
 
-import com.blib.BLib;
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
@@ -10,6 +9,8 @@ import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.NotNull;
+
+import com.blib.BLib;
 
 public class DefaultDispenseSpawnEggItemBehavior extends DefaultDispenseItemBehavior {
 

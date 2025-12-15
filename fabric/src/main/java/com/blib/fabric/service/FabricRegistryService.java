@@ -1,8 +1,6 @@
 package com.blib.fabric.service;
 
-import com.blib.common.network.model.NetworkHandler;
-import com.blib.common.network.model.PacketDirection;
-import com.blib.common.util.codec.stream.adapter.JustStreamCodecToMojangStreamCodecAdapter;
+import com.avp.service.RegistryService;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import mod.azure.azurelib.common.animation.cache.AzIdentityRegistry;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -18,7 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import com.avp.service.RegistryService;
+import com.blib.common.network.model.NetworkHandler;
+import com.blib.common.network.model.PacketDirection;
+import com.blib.common.util.codec.stream.adapter.JustStreamCodecToMojangStreamCodecAdapter;
 
 public class FabricRegistryService implements RegistryService {
 

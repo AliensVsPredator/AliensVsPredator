@@ -1,12 +1,5 @@
 package com.blib.neoforge.internal.service.impl;
 
-import com.blib.BLibMod;
-import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
-import com.blib.common.registry.BLibHolder;
-import com.blib.internal.service.BLibRegistryService;
-import com.blib.neoforge.data.BLibNeoForgeCompostableDataMapProvider;
-import com.blib.neoforge.data.BLibNeoForgeEntitySpawnDataProvider;
-import com.blib.neoforge.data.BLibNeoForgeFurnaceFuelDataMapProvider;
 import com.just.core.functional.tuple.Tuple2;
 import com.just.core.functional.tuple.Tuple4;
 import net.minecraft.core.Holder;
@@ -31,6 +24,14 @@ import org.jetbrains.annotations.ApiStatus;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
+
+import com.blib.BLibMod;
+import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
+import com.blib.common.registry.BLibHolder;
+import com.blib.internal.service.BLibRegistryService;
+import com.blib.neoforge.data.BLibNeoForgeCompostableDataMapProvider;
+import com.blib.neoforge.data.BLibNeoForgeEntitySpawnDataProvider;
+import com.blib.neoforge.data.BLibNeoForgeFurnaceFuelDataMapProvider;
 
 @ApiStatus.Internal
 public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {

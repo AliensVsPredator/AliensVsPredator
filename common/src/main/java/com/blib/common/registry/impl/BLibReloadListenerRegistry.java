@@ -1,10 +1,11 @@
 package com.blib.common.registry.impl;
 
+import net.minecraft.server.packs.resources.PreparableReloadListener;
+
 import com.blib.BLibMod;
 import com.blib.common.exception.BLibRegistrationException;
 import com.blib.common.mod.BLibModState;
 import com.blib.internal.service.BLibInternalServices;
-import net.minecraft.server.packs.resources.PreparableReloadListener;
 
 public class BLibReloadListenerRegistry {
 

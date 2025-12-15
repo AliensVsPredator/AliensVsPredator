@@ -1,8 +1,8 @@
 package com.blib.common.gameplay.util.spatial.sphere.layer.impl;
 
-import com.blib.common.gameplay.util.spatial.sphere.layer.SphereLayer;
-
 import java.util.function.Supplier;
+
+import com.blib.common.gameplay.util.spatial.sphere.layer.SphereLayer;
 
 public final class SupplyingPercentileSphereLayer implements SphereLayer {
 

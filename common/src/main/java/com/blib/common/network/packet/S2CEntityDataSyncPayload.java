@@ -1,13 +1,14 @@
 package com.blib.common.network.packet;
 
-import com.blib.BLib;
-import com.blib.common.network.data.RawDataSyncMap;
 import com.just.codec.stream.RecordStreamCodec;
 import com.just.codec.stream.StreamCodec;
 import com.just.codec.stream.impl.StreamCodecs;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+
+import com.blib.BLib;
+import com.blib.common.network.data.RawDataSyncMap;
 
 public record S2CEntityDataSyncPayload(
     int entityId,

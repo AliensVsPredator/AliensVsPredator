@@ -1,9 +1,5 @@
 package com.blib.fabric.internal.service.impl;
 
-import com.blib.BLibMod;
-import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
-import com.blib.common.registry.BLibHolder;
-import com.blib.internal.service.BLibRegistryService;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.core.Holder;
@@ -26,6 +22,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
+
+import com.blib.BLibMod;
+import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
+import com.blib.common.registry.BLibHolder;
+import com.blib.internal.service.BLibRegistryService;
 
 @ApiStatus.Internal
 public class FabricBLibRegistryServiceImpl implements BLibRegistryService {

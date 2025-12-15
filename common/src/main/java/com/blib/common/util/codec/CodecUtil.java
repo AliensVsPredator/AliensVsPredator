@@ -1,6 +1,5 @@
 package com.blib.common.util.codec;
 
-import com.blib.common.util.codec.schema.CodecSchemas;
 import com.just.codec.schema.CodecSchema;
 import com.just.core.functional.result.Result;
 import com.mojang.datafixers.util.Pair;
@@ -10,6 +9,8 @@ import com.mojang.serialization.DynamicOps;
 import net.minecraft.nbt.NbtOps;
 
 import java.util.Map;
+
+import com.blib.common.util.codec.schema.CodecSchemas;
 
 public class CodecUtil {
 

@@ -1,6 +1,5 @@
 package com.blib.common.gameplay.model.inventory;
 
-import com.blib.common.util.codec.impl.MojangCodecs;
 import com.just.codec.Codec;
 import com.just.codec.schema.CodecSchema;
 import com.just.core.functional.result.Result;
@@ -21,6 +20,8 @@ import java.util.SequencedSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
+
+import com.blib.common.util.codec.impl.MojangCodecs;
 
 public class BLibInventory {
 

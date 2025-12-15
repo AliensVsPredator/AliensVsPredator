@@ -1,9 +1,9 @@
 package com.blib.common.network;
 
+import com.avp.service.Services;
+
 import com.blib.common.network.model.PacketDirection;
 import com.blib.common.network.packet.S2CEntityDataSyncPayload;
-
-import com.avp.service.Services;
 
 public class BLibPacketDirections {
 

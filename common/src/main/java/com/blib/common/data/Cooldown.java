@@ -1,9 +1,10 @@
 package com.blib.common.data;
 
-import com.blib.common.gameplay.model.NBTSerializable;
 import net.minecraft.nbt.CompoundTag;
 
 import java.time.Duration;
+
+import com.blib.common.gameplay.model.NBTSerializable;
 
 public class Cooldown implements NBTSerializable {
 

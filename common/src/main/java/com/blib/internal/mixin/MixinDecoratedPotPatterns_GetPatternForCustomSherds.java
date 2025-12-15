@@ -1,7 +1,5 @@
 package com.blib.internal.mixin;
 
-import com.blib.common.data.tag.BLibItemTags;
-import com.blib.internal.common.BLibDecoratedPotPatternCache;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.DecoratedPotPattern;
@@ -11,6 +9,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import com.blib.common.data.tag.BLibItemTags;
+import com.blib.internal.common.BLibDecoratedPotPatternCache;
 
 @ApiStatus.Internal
 @Mixin(DecoratedPotPatterns.class)

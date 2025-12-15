@@ -1,7 +1,5 @@
 package com.blib.common.gameplay.goap.sensor;
 
-import com.blib.common.gameplay.model.inventory.BLibInventory;
-import com.blib.common.gameplay.model.inventory.BLibInventoryHolder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.effect.MobEffect;
@@ -11,6 +9,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import com.blib.common.gameplay.model.inventory.BLibInventory;
+import com.blib.common.gameplay.model.inventory.BLibInventoryHolder;
 
 public class PotionEntriesInInventorySensor {
 

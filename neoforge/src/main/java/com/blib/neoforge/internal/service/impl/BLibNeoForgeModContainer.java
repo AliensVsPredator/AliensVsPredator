@@ -1,10 +1,5 @@
 package com.blib.neoforge.internal.service.impl;
 
-import com.blib.BLibMod;
-import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
-import com.blib.common.registry.BLibHolder;
-import com.blib.internal.common.BLibDecoratedPotPatternCache;
-import com.blib.internal.common.registry.BLibRegistries;
 import com.just.core.functional.tuple.Tuple2;
 import com.just.core.functional.tuple.Tuple4;
 import net.minecraft.core.Registry;
@@ -28,6 +23,12 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import com.blib.BLibMod;
+import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
+import com.blib.common.registry.BLibHolder;
+import com.blib.internal.common.BLibDecoratedPotPatternCache;
+import com.blib.internal.common.registry.BLibRegistries;
 
 @ApiStatus.Internal
 public class BLibNeoForgeModContainer {

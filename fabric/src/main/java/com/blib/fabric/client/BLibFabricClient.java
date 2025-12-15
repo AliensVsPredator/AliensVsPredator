@@ -1,7 +1,6 @@
 package com.blib.fabric.client;
 
-import com.blib.common.network.model.NetworkHandler;
-import com.blib.fabric.service.FabricRegistryService;
+import com.avp.service.Services;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -9,7 +8,8 @@ import net.minecraft.world.entity.player.Player;
 
 import java.util.function.BiConsumer;
 
-import com.avp.service.Services;
+import com.blib.common.network.model.NetworkHandler;
+import com.blib.fabric.service.FabricRegistryService;
 
 public class BLibFabricClient implements ClientModInitializer {
 

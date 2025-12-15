@@ -1,7 +1,5 @@
 package com.avp.service;
 
-import com.blib.common.network.model.NetworkHandler;
-import com.blib.common.network.model.PacketDirection;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -11,6 +9,9 @@ import net.minecraft.world.item.Item;
 
 import java.util.List;
 import java.util.function.Supplier;
+
+import com.blib.common.network.model.NetworkHandler;
+import com.blib.common.network.model.PacketDirection;
 
 @Deprecated(forRemoval = true)
 public interface RegistryService {

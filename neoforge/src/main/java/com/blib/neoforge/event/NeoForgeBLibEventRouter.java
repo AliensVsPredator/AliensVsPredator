@@ -1,9 +1,9 @@
 package com.blib.neoforge.event;
 
-import com.blib.event.BLibEventRouter;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.blib.event.BLibEventRouter;
 
 public abstract class NeoForgeBLibEventRouter<Dispatcher> implements BLibEventRouter<Dispatcher> {
 

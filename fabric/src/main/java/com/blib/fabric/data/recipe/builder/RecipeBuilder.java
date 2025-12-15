@@ -1,10 +1,11 @@
 package com.blib.fabric.data.recipe.builder;
 
-import com.blib.BLibMod;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.level.ItemLike;
 
 import java.util.function.Supplier;
+
+import com.blib.BLibMod;
 
 public class RecipeBuilder {
 

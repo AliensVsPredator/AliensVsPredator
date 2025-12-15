@@ -1,11 +1,12 @@
 package com.blib.fabric;
 
-import com.blib.BLib;
-import com.blib.common.network.data.DataContainer;
-import com.blib.common.network.data.DataUser;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
 import net.minecraft.world.entity.LivingEntity;
+
+import com.blib.BLib;
+import com.blib.common.network.data.DataContainer;
+import com.blib.common.network.data.DataUser;
 
 public class BLibFabric implements ModInitializer {
 

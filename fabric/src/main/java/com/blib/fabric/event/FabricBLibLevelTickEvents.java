@@ -1,13 +1,14 @@
 package com.blib.fabric.event;
 
-import com.blib.event.BLibEventRouter;
-import com.blib.internal.service.BLibInternalServices;
-import com.blib.service.BLibEventService;
-import com.blib.service.model.DistributionEnvironmentType;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.server.level.ServerLevel;
+
+import com.blib.event.BLibEventRouter;
+import com.blib.internal.service.BLibEventService;
+import com.blib.internal.service.BLibInternalServices;
+import com.blib.service.model.DistributionEnvironmentType;
 
 public class FabricBLibLevelTickEvents {
 

@@ -1,10 +1,5 @@
 package com.blib.fabric.internal.service.impl;
 
-import com.blib.BLibMod;
-import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
-import com.blib.common.registry.BLibHolder;
-import com.blib.internal.common.BLibDecoratedPotPatternCache;
-import com.blib.internal.common.registry.BLibRegistries;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
@@ -33,6 +28,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+
+import com.blib.BLibMod;
+import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
+import com.blib.common.registry.BLibHolder;
+import com.blib.internal.common.BLibDecoratedPotPatternCache;
+import com.blib.internal.common.registry.BLibRegistries;
 
 @ApiStatus.Internal
 class BLibFabricModContainer {

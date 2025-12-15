@@ -1,9 +1,10 @@
 package com.blib.common.util.codec.stream.adapter;
 
-import com.blib.common.util.codec.stream.schema.StreamCodecSchemas;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.NotNull;
+
+import com.blib.common.util.codec.stream.schema.StreamCodecSchemas;
 
 public class JustStreamCodecToMojangStreamCodecAdapter<A> implements StreamCodec<FriendlyByteBuf, A> {
 

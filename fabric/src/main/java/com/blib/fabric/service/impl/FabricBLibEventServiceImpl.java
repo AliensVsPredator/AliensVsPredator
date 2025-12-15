@@ -4,7 +4,7 @@ import com.blib.event.BLibEventRouter;
 import com.blib.fabric.event.FabricBLibLevelTickEvents;
 import com.blib.fabric.event.FabricBLibPlayerBlockBreakEvents;
 import com.blib.fabric.event.FabricBLibTagsUpdatedEvents;
-import com.blib.service.BLibEventService;
+import com.blib.internal.service.BLibEventService;
 
 public class FabricBLibEventServiceImpl implements BLibEventService {
 

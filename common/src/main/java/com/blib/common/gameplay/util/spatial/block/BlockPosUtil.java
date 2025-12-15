@@ -1,6 +1,5 @@
 package com.blib.common.gameplay.util.spatial.block;
 
-import com.blib.common.util.DirectionUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
@@ -10,6 +9,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+
+import com.blib.common.util.DirectionUtil;
 
 public class BlockPosUtil {
 

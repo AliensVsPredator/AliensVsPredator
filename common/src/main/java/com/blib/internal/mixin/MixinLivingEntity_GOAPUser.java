@@ -1,7 +1,5 @@
 package com.blib.internal.mixin;
 
-import com.blib.common.gameplay.goap.GOAPUser;
-import com.blib.common.gameplay.goap.LivingEntityAgent;
 import com.just.goap.graph.Graph;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -13,6 +11,9 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import com.blib.common.gameplay.goap.GOAPUser;
+import com.blib.common.gameplay.goap.LivingEntityAgent;
 
 @ApiStatus.Internal
 @Mixin(LivingEntity.class)

@@ -1,7 +1,6 @@
 package com.avp.neoforge.service;
 
-import com.blib.common.network.model.NetworkHandler;
-import com.blib.common.network.model.PacketDirection;
+import com.avp.service.RegistryService;
 import com.just.core.functional.tuple.Tuple2;
 import com.just.core.functional.tuple.Tuple3;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -16,7 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import com.avp.service.RegistryService;
+import com.blib.common.network.model.NetworkHandler;
+import com.blib.common.network.model.PacketDirection;
 
 public class NeoForgeRegistryService implements RegistryService {
 

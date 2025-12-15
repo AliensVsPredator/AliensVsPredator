@@ -1,10 +1,11 @@
 package com.blib.neoforge.event.impl;
 
-import com.blib.neoforge.event.NeoForgeBLibEventRouter;
-import com.blib.service.BLibEventService;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.level.BlockEvent;
+
+import com.blib.internal.service.BLibEventService;
+import com.blib.neoforge.event.NeoForgeBLibEventRouter;
 
 public class NeoForgeBLibPlayerBlockBreakEvents {
 

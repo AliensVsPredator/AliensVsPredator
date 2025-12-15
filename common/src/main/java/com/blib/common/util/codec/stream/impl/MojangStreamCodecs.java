@@ -1,7 +1,5 @@
 package com.blib.common.util.codec.stream.impl;
 
-import com.blib.common.gameplay.model.DataComponentPatchAccessor;
-import com.blib.internal.mixin.MixinDataComponentPatch;
 import com.just.codec.stream.StreamCodec;
 import com.just.codec.stream.impl.StreamCodecs;
 import com.just.codec.stream.schema.StreamCodecSchema;
@@ -20,6 +18,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
+
+import com.blib.common.gameplay.model.DataComponentPatchAccessor;
+import com.blib.internal.mixin.MixinDataComponentPatch;
 
 public class MojangStreamCodecs {
 

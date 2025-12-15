@@ -1,10 +1,11 @@
 package com.blib.common.util.codec.impl;
 
-import com.blib.common.util.codec.CodecUtil;
 import com.just.codec.Codec;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
+
+import com.blib.common.util.codec.CodecUtil;
 
 public class MojangCodecs {
 

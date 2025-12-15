@@ -1,9 +1,10 @@
 package com.blib.neoforge.event.impl;
 
-import com.blib.neoforge.event.NeoForgeBLibEventRouter;
-import com.blib.service.BLibEventService;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
+
+import com.blib.internal.service.BLibEventService;
+import com.blib.neoforge.event.NeoForgeBLibEventRouter;
 
 public class NeoForgeBLibTagsUpdatedEvents {
 

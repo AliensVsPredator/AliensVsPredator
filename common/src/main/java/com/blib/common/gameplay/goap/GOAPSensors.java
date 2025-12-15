@@ -1,6 +1,5 @@
 package com.blib.common.gameplay.goap;
 
-import com.blib.common.gameplay.util.BLibEntityPredicates;
 import com.just.goap.StateKey;
 import com.just.goap.sensor.Sensor;
 import com.just.goap.sensor.Sensors;
@@ -11,6 +10,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 
 import java.util.List;
+
+import com.blib.common.gameplay.util.BLibEntityPredicates;
 
 public class GOAPSensors {
 

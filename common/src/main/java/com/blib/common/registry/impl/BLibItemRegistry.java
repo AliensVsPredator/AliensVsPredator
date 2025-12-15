@@ -1,11 +1,5 @@
 package com.blib.common.registry.impl;
 
-import com.blib.BLib;
-import com.blib.BLibMod;
-import com.blib.common.gameplay.DefaultDispenseSpawnEggItemBehavior;
-import com.blib.common.mod.loader.model.ModLoaderType;
-import com.blib.common.registry.BLibHolder;
-import com.blib.common.registry.BLibRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
@@ -13,6 +7,13 @@ import net.minecraft.world.level.block.DispenserBlock;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
+
+import com.blib.BLib;
+import com.blib.BLibMod;
+import com.blib.common.gameplay.DefaultDispenseSpawnEggItemBehavior;
+import com.blib.common.mod.loader.model.ModLoaderType;
+import com.blib.common.registry.BLibHolder;
+import com.blib.common.registry.BLibRegistry;
 
 public class BLibItemRegistry extends BLibRegistry<Item> {
 

@@ -1,13 +1,5 @@
 package com.blib.common.registry;
 
-import com.blib.BLibMod;
-import com.blib.common.registry.impl.BLibCompostableRegistry;
-import com.blib.common.registry.impl.BLibDecoratedPotPatternRegistry;
-import com.blib.common.registry.impl.BLibEntityAttributeRegistry;
-import com.blib.common.registry.impl.BLibEntitySpawnRegistry;
-import com.blib.common.registry.impl.BLibFurnaceFuelRegistry;
-import com.blib.common.registry.impl.BLibItemRegistry;
-import com.blib.common.registry.impl.BLibReloadListenerRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 
@@ -16,6 +8,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import com.blib.BLibMod;
+import com.blib.common.registry.impl.BLibCompostableRegistry;
+import com.blib.common.registry.impl.BLibDecoratedPotPatternRegistry;
+import com.blib.common.registry.impl.BLibEntityAttributeRegistry;
+import com.blib.common.registry.impl.BLibEntitySpawnRegistry;
+import com.blib.common.registry.impl.BLibFurnaceFuelRegistry;
+import com.blib.common.registry.impl.BLibItemRegistry;
+import com.blib.common.registry.impl.BLibReloadListenerRegistry;
 
 public class BLibRegistryAccess {
 

@@ -1,9 +1,10 @@
 package com.blib.fabric.data.recipe.impl.vanilla;
 
-import com.blib.fabric.data.recipe.builder.RecipeBuilder;
 import com.compatibility.CommonItemTags;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.Items;
+
+import com.blib.fabric.data.recipe.builder.RecipeBuilder;
 
 public class VanillaMiscellaneousRecipeProvider {
 

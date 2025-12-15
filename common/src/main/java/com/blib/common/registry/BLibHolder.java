@@ -1,6 +1,5 @@
 package com.blib.common.registry;
 
-import com.blib.common.gameplay.model.HolderExtension;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderOwner;
@@ -16,6 +15,8 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+
+import com.blib.common.gameplay.model.HolderExtension;
 
 public class BLibHolder<T> implements Holder<T>, HolderExtension<T>, Supplier<T> {
 

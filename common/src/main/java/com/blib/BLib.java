@@ -1,5 +1,10 @@
 package com.blib;
 
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.blib.common.mod.loader.model.ModLoaderType;
 import com.blib.common.model.Version;
 import com.blib.common.network.BLibPacketDirections;
@@ -8,12 +13,8 @@ import com.blib.common.registry.init.BLibDataKeys;
 import com.blib.internal.service.BLibInternalServices;
 import com.blib.server.BlockBreakProgressManager;
 import com.blib.server.ServerScheduler;
-import com.blib.service.BLibServices;
 import com.blib.service.model.DistributionEnvironmentType;
 import com.blib.service.model.ReleaseEnvironmentType;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class BLib {
 
@@ -21,6 +22,7 @@ public class BLib {
 
     public static final String MOD_ID = "blib";
 
+    @ApiStatus.Internal
     public static final BLibMod MOD = createMod(MOD_ID);
 
     public static BLibMod createMod(String modId) {
@@ -47,6 +49,7 @@ public class BLib {
         return BLibInternalServices.MOD_LOADER.isModLoaded(modId);
     }
 
+    @ApiStatus.Internal
     public static void initialize() {
         LOGGER.info("Initializing BLib for platform '{}'", BLib.getModLoaderType());
 
@@ -54,11 +57,11 @@ public class BLib {
             BLibPacketDirections.initialize();
             BLibDataKeys.initialize();
             BLibServerPacketHandlers.initialize();
-        });
 
-        // TODO: There's a small bug here. This runs for both client and server levels!
-        BLibServices.EVENT.afterLevelTick().register(ServerScheduler::tick);
-        // TODO: There's a small bug here. This runs for both client and server levels!
-        BLibServices.EVENT.afterLevelTick().register(BlockBreakProgressManager::tick);
+            // TODO: There's a small bug here. This runs for both client and server levels!
+            MOD.events().afterLevelTick().register(ServerScheduler::tick);
+            // TODO: There's a small bug here. This runs for both client and server levels!
+            MOD.events().afterLevelTick().register(BlockBreakProgressManager::tick);
+        });
     }
 }

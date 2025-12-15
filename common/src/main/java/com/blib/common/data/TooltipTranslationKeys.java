@@ -1,7 +1,8 @@
 package com.blib.common.data;
 
-import com.blib.BLib;
 import org.jetbrains.annotations.NotNull;
+
+import com.blib.BLib;
 
 public class TooltipTranslationKeys {
 

@@ -1,7 +1,5 @@
 package com.blib.internal.mixin;
 
-import com.blib.common.data.tag.BLibItemTags;
-import com.blib.common.gameplay.util.BLibEntityPredicates;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -14,6 +12,9 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import com.blib.common.data.tag.BLibItemTags;
+import com.blib.common.gameplay.util.BLibEntityPredicates;
 
 @ApiStatus.Internal
 @Mixin(LivingEntity.class)

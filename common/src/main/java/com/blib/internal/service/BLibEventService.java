@@ -1,12 +1,15 @@
-package com.blib.service;
+package com.blib.internal.service;
 
-import com.blib.event.BLibEventRouter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.ApiStatus;
 
+import com.blib.event.BLibEventRouter;
+
+@ApiStatus.Internal
 public interface BLibEventService {
 
     BLibEventRouter<LevelTickEvent> afterLevelTick();

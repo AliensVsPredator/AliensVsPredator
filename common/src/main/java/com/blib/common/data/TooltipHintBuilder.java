@@ -1,11 +1,12 @@
 package com.blib.common.data;
 
-import com.blib.common.gameplay.model.TooltipCategoryType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.blib.common.gameplay.model.TooltipCategoryType;
 
 public class TooltipHintBuilder {
 

@@ -1,15 +1,16 @@
 package com.blib.common.registry.impl;
 
-import com.blib.BLibMod;
-import com.blib.common.exception.BLibRegistrationException;
-import com.blib.common.mod.BLibModState;
-import com.blib.common.registry.BLibHolder;
-import com.blib.internal.service.BLibInternalServices;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 
 import java.util.function.Supplier;
+
+import com.blib.BLibMod;
+import com.blib.common.exception.BLibRegistrationException;
+import com.blib.common.mod.BLibModState;
+import com.blib.common.registry.BLibHolder;
+import com.blib.internal.service.BLibInternalServices;
 
 public class BLibEntityAttributeRegistry {
 

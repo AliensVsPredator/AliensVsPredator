@@ -1,6 +1,5 @@
 package com.blib.common.gameplay.entity.ai.goal.combat;
 
-import com.blib.common.data.Cooldown;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -9,6 +8,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.util.EnumSet;
+
+import com.blib.common.data.Cooldown;
 
 public class DelayedAttackGoal extends MeleeAttackGoal {
 

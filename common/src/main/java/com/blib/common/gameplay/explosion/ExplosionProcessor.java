@@ -1,7 +1,5 @@
 package com.blib.common.gameplay.explosion;
 
-import com.blib.common.util.DirectionUtil;
-import com.blib.server.ServerScheduler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
@@ -13,6 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import com.blib.common.util.DirectionUtil;
+import com.blib.server.ServerScheduler;
 
 public class ExplosionProcessor {
 

@@ -1,10 +1,10 @@
 package com.blib.common.network;
 
+import com.avp.service.Services;
+
 import com.blib.client.network.BLibClientListener;
 import com.blib.common.network.model.NetworkHandler;
 import com.blib.common.network.packet.S2CEntityDataSyncPayload;
-
-import com.avp.service.Services;
 
 public class BLibServerPacketHandlers {
 

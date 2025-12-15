@@ -1,10 +1,11 @@
 package com.blib.client.input.keybind;
 
-import com.blib.client.model.KeyInteractType;
 import net.minecraft.client.KeyMapping;
 
 import java.util.HashSet;
 import java.util.function.Consumer;
+
+import com.blib.client.model.KeyInteractType;
 
 public class KeyPressHandler {
 

@@ -1,8 +1,9 @@
 package com.blib.client.network;
 
+import net.minecraft.world.entity.player.Player;
+
 import com.blib.common.network.data.DataUser;
 import com.blib.common.network.packet.S2CEntityDataSyncPayload;
-import net.minecraft.world.entity.player.Player;
 
 public class BLibClientListener {
 

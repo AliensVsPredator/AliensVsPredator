@@ -1,11 +1,12 @@
 package com.blib.common.registry.init;
 
-import com.blib.BLib;
-import com.blib.common.network.data.DataKey;
-import com.blib.common.registry.DataKeyRegistry;
 import com.just.codec.stream.impl.StreamCodecs;
 
 import java.util.function.Function;
+
+import com.blib.BLib;
+import com.blib.common.network.data.DataKey;
+import com.blib.common.registry.DataKeyRegistry;
 
 public class BLibDataKeys {
 

@@ -1,6 +1,5 @@
 package com.blib.internal.mixin;
 
-import com.blib.common.data.fixer.BLibDataFixerRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.WritableRegistry;
@@ -18,6 +17,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Map;
 import java.util.Optional;
+
+import com.blib.common.data.fixer.BLibDataFixerRegistry;
 
 @ApiStatus.Internal
 @Mixin(MappedRegistry.class)

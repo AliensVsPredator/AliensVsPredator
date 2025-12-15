@@ -1,12 +1,13 @@
 package com.blib.common.registry;
 
-import com.blib.common.network.data.DataKey;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import com.blib.common.network.data.DataKey;
 
 public class DataKeyRegistry {
 

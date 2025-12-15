@@ -1,11 +1,5 @@
 package com.blib.common.network.data;
 
-import com.blib.BLib;
-import com.blib.common.gameplay.model.NBTSerializable;
-import com.blib.common.network.packet.S2CEntityDataSyncPayload;
-import com.blib.common.registry.DataKeyRegistry;
-import com.blib.common.util.codec.stream.schema.StreamCodecSchemas;
-import com.blib.service.BLibServices;
 import com.just.codec.stream.StreamCodec;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBufUtil;
@@ -22,6 +16,13 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+
+import com.blib.BLib;
+import com.blib.common.gameplay.model.NBTSerializable;
+import com.blib.common.network.packet.S2CEntityDataSyncPayload;
+import com.blib.common.registry.DataKeyRegistry;
+import com.blib.common.util.codec.stream.schema.StreamCodecSchemas;
+import com.blib.service.BLibServices;
 
 public class DataContainer implements NBTSerializable {
 

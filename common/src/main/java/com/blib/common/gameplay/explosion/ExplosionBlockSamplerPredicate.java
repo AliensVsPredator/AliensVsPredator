@@ -1,8 +1,9 @@
 package com.blib.common.gameplay.explosion;
 
-import com.blib.common.util.ExplosionUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Blocks;
+
+import com.blib.common.util.ExplosionUtil;
 
 @FunctionalInterface
 public interface ExplosionBlockSamplerPredicate {

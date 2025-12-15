@@ -1,6 +1,5 @@
 package com.blib.fabric.data.recipe;
 
-import com.blib.fabric.data.recipe.builder.ShapedRecipeBuilder;
 import com.compatibility.CommonItemTags;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.tags.TagKey;
@@ -10,6 +9,8 @@ import net.minecraft.world.level.ItemLike;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
+
+import com.blib.fabric.data.recipe.builder.ShapedRecipeBuilder;
 
 public class RecipeTemplates {
 

@@ -1,11 +1,12 @@
 package com.blib.common.registry.impl;
 
+import net.minecraft.world.entity.Mob;
+
 import com.blib.BLibMod;
 import com.blib.common.exception.BLibRegistrationException;
 import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
 import com.blib.common.mod.BLibModState;
 import com.blib.internal.service.BLibInternalServices;
-import net.minecraft.world.entity.Mob;
 
 public class BLibEntitySpawnRegistry {
 

@@ -1,11 +1,12 @@
 package com.blib.fabric.data.model;
 
-import com.blib.BLib;
 import net.minecraft.data.models.model.ModelTemplate;
 import net.minecraft.data.models.model.TextureSlot;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Optional;
+
+import com.blib.BLib;
 
 public class BLibModelTemplates {
 

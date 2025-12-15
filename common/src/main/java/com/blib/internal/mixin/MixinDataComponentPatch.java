@@ -1,6 +1,5 @@
 package com.blib.internal.mixin;
 
-import com.blib.common.gameplay.model.DataComponentPatchAccessor;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
@@ -10,6 +9,8 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
 import java.util.Optional;
+
+import com.blib.common.gameplay.model.DataComponentPatchAccessor;
 
 @ApiStatus.Internal
 @Mixin(DataComponentPatch.class)

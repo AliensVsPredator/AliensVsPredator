@@ -1,8 +1,5 @@
 package com.blib.neoforge.service.impl;
 
-import com.blib.client.input.keybind.util.KeyMappingUtil;
-import com.blib.client.model.KeyInteractType;
-import com.blib.service.BLibClientRegistryService;
 import com.just.core.functional.function.Lazy;
 import com.just.core.functional.tuple.Tuple2;
 import mod.azure.azurelib.common.render.armor.AzArmorRenderer;
@@ -33,6 +30,10 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import com.blib.client.input.keybind.util.KeyMappingUtil;
+import com.blib.client.model.KeyInteractType;
+import com.blib.service.BLibClientRegistryService;
 
 public class NeoForgeBLibClientRegistryServiceImpl implements BLibClientRegistryService {
 

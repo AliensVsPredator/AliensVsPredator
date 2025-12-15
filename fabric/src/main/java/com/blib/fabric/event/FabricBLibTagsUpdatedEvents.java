@@ -1,8 +1,9 @@
 package com.blib.fabric.event;
 
-import com.blib.event.BLibEventRouter;
-import com.blib.service.BLibEventService;
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
+
+import com.blib.event.BLibEventRouter;
+import com.blib.internal.service.BLibEventService;
 
 public class FabricBLibTagsUpdatedEvents {
 

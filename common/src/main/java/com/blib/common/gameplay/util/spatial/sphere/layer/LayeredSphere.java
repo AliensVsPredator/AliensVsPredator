@@ -1,10 +1,11 @@
 package com.blib.common.gameplay.util.spatial.sphere.layer;
 
-import com.blib.common.gameplay.util.spatial.Vec3Like;
-import com.blib.common.gameplay.util.spatial.sphere.Sphere;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+
+import com.blib.common.gameplay.util.spatial.Vec3Like;
+import com.blib.common.gameplay.util.spatial.sphere.Sphere;
 
 public interface LayeredSphere extends Sphere {
 

@@ -1,8 +1,5 @@
 package com.blib.neoforge.data;
 
-import com.blib.BLibMod;
-import com.blib.internal.service.BLibInternalServices;
-import com.blib.neoforge.internal.service.impl.NeoForgeBLibRegistryServiceImpl;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.DataMapProvider;
@@ -11,6 +8,10 @@ import net.neoforged.neoforge.registries.datamaps.builtin.NeoForgeDataMaps;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
+
+import com.blib.BLibMod;
+import com.blib.internal.service.BLibInternalServices;
+import com.blib.neoforge.internal.service.impl.NeoForgeBLibRegistryServiceImpl;
 
 public class BLibNeoForgeCompostableDataMapProvider extends DataMapProvider {
 
