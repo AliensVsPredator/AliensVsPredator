@@ -2,12 +2,10 @@ package com.avp.neoforge;
 
 import com.avp.neoforge.service.NeoForgeRegistryService;
 import com.avp.service.Services;
-import mod.azure.azurelib.common.animation.cache.AzIdentityRegistry;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -30,16 +28,9 @@ public class AVPNeoForge {
 
         // Mod bus events.
         modBus.addListener(AVPNeoForge::registerPayloadHandlers);
-        modBus.addListener(AVPNeoForge::registerMiscellaneous);
 
         // Game bus events.
         NeoForge.EVENT_BUS.addListener(AVPNeoForge::registerPlayerTrackingEntityHandler);
-    }
-
-    public static void registerMiscellaneous(FMLCommonSetupEvent event) {
-        // Register AzureLib item identities.
-        REGISTRY.getAzureLibItemIdentitySuppliers()
-            .forEach(itemSupplier -> AzIdentityRegistry.register(itemSupplier.get()));
     }
 
     public static void registerPlayerTrackingEntityHandler(PlayerEvent.StartTracking event) {

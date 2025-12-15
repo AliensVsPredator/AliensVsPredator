@@ -1,5 +1,6 @@
 package com.blib.fabric.internal.service.impl;
 
+import mod.azure.azurelib.common.animation.cache.AzIdentityRegistry;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
@@ -40,6 +41,8 @@ class BLibFabricModContainer {
 
     private final BLibMod mod;
 
+    private final List<Runnable> deferredAzureLibIdentityRegistrations;
+
     private final List<Runnable> deferredCompostableRegistrations;
 
     private final List<Runnable> deferredDecoratedPotPatternRegistrations;
@@ -54,6 +57,7 @@ class BLibFabricModContainer {
 
     public BLibFabricModContainer(BLibMod mod) {
         this.mod = mod;
+        this.deferredAzureLibIdentityRegistrations = new ArrayList<>();
         this.deferredCompostableRegistrations = new ArrayList<>();
         this.deferredDecoratedPotPatternRegistrations = new ArrayList<>();
         this.deferredEntityAttributeRegistrations = new ArrayList<>();
@@ -123,7 +127,8 @@ class BLibFabricModContainer {
     /* package-private */ void runDeferredRegistrations() {
         // Run primary registries.
         BLibRegistries.REGISTRATION_ORDER.forEach(this::runRegistrationsFor);
-
+        // Run AzureLib identity registrations after primary registries are ran.
+        deferredAzureLibIdentityRegistrations.forEach(Runnable::run);
         // Run compostable registrations after primary registries are ran.
         deferredCompostableRegistrations.forEach(Runnable::run);
         // Run decorated pot pattern registrations after primary registries are ran.
@@ -135,6 +140,10 @@ class BLibFabricModContainer {
         deferredEntityAttributeRegistrations.forEach(Runnable::run);
         // Run entity spawn data registrations after entity attribute registrations.
         deferredEntitySpawnDataRegistrations.forEach(Runnable::run);
+    }
+
+    /* package-private */ void deferAzureLibIdentityRegistration(BLibHolder<? extends Item> holder) {
+        deferredAzureLibIdentityRegistrations.add(() -> AzIdentityRegistry.register(holder.get()));
     }
 
     /* package-private */ void deferCompostableRegistration(BLibHolder<? extends ItemLike> holder, float chance) {

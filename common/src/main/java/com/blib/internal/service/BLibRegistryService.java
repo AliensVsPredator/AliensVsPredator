@@ -21,6 +21,8 @@ public interface BLibRegistryService {
 
     <T> Holder<T> register(BLibHolder<T> holder, Supplier<? extends T> valueFactory);
 
+    void registerAzureLibIdentity(BLibHolder<? extends Item> holder);
+
     void registerCompostable(BLibHolder<? extends ItemLike> holder, float chance, boolean villagersCanCompost, boolean replace);
 
     void registerDecoratedPotPattern(String path, BLibHolder<? extends Item> holder);

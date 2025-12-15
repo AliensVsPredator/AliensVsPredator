@@ -41,6 +41,8 @@ public class BLibNeoForgeModContainer {
 
     private final Map<Registry<?>, DeferredRegister<?>> registryToDeferredRegisterMap;
 
+    private final List<BLibHolder<? extends Item>> azureLibIdentityEntries;
+
     private final List<Tuple4<BLibHolder<? extends ItemLike>, Float, Boolean, Boolean>> compostableData;
 
     private final List<Runnable> deferredDecoratedPotPatternRegistrations;
@@ -64,6 +66,7 @@ public class BLibNeoForgeModContainer {
                 )
             );
 
+        this.azureLibIdentityEntries = new ArrayList<>();
         this.compostableData = new ArrayList<>();
         this.deferredDecoratedPotPatternRegistrations = new ArrayList<>();
         this.entityAttributeSupplierPairs = new ArrayList<>();
@@ -86,6 +89,31 @@ public class BLibNeoForgeModContainer {
 
     public List<Tuple2<BLibHolder<? extends ItemLike>, Integer>> getFurnaceFuelData() {
         return Collections.unmodifiableList(furnaceFuelData);
+    }
+
+    /* package-private */ List<BLibHolder<? extends Item>> getAzureLibIdentityEntries() {
+        return azureLibIdentityEntries;
+    }
+
+    @SuppressWarnings("unchecked")
+    /* package-private */ <T> DeferredRegister<T> getDeferredRegister(Registry<T> registry) {
+        return (DeferredRegister<T>) registryToDeferredRegisterMap.get(registry);
+    }
+
+    /* package-private */ Collection<DeferredRegister<?>> getDeferredRegisters() {
+        return Collections.unmodifiableCollection(registryToDeferredRegisterMap.values());
+    }
+
+    /* package-private */ List<Tuple2<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>>> getEntityAttributeSupplierPairs() {
+        return Collections.unmodifiableList(entityAttributeSupplierPairs);
+    }
+
+    /* package-private */ List<PreparableReloadListener> getReloadListeners() {
+        return reloadListeners;
+    }
+
+    /* package-private */ void registerAzureLibIdentity(BLibHolder<? extends Item> holder) {
+        azureLibIdentityEntries.add(holder);
     }
 
     /* package-private */ void registerCompostable(Tuple4<BLibHolder<? extends ItemLike>, Float, Boolean, Boolean> tuple) {
@@ -115,22 +143,5 @@ public class BLibNeoForgeModContainer {
 
     /* package-private */ void registerReloadListener(PreparableReloadListener listener) {
         reloadListeners.add(listener);
-    }
-
-    @SuppressWarnings("unchecked")
-    /* package-private */ <T> DeferredRegister<T> getDeferredRegister(Registry<T> registry) {
-        return (DeferredRegister<T>) registryToDeferredRegisterMap.get(registry);
-    }
-
-    /* package-private */ Collection<DeferredRegister<?>> getDeferredRegisters() {
-        return Collections.unmodifiableCollection(registryToDeferredRegisterMap.values());
-    }
-
-    /* package-private */ List<Tuple2<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>>> getEntityAttributeSupplierPairs() {
-        return Collections.unmodifiableList(entityAttributeSupplierPairs);
-    }
-
-    /* package-private */ List<PreparableReloadListener> getReloadListeners() {
-        return reloadListeners;
     }
 }

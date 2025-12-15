@@ -2,6 +2,7 @@ package com.blib.neoforge.internal.service.impl;
 
 import com.just.core.functional.tuple.Tuple2;
 import com.just.core.functional.tuple.Tuple4;
+import mod.azure.azurelib.common.animation.cache.AzIdentityRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.entity.EntityType;
@@ -58,6 +59,12 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
     }
 
     @Override
+    public void registerAzureLibIdentity(BLibHolder<? extends Item> holder) {
+        getModContainer(holder)
+            .registerAzureLibIdentity(holder);
+    }
+
+    @Override
     public void registerCompostable(BLibHolder<? extends ItemLike> holder, float chance, boolean villagersCanCompost, boolean replace) {
         getModContainer(holder)
             .registerCompostable(new Tuple4<>(holder, chance, villagersCanCompost, replace));
@@ -105,9 +112,15 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
         eventBus.<RegisterSpawnPlacementsEvent>addListener(event -> onRegisterEntitySpawnPlacements(mod, event));
 
         eventBus.<FMLCommonSetupEvent>addListener(
-            event -> getModContainer(mod)
-                .getDeferredDecoratedPotPatternRegistrations()
-                .forEach(Runnable::run)
+            event -> {
+                getModContainer(mod)
+                    .getAzureLibIdentityEntries()
+                    .forEach(holder -> AzIdentityRegistry.register(holder.get()));
+
+                getModContainer(mod)
+                    .getDeferredDecoratedPotPatternRegistrations()
+                    .forEach(Runnable::run);
+            }
         );
 
         eventBus.<GatherDataEvent>addListener(event -> {

@@ -2,7 +2,6 @@ package com.blib.fabric.service;
 
 import com.avp.service.RegistryService;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import mod.azure.azurelib.common.animation.cache.AzIdentityRegistry;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
@@ -10,7 +9,6 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
-import net.minecraft.world.item.Item;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,11 +32,6 @@ public class FabricRegistryService implements RegistryService {
     @Override
     public void registerCommand(LiteralArgumentBuilder<CommandSourceStack> literalArgumentBuilder) {
         literalArgumentBuilders.add(literalArgumentBuilder);
-    }
-
-    @Override
-    public void registerAzureLibIdentity(Supplier<? extends Item> itemSupplier) {
-        AzIdentityRegistry.register(itemSupplier.get());
     }
 
     @Override

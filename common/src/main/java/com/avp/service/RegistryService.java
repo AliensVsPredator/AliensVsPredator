@@ -5,7 +5,6 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
-import net.minecraft.world.item.Item;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -17,8 +16,6 @@ import com.blib.common.network.model.PacketDirection;
 public interface RegistryService {
 
     void registerCommand(LiteralArgumentBuilder<CommandSourceStack> literalArgumentBuilder);
-
-    void registerAzureLibIdentity(Supplier<? extends Item> itemSupplier);
 
     <T extends CustomPacketPayload> void registerPacketHandlers(NetworkHandler<T> networkHandler);
 

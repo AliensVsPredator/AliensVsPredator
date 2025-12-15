@@ -46,6 +46,12 @@ public class FabricBLibRegistryServiceImpl implements BLibRegistryService {
     }
 
     @Override
+    public void registerAzureLibIdentity(BLibHolder<? extends Item> holder) {
+        getModContainer(holder)
+            .deferAzureLibIdentityRegistration(holder);
+    }
+
+    @Override
     public void registerCompostable(
         BLibHolder<? extends ItemLike> holder,
         float chance,
