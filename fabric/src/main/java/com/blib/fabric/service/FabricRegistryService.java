@@ -1,11 +1,9 @@
 package com.blib.fabric.service;
 
 import com.avp.service.RegistryService;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
-import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
@@ -22,16 +20,8 @@ public class FabricRegistryService implements RegistryService {
 
     private final List<NetworkHandler<?>> clientBoundPacketHandlers;
 
-    private final List<LiteralArgumentBuilder<CommandSourceStack>> literalArgumentBuilders;
-
     public FabricRegistryService() {
         this.clientBoundPacketHandlers = new ArrayList<>();
-        this.literalArgumentBuilders = new ArrayList<>();
-    }
-
-    @Override
-    public void registerCommand(LiteralArgumentBuilder<CommandSourceStack> literalArgumentBuilder) {
-        literalArgumentBuilders.add(literalArgumentBuilder);
     }
 
     @Override
@@ -94,9 +84,5 @@ public class FabricRegistryService implements RegistryService {
 
     public List<NetworkHandler<?>> getClientBoundPacketHandlers() {
         return clientBoundPacketHandlers;
-    }
-
-    public List<LiteralArgumentBuilder<CommandSourceStack>> getLiteralArgumentBuilders() {
-        return literalArgumentBuilders;
     }
 }

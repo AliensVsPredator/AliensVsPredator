@@ -1,7 +1,5 @@
 package com.avp.service;
 
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
@@ -14,8 +12,6 @@ import com.blib.common.network.model.PacketDirection;
 
 @Deprecated(forRemoval = true)
 public interface RegistryService {
-
-    void registerCommand(LiteralArgumentBuilder<CommandSourceStack> literalArgumentBuilder);
 
     <T extends CustomPacketPayload> void registerPacketHandlers(NetworkHandler<T> networkHandler);
 

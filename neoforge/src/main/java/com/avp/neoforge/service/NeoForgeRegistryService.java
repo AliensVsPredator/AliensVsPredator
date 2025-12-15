@@ -2,8 +2,6 @@ package com.avp.neoforge.service;
 
 import com.avp.service.RegistryService;
 import com.just.core.functional.tuple.Tuple3;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
@@ -17,21 +15,13 @@ import com.blib.common.network.model.PacketDirection;
 
 public class NeoForgeRegistryService implements RegistryService {
 
-    private final List<LiteralArgumentBuilder<CommandSourceStack>> literalArgumentBuilders;
-
     private final List<NetworkHandler<?>> networkHandlers;
 
     private final List<Tuple3<Supplier<VillagerProfession>, Integer, List<VillagerTrades.ItemListing>>> villagerTradeData;
 
     public NeoForgeRegistryService() {
-        this.literalArgumentBuilders = new ArrayList<>();
         this.networkHandlers = new ArrayList<>();
         this.villagerTradeData = new ArrayList<>();
-    }
-
-    @Override
-    public void registerCommand(LiteralArgumentBuilder<CommandSourceStack> literalArgumentBuilder) {
-        literalArgumentBuilders.add(literalArgumentBuilder);
     }
 
     @Override
@@ -51,10 +41,6 @@ public class NeoForgeRegistryService implements RegistryService {
         List<VillagerTrades.ItemListing> villagerTradeItemListings
     ) {
         villagerTradeData.add(new Tuple3<>(villagerProfessionSupplier, level, villagerTradeItemListings));
-    }
-
-    public List<LiteralArgumentBuilder<CommandSourceStack>> getLiteralArgumentBuilders() {
-        return literalArgumentBuilders;
     }
 
     public List<NetworkHandler<?>> getNetworkHandlers() {
