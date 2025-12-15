@@ -18,7 +18,7 @@ public class BLibDecoratedPotPatternRegistry {
     public void register(String path, BLibHolder<? extends Item> holder) {
         if (mod.state() != BLibModState.INITIALIZING) {
             throw new BLibRegistrationException(
-                "Attempted to register a BLibHolder outside of mod's initialization window. BLibHolder: %s Mod State: %s".formatted(
+                "Attempted to register a BLibHolder outside of mod's initialization window. BLibHolder: %s, Mod State: %s".formatted(
                     holder,
                     mod.state()
                 )

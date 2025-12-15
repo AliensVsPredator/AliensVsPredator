@@ -17,7 +17,7 @@ public class BLibReloadListenerRegistry {
     public void register(String path, PreparableReloadListener reloadListener) {
         if (mod.state() != BLibModState.INITIALIZING) {
             throw new BLibRegistrationException(
-                "Attempted to register a reload listener outside of mod's initialization window. Reload Listener: %s Mod State: %s"
+                "Attempted to register a reload listener outside of mod's initialization window. Reload Listener: %s, Mod State: %s"
                     .formatted(
                         reloadListener,
                         mod.state()
