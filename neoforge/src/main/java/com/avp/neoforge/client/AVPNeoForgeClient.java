@@ -1,5 +1,6 @@
 package com.avp.neoforge.client;
 
+import com.blib.BLib;
 import com.blib.client.input.keybind.KeyPressHandler;
 import com.blib.neoforge.service.impl.NeoForgeBLibClientRegistryServiceImpl;
 import com.blib.service.BLibServices;
@@ -25,9 +26,7 @@ import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
-import com.avp.AVP;
-
-@EventBusSubscriber(modid = AVP.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@EventBusSubscriber(modid = BLib.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class AVPNeoForgeClient {
 
     private static final NeoForgeBLibClientRegistryServiceImpl CLIENT_REGISTRY =

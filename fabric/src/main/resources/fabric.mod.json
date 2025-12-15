@@ -1,10 +1,10 @@
 {
 	"schemaVersion": 1,
-	"id": "avp",
+	"id": "blib",
 	"version": "${version}",
 	"name": "${mod_name}",
 	"description": "${description}",
-	"accessWidener": "avp.accesswidener",
+	"accessWidener": "blib.accesswidener",
 	"authors": ["Stargazer Studios"],
 	"contact": {
 		"homepage": "https://www.curseforge.com/minecraft/mc-mods/avp-regenesis",

@@ -1,5 +1,6 @@
 package com.avp.neoforge;
 
+import com.blib.BLib;
 import com.blib.common.network.data.DataContainer;
 import com.blib.common.network.data.DataUser;
 import com.blib.common.network.model.NetworkHandler;
@@ -16,17 +17,16 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
 import net.neoforged.neoforge.network.registration.HandlerThread;
 
-import com.avp.AVP;
 import com.avp.neoforge.service.NeoForgeRegistryService;
 import com.avp.service.Services;
 
-@Mod(AVP.MOD_ID)
+@Mod(BLib.MOD_ID)
 public class AVPNeoForge {
 
     private static final NeoForgeRegistryService REGISTRY = (NeoForgeRegistryService) Services.REGISTRY;
 
     public AVPNeoForge(IEventBus modBus) {
-        AVP.initialize();
+        BLib.initialize();
 
         // Mod bus events.
         modBus.addListener(AVPNeoForge::registerPayloadHandlers);

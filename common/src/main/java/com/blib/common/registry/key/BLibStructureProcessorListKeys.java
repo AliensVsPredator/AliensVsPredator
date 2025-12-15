@@ -12,5 +12,7 @@ public class BLibStructureProcessorListKeys {
         ResourceLocation.withDefaultNamespace("empty")
     );
 
-    private BLibStructureProcessorListKeys() {}
+    private BLibStructureProcessorListKeys() {
+        throw new UnsupportedOperationException();
+    }
 }

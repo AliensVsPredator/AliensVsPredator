@@ -1,8 +1,8 @@
 package com.avp.service;
 
-import java.util.ServiceLoader;
+import com.blib.BLib;
 
-import com.avp.AVP;
+import java.util.ServiceLoader;
 
 @Deprecated(forRemoval = true)
 public class Services {
@@ -14,7 +14,7 @@ public class Services {
             .findFirst()
             .orElseThrow(() -> new NullPointerException("Failed to load service for " + clazz.getName()));
 
-        AVP.LOGGER.debug("Loaded {} for service {}", loadedService, clazz);
+        BLib.LOGGER.debug("Loaded {} for service {}", loadedService, clazz);
 
         return loadedService;
     }
