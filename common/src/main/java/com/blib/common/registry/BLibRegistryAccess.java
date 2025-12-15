@@ -15,8 +15,8 @@ import com.blib.common.registry.impl.BLibDecoratedPotPatternRegistry;
 import com.blib.common.registry.impl.BLibEntityAttributeRegistry;
 import com.blib.common.registry.impl.BLibEntitySpawnRegistry;
 import com.blib.common.registry.impl.BLibFurnaceFuelRegistry;
-import com.blib.common.registry.impl.BLibItemRegistry;
 import com.blib.common.registry.impl.BLibReloadListenerRegistry;
+import com.blib.internal.common.registry.impl.BLibItemRegistry;
 
 public class BLibRegistryAccess {
 
@@ -49,10 +49,6 @@ public class BLibRegistryAccess {
         return new BLibFurnaceFuelRegistry(mod);
     }
 
-    public BLibItemRegistry createItemRegistry() {
-        return bind(new BLibItemRegistry(mod));
-    }
-
     public BLibReloadListenerRegistry createReloadListenerRegistry() {
         return new BLibReloadListenerRegistry(mod);
     }
@@ -62,7 +58,7 @@ public class BLibRegistryAccess {
 
         if (registry == BuiltInRegistries.ITEM) {
             @SuppressWarnings("unchecked")
-            var itemRegistry = (BLibRegistry<T>) createItemRegistry();
+            var itemRegistry = (BLibRegistry<T>) bind(new BLibItemRegistry(mod));
             blibRegistry = itemRegistry;
         } else {
             blibRegistry = new BLibRegistry<>(mod, registry);

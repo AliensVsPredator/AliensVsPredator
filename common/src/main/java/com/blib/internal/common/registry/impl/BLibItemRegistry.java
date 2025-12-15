@@ -1,9 +1,10 @@
-package com.blib.common.registry.impl;
+package com.blib.internal.common.registry.impl;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.block.DispenserBlock;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
@@ -15,6 +16,7 @@ import com.blib.common.mod.loader.model.ModLoaderType;
 import com.blib.common.registry.BLibHolder;
 import com.blib.common.registry.BLibRegistry;
 
+@ApiStatus.Internal
 public class BLibItemRegistry extends BLibRegistry<Item> {
 
     public BLibItemRegistry(BLibMod mod) {
