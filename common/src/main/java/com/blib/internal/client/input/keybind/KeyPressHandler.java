@@ -1,4 +1,4 @@
-package com.blib.client.input.keybind;
+package com.blib.internal.client.input.keybind;
 
 import net.minecraft.client.KeyMapping;
 

@@ -37,9 +37,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import com.blib.client.input.keybind.KeyPressHandler;
 import com.blib.client.input.keybind.util.KeyMappingUtil;
 import com.blib.client.model.KeyInteractType;
+import com.blib.internal.client.input.keybind.KeyPressHandler;
 import com.blib.internal.service.BLibClientRegistryService;
 
 @ApiStatus.Internal

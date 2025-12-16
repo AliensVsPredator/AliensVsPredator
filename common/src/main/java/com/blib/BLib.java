@@ -16,7 +16,7 @@ import com.blib.internal.service.BLibInternalServices;
 import com.blib.server.BlockBreakProgressManager;
 import com.blib.server.ServerScheduler;
 
-public class BLib {
+public final class BLib {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(BLib.class);
 
@@ -63,5 +63,10 @@ public class BLib {
             // TODO: There's a small bug here. This runs for both client and server levels!
             MOD.events().afterLevelTick().register(BlockBreakProgressManager::tick);
         });
+    }
+
+    @ApiStatus.Internal
+    private BLib() {
+        throw new UnsupportedOperationException();
     }
 }
