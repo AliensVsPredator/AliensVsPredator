@@ -2,6 +2,8 @@ package com.blib;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 import com.blib.common.exception.BLibModInitializationException;
 import com.blib.common.model.BLibModState;
 import com.blib.common.model.Version;
@@ -88,5 +90,19 @@ public class BLibMod {
 
     public @Nullable Version version() {
         return version;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof BLibMod mod)) {
+            return false;
+        }
+
+        return Objects.equals(id, mod.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

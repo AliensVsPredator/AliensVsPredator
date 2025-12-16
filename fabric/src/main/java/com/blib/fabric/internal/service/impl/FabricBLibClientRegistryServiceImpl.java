@@ -37,6 +37,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import com.blib.client.BLibClientMod;
 import com.blib.client.input.keybind.util.KeyMappingUtil;
 import com.blib.client.model.KeyInteractType;
 import com.blib.internal.client.input.keybind.KeyPressHandler;
@@ -46,12 +47,17 @@ import com.blib.internal.service.BLibClientRegistryService;
 public class FabricBLibClientRegistryServiceImpl implements BLibClientRegistryService {
 
     @Override
-    public void registerArmorRenderer(Supplier<AzArmorRenderer> armorRendererSupplier, List<Supplier<? extends Item>> itemSuppliers) {
-        registerArmorRendererImmediately(armorRendererSupplier, itemSuppliers);
+    public void registerArmorRenderer(
+        BLibClientMod mod,
+        Supplier<AzArmorRenderer> armorRendererSupplier,
+        List<Supplier<? extends Item>> itemSuppliers
+    ) {
+        registerArmorRendererImmediately(mod, armorRendererSupplier, itemSuppliers);
     }
 
     @Override
     public <T extends BlockEntity> void registerBlockEntityRenderer(
+        BLibClientMod mod,
         Supplier<BlockEntityType<T>> blockEntityTypeSupplier,
         BlockEntityRendererProvider<T> renderProvider
     ) {
@@ -59,12 +65,13 @@ public class FabricBLibClientRegistryServiceImpl implements BLibClientRegistrySe
     }
 
     @Override
-    public void registerBlockRenderLayer(Supplier<? extends Block> blockSupplier, RenderType renderType) {
+    public void registerBlockRenderLayer(BLibClientMod mod, Supplier<? extends Block> blockSupplier, RenderType renderType) {
         BlockRenderLayerMap.INSTANCE.putBlock(blockSupplier.get(), renderType);
     }
 
     @Override
     public <E extends Entity> void registerEntityRenderer(
+        BLibClientMod mod,
         Supplier<EntityType<E>> entityTypeSupplier,
         EntityRendererProvider<E> entityRendererFactory
     ) {
@@ -72,17 +79,22 @@ public class FabricBLibClientRegistryServiceImpl implements BLibClientRegistrySe
     }
 
     @Override
-    public void registerItemColor(ItemColor itemColor, List<Supplier<? extends Item>> itemSuppliers) {
+    public void registerItemColor(BLibClientMod mod, ItemColor itemColor, List<Supplier<? extends Item>> itemSuppliers) {
         itemSuppliers.forEach(itemSupplier -> ColorProviderRegistry.ITEM.register(itemColor, itemSupplier.get()));
     }
 
     @Override
-    public void registerItemRenderer(Supplier<? extends Item> itemSupplier, Function<String, Supplier<AzItemRenderer>> rendererFactory) {
-        registerItemRendererImmediately(itemSupplier.get(), rendererFactory);
+    public void registerItemRenderer(
+        BLibClientMod mod,
+        Supplier<? extends Item> itemSupplier,
+        Function<String, Supplier<AzItemRenderer>> rendererFactory
+    ) {
+        registerItemRendererImmediately(mod, itemSupplier.get(), rendererFactory);
     }
 
     @Override
     public Supplier<Tuple2<KeyMapping, Consumer<KeyInteractType>>> registerKeyMapping(
+        BLibClientMod mod,
         ResourceLocation resourceLocation,
         String category,
         int key,
@@ -100,6 +112,7 @@ public class FabricBLibClientRegistryServiceImpl implements BLibClientRegistrySe
 
     @Override
     public <T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>> void registerMenuScreen(
+        BLibClientMod mod,
         Supplier<? extends MenuType<T>> menuTypeSupplier,
         MenuScreens.ScreenConstructor<T, U> screenConstructor
     ) {
@@ -108,6 +121,7 @@ public class FabricBLibClientRegistryServiceImpl implements BLibClientRegistrySe
 
     @Override
     public <T extends ParticleOptions> void registerParticleProviderFactory(
+        BLibClientMod mod,
         Supplier<? extends ParticleType<T>> particleTypeSupplier,
         ParticleEngine.SpriteParticleRegistration<T> spriteParticleRegistration
     ) {

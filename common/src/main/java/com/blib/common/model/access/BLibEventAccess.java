@@ -1,5 +1,7 @@
 package com.blib.common.model.access;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import com.blib.BLibMod;
 import com.blib.common.event.BLibBlockBreakEvent;
 import com.blib.common.event.BLibEventRouter;
@@ -11,6 +13,7 @@ public class BLibEventAccess {
 
     private final BLibMod mod;
 
+    @ApiStatus.Internal
     public BLibEventAccess(BLibMod mod) {
         this.mod = mod;
     }

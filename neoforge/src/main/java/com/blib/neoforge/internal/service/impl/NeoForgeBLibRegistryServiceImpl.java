@@ -124,6 +124,14 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
             .registerReloadListener(listener);
     }
 
+    public BLibNeoForgeModContainer getModContainer(BLibHolder<?> holder) {
+        return getModContainer(holder.getRegistry().getMod());
+    }
+
+    public BLibNeoForgeModContainer getModContainer(BLibMod mod) {
+        return modToContainerMap.computeIfAbsent(mod, $ -> new BLibNeoForgeModContainer(mod));
+    }
+
     /* package-private */ void finalize(BLibMod mod, IEventBus eventBus) {
         getModContainer(mod)
             .getDeferredRegisters()
@@ -229,13 +237,5 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
                     RegisterSpawnPlacementsEvent.Operation.AND
                 );
             });
-    }
-
-    private BLibNeoForgeModContainer getModContainer(BLibHolder<?> holder) {
-        return getModContainer(holder.getRegistry().getMod());
-    }
-
-    public BLibNeoForgeModContainer getModContainer(BLibMod mod) {
-        return modToContainerMap.computeIfAbsent(mod, $ -> new BLibNeoForgeModContainer(mod));
     }
 }

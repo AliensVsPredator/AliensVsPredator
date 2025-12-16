@@ -2,6 +2,7 @@ package com.blib.common.model.access;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,6 +28,7 @@ public class BLibRegistryAccess {
 
     private final Map<Registry<?>, List<BLibRegistry<?>>> registryToRegistriesMap;
 
+    @ApiStatus.Internal
     public BLibRegistryAccess(BLibMod mod) {
         this.mod = mod;
         this.registryToRegistriesMap = new ConcurrentHashMap<>();

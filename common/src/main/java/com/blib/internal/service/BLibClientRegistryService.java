@@ -33,14 +33,20 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import com.blib.client.BLibClientMod;
 import com.blib.client.model.KeyInteractType;
 
 @ApiStatus.Internal
 public interface BLibClientRegistryService {
 
-    void registerArmorRenderer(Supplier<AzArmorRenderer> armorRendererSupplier, List<Supplier<? extends Item>> itemSuppliers);
+    void registerArmorRenderer(
+        BLibClientMod mod,
+        Supplier<AzArmorRenderer> armorRendererSupplier,
+        List<Supplier<? extends Item>> itemSuppliers
+    );
 
     default void registerArmorRendererImmediately(
+        BLibClientMod mod,
         Supplier<AzArmorRenderer> armorRendererSupplier,
         List<Supplier<? extends Item>> itemSuppliers
     ) {
@@ -48,28 +54,35 @@ public interface BLibClientRegistryService {
     }
 
     <T extends BlockEntity> void registerBlockEntityRenderer(
+        BLibClientMod mod,
         Supplier<BlockEntityType<T>> blockEntityTypeSupplier,
         BlockEntityRendererProvider<T> renderProvider
     );
 
-    void registerBlockRenderLayer(Supplier<? extends Block> blockSupplier, RenderType renderType);
+    void registerBlockRenderLayer(BLibClientMod mod, Supplier<? extends Block> blockSupplier, RenderType renderType);
 
     <E extends Entity> void registerEntityRenderer(
+        BLibClientMod mod,
         Supplier<EntityType<E>> entityTypeSupplier,
         EntityRendererProvider<E> entityRendererFactory
     );
 
-    void registerItemColor(ItemColor itemColor, List<Supplier<? extends Item>> itemSuppliers);
+    void registerItemColor(BLibClientMod mod, ItemColor itemColor, List<Supplier<? extends Item>> itemSuppliers);
 
-    void registerItemRenderer(Supplier<? extends Item> itemSupplier, Function<String, Supplier<AzItemRenderer>> rendererFactory);
+    void registerItemRenderer(
+        BLibClientMod mod,
+        Supplier<? extends Item> itemSupplier,
+        Function<String, Supplier<AzItemRenderer>> rendererFactory
+    );
 
-    default void registerItemRendererImmediately(Item item, Function<String, Supplier<AzItemRenderer>> rendererFactory) {
+    default void registerItemRendererImmediately(BLibClientMod mod, Item item, Function<String, Supplier<AzItemRenderer>> rendererFactory) {
         var path = BuiltInRegistries.ITEM.getKey(item).getPath();
         var itemRendererSupplier = rendererFactory.apply(path);
         AzItemRendererRegistry.register(itemRendererSupplier, item);
     }
 
     Supplier<Tuple2<KeyMapping, Consumer<KeyInteractType>>> registerKeyMapping(
+        BLibClientMod mod,
         ResourceLocation resourceLocation,
         String category,
         int key,
@@ -77,11 +90,13 @@ public interface BLibClientRegistryService {
     );
 
     <T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>> void registerMenuScreen(
+        BLibClientMod mod,
         Supplier<? extends MenuType<T>> menuTypeSupplier,
         MenuScreens.ScreenConstructor<T, U> screenConstructor
     );
 
     <T extends ParticleOptions> void registerParticleProviderFactory(
+        BLibClientMod mod,
         Supplier<? extends ParticleType<T>> particleTypeSupplier,
         ParticleEngine.SpriteParticleRegistration<T> spriteParticleRegistration
     );

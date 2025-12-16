@@ -36,8 +36,9 @@ import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.ApiStatus;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -51,74 +52,67 @@ import com.blib.internal.service.BLibClientRegistryService;
 @ApiStatus.Internal
 public class BLibNeoForgeClientRegistryServiceImpl implements BLibClientRegistryService {
 
-    private final List<Tuple2<Supplier<AzArmorRenderer>, List<Supplier<? extends Item>>>> armorRendererPairs;
-
-    private final List<Tuple2<Supplier<? extends BlockEntityType<? extends BlockEntity>>, BlockEntityRendererProvider<? extends BlockEntity>>> blockEntityRendererPairs;
-
-    private final List<Tuple2<Supplier<? extends Block>, RenderType>> blockRenderLayerPairs;
-
-    private final List<Tuple2<Supplier<? extends EntityType<?>>, EntityRendererProvider<?>>> entityRendererPairs;
-
-    private final List<Tuple2<ItemColor, List<Supplier<? extends Item>>>> itemColorPairs;
-
-    private final List<Tuple2<Supplier<? extends Item>, Function<String, Supplier<AzItemRenderer>>>> itemRendererPairs;
-
-    private final List<Supplier<Tuple2<KeyMapping, Consumer<KeyInteractType>>>> keyMappingHandlerPairSuppliers;
-
-    private final List<Tuple2<Supplier<? extends MenuType<?>>, MenuScreens.ScreenConstructor<?, ?>>> menuScreenConstructorPairs;
-
-    private final List<Tuple2<Supplier<? extends ParticleType<?>>, ParticleEngine.SpriteParticleRegistration<?>>> particleProviderFactoryPairs;
+    private final Map<BLibClientMod, BLibNeoForgeClientModContainer> modToContainerMap;
 
     public BLibNeoForgeClientRegistryServiceImpl() {
-        this.armorRendererPairs = new ArrayList<>();
-        this.blockEntityRendererPairs = new ArrayList<>();
-        this.blockRenderLayerPairs = new ArrayList<>();
-        this.entityRendererPairs = new ArrayList<>();
-        this.itemColorPairs = new ArrayList<>();
-        this.itemRendererPairs = new ArrayList<>();
-        this.keyMappingHandlerPairSuppliers = new ArrayList<>();
-        this.menuScreenConstructorPairs = new ArrayList<>();
-        this.particleProviderFactoryPairs = new ArrayList<>();
+        this.modToContainerMap = new ConcurrentHashMap<>();
     }
 
     @Override
-    public void registerArmorRenderer(Supplier<AzArmorRenderer> armorRendererSupplier, List<Supplier<? extends Item>> itemSuppliers) {
-        armorRendererPairs.add(new Tuple2<>(armorRendererSupplier, itemSuppliers));
+    public void registerArmorRenderer(
+        BLibClientMod mod,
+        Supplier<AzArmorRenderer> armorRendererSupplier,
+        List<Supplier<? extends Item>> itemSuppliers
+    ) {
+        getModContainer(mod)
+            .registerArmorRenderer(armorRendererSupplier, itemSuppliers);
     }
 
     @Override
     public <T extends BlockEntity> void registerBlockEntityRenderer(
+        BLibClientMod mod,
         Supplier<BlockEntityType<T>> blockEntityTypeSupplier,
         BlockEntityRendererProvider<T> renderProvider
     ) {
-        blockEntityRendererPairs.add(new Tuple2<>(blockEntityTypeSupplier, renderProvider));
+        getModContainer(mod)
+            .registerBlockEntityRenderer(blockEntityTypeSupplier, renderProvider);
     }
 
     @Override
-    public void registerBlockRenderLayer(Supplier<? extends Block> blockSupplier, RenderType renderType) {
-        blockRenderLayerPairs.add(new Tuple2<>(blockSupplier, renderType));
+    public void registerBlockRenderLayer(BLibClientMod mod, Supplier<? extends Block> blockSupplier, RenderType renderType) {
+        getModContainer(mod)
+            .registerBlockRenderLayer(blockSupplier, renderType);
     }
 
     @Override
     public <E extends Entity> void registerEntityRenderer(
+        BLibClientMod mod,
         Supplier<EntityType<E>> entityTypeSupplier,
         EntityRendererProvider<E> entityRendererFactory
     ) {
-        entityRendererPairs.add(new Tuple2<>(entityTypeSupplier, entityRendererFactory));
+        getModContainer(mod)
+            .registerEntityRenderer(entityTypeSupplier, entityRendererFactory);
     }
 
     @Override
-    public void registerItemColor(ItemColor itemColor, List<Supplier<? extends Item>> itemSuppliers) {
-        itemColorPairs.add(new Tuple2<>(itemColor, itemSuppliers));
+    public void registerItemColor(BLibClientMod mod, ItemColor itemColor, List<Supplier<? extends Item>> itemSuppliers) {
+        getModContainer(mod)
+            .registerItemColor(itemColor, itemSuppliers);
     }
 
     @Override
-    public void registerItemRenderer(Supplier<? extends Item> itemSupplier, Function<String, Supplier<AzItemRenderer>> rendererFactory) {
-        itemRendererPairs.add(new Tuple2<>(itemSupplier, rendererFactory));
+    public void registerItemRenderer(
+        BLibClientMod mod,
+        Supplier<? extends Item> itemSupplier,
+        Function<String, Supplier<AzItemRenderer>> rendererFactory
+    ) {
+        getModContainer(mod)
+            .registerItemRenderer(itemSupplier, rendererFactory);
     }
 
     @Override
     public Supplier<Tuple2<KeyMapping, Consumer<KeyInteractType>>> registerKeyMapping(
+        BLibClientMod mod,
         ResourceLocation resourceLocation,
         String category,
         int key,
@@ -128,40 +122,53 @@ public class BLibNeoForgeClientRegistryServiceImpl implements BLibClientRegistry
         Supplier<Tuple2<KeyMapping, Consumer<KeyInteractType>>> supplier = Lazy.of(
             () -> new Tuple2<>(KeyMappingUtil.createKeyMapping(resourceLocation, category, key), keyInteractTypeConsumer)
         );
-        keyMappingHandlerPairSuppliers.add(supplier);
+
+        getModContainer(mod)
+            .registerKeyMapping(supplier);
+
         return supplier;
     }
 
     @Override
     public <T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>> void registerMenuScreen(
+        BLibClientMod mod,
         Supplier<? extends MenuType<T>> menuTypeSupplier,
         MenuScreens.ScreenConstructor<T, U> screenConstructor
     ) {
-        menuScreenConstructorPairs.add(new Tuple2<>(menuTypeSupplier, screenConstructor));
+        getModContainer(mod)
+            .registerMenuScreen(menuTypeSupplier, screenConstructor);
     }
 
     @Override
     public <T extends ParticleOptions> void registerParticleProviderFactory(
+        BLibClientMod mod,
         Supplier<? extends ParticleType<T>> particleTypeSupplier,
         ParticleEngine.SpriteParticleRegistration<T> spriteParticleRegistration
     ) {
-        particleProviderFactoryPairs.add(new Tuple2<>(particleTypeSupplier, spriteParticleRegistration));
+        getModContainer(mod)
+            .registerParticleProviderFactory(particleTypeSupplier, spriteParticleRegistration);
     }
 
     /* package-private */ void finalize(BLibClientMod mod, IEventBus eventBus) {
+        var modContainer = getModContainer(mod);
+
         eventBus.<FMLClientSetupEvent>addListener(event -> {
-            armorRendererPairs
-                .forEach(pair -> registerArmorRendererImmediately(pair.v1(), pair.v2()));
+            modContainer
+                .getArmorRendererPairs()
+                .forEach(pair -> registerArmorRendererImmediately(mod, pair.v1(), pair.v2()));
 
-            itemRendererPairs
-                .forEach(pair -> registerItemRendererImmediately(pair.v1().get(), pair.v2()));
+            modContainer
+                .getItemRendererPairs()
+                .forEach(pair -> registerItemRendererImmediately(mod, pair.v1().get(), pair.v2()));
 
-            blockRenderLayerPairs
+            modContainer
+                .getBlockRenderLayerPairs()
                 .forEach(pair -> ItemBlockRenderTypes.setRenderLayer(pair.v1().get(), pair.v2()));
         });
 
         eventBus.<RegisterColorHandlersEvent.Item>addListener(
-            event -> itemColorPairs
+            event -> modContainer
+                .getItemColorPairs()
                 .forEach(
                     pair -> pair.v2()
                         .forEach(
@@ -173,7 +180,8 @@ public class BLibNeoForgeClientRegistryServiceImpl implements BLibClientRegistry
 
         eventBus.<EntityRenderersEvent.RegisterRenderers>addListener(event -> {
             // Entities
-            entityRendererPairs
+            modContainer
+                .getEntityRendererPairs()
                 .forEach(pair -> {
                     var entityType = pair.v1().get();
                     @SuppressWarnings("unchecked")
@@ -182,7 +190,8 @@ public class BLibNeoForgeClientRegistryServiceImpl implements BLibClientRegistry
                 });
 
             // Block Entities
-            blockEntityRendererPairs
+            modContainer
+                .getBlockEntityRendererPairs()
                 .forEach(pair -> {
                     var blockEntityType = pair.v1().get();
                     @SuppressWarnings("unchecked")
@@ -192,12 +201,14 @@ public class BLibNeoForgeClientRegistryServiceImpl implements BLibClientRegistry
         });
 
         eventBus.<RegisterKeyMappingsEvent>addListener(
-            event -> keyMappingHandlerPairSuppliers
+            event -> modContainer
+                .getKeyMappingHandlerPairSuppliers()
                 .forEach(keyMappingSupplier -> event.register(keyMappingSupplier.get().v1()))
         );
 
         eventBus.<RegisterMenuScreensEvent>addListener(event -> {
-            menuScreenConstructorPairs
+            modContainer
+                .getMenuScreenConstructorPairs()
                 .forEach(pair -> {
                     var menuType = pair.v1().get();
                     @SuppressWarnings("unchecked")
@@ -207,7 +218,8 @@ public class BLibNeoForgeClientRegistryServiceImpl implements BLibClientRegistry
         });
 
         eventBus.<RegisterParticleProvidersEvent>addListener(event -> {
-            particleProviderFactoryPairs
+            modContainer
+                .getParticleProviderFactoryPairs()
                 .forEach(pair -> {
                     @SuppressWarnings("unchecked")
                     var particleType = (ParticleType<ParticleOptions>) pair.v1().get();
@@ -218,7 +230,8 @@ public class BLibNeoForgeClientRegistryServiceImpl implements BLibClientRegistry
         });
 
         NeoForge.EVENT_BUS.<ClientTickEvent.Post>addListener(
-            event -> keyMappingHandlerPairSuppliers
+            event -> modContainer
+                .getKeyMappingHandlerPairSuppliers()
                 .forEach(keyMappingSupplier -> {
                     var keyMapping = keyMappingSupplier.get().v1();
                     var keyInteractTypeConsumer = keyMappingSupplier.get().v2();
@@ -226,5 +239,9 @@ public class BLibNeoForgeClientRegistryServiceImpl implements BLibClientRegistry
                     KeyPressHandler.handle(keyMapping, keyInteractTypeConsumer);
                 })
         );
+    }
+
+    private BLibNeoForgeClientModContainer getModContainer(BLibClientMod mod) {
+        return modToContainerMap.computeIfAbsent(mod, $ -> new BLibNeoForgeClientModContainer(mod));
     }
 }

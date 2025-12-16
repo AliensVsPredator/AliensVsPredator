@@ -4,6 +4,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.BLibMod;
 
@@ -11,6 +12,7 @@ public class BLibResourceAccess {
 
     private final BLibMod mod;
 
+    @ApiStatus.Internal
     public BLibResourceAccess(BLibMod mod) {
         this.mod = mod;
     }
