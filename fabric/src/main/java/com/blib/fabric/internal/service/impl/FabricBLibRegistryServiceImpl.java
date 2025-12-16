@@ -15,11 +15,14 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -171,6 +174,16 @@ public class FabricBLibRegistryServiceImpl implements BLibRegistryService {
 
         ResourceManagerHelper.get(PackType.SERVER_DATA)
             .registerReloadListener(adaptedListener);
+    }
+
+    @Override
+    public void registerVillagerTrade(
+        BLibHolder<VillagerProfession> holder,
+        int level,
+        List<VillagerTrades.ItemListing> villagerTradeItemListings
+    ) {
+        getModContainer(holder)
+            .deferVillagerTradeRegistration(holder, level, villagerTradeItemListings);
     }
 
     public BLibFabricModContainer getModContainer(BLibHolder<?> holder) {

@@ -4,6 +4,7 @@ import mod.azure.azurelib.common.animation.cache.AzIdentityRegistry;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.fabricmc.fabric.api.object.builder.v1.world.poi.PointOfInterestHelper;
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
@@ -19,6 +20,8 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
+import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.ApiStatus;
@@ -59,6 +62,8 @@ public class BLibFabricModContainer {
 
     private final Map<Registry<?>, List<Runnable>> deferredRegistrations;
 
+    private final List<Runnable> deferredVillagerTradeRegistrations;
+
     public BLibFabricModContainer(BLibMod mod) {
         this.mod = mod;
         this.clientBoundPacketHandlers = new ArrayList<>();
@@ -69,6 +74,7 @@ public class BLibFabricModContainer {
         this.deferredEntitySpawnDataRegistrations = new ArrayList<>();
         this.deferredFurnaceFuelRegistrations = new ArrayList<>();
         this.deferredRegistrations = new HashMap<>();
+        this.deferredVillagerTradeRegistrations = new ArrayList<>();
     }
 
     public List<NetworkHandler<?>> getClientBoundPacketHandlers() {
@@ -147,8 +153,10 @@ public class BLibFabricModContainer {
 
         // Run entity attribute registrations after primary registries are ran.
         deferredEntityAttributeRegistrations.forEach(Runnable::run);
-        // Run entity spawn data registrations after entity attribute registrations.
+        // Run entity spawn data registrations after primary registries registrations.
         deferredEntitySpawnDataRegistrations.forEach(Runnable::run);
+        // Run villager trade registrations after primary registries are ran.
+        deferredVillagerTradeRegistrations.forEach(Runnable::run);
     }
 
     /* package-private */ void deferAzureLibIdentityRegistration(BLibHolder<? extends Item> holder) {
@@ -171,6 +179,16 @@ public class BLibFabricModContainer {
 
     /* package-private */ <T extends CustomPacketPayload> void registerNetworkHandler(NetworkHandler<T> networkHandler) {
         clientBoundPacketHandlers.add(networkHandler);
+    }
+
+    /* package-private */ void deferVillagerTradeRegistration(
+        BLibHolder<VillagerProfession> holder,
+        int level,
+        List<VillagerTrades.ItemListing> villagerTradeItemListings
+    ) {
+        deferredVillagerTradeRegistrations.add(
+            () -> TradeOfferHelper.registerVillagerOffers(holder.get(), level, factories -> factories.addAll(villagerTradeItemListings))
+        );
     }
 
     private void runRegistrationsFor(Registry<?> registry) {

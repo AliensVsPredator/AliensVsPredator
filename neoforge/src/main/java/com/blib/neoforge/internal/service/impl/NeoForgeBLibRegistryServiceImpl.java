@@ -11,6 +11,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.bus.api.IEventBus;
@@ -20,12 +22,14 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
+import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
 import net.neoforged.neoforge.network.registration.HandlerThread;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
@@ -124,6 +128,16 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
             .registerReloadListener(listener);
     }
 
+    @Override
+    public void registerVillagerTrade(
+        BLibHolder<VillagerProfession> holder,
+        int level,
+        List<VillagerTrades.ItemListing> villagerTradeItemListings
+    ) {
+        getModContainer(holder)
+            .registerVillagerTrade(holder, level, villagerTradeItemListings);
+    }
+
     public BLibNeoForgeModContainer getModContainer(BLibHolder<?> holder) {
         return getModContainer(holder.getRegistry().getMod());
     }
@@ -202,6 +216,18 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
         NeoForge.EVENT_BUS.<AddReloadListenerEvent>addListener(
             event -> getModContainer(mod).getReloadListeners().forEach(event::addListener)
         );
+
+        NeoForge.EVENT_BUS.<VillagerTradesEvent>addListener(event -> {
+            var trades = event.getTrades();
+
+            getModContainer(mod)
+                .getVillagerTradeData()
+                .forEach(villagerTradeData -> {
+                    if (event.getType() == villagerTradeData.v1().get()) {
+                        trades.get(villagerTradeData.v2()).addAll(villagerTradeData.v3());
+                    }
+                });
+        });
 
         NeoForgeBLibLevelTickEvents.AFTER.initialize();
         NeoForgeBLibLevelTickEvents.BEFORE.initialize();

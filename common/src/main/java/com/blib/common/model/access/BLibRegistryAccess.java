@@ -20,6 +20,7 @@ import com.blib.common.registry.impl.BLibEntitySpawnRegistry;
 import com.blib.common.registry.impl.BLibFurnaceFuelRegistry;
 import com.blib.common.registry.impl.BLibNetworkRegistry;
 import com.blib.common.registry.impl.BLibReloadListenerRegistry;
+import com.blib.common.registry.impl.BLibVillagerTradeRegistry;
 import com.blib.internal.common.registry.impl.BLibItemRegistry;
 
 public class BLibRegistryAccess {
@@ -60,6 +61,10 @@ public class BLibRegistryAccess {
 
     public BLibReloadListenerRegistry createReloadListenerRegistry() {
         return new BLibReloadListenerRegistry(mod);
+    }
+
+    public BLibVillagerTradeRegistry createVillagerTradeRegistry() {
+        return new BLibVillagerTradeRegistry(mod);
     }
 
     public <T> BLibRegistry<T> create(Registry<T> registry) {

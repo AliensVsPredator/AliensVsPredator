@@ -7,10 +7,13 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 import com.blib.BLibMod;
@@ -44,4 +47,10 @@ public interface BLibRegistryService {
     <T extends CustomPacketPayload> void registerPacketDirection(BLibMod mod, PacketDirection<T> packetDirection);
 
     void registerReloadListener(BLibMod mod, String path, PreparableReloadListener listener);
+
+    void registerVillagerTrade(
+        BLibHolder<VillagerProfession> holder,
+        int level,
+        List<VillagerTrades.ItemListing> villagerTradeItemListings
+    );
 }
