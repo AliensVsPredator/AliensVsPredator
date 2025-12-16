@@ -26,10 +26,11 @@ public class BLibCompostableRegistry {
     ) {
         if (mod.state() != BLibModState.INITIALIZING) {
             throw new BLibRegistrationException(
-                "Attempted to register a BLibHolder outside of mod's initialization window. BLibHolder: %s, Mod State: %s".formatted(
-                    holder,
-                    mod.state()
-                )
+                "Attempted to register a compostable outside of mod's initialization window. ItemLike BLibHolder: %s, Mod State: %s"
+                    .formatted(
+                        holder,
+                        mod.state()
+                    )
             );
         }
 

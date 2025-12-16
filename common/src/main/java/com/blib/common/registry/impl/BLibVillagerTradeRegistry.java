@@ -24,7 +24,7 @@ public class BLibVillagerTradeRegistry {
     public void register(BLibHolder<VillagerProfession> holder, int level, List<VillagerTrades.ItemListing> villagerTradeItemListings) {
         if (mod.state() != BLibModState.INITIALIZING) {
             throw new BLibRegistrationException(
-                "Attempted to register villager trades outside of mod's initialization window. Villager Profession Holder: %s, Mod State: %s"
+                "Attempted to register villager trades outside of mod's initialization window. Villager Profession BLibHolder: %s, Mod State: %s"
                     .formatted(holder, mod.state())
             );
         }

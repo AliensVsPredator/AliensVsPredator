@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.blib.BLibMod;
 import com.blib.common.registry.BLibHolder;
 import com.blib.common.registry.BLibRegistry;
+import com.blib.common.registry.impl.BLibAzureLibIdentityRegistry;
 import com.blib.common.registry.impl.BLibCompostableRegistry;
 import com.blib.common.registry.impl.BLibDecoratedPotPatternRegistry;
 import com.blib.common.registry.impl.BLibEntityAttributeRegistry;
@@ -33,6 +34,10 @@ public class BLibRegistryAccess {
     public BLibRegistryAccess(BLibMod mod) {
         this.mod = mod;
         this.registryToRegistriesMap = new ConcurrentHashMap<>();
+    }
+
+    public BLibAzureLibIdentityRegistry createAzureLibIdentityRegistry() {
+        return new BLibAzureLibIdentityRegistry(mod);
     }
 
     public BLibCompostableRegistry createCompostableRegistry() {
