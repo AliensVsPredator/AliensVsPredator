@@ -27,6 +27,7 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
 import net.neoforged.neoforge.network.registration.HandlerThread;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
@@ -160,6 +161,8 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
             }
         );
 
+        eventBus.<NewRegistryEvent>addListener(event -> modContainer.getCustomRegistryEntries().forEach(event::register));
+
         eventBus.<GatherDataEvent>addListener(event -> {
             var generator = event.getGenerator();
             var packOutput = generator.getPackOutput();
@@ -214,7 +217,7 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
         NeoForge.EVENT_BUS.<VillagerTradesEvent>addListener(event -> {
             var trades = event.getTrades();
 
-            getModContainer(mod)
+            modContainer
                 .getVillagerTradeData()
                 .forEach(villagerTradeData -> {
                     if (event.getType() == villagerTradeData.v1().get()) {

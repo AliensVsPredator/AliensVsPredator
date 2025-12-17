@@ -50,6 +50,8 @@ public class BLibNeoForgeModContainer {
 
     private final List<Tuple4<BLibHolder<? extends ItemLike>, Float, Boolean, Boolean>> compostableData;
 
+    private final List<Registry<?>> customRegistryEntries;
+
     private final List<Runnable> deferredDecoratedPotPatternRegistrations;
 
     private final List<Tuple2<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>>> entityAttributeSupplierPairs;
@@ -77,6 +79,7 @@ public class BLibNeoForgeModContainer {
 
         this.azureLibIdentityEntries = new ArrayList<>();
         this.compostableData = new ArrayList<>();
+        this.customRegistryEntries = new ArrayList<>();
         this.deferredDecoratedPotPatternRegistrations = new ArrayList<>();
         this.entityAttributeSupplierPairs = new ArrayList<>();
         this.entitySpawnDataEntries = new ArrayList<>();
@@ -104,6 +107,10 @@ public class BLibNeoForgeModContainer {
 
     /* package-private */ List<BLibHolder<? extends Item>> getAzureLibIdentityEntries() {
         return azureLibIdentityEntries;
+    }
+
+    /* package-private */ List<Registry<?>> getCustomRegistryEntries() {
+        return customRegistryEntries;
     }
 
     @SuppressWarnings("unchecked")
@@ -137,6 +144,10 @@ public class BLibNeoForgeModContainer {
 
     /* package-private */ void registerCompostable(Tuple4<BLibHolder<? extends ItemLike>, Float, Boolean, Boolean> tuple) {
         compostableData.add(tuple);
+    }
+
+    /* package-private */ void registerCustomRegistry(Registry<?> registry) {
+        customRegistryEntries.add(registry);
     }
 
     /* package-private */ void registerFurnaceFuel(Tuple2<BLibHolder<? extends ItemLike>, Integer> tuple) {
