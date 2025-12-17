@@ -20,7 +20,7 @@ public class RecipeProvider extends FabricRecipeProvider {
 
     @Override
     public void buildRecipes(RecipeOutput recipeOutput) {
-        var builder = RecipeBuilder.with(BLib.MOD, recipeOutput);
+        var builder = RecipeBuilder.with(BLib.MOD, recipeOutput, this::withConditions);
 
         VanillaIronLikeRecipeProvider.provide(builder);
         VanillaMiscellaneousRecipeProvider.provide(builder);
