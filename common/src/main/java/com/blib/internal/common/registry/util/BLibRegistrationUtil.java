@@ -1,23 +1,19 @@
-package com.blib.internal.common.registry;
+package com.blib.internal.common.registry.util;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceKey;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
 
-import com.blib.BLib;
-import com.blib.common.network.data.DataSyncKey;
+import com.blib.common.registry.BLibBuiltInRegistries;
 
 @ApiStatus.Internal
-public class BLibRegistries {
-
-    public static final ResourceKey<Registry<DataSyncKey<?>>> DATA_SYNC_KEYS = ResourceKey.createRegistryKey(
-        BLib.MOD.resources().createLocation("data_sync_keys")
-    );
+public class BLibRegistrationUtil {
 
     public static final List<Registry<?>> REGISTRATION_ORDER = List.of(
+        // Custom independent registries.
+        BLibBuiltInRegistries.DATA_SYNC_KEYS,
         // Independent registries.
         BuiltInRegistries.BLOCK,
         BuiltInRegistries.DATA_COMPONENT_TYPE,
@@ -42,4 +38,8 @@ public class BLibRegistries {
         BuiltInRegistries.CREATIVE_MODE_TAB
     );
 
+    @ApiStatus.Internal
+    private BLibRegistrationUtil() {
+        throw new UnsupportedOperationException();
+    }
 }

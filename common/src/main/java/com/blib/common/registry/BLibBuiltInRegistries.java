@@ -5,7 +5,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.BLib;
 import com.blib.common.network.data.DataSyncKey;
-import com.blib.internal.common.registry.BLibRegistries;
+import com.blib.common.registry.key.BLibRegistries;
 
 public class BLibBuiltInRegistries {
 

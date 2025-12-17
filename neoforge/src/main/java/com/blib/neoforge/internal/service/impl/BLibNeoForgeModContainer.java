@@ -33,7 +33,7 @@ import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
 import com.blib.common.network.model.NetworkHandler;
 import com.blib.common.registry.BLibHolder;
 import com.blib.internal.common.BLibDecoratedPotPatternCache;
-import com.blib.internal.common.registry.BLibRegistries;
+import com.blib.internal.common.registry.util.BLibRegistrationUtil;
 
 @ApiStatus.Internal
 public class BLibNeoForgeModContainer {
@@ -68,7 +68,7 @@ public class BLibNeoForgeModContainer {
 
     public BLibNeoForgeModContainer(BLibMod mod) {
         this.mod = mod;
-        this.registryToDeferredRegisterMap = BLibRegistries.REGISTRATION_ORDER
+        this.registryToDeferredRegisterMap = BLibRegistrationUtil.REGISTRATION_ORDER
             .stream()
             .collect(
                 Collectors.toMap(

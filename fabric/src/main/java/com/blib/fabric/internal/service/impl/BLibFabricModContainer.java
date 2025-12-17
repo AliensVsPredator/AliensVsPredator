@@ -39,7 +39,7 @@ import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
 import com.blib.common.network.model.NetworkHandler;
 import com.blib.common.registry.BLibHolder;
 import com.blib.internal.common.BLibDecoratedPotPatternCache;
-import com.blib.internal.common.registry.BLibRegistries;
+import com.blib.internal.common.registry.util.BLibRegistrationUtil;
 
 @ApiStatus.Internal
 public class BLibFabricModContainer {
@@ -141,7 +141,7 @@ public class BLibFabricModContainer {
 
     /* package-private */ void finalizeRegistrations() {
         // Run primary registries.
-        BLibRegistries.REGISTRATION_ORDER.forEach(this::runRegistrationsFor);
+        BLibRegistrationUtil.REGISTRATION_ORDER.forEach(this::runRegistrationsFor);
         // Run AzureLib identity registrations after primary registries are ran.
         deferredAzureLibIdentityRegistrations.forEach(Runnable::run);
         // Run compostable registrations after primary registries are ran.
