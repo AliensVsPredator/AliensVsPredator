@@ -6,14 +6,10 @@ import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
 
-import com.blib.common.registry.BLibBuiltInRegistries;
-
 @ApiStatus.Internal
 public class BLibRegistrationUtil {
 
-    public static final List<Registry<?>> REGISTRATION_ORDER = List.of(
-        // Custom independent registries.
-        BLibBuiltInRegistries.DATA_SYNC_KEYS,
+    public static final List<Registry<?>> VANILLA_REGISTRATION_ORDER = List.of(
         // Independent registries.
         BuiltInRegistries.BLOCK,
         BuiltInRegistries.DATA_COMPONENT_TYPE,
@@ -38,7 +34,6 @@ public class BLibRegistrationUtil {
         BuiltInRegistries.CREATIVE_MODE_TAB
     );
 
-    @ApiStatus.Internal
     private BLibRegistrationUtil() {
         throw new UnsupportedOperationException();
     }

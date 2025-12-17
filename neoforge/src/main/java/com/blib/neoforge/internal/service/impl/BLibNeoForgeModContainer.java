@@ -68,7 +68,7 @@ public class BLibNeoForgeModContainer {
 
     public BLibNeoForgeModContainer(BLibMod mod) {
         this.mod = mod;
-        this.registryToDeferredRegisterMap = BLibRegistrationUtil.REGISTRATION_ORDER
+        this.registryToDeferredRegisterMap = BLibRegistrationUtil.VANILLA_REGISTRATION_ORDER
             .stream()
             .collect(
                 Collectors.toMap(
@@ -148,6 +148,8 @@ public class BLibNeoForgeModContainer {
 
     /* package-private */ void registerCustomRegistry(Registry<?> registry) {
         customRegistryEntries.add(registry);
+        // Special case for custom registries, automatically bootstrap a deferred registry for the custom registry.
+        registryToDeferredRegisterMap.put(registry, createDeferredRegistry(mod.id(), registry));
     }
 
     /* package-private */ void registerFurnaceFuel(Tuple2<BLibHolder<? extends ItemLike>, Integer> tuple) {

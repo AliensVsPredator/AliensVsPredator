@@ -37,6 +37,7 @@ import java.util.function.Supplier;
 import com.blib.BLibMod;
 import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
 import com.blib.common.network.model.NetworkHandler;
+import com.blib.common.registry.BLibBuiltInRegistries;
 import com.blib.common.registry.BLibHolder;
 import com.blib.internal.common.BLibDecoratedPotPatternCache;
 import com.blib.internal.common.registry.util.BLibRegistrationUtil;
@@ -140,8 +141,10 @@ public class BLibFabricModContainer {
     }
 
     /* package-private */ void finalizeRegistrations() {
+        // Run built-in registries.
+        runRegistrationsFor(BLibBuiltInRegistries.DATA_SYNC_KEYS);
         // Run primary registries.
-        BLibRegistrationUtil.REGISTRATION_ORDER.forEach(this::runRegistrationsFor);
+        BLibRegistrationUtil.VANILLA_REGISTRATION_ORDER.forEach(this::runRegistrationsFor);
         // Run AzureLib identity registrations after primary registries are ran.
         deferredAzureLibIdentityRegistrations.forEach(Runnable::run);
         // Run compostable registrations after primary registries are ran.
