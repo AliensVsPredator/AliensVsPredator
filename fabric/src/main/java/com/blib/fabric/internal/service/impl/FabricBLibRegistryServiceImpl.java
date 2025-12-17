@@ -23,9 +23,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
@@ -39,12 +37,6 @@ import com.blib.internal.service.BLibRegistryService;
 
 @ApiStatus.Internal
 public class FabricBLibRegistryServiceImpl implements BLibRegistryService {
-
-    private final Map<BLibMod, BLibFabricModContainer> modToContainerMap;
-
-    public FabricBLibRegistryServiceImpl() {
-        this.modToContainerMap = new ConcurrentHashMap<>();
-    }
 
     @Override
     public <T> Holder<T> register(BLibHolder<T> holder, Supplier<? extends T> valueFactory) {
@@ -191,7 +183,7 @@ public class FabricBLibRegistryServiceImpl implements BLibRegistryService {
     }
 
     public BLibFabricModContainer getModContainer(BLibMod mod) {
-        return modToContainerMap.computeIfAbsent(mod, $ -> new BLibFabricModContainer(mod));
+        return BLibFabricModContainerLookup.INSTANCE.get(mod);
     }
 
     /* package-private */ void finalize(BLibMod mod) {

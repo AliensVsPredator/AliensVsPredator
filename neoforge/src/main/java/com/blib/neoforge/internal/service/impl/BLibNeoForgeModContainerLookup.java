@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.blib.BLibMod;
-import com.blib.common.registry.BLibHolder;
 
 @ApiStatus.Internal
 public class BLibNeoForgeModContainerLookup {
@@ -17,10 +16,6 @@ public class BLibNeoForgeModContainerLookup {
 
     private BLibNeoForgeModContainerLookup() {
         this.modToContainerMap = new ConcurrentHashMap<>();
-    }
-
-    public BLibNeoForgeModContainer get(BLibHolder<?> holder) {
-        return get(holder.getRegistry().getMod());
     }
 
     public BLibNeoForgeModContainer get(BLibMod mod) {

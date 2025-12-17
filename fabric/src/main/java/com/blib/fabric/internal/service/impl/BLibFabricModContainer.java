@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.object.builder.v1.world.poi.PointOfInterestHelper
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.core.Holder;
+import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -37,7 +38,6 @@ import java.util.function.Supplier;
 import com.blib.BLibMod;
 import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
 import com.blib.common.network.model.NetworkHandler;
-import com.blib.common.registry.BLibBuiltInRegistries;
 import com.blib.common.registry.BLibHolder;
 import com.blib.internal.common.BLibDecoratedPotPatternCache;
 import com.blib.internal.common.registry.util.BLibRegistrationUtil;
@@ -48,6 +48,8 @@ public class BLibFabricModContainer {
     private final BLibMod mod;
 
     private final List<NetworkHandler<?>> clientBoundPacketHandlers;
+
+    private final List<Registry<?>> customRegistries;
 
     private final List<Runnable> deferredAzureLibIdentityRegistrations;
 
@@ -68,6 +70,7 @@ public class BLibFabricModContainer {
     public BLibFabricModContainer(BLibMod mod) {
         this.mod = mod;
         this.clientBoundPacketHandlers = new ArrayList<>();
+        this.customRegistries = new ArrayList<>();
         this.deferredAzureLibIdentityRegistrations = new ArrayList<>();
         this.deferredCompostableRegistrations = new ArrayList<>();
         this.deferredDecoratedPotPatternRegistrations = new ArrayList<>();
@@ -140,9 +143,37 @@ public class BLibFabricModContainer {
         });
     }
 
+    /* package-private */ void deferAzureLibIdentityRegistration(BLibHolder<? extends Item> holder) {
+        deferredAzureLibIdentityRegistrations.add(() -> AzIdentityRegistry.register(holder.get()));
+    }
+
+    /* package-private */ void deferCompostableRegistration(BLibHolder<? extends ItemLike> holder, float chance) {
+        deferredCompostableRegistrations.add(() -> CompostingChanceRegistry.INSTANCE.add(holder.get(), chance));
+    }
+
+    /* package-private */ void deferDecoratedPotPatternRegistration(String path, BLibHolder<? extends Item> holder) {
+        deferredDecoratedPotPatternRegistrations.add(
+            () -> BLibDecoratedPotPatternCache.put(holder.get(), mod.resources().createKey(Registries.DECORATED_POT_PATTERN, path))
+        );
+    }
+
+    /* package-private */ void deferFurnaceFuelRegistration(BLibHolder<? extends ItemLike> holder, int burnTimeInTicks) {
+        deferredFurnaceFuelRegistrations.add(() -> FuelRegistry.INSTANCE.add(holder.get(), burnTimeInTicks));
+    }
+
+    /* package-private */ void deferVillagerTradeRegistration(
+        BLibHolder<VillagerProfession> holder,
+        int level,
+        List<VillagerTrades.ItemListing> villagerTradeItemListings
+    ) {
+        deferredVillagerTradeRegistrations.add(
+            () -> TradeOfferHelper.registerVillagerOffers(holder.get(), level, factories -> factories.addAll(villagerTradeItemListings))
+        );
+    }
+
     /* package-private */ void finalizeRegistrations() {
         // Run built-in registries.
-        runRegistrationsFor(BLibBuiltInRegistries.DATA_SYNC_KEYS);
+        customRegistries.forEach(this::runRegistrationsFor);
         // Run primary registries.
         BLibRegistrationUtil.VANILLA_REGISTRATION_ORDER.forEach(this::runRegistrationsFor);
         // Run AzureLib identity registrations after primary registries are ran.
@@ -162,36 +193,12 @@ public class BLibFabricModContainer {
         deferredVillagerTradeRegistrations.forEach(Runnable::run);
     }
 
-    /* package-private */ void deferAzureLibIdentityRegistration(BLibHolder<? extends Item> holder) {
-        deferredAzureLibIdentityRegistrations.add(() -> AzIdentityRegistry.register(holder.get()));
-    }
-
-    /* package-private */ void deferCompostableRegistration(BLibHolder<? extends ItemLike> holder, float chance) {
-        deferredCompostableRegistrations.add(() -> CompostingChanceRegistry.INSTANCE.add(holder.get(), chance));
-    }
-
-    /* package-private */ void deferDecoratedPotPatternRegistration(String path, BLibHolder<? extends Item> holder) {
-        deferredDecoratedPotPatternRegistrations.add(
-            () -> BLibDecoratedPotPatternCache.put(holder.get(), mod.resources().createKey(Registries.DECORATED_POT_PATTERN, path))
-        );
-    }
-
-    /* package-private */ void deferFurnaceFuelRegistration(BLibHolder<? extends ItemLike> holder, int burnTimeInTicks) {
-        deferredFurnaceFuelRegistrations.add(() -> FuelRegistry.INSTANCE.add(holder.get(), burnTimeInTicks));
+    /* package-private */ <T> void registerCustomRegistry(MappedRegistry<T> registry) {
+        customRegistries.add(registry);
     }
 
     /* package-private */ <T extends CustomPacketPayload> void registerNetworkHandler(NetworkHandler<T> networkHandler) {
         clientBoundPacketHandlers.add(networkHandler);
-    }
-
-    /* package-private */ void deferVillagerTradeRegistration(
-        BLibHolder<VillagerProfession> holder,
-        int level,
-        List<VillagerTrades.ItemListing> villagerTradeItemListings
-    ) {
-        deferredVillagerTradeRegistrations.add(
-            () -> TradeOfferHelper.registerVillagerOffers(holder.get(), level, factories -> factories.addAll(villagerTradeItemListings))
-        );
     }
 
     private void runRegistrationsFor(Registry<?> registry) {

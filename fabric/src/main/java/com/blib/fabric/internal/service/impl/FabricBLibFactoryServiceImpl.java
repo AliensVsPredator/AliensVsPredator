@@ -26,7 +26,12 @@ public class FabricBLibFactoryServiceImpl implements BLibFactoryService {
             builder.attribute(RegistryAttribute.SYNCED);
         }
 
-        return builder.buildAndRegister();
+        var registry = builder.buildAndRegister();
+
+        BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .registerCustomRegistry(registry);
+
+        return registry;
     }
 
     @Override
