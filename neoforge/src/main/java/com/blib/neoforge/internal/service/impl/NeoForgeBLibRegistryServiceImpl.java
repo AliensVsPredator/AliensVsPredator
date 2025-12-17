@@ -30,8 +30,6 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 import com.blib.BLibMod;
@@ -50,12 +48,6 @@ import com.blib.neoforge.internal.event.impl.NeoForgeBLibTagsUpdatedEvents;
 
 @ApiStatus.Internal
 public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
-
-    private final Map<BLibMod, BLibNeoForgeModContainer> modToContainerMap;
-
-    public NeoForgeBLibRegistryServiceImpl() {
-        this.modToContainerMap = new ConcurrentHashMap<>();
-    }
 
     @Override
     public <T> Holder<T> register(BLibHolder<T> holder, Supplier<? extends T> valueFactory) {
@@ -143,11 +135,13 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
     }
 
     public BLibNeoForgeModContainer getModContainer(BLibMod mod) {
-        return modToContainerMap.computeIfAbsent(mod, $ -> new BLibNeoForgeModContainer(mod));
+        return BLibNeoForgeModContainerLookup.INSTANCE.get(mod);
     }
 
     /* package-private */ void finalize(BLibMod mod, IEventBus eventBus) {
-        getModContainer(mod)
+        var modContainer = getModContainer(mod);
+
+        modContainer
             .getDeferredRegisters()
             .forEach(deferredRegister -> deferredRegister.register(eventBus));
 
@@ -156,11 +150,11 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
 
         eventBus.<FMLCommonSetupEvent>addListener(
             event -> {
-                getModContainer(mod)
+                modContainer
                     .getAzureLibIdentityEntries()
                     .forEach(holder -> AzIdentityRegistry.register(holder.get()));
 
-                getModContainer(mod)
+                modContainer
                     .getDeferredDecoratedPotPatternRegistrations()
                     .forEach(Runnable::run);
             }
@@ -181,7 +175,7 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
             var registrar = event.registrar("1")
                 .executesOn(HandlerThread.NETWORK);
 
-            getModContainer(mod).getNetworkHandlers()
+            modContainer.getNetworkHandlers()
                 .forEach(networkHandler -> {
                     @SuppressWarnings("unchecked")
                     var typedNetworkHandler = (NetworkHandler<CustomPacketPayload>) networkHandler;
@@ -214,7 +208,7 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
         });
 
         NeoForge.EVENT_BUS.<AddReloadListenerEvent>addListener(
-            event -> getModContainer(mod).getReloadListeners().forEach(event::addListener)
+            event -> modContainer.getReloadListeners().forEach(event::addListener)
         );
 
         NeoForge.EVENT_BUS.<VillagerTradesEvent>addListener(event -> {
