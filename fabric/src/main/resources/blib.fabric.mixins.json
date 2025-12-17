@@ -1,10 +1,12 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.blib.fabric.mixin",
+  "package": "com.blib.fabric.internal.mixin",
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_21",
-  "mixins": [],
+  "mixins": [
+    "MixinFabricDataGenHelper_InjectNeoForgeResourceConditions"
+  ],
   "client": [],
   "injectors": {
     "defaultRequire": 1
