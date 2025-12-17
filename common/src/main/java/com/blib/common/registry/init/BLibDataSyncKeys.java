@@ -14,13 +14,6 @@ public class BLibDataSyncKeys {
 
     private static final BLibRegistry<DataSyncKey<?>> REGISTRY = BLib.MOD.registries().create(BLibBuiltInRegistries.DATA_SYNC_KEYS);
 
-    // TODO: Move to human module.
-    public static final BLibHolder<DataSyncKey<Boolean>> ENTITY_HAS_WARP_EFFECT = register(
-        "entity_has_warp_effect",
-        builder -> builder.networkSynchronized(StreamCodecs.BOOLEAN)
-            .build(false)
-    );
-
     public static final BLibHolder<DataSyncKey<Boolean>> ENTITY_HAS_TARGET = register(
         "entity_has_target",
         builder -> builder.networkSynchronized(StreamCodecs.BOOLEAN)
