@@ -22,18 +22,16 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import com.blib.BLibMod;
 import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
 import com.blib.common.network.model.NetworkHandler;
 import com.blib.common.registry.BLibHolder;
 import com.blib.internal.common.BLibDecoratedPotPatternCache;
-import com.blib.internal.common.registry.util.BLibRegistrationUtil;
 
 @ApiStatus.Internal
 public class BLibNeoForgeModContainer {
@@ -68,14 +66,7 @@ public class BLibNeoForgeModContainer {
 
     public BLibNeoForgeModContainer(BLibMod mod) {
         this.mod = mod;
-        this.registryToDeferredRegisterMap = BLibRegistrationUtil.VANILLA_REGISTRATION_ORDER
-            .stream()
-            .collect(
-                Collectors.toMap(
-                    Function.identity(),
-                    registry -> createDeferredRegistry(mod.id(), registry)
-                )
-            );
+        this.registryToDeferredRegisterMap = new HashMap<>();
 
         this.azureLibIdentityEntries = new ArrayList<>();
         this.compostableData = new ArrayList<>();
@@ -115,7 +106,10 @@ public class BLibNeoForgeModContainer {
 
     @SuppressWarnings("unchecked")
     /* package-private */ <T> DeferredRegister<T> getDeferredRegister(Registry<T> registry) {
-        return (DeferredRegister<T>) registryToDeferredRegisterMap.get(registry);
+        return (DeferredRegister<T>) registryToDeferredRegisterMap.computeIfAbsent(
+            registry,
+            $ -> createDeferredRegistry(mod.id(), registry)
+        );
     }
 
     /* package-private */ Collection<DeferredRegister<?>> getDeferredRegisters() {
@@ -148,8 +142,6 @@ public class BLibNeoForgeModContainer {
 
     /* package-private */ void registerCustomRegistry(Registry<?> registry) {
         customRegistryEntries.add(registry);
-        // Special case for custom registries, automatically bootstrap a deferred registry for the custom registry.
-        registryToDeferredRegisterMap.put(registry, createDeferredRegistry(mod.id(), registry));
     }
 
     /* package-private */ void registerFurnaceFuel(Tuple2<BLibHolder<? extends ItemLike>, Integer> tuple) {

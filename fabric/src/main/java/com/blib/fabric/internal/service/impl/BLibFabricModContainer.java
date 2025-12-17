@@ -9,7 +9,6 @@ import net.fabricmc.fabric.api.object.builder.v1.world.poi.PointOfInterestHelper
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.core.Holder;
-import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -32,6 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -48,8 +48,6 @@ public class BLibFabricModContainer {
     private final BLibMod mod;
 
     private final List<NetworkHandler<?>> clientBoundPacketHandlers;
-
-    private final List<Registry<?>> customRegistries;
 
     private final List<Runnable> deferredAzureLibIdentityRegistrations;
 
@@ -70,7 +68,6 @@ public class BLibFabricModContainer {
     public BLibFabricModContainer(BLibMod mod) {
         this.mod = mod;
         this.clientBoundPacketHandlers = new ArrayList<>();
-        this.customRegistries = new ArrayList<>();
         this.deferredAzureLibIdentityRegistrations = new ArrayList<>();
         this.deferredCompostableRegistrations = new ArrayList<>();
         this.deferredDecoratedPotPatternRegistrations = new ArrayList<>();
@@ -172,10 +169,17 @@ public class BLibFabricModContainer {
     }
 
     /* package-private */ void finalizeRegistrations() {
-        // Run built-in registries.
-        customRegistries.forEach(this::runRegistrationsFor);
-        // Run primary registries.
-        BLibRegistrationUtil.VANILLA_REGISTRATION_ORDER.forEach(this::runRegistrationsFor);
+        // Variables are present here for source of truth concerns.
+        var orderedRegistries = BLibRegistrationUtil.VANILLA_REGISTRATION_ORDER;
+        var orderSensitiveRegistrySet = Set.copyOf(orderedRegistries);
+
+        // Run order-sensitive registries, first.
+        orderedRegistries.forEach(this::runRegistrationsFor);
+        // Run all other registries after order-sensitive registries.
+        deferredRegistrations.keySet()
+            .stream()
+            .filter(registry -> !orderSensitiveRegistrySet.contains(registry))
+            .forEach(this::runRegistrationsFor);
         // Run AzureLib identity registrations after primary registries are ran.
         deferredAzureLibIdentityRegistrations.forEach(Runnable::run);
         // Run compostable registrations after primary registries are ran.
@@ -191,10 +195,6 @@ public class BLibFabricModContainer {
         deferredEntitySpawnDataRegistrations.forEach(Runnable::run);
         // Run villager trade registrations after primary registries are ran.
         deferredVillagerTradeRegistrations.forEach(Runnable::run);
-    }
-
-    /* package-private */ <T> void registerCustomRegistry(MappedRegistry<T> registry) {
-        customRegistries.add(registry);
     }
 
     /* package-private */ <T extends CustomPacketPayload> void registerNetworkHandler(NetworkHandler<T> networkHandler) {

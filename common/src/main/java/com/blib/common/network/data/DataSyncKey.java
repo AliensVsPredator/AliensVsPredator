@@ -25,9 +25,9 @@ public record DataSyncKey<T>(
             return false;
         }
 
-        var dataKey = (DataSyncKey<?>) object;
+        var dataSyncKey = (DataSyncKey<?>) object;
 
-        return Objects.equals(id, dataKey.id);
+        return Objects.equals(id, dataSyncKey.id);
     }
 
     public static class Builder<U> {
