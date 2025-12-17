@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.Objects;
 
-public record DataKey<T>(
+public record DataSyncKey<T>(
     ResourceLocation id,
     T initialValue,
     Option<PersistenceMetadata<T>> persistenceMetadata,
@@ -25,7 +25,7 @@ public record DataKey<T>(
             return false;
         }
 
-        var dataKey = (DataKey<?>) object;
+        var dataKey = (DataSyncKey<?>) object;
 
         return Objects.equals(id, dataKey.id);
     }
@@ -54,8 +54,8 @@ public record DataKey<T>(
             return this;
         }
 
-        public DataKey<U> build(U initialValue) {
-            return new DataKey<>(id, initialValue, persistDataOption, streamCodecOption);
+        public DataSyncKey<U> build(U initialValue) {
+            return new DataSyncKey<>(id, initialValue, persistDataOption, streamCodecOption);
         }
     }
 }

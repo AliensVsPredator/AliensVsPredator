@@ -2,12 +2,20 @@ package com.blib.internal.common.registry;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
 
+import com.blib.BLib;
+import com.blib.common.network.data.DataSyncKey;
+
 @ApiStatus.Internal
 public class BLibRegistries {
+
+    public static final ResourceKey<Registry<DataSyncKey<?>>> DATA_SYNC_KEYS = ResourceKey.createRegistryKey(
+        BLib.MOD.resources().createLocation("data_sync_keys")
+    );
 
     public static final List<Registry<?>> REGISTRATION_ORDER = List.of(
         // Independent registries.
@@ -33,4 +41,5 @@ public class BLibRegistries {
         // Depends on blocks and items.
         BuiltInRegistries.CREATIVE_MODE_TAB
     );
+
 }

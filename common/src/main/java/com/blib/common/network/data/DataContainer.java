@@ -20,18 +20,18 @@ import java.util.stream.Collectors;
 import com.blib.BLib;
 import com.blib.common.gameplay.model.NBTSerializable;
 import com.blib.common.network.packet.S2CEntityDataSyncPayload;
-import com.blib.common.registry.DataKeyRegistry;
+import com.blib.common.registry.BLibBuiltInRegistries;
 import com.blib.common.util.codec.stream.schema.StreamCodecSchemas;
 
 public class DataContainer implements NBTSerializable {
 
-    private final Set<DataKey<?>> dirtyKeys;
+    private final Set<DataSyncKey<?>> dirtyKeys;
 
-    private final Map<DataKey<?>, Consumer<?>> onChangeCallbacks;
+    private final Map<DataSyncKey<?>, Consumer<?>> onChangeCallbacks;
 
-    private final Map<DataKey<?>, Consumer<?>> onLoadCallbacks;
+    private final Map<DataSyncKey<?>, Consumer<?>> onLoadCallbacks;
 
-    private final Map<DataKey<?>, Object> values;
+    private final Map<DataSyncKey<?>, Object> values;
 
     public DataContainer() {
         this.dirtyKeys = new HashSet<>();
@@ -40,20 +40,20 @@ public class DataContainer implements NBTSerializable {
         this.values = new HashMap<>();
     }
 
-    public <T> void setOnChangeCallback(DataKey<T> dataKey, Consumer<T> callback) {
-        onChangeCallbacks.put(dataKey, callback);
+    public <T> void setOnChangeCallback(DataSyncKey<T> dataSyncKey, Consumer<T> callback) {
+        onChangeCallbacks.put(dataSyncKey, callback);
     }
 
-    public <T> void setOnLoadCallback(DataKey<T> dataKey, Consumer<T> callback) {
-        onLoadCallbacks.put(dataKey, callback);
+    public <T> void setOnLoadCallback(DataSyncKey<T> dataSyncKey, Consumer<T> callback) {
+        onLoadCallbacks.put(dataSyncKey, callback);
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T get(DataKey<T> key) {
+    public <T> T get(DataSyncKey<T> key) {
         return (T) values.getOrDefault(key, key.initialValue());
     }
 
-    public <T> void set(DataKey<T> key, T value) {
+    public <T> void set(DataSyncKey<T> key, T value) {
         if (!Objects.equals(values.get(key), value)) {
             values.put(key, value);
 
@@ -72,15 +72,18 @@ public class DataContainer implements NBTSerializable {
     }
 
     public void set(int id, byte[] rawData) {
-        @SuppressWarnings("unchecked")
-        var key = (DataKey<Object>) DataKeyRegistry.getDataKeyOrNull(id);
+        var dataSyncKeyHolderOptional = BLibBuiltInRegistries.DATA_SYNC_KEYS.getHolder(id);
 
-        if (key == null) {
+        if (dataSyncKeyHolderOptional.isEmpty()) {
             return;
         }
 
+        var dataSyncKeyHolder = dataSyncKeyHolderOptional.get();
+        @SuppressWarnings("unchecked")
+        var dataSyncKey = (DataSyncKey<Object>) dataSyncKeyHolder.value();
+
         // TODO: unwrap is terrible here.
-        var codec = key.streamCodec().unwrap();
+        var codec = dataSyncKey.streamCodec().unwrap();
 
         var byteBuf = Unpooled.wrappedBuffer(rawData);
         var friendlyByteBuf = new FriendlyByteBuf(byteBuf);
@@ -88,7 +91,7 @@ public class DataContainer implements NBTSerializable {
         var value = codec.decode(StreamCodecSchemas.BYTE_BUF, friendlyByteBuf);
 
         // 5. Store the value
-        set(key, value);
+        set(dataSyncKey, value);
     }
 
     public void syncToClient(Entity entity, SyncType syncType) {
@@ -103,9 +106,9 @@ public class DataContainer implements NBTSerializable {
         var dataMap = values.keySet()
             .stream()
             .filter(key -> syncType != SyncType.DIRTY || dirtyKeys.contains(key))
-            .filter(key -> key.streamCodec().isSome() && DataKeyRegistry.getIdOrNull(key.id()) != null)
+            .filter(key -> key.streamCodec().isSome())
             .map(key -> {
-                var id = Objects.requireNonNull(DataKeyRegistry.getIdOrNull(key.id()));
+                var id = BLibBuiltInRegistries.DATA_SYNC_KEYS.getId(key);
                 // Safe to unwrap here due to our earlier filter check.
                 @SuppressWarnings("unchecked")
                 var codec = (StreamCodec<Object>) key.streamCodec().unwrap();
@@ -179,7 +182,7 @@ public class DataContainer implements NBTSerializable {
 
                 if (value != null) {
                     @SuppressWarnings("unchecked")
-                    var typedKey = (DataKey<Object>) key;
+                    var typedKey = (DataSyncKey<Object>) key;
                     values.put(typedKey, value);
 
                     if (onLoadCallback != null) {

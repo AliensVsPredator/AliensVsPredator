@@ -11,7 +11,7 @@ import com.blib.common.model.Version;
 import com.blib.common.model.loader.ModLoaderType;
 import com.blib.common.network.BLibPacketDirections;
 import com.blib.common.network.BLibServerPacketHandlers;
-import com.blib.common.registry.init.BLibDataKeys;
+import com.blib.common.registry.init.BLibDataSyncKeys;
 import com.blib.internal.service.BLibInternalServices;
 import com.blib.server.BlockBreakProgressManager;
 import com.blib.server.ServerScheduler;
@@ -55,7 +55,7 @@ public final class BLib {
 
         MOD.initialize(() -> {
             BLibPacketDirections.initialize();
-            BLibDataKeys.initialize();
+            BLibDataSyncKeys.initialize();
             BLibServerPacketHandlers.initialize();
 
             // TODO: There's a small bug here. This runs for both client and server levels!

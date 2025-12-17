@@ -6,37 +6,37 @@ public class DataAccessor<T> {
 
     private final DataContainer dataContainer;
 
-    private final DataKey<T> dataKey;
+    private final DataSyncKey<T> dataSyncKey;
 
-    public DataAccessor(DataUser dataUser, DataKey<T> dataKey) {
-        this(dataUser.getDataContainer(), dataKey);
+    public DataAccessor(DataUser dataUser, DataSyncKey<T> dataSyncKey) {
+        this(dataUser.getDataContainer(), dataSyncKey);
     }
 
-    public DataAccessor(DataContainer dataContainer, DataKey<T> dataKey) {
-        this.dataKey = dataKey;
+    public DataAccessor(DataContainer dataContainer, DataSyncKey<T> dataSyncKey) {
+        this.dataSyncKey = dataSyncKey;
         this.dataContainer = dataContainer;
 
         // Auto-initialize.
-        dataContainer.set(dataKey, dataKey.initialValue());
+        dataContainer.set(dataSyncKey, dataSyncKey.initialValue());
     }
 
     public T get() {
-        return dataContainer.get(dataKey);
+        return dataContainer.get(dataSyncKey);
     }
 
     public void reset() {
-        dataContainer.set(dataKey, dataKey.initialValue());
+        dataContainer.set(dataSyncKey, dataSyncKey.initialValue());
     }
 
     public void set(T value) {
-        dataContainer.set(dataKey, value);
+        dataContainer.set(dataSyncKey, value);
     }
 
     public void onChange(Consumer<T> callback) {
-        dataContainer.setOnChangeCallback(dataKey, callback);
+        dataContainer.setOnChangeCallback(dataSyncKey, callback);
     }
 
     public void onLoad(Consumer<T> callback) {
-        dataContainer.setOnLoadCallback(dataKey, callback);
+        dataContainer.setOnLoadCallback(dataSyncKey, callback);
     }
 }
