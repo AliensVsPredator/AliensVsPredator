@@ -3,6 +3,8 @@ package com.blib.neoforge.internal.service.impl;
 import com.just.core.functional.tuple.Tuple2;
 import com.just.core.functional.tuple.Tuple3;
 import com.just.core.functional.tuple.Tuple4;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -58,6 +60,8 @@ public class BLibNeoForgeModContainer {
 
     private final List<BLibEntitySpawnData<?>> entitySpawnDataEntries;
 
+    private final List<LiteralArgumentBuilder<CommandSourceStack>> literalArgumentBuilders;
+
     private final List<NetworkHandler<?>> networkHandlers;
 
     private final List<PreparableReloadListener> reloadListeners;
@@ -75,6 +79,7 @@ public class BLibNeoForgeModContainer {
         this.entityAttributeSupplierPairs = new ArrayList<>();
         this.entitySpawnDataEntries = new ArrayList<>();
         this.furnaceFuelData = new ArrayList<>();
+        this.literalArgumentBuilders = new ArrayList<>();
         this.networkHandlers = new ArrayList<>();
         this.reloadListeners = new ArrayList<>();
         this.villagerTradeData = new ArrayList<>();
@@ -85,7 +90,7 @@ public class BLibNeoForgeModContainer {
     }
 
     public List<Runnable> getDeferredDecoratedPotPatternRegistrations() {
-        return deferredDecoratedPotPatternRegistrations;
+        return Collections.unmodifiableList(deferredDecoratedPotPatternRegistrations);
     }
 
     public List<BLibEntitySpawnData<?>> getEntitySpawnDataEntries() {
@@ -97,11 +102,11 @@ public class BLibNeoForgeModContainer {
     }
 
     /* package-private */ List<BLibHolder<? extends Item>> getAzureLibIdentityEntries() {
-        return azureLibIdentityEntries;
+        return Collections.unmodifiableList(azureLibIdentityEntries);
     }
 
     /* package-private */ List<Registry<?>> getCustomRegistryEntries() {
-        return customRegistryEntries;
+        return Collections.unmodifiableList(customRegistryEntries);
     }
 
     @SuppressWarnings("unchecked")
@@ -120,20 +125,28 @@ public class BLibNeoForgeModContainer {
         return Collections.unmodifiableList(entityAttributeSupplierPairs);
     }
 
+    /* package-private */ List<LiteralArgumentBuilder<CommandSourceStack>> getLiteralArgumentBuilders() {
+        return Collections.unmodifiableList(literalArgumentBuilders);
+    }
+
     /* package-private */ List<NetworkHandler<?>> getNetworkHandlers() {
-        return networkHandlers;
+        return Collections.unmodifiableList(networkHandlers);
     }
 
     /* package-private */ List<PreparableReloadListener> getReloadListeners() {
-        return reloadListeners;
+        return Collections.unmodifiableList(reloadListeners);
     }
 
     /* package-private */ List<Tuple3<Supplier<VillagerProfession>, Integer, List<VillagerTrades.ItemListing>>> getVillagerTradeData() {
-        return villagerTradeData;
+        return Collections.unmodifiableList(villagerTradeData);
     }
 
     /* package-private */ void registerAzureLibIdentity(BLibHolder<? extends Item> holder) {
         azureLibIdentityEntries.add(holder);
+    }
+
+    /* package-private */ void registerCommand(LiteralArgumentBuilder<CommandSourceStack> literalArgumentBuilder) {
+        literalArgumentBuilders.add(literalArgumentBuilder);
     }
 
     /* package-private */ void registerCompostable(Tuple4<BLibHolder<? extends ItemLike>, Float, Boolean, Boolean> tuple) {

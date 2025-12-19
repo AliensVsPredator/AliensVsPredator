@@ -2,7 +2,9 @@ package com.blib.neoforge.internal.service.impl;
 
 import com.just.core.functional.tuple.Tuple2;
 import com.just.core.functional.tuple.Tuple4;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import mod.azure.azurelib.common.animation.cache.AzIdentityRegistry;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Holder;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
@@ -20,6 +22,7 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
@@ -69,6 +72,12 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
     public void registerAzureLibIdentity(BLibHolder<? extends Item> holder) {
         getModContainer(holder)
             .registerAzureLibIdentity(holder);
+    }
+
+    @Override
+    public void registerCommand(BLibMod mod, LiteralArgumentBuilder<CommandSourceStack> literalArgumentBuilder) {
+        getModContainer(mod)
+            .registerCommand(literalArgumentBuilder);
     }
 
     @Override
@@ -209,6 +218,11 @@ public class NeoForgeBLibRegistryServiceImpl implements BLibRegistryService {
                     }
                 });
         });
+
+        NeoForge.EVENT_BUS.<RegisterCommandsEvent>addListener(
+            event -> modContainer.getLiteralArgumentBuilders()
+                .forEach(literalArgumentBuilder -> event.getDispatcher().register(literalArgumentBuilder))
+        );
 
         NeoForge.EVENT_BUS.<AddReloadListenerEvent>addListener(
             event -> modContainer.getReloadListeners().forEach(event::addListener)

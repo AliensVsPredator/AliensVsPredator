@@ -1,9 +1,11 @@
 package com.blib.fabric.internal.service.impl;
 
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Holder;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
@@ -50,6 +52,12 @@ public class FabricBLibRegistryServiceImpl implements BLibRegistryService {
     public void registerAzureLibIdentity(BLibHolder<? extends Item> holder) {
         getModContainer(holder)
             .deferAzureLibIdentityRegistration(holder);
+    }
+
+    @Override
+    public void registerCommand(BLibMod mod, LiteralArgumentBuilder<CommandSourceStack> literalArgumentBuilder) {
+        getModContainer(mod)
+            .registerCommand(literalArgumentBuilder);
     }
 
     @Override

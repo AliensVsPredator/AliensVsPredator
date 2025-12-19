@@ -1,14 +1,16 @@
 package com.blib.fabric.internal.service.impl;
 
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import mod.azure.azurelib.common.animation.cache.AzIdentityRegistry;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.fabricmc.fabric.api.object.builder.v1.world.poi.PointOfInterestHelper;
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
-import net.minecraft.core.Holder;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -25,7 +27,6 @@ import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,6 +66,8 @@ public class BLibFabricModContainer {
 
     private final List<Runnable> deferredVillagerTradeRegistrations;
 
+    private final List<LiteralArgumentBuilder<CommandSourceStack>> literalArgumentBuilders;
+
     public BLibFabricModContainer(BLibMod mod) {
         this.mod = mod;
         this.clientBoundPacketHandlers = new ArrayList<>();
@@ -76,6 +79,7 @@ public class BLibFabricModContainer {
         this.deferredFurnaceFuelRegistrations = new ArrayList<>();
         this.deferredRegistrations = new HashMap<>();
         this.deferredVillagerTradeRegistrations = new ArrayList<>();
+        this.literalArgumentBuilders = new ArrayList<>();
     }
 
     public List<NetworkHandler<?>> getClientBoundPacketHandlers() {
@@ -195,6 +199,15 @@ public class BLibFabricModContainer {
         deferredEntitySpawnDataRegistrations.forEach(Runnable::run);
         // Run villager trade registrations after primary registries are ran.
         deferredVillagerTradeRegistrations.forEach(Runnable::run);
+
+        CommandRegistrationCallback.EVENT.register(
+            (dispatcher, registryAccess, environment) -> literalArgumentBuilders
+                .forEach(dispatcher::register)
+        );
+    }
+
+    /* package-private */ void registerCommand(LiteralArgumentBuilder<CommandSourceStack> literalArgumentBuilder) {
+        literalArgumentBuilders.add(literalArgumentBuilder);
     }
 
     /* package-private */ <T extends CustomPacketPayload> void registerNetworkHandler(NetworkHandler<T> networkHandler) {
@@ -205,12 +218,10 @@ public class BLibFabricModContainer {
         deferredRegistrations.getOrDefault(registry, List.of()).forEach(Runnable::run);
     }
 
-    private <T> @NotNull Holder<T> registerPoiType(ResourceLocation resourceLocation, PoiType poiType) {
+    private void registerPoiType(ResourceLocation resourceLocation, PoiType poiType) {
         PointOfInterestHelper.register(resourceLocation, poiType.maxTickets(), poiType.validRange(), poiType.matchingStates());
         // Immediately get the holder or throw. This should be safe to do since we registered the PoiType in the last
         // line. This is necessary because PointOfInterestHelper doesn't return back a holder after registration.
-        @SuppressWarnings("unchecked")
-        var registeredHolder = (Holder<T>) BuiltInRegistries.POINT_OF_INTEREST_TYPE.getHolder(resourceLocation).orElseThrow();
-        return registeredHolder;
+        BuiltInRegistries.POINT_OF_INTEREST_TYPE.getHolder(resourceLocation).orElseThrow();
     }
 }

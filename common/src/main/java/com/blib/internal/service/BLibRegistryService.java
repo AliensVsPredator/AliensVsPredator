@@ -1,5 +1,7 @@
 package com.blib.internal.service;
 
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Holder;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
@@ -28,6 +30,8 @@ public interface BLibRegistryService {
     <T> Holder<T> register(BLibHolder<T> holder, Supplier<? extends T> valueFactory);
 
     void registerAzureLibIdentity(BLibHolder<? extends Item> holder);
+
+    void registerCommand(BLibMod mod, LiteralArgumentBuilder<CommandSourceStack> literalArgumentBuilder);
 
     void registerCompostable(BLibHolder<? extends ItemLike> holder, float chance, boolean villagersCanCompost, boolean replace);
 
