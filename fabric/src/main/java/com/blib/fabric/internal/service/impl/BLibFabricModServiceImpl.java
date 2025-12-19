@@ -11,7 +11,7 @@ public class BLibFabricModServiceImpl implements BLibModService {
 
     @Override
     public void postInitialize(BLibMod mod) {
-        var registry = (FabricBLibRegistryServiceImpl) BLibInternalServices.REGISTRY;
+        var registry = (BLibFabricRegistryServiceImpl) BLibInternalServices.REGISTRY;
         registry.finalize(mod);
     }
 }

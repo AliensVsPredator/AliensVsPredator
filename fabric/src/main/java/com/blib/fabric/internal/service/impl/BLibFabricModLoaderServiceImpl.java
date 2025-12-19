@@ -11,7 +11,7 @@ import com.blib.common.model.loader.ModLoaderType;
 import com.blib.internal.service.BLibModLoaderService;
 
 @ApiStatus.Internal
-public class FabricBLibModLoaderServiceImpl implements BLibModLoaderService {
+public class BLibFabricModLoaderServiceImpl implements BLibModLoaderService {
 
     @Override
     public ModLoaderType getModLoaderType() {

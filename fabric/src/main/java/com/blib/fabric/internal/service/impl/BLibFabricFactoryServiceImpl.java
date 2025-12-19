@@ -1,13 +1,13 @@
-package com.blib.neoforge.internal.service.impl;
+package com.blib.fabric.internal.service.impl;
 
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
-import net.neoforged.neoforge.common.DeferredSpawnEggItem;
-import net.neoforged.neoforge.registries.RegistryBuilder;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.Supplier;
@@ -16,18 +16,17 @@ import com.blib.BLibMod;
 import com.blib.internal.service.BLibFactoryService;
 
 @ApiStatus.Internal
-public class NeoForgeBLibFactoryServiceImpl implements BLibFactoryService {
+public class BLibFabricFactoryServiceImpl implements BLibFactoryService {
 
     @Override
     public <T> Registry<T> createCustomRegistry(BLibMod mod, ResourceKey<Registry<T>> registryResourceKey, boolean shouldSync) {
-        var registry = new RegistryBuilder<>(registryResourceKey)
-            .sync(shouldSync)
-            .create();
+        var builder = FabricRegistryBuilder.createSimple(registryResourceKey);
 
-        BLibNeoForgeModContainerLookup.INSTANCE.get(mod)
-            .registerCustomRegistry(registry);
+        if (shouldSync) {
+            builder.attribute(RegistryAttribute.SYNCED);
+        }
 
-        return registry;
+        return builder.buildAndRegister();
     }
 
     @Override
@@ -37,6 +36,6 @@ public class NeoForgeBLibFactoryServiceImpl implements BLibFactoryService {
         int secondaryEggColor,
         Item.Properties itemProperties
     ) {
-        return () -> new DeferredSpawnEggItem(entityType, primaryEggColor, secondaryEggColor, itemProperties);
+        return () -> new SpawnEggItem(entityType.get(), primaryEggColor, secondaryEggColor, itemProperties);
     }
 }

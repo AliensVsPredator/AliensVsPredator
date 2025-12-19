@@ -5,11 +5,11 @@ import java.util.List;
 
 import com.blib.common.event.BLibEventRouter;
 
-public abstract class NeoForgeBLibEventRouter<Dispatcher> implements BLibEventRouter<Dispatcher> {
+public abstract class BLibNeoForgeEventRouter<Dispatcher> implements BLibEventRouter<Dispatcher> {
 
     protected final List<Dispatcher> listeners;
 
-    protected NeoForgeBLibEventRouter() {
+    protected BLibNeoForgeEventRouter() {
         this.listeners = new ArrayList<>();
     }
 

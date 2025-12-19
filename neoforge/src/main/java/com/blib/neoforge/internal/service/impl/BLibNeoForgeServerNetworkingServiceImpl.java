@@ -9,7 +9,7 @@ import org.jetbrains.annotations.ApiStatus;
 import com.blib.internal.service.BLibServerNetworkingService;
 
 @ApiStatus.Internal
-public class NeoForgeBLibServerNetworkingServiceImpl implements BLibServerNetworkingService {
+public class BLibNeoForgeServerNetworkingServiceImpl implements BLibServerNetworkingService {
 
     @Override
     public void sendToClient(ServerPlayer serverPlayer, CustomPacketPayload payload) {

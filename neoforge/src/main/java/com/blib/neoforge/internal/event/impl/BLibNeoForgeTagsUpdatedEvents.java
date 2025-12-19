@@ -5,12 +5,12 @@ import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.common.event.BLibTagsUpdatedEvent;
-import com.blib.neoforge.event.NeoForgeBLibEventRouter;
+import com.blib.neoforge.event.BLibNeoForgeEventRouter;
 
 @ApiStatus.Internal
-public final class NeoForgeBLibTagsUpdatedEvents {
+public final class BLibNeoForgeTagsUpdatedEvents {
 
-    public static final NeoForgeBLibEventRouter<BLibTagsUpdatedEvent> ROUTER = new NeoForgeBLibEventRouter<>() {
+    public static final BLibNeoForgeEventRouter<BLibTagsUpdatedEvent> ROUTER = new BLibNeoForgeEventRouter<>() {
 
         // TODO: See if we can determine integrated server connection here in the future.
         private final BLibTagsUpdatedEvent dispatcher = (registryAccess, fromClientPacket) -> NeoForge.EVENT_BUS.post(

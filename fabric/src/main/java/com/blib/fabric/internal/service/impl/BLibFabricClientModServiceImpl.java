@@ -17,7 +17,7 @@ public class BLibFabricClientModServiceImpl implements BLibClientModService {
 
     @Override
     public void initialize(BLibClientMod mod) {
-        var registry = (FabricBLibRegistryServiceImpl) BLibInternalServices.REGISTRY;
+        var registry = (BLibFabricRegistryServiceImpl) BLibInternalServices.REGISTRY;
 
         registry.getModContainer(mod.common())
             .getClientBoundPacketHandlers()

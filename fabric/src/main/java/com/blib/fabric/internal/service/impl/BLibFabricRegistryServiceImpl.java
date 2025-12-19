@@ -38,7 +38,7 @@ import com.blib.common.util.codec.stream.adapter.JustStreamCodecToMojangStreamCo
 import com.blib.internal.service.BLibRegistryService;
 
 @ApiStatus.Internal
-public class FabricBLibRegistryServiceImpl implements BLibRegistryService {
+public class BLibFabricRegistryServiceImpl implements BLibRegistryService {
 
     @Override
     public <T> Holder<T> register(BLibHolder<T> holder, Supplier<? extends T> valueFactory) {

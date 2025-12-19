@@ -7,7 +7,7 @@ import com.blib.common.event.BLibEventRouter;
 import com.blib.common.event.BLibTagsUpdatedEvent;
 
 @ApiStatus.Internal
-public final class FabricBLibTagsUpdatedEvents {
+public final class BLibFabricTagsUpdatedEvents {
 
     public static final BLibEventRouter<BLibTagsUpdatedEvent> ROUTER = new BLibEventRouter<>() {
 

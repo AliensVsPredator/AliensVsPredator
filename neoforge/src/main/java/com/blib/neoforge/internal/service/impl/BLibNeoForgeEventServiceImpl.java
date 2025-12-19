@@ -8,13 +8,13 @@ import com.blib.common.event.BLibLevelTickEvent;
 import com.blib.common.event.BLibPlayerTrackingEntityEvent;
 import com.blib.common.event.BLibTagsUpdatedEvent;
 import com.blib.internal.service.BLibEventService;
+import com.blib.neoforge.internal.event.impl.BLibNeoForgeLevelTickEvents;
+import com.blib.neoforge.internal.event.impl.BLibNeoForgePlayerBlockBreakEvents;
 import com.blib.neoforge.internal.event.impl.BLibNeoForgePlayerTrackingEntityEvents;
-import com.blib.neoforge.internal.event.impl.NeoForgeBLibLevelTickEvents;
-import com.blib.neoforge.internal.event.impl.NeoForgeBLibPlayerBlockBreakEvents;
-import com.blib.neoforge.internal.event.impl.NeoForgeBLibTagsUpdatedEvents;
+import com.blib.neoforge.internal.event.impl.BLibNeoForgeTagsUpdatedEvents;
 
 @ApiStatus.Internal
-public class NeoForgeBLibEventServiceImpl implements BLibEventService {
+public class BLibNeoForgeEventServiceImpl implements BLibEventService {
 
     @Override
     public BLibEventRouter<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity() {
@@ -23,21 +23,21 @@ public class NeoForgeBLibEventServiceImpl implements BLibEventService {
 
     @Override
     public BLibEventRouter<BLibTagsUpdatedEvent> onTagsUpdated() {
-        return NeoForgeBLibTagsUpdatedEvents.ROUTER;
+        return BLibNeoForgeTagsUpdatedEvents.ROUTER;
     }
 
     @Override
     public BLibEventRouter<BLibLevelTickEvent> postLevelTick() {
-        return NeoForgeBLibLevelTickEvents.AFTER;
+        return BLibNeoForgeLevelTickEvents.AFTER;
     }
 
     @Override
     public BLibEventRouter<BLibBlockBreakEvent> preBlockBreak() {
-        return NeoForgeBLibPlayerBlockBreakEvents.BEFORE;
+        return BLibNeoForgePlayerBlockBreakEvents.BEFORE;
     }
 
     @Override
     public BLibEventRouter<BLibLevelTickEvent> preLevelTick() {
-        return NeoForgeBLibLevelTickEvents.BEFORE;
+        return BLibNeoForgeLevelTickEvents.BEFORE;
     }
 }

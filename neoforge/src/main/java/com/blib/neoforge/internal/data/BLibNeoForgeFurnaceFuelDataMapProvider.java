@@ -12,7 +12,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.blib.BLibMod;
 import com.blib.internal.service.BLibInternalServices;
-import com.blib.neoforge.internal.service.impl.NeoForgeBLibRegistryServiceImpl;
+import com.blib.neoforge.internal.service.impl.BLibNeoForgeRegistryServiceImpl;
 
 @ApiStatus.Internal
 public final class BLibNeoForgeFurnaceFuelDataMapProvider extends DataMapProvider {
@@ -30,7 +30,7 @@ public final class BLibNeoForgeFurnaceFuelDataMapProvider extends DataMapProvide
 
     @Override
     protected void gather(@NotNull HolderLookup.Provider provider) {
-        var registry = (NeoForgeBLibRegistryServiceImpl) BLibInternalServices.REGISTRY;
+        var registry = (BLibNeoForgeRegistryServiceImpl) BLibInternalServices.REGISTRY;
         var builder = builder(NeoForgeDataMaps.FURNACE_FUELS);
 
         registry.getModContainer(mod)

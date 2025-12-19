@@ -12,7 +12,7 @@ import com.blib.common.model.loader.ModLoaderType;
 import com.blib.internal.service.BLibModLoaderService;
 
 @ApiStatus.Internal
-public class NeoForgeBLibModLoaderServiceImpl implements BLibModLoaderService {
+public class BLibNeoForgeModLoaderServiceImpl implements BLibModLoaderService {
 
     @Override
     public ModLoaderType getModLoaderType() {

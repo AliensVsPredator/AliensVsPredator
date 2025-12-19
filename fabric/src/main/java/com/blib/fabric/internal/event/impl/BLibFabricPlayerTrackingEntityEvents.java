@@ -8,7 +8,7 @@ import com.blib.common.event.BLibEventRouter;
 import com.blib.common.event.BLibPlayerTrackingEntityEvent;
 
 @ApiStatus.Internal
-public final class FabricBLibPlayerTrackingEntityEvents {
+public final class BLibFabricPlayerTrackingEntityEvents {
 
     public static final BLibEventRouter<BLibPlayerTrackingEntityEvent> START = new BLibEventRouter<>() {
 

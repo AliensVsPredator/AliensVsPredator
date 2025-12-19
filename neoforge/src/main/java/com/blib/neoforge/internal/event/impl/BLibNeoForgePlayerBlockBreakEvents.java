@@ -6,12 +6,12 @@ import net.neoforged.neoforge.event.level.BlockEvent;
 import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.common.event.BLibBlockBreakEvent;
-import com.blib.neoforge.event.NeoForgeBLibEventRouter;
+import com.blib.neoforge.event.BLibNeoForgeEventRouter;
 
 @ApiStatus.Internal
-public final class NeoForgeBLibPlayerBlockBreakEvents {
+public final class BLibNeoForgePlayerBlockBreakEvents {
 
-    public static final NeoForgeBLibEventRouter<BLibBlockBreakEvent> BEFORE = new NeoForgeBLibEventRouter<>() {
+    public static final BLibNeoForgeEventRouter<BLibBlockBreakEvent> BEFORE = new BLibNeoForgeEventRouter<>() {
 
         private final BLibBlockBreakEvent dispatcher = (level, player, blockPos, blockState) -> !NeoForge.EVENT_BUS.post(
             new BlockEvent.BreakEvent(level, blockPos, blockState, player)

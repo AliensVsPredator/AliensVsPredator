@@ -7,37 +7,37 @@ import com.blib.common.event.BLibEventRouter;
 import com.blib.common.event.BLibLevelTickEvent;
 import com.blib.common.event.BLibPlayerTrackingEntityEvent;
 import com.blib.common.event.BLibTagsUpdatedEvent;
-import com.blib.fabric.internal.event.impl.FabricBLibLevelTickEvents;
-import com.blib.fabric.internal.event.impl.FabricBLibPlayerBlockBreakEvents;
-import com.blib.fabric.internal.event.impl.FabricBLibPlayerTrackingEntityEvents;
-import com.blib.fabric.internal.event.impl.FabricBLibTagsUpdatedEvents;
+import com.blib.fabric.internal.event.impl.BLibFabricLevelTickEvents;
+import com.blib.fabric.internal.event.impl.BLibFabricPlayerBlockBreakEvents;
+import com.blib.fabric.internal.event.impl.BLibFabricPlayerTrackingEntityEvents;
+import com.blib.fabric.internal.event.impl.BLibFabricTagsUpdatedEvents;
 import com.blib.internal.service.BLibEventService;
 
 @ApiStatus.Internal
-public class FabricBLibEventServiceImpl implements BLibEventService {
+public class BLibFabricEventServiceImpl implements BLibEventService {
 
     @Override
     public BLibEventRouter<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity() {
-        return FabricBLibPlayerTrackingEntityEvents.START;
+        return BLibFabricPlayerTrackingEntityEvents.START;
     }
 
     @Override
     public BLibEventRouter<BLibTagsUpdatedEvent> onTagsUpdated() {
-        return FabricBLibTagsUpdatedEvents.ROUTER;
+        return BLibFabricTagsUpdatedEvents.ROUTER;
     }
 
     @Override
     public BLibEventRouter<BLibLevelTickEvent> postLevelTick() {
-        return FabricBLibLevelTickEvents.AFTER;
+        return BLibFabricLevelTickEvents.AFTER;
     }
 
     @Override
     public BLibEventRouter<BLibBlockBreakEvent> preBlockBreak() {
-        return FabricBLibPlayerBlockBreakEvents.BEFORE;
+        return BLibFabricPlayerBlockBreakEvents.BEFORE;
     }
 
     @Override
     public BLibEventRouter<BLibLevelTickEvent> preLevelTick() {
-        return FabricBLibLevelTickEvents.BEFORE;
+        return BLibFabricLevelTickEvents.BEFORE;
     }
 }

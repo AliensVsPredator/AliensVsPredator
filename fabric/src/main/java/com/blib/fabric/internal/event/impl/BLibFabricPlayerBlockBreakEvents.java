@@ -7,7 +7,7 @@ import com.blib.common.event.BLibBlockBreakEvent;
 import com.blib.common.event.BLibEventRouter;
 
 @ApiStatus.Internal
-public final class FabricBLibPlayerBlockBreakEvents {
+public final class BLibFabricPlayerBlockBreakEvents {
 
     public static final BLibEventRouter<BLibBlockBreakEvent> BEFORE = new BLibEventRouter<>() {
 

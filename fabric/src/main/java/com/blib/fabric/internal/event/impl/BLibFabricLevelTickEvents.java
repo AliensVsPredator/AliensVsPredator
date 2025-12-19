@@ -12,7 +12,7 @@ import com.blib.common.model.DistributionEnvironmentType;
 import com.blib.internal.service.BLibInternalServices;
 
 @ApiStatus.Internal
-public final class FabricBLibLevelTickEvents {
+public final class BLibFabricLevelTickEvents {
 
     public static final BLibEventRouter<BLibLevelTickEvent> AFTER = new BLibEventRouter<>() {
 

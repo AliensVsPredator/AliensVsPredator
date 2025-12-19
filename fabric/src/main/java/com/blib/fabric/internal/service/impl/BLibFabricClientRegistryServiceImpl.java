@@ -44,7 +44,7 @@ import com.blib.internal.client.input.keybind.KeyPressHandler;
 import com.blib.internal.service.BLibClientRegistryService;
 
 @ApiStatus.Internal
-public class FabricBLibClientRegistryServiceImpl implements BLibClientRegistryService {
+public class BLibFabricClientRegistryServiceImpl implements BLibClientRegistryService {
 
     @Override
     public void registerArmorRenderer(

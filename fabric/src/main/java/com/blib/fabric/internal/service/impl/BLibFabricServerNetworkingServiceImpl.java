@@ -10,7 +10,7 @@ import org.jetbrains.annotations.ApiStatus;
 import com.blib.internal.service.BLibServerNetworkingService;
 
 @ApiStatus.Internal
-public class FabricBLibServerNetworkingServiceImpl implements BLibServerNetworkingService {
+public class BLibFabricServerNetworkingServiceImpl implements BLibServerNetworkingService {
 
     @Override
     public void sendToClient(ServerPlayer serverPlayer, CustomPacketPayload payload) {

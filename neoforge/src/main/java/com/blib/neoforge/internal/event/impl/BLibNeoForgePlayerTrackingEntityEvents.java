@@ -5,12 +5,12 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.common.event.BLibPlayerTrackingEntityEvent;
-import com.blib.neoforge.event.NeoForgeBLibEventRouter;
+import com.blib.neoforge.event.BLibNeoForgeEventRouter;
 
 @ApiStatus.Internal
 public final class BLibNeoForgePlayerTrackingEntityEvents {
 
-    public static final NeoForgeBLibEventRouter<BLibPlayerTrackingEntityEvent> START = new NeoForgeBLibEventRouter<>() {
+    public static final BLibNeoForgeEventRouter<BLibPlayerTrackingEntityEvent> START = new BLibNeoForgeEventRouter<>() {
 
         private final BLibPlayerTrackingEntityEvent dispatcher = (trackedEntity, player) -> NeoForge.EVENT_BUS.post(
             new PlayerEvent.StartTracking(player, trackedEntity)

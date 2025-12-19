@@ -20,7 +20,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.blib.BLibMod;
 import com.blib.internal.service.BLibInternalServices;
-import com.blib.neoforge.internal.service.impl.NeoForgeBLibRegistryServiceImpl;
+import com.blib.neoforge.internal.service.impl.BLibNeoForgeRegistryServiceImpl;
 
 @ApiStatus.Internal
 public final class BLibNeoForgeEntitySpawnDataProvider implements DataProvider.Factory<DatapackBuiltinEntriesProvider> {
@@ -39,7 +39,7 @@ public final class BLibNeoForgeEntitySpawnDataProvider implements DataProvider.F
 
     @Override
     public @NotNull DatapackBuiltinEntriesProvider create(@NotNull PackOutput packOutput) {
-        var registry = (NeoForgeBLibRegistryServiceImpl) BLibInternalServices.REGISTRY;
+        var registry = (BLibNeoForgeRegistryServiceImpl) BLibInternalServices.REGISTRY;
 
         var registrySetBuilder = new RegistrySetBuilder()
             .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, bootstrap -> {

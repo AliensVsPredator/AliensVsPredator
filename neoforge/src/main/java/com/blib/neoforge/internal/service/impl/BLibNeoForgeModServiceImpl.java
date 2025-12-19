@@ -13,7 +13,7 @@ public class BLibNeoForgeModServiceImpl implements BLibModService {
 
     @Override
     public void postInitialize(BLibMod mod) {
-        var registry = (NeoForgeBLibRegistryServiceImpl) BLibInternalServices.REGISTRY;
+        var registry = (BLibNeoForgeRegistryServiceImpl) BLibInternalServices.REGISTRY;
         var modContainerOptional = ModList.get().getModContainerById(mod.id());
 
         if (modContainerOptional.isEmpty()) {
