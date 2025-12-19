@@ -1,5 +1,8 @@
 package com.blib;
 
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -11,6 +14,8 @@ import com.blib.common.model.Version;
 import com.blib.common.model.loader.ModLoaderType;
 import com.blib.common.network.BLibPacketDirections;
 import com.blib.common.network.BLibServerPacketHandlers;
+import com.blib.common.network.data.DataContainer;
+import com.blib.common.network.data.DataUser;
 import com.blib.common.registry.init.BLibDataSyncKeys;
 import com.blib.internal.service.BLibInternalServices;
 import com.blib.server.BlockBreakProgressManager;
@@ -58,11 +63,18 @@ public final class BLib {
             BLibDataSyncKeys.initialize();
             BLibServerPacketHandlers.initialize();
 
+            MOD.events().onPlayerStartTrackingEntity().register(BLib::syncDataForTrackedEntity);
             // TODO: There's a small bug here. This runs for both client and server levels!
-            MOD.events().afterLevelTick().register(ServerScheduler::tick);
+            MOD.events().postLevelTick().register(ServerScheduler::tick);
             // TODO: There's a small bug here. This runs for both client and server levels!
-            MOD.events().afterLevelTick().register(BlockBreakProgressManager::tick);
+            MOD.events().postLevelTick().register(BlockBreakProgressManager::tick);
         });
+    }
+
+    private static void syncDataForTrackedEntity(Entity trackedEntity, Player player) {
+        if (trackedEntity instanceof LivingEntity livingEntity) {
+            ((DataUser) livingEntity).getDataContainer().syncToClient(livingEntity, DataContainer.SyncType.ALL);
+        }
     }
 
     @ApiStatus.Internal
