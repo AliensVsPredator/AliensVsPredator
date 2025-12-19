@@ -1,4 +1,4 @@
-package com.blib.fabric.internal.event;
+package com.blib.fabric.internal.event.impl;
 
 import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
 import net.minecraft.server.level.ServerPlayer;

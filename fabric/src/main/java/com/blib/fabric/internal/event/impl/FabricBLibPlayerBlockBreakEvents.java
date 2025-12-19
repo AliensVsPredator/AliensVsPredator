@@ -1,4 +1,4 @@
-package com.blib.fabric.internal.event;
+package com.blib.fabric.internal.event.impl;
 
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import org.jetbrains.annotations.ApiStatus;

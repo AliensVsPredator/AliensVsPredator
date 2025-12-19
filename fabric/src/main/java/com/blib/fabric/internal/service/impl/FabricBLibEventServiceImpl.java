@@ -7,10 +7,10 @@ import com.blib.common.event.BLibEventRouter;
 import com.blib.common.event.BLibLevelTickEvent;
 import com.blib.common.event.BLibPlayerTrackingEntityEvent;
 import com.blib.common.event.BLibTagsUpdatedEvent;
-import com.blib.fabric.internal.event.FabricBLibLevelTickEvents;
-import com.blib.fabric.internal.event.FabricBLibPlayerBlockBreakEvents;
-import com.blib.fabric.internal.event.FabricBLibPlayerTrackingEntityEvents;
-import com.blib.fabric.internal.event.FabricBLibTagsUpdatedEvents;
+import com.blib.fabric.internal.event.impl.FabricBLibLevelTickEvents;
+import com.blib.fabric.internal.event.impl.FabricBLibPlayerBlockBreakEvents;
+import com.blib.fabric.internal.event.impl.FabricBLibPlayerTrackingEntityEvents;
+import com.blib.fabric.internal.event.impl.FabricBLibTagsUpdatedEvents;
 import com.blib.internal.service.BLibEventService;
 
 @ApiStatus.Internal
