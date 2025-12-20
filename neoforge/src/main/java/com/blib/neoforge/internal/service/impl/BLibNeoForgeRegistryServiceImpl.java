@@ -3,7 +3,6 @@ package com.blib.neoforge.internal.service.impl;
 import com.just.core.functional.tuple.Tuple2;
 import com.just.core.functional.tuple.Tuple4;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import mod.azure.azurelib.common.animation.cache.AzIdentityRegistry;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Holder;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -15,7 +14,6 @@ import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -37,6 +35,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import com.blib.BLibMod;
+import com.blib.common.event.BLibCommonSetupEvent;
 import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
 import com.blib.common.network.model.NetworkHandler;
 import com.blib.common.network.model.PacketDirection;
@@ -48,6 +47,7 @@ import com.blib.neoforge.internal.data.BLibNeoForgeEntitySpawnDataProvider;
 import com.blib.neoforge.internal.data.BLibNeoForgeFurnaceFuelDataMapProvider;
 import com.blib.neoforge.internal.event.impl.BLibNeoForgeLevelTickEvents;
 import com.blib.neoforge.internal.event.impl.BLibNeoForgePlayerBlockBreakEvents;
+import com.blib.neoforge.internal.event.impl.BLibNeoForgePlayerTrackingEntityEvents;
 import com.blib.neoforge.internal.event.impl.BLibNeoForgeTagsUpdatedEvents;
 
 @ApiStatus.Internal
@@ -69,12 +69,6 @@ public class BLibNeoForgeRegistryServiceImpl implements BLibRegistryService {
     }
 
     @Override
-    public void registerAzureLibIdentity(BLibHolder<? extends Item> holder) {
-        getModContainer(holder)
-            .registerAzureLibIdentity(holder);
-    }
-
-    @Override
     public void registerCommand(BLibMod mod, LiteralArgumentBuilder<CommandSourceStack> literalArgumentBuilder) {
         getModContainer(mod)
             .registerCommand(literalArgumentBuilder);
@@ -84,12 +78,6 @@ public class BLibNeoForgeRegistryServiceImpl implements BLibRegistryService {
     public void registerCompostable(BLibHolder<? extends ItemLike> holder, float chance, boolean villagersCanCompost, boolean replace) {
         getModContainer(holder)
             .registerCompostable(new Tuple4<>(holder, chance, villagersCanCompost, replace));
-    }
-
-    @Override
-    public void registerDecoratedPotPattern(String path, BLibHolder<? extends Item> holder) {
-        getModContainer(holder)
-            .registerDecoratedPotPattern(path, holder);
     }
 
     @Override
@@ -159,15 +147,9 @@ public class BLibNeoForgeRegistryServiceImpl implements BLibRegistryService {
         eventBus.<RegisterSpawnPlacementsEvent>addListener(event -> onRegisterEntitySpawnPlacements(mod, event));
 
         eventBus.<FMLCommonSetupEvent>addListener(
-            event -> {
-                modContainer
-                    .getAzureLibIdentityEntries()
-                    .forEach(holder -> AzIdentityRegistry.register(holder.get()));
-
-                modContainer
-                    .getDeferredDecoratedPotPatternRegistrations()
-                    .forEach(Runnable::run);
-            }
+            event -> modContainer.onCommonSetup()
+                .getListeners()
+                .forEach(BLibCommonSetupEvent::invoke)
         );
 
         eventBus.<NewRegistryEvent>addListener(event -> modContainer.getCustomRegistryEntries().forEach(event::register));
@@ -240,9 +222,12 @@ public class BLibNeoForgeRegistryServiceImpl implements BLibRegistryService {
                 });
         });
 
-        BLibNeoForgeLevelTickEvents.AFTER.initialize();
         BLibNeoForgeLevelTickEvents.BEFORE.initialize();
         BLibNeoForgePlayerBlockBreakEvents.BEFORE.initialize();
+
+        BLibNeoForgeLevelTickEvents.AFTER.initialize();
+
+        BLibNeoForgePlayerTrackingEntityEvents.START.initialize();
         BLibNeoForgeTagsUpdatedEvents.ROUTER.initialize();
     }
 

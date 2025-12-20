@@ -1,7 +1,6 @@
 package com.blib.fabric.internal.service.impl;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import mod.azure.azurelib.common.animation.cache.AzIdentityRegistry;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -13,7 +12,6 @@ import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -24,7 +22,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -37,10 +34,13 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import com.blib.BLibMod;
+import com.blib.common.event.BLibCommonSetupEvent;
+import com.blib.common.event.BLibEventListenerHandle;
+import com.blib.common.event.impl.BLibCommonSetupEvents;
+import com.blib.common.event.impl.BLibEventListenerContainer;
 import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
 import com.blib.common.network.model.NetworkHandler;
 import com.blib.common.registry.BLibHolder;
-import com.blib.internal.common.BLibDecoratedPotPatternCache;
 import com.blib.internal.common.registry.util.BLibRegistrationUtil;
 
 @ApiStatus.Internal
@@ -50,11 +50,7 @@ public class BLibFabricModContainer {
 
     private final List<NetworkHandler<?>> clientBoundPacketHandlers;
 
-    private final List<Runnable> deferredAzureLibIdentityRegistrations;
-
     private final List<Runnable> deferredCompostableRegistrations;
-
-    private final List<Runnable> deferredDecoratedPotPatternRegistrations;
 
     private final List<Runnable> deferredEntityAttributeRegistrations;
 
@@ -68,22 +64,27 @@ public class BLibFabricModContainer {
 
     private final List<LiteralArgumentBuilder<CommandSourceStack>> literalArgumentBuilders;
 
+    private final BLibEventListenerContainer<BLibCommonSetupEvent> onCommonSetup;
+
     public BLibFabricModContainer(BLibMod mod) {
         this.mod = mod;
         this.clientBoundPacketHandlers = new ArrayList<>();
-        this.deferredAzureLibIdentityRegistrations = new ArrayList<>();
         this.deferredCompostableRegistrations = new ArrayList<>();
-        this.deferredDecoratedPotPatternRegistrations = new ArrayList<>();
         this.deferredEntityAttributeRegistrations = new ArrayList<>();
         this.deferredEntitySpawnDataRegistrations = new ArrayList<>();
         this.deferredFurnaceFuelRegistrations = new ArrayList<>();
         this.deferredRegistrations = new HashMap<>();
         this.deferredVillagerTradeRegistrations = new ArrayList<>();
         this.literalArgumentBuilders = new ArrayList<>();
+        this.onCommonSetup = BLibCommonSetupEvents.CONTAINER_FACTORY.get();
     }
 
     public List<NetworkHandler<?>> getClientBoundPacketHandlers() {
         return clientBoundPacketHandlers;
+    }
+
+    public BLibEventListenerHandle<BLibCommonSetupEvent> onCommonSetup() {
+        return onCommonSetup;
     }
 
     /* package-private */ <T> void deferRegistration(BLibHolder<T> holder, Supplier<? extends T> valueFactory) {
@@ -144,18 +145,8 @@ public class BLibFabricModContainer {
         });
     }
 
-    /* package-private */ void deferAzureLibIdentityRegistration(BLibHolder<? extends Item> holder) {
-        deferredAzureLibIdentityRegistrations.add(() -> AzIdentityRegistry.register(holder.get()));
-    }
-
     /* package-private */ void deferCompostableRegistration(BLibHolder<? extends ItemLike> holder, float chance) {
         deferredCompostableRegistrations.add(() -> CompostingChanceRegistry.INSTANCE.add(holder.get(), chance));
-    }
-
-    /* package-private */ void deferDecoratedPotPatternRegistration(String path, BLibHolder<? extends Item> holder) {
-        deferredDecoratedPotPatternRegistrations.add(
-            () -> BLibDecoratedPotPatternCache.put(holder.get(), mod.resources().createKey(Registries.DECORATED_POT_PATTERN, path))
-        );
     }
 
     /* package-private */ void deferFurnaceFuelRegistration(BLibHolder<? extends ItemLike> holder, int burnTimeInTicks) {
@@ -184,12 +175,8 @@ public class BLibFabricModContainer {
             .stream()
             .filter(registry -> !orderSensitiveRegistrySet.contains(registry))
             .forEach(this::runRegistrationsFor);
-        // Run AzureLib identity registrations after primary registries are ran.
-        deferredAzureLibIdentityRegistrations.forEach(Runnable::run);
         // Run compostable registrations after primary registries are ran.
         deferredCompostableRegistrations.forEach(Runnable::run);
-        // Run decorated pot pattern registrations after primary registries are ran.
-        deferredDecoratedPotPatternRegistrations.forEach(Runnable::run);
         // Run furnace fuel registrations after primary registries are ran.
         deferredFurnaceFuelRegistrations.forEach(Runnable::run);
 
@@ -204,6 +191,9 @@ public class BLibFabricModContainer {
             (dispatcher, registryAccess, environment) -> literalArgumentBuilders
                 .forEach(dispatcher::register)
         );
+
+        onCommonSetup.getListeners()
+            .forEach(BLibCommonSetupEvent::invoke);
     }
 
     /* package-private */ void registerCommand(LiteralArgumentBuilder<CommandSourceStack> literalArgumentBuilder) {

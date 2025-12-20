@@ -1,5 +1,6 @@
 package com.blib.common.registry.impl;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -7,6 +8,7 @@ import com.blib.BLibMod;
 import com.blib.common.exception.BLibRegistrationException;
 import com.blib.common.model.BLibModState;
 import com.blib.common.registry.BLibHolder;
+import com.blib.internal.common.BLibDecoratedPotPatternCache;
 import com.blib.internal.service.BLibInternalServices;
 
 public class BLibDecoratedPotPatternRegistry {
@@ -28,6 +30,13 @@ public class BLibDecoratedPotPatternRegistry {
             );
         }
 
-        BLibInternalServices.REGISTRY.registerDecoratedPotPattern(path, holder);
+        BLibInternalServices.EVENT
+            .onCommonSetup(mod)
+            .register(
+                () -> BLibDecoratedPotPatternCache.put(
+                    holder.get(),
+                    mod.resources().createKey(Registries.DECORATED_POT_PATTERN, path)
+                )
+            );
     }
 }

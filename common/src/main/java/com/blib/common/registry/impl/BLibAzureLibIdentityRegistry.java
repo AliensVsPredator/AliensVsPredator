@@ -1,5 +1,6 @@
 package com.blib.common.registry.impl;
 
+import mod.azure.azurelib.common.animation.cache.AzIdentityRegistry;
 import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -26,6 +27,8 @@ public class BLibAzureLibIdentityRegistry {
             );
         }
 
-        BLibInternalServices.REGISTRY.registerAzureLibIdentity(holder);
+        BLibInternalServices.EVENT
+            .onCommonSetup(mod)
+            .register(() -> AzIdentityRegistry.register(holder.get()));
     }
 }

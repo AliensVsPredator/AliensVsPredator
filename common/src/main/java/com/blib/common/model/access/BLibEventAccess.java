@@ -4,6 +4,8 @@ import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.BLibMod;
 import com.blib.common.event.BLibBlockBreakEvent;
+import com.blib.common.event.BLibCommonSetupEvent;
+import com.blib.common.event.BLibEventListenerHandle;
 import com.blib.common.event.BLibEventRouter;
 import com.blib.common.event.BLibLevelTickEvent;
 import com.blib.common.event.BLibPlayerTrackingEntityEvent;
@@ -17,6 +19,10 @@ public class BLibEventAccess {
     @ApiStatus.Internal
     public BLibEventAccess(BLibMod mod) {
         this.mod = mod;
+    }
+
+    public BLibEventListenerHandle<BLibCommonSetupEvent> onCommonSetup() {
+        return BLibInternalServices.EVENT.onCommonSetup(mod);
     }
 
     public BLibEventRouter<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity() {

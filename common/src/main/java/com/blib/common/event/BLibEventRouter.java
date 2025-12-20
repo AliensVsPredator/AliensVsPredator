@@ -1,8 +1,3 @@
 package com.blib.common.event;
 
-public interface BLibEventRouter<Dispatcher> {
-
-    Dispatcher dispatcher();
-
-    void register(Dispatcher dispatcher);
-}
+public interface BLibEventRouter<Dispatcher> extends BLibEventListenerHandle<Dispatcher>, BLibEventDispatchHandle<Dispatcher> {}

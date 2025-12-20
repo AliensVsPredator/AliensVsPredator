@@ -11,7 +11,6 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -29,13 +28,9 @@ public interface BLibRegistryService {
 
     <T> Holder<T> register(BLibHolder<T> holder, Supplier<? extends T> valueFactory);
 
-    void registerAzureLibIdentity(BLibHolder<? extends Item> holder);
-
     void registerCommand(BLibMod mod, LiteralArgumentBuilder<CommandSourceStack> literalArgumentBuilder);
 
     void registerCompostable(BLibHolder<? extends ItemLike> holder, float chance, boolean villagersCanCompost, boolean replace);
-
-    void registerDecoratedPotPattern(String path, BLibHolder<? extends Item> holder);
 
     void registerEntityAttributes(
         BLibHolder<? extends EntityType<? extends LivingEntity>> holder,

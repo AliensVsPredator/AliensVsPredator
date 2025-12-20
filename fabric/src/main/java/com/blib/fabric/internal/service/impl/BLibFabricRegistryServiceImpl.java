@@ -19,7 +19,6 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -49,12 +48,6 @@ public class BLibFabricRegistryServiceImpl implements BLibRegistryService {
     }
 
     @Override
-    public void registerAzureLibIdentity(BLibHolder<? extends Item> holder) {
-        getModContainer(holder)
-            .deferAzureLibIdentityRegistration(holder);
-    }
-
-    @Override
     public void registerCommand(BLibMod mod, LiteralArgumentBuilder<CommandSourceStack> literalArgumentBuilder) {
         getModContainer(mod)
             .registerCommand(literalArgumentBuilder);
@@ -69,11 +62,6 @@ public class BLibFabricRegistryServiceImpl implements BLibRegistryService {
     ) {
         getModContainer(holder)
             .deferCompostableRegistration(holder, chance);
-    }
-
-    public void registerDecoratedPotPattern(String path, BLibHolder<? extends Item> holder) {
-        getModContainer(holder)
-            .deferDecoratedPotPatternRegistration(path, holder);
     }
 
     @Override
