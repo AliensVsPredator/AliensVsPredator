@@ -14,7 +14,7 @@ public class BLibHookedEventListenerContainer<T extends BLibModStateAccess, Disp
 
     @Override
     public void register(Dispatcher dispatcher) {
-        if (modStateAccess.state() != BLibModState.UNINITIALIZED) {
+        if (modStateAccess.state() != BLibModState.INITIALIZING) {
             throw new BLibModInitializationException(
                 "Attempted to register an event outside of mod's initialization window. Mod State: %s".formatted(modStateAccess.state())
             );
