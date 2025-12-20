@@ -15,7 +15,7 @@ public class BLibEventListenerContainer<Dispatcher> implements BLibEventListener
     }
 
     @Override
-    public final void register(Dispatcher dispatcher) {
+    public void register(Dispatcher dispatcher) {
         listeners.add(dispatcher);
     }
 
