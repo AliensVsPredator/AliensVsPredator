@@ -9,12 +9,13 @@ import com.blib.common.model.BLibModState;
 import com.blib.common.model.Version;
 import com.blib.common.model.access.BLibEventAccess;
 import com.blib.common.model.access.BLibFactoryAccess;
+import com.blib.common.model.access.BLibModStateAccess;
 import com.blib.common.model.access.BLibNetworkAccess;
 import com.blib.common.model.access.BLibRegistryAccess;
 import com.blib.common.model.access.BLibResourceAccess;
 import com.blib.internal.service.BLibInternalServices;
 
-public class BLibMod {
+public class BLibMod implements BLibModStateAccess {
 
     private final String id;
 
@@ -41,6 +42,15 @@ public class BLibMod {
         this.resourceAccess = new BLibResourceAccess(this);
         this.version = BLibInternalServices.MOD_LOADER.getModVersion(id);
         this.state = BLibModState.UNINITIALIZED;
+    }
+
+    @Override
+    public BLibModState state() {
+        return state;
+    }
+
+    public void initialize() {
+        initialize(() -> {});
     }
 
     public void initialize(Runnable runnable) {
@@ -82,10 +92,6 @@ public class BLibMod {
 
     public BLibResourceAccess resources() {
         return resourceAccess;
-    }
-
-    public BLibModState state() {
-        return state;
     }
 
     public @Nullable Version version() {
