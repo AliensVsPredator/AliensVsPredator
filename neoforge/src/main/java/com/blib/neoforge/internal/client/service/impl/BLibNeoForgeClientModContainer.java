@@ -71,7 +71,7 @@ public class BLibNeoForgeClientModContainer {
         this.itemRendererPairs = new ArrayList<>();
         this.keyMappingHandlerPairSuppliers = new ArrayList<>();
         this.menuScreenConstructorPairs = new ArrayList<>();
-        this.onClientSetup = BLibClientSetupEvents.CONTAINER_FACTORY.get();
+        this.onClientSetup = BLibClientSetupEvents.CONTAINER_FACTORY.apply(mod);
         this.particleProviderFactoryPairs = new ArrayList<>();
     }
 

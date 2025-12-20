@@ -76,7 +76,7 @@ public class BLibFabricModContainer {
         this.deferredRegistrations = new HashMap<>();
         this.deferredVillagerTradeRegistrations = new ArrayList<>();
         this.literalArgumentBuilders = new ArrayList<>();
-        this.onCommonSetup = BLibCommonSetupEvents.CONTAINER_FACTORY.get();
+        this.onCommonSetup = BLibCommonSetupEvents.CONTAINER_FACTORY.apply(mod);
     }
 
     public List<NetworkHandler<?>> getClientBoundPacketHandlers() {

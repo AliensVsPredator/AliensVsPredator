@@ -77,7 +77,7 @@ public class BLibNeoForgeModContainer {
         this.furnaceFuelData = new ArrayList<>();
         this.literalArgumentBuilders = new ArrayList<>();
         this.networkHandlers = new ArrayList<>();
-        this.onCommonSetup = BLibCommonSetupEvents.CONTAINER_FACTORY.get();
+        this.onCommonSetup = BLibCommonSetupEvents.CONTAINER_FACTORY.apply(mod);
         this.reloadListeners = new ArrayList<>();
         this.villagerTradeData = new ArrayList<>();
     }
