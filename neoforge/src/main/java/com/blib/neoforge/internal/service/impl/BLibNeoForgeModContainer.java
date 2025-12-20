@@ -28,12 +28,21 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import com.blib.BLibMod;
+import com.blib.common.event.BLibBlockBreakEvent;
 import com.blib.common.event.BLibCommonSetupEvent;
+import com.blib.common.event.BLibLevelTickEvent;
+import com.blib.common.event.BLibPlayerTrackingEntityEvent;
+import com.blib.common.event.BLibTagsUpdatedEvent;
 import com.blib.common.event.impl.BLibCommonSetupEvents;
 import com.blib.common.event.impl.BLibEventListenerContainer;
 import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
 import com.blib.common.network.model.NetworkHandler;
 import com.blib.common.registry.BLibHolder;
+import com.blib.neoforge.event.BLibNeoForgeEventRouter;
+import com.blib.neoforge.internal.event.impl.BLibNeoForgeLevelTickEvents;
+import com.blib.neoforge.internal.event.impl.BLibNeoForgePlayerBlockBreakEvents;
+import com.blib.neoforge.internal.event.impl.BLibNeoForgePlayerTrackingEntityEvents;
+import com.blib.neoforge.internal.event.impl.BLibNeoForgeTagsUpdatedEvents;
 
 @ApiStatus.Internal
 public class BLibNeoForgeModContainer {
@@ -62,6 +71,16 @@ public class BLibNeoForgeModContainer {
 
     private final BLibEventListenerContainer<BLibCommonSetupEvent> onCommonSetup;
 
+    private final BLibNeoForgeEventRouter<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity;
+
+    private final BLibNeoForgeEventRouter<BLibTagsUpdatedEvent> onTagsUpdated;
+
+    private final BLibNeoForgeEventRouter<BLibLevelTickEvent> postLevelTick;
+
+    private final BLibNeoForgeEventRouter<BLibBlockBreakEvent> preBlockBreak;
+
+    private final BLibNeoForgeEventRouter<BLibLevelTickEvent> preLevelTick;
+
     private final List<PreparableReloadListener> reloadListeners;
 
     private final List<Tuple3<Supplier<VillagerProfession>, Integer, List<VillagerTrades.ItemListing>>> villagerTradeData;
@@ -77,7 +96,12 @@ public class BLibNeoForgeModContainer {
         this.furnaceFuelData = new ArrayList<>();
         this.literalArgumentBuilders = new ArrayList<>();
         this.networkHandlers = new ArrayList<>();
-        this.onCommonSetup = BLibCommonSetupEvents.CONTAINER_FACTORY.apply(mod);
+        this.onCommonSetup = BLibCommonSetupEvents.FACTORY.apply(mod);
+        this.onPlayerStartTrackingEntity = BLibNeoForgePlayerTrackingEntityEvents.FACTORY.apply(mod);
+        this.onTagsUpdated = BLibNeoForgeTagsUpdatedEvents.FACTORY.apply(mod);
+        this.postLevelTick = BLibNeoForgeLevelTickEvents.POST_FACTORY.apply(mod);
+        this.preBlockBreak = BLibNeoForgePlayerBlockBreakEvents.FACTORY.apply(mod);
+        this.preLevelTick = BLibNeoForgeLevelTickEvents.PRE_FACTORY.apply(mod);
         this.reloadListeners = new ArrayList<>();
         this.villagerTradeData = new ArrayList<>();
     }
@@ -92,6 +116,30 @@ public class BLibNeoForgeModContainer {
 
     public List<Tuple2<BLibHolder<? extends ItemLike>, Integer>> getFurnaceFuelData() {
         return Collections.unmodifiableList(furnaceFuelData);
+    }
+
+    public BLibEventListenerContainer<BLibCommonSetupEvent> onCommonSetup() {
+        return onCommonSetup;
+    }
+
+    public BLibNeoForgeEventRouter<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity() {
+        return onPlayerStartTrackingEntity;
+    }
+
+    public BLibNeoForgeEventRouter<BLibTagsUpdatedEvent> onTagsUpdated() {
+        return onTagsUpdated;
+    }
+
+    public BLibNeoForgeEventRouter<BLibLevelTickEvent> postLevelTick() {
+        return postLevelTick;
+    }
+
+    public BLibNeoForgeEventRouter<BLibBlockBreakEvent> preBlockBreak() {
+        return preBlockBreak;
+    }
+
+    public BLibNeoForgeEventRouter<BLibLevelTickEvent> preLevelTick() {
+        return preLevelTick;
     }
 
     /* package-private */ List<Registry<?>> getCustomRegistryEntries() {
@@ -171,9 +219,5 @@ public class BLibNeoForgeModContainer {
         List<VillagerTrades.ItemListing> villagerTradeItemListings
     ) {
         villagerTradeData.add(new Tuple3<>(holder, level, villagerTradeItemListings));
-    }
-
-    public BLibEventListenerContainer<BLibCommonSetupEvent> onCommonSetup() {
-        return onCommonSetup;
     }
 }

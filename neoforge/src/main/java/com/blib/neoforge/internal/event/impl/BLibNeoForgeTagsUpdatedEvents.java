@@ -4,13 +4,18 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.function.Function;
+
+import com.blib.BLibMod;
 import com.blib.common.event.BLibTagsUpdatedEvent;
 import com.blib.neoforge.event.BLibNeoForgeEventRouter;
 
 @ApiStatus.Internal
 public final class BLibNeoForgeTagsUpdatedEvents {
 
-    public static final BLibNeoForgeEventRouter<BLibTagsUpdatedEvent> ROUTER = new BLibNeoForgeEventRouter<>() {
+    public static final Function<BLibMod, BLibNeoForgeEventRouter<BLibTagsUpdatedEvent>> FACTORY = mod -> new BLibNeoForgeEventRouter<>(
+        mod
+    ) {
 
         // TODO: See if we can determine integrated server connection here in the future.
         private final BLibTagsUpdatedEvent dispatcher = (registryAccess, fromClientPacket) -> NeoForge.EVENT_BUS.post(

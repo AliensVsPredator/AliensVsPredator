@@ -45,10 +45,6 @@ import com.blib.internal.service.BLibRegistryService;
 import com.blib.neoforge.internal.data.BLibNeoForgeCompostableDataMapProvider;
 import com.blib.neoforge.internal.data.BLibNeoForgeEntitySpawnDataProvider;
 import com.blib.neoforge.internal.data.BLibNeoForgeFurnaceFuelDataMapProvider;
-import com.blib.neoforge.internal.event.impl.BLibNeoForgeLevelTickEvents;
-import com.blib.neoforge.internal.event.impl.BLibNeoForgePlayerBlockBreakEvents;
-import com.blib.neoforge.internal.event.impl.BLibNeoForgePlayerTrackingEntityEvents;
-import com.blib.neoforge.internal.event.impl.BLibNeoForgeTagsUpdatedEvents;
 
 @ApiStatus.Internal
 public class BLibNeoForgeRegistryServiceImpl implements BLibRegistryService {
@@ -222,13 +218,13 @@ public class BLibNeoForgeRegistryServiceImpl implements BLibRegistryService {
                 });
         });
 
-        BLibNeoForgeLevelTickEvents.BEFORE.initialize();
-        BLibNeoForgePlayerBlockBreakEvents.BEFORE.initialize();
+        modContainer.preLevelTick().initialize();
+        modContainer.preBlockBreak().initialize();
 
-        BLibNeoForgeLevelTickEvents.AFTER.initialize();
+        modContainer.postLevelTick().initialize();
 
-        BLibNeoForgePlayerTrackingEntityEvents.START.initialize();
-        BLibNeoForgeTagsUpdatedEvents.ROUTER.initialize();
+        modContainer.onPlayerStartTrackingEntity().initialize();
+        modContainer.onTagsUpdated().initialize();
     }
 
     private void onRegisterEntityAttributes(BLibMod mod, EntityAttributeCreationEvent event) {

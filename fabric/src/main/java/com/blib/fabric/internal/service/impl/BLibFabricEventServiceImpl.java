@@ -10,10 +10,6 @@ import com.blib.common.event.BLibEventRouter;
 import com.blib.common.event.BLibLevelTickEvent;
 import com.blib.common.event.BLibPlayerTrackingEntityEvent;
 import com.blib.common.event.BLibTagsUpdatedEvent;
-import com.blib.fabric.internal.event.impl.BLibFabricLevelTickEvents;
-import com.blib.fabric.internal.event.impl.BLibFabricPlayerBlockBreakEvents;
-import com.blib.fabric.internal.event.impl.BLibFabricPlayerTrackingEntityEvents;
-import com.blib.fabric.internal.event.impl.BLibFabricTagsUpdatedEvents;
 import com.blib.internal.service.BLibEventService;
 
 @ApiStatus.Internal
@@ -26,27 +22,32 @@ public class BLibFabricEventServiceImpl implements BLibEventService {
     }
 
     @Override
-    public BLibEventRouter<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity() {
-        return BLibFabricPlayerTrackingEntityEvents.START;
+    public BLibEventRouter<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .onPlayerStartTrackingEntity();
     }
 
     @Override
-    public BLibEventRouter<BLibTagsUpdatedEvent> onTagsUpdated() {
-        return BLibFabricTagsUpdatedEvents.ROUTER;
+    public BLibEventRouter<BLibTagsUpdatedEvent> onTagsUpdated(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .onTagsUpdated();
     }
 
     @Override
-    public BLibEventRouter<BLibLevelTickEvent> postLevelTick() {
-        return BLibFabricLevelTickEvents.AFTER;
+    public BLibEventRouter<BLibLevelTickEvent> postLevelTick(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .postLevelTick();
     }
 
     @Override
-    public BLibEventRouter<BLibBlockBreakEvent> preBlockBreak() {
-        return BLibFabricPlayerBlockBreakEvents.BEFORE;
+    public BLibEventRouter<BLibBlockBreakEvent> preBlockBreak(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .preBlockBreak();
     }
 
     @Override
-    public BLibEventRouter<BLibLevelTickEvent> preLevelTick() {
-        return BLibFabricLevelTickEvents.BEFORE;
+    public BLibEventRouter<BLibLevelTickEvent> preLevelTick(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .preLevelTick();
     }
 }

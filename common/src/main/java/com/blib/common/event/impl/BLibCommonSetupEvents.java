@@ -10,7 +10,7 @@ import com.blib.common.event.BLibCommonSetupEvent;
 @ApiStatus.Internal
 public final class BLibCommonSetupEvents {
 
-    public static final Function<BLibMod, BLibEventListenerContainer<BLibCommonSetupEvent>> CONTAINER_FACTORY =
+    public static final Function<BLibMod, BLibEventListenerContainer<BLibCommonSetupEvent>> FACTORY =
         BLibHookedEventListenerContainer::new;
 
     BLibCommonSetupEvents() {

@@ -11,10 +11,6 @@ import com.blib.common.event.BLibLevelTickEvent;
 import com.blib.common.event.BLibPlayerTrackingEntityEvent;
 import com.blib.common.event.BLibTagsUpdatedEvent;
 import com.blib.internal.service.BLibEventService;
-import com.blib.neoforge.internal.event.impl.BLibNeoForgeLevelTickEvents;
-import com.blib.neoforge.internal.event.impl.BLibNeoForgePlayerBlockBreakEvents;
-import com.blib.neoforge.internal.event.impl.BLibNeoForgePlayerTrackingEntityEvents;
-import com.blib.neoforge.internal.event.impl.BLibNeoForgeTagsUpdatedEvents;
 
 @ApiStatus.Internal
 public class BLibNeoForgeEventServiceImpl implements BLibEventService {
@@ -26,27 +22,32 @@ public class BLibNeoForgeEventServiceImpl implements BLibEventService {
     }
 
     @Override
-    public BLibEventRouter<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity() {
-        return BLibNeoForgePlayerTrackingEntityEvents.START;
+    public BLibEventRouter<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity(BLibMod mod) {
+        return BLibNeoForgeModContainerLookup.INSTANCE.get(mod)
+            .onPlayerStartTrackingEntity();
     }
 
     @Override
-    public BLibEventRouter<BLibTagsUpdatedEvent> onTagsUpdated() {
-        return BLibNeoForgeTagsUpdatedEvents.ROUTER;
+    public BLibEventRouter<BLibTagsUpdatedEvent> onTagsUpdated(BLibMod mod) {
+        return BLibNeoForgeModContainerLookup.INSTANCE.get(mod)
+            .onTagsUpdated();
     }
 
     @Override
-    public BLibEventRouter<BLibLevelTickEvent> postLevelTick() {
-        return BLibNeoForgeLevelTickEvents.AFTER;
+    public BLibEventRouter<BLibLevelTickEvent> postLevelTick(BLibMod mod) {
+        return BLibNeoForgeModContainerLookup.INSTANCE.get(mod)
+            .postLevelTick();
     }
 
     @Override
-    public BLibEventRouter<BLibBlockBreakEvent> preBlockBreak() {
-        return BLibNeoForgePlayerBlockBreakEvents.BEFORE;
+    public BLibEventRouter<BLibBlockBreakEvent> preBlockBreak(BLibMod mod) {
+        return BLibNeoForgeModContainerLookup.INSTANCE.get(mod)
+            .preBlockBreak();
     }
 
     @Override
-    public BLibEventRouter<BLibLevelTickEvent> preLevelTick() {
-        return BLibNeoForgeLevelTickEvents.BEFORE;
+    public BLibEventRouter<BLibLevelTickEvent> preLevelTick(BLibMod mod) {
+        return BLibNeoForgeModContainerLookup.INSTANCE.get(mod)
+            .preLevelTick();
     }
 }

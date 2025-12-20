@@ -3,13 +3,16 @@ package com.blib.fabric.internal.event.impl;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.function.Function;
+
+import com.blib.BLibMod;
 import com.blib.common.event.BLibBlockBreakEvent;
 import com.blib.common.event.BLibEventRouter;
 
 @ApiStatus.Internal
 public final class BLibFabricPlayerBlockBreakEvents {
 
-    public static final BLibEventRouter<BLibBlockBreakEvent> BEFORE = new BLibEventRouter<>() {
+    public static final Function<BLibMod, BLibEventRouter<BLibBlockBreakEvent>> FACTORY = mod -> new BLibEventRouter<>(mod) {
 
         private final BLibBlockBreakEvent dispatcher = (level, player, blockPos, blockState) -> PlayerBlockBreakEvents.BEFORE
             .invoker()
@@ -21,7 +24,7 @@ public final class BLibFabricPlayerBlockBreakEvents {
         }
 
         @Override
-        public void register(BLibBlockBreakEvent blockBreakEvent) {
+        public void onRegister(BLibBlockBreakEvent blockBreakEvent) {
             PlayerBlockBreakEvents.BEFORE.register(
                 (level, player, pos, state, blockEntity) -> blockBreakEvent.invoke(level, player, pos, state)
             );

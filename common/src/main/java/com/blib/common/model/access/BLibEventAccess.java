@@ -26,22 +26,22 @@ public class BLibEventAccess {
     }
 
     public BLibEventRouter<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity() {
-        return BLibInternalServices.EVENT.onPlayerStartTrackingEntity();
+        return BLibInternalServices.EVENT.onPlayerStartTrackingEntity(mod);
     }
 
     public BLibEventRouter<BLibTagsUpdatedEvent> onTagsUpdated() {
-        return BLibInternalServices.EVENT.onTagsUpdated();
+        return BLibInternalServices.EVENT.onTagsUpdated(mod);
     }
 
     public BLibEventRouter<BLibLevelTickEvent> postLevelTick() {
-        return BLibInternalServices.EVENT.postLevelTick();
+        return BLibInternalServices.EVENT.postLevelTick(mod);
     }
 
     public BLibEventRouter<BLibBlockBreakEvent> preBlockBreak() {
-        return BLibInternalServices.EVENT.preBlockBreak();
+        return BLibInternalServices.EVENT.preBlockBreak(mod);
     }
 
     public BLibEventRouter<BLibLevelTickEvent> preLevelTick() {
-        return BLibInternalServices.EVENT.preLevelTick();
+        return BLibInternalServices.EVENT.preLevelTick(mod);
     }
 }

@@ -16,13 +16,13 @@ public interface BLibEventService {
 
     BLibEventListenerHandle<BLibCommonSetupEvent> onCommonSetup(BLibMod mod);
 
-    BLibEventRouter<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity();
+    BLibEventRouter<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity(BLibMod mod);
 
-    BLibEventRouter<BLibTagsUpdatedEvent> onTagsUpdated();
+    BLibEventRouter<BLibTagsUpdatedEvent> onTagsUpdated(BLibMod mod);
 
-    BLibEventRouter<BLibLevelTickEvent> postLevelTick();
+    BLibEventRouter<BLibLevelTickEvent> postLevelTick(BLibMod mod);
 
-    BLibEventRouter<BLibBlockBreakEvent> preBlockBreak();
+    BLibEventRouter<BLibBlockBreakEvent> preBlockBreak(BLibMod mod);
 
-    BLibEventRouter<BLibLevelTickEvent> preLevelTick();
+    BLibEventRouter<BLibLevelTickEvent> preLevelTick(BLibMod mod);
 }

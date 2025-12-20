@@ -4,30 +4,34 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.function.Function;
+
+import com.blib.BLibMod;
 import com.blib.common.event.BLibPlayerTrackingEntityEvent;
 import com.blib.neoforge.event.BLibNeoForgeEventRouter;
 
 @ApiStatus.Internal
 public final class BLibNeoForgePlayerTrackingEntityEvents {
 
-    public static final BLibNeoForgeEventRouter<BLibPlayerTrackingEntityEvent> START = new BLibNeoForgeEventRouter<>() {
+    public static final Function<BLibMod, BLibNeoForgeEventRouter<BLibPlayerTrackingEntityEvent>> FACTORY =
+        mod -> new BLibNeoForgeEventRouter<>(mod) {
 
-        private final BLibPlayerTrackingEntityEvent dispatcher = (trackedEntity, player) -> NeoForge.EVENT_BUS.post(
-            new PlayerEvent.StartTracking(player, trackedEntity)
-        );
-
-        @Override
-        public void initialize() {
-            NeoForge.EVENT_BUS.<PlayerEvent.StartTracking>addListener(
-                event -> listeners.forEach(
-                    listener -> listener.invoke(event.getTarget(), event.getEntity())
-                )
+            private final BLibPlayerTrackingEntityEvent dispatcher = (trackedEntity, player) -> NeoForge.EVENT_BUS.post(
+                new PlayerEvent.StartTracking(player, trackedEntity)
             );
-        }
 
-        @Override
-        public BLibPlayerTrackingEntityEvent dispatcher() {
-            return dispatcher;
-        }
-    };
+            @Override
+            public void initialize() {
+                NeoForge.EVENT_BUS.<PlayerEvent.StartTracking>addListener(
+                    event -> listeners.forEach(
+                        listener -> listener.invoke(event.getTarget(), event.getEntity())
+                    )
+                );
+            }
+
+            @Override
+            public BLibPlayerTrackingEntityEvent dispatcher() {
+                return dispatcher;
+            }
+        };
 }

@@ -4,13 +4,18 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.function.Function;
+
+import com.blib.BLibMod;
 import com.blib.common.event.BLibLevelTickEvent;
 import com.blib.neoforge.event.BLibNeoForgeEventRouter;
 
 @ApiStatus.Internal
 public final class BLibNeoForgeLevelTickEvents {
 
-    public static final BLibNeoForgeEventRouter<BLibLevelTickEvent> AFTER = new BLibNeoForgeEventRouter<>() {
+    public static final Function<BLibMod, BLibNeoForgeEventRouter<BLibLevelTickEvent>> POST_FACTORY = mod -> new BLibNeoForgeEventRouter<>(
+        mod
+    ) {
 
         // TODO: See if we can pass something other than () -> true for this event in the future.
         private final BLibLevelTickEvent dispatcher = (level) -> NeoForge.EVENT_BUS.post(
@@ -32,7 +37,9 @@ public final class BLibNeoForgeLevelTickEvents {
         }
     };
 
-    public static final BLibNeoForgeEventRouter<BLibLevelTickEvent> BEFORE = new BLibNeoForgeEventRouter<>() {
+    public static final Function<BLibMod, BLibNeoForgeEventRouter<BLibLevelTickEvent>> PRE_FACTORY = mod -> new BLibNeoForgeEventRouter<>(
+        mod
+    ) {
 
         // TODO: See if we can pass something other than () -> true for this event in the future.
         private final BLibLevelTickEvent dispatcher = (level) -> NeoForge.EVENT_BUS.post(

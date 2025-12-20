@@ -3,13 +3,16 @@ package com.blib.fabric.internal.event.impl;
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.function.Function;
+
+import com.blib.BLibMod;
 import com.blib.common.event.BLibEventRouter;
 import com.blib.common.event.BLibTagsUpdatedEvent;
 
 @ApiStatus.Internal
 public final class BLibFabricTagsUpdatedEvents {
 
-    public static final BLibEventRouter<BLibTagsUpdatedEvent> ROUTER = new BLibEventRouter<>() {
+    public static final Function<BLibMod, BLibEventRouter<BLibTagsUpdatedEvent>> FACTORY = mod -> new BLibEventRouter<>(mod) {
 
         private final BLibTagsUpdatedEvent dispatcher = (registryAccess, fromClientPacket) -> CommonLifecycleEvents.TAGS_LOADED
             .invoker()
@@ -21,7 +24,7 @@ public final class BLibFabricTagsUpdatedEvents {
         }
 
         @Override
-        public void register(BLibTagsUpdatedEvent tagsUpdatedEvent) {
+        public void onRegister(BLibTagsUpdatedEvent tagsUpdatedEvent) {
             CommonLifecycleEvents.TAGS_LOADED.register((tagsUpdatedEvent::invoke));
         }
     };

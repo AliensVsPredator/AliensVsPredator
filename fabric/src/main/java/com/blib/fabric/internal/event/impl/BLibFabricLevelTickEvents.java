@@ -6,6 +6,9 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.function.Function;
+
+import com.blib.BLibMod;
 import com.blib.common.event.BLibEventRouter;
 import com.blib.common.event.BLibLevelTickEvent;
 import com.blib.common.model.DistributionEnvironmentType;
@@ -14,7 +17,7 @@ import com.blib.internal.service.BLibInternalServices;
 @ApiStatus.Internal
 public final class BLibFabricLevelTickEvents {
 
-    public static final BLibEventRouter<BLibLevelTickEvent> AFTER = new BLibEventRouter<>() {
+    public static final Function<BLibMod, BLibEventRouter<BLibLevelTickEvent>> POST_FACTORY = mod -> new BLibEventRouter<>(mod) {
 
         private final BLibLevelTickEvent dispatcher = (level) -> {
             if (level.isClientSide) {
@@ -30,7 +33,7 @@ public final class BLibFabricLevelTickEvents {
         }
 
         @Override
-        public void register(BLibLevelTickEvent levelTickEvent) {
+        public void onRegister(BLibLevelTickEvent levelTickEvent) {
             if (BLibInternalServices.MOD_LOADER.getDistributionEnvironmentType() == DistributionEnvironmentType.CLIENT) {
                 ClientTickEvents.END_WORLD_TICK.register(levelTickEvent::invoke);
             }
@@ -39,7 +42,7 @@ public final class BLibFabricLevelTickEvents {
         }
     };
 
-    public static final BLibEventRouter<BLibLevelTickEvent> BEFORE = new BLibEventRouter<>() {
+    public static final Function<BLibMod, BLibEventRouter<BLibLevelTickEvent>> PRE_FACTORY = mod -> new BLibEventRouter<>(mod) {
 
         private final BLibLevelTickEvent dispatcher = (level) -> {
             if (level.isClientSide) {
@@ -55,7 +58,7 @@ public final class BLibFabricLevelTickEvents {
         }
 
         @Override
-        public void register(BLibLevelTickEvent levelTickEvent) {
+        public void onRegister(BLibLevelTickEvent levelTickEvent) {
             if (BLibInternalServices.MOD_LOADER.getDistributionEnvironmentType() == DistributionEnvironmentType.CLIENT) {
                 ClientTickEvents.START_WORLD_TICK.register(levelTickEvent::invoke);
             }

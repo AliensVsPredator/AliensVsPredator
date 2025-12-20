@@ -34,13 +34,22 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import com.blib.BLibMod;
+import com.blib.common.event.BLibBlockBreakEvent;
 import com.blib.common.event.BLibCommonSetupEvent;
 import com.blib.common.event.BLibEventListenerHandle;
+import com.blib.common.event.BLibEventRouter;
+import com.blib.common.event.BLibLevelTickEvent;
+import com.blib.common.event.BLibPlayerTrackingEntityEvent;
+import com.blib.common.event.BLibTagsUpdatedEvent;
 import com.blib.common.event.impl.BLibCommonSetupEvents;
 import com.blib.common.event.impl.BLibEventListenerContainer;
 import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
 import com.blib.common.network.model.NetworkHandler;
 import com.blib.common.registry.BLibHolder;
+import com.blib.fabric.internal.event.impl.BLibFabricLevelTickEvents;
+import com.blib.fabric.internal.event.impl.BLibFabricPlayerBlockBreakEvents;
+import com.blib.fabric.internal.event.impl.BLibFabricPlayerTrackingEntityEvents;
+import com.blib.fabric.internal.event.impl.BLibFabricTagsUpdatedEvents;
 import com.blib.internal.common.registry.util.BLibRegistrationUtil;
 
 @ApiStatus.Internal
@@ -66,6 +75,16 @@ public class BLibFabricModContainer {
 
     private final BLibEventListenerContainer<BLibCommonSetupEvent> onCommonSetup;
 
+    private final BLibEventRouter<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity;
+
+    private final BLibEventRouter<BLibTagsUpdatedEvent> onTagsUpdated;
+
+    private final BLibEventRouter<BLibLevelTickEvent> postLevelTick;
+
+    private final BLibEventRouter<BLibBlockBreakEvent> preBlockBreak;
+
+    private final BLibEventRouter<BLibLevelTickEvent> preLevelTick;
+
     public BLibFabricModContainer(BLibMod mod) {
         this.mod = mod;
         this.clientBoundPacketHandlers = new ArrayList<>();
@@ -76,7 +95,12 @@ public class BLibFabricModContainer {
         this.deferredRegistrations = new HashMap<>();
         this.deferredVillagerTradeRegistrations = new ArrayList<>();
         this.literalArgumentBuilders = new ArrayList<>();
-        this.onCommonSetup = BLibCommonSetupEvents.CONTAINER_FACTORY.apply(mod);
+        this.onCommonSetup = BLibCommonSetupEvents.FACTORY.apply(mod);
+        this.onPlayerStartTrackingEntity = BLibFabricPlayerTrackingEntityEvents.FACTORY.apply(mod);
+        this.onTagsUpdated = BLibFabricTagsUpdatedEvents.FACTORY.apply(mod);
+        this.postLevelTick = BLibFabricLevelTickEvents.POST_FACTORY.apply(mod);
+        this.preBlockBreak = BLibFabricPlayerBlockBreakEvents.FACTORY.apply(mod);
+        this.preLevelTick = BLibFabricLevelTickEvents.PRE_FACTORY.apply(mod);
     }
 
     public List<NetworkHandler<?>> getClientBoundPacketHandlers() {
@@ -85,6 +109,26 @@ public class BLibFabricModContainer {
 
     public BLibEventListenerHandle<BLibCommonSetupEvent> onCommonSetup() {
         return onCommonSetup;
+    }
+
+    public BLibEventRouter<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity() {
+        return onPlayerStartTrackingEntity;
+    }
+
+    public BLibEventRouter<BLibTagsUpdatedEvent> onTagsUpdated() {
+        return onTagsUpdated;
+    }
+
+    public BLibEventRouter<BLibLevelTickEvent> postLevelTick() {
+        return postLevelTick;
+    }
+
+    public BLibEventRouter<BLibBlockBreakEvent> preBlockBreak() {
+        return preBlockBreak;
+    }
+
+    public BLibEventRouter<BLibLevelTickEvent> preLevelTick() {
+        return preLevelTick;
     }
 
     /* package-private */ <T> void deferRegistration(BLibHolder<T> holder, Supplier<? extends T> valueFactory) {
