@@ -26,7 +26,7 @@ public class BLibNeoForgeModServiceImpl implements BLibModService {
         var eventBus = modContainer.getEventBus();
 
         if (eventBus != null) {
-            registry.finalize(mod, eventBus);
+            registry.initialize(mod, eventBus);
         } else {
             BLib.LOGGER.warn("Unable to finalize registration for mod '{}' because its event bus is null.", mod.id());
         }

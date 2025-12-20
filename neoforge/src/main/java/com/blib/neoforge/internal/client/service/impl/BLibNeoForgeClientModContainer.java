@@ -1,4 +1,4 @@
-package com.blib.neoforge.internal.service.impl;
+package com.blib.neoforge.internal.client.service.impl;
 
 import com.just.core.functional.tuple.Tuple2;
 import mod.azure.azurelib.common.render.armor.AzArmorRenderer;
@@ -31,7 +31,10 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.blib.client.BLibClientMod;
+import com.blib.client.event.BLibClientSetupEvent;
+import com.blib.client.event.impl.BLibClientSetupEvents;
 import com.blib.client.model.KeyInteractType;
+import com.blib.common.event.impl.BLibEventListenerContainer;
 
 @ApiStatus.Internal
 public class BLibNeoForgeClientModContainer {
@@ -54,6 +57,8 @@ public class BLibNeoForgeClientModContainer {
 
     private final List<Tuple2<Supplier<? extends MenuType<?>>, MenuScreens.ScreenConstructor<?, ?>>> menuScreenConstructorPairs;
 
+    private final BLibEventListenerContainer<BLibClientSetupEvent> onClientSetup;
+
     private final List<Tuple2<Supplier<? extends ParticleType<?>>, ParticleEngine.SpriteParticleRegistration<?>>> particleProviderFactoryPairs;
 
     public BLibNeoForgeClientModContainer(BLibClientMod mod) {
@@ -66,7 +71,12 @@ public class BLibNeoForgeClientModContainer {
         this.itemRendererPairs = new ArrayList<>();
         this.keyMappingHandlerPairSuppliers = new ArrayList<>();
         this.menuScreenConstructorPairs = new ArrayList<>();
+        this.onClientSetup = BLibClientSetupEvents.CONTAINER_FACTORY.get();
         this.particleProviderFactoryPairs = new ArrayList<>();
+    }
+
+    public BLibEventListenerContainer<BLibClientSetupEvent> onClientSetup() {
+        return onClientSetup;
     }
 
     /* package-private */ List<Tuple2<Supplier<AzArmorRenderer>, List<Supplier<? extends Item>>>> getArmorRendererPairs() {

@@ -32,7 +32,7 @@ import java.util.function.Supplier;
 
 import com.blib.client.BLibClientMod;
 import com.blib.client.model.KeyInteractType;
-import com.blib.internal.service.BLibInternalServices;
+import com.blib.internal.client.service.BLibInternalClientServices;
 
 public class BLibClientRegistryAccess {
 
@@ -44,44 +44,44 @@ public class BLibClientRegistryAccess {
     }
 
     public void registerArmorRenderer(Supplier<AzArmorRenderer> armorRendererSupplier, List<Supplier<? extends Item>> itemSuppliers) {
-        BLibInternalServices.CLIENT_REGISTRY.registerArmorRenderer(mod, armorRendererSupplier, itemSuppliers);
+        BLibInternalClientServices.CLIENT_REGISTRY.registerArmorRenderer(mod, armorRendererSupplier, itemSuppliers);
     }
 
     public void registerArmorRendererImmediately(
         Supplier<AzArmorRenderer> armorRendererSupplier,
         List<Supplier<? extends Item>> itemSuppliers
     ) {
-        BLibInternalServices.CLIENT_REGISTRY.registerArmorRendererImmediately(mod, armorRendererSupplier, itemSuppliers);
+        BLibInternalClientServices.CLIENT_REGISTRY.registerArmorRendererImmediately(mod, armorRendererSupplier, itemSuppliers);
     }
 
     public <T extends BlockEntity> void registerBlockEntityRenderer(
         Supplier<BlockEntityType<T>> blockEntityTypeSupplier,
         BlockEntityRendererProvider<T> renderProvider
     ) {
-        BLibInternalServices.CLIENT_REGISTRY.registerBlockEntityRenderer(mod, blockEntityTypeSupplier, renderProvider);
+        BLibInternalClientServices.CLIENT_REGISTRY.registerBlockEntityRenderer(mod, blockEntityTypeSupplier, renderProvider);
     }
 
     public void registerBlockRenderLayer(Supplier<? extends Block> blockSupplier, RenderType renderType) {
-        BLibInternalServices.CLIENT_REGISTRY.registerBlockRenderLayer(mod, blockSupplier, renderType);
+        BLibInternalClientServices.CLIENT_REGISTRY.registerBlockRenderLayer(mod, blockSupplier, renderType);
     }
 
     public <E extends Entity> void registerEntityRenderer(
         Supplier<EntityType<E>> entityTypeSupplier,
         EntityRendererProvider<E> entityRendererFactory
     ) {
-        BLibInternalServices.CLIENT_REGISTRY.registerEntityRenderer(mod, entityTypeSupplier, entityRendererFactory);
+        BLibInternalClientServices.CLIENT_REGISTRY.registerEntityRenderer(mod, entityTypeSupplier, entityRendererFactory);
     }
 
     public void registerItemColor(ItemColor itemColor, List<Supplier<? extends Item>> itemSuppliers) {
-        BLibInternalServices.CLIENT_REGISTRY.registerItemColor(mod, itemColor, itemSuppliers);
+        BLibInternalClientServices.CLIENT_REGISTRY.registerItemColor(mod, itemColor, itemSuppliers);
     }
 
     public void registerItemRenderer(Supplier<? extends Item> itemSupplier, Function<String, Supplier<AzItemRenderer>> rendererFactory) {
-        BLibInternalServices.CLIENT_REGISTRY.registerItemRenderer(mod, itemSupplier, rendererFactory);
+        BLibInternalClientServices.CLIENT_REGISTRY.registerItemRenderer(mod, itemSupplier, rendererFactory);
     }
 
     public void registerItemRendererImmediately(Item item, Function<String, Supplier<AzItemRenderer>> rendererFactory) {
-        BLibInternalServices.CLIENT_REGISTRY.registerItemRendererImmediately(mod, item, rendererFactory);
+        BLibInternalClientServices.CLIENT_REGISTRY.registerItemRendererImmediately(mod, item, rendererFactory);
     }
 
     public Supplier<Tuple2<KeyMapping, Consumer<KeyInteractType>>> registerKeyMapping(
@@ -90,20 +90,20 @@ public class BLibClientRegistryAccess {
         int key,
         Consumer<KeyInteractType> keyInteractTypeConsumer
     ) {
-        return BLibInternalServices.CLIENT_REGISTRY.registerKeyMapping(mod, resourceLocation, category, key, keyInteractTypeConsumer);
+        return BLibInternalClientServices.CLIENT_REGISTRY.registerKeyMapping(mod, resourceLocation, category, key, keyInteractTypeConsumer);
     }
 
     public <T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>> void registerMenuScreen(
         Supplier<? extends MenuType<T>> menuTypeSupplier,
         MenuScreens.ScreenConstructor<T, U> screenConstructor
     ) {
-        BLibInternalServices.CLIENT_REGISTRY.registerMenuScreen(mod, menuTypeSupplier, screenConstructor);
+        BLibInternalClientServices.CLIENT_REGISTRY.registerMenuScreen(mod, menuTypeSupplier, screenConstructor);
     }
 
     public <T extends ParticleOptions> void registerParticleProviderFactory(
         Supplier<? extends ParticleType<T>> particleTypeSupplier,
         ParticleEngine.SpriteParticleRegistration<T> spriteParticleRegistration
     ) {
-        BLibInternalServices.CLIENT_REGISTRY.registerParticleProviderFactory(mod, particleTypeSupplier, spriteParticleRegistration);
+        BLibInternalClientServices.CLIENT_REGISTRY.registerParticleProviderFactory(mod, particleTypeSupplier, spriteParticleRegistration);
     }
 }

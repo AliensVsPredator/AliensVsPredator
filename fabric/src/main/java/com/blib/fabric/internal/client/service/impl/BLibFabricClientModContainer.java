@@ -1,4 +1,4 @@
-package com.blib.fabric.internal.service.impl;
+package com.blib.fabric.internal.client.service.impl;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -8,16 +8,34 @@ import org.jetbrains.annotations.ApiStatus;
 import java.util.function.BiConsumer;
 
 import com.blib.client.BLibClientMod;
+import com.blib.client.event.BLibClientSetupEvent;
+import com.blib.client.event.impl.BLibClientSetupEvents;
+import com.blib.common.event.impl.BLibEventListenerContainer;
 import com.blib.common.network.model.NetworkHandler;
-import com.blib.internal.service.BLibClientModService;
+import com.blib.fabric.internal.service.impl.BLibFabricRegistryServiceImpl;
 import com.blib.internal.service.BLibInternalServices;
 
 @ApiStatus.Internal
-public class BLibFabricClientModServiceImpl implements BLibClientModService {
+public class BLibFabricClientModContainer {
 
-    @Override
-    public void initialize(BLibClientMod mod) {
+    private final BLibClientMod mod;
+
+    private final BLibEventListenerContainer<BLibClientSetupEvent> onClientSetup;
+
+    public BLibFabricClientModContainer(BLibClientMod mod) {
+        this.mod = mod;
+        this.onClientSetup = BLibClientSetupEvents.CONTAINER_FACTORY.get();
+    }
+
+    public BLibEventListenerContainer<BLibClientSetupEvent> onClientSetup() {
+        return onClientSetup;
+    }
+
+    public void initialize() {
         var registry = (BLibFabricRegistryServiceImpl) BLibInternalServices.REGISTRY;
+
+        onClientSetup.getListeners()
+            .forEach(BLibClientSetupEvent::invoke);
 
         registry.getModContainer(mod.common())
             .getClientBoundPacketHandlers()

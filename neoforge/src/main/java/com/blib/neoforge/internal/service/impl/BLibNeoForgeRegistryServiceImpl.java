@@ -136,7 +136,7 @@ public class BLibNeoForgeRegistryServiceImpl implements BLibRegistryService {
         return BLibNeoForgeModContainerLookup.INSTANCE.get(mod);
     }
 
-    /* package-private */ void finalize(BLibMod mod, IEventBus eventBus) {
+    /* package-private */ void initialize(BLibMod mod, IEventBus eventBus) {
         var modContainer = getModContainer(mod);
 
         modContainer

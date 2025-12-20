@@ -1,4 +1,4 @@
-package com.blib.internal.service;
+package com.blib.internal.client.service;
 
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import org.jetbrains.annotations.ApiStatus;

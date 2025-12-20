@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.BLibMod;
+import com.blib.internal.client.service.BLibInternalClientServices;
 import com.blib.internal.service.BLibInternalServices;
 
 public class BLibNetworkAccess {
@@ -18,7 +19,7 @@ public class BLibNetworkAccess {
     }
 
     public void sendToServer(CustomPacketPayload customPacketPayload) {
-        BLibInternalServices.CLIENT_NETWORKING.sendToServer(customPacketPayload);
+        BLibInternalClientServices.CLIENT_NETWORKING.sendToServer(customPacketPayload);
     }
 
     public void sendToClient(ServerPlayer serverPlayer, CustomPacketPayload customPacketPayload) {

@@ -1,4 +1,4 @@
-package com.blib.fabric.internal.service.impl;
+package com.blib.fabric.internal.client.service.impl;
 
 import com.just.core.functional.tuple.Tuple2;
 import mod.azure.azurelib.common.render.armor.AzArmorRenderer;
@@ -41,7 +41,7 @@ import com.blib.client.BLibClientMod;
 import com.blib.client.input.keybind.util.KeyMappingUtil;
 import com.blib.client.model.KeyInteractType;
 import com.blib.internal.client.input.keybind.KeyPressHandler;
-import com.blib.internal.service.BLibClientRegistryService;
+import com.blib.internal.client.service.BLibClientRegistryService;
 
 @ApiStatus.Internal
 public class BLibFabricClientRegistryServiceImpl implements BLibClientRegistryService {

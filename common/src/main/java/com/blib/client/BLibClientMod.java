@@ -3,8 +3,9 @@ package com.blib.client;
 import java.util.Objects;
 
 import com.blib.BLibMod;
+import com.blib.client.model.access.BLibClientEventAccess;
 import com.blib.client.model.access.BLibClientRegistryAccess;
-import com.blib.internal.service.BLibInternalServices;
+import com.blib.internal.client.service.BLibInternalClientServices;
 
 public class BLibClientMod {
 
@@ -16,17 +17,24 @@ public class BLibClientMod {
 
     private final BLibClientRegistryAccess clientRegistryAccess;
 
+    private final BLibClientEventAccess clientEventAccess;
+
     private BLibClientMod(BLibMod mod) {
         this.mod = mod;
         this.clientRegistryAccess = new BLibClientRegistryAccess(this);
+        this.clientEventAccess = new BLibClientEventAccess(this);
     }
 
     public void initialize() {
-        BLibInternalServices.CLIENT_MOD.initialize(this);
+        BLibInternalClientServices.CLIENT_MOD.initialize(this);
     }
 
     public BLibMod common() {
         return mod;
+    }
+
+    public BLibClientEventAccess events() {
+        return clientEventAccess;
     }
 
     public String id() {

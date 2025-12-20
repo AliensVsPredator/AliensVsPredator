@@ -1,4 +1,4 @@
-package com.blib.neoforge.internal.service.impl;
+package com.blib.neoforge.internal.client.service.impl;
 
 import com.just.core.functional.function.Lazy;
 import com.just.core.functional.tuple.Tuple2;
@@ -44,10 +44,11 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.blib.client.BLibClientMod;
+import com.blib.client.event.BLibClientSetupEvent;
 import com.blib.client.input.keybind.util.KeyMappingUtil;
 import com.blib.client.model.KeyInteractType;
 import com.blib.internal.client.input.keybind.KeyPressHandler;
-import com.blib.internal.service.BLibClientRegistryService;
+import com.blib.internal.client.service.BLibClientRegistryService;
 
 @ApiStatus.Internal
 public class BLibNeoForgeClientRegistryServiceImpl implements BLibClientRegistryService {
@@ -149,7 +150,7 @@ public class BLibNeoForgeClientRegistryServiceImpl implements BLibClientRegistry
             .registerParticleProviderFactory(particleTypeSupplier, spriteParticleRegistration);
     }
 
-    /* package-private */ void finalize(BLibClientMod mod, IEventBus eventBus) {
+    /* package-private */ void initialize(BLibClientMod mod, IEventBus eventBus) {
         var modContainer = getModContainer(mod);
 
         eventBus.<FMLClientSetupEvent>addListener(event -> {
@@ -228,6 +229,12 @@ public class BLibNeoForgeClientRegistryServiceImpl implements BLibClientRegistry
                     event.registerSpriteSet(particleType, spriteParticleRegistration);
                 });
         });
+
+        eventBus.<FMLClientSetupEvent>addListener(
+            event -> modContainer.onClientSetup()
+                .getListeners()
+                .forEach(BLibClientSetupEvent::invoke)
+        );
 
         NeoForge.EVENT_BUS.<ClientTickEvent.Post>addListener(
             event -> modContainer

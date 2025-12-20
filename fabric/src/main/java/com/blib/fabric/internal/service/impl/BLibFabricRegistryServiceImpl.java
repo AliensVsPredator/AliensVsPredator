@@ -182,7 +182,7 @@ public class BLibFabricRegistryServiceImpl implements BLibRegistryService {
         return BLibFabricModContainerLookup.INSTANCE.get(mod);
     }
 
-    /* package-private */ void finalize(BLibMod mod) {
+    /* package-private */ void initialize(BLibMod mod) {
         getModContainer(mod)
             .finalizeRegistrations();
     }

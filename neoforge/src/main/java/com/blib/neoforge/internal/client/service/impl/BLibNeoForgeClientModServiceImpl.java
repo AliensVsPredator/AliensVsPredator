@@ -1,19 +1,19 @@
-package com.blib.neoforge.internal.service.impl;
+package com.blib.neoforge.internal.client.service.impl;
 
 import net.neoforged.fml.ModList;
 import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.BLib;
 import com.blib.client.BLibClientMod;
-import com.blib.internal.service.BLibClientModService;
-import com.blib.internal.service.BLibInternalServices;
+import com.blib.internal.client.service.BLibClientModService;
+import com.blib.internal.client.service.BLibInternalClientServices;
 
 @ApiStatus.Internal
 public class BLibNeoForgeClientModServiceImpl implements BLibClientModService {
 
     @Override
     public void initialize(BLibClientMod mod) {
-        var registry = (BLibNeoForgeClientRegistryServiceImpl) BLibInternalServices.CLIENT_REGISTRY;
+        var registry = (BLibNeoForgeClientRegistryServiceImpl) BLibInternalClientServices.CLIENT_REGISTRY;
         var modContainerOptional = ModList.get().getModContainerById(mod.id());
 
         if (modContainerOptional.isEmpty()) {
@@ -26,7 +26,7 @@ public class BLibNeoForgeClientModServiceImpl implements BLibClientModService {
         var eventBus = modContainer.getEventBus();
 
         if (eventBus != null) {
-            registry.finalize(mod, eventBus);
+            registry.initialize(mod, eventBus);
         } else {
             BLib.LOGGER.warn("Unable to finalize registration for client mod '{}' because its event bus is null.", mod.id());
         }

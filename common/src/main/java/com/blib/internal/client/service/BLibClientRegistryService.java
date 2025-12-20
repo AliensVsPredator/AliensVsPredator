@@ -1,4 +1,4 @@
-package com.blib.internal.service;
+package com.blib.internal.client.service;
 
 import com.just.core.functional.tuple.Tuple2;
 import mod.azure.azurelib.common.render.armor.AzArmorRenderer;

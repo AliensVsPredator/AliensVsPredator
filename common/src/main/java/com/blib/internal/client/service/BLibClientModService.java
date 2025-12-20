@@ -1,4 +1,4 @@
-package com.blib.internal.service;
+package com.blib.internal.client.service;
 
 import org.jetbrains.annotations.ApiStatus;
 
