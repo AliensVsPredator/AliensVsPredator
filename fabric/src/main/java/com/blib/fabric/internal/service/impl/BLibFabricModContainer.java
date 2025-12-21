@@ -36,8 +36,8 @@ import java.util.function.Supplier;
 import com.blib.BLibMod;
 import com.blib.common.event.BLibBlockBreakEvent;
 import com.blib.common.event.BLibCommonSetupEvent;
+import com.blib.common.event.BLibEventHandle;
 import com.blib.common.event.BLibEventListenerHandle;
-import com.blib.common.event.BLibEventRouter;
 import com.blib.common.event.BLibLevelTickEvent;
 import com.blib.common.event.BLibPlayerTrackingEntityEvent;
 import com.blib.common.event.BLibTagsUpdatedEvent;
@@ -75,15 +75,15 @@ public class BLibFabricModContainer {
 
     private final BLibEventListenerContainer<BLibCommonSetupEvent> onCommonSetup;
 
-    private final BLibEventRouter<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity;
+    private final BLibEventHandle<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity;
 
-    private final BLibEventRouter<BLibTagsUpdatedEvent> onTagsUpdated;
+    private final BLibEventHandle<BLibTagsUpdatedEvent> onTagsUpdated;
 
-    private final BLibEventRouter<BLibLevelTickEvent> postLevelTick;
+    private final BLibEventHandle<BLibLevelTickEvent> postLevelTick;
 
-    private final BLibEventRouter<BLibBlockBreakEvent> preBlockBreak;
+    private final BLibEventHandle<BLibBlockBreakEvent> preBlockBreak;
 
-    private final BLibEventRouter<BLibLevelTickEvent> preLevelTick;
+    private final BLibEventHandle<BLibLevelTickEvent> preLevelTick;
 
     public BLibFabricModContainer(BLibMod mod) {
         this.mod = mod;
@@ -111,23 +111,23 @@ public class BLibFabricModContainer {
         return onCommonSetup;
     }
 
-    public BLibEventRouter<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity() {
+    public BLibEventHandle<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity() {
         return onPlayerStartTrackingEntity;
     }
 
-    public BLibEventRouter<BLibTagsUpdatedEvent> onTagsUpdated() {
+    public BLibEventHandle<BLibTagsUpdatedEvent> onTagsUpdated() {
         return onTagsUpdated;
     }
 
-    public BLibEventRouter<BLibLevelTickEvent> postLevelTick() {
+    public BLibEventHandle<BLibLevelTickEvent> postLevelTick() {
         return postLevelTick;
     }
 
-    public BLibEventRouter<BLibBlockBreakEvent> preBlockBreak() {
+    public BLibEventHandle<BLibBlockBreakEvent> preBlockBreak() {
         return preBlockBreak;
     }
 
-    public BLibEventRouter<BLibLevelTickEvent> preLevelTick() {
+    public BLibEventHandle<BLibLevelTickEvent> preLevelTick() {
         return preLevelTick;
     }
 

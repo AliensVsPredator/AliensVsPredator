@@ -7,13 +7,13 @@ import org.jetbrains.annotations.ApiStatus;
 import java.util.function.Function;
 
 import com.blib.BLibMod;
-import com.blib.common.event.BLibEventRouter;
+import com.blib.common.event.BLibEventHandle;
 import com.blib.common.event.BLibPlayerTrackingEntityEvent;
 
 @ApiStatus.Internal
 public final class BLibFabricPlayerTrackingEntityEvents {
 
-    public static final Function<BLibMod, BLibEventRouter<BLibPlayerTrackingEntityEvent>> FACTORY = mod -> new BLibEventRouter<>(mod) {
+    public static final Function<BLibMod, BLibEventHandle<BLibPlayerTrackingEntityEvent>> FACTORY = mod -> new BLibEventHandle<>(mod) {
 
         private final BLibPlayerTrackingEntityEvent dispatcher = (trackedEntity, player) -> EntityTrackingEvents.START_TRACKING
             .invoker()

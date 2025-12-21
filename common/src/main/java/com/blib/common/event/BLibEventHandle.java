@@ -4,11 +4,11 @@ import com.blib.common.exception.BLibModInitializationException;
 import com.blib.common.model.BLibModState;
 import com.blib.common.model.access.BLibModStateAccess;
 
-public abstract class BLibEventRouter<Dispatcher> implements BLibEventListenerHandle<Dispatcher>, BLibEventDispatchHandle<Dispatcher> {
+public abstract class BLibEventHandle<Dispatcher> implements BLibEventListenerHandle<Dispatcher>, BLibEventDispatchHandle<Dispatcher> {
 
     private final BLibModStateAccess modStateAccess;
 
-    protected BLibEventRouter(BLibModStateAccess modStateAccess) {
+    protected BLibEventHandle(BLibModStateAccess modStateAccess) {
         this.modStateAccess = modStateAccess;
     }
 

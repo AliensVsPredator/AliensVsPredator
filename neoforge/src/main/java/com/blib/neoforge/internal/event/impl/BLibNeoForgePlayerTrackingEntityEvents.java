@@ -8,13 +8,13 @@ import java.util.function.Function;
 
 import com.blib.BLibMod;
 import com.blib.common.event.BLibPlayerTrackingEntityEvent;
-import com.blib.neoforge.event.BLibNeoForgeEventRouter;
+import com.blib.neoforge.event.BLibNeoForgeEventHandle;
 
 @ApiStatus.Internal
 public final class BLibNeoForgePlayerTrackingEntityEvents {
 
-    public static final Function<BLibMod, BLibNeoForgeEventRouter<BLibPlayerTrackingEntityEvent>> FACTORY =
-        mod -> new BLibNeoForgeEventRouter<>(mod) {
+    public static final Function<BLibMod, BLibNeoForgeEventHandle<BLibPlayerTrackingEntityEvent>> FACTORY =
+        mod -> new BLibNeoForgeEventHandle<>(mod) {
 
             private final BLibPlayerTrackingEntityEvent dispatcher = (trackedEntity, player) -> NeoForge.EVENT_BUS.post(
                 new PlayerEvent.StartTracking(player, trackedEntity)

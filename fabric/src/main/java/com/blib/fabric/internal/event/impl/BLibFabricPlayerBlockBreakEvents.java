@@ -7,12 +7,12 @@ import java.util.function.Function;
 
 import com.blib.BLibMod;
 import com.blib.common.event.BLibBlockBreakEvent;
-import com.blib.common.event.BLibEventRouter;
+import com.blib.common.event.BLibEventHandle;
 
 @ApiStatus.Internal
 public final class BLibFabricPlayerBlockBreakEvents {
 
-    public static final Function<BLibMod, BLibEventRouter<BLibBlockBreakEvent>> FACTORY = mod -> new BLibEventRouter<>(mod) {
+    public static final Function<BLibMod, BLibEventHandle<BLibBlockBreakEvent>> FACTORY = mod -> new BLibEventHandle<>(mod) {
 
         private final BLibBlockBreakEvent dispatcher = (level, player, blockPos, blockState) -> PlayerBlockBreakEvents.BEFORE
             .invoker()

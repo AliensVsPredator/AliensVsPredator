@@ -34,6 +34,12 @@ public abstract class MixinRegistry_ApplyDataFixes<T> implements WritableRegistr
         cancellable = true
     )
     private void fixedGet(@Nullable ResourceKey<T> key, CallbackInfoReturnable<@Nullable T> cir) {
+        var original = cir.getReturnValue();
+
+        if (original != null) {
+            return;
+        }
+
         fixedGet(key != null ? key.location() : null, cir);
     }
 
@@ -43,6 +49,12 @@ public abstract class MixinRegistry_ApplyDataFixes<T> implements WritableRegistr
         cancellable = true
     )
     private void fixedGet(@Nullable ResourceLocation name, CallbackInfoReturnable<@Nullable T> cir) {
+        var original = cir.getReturnValue();
+
+        if (original != null) {
+            return;
+        }
+
         var fixed = convertResourceLocation(name);
 
         if (fixed != null) {
@@ -56,6 +68,12 @@ public abstract class MixinRegistry_ApplyDataFixes<T> implements WritableRegistr
         cancellable = true
     )
     private void fixedGetHolder(@Nullable ResourceKey<?> key, CallbackInfoReturnable<Optional<Holder.Reference<T>>> cir) {
+        var original = cir.getReturnValue();
+
+        if (original != null && original.isPresent()) {
+            return;
+        }
+
         fixedGetHolder(key != null ? key.location() : null, cir);
     }
 
@@ -65,6 +83,12 @@ public abstract class MixinRegistry_ApplyDataFixes<T> implements WritableRegistr
         cancellable = true
     )
     private void fixedGetHolder(@Nullable ResourceLocation resourceLocation, CallbackInfoReturnable<Optional<Holder.Reference<T>>> cir) {
+        var original = cir.getReturnValue();
+
+        if (original != null && original.isPresent()) {
+            return;
+        }
+
         if (resourceLocation != null) {
             var fixed = convertResourceLocation(resourceLocation);
 
@@ -80,6 +104,12 @@ public abstract class MixinRegistry_ApplyDataFixes<T> implements WritableRegistr
         cancellable = true
     )
     private void fixedGetOrCreateHolderOrThrow(ResourceKey<T> key, CallbackInfoReturnable<Holder.Reference<T>> cir) {
+        var original = cir.getReturnValue();
+
+        if (original != null) {
+            return;
+        }
+
         if (key != null) {
             var fixed = convertResourceLocation(key.location());
 

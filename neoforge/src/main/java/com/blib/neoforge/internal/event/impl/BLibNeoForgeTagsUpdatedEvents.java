@@ -8,12 +8,12 @@ import java.util.function.Function;
 
 import com.blib.BLibMod;
 import com.blib.common.event.BLibTagsUpdatedEvent;
-import com.blib.neoforge.event.BLibNeoForgeEventRouter;
+import com.blib.neoforge.event.BLibNeoForgeEventHandle;
 
 @ApiStatus.Internal
 public final class BLibNeoForgeTagsUpdatedEvents {
 
-    public static final Function<BLibMod, BLibNeoForgeEventRouter<BLibTagsUpdatedEvent>> FACTORY = mod -> new BLibNeoForgeEventRouter<>(
+    public static final Function<BLibMod, BLibNeoForgeEventHandle<BLibTagsUpdatedEvent>> FACTORY = mod -> new BLibNeoForgeEventHandle<>(
         mod
     ) {
 

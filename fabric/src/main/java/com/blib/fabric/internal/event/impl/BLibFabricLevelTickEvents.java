@@ -9,7 +9,7 @@ import org.jetbrains.annotations.ApiStatus;
 import java.util.function.Function;
 
 import com.blib.BLibMod;
-import com.blib.common.event.BLibEventRouter;
+import com.blib.common.event.BLibEventHandle;
 import com.blib.common.event.BLibLevelTickEvent;
 import com.blib.common.model.DistributionEnvironmentType;
 import com.blib.internal.service.BLibInternalServices;
@@ -17,7 +17,7 @@ import com.blib.internal.service.BLibInternalServices;
 @ApiStatus.Internal
 public final class BLibFabricLevelTickEvents {
 
-    public static final Function<BLibMod, BLibEventRouter<BLibLevelTickEvent>> POST_FACTORY = mod -> new BLibEventRouter<>(mod) {
+    public static final Function<BLibMod, BLibEventHandle<BLibLevelTickEvent>> POST_FACTORY = mod -> new BLibEventHandle<>(mod) {
 
         private final BLibLevelTickEvent dispatcher = (level) -> {
             if (level.isClientSide) {
@@ -42,7 +42,7 @@ public final class BLibFabricLevelTickEvents {
         }
     };
 
-    public static final Function<BLibMod, BLibEventRouter<BLibLevelTickEvent>> PRE_FACTORY = mod -> new BLibEventRouter<>(mod) {
+    public static final Function<BLibMod, BLibEventHandle<BLibLevelTickEvent>> PRE_FACTORY = mod -> new BLibEventHandle<>(mod) {
 
         private final BLibLevelTickEvent dispatcher = (level) -> {
             if (level.isClientSide) {

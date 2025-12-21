@@ -8,12 +8,12 @@ import java.util.function.Function;
 
 import com.blib.BLibMod;
 import com.blib.common.event.BLibLevelTickEvent;
-import com.blib.neoforge.event.BLibNeoForgeEventRouter;
+import com.blib.neoforge.event.BLibNeoForgeEventHandle;
 
 @ApiStatus.Internal
 public final class BLibNeoForgeLevelTickEvents {
 
-    public static final Function<BLibMod, BLibNeoForgeEventRouter<BLibLevelTickEvent>> POST_FACTORY = mod -> new BLibNeoForgeEventRouter<>(
+    public static final Function<BLibMod, BLibNeoForgeEventHandle<BLibLevelTickEvent>> POST_FACTORY = mod -> new BLibNeoForgeEventHandle<>(
         mod
     ) {
 
@@ -37,7 +37,7 @@ public final class BLibNeoForgeLevelTickEvents {
         }
     };
 
-    public static final Function<BLibMod, BLibNeoForgeEventRouter<BLibLevelTickEvent>> PRE_FACTORY = mod -> new BLibNeoForgeEventRouter<>(
+    public static final Function<BLibMod, BLibNeoForgeEventHandle<BLibLevelTickEvent>> PRE_FACTORY = mod -> new BLibNeoForgeEventHandle<>(
         mod
     ) {
 

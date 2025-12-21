@@ -5,8 +5,8 @@ import org.jetbrains.annotations.ApiStatus;
 import com.blib.BLibMod;
 import com.blib.common.event.BLibBlockBreakEvent;
 import com.blib.common.event.BLibCommonSetupEvent;
+import com.blib.common.event.BLibEventHandle;
 import com.blib.common.event.BLibEventListenerHandle;
-import com.blib.common.event.BLibEventRouter;
 import com.blib.common.event.BLibLevelTickEvent;
 import com.blib.common.event.BLibPlayerTrackingEntityEvent;
 import com.blib.common.event.BLibTagsUpdatedEvent;
@@ -22,31 +22,31 @@ public class BLibFabricEventServiceImpl implements BLibEventService {
     }
 
     @Override
-    public BLibEventRouter<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity(BLibMod mod) {
+    public BLibEventHandle<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity(BLibMod mod) {
         return BLibFabricModContainerLookup.INSTANCE.get(mod)
             .onPlayerStartTrackingEntity();
     }
 
     @Override
-    public BLibEventRouter<BLibTagsUpdatedEvent> onTagsUpdated(BLibMod mod) {
+    public BLibEventHandle<BLibTagsUpdatedEvent> onTagsUpdated(BLibMod mod) {
         return BLibFabricModContainerLookup.INSTANCE.get(mod)
             .onTagsUpdated();
     }
 
     @Override
-    public BLibEventRouter<BLibLevelTickEvent> postLevelTick(BLibMod mod) {
+    public BLibEventHandle<BLibLevelTickEvent> postLevelTick(BLibMod mod) {
         return BLibFabricModContainerLookup.INSTANCE.get(mod)
             .postLevelTick();
     }
 
     @Override
-    public BLibEventRouter<BLibBlockBreakEvent> preBlockBreak(BLibMod mod) {
+    public BLibEventHandle<BLibBlockBreakEvent> preBlockBreak(BLibMod mod) {
         return BLibFabricModContainerLookup.INSTANCE.get(mod)
             .preBlockBreak();
     }
 
     @Override
-    public BLibEventRouter<BLibLevelTickEvent> preLevelTick(BLibMod mod) {
+    public BLibEventHandle<BLibLevelTickEvent> preLevelTick(BLibMod mod) {
         return BLibFabricModContainerLookup.INSTANCE.get(mod)
             .preLevelTick();
     }

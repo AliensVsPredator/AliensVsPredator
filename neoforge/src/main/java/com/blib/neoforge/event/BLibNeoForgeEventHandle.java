@@ -3,14 +3,14 @@ package com.blib.neoforge.event;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.blib.common.event.BLibEventRouter;
+import com.blib.common.event.BLibEventHandle;
 import com.blib.common.model.access.BLibModStateAccess;
 
-public abstract class BLibNeoForgeEventRouter<Dispatcher> extends BLibEventRouter<Dispatcher> {
+public abstract class BLibNeoForgeEventHandle<Dispatcher> extends BLibEventHandle<Dispatcher> {
 
     protected final List<Dispatcher> listeners;
 
-    protected BLibNeoForgeEventRouter(BLibModStateAccess modStateAccess) {
+    protected BLibNeoForgeEventHandle(BLibModStateAccess modStateAccess) {
         super(modStateAccess);
         this.listeners = new ArrayList<>();
     }

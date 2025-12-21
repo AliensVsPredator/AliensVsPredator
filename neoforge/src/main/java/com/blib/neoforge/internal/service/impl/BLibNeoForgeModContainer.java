@@ -38,7 +38,7 @@ import com.blib.common.event.impl.BLibEventListenerContainer;
 import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
 import com.blib.common.network.model.NetworkHandler;
 import com.blib.common.registry.BLibHolder;
-import com.blib.neoforge.event.BLibNeoForgeEventRouter;
+import com.blib.neoforge.event.BLibNeoForgeEventHandle;
 import com.blib.neoforge.internal.event.impl.BLibNeoForgeLevelTickEvents;
 import com.blib.neoforge.internal.event.impl.BLibNeoForgePlayerBlockBreakEvents;
 import com.blib.neoforge.internal.event.impl.BLibNeoForgePlayerTrackingEntityEvents;
@@ -71,15 +71,15 @@ public class BLibNeoForgeModContainer {
 
     private final BLibEventListenerContainer<BLibCommonSetupEvent> onCommonSetup;
 
-    private final BLibNeoForgeEventRouter<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity;
+    private final BLibNeoForgeEventHandle<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity;
 
-    private final BLibNeoForgeEventRouter<BLibTagsUpdatedEvent> onTagsUpdated;
+    private final BLibNeoForgeEventHandle<BLibTagsUpdatedEvent> onTagsUpdated;
 
-    private final BLibNeoForgeEventRouter<BLibLevelTickEvent> postLevelTick;
+    private final BLibNeoForgeEventHandle<BLibLevelTickEvent> postLevelTick;
 
-    private final BLibNeoForgeEventRouter<BLibBlockBreakEvent> preBlockBreak;
+    private final BLibNeoForgeEventHandle<BLibBlockBreakEvent> preBlockBreak;
 
-    private final BLibNeoForgeEventRouter<BLibLevelTickEvent> preLevelTick;
+    private final BLibNeoForgeEventHandle<BLibLevelTickEvent> preLevelTick;
 
     private final List<PreparableReloadListener> reloadListeners;
 
@@ -122,23 +122,23 @@ public class BLibNeoForgeModContainer {
         return onCommonSetup;
     }
 
-    public BLibNeoForgeEventRouter<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity() {
+    public BLibNeoForgeEventHandle<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity() {
         return onPlayerStartTrackingEntity;
     }
 
-    public BLibNeoForgeEventRouter<BLibTagsUpdatedEvent> onTagsUpdated() {
+    public BLibNeoForgeEventHandle<BLibTagsUpdatedEvent> onTagsUpdated() {
         return onTagsUpdated;
     }
 
-    public BLibNeoForgeEventRouter<BLibLevelTickEvent> postLevelTick() {
+    public BLibNeoForgeEventHandle<BLibLevelTickEvent> postLevelTick() {
         return postLevelTick;
     }
 
-    public BLibNeoForgeEventRouter<BLibBlockBreakEvent> preBlockBreak() {
+    public BLibNeoForgeEventHandle<BLibBlockBreakEvent> preBlockBreak() {
         return preBlockBreak;
     }
 
-    public BLibNeoForgeEventRouter<BLibLevelTickEvent> preLevelTick() {
+    public BLibNeoForgeEventHandle<BLibLevelTickEvent> preLevelTick() {
         return preLevelTick;
     }
 

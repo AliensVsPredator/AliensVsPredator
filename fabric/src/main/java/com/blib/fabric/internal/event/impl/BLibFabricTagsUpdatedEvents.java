@@ -6,13 +6,13 @@ import org.jetbrains.annotations.ApiStatus;
 import java.util.function.Function;
 
 import com.blib.BLibMod;
-import com.blib.common.event.BLibEventRouter;
+import com.blib.common.event.BLibEventHandle;
 import com.blib.common.event.BLibTagsUpdatedEvent;
 
 @ApiStatus.Internal
 public final class BLibFabricTagsUpdatedEvents {
 
-    public static final Function<BLibMod, BLibEventRouter<BLibTagsUpdatedEvent>> FACTORY = mod -> new BLibEventRouter<>(mod) {
+    public static final Function<BLibMod, BLibEventHandle<BLibTagsUpdatedEvent>> FACTORY = mod -> new BLibEventHandle<>(mod) {
 
         private final BLibTagsUpdatedEvent dispatcher = (registryAccess, fromClientPacket) -> CommonLifecycleEvents.TAGS_LOADED
             .invoker()

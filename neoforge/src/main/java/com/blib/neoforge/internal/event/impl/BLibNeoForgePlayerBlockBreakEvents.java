@@ -9,12 +9,12 @@ import java.util.function.Function;
 
 import com.blib.BLibMod;
 import com.blib.common.event.BLibBlockBreakEvent;
-import com.blib.neoforge.event.BLibNeoForgeEventRouter;
+import com.blib.neoforge.event.BLibNeoForgeEventHandle;
 
 @ApiStatus.Internal
 public final class BLibNeoForgePlayerBlockBreakEvents {
 
-    public static final Function<BLibMod, BLibNeoForgeEventRouter<BLibBlockBreakEvent>> FACTORY = mod -> new BLibNeoForgeEventRouter<>(
+    public static final Function<BLibMod, BLibNeoForgeEventHandle<BLibBlockBreakEvent>> FACTORY = mod -> new BLibNeoForgeEventHandle<>(
         mod
     ) {
 
