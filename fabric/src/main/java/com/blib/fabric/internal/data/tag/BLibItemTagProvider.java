@@ -26,6 +26,10 @@ public final class BLibItemTagProvider extends FabricTagProvider.ItemTagProvider
         getOrCreateTagBuilder(ItemTags.DECORATED_POT_SHERDS)
             .addTag(BLibItemTags.DECORATIVE_POT_SHERDS);
 
+        getOrCreateTagBuilder(BLibItemTags.IRON_BLOCK_LIKE);
+
+        getOrCreateTagBuilder(BLibItemTags.IRON_INGOT_LIKE);
+
         getOrCreateTagBuilder(BLibItemTags.MELEE_WEAPONS)
             .addOptionalTag(ItemTags.AXES)
             .addOptionalTag(ItemTags.SWORDS)
