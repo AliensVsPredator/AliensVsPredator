@@ -37,8 +37,6 @@ import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -52,12 +50,6 @@ import com.blib.internal.client.service.BLibClientRegistryService;
 
 @ApiStatus.Internal
 public class BLibNeoForgeClientRegistryServiceImpl implements BLibClientRegistryService {
-
-    private final Map<BLibClientMod, BLibNeoForgeClientModContainer> modToContainerMap;
-
-    public BLibNeoForgeClientRegistryServiceImpl() {
-        this.modToContainerMap = new ConcurrentHashMap<>();
-    }
 
     @Override
     public void registerArmorRenderer(
@@ -249,6 +241,6 @@ public class BLibNeoForgeClientRegistryServiceImpl implements BLibClientRegistry
     }
 
     private BLibNeoForgeClientModContainer getModContainer(BLibClientMod mod) {
-        return modToContainerMap.computeIfAbsent(mod, $ -> new BLibNeoForgeClientModContainer(mod));
+        return BLibNeoForgeClientModContainerLookup.INSTANCE.get(mod);
     }
 }
