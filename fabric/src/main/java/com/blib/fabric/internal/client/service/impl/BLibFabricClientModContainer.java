@@ -24,7 +24,7 @@ public class BLibFabricClientModContainer {
 
     public BLibFabricClientModContainer(BLibClientMod mod) {
         this.mod = mod;
-        this.onClientSetup = BLibClientSetupEvents.CONTAINER_FACTORY.apply(mod);
+        this.onClientSetup = BLibClientSetupEvents.FACTORY.apply(mod);
     }
 
     public BLibEventListenerContainer<BLibClientSetupEvent> onClientSetup() {

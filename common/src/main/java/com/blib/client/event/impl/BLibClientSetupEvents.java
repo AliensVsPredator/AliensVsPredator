@@ -11,7 +11,7 @@ import com.blib.common.event.impl.BLibHookedEventListenerContainer;
 @ApiStatus.Internal
 public final class BLibClientSetupEvents {
 
-    public static final Function<BLibClientMod, BLibHookedEventListenerContainer<BLibClientMod, BLibClientSetupEvent>> CONTAINER_FACTORY =
+    public static final Function<BLibClientMod, BLibHookedEventListenerContainer<BLibClientMod, BLibClientSetupEvent>> FACTORY =
         BLibHookedEventListenerContainer::new;
 
     BLibClientSetupEvents() {
