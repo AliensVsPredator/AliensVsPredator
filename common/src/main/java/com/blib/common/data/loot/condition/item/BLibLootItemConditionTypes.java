@@ -13,7 +13,7 @@ public class BLibLootItemConditionTypes {
 
     private static final BLibRegistry<LootItemConditionType> REGISTRY = BLib.MOD.registries().create(BuiltInRegistries.LOOT_CONDITION_TYPE);
 
-    public static final BLibHolder<LootItemConditionType> MOD_LOADED = create("mod_loaded", LootItemModLoadedCondition.CODEC);
+    public static final BLibHolder<LootItemConditionType> MOD_LOADED = create("mod_loaded", BLibLootItemModLoadedCondition.CODEC);
 
     private static BLibHolder<LootItemConditionType> create(String path, MapCodec<? extends LootItemCondition> codec) {
         return REGISTRY.createHolder(path, () -> new LootItemConditionType(codec));

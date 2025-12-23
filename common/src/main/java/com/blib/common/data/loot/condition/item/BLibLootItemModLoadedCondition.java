@@ -10,12 +10,22 @@ import org.jetbrains.annotations.NotNull;
 
 import com.blib.BLib;
 
-public record LootItemModLoadedCondition(String modId) implements LootItemCondition {
+public class BLibLootItemModLoadedCondition implements LootItemCondition {
 
-    public static final MapCodec<LootItemModLoadedCondition> CODEC = RecordCodecBuilder.mapCodec(
-        (instance) -> instance.group(Codec.STRING.fieldOf("modId").forGetter(LootItemModLoadedCondition::modId))
-            .apply(instance, LootItemModLoadedCondition::new)
+    public static final MapCodec<BLibLootItemModLoadedCondition> CODEC = RecordCodecBuilder.mapCodec(
+        (instance) -> instance.group(Codec.STRING.fieldOf("modId").forGetter(BLibLootItemModLoadedCondition::modId))
+            .apply(instance, BLibLootItemModLoadedCondition::new)
     );
+
+    private final String modId;
+
+    private BLibLootItemModLoadedCondition(String modId) {
+        this.modId = modId;
+    }
+
+    public String modId() {
+        return modId;
+    }
 
     public @NotNull LootItemConditionType getType() {
         return BLibLootItemConditionTypes.MOD_LOADED.get();
@@ -24,4 +34,9 @@ public record LootItemModLoadedCondition(String modId) implements LootItemCondit
     public boolean test(LootContext context) {
         return BLib.isModLoaded(modId);
     }
+
+    public static LootItemCondition.Builder isModLoaded(String modId) {
+        return () -> new BLibLootItemModLoadedCondition(modId);
+    }
+
 }
