@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blib.common.data.loot.condition.item.BLibLootItemConditionTypes;
 import com.blib.common.model.DistributionEnvironmentType;
 import com.blib.common.model.ReleaseEnvironmentType;
 import com.blib.common.model.Version;
@@ -59,8 +60,9 @@ public final class BLib {
         LOGGER.info("Initializing BLib for platform '{}'", BLib.getModLoaderType());
 
         MOD.initialize(() -> {
-            BLibPacketDirections.initialize();
             BLibDataSyncKeys.initialize();
+            BLibLootItemConditionTypes.initialize();
+            BLibPacketDirections.initialize();
             BLibServerPacketHandlers.initialize();
 
             MOD.events().onPlayerStartTrackingEntity().register(BLib::syncDataForTrackedEntity);
