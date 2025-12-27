@@ -1,10 +1,10 @@
-package com.blib.common.event.impl;
+package com.blib.common.event.handle.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.blib.common.event.BLibEventListenerHandle;
+import com.blib.common.event.handle.BLibEventListenerHandle;
 
 public class BLibEventListenerContainer<Dispatcher> implements BLibEventListenerHandle<Dispatcher> {
 

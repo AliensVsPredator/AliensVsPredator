@@ -3,7 +3,7 @@ package com.blib.neoforge.event;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.blib.common.event.BLibEventHandle;
+import com.blib.common.event.handle.BLibEventHandle;
 import com.blib.common.model.access.BLibModStateAccess;
 
 public abstract class BLibNeoForgeEventHandle<Dispatcher> extends BLibEventHandle<Dispatcher> {

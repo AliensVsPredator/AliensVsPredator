@@ -1,4 +1,4 @@
-package com.blib.common.event;
+package com.blib.common.event.handle;
 
 public interface BLibEventDispatchHandle<Dispatcher> {
 

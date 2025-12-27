@@ -6,6 +6,8 @@ import java.util.function.Function;
 
 import com.blib.BLibMod;
 import com.blib.common.event.BLibCommonSetupEvent;
+import com.blib.common.event.handle.impl.BLibEventListenerContainer;
+import com.blib.common.event.handle.impl.BLibHookedEventListenerContainer;
 
 @ApiStatus.Internal
 public final class BLibCommonSetupEvents {

@@ -10,7 +10,7 @@ import java.util.function.BiConsumer;
 import com.blib.client.BLibClientMod;
 import com.blib.client.event.BLibClientSetupEvent;
 import com.blib.client.event.impl.BLibClientSetupEvents;
-import com.blib.common.event.impl.BLibEventListenerContainer;
+import com.blib.common.event.handle.impl.BLibEventListenerContainer;
 import com.blib.common.network.model.NetworkHandler;
 import com.blib.fabric.internal.service.impl.BLibFabricRegistryServiceImpl;
 import com.blib.internal.service.BLibInternalServices;

@@ -34,7 +34,7 @@ import com.blib.client.BLibClientMod;
 import com.blib.client.event.BLibClientSetupEvent;
 import com.blib.client.event.impl.BLibClientSetupEvents;
 import com.blib.client.model.KeyInteractType;
-import com.blib.common.event.impl.BLibEventListenerContainer;
+import com.blib.common.event.handle.impl.BLibEventListenerContainer;
 
 @ApiStatus.Internal
 public class BLibNeoForgeClientModContainer {

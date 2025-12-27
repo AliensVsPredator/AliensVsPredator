@@ -7,7 +7,7 @@ import java.util.function.Function;
 
 import com.blib.BLibMod;
 import com.blib.common.event.BLibBlockBreakEvent;
-import com.blib.common.event.BLibEventHandle;
+import com.blib.common.event.handle.BLibEventHandle;
 
 @ApiStatus.Internal
 public final class BLibFabricPlayerBlockBreakEvents {

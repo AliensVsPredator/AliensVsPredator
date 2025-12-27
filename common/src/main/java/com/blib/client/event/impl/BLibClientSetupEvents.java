@@ -6,7 +6,7 @@ import java.util.function.Function;
 
 import com.blib.client.BLibClientMod;
 import com.blib.client.event.BLibClientSetupEvent;
-import com.blib.common.event.impl.BLibHookedEventListenerContainer;
+import com.blib.common.event.handle.impl.BLibHookedEventListenerContainer;
 
 @ApiStatus.Internal
 public final class BLibClientSetupEvents {

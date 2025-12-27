@@ -6,8 +6,8 @@ import org.jetbrains.annotations.ApiStatus;
 import java.util.function.Function;
 
 import com.blib.BLibMod;
-import com.blib.common.event.BLibEventHandle;
 import com.blib.common.event.BLibTagsUpdatedEvent;
+import com.blib.common.event.handle.BLibEventHandle;
 
 @ApiStatus.Internal
 public final class BLibFabricTagsUpdatedEvents {

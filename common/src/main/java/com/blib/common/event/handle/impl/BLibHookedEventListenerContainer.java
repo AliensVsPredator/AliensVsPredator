@@ -1,4 +1,4 @@
-package com.blib.common.event.impl;
+package com.blib.common.event.handle.impl;
 
 import com.blib.common.exception.BLibModInitializationException;
 import com.blib.common.model.BLibModState;

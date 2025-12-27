@@ -4,7 +4,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.client.BLibClientMod;
 import com.blib.client.event.BLibClientSetupEvent;
-import com.blib.common.event.BLibEventListenerHandle;
+import com.blib.common.event.handle.BLibEventListenerHandle;
 import com.blib.internal.client.service.BLibInternalClientServices;
 
 public class BLibClientEventAccess {
