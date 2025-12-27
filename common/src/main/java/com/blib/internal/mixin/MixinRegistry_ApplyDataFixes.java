@@ -5,7 +5,6 @@ import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.WritableRegistry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,7 +19,6 @@ import java.util.Optional;
 
 import com.blib.common.data.fixer.BLibDataFixerRegistry;
 
-@ApiStatus.Internal
 @Mixin(MappedRegistry.class)
 public abstract class MixinRegistry_ApplyDataFixes<T> implements WritableRegistry<T> {
 

@@ -8,7 +8,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.level.block.Block;
-import org.jetbrains.annotations.ApiStatus;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -16,7 +15,6 @@ import org.spongepowered.asm.mixin.Unique;
 
 import com.blib.common.registry.SilencedEntityTypeBuilder;
 
-@ApiStatus.Internal
 @Mixin(EntityType.Builder.class)
 public class MixinEntityTypeBuilder_SilenceDataFixerError implements SilencedEntityTypeBuilder {
 
