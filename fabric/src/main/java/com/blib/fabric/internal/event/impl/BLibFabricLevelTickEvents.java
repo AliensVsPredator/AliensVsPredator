@@ -33,12 +33,12 @@ public final class BLibFabricLevelTickEvents {
         }
 
         @Override
-        public void onRegister(BLibLevelTickEvent levelTickEvent) {
+        public void onRegister(BLibLevelTickEvent event) {
             if (BLibInternalServices.MOD_LOADER.getDistributionEnvironmentType() == DistributionEnvironmentType.CLIENT) {
-                ClientTickEvents.END_WORLD_TICK.register(levelTickEvent::invoke);
+                ClientTickEvents.END_WORLD_TICK.register(event::invoke);
             }
 
-            ServerTickEvents.END_WORLD_TICK.register(levelTickEvent::invoke);
+            ServerTickEvents.END_WORLD_TICK.register(event::invoke);
         }
     };
 
@@ -58,12 +58,12 @@ public final class BLibFabricLevelTickEvents {
         }
 
         @Override
-        public void onRegister(BLibLevelTickEvent levelTickEvent) {
+        public void onRegister(BLibLevelTickEvent event) {
             if (BLibInternalServices.MOD_LOADER.getDistributionEnvironmentType() == DistributionEnvironmentType.CLIENT) {
-                ClientTickEvents.START_WORLD_TICK.register(levelTickEvent::invoke);
+                ClientTickEvents.START_WORLD_TICK.register(event::invoke);
             }
 
-            ServerTickEvents.START_WORLD_TICK.register(levelTickEvent::invoke);
+            ServerTickEvents.START_WORLD_TICK.register(event::invoke);
         }
     };
 }

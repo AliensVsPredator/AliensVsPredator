@@ -24,9 +24,9 @@ public final class BLibFabricPlayerBlockBreakEvents {
         }
 
         @Override
-        public void onRegister(BLibBlockBreakEvent blockBreakEvent) {
+        public void onRegister(BLibBlockBreakEvent event) {
             PlayerBlockBreakEvents.BEFORE.register(
-                (level, player, pos, state, blockEntity) -> blockBreakEvent.invoke(level, player, pos, state)
+                (level, player, pos, state, blockEntity) -> event.invoke(level, player, pos, state)
             );
         }
     };

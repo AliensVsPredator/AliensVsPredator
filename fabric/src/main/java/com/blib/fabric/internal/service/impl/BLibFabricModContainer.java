@@ -38,6 +38,7 @@ import com.blib.common.event.BLibBlockBreakEvent;
 import com.blib.common.event.BLibCommonSetupEvent;
 import com.blib.common.event.BLibLevelTickEvent;
 import com.blib.common.event.BLibPlayerTrackingEntityEvent;
+import com.blib.common.event.BLibServerLifecycleEvent;
 import com.blib.common.event.BLibTagsUpdatedEvent;
 import com.blib.common.event.handle.BLibEventHandle;
 import com.blib.common.event.handle.BLibEventListenerHandle;
@@ -49,6 +50,7 @@ import com.blib.common.registry.BLibHolder;
 import com.blib.fabric.internal.event.impl.BLibFabricLevelTickEvents;
 import com.blib.fabric.internal.event.impl.BLibFabricPlayerBlockBreakEvents;
 import com.blib.fabric.internal.event.impl.BLibFabricPlayerTrackingEntityEvents;
+import com.blib.fabric.internal.event.impl.BLibFabricServerLifecycleEvents;
 import com.blib.fabric.internal.event.impl.BLibFabricTagsUpdatedEvents;
 import com.blib.internal.common.registry.util.BLibRegistrationUtil;
 
@@ -85,6 +87,14 @@ public class BLibFabricModContainer {
 
     private final BLibEventHandle<BLibLevelTickEvent> preLevelTick;
 
+    private final BLibEventHandle<BLibServerLifecycleEvent.Started> serverStarted;
+
+    private final BLibEventHandle<BLibServerLifecycleEvent.Starting> serverStarting;
+
+    private final BLibEventHandle<BLibServerLifecycleEvent.Stopped> serverStopped;
+
+    private final BLibEventHandle<BLibServerLifecycleEvent.Stopping> serverStopping;
+
     public BLibFabricModContainer(BLibMod mod) {
         this.mod = mod;
         this.clientBoundPacketHandlers = new ArrayList<>();
@@ -101,6 +111,10 @@ public class BLibFabricModContainer {
         this.postLevelTick = BLibFabricLevelTickEvents.POST_FACTORY.apply(mod);
         this.preBlockBreak = BLibFabricPlayerBlockBreakEvents.FACTORY.apply(mod);
         this.preLevelTick = BLibFabricLevelTickEvents.PRE_FACTORY.apply(mod);
+        this.serverStarted = BLibFabricServerLifecycleEvents.STARTED_FACTORY.apply(mod);
+        this.serverStarting = BLibFabricServerLifecycleEvents.STARTING_FACTORY.apply(mod);
+        this.serverStopped = BLibFabricServerLifecycleEvents.STOPPED_FACTORY.apply(mod);
+        this.serverStopping = BLibFabricServerLifecycleEvents.STOPPING_FACTORY.apply(mod);
     }
 
     public List<NetworkHandler<?>> getClientBoundPacketHandlers() {
@@ -129,6 +143,22 @@ public class BLibFabricModContainer {
 
     public BLibEventHandle<BLibLevelTickEvent> preLevelTick() {
         return preLevelTick;
+    }
+
+    public BLibEventHandle<BLibServerLifecycleEvent.Started> serverStarted() {
+        return serverStarted;
+    }
+
+    public BLibEventHandle<BLibServerLifecycleEvent.Starting> serverStarting() {
+        return serverStarting;
+    }
+
+    public BLibEventHandle<BLibServerLifecycleEvent.Stopped> serverStopped() {
+        return serverStopped;
+    }
+
+    public BLibEventHandle<BLibServerLifecycleEvent.Stopping> serverStopping() {
+        return serverStopping;
     }
 
     /* package-private */ <T> void deferRegistration(BLibHolder<T> holder, Supplier<? extends T> valueFactory) {

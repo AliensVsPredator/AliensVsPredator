@@ -24,8 +24,8 @@ public final class BLibFabricTagsUpdatedEvents {
         }
 
         @Override
-        public void onRegister(BLibTagsUpdatedEvent tagsUpdatedEvent) {
-            CommonLifecycleEvents.TAGS_LOADED.register((tagsUpdatedEvent::invoke));
+        public void onRegister(BLibTagsUpdatedEvent event) {
+            CommonLifecycleEvents.TAGS_LOADED.register((event::invoke));
         }
     };
 }

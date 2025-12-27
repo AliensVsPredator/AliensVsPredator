@@ -225,6 +225,10 @@ public class BLibNeoForgeRegistryServiceImpl implements BLibRegistryService {
 
         modContainer.onPlayerStartTrackingEntity().initialize();
         modContainer.onTagsUpdated().initialize();
+        modContainer.serverStarted().initialize();
+        modContainer.serverStarting().initialize();
+        modContainer.serverStopped().initialize();
+        modContainer.serverStopping().initialize();
     }
 
     private void onRegisterEntityAttributes(BLibMod mod, EntityAttributeCreationEvent event) {

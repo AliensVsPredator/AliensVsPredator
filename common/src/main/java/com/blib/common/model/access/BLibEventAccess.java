@@ -7,6 +7,7 @@ import com.blib.common.event.BLibBlockBreakEvent;
 import com.blib.common.event.BLibCommonSetupEvent;
 import com.blib.common.event.BLibLevelTickEvent;
 import com.blib.common.event.BLibPlayerTrackingEntityEvent;
+import com.blib.common.event.BLibServerLifecycleEvent;
 import com.blib.common.event.BLibTagsUpdatedEvent;
 import com.blib.common.event.handle.BLibEventHandle;
 import com.blib.common.event.handle.BLibEventListenerHandle;
@@ -43,5 +44,21 @@ public class BLibEventAccess {
 
     public BLibEventHandle<BLibLevelTickEvent> preLevelTick() {
         return BLibInternalServices.EVENT.preLevelTick(mod);
+    }
+
+    public BLibEventHandle<BLibServerLifecycleEvent.Started> serverStarted() {
+        return BLibInternalServices.EVENT.serverStarted(mod);
+    }
+
+    public BLibEventHandle<BLibServerLifecycleEvent.Starting> serverStarting() {
+        return BLibInternalServices.EVENT.serverStarting(mod);
+    }
+
+    public BLibEventHandle<BLibServerLifecycleEvent.Stopped> serverStopped() {
+        return BLibInternalServices.EVENT.serverStopped(mod);
+    }
+
+    public BLibEventHandle<BLibServerLifecycleEvent.Stopping> serverStopping() {
+        return BLibInternalServices.EVENT.serverStopping(mod);
     }
 }

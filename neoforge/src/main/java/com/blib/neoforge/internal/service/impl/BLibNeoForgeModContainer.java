@@ -32,6 +32,7 @@ import com.blib.common.event.BLibBlockBreakEvent;
 import com.blib.common.event.BLibCommonSetupEvent;
 import com.blib.common.event.BLibLevelTickEvent;
 import com.blib.common.event.BLibPlayerTrackingEntityEvent;
+import com.blib.common.event.BLibServerLifecycleEvent;
 import com.blib.common.event.BLibTagsUpdatedEvent;
 import com.blib.common.event.handle.impl.BLibEventListenerContainer;
 import com.blib.common.event.impl.BLibCommonSetupEvents;
@@ -42,6 +43,7 @@ import com.blib.neoforge.event.BLibNeoForgeEventHandle;
 import com.blib.neoforge.internal.event.impl.BLibNeoForgeLevelTickEvents;
 import com.blib.neoforge.internal.event.impl.BLibNeoForgePlayerBlockBreakEvents;
 import com.blib.neoforge.internal.event.impl.BLibNeoForgePlayerTrackingEntityEvents;
+import com.blib.neoforge.internal.event.impl.BLibNeoForgeServerLifecycleEvents;
 import com.blib.neoforge.internal.event.impl.BLibNeoForgeTagsUpdatedEvents;
 
 @ApiStatus.Internal
@@ -81,6 +83,14 @@ public class BLibNeoForgeModContainer {
 
     private final BLibNeoForgeEventHandle<BLibLevelTickEvent> preLevelTick;
 
+    private final BLibNeoForgeEventHandle<BLibServerLifecycleEvent.Started> serverStarted;
+
+    private final BLibNeoForgeEventHandle<BLibServerLifecycleEvent.Starting> serverStarting;
+
+    private final BLibNeoForgeEventHandle<BLibServerLifecycleEvent.Stopped> serverStopped;
+
+    private final BLibNeoForgeEventHandle<BLibServerLifecycleEvent.Stopping> serverStopping;
+
     private final List<PreparableReloadListener> reloadListeners;
 
     private final List<Tuple3<Supplier<VillagerProfession>, Integer, List<VillagerTrades.ItemListing>>> villagerTradeData;
@@ -102,6 +112,10 @@ public class BLibNeoForgeModContainer {
         this.postLevelTick = BLibNeoForgeLevelTickEvents.POST_FACTORY.apply(mod);
         this.preBlockBreak = BLibNeoForgePlayerBlockBreakEvents.FACTORY.apply(mod);
         this.preLevelTick = BLibNeoForgeLevelTickEvents.PRE_FACTORY.apply(mod);
+        this.serverStarted = BLibNeoForgeServerLifecycleEvents.STARTED_FACTORY.apply(mod);
+        this.serverStarting = BLibNeoForgeServerLifecycleEvents.STARTING_FACTORY.apply(mod);
+        this.serverStopped = BLibNeoForgeServerLifecycleEvents.STOPPED_FACTORY.apply(mod);
+        this.serverStopping = BLibNeoForgeServerLifecycleEvents.STOPPING_FACTORY.apply(mod);
         this.reloadListeners = new ArrayList<>();
         this.villagerTradeData = new ArrayList<>();
     }
@@ -140,6 +154,22 @@ public class BLibNeoForgeModContainer {
 
     public BLibNeoForgeEventHandle<BLibLevelTickEvent> preLevelTick() {
         return preLevelTick;
+    }
+
+    public BLibNeoForgeEventHandle<BLibServerLifecycleEvent.Started> serverStarted() {
+        return serverStarted;
+    }
+
+    public BLibNeoForgeEventHandle<BLibServerLifecycleEvent.Starting> serverStarting() {
+        return serverStarting;
+    }
+
+    public BLibNeoForgeEventHandle<BLibServerLifecycleEvent.Stopped> serverStopped() {
+        return serverStopped;
+    }
+
+    public BLibNeoForgeEventHandle<BLibServerLifecycleEvent.Stopping> serverStopping() {
+        return serverStopping;
     }
 
     /* package-private */ List<Registry<?>> getCustomRegistryEntries() {

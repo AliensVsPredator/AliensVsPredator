@@ -25,8 +25,8 @@ public final class BLibFabricPlayerTrackingEntityEvents {
         }
 
         @Override
-        public void onRegister(BLibPlayerTrackingEntityEvent playerTrackingEntityEvent) {
-            EntityTrackingEvents.START_TRACKING.register((playerTrackingEntityEvent::invoke));
+        public void onRegister(BLibPlayerTrackingEntityEvent event) {
+            EntityTrackingEvents.START_TRACKING.register((event::invoke));
         }
     };
 }
