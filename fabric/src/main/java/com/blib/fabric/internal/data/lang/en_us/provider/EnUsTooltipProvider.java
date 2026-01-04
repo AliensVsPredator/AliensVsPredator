@@ -22,7 +22,6 @@ public final class EnUsTooltipProvider {
 
         builder.add(TooltipTranslationKeys.EFFECT_FIRE_RESISTANCE, "Fire Resistance");
         builder.add(TooltipTranslationKeys.EFFECT_JUMP_BOOST, "Jump Boost");
-        builder.add(TooltipTranslationKeys.EFFECT_PREVENTS_FACEHUGGING, "Prevents Facehugging");
         builder.add(TooltipTranslationKeys.EFFECT_WATER_BREATHING, "Water Breathing");
         builder.add(TooltipTranslationKeys.EFFECT_SLOWNESS, "Slowness");
         builder.add(TooltipTranslationKeys.EFFECT_STRENGTH, "Strength");
