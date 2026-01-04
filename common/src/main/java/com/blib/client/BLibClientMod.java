@@ -47,10 +47,11 @@ public class BLibClientMod implements BLibModStateAccess {
             );
         }
 
-        this.state = BLibModState.INITIALIZING;
-        runnable.run();
-        BLibInternalClientServices.CLIENT_MOD.initialize(this);
-        this.state = BLibModState.INITIALIZED;
+        BLibInternalClientServices.CLIENT_MOD.initialize(this, () -> {
+            this.state = BLibModState.INITIALIZING;
+            runnable.run();
+            this.state = BLibModState.INITIALIZED;
+        });
     }
 
     public BLibMod common() {

@@ -60,10 +60,12 @@ public class BLibMod implements BLibModStateAccess {
             );
         }
 
-        this.state = BLibModState.INITIALIZING;
-        runnable.run();
-        BLibInternalServices.MOD.postInitialize(this);
-        this.state = BLibModState.INITIALIZED;
+        BLibInternalServices.MOD.initialize(this, () -> {
+            this.state = BLibModState.INITIALIZING;
+            runnable.run();
+            BLibInternalServices.MOD.postInitialize(this);
+            this.state = BLibModState.INITIALIZED;
+        });
     }
 
     public boolean isLoaded() {

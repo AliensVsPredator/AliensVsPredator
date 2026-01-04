@@ -9,7 +9,9 @@ import com.blib.internal.client.service.BLibClientModService;
 public class BLibFabricClientModServiceImpl implements BLibClientModService {
 
     @Override
-    public void initialize(BLibClientMod mod) {
+    public void initialize(BLibClientMod mod, Runnable runnable) {
+        runnable.run();
+
         BLibFabricClientModContainerLookup.INSTANCE.get(mod)
             .initialize();
     }

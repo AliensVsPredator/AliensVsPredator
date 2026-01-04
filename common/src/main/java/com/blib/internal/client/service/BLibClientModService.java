@@ -7,5 +7,5 @@ import com.blib.client.BLibClientMod;
 @ApiStatus.Internal
 public interface BLibClientModService {
 
-    void initialize(BLibClientMod mod);
+    void initialize(BLibClientMod mod, Runnable runnable);
 }

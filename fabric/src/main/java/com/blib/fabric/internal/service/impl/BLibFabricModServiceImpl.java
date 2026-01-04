@@ -10,6 +10,11 @@ import com.blib.internal.service.BLibModService;
 public class BLibFabricModServiceImpl implements BLibModService {
 
     @Override
+    public void initialize(BLibMod mod, Runnable runnable) {
+        runnable.run();
+    }
+
+    @Override
     public void postInitialize(BLibMod mod) {
         var registry = (BLibFabricRegistryServiceImpl) BLibInternalServices.REGISTRY;
         registry.initialize(mod);
