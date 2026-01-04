@@ -1,8 +1,5 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Mod Wiki
-    url: https://moddedmc.wiki/en/project/avp/docs
-    about: Please see the WIP wiki for information about the mod.
   - name: Discord Community Support
     url: https://discord.gg/uPUtXSBNgY
     about: Please ask and answer questions here.

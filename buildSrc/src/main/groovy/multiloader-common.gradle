@@ -13,6 +13,8 @@ base {
 }
 
 java {
+    withSourcesJar()
+    withJavadocJar()
     toolchain.languageVersion = JavaLanguageVersion.of(java_version)
 }
 
@@ -45,7 +47,7 @@ repositories {
         name = 'BlameJared'
         url = 'https://maven.blamejared.com'
     }
-    maven { url = "https://jitpack.io" }
+    maven { url = "https://maven.bvanseghi.dev/just" }
     maven { url = "https://maven.azuredoom.com/mods" }
     maven { url = "https://maven.terraformersmc.com/releases" }
     maven { url = "https://maven.parchmentmc.org" }
@@ -113,13 +115,7 @@ processResources {
 
     inputs.properties(expandProps)
 
-    from("$rootDir/docs/avp/") {
-        into "assets/avp/books/avp/"
-        exclude '.assets/item/**'
-    }
-
     doLast {
-        println "processResources executed: wiki folder copied into assets/avp"
         def jsonMinifyStart = System.currentTimeMillis()
         def jsonMinified = 0
         def jsonBytesSaved = 0
@@ -137,17 +133,42 @@ processResources {
 }
 
 publishing {
-    publications {
-        register('mavenJava', MavenPublication) {
-            artifactId base.archivesName.get()
-            from components.java
-        }
-    }
     repositories {
         maven {
-            url System.getenv('local_maven_url')
+            name = project.mod_id
+            url = uri(project.maven_url)
+
+            credentials {
+                username = System.getenv("AVP_MAVEN_USERNAME")
+                password = System.getenv("AVP_MAVEN_PASSWORD")
+            }
+
+            authentication {
+                basic(BasicAuthentication)
+            }
         }
     }
+
+    publications {
+        maven(MavenPublication) {
+            artifactId base.archivesName.get()
+            from components.java
+            pom.withXml {
+                asNode().dependencies.dependency.each { dep ->
+                    if (dep.groupId.text() == 'com.terraformersmc' && dep.artifactId.text() == 'modmenu') {
+                        dep.parent().remove(dep)
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Disables Gradle's custom module metadata from being published to maven. The
+// metadata includes mapped dependencies which are not reasonably consumable by
+// other mod developers.
+tasks.withType(GenerateModuleMetadata).configureEach {
+    enabled = false
 }
 
 idea {

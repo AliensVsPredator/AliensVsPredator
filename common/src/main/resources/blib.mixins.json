@@ -1,0 +1,25 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.blib.internal.mixin",
+  "refmap": "${mod_id}.refmap.json",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "BlockBehaviourInvoker",
+    "MixinDataComponentPatch",
+    "MixinDecoratedPotPatterns_GetPatternForCustomSherds",
+    "MixinEntity_DataUser",
+    "MixinEntityTypeBuilder_SilenceDataFixerError",
+    "MixinHolder",
+    "MixinLivingEntity_ApplyArmorEffects",
+    "MixinLivingEntity_GOAPUser",
+    "MixinRegistry_ApplyDataFixes",
+    "StructurePoolAccessor",
+    "server.MixinServerLevel"
+  ],
+  "client": [],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

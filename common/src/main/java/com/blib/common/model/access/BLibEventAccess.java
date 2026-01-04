@@ -1,0 +1,64 @@
+package com.blib.common.model.access;
+
+import org.jetbrains.annotations.ApiStatus;
+
+import com.blib.BLibMod;
+import com.blib.common.event.BLibBlockBreakEvent;
+import com.blib.common.event.BLibCommonSetupEvent;
+import com.blib.common.event.BLibLevelTickEvent;
+import com.blib.common.event.BLibPlayerTrackingEntityEvent;
+import com.blib.common.event.BLibServerLifecycleEvent;
+import com.blib.common.event.BLibTagsUpdatedEvent;
+import com.blib.common.event.handle.BLibEventHandle;
+import com.blib.common.event.handle.BLibEventListenerHandle;
+import com.blib.internal.service.BLibInternalServices;
+
+public class BLibEventAccess {
+
+    private final BLibMod mod;
+
+    @ApiStatus.Internal
+    public BLibEventAccess(BLibMod mod) {
+        this.mod = mod;
+    }
+
+    public BLibEventListenerHandle<BLibCommonSetupEvent> onCommonSetup() {
+        return BLibInternalServices.EVENT.onCommonSetup(mod);
+    }
+
+    public BLibEventHandle<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity() {
+        return BLibInternalServices.EVENT.onPlayerStartTrackingEntity(mod);
+    }
+
+    public BLibEventHandle<BLibTagsUpdatedEvent> onTagsUpdated() {
+        return BLibInternalServices.EVENT.onTagsUpdated(mod);
+    }
+
+    public BLibEventHandle<BLibLevelTickEvent> postLevelTick() {
+        return BLibInternalServices.EVENT.postLevelTick(mod);
+    }
+
+    public BLibEventHandle<BLibBlockBreakEvent> preBlockBreak() {
+        return BLibInternalServices.EVENT.preBlockBreak(mod);
+    }
+
+    public BLibEventHandle<BLibLevelTickEvent> preLevelTick() {
+        return BLibInternalServices.EVENT.preLevelTick(mod);
+    }
+
+    public BLibEventHandle<BLibServerLifecycleEvent.Started> serverStarted() {
+        return BLibInternalServices.EVENT.serverStarted(mod);
+    }
+
+    public BLibEventHandle<BLibServerLifecycleEvent.Starting> serverStarting() {
+        return BLibInternalServices.EVENT.serverStarting(mod);
+    }
+
+    public BLibEventHandle<BLibServerLifecycleEvent.Stopped> serverStopped() {
+        return BLibInternalServices.EVENT.serverStopped(mod);
+    }
+
+    public BLibEventHandle<BLibServerLifecycleEvent.Stopping> serverStopping() {
+        return BLibInternalServices.EVENT.serverStopping(mod);
+    }
+}

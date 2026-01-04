@@ -1,14 +1,14 @@
 [curse-downloads-shield]: https://img.shields.io/curseforge/dt/1005026
-[curse-files-url]: https://www.curseforge.com/minecraft/mc-mods/avp/files
+[curse-files-url]: https://www.curseforge.com/minecraft/mc-mods/blib/files
 
 [modrinth-downloads-shield]: https://img.shields.io/modrinth/dt/Uqo0H9FX
-[modrinth-files-url]: https://modrinth.com/mod/avp/versions
+[modrinth-files-url]: https://modrinth.com/mod/blib/versions
 
 [discord-shield]: https://dcbadge.limes.pink/api/server/https://discord.gg/wp7mvmbkVb
 [discord-url]: https://discord.gg/wp7mvmbkVb
 
-[github-build]: https://github.com/AliensVsPredator/AliensVsPredator/actions/workflows/build.yml/badge.svg
-[github-build-url]:https://github.com/AliensVsPredator/AliensVsPredator/actions/workflows/build.yml
+[github-build]: https://github.com/Stargazer-Studios/BLib/actions/workflows/build.yml/badge.svg
+[github-build-url]:https://github.com/Stargazer-Studios/BLib/actions/workflows/build.yml
 
 [java-shield]: https://img.shields.io/badge/Made%20with-Java-ED8B00.svg
 [java-url]: https://www.java.com/
@@ -24,10 +24,10 @@
 <br>
 <center>
 
-Aliens Vs Predator
+BLib
 =============
 
-<img src="https://github.com/AliensVsPredator/AliensVsPredator/blob/1.21.1-Fabric/src/main/resources/assets/avp/icon.png?raw=true" alt="AVP"/>
+<img src="https://github.com/Stargazer-Studios/AVP/blob/1.21.1-Fabric/src/main/resources/assets/avp/icon.png?raw=true" alt="AVP"/>
 <br><br>
 <a href="https://modrinth.com/mod/azurelib"> <img src="https://azuredoom.com/cozy_64h.png" alt="logo" height="64"  width="170" /> </a>
 <a href="https://modrinth.com/mod/fabric-api"> <img src="https://github.com/intergrav/devins-badges/blob/v2/assets/cozy/requires/fabric-api_64h.png?raw=true" alt="logo" height="64"  width="186"/> </a>

@@ -1,4 +1,4 @@
-name: AVP Jar Build Testing
+name: BLib Jar Build Testing
 
 on:
   workflow_dispatch:

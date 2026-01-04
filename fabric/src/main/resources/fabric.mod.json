@@ -1,46 +1,30 @@
 {
 	"schemaVersion": 1,
-	"id": "avp",
+	"id": "blib",
 	"version": "${version}",
 	"name": "${mod_name}",
 	"description": "${description}",
-	"accessWidener": "avp.accesswidener",
-	"authors": [
-		"AzureDoom",
-		"Boston Vanseghi",
-		"Caution",
-		"gorblegorble",
-		"Gothic Lycan",
-		"Hossaurus",
-		"Pheonix Atredes",
-		"Shift",
-		"Spookyboo117",
-		"Whiteshark01",
-		"Xavier"
-	],
+	"accessWidener": "blib.accesswidener",
+	"authors": ["Stargazer Studios"],
 	"contact": {
-		"homepage": "https://www.curseforge.com/minecraft/mc-mods/avp-regenesis",
-		"sources": "https://github.com/AliensVsPredator/AliensVsPredator"
+		"homepage": "https://www.curseforge.com/minecraft/mc-mods/blib",
+		"sources": "https://github.com/Stargazer-Studios/BLib"
 	},
 	"license": "${license}",
 	"icon": "${icon}",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.avp.fabric.AVPFabric"
+			"com.blib.fabric.internal.BLibFabric"
 		],
 		"client": [
-			"com.avp.fabric.client.AVPFabricClient"
+			"com.blib.fabric.internal.client.BLibFabricClient"
 		],
 		"fabric-datagen": [
-			"com.avp.fabric.data.AVPDataGenerator"
+			"com.blib.fabric.internal.data.BLibDataGenerator"
 		],
-		"rei_client": [
-			"com.avp.client.compat.rei.AVPREIClient"
-		],
-		"jei_mod_plugin": [
-			"com.avp.client.compat.jei.AVPJEIPlugin"
-		]
+		"rei_client": [],
+		"jei_mod_plugin": []
 	},
 	"mixins": [
 		"${mod_id}.mixins.json",

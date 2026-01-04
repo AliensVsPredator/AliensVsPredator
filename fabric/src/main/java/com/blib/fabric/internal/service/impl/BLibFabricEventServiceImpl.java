@@ -1,0 +1,78 @@
+package com.blib.fabric.internal.service.impl;
+
+import org.jetbrains.annotations.ApiStatus;
+
+import com.blib.BLibMod;
+import com.blib.common.event.BLibBlockBreakEvent;
+import com.blib.common.event.BLibCommonSetupEvent;
+import com.blib.common.event.BLibLevelTickEvent;
+import com.blib.common.event.BLibPlayerTrackingEntityEvent;
+import com.blib.common.event.BLibServerLifecycleEvent;
+import com.blib.common.event.BLibTagsUpdatedEvent;
+import com.blib.common.event.handle.BLibEventHandle;
+import com.blib.common.event.handle.BLibEventListenerHandle;
+import com.blib.internal.service.BLibEventService;
+
+@ApiStatus.Internal
+public class BLibFabricEventServiceImpl implements BLibEventService {
+
+    @Override
+    public BLibEventListenerHandle<BLibCommonSetupEvent> onCommonSetup(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .onCommonSetup();
+    }
+
+    @Override
+    public BLibEventHandle<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .onPlayerStartTrackingEntity();
+    }
+
+    @Override
+    public BLibEventHandle<BLibTagsUpdatedEvent> onTagsUpdated(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .onTagsUpdated();
+    }
+
+    @Override
+    public BLibEventHandle<BLibLevelTickEvent> postLevelTick(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .postLevelTick();
+    }
+
+    @Override
+    public BLibEventHandle<BLibBlockBreakEvent> preBlockBreak(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .preBlockBreak();
+    }
+
+    @Override
+    public BLibEventHandle<BLibLevelTickEvent> preLevelTick(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .preLevelTick();
+    }
+
+    @Override
+    public BLibEventHandle<BLibServerLifecycleEvent.Started> serverStarted(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .serverStarted();
+    }
+
+    @Override
+    public BLibEventHandle<BLibServerLifecycleEvent.Starting> serverStarting(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .serverStarting();
+    }
+
+    @Override
+    public BLibEventHandle<BLibServerLifecycleEvent.Stopped> serverStopped(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .serverStopped();
+    }
+
+    @Override
+    public BLibEventHandle<BLibServerLifecycleEvent.Stopping> serverStopping(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .serverStopping();
+    }
+}

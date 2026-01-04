@@ -4,7 +4,6 @@ plugins {
     id 'multiloader-loader'
     id 'net.neoforged.moddev'
     id 'me.modmuss50.mod-publish-plugin'
-    id 'org.moddedmc.wiki.toolkit'
 }
 
 neoForge {
@@ -62,21 +61,35 @@ dependencies {
     implementation "dev.architectury:architectury-neoforge:${project.architectury_version}"
     implementation "me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_version}"
 
-    compileOnly "org.sinytra:item-asset-export-neoforge:${project.asset_export}"
-
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${project.jei_version}")
     runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${project.jei_version}")
 
-    jarJar(implementation("com.github.just-collective:just-codec:${project.just_codec_version}"))
-    additionalRuntimeClasspath "com.github.just-collective:just-codec:${project.just_codec_version}"
+    jarJar(implementation("com.just:just-codec:${project.just_codec_version}"))
+    additionalRuntimeClasspath "com.just:just-codec:${project.just_codec_version}"
 
-    jarJar(implementation("com.github.just-collective:just-core:${project.just_core_version}"))
-    additionalRuntimeClasspath "com.github.just-collective:just-core:${project.just_core_version}"
+    jarJar(implementation("com.just:just-core:${project.just_core_version}"))
+    additionalRuntimeClasspath "com.just:just-core:${project.just_core_version}"
 
-    // Compats
-    implementation "maven.modrinth:gigeresque:${project.gigeresque_version}"
+    jarJar(implementation("com.just:just-goap:${project.just_goap_version}"))
+    additionalRuntimeClasspath "com.just:just-goap:${project.just_goap_version}"
 }
 
+configurations.configureEach {
+    resolutionStrategy {
+        force 'org.slf4j:slf4j-api:2.0.9'
+
+        eachDependency { DependencyResolveDetails details ->
+            if (details.requested.group == 'org.slf4j' && details.requested.name == 'slf4j-api') {
+                details.useVersion '2.0.9'
+                details.because 'Aligning SLF4J version to satisfy NeoForge strict constraint'
+            }
+            if (details.requested.group == 'ch.qos.logback' && details.requested.name == 'logback-classic') {
+                details.useVersion '1.4.11'
+                details.because 'Logback 1.5.x requires slf4j-api 2.0.17+, incompatible with NeoForge'
+            }
+        }
+    }
+}
 
 def keyPropsFile = new File(rootProject.projectDir, "key.properties")
 
@@ -102,7 +115,7 @@ if (keyPropsFile.exists()) {
             avatarUrl = "https://i.imgur.com/5Y0EZ9x.jpeg"
             content = changelog.map { text ->
                 def maxEmbedCharacterCount = 4096
-                def header = "# A new version of AVP for NeoForge has been released!\n"
+                def header = "# A new version of BLib for NeoForge has been released!\n"
                 def footer = "\n...and more! Check the mod page for more details."
 
                 def needsTruncation = (header.length() + text.length()) > maxEmbedCharacterCount

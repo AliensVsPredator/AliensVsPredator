@@ -7,7 +7,6 @@ plugins {
 	// Manual plugins added here
 	id 'java'
 	id "me.modmuss50.mod-publish-plugin" version "0.8.4"
-	id 'org.moddedmc.wiki.toolkit' version '0.2.7'
 }
 
 // #####################################################################################

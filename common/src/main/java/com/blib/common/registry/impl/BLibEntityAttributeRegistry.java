@@ -1,0 +1,37 @@
+package com.blib.common.registry.impl;
+
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import org.jetbrains.annotations.ApiStatus;
+
+import java.util.function.Supplier;
+
+import com.blib.BLibMod;
+import com.blib.common.exception.BLibRegistrationException;
+import com.blib.common.model.BLibModState;
+import com.blib.common.registry.BLibHolder;
+import com.blib.internal.service.BLibInternalServices;
+
+public class BLibEntityAttributeRegistry {
+
+    private final BLibMod mod;
+
+    @ApiStatus.Internal
+    public BLibEntityAttributeRegistry(BLibMod mod) {
+        this.mod = mod;
+    }
+
+    public void register(
+        BLibHolder<? extends EntityType<? extends LivingEntity>> holder,
+        Supplier<AttributeSupplier.Builder> attributeSupplierBuilderSupplier
+    ) {
+        if (mod.state() != BLibModState.INITIALIZING) {
+            throw new BLibRegistrationException(
+                "Attempted to register entity attributes outside of mod's initialization window. Mod State: %s".formatted(mod.state())
+            );
+        }
+
+        BLibInternalServices.REGISTRY.registerEntityAttributes(holder, attributeSupplierBuilderSupplier);
+    }
+}
