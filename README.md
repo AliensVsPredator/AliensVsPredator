@@ -1,9 +1,3 @@
-[curse-downloads-shield]: https://img.shields.io/curseforge/dt/1005026
-[curse-files-url]: https://www.curseforge.com/minecraft/mc-mods/blib/files
-
-[modrinth-downloads-shield]: https://img.shields.io/modrinth/dt/Uqo0H9FX
-[modrinth-files-url]: https://modrinth.com/mod/blib/versions
-
 [discord-shield]: https://dcbadge.limes.pink/api/server/https://discord.gg/wp7mvmbkVb
 [discord-url]: https://discord.gg/wp7mvmbkVb
 
@@ -12,9 +6,6 @@
 
 [java-shield]: https://img.shields.io/badge/Made%20with-Java-ED8B00.svg
 [java-url]: https://www.java.com/
-
-[license-shield]: https://img.shields.io/badge/license-Apache%202.0-blue?style=flat-square
-[license-url]: https://www.apache.org/licenses/LICENSE-2.0
 
 [IntelliJ IDEA]: https://www.jetbrains.com/idea/
 [Gradle]: https://www.gradle.org/
@@ -27,25 +18,9 @@
 BLib
 =============
 
-<img src="https://github.com/Stargazer-Studios/AVP/blob/1.21.1-Fabric/src/main/resources/assets/avp/icon.png?raw=true" alt="AVP"/>
-<br><br>
-<a href="https://modrinth.com/mod/azurelib"> <img src="https://azuredoom.com/cozy_64h.png" alt="logo" height="64"  width="170" /> </a>
-<a href="https://modrinth.com/mod/fabric-api"> <img src="https://github.com/intergrav/devins-badges/blob/v2/assets/cozy/requires/fabric-api_64h.png?raw=true" alt="logo" height="64"  width="186"/> </a>
-<br><br>
-<a href="https://neoforged.net/"> <img src="https://i.imgur.com/TGnV6jv.png" alt="logo" height="64"  width="186"/> </a>
-<a href="https://fabricmc.net/"> <img src="https://github.com/intergrav/devins-badges/blob/v3/assets/cozy/supported/fabric_64h.png?raw=true" alt="logo" height="64"  width="170" /> </a>
-
-
 [![discord-shield]][discord-url]
 
-<img src="https://i.imgur.com/L6vA521.png" alt="CurseForge" width="200"/>
-<img src="https://img.shields.io/curseforge/dt/1005026" alt="CurseForge" width="200"/>
-<br>
-<img src="https://crowdin-static.downloads.crowdin.com/images/project-logo/518556/small/d0d0fa84ec9d7863f8ce01c6a4352272374.png" alt="Modrinth" width="200"/>
-<img src="https://img.shields.io/modrinth/dt/Uqo0H9FX" alt="Modrinth" width="200"/>
-
 [![github-build]][github-build-url]
-[![license-shield]][license-url]
 [![java-shield]][java-url]
 
 </center>
