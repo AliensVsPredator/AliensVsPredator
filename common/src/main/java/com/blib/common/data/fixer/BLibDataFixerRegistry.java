@@ -1,15 +1,16 @@
 package com.blib.common.data.fixer;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class BLibDataFixerRegistry {
 
-    private static final Int2ObjectMap<Entry> DATA_FIXER_KEY_TO_ENTRY = new Int2ObjectOpenHashMap<>();
+    private static final Map<Integer, Entry> DATA_FIXER_KEY_TO_ENTRY = new HashMap<>();
 
     public static void register(Entry entry) {
         var hash = computeHash(entry.registryResourceLocation(), entry.from());
