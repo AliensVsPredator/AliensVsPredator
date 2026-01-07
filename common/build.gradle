@@ -19,10 +19,10 @@ neoForge {
 }
 
 dependencies {
-    compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.5'
+    compileOnly group: 'org.spongepowered', name: 'mixin', version: project.mixin_version
     // fabric and neoforge both bundle mixinextras, so it is safe to use it in common
-    compileOnly group: 'io.github.llamalad7', name: 'mixinextras-common', version: '0.3.5'
-    annotationProcessor group: 'io.github.llamalad7', name: 'mixinextras-common', version: '0.3.5'
+    compileOnly group: 'io.github.llamalad7', name: 'mixinextras-common', version: project.mixinextras_common_version
+    annotationProcessor group: 'io.github.llamalad7', name: 'mixinextras-common', version: project.mixinextras_common_version
 
     // Manually added dependencies
     compileOnly "com.just:just-codec:${project.just_codec_version}"
@@ -36,15 +36,15 @@ dependencies {
 
 configurations.configureEach {
     resolutionStrategy {
-        force 'org.slf4j:slf4j-api:2.0.9'
+        force "org.slf4j:slf4j-api:${project.slf4j_version}"
 
         eachDependency { DependencyResolveDetails details ->
             if (details.requested.group == 'org.slf4j' && details.requested.name == 'slf4j-api') {
-                details.useVersion '2.0.9'
+                details.useVersion project.slf4j_version
                 details.because 'Aligning SLF4J version to satisfy NeoForge strict constraint'
             }
             if (details.requested.group == 'ch.qos.logback' && details.requested.name == 'logback-classic') {
-                details.useVersion '1.4.11'
+                details.useVersion project.logback_classic_version
                 details.because 'Logback 1.5.x requires slf4j-api 2.0.17+, incompatible with NeoForge'
             }
         }

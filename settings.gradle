@@ -39,13 +39,13 @@ pluginManagement {
 	}
 
 	plugins {
-		id "com.diffplug.spotless" version "7.0.3"
-		id "com.github.ben-manes.versions" version "0.52.0"
+		id "com.diffplug.spotless" version "${spotless_version}"
+		id "com.github.ben-manes.versions" version "${ben_manes_versions_version}"
 	}
 }
 
 plugins {
-	id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
+	id 'org.gradle.toolchains.foojay-resolver-convention' version "${foojay_resolver_version}"
 }
 
 // This should match the folder name of the project, or else IDEA may complain (see https://youtrack.jetbrains.com/issue/IDEA-317606)

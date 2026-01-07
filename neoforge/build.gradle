@@ -6,6 +6,18 @@ plugins {
     id 'me.modmuss50.mod-publish-plugin'
 }
 
+// create a runtime-only configuration that published to POM
+configurations {
+    localRuntime {
+        canBeConsumed = false
+        visible = false
+    }
+
+    named(sourceSets.main.runtimeClasspathConfigurationName) {
+        extendsFrom(configurations.localRuntime)
+    }
+}
+
 neoForge {
     version = neoforge_version
     // Automatically enable neoforge AccessTransformers if the file exists
@@ -54,15 +66,17 @@ neoForge {
 dependencies {
     implementation "mod.azure.azurelib:azurelib-neo-${project.minecraft_version}:${project.azurelib_version}"
 
-    compileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:${project.rei_version}"
-    compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
-    runtimeOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
+    localRuntime "dev.architectury:architectury-neoforge:${project.architectury_version}"
+    localRuntime "me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_version}"
 
-    implementation "dev.architectury:architectury-neoforge:${project.architectury_version}"
-    implementation "me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_version}"
-
-    compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${project.jei_version}")
-    runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${project.jei_version}")
+    // Thanks to Rearth from Oritech for this little trick. :)
+    switch (recipe_viewer.toLowerCase(Locale.ROOT)) {
+        case "emi": localRuntime "dev.emi:emi-neoforge:${emi_version}"; break
+        case "jei": localRuntime "mezz.jei:jei-$minecraft_version-neoforge:${jei_version}"; break
+        case "rei": localRuntime "me.shedaniel:RoughlyEnoughItems-neoforge:${rei_version}"; break
+        case "disabled": break
+        default: println("Unknown recipe viewer specified: $recipe_viewer. Must be EMI, REI, JEI, or disabled.")
+    }
 
     jarJar(implementation("com.just:just-codec:${project.just_codec_version}"))
     additionalRuntimeClasspath "com.just:just-codec:${project.just_codec_version}"
@@ -76,15 +90,15 @@ dependencies {
 
 configurations.configureEach {
     resolutionStrategy {
-        force 'org.slf4j:slf4j-api:2.0.9'
+        force "org.slf4j:slf4j-api:${project.slf4j_version}"
 
         eachDependency { DependencyResolveDetails details ->
             if (details.requested.group == 'org.slf4j' && details.requested.name == 'slf4j-api') {
-                details.useVersion '2.0.9'
+                details.useVersion project.slf4j_version
                 details.because 'Aligning SLF4J version to satisfy NeoForge strict constraint'
             }
             if (details.requested.group == 'ch.qos.logback' && details.requested.name == 'logback-classic') {
-                details.useVersion '1.4.11'
+                details.useVersion project.logback_classic_version
                 details.because 'Logback 1.5.x requires slf4j-api 2.0.17+, incompatible with NeoForge'
             }
         }
