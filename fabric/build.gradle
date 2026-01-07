@@ -57,6 +57,8 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
     // Manually added dependencies
+    modImplementation "mod.azure.azurelib:azurelib-fabric-${project.minecraft_version}:${project.azurelib_version}"
+
     // TODO: Shouldn't need this implementation call, figure out how to remove.
     implementation "com.just:just-codec:${project.just_codec_version}"
     include "com.just:just-codec:${project.just_codec_version}"
@@ -67,11 +69,12 @@ dependencies {
     implementation "com.just:just-goap:${project.just_goap_version}"
     include "com.just:just-goap:${project.just_goap_version}"
 
-    modImplementation "mod.azure.azurelib:azurelib-fabric-${project.minecraft_version}:${project.azurelib_version}"
-
     modApi "com.terraformersmc:modmenu:${project.modmenu_version}"
     modApi "dev.architectury:architectury-fabric:${project.architectury_version}"
     modApi "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_version}"
+
+    // Here in case of any issues
+    //modImplementation "maven.modrinth:modernfix:5.21.0+mc1.21.1"
 
     // Thanks to Rearth from Oritech for this little trick. :)
     switch (recipe_viewer.toLowerCase(Locale.ROOT)) {
@@ -81,9 +84,6 @@ dependencies {
         case "disabled": break
         default: println("Unknown recipe viewer specified: $recipe_viewer. Must be EMI, REI, JEI, or disabled.")
     }
-
-    // Here in case of any issues
-    //modImplementation "maven.modrinth:modernfix:5.21.0+mc1.21.1"
 }
 
 loom {

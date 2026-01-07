@@ -66,6 +66,15 @@ neoForge {
 dependencies {
     implementation "mod.azure.azurelib:azurelib-neo-${project.minecraft_version}:${project.azurelib_version}"
 
+    jarJar(implementation("com.just:just-codec:${project.just_codec_version}"))
+    additionalRuntimeClasspath "com.just:just-codec:${project.just_codec_version}"
+
+    jarJar(implementation("com.just:just-core:${project.just_core_version}"))
+    additionalRuntimeClasspath "com.just:just-core:${project.just_core_version}"
+
+    jarJar(implementation("com.just:just-goap:${project.just_goap_version}"))
+    additionalRuntimeClasspath "com.just:just-goap:${project.just_goap_version}"
+
     localRuntime "dev.architectury:architectury-neoforge:${project.architectury_version}"
     localRuntime "me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_version}"
 
@@ -77,15 +86,6 @@ dependencies {
         case "disabled": break
         default: println("Unknown recipe viewer specified: $recipe_viewer. Must be EMI, REI, JEI, or disabled.")
     }
-
-    jarJar(implementation("com.just:just-codec:${project.just_codec_version}"))
-    additionalRuntimeClasspath "com.just:just-codec:${project.just_codec_version}"
-
-    jarJar(implementation("com.just:just-core:${project.just_core_version}"))
-    additionalRuntimeClasspath "com.just:just-core:${project.just_core_version}"
-
-    jarJar(implementation("com.just:just-goap:${project.just_goap_version}"))
-    additionalRuntimeClasspath "com.just:just-goap:${project.just_goap_version}"
 }
 
 configurations.configureEach {
