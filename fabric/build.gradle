@@ -134,7 +134,7 @@ if (keyPropsFile.exists()) {
             avatarUrl = "https://i.imgur.com/5Y0EZ9x.jpeg"
             content = changelog.map { text ->
                 def maxEmbedCharacterCount = 4096
-                def header = "# A new version of BLib for Fabric has been released!\n"
+                def header = "# A new version of ${project.mod_name} for Fabric has been released!\n"
                 def footer = "\n...and more! Check the mod page for more details."
 
                 def needsTruncation = (header.length() + text.length()) > maxEmbedCharacterCount
