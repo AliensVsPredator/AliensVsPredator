@@ -1,19 +1,28 @@
 package com.blib.fabric.data.recipe.builder;
 
+import net.minecraft.advancements.AdvancementRequirements;
+import net.minecraft.advancements.AdvancementRewards;
+import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.ItemLike;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import com.blib.fabric.data.recipe.util.RecipeProviderProxy;
+import com.blib.internal.mixin.MixinShapelessRecipeBuilder_Accessor;
 
 public class ShapelessRecipeBuilder {
 
@@ -86,17 +95,60 @@ public class ShapelessRecipeBuilder {
     }
 
     public void into(int count, ItemLike destination) {
-        var builder = net.minecraft.data.recipes.ShapelessRecipeBuilder.shapeless(recipeCategory, destination, count);
+        into(new ItemStack(destination, count));
+    }
+
+    public void into(ItemStack destination) {
+        var shapelessRecipeBuilder = net.minecraft.data.recipes.ShapelessRecipeBuilder.shapeless(
+            recipeCategory,
+            destination.getItem(),
+            destination.getCount()
+        );
 
         for (var transformation : transformations) {
-            builder = transformation.apply(builder);
+            shapelessRecipeBuilder = transformation.apply(shapelessRecipeBuilder);
         }
 
-        if (customNameOperator == null) {
-            builder.save(baseBuilder.getRecipeOutput());
-        } else {
-            var destinationName = RecipeProviderProxy.getNameForItem(destination);
-            builder.save(baseBuilder.getRecipeOutput(), customNameOperator.apply(destinationName));
+        var destinationName = RecipeProviderProxy.getNameForItem(destination.getItem());
+
+        if (customNameOperator != null) {
+            destinationName = customNameOperator.apply(destinationName);
         }
+
+        var resourceLocation = baseBuilder.getMod().resources().createLocation(destinationName);
+        save(baseBuilder.getRecipeOutput(), shapelessRecipeBuilder, destination, resourceLocation);
+    }
+
+    private void save(
+        RecipeOutput recipeOutput,
+        net.minecraft.data.recipes.ShapelessRecipeBuilder shapelessRecipeBuilder,
+        ItemStack result,
+        ResourceLocation id
+    ) {
+        var accessor = (MixinShapelessRecipeBuilder_Accessor) shapelessRecipeBuilder;
+
+        accessor.invokeEnsureValid(id);
+
+        var builder = recipeOutput.advancement()
+            .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
+            .rewards(AdvancementRewards.Builder.recipe(id))
+            .requirements(AdvancementRequirements.Strategy.OR);
+        var criteria = accessor.getCriteria();
+
+        Objects.requireNonNull(builder);
+        criteria.forEach(builder::addCriterion);
+
+        var shapelessRecipe = new ShapelessRecipe(
+            Objects.requireNonNullElse(accessor.getGroup(), ""),
+            net.minecraft.data.recipes.RecipeBuilder.determineBookCategory(accessor.getCategory()),
+            result,
+            accessor.getIngredients()
+        );
+
+        recipeOutput.accept(
+            id,
+            shapelessRecipe,
+            builder.build(id.withPrefix("recipes/" + accessor.getCategory().getFolderName() + "/"))
+        );
     }
 }

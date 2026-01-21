@@ -15,6 +15,7 @@
     "MixinLivingEntity_GOAPUser",
     "MixinRegistry_ApplyDataFixes",
     "MixinShapedRecipeBuilder_Accessor",
+    "MixinShapelessRecipeBuilder_Accessor",
     "StructurePoolAccessor",
     "server.MixinServerLevel"
   ],
