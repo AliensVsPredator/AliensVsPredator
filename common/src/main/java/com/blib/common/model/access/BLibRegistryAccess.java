@@ -82,7 +82,7 @@ public class BLibRegistryAccess {
 
         if (registry == BuiltInRegistries.ITEM) {
             @SuppressWarnings("unchecked")
-            var itemRegistry = (BLibRegistry<T>) bind(new BLibItemRegistry(mod));
+            var itemRegistry = (BLibRegistry<T>) new BLibItemRegistry(mod);
             blibRegistry = itemRegistry;
         } else {
             blibRegistry = new BLibRegistry<>(mod, registry);
