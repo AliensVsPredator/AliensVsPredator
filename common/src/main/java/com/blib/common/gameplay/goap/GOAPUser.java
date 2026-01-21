@@ -1,5 +1,6 @@
 package com.blib.common.gameplay.goap;
 
+import com.just.goap.Agent;
 import com.just.goap.graph.Graph;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.Nullable;
@@ -7,9 +8,13 @@ import org.jetbrains.annotations.Nullable;
 public interface GOAPUser<T extends LivingEntity> {
 
     @Nullable
-    Graph<T> getCurrentGraph();
+    Graph<T> blib$getGOAPGraphOrNull();
 
-    default @Nullable LivingEntityAgent<T> getGOAPAgentOrNull() {
+    default Agent.Builder<T> blib$applyGOAPAgentProperties(Agent.Builder<T> agentBuilder) {
+        return agentBuilder;
+    }
+
+    default @Nullable LivingEntityAgent<T> blib$getGOAPAgentOrNull() {
         return null;
     }
 }

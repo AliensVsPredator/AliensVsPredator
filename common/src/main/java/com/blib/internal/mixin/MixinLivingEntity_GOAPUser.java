@@ -5,6 +5,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -18,7 +19,7 @@ import com.blib.common.gameplay.goap.LivingEntityAgent;
 public abstract class MixinLivingEntity_GOAPUser extends Entity implements GOAPUser<LivingEntity> {
 
     @Unique
-    private LivingEntityAgent<LivingEntity> agent;
+    private LivingEntityAgent<LivingEntity> blib$goapAgent;
 
     public MixinLivingEntity_GOAPUser(EntityType<?> entityType, Level level) {
         super(entityType, level);
@@ -26,25 +27,30 @@ public abstract class MixinLivingEntity_GOAPUser extends Entity implements GOAPU
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void onInit(CallbackInfo ci) {
-        this.agent = new LivingEntityAgent<>();
+        var self = LivingEntity.class.cast(this);
+        this.blib$goapAgent = new LivingEntityAgent<>(self, this::blib$applyGOAPAgentProperties);
     }
 
     @Inject(at = @At("HEAD"), method = "tick")
     public void tick(CallbackInfo callbackInfo) {
-        if (level().isClientSide || agent == null) {
+        if (level().isClientSide || blib$goapAgent == null) {
             return;
         }
 
-        var graph = getCurrentGraph();
+        var graph = blib$getGOAPGraphOrNull();
 
         if (graph != null) {
-            var self = LivingEntity.class.cast(this);
-            agent.update(graph, self);
+            blib$goapAgent.update(graph);
         }
     }
 
     @Override
-    public Graph<LivingEntity> getCurrentGraph() {
+    public @Nullable LivingEntityAgent<LivingEntity> blib$getGOAPAgentOrNull() {
+        return blib$goapAgent;
+    }
+
+    @Override
+    public Graph<LivingEntity> blib$getGOAPGraphOrNull() {
         return null;
     }
 }
