@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "I": {
+      "tag": "blib:iron_ingot_like"
+    },
+    "S": {
+      "tag": "c:strings"
+    },
+    "T": {
+      "tag": "c:rods/wooden"
+    },
+    "W": {
+      "item": "minecraft:tripwire_hook"
+    }
+  },
+  "pattern": [
+    "TIT",
+    "SWS",
+    " S "
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:crossbow"
+  }
+}

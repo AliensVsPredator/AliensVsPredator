@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "tag": "blib:iron_ingot_like"
+    },
+    "S": {
+      "item": "minecraft:stone"
+    }
+  },
+  "pattern": [
+    " I ",
+    "SSS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:stonecutter"
+  }
+}

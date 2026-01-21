@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "I": {
+      "tag": "blib:iron_ingot_like"
+    },
+    "P": {
+      "tag": "minecraft:planks"
+    },
+    "S": {
+      "tag": "c:rods/wooden"
+    }
+  },
+  "pattern": [
+    "I",
+    "S",
+    "P"
+  ],
+  "result": {
+    "count": 2,
+    "id": "minecraft:tripwire_hook"
+  }
+}

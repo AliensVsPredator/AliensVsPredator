@@ -1,0 +1,23 @@
+{
+  "tag.block.blib.should_not_be_destroyed": "Should Not Be Destroyed",
+  "tag.entity_type.blib.humanoids": "Humanoids",
+  "tag.entity_type.blib.nether_creatures": "Nether Creatures",
+  "tag.item.blib.decorative_pot_sherds": "Decorative Pot Sherds",
+  "tag.item.blib.fire_resistant_armors": "Fire-Resistant Armors",
+  "tag.item.blib.iron_block_like": "Iron Block Like",
+  "tag.item.blib.iron_ingot_like": "Iron Ingot Like",
+  "tag.item.blib.melee_weapons": "Melee Weapons",
+  "tag.item.blib.ranged_weapons": "Ranged Weapons",
+  "tooltip.blib.fire_resistance": "Fire Resistance",
+  "tooltip.blib.full_set_bonus": "When Placed",
+  "tooltip.blib.jump_boost": "Jump Boost",
+  "tooltip.blib.requirements": "Requires",
+  "tooltip.blib.slowness": "Slowness",
+  "tooltip.blib.strength": "Strength",
+  "tooltip.blib.water_breathing": "Water Breathing",
+  "tooltip.blib.when_full_armor_set_equipped": "Full Set Bonus",
+  "tooltip.blib.when_helmet_equipped": "Helmet Bonus",
+  "tooltip.blib.when_in_inventory": "When In Inventory",
+  "tooltip.blib.when_used": "When Used",
+  "tooltip.blib.when_used_on_armor_stand": "When Used On Armor Stand"
+}

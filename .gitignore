@@ -23,10 +23,12 @@ bin/
 # macos
 *.DS_Store
 
+# datagen
+**/generated/.cache
+
 # fabric
 run/
 runs/
-**/generated/*
 
 # java
 hs_err_*.log

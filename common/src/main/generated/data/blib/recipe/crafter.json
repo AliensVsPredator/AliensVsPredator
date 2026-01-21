@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "C": {
+      "item": "minecraft:crafting_table"
+    },
+    "D": {
+      "item": "minecraft:dropper"
+    },
+    "I": {
+      "tag": "blib:iron_ingot_like"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "pattern": [
+    "III",
+    "ICI",
+    "RDR"
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:crafter"
+  }
+}

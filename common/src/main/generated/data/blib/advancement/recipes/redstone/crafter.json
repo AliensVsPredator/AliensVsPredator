@@ -1,0 +1,65 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_crafting_table": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:crafting_table"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_dropper": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:dropper"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_dusts/redstone": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:dusts/redstone"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_iron_ingot_like": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#blib:iron_ingot_like"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "blib:crafter"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_crafting_table",
+      "has_dropper",
+      "has_iron_ingot_like",
+      "has_dusts/redstone"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "blib:crafter"
+    ]
+  }
+}
