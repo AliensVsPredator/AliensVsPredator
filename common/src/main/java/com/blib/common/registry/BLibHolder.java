@@ -54,6 +54,11 @@ public class BLibHolder<T> implements Holder<T>, HolderExtension<T>, Supplier<T>
         return value();
     }
 
+    public @Nullable Holder<T> getBackingHolder() {
+        bind(true);
+        return holder;
+    }
+
     @Override
     public boolean isBound() {
         bind(false);
