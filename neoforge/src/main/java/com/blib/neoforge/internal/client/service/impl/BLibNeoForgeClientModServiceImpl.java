@@ -3,8 +3,9 @@ package com.blib.neoforge.internal.client.service.impl;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
 import org.jetbrains.annotations.ApiStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.blib.api.BLibAPI;
 import com.blib.api.client.mod.v1.BLibClientMod;
 import com.blib.internal.client.service.BLibClientModService;
 import com.blib.internal.client.service.BLibInternalClientServices;
@@ -12,12 +13,14 @@ import com.blib.internal.client.service.BLibInternalClientServices;
 @ApiStatus.Internal
 public class BLibNeoForgeClientModServiceImpl implements BLibClientModService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(BLibNeoForgeClientModServiceImpl.class);
+
     @Override
     public void initialize(BLibClientMod mod, Runnable runnable) {
         var modContainerOptional = ModList.get().getModContainerById(mod.id());
 
         if (modContainerOptional.isEmpty()) {
-            BLibAPI.LOGGER.warn("Unable to initialize client mod '{}'. No NeoForge mod container was found for the mod.", mod.id());
+            LOGGER.warn("Unable to initialize client mod '{}'. No NeoForge mod container was found for the mod.", mod.id());
             return;
         }
 
@@ -33,7 +36,7 @@ public class BLibNeoForgeClientModServiceImpl implements BLibClientModService {
                 registry.initialize(mod, eventBus);
             });
         } else {
-            BLibAPI.LOGGER.warn("Unable to finalize registration for client mod '{}' because its event bus is null.", mod.id());
+            LOGGER.warn("Unable to finalize registration for client mod '{}' because its event bus is null.", mod.id());
         }
     }
 }

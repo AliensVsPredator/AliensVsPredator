@@ -1,13 +1,15 @@
 package com.blib.internal.service;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ServiceLoader;
 
-import com.blib.api.BLibAPI;
-
 @ApiStatus.Internal
 public class BLibInternalServices {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(BLibInternalServices.class);
 
     public static final BLibEventService EVENT = load(BLibEventService.class);
 
@@ -26,7 +28,7 @@ public class BLibInternalServices {
             .findFirst()
             .orElseThrow(() -> new NullPointerException("Failed to load service for " + clazz.getName()));
 
-        BLibAPI.LOGGER.debug("Loaded {} for service {}", loadedService, clazz);
+        LOGGER.debug("Loaded {} for service {}", loadedService, clazz);
 
         return loadedService;
     }

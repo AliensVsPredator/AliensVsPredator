@@ -3,7 +3,6 @@ package com.blib.neoforge.internal;
 import net.neoforged.fml.common.Mod;
 import org.jetbrains.annotations.ApiStatus;
 
-import com.blib.api.BLibAPI;
 import com.blib.mod.BLib;
 
 @ApiStatus.Internal
@@ -11,6 +10,6 @@ import com.blib.mod.BLib;
 public class BLibNeoForge {
 
     public BLibNeoForge() {
-        BLibAPI.initialize();
+        BLib.initialize();
     }
 }
