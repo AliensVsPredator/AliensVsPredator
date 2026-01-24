@@ -33,8 +33,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import com.blib.client.BLibClientMod;
-import com.blib.client.model.KeyInteractType;
+import com.blib.api.client.input.v1.model.KeyInteractType;
+import com.blib.api.client.mod.v1.BLibClientMod;
 
 @ApiStatus.Internal
 public interface BLibClientRegistryService {

@@ -30,11 +30,11 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import com.blib.client.BLibClientMod;
-import com.blib.client.event.BLibClientSetupEvent;
-import com.blib.client.event.impl.BLibClientSetupEvents;
-import com.blib.client.model.KeyInteractType;
-import com.blib.common.event.handle.impl.BLibEventListenerContainer;
+import com.blib.api.client.event.v1.BLibClientSetupEvent;
+import com.blib.api.client.event.v1.impl.BLibClientSetupEvents;
+import com.blib.api.client.input.v1.model.KeyInteractType;
+import com.blib.api.client.mod.v1.BLibClientMod;
+import com.blib.api.common.event.v1.handle.impl.BLibEventListenerContainer;
 
 @ApiStatus.Internal
 public class BLibNeoForgeClientModContainer {

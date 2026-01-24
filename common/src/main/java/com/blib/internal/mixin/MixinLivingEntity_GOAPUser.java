@@ -12,8 +12,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.blib.common.gameplay.goap.GOAPUser;
-import com.blib.common.gameplay.goap.LivingEntityAgent;
+import com.blib.api.common.goap.v1.GOAPUser;
+import com.blib.api.common.goap.v1.LivingEntityAgent;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity_GOAPUser extends Entity implements GOAPUser<LivingEntity> {

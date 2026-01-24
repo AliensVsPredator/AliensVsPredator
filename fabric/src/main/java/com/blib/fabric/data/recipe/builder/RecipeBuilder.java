@@ -7,7 +7,7 @@ import net.minecraft.world.level.ItemLike;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
-import com.blib.BLibMod;
+import com.blib.api.common.mod.v1.BLibMod;
 
 public class RecipeBuilder {
 

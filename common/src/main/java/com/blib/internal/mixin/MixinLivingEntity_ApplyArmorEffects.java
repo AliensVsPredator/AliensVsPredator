@@ -12,8 +12,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.blib.common.data.tag.BLibItemTags;
-import com.blib.common.gameplay.util.BLibEntityPredicates;
+import com.blib.api.common.entity.v1.BLibEntityPredicates;
+import com.blib.api.common.tag.v1.BLibItemTags;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity_ApplyArmorEffects extends Entity {

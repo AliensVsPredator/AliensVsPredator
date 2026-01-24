@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
-import com.blib.common.registry.SilencedEntityTypeBuilder;
+import com.blib.api.common.entity.v1.SilencedEntityTypeBuilder;
 
 @Mixin(EntityType.Builder.class)
 public class MixinEntityTypeBuilder_SilenceDataFixerError implements SilencedEntityTypeBuilder {

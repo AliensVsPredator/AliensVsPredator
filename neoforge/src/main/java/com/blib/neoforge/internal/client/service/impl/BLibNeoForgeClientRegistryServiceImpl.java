@@ -41,10 +41,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import com.blib.client.BLibClientMod;
-import com.blib.client.event.BLibClientSetupEvent;
-import com.blib.client.input.keybind.util.KeyMappingUtil;
-import com.blib.client.model.KeyInteractType;
+import com.blib.api.client.event.v1.BLibClientSetupEvent;
+import com.blib.api.client.input.v1.KeyMappingUtil;
+import com.blib.api.client.input.v1.model.KeyInteractType;
+import com.blib.api.client.mod.v1.BLibClientMod;
 import com.blib.internal.client.input.keybind.KeyPressHandler;
 import com.blib.internal.client.service.BLibClientRegistryService;
 

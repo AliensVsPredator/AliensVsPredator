@@ -9,7 +9,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.blib.common.data.tag.BLibEntityTypeTags;
+import com.blib.api.common.tag.v1.BLibEntityTypeTags;
 
 @ApiStatus.Internal
 public final class BLibEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagProvider {

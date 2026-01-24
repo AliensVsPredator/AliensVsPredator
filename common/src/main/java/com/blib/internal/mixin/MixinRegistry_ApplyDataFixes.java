@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Map;
 import java.util.Optional;
 
-import com.blib.common.data.fixer.BLibDataFixerRegistry;
+import com.blib.api.common.data_fix.v1.BLibDataFixerRegistry;
 
 @Mixin(MappedRegistry.class)
 public abstract class MixinRegistry_ApplyDataFixes<T> implements WritableRegistry<T> {

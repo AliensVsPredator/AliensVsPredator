@@ -7,10 +7,10 @@ import net.minecraft.data.recipes.RecipeOutput;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.blib.BLib;
 import com.blib.fabric.data.recipe.builder.RecipeBuilder;
 import com.blib.fabric.data.recipe.impl.vanilla.VanillaIronLikeRecipeProvider;
 import com.blib.fabric.data.recipe.impl.vanilla.VanillaMiscellaneousRecipeProvider;
+import com.blib.mod.BLib;
 
 public class RecipeProvider extends FabricRecipeProvider {
 

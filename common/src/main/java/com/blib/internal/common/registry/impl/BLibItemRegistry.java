@@ -9,12 +9,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
-import com.blib.BLib;
-import com.blib.BLibMod;
-import com.blib.common.gameplay.DefaultDispenseSpawnEggItemBehavior;
-import com.blib.common.model.loader.ModLoaderType;
-import com.blib.common.registry.BLibHolder;
-import com.blib.common.registry.BLibRegistry;
+import com.blib.api.BLibAPI;
+import com.blib.api.common.item.v1.DefaultDispenseSpawnEggItemBehavior;
+import com.blib.api.common.mod.v1.BLibMod;
+import com.blib.api.common.mod.v1.model.loader.ModLoaderType;
+import com.blib.api.common.registry.v1.BLibHolder;
+import com.blib.api.common.registry.v1.BLibRegistry;
 
 @ApiStatus.Internal
 public class BLibItemRegistry extends BLibRegistry<Item> {
@@ -27,7 +27,7 @@ public class BLibItemRegistry extends BLibRegistry<Item> {
     public <U extends Item> BLibHolder<U> createHolder(String path, Supplier<U> valueSupplier) {
         var supplier = valueSupplier;
 
-        if (BLib.getModLoaderType() == ModLoaderType.FABRIC) {
+        if (BLibAPI.getModLoaderType() == ModLoaderType.FABRIC) {
             supplier = injectSpawnEggItemDispenserBehaviorRegistration(valueSupplier);
         }
 

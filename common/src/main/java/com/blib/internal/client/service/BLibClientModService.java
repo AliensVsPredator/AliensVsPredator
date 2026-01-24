@@ -2,7 +2,7 @@ package com.blib.internal.client.service;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import com.blib.client.BLibClientMod;
+import com.blib.api.client.mod.v1.BLibClientMod;
 
 @ApiStatus.Internal
 public interface BLibClientModService {

@@ -1,6 +1,5 @@
 package com.blib.fabric.internal.data.tag;
 
-import com.compatibility.CommonItemTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
@@ -10,7 +9,8 @@ import org.jetbrains.annotations.ApiStatus;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.blib.common.data.tag.BLibItemTags;
+import com.blib.api.common.tag.v1.BLibItemTags;
+import com.blib.api.common.tag.v1.CommonItemTags;
 
 @ApiStatus.Internal
 public final class BLibItemTagProvider extends FabricTagProvider.ItemTagProvider {

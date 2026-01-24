@@ -4,7 +4,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ServiceLoader;
 
-import com.blib.BLib;
+import com.blib.api.BLibAPI;
 
 @ApiStatus.Internal
 public class BLibInternalServices {
@@ -26,7 +26,7 @@ public class BLibInternalServices {
             .findFirst()
             .orElseThrow(() -> new NullPointerException("Failed to load service for " + clazz.getName()));
 
-        BLib.LOGGER.debug("Loaded {} for service {}", loadedService, clazz);
+        BLibAPI.LOGGER.debug("Loaded {} for service {}", loadedService, clazz);
 
         return loadedService;
     }

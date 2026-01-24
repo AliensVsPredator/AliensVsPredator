@@ -6,7 +6,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "BlockBehaviourInvoker",
-    "MixinDataComponentPatch",
+    "MixinDataComponentPatch_Accessor",
     "MixinDecoratedPotPatterns_GetPatternForCustomSherds",
     "MixinEntity_DataUser",
     "MixinEntityTypeBuilder_SilenceDataFixerError",
@@ -17,7 +17,7 @@
     "MixinShapedRecipeBuilder_Accessor",
     "MixinShapelessRecipeBuilder_Accessor",
     "StructurePoolAccessor",
-    "server.MixinServerLevel"
+    "server.MixinServerLevel_BlockBreakProgressManager"
   ],
   "client": [],
   "server": [],
