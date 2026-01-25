@@ -1,8 +1,6 @@
 package com.blib.fabric.internal.client.service.impl;
 
 import com.just.core.functional.tuple.Tuple2;
-import mod.azure.azurelib.common.render.armor.AzArmorRenderer;
-import mod.azure.azurelib.common.render.item.AzItemRenderer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -37,9 +35,11 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import com.blib.client.BLibClientMod;
-import com.blib.client.input.keybind.util.KeyMappingUtil;
-import com.blib.client.model.KeyInteractType;
+import com.blib.api.client.input.v1.KeyMappingUtil;
+import com.blib.api.client.input.v1.model.KeyInteractType;
+import com.blib.api.client.mod.v1.BLibClientMod;
+import com.blib.azurelib.common.render.armor.AzArmorRenderer;
+import com.blib.azurelib.common.render.item.AzItemRenderer;
 import com.blib.internal.client.input.keybind.KeyPressHandler;
 import com.blib.internal.client.service.BLibClientRegistryService;
 

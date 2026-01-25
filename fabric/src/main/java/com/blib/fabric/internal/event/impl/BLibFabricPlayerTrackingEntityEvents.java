@@ -6,9 +6,9 @@ import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.Function;
 
-import com.blib.BLibMod;
-import com.blib.common.event.BLibPlayerTrackingEntityEvent;
-import com.blib.common.event.handle.BLibEventHandle;
+import com.blib.api.common.event.v1.BLibPlayerTrackingEntityEvent;
+import com.blib.api.common.event.v1.handle.BLibEventHandle;
+import com.blib.api.common.mod.v1.BLibMod;
 
 @ApiStatus.Internal
 public final class BLibFabricPlayerTrackingEntityEvents {

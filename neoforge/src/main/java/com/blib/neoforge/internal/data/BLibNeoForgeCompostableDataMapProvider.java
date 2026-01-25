@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.blib.BLibMod;
+import com.blib.api.common.mod.v1.BLibMod;
 import com.blib.internal.service.BLibInternalServices;
 import com.blib.neoforge.internal.service.impl.BLibNeoForgeRegistryServiceImpl;
 

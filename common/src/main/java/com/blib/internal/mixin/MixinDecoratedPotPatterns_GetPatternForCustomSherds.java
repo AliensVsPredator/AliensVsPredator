@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.blib.common.data.tag.BLibItemTags;
+import com.blib.api.common.tag.v1.BLibItemTags;
 import com.blib.internal.common.BLibDecoratedPotPatternCache;
 
 @Mixin(DecoratedPotPatterns.class)

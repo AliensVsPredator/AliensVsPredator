@@ -2,7 +2,7 @@ package com.blib.fabric.internal.service.impl;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import com.blib.BLibMod;
+import com.blib.api.common.mod.v1.BLibMod;
 import com.blib.internal.service.BLibInternalServices;
 import com.blib.internal.service.BLibModService;
 

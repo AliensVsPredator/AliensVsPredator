@@ -1,12 +1,12 @@
 package com.blib.fabric.data.recipe.impl.vanilla;
 
-import com.compatibility.CommonItemTags;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
-import com.blib.common.data.tag.BLibItemTags;
+import com.blib.api.common.tag.v1.BLibItemTags;
+import com.blib.api.common.tag.v1.CommonItemTags;
 import com.blib.fabric.data.recipe.builder.RecipeBuilder;
 
 public class VanillaIronLikeRecipeProvider {

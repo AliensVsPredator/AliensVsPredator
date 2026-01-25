@@ -9,8 +9,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.blib.common.network.data.DataContainer;
-import com.blib.common.network.data.DataUser;
+import com.blib.api.common.data_sync.v1.DataContainer;
+import com.blib.api.common.data_sync.v1.model.DataUser;
 
 @Mixin(Entity.class)
 public abstract class MixinEntity_DataUser implements DataUser {

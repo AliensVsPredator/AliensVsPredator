@@ -6,7 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.Optional;
 
-import com.blib.BLib;
+import com.blib.mod.BLib;
 
 public class BLibModelTemplates {
 

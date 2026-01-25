@@ -28,12 +28,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
-import com.blib.BLibMod;
-import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
-import com.blib.common.network.model.NetworkHandler;
-import com.blib.common.network.model.PacketDirection;
-import com.blib.common.registry.BLibHolder;
-import com.blib.common.util.codec.stream.adapter.JustStreamCodecToMojangStreamCodecAdapter;
+import com.blib.api.common.codec.v1.stream.adapter.J2MStreamCodecAdapter;
+import com.blib.api.common.entity.v1.spawning.BLibEntitySpawnData;
+import com.blib.api.common.mod.v1.BLibMod;
+import com.blib.api.common.network.v1.NetworkHandler;
+import com.blib.api.common.network.v1.PacketDirection;
+import com.blib.api.common.registry.v1.BLibHolder;
 import com.blib.internal.service.BLibRegistryService;
 
 @ApiStatus.Internal
@@ -109,7 +109,7 @@ public class BLibFabricRegistryServiceImpl implements BLibRegistryService {
     public <T extends CustomPacketPayload> void registerPacketDirection(BLibMod mod, PacketDirection<T> packetDirection) {
         var handleClient = false;
         var handleServer = false;
-        var codec = new JustStreamCodecToMojangStreamCodecAdapter<>(packetDirection.codec());
+        var codec = new J2MStreamCodecAdapter<>(packetDirection.codec());
         var type = packetDirection.type();
 
         switch (packetDirection) {

@@ -2,8 +2,8 @@ package com.blib.internal.client;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import com.blib.BLib;
-import com.blib.client.BLibClientMod;
+import com.blib.api.client.mod.v1.BLibClientMod;
+import com.blib.mod.BLib;
 
 public final class BLibClient {
 

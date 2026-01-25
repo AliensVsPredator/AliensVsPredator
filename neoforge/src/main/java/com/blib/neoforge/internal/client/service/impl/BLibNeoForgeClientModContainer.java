@@ -1,8 +1,6 @@
 package com.blib.neoforge.internal.client.service.impl;
 
 import com.just.core.functional.tuple.Tuple2;
-import mod.azure.azurelib.common.render.armor.AzArmorRenderer;
-import mod.azure.azurelib.common.render.item.AzItemRenderer;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -30,11 +28,13 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import com.blib.client.BLibClientMod;
-import com.blib.client.event.BLibClientSetupEvent;
-import com.blib.client.event.impl.BLibClientSetupEvents;
-import com.blib.client.model.KeyInteractType;
-import com.blib.common.event.handle.impl.BLibEventListenerContainer;
+import com.blib.api.client.event.v1.BLibClientSetupEvent;
+import com.blib.api.client.event.v1.impl.BLibClientSetupEvents;
+import com.blib.api.client.input.v1.model.KeyInteractType;
+import com.blib.api.client.mod.v1.BLibClientMod;
+import com.blib.api.common.event.v1.handle.impl.BLibEventListenerContainer;
+import com.blib.azurelib.common.render.armor.AzArmorRenderer;
+import com.blib.azurelib.common.render.item.AzItemRenderer;
 
 @ApiStatus.Internal
 public class BLibNeoForgeClientModContainer {

@@ -5,7 +5,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.Consumer;
 
-import com.blib.common.data.tag.BLibItemTags;
+import com.blib.api.common.tag.v1.BLibItemTags;
 
 @ApiStatus.Internal
 public final class EnUsItemTagProvider {

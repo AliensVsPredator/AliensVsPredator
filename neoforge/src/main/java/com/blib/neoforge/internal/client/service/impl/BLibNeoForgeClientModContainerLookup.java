@@ -5,7 +5,7 @@ import org.jetbrains.annotations.ApiStatus;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.blib.client.BLibClientMod;
+import com.blib.api.client.mod.v1.BLibClientMod;
 
 @ApiStatus.Internal
 public class BLibNeoForgeClientModContainerLookup {

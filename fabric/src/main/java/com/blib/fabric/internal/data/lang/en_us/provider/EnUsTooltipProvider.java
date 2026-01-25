@@ -5,8 +5,8 @@ import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.Consumer;
 
-import com.blib.common.data.TooltipTranslationKeys;
-import com.blib.common.gameplay.model.TooltipCategoryType;
+import com.blib.api.common.tooltip.v1.TooltipCategoryType;
+import com.blib.api.common.tooltip.v1.TooltipTranslationKeys;
 
 @ApiStatus.Internal
 public final class EnUsTooltipProvider {

@@ -64,8 +64,6 @@ neoForge {
 }
 
 dependencies {
-    implementation "mod.azure.azurelib:azurelib-neo-${project.minecraft_version}:${project.azurelib_version}"
-
     jarJar(implementation("com.just:just-codec:${project.just_codec_version}"))
     additionalRuntimeClasspath "com.just:just-codec:${project.just_codec_version}"
 
@@ -74,6 +72,8 @@ dependencies {
 
     jarJar(implementation("com.just:just-goap:${project.just_goap_version}"))
     additionalRuntimeClasspath "com.just:just-goap:${project.just_goap_version}"
+
+    compileOnly "maven.modrinth:shoulder-surfing-reloaded:1.21.1-4.14.3+neoforge"
 
     localRuntime "dev.architectury:architectury-neoforge:${project.architectury_version}"
     localRuntime "me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_version}"

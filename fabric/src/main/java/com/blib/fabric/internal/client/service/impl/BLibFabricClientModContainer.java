@@ -7,11 +7,11 @@ import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.BiConsumer;
 
-import com.blib.client.BLibClientMod;
-import com.blib.client.event.BLibClientSetupEvent;
-import com.blib.client.event.impl.BLibClientSetupEvents;
-import com.blib.common.event.handle.impl.BLibEventListenerContainer;
-import com.blib.common.network.model.NetworkHandler;
+import com.blib.api.client.event.v1.BLibClientSetupEvent;
+import com.blib.api.client.event.v1.impl.BLibClientSetupEvents;
+import com.blib.api.client.mod.v1.BLibClientMod;
+import com.blib.api.common.event.v1.handle.impl.BLibEventListenerContainer;
+import com.blib.api.common.network.v1.NetworkHandler;
 import com.blib.fabric.internal.service.impl.BLibFabricRegistryServiceImpl;
 import com.blib.internal.service.BLibInternalServices;
 

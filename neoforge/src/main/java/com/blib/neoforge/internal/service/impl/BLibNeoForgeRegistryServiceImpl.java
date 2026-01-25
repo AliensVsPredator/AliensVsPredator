@@ -34,13 +34,13 @@ import org.jetbrains.annotations.ApiStatus;
 import java.util.List;
 import java.util.function.Supplier;
 
-import com.blib.BLibMod;
-import com.blib.common.event.BLibCommonSetupEvent;
-import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
-import com.blib.common.network.model.NetworkHandler;
-import com.blib.common.network.model.PacketDirection;
-import com.blib.common.registry.BLibHolder;
-import com.blib.common.util.codec.stream.adapter.JustStreamCodecToMojangStreamCodecAdapter;
+import com.blib.api.common.codec.v1.stream.adapter.J2MStreamCodecAdapter;
+import com.blib.api.common.entity.v1.spawning.BLibEntitySpawnData;
+import com.blib.api.common.event.v1.BLibCommonSetupEvent;
+import com.blib.api.common.mod.v1.BLibMod;
+import com.blib.api.common.network.v1.NetworkHandler;
+import com.blib.api.common.network.v1.PacketDirection;
+import com.blib.api.common.registry.v1.BLibHolder;
 import com.blib.internal.service.BLibRegistryService;
 import com.blib.neoforge.internal.data.BLibNeoForgeCompostableDataMapProvider;
 import com.blib.neoforge.internal.data.BLibNeoForgeEntitySpawnDataProvider;
@@ -173,12 +173,12 @@ public class BLibNeoForgeRegistryServiceImpl implements BLibRegistryService {
                     switch (typedNetworkHandler) {
                         case NetworkHandler.FromClient<CustomPacketPayload> handler -> registrar.playToServer(
                             handler.type(),
-                            new JustStreamCodecToMojangStreamCodecAdapter<>(handler.codec()),
+                            new J2MStreamCodecAdapter<>(handler.codec()),
                             (payload, context) -> context.enqueueWork(() -> handler.payloadConsumer().accept(payload, context.player()))
                         );
                         case NetworkHandler.FromEither<CustomPacketPayload> handler -> registrar.playBidirectional(
                             handler.type(),
-                            new JustStreamCodecToMojangStreamCodecAdapter<>(handler.codec()),
+                            new J2MStreamCodecAdapter<>(handler.codec()),
                             new DirectionalPayloadHandler<>(
                                 (payload, context) -> context.enqueueWork(
                                     () -> handler.fromServerPayloadConsumer().accept(payload, context.player())
@@ -190,7 +190,7 @@ public class BLibNeoForgeRegistryServiceImpl implements BLibRegistryService {
                         );
                         case NetworkHandler.FromServer<CustomPacketPayload> handler -> registrar.playToClient(
                             handler.type(),
-                            new JustStreamCodecToMojangStreamCodecAdapter<>(handler.codec()),
+                            new J2MStreamCodecAdapter<>(handler.codec()),
                             (payload, context) -> context.enqueueWork(() -> handler.payloadConsumer().accept(payload, context.player()))
                         );
                     }

@@ -2,9 +2,9 @@ package com.blib.internal.client.service;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import com.blib.client.BLibClientMod;
-import com.blib.client.event.BLibClientSetupEvent;
-import com.blib.common.event.handle.BLibEventListenerHandle;
+import com.blib.api.client.event.v1.BLibClientSetupEvent;
+import com.blib.api.client.mod.v1.BLibClientMod;
+import com.blib.api.common.event.v1.handle.BLibEventListenerHandle;
 
 @ApiStatus.Internal
 public interface BLibClientEventService {

@@ -17,11 +17,11 @@ import org.jetbrains.annotations.ApiStatus;
 import java.util.List;
 import java.util.function.Supplier;
 
-import com.blib.BLibMod;
-import com.blib.common.gameplay.model.spawning.BLibEntitySpawnData;
-import com.blib.common.network.model.NetworkHandler;
-import com.blib.common.network.model.PacketDirection;
-import com.blib.common.registry.BLibHolder;
+import com.blib.api.common.entity.v1.spawning.BLibEntitySpawnData;
+import com.blib.api.common.mod.v1.BLibMod;
+import com.blib.api.common.network.v1.NetworkHandler;
+import com.blib.api.common.network.v1.PacketDirection;
+import com.blib.api.common.registry.v1.BLibHolder;
 
 @ApiStatus.Internal
 public interface BLibRegistryService {

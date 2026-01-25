@@ -4,8 +4,8 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.common.Mod;
 import org.jetbrains.annotations.ApiStatus;
 
-import com.blib.BLib;
 import com.blib.internal.client.BLibClient;
+import com.blib.mod.BLib;
 
 @ApiStatus.Internal
 @Mod(value = BLib.MOD_ID, dist = Dist.CLIENT)
