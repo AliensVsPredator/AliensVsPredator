@@ -1,4 +1,4 @@
-package com.blib.common.config.property;
+package com.blib.api.common.config.v1;
 
 import com.just.core.functional.option.Option;
 import org.jetbrains.annotations.Nullable;
@@ -413,8 +413,10 @@ public class PropertyConfig {
     private void removeLinesByPrefix(String prefix) {
         var searchPrefix = prefix + ".";
 
-        lines.removeIf(line -> line instanceof PropertyLine.Property prop &&
-            (prop.key().equals(prefix) || prop.key().startsWith(searchPrefix)));
+        lines.removeIf(
+            line -> line instanceof PropertyLine.Property prop &&
+                (prop.key().equals(prefix) || prop.key().startsWith(searchPrefix))
+        );
     }
 
     // ========== Utility Methods ==========

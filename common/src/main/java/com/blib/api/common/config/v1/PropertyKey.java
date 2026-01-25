@@ -1,7 +1,8 @@
-package com.blib.common.config.property;
+package com.blib.api.common.config.v1;
 
-import com.blib.common.config.property.serializer.PropertySerializer;
 import org.jetbrains.annotations.Nullable;
+
+import com.blib.api.common.config.v1.serializer.PropertySerializer;
 
 /**
  * A hierarchical key for accessing properties in a PropertyConfig. Keys form a tree structure where Parent nodes can
@@ -17,7 +18,8 @@ public sealed interface PropertyKey permits PropertyKey.Parent, PropertyKey.Leaf
     /**
      * Returns the parent key, or null if this is a root key.
      */
-    @Nullable Parent parent();
+    @Nullable
+    Parent parent();
 
     /**
      * Returns the full dot-separated path from root to this key.

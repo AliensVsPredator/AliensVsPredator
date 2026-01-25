@@ -1,4 +1,4 @@
-package com.blib.common.config.property;
+package com.blib.api.common.config.v1;
 
 /**
  * Represents a single line in a properties file. This allows preserving comments, blank lines, and property order when

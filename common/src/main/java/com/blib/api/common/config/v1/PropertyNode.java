@@ -1,4 +1,4 @@
-package com.blib.common.config.property;
+package com.blib.api.common.config.v1;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -23,7 +23,8 @@ final class PropertyNode {
     /**
      * Gets the raw string value at this node, or null if no value is set.
      */
-    @Nullable String getRawValue() {
+    @Nullable
+    String getRawValue() {
         return rawValue;
     }
 
@@ -38,7 +39,8 @@ final class PropertyNode {
     /**
      * Gets the cached deserialized value, or null if not cached.
      */
-    @Nullable Object getCachedValue() {
+    @Nullable
+    Object getCachedValue() {
         return cachedValue;
     }
 
@@ -66,7 +68,8 @@ final class PropertyNode {
     /**
      * Gets a child node by name, or null if it doesn't exist.
      */
-    @Nullable PropertyNode getChild(String name) {
+    @Nullable
+    PropertyNode getChild(String name) {
         return children.get(name);
     }
 
@@ -80,7 +83,8 @@ final class PropertyNode {
     /**
      * Removes a child node by name. Returns the removed node, or null if it didn't exist.
      */
-    @Nullable PropertyNode removeChild(String name) {
+    @Nullable
+    PropertyNode removeChild(String name) {
         return children.remove(name);
     }
 

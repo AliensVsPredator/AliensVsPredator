@@ -1,4 +1,4 @@
-package com.blib.common.config.property.serializer;
+package com.blib.api.common.config.v1.serializer;
 
 import com.just.core.functional.option.Option;
 
