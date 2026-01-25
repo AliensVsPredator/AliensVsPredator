@@ -1,20 +1,10 @@
-package com.blib.api.common.config.v1;
+package com.blib.api.common.property.v1;
 
-/**
- * Represents a single line in a properties file. This allows preserving comments, blank lines, and property order when
- * reading and writing.
- */
-public sealed interface PropertyLine {
+public sealed interface BLibPropertyLine {
 
-    /**
-     * Converts this line back to its file representation.
-     */
     String toFileLine();
 
-    /**
-     * A comment line (starts with #).
-     */
-    record Comment(String content) implements PropertyLine {
+    record Comment(String content) implements BLibPropertyLine {
 
         @Override
         public String toFileLine() {
@@ -22,10 +12,7 @@ public sealed interface PropertyLine {
         }
     }
 
-    /**
-     * A blank/whitespace-only line.
-     */
-    enum Blank implements PropertyLine {
+    enum Blank implements BLibPropertyLine {
 
         INSTANCE;
 
@@ -35,13 +22,10 @@ public sealed interface PropertyLine {
         }
     }
 
-    /**
-     * A property line with key and raw string value.
-     */
     record Property(
         String key,
         String rawValue
-    ) implements PropertyLine {
+    ) implements BLibPropertyLine {
 
         @Override
         public String toFileLine() {
@@ -49,10 +33,7 @@ public sealed interface PropertyLine {
         }
     }
 
-    /**
-     * Parses a line from a properties file.
-     */
-    static PropertyLine parse(String line) {
+    static BLibPropertyLine parse(String line) {
         if (line == null) {
             return Blank.INSTANCE;
         }
@@ -73,7 +54,7 @@ public sealed interface PropertyLine {
         var equalsIndex = line.indexOf('=');
 
         if (equalsIndex == -1) {
-            // Malformed line, treat as comment to preserve it
+            // Malformed line, treat as text to preserve it
             return new Comment(line);
         }
 
