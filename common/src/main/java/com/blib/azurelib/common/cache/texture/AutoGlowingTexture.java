@@ -20,8 +20,8 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
+import com.blib.api.BLibAPI;
 import com.blib.azurelib.AzureLib;
-import com.blib.azurelib.common.platform.Services;
 
 /**
  * Texture object type responsible for AzureLib's emissive render textures
@@ -96,7 +96,7 @@ public class AutoGlowingTexture extends AzAbstractTexture {
             if (glowLayerMeta != null) {
                 glowLayerMeta.createImageMask(baseImage, glowImage);
 
-                if (Services.PLATFORM.isDevelopmentEnvironment()) {
+                if (BLibAPI.isDevelopmentEnvironment()) {
                     printDebugImageToDisk(this.textureBase, baseImage);
                     printDebugImageToDisk(this.glowLayer, glowImage);
                 }

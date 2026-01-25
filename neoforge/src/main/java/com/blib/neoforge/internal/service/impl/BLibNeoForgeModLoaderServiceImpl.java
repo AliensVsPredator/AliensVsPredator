@@ -5,6 +5,8 @@ import net.neoforged.fml.loading.FMLLoader;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.file.Path;
+
 import com.blib.api.common.mod.v1.model.DistributionEnvironmentType;
 import com.blib.api.common.mod.v1.model.ReleaseEnvironmentType;
 import com.blib.api.common.mod.v1.model.Version;
@@ -13,6 +15,11 @@ import com.blib.internal.service.BLibModLoaderService;
 
 @ApiStatus.Internal
 public class BLibNeoForgeModLoaderServiceImpl implements BLibModLoaderService {
+
+    @Override
+    public Path getGameDirectory() {
+        return FMLLoader.getGamePath();
+    }
 
     @Override
     public ModLoaderType getModLoaderType() {

@@ -6,7 +6,7 @@ import net.minecraft.world.entity.Entity;
 
 import java.util.function.Supplier;
 
-import com.blib.azurelib.common.platform.Services;
+import com.blib.api.BLibAPI;
 
 /**
  * A utility class designed to handle interactions with the "Shoulder Surfing" mod. This class provides methods for:
@@ -35,7 +35,7 @@ public class ShoulderSurfingCompat {
      * is detected, it sets the internal state to indicate that the compatibility layer is successfully loaded.
      */
     public static void init() {
-        if (Services.PLATFORM.isModLoaded("shouldersurfing")) {
+        if (BLibAPI.isModLoaded("shouldersurfing")) {
             isLoaded = true;
         }
     }

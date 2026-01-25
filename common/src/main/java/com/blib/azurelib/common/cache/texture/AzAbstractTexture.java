@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
-import com.blib.azurelib.common.platform.Services;
+import com.blib.api.BLibAPI;
 
 public abstract class AzAbstractTexture extends SimpleTexture {
 
@@ -152,7 +152,7 @@ public abstract class AzAbstractTexture extends SimpleTexture {
      */
     protected void printDebugImageToDisk(ResourceLocation id, NativeImage newImage) {
         try {
-            File file = new File(Services.PLATFORM.getGameDir().toFile(), "GeoTexture Debug Printouts");
+            File file = new File(BLibAPI.getGameDirectory().toFile(), "GeoTexture Debug Printouts");
 
             if (!file.exists()) {
                 file.mkdirs();

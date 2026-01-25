@@ -6,9 +6,9 @@ import org.joml.Matrix4f;
 
 import java.util.UUID;
 
+import com.blib.api.BLibAPI;
 import com.blib.azurelib.common.animation.controller.AzAnimationController;
 import com.blib.azurelib.common.model.AzBone;
-import com.blib.azurelib.common.platform.Services;
 import com.blib.azurelib.common.render.AzLayerRenderer;
 import com.blib.azurelib.common.render.AzModelRenderer;
 import com.blib.azurelib.common.render.AzPhasedRenderer;
@@ -97,7 +97,7 @@ public class AzItemModelRenderer extends AzModelRenderer<UUID, ItemStack> {
         var animator = itemRendererPipeline.getRenderer().getAnimator();
         var isAnimationPlaying = false;
         // Check if the first-person mod is loaded as it has its own arm system for items
-        var firstPerson = Services.PLATFORM.isModLoaded("firstperson");
+        var firstPerson = BLibAPI.isModLoaded("firstperson");
         // Check if the bone is an arm bone and the first person mod is loaded
         var isArmBone = com.blib.azurelib.common.render.item.AzItemArmRenderUtil.isArmBone(bone) && !firstPerson;
 

@@ -8,11 +8,11 @@ import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.Function;
 
+import com.blib.api.BLibAPI;
 import com.blib.api.common.event.v1.BLibLevelTickEvent;
 import com.blib.api.common.event.v1.handle.BLibEventHandle;
 import com.blib.api.common.mod.v1.BLibMod;
 import com.blib.api.common.mod.v1.model.DistributionEnvironmentType;
-import com.blib.internal.service.BLibInternalServices;
 
 @ApiStatus.Internal
 public final class BLibFabricLevelTickEvents {
@@ -34,7 +34,7 @@ public final class BLibFabricLevelTickEvents {
 
         @Override
         public void onRegister(BLibLevelTickEvent event) {
-            if (BLibInternalServices.MOD_LOADER.getDistributionEnvironmentType() == DistributionEnvironmentType.CLIENT) {
+            if (BLibAPI.getDistributionType() == DistributionEnvironmentType.CLIENT) {
                 ClientTickEvents.END_WORLD_TICK.register(event::invoke);
             }
 
@@ -59,7 +59,7 @@ public final class BLibFabricLevelTickEvents {
 
         @Override
         public void onRegister(BLibLevelTickEvent event) {
-            if (BLibInternalServices.MOD_LOADER.getDistributionEnvironmentType() == DistributionEnvironmentType.CLIENT) {
+            if (BLibAPI.getDistributionType() == DistributionEnvironmentType.CLIENT) {
                 ClientTickEvents.START_WORLD_TICK.register(event::invoke);
             }
 

@@ -10,7 +10,7 @@ import net.minecraft.world.level.gameevent.vibrations.VibrationSystem.Data;
 import net.minecraft.world.level.gameevent.vibrations.VibrationSystem.Listener;
 import net.minecraft.world.level.gameevent.vibrations.VibrationSystem.User;
 
-import com.blib.azurelib.common.platform.Services;
+import com.blib.api.BLibAPI;
 
 /**
  * Custom class for use with {@link AzureVibrationUser}
@@ -43,7 +43,7 @@ public interface AzureTicker {
             data.setCurrentVibration(vibrationInfo);
             var vec3 = vibrationInfo.pos();
             data.setTravelTimeInTicks(user.calculateTravelTimeInTicks(vibrationInfo.distance()));
-            if (Services.PLATFORM.isDevelopmentEnvironment())
+            if (BLibAPI.isDevelopmentEnvironment())
                 serverLevel.sendParticles(
                     new VibrationParticleOption(user.getPositionSource(), data.getTravelTimeInTicks()),
                     vec3.x,

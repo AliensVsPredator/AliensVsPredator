@@ -2,6 +2,8 @@ package com.blib.api;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.file.Path;
+
 import com.blib.api.common.mod.v1.BLibMod;
 import com.blib.api.common.mod.v1.model.DistributionEnvironmentType;
 import com.blib.api.common.mod.v1.model.ReleaseEnvironmentType;
@@ -19,6 +21,10 @@ public final class BLibAPI {
         return BLibInternalServices.MOD_LOADER.getDistributionEnvironmentType();
     }
 
+    public static Path getGameDirectory() {
+        return BLibInternalServices.MOD_LOADER.getGameDirectory();
+    }
+
     public static ModLoaderType getModLoaderType() {
         return BLibInternalServices.MOD_LOADER.getModLoaderType();
     }
@@ -29,6 +35,10 @@ public final class BLibAPI {
 
     public static ReleaseEnvironmentType getReleaseEnvironmentType() {
         return BLibInternalServices.MOD_LOADER.getReleaseEnvironmentType();
+    }
+
+    public static boolean isDevelopmentEnvironment() {
+        return BLibInternalServices.MOD_LOADER.isDevelopmentEnvironment();
     }
 
     public static boolean isModLoaded(String modId) {

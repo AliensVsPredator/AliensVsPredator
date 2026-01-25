@@ -41,7 +41,7 @@ public class BLibMod implements BLibModStateAccess {
         this.networkAccess = new BLibNetworkAccess(this);
         this.registryAccess = new BLibRegistryAccess(this);
         this.resourceAccess = new BLibResourceAccess(this);
-        this.version = BLibInternalServices.MOD_LOADER.getModVersion(id);
+        this.version = BLibAPI.getModVersion(id);
         this.state = BLibModState.UNINITIALIZED;
     }
 

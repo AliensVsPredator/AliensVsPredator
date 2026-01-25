@@ -8,8 +8,6 @@ public final class Services {
 
     public static final AzureLibInitializer INITIALIZER = load(AzureLibInitializer.class);
 
-    public static final IPlatformHelper PLATFORM = load(IPlatformHelper.class);
-
     private Services() {
         throw new UnsupportedOperationException();
     }
