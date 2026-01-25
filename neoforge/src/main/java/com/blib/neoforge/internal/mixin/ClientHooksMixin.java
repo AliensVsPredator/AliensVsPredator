@@ -3,7 +3,7 @@
  * https://github.com/bernie-g/geckolib Copyright © 2024 Bernie-G. Licensed under the MIT License.
  * https://github.com/bernie-g/geckolib/blob/main/LICENSE
  */
-package com.blib.azurelib.neoforge.mixins;
+package com.blib.neoforge.internal.mixin;
 
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.Model;

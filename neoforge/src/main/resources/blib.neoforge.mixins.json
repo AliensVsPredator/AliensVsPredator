@@ -1,10 +1,13 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.blib.neoforge.mixin",
+  "package": "com.blib.neoforge.internal.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [],
-  "client": [],
+  "client": [
+    "ClientHooksMixin",
+    "MixinHumanoidArmorLayer"
+  ],
   "server": [],
   "injectors": {
     "defaultRequire": 1

@@ -25,7 +25,6 @@
     "azurelib.BlockEntityMixin_AzBlockEntityAnimatorCache",
     "azurelib.EntityMixin_AzEntityAnimatorCache",
     "azurelib.ItemStackMixin_AzItemAnimatorCache",
-    "azurelib.MixinHumanoidArmorLayer",
     "azurelib.MixinItemRenderer",
     "azurelib.TextureManagerMixin"
   ],

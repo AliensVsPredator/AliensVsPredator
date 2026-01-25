@@ -7,7 +7,9 @@
   "mixins": [
     "MixinFabricDataGenHelper_InjectNeoForgeResourceConditions"
   ],
-  "client": [],
+  "client": [
+    "MixinHumanoidArmorLayer"
+  ],
   "injectors": {
     "defaultRequire": 1
 	}

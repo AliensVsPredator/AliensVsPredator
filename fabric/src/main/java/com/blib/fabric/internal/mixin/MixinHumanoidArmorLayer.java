@@ -1,4 +1,9 @@
-package com.blib.azurelib.neoforge.mixins;
+/**
+ * This class is a fork of the matching class found in the Geckolib repository. Original source:
+ * https://github.com/bernie-g/geckolib Copyright © 2024 Bernie-G. Licensed under the MIT License.
+ * https://github.com/bernie-g/geckolib/blob/main/LICENSE
+ */
+package com.blib.fabric.internal.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Share;
@@ -25,7 +30,7 @@ import com.blib.azurelib.common.render.armor.AzArmorRendererRegistry;
 public abstract class MixinHumanoidArmorLayer<T extends LivingEntity, A extends HumanoidModel<T>> {
 
     @ModifyExpressionValue(
-        method = "renderArmorPiece(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/entity/EquipmentSlot;ILnet/minecraft/client/model/HumanoidModel;FFFFFF)V",
+        method = "renderArmorPiece",
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/world/entity/LivingEntity;getItemBySlot(Lnet/minecraft/world/entity/EquipmentSlot;)Lnet/minecraft/world/item/ItemStack;"
@@ -40,8 +45,7 @@ public abstract class MixinHumanoidArmorLayer<T extends LivingEntity, A extends 
     }
 
     @Inject(
-        method = "renderArmorPiece(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/entity/EquipmentSlot;ILnet/minecraft/client/model/HumanoidModel;FFFFFF)V",
-        at = @At(
+        method = "renderArmorPiece", at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/client/renderer/entity/layers/HumanoidArmorLayer;usesInnerModel(Lnet/minecraft/world/entity/EquipmentSlot;)Z"
         ), cancellable = true
@@ -49,16 +53,10 @@ public abstract class MixinHumanoidArmorLayer<T extends LivingEntity, A extends 
     public void azurelib$renderAzurelibModel(
         PoseStack poseStack,
         MultiBufferSource bufferSource,
-        LivingEntity entity,
+        T entity,
         EquipmentSlot equipmentSlot,
         int packedLight,
-        HumanoidModel baseModel,
-        float limbSwing,
-        float limbSwingAmount,
-        float partialTick,
-        float ageInTicks,
-        float netHeadYaw,
-        float headPitch,
+        A baseModel,
         CallbackInfo ci,
         @Share("item_by_slot") LocalRef<ItemStack> itemBySlotRef
     ) {
