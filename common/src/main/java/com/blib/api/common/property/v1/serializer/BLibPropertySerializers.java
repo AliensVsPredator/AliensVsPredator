@@ -105,7 +105,7 @@ public final class BLibPropertySerializers {
             }
 
             try {
-                return Long.parseLong(Long.trim());
+                return Long.parseLong(raw.trim());
             } catch (NumberFormatException e) {
                 return null;
             }
