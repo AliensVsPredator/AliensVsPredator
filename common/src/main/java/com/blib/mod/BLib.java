@@ -19,6 +19,7 @@ import com.blib.mod.common.network.BLibServerPacketHandlers;
 import com.blib.mod.common.registry.init.BLibDataComponents;
 import com.blib.mod.common.registry.init.BLibDataSyncKeys;
 import com.blib.mod.common.registry.init.BLibLootItemConditionTypes;
+import com.blib.mod.common.registry.init.BLibReloadListeners;
 
 @ApiStatus.Internal
 public class BLib {
@@ -35,6 +36,7 @@ public class BLib {
         LOGGER.info("Initializing BLib for platform '{}'", BLibAPI.getModLoaderType());
 
         BLib.MOD.initialize(() -> {
+            BLibReloadListeners.initialize();
             BLibDataComponents.initialize();
             BLibDataSyncKeys.initialize();
             BLibLootItemConditionTypes.initialize();
