@@ -28,7 +28,8 @@ dependencies {
     compileOnly "com.just:just-codec:${project.just_codec_version}"
     compileOnly "com.just:just-core:${project.just_core_version}"
     compileOnly "com.just:just-goap:${project.just_goap_version}"
-    compileOnly "mod.azure.azurelib:azurelib-common-${project.minecraft_version}:${project.azurelib_version}"
+
+    compileOnly "maven.modrinth:shoulder-surfing-reloaded:1.21.1-4.11.0+neoforge"
     compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${project.jei_version}"
     compileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:${project.rei_version}"
     compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"

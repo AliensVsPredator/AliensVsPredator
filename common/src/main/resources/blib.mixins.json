@@ -5,6 +5,8 @@
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "azurelib.AbstractContainerMenuMixin_AzItemIDFix",
+    "azurelib.ItemStackMixin_AzItemStackIdentityRegistry",
     "BlockBehaviourInvoker",
     "MixinDataComponentPatch_Accessor",
     "MixinDecoratedPotPatterns_GetPatternForCustomSherds",
@@ -19,7 +21,14 @@
     "StructurePoolAccessor",
     "server.MixinServerLevel_BlockBreakProgressManager"
   ],
-  "client": [],
+  "client": [
+    "azurelib.BlockEntityMixin_AzBlockEntityAnimatorCache",
+    "azurelib.EntityMixin_AzEntityAnimatorCache",
+    "azurelib.ItemStackMixin_AzItemAnimatorCache",
+    "azurelib.MixinHumanoidArmorLayer",
+    "azurelib.MixinItemRenderer",
+    "azurelib.TextureManagerMixin"
+  ],
   "server": [],
   "injectors": {
     "defaultRequire": 1

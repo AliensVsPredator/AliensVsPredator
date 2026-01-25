@@ -1,10 +1,6 @@
 package com.blib.internal.client.service;
 
 import com.just.core.functional.tuple.Tuple2;
-import mod.azure.azurelib.common.render.armor.AzArmorRenderer;
-import mod.azure.azurelib.common.render.armor.AzArmorRendererRegistry;
-import mod.azure.azurelib.common.render.item.AzItemRenderer;
-import mod.azure.azurelib.common.render.item.AzItemRendererRegistry;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -35,6 +31,10 @@ import java.util.function.Supplier;
 
 import com.blib.api.client.input.v1.model.KeyInteractType;
 import com.blib.api.client.mod.v1.BLibClientMod;
+import com.blib.azurelib.common.render.armor.AzArmorRenderer;
+import com.blib.azurelib.common.render.armor.AzArmorRendererRegistry;
+import com.blib.azurelib.common.render.item.AzItemRenderer;
+import com.blib.azurelib.common.render.item.AzItemRendererRegistry;
 
 @ApiStatus.Internal
 public interface BLibClientRegistryService {

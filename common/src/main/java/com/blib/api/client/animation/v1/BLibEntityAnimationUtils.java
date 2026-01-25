@@ -1,8 +1,9 @@
 package com.blib.api.client.animation.v1;
 
-import mod.azure.azurelib.common.animation.AzAnimationContext;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
+
+import com.blib.azurelib.common.animation.AzAnimationContext;
 
 public class BLibEntityAnimationUtils {
 

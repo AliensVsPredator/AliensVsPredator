@@ -1,10 +1,10 @@
 package com.blib.api.client.animation.v1;
 
-import mod.azure.azurelib.common.animation.dispatch.command.AzCommand;
-import mod.azure.azurelib.common.animation.play_behavior.AzPlayBehavior;
-import mod.azure.azurelib.common.animation.play_behavior.AzPlayBehaviors;
-
 import java.util.List;
+
+import com.blib.azurelib.common.animation.dispatch.command.AzCommand;
+import com.blib.azurelib.common.animation.play_behavior.AzPlayBehavior;
+import com.blib.azurelib.common.animation.play_behavior.AzPlayBehaviors;
 
 public class AzAnimationUtil {
 

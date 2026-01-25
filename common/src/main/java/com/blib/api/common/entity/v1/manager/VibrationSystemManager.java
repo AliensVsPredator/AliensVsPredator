@@ -1,7 +1,5 @@
 package com.blib.api.common.entity.v1.manager;
 
-import mod.azure.azurelib.common.vibration.AzureTicker;
-import mod.azure.azurelib.common.vibration.AzureVibrationUser;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.gameevent.DynamicGameEventListener;
@@ -9,6 +7,9 @@ import net.minecraft.world.level.gameevent.vibrations.VibrationSystem;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiConsumer;
+
+import com.blib.azurelib.common.vibration.AzureTicker;
+import com.blib.azurelib.common.vibration.AzureVibrationUser;
 
 public class VibrationSystemManager implements VibrationSystem {
 

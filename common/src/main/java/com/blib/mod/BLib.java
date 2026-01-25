@@ -13,8 +13,10 @@ import com.blib.api.common.data_sync.v1.DataContainer;
 import com.blib.api.common.data_sync.v1.model.DataUser;
 import com.blib.api.common.mod.v1.BLibMod;
 import com.blib.api.common.server.v1.ServerScheduler;
+import com.blib.azurelib.AzureLib;
 import com.blib.mod.common.network.BLibPacketDirections;
 import com.blib.mod.common.network.BLibServerPacketHandlers;
+import com.blib.mod.common.registry.init.BLibDataComponents;
 import com.blib.mod.common.registry.init.BLibDataSyncKeys;
 import com.blib.mod.common.registry.init.BLibLootItemConditionTypes;
 
@@ -28,9 +30,12 @@ public class BLib {
     public static final BLibMod MOD = BLibAPI.createMod(MOD_ID);
 
     public static void initialize() {
+        AzureLib.initialize();
+
         LOGGER.info("Initializing BLib for platform '{}'", BLibAPI.getModLoaderType());
 
         BLib.MOD.initialize(() -> {
+            BLibDataComponents.initialize();
             BLibDataSyncKeys.initialize();
             BLibLootItemConditionTypes.initialize();
             BLibPacketDirections.initialize();

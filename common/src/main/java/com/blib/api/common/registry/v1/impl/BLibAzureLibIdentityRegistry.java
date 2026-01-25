@@ -1,6 +1,5 @@
 package com.blib.api.common.registry.v1.impl;
 
-import mod.azure.azurelib.common.animation.cache.AzIdentityRegistry;
 import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -8,6 +7,7 @@ import com.blib.api.common.mod.v1.BLibMod;
 import com.blib.api.common.mod.v1.model.BLibModState;
 import com.blib.api.common.registry.v1.BLibHolder;
 import com.blib.api.common.registry.v1.exception.BLibRegistrationException;
+import com.blib.azurelib.common.animation.cache.AzIdentityRegistry;
 import com.blib.internal.service.BLibInternalServices;
 
 public class BLibAzureLibIdentityRegistry {
