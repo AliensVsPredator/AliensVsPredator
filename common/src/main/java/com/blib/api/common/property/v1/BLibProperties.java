@@ -42,6 +42,17 @@ public class BLibProperties {
         var writtenLines = new ArrayList<String>();
 
         var propertyPathToValueMap = propertyContainer.getPathToValueMap();
+        var alignPropertyValues = propertySchema.alignPropertyValues();
+
+        var maxPropertyPathLength = 0;
+
+        if (alignPropertyValues) {
+            for (var line : propertySchema.getLines()) {
+                if (line instanceof BLibPropertySchema.Line.Property<?> property) {
+                    maxPropertyPathLength = Math.max(maxPropertyPathLength, property.leaf().path().length());
+                }
+            }
+        }
 
         for (var line : propertySchema.getLines()) {
             switch (line) {
@@ -50,9 +61,12 @@ public class BLibProperties {
                 case BLibPropertySchema.Line.Property<?> property -> {
                     var propertyPath = property.leaf().path();
                     var propertyValueOrNull = propertyPathToValueMap.get(propertyPath);
+                    var padding = alignPropertyValues
+                        ? " ".repeat(maxPropertyPathLength - propertyPath.length())
+                        : "";
 
                     if (propertyValueOrNull == null) {
-                        writtenLines.add(propertyPath + "=" + property.defaultValue());
+                        writtenLines.add(propertyPath + padding + "= " + property.defaultValue());
                         continue;
                     }
 
@@ -68,7 +82,7 @@ public class BLibProperties {
                         case BLibPropertyValue.Serialized<?> propertyValue -> propertyValue.value();
                     };
 
-                    writtenLines.add(propertyPath + "=" + rawPropertyValue);
+                    writtenLines.add(propertyPath + padding + "= " + rawPropertyValue);
                 }
             }
         }

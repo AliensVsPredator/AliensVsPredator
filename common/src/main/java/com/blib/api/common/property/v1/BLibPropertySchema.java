@@ -15,11 +15,14 @@ public class BLibPropertySchema {
         return new Builder();
     }
 
+    private final boolean alignPropertyValues;
+
     private final List<Line> lines;
 
     private final Map<String, Line.Property<?>> pathToPropertyMap;
 
-    private BLibPropertySchema(List<Line> lines) {
+    private BLibPropertySchema(boolean alignPropertyValues, List<Line> lines) {
+        this.alignPropertyValues = alignPropertyValues;
         this.lines = Collections.unmodifiableList(lines);
         this.pathToPropertyMap = lines.stream()
             .filter(line -> line instanceof Line.Property<?>)
@@ -28,6 +31,10 @@ public class BLibPropertySchema {
                 return Map.entry(property.leaf().path(), property);
             })
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    public boolean alignPropertyValues() {
+        return alignPropertyValues;
     }
 
     public List<Line> getLines() {
@@ -43,8 +50,11 @@ public class BLibPropertySchema {
 
         private final List<Line> lines;
 
+        private boolean alignPropertyValues;
+
         private Builder() {
             this.lines = new ArrayList<>();
+            this.alignPropertyValues = true;
         }
 
         public Builder addBlankLine() {
@@ -62,12 +72,17 @@ public class BLibPropertySchema {
             return this;
         }
 
+        public Builder withPropertyValueAlignment(boolean alignPropertyValues) {
+            this.alignPropertyValues = alignPropertyValues;
+            return this;
+        }
+
         public Builder apply(UnaryOperator<Builder> unaryOperator) {
             return unaryOperator.apply(this);
         }
 
         public BLibPropertySchema build() {
-            return new BLibPropertySchema(lines);
+            return new BLibPropertySchema(alignPropertyValues, lines);
         }
     }
 
