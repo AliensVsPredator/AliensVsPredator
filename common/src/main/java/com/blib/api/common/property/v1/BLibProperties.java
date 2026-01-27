@@ -54,6 +54,8 @@ public class BLibProperties {
             }
         }
 
+        var assignmentText = " = ";
+
         for (var line : propertySchema.getLines()) {
             switch (line) {
                 case BLibPropertySchema.Line.Blank blank -> writtenLines.add("");
@@ -66,7 +68,7 @@ public class BLibProperties {
                         : "";
 
                     if (propertyValueOrNull == null) {
-                        writtenLines.add(propertyPath + padding + "= " + property.defaultValue());
+                        writtenLines.add(propertyPath + padding + assignmentText + property.defaultValue());
                         continue;
                     }
 
@@ -82,7 +84,7 @@ public class BLibProperties {
                         case BLibPropertyValue.Serialized<?> propertyValue -> propertyValue.value();
                     };
 
-                    writtenLines.add(propertyPath + padding + "= " + rawPropertyValue);
+                    writtenLines.add(propertyPath + padding + assignmentText + rawPropertyValue);
                 }
             }
         }
