@@ -16,6 +16,8 @@ import com.blib.api.common.server.v1.ServerScheduler;
 import com.blib.azurelib.AzureLib;
 import com.blib.mod.common.network.BLibPacketDirections;
 import com.blib.mod.common.network.BLibServerPacketHandlers;
+import com.blib.mod.common.registry.init.BLibBlockEntityTypes;
+import com.blib.mod.common.registry.init.BLibBlocks;
 import com.blib.mod.common.registry.init.BLibDataComponents;
 import com.blib.mod.common.registry.init.BLibDataSyncKeys;
 import com.blib.mod.common.registry.init.BLibLootItemConditionTypes;
@@ -36,6 +38,8 @@ public class BLib {
         LOGGER.info("Initializing BLib for platform '{}'", BLibAPI.getModLoaderType());
 
         BLib.MOD.initialize(() -> {
+            BLibBlocks.initialize();
+            BLibBlockEntityTypes.initialize();
             BLibReloadListeners.initialize();
             BLibDataComponents.initialize();
             BLibDataSyncKeys.initialize();

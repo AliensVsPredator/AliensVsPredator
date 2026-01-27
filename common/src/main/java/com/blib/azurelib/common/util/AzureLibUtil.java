@@ -8,6 +8,8 @@ package com.blib.azurelib.common.util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
+import com.blib.mod.common.registry.init.BLibBlocks;
+
 /**
  * Helper class for various AzureLib-specific functions.
  */
@@ -26,22 +28,27 @@ public record AzureLibUtil() {
     }
 
     public static BlockPos findFreeSpace(Level world, BlockPos blockPos, int maxDistance) {
-        if (blockPos == null)
+        if (blockPos == null) {
             return null;
+        }
 
         var offsets = new int[maxDistance * 2 + 1];
         offsets[0] = 0;
+
         for (var i = 2; i <= maxDistance * 2; i += 2) {
             offsets[i - 1] = i / 2;
             offsets[i] = -i / 2;
         }
+
         for (var x : offsets)
             for (var y : offsets)
                 for (var z : offsets) {
                     var offsetPos = blockPos.offset(x, y, z);
                     var state = world.getBlockState(offsetPos);
-                    if (state.isAir() /* || state.getBlock().equals(AzureBlocksRegistry.TICKING_LIGHT_BLOCK.get()) */)
+
+                    if (state.isAir() || state.getBlock().equals(BLibBlocks.TICKING_LIGHT.get())) {
                         return offsetPos;
+                    }
                 }
         return null;
     }
