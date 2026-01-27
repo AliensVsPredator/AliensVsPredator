@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "blib:block/ticking_light"
+    }
+  }
+}
