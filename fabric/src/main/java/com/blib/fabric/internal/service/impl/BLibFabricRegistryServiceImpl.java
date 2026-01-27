@@ -131,7 +131,7 @@ public class BLibFabricRegistryServiceImpl implements BLibRegistryService {
     }
 
     @Override
-    public void registerReloadListener(BLibMod mod, String path, PreparableReloadListener listener) {
+    public void registerReloadListener(BLibMod mod, String path, PreparableReloadListener listener, PackType packType) {
         var resourceLocation = mod.resources().createLocation(path);
         var adaptedListener = new IdentifiableResourceReloadListener() {
 
@@ -160,7 +160,7 @@ public class BLibFabricRegistryServiceImpl implements BLibRegistryService {
             }
         };
 
-        ResourceManagerHelper.get(PackType.SERVER_DATA)
+        ResourceManagerHelper.get(packType)
             .registerReloadListener(adaptedListener);
     }
 

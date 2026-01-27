@@ -1,5 +1,6 @@
 package com.blib.mod.common.registry.init;
 
+import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -17,7 +18,7 @@ public class BLibReloadListeners {
     private static final BLibReloadListenerRegistry REGISTRY = BLib.MOD.registries().createReloadListenerRegistry();
 
     public static void initialize() {
-        REGISTRY.register("azurelib_cache", BLibReloadListeners::reload);
+        REGISTRY.register("azurelib_cache", BLibReloadListeners::reload, PackType.CLIENT_RESOURCES);
     }
 
     private static CompletableFuture<Void> reload(

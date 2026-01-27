@@ -3,10 +3,13 @@ package com.blib.neoforge.internal.service.impl;
 import com.just.core.functional.tuple.Tuple2;
 import com.just.core.functional.tuple.Tuple4;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Holder;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -34,10 +37,12 @@ import org.jetbrains.annotations.ApiStatus;
 import java.util.List;
 import java.util.function.Supplier;
 
+import com.blib.api.BLibAPI;
 import com.blib.api.common.codec.v1.stream.adapter.J2MStreamCodecAdapter;
 import com.blib.api.common.entity.v1.spawning.BLibEntitySpawnData;
 import com.blib.api.common.event.v1.BLibCommonSetupEvent;
 import com.blib.api.common.mod.v1.BLibMod;
+import com.blib.api.common.mod.v1.model.DistributionEnvironmentType;
 import com.blib.api.common.network.v1.NetworkHandler;
 import com.blib.api.common.network.v1.PacketDirection;
 import com.blib.api.common.registry.v1.BLibHolder;
@@ -109,9 +114,12 @@ public class BLibNeoForgeRegistryServiceImpl implements BLibRegistryService {
     }
 
     @Override
-    public void registerReloadListener(BLibMod mod, String path, PreparableReloadListener listener) {
-        getModContainer(mod)
-            .registerReloadListener(listener);
+    public void registerReloadListener(BLibMod mod, String path, PreparableReloadListener listener, PackType packType) {
+        switch (packType) {
+            case CLIENT_RESOURCES -> registerClientReloadListener(listener);
+            case SERVER_DATA -> getModContainer(mod)
+                .registerReloadListener(listener, packType);
+        }
     }
 
     @Override
@@ -203,7 +211,8 @@ public class BLibNeoForgeRegistryServiceImpl implements BLibRegistryService {
         );
 
         NeoForge.EVENT_BUS.<AddReloadListenerEvent>addListener(
-            event -> modContainer.getReloadListeners().forEach(event::addListener)
+            event -> modContainer.getReloadListeners()
+                .forEach(tuple2 -> event.addListener(tuple2.v1()))
         );
 
         NeoForge.EVENT_BUS.<VillagerTradesEvent>addListener(event -> {
@@ -259,5 +268,23 @@ public class BLibNeoForgeRegistryServiceImpl implements BLibRegistryService {
                     RegisterSpawnPlacementsEvent.Operation.AND
                 );
             });
+    }
+
+    private static void registerClientReloadListener(PreparableReloadListener preparableReloadListener) {
+        if (BLibAPI.getDistributionType() != DistributionEnvironmentType.CLIENT) {
+            return;
+        }
+
+        var mc = Minecraft.getInstance();
+
+        if (mc == null) {
+            return;
+        }
+
+        if (!(mc.getResourceManager() instanceof ReloadableResourceManager resourceManager)) {
+            throw new RuntimeException("Client reload listener was initialized too early!");
+        }
+
+        resourceManager.registerReloadListener(preparableReloadListener);
     }
 }

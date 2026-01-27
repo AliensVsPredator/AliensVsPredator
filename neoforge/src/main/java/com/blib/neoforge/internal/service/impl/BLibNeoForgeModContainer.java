@@ -7,6 +7,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -91,7 +92,7 @@ public class BLibNeoForgeModContainer {
 
     private final BLibNeoForgeEventHandle<BLibServerLifecycleEvent.Stopping> serverStopping;
 
-    private final List<PreparableReloadListener> reloadListeners;
+    private final List<Tuple2<PreparableReloadListener, PackType>> reloadListeners;
 
     private final List<Tuple3<Supplier<VillagerProfession>, Integer, List<VillagerTrades.ItemListing>>> villagerTradeData;
 
@@ -200,7 +201,7 @@ public class BLibNeoForgeModContainer {
         return Collections.unmodifiableList(networkHandlers);
     }
 
-    /* package-private */ List<PreparableReloadListener> getReloadListeners() {
+    /* package-private */ List<Tuple2<PreparableReloadListener, PackType>> getReloadListeners() {
         return Collections.unmodifiableList(reloadListeners);
     }
 
@@ -239,8 +240,8 @@ public class BLibNeoForgeModContainer {
         networkHandlers.add(networkHandler);
     }
 
-    /* package-private */ void registerReloadListener(PreparableReloadListener listener) {
-        reloadListeners.add(listener);
+    /* package-private */ void registerReloadListener(PreparableReloadListener listener, PackType packType) {
+        reloadListeners.add(new Tuple2<>(listener, packType));
     }
 
     /* package-private */ void registerVillagerTrade(

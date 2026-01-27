@@ -4,6 +4,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Holder;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -45,7 +46,7 @@ public interface BLibRegistryService {
 
     <T extends CustomPacketPayload> void registerPacketDirection(BLibMod mod, PacketDirection<T> packetDirection);
 
-    void registerReloadListener(BLibMod mod, String path, PreparableReloadListener listener);
+    void registerReloadListener(BLibMod mod, String path, PreparableReloadListener listener, PackType packType);
 
     void registerVillagerTrade(
         BLibHolder<VillagerProfession> holder,
