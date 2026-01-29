@@ -14,7 +14,11 @@ public class BLibBlockEntityTypes {
 
     public static final BLibHolder<BlockEntityType<TickingLightBlockEntity>> TICKING_LIGHT = REGISTRY.createHolder(
         "ticking_light",
-        () -> BlockEntityType.Builder.of(TickingLightBlockEntity::new).build(null)
+        () -> BlockEntityType.Builder.of(
+            TickingLightBlockEntity::new,
+            BLibBlocks.TICKING_LIGHT.get()
+        )
+            .build(null)
     );
 
     public static void initialize() {
