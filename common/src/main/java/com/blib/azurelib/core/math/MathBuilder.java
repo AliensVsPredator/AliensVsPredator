@@ -1,8 +1,3 @@
-/**
- * This class is a fork of the matching class found in the Geckolib repository. Original source:
- * https://github.com/bernie-g/geckolib Copyright © 2024 Bernie-G. Licensed under the MIT License.
- * https://github.com/bernie-g/geckolib/blob/main/LICENSE
- */
 package com.blib.azurelib.core.math;
 
 import java.lang.reflect.Constructor;
@@ -54,29 +49,16 @@ import com.blib.azurelib.core.math.functions.rounding.Round;
 import com.blib.azurelib.core.math.functions.rounding.Trunc;
 import com.blib.azurelib.core.math.functions.utility.*;
 
-/**
- * Math builder This class is responsible for parsing math expressions provided by user in a string to an
- * {@link com.blib.azurelib.core.math.IValue} which can be used to compute some value dynamically using different math
- * operators, variables and functions. It works by first breaking down given string into a list of tokens and then
- * putting them together in a binary tree-like {@link com.blib.azurelib.core.math.IValue}. TODO: maybe implement
- * constant pool (to reuse same values)? TODO: maybe pre-compute constant expressions?
- */
 public class MathBuilder {
 
-    /**
-     * Named variables that can be used in math expression by this builder
-     */
-    public Map<String, com.blib.azurelib.core.math.Variable> variables = new HashMap<String, com.blib.azurelib.core.math.Variable>();
+    public Map<String, Variable> variables = new HashMap<String, Variable>();
 
-    /**
-     * Map of functions which can be used in the math expressions
-     */
-    public Map<String, Class<? extends Function>> functions = new HashMap<String, Class<? extends Function>>();
+    public Map<String, Class<? extends Function>> functions = new HashMap<>();
 
     public MathBuilder() {
         /* Some default values */
-        this.register(new com.blib.azurelib.core.math.Variable("PI", Math.PI));
-        this.register(new com.blib.azurelib.core.math.Variable("E", Math.E));
+        this.register(new Variable("PI", Math.PI));
+        this.register(new Variable("E", Math.E));
 
         /* Rounding functions */
         this.functions.put("floor", Floor.class);
@@ -166,23 +148,14 @@ public class MathBuilder {
         this.functions.put("ease_in_out_bounce", EaseInOutBounce.class);
     }
 
-    /**
-     * Register a variable
-     */
-    public void register(com.blib.azurelib.core.math.Variable variable) {
+    public void register(Variable variable) {
         this.variables.put(variable.getName(), variable);
     }
 
-    /**
-     * Parse given math expression into a {@link com.blib.azurelib.core.math.IValue} which can be used to execute math.
-     */
-    public com.blib.azurelib.core.math.IValue parse(String expression) throws Exception {
+    public IValue parse(String expression) throws Exception {
         return this.parseSymbols(this.breakdownChars(this.breakdown(expression)));
     }
 
-    /**
-     * Break down an expression
-     */
     public String[] breakdown(String expression) throws AzureLibException {
         /* If given string has illegal characters, then it can't be parsed */
         if (!expression.matches("^[\\w\\d\\s_+-/*%^&|<>=!?:.,()]+$")) {
@@ -216,9 +189,6 @@ public class MathBuilder {
         return chars;
     }
 
-    /**
-     * Breakdown characters into a list of math expression symbols.
-     */
     public List<Object> breakdownChars(String[] chars) {
         List<Object> symbols = new ArrayList<>();
         String buffer = "";
@@ -301,14 +271,8 @@ public class MathBuilder {
         return symbols;
     }
 
-    /**
-     * Parse symbols This function is the most important part of this class. It's responsible for turning list of
-     * symbols into {@link com.blib.azurelib.core.math.IValue}. This is done by constructing a binary tree-like
-     * {@link com.blib.azurelib.core.math.IValue} based on {@link com.blib.azurelib.core.math.Operator} class. However,
-     * beside parsing operations, it's also can return one or two item sized symbol lists.
-     */
-    public com.blib.azurelib.core.math.IValue parseSymbols(List<Object> symbols) throws Exception {
-        com.blib.azurelib.core.math.IValue ternary = this.tryTernary(symbols);
+    public IValue parseSymbols(List<Object> symbols) throws Exception {
+        IValue ternary = this.tryTernary(symbols);
 
         if (ternary != null) {
             return ternary;
@@ -339,35 +303,35 @@ public class MathBuilder {
             int leftOp = this.seekLastOperator(symbols, op - 1);
 
             if (leftOp != -1) {
-                com.blib.azurelib.core.math.Operation left = this.operationForOperator((String) symbols.get(leftOp));
-                com.blib.azurelib.core.math.Operation right = this.operationForOperator((String) symbols.get(op));
+                Operation left = this.operationForOperator((String) symbols.get(leftOp));
+                Operation right = this.operationForOperator((String) symbols.get(op));
 
                 if (right.value > left.value) {
-                    com.blib.azurelib.core.math.IValue leftValue = this.parseSymbols(symbols.subList(0, leftOp));
-                    com.blib.azurelib.core.math.IValue rightValue = this.parseSymbols(symbols.subList(leftOp + 1, size));
+                    IValue leftValue = this.parseSymbols(symbols.subList(0, leftOp));
+                    IValue rightValue = this.parseSymbols(symbols.subList(leftOp + 1, size));
 
-                    return new com.blib.azurelib.core.math.Operator(left, leftValue, rightValue);
+                    return new Operator(left, leftValue, rightValue);
                 } else if (left.value > right.value) {
-                    com.blib.azurelib.core.math.Operation initial = this.operationForOperator((String) symbols.get(lastOp));
+                    Operation initial = this.operationForOperator((String) symbols.get(lastOp));
 
                     if (initial.value < left.value) {
-                        com.blib.azurelib.core.math.IValue leftValue = this.parseSymbols(symbols.subList(0, lastOp));
-                        com.blib.azurelib.core.math.IValue rightValue = this.parseSymbols(symbols.subList(lastOp + 1, size));
+                        IValue leftValue = this.parseSymbols(symbols.subList(0, lastOp));
+                        IValue rightValue = this.parseSymbols(symbols.subList(lastOp + 1, size));
 
-                        return new com.blib.azurelib.core.math.Operator(initial, leftValue, rightValue);
+                        return new Operator(initial, leftValue, rightValue);
                     }
 
-                    com.blib.azurelib.core.math.IValue leftValue = this.parseSymbols(symbols.subList(0, op));
-                    com.blib.azurelib.core.math.IValue rightValue = this.parseSymbols(symbols.subList(op + 1, size));
+                    IValue leftValue = this.parseSymbols(symbols.subList(0, op));
+                    IValue rightValue = this.parseSymbols(symbols.subList(op + 1, size));
 
-                    return new com.blib.azurelib.core.math.Operator(right, leftValue, rightValue);
+                    return new Operator(right, leftValue, rightValue);
                 }
             }
 
             op = leftOp;
         }
 
-        com.blib.azurelib.core.math.Operation operation = this.operationForOperator((String) symbols.get(lastOp));
+        Operation operation = this.operationForOperator((String) symbols.get(lastOp));
 
         return new Operator(
             operation,
@@ -380,9 +344,6 @@ public class MathBuilder {
         return this.seekLastOperator(symbols, symbols.size() - 1);
     }
 
-    /**
-     * Find the index of the first operator
-     */
     protected int seekLastOperator(List<Object> symbols, int offset) {
         for (int i = offset; i >= 0; i--) {
             Object o = symbols.get(i);
@@ -399,9 +360,6 @@ public class MathBuilder {
         return this.seekFirstOperator(symbols, 0);
     }
 
-    /**
-     * Find the index of the first operator
-     */
     protected int seekFirstOperator(List<Object> symbols, int offset) {
         for (int i = offset, size = symbols.size(); i < size; i++) {
             Object o = symbols.get(i);
@@ -414,11 +372,7 @@ public class MathBuilder {
         return -1;
     }
 
-    /**
-     * Try parsing a ternary expression From what we know, with ternary expressions, we should have only one ? and :,
-     * and some elements from beginning till ?, in between ? and :, and also some remaining elements after :.
-     */
-    protected com.blib.azurelib.core.math.IValue tryTernary(List<Object> symbols) throws Exception {
+    protected IValue tryTernary(List<Object> symbols) throws Exception {
         int question = -1;
         int questions = 0;
         int colon = -1;
@@ -456,36 +410,30 @@ public class MathBuilder {
         return null;
     }
 
-    /**
-     * Create a function value This method in comparison to {@link #valueFromObject(Object)} needs the name of the
-     * function and list of args (which can't be stored in one object). This method will constructs
-     * {@link com.blib.azurelib.core.math.IValue}s from list of args mixed with operators, groups, values and commas.
-     * And then plug it in to a class constructor with given name.
-     */
-    protected com.blib.azurelib.core.math.IValue createFunction(String first, List<Object> args) throws Exception {
+    protected IValue createFunction(String first, List<Object> args) throws Exception {
         /* Handle special cases with negation */
         if (first.equals("!")) {
-            return new com.blib.azurelib.core.math.Negate(this.parseSymbols(args));
+            return new Negate(this.parseSymbols(args));
         }
 
         if (first.startsWith("!") && first.length() > 1) {
-            return new com.blib.azurelib.core.math.Negate(this.createFunction(first.substring(1), args));
+            return new Negate(this.createFunction(first.substring(1), args));
         }
 
         /* Handle inversion of the value */
         if (first.equals("-")) {
-            return new com.blib.azurelib.core.math.Negative(new com.blib.azurelib.core.math.Group(this.parseSymbols(args)));
+            return new Negative(new Group(this.parseSymbols(args)));
         }
 
         if (first.startsWith("-") && first.length() > 1) {
-            return new com.blib.azurelib.core.math.Negative(this.createFunction(first.substring(1), args));
+            return new Negative(this.createFunction(first.substring(1), args));
         }
 
         if (!this.functions.containsKey(first)) {
             throw new AzureLibException("Function '" + first + "' couldn't be found!");
         }
 
-        List<com.blib.azurelib.core.math.IValue> values = new ArrayList<>();
+        List<IValue> values = new ArrayList<>();
         List<Object> buffer = new ArrayList<>();
 
         for (Object o : args) {
@@ -502,15 +450,11 @@ public class MathBuilder {
         }
 
         Class<? extends Function> function = this.functions.get(first);
-        Constructor<? extends Function> ctor = function.getConstructor(com.blib.azurelib.core.math.IValue[].class, String.class);
-        return ctor.newInstance(values.toArray(new com.blib.azurelib.core.math.IValue[values.size()]), first);
+        Constructor<? extends Function> ctor = function.getConstructor(IValue[].class, String.class);
+        return ctor.newInstance(values.toArray(new IValue[values.size()]), first);
     }
 
-    /**
-     * Get value from an object. This method is responsible for creating different sort of values based on the input
-     * object. It can create constants, variables and groups.
-     */
-    public com.blib.azurelib.core.math.IValue valueFromObject(Object object) {
+    public IValue valueFromObject(Object object) {
         try {
 
             if (object instanceof List) {
@@ -524,12 +468,12 @@ public class MathBuilder {
                 }
 
                 if (this.isDecimal(symbol)) {
-                    return new com.blib.azurelib.core.math.Constant(Double.parseDouble(symbol));
+                    return new Constant(Double.parseDouble(symbol));
                 } else if (this.isVariable(symbol)) {
                     /* Need to account for a negative value variable */
                     if (symbol.startsWith("-")) {
                         symbol = symbol.substring(1);
-                        com.blib.azurelib.core.math.Variable value = this.getVariable(symbol);
+                        Variable value = this.getVariable(symbol);
 
                         if (value != null) {
                             return new Negative(value);
@@ -551,18 +495,12 @@ public class MathBuilder {
         return new Constant(0);
     }
 
-    /**
-     * Get variable
-     */
     protected Variable getVariable(String name) {
         return this.variables.get(name);
     }
 
-    /**
-     * Get operation for given operator strings
-     */
-    protected com.blib.azurelib.core.math.Operation operationForOperator(String op) throws AzureLibException {
-        for (com.blib.azurelib.core.math.Operation operation : com.blib.azurelib.core.math.Operation.values()) {
+    protected Operation operationForOperator(String op) throws AzureLibException {
+        for (Operation operation : Operation.values()) {
             if (operation.sign.equals(op)) {
                 return operation;
             }
@@ -571,9 +509,6 @@ public class MathBuilder {
         throw new AzureLibException("There is no such operator '" + op + "'!");
     }
 
-    /**
-     * Whether given object is a variable
-     */
     protected boolean isVariable(Object o) {
         return o instanceof String string && !this.isDecimal((String) o) && !this.isOperator(string);
     }
@@ -582,16 +517,10 @@ public class MathBuilder {
         return o instanceof String string && this.isOperator(string);
     }
 
-    /**
-     * Whether string is an operator
-     */
     protected boolean isOperator(String s) {
         return Operation.OPERATORS.contains(s) || s.equals("?") || s.equals(":");
     }
 
-    /**
-     * Whether string is numeric (including whether it's a floating number)
-     */
     protected boolean isDecimal(String s) {
         return s.matches("^-?\\d+(\\.\\d+)?$");
     }

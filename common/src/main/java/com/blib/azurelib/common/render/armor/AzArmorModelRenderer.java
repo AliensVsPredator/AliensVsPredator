@@ -9,7 +9,6 @@ import java.util.UUID;
 import com.blib.azurelib.common.model.AzBone;
 import com.blib.azurelib.common.render.AzLayerRenderer;
 import com.blib.azurelib.common.render.AzModelRenderer;
-import com.blib.azurelib.common.render.AzPhasedRenderer;
 import com.blib.azurelib.common.render.AzRendererPipelineContext;
 import com.blib.azurelib.common.util.client.RenderUtils;
 
@@ -25,11 +24,6 @@ public class AzArmorModelRenderer extends AzModelRenderer<UUID, ItemStack> {
         this.armorRendererPipeline = armorRendererPipeline;
     }
 
-    /**
-     * The actual render method that subtype renderers should override to handle their specific rendering tasks.<br>
-     * {@link AzPhasedRenderer#preRender} has already been called by this stage, and {@link AzPhasedRenderer#postRender}
-     * will be called directly after
-     */
     @Override
     public void render(AzRendererPipelineContext<UUID, ItemStack> context, boolean isReRender) {
         var poseStack = context.poseStack();
@@ -53,9 +47,6 @@ public class AzArmorModelRenderer extends AzModelRenderer<UUID, ItemStack> {
         poseStack.popPose();
     }
 
-    /**
-     * Renders the provided {@link AzBone} and its associated child bones
-     */
     @Override
     public void renderRecursively(AzRendererPipelineContext<UUID, ItemStack> context, AzBone bone, boolean isReRender) {
         var poseStack = context.poseStack();

@@ -12,7 +12,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -92,9 +91,6 @@ public abstract class AzAbstractTexture extends SimpleTexture {
         }
     }
 
-    /**
-     * Generates the texture instance for the given path with the given appendix if it hasn't already been generated
-     */
     protected static void generateTexture(
         ResourceLocation texturePath,
         Consumer<TextureManager> textureManagerConsumer
@@ -115,9 +111,6 @@ public abstract class AzAbstractTexture extends SimpleTexture {
             textureManagerConsumer.accept(textureManager);
     }
 
-    /**
-     * No-frills helper method for uploading {@link NativeImage images} into memory for use
-     */
     public static void uploadSimple(int texture, NativeImage image, boolean blur, boolean clamp) {
         TextureUtil.prepareImage(texture, 0, image.getWidth(), image.getHeight());
         image.upload(0, 0, 0, 0, 0, image.getWidth(), image.getHeight(), blur, clamp, false, true);
@@ -147,9 +140,6 @@ public abstract class AzAbstractTexture extends SimpleTexture {
         }
     }
 
-    /**
-     * Debugging function to write out the generated glowmap image to disk
-     */
     protected void printDebugImageToDisk(ResourceLocation id, NativeImage newImage) {
         try {
             File file = new File(BLibAPI.getGameDirectory().toFile(), "GeoTexture Debug Printouts");
@@ -172,21 +162,9 @@ public abstract class AzAbstractTexture extends SimpleTexture {
         }
     }
 
-    /**
-     * Called at {@link AbstractTexture#load} time to load this texture for the first time into the render cache.
-     * Generate and apply the necessary functions here, then return the RenderCall to submit to the render pipeline.
-     *
-     * @return The RenderCall to submit to the render pipeline, or null if no further action required
-     */
     @Nullable
     protected abstract RenderCall loadTexture(ResourceManager resourceManager, Minecraft mc) throws IOException;
 
-    /**
-     * Get the emissive resource equivalent of the input resource path.<br>
-     * Additionally prepares the texture manager for the missing texture if the resource is not present
-     *
-     * @return The glowlayer resourcepath for the provided input path
-     */
     public static ResourceLocation getEmissiveResource(ResourceLocation baseResource) {
         ResourceLocation path = appendToPath(baseResource, APPENDIX);
 
@@ -198,21 +176,10 @@ public abstract class AzAbstractTexture extends SimpleTexture {
         return path;
     }
 
-    /**
-     * Return a cached instance of the RenderType for the given texture for GeoGlowingLayer rendering.
-     *
-     * @param texture The texture of the resource to apply a glow layer to
-     */
     public static RenderType getRenderType(ResourceLocation texture) {
         return GLOWING_RENDER_TYPE.apply(getEmissiveResource(texture), false);
     }
 
-    /**
-     * Return a cached instance of the RenderType for the given texture for AutoGlowingGeoLayer rendering, while the
-     * entity has an outline
-     *
-     * @param texture The texture of the resource to apply a glow layer to
-     */
     public static RenderType getOutlineRenderType(ResourceLocation texture) {
         return GLOWING_RENDER_TYPE.apply(getEmissiveResource(texture), true);
     }

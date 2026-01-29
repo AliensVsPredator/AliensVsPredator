@@ -13,14 +13,6 @@ import com.blib.azurelib.common.util.client.RenderUtils;
 import com.blib.azurelib.core.molang.MolangParser;
 import com.blib.azurelib.core.molang.MolangQueries;
 
-/**
- * The {@code AzEntityAnimator} class extends {@link AzAnimator} to provide specialized animation management for
- * entities. This abstract class is designed to handle various animation-related requirements for entities in a game
- * framework, including the application of MoLang queries specific to entity-related properties such as position,
- * health, and motion state.
- *
- * @param <T> The type of entity this animator is designed to manage.
- */
 public abstract class AzEntityAnimator<T extends Entity> extends AzAnimator<UUID, T> {
 
     protected AzEntityAnimator() {
@@ -31,15 +23,6 @@ public abstract class AzEntityAnimator<T extends Entity> extends AzAnimator<UUID
         super(config);
     }
 
-    /**
-     * Applies MoLang queries to the given entity, setting various parameters related to its state and properties. This
-     * method customizes animation behavior by populating MoLang queries with entity-specific data such as position,
-     * health, motion state, and environmental conditions.
-     *
-     * @param entity       The entity being animated. It can be of any type extending {@code Entity}.
-     * @param animTime     The time in seconds related to the current animation cycle.
-     * @param partialTicks A partial tick value used to interpolate animations smoothly.
-     */
     @Override
     protected void applyMolangQueries(T entity, double animTime, float partialTicks) {
         super.applyMolangQueries(entity, animTime, partialTicks);

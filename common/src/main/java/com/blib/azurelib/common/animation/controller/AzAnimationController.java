@@ -21,11 +21,6 @@ import com.blib.azurelib.common.animation.dispatch.command.sequence.AzAnimationS
 import com.blib.azurelib.common.animation.primitive.AzQueuedAnimation;
 import com.blib.azurelib.common.animation.property.AzAnimationProperties;
 
-/**
- * The actual controller that handles the playing and usage of animations, including their various keyframes and
- * instruction markers. Each controller can only play a single animation at a time - for example, you may have one
- * controller to animate walking, one to control attacks, one is to control size, etc.
- */
 public class AzAnimationController<T> extends AzAbstractAnimationController {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(AzAnimationController.class);
@@ -36,7 +31,7 @@ public class AzAnimationController<T> extends AzAbstractAnimationController {
 
     private final AzAnimationControllerTimer<T> controllerTimer;
 
-    private final com.blib.azurelib.common.animation.controller.AzAnimationQueue animationQueue;
+    private final AzAnimationQueue animationQueue;
 
     private final AzAnimationControllerStateMachine<T> stateMachine;
 
@@ -44,7 +39,7 @@ public class AzAnimationController<T> extends AzAbstractAnimationController {
 
     private final AzBoneAnimationQueueCache<T> boneAnimationQueueCache;
 
-    private final com.blib.azurelib.common.animation.controller.AzBoneSnapshotCache boneSnapshotCache;
+    private final AzBoneSnapshotCache boneSnapshotCache;
 
     private final AzKeyframeManager<T> keyframeManager;
 
@@ -64,9 +59,9 @@ public class AzAnimationController<T> extends AzAbstractAnimationController {
         this.controllerTimer = new AzAnimationControllerTimer<>(this);
         this.animationProperties = animationProperties;
 
-        this.animationQueue = new com.blib.azurelib.common.animation.controller.AzAnimationQueue();
+        this.animationQueue = new AzAnimationQueue();
         this.boneAnimationQueueCache = new AzBoneAnimationQueueCache<>(animator.context().boneCache());
-        this.boneSnapshotCache = new com.blib.azurelib.common.animation.controller.AzBoneSnapshotCache();
+        this.boneSnapshotCache = new AzBoneSnapshotCache();
         this.keyframeManager = new AzKeyframeManager<>(
             this,
             boneAnimationQueueCache,
@@ -84,35 +79,11 @@ public class AzAnimationController<T> extends AzAbstractAnimationController {
         this.stateMachine = new AzAnimationControllerStateMachine<>(stateHolder, this, animator.context());
     }
 
-    /**
-     * Determines if the animation process managed by this controller has fully completed. <br>
-     * This method combines the parent class's condition for animation completion with an additional check to verify if
-     * the state machine is in a stopped state. The state machine being stopped indicates that no subsequent animations
-     * or transitions are active.
-     *
-     * @return true if the parent controller and state machine both indicate that the animation process has fully
-     *         finished, false otherwise.
-     */
     @Override
     public boolean hasAnimationFinished() {
         return super.hasAnimationFinished() && stateMachine.isStopped();
     }
 
-    /**
-     * Attempts to create a queue of animations from the provided animation sequence for the given animatable object.
-     * This method processes each stage of the supplied animation sequence, retrieves the corresponding animation, and
-     * adds it to the queue with its specified play behavior.
-     * <p>
-     * If any stage in the sequence references an animation that cannot be found, the method logs a warning and returns
-     * an empty list, indicating that the animation queue could not be fully created.
-     *
-     * @param animatable The animatable object for which the animation queue is being created. The object determines the
-     *                   context in which animations are retrieved and applied.
-     * @param sequence   An {@link AzAnimationSequence} object representing a sequential list of animation stages, each
-     *                   containing metadata necessary to retrieve and configure animations.
-     * @return A list of {@link AzQueuedAnimation} objects representing the created animation queue. Returns an empty
-     *         list if any stage references a non-existent animation.
-     */
     public List<AzQueuedAnimation> tryCreateAnimationQueue(T animatable, AzAnimationSequence sequence) {
         var stages = sequence.stages();
         var animations = new ArrayList<AzQueuedAnimation>();
@@ -135,9 +106,6 @@ public class AzAnimationController<T> extends AzAbstractAnimationController {
         return animations;
     }
 
-    /**
-     * This method is called every frame to populate the animation point queues, and process animation state logic.
-     */
     public void update() {
         // Adjust the tick before making any updates.
         controllerTimer.update();
@@ -147,17 +115,6 @@ public class AzAnimationController<T> extends AzAbstractAnimationController {
         boneAnimationQueueCache.update(animationProperties.easingType());
     }
 
-    /**
-     * Executes an animation sequence for a given dispatch side and updates the state machine accordingly. This method
-     * determines if an animation sequence can be executed based on its origin side and whether the current animation
-     * sequence has finished. It also transitions the state machine and handles the addition of new animations to the
-     * animation queue.
-     *
-     * @param originSide The side (client or server) from which the animation sequence originates. This determines
-     *                   whether the sequence can override a currently running sequence.
-     * @param sequence   The {@link AzAnimationSequence} object representing the ordered list of animation stages to be
-     *                   processed. Must not be null.
-     */
     public void run(AzDispatchSide originSide, @NotNull AzAnimationSequence sequence) {
         if (currentSequenceOrigin == AzDispatchSide.SERVER && originSide == AzDispatchSide.CLIENT) {
             if (!hasAnimationFinished()) {
@@ -204,14 +161,6 @@ public class AzAnimationController<T> extends AzAbstractAnimationController {
         return animationProperties;
     }
 
-    /**
-     * Sets the animation properties for this controller. This method assigns the provided {@link AzAnimationProperties}
-     * object to the controller to define various attributes for animation behavior, such as speed, easing type,
-     * transition length, and start tick offset.
-     *
-     * @param animationProperties The {@link AzAnimationProperties} object containing the desired animation properties.
-     *                            This parameter must not be null.
-     */
     public void setAnimationProperties(AzAnimationProperties animationProperties) {
         this.animationProperties = animationProperties;
     }
@@ -244,14 +193,6 @@ public class AzAnimationController<T> extends AzAbstractAnimationController {
         return stateMachine;
     }
 
-    /**
-     * Sets the current animation to be played and updates the associated state variables. This method assigns the given
-     * {@link AzQueuedAnimation} as the current animation and clears the current animation sequence and its origin if
-     * the provided animation is null.
-     *
-     * @param currentAnimation The {@link AzQueuedAnimation} to be set as the current animation. May be null, in which
-     *                         case the current sequence and sequence origin are cleared.
-     */
     public void setCurrentAnimation(AzQueuedAnimation currentAnimation) {
         this.currentAnimation = currentAnimation;
 

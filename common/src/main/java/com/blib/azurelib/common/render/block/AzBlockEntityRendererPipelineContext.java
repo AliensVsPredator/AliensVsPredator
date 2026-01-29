@@ -9,13 +9,6 @@ import org.jetbrains.annotations.Nullable;
 import com.blib.azurelib.common.render.AzRendererPipeline;
 import com.blib.azurelib.common.render.AzRendererPipelineContext;
 
-/**
- * Represents a specialized rendering context for handling {@link BlockEntity} rendering in a pipeline-based rendering
- * framework. This class extends {@link AzRendererPipelineContext} to provide specific functionality tailored to block
- * entities within the AzureLib rendering system.
- *
- * @param <T> The type of {@link BlockEntity} to be rendered.
- */
 public class AzBlockEntityRendererPipelineContext<T extends BlockEntity> extends AzRendererPipelineContext<Long, T> {
 
     public AzBlockEntityRendererPipelineContext(AzRendererPipeline<Long, T> rendererPipeline) {

@@ -12,11 +12,6 @@ import com.blib.azurelib.common.model.AzBakedModel;
 
 public class AzItemGuiRenderUtil {
 
-    /**
-     * Wrapper method to handle rendering the item in a GUI context (defined by
-     * {@link net.minecraft.world.item.ItemDisplayContext#GUI} normally).<br>
-     * Just includes some additional required transformations and settings.
-     */
     public static void renderInGui(
         AzItemRendererConfig config,
         AzItemRendererPipeline rendererPipeline,

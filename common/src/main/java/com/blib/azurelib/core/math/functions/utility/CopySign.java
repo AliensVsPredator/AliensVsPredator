@@ -3,9 +3,6 @@ package com.blib.azurelib.core.math.functions.utility;
 import com.blib.azurelib.core.math.IValue;
 import com.blib.azurelib.core.math.functions.Function;
 
-/**
- * Copy sign function Returns a value with the magnitude of A and the sign of B
- */
 public class CopySign extends Function {
 
     public CopySign(IValue[] values, String name) throws Exception {

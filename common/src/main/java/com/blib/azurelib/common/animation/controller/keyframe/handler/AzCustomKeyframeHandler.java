@@ -2,11 +2,6 @@ package com.blib.azurelib.common.animation.controller.keyframe.handler;
 
 import com.blib.azurelib.common.animation.event.AzCustomInstructionKeyframeEvent;
 
-/**
- * A handler for pre-defined custom instruction keyframes. When the keyframe is encountered, the
- * {@link AzCustomKeyframeHandler#handle(AzCustomInstructionKeyframeEvent)} method will be called. You can then take
- * whatever action you want at this point.
- */
 @FunctionalInterface
 public interface AzCustomKeyframeHandler<A> {
 

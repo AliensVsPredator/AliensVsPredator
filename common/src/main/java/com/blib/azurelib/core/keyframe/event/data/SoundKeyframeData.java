@@ -1,17 +1,7 @@
-/**
- * This class is a fork of the matching class found in the Geckolib repository. Original source:
- * https://github.com/bernie-g/geckolib Copyright © 2024 Bernie-G. Licensed under the MIT License.
- * https://github.com/bernie-g/geckolib/blob/main/LICENSE
- */
 package com.blib.azurelib.core.keyframe.event.data;
 
 import java.util.Objects;
 
-import com.blib.azurelib.common.animation.controller.keyframe.AzKeyframe;
-
-/**
- * Sound {@link AzKeyframe} instruction holder
- */
 public class SoundKeyframeData extends KeyFrameData {
 
     private final String sound;
@@ -22,9 +12,6 @@ public class SoundKeyframeData extends KeyFrameData {
         this.sound = sound;
     }
 
-    /**
-     * Gets the sound id given by the {@link AzKeyframe} instruction from the {@code animation.json}
-     */
     public String getSound() {
         return this.sound;
     }

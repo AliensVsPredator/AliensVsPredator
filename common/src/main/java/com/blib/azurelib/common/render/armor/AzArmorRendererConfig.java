@@ -20,7 +20,7 @@ import com.blib.azurelib.common.render.armor.bone.AzArmorBoneProvider;
 import com.blib.azurelib.common.render.armor.bone.AzDefaultArmorBoneProvider;
 import com.blib.azurelib.common.render.layer.AzRenderLayer;
 
-public class AzArmorRendererConfig extends com.blib.azurelib.common.render.AzRendererConfig<UUID, ItemStack> {
+public class AzArmorRendererConfig extends AzRendererConfig<UUID, ItemStack> {
 
     private final AzArmorBoneProvider boneProvider;
 
@@ -30,15 +30,15 @@ public class AzArmorRendererConfig extends com.blib.azurelib.common.render.AzRen
         BiFunction<Entity, ItemStack, RenderType> renderTypeProvider,
         BiFunction<Entity, ItemStack, ResourceLocation> modelLocationProvider,
         List<AzRenderLayer<UUID, ItemStack>> renderLayers,
-        Function<com.blib.azurelib.common.render.AzRendererPipelineContext<UUID, ItemStack>, com.blib.azurelib.common.render.AzRendererPipelineContext<UUID, ItemStack>> preRenderEntry,
-        Function<com.blib.azurelib.common.render.AzRendererPipelineContext<UUID, ItemStack>, com.blib.azurelib.common.render.AzRendererPipelineContext<UUID, ItemStack>> renderEntry,
-        Function<com.blib.azurelib.common.render.AzRendererPipelineContext<UUID, ItemStack>, com.blib.azurelib.common.render.AzRendererPipelineContext<UUID, ItemStack>> postRenderEntry,
+        Function<AzRendererPipelineContext<UUID, ItemStack>, AzRendererPipelineContext<UUID, ItemStack>> preRenderEntry,
+        Function<AzRendererPipelineContext<UUID, ItemStack>, AzRendererPipelineContext<UUID, ItemStack>> renderEntry,
+        Function<AzRendererPipelineContext<UUID, ItemStack>, AzRendererPipelineContext<UUID, ItemStack>> postRenderEntry,
         BiFunction<Entity, ItemStack, ResourceLocation> textureLocationProvider,
         Function<ItemStack, Float> alphaFunction,
         Function<ItemStack, Float> scaleHeight,
         Function<ItemStack, Float> scaleWidth,
-        BiFunction<com.blib.azurelib.common.render.AzRendererPipeline<UUID, ItemStack>, com.blib.azurelib.common.render.AzLayerRenderer<UUID, ItemStack>, com.blib.azurelib.common.render.AzModelRenderer<UUID, ItemStack>> modelRendererProvider,
-        Function<com.blib.azurelib.common.render.AzRendererPipeline<UUID, ItemStack>, com.blib.azurelib.common.render.AzRendererPipelineContext<UUID, ItemStack>> pipelineContextFunction,
+        BiFunction<AzRendererPipeline<UUID, ItemStack>, AzLayerRenderer<UUID, ItemStack>, AzModelRenderer<UUID, ItemStack>> modelRendererProvider,
+        Function<AzRendererPipeline<UUID, ItemStack>, AzRendererPipelineContext<UUID, ItemStack>> pipelineContextFunction,
         Function<AzBone, ResourceLocation> boneTextureOverrideProvider,
         Function<AzBone, RenderType> boneRenderTypeOverrideProvider
     ) {
@@ -80,7 +80,7 @@ public class AzArmorRendererConfig extends com.blib.azurelib.common.render.AzRen
         return new Builder(modelLocationProvider, textureLocationProvider);
     }
 
-    public static class Builder extends com.blib.azurelib.common.render.AzRendererConfig.Builder<UUID, ItemStack> {
+    public static class Builder extends AzRendererConfig.Builder<UUID, ItemStack> {
 
         private AzArmorBoneProvider boneProvider;
 
@@ -110,14 +110,14 @@ public class AzArmorRendererConfig extends com.blib.azurelib.common.render.AzRen
 
         @Override
         public Builder setModelRenderer(
-            BiFunction<com.blib.azurelib.common.render.AzRendererPipeline<UUID, ItemStack>, com.blib.azurelib.common.render.AzLayerRenderer<UUID, ItemStack>, com.blib.azurelib.common.render.AzModelRenderer<UUID, ItemStack>> modelRendererProvider
+            BiFunction<AzRendererPipeline<UUID, ItemStack>, AzLayerRenderer<UUID, ItemStack>, AzModelRenderer<UUID, ItemStack>> modelRendererProvider
         ) {
             return (Builder) super.setModelRenderer(modelRendererProvider);
         }
 
         @Override
         public Builder setPipelineContext(
-            Function<com.blib.azurelib.common.render.AzRendererPipeline<UUID, ItemStack>, com.blib.azurelib.common.render.AzRendererPipelineContext<UUID, ItemStack>> azRendererPipelineAzRendererPipelineContextFunction
+            Function<AzRendererPipeline<UUID, ItemStack>, AzRendererPipelineContext<UUID, ItemStack>> azRendererPipelineAzRendererPipelineContextFunction
         ) {
             return (Builder) super.setPipelineContext(azRendererPipelineAzRendererPipelineContextFunction);
         }
@@ -139,21 +139,21 @@ public class AzArmorRendererConfig extends com.blib.azurelib.common.render.AzRen
 
         @Override
         public Builder setPrerenderEntry(
-            Function<com.blib.azurelib.common.render.AzRendererPipelineContext<UUID, ItemStack>, com.blib.azurelib.common.render.AzRendererPipelineContext<UUID, ItemStack>> preRenderEntry
+            Function<AzRendererPipelineContext<UUID, ItemStack>, AzRendererPipelineContext<UUID, ItemStack>> preRenderEntry
         ) {
             return (AzArmorRendererConfig.Builder) super.setPrerenderEntry(preRenderEntry);
         }
 
         @Override
         public Builder setRenderEntry(
-            Function<com.blib.azurelib.common.render.AzRendererPipelineContext<UUID, ItemStack>, com.blib.azurelib.common.render.AzRendererPipelineContext<UUID, ItemStack>> renderEntry
+            Function<AzRendererPipelineContext<UUID, ItemStack>, AzRendererPipelineContext<UUID, ItemStack>> renderEntry
         ) {
             return (AzArmorRendererConfig.Builder) super.setRenderEntry(renderEntry);
         }
 
         @Override
         public Builder setPostRenderEntry(
-            Function<com.blib.azurelib.common.render.AzRendererPipelineContext<UUID, ItemStack>, AzRendererPipelineContext<UUID, ItemStack>> preRenderEntry
+            Function<AzRendererPipelineContext<UUID, ItemStack>, AzRendererPipelineContext<UUID, ItemStack>> preRenderEntry
         ) {
             return (AzArmorRendererConfig.Builder) super.setPostRenderEntry(preRenderEntry);
         }

@@ -8,15 +8,6 @@ import com.blib.azurelib.common.model.AzBoneSnapshot;
 
 public class AzBoneAnimationUpdateUtil {
 
-    /**
-     * Updates the position of the given bone by interpolating the position values from the animation queue and applying
-     * the specified easing type. The method also updates the snapshot offsets and flags the bone's position as changed.
-     *
-     * @param boneAnimation The animation queue containing position data for the bone.
-     * @param bone          The bone whose position is being updated.
-     * @param easingType    The easing type used for interpolating the position values.
-     * @param snapshot      The snapshot used to store the updated position offsets and start animations.
-     */
     public static void updatePositions(
         AzBoneAnimationQueue boneAnimation,
         AzBone bone,
@@ -37,17 +28,6 @@ public class AzBoneAnimationUpdateUtil {
         }
     }
 
-    /**
-     * Updates the rotation of the specified bone by interpolating the rotation values from the animation queue and
-     * applying the specified easing type. The method also updates the snapshot rotation values, starts the rotation
-     * animation, and marks the bone's rotation as changed.
-     *
-     * @param boneAnimation   The animation queue containing rotation data for the bone.
-     * @param bone            The bone whose rotation is being updated.
-     * @param easingType      The easing type used for interpolating the rotation values.
-     * @param initialSnapshot The initial snapshot containing the original rotation offsets.
-     * @param snapshot        The snapshot used to store the updated rotation values and start animations.
-     */
     public static void updateRotations(
         AzBoneAnimationQueue boneAnimation,
         AzBone bone,
@@ -75,16 +55,6 @@ public class AzBoneAnimationUpdateUtil {
         }
     }
 
-    /**
-     * Updates the scale of the specified bone by interpolating the scale values from the animation queue and applying
-     * the specified easing type. The method also updates the snapshot with the new scale values, starts the scale
-     * animation, and marks the bone's scale as changed.
-     *
-     * @param boneAnimation The animation queue containing scale data for the bone.
-     * @param bone          The bone whose scale is being updated.
-     * @param easingType    The easing type used for interpolating the scale values.
-     * @param snapshot      The snapshot used to store the updated scale values and start animations.
-     */
     public static void updateScale(
         AzBoneAnimationQueue boneAnimation,
         AzBone bone,

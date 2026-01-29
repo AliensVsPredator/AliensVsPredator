@@ -13,20 +13,8 @@ import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 
-/**
- * Utility class for rendering entity leash visuals within the Minecraft rendering engine. This class provides static
- * methods to handle leash rendering logic, enabling flexible re-use and separation from the default rendering behavior.
- * <br>
- * This utility replicates the leash rendering logic from {@link net.minecraft.client.renderer.entity.MobRenderer} to
- * provide enhanced customization for entity rendering purposes.
- */
 public class AzEntityLeashRenderUtil {
 
-    /**
-     * Static rendering code for rendering a leash segment.<br>
-     * It's a like-for-like from {@link net.minecraft.client.renderer.entity.MobRenderer#renderLeash} that had to be
-     * duplicated here for flexible usage
-     */
     public static <T extends Entity, E extends Entity, M extends Mob> void renderLeash(
         AzEntityRenderer<T> azEntityRenderer,
         M mob,
@@ -111,11 +99,6 @@ public class AzEntityLeashRenderUtil {
         poseStack.popPose();
     }
 
-    /**
-     * Static rendering code for rendering a leash segment.<br>
-     * It's a like-for-like from {@link net.minecraft.client.renderer.entity.MobRenderer#addVertexPair} that had to be
-     * duplicated here for flexible usage
-     */
     private static void renderLeashPiece(
         VertexConsumer buffer,
         Matrix4f positionMatrix,

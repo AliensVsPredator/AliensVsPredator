@@ -25,84 +25,30 @@ public interface AzArmorBoneProvider {
 
     String BONE_ARMOR_WAIST_NAME = "armorWaist";
 
-    /**
-     * Returns the 'head' AzBone from this model.<br>
-     * Override if your geo model has different bone names for these bones
-     *
-     * @return The bone for the head model piece, or null if not using it
-     */
     @Nullable
     AzBone getHeadBone(AzBakedModel model);
 
-    /**
-     * Returns the 'body' AzBone from this model.<br>
-     * Override if your geo model has different bone names for these bones
-     *
-     * @return The bone for the body model piece, or null if not using it
-     */
     @Nullable
     AzBone getBodyBone(AzBakedModel model);
 
-    /**
-     * Returns the 'right arm' AzBone from this model.<br>
-     * Override if your geo model has different bone names for these bones
-     *
-     * @return The bone for the right arm model piece, or null if not using it
-     */
     @Nullable
     AzBone getRightArmBone(AzBakedModel model);
 
-    /**
-     * Returns the 'left arm' AzBone from this model.<br>
-     * Override if your geo model has different bone names for these bones
-     *
-     * @return The bone for the left arm model piece, or null if not using it
-     */
     @Nullable
     AzBone getLeftArmBone(AzBakedModel model);
 
-    /**
-     * Returns the 'right leg' AzBone from this model.<br>
-     * Override if your geo model has different bone names for these bones
-     *
-     * @return The bone for the right leg model piece, or null if not using it
-     */
     @Nullable
     AzBone getRightLegBone(AzBakedModel model);
 
-    /**
-     * Returns the 'left leg' AzBone from this model.<br>
-     * Override if your geo model has different bone names for these bones
-     *
-     * @return The bone for the left leg model piece, or null if not using it
-     */
     @Nullable
     AzBone getLeftLegBone(AzBakedModel model);
 
-    /**
-     * Returns the 'right boot' AzBone from this model.<br>
-     * Override if your geo model has different bone names for these bones
-     *
-     * @return The bone for the right boot model piece, or null if not using it
-     */
     @Nullable
     AzBone getRightBootBone(AzBakedModel model);
 
-    /**
-     * Returns the 'left boot' AzBone from this model.<br>
-     * Override if your geo model has different bone names for these bones
-     *
-     * @return The bone for the left boot model piece, or null if not using it
-     */
     @Nullable
     AzBone getLeftBootBone(AzBakedModel model);
 
-    /**
-     * Returns the 'waist' AzBone from this model.<br>
-     * Override if your geo model has different bone names for these bones
-     *
-     * @return The bone for the waist model piece, or null if not using it
-     */
     @Nullable
     AzBone getWaistBone(AzBakedModel model);
 }

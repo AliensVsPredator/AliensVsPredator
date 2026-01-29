@@ -16,14 +16,6 @@ import com.blib.azurelib.common.model.AzBakedModel;
 import com.blib.azurelib.common.render.AzProvider;
 import com.blib.mod.common.registry.init.BLibDataComponents;
 
-/**
- * AzItemRenderer is an abstract base class for rendering custom animated items in a game framework. It provides
- * utilities for handling item models, textures, and animations via a configurable pipeline and provider system. This
- * class supports rendering of items both in GUI contexts and in-world as entities, enabling advanced visual effects
- * such as custom animations and lighting. <br>
- * The rendering process utilizes a pipeline to manage render layers, textures, and baked models, integrating with game
- * frame components like PoseStack and MultiBufferSource.
- */
 public abstract class AzItemRenderer {
 
     private final AzItemRendererConfig config;

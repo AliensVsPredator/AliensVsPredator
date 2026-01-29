@@ -9,11 +9,6 @@ import com.blib.azurelib.common.animation.AzAnimator;
 import com.blib.azurelib.common.animation.dispatch.AzDispatchSide;
 import com.blib.azurelib.common.animation.dispatch.command.action.AzAction;
 
-/**
- * The AzRootCancelAllAction class is a predefined implementation of the {@link AzAction} interface that cancels all
- * animations on all controllers of an {@link AzAnimator}. This action is effectively used to reset the animation state
- * by nullifying the current animation on all active controllers.
- */
 public class AzRootCancelAllAction implements AzAction {
 
     public static final AzRootCancelAllAction INSTANCE = new AzRootCancelAllAction();

@@ -10,23 +10,23 @@ import java.util.Map;
 
 public class AzPlayBehaviorRegistry {
 
-    private static final Map<String, com.blib.azurelib.common.animation.play_behavior.AzPlayBehavior> PLAY_BEHAVIORS = new HashMap<>();
+    private static final Map<String, AzPlayBehavior> PLAY_BEHAVIORS = new HashMap<>();
 
-    public static com.blib.azurelib.common.animation.play_behavior.AzPlayBehavior register(
-        com.blib.azurelib.common.animation.play_behavior.AzPlayBehavior playBehavior
+    public static AzPlayBehavior register(
+        AzPlayBehavior playBehavior
     ) {
         PLAY_BEHAVIORS.put(playBehavior.name(), playBehavior);
         return playBehavior;
     }
 
-    public static com.blib.azurelib.common.animation.play_behavior.AzPlayBehavior getOrDefault(
+    public static AzPlayBehavior getOrDefault(
         String name,
-        @NotNull com.blib.azurelib.common.animation.play_behavior.AzPlayBehavior defaultValue
+        @NotNull AzPlayBehavior defaultValue
     ) {
         return PLAY_BEHAVIORS.getOrDefault(name, defaultValue);
     }
 
-    public static @Nullable com.blib.azurelib.common.animation.play_behavior.AzPlayBehavior getOrNull(String name) {
+    public static @Nullable AzPlayBehavior getOrNull(String name) {
         return PLAY_BEHAVIORS.get(name);
     }
 

@@ -1,14 +1,8 @@
 package com.blib.azurelib.common.animation.event;
 
 import com.blib.azurelib.common.animation.controller.AzAnimationController;
-import com.blib.azurelib.common.animation.controller.keyframe.AzKeyframeCallbacks;
 import com.blib.azurelib.core.keyframe.event.data.CustomInstructionKeyframeData;
 
-/**
- * The {@link com.blib.azurelib.common.animation.event.AzKeyframeEvent} specific to the
- * {@link AzKeyframeCallbacks#customKeyframeHandler()}.<br>
- * Called when a custom instruction keyframe is encountered
- */
 public class AzCustomInstructionKeyframeEvent<T> extends AzKeyframeEvent<T, CustomInstructionKeyframeData> {
 
     public AzCustomInstructionKeyframeEvent(
@@ -20,9 +14,6 @@ public class AzCustomInstructionKeyframeEvent<T> extends AzKeyframeEvent<T, Cust
         super(entity, animationTick, controller, customInstructionKeyframeData);
     }
 
-    /**
-     * Get the {@link CustomInstructionKeyframeData} relevant to this event call
-     */
     @Override
     public CustomInstructionKeyframeData getKeyframeData() {
         return super.getKeyframeData();

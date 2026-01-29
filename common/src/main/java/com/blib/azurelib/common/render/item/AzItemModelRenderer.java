@@ -11,14 +11,9 @@ import com.blib.azurelib.common.animation.controller.AzAnimationController;
 import com.blib.azurelib.common.model.AzBone;
 import com.blib.azurelib.common.render.AzLayerRenderer;
 import com.blib.azurelib.common.render.AzModelRenderer;
-import com.blib.azurelib.common.render.AzPhasedRenderer;
 import com.blib.azurelib.common.render.AzRendererPipelineContext;
 import com.blib.azurelib.common.util.client.RenderUtils;
 
-/**
- * AzItemModelRenderer is a specialized implementation of {@link AzModelRenderer} for rendering {@link ItemStack}
- * objects. It provides customized rendering logic for rendering item models in a layered and recursive manner.
- */
 public class AzItemModelRenderer extends AzModelRenderer<UUID, ItemStack> {
 
     protected final AzItemRendererPipeline itemRendererPipeline;
@@ -31,11 +26,6 @@ public class AzItemModelRenderer extends AzModelRenderer<UUID, ItemStack> {
         this.itemRendererPipeline = itemRendererPipeline;
     }
 
-    /**
-     * The actual render method that subtype renderers should override to handle their specific rendering tasks.<br>
-     * {@link AzPhasedRenderer#preRender} has already been called by this stage, and {@link AzPhasedRenderer#postRender}
-     * will be called directly after
-     */
     @Override
     public void render(AzRendererPipelineContext<UUID, ItemStack> context, boolean isReRender) {
         if (!isReRender) {
@@ -54,9 +44,6 @@ public class AzItemModelRenderer extends AzModelRenderer<UUID, ItemStack> {
         super.render(context, isReRender);
     }
 
-    /**
-     * Renders the provided {@link AzBone} and its associated child bones
-     */
     @Override
     public void renderRecursively(AzRendererPipelineContext<UUID, ItemStack> context, AzBone bone, boolean isReRender) {
         var poseStack = context.poseStack();
@@ -99,7 +86,7 @@ public class AzItemModelRenderer extends AzModelRenderer<UUID, ItemStack> {
         // Check if the first-person mod is loaded as it has its own arm system for items
         var firstPerson = BLibAPI.isModLoaded("firstperson");
         // Check if the bone is an arm bone and the first person mod is loaded
-        var isArmBone = com.blib.azurelib.common.render.item.AzItemArmRenderUtil.isArmBone(bone) && !firstPerson;
+        var isArmBone = AzItemArmRenderUtil.isArmBone(bone) && !firstPerson;
 
         if (animator != null) {
             // Check all animation controllers to see if any are playing

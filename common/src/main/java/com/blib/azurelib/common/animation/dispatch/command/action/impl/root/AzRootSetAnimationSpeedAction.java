@@ -10,11 +10,6 @@ import com.blib.azurelib.common.animation.AzAnimator;
 import com.blib.azurelib.common.animation.dispatch.AzDispatchSide;
 import com.blib.azurelib.common.animation.dispatch.command.action.AzAction;
 
-/**
- * Represents an action for setting the animation speed of all animation controllers in an {@link AzAnimator} instance.
- * This action is part of the AzureLib animation system and encapsulates the behavior for modifying the animation speed
- * property.
- */
 public record AzRootSetAnimationSpeedAction(
     double animationSpeed
 ) implements AzAction {

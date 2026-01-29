@@ -14,15 +14,6 @@ import com.blib.azurelib.common.animation.AzAnimatorAccessor;
 import com.blib.azurelib.common.model.AzBakedModel;
 import com.blib.azurelib.common.model.cache.AzBakedModelCache;
 
-/**
- * The {@code AzProvider} class serves as a utility for providing animation-related resources, such as baked models and
- * animators for animatable objects of type {@code T}. This class facilitates the dynamic retrieval and caching of
- * resources to enhance performance during runtime and minimize redundant resource generation.
- *
- * @param <K> The type of the key used to identify the animatable object. Typically, a UUID for items/entities and Long
- *            for BlockEntities.
- * @param <T> The type of the animatable object this provider works with (e.g., an entity, block, or item).
- */
 public class AzProvider<K, T> {
 
     protected final Supplier<AzAnimator<K, T>> animatorSupplier;
@@ -41,14 +32,6 @@ public class AzProvider<K, T> {
         this.UUIDProvider = UUIDProvider;
     }
 
-    /**
-     * Provides a baked model associated with the specified animatable object. This method retrieves the model resource
-     * location for the animatable object using the configured model location provider, then fetches the corresponding
-     * baked model from the {@link AzBakedModelCache}.
-     *
-     * @param animatable the animatable object for which the baked model should be retrieved, must not be null
-     * @return the baked model associated with the animatable object, or null if no model is found
-     */
     public @Nullable AzBakedModel provideBakedModel(@Nullable Entity entity, @NotNull T animatable) {
         // Always have a safe fallback
         var modelLocation = modelLocationProvider.apply(entity, animatable);
@@ -77,14 +60,6 @@ public class AzProvider<K, T> {
         return cache.getBakedModel(); // <- the deep-copied, per-instance model
     }
 
-    /**
-     * Provides an {@link AzAnimator} instance associated with the given animatable object. If the animator is not
-     * already cached, this method will create a new animator, register its controllers, and cache it for future use.
-     *
-     * @param animatable the animatable object for which the animator should be provided
-     * @return an {@link AzAnimator} instance associated with the animatable object, or null if the animator could not
-     *         be created or retrieved
-     */
     public @Nullable AzAnimator<K, T> provideAnimator(@Nullable Entity entity, T animatable) {
         // TODO: Instead of caching the entire animator itself, we're going to want to cache the relevant data for the
         // entity.

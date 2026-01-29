@@ -14,20 +14,10 @@ import org.joml.Vector4f;
 import com.blib.azurelib.common.animation.AzAnimator;
 import com.blib.azurelib.common.cache.object.GeoCube;
 import com.blib.azurelib.common.cache.object.GeoQuad;
-import com.blib.azurelib.common.cache.object.GeoVertex;
 import com.blib.azurelib.common.model.AzBone;
 import com.blib.azurelib.common.render.item.AzItemRendererPipelineContext;
 import com.blib.azurelib.common.util.client.RenderUtils;
 
-/**
- * AzModelRenderer provides a generic and extensible base class for rendering models by processing hierarchical bone
- * structures recursively. It leverages a rendering pipeline and a layer renderer to facilitate advanced rendering
- * tasks, including layer application and animated texture processing.
- *
- * @param <K> The type of the key used to identify the animatable object. Typically, a UUID for items/entities and Long
- *            for BlockEntities.
- * @param <T> the type of animatable object this renderer supports
- */
 public class AzModelRenderer<K, T> {
 
     private final Matrix4f poseStateCache = new Matrix4f();
@@ -36,16 +26,13 @@ public class AzModelRenderer<K, T> {
 
     private final AzRendererPipeline<K, T> rendererPipeline;
 
-    protected final com.blib.azurelib.common.render.AzLayerRenderer<K, T> layerRenderer;
+    protected final AzLayerRenderer<K, T> layerRenderer;
 
     public AzModelRenderer(AzRendererPipeline<K, T> rendererPipeline, AzLayerRenderer<K, T> layerRenderer) {
         this.layerRenderer = layerRenderer;
         this.rendererPipeline = rendererPipeline;
     }
 
-    /**
-     * The actual render method that subtype renderers should override to handle their specific rendering tasks.<br>
-     */
     protected void render(AzRendererPipelineContext<K, T> context, boolean isReRender) {
         var animatable = context.animatable();
         var model = context.bakedModel();
@@ -60,9 +47,6 @@ public class AzModelRenderer<K, T> {
         config.renderEntry(context);
     }
 
-    /**
-     * Renders the provided {@link AzBone} and its associated child bones
-     */
     protected void renderRecursively(AzRendererPipelineContext<K, T> context, AzBone bone, boolean isReRender) {
         var buffer = context.vertexConsumer();
         var bufferSource = context.multiBufferSource();
@@ -95,9 +79,6 @@ public class AzModelRenderer<K, T> {
         poseStack.popPose();
     }
 
-    /**
-     * Renders the {@link GeoCube GeoCubes} associated with a given {@link AzBone}
-     */
     protected void renderCubesOfBone(AzRendererPipelineContext<K, T> context, AzBone bone) {
         if (bone.isHidden()) {
             return;
@@ -114,11 +95,6 @@ public class AzModelRenderer<K, T> {
         }
     }
 
-    /**
-     * Render the child bones of a given {@link AzBone}.<br>
-     * Note that this does not render the bone itself. That should be done through
-     * {@link AzModelRenderer#renderCubesOfBone} separately
-     */
     protected void renderChildBones(AzRendererPipelineContext<K, T> context, AzBone bone, boolean isReRender) {
         if (bone.isHidingChildren())
             return;
@@ -128,10 +104,6 @@ public class AzModelRenderer<K, T> {
         }
     }
 
-    /**
-     * Renders an individual {@link GeoCube}.<br>
-     * This tends to be called recursively from something like {@link AzModelRenderer#renderCubesOfBone}
-     */
     protected void renderCube(AzRendererPipelineContext<K, T> context, GeoCube cube) {
         var poseStack = context.poseStack();
 
@@ -156,10 +128,6 @@ public class AzModelRenderer<K, T> {
         }
     }
 
-    /**
-     * Applies the {@link GeoQuad Quad's} {@link GeoVertex vertices} to the given {@link VertexConsumer buffer} for
-     * rendering
-     */
     protected void createVerticesOfQuad(
         AzRendererPipelineContext<K, T> context,
         GeoQuad quad,
@@ -214,20 +182,6 @@ public class AzModelRenderer<K, T> {
         }
     }
 
-    /**
-     * Override method for rendering a specific bone. This method can be customized to apply specific transformations,
-     * modify the bone's render properties, or override its rendering behavior entirely.
-     *
-     * @param poseStack     The pose stack used for handling transformations (rotation, scaling, and translation).
-     * @param bone          The bone that is being rendered.
-     * @param bufferSource  The buffer source used for rendering.
-     * @param buffer        The vertex consumer buffer used for writing vertex data during rendering.
-     * @param partialTick   The partial tick progress for interpolating between frames.
-     * @param packedLight   The packed light value for the rendered bone.
-     * @param packedOverlay The packed overlay value for the rendered bone.
-     * @param colour        The color modifier for the rendered output.
-     * @return A boolean indicating whether the bone's rendering behavior has been overridden successfully.
-     */
     public boolean boneRenderOverride(
         PoseStack poseStack,
         AzBone bone,
@@ -245,18 +199,6 @@ public class AzModelRenderer<K, T> {
         animator.animate(animatable, partialTick);
     }
 
-    /**
-     * Retrieves or refreshes the {@link VertexConsumer} for rendering based on the current buffer state and rendering
-     * context. Depending on the type and state of the current {@link VertexConsumer}, this method determines whether to
-     * reuse the existing buffer or obtain a fresh one from the {@link MultiBufferSource}.
-     *
-     * @param context    The rendering context containing information about the current buffer, the buffer source, and
-     *                   rendering pipeline data.
-     * @param bone       The {@link AzBone} being rendered, which may influence the behavior or context of the buffer
-     *                   retrieval.
-     * @param renderType The {@link RenderType} specifying the desired render characteristics or pipeline for rendering.
-     * @return The appropriate {@link VertexConsumer} for rendering, either the existing buffer or a refreshed/new one.
-     */
     public VertexConsumer getOrRefreshBufferRenderType(
         AzItemRendererPipelineContext context,
         AzBone bone,
@@ -280,17 +222,6 @@ public class AzModelRenderer<K, T> {
         };
     }
 
-    /**
-     * Retrieves the appropriate {@link VertexConsumer} for rendering, or refreshes the render buffer if needed.
-     * Depending on the rendering context and state of the current buffer, this method determines whether to reuse the
-     * existing buffer or acquire a new one.
-     *
-     * @param isReRender Indicates whether this is a re-render operation. If true, the current buffer is reused.
-     * @param context    The rendering context containing relevant information like the current buffer, buffer source,
-     *                   and render type.
-     * @return The {@link VertexConsumer} that should be used for rendering, potentially refreshed based on the buffer's
-     *         state and the given render context.
-     */
     public VertexConsumer getOrRefreshRenderBuffer(
         boolean isReRender,
         AzRendererPipelineContext<K, T> context,
@@ -343,13 +274,6 @@ public class AzModelRenderer<K, T> {
         };
     }
 
-    /**
-     * Determines whether the given {@link VertexConsumer} requires a buffer refresh. This involves checking the
-     * specific type of the {@link VertexConsumer} and applying appropriate logic to evaluate its state.
-     *
-     * @param buffer The {@link VertexConsumer} instance to evaluate.
-     * @return {@code true} if the buffer needs to be refreshed; {@code false} otherwise.
-     */
     protected boolean needsBufferRefresh(VertexConsumer buffer) {
         return switch (buffer) {
             case BufferBuilder builder -> isBufferInactive(builder);
@@ -360,13 +284,6 @@ public class AzModelRenderer<K, T> {
         };
     }
 
-    /**
-     * Determines if the given {@link BufferBuilder} is inactive. A buffer is considered inactive if it is not currently
-     * in the process of building.
-     *
-     * @param builder The {@link BufferBuilder} instance to check.
-     * @return {@code true} if the buffer is inactive (not building); {@code false} otherwise.
-     */
     protected boolean isBufferInactive(BufferBuilder builder) {
         return !builder.building;
     }

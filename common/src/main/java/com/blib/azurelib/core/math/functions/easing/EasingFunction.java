@@ -3,9 +3,6 @@ package com.blib.azurelib.core.math.functions.easing;
 import com.blib.azurelib.core.math.IValue;
 import com.blib.azurelib.core.math.functions.Function;
 
-/**
- * Base class for easing functions All easing functions take (start, end, t) where t is 0-1
- */
 public abstract class EasingFunction extends Function {
 
     protected EasingFunction(IValue[] values, String name) throws Exception {
@@ -30,11 +27,5 @@ public abstract class EasingFunction extends Function {
         return start + (end - start) * easedT;
     }
 
-    /**
-     * The easing function to apply to t (0-1)
-     *
-     * @param t input value from 0 to 1
-     * @return eased value
-     */
     protected abstract double ease(double t);
 }

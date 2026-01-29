@@ -1,18 +1,8 @@
-/**
- * This class is a fork of the matching class found in the Geckolib repository. Original source:
- * https://github.com/bernie-g/geckolib Copyright © 2024 Bernie-G. Licensed under the MIT License.
- * https://github.com/bernie-g/geckolib/blob/main/LICENSE
- */
 package com.blib.azurelib.core.math;
 
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Operation enumeration This enumeration provides different hardcoded enumerations of default math operators such
- * addition, substraction, multiplication, division, modulo and power. TODO: maybe convert to classes (for the sake of
- * API)?
- */
 public enum Operation {
 
     ADD("+", 1) {
@@ -123,14 +113,8 @@ public enum Operation {
         }
     }
 
-    /**
-     * String-ified name of this operation
-     */
     public final String sign;
 
-    /**
-     * Value of this operation in relation to other operations (i.e precedence importance)
-     */
     public final int value;
 
     private Operation(String sign, int value) {
@@ -142,8 +126,5 @@ public enum Operation {
         return Math.abs(a - b) < 0.00001;
     }
 
-    /**
-     * Calculate the value based on given two doubles
-     */
     public abstract double calculate(double a, double b);
 }

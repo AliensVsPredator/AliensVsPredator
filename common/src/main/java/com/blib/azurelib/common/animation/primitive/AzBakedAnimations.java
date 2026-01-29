@@ -8,26 +8,14 @@ import java.util.Map;
 import com.blib.azurelib.common.animation.cache.AzBakedAnimationCache;
 import com.blib.azurelib.common.util.AzureLibException;
 
-/**
- * Represents a container for baked animations in the AzureLib framework. This record holds mappings for precompiled
- * animation instances ({@link com.blib.azurelib.common.animation.primitive.AzBakedAnimation}) and resource includes
- * ({@link ResourceLocation}) for use in animation-driven content. <br>
- * The `AzBakedAnimations` structure provides functionality for retrieving animations by name and supporting external
- * resource references via the includes mapping, enabling extensibility and reuse of animations across various contexts.
- * <br>
- * Immutable and designed for efficient storage and retrieval of animation data.
- */
 public record AzBakedAnimations(
-    Map<String, com.blib.azurelib.common.animation.primitive.AzBakedAnimation> animations,
+    Map<String, AzBakedAnimation> animations,
     Map<String, ResourceLocation> includes
 ) {
 
-    /**
-     * Gets an {@link com.blib.azurelib.common.animation.primitive.AzBakedAnimation} by its name, if present
-     */
     @Nullable
-    public com.blib.azurelib.common.animation.primitive.AzBakedAnimation getAnimation(String name) {
-        com.blib.azurelib.common.animation.primitive.AzBakedAnimation result = animations.get(name);
+    public AzBakedAnimation getAnimation(String name) {
+        AzBakedAnimation result = animations.get(name);
         if (result == null && includes != null) {
             ResourceLocation otherFileID = includes.getOrDefault(name, null);
             if (otherFileID != null) {

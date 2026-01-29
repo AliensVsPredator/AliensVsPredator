@@ -1,17 +1,8 @@
 package com.blib.azurelib.common.animation.event;
 
 import com.blib.azurelib.common.animation.controller.AzAnimationController;
-import com.blib.azurelib.common.animation.controller.keyframe.AzKeyframe;
 import com.blib.azurelib.core.keyframe.event.data.KeyFrameData;
 
-/**
- * The base class for {@link AzKeyframe} events.<br>
- * These will be passed to one of the controllers in {@link AzAnimationController} when encountered during animation.
- *
- * @see AzCustomInstructionKeyframeEvent
- * @see AzParticleKeyframeEvent
- * @see AzSoundKeyframeEvent
- */
 public abstract class AzKeyframeEvent<T, E extends KeyFrameData> {
 
     private final T animatable;
@@ -34,31 +25,18 @@ public abstract class AzKeyframeEvent<T, E extends KeyFrameData> {
         this.eventKeyframe = eventKeyframe;
     }
 
-    /**
-     * Gets the amount of ticks that have passed in either the current transition or animation, depending on the
-     * controller's AnimationState.
-     */
     public double getAnimationTick() {
         return animationTick;
     }
 
-    /**
-     * Gets the {@link T animatable} object being rendered
-     */
     public T getAnimatable() {
         return animatable;
     }
 
-    /**
-     * Gets the {@link AzAnimationController} responsible for the currently playing animation
-     */
     public AzAnimationController<T> getController() {
         return controller;
     }
 
-    /**
-     * Returns the {@link KeyFrameData} relevant to the encountered {@link AzKeyframe}
-     */
     public E getKeyframeData() {
         return this.eventKeyframe;
     }

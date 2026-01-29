@@ -16,22 +16,13 @@ import com.blib.azurelib.common.animation.AzAnimator;
 import com.blib.azurelib.common.model.AzBone;
 import com.blib.azurelib.common.render.layer.AzRenderLayer;
 
-/**
- * The {@code AzRendererConfig} class is a configuration class used for defining rendering configurations for generic
- * animatable objects. It allows customization of model and texture locations, animators, render layers, and scale
- * factors.
- *
- * @param <K> The type of the key used to identify the animatable object. Typically, a UUID for items/entities and Long
- *            for BlockEntities.
- * @param <T> The type of animatable object this configuration applies to.
- */
 public class AzRendererConfig<K, T> {
 
     private final Supplier<@Nullable AzAnimator<K, T>> animatorProvider;
 
     private final BiFunction<@Nullable Entity, T, ResourceLocation> modelLocationProvider;
 
-    private final BiFunction<AzRendererPipeline<K, T>, com.blib.azurelib.common.render.AzLayerRenderer<K, T>, com.blib.azurelib.common.render.AzModelRenderer<K, T>> modelRendererProvider;
+    private final BiFunction<AzRendererPipeline<K, T>, AzLayerRenderer<K, T>, AzModelRenderer<K, T>> modelRendererProvider;
 
     private final Function<AzRendererPipeline<K, T>, AzRendererPipelineContext<K, T>> pipelineContextFunction;
 
@@ -60,7 +51,7 @@ public class AzRendererConfig<K, T> {
     public AzRendererConfig(
         Supplier<AzAnimator<K, T>> animatorProvider,
         BiFunction<@Nullable Entity, T, ResourceLocation> modelLocationProvider,
-        BiFunction<AzRendererPipeline<K, T>, com.blib.azurelib.common.render.AzLayerRenderer<K, T>, com.blib.azurelib.common.render.AzModelRenderer<K, T>> modelRendererProvider,
+        BiFunction<AzRendererPipeline<K, T>, AzLayerRenderer<K, T>, AzModelRenderer<K, T>> modelRendererProvider,
         Function<AzRendererPipeline<K, T>, AzRendererPipelineContext<K, T>> pipelineContextFunction,
         BiFunction<@Nullable Entity, T, RenderType> renderTypeFunction,
         List<AzRenderLayer<K, T>> renderLayers,
@@ -115,9 +106,9 @@ public class AzRendererConfig<K, T> {
         return textureLocationProvider.apply(entity, animatable);
     }
 
-    public com.blib.azurelib.common.render.AzModelRenderer<K, T> modelRendererProvider(
+    public AzModelRenderer<K, T> modelRendererProvider(
         AzRendererPipeline<K, T> pipeline,
-        com.blib.azurelib.common.render.AzLayerRenderer<K, T> layerRenderer
+        AzLayerRenderer<K, T> layerRenderer
     ) {
         return modelRendererProvider.apply(pipeline, layerRenderer);
     }
@@ -170,7 +161,7 @@ public class AzRendererConfig<K, T> {
 
         protected final BiFunction<@Nullable Entity, T, ResourceLocation> modelLocationProvider;
 
-        protected BiFunction<AzRendererPipeline<K, T>, com.blib.azurelib.common.render.AzLayerRenderer<K, T>, com.blib.azurelib.common.render.AzModelRenderer<K, T>> modelRendererProvider;
+        protected BiFunction<AzRendererPipeline<K, T>, AzLayerRenderer<K, T>, AzModelRenderer<K, T>> modelRendererProvider;
 
         protected Function<AzRendererPipeline<K, T>, AzRendererPipelineContext<K, T>> pipelineContextFunction;
 
@@ -204,7 +195,7 @@ public class AzRendererConfig<K, T> {
         ) {
             this.animatorProvider = () -> null;
             this.modelLocationProvider = modelLocationProvider;
-            this.modelRendererProvider = com.blib.azurelib.common.render.AzModelRenderer::new;
+            this.modelRendererProvider = AzModelRenderer::new;
             this.pipelineContextFunction = null;
             this.renderTypeProvider = (a, b) -> RenderType.entityCutout(textureLocationProvider.apply(a, b));
             this.renderLayers = new ObjectArrayList<>();
@@ -268,113 +259,48 @@ public class AzRendererConfig<K, T> {
             return this;
         }
 
-        /**
-         * Sets the animator provider for the builder. The animator provider is responsible for supplying an instance of
-         * {@link AzAnimator} that defines the animation logic for the target object.
-         *
-         * @param animatorProvider a {@link Supplier} that provides a {@link AzAnimator} instance or null if no custom
-         *                         animation logic is required
-         * @return the updated {@code Builder} instance for chaining configuration methods
-         */
         public Builder<K, T> setAnimatorProvider(Supplier<@Nullable AzAnimator<K, T>> animatorProvider) {
             this.animatorProvider = animatorProvider;
             return this;
         }
 
-        /**
-         * Adds a {@link AzRenderLayer} to this config, to be called after the main model is rendered each frame
-         */
         public Builder<K, T> addRenderLayer(AzRenderLayer<K, T> renderLayer) {
             this.renderLayers.add(renderLayer);
             return this;
         }
 
-        /**
-         * Sets the alpha value provider for the builder. The alpha value determines the opacity level of the rendered
-         * object and is calculated dynamically based on the specified function.
-         *
-         * @param alphaFunction a {@link Function} that takes an object of type {@code T} and returns a {@code Float}
-         *                      value representing the alpha (opacity) level, where 0.0 is fully transparent and 1.0 is
-         *                      fully opaque
-         * @return the updated {@code Builder} instance for chaining configuration methods
-         */
         public Builder<K, T> setAlpha(Function<T, Float> alphaFunction) {
             this.alphaFunction = alphaFunction;
             return this;
         }
 
-        /**
-         * Sets the alpha transparency level for the builder, which determines the level of transparency to be applied.
-         *
-         * @param alpha the alpha transparency value to set, where 0.0 represents fully transparent and 1.0 represents
-         *              fully opaque
-         * @return the updated {@code Builder} instance for chaining configuration methods
-         */
         public Builder<K, T> setAlpha(float alpha) {
             this.alphaFunction = $ -> alpha;
             return this;
         }
 
-        /**
-         * Sets the scaling factor uniformly for both width and height dimensions.
-         *
-         * @param scale the uniform scaling factor to be applied to both width and height
-         * @return the {@code Builder} instance for method chaining
-         */
         public Builder<K, T> setScale(float scale) {
             return setScale(scale, scale);
         }
 
-        /**
-         * Sets the scaling factors for both width and height.
-         *
-         * @param scaleWidth  the scaling factor for the width
-         * @param scaleHeight the scaling factor for the height
-         * @return the updated builder instance for chaining operations
-         */
         public Builder<K, T> setScale(float scaleWidth, float scaleHeight) {
             this.scaleHeight = $ -> scaleHeight;
             this.scaleWidth = $ -> scaleWidth;
             return this;
         }
 
-        /**
-         * Sets the scaling function for both the width and height dimensions of the target object. The provided
-         * function dynamically calculates scaling factors based on the input object of type {@code T}.
-         *
-         * @param scaleFunction a {@link Function} that takes an object of type {@code T} and returns a {@code Float}
-         *                      value representing the scaling factor to be applied uniformly to both width and height
-         * @return the updated {@code Builder} instance for chaining configuration methods
-         */
         public Builder<K, T> setScale(Function<T, Float> scaleFunction) {
             this.scaleHeight = scaleFunction;
             this.scaleWidth = scaleFunction;
             return this;
         }
 
-        /**
-         * Sets the scaling functions for height and width dimensions. These functions dynamically calculate scaling
-         * factors based on the input object of type {@code T}.
-         *
-         * @param scaleHeightFunction a {@link Function} that takes an object of type {@code T} and returns a
-         *                            {@code Float} representing the scaling factor for the height dimension
-         * @param scaleWidthFunction  a {@link Function} that takes an object of type {@code T} and returns a
-         *                            {@code Float} representing the scaling factor for the width dimension
-         * @return the updated {@code Builder} instance for chaining configuration methods
-         */
         public Builder<K, T> setScale(Function<T, Float> scaleHeightFunction, Function<T, Float> scaleWidthFunction) {
             this.scaleHeight = scaleHeightFunction;
             this.scaleWidth = scaleWidthFunction;
             return this;
         }
 
-        /**
-         * Builds and returns a finalized {@link AzRendererConfig} instance with the current configuration settings
-         * provided through the builder.
-         *
-         * @return a new instance of {@link AzRendererConfig} configured with the specified animator provider, model
-         *         location provider, texture location provider, render layers, and scale factors.
-         */
         public AzRendererConfig<K, T> build() {
             return new AzRendererConfig<>(
                 animatorProvider,

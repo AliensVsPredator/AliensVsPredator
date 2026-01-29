@@ -62,9 +62,6 @@ public class AzArmorModel<E extends LivingEntity> extends HumanoidModel<E> {
         rendererPipeline.render(poseStack, model, animatable, bufferSource, null, buffer, 0, partialTick, packedLight);
     }
 
-    /**
-     * Applies settings and transformations pre-render based on the default model
-     */
     public void applyBaseModel(HumanoidModel<?> baseModel) {
         this.young = baseModel.young;
         this.crouching = baseModel.crouching;

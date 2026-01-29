@@ -8,13 +8,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-/**
- * This enum represents the dispatch side for animation commands, which can either be client-side or server-side. It is
- * used as part of the AzureLib animation system for identifying where an animation command originates from or should be
- * executed. <br>
- * Each enum constant has an associated unique identifier for easy lookup and transmission across the network. This
- * mapping is also used within codecs for serialization and deserialization purposes.
- */
 public enum AzDispatchSide implements StringRepresentable {
 
     CLIENT(0),

@@ -18,13 +18,6 @@ import com.blib.azurelib.common.render.AzModelRenderer;
 import com.blib.azurelib.common.render.AzRendererPipelineContext;
 import com.blib.azurelib.common.util.client.RenderUtils;
 
-/**
- * The AzBlockEntityModelRenderer is a specialized model renderer class for rendering block entities in a 3D space. It
- * extends the AzModelRenderer class and provides functionality specific to handling and rendering block entities based
- * on their corresponding properties and transformations.
- *
- * @param <T> The type of BlockEntity that this renderer is responsible for
- */
 public class AzBlockEntityModelRenderer<T extends BlockEntity> extends AzModelRenderer<Long, T> {
 
     protected final AzBlockEntityRendererPipeline<T> blockEntityRendererPipeline;
@@ -37,11 +30,6 @@ public class AzBlockEntityModelRenderer<T extends BlockEntity> extends AzModelRe
         this.blockEntityRendererPipeline = blockEntityRendererPipeline;
     }
 
-    /**
-     * The actual render method that subtype renderers should override to handle their specific rendering tasks.<br>
-     * {@link AzBlockEntityRendererPipeline#preRender} has already been called by this stage, and
-     * {@link AzBlockEntityRendererPipeline#postRender} will be called directly after
-     */
     @Override
     public void render(AzRendererPipelineContext<Long, T> context, boolean isReRender) {
         var entity = context.animatable();
@@ -65,9 +53,6 @@ public class AzBlockEntityModelRenderer<T extends BlockEntity> extends AzModelRe
         super.render(context, isReRender);
     }
 
-    /**
-     * Renders the provided {@link AzBone} and its associated child bones
-     */
     @Override
     public void renderRecursively(AzRendererPipelineContext<Long, T> context, AzBone bone, boolean isReRender) {
         var buffer = context.vertexConsumer();
@@ -133,9 +118,6 @@ public class AzBlockEntityModelRenderer<T extends BlockEntity> extends AzModelRe
         poseStack.popPose();
     }
 
-    /**
-     * Attempt to extract a direction from the block so that the model can be oriented correctly
-     */
     protected Direction getFacing(T block) {
         BlockState blockState = block.getBlockState();
 
@@ -148,9 +130,6 @@ public class AzBlockEntityModelRenderer<T extends BlockEntity> extends AzModelRe
         return Direction.NORTH;
     }
 
-    /**
-     * Rotate the {@link PoseStack} based on the determined {@link Direction} the block is facing
-     */
     protected void rotateBlock(Direction facing, PoseStack poseStack) {
         switch (facing) {
             case SOUTH -> poseStack.mulPose(Axis.YP.rotationDegrees(180));

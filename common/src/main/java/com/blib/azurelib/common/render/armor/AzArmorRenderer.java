@@ -43,17 +43,6 @@ public class AzArmorRenderer {
         return new AzArmorRendererPipeline(config, this);
     }
 
-    /**
-     * Prepare the renderer for the current render cycle.<br>
-     * Must be called prior to render as the default HumanoidModel doesn't give render context.<br>
-     * Params have been left nullable so that the renderer can be called for model/texture purposes safely. If you do
-     * grab the renderer using null parameters, you should not use it for actual rendering.
-     *
-     * @param entity    The entity being rendered with the armor on
-     * @param stack     The ItemStack being rendered
-     * @param slot      The slot being rendered
-     * @param baseModel The default (vanilla) model that would have been rendered if this model hadn't replaced it
-     */
     public void prepForRender(
         @Nullable Entity entity,
         ItemStack stack,

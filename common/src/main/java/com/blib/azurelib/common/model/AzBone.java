@@ -12,10 +12,6 @@ import java.util.Objects;
 
 import com.blib.azurelib.common.cache.object.GeoCube;
 
-/**
- * Mutable bone object representing a set of cubes, as well as child bones.<br>
- * This is the object that is directly modified by animations to handle movement
- */
 public class AzBone {
 
     private final AzBoneMetadata metadata;
@@ -320,18 +316,12 @@ public class AzBone {
         this.worldSpaceNormal = matrix;
     }
 
-    /**
-     * Get the position of the bone relative to its owner
-     */
     public Vector3d getLocalPosition() {
         Vector4f vec = getLocalSpaceMatrix().transform(new Vector4f(0, 0, 0, 1));
 
         return new Vector3d(vec.x(), vec.y(), vec.z());
     }
 
-    /**
-     * Get the position of the bone relative to the model it belongs to
-     */
     public Vector3d getModelPosition() {
         Vector4f vec = getModelSpaceMatrix().transform(new Vector4f(0, 0, 0, 1));
 
@@ -350,9 +340,6 @@ public class AzBone {
         updatePosition(-vec.x() * 16f, vec.y() * 16f, vec.z() * 16f);
     }
 
-    /**
-     * Get the position of the bone relative to the world
-     */
     public Vector3d getWorldPosition() {
         Vector4f vec = getWorldSpaceMatrix().transform(new Vector4f(0, 0, 0, 1));
 

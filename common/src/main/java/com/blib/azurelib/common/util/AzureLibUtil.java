@@ -1,8 +1,3 @@
-/**
- * This class is a fork of the matching class found in the Geckolib repository. Original source:
- * https://github.com/bernie-g/geckolib Copyright © 2024 Bernie-G. Licensed under the MIT License.
- * https://github.com/bernie-g/geckolib/blob/main/LICENSE
- */
 package com.blib.azurelib.common.util;
 
 import net.minecraft.core.BlockPos;
@@ -10,9 +5,6 @@ import net.minecraft.world.level.Level;
 
 import com.blib.mod.common.registry.init.BLibBlocks;
 
-/**
- * Helper class for various AzureLib-specific functions.
- */
 public record AzureLibUtil() {
 
     public static <T> T self(Object object) {

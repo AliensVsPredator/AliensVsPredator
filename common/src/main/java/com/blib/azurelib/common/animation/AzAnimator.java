@@ -13,15 +13,6 @@ import com.blib.azurelib.common.animation.primitive.AzBakedAnimation;
 import com.blib.azurelib.core.molang.MolangParser;
 import com.blib.azurelib.core.molang.MolangQueries;
 
-/**
- * The {@code AzAnimator} class is an abstract base class for managing animations for various types of objects such as
- * entities, blocks, or items. It provides a reusable structure for animating objects, allowing the integration of a
- * variety of animation controllers and custom animations.
- *
- * @param <K> The type of the key used to identify the animatable object. Typically, a UUID for items/entities and Long
- *            for BlockEntities.
- * @param <T> The type of object this animator will animate (e.g., an entity, block entity, or item stack).
- */
 public abstract class AzAnimator<K, T> {
 
     private AzAnimationContext<T> currentContext;
@@ -95,24 +86,10 @@ public abstract class AzAnimator<K, T> {
         this.animate(animatable, partialTicks, true);
     }
 
-    /**
-     * Apply transformations and settings prior to acting on any animation-related functionality.
-     *
-     * @param animatable   The animatable being animated.
-     * @param animTime     Animation time in seconds.
-     * @param partialTicks The partial tick for smooth animations.
-     */
     protected void preAnimationSetup(T animatable, double animTime, float partialTicks) {
         applyMolangQueries(animatable, animTime, partialTicks);
     }
 
-    /**
-     * Handles MoLang queries with support for partial ticks.
-     *
-     * @param animatable   The animatable being animated.
-     * @param animTime     Animation time in seconds.
-     * @param partialTicks The partial tick for smooth animations.
-     */
     protected void applyMolangQueries(T animatable, double animTime, float partialTicks) {
         var level = Minecraft.getInstance().level;
         var parser = MolangParser.INSTANCE;
@@ -127,18 +104,8 @@ public abstract class AzAnimator<K, T> {
         parser.setMemoizedValue(MolangQueries.MOON_PHASE, level::getMoonPhase);
     }
 
-    /**
-     * Sets custom animations for the given animatable object. This method is used to define and configure specific
-     * animations unique to the context of the animatable and the current render state.
-     *
-     * @param animatable   The object for which custom animations are being set.
-     * @param partialTicks The partial tick time used for interpolating animations smoothly between frames.
-     */
     public void setCustomAnimations(T animatable, float partialTicks) {}
 
-    /**
-     * Get the baked animation object used for rendering from the given resource path
-     */
     public AzBakedAnimation getAnimation(T animatable, String name) {
         var location = getAnimationLocation(animatable);
         var bakedAnimations = AzBakedAnimationCache.getInstance().getNullable(location);

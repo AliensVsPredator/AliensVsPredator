@@ -13,7 +13,6 @@ import java.util.Collections;
 import java.util.List;
 
 import com.blib.azurelib.AzureLib;
-import com.blib.azurelib.common.animation.AzAnimator;
 import com.blib.azurelib.common.animation.AzAnimatorAccessor;
 import com.blib.azurelib.common.animation.dispatch.AzDispatchSide;
 import com.blib.azurelib.common.animation.dispatch.command.action.AzAction;
@@ -26,11 +25,6 @@ import com.blib.mod.common.network.packet.S2CEntityDispatchCommandPayload;
 import com.blib.mod.common.network.packet.S2CItemStackDispatchCommandPayload;
 import com.blib.mod.common.registry.init.BLibDataComponents;
 
-/**
- * Represents a command containing a list of actions (`AzAction`) that can be executed as part of animations or other
- * complex behaviors. This class provides methods for constructing, composing, and dispatching commands across client
- * and server contexts.
- */
 public record AzCommand(List<AzAction> actions) {
 
     public static final StreamCodec<FriendlyByteBuf, AzCommand> CODEC = StreamCodec.composite(
@@ -71,27 +65,10 @@ public record AzCommand(List<AzAction> actions) {
         return compose(allCommands);
     }
 
-    /**
-     * Creates an animation command for a specific controller and animation, using the default play behavior of
-     * PLAY_ONCE.
-     *
-     * @param controllerName the name of the animation controller to target
-     * @param animationName  the name of the animation to be played
-     * @return an AzCommand instance encapsulating the animation command for the specified controller and animation
-     */
     public static AzCommand create(String controllerName, String animationName) {
         return create(controllerName, animationName, AzPlayBehaviors.PLAY_ONCE, 0F, 1F, 0F, 0F, 0F, false);
     }
 
-    /**
-     * Creates an animation command for a specific controller and animation, with the ability to customize the play
-     * behavior. A default starting tick offset of 0 is used.
-     *
-     * @param controllerName the name of the animation controller to target
-     * @param animationName  the name of the animation to be played
-     * @param playBehavior   the play behavior for the animation, defining how it should handle playback
-     * @return an AzCommand instance that encapsulates the animation command for the specified controller and animation
-     */
     public static AzCommand create(String controllerName, String animationName, AzPlayBehavior playBehavior) {
         return create(controllerName, animationName, playBehavior, 0F, 1F, 0F, 0F, 0F, false);
     }
@@ -124,16 +101,6 @@ public record AzCommand(List<AzAction> actions) {
             .build();
     }
 
-    /**
-     * Creates a root-level (all controllers) animation command with specified parameters for animation name, play
-     * behavior, start tick offset, and animation speed.
-     *
-     * @param animationName   the name of the animation to be played
-     * @param playBehavior    the play behavior for the animation, defining how it should handle playback
-     * @param startTickOffset the starting tick offset for the animation
-     * @param animationSpeed  the speed at which the animation should play
-     * @return an AzCommand instance configured with the specified animation settings
-     */
     // TODO: Fix transition length overriding transition lenght on the base create method
     public static AzCommand createRoot(
         String animationName,
@@ -161,13 +128,6 @@ public record AzCommand(List<AzAction> actions) {
             .build();
     }
 
-    /**
-     * Sends animation commands for the specified entity based on the configured dispatch origin. The method determines
-     * whether the command should proceed, logs a warning if it cannot, and dispatches the animation commands either
-     * from the client or the server side.
-     *
-     * @param entity the target {@link Entity} for which the animation commands are dispatched.
-     */
     public void sendForEntity(Entity entity) {
         if (entity.level().isClientSide()) {
             dispatchFromClient(entity);
@@ -178,13 +138,6 @@ public record AzCommand(List<AzAction> actions) {
         }
     }
 
-    /**
-     * Sends animation commands for the specified block entity based on the configured dispatch origin. The method
-     * determines whether the command should proceed, logs a warning if it cannot, and dispatches the animation commands
-     * either from the client or the server side.
-     *
-     * @param entity the target {@link BlockEntity} for which the animation commands are dispatched.
-     */
     public void sendForBlockEntity(BlockEntity entity) {
         if (entity.getLevel().isClientSide()) {
             dispatchFromClient(entity);
@@ -195,14 +148,6 @@ public record AzCommand(List<AzAction> actions) {
         }
     }
 
-    /**
-     * Sends animation commands for the specified item based on the configured dispatch origin. The method determines
-     * whether the command can proceed, assigns a unique identifier to the item if required, and dispatches the
-     * animation commands either from the client or the server side.
-     *
-     * @param entity    the {@link Entity} associated with the {@link ItemStack}.
-     * @param itemStack the {@link ItemStack} on which the animation commands are dispatched.
-     */
     public void sendForItem(Entity entity, ItemStack itemStack) {
         if (entity.level().isClientSide()) {
             dispatchFromClient(entity);
@@ -223,14 +168,6 @@ public record AzCommand(List<AzAction> actions) {
         }
     }
 
-    /**
-     * Dispatches animation commands from the client side for the provided animatable object. This method retrieves an
-     * {@link AzAnimator} instance associated with the animatable object and applies all configured actions to it using
-     * the {@code CLIENT} dispatch side.
-     *
-     * @param <T>        the type of the animatable object
-     * @param animatable the animatable object for which the animation commands are dispatched
-     */
     private <T> void dispatchFromClient(T animatable) {
         var animator = AzAnimatorAccessor.getOrNull(animatable);
 

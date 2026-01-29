@@ -14,15 +14,6 @@ import com.blib.azurelib.common.animation.cache.AzIdentityRegistry;
 import com.blib.azurelib.common.util.AzureLibUtil;
 import com.blib.mod.common.registry.init.BLibDataComponents;
 
-/**
- * This mixin modifies the {@link ItemStack} class to inject functionality for managing a unique identifier as part of
- * the ItemStack's data components. The added identifier is used in conjunction with the animation registry provided by
- * AzureLib.
- * <p>
- * When an {@code ItemStack} is instantiated and is associated with an animatable item, this mixin ensures that it
- * includes a unique identifier in its data components. If the item is animatable and the required data component is not
- * yet present, it assigns a newly generated {@link UUID} to the component.
- */
 @Mixin(ItemStack.class)
 public class ItemStackMixin_AzItemStackIdentityRegistry {
 

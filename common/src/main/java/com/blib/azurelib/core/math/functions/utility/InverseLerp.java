@@ -3,10 +3,6 @@ package com.blib.azurelib.core.math.functions.utility;
 import com.blib.azurelib.core.math.IValue;
 import com.blib.azurelib.core.math.functions.Function;
 
-/**
- * Inverse lerp function Returns the interpolation factor (0 to 1) that would produce the given value between start and
- * end
- */
 public class InverseLerp extends Function {
 
     public InverseLerp(IValue[] values, String name) throws Exception {

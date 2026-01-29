@@ -1,8 +1,3 @@
-/**
- * This class is a fork of the matching class found in the Geckolib repository. Original source:
- * https://github.com/bernie-g/geckolib Copyright © 2024 Bernie-G. Licensed under the MIT License.
- * https://github.com/bernie-g/geckolib/blob/main/LICENSE
- */
 package com.blib.azurelib.core.molang.expressions;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -14,17 +9,13 @@ import java.util.StringJoiner;
 
 import com.blib.azurelib.core.molang.LazyVariable;
 
-/**
- * An extension of the {@link com.blib.azurelib.core.molang.expressions.MolangValue} class, allowing for compound
- * expressions.
- */
-public class MolangCompoundValue extends com.blib.azurelib.core.molang.expressions.MolangValue {
+public class MolangCompoundValue extends MolangValue {
 
-    public final List<com.blib.azurelib.core.molang.expressions.MolangValue> values = new ObjectArrayList<>();
+    public final List<MolangValue> values = new ObjectArrayList<>();
 
     public final Map<String, LazyVariable> locals = new Object2ObjectOpenHashMap<>();
 
-    public MolangCompoundValue(com.blib.azurelib.core.molang.expressions.MolangValue baseValue) {
+    public MolangCompoundValue(MolangValue baseValue) {
         super(baseValue);
 
         this.values.add(baseValue);
@@ -34,7 +25,7 @@ public class MolangCompoundValue extends com.blib.azurelib.core.molang.expressio
     public double get() {
         double value = 0;
 
-        for (com.blib.azurelib.core.molang.expressions.MolangValue molangValue : this.values) {
+        for (var molangValue : this.values) {
             value = molangValue.get();
         }
 

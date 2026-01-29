@@ -11,16 +11,6 @@ import com.blib.azurelib.common.animation.easing.AzEasingType;
 import com.blib.azurelib.common.animation.easing.AzEasingUtil;
 import com.blib.azurelib.core.math.IValue;
 
-/**
- * The BezierEasing class represents an abstract easing type that facilitates smooth transitions in animation using
- * cubic Bézier curves. This is implemented as part of the AzEasingType interface and provides utilities for generating
- * Bézier curves based on animation parameters.
- * <p>
- * Subclasses must implement the {@code isEasingBefore} method to define whether the easing curve applies before or
- * after a specific condition in the animation timeline.
- * <p>
- * <b>Author:</b> <a href="https://github.com/ZigyTheBird">ZigyTheBird</a>
- */
 public abstract class BezierEasing implements AzEasingType {
 
     private static final double DEFAULT_RIGHT_TIME = 0.1;
@@ -31,26 +21,11 @@ public abstract class BezierEasing implements AzEasingType {
 
     private static final double TICKS_PER_SECOND = 20;
 
-    /**
-     * Builds and returns a Double2DoubleFunction that applies easing transformation.
-     *
-     * @param value the input parameter used for configuring the transformer
-     * @return a Double2DoubleFunction that applies an easing transformation
-     */
     @Override
     public Double2DoubleFunction buildTransformer(Double value) {
         return AzEasingUtil.easeIn(AzEasingUtil::linear);
     }
 
-    /**
-     * Applies a specified easing transformation to an animation point based on the provided easing value and lerping
-     * value.
-     *
-     * @param animationPoint the point within the animation sequence, containing keyframe data and other parameters
-     * @param easingValue    the easing configuration value influencing the animation behavior
-     * @param lerpValue      the interpolation value for determining the current animation state
-     * @return the eased result as a double, representing the updated animation state
-     */
     @Override
     public double apply(AzAnimationPoint animationPoint, Double easingValue, double lerpValue) {
         List<? extends IValue> easingArgs = animationPoint.keyframe().easingArgs();
@@ -100,26 +75,8 @@ public abstract class BezierEasing implements AzEasingType {
         );
     }
 
-    /**
-     * Determines whether the easing process should occur before a specified condition or point in the animation
-     * sequence. This method is abstract and must be implemented by subclasses to define the specific behavior of the
-     * easing evaluation.
-     *
-     * @return true if the easing is configured to occur before the specified condition or animation evaluation point;
-     *         false otherwise.
-     */
     public abstract boolean isEasingBefore();
 
-    /**
-     * Handles the scenario where no specific easing arguments are provided by applying a linear interpolation between
-     * the animation start value and end value, transformed through a calculated easing function.
-     *
-     * @param animationPoint the current animation point containing keyframe data and start and end values for the
-     *                       animation
-     * @param easingValue    the easing configuration value used to generate the transformation function
-     * @param lerpValue      the interpolation (lerp) value to determine the current progress of the animation
-     * @return the transformed interpolated value as a double, representing the current state of the animation
-     */
     private double handleNoEasingArgs(AzAnimationPoint animationPoint, Double easingValue, double lerpValue) {
         Double2DoubleFunction transformer = buildTransformer(easingValue);
         return Mth.lerp(
@@ -129,20 +86,6 @@ public abstract class BezierEasing implements AzEasingType {
         );
     }
 
-    /**
-     * Constructs a cubic Bézier curve using the provided animation point, time constraints, value adjustments, and
-     * transition duration. The Bézier curve is defined by four control points calculated based on the input parameters.
-     *
-     * @param animationPoint               the animation point containing keyframe data and start/end animation values
-     * @param clampedLeftTime              the time constraint for the left control point of the Bézier curve
-     * @param clampedRightTime             the time constraint for the right control point of the Bézier curve
-     * @param leftValue                    the adjustment value for the left control point relative to the starting
-     *                                     point
-     * @param rightValue                   the adjustment value for the right control point relative to the starting
-     *                                     point
-     * @param normalizedTransitionDuration the normalized duration of the transition for the curve's end points
-     * @return a {@code CubicBezierCurve} instance representing the calculated curve
-     */
     private CubicBezierCurve buildBezierCurve(
         AzAnimationPoint animationPoint,
         double clampedLeftTime,
@@ -162,15 +105,6 @@ public abstract class BezierEasing implements AzEasingType {
         );
     }
 
-    /**
-     * Finds the two closest points in a list of 2D points to a specified value of time. The distances between the
-     * x-coordinates of the points and the given time are used to determine proximity.
-     *
-     * @param points the list of 2D points to search through
-     * @param time   the target time value used to measure distance from each point's x-coordinate
-     * @return an array containing the two closest points to the specified time, with the closest point at index 0 and
-     *         the second closest point at index 1
-     */
     private Vector2d[] findClosestPoints(List<Vector2d> points, double time) {
         Vector2d closest = new Vector2d();
         Vector2d secondClosest = new Vector2d();

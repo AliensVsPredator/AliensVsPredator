@@ -1,14 +1,5 @@
-/**
- * This class is a fork of the matching class found in the Geckolib repository. Original source:
- * https://github.com/bernie-g/geckolib Copyright © 2024 Bernie-G. Licensed under the MIT License.
- * https://github.com/bernie-g/geckolib/blob/main/LICENSE
- */
 package com.blib.azurelib.core.molang;
 
-/**
- * Holder class for the various builtin query string constants for the {@link MolangParser}.<br>
- * These do not constitute a definitive list of queries; merely the default ones
- */
 public final class MolangQueries {
 
     private static final String QUERY_PREFIX = "query.";

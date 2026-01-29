@@ -1,8 +1,3 @@
-/**
- * This class is a fork of the matching class found in the Geckolib repository. Original source:
- * https://github.com/bernie-g/geckolib Copyright © 2024 Bernie-G. Licensed under the MIT License.
- * https://github.com/bernie-g/geckolib/blob/main/LICENSE
- */
 package com.blib.azurelib.common.cache.texture;
 
 import com.google.gson.JsonArray;
@@ -19,12 +14,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import com.blib.azurelib.common.render.layer.AzAutoGlowingLayer;
-
-/**
- * Metadata class that stores the data for AzureLib's {@link AzAutoGlowingLayer emissive texture feature} for a given
- * texture
- */
 public class GeoGlowingTextureMeta {
 
     public static final MetadataSectionSerializer<GeoGlowingTextureMeta> DESERIALIZER =
@@ -47,9 +36,6 @@ public class GeoGlowingTextureMeta {
                 return new GeoGlowingTextureMeta(pixels);
             }
 
-            /**
-             * Generate a {@link Pixel} collection from the "sections" array of the mcmeta file
-             */
             private List<Pixel> fromSections(@Nullable JsonArray sectionsArray) {
                 if (sectionsArray == null)
                     return List.of();
@@ -90,9 +76,6 @@ public class GeoGlowingTextureMeta {
         this.pixels = pixels;
     }
 
-    /**
-     * Generate the GlowLayer pixels list from an existing image resource, instead of using the .png.mcmeta file
-     */
     public static GeoGlowingTextureMeta fromExistingImage(NativeImage glowLayer) {
         List<Pixel> pixels = new ObjectArrayList<>();
 
@@ -111,9 +94,6 @@ public class GeoGlowingTextureMeta {
         return new GeoGlowingTextureMeta(pixels);
     }
 
-    /**
-     * Create a new mask image based on the pre-determined pixel data
-     */
     public void createImageMask(NativeImage originalImage, NativeImage newImage) {
         for (Pixel pixel : this.pixels) {
             int color = originalImage.getPixelRGBA(pixel.x, pixel.y);
@@ -131,13 +111,6 @@ public class GeoGlowingTextureMeta {
         }
     }
 
-    /**
-     * A pixel marker for a glowlayer mask
-     *
-     * @param x     The X coordinate of the pixel
-     * @param y     The Y coordinate of the pixel
-     * @param alpha The alpha value of the mask
-     */
     private record Pixel(
         int x,
         int y,

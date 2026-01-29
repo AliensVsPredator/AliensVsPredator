@@ -12,22 +12,13 @@ import java.util.function.Function;
 
 public class AzEasingTypeRegistry {
 
-    private static final Map<String, com.blib.azurelib.common.animation.easing.AzEasingType> EASING_TYPES = new HashMap<>();
+    private static final Map<String, AzEasingType> EASING_TYPES = new HashMap<>();
 
-    /**
-     * Register an {@code EasingType} with AzureLib for handling animation transitions and value curves.<br>
-     * <b><u>MUST be called during mod construct</u></b><br>
-     * It is recommended you don't call this directly, and instead call it via {@code AzureLibUtil#addCustomEasingType}
-     *
-     * @param name        The name of the easing type
-     * @param transformer The {@code Double2DoubleFunction} to associate with the given name
-     * @return The {@code EasingType} you registered
-     */
-    public static com.blib.azurelib.common.animation.easing.AzEasingType register(
+    public static AzEasingType register(
         String name,
         Function<Double, Double2DoubleFunction> transformer
     ) {
-        return EASING_TYPES.computeIfAbsent(name, ($) -> new com.blib.azurelib.common.animation.easing.AzEasingType() {
+        return EASING_TYPES.computeIfAbsent(name, ($) -> new AzEasingType() {
 
             @Override
             public String name() {
@@ -41,21 +32,21 @@ public class AzEasingTypeRegistry {
         });
     }
 
-    public static com.blib.azurelib.common.animation.easing.AzEasingType register(
+    public static AzEasingType register(
         String name,
-        com.blib.azurelib.common.animation.easing.AzEasingType easingType
+        AzEasingType easingType
     ) {
         return register(name, easingType::buildTransformer);
     }
 
-    public static com.blib.azurelib.common.animation.easing.AzEasingType getOrDefault(
+    public static AzEasingType getOrDefault(
         String name,
-        @NotNull com.blib.azurelib.common.animation.easing.AzEasingType defaultValue
+        @NotNull AzEasingType defaultValue
     ) {
         return EASING_TYPES.getOrDefault(name, defaultValue);
     }
 
-    public static @Nullable com.blib.azurelib.common.animation.easing.AzEasingType getOrNull(String name) {
+    public static @Nullable AzEasingType getOrNull(String name) {
         return EASING_TYPES.get(name);
     }
 

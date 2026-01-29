@@ -1,13 +1,7 @@
 package com.blib.azurelib.common.animation.primitive;
 
-import com.blib.azurelib.common.animation.controller.AzAnimationController;
 import com.blib.azurelib.common.animation.controller.keyframe.AzBoneAnimation;
 
-/**
- * A compiled animation instance for use by the {@link AzAnimationController}<br>
- * Modifications or extensions of a compiled Animation are not supported, and therefore an instance of
- * <code>Animation</code> is considered final and immutable.
- */
 public record AzBakedAnimation(
     String name,
     double length,

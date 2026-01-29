@@ -1,8 +1,3 @@
-/**
- * This class is a fork of the matching class found in the Geckolib repository. Original source:
- * https://github.com/bernie-g/geckolib Copyright © 2024 Bernie-G. Licensed under the MIT License.
- * https://github.com/bernie-g/geckolib/blob/main/LICENSE
- */
 package com.blib.azurelib.common.cache.texture;
 
 import com.mojang.blaze3d.pipeline.RenderCall;
@@ -31,9 +26,6 @@ import com.blib.azurelib.AzureLib;
 import com.blib.azurelib.common.cache.texture.util.Frame;
 import com.blib.azurelib.common.util.client.RenderUtils;
 
-/**
- * Wrapper for {@link SimpleTexture SimpleTexture} implementation allowing for casual use of animated non-atlas textures
- */
 public class AnimatableTexture extends SimpleTexture {
 
     protected AnimationContents animationContents = null;
@@ -90,11 +82,6 @@ public class AnimatableTexture extends SimpleTexture {
         }
     }
 
-    /**
-     * Returns whether the texture found any valid animation metadata when loading.
-     * <p>
-     * If false, then this is no different to a standard {@link SimpleTexture}
-     */
     public boolean isAnimated() {
         return this.isAnimated;
     }
@@ -103,12 +90,6 @@ public class AnimatableTexture extends SimpleTexture {
         setAndUpdate(texturePath, (int) RenderUtils.getCurrentTick());
     }
 
-    /**
-     * Setting a specific frame for the animated texture does not work well because of how Minecraft buffers rendering
-     * passes
-     * <p>
-     * Use the non-specified method above unless you know what you're doing
-     */
     public static void setAndUpdate(ResourceLocation texturePath, int frameTick) {
         AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(texturePath);
 
@@ -132,9 +113,6 @@ public class AnimatableTexture extends SimpleTexture {
         }
     }
 
-    /**
-     * TODO: Work moving to own class without breaking things
-     */
     protected class AnimationContents {
 
         protected final FrameSize frameSize;

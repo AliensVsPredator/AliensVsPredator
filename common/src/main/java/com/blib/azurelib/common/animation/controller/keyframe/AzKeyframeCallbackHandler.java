@@ -13,15 +13,6 @@ import com.blib.azurelib.common.animation.event.AzSoundKeyframeEvent;
 import com.blib.azurelib.common.animation.primitive.AzQueuedAnimation;
 import com.blib.azurelib.core.keyframe.event.data.KeyFrameData;
 
-/**
- * AzKeyframeCallbackHandler acts as a handler for managing animation keyframe events such as sound, particle, or custom
- * events during a specific animation. It works in conjunction with an animation controller and a set of keyframe
- * callbacks, executing them as appropriate based on the animation's progress. <br>
- * This class is generic and operates on a user-defined animatable type to handle various keyframe events related to
- * animations.
- *
- * @param <T> the type of the animatable object being handled
- */
 // TODO: reduce the boilerplate of the specialized handle functions in this class.
 public class AzKeyframeCallbackHandler<T> {
 
@@ -31,7 +22,7 @@ public class AzKeyframeCallbackHandler<T> {
 
     private final Set<KeyFrameData> executedKeyframes;
 
-    private final com.blib.azurelib.common.animation.controller.keyframe.AzKeyframeCallbacks<T> keyframeCallbacks;
+    private final AzKeyframeCallbacks<T> keyframeCallbacks;
 
     public AzKeyframeCallbackHandler(
         AzAnimationController<T> animationController,
@@ -114,9 +105,6 @@ public class AzKeyframeCallbackHandler<T> {
         }
     }
 
-    /**
-     * Clear the {@link KeyFrameData} cache in preparation for the next animation
-     */
     public void reset() {
         executedKeyframes.clear();
     }

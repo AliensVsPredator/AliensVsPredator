@@ -3,9 +3,6 @@ package com.blib.azurelib.core.math.functions.utility;
 import com.blib.azurelib.core.math.IValue;
 import com.blib.azurelib.core.math.functions.Function;
 
-/**
- * Sign function Returns -1 for negative values, 0 for zero, and 1 for positive values
- */
 public class Sign extends Function {
 
     public Sign(IValue[] values, String name) throws Exception {

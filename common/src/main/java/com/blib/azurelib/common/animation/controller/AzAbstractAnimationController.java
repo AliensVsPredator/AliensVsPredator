@@ -20,13 +20,6 @@ public class AzAbstractAnimationController {
         return name;
     }
 
-    /**
-     * Checks whether the last animation playing on this controller has finished or not.<br>
-     * This will return true if the controller has had an animation set previously, and it has finished playing and
-     * isn't going to loop or proceed to another animation.<br>
-     *
-     * @return Whether the previous animation finished or not
-     */
     public boolean hasAnimationFinished() {
         return currentSequence != null;
     }

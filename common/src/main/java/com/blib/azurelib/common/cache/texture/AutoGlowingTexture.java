@@ -1,8 +1,3 @@
-/**
- * This class is a fork of the matching class found in the Geckolib repository. Original source:
- * https://github.com/bernie-g/geckolib Copyright © 2024 Bernie-G. Licensed under the MIT License.
- * https://github.com/bernie-g/geckolib/blob/main/LICENSE
- */
 package com.blib.azurelib.common.cache.texture;
 
 import com.mojang.blaze3d.pipeline.RenderCall;
@@ -23,9 +18,6 @@ import java.util.concurrent.ExecutionException;
 import com.blib.api.BLibAPI;
 import com.blib.azurelib.AzureLib;
 
-/**
- * Texture object type responsible for AzureLib's emissive render textures
- */
 public class AutoGlowingTexture extends AzAbstractTexture {
 
     protected final ResourceLocation textureBase;
@@ -38,10 +30,6 @@ public class AutoGlowingTexture extends AzAbstractTexture {
         this.glowLayer = location;
     }
 
-    /**
-     * Generates the glow layer {@link NativeImage} and appropriately modifies the base texture for use in glow render
-     * layers
-     */
     @Nullable
     @Override
     protected RenderCall loadTexture(ResourceManager resourceManager, Minecraft mc) throws IOException {
@@ -117,7 +105,7 @@ public class AutoGlowingTexture extends AzAbstractTexture {
             return null;
         }
 
-        boolean animated = originalTexture instanceof com.blib.azurelib.common.cache.texture.AnimatableTexture animatableTexture
+        boolean animated = originalTexture instanceof AnimatableTexture animatableTexture
             && animatableTexture
                 .isAnimated();
 

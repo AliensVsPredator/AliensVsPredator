@@ -18,13 +18,6 @@ import com.blib.azurelib.common.render.AzModelRenderer;
 import com.blib.azurelib.common.render.AzRendererPipelineContext;
 import com.blib.azurelib.common.util.client.RenderUtils;
 
-/**
- * AzEntityModelRenderer is a class responsible for rendering animated 3D entity models in a pipeline-based rendering
- * setup. Extends the {@link AzModelRenderer} class and utilizes the {@link AzEntityRendererPipeline} to handle various
- * rendering tasks, such as applying model transformations and managing animated states in the rendering lifecycle. <br>
- *
- * @param <T> The type of entity that this renderer applies to, extends the {@link Entity} class.
- */
 public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUID, T> {
 
     protected final AzEntityRendererPipeline<T> entityRendererPipeline;
@@ -37,11 +30,6 @@ public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUI
         this.entityRendererPipeline = entityRendererPipeline;
     }
 
-    /**
-     * The actual render method that subtype renderers should override to handle their specific rendering tasks.<br>
-     * {@link AzEntityRendererPipeline#preRender} has already been called by this stage, and
-     * {@link AzEntityRendererPipeline#postRender} will be called directly after
-     */
     @Override
     public void render(AzRendererPipelineContext<UUID, T> context, boolean isReRender) {
         var animatable = context.animatable();
@@ -88,9 +76,6 @@ public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUI
         poseStack.popPose();
     }
 
-    /**
-     * Renders the provided {@link AzBone} and its associated child bones
-     */
     @Override
     public void renderRecursively(AzRendererPipelineContext<UUID, T> context, AzBone bone, boolean isReRender) {
         var buffer = context.vertexConsumer();
@@ -152,19 +137,6 @@ public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUI
         poseStack.popPose();
     }
 
-    /**
-     * Calculates a linear interpolation (LERP) rotation value for a given entity, taking into account the entity's
-     * current and previous rotations, its head movement, and whether it is mounted on another entity. Specifically,
-     * this method interpolates between the previous and current rotation states, constraining rotational adjustments to
-     * ensure realistic movement, especially when the entity is a passenger.
-     *
-     * @param animatable  The entity whose rotation is to be interpolated. Must extend {@link Entity}, and may include
-     *                    subtypes such as {@link LivingEntity} to apply specific logic for living entities.
-     * @param partialTick A float value representing the partial time progression within the current game tick. Used to
-     *                    blend between previous and current states for smoother animations.
-     * @return The interpolated LERP rotation value, which represents the adjusted body rotation of the entity after
-     *         considering multiple elements such as head movements and passenger state.
-     */
     private static <T extends Entity> float getLerpRot(T animatable, float partialTick) {
         boolean shouldSit = animatable.isPassenger() && (animatable.getVehicle() != null);
 
@@ -195,10 +167,6 @@ public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUI
         return lerpBodyRot;
     }
 
-    /**
-     * Applies rotation transformations to the renderer prior to render time to account for various entity states,
-     * scalable
-     */
     protected void applyRotations(
         T animatable,
         PoseStack poseStack,

@@ -10,18 +10,6 @@ import org.jetbrains.annotations.Nullable;
 
 public record CommonUtils() {
 
-    /**
-     * Summons an Area of Effect Cloud with the set particle, y offset, radius, duration, and effect options.
-     *
-     * @param entity     The Entity summoning the AoE
-     * @param particle   Sets the Particle
-     * @param yOffset    Set the yOffset if wanted
-     * @param duration   Sets the duration of the AoE
-     * @param radius     Sets the radius of the AoE
-     * @param hasEffect  Should this have an effect?
-     * @param effect     If it should effect, what effect?
-     * @param effectTime How long the effect should be applied for?
-     */
     public static void summonAoE(
         LivingEntity entity,
         ParticleOptions particle,

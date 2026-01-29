@@ -7,16 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import com.blib.azurelib.common.animation.dispatch.command.action.AzAction;
 import com.blib.azurelib.common.animation.dispatch.command.action.registry.AzActionRegistry;
 
-/**
- * The AzActionCodec class serves as an implementation of the {@link StreamCodec} interface specifically designed for
- * encoding and decoding {@link AzAction} objects. This codec encodes and decodes AzAction instances using their
- * associated resource locations and registered codecs within the {@link AzActionRegistry}. <br>
- * This class provides the necessary functionality to serialize an AzAction to a {@link FriendlyByteBuf} and deserialize
- * it back, ensuring proper handling of resource location and associated data. It relies on the AzActionRegistry to
- * dynamically retrieve the appropriate codec and handle the serialization or deserialization process. <br>
- * Use this implementation in scenarios where AzAction objects need to be serialized or deserialized for efficient data
- * transmission or storage.
- */
 public class AzActionCodec implements StreamCodec<FriendlyByteBuf, AzAction> {
 
     @Override

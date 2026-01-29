@@ -6,86 +6,33 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import org.jetbrains.annotations.Nullable;
 
-import com.blib.azurelib.common.cache.texture.AnimatableTexture;
 import com.blib.azurelib.common.model.AzBakedModel;
-import com.blib.azurelib.common.render.layer.AzRenderLayer;
 
-/**
- * Abstract base class for defining a rendering pipeline. The {@code AzRendererPipeline} provides a structured framework
- * to handle complex rendering tasks by separating responsibilities into different components, such as layer rendering
- * and model rendering.
- *
- * @param <K> The type of the key used to identify the animatable object. Typically, a UUID for items/entities and Long
- *            for BlockEntities.
- * @param <T> The type of the object to be rendered.
- */
 public abstract class AzRendererPipeline<K, T> implements AzPhasedRenderer<K, T> {
 
-    protected final com.blib.azurelib.common.render.AzRendererConfig<K, T> config;
+    protected final AzRendererConfig<K, T> config;
 
     private final AzRendererPipelineContext<K, T> context;
 
-    private final com.blib.azurelib.common.render.AzLayerRenderer<K, T> layerRenderer;
+    private final AzLayerRenderer<K, T> layerRenderer;
 
-    private final com.blib.azurelib.common.render.AzModelRenderer<K, T> modelRenderer;
+    private final AzModelRenderer<K, T> modelRenderer;
 
-    protected AzRendererPipeline(com.blib.azurelib.common.render.AzRendererConfig<K, T> config) {
+    protected AzRendererPipeline(AzRendererConfig<K, T> config) {
         this.config = config;
         this.context = createContext(this);
         this.layerRenderer = createLayerRenderer(config);
         this.modelRenderer = createModelRenderer(layerRenderer);
     }
 
-    /**
-     * Creates a rendering pipeline context for the specified renderer pipeline. This method is intended to be
-     * implemented by subclasses to provide a specific implementation of the {@link AzRendererPipelineContext} for
-     * rendering.
-     *
-     * @param rendererPipeline the renderer pipeline for which the context is to be created
-     * @return a new instance of {@link AzRendererPipelineContext} specific to the given renderer pipeline
-     */
     protected abstract AzRendererPipelineContext<K, T> createContext(AzRendererPipeline<K, T> rendererPipeline);
 
-    /**
-     * Creates an instance of {@link com.blib.azurelib.common.render.AzModelRenderer} using the provided
-     * {@link com.blib.azurelib.common.render.AzLayerRenderer}. This method is part of the rendering pipeline and is
-     * responsible for generating a model renderer which can handle hierarchical structures and advanced rendering
-     * tasks.
-     *
-     * @param layerRenderer the {@link com.blib.azurelib.common.render.AzLayerRenderer} instance used to decorate and
-     *                      handle additional render layers within the model rendering process
-     * @return a new instance of {@link com.blib.azurelib.common.render.AzModelRenderer} configured with the provided
-     *         layer renderer
-     */
-    protected abstract AzModelRenderer<K, T> createModelRenderer(com.blib.azurelib.common.render.AzLayerRenderer<K, T> layerRenderer);
+    protected abstract AzModelRenderer<K, T> createModelRenderer(AzLayerRenderer<K, T> layerRenderer);
 
-    /**
-     * Creates an instance of {@link com.blib.azurelib.common.render.AzLayerRenderer} using the provided
-     * {@link com.blib.azurelib.common.render.AzRendererConfig}. This method is responsible for generating a layer
-     * renderer configured with the provided rendering configuration, allowing for the management and application of
-     * multiple render layers.
-     *
-     * @param config The configuration object of type {@link com.blib.azurelib.common.render.AzRendererConfig} that
-     *               provides the necessary settings and parameters for the layer renderer.
-     * @return A newly created {@link com.blib.azurelib.common.render.AzLayerRenderer} instance configured based on the
-     *         specified {@link com.blib.azurelib.common.render.AzRendererConfig}.
-     */
-    protected abstract AzLayerRenderer<K, T> createLayerRenderer(com.blib.azurelib.common.render.AzRendererConfig<K, T> config);
+    protected abstract AzLayerRenderer<K, T> createLayerRenderer(AzRendererConfig<K, T> config);
 
-    /**
-     * Update the current frame of a {@link AnimatableTexture potentially animated} texture used by this
-     * GeoRenderer.<br>
-     * This should only be called immediately prior to rendering, and only
-     *
-     * @see AnimatableTexture#setAndUpdate
-     */
     protected abstract void updateAnimatedTextureFrame(T animatable);
 
-    /**
-     * Initial access point for rendering. It all begins here.<br>
-     * All AzureLib renderers should immediately defer their respective default {@code render} calls to this, for
-     * consistent handling
-     */
     public void render(
         PoseStack poseStack,
         AzBakedModel model,
@@ -131,11 +78,6 @@ public abstract class AzRendererPipeline<K, T> implements AzPhasedRenderer<K, T>
         doPostRenderCleanup(context);
     }
 
-    /**
-     * Re-renders the provided {@link AzBakedModel}.<br>
-     * Usually you'd use this for rendering alternate {@link RenderType} layers or for sub-model rendering whilst inside
-     * a {@link AzRenderLayer} or similar
-     */
     public void reRender(AzRendererPipelineContext<K, T> context) {
         var poseStack = context.poseStack();
 
@@ -148,26 +90,10 @@ public abstract class AzRendererPipeline<K, T> implements AzPhasedRenderer<K, T>
         poseStack.popPose();
     }
 
-    /**
-     * Call after all other rendering work has taken place, including reverting the {@link PoseStack}'s state. This
-     * method is <u>not</u> called in {@link AzRendererPipeline#reRender re-render}
-     */
     protected void renderFinal(AzRendererPipelineContext<K, T> context) {}
 
-    /**
-     * Called after all render operations are completed and the render pass is considered functionally complete.
-     * <p>
-     * Use this method to clean up any leftover persistent objects stored during rendering or any other post-render
-     * maintenance tasks as required
-     */
     protected void doPostRenderCleanup(AzRendererPipelineContext<K, T> context) {}
 
-    /**
-     * Scales the {@link PoseStack} in preparation for rendering the model, excluding when re-rendering the model as
-     * part of a {@link AzRenderLayer} or external render call.<br>
-     * Override and call super with modified scale values as needed to further modify the scale of the model (E.G. child
-     * entities)
-     */
     protected void scaleModelForRender(
         AzRendererPipelineContext<K, T> context,
         float widthScale,
@@ -180,23 +106,10 @@ public abstract class AzRendererPipeline<K, T> implements AzPhasedRenderer<K, T>
         }
     }
 
-    /**
-     * Provides access to the rendering configuration associated with this rendering pipeline.
-     *
-     * @return An instance of {@link com.blib.azurelib.common.render.AzRendererConfig} that contains the configuration
-     *         details for this rendering pipeline, including animator, model location, texture location, render layers,
-     *         and scaling parameters.
-     */
     public AzRendererConfig<K, T> config() {
         return config;
     }
 
-    /**
-     * Provides access to the rendering pipeline context associated with this rendering pipeline.
-     *
-     * @return An instance of {@link AzRendererPipelineContext} representing the context for the current rendering
-     *         pipeline, containing relevant rendering data and configurations for processing animations and models.
-     */
     public AzRendererPipelineContext<K, T> context() {
         return context;
     }

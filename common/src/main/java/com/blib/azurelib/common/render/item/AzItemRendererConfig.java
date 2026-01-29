@@ -19,12 +19,7 @@ import com.blib.azurelib.common.render.*;
 import com.blib.azurelib.common.render.AzRendererPipelineContext;
 import com.blib.azurelib.common.render.layer.AzRenderLayer;
 
-/**
- * Configuration class for rendering items using customized settings in an animation framework. Extends
- * {@link com.blib.azurelib.common.render.AzRendererConfig} specifically for handling {@link ItemStack}. Provides
- * additional settings specific to item rendering, such as GUI lighting and custom offsets.
- */
-public class AzItemRendererConfig extends com.blib.azurelib.common.render.AzRendererConfig<UUID, ItemStack> {
+public class AzItemRendererConfig extends AzRendererConfig<UUID, ItemStack> {
 
     private final boolean useEntityGuiLighting;
 
@@ -37,9 +32,9 @@ public class AzItemRendererConfig extends com.blib.azurelib.common.render.AzRend
         Function<ItemStack, ResourceLocation> modelLocationProvider,
         Function<ItemStack, RenderType> renderTypeProvider,
         List<AzRenderLayer<UUID, ItemStack>> renderLayers,
-        Function<com.blib.azurelib.common.render.AzRendererPipelineContext<UUID, ItemStack>, com.blib.azurelib.common.render.AzRendererPipelineContext<UUID, ItemStack>> preRenderEntry,
-        Function<com.blib.azurelib.common.render.AzRendererPipelineContext<UUID, ItemStack>, com.blib.azurelib.common.render.AzRendererPipelineContext<UUID, ItemStack>> renderEntry,
-        Function<com.blib.azurelib.common.render.AzRendererPipelineContext<UUID, ItemStack>, com.blib.azurelib.common.render.AzRendererPipelineContext<UUID, ItemStack>> postRenderEntry,
+        Function<AzRendererPipelineContext<UUID, ItemStack>, AzRendererPipelineContext<UUID, ItemStack>> preRenderEntry,
+        Function<AzRendererPipelineContext<UUID, ItemStack>, AzRendererPipelineContext<UUID, ItemStack>> renderEntry,
+        Function<AzRendererPipelineContext<UUID, ItemStack>, AzRendererPipelineContext<UUID, ItemStack>> postRenderEntry,
         Function<ItemStack, ResourceLocation> textureLocationProvider,
         Function<ItemStack, Float> alphaFunction,
         Function<ItemStack, Float> scaleHeight,
@@ -47,8 +42,8 @@ public class AzItemRendererConfig extends com.blib.azurelib.common.render.AzRend
         boolean useEntityGuiLighting,
         boolean useNewOffset,
         Predicate<ItemDisplayContext> shouldAnimateInContext,
-        BiFunction<com.blib.azurelib.common.render.AzRendererPipeline<UUID, ItemStack>, com.blib.azurelib.common.render.AzLayerRenderer<UUID, ItemStack>, com.blib.azurelib.common.render.AzModelRenderer<UUID, ItemStack>> modelRendererProvider,
-        Function<com.blib.azurelib.common.render.AzRendererPipeline<UUID, ItemStack>, com.blib.azurelib.common.render.AzRendererPipelineContext<UUID, ItemStack>> pipelineContextFunction,
+        BiFunction<AzRendererPipeline<UUID, ItemStack>, AzLayerRenderer<UUID, ItemStack>, AzModelRenderer<UUID, ItemStack>> modelRendererProvider,
+        Function<AzRendererPipeline<UUID, ItemStack>, AzRendererPipelineContext<UUID, ItemStack>> pipelineContextFunction,
         Function<AzBone, ResourceLocation> boneTextureOverrideProvider,
         Function<AzBone, RenderType> boneRenderTypeOverrideProvider
     ) {
@@ -100,7 +95,7 @@ public class AzItemRendererConfig extends com.blib.azurelib.common.render.AzRend
         return new Builder(modelLocationProvider, textureLocationProvider);
     }
 
-    public static class Builder extends com.blib.azurelib.common.render.AzRendererConfig.Builder<UUID, ItemStack> {
+    public static class Builder extends AzRendererConfig.Builder<UUID, ItemStack> {
 
         private boolean useEntityGuiLighting;
 
@@ -136,14 +131,14 @@ public class AzItemRendererConfig extends com.blib.azurelib.common.render.AzRend
 
         @Override
         public Builder setModelRenderer(
-            BiFunction<com.blib.azurelib.common.render.AzRendererPipeline<UUID, ItemStack>, com.blib.azurelib.common.render.AzLayerRenderer<UUID, ItemStack>, com.blib.azurelib.common.render.AzModelRenderer<UUID, ItemStack>> modelRendererProvider
+            BiFunction<AzRendererPipeline<UUID, ItemStack>, AzLayerRenderer<UUID, ItemStack>, AzModelRenderer<UUID, ItemStack>> modelRendererProvider
         ) {
             return (Builder) super.setModelRenderer(modelRendererProvider);
         }
 
         @Override
         public Builder setPipelineContext(
-            Function<com.blib.azurelib.common.render.AzRendererPipeline<UUID, ItemStack>, com.blib.azurelib.common.render.AzRendererPipelineContext<UUID, ItemStack>> azRendererPipelineAzRendererPipelineContextFunction
+            Function<AzRendererPipeline<UUID, ItemStack>, AzRendererPipelineContext<UUID, ItemStack>> azRendererPipelineAzRendererPipelineContextFunction
         ) {
             return (Builder) super.setPipelineContext(azRendererPipelineAzRendererPipelineContextFunction);
         }
@@ -170,21 +165,21 @@ public class AzItemRendererConfig extends com.blib.azurelib.common.render.AzRend
 
         @Override
         public Builder setPrerenderEntry(
-            Function<com.blib.azurelib.common.render.AzRendererPipelineContext<UUID, ItemStack>, com.blib.azurelib.common.render.AzRendererPipelineContext<UUID, ItemStack>> preRenderEntry
+            Function<AzRendererPipelineContext<UUID, ItemStack>, AzRendererPipelineContext<UUID, ItemStack>> preRenderEntry
         ) {
             return (Builder) super.setPrerenderEntry(preRenderEntry);
         }
 
         @Override
         public Builder setRenderEntry(
-            Function<com.blib.azurelib.common.render.AzRendererPipelineContext<UUID, ItemStack>, com.blib.azurelib.common.render.AzRendererPipelineContext<UUID, ItemStack>> renderEntry
+            Function<AzRendererPipelineContext<UUID, ItemStack>, AzRendererPipelineContext<UUID, ItemStack>> renderEntry
         ) {
             return (Builder) super.setRenderEntry(renderEntry);
         }
 
         @Override
         public Builder setPostRenderEntry(
-            Function<com.blib.azurelib.common.render.AzRendererPipelineContext<UUID, ItemStack>, AzRendererPipelineContext<UUID, ItemStack>> preRenderEntry
+            Function<AzRendererPipelineContext<UUID, ItemStack>, AzRendererPipelineContext<UUID, ItemStack>> preRenderEntry
         ) {
             return (Builder) super.setPostRenderEntry(preRenderEntry);
         }
@@ -232,36 +227,16 @@ public class AzItemRendererConfig extends com.blib.azurelib.common.render.AzRend
             return this;
         }
 
-        /**
-         * @param useNewOffset Determines whether to apply the y offset for a model due to the change in BlockBench
-         *                     4.11.
-         */
         public Builder useNewOffset(boolean useNewOffset) {
             this.useNewOffset = useNewOffset;
             return this;
         }
 
-        /**
-         * Sets the Predicate to determine whether an item should be animated in a specific {@link ItemDisplayContext}.
-         *
-         * @param shouldAnimateInContext A Predicate that takes an {@link ItemDisplayContext} and returns true if the
-         *                               animation should occur in that context; false otherwise.
-         * @return The current instance of the {@code Builder} for method chaining.
-         */
         public Builder setShouldAnimateInContext(Predicate<ItemDisplayContext> shouldAnimateInContext) {
             this.shouldAnimateInContext = shouldAnimateInContext;
             return this;
         }
 
-        /**
-         * Disables animation for specific {@link ItemDisplayContext} instances. The provided contexts are added to a
-         * set, and animations will not occur in the specified contexts.
-         *
-         * @param contextToDisable  The primary {@link ItemDisplayContext} in which animations are to be disabled.
-         * @param contextsToDisable Additional {@link ItemDisplayContext} instances in which animations are to be
-         *                          disabled.
-         * @return The current instance of the {@code Builder} for method chaining.
-         */
         public Builder disableAnimationInContexts(
             ItemDisplayContext contextToDisable,
             ItemDisplayContext... contextsToDisable
@@ -278,14 +253,6 @@ public class AzItemRendererConfig extends com.blib.azurelib.common.render.AzRend
             return this;
         }
 
-        /**
-         * Enables animation only for the specified {@link ItemDisplayContext} instances. Any contexts not provided in
-         * the parameters will have animations disabled.
-         *
-         * @param contextToEnable  The primary {@link ItemDisplayContext} where animations should be enabled.
-         * @param contextsToEnable Additional {@link ItemDisplayContext} instances where animations should be enabled.
-         * @return The current instance of the {@code Builder} for method chaining.
-         */
         public Builder enableAnimationOnlyInContexts(
             ItemDisplayContext contextToEnable,
             ItemDisplayContext... contextsToEnable

@@ -1,8 +1,3 @@
-/**
- * This class is a fork of the matching class found in the Geckolib repository. Original source:
- * https://github.com/bernie-g/geckolib Copyright © 2024 Bernie-G. Licensed under the MIT License.
- * https://github.com/bernie-g/geckolib/blob/main/LICENSE
- */
 package com.blib.azurelib.common.cache.object;
 
 import net.minecraft.core.Direction;
@@ -10,9 +5,6 @@ import org.joml.Vector3f;
 
 import com.blib.azurelib.common.loading.json.raw.FaceUV;
 
-/**
- * Quad data holder
- */
 public record GeoQuad(
     GeoVertex[] vertices,
     Vector3f normal,

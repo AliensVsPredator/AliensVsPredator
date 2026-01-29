@@ -10,12 +10,6 @@ import com.blib.azurelib.common.animation.dispatch.AzDispatchSide;
 import com.blib.azurelib.common.animation.dispatch.command.action.AzAction;
 import com.blib.azurelib.common.animation.dispatch.command.sequence.AzAnimationSequence;
 
-/**
- * Represents an action that plays a specified animation sequence on all animation controllers. This class is a concrete
- * implementation of the {@link AzAction} interface, encapsulating the details required to trigger and manage animation
- * sequences within the AzureLib animation system. It allows the animation sequence to be applied to one or more
- * animation controllers identified by a controller name.
- */
 public record AzRootPlayAnimationSequenceAction(
     AzAnimationSequence sequence
 ) implements AzAction {

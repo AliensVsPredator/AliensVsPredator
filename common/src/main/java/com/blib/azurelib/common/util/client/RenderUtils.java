@@ -1,7 +1,3 @@
-/**
- * This class is a fork of the matching class found in the Configuration repository. Original source:
- * https://github.com/Toma1O6/Configuration Copyright © 2024 Toma1O6. Licensed under the MIT License.
- */
 package com.blib.azurelib.common.util.client;
 
 import com.mojang.blaze3d.Blaze3D;
@@ -26,12 +22,8 @@ import org.joml.Vector3f;
 
 import com.blib.azurelib.AzureLib;
 import com.blib.azurelib.common.cache.object.GeoCube;
-import com.blib.azurelib.common.cache.object.GeoQuad;
 import com.blib.azurelib.common.model.AzBone;
 
-/**
- * Helper class for various methods and functions useful while rendering
- */
 public class RenderUtils {
 
     private static final Matrix4f TRANSLATE_MATRIX_CACHE = new Matrix4f();
@@ -123,30 +115,16 @@ public class RenderUtils {
         return inputMatrix;
     }
 
-    /**
-     * Translates the provided {@link PoseStack} to face towards the given {@link Entity}'s rotation.<br>
-     */
     public static void faceRotation(PoseStack poseStack, Entity animatable, float partialTick) {
         poseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTick, animatable.yRotO, animatable.getYRot()) - 90));
         poseStack.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partialTick, animatable.xRotO, animatable.getXRot())));
     }
 
-    /**
-     * Add a positional vector to a matrix. This is specifically implemented to act as a translation of an x/y/z
-     * coordinate triplet to a render matrix
-     */
     public static Matrix4f translateMatrix(Matrix4f matrix, Vector3f vector) {
         TRANSLATE_MATRIX_CACHE.m30(vector.x).m31(vector.y).m32(vector.z);
         return matrix.add(TRANSLATE_MATRIX_CACHE);
     }
 
-    /**
-     * Gets the actual dimensions of a texture resource from a given path.<br>
-     * Not performance-efficient, and should not be relied upon
-     *
-     * @param texture The path of the texture resource to check
-     * @return The dimensions (width x height) of the texture, or null if unable to find or read the file
-     */
     @Nullable
     public static IntIntPair getTextureDimensions(ResourceLocation texture) {
         if (texture == null)
@@ -183,46 +161,22 @@ public class RenderUtils {
         return System.nanoTime() / 1E6 / 50d;
     }
 
-    /**
-     * Returns the current time (in ticks) that the {@link org.lwjgl.glfw.GLFW GLFW} instance has been running. This is
-     * effectively a permanent timer that counts up since the game was launched.
-     */
     public static double getCurrentTick() {
         return Blaze3D.getTime() * 20d;
     }
 
-    /**
-     * Returns a float equivalent of a boolean.<br>
-     * Output table:
-     * <ul>
-     * <li>true -> 1</li>
-     * <li>false -> 0</li>
-     * </ul>
-     */
     public static float booleanToFloat(boolean input) {
         return input ? 1f : 0f;
     }
 
-    /**
-     * Converts a given double array to its {@link Vec3} equivalent
-     */
     public static Vec3 arrayToVec(double[] array) {
         return new Vec3(array[0], array[1], array[2]);
     }
 
-    /**
-     * Rotates a {@link AzBone} to match a provided {@link ModelPart}'s rotations.<br>
-     * Usually used for items or armor rendering to match the rotations of other non-geo model parts.
-     */
     public static void matchModelPartRot(ModelPart from, AzBone to) {
         to.updateRotation(-from.xRot, -from.yRot, from.zRot);
     }
 
-    /**
-     * If a {@link GeoCube} is a 2d plane the {@link GeoQuad Quad's} normal is inverted in an intersecting plane,it can
-     * cause issues with shaders and other lighting tasks.<br>
-     * This performs a pseudo-ABS function to help resolve some of those issues.
-     */
     public static void fixInvertedFlatCube(GeoCube cube, Vector3f normal) {
         if (normal.x() < 0 && (cube.size().y() == 0 || cube.size().z() == 0))
             normal.mul(-1, 1, 1);
@@ -234,9 +188,6 @@ public class RenderUtils {
             normal.mul(1, 1, -1);
     }
 
-    /**
-     * Converts a {@link Direction} to a rotational float for rotation purposes
-     */
     public static float getDirectionAngle(Direction direction) {
         return switch (direction) {
             case SOUTH -> 90f;

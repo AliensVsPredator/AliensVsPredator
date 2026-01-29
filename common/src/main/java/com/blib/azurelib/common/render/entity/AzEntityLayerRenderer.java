@@ -10,21 +10,12 @@ import com.blib.azurelib.common.render.AzLayerRenderer;
 import com.blib.azurelib.common.render.AzRendererPipelineContext;
 import com.blib.azurelib.common.render.layer.AzRenderLayer;
 
-/**
- * A renderer class responsible for rendering additional entity layers for a particular animatable entity type. It
- * extends functionality from {@link AzLayerRenderer} and enables conditional rendering based on entity states.
- *
- * @param <T> The type of animatable entity this renderer is applied to.
- */
 public class AzEntityLayerRenderer<T extends Entity> extends AzLayerRenderer<UUID, T> {
 
     public AzEntityLayerRenderer(Supplier<Collection<AzRenderLayer<UUID, T>>> renderLayerSupplier) {
         super(renderLayerSupplier);
     }
 
-    /**
-     * Render the various {@link AzRenderLayer RenderLayers} that have been registered to this renderer
-     */
     @Override
     public void applyRenderLayers(AzRendererPipelineContext<UUID, T> context) {
         var animatable = context.animatable();

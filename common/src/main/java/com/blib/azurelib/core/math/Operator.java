@@ -1,22 +1,14 @@
-/**
- * This class is a fork of the matching class found in the Geckolib repository. Original source:
- * https://github.com/bernie-g/geckolib Copyright © 2024 Bernie-G. Licensed under the MIT License.
- * https://github.com/bernie-g/geckolib/blob/main/LICENSE
- */
 package com.blib.azurelib.core.math;
 
-/**
- * Operator class This class is responsible for performing a calculation of two values based on given operation.
- */
-public class Operator implements com.blib.azurelib.core.math.IValue {
+public class Operator implements IValue {
 
     public Operation operation;
 
-    public com.blib.azurelib.core.math.IValue a;
+    public IValue a;
 
-    public com.blib.azurelib.core.math.IValue b;
+    public IValue b;
 
-    public Operator(Operation op, com.blib.azurelib.core.math.IValue a, IValue b) {
+    public Operator(Operation op, IValue a, IValue b) {
         this.operation = op;
         this.a = a;
         this.b = b;

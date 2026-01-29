@@ -15,11 +15,6 @@ import com.blib.azurelib.common.model.factory.AzBakedModelFactory;
 import com.blib.azurelib.common.model.factory.primitive.VertexSet;
 import com.blib.azurelib.common.util.client.RenderUtils;
 
-/**
- * A concrete implementation of the {@link AzBakedModelFactory} that constructs baked models, bones, and cubes from raw
- * geometry data. It is tailored to create and configure the model and its associated components in a hierarchical
- * manner, based on the provided structure and properties.
- */
 public final class AzBuiltinBakedModelFactory extends AzBakedModelFactory {
 
     @Override

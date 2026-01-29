@@ -10,11 +10,6 @@ import com.blib.azurelib.common.model.AzBone;
 import com.blib.azurelib.common.render.AzRendererPipelineContext;
 import com.blib.azurelib.common.util.client.ClientUtils;
 
-/**
- * A {@link com.blib.azurelib.common.render.layer.AzRenderLayer} dedicated to rendering the auto-generated glow layer
- * functionality provided by AzureLib. This utilizes texture files with the <i>_glowing</i> suffix to create glowing
- * effects for models.
- */
 public class AzAutoGlowingLayer<K, T> implements AzRenderLayer<K, T> {
 
     @Override
@@ -37,24 +32,10 @@ public class AzAutoGlowingLayer<K, T> implements AzRenderLayer<K, T> {
     @Override
     public void renderForBone(AzRendererPipelineContext<K, T> context, AzBone bone) {}
 
-    /**
-     * Calculates and returns the packed light value to be used in the rendering pipeline.
-     *
-     * @param context The rendering context that contains information about the current rendering pipeline, the
-     *                animatable entity, and other rendering configurations.
-     * @return The packed light value, typically used to determine the lighting conditions in rendering.
-     */
     protected int getPackedLight(AzRendererPipelineContext<K, T> context) {
         return LightTexture.FULL_SKY;
     }
 
-    /**
-     * Determines the appropriate RenderType for the animatable entity in the given rendering context. Handles special
-     * cases such as invisibility, glowing appearance, and outline rendering.
-     *
-     * @param context The context containing the animatable and rendering configuration.
-     * @return The appropriate RenderType for rendering the entity.
-     */
     protected RenderType determineRenderType(AzRendererPipelineContext<K, T> context) {
         var animatable = context.animatable();
         var config = context.rendererPipeline().config();

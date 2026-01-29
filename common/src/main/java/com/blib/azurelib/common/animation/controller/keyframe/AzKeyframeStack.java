@@ -4,11 +4,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import java.util.List;
 
-/**
- * Stores a triplet of {@link com.blib.azurelib.common.animation.controller.keyframe.AzKeyframe Keyframes} in an ordered
- * stack
- */
-public record AzKeyframeStack<T extends com.blib.azurelib.common.animation.controller.keyframe.AzKeyframe<?>>(
+public record AzKeyframeStack<T extends AzKeyframe<?>>(
     List<T> xKeyframes,
     List<T> yKeyframes,
     List<T> zKeyframes

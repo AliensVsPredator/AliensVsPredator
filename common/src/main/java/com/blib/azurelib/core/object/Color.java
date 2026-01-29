@@ -1,7 +1,3 @@
-/**
- * Direct copy of https://github.com/shedaniel/cloth-basic-math/blob/master/src/main/java/me/shedaniel/math/Color.java
- * under the unlicense.
- */
 package com.blib.azurelib.core.object;
 
 import com.mojang.datafixers.util.Either;
@@ -11,9 +7,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.List;
 
-/**
- * Color holder object for storing a packed int argb value.
- */
 public record Color(int argbInt) {
 
     public static Codec<Color> RGBA_CODEC = RecordCodecBuilder.create((instance) -> { // float?
@@ -67,30 +60,18 @@ public record Color(int argbInt) {
 
     public static final Color BLUE = new Color(0xFF0000FF);
 
-    /**
-     * Creates a new {@code Color} instance from RGB values, ensuring 100% opacity
-     */
     public static Color ofOpaque(int color) {
         return new Color(0xFF000000 | color);
     }
 
-    /**
-     * Creates a new {@code Color} instance from RGB values with 100% opacity
-     */
     public static Color ofRGB(float red, float green, float blue) {
         return ofRGBA(red, green, blue, 1f);
     }
 
-    /**
-     * Creates a new {@code Color} instance from RGB values with 100% opacity
-     */
     public static Color ofRGB(int r, int g, int b) {
         return ofRGBA(r, g, b, 255);
     }
 
-    /**
-     * Creates a new {@code Color} instance from RGBA values
-     */
     public static Color ofRGBA(float r, float g, float b, float a) {
         return ofRGBA(
             (int) (r * 255f + 0.5),
@@ -100,23 +81,14 @@ public record Color(int argbInt) {
         );
     }
 
-    /**
-     * Creates a new {@code Color} instance from RGBA values
-     */
     public static Color ofRGBA(int r, int g, int b, int a) {
         return new Color(((a & 0xFF) << 24) | ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | (b & 0xFF));
     }
 
-    /**
-     * Creates a new {@code Color} instance from HSB values with 100% opacity
-     */
     public static Color ofHSB(float hue, float saturation, float brightness) {
         return ofOpaque(HSBtoARGB(hue, saturation, brightness));
     }
 
-    /**
-     * Converts a HSB value triplet to a packed ARGB int
-     */
     public static int HSBtoARGB(float hue, float saturation, float brightness) {
         int r = 0;
         int g = 0;
@@ -168,9 +140,6 @@ public record Color(int argbInt) {
         return 0xFF000000 | (r << 16) | (g << 8) | b;
     }
 
-    /**
-     * Creates a new {@code Color} instance from a hexadecimal color
-     */
     public static Color ofHexString(String hexColor) {
         if (hexColor.startsWith("#")) {
             hexColor = hexColor.substring(1);
@@ -185,9 +154,6 @@ public record Color(int argbInt) {
         return new Color(Integer.parseInt(hexColor, 16));
     }
 
-    /**
-     * Creates a new {@code Color} instance from a hexadecimal color
-     */
     public static DataResult<Color> tryHexString(String hexColor) {
         try {
             return DataResult.success(ofHexString(hexColor));
@@ -236,11 +202,6 @@ public record Color(int argbInt) {
         return List.of(getRed(), getGreen(), getBlue(), getAlpha());
     }
 
-    /**
-     * Returns a brighter variant of the same color.<br>
-     *
-     * @param factor The factor for shading
-     */
     public Color brighter(double factor) {
         int r = getRed();
         int g = getGreen();
@@ -267,13 +228,6 @@ public record Color(int argbInt) {
         );
     }
 
-    /**
-     * Returns a darker variant of the same color.<br>
-     *
-     * @param factor The factor for shading. The value provided is an inversely relative multiplier.<br>
-     *               E.G. input=2 -> 2x as dark.<br>
-     *               E.G. input=0.5 -> 0.5x as dark (brighter)
-     */
     public Color darker(float factor) {
         return ofRGBA(
             Math.max((int) (getRed() * (1 / factor)), 0),

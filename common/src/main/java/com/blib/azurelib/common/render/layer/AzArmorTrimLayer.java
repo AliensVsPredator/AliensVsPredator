@@ -16,13 +16,6 @@ import com.blib.azurelib.common.model.AzBone;
 import com.blib.azurelib.common.render.AzRendererPipelineContext;
 import com.blib.azurelib.common.render.armor.AzArmorRendererPipelineContext;
 
-/**
- * Represents a render layer for applying armor trim textures to an item stack during the rendering process. This layer
- * enables dynamic customization of armor visuals by applying trim patterns and materials based on the item's metadata
- * and associated {@link ArmorTrim}.
- *
- * @author ZsoltMolnarrr
- */
 public class AzArmorTrimLayer implements AzRenderLayer<UUID, ItemStack> {
 
     public final ResourceLocation textureBaseLocation;

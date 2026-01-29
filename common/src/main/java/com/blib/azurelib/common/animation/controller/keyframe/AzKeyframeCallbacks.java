@@ -5,16 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import com.blib.azurelib.common.animation.controller.keyframe.handler.AzCustomKeyframeHandler;
 import com.blib.azurelib.common.animation.controller.keyframe.handler.AzParticleKeyframeHandler;
 import com.blib.azurelib.common.animation.controller.keyframe.handler.AzSoundKeyframeHandler;
-import com.blib.azurelib.common.animation.event.AzCustomInstructionKeyframeEvent;
-import com.blib.azurelib.common.animation.event.AzParticleKeyframeEvent;
-import com.blib.azurelib.common.animation.event.AzSoundKeyframeEvent;
 
-/**
- * The AzKeyframeCallbacks class manages callbacks for different types of keyframe events, enabling the handling of
- * sound, particle, and custom-defined keyframe instructions during an animation sequence.
- *
- * @param <T> The type of entity or object this keyframe callback interacts with.
- */
 public class AzKeyframeCallbacks<T> {
 
     private static final AzKeyframeCallbacks<?> NO_OP = new AzKeyframeCallbacks<>(null, null, null);
@@ -66,34 +57,16 @@ public class AzKeyframeCallbacks<T> {
 
         private Builder() {}
 
-        /**
-         * Applies the given {@link AzSoundKeyframeHandler} to this controller, for handling {@link AzSoundKeyframeEvent
-         * sound keyframe instructions}.
-         *
-         * @return this
-         */
         public Builder<T> setSoundKeyframeHandler(AzSoundKeyframeHandler<T> soundHandler) {
             this.soundKeyframeHandler = soundHandler;
             return this;
         }
 
-        /**
-         * Applies the given {@link AzParticleKeyframeHandler} to this controller, for handling
-         * {@link AzParticleKeyframeEvent particle keyframe instructions}.
-         *
-         * @return this
-         */
         public Builder<T> setParticleKeyframeHandler(AzParticleKeyframeHandler<T> particleHandler) {
             this.particleKeyframeHandler = particleHandler;
             return this;
         }
 
-        /**
-         * Applies the given {@link AzCustomKeyframeHandler} to this controller, for handling
-         * {@link AzCustomInstructionKeyframeEvent sound keyframe instructions}.
-         *
-         * @return this
-         */
         public Builder<T> setCustomInstructionKeyframeHandler(AzCustomKeyframeHandler<T> customInstructionHandler) {
             this.customKeyframeHandler = customInstructionHandler;
             return this;

@@ -55,9 +55,6 @@ public class AzArmorBoneContext {
         setBoneVisible(this.waist, pVisible);
     }
 
-    /**
-     * Gets and caches the relevant armor model bones for this baked model if it hasn't been done already
-     */
     public void grabRelevantBones(AzBakedModel model, AzArmorBoneProvider boneProvider) {
         if (this.lastModel == model) {
             return;
@@ -75,9 +72,6 @@ public class AzArmorBoneContext {
         this.waist = boneProvider.getWaistBone(model);
     }
 
-    /**
-     * Transform the currently rendering {@link AzBakedModel} to match the positions and rotations of the base model
-     */
     public void applyBaseTransformations(HumanoidModel<?> baseModel) {
         if (this.head != null) {
             ModelPart headPart = baseModel.head;
@@ -140,12 +134,6 @@ public class AzArmorBoneContext {
         }
     }
 
-    /**
-     * Resets the bone visibility for the model based on the current {@link ModelPart} and {@link EquipmentSlot}, and
-     * then sets the bones relevant to the current part as visible for rendering.<br>
-     * <br>
-     * If you are rendering a geo entity with armor, you should probably be calling this prior to rendering
-     */
     public void applyBoneVisibilityByPart(EquipmentSlot currentSlot, ModelPart currentPart, HumanoidModel<?> model) {
         setAllVisible(false);
 
@@ -179,12 +167,6 @@ public class AzArmorBoneContext {
         }
     }
 
-    /**
-     * Resets the bone visibility for the model based on the currently rendering slot, and then sets bones relevant to
-     * the current slot as visible for rendering.<br>
-     * <br>
-     * This is only called by default for non-geo entities (I.E. players or vanilla mobs)
-     */
     public void applyBoneVisibilityBySlot(EquipmentSlot currentSlot) {
         setAllVisible(false);
 
@@ -209,9 +191,6 @@ public class AzArmorBoneContext {
         }
     }
 
-    /**
-     * Sets a bone as visible or hidden, with nullability
-     */
     protected void setBoneVisible(@Nullable AzBone bone, boolean visible) {
         if (bone == null)
             return;

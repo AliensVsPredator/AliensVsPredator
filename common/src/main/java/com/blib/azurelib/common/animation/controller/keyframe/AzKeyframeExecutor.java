@@ -12,15 +12,6 @@ import com.blib.azurelib.core.molang.MolangParser;
 import com.blib.azurelib.core.molang.MolangQueries;
 import com.blib.azurelib.core.object.Axis;
 
-/**
- * AzKeyframeExecutor is a specialized implementation of {@link AzAbstractKeyframeExecutor}, designed to handle
- * keyframe-based animations for animatable objects. It delegates animation control to an {@link AzAnimationController}
- * and manages bone animation queues through an {@link AzBoneAnimationQueueCache}. <br>
- * This class processes and applies transformations such as rotation, position, and scale to bone animations, based on
- * the current tick time and the keyframes associated with each bone animation.
- *
- * @param <T> The type of the animatable object to which the keyframe animations will be applied
- */
 public class AzKeyframeExecutor<T> extends AzAbstractKeyframeExecutor {
 
     private final AzAnimationController<T> animationController;
@@ -35,12 +26,6 @@ public class AzKeyframeExecutor<T> extends AzAbstractKeyframeExecutor {
         this.boneAnimationQueueCache = boneAnimationQueueCache;
     }
 
-    /**
-     * Handle the current animation's state modifications and translations
-     *
-     * @param crashWhenCantFindBone Whether the controller should throw an exception when unable to find the required
-     *                              bone, or continue with the remaining bones
-     */
     public void execute(@NotNull AzQueuedAnimation currentAnimation, T animatable, boolean crashWhenCantFindBone) {
         var keyframeCallbackHandler = animationController.keyframeManager().keyframeCallbackHandler();
         var controllerTimer = animationController.controllerTimer();
@@ -74,7 +59,7 @@ public class AzKeyframeExecutor<T> extends AzAbstractKeyframeExecutor {
     }
 
     private void updateRotation(
-        com.blib.azurelib.common.animation.controller.keyframe.AzKeyframeStack<com.blib.azurelib.common.animation.controller.keyframe.AzKeyframe<IValue>> keyframes,
+        AzKeyframeStack<AzKeyframe<IValue>> keyframes,
         AzBoneAnimationQueue queue,
         double adjustedTick
     ) {
@@ -90,7 +75,7 @@ public class AzKeyframeExecutor<T> extends AzAbstractKeyframeExecutor {
     }
 
     private void updatePosition(
-        com.blib.azurelib.common.animation.controller.keyframe.AzKeyframeStack<com.blib.azurelib.common.animation.controller.keyframe.AzKeyframe<IValue>> keyframes,
+        AzKeyframeStack<AzKeyframe<IValue>> keyframes,
         AzBoneAnimationQueue queue,
         double adjustedTick
     ) {

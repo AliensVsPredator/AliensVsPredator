@@ -10,11 +10,6 @@ import com.blib.azurelib.common.animation.AzAnimator;
 import com.blib.azurelib.common.animation.dispatch.AzDispatchSide;
 import com.blib.azurelib.common.animation.dispatch.command.action.AzAction;
 
-/**
- * Represents an action that sets the transition speed for all animation controllers within the associated
- * {@link AzAnimator}. This class is a record type, encapsulating a {@code float} value representing the transition
- * speed.
- */
 public record AzRootSetTransitionSpeedAction(
     float transitionSpeed
 ) implements AzAction {

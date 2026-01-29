@@ -8,231 +8,228 @@ import com.blib.azurelib.core.utils.Interpolations;
 
 public class AzEasingTypes {
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType NONE = AzEasingTypeRegistry.register(
+    public static final AzEasingType NONE = AzEasingTypeRegistry.register(
         "none",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeIn(
-            com.blib.azurelib.common.animation.easing.AzEasingUtil::linear
+        value -> AzEasingUtil.easeIn(
+            AzEasingUtil::linear
         )
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType LINEAR = AzEasingTypeRegistry.register("linear", NONE);
+    public static final AzEasingType LINEAR = AzEasingTypeRegistry.register("linear", NONE);
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType STEP = AzEasingTypeRegistry.register(
+    public static final AzEasingType STEP = AzEasingTypeRegistry.register(
         "step",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeIn(
-            com.blib.azurelib.common.animation.easing.AzEasingUtil.step(value)
+        value -> AzEasingUtil.easeIn(
+            AzEasingUtil.step(value)
         )
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType EASE_IN_SINE = AzEasingTypeRegistry.register(
+    public static final AzEasingType EASE_IN_SINE = AzEasingTypeRegistry.register(
         "easeinsine",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeIn(com.blib.azurelib.common.animation.easing.AzEasingUtil::sine)
+        value -> AzEasingUtil.easeIn(AzEasingUtil::sine)
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType EASE_OUT_SINE = AzEasingTypeRegistry.register(
+    public static final AzEasingType EASE_OUT_SINE = AzEasingTypeRegistry.register(
         "easeoutsine",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeOut(
-            com.blib.azurelib.common.animation.easing.AzEasingUtil::sine
+        value -> AzEasingUtil.easeOut(
+            AzEasingUtil::sine
         )
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType EASE_IN_OUT_SINE = AzEasingTypeRegistry.register(
+    public static final AzEasingType EASE_IN_OUT_SINE = AzEasingTypeRegistry.register(
         "easeinoutsine",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeInOut(
-            com.blib.azurelib.common.animation.easing.AzEasingUtil::sine
+        value -> AzEasingUtil.easeInOut(
+            AzEasingUtil::sine
         )
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType EASE_IN_QUAD = AzEasingTypeRegistry.register(
+    public static final AzEasingType EASE_IN_QUAD = AzEasingTypeRegistry.register(
         "easeinquad",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeIn(
-            com.blib.azurelib.common.animation.easing.AzEasingUtil::quadratic
+        value -> AzEasingUtil.easeIn(
+            AzEasingUtil::quadratic
         )
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType EASE_OUT_QUAD = AzEasingTypeRegistry.register(
+    public static final AzEasingType EASE_OUT_QUAD = AzEasingTypeRegistry.register(
         "easeoutquad",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeOut(
-            com.blib.azurelib.common.animation.easing.AzEasingUtil::quadratic
+        value -> AzEasingUtil.easeOut(
+            AzEasingUtil::quadratic
         )
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType EASE_IN_OUT_QUAD = AzEasingTypeRegistry.register(
+    public static final AzEasingType EASE_IN_OUT_QUAD = AzEasingTypeRegistry.register(
         "easeinoutquad",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeInOut(
-            com.blib.azurelib.common.animation.easing.AzEasingUtil::quadratic
+        value -> AzEasingUtil.easeInOut(
+            AzEasingUtil::quadratic
         )
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType EASE_IN_CUBIC = AzEasingTypeRegistry.register(
+    public static final AzEasingType EASE_IN_CUBIC = AzEasingTypeRegistry.register(
         "easeincubic",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeIn(
-            com.blib.azurelib.common.animation.easing.AzEasingUtil::cubic
+        value -> AzEasingUtil.easeIn(
+            AzEasingUtil::cubic
         )
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType EASE_OUT_CUBIC = AzEasingTypeRegistry.register(
+    public static final AzEasingType EASE_OUT_CUBIC = AzEasingTypeRegistry.register(
         "easeoutcubic",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeOut(
-            com.blib.azurelib.common.animation.easing.AzEasingUtil::cubic
+        value -> AzEasingUtil.easeOut(
+            AzEasingUtil::cubic
         )
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType EASE_IN_OUT_CUBIC = AzEasingTypeRegistry.register(
+    public static final AzEasingType EASE_IN_OUT_CUBIC = AzEasingTypeRegistry.register(
         "easeinoutcubic",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeInOut(
-            com.blib.azurelib.common.animation.easing.AzEasingUtil::cubic
+        value -> AzEasingUtil.easeInOut(
+            AzEasingUtil::cubic
         )
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType EASE_IN_QUART = AzEasingTypeRegistry.register(
+    public static final AzEasingType EASE_IN_QUART = AzEasingTypeRegistry.register(
         "easeinquart",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeIn(
-            com.blib.azurelib.common.animation.easing.AzEasingUtil.pow(4)
+        value -> AzEasingUtil.easeIn(
+            AzEasingUtil.pow(4)
         )
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType EASE_OUT_QUART = AzEasingTypeRegistry.register(
+    public static final AzEasingType EASE_OUT_QUART = AzEasingTypeRegistry.register(
         "easeoutquart",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeOut(
-            com.blib.azurelib.common.animation.easing.AzEasingUtil.pow(4)
+        value -> AzEasingUtil.easeOut(
+            AzEasingUtil.pow(4)
         )
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType EASE_IN_OUT_QUART = AzEasingTypeRegistry.register(
+    public static final AzEasingType EASE_IN_OUT_QUART = AzEasingTypeRegistry.register(
         "easeinoutquart",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeInOut(
-            com.blib.azurelib.common.animation.easing.AzEasingUtil.pow(4)
+        value -> AzEasingUtil.easeInOut(
+            AzEasingUtil.pow(4)
         )
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType EASE_IN_QUINT = AzEasingTypeRegistry.register(
+    public static final AzEasingType EASE_IN_QUINT = AzEasingTypeRegistry.register(
         "easeinquint",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeIn(
-            com.blib.azurelib.common.animation.easing.AzEasingUtil.pow(4)
+        value -> AzEasingUtil.easeIn(
+            AzEasingUtil.pow(4)
         )
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType EASE_OUT_QUINT = AzEasingTypeRegistry.register(
+    public static final AzEasingType EASE_OUT_QUINT = AzEasingTypeRegistry.register(
         "easeoutquint",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeOut(
-            com.blib.azurelib.common.animation.easing.AzEasingUtil.pow(5)
+        value -> AzEasingUtil.easeOut(
+            AzEasingUtil.pow(5)
         )
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType EASE_IN_OUT_QUINT = AzEasingTypeRegistry.register(
+    public static final AzEasingType EASE_IN_OUT_QUINT = AzEasingTypeRegistry.register(
         "easeinoutquint",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeInOut(
-            com.blib.azurelib.common.animation.easing.AzEasingUtil.pow(5)
+        value -> AzEasingUtil.easeInOut(
+            AzEasingUtil.pow(5)
         )
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType EASE_IN_EXPO = AzEasingTypeRegistry.register(
+    public static final AzEasingType EASE_IN_EXPO = AzEasingTypeRegistry.register(
         "easeinexpo",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeIn(com.blib.azurelib.common.animation.easing.AzEasingUtil::exp)
+        value -> AzEasingUtil.easeIn(AzEasingUtil::exp)
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType EASE_OUT_EXPO = AzEasingTypeRegistry.register(
+    public static final AzEasingType EASE_OUT_EXPO = AzEasingTypeRegistry.register(
         "easeoutexpo",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeOut(com.blib.azurelib.common.animation.easing.AzEasingUtil::exp)
+        value -> AzEasingUtil.easeOut(AzEasingUtil::exp)
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType EASE_IN_OUT_EXPO = AzEasingTypeRegistry.register(
+    public static final AzEasingType EASE_IN_OUT_EXPO = AzEasingTypeRegistry.register(
         "easeinoutexpo",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeInOut(
-            com.blib.azurelib.common.animation.easing.AzEasingUtil::exp
+        value -> AzEasingUtil.easeInOut(
+            AzEasingUtil::exp
         )
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType EASE_IN_CIRC = AzEasingTypeRegistry.register(
+    public static final AzEasingType EASE_IN_CIRC = AzEasingTypeRegistry.register(
         "easeincirc",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeIn(
-            com.blib.azurelib.common.animation.easing.AzEasingUtil::circle
+        value -> AzEasingUtil.easeIn(
+            AzEasingUtil::circle
         )
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType EASE_OUT_CIRC = AzEasingTypeRegistry.register(
+    public static final AzEasingType EASE_OUT_CIRC = AzEasingTypeRegistry.register(
         "easeoutcirc",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeOut(
-            com.blib.azurelib.common.animation.easing.AzEasingUtil::circle
+        value -> AzEasingUtil.easeOut(
+            AzEasingUtil::circle
         )
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType EASE_IN_OUT_CIRC = AzEasingTypeRegistry.register(
+    public static final AzEasingType EASE_IN_OUT_CIRC = AzEasingTypeRegistry.register(
         "easeinoutcirc",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeInOut(
-            com.blib.azurelib.common.animation.easing.AzEasingUtil::circle
+        value -> AzEasingUtil.easeInOut(
+            AzEasingUtil::circle
         )
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType EASE_IN_BACK = AzEasingTypeRegistry.register(
+    public static final AzEasingType EASE_IN_BACK = AzEasingTypeRegistry.register(
         "easeinback",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeIn(
-            com.blib.azurelib.common.animation.easing.AzEasingUtil.back(value)
+        value -> AzEasingUtil.easeIn(
+            AzEasingUtil.back(value)
         )
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType EASE_OUT_BACK = AzEasingTypeRegistry.register(
+    public static final AzEasingType EASE_OUT_BACK = AzEasingTypeRegistry.register(
         "easeoutback",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeOut(
-            com.blib.azurelib.common.animation.easing.AzEasingUtil.back(value)
+        value -> AzEasingUtil.easeOut(
+            AzEasingUtil.back(value)
         )
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType EASE_IN_OUT_BACK = AzEasingTypeRegistry.register(
+    public static final AzEasingType EASE_IN_OUT_BACK = AzEasingTypeRegistry.register(
         "easeinoutback",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeInOut(
-            com.blib.azurelib.common.animation.easing.AzEasingUtil.back(value)
+        value -> AzEasingUtil.easeInOut(
+            AzEasingUtil.back(value)
         )
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType EASE_IN_ELASTIC = AzEasingTypeRegistry.register(
+    public static final AzEasingType EASE_IN_ELASTIC = AzEasingTypeRegistry.register(
         "easeinelastic",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeIn(
-            com.blib.azurelib.common.animation.easing.AzEasingUtil.elastic(value)
+        value -> AzEasingUtil.easeIn(
+            AzEasingUtil.elastic(value)
         )
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType EASE_OUT_ELASTIC = AzEasingTypeRegistry.register(
+    public static final AzEasingType EASE_OUT_ELASTIC = AzEasingTypeRegistry.register(
         "easeoutelastic",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeOut(
-            com.blib.azurelib.common.animation.easing.AzEasingUtil.elastic(value)
+        value -> AzEasingUtil.easeOut(
+            AzEasingUtil.elastic(value)
         )
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType EASE_IN_OUT_ELASTIC = AzEasingTypeRegistry.register(
+    public static final AzEasingType EASE_IN_OUT_ELASTIC = AzEasingTypeRegistry.register(
         "easeinoutelastic",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeInOut(
-            com.blib.azurelib.common.animation.easing.AzEasingUtil.elastic(value)
+        value -> AzEasingUtil.easeInOut(
+            AzEasingUtil.elastic(value)
         )
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType EASE_IN_BOUNCE = AzEasingTypeRegistry.register(
+    public static final AzEasingType EASE_IN_BOUNCE = AzEasingTypeRegistry.register(
         "easeinbounce",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeIn(
-            com.blib.azurelib.common.animation.easing.AzEasingUtil.bounce(value)
+        value -> AzEasingUtil.easeIn(
+            AzEasingUtil.bounce(value)
         )
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType EASE_OUT_BOUNCE = AzEasingTypeRegistry.register(
+    public static final AzEasingType EASE_OUT_BOUNCE = AzEasingTypeRegistry.register(
         "easeoutbounce",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeOut(
-            com.blib.azurelib.common.animation.easing.AzEasingUtil.bounce(value)
+        value -> AzEasingUtil.easeOut(
+            AzEasingUtil.bounce(value)
         )
     );
 
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType EASE_IN_OUT_BOUNCE = AzEasingTypeRegistry.register(
+    public static final AzEasingType EASE_IN_OUT_BOUNCE = AzEasingTypeRegistry.register(
         "easeinoutbounce",
-        value -> com.blib.azurelib.common.animation.easing.AzEasingUtil.easeInOut(
-            com.blib.azurelib.common.animation.easing.AzEasingUtil.bounce(value)
+        value -> AzEasingUtil.easeInOut(
+            AzEasingUtil.bounce(value)
         )
     );
 
     // Bedrock Animation Types
-    /**
-     * <b>Author:</b> <a href="https://github.com/ZigyTheBird">ZigyTheBird</a>
-     */
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType BEZIER = AzEasingTypeRegistry.register(
+    public static final AzEasingType BEZIER = AzEasingTypeRegistry.register(
         "bezier",
         new BezierEasing() {
 
@@ -248,10 +245,7 @@ public class AzEasingTypes {
         }
     );
 
-    /**
-     * <b>Author:</b> <a href="https://github.com/ZigyTheBird">ZigyTheBird</a>
-     */
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType BEZIER_AFTER = AzEasingTypeRegistry.register(
+    public static final AzEasingType BEZIER_AFTER = AzEasingTypeRegistry.register(
         "bezier_after",
         new BezierEasing() {
 
@@ -267,12 +261,9 @@ public class AzEasingTypes {
         }
     );
 
-    /**
-     * <b>Author:</b> <a href="https://github.com/ZigyTheBird">ZigyTheBird</a>
-     */
-    public static final com.blib.azurelib.common.animation.easing.AzEasingType CATMULLROM = AzEasingTypeRegistry.register(
+    public static final AzEasingType CATMULLROM = AzEasingTypeRegistry.register(
         "catmullrom",
-        new com.blib.azurelib.common.animation.easing.AzEasingType() {
+        new AzEasingType() {
 
             @Override
             public String name() {
@@ -281,8 +272,8 @@ public class AzEasingTypes {
 
             @Override
             public Double2DoubleFunction buildTransformer(Double value) {
-                return com.blib.azurelib.common.animation.easing.AzEasingUtil.easeInOut(
-                    com.blib.azurelib.common.animation.easing.AzEasingUtil::catmullRom
+                return AzEasingUtil.easeInOut(
+                    AzEasingUtil::catmullRom
                 );
             }
 

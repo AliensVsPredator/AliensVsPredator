@@ -8,12 +8,6 @@ import org.spongepowered.asm.mixin.Unique;
 import com.blib.azurelib.common.animation.AzAnimator;
 import com.blib.azurelib.common.animation.AzAnimatorAccessor;
 
-/**
- * Mixin class that implements the {@code AzAnimatorAccessor<BlockEntity>} interface to enable managing and associating
- * an {@link AzAnimator} instance with a {@link BlockEntity}. This allows for caching and retrieval of the animator
- * associated with specific block entities. This mixin modifies the behavior of {@link BlockEntity} by adding an
- * animator cache that can be used to store and retrieve {@link AzAnimator} instances for animation handling.
- */
 @Mixin(BlockEntity.class)
 public abstract class BlockEntityMixin_AzBlockEntityAnimatorCache implements AzAnimatorAccessor<Long, BlockEntity> {
 

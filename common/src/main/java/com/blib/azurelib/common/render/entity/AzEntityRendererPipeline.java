@@ -1,8 +1,6 @@
 package com.blib.azurelib.common.render.entity;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import org.joml.Matrix4f;
@@ -16,16 +14,9 @@ import com.blib.azurelib.common.render.AzRendererConfig;
 import com.blib.azurelib.common.render.AzRendererPipeline;
 import com.blib.azurelib.common.render.AzRendererPipelineContext;
 
-/**
- * Represents a renderer pipeline specifically designed for rendering entities. This pipeline facilitates stages of
- * rendering where contextual work like pre-translations, texture animations, and leash rendering are managed within a
- * customizable structure.
- *
- * @param <T> The type of entity this renderer pipeline handles. Extends from the base {@link Entity}.
- */
 public class AzEntityRendererPipeline<T extends Entity> extends AzRendererPipeline<UUID, T> {
 
-    private final com.blib.azurelib.common.render.entity.AzEntityRenderer<T> entityRenderer;
+    private final AzEntityRenderer<T> entityRenderer;
 
     protected Matrix4f entityRenderTranslations = new Matrix4f();
 
@@ -33,7 +24,7 @@ public class AzEntityRendererPipeline<T extends Entity> extends AzRendererPipeli
 
     public AzEntityRendererPipeline(
         AzEntityRendererConfig<T> config,
-        com.blib.azurelib.common.render.entity.AzEntityRenderer<T> entityRenderer
+        AzEntityRenderer<T> entityRenderer
     ) {
         super(config);
         this.entityRenderer = entityRenderer;
@@ -54,23 +45,11 @@ public class AzEntityRendererPipeline<T extends Entity> extends AzRendererPipeli
         return new AzEntityLayerRenderer<>(config::renderLayers);
     }
 
-    /**
-     * Update the current frame of a {@link AnimatableTexture potentially animated} texture used by this
-     * GeoRenderer.<br>
-     * This should only be called immediately prior to rendering, and only
-     *
-     * @see AnimatableTexture#setAndUpdate(ResourceLocation, int)
-     */
     @Override
     public void updateAnimatedTextureFrame(T entity) {
         AnimatableTexture.setAndUpdate(config.textureLocation(context().currentEntity(), entity));
     }
 
-    /**
-     * Called before rendering the model to buffer. Allows for render modifications and preparatory work such as scaling
-     * and translating.<br>
-     * {@link PoseStack} translations made here are kept until the end of the render process
-     */
     @Override
     public void preRender(AzRendererPipelineContext<UUID, T> context, boolean isReRender) {
         var poseStack = context.poseStack();
@@ -101,12 +80,6 @@ public class AzEntityRendererPipeline<T extends Entity> extends AzRendererPipeli
         context.setTextureOverride(null);
     }
 
-    /**
-     * Renders the final frame of the entity, including handling special cases such as entities with leashes.
-     *
-     * @param context the rendering context that contains all required data for rendering, such as the entity, pose
-     *                stack, light information, and buffer source
-     */
     @Override
     public void renderFinal(AzRendererPipelineContext<UUID, T> context) {
         var bufferSource = context.multiBufferSource();

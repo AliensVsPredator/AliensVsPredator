@@ -10,11 +10,6 @@ import com.blib.azurelib.common.model.AzBakedModel;
 import com.blib.azurelib.common.model.AzBone;
 import com.blib.azurelib.common.model.AzBoneSnapshot;
 
-/**
- * The AzBoneCache class is responsible for managing the state and cache of bones in a baked model. It provides
- * functionality for updating animation contexts, managing snapshots of bone states, and resetting transformation
- * markers in preparation for rendering.
- */
 public class AzBoneCache {
 
     private AzBakedModel templateModel;
@@ -65,17 +60,10 @@ public class AzBoneCache {
         resetBoneTransformationMarkers();
     }
 
-    /**
-     * Reset the transformation markers applied to each {@link AzBone} ready for the next render frame
-     */
     private void resetBoneTransformationMarkers() {
         bakedModel.getBonesByName().values().forEach(AzBone::resetStateChanges);
     }
 
-    /**
-     * Create new bone {@link AzBoneSnapshot} based on the bone's initial snapshot for the currently registered
-     * {@link AzBone AzBones}, filtered by the bones already present in the master snapshots map
-     */
     private void snapshot() {
         boneSnapshotsByName.clear();
 

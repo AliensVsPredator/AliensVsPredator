@@ -13,13 +13,6 @@ import com.blib.azurelib.core.molang.MolangParser;
 import com.blib.azurelib.core.molang.MolangQueries;
 import com.blib.azurelib.core.object.Axis;
 
-/**
- * AzKeyframeTransitioner is a specialized class for executing smooth animations and transitions between keyframes for
- * bones in an animation system. It utilizes animation controllers, bone animation queue caches, and bone snapshot
- * caches to manage and apply transitions for rotation, position, and scale of bones.
- *
- * @param <T> The type of the animation data handled by the associated animation controller.
- */
 public class AzKeyframeTransitioner<T> extends AzAbstractKeyframeExecutor {
 
     private final AzAnimationController<T> animationController;
@@ -74,8 +67,8 @@ public class AzKeyframeTransitioner<T> extends AzAbstractKeyframeExecutor {
 
     private void transitionRotation(
         double adjustedTick,
-        com.blib.azurelib.common.animation.controller.keyframe.AzKeyframeStack<com.blib.azurelib.common.animation.controller.keyframe.AzKeyframe<IValue>> keyframes,
-        com.blib.azurelib.common.animation.controller.keyframe.AzBoneAnimationQueue queue,
+        AzKeyframeStack<AzKeyframe<IValue>> keyframes,
+        AzBoneAnimationQueue queue,
         double transitionLength,
         AzBoneSnapshot snapshot,
         AzBone bone
@@ -94,8 +87,8 @@ public class AzKeyframeTransitioner<T> extends AzAbstractKeyframeExecutor {
 
     private void transitionPosition(
         double adjustedTick,
-        com.blib.azurelib.common.animation.controller.keyframe.AzKeyframeStack<com.blib.azurelib.common.animation.controller.keyframe.AzKeyframe<IValue>> keyframes,
-        com.blib.azurelib.common.animation.controller.keyframe.AzBoneAnimationQueue queue,
+        AzKeyframeStack<AzKeyframe<IValue>> keyframes,
+        AzBoneAnimationQueue queue,
         double transitionLength,
         AzBoneSnapshot snapshot
     ) {

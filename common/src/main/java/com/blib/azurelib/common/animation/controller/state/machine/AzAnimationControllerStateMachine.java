@@ -10,12 +10,6 @@ import com.blib.azurelib.common.animation.controller.state.impl.AzAnimationTrans
 import com.blib.azurelib.common.util.state.StateMachine;
 import com.blib.azurelib.common.util.state.StateMachineContext;
 
-/**
- * A state machine for managing animation controller states, providing functionality to transition between play, pause,
- * stop, and transition states. It is generic and supports handling context and states specific to animations.
- *
- * @param <T> the type of the animation the state machine controls
- */
 public class AzAnimationControllerStateMachine<T> extends StateMachine<AzAnimationControllerStateMachine.Context<T>, AzAnimationState<T>> {
 
     private final StateHolder<T> stateHolder;

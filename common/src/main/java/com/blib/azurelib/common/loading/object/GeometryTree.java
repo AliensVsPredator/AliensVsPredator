@@ -1,8 +1,3 @@
-/**
- * This class is a fork of the matching class found in the Geckolib repository. Original source:
- * https://github.com/bernie-g/geckolib Copyright © 2024 Bernie-G. Licensed under the MIT License.
- * https://github.com/bernie-g/geckolib/blob/main/LICENSE
- */
 package com.blib.azurelib.common.loading.object;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -16,9 +11,6 @@ import com.blib.azurelib.common.loading.json.raw.MinecraftGeometry;
 import com.blib.azurelib.common.loading.json.raw.Model;
 import com.blib.azurelib.common.loading.json.raw.ModelProperties;
 
-/**
- * Container class for a {@link Bone} structure, used at startup during deserialization
- */
 public record GeometryTree(
     Map<String, BoneStructure> topLevelBones,
     ModelProperties properties

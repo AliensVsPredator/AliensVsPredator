@@ -17,48 +17,23 @@ import com.blib.azurelib.common.render.AzRendererPipelineContext;
 import com.blib.azurelib.common.util.client.ClientUtils;
 import com.blib.azurelib.common.util.client.RenderUtils;
 
-/**
- * Utility class for rendering item-specific player arms in Minecraft. This class provides methods for determining
- * visibility and rendering logic for arm bones, typically used in first-person item rendering scenarios. It integrates
- * with custom pipeline contexts and model renderers.
- */
 public class AzItemArmRenderUtil {
 
     private static final String LEFT_ARM_BONE = "leftArm";
 
     private static final String RIGHT_ARM_BONE = "rightArm";
 
-    /**
-     * Checks if the given bone is an arm bone that should be rendered.
-     *
-     * @param bone The bone to check
-     * @return true if this is a left or right arm bone
-     */
     public static boolean isArmBone(AzBone bone) {
         var name = bone.getName();
         return LEFT_ARM_BONE.equals(name) || RIGHT_ARM_BONE.equals(name);
     }
 
-    /**
-     * Checks if arm rendering should occur based on the current display context.
-     *
-     * @param context The rendering context
-     * @return true if we should render arms for this context
-     */
     public static boolean shouldRenderArmsForContext(AzItemRendererPipelineContext context) {
         var transformType = context.getTransformType();
         return transformType == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND ||
             transformType == ItemDisplayContext.FIRST_PERSON_LEFT_HAND;
     }
 
-    /**
-     * Renders player arms for the specified arm bone, hiding the bone itself but keeping children visible. This method
-     * should be called during the bone rendering process.
-     *
-     * @param context       The rendering context
-     * @param bone          The arm bone to render
-     * @param modelRenderer The model renderer instance (needed for buffer methods)
-     */
     public static void renderArmForBone(
         AzRendererPipelineContext<UUID, ItemStack> context,
         AzBone bone,
@@ -102,9 +77,6 @@ public class AzItemArmRenderUtil {
         poseStack.popPose();
     }
 
-    /**
-     * Renders the left arm and sleeve.
-     */
     private static void renderLeftArm(
         PoseStack poseStack,
         AzBone bone,
@@ -138,9 +110,6 @@ public class AzItemArmRenderUtil {
         );
     }
 
-    /**
-     * Renders the right arm and sleeve.
-     */
     private static void renderRightArm(
         PoseStack poseStack,
         AzBone bone,

@@ -12,9 +12,6 @@ import net.minecraft.world.level.gameevent.vibrations.VibrationSystem.User;
 
 import com.blib.api.BLibAPI;
 
-/**
- * Custom class for use with {@link AzureVibrationUser}
- */
 public interface AzureTicker {
 
     static void tick(Level level, Data data, User user) {

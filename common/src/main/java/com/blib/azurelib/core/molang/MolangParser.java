@@ -1,8 +1,3 @@
-/**
- * This class is a fork of the matching class found in the Geckolib repository. Original source:
- * https://github.com/bernie-g/geckolib Copyright © 2024 Bernie-G. Licensed under the MIT License.
- * https://github.com/bernie-g/geckolib/blob/main/LICENSE
- */
 package com.blib.azurelib.core.molang;
 
 import com.google.gson.JsonElement;
@@ -25,15 +20,10 @@ import com.blib.azurelib.core.molang.expressions.MolangVariableHolder;
 import com.blib.azurelib.core.molang.functions.CosDegrees;
 import com.blib.azurelib.core.molang.functions.SinDegrees;
 
-/**
- * Utility class for parsing and utilising MoLang functions and expressions
- *
- * @see <a href="https://bedrock.dev/docs/1.19.0.0/1.19.30.23/Molang#Math%20Functions">Bedrock Dev - Molang</a>
- */
 public class MolangParser extends MathBuilder {
 
     // Replace base variables map
-    public static final Map<String, com.blib.azurelib.core.molang.LazyVariable> VARIABLES = new Object2ObjectOpenHashMap<>();
+    public static final Map<String, LazyVariable> VARIABLES = new Object2ObjectOpenHashMap<>();
 
     public static final MolangVariableHolder ZERO = new MolangVariableHolder(null, new Constant(0));
 
@@ -73,9 +63,6 @@ public class MolangParser extends MathBuilder {
         return ZERO;
     }
 
-    /**
-     * Parse a molang expression
-     */
     public static MolangValue parseExpression(String expression) {
         MolangCompoundValue result = null;
 
@@ -101,9 +88,6 @@ public class MolangParser extends MathBuilder {
         return result;
     }
 
-    /**
-     * Parse a single Molang statement
-     */
     protected static MolangValue parseOneLine(
         String expression,
         MolangCompoundValue currentStatement
@@ -125,10 +109,10 @@ public class MolangParser extends MathBuilder {
                     && symbols.get(1).equals("=")
             ) {
                 symbols = symbols.subList(2, symbols.size());
-                com.blib.azurelib.core.molang.LazyVariable variable;
+                LazyVariable variable;
 
                 if (!VARIABLES.containsKey(name) && !currentStatement.locals.containsKey(name)) {
-                    currentStatement.locals.put(name, (variable = new com.blib.azurelib.core.molang.LazyVariable(name, 0)));
+                    currentStatement.locals.put(name, (variable = new LazyVariable(name, 0)));
                 } else {
                     variable = INSTANCE.getVariable(name, currentStatement);
                 }
@@ -178,70 +162,51 @@ public class MolangParser extends MathBuilder {
     }
 
     private void registerAdditionalVariables() {
-        register(new com.blib.azurelib.core.molang.LazyVariable(MolangQueries.ANIM_TIME, 0));
-        register(new com.blib.azurelib.core.molang.LazyVariable(MolangQueries.LIFE_TIME, 0));
-        register(new com.blib.azurelib.core.molang.LazyVariable(MolangQueries.ACTOR_COUNT, 0));
-        register(new com.blib.azurelib.core.molang.LazyVariable(MolangQueries.HEALTH, 0));
-        register(new com.blib.azurelib.core.molang.LazyVariable(MolangQueries.MAX_HEALTH, 0));
-        register(new com.blib.azurelib.core.molang.LazyVariable(MolangQueries.DISTANCE_FROM_CAMERA, 0));
-        register(new com.blib.azurelib.core.molang.LazyVariable(MolangQueries.YAW_SPEED, 0));
-        register(new com.blib.azurelib.core.molang.LazyVariable(MolangQueries.IS_IN_WATER_OR_RAIN, 0));
-        register(new com.blib.azurelib.core.molang.LazyVariable(MolangQueries.IS_IN_WATER, 0));
-        register(new com.blib.azurelib.core.molang.LazyVariable(MolangQueries.IS_ON_GROUND, 0));
-        register(new com.blib.azurelib.core.molang.LazyVariable(MolangQueries.TIME_OF_DAY, 0));
-        register(new com.blib.azurelib.core.molang.LazyVariable(MolangQueries.IS_ON_FIRE, 0));
-        register(new com.blib.azurelib.core.molang.LazyVariable(MolangQueries.GROUND_SPEED, 0));
-        register(new com.blib.azurelib.core.molang.LazyVariable(MolangQueries.HEAD_YAW, 0));
-        register(new com.blib.azurelib.core.molang.LazyVariable(MolangQueries.HEAD_PITCH, 0));
-        register(new com.blib.azurelib.core.molang.LazyVariable(MolangQueries.HURT_TIME, 0));
-        register(new com.blib.azurelib.core.molang.LazyVariable(MolangQueries.IN_AIR, 0));
-        register(new com.blib.azurelib.core.molang.LazyVariable(MolangQueries.IS_BABY, 0));
-        register(new com.blib.azurelib.core.molang.LazyVariable(MolangQueries.IS_BLOCKING, 0));
-        register(new com.blib.azurelib.core.molang.LazyVariable(MolangQueries.IS_USING_ITEM, 0));
-        register(new com.blib.azurelib.core.molang.LazyVariable(MolangQueries.ITEM_CURRENT_DURABILITY, 0));
-        register(new com.blib.azurelib.core.molang.LazyVariable(MolangQueries.ITEM_IS_ENCHANTED, 0));
-        register(new com.blib.azurelib.core.molang.LazyVariable(MolangQueries.LIMB_SWING, 0));
-        register(new com.blib.azurelib.core.molang.LazyVariable(MolangQueries.LIMB_SWING_AMOUNT, 0));
+        register(new LazyVariable(MolangQueries.ANIM_TIME, 0));
+        register(new LazyVariable(MolangQueries.LIFE_TIME, 0));
+        register(new LazyVariable(MolangQueries.ACTOR_COUNT, 0));
+        register(new LazyVariable(MolangQueries.HEALTH, 0));
+        register(new LazyVariable(MolangQueries.MAX_HEALTH, 0));
+        register(new LazyVariable(MolangQueries.DISTANCE_FROM_CAMERA, 0));
+        register(new LazyVariable(MolangQueries.YAW_SPEED, 0));
+        register(new LazyVariable(MolangQueries.IS_IN_WATER_OR_RAIN, 0));
+        register(new LazyVariable(MolangQueries.IS_IN_WATER, 0));
+        register(new LazyVariable(MolangQueries.IS_ON_GROUND, 0));
+        register(new LazyVariable(MolangQueries.TIME_OF_DAY, 0));
+        register(new LazyVariable(MolangQueries.IS_ON_FIRE, 0));
+        register(new LazyVariable(MolangQueries.GROUND_SPEED, 0));
+        register(new LazyVariable(MolangQueries.HEAD_YAW, 0));
+        register(new LazyVariable(MolangQueries.HEAD_PITCH, 0));
+        register(new LazyVariable(MolangQueries.HURT_TIME, 0));
+        register(new LazyVariable(MolangQueries.IN_AIR, 0));
+        register(new LazyVariable(MolangQueries.IS_BABY, 0));
+        register(new LazyVariable(MolangQueries.IS_BLOCKING, 0));
+        register(new LazyVariable(MolangQueries.IS_USING_ITEM, 0));
+        register(new LazyVariable(MolangQueries.ITEM_CURRENT_DURABILITY, 0));
+        register(new LazyVariable(MolangQueries.ITEM_IS_ENCHANTED, 0));
+        register(new LazyVariable(MolangQueries.LIMB_SWING, 0));
+        register(new LazyVariable(MolangQueries.LIMB_SWING_AMOUNT, 0));
     }
 
-    /**
-     * Register a new {@link Variable} with the {@code MolangParser}.<br>
-     * Ideally should be called from the mod constructor.
-     */
     @Override
     public void register(Variable variable) {
-        if (!(variable instanceof com.blib.azurelib.core.molang.LazyVariable))
-            variable = com.blib.azurelib.core.molang.LazyVariable.from(variable);
+        if (!(variable instanceof LazyVariable))
+            variable = LazyVariable.from(variable);
 
-        VARIABLES.put(variable.getName(), (com.blib.azurelib.core.molang.LazyVariable) variable);
+        VARIABLES.put(variable.getName(), (LazyVariable) variable);
     }
 
-    /**
-     * Remap a function to a new name, maintaining the actual functionality and removing the old registration entry
-     */
     public void remap(String old, String newName) {
         this.functions.put(newName, this.functions.remove(old));
     }
 
-    /**
-     * Set the value supplier for a variable.<br>
-     * Consider using {@link MolangParser#setMemoizedValue} instead of you don't need per-call dynamic results
-     *
-     * @param name  The name of the variable to set the value for
-     * @param value The value supplier to set
-     */
     public void setValue(String name, DoubleSupplier value) {
-        com.blib.azurelib.core.molang.LazyVariable variable = getVariable(name);
+        LazyVariable variable = getVariable(name);
 
         if (variable != null)
             variable.set(value);
     }
 
-    /**
-     * Sets a memoized value supplier for a variable.<br>
-     * This prevents re-calculation on successive calls, improving efficiency.<br>
-     * This should be used wherever per-call accuracy is not needed.
-     */
     public void setMemoizedValue(String name, DoubleSupplier value) {
         var variable = getVariable(name);
 
@@ -262,19 +227,12 @@ public class MolangParser extends MathBuilder {
         });
     }
 
-    /**
-     * Get the registered {@link com.blib.azurelib.core.molang.LazyVariable} for the given name
-     *
-     * @param name The name of the variable to get
-     * @return The registered {@code LazyVariable} instance, or a newly registered instance if one wasn't registered
-     *         previously
-     */
     @Override
-    public com.blib.azurelib.core.molang.LazyVariable getVariable(String name) {
-        return VARIABLES.computeIfAbsent(name, key -> new com.blib.azurelib.core.molang.LazyVariable(key, 0));
+    public LazyVariable getVariable(String name) {
+        return VARIABLES.computeIfAbsent(name, key -> new LazyVariable(key, 0));
     }
 
-    public com.blib.azurelib.core.molang.LazyVariable getVariable(String name, MolangCompoundValue currentStatement) {
+    public LazyVariable getVariable(String name, MolangCompoundValue currentStatement) {
         LazyVariable variable;
 
         if (currentStatement != null) {
@@ -287,15 +245,6 @@ public class MolangParser extends MathBuilder {
         return getVariable(name);
     }
 
-    /**
-     * Parses a list of symbols in the Molang context and converts them into an {@link IValue} representation. This
-     * method extends the functionality of {@code parseSymbols} to handle scenarios unique to Molang expressions. If an
-     * error occurs during parsing, an error message is logged and a default value of {@code ZERO} is returned.
-     *
-     * @param symbols A list of objects representing the symbols to be parsed into an {@link IValue}.
-     * @return The parsed {@link IValue} object corresponding to the provided symbols. Returns {@code ZERO} in case of a
-     *         parsing failure.
-     */
     private IValue parseSymbolsMolang(List<Object> symbols) {
         try {
             return this.parseSymbols(symbols);
@@ -305,10 +254,6 @@ public class MolangParser extends MathBuilder {
         }
     }
 
-    /**
-     * Extend this method to allow {@link #breakdownChars(String[])} to capture "=" as an operator, so it was easier to
-     * parse assignment statements
-     */
     @Override
     protected boolean isOperator(String s) {
         return super.isOperator(s) || s.equals("=");

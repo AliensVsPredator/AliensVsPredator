@@ -17,11 +17,6 @@ import com.blib.azurelib.common.loading.object.GeometryTree;
 import com.blib.azurelib.common.model.AzBakedModel;
 import com.blib.azurelib.common.model.factory.registry.AzBakedModelFactoryRegistry;
 
-/**
- * AzBakedModelCache is a singleton class that extends {@link AzResourceCache} and is designed to manage and cache baked
- * models of type {@link AzBakedModel}. It provides functionality to asynchronously load and store models associated
- * with specific resource locations.
- */
 public class AzBakedModelCache extends AzResourceCache {
 
     private static final AzBakedModelCache INSTANCE = new AzBakedModelCache();

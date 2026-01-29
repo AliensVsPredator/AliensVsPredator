@@ -5,9 +5,6 @@ import net.minecraft.world.phys.Vec3;
 
 import com.blib.azurelib.common.cache.object.GeoVertex;
 
-/**
- * Holder class to make it easier to store and refer to vertices for a given cube
- */
 public record VertexSet(
     GeoVertex bottomLeftBack,
     GeoVertex bottomRightBack,
@@ -48,16 +45,10 @@ public record VertexSet(
         );
     }
 
-    /**
-     * Returns the normal vertex array for a west-facing quad
-     */
     public GeoVertex[] quadWest() {
         return new GeoVertex[] { this.topRightBack, this.topLeftBack, this.bottomLeftBack, this.bottomRightBack };
     }
 
-    /**
-     * Returns the normal vertex array for an east-facing quad
-     */
     public GeoVertex[] quadEast() {
         return new GeoVertex[] {
             this.topLeftFront,
@@ -67,16 +58,10 @@ public record VertexSet(
         };
     }
 
-    /**
-     * Returns the normal vertex array for a north-facing quad
-     */
     public GeoVertex[] quadNorth() {
         return new GeoVertex[] { this.topLeftBack, this.topLeftFront, this.bottomLeftFront, this.bottomLeftBack };
     }
 
-    /**
-     * Returns the normal vertex array for a south-facing quad
-     */
     public GeoVertex[] quadSouth() {
         return new GeoVertex[] {
             this.topRightFront,
@@ -86,16 +71,10 @@ public record VertexSet(
         };
     }
 
-    /**
-     * Returns the normal vertex array for a top-facing quad
-     */
     public GeoVertex[] quadUp() {
         return new GeoVertex[] { this.topRightBack, this.topRightFront, this.topLeftFront, this.topLeftBack };
     }
 
-    /**
-     * Returns the normal vertex array for a bottom-facing quad
-     */
     public GeoVertex[] quadDown() {
         return new GeoVertex[] {
             this.bottomLeftBack,
@@ -105,9 +84,6 @@ public record VertexSet(
         };
     }
 
-    /**
-     * Return the vertex array relevant to the quad being built, taking into account mirroring and quad type
-     */
     public GeoVertex[] verticesForQuad(Direction direction, boolean boxUv, boolean mirror) {
         return switch (direction) {
             case WEST -> mirror ? quadEast() : quadWest();

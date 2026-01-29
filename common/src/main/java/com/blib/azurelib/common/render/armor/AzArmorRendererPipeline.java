@@ -22,9 +22,9 @@ import com.blib.azurelib.common.render.armor.compat.ShoulderSurfingCompat;
 
 public class AzArmorRendererPipeline extends AzRendererPipeline<UUID, ItemStack> {
 
-    private final com.blib.azurelib.common.render.armor.AzArmorModel<?> armorModel;
+    private final AzArmorModel<?> armorModel;
 
-    private final com.blib.azurelib.common.render.armor.AzArmorRenderer armorRenderer;
+    private final AzArmorRenderer armorRenderer;
 
     protected Matrix4f entityRenderTranslations = new Matrix4f();
 
@@ -32,10 +32,10 @@ public class AzArmorRendererPipeline extends AzRendererPipeline<UUID, ItemStack>
 
     public AzArmorRendererPipeline(
         AzRendererConfig<UUID, ItemStack> config,
-        com.blib.azurelib.common.render.armor.AzArmorRenderer armorRenderer
+        AzArmorRenderer armorRenderer
     ) {
         super(config);
-        this.armorModel = new com.blib.azurelib.common.render.armor.AzArmorModel<>(this);
+        this.armorModel = new AzArmorModel<>(this);
         this.armorRenderer = armorRenderer;
     }
 
@@ -111,17 +111,6 @@ public class AzArmorRendererPipeline extends AzRendererPipeline<UUID, ItemStack>
         context.setTextureOverride(null);
     }
 
-    /**
-     * Scales the specified bone based on the model part associated with the current {@link EquipmentSlot}. This method
-     * adjusts the scaling for various armor parts such as head, chest, legs, and feet during rendering. The scaling is
-     * not performed if {@code isReRender} is set to true.
-     *
-     * @param context     The {@link AzArmorRendererPipelineContext} providing the rendering context, including the base
-     *                    model, current slot, and other relevant information for the rendering pipeline.
-     * @param boneContext The {@link AzArmorBoneContext} specifying the bones that correspond to the armor model parts.
-     * @param isReRender  A boolean flag indicating if this is a re-rendering pass. When true, scaling logic is skipped
-     *                    as it is generally unnecessary during re-rendering.
-     */
     public void scaleBoneWithModelPart(
         AzArmorRendererPipelineContext context,
         AzArmorBoneContext boneContext,
@@ -158,23 +147,12 @@ public class AzArmorRendererPipeline extends AzRendererPipeline<UUID, ItemStack>
         }
     }
 
-    /**
-     * Sets the scale of the specified bone based on the scaling parameters defined in the given model part.
-     *
-     * @param bone      The {@link AzBone} instance representing the bone to be scaled.
-     * @param modelPart The {@link ModelPart} containing the scale values (xScale, yScale, zScale) that will be applied
-     *                  to the bone.
-     */
     private void setBoneScale(AzBone bone, ModelPart modelPart) {
         bone.setScaleX(modelPart.xScale);
         bone.setScaleY(modelPart.yScale);
         bone.setScaleZ(modelPart.zScale);
     }
 
-    /**
-     * Apply custom scaling to account for {@link net.minecraft.client.model.AgeableListModel AgeableListModel} baby
-     * models
-     */
     public void scaleModelForBaby(AzArmorRendererPipelineContext context, boolean isReRender) {
         var currentEntity = context.currentEntity();
         if (!(currentEntity instanceof AgeableMob ageableMob && ageableMob.isBaby()) || isReRender) {
@@ -206,7 +184,7 @@ public class AzArmorRendererPipeline extends AzRendererPipeline<UUID, ItemStack>
     }
 
     @Override
-    public com.blib.azurelib.common.render.armor.AzArmorRendererConfig config() {
+    public AzArmorRendererConfig config() {
         return (AzArmorRendererConfig) super.config();
     }
 

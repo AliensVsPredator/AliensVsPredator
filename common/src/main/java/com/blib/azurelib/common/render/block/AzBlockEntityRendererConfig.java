@@ -17,29 +17,22 @@ import com.blib.azurelib.common.render.*;
 import com.blib.azurelib.common.render.AzRendererPipelineContext;
 import com.blib.azurelib.common.render.layer.AzRenderLayer;
 
-/**
- * The {@code AzBlockEntityRendererConfig} class is a specialized configuration for rendering block entities. It extends
- * the generic {@link com.blib.azurelib.common.render.AzRendererConfig} and provides additional methods to streamline
- * the creation of configurations specifically for block entity renderers.
- *
- * @param <T> The type of block entity this configuration is tailored for.
- */
-public class AzBlockEntityRendererConfig<T extends BlockEntity> extends com.blib.azurelib.common.render.AzRendererConfig<Long, T> {
+public class AzBlockEntityRendererConfig<T extends BlockEntity> extends AzRendererConfig<Long, T> {
 
     private AzBlockEntityRendererConfig(
         Supplier<AzAnimator<Long, T>> animatorProvider,
         Function<T, ResourceLocation> modelLocationProvider,
         Function<T, RenderType> renderTypeFunction,
         List<AzRenderLayer<Long, T>> renderLayers,
-        Function<com.blib.azurelib.common.render.AzRendererPipelineContext<Long, T>, com.blib.azurelib.common.render.AzRendererPipelineContext<Long, T>> preRenderEntry,
-        Function<com.blib.azurelib.common.render.AzRendererPipelineContext<Long, T>, com.blib.azurelib.common.render.AzRendererPipelineContext<Long, T>> renderEntry,
-        Function<com.blib.azurelib.common.render.AzRendererPipelineContext<Long, T>, com.blib.azurelib.common.render.AzRendererPipelineContext<Long, T>> postRenderEntry,
+        Function<AzRendererPipelineContext<Long, T>, AzRendererPipelineContext<Long, T>> preRenderEntry,
+        Function<AzRendererPipelineContext<Long, T>, AzRendererPipelineContext<Long, T>> renderEntry,
+        Function<AzRendererPipelineContext<Long, T>, AzRendererPipelineContext<Long, T>> postRenderEntry,
         Function<T, ResourceLocation> textureLocationProvider,
         Function<T, Float> alphaFunction,
         Function<T, Float> scaleHeight,
         Function<T, Float> scaleWidth,
-        BiFunction<com.blib.azurelib.common.render.AzRendererPipeline<Long, T>, com.blib.azurelib.common.render.AzLayerRenderer<Long, T>, com.blib.azurelib.common.render.AzModelRenderer<Long, T>> modelRendererProvider,
-        Function<com.blib.azurelib.common.render.AzRendererPipeline<Long, T>, com.blib.azurelib.common.render.AzRendererPipelineContext<Long, T>> pipelineContextFunction,
+        BiFunction<AzRendererPipeline<Long, T>, AzLayerRenderer<Long, T>, AzModelRenderer<Long, T>> modelRendererProvider,
+        Function<AzRendererPipeline<Long, T>, AzRendererPipelineContext<Long, T>> pipelineContextFunction,
         Function<AzBone, ResourceLocation> boneTextureOverrideProvider,
         Function<AzBone, RenderType> boneRenderTypeOverrideProvider
     ) {
@@ -76,7 +69,7 @@ public class AzBlockEntityRendererConfig<T extends BlockEntity> extends com.blib
         return new Builder<>(modelLocationProvider, textureLocationProvider);
     }
 
-    public static class Builder<T extends BlockEntity> extends com.blib.azurelib.common.render.AzRendererConfig.Builder<Long, T> {
+    public static class Builder<T extends BlockEntity> extends AzRendererConfig.Builder<Long, T> {
 
         protected Builder(
             Function<T, ResourceLocation> modelLocationProvider,
@@ -107,14 +100,14 @@ public class AzBlockEntityRendererConfig<T extends BlockEntity> extends com.blib
 
         @Override
         public Builder<T> setModelRenderer(
-            BiFunction<com.blib.azurelib.common.render.AzRendererPipeline<Long, T>, com.blib.azurelib.common.render.AzLayerRenderer<Long, T>, com.blib.azurelib.common.render.AzModelRenderer<Long, T>> modelRendererProvider
+            BiFunction<AzRendererPipeline<Long, T>, AzLayerRenderer<Long, T>, AzModelRenderer<Long, T>> modelRendererProvider
         ) {
             return (Builder<T>) super.setModelRenderer(modelRendererProvider);
         }
 
         @Override
         public Builder<T> setPipelineContext(
-            Function<com.blib.azurelib.common.render.AzRendererPipeline<Long, T>, com.blib.azurelib.common.render.AzRendererPipelineContext<Long, T>> pipelineContextFunction
+            Function<AzRendererPipeline<Long, T>, AzRendererPipelineContext<Long, T>> pipelineContextFunction
         ) {
             return (Builder<T>) super.setPipelineContext(pipelineContextFunction);
         }
@@ -141,21 +134,21 @@ public class AzBlockEntityRendererConfig<T extends BlockEntity> extends com.blib
 
         @Override
         public Builder<T> setPrerenderEntry(
-            Function<com.blib.azurelib.common.render.AzRendererPipelineContext<Long, T>, com.blib.azurelib.common.render.AzRendererPipelineContext<Long, T>> preRenderEntry
+            Function<AzRendererPipelineContext<Long, T>, AzRendererPipelineContext<Long, T>> preRenderEntry
         ) {
             return (Builder<T>) super.setPrerenderEntry(preRenderEntry);
         }
 
         @Override
         public Builder<T> setRenderEntry(
-            Function<com.blib.azurelib.common.render.AzRendererPipelineContext<Long, T>, com.blib.azurelib.common.render.AzRendererPipelineContext<Long, T>> renderEntry
+            Function<AzRendererPipelineContext<Long, T>, AzRendererPipelineContext<Long, T>> renderEntry
         ) {
             return (Builder<T>) super.setRenderEntry(renderEntry);
         }
 
         @Override
         public Builder<T> setPostRenderEntry(
-            Function<com.blib.azurelib.common.render.AzRendererPipelineContext<Long, T>, AzRendererPipelineContext<Long, T>> preRenderEntry
+            Function<AzRendererPipelineContext<Long, T>, AzRendererPipelineContext<Long, T>> preRenderEntry
         ) {
             return (Builder<T>) super.setPostRenderEntry(preRenderEntry);
         }

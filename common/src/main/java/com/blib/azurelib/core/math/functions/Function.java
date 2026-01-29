@@ -1,16 +1,7 @@
-/**
- * This class is a fork of the matching class found in the Geckolib repository. Original source:
- * https://github.com/bernie-g/geckolib Copyright © 2024 Bernie-G. Licensed under the MIT License.
- * https://github.com/bernie-g/geckolib/blob/main/LICENSE
- */
 package com.blib.azurelib.core.math.functions;
 
 import com.blib.azurelib.core.math.IValue;
 
-/**
- * Abstract function class This class provides function capability (i.e. giving it arguments and upon {@link #get()}
- * method you receive output).
- */
 public abstract class Function implements IValue {
 
     protected IValue[] args;
@@ -33,9 +24,6 @@ public abstract class Function implements IValue {
         this.name = name;
     }
 
-    /**
-     * Get the value of nth argument
-     */
     public double getArg(int index) {
         if (index < 0 || index >= this.args.length) {
             return 0;
@@ -59,16 +47,10 @@ public abstract class Function implements IValue {
         return this.getName() + "(" + argsBuilder + ")";
     }
 
-    /**
-     * Get name of this function
-     */
     public String getName() {
         return this.name;
     }
 
-    /**
-     * Get minimum count of arguments this function needs
-     */
     public int getRequiredArguments() {
         return 0;
     }

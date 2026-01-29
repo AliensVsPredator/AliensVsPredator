@@ -1,17 +1,7 @@
-/**
- * This class is a fork of the matching class found in the Geckolib repository. Original source:
- * https://github.com/bernie-g/geckolib Copyright © 2024 Bernie-G. Licensed under the MIT License.
- * https://github.com/bernie-g/geckolib/blob/main/LICENSE
- */
 package com.blib.azurelib.core.keyframe.event.data;
 
 import java.util.Objects;
 
-import com.blib.azurelib.common.animation.controller.keyframe.AzKeyframe;
-
-/**
- * Particle {@link AzKeyframe} instruction holder
- */
 public class ParticleKeyframeData extends KeyFrameData {
 
     private final String effect;
@@ -28,23 +18,14 @@ public class ParticleKeyframeData extends KeyFrameData {
         this.effect = effect;
     }
 
-    /**
-     * Gets the effect id given by the {@link AzKeyframe} instruction from the {@code animation.json}
-     */
     public String getEffect() {
         return this.effect;
     }
 
-    /**
-     * Gets the locator string given by the {@link AzKeyframe} instruction from the {@code animation.json}
-     */
     public String getLocator() {
         return this.locator;
     }
 
-    /**
-     * Gets the script string given by the {@link AzKeyframe} instruction from the {@code animation.json}
-     */
     public String script() {
         return this.script;
     }

@@ -1,8 +1,3 @@
-/**
- * This class is a fork of the matching class found in the Geckolib repository. Original source:
- * https://github.com/bernie-g/geckolib Copyright © 2024 Bernie-G. Licensed under the MIT License.
- * https://github.com/bernie-g/geckolib/blob/main/LICENSE
- */
 package com.blib.azurelib.common.animation.controller.keyframe;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -14,15 +9,6 @@ import com.blib.azurelib.common.animation.easing.AzEasingType;
 import com.blib.azurelib.common.animation.easing.AzEasingTypes;
 import com.blib.azurelib.core.math.IValue;
 
-/**
- * Animation keyframe data
- *
- * @param length     The length (in ticks) the keyframe lasts for
- * @param startValue The value to start the keyframe's transformation with
- * @param endValue   The value to end the keyframe's transformation with
- * @param easingType The {@code EasingType} to use for transformations
- * @param easingArgs The arguments to provide to the easing calculation
- */
 public record AzKeyframe<T extends IValue>(
     double length,
     T startValue,

@@ -1,19 +1,10 @@
-/**
- * This class is a fork of the matching class found in the Geckolib repository. Original source:
- * https://github.com/bernie-g/geckolib Copyright © 2024 Bernie-G. Licensed under the MIT License.
- * https://github.com/bernie-g/geckolib/blob/main/LICENSE
- */
-
 package com.blib.azurelib.common.model;
 
 import org.joml.Vector3f;
 
-/**
- * A state monitoring class for a given {@link com.blib.azurelib.common.model.AzBone}.<br>
- */
 public class AzBoneSnapshot {
 
-    private final com.blib.azurelib.common.model.AzBone bone;
+    private final AzBone bone;
 
     private final Vector3f offsetPosition;
 
@@ -33,7 +24,7 @@ public class AzBoneSnapshot {
 
     private boolean scaleAnimInProgress = true;
 
-    public AzBoneSnapshot(com.blib.azurelib.common.model.AzBone bone) {
+    public AzBoneSnapshot(AzBone bone) {
         this.bone = bone;
         this.offsetPosition = new Vector3f(bone.getPosX(), bone.getPosY(), bone.getPosZ());
         this.rotation = new Vector3f(bone.getRotX(), bone.getRotY(), bone.getRotZ());
@@ -114,23 +105,14 @@ public class AzBoneSnapshot {
         return this.scaleAnimInProgress;
     }
 
-    /**
-     * Update the scale state of this snapshot
-     */
     public void updateScale(float scaleX, float scaleY, float scaleZ) {
         scale.set(scaleX, scaleY, scaleZ);
     }
 
-    /**
-     * Update the offset state of this snapshot
-     */
     public void updateOffset(float offsetX, float offsetY, float offsetZ) {
         offsetPosition.set(offsetX, offsetY, offsetZ);
     }
 
-    /**
-     * Update the rotation state of this snapshot
-     */
     public void updateRotation(float rotX, float rotY, float rotZ) {
         rotation.set(rotX, rotY, rotZ);
     }

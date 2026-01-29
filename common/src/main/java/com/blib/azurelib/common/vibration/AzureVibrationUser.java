@@ -8,7 +8,6 @@ import net.minecraft.tags.GameEventTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ambient.Bat;
-import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.level.gameevent.EntityPositionSource;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEvent.Context;
@@ -18,9 +17,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Custom Vibration class that removes the {@link Warden} particle that usually spawns
- */
 public class AzureVibrationUser implements VibrationSystem.User {
 
     protected final Mob mob;

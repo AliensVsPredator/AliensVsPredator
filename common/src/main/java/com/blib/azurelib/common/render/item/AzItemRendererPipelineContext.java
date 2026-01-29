@@ -12,13 +12,6 @@ import java.util.UUID;
 import com.blib.azurelib.common.render.AzRendererPipeline;
 import com.blib.azurelib.common.render.AzRendererPipelineContext;
 
-/**
- * A specialized subclass of {@link AzRendererPipelineContext} designed for rendering {@link ItemStack} objects.
- * Provides the default rendering context and pipeline for rendering item models within a custom rendering framework.
- * <br>
- * This context delegates rendering operations to its associated {@link AzRendererPipeline} while providing additional
- * configuration and control over the rendering process of an {@link ItemStack}.
- */
 public class AzItemRendererPipelineContext extends AzRendererPipelineContext<UUID, ItemStack> {
 
     private boolean translucent = false;
@@ -37,13 +30,6 @@ public class AzItemRendererPipelineContext extends AzRendererPipelineContext<UUI
         this.transformType = transformType;
     }
 
-    /**
-     * Sets whether the rendering pipeline should render with a translucent effect or not.
-     *
-     * @param translucent A boolean value indicating whether to enable or disable translucency. If true, the rendering
-     *                    pipeline will apply a translucent effect to rendered elements. If false, it will render with
-     *                    an opaque effect.
-     */
     public void setTranslucent(boolean translucent) {
         this.translucent = translucent;
     }
