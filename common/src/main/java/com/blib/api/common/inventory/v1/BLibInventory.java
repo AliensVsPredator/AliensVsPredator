@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
-import com.blib.api.common.codec.v1.impl.MojangCodecs;
+import com.blib.api.common.codec.v1.BLibCodecs;
 
 public class BLibInventory {
 
@@ -41,7 +41,7 @@ public class BLibInventory {
                 var failed = new AtomicBoolean(false);
 
                 consumer.accept(element -> {
-                    var result = MojangCodecs.ITEM_STACK.decode(codecSchema, element);
+                    var result = BLibCodecs.ITEM_STACK.decode(codecSchema, element);
                     if (result.isOk()) {
                         listBuilder.add(result.unwrap());
                     } else {
@@ -62,7 +62,7 @@ public class BLibInventory {
             return codecSchema.createList(
                 Arrays.stream(value.getSerializedItemStacks())
                     .filter(Predicate.not(ItemStack::isEmpty))
-                    .map(stack -> MojangCodecs.ITEM_STACK.encode(codecSchema, stack))
+                    .map(stack -> BLibCodecs.ITEM_STACK.encode(codecSchema, stack))
             );
         }
     };

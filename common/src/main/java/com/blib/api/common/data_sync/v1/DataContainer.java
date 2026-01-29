@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import com.blib.api.common.codec.v1.stream.schema.StreamCodecSchemas;
+import com.blib.api.common.codec.v1.BLibCodecs;
 import com.blib.api.common.data_sync.v1.model.DataSyncKey;
 import com.blib.api.common.data_sync.v1.model.RawDataSyncMap;
 import com.blib.api.common.nbt.v1.model.NBTSerializable;
@@ -94,7 +94,7 @@ public class DataContainer implements NBTSerializable {
         var byteBuf = Unpooled.wrappedBuffer(rawData);
         var friendlyByteBuf = new FriendlyByteBuf(byteBuf);
 
-        var value = codec.decode(StreamCodecSchemas.BYTE_BUF, friendlyByteBuf);
+        var value = codec.decode(BLibCodecs.Schema.BYTE_BUF, friendlyByteBuf);
 
         // 5. Store the value
         set(dataSyncKey, value);
@@ -121,7 +121,7 @@ public class DataContainer implements NBTSerializable {
                 var value = get(key);
                 var friendlyByteBuf = new FriendlyByteBuf(Unpooled.buffer());
 
-                codec.encode(StreamCodecSchemas.BYTE_BUF, friendlyByteBuf, value);
+                codec.encode(BLibCodecs.Schema.BYTE_BUF, friendlyByteBuf, value);
 
                 return Map.entry(id, ByteBufUtil.getBytes(friendlyByteBuf));
             })

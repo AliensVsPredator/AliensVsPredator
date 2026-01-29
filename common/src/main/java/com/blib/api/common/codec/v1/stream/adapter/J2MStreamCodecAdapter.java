@@ -4,7 +4,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.NotNull;
 
-import com.blib.api.common.codec.v1.stream.schema.StreamCodecSchemas;
+import com.blib.api.common.codec.v1.BLibCodecs;
 
 public class J2MStreamCodecAdapter<A> implements StreamCodec<FriendlyByteBuf, A> {
 
@@ -16,11 +16,11 @@ public class J2MStreamCodecAdapter<A> implements StreamCodec<FriendlyByteBuf, A>
 
     @Override
     public @NotNull A decode(@NotNull FriendlyByteBuf byteBuf) {
-        return streamCodec.decode(StreamCodecSchemas.BYTE_BUF, byteBuf);
+        return streamCodec.decode(BLibCodecs.Schema.BYTE_BUF, byteBuf);
     }
 
     @Override
     public void encode(@NotNull FriendlyByteBuf o, @NotNull A a) {
-        streamCodec.encode(StreamCodecSchemas.BYTE_BUF, o, a);
+        streamCodec.encode(BLibCodecs.Schema.BYTE_BUF, o, a);
     }
 }

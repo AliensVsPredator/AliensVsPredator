@@ -28,7 +28,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
-import com.blib.api.common.codec.v1.stream.adapter.J2MStreamCodecAdapter;
+import com.blib.api.common.codec.v1.BLibCodecs;
 import com.blib.api.common.entity.v1.spawning.BLibEntitySpawnData;
 import com.blib.api.common.mod.v1.BLibMod;
 import com.blib.api.common.network.v1.NetworkHandler;
@@ -109,7 +109,7 @@ public class BLibFabricRegistryServiceImpl implements BLibRegistryService {
     public <T extends CustomPacketPayload> void registerPacketDirection(BLibMod mod, PacketDirection<T> packetDirection) {
         var handleClient = false;
         var handleServer = false;
-        var codec = new J2MStreamCodecAdapter<>(packetDirection.codec());
+        var codec = BLibCodecs.Stream.toMinecraft(packetDirection.codec());
         var type = packetDirection.type();
 
         switch (packetDirection) {

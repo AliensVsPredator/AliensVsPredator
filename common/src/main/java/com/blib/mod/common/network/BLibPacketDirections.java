@@ -1,6 +1,6 @@
 package com.blib.mod.common.network;
 
-import com.blib.api.common.codec.v1.stream.adapter.M2JStreamCodecAdapter;
+import com.blib.api.common.codec.v1.BLibCodecs;
 import com.blib.api.common.network.v1.PacketDirection;
 import com.blib.api.common.registry.v1.impl.BLibNetworkRegistry;
 import com.blib.mod.BLib;
@@ -19,19 +19,19 @@ public class BLibPacketDirections {
         REGISTRY.registerPacketDirection(
             new PacketDirection.S2C<>(
                 S2CBlockEntityDispatchCommandPayload.TYPE,
-                new M2JStreamCodecAdapter<>(S2CBlockEntityDispatchCommandPayload.CODEC)
+                BLibCodecs.Stream.fromMinecraft(S2CBlockEntityDispatchCommandPayload.CODEC)
             )
         );
         REGISTRY.registerPacketDirection(
             new PacketDirection.S2C<>(
                 S2CEntityDispatchCommandPayload.TYPE,
-                new M2JStreamCodecAdapter<>(S2CEntityDispatchCommandPayload.CODEC)
+                BLibCodecs.Stream.fromMinecraft(S2CEntityDispatchCommandPayload.CODEC)
             )
         );
         REGISTRY.registerPacketDirection(
             new PacketDirection.S2C<>(
                 S2CItemStackDispatchCommandPayload.TYPE,
-                new M2JStreamCodecAdapter<>(S2CItemStackDispatchCommandPayload.CODEC)
+                BLibCodecs.Stream.fromMinecraft(S2CItemStackDispatchCommandPayload.CODEC)
             )
         );
     }

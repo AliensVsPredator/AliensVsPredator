@@ -10,12 +10,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import com.blib.api.common.codec.v1.impl.MojangCodecs;
+import com.blib.api.common.codec.v1.BLibCodecs;
 
 public class EntityReserves {
 
     public static final Codec<EntityReserves> CODEC = Codec.unboundedMap(
-        MojangCodecs.ENTITY_TYPE,
+        BLibCodecs.ENTITY_TYPE,
         Codecs.INT
     )
         .xmap(

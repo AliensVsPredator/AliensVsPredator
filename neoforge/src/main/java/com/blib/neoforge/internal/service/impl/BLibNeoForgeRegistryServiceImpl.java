@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import com.blib.api.BLibAPI;
-import com.blib.api.common.codec.v1.stream.adapter.J2MStreamCodecAdapter;
+import com.blib.api.common.codec.v1.BLibCodecs;
 import com.blib.api.common.entity.v1.spawning.BLibEntitySpawnData;
 import com.blib.api.common.event.v1.BLibCommonSetupEvent;
 import com.blib.api.common.mod.v1.BLibMod;
@@ -181,12 +181,12 @@ public class BLibNeoForgeRegistryServiceImpl implements BLibRegistryService {
                     switch (typedNetworkHandler) {
                         case NetworkHandler.FromClient<CustomPacketPayload> handler -> registrar.playToServer(
                             handler.type(),
-                            new J2MStreamCodecAdapter<>(handler.codec()),
+                            BLibCodecs.Stream.toMinecraft(handler.codec()),
                             (payload, context) -> context.enqueueWork(() -> handler.payloadConsumer().accept(payload, context.player()))
                         );
                         case NetworkHandler.FromEither<CustomPacketPayload> handler -> registrar.playBidirectional(
                             handler.type(),
-                            new J2MStreamCodecAdapter<>(handler.codec()),
+                            BLibCodecs.Stream.toMinecraft(handler.codec()),
                             new DirectionalPayloadHandler<>(
                                 (payload, context) -> context.enqueueWork(
                                     () -> handler.fromServerPayloadConsumer().accept(payload, context.player())
@@ -198,7 +198,7 @@ public class BLibNeoForgeRegistryServiceImpl implements BLibRegistryService {
                         );
                         case NetworkHandler.FromServer<CustomPacketPayload> handler -> registrar.playToClient(
                             handler.type(),
-                            new J2MStreamCodecAdapter<>(handler.codec()),
+                            BLibCodecs.Stream.toMinecraft(handler.codec()),
                             (payload, context) -> context.enqueueWork(() -> handler.payloadConsumer().accept(payload, context.player()))
                         );
                     }
