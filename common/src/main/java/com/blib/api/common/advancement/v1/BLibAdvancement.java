@@ -4,11 +4,23 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public record BLibAdvancementAccess(
-    String modId,
-    String group,
-    String path
-) {
+public class BLibAdvancement {
+
+    private final String modId;
+
+    private final String group;
+
+    private final String path;
+
+    public BLibAdvancement(
+        String modId,
+        String group,
+        String path
+    ) {
+        this.modId = modId;
+        this.group = group;
+        this.path = path;
+    }
 
     public ResourceLocation getResourceLocation() {
         return ResourceLocation.fromNamespaceAndPath(modId, group + "/" + path);
