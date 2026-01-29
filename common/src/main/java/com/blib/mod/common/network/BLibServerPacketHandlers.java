@@ -29,7 +29,7 @@ public class BLibServerPacketHandlers {
         REGISTRY.registerPacketHandler(
             new NetworkHandler.FromServer<>(
                 S2CBlockEntityDispatchCommandPayload.TYPE,
-                BLibCodecs.Stream.fromMinecraft(S2CBlockEntityDispatchCommandPayload.CODEC),
+                BLibCodecs.Stream.fromMojang(S2CBlockEntityDispatchCommandPayload.CODEC),
                 BLibClientListener::handleBlockEntityDispatchCommand
             )
         );
@@ -37,7 +37,7 @@ public class BLibServerPacketHandlers {
         REGISTRY.registerPacketHandler(
             new NetworkHandler.FromServer<>(
                 S2CEntityDispatchCommandPayload.TYPE,
-                BLibCodecs.Stream.fromMinecraft(S2CEntityDispatchCommandPayload.CODEC),
+                BLibCodecs.Stream.fromMojang(S2CEntityDispatchCommandPayload.CODEC),
                 BLibClientListener::handleEntityDispatchCommand
             )
         );
@@ -45,7 +45,7 @@ public class BLibServerPacketHandlers {
         REGISTRY.registerPacketHandler(
             new NetworkHandler.FromServer<>(
                 S2CItemStackDispatchCommandPayload.TYPE,
-                BLibCodecs.Stream.fromMinecraft(S2CItemStackDispatchCommandPayload.CODEC),
+                BLibCodecs.Stream.fromMojang(S2CItemStackDispatchCommandPayload.CODEC),
                 BLibClientListener::handleItemStackDispatchCommand
             )
         );

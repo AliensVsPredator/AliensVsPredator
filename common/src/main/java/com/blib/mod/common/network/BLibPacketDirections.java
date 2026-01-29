@@ -19,19 +19,19 @@ public class BLibPacketDirections {
         REGISTRY.registerPacketDirection(
             new PacketDirection.S2C<>(
                 S2CBlockEntityDispatchCommandPayload.TYPE,
-                BLibCodecs.Stream.fromMinecraft(S2CBlockEntityDispatchCommandPayload.CODEC)
+                BLibCodecs.Stream.fromMojang(S2CBlockEntityDispatchCommandPayload.CODEC)
             )
         );
         REGISTRY.registerPacketDirection(
             new PacketDirection.S2C<>(
                 S2CEntityDispatchCommandPayload.TYPE,
-                BLibCodecs.Stream.fromMinecraft(S2CEntityDispatchCommandPayload.CODEC)
+                BLibCodecs.Stream.fromMojang(S2CEntityDispatchCommandPayload.CODEC)
             )
         );
         REGISTRY.registerPacketDirection(
             new PacketDirection.S2C<>(
                 S2CItemStackDispatchCommandPayload.TYPE,
-                BLibCodecs.Stream.fromMinecraft(S2CItemStackDispatchCommandPayload.CODEC)
+                BLibCodecs.Stream.fromMojang(S2CItemStackDispatchCommandPayload.CODEC)
             )
         );
     }

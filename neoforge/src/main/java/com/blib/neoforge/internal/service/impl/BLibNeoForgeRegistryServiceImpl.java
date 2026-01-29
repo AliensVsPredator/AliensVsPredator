@@ -181,12 +181,12 @@ public class BLibNeoForgeRegistryServiceImpl implements BLibRegistryService {
                     switch (typedNetworkHandler) {
                         case NetworkHandler.FromClient<CustomPacketPayload> handler -> registrar.playToServer(
                             handler.type(),
-                            BLibCodecs.Stream.toMinecraft(handler.codec()),
+                            BLibCodecs.Stream.toMojang(handler.codec()),
                             (payload, context) -> context.enqueueWork(() -> handler.payloadConsumer().accept(payload, context.player()))
                         );
                         case NetworkHandler.FromEither<CustomPacketPayload> handler -> registrar.playBidirectional(
                             handler.type(),
-                            BLibCodecs.Stream.toMinecraft(handler.codec()),
+                            BLibCodecs.Stream.toMojang(handler.codec()),
                             new DirectionalPayloadHandler<>(
                                 (payload, context) -> context.enqueueWork(
                                     () -> handler.fromServerPayloadConsumer().accept(payload, context.player())
@@ -198,7 +198,7 @@ public class BLibNeoForgeRegistryServiceImpl implements BLibRegistryService {
                         );
                         case NetworkHandler.FromServer<CustomPacketPayload> handler -> registrar.playToClient(
                             handler.type(),
-                            BLibCodecs.Stream.toMinecraft(handler.codec()),
+                            BLibCodecs.Stream.toMojang(handler.codec()),
                             (payload, context) -> context.enqueueWork(() -> handler.payloadConsumer().accept(payload, context.player()))
                         );
                     }

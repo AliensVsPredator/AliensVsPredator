@@ -109,7 +109,7 @@ public class BLibFabricRegistryServiceImpl implements BLibRegistryService {
     public <T extends CustomPacketPayload> void registerPacketDirection(BLibMod mod, PacketDirection<T> packetDirection) {
         var handleClient = false;
         var handleServer = false;
-        var codec = BLibCodecs.Stream.toMinecraft(packetDirection.codec());
+        var codec = BLibCodecs.Stream.toMojang(packetDirection.codec());
         var type = packetDirection.type();
 
         switch (packetDirection) {
