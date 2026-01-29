@@ -7,7 +7,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProc
 
 public class BLibStructureProcessorListKeys {
 
-    public static final ResourceKey<StructureProcessorList> EMPTY_PROCESSOR_LIST_KEY = ResourceKey.create(
+    public static final ResourceKey<StructureProcessorList> EMPTY = ResourceKey.create(
         Registries.PROCESSOR_LIST,
         ResourceLocation.withDefaultNamespace("empty")
     );
