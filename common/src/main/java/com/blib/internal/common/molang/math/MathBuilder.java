@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.blib.azurelib.core.math.functions.classic.*;
-import com.blib.azurelib.core.math.functions.utility.*;
 import com.blib.internal.common.exception.AzureLibException;
 import com.blib.internal.common.molang.math.functions.Function;
 import com.blib.internal.common.molang.math.functions.classic.ACos;

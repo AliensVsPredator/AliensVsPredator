@@ -1,4 +1,4 @@
-package com.blib.api.common.entity.v1.manager;
+package com.blib.api.common.entity.v1.vibration;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Mob;
@@ -7,9 +7,6 @@ import net.minecraft.world.level.gameevent.vibrations.VibrationSystem;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiConsumer;
-
-import com.blib.azurelib.common.vibration.AzureTicker;
-import com.blib.azurelib.common.vibration.AzureVibrationUser;
 
 public class VibrationSystemManager implements VibrationSystem {
 
