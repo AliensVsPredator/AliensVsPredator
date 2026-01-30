@@ -18,7 +18,7 @@
     "MixinRegistry_ApplyDataFixes",
     "MixinShapedRecipeBuilder_Accessor",
     "MixinShapelessRecipeBuilder_Accessor",
-    "StructurePoolAccessor",
+    "MixinStructureTemplatePool_Accessor",
     "server.MixinServerLevel_BlockBreakProgressManager"
   ],
   "client": [

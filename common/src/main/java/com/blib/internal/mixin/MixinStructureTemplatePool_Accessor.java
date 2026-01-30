@@ -10,16 +10,21 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 import java.util.List;
 
+import com.blib.api.common.worldgen.v1.StructureTemplatePoolAccessor;
+
 @Mixin(StructureTemplatePool.class)
-public interface StructurePoolAccessor {
+public interface MixinStructureTemplatePool_Accessor extends StructureTemplatePoolAccessor {
 
     @Accessor(value = "templates")
+    @Override
     ObjectArrayList<StructurePoolElement> getElements();
 
     @Accessor(value = "rawTemplates")
+    @Override
     List<Pair<StructurePoolElement, Integer>> getElementCounts();
 
     @Accessor(value = "rawTemplates")
     @Mutable
+    @Override
     void setElementCounts(List<Pair<StructurePoolElement, Integer>> list);
 }
