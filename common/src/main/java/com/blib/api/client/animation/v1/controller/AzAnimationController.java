@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.blib.api.client.animation.v1.animator.AzAnimator;
+import com.blib.api.client.animation.v1.command.sequence.AzAnimationSequence;
 import com.blib.api.client.animation.v1.keyframe.AzKeyframeCallbacks;
 import com.blib.internal.client.animation.controller.AzAbstractAnimationController;
 import com.blib.internal.client.animation.controller.AzAnimationControllerTimer;
@@ -22,7 +23,6 @@ import com.blib.internal.client.animation.controller.state.impl.AzAnimationStopS
 import com.blib.internal.client.animation.controller.state.impl.AzAnimationTransitionState;
 import com.blib.internal.client.animation.controller.state.machine.AzAnimationControllerStateMachine;
 import com.blib.internal.client.animation.dispatch.AzDispatchSide;
-import com.blib.internal.client.animation.dispatch.command.sequence.AzAnimationSequence;
 import com.blib.internal.client.animation.primitive.AzQueuedAnimation;
 import com.blib.internal.client.animation.property.AzAnimationProperties;
 

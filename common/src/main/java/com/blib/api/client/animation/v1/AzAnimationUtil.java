@@ -2,9 +2,9 @@ package com.blib.api.client.animation.v1;
 
 import java.util.List;
 
+import com.blib.api.client.animation.v1.command.AzCommand;
 import com.blib.api.client.animation.v1.command.play_behavior.AzPlayBehavior;
 import com.blib.api.client.animation.v1.command.play_behavior.AzPlayBehaviors;
-import com.blib.internal.client.animation.dispatch.command.AzCommand;
 
 public class AzAnimationUtil {
 

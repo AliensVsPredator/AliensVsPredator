@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-import com.blib.internal.client.animation.dispatch.command.AzCommand;
+import com.blib.api.client.animation.v1.command.AzCommand;
 import com.blib.mod.BLib;
 
 public record S2CItemStackDispatchCommandPayload(

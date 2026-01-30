@@ -1,7 +1,8 @@
-package com.blib.internal.client.animation.dispatch.command;
+package com.blib.api.client.animation.v1.command;
 
 import java.util.function.UnaryOperator;
 
+import com.blib.api.client.animation.v1.command.sequence.AzAnimationSequenceBuilder;
 import com.blib.internal.client.animation.dispatch.command.action.impl.controller.AzControllerCancelAction;
 import com.blib.internal.client.animation.dispatch.command.action.impl.controller.AzControllerPlayAnimationSequenceAction;
 import com.blib.internal.client.animation.dispatch.command.action.impl.controller.AzControllerSetAnimationSpeedAction;
@@ -11,7 +12,6 @@ import com.blib.internal.client.animation.dispatch.command.action.impl.controlle
 import com.blib.internal.client.animation.dispatch.command.action.impl.controller.AzControllerSetReverseAction;
 import com.blib.internal.client.animation.dispatch.command.action.impl.controller.AzControllerSetStartTickOffsetAction;
 import com.blib.internal.client.animation.dispatch.command.action.impl.controller.AzControllerSetTransitionSpeedAction;
-import com.blib.internal.client.animation.dispatch.command.sequence.AzAnimationSequenceBuilder;
 import com.blib.internal.client.animation.easing.AzEasingType;
 
 public class AzControllerCommandBuilder extends AzCommandBuilder {

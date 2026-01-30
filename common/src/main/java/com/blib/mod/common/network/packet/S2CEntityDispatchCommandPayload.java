@@ -7,7 +7,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-import com.blib.internal.client.animation.dispatch.command.AzCommand;
+import com.blib.api.client.animation.v1.command.AzCommand;
 import com.blib.mod.BLib;
 
 public record S2CEntityDispatchCommandPayload(

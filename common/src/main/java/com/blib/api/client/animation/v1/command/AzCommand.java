@@ -1,4 +1,4 @@
-package com.blib.internal.client.animation.dispatch.command;
+package com.blib.api.client.animation.v1.command;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;

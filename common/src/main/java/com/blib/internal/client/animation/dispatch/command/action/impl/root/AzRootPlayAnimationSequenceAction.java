@@ -5,9 +5,9 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 
 import com.blib.api.client.animation.v1.animator.AzAnimator;
+import com.blib.api.client.animation.v1.command.sequence.AzAnimationSequence;
 import com.blib.internal.client.animation.dispatch.AzDispatchSide;
 import com.blib.internal.client.animation.dispatch.command.action.AzAction;
-import com.blib.internal.client.animation.dispatch.command.sequence.AzAnimationSequence;
 import com.blib.mod.BLib;
 
 public record AzRootPlayAnimationSequenceAction(

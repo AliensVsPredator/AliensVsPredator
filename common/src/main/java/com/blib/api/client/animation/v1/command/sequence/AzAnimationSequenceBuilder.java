@@ -1,4 +1,4 @@
-package com.blib.internal.client.animation.dispatch.command.sequence;
+package com.blib.api.client.animation.v1.command.sequence;
 
 import java.util.ArrayList;
 import java.util.List;

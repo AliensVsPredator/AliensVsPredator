@@ -1,7 +1,8 @@
-package com.blib.internal.client.animation.dispatch.command;
+package com.blib.api.client.animation.v1.command;
 
 import java.util.function.UnaryOperator;
 
+import com.blib.api.client.animation.v1.command.sequence.AzAnimationSequenceBuilder;
 import com.blib.internal.client.animation.dispatch.command.action.impl.root.AzRootCancelAllAction;
 import com.blib.internal.client.animation.dispatch.command.action.impl.root.AzRootPlayAnimationSequenceAction;
 import com.blib.internal.client.animation.dispatch.command.action.impl.root.AzRootSetAnimationSpeedAction;
@@ -11,7 +12,6 @@ import com.blib.internal.client.animation.dispatch.command.action.impl.root.AzRo
 import com.blib.internal.client.animation.dispatch.command.action.impl.root.AzRootSetReverseAction;
 import com.blib.internal.client.animation.dispatch.command.action.impl.root.AzRootSetStartTickOffsetAction;
 import com.blib.internal.client.animation.dispatch.command.action.impl.root.AzRootSetTransitionSpeedAction;
-import com.blib.internal.client.animation.dispatch.command.sequence.AzAnimationSequenceBuilder;
 import com.blib.internal.client.animation.easing.AzEasingType;
 
 public class AzRootCommandBuilder extends AzCommandBuilder {
