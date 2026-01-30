@@ -1,4 +1,4 @@
-package com.blib.internal.common.model;
+package com.blib.api.common.spatial.v1;
 
 public enum Axis {
     X,

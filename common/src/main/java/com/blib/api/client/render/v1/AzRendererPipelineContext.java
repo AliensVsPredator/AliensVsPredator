@@ -14,8 +14,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 import com.blib.api.client.model.v1.AzBakedModel;
+import com.blib.api.common.color.v1.Color;
 import com.blib.internal.client.render.util.RenderUtil;
-import com.blib.internal.common.model.Color;
 
 public abstract class AzRendererPipelineContext<K, T> {
 

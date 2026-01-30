@@ -5,10 +5,10 @@ import java.util.NoSuchElementException;
 
 import com.blib.api.client.animation.v1.controller.AzAnimationController;
 import com.blib.api.client.model.v1.AzBone;
+import com.blib.api.common.spatial.v1.Axis;
 import com.blib.internal.client.animation.controller.AzBoneAnimationQueueCache;
 import com.blib.internal.client.animation.controller.AzBoneSnapshotCache;
 import com.blib.internal.client.model.AzBoneSnapshot;
-import com.blib.internal.common.model.Axis;
 import com.blib.internal.common.molang.MolangParser;
 import com.blib.internal.common.molang.MolangQueries;
 import com.blib.internal.common.molang.math.IValue;

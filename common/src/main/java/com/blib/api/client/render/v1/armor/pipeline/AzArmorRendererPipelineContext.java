@@ -16,7 +16,7 @@ import java.util.UUID;
 import com.blib.api.client.render.v1.AzRendererPipeline;
 import com.blib.api.client.render.v1.AzRendererPipelineContext;
 import com.blib.api.client.render.v1.armor.model.bone.AzArmorBoneContext;
-import com.blib.internal.common.model.Color;
+import com.blib.api.common.color.v1.Color;
 
 public class AzArmorRendererPipelineContext extends AzRendererPipelineContext<UUID, ItemStack> {
 

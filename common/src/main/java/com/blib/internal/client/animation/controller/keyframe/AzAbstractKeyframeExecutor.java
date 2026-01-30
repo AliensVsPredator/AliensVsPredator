@@ -2,7 +2,7 @@ package com.blib.internal.client.animation.controller.keyframe;
 
 import java.util.List;
 
-import com.blib.internal.common.model.Axis;
+import com.blib.api.common.spatial.v1.Axis;
 import com.blib.internal.common.molang.math.Constant;
 import com.blib.internal.common.molang.math.IValue;
 

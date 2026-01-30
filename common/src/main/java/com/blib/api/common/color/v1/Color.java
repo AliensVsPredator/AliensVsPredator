@@ -1,4 +1,4 @@
-package com.blib.internal.common.model;
+package com.blib.api.common.color.v1;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;

@@ -25,8 +25,8 @@ import com.blib.api.client.model.v1.AzBone;
 import com.blib.api.client.registry.v1.AzArmorRendererRegistry;
 import com.blib.api.client.render.v1.AzRendererPipelineContext;
 import com.blib.api.client.render.v1.armor.AzArmorRenderer;
+import com.blib.api.common.color.v1.Color;
 import com.blib.internal.client.render.util.RenderUtil;
-import com.blib.internal.common.model.Color;
 
 public class AzArmorLayer<T extends LivingEntity> implements AzRenderLayer<UUID, T> {
 
