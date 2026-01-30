@@ -20,7 +20,7 @@ import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-import com.blib.internal.client.model.AzBone;
+import com.blib.api.client.model.v1.AzBone;
 import com.blib.internal.client.model.GeoCube;
 import com.blib.mod.BLib;
 

@@ -6,11 +6,11 @@ import org.joml.Vector3f;
 
 import java.util.UUID;
 
+import com.blib.api.client.model.v1.AzBone;
 import com.blib.api.client.render.v1.AzLayerRenderer;
 import com.blib.api.client.render.v1.AzModelRenderer;
 import com.blib.api.client.render.v1.AzRendererPipelineContext;
 import com.blib.api.client.render.v1.armor.pipeline.AzArmorRendererPipeline;
-import com.blib.internal.client.model.AzBone;
 import com.blib.internal.client.render.util.RenderUtil;
 
 public class AzArmorModelRenderer extends AzModelRenderer<UUID, ItemStack> {

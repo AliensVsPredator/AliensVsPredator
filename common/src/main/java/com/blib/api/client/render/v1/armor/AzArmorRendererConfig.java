@@ -13,6 +13,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.blib.api.client.animation.v1.animator.AzAnimator;
+import com.blib.api.client.model.v1.AzBone;
 import com.blib.api.client.render.v1.AzLayerRenderer;
 import com.blib.api.client.render.v1.AzModelRenderer;
 import com.blib.api.client.render.v1.AzRendererConfig;
@@ -24,7 +25,6 @@ import com.blib.api.client.render.v1.armor.model.bone.AzDefaultArmorBoneProvider
 import com.blib.api.client.render.v1.armor.pipeline.AzArmorRendererPipeline;
 import com.blib.api.client.render.v1.armor.pipeline.AzArmorRendererPipelineContext;
 import com.blib.api.client.render.v1.layer.AzRenderLayer;
-import com.blib.internal.client.model.AzBone;
 
 public class AzArmorRendererConfig extends AzRendererConfig<UUID, ItemStack> {
 

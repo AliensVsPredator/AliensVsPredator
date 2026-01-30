@@ -12,11 +12,11 @@ import org.joml.Matrix4f;
 
 import java.util.UUID;
 
+import com.blib.api.client.model.v1.AzBone;
 import com.blib.api.client.render.v1.AzLayerRenderer;
 import com.blib.api.client.render.v1.AzModelRenderer;
 import com.blib.api.client.render.v1.AzRendererPipelineContext;
 import com.blib.api.client.render.v1.entity.pipeline.AzEntityRendererPipeline;
-import com.blib.internal.client.model.AzBone;
 import com.blib.internal.client.render.util.RenderUtil;
 
 public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUID, T> {

@@ -1,9 +1,9 @@
 package com.blib.internal.client.animation;
 
+import com.blib.api.client.model.v1.AzBone;
 import com.blib.internal.client.animation.controller.keyframe.AzBoneAnimationQueue;
 import com.blib.internal.client.animation.easing.AzEasingType;
 import com.blib.internal.client.animation.easing.AzEasingUtil;
-import com.blib.internal.client.model.AzBone;
 import com.blib.internal.client.model.AzBoneSnapshot;
 
 public class AzBoneAnimationUpdateUtil {

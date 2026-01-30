@@ -12,6 +12,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.blib.api.client.animation.v1.animator.AzAnimator;
+import com.blib.api.client.model.v1.AzBone;
 import com.blib.api.client.render.v1.AzLayerRenderer;
 import com.blib.api.client.render.v1.AzModelRenderer;
 import com.blib.api.client.render.v1.AzRendererConfig;
@@ -21,7 +22,6 @@ import com.blib.api.client.render.v1.entity.model.AzEntityModelRenderer;
 import com.blib.api.client.render.v1.entity.pipeline.AzEntityRendererPipeline;
 import com.blib.api.client.render.v1.entity.pipeline.AzEntityRendererPipelineContext;
 import com.blib.api.client.render.v1.layer.AzRenderLayer;
-import com.blib.internal.client.model.AzBone;
 
 public class AzEntityRendererConfig<T extends Entity> extends AzRendererConfig<UUID, T> {
 

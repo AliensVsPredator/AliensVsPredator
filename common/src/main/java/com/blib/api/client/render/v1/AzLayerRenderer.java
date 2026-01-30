@@ -3,8 +3,8 @@ package com.blib.api.client.render.v1;
 import java.util.Collection;
 import java.util.function.Supplier;
 
+import com.blib.api.client.model.v1.AzBone;
 import com.blib.api.client.render.v1.layer.AzRenderLayer;
-import com.blib.internal.client.model.AzBone;
 
 public class AzLayerRenderer<K, T> {
 

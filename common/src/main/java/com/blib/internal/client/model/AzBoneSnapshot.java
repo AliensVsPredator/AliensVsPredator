@@ -2,6 +2,8 @@ package com.blib.internal.client.model;
 
 import org.joml.Vector3f;
 
+import com.blib.api.client.model.v1.AzBone;
+
 public class AzBoneSnapshot {
 
     private final AzBone bone;

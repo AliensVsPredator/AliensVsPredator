@@ -2,7 +2,7 @@ package com.blib.internal.client.animation;
 
 import java.util.Map;
 
-import com.blib.internal.client.model.AzBone;
+import com.blib.api.client.model.v1.AzBone;
 import com.blib.internal.client.model.AzBoneSnapshot;
 
 public class AzCachedBoneUpdateUtil {

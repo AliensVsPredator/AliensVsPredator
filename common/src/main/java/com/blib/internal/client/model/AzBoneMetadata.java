@@ -2,6 +2,8 @@ package com.blib.internal.client.model;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.blib.api.client.model.v1.AzBone;
+
 public record AzBoneMetadata(
     @Nullable Boolean dontRender,
     @Nullable Double inflate,

@@ -3,7 +3,7 @@ package com.blib.internal.client.animation.controller.keyframe;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import com.blib.internal.client.model.AzBone;
+import com.blib.api.client.model.v1.AzBone;
 import com.blib.internal.client.model.AzBoneSnapshot;
 import com.blib.mod.BLib;
 

@@ -12,9 +12,9 @@ import net.minecraft.world.item.armortrim.ArmorTrim;
 import java.util.UUID;
 import java.util.function.Function;
 
+import com.blib.api.client.model.v1.AzBone;
 import com.blib.api.client.render.v1.AzRendererPipelineContext;
 import com.blib.api.client.render.v1.armor.pipeline.AzArmorRendererPipelineContext;
-import com.blib.internal.client.model.AzBone;
 
 public class AzArmorTrimLayer implements AzRenderLayer<UUID, ItemStack> {
 

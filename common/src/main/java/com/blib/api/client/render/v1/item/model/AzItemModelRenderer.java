@@ -8,13 +8,13 @@ import java.util.UUID;
 
 import com.blib.api.BLibAPI;
 import com.blib.api.client.animation.v1.controller.AzAnimationController;
+import com.blib.api.client.model.v1.AzBone;
 import com.blib.api.client.render.v1.AzLayerRenderer;
 import com.blib.api.client.render.v1.AzModelRenderer;
 import com.blib.api.client.render.v1.AzRendererPipelineContext;
 import com.blib.api.client.render.v1.item.AzItemRendererConfig;
 import com.blib.api.client.render.v1.item.pipeline.AzItemRendererPipeline;
 import com.blib.api.client.render.v1.item.pipeline.AzItemRendererPipelineContext;
-import com.blib.internal.client.model.AzBone;
 import com.blib.internal.client.render.item.AzItemArmRenderUtil;
 import com.blib.internal.client.render.util.RenderUtil;
 

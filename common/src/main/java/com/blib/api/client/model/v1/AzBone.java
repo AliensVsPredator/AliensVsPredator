@@ -1,4 +1,4 @@
-package com.blib.internal.client.model;
+package com.blib.api.client.model.v1;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.joml.Matrix3f;
@@ -9,6 +9,10 @@ import org.joml.Vector4f;
 
 import java.util.List;
 import java.util.Objects;
+
+import com.blib.internal.client.model.AzBoneMetadata;
+import com.blib.internal.client.model.AzBoneSnapshot;
+import com.blib.internal.client.model.GeoCube;
 
 public class AzBone {
 
