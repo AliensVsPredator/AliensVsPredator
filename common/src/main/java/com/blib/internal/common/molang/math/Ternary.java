@@ -1,0 +1,26 @@
+package com.blib.internal.common.molang.math;
+
+public class Ternary implements IValue {
+
+    public final IValue condition;
+
+    public final IValue ifTrue;
+
+    public final IValue ifFalse;
+
+    public Ternary(IValue condition, IValue ifTrue, IValue ifFalse) {
+        this.condition = condition;
+        this.ifTrue = ifTrue;
+        this.ifFalse = ifFalse;
+    }
+
+    @Override
+    public double get() {
+        return this.condition.get() != 0 ? this.ifTrue.get() : this.ifFalse.get();
+    }
+
+    @Override
+    public String toString() {
+        return this.condition.toString() + " ? " + this.ifTrue.toString() + " : " + this.ifFalse.toString();
+    }
+}

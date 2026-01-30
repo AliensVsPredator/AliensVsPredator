@@ -5,8 +5,8 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-import com.blib.azurelib.common.animation.AzAnimator;
-import com.blib.azurelib.common.animation.AzAnimatorAccessor;
+import com.blib.api.client.animation.v1.animator.AzAnimator;
+import com.blib.internal.client.animation.AzAnimatorAccessor;
 
 @Mixin(BlockEntity.class)
 public abstract class BlockEntityMixin_AzBlockEntityAnimatorCache implements AzAnimatorAccessor<Long, BlockEntity> {

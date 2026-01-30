@@ -1,13 +1,13 @@
 package com.blib.mod.common.network;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.api.common.data_sync.v1.model.DataUser;
-import com.blib.azurelib.common.animation.AzAnimatorAccessor;
-import com.blib.azurelib.common.animation.cache.AzIdentifiableItemStackAnimatorCache;
-import com.blib.azurelib.common.animation.dispatch.AzDispatchSide;
-import com.blib.azurelib.common.util.client.ClientUtils;
+import com.blib.internal.client.animation.AzAnimatorAccessor;
+import com.blib.internal.client.animation.cache.AzIdentifiableItemStackAnimatorCache;
+import com.blib.internal.client.animation.dispatch.AzDispatchSide;
 import com.blib.mod.common.network.packet.S2CBlockEntityDispatchCommandPayload;
 import com.blib.mod.common.network.packet.S2CEntityDataSyncPayload;
 import com.blib.mod.common.network.packet.S2CEntityDispatchCommandPayload;
@@ -21,7 +21,7 @@ public final class BLibClientListener {
         Player player
     ) {
         var blockPos = blockEntityDispatchCommandPayload.blockPos();
-        var blockEntity = ClientUtils.getLevel().getBlockEntity(blockPos);
+        var blockEntity = Minecraft.getInstance().level.getBlockEntity(blockPos);
 
         if (blockEntity == null) {
             return;
@@ -50,7 +50,7 @@ public final class BLibClientListener {
     }
 
     public static void handleEntityDispatchCommand(S2CEntityDispatchCommandPayload entityDispatchCommandPayload, Player player) {
-        var entity = ClientUtils.getLevel().getEntity(entityDispatchCommandPayload.entityId());
+        var entity = Minecraft.getInstance().level.getEntity(entityDispatchCommandPayload.entityId());
 
         if (entity == null) {
             return;

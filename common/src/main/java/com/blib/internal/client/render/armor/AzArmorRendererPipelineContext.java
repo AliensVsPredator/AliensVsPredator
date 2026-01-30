@@ -1,0 +1,101 @@
+package com.blib.internal.client.render.armor;
+
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.DyedItemColor;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.UUID;
+
+import com.blib.internal.client.render.AzRendererPipeline;
+import com.blib.internal.client.render.AzRendererPipelineContext;
+import com.blib.internal.client.render.armor.bone.AzArmorBoneContext;
+import com.blib.internal.common.model.Color;
+
+public class AzArmorRendererPipelineContext extends AzRendererPipelineContext<UUID, ItemStack> {
+
+    private final AzArmorBoneContext boneContext;
+
+    private HumanoidModel<?> baseModel;
+
+    private EquipmentSlot currentSlot;
+
+    private ItemStack currentStack;
+
+    private boolean translucent = false;
+
+    public AzArmorRendererPipelineContext(AzRendererPipeline<UUID, ItemStack> rendererPipeline) {
+        super(rendererPipeline);
+        this.baseModel = null;
+        this.boneContext = new AzArmorBoneContext();
+        this.currentEntity = null;
+        this.currentSlot = null;
+        this.currentStack = null;
+    }
+
+    @Override
+    public RenderType getDefaultRenderType(
+        ItemStack animatable,
+        ResourceLocation texture,
+        @Nullable MultiBufferSource bufferSource,
+        float partialTick,
+        RenderType defaultRenderType,
+        float alpha
+    ) {
+        return translucent
+            ? RenderType.itemEntityTranslucentCull(texture)
+            : defaultRenderType;
+    }
+
+    public void prepare(
+        @Nullable Entity entity,
+        ItemStack stack,
+        @Nullable EquipmentSlot slot,
+        @Nullable HumanoidModel<?> baseModel
+    ) {
+        this.baseModel = baseModel;
+        this.currentEntity = entity;
+        this.currentStack = stack;
+        this.animatable = stack;
+        this.currentSlot = slot;
+    }
+
+    public void setTranslucent(boolean translucent) {
+        this.translucent = translucent;
+    }
+
+    @Override
+    public Color getRenderColor(ItemStack animatable, float partialTick, int packedLight) {
+        return this.currentStack.is(ItemTags.DYEABLE)
+            ? Color.ofOpaque(
+                DyedItemColor.getOrDefault(this.currentStack, -6265536)
+            )
+            : Color.WHITE;
+    }
+
+    public HumanoidModel<?> baseModel() {
+        return baseModel;
+    }
+
+    public AzArmorBoneContext boneContext() {
+        return boneContext;
+    }
+
+    public Entity currentEntity() {
+        return currentEntity;
+    }
+
+    public EquipmentSlot currentSlot() {
+        return currentSlot;
+    }
+
+    public ItemStack currentStack() {
+        return currentStack;
+    }
+}

@@ -9,8 +9,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 import com.blib.api.common.registry.v1.impl.BLibReloadListenerRegistry;
-import com.blib.azurelib.common.animation.cache.AzBakedAnimationCache;
-import com.blib.azurelib.common.model.cache.AzBakedModelCache;
+import com.blib.internal.client.animation.cache.AzBakedAnimationCache;
+import com.blib.internal.client.model.AzBakedModelCache;
 import com.blib.mod.BLib;
 
 public class BLibReloadListeners {

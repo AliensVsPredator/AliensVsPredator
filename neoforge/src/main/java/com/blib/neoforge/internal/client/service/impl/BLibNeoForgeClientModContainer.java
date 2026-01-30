@@ -32,9 +32,9 @@ import com.blib.api.client.event.v1.BLibClientSetupEvent;
 import com.blib.api.client.event.v1.impl.BLibClientSetupEvents;
 import com.blib.api.client.input.v1.model.KeyInteractType;
 import com.blib.api.client.mod.v1.BLibClientMod;
+import com.blib.api.client.render.v1.armor.AzArmorRenderer;
+import com.blib.api.client.render.v1.item.AzItemRenderer;
 import com.blib.api.common.event.v1.handle.impl.BLibEventListenerContainer;
-import com.blib.azurelib.common.render.armor.AzArmorRenderer;
-import com.blib.azurelib.common.render.item.AzItemRenderer;
 
 @ApiStatus.Internal
 public class BLibNeoForgeClientModContainer {

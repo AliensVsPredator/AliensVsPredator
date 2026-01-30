@@ -6,11 +6,11 @@ import org.spongepowered.asm.mixin.Mixin;
 
 import java.util.UUID;
 
-import com.blib.azurelib.common.animation.AzAnimator;
-import com.blib.azurelib.common.animation.AzAnimatorAccessor;
-import com.blib.azurelib.common.animation.cache.AzIdentifiableItemStackAnimatorCache;
-import com.blib.azurelib.common.animation.impl.AzItemAnimator;
-import com.blib.azurelib.common.util.AzureLibUtil;
+import com.blib.api.client.animation.v1.animator.AzAnimator;
+import com.blib.api.client.animation.v1.animator.AzItemAnimator;
+import com.blib.internal.client.animation.AzAnimatorAccessor;
+import com.blib.internal.client.animation.cache.AzIdentifiableItemStackAnimatorCache;
+import com.blib.internal.common.util.AzureLibUtil;
 import com.blib.mod.common.registry.init.BLibDataComponents;
 
 @Mixin(ItemStack.class)

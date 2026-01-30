@@ -10,8 +10,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.UUID;
 
-import com.blib.azurelib.common.animation.cache.AzIdentityRegistry;
-import com.blib.azurelib.common.util.AzureLibUtil;
+import com.blib.api.client.animation.v1.identity.AzIdentityRegistry;
+import com.blib.internal.common.util.AzureLibUtil;
 import com.blib.mod.common.registry.init.BLibDataComponents;
 
 @Mixin(ItemStack.class)

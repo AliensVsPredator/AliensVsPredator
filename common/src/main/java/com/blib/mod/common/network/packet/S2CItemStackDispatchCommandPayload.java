@@ -9,17 +9,16 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-import com.blib.azurelib.AzureLib;
-import com.blib.azurelib.common.animation.dispatch.command.AzCommand;
+import com.blib.internal.client.animation.dispatch.command.AzCommand;
+import com.blib.mod.BLib;
 
 public record S2CItemStackDispatchCommandPayload(
     UUID itemStackId,
     AzCommand dispatchCommand
 ) implements CustomPacketPayload {
 
-    private static final ResourceLocation AZ_ITEM_STACK_DISPATCH_COMMAND_SYNC_PACKET_ID = AzureLib.modResource(
-        "az_item_stack_dispatch_command_sync"
-    );
+    private static final ResourceLocation AZ_ITEM_STACK_DISPATCH_COMMAND_SYNC_PACKET_ID = BLib.MOD.resources()
+        .createLocation("az_item_stack_dispatch_command_sync");
 
     public static final Type<S2CItemStackDispatchCommandPayload> TYPE = new Type<>(
         AZ_ITEM_STACK_DISPATCH_COMMAND_SYNC_PACKET_ID

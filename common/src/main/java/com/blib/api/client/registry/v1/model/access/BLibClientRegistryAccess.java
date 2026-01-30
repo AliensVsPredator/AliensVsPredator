@@ -30,8 +30,8 @@ import java.util.function.Supplier;
 
 import com.blib.api.client.input.v1.model.KeyInteractType;
 import com.blib.api.client.mod.v1.BLibClientMod;
-import com.blib.azurelib.common.render.armor.AzArmorRenderer;
-import com.blib.azurelib.common.render.item.AzItemRenderer;
+import com.blib.api.client.render.v1.armor.AzArmorRenderer;
+import com.blib.api.client.render.v1.item.AzItemRenderer;
 import com.blib.internal.client.service.BLibInternalClientServices;
 
 public class BLibClientRegistryAccess {

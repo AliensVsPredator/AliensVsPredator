@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.blib.azurelib.common.render.armor.AzArmorRendererRegistry;
+import com.blib.api.client.registry.v1.AzArmorRendererRegistry;
 
 @Mixin(ClientHooks.class)
 public class ClientHooksMixin {

@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
-import com.blib.azurelib.common.animation.cache.AzIdentityRegistry;
+import com.blib.api.client.animation.v1.identity.AzIdentityRegistry;
 import com.blib.mod.common.registry.init.BLibDataComponents;
 
 @Mixin(AbstractContainerMenu.class)

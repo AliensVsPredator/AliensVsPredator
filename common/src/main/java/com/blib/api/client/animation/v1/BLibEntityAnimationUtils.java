@@ -3,7 +3,7 @@ package com.blib.api.client.animation.v1;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 
-import com.blib.azurelib.common.animation.AzAnimationContext;
+import com.blib.internal.client.animation.AzAnimationContext;
 
 public class BLibEntityAnimationUtils {
 

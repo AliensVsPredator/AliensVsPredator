@@ -7,8 +7,8 @@ import org.spongepowered.asm.mixin.Unique;
 
 import java.util.UUID;
 
-import com.blib.azurelib.common.animation.AzAnimator;
-import com.blib.azurelib.common.animation.AzAnimatorAccessor;
+import com.blib.api.client.animation.v1.animator.AzAnimator;
+import com.blib.internal.client.animation.AzAnimatorAccessor;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin_AzEntityAnimatorCache implements AzAnimatorAccessor<UUID, Entity> {
