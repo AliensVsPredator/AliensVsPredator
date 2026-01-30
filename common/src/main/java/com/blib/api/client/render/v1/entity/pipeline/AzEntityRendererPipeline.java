@@ -15,8 +15,8 @@ import com.blib.api.client.render.v1.AzRendererPipelineContext;
 import com.blib.api.client.render.v1.entity.AzEntityRenderer;
 import com.blib.api.client.render.v1.entity.AzEntityRendererConfig;
 import com.blib.api.client.render.v1.entity.layer.AzEntityLayerRenderer;
+import com.blib.api.client.texture.v1.AnimatableTexture;
 import com.blib.internal.client.render.entity.AzEntityLeashRenderUtil;
-import com.blib.internal.client.texture.AnimatableTexture;
 
 public class AzEntityRendererPipeline<T extends Entity> extends AzRendererPipeline<UUID, T> {
 

@@ -7,7 +7,7 @@ import net.minecraft.world.entity.Entity;
 
 import com.blib.api.client.model.v1.AzBone;
 import com.blib.api.client.render.v1.AzRendererPipelineContext;
-import com.blib.internal.client.texture.AzAbstractTexture;
+import com.blib.api.client.texture.v1.AzAbstractTexture;
 
 public class AzAutoGlowingLayer<K, T> implements AzRenderLayer<K, T> {
 

@@ -10,7 +10,7 @@ import com.blib.api.client.render.v1.AzRendererPipeline;
 import com.blib.api.client.render.v1.AzRendererPipelineContext;
 import com.blib.api.client.render.v1.block.AzBlockEntityRenderer;
 import com.blib.api.client.render.v1.block.AzBlockEntityRendererConfig;
-import com.blib.internal.client.texture.AnimatableTexture;
+import com.blib.api.client.texture.v1.AnimatableTexture;
 
 public class AzBlockEntityRendererPipeline<T extends BlockEntity> extends AzRendererPipeline<Long, T> {
 

@@ -1,4 +1,4 @@
-package com.blib.internal.client.texture;
+package com.blib.api.client.texture.v1;
 
 import com.mojang.blaze3d.pipeline.RenderCall;
 import com.mojang.blaze3d.platform.NativeImage;
@@ -22,8 +22,8 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
+import com.blib.api.client.texture.v1.util.Frame;
 import com.blib.internal.client.render.util.RenderUtil;
-import com.blib.internal.client.texture.util.Frame;
 import com.blib.mod.BLib;
 
 public class AnimatableTexture extends SimpleTexture {

@@ -19,9 +19,9 @@ import com.blib.api.client.render.v1.armor.AzArmorRenderer;
 import com.blib.api.client.render.v1.armor.AzArmorRendererConfig;
 import com.blib.api.client.render.v1.armor.model.AzArmorModel;
 import com.blib.api.client.render.v1.armor.model.bone.AzArmorBoneContext;
+import com.blib.api.client.texture.v1.AnimatableTexture;
 import com.blib.internal.client.animation.AzAnimatorAccessor;
 import com.blib.internal.client.render.armor.compat.ShoulderSurfingCompat;
-import com.blib.internal.client.texture.AnimatableTexture;
 
 public class AzArmorRendererPipeline extends AzRendererPipeline<UUID, ItemStack> {
 

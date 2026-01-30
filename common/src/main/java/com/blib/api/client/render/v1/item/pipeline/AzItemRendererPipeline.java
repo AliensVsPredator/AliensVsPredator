@@ -13,7 +13,7 @@ import com.blib.api.client.render.v1.AzRendererPipelineContext;
 import com.blib.api.client.render.v1.item.AzItemRenderer;
 import com.blib.api.client.render.v1.item.AzItemRendererConfig;
 import com.blib.api.client.render.v1.item.model.AzItemModelRenderer;
-import com.blib.internal.client.texture.AnimatableTexture;
+import com.blib.api.client.texture.v1.AnimatableTexture;
 
 public class AzItemRendererPipeline extends AzRendererPipeline<UUID, ItemStack> {
 

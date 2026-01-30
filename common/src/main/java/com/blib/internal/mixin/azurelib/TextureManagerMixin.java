@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Map;
 
-import com.blib.internal.client.texture.AnimatableTexture;
+import com.blib.api.client.texture.v1.AnimatableTexture;
 
 @Mixin(value = TextureManager.class, priority = 900)
 public abstract class TextureManagerMixin {

@@ -1,4 +1,4 @@
-package com.blib.internal.client.texture;
+package com.blib.api.client.texture.v1;
 
 import com.mojang.blaze3d.pipeline.RenderCall;
 import com.mojang.blaze3d.platform.GlStateManager;
