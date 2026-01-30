@@ -16,6 +16,7 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
+import com.blib.api.client.model.v1.AzBakedModel;
 import com.blib.internal.common.io.ResourceFileLoader;
 import com.blib.internal.common.io.util.JsonUtil;
 import com.blib.mod.BLib;

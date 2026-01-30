@@ -5,7 +5,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.EquipmentSlot;
 import org.jetbrains.annotations.Nullable;
 
-import com.blib.internal.client.model.AzBakedModel;
+import com.blib.api.client.model.v1.AzBakedModel;
 import com.blib.internal.client.model.AzBone;
 import com.blib.internal.client.render.util.RenderUtil;
 

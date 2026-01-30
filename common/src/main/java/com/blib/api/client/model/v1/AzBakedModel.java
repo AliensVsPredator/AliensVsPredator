@@ -1,8 +1,10 @@
-package com.blib.internal.client.model;
+package com.blib.api.client.model.v1;
 
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+
+import com.blib.internal.client.model.AzBone;
 
 public class AzBakedModel {
 

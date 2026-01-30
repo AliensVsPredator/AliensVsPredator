@@ -2,6 +2,7 @@ package com.blib.internal.client.animation;
 
 import net.minecraft.client.Minecraft;
 
+import com.blib.api.client.animation.v1.animator.AzAnimatorConfig;
 import com.blib.internal.client.render.util.RenderUtil;
 
 public class AzAnimationTimer {

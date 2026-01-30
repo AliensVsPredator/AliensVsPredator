@@ -7,7 +7,6 @@ import net.minecraft.world.entity.LivingEntity;
 
 import java.util.UUID;
 
-import com.blib.internal.client.animation.AzAnimatorConfig;
 import com.blib.internal.client.render.util.RenderUtil;
 import com.blib.internal.common.molang.MolangParser;
 import com.blib.internal.common.molang.MolangQueries;

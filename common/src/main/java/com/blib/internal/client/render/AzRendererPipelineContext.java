@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-import com.blib.internal.client.model.AzBakedModel;
+import com.blib.api.client.model.v1.AzBakedModel;
 import com.blib.internal.client.render.util.RenderUtil;
 import com.blib.internal.common.model.Color;
 

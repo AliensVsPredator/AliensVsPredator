@@ -2,7 +2,7 @@ package com.blib.internal.client.render.armor.bone;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.blib.internal.client.model.AzBakedModel;
+import com.blib.api.client.model.v1.AzBakedModel;
 import com.blib.internal.client.model.AzBone;
 
 public class AzDefaultArmorBoneProvider implements AzArmorBoneProvider {

@@ -3,6 +3,7 @@ package com.blib.internal.client.model;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.phys.Vec3;
 
+import com.blib.api.client.model.v1.AzBakedModel;
 import com.blib.internal.client.render.util.RenderUtil;
 
 public final class AzBuiltinBakedModelFactory extends AzBakedModelFactory {

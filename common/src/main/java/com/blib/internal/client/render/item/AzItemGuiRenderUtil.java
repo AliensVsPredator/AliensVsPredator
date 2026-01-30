@@ -8,8 +8,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.item.ItemStack;
 
+import com.blib.api.client.model.v1.AzBakedModel;
 import com.blib.api.client.render.v1.item.AzItemRendererConfig;
-import com.blib.internal.client.model.AzBakedModel;
 
 public class AzItemGuiRenderUtil {
 

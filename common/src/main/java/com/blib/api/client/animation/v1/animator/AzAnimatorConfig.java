@@ -1,4 +1,4 @@
-package com.blib.internal.client.animation;
+package com.blib.api.client.animation.v1.animator;
 
 public record AzAnimatorConfig(
     double boneResetTime,

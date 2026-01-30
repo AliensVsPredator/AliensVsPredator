@@ -4,9 +4,9 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import java.util.Map;
 
+import com.blib.api.client.model.v1.AzBakedModel;
 import com.blib.internal.client.animation.AzAnimationContext;
 import com.blib.internal.client.animation.AzCachedBoneUpdateUtil;
-import com.blib.internal.client.model.AzBakedModel;
 import com.blib.internal.client.model.AzBone;
 import com.blib.internal.client.model.AzBoneSnapshot;
 

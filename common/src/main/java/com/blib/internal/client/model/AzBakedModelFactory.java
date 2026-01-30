@@ -4,6 +4,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
+import com.blib.api.client.model.v1.AzBakedModel;
+
 public abstract class AzBakedModelFactory {
 
     public abstract AzBakedModel constructGeoModel(GeometryTree geometryTree);

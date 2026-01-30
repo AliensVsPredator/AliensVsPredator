@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 import com.blib.api.client.animation.v1.animator.AzItemAnimator;
-import com.blib.internal.client.model.AzBakedModel;
+import com.blib.api.client.model.v1.AzBakedModel;
 import com.blib.internal.client.render.AzProvider;
 import com.blib.internal.client.render.AzRendererConfig;
 import com.blib.internal.client.render.armor.AzArmorRendererPipeline;

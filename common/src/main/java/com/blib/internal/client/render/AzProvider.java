@@ -10,8 +10,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.blib.api.client.animation.v1.animator.AzAnimator;
+import com.blib.api.client.model.v1.AzBakedModel;
 import com.blib.internal.client.animation.AzAnimatorAccessor;
-import com.blib.internal.client.model.AzBakedModel;
 import com.blib.internal.client.model.AzBakedModelCache;
 
 public class AzProvider<K, T> {

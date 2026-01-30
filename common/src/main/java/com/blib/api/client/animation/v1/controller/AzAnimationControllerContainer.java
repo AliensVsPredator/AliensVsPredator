@@ -1,12 +1,10 @@
-package com.blib.internal.client.animation.controller;
+package com.blib.api.client.animation.v1.controller;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Map;
-
-import com.blib.api.client.animation.v1.controller.AzAnimationController;
 
 public class AzAnimationControllerContainer<T> {
 

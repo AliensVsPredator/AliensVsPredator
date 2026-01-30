@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import org.jetbrains.annotations.Nullable;
 
-import com.blib.internal.client.model.AzBakedModel;
+import com.blib.api.client.model.v1.AzBakedModel;
 
 public abstract class AzRendererPipeline<K, T> implements AzPhasedRenderer<K, T> {
 
