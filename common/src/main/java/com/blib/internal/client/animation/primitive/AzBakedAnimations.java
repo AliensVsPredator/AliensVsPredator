@@ -19,7 +19,7 @@ public record AzBakedAnimations(
         if (result == null && includes != null) {
             ResourceLocation otherFileID = includes.getOrDefault(name, null);
             if (otherFileID != null) {
-                AzBakedAnimations otherBakedAnims = AzBakedAnimationCache.getInstance().getNullable(otherFileID);
+                AzBakedAnimations otherBakedAnims = AzBakedAnimationCache.getInstance().getOrNull(otherFileID);
                 if (otherBakedAnims.equals(this)) {
                     throw new AzureLibException(
                         "The animation file '" + otherFileID +

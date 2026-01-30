@@ -35,7 +35,7 @@ public class AzProvider<K, T> {
     public @Nullable AzBakedModel provideBakedModel(@Nullable Entity entity, @NotNull T animatable) {
         // Always have a safe fallback
         var modelLocation = modelLocationProvider.apply(entity, animatable);
-        var shared = AzBakedModelCache.getInstance().getNullable(modelLocation);
+        var shared = AzBakedModelCache.getInstance().getOrNull(modelLocation);
 
         if (shared == null) {
             return AzBakedModel.getDefault();
@@ -74,7 +74,7 @@ public class AzProvider<K, T> {
 
                 // Install a deep-copied model into the bone cache BEFORE controllers
                 var modelLocation = modelLocationProvider.apply(entity, animatable);
-                var shared = AzBakedModelCache.getInstance().getNullable(modelLocation);
+                var shared = AzBakedModelCache.getInstance().getOrNull(modelLocation);
                 if (shared != null) {
                     ctx.boneCache().setActiveModel(shared); // setActiveModel deep-copies internally
                 }

@@ -111,7 +111,7 @@ public abstract class AzAnimator<K, T> {
 
     public AzBakedAnimation getAnimation(T animatable, String name) {
         var location = getAnimationLocation(animatable);
-        var bakedAnimations = AzBakedAnimationCache.getInstance().getNullable(location);
+        var bakedAnimations = AzBakedAnimationCache.getInstance().getOrNull(location);
 
         return bakedAnimations.getAnimation(name);
     }
