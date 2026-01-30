@@ -1,4 +1,4 @@
-package com.blib.internal.client.render.entity;
+package com.blib.api.client.render.v1.entity.pipeline;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;

@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 
 import com.blib.api.client.model.v1.AzBakedModel;
 import com.blib.api.client.render.v1.item.AzItemRendererConfig;
+import com.blib.api.client.render.v1.item.pipeline.AzItemRendererPipeline;
 
 public class AzItemGuiRenderUtil {
 

@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.UUID;
 
+import com.blib.api.client.render.v1.item.pipeline.AzItemRendererPipelineContext;
 import com.blib.internal.client.model.AzBone;
 import com.blib.internal.client.render.AzModelRenderer;
 import com.blib.internal.client.render.AzRendererPipelineContext;

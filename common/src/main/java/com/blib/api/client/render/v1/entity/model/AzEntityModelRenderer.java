@@ -1,4 +1,4 @@
-package com.blib.internal.client.render.entity;
+package com.blib.api.client.render.v1.entity.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -12,6 +12,7 @@ import org.joml.Matrix4f;
 
 import java.util.UUID;
 
+import com.blib.api.client.render.v1.entity.pipeline.AzEntityRendererPipeline;
 import com.blib.internal.client.model.AzBone;
 import com.blib.internal.client.render.AzLayerRenderer;
 import com.blib.internal.client.render.AzModelRenderer;
@@ -67,7 +68,7 @@ public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUI
             }
         }
 
-        entityRendererPipeline.modelRenderTranslations.set(poseStack.last().pose());
+        entityRendererPipeline.getModelRenderTranslations().set(poseStack.last().pose());
 
         if (context.vertexConsumer() != null) {
             super.render(context, isReRender);
@@ -93,11 +94,11 @@ public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUI
             Matrix4f poseState = new Matrix4f(poseStack.last().pose());
             Matrix4f localMatrix = RenderUtil.invertAndMultiplyMatrices(
                 poseState,
-                entityRendererPipeline.entityRenderTranslations
+                entityRendererPipeline.getEntityRenderTranslations()
             );
 
             bone.setModelSpaceMatrix(
-                RenderUtil.invertAndMultiplyMatrices(poseState, entityRendererPipeline.modelRenderTranslations)
+                RenderUtil.invertAndMultiplyMatrices(poseState, entityRendererPipeline.getModelRenderTranslations())
             );
             bone.setLocalSpaceMatrix(
                 RenderUtil.translateMatrix(

@@ -32,9 +32,9 @@ import java.util.function.Supplier;
 import com.blib.api.client.input.v1.model.KeyInteractType;
 import com.blib.api.client.mod.v1.BLibClientMod;
 import com.blib.api.client.registry.v1.AzArmorRendererRegistry;
+import com.blib.api.client.registry.v1.AzItemRendererRegistry;
 import com.blib.api.client.render.v1.armor.AzArmorRenderer;
 import com.blib.api.client.render.v1.item.AzItemRenderer;
-import com.blib.internal.client.render.item.AzItemRendererRegistry;
 
 @ApiStatus.Internal
 public interface BLibClientRegistryService {

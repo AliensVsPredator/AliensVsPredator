@@ -1,4 +1,4 @@
-package com.blib.internal.client.render.block;
+package com.blib.api.client.render.v1.block.pipeline;
 
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.joml.Matrix4f;
@@ -68,6 +68,18 @@ public class AzBlockEntityRendererPipeline<T extends BlockEntity> extends AzRend
     public void postRender(AzRendererPipelineContext<Long, T> context, boolean isReRender) {
         config.postRenderEntry(context);
         context.setTextureOverride(null);
+    }
+
+    public void setModelRenderTranslations(Matrix4f modelRenderTranslations) {
+        this.modelRenderTranslations = modelRenderTranslations;
+    }
+
+    public Matrix4f getEntityRenderTranslations() {
+        return entityRenderTranslations;
+    }
+
+    public Matrix4f getModelRenderTranslations() {
+        return modelRenderTranslations;
     }
 
     public AzBlockEntityRenderer<T> getRenderer() {

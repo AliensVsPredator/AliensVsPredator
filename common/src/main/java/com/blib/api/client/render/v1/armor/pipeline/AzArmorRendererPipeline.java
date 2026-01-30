@@ -1,4 +1,4 @@
-package com.blib.internal.client.render.armor;
+package com.blib.api.client.render.v1.armor.pipeline;
 
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -11,6 +11,8 @@ import java.util.UUID;
 
 import com.blib.api.client.render.v1.armor.AzArmorRenderer;
 import com.blib.api.client.render.v1.armor.AzArmorRendererConfig;
+import com.blib.api.client.render.v1.armor.model.AzArmorModel;
+import com.blib.api.client.render.v1.armor.model.bone.AzArmorBoneContext;
 import com.blib.internal.client.animation.AzAnimatorAccessor;
 import com.blib.internal.client.model.AzBone;
 import com.blib.internal.client.render.AzLayerRenderer;
@@ -18,7 +20,6 @@ import com.blib.internal.client.render.AzModelRenderer;
 import com.blib.internal.client.render.AzRendererConfig;
 import com.blib.internal.client.render.AzRendererPipeline;
 import com.blib.internal.client.render.AzRendererPipelineContext;
-import com.blib.internal.client.render.armor.bone.AzArmorBoneContext;
 import com.blib.internal.client.render.armor.compat.ShoulderSurfingCompat;
 import com.blib.internal.client.texture.AnimatableTexture;
 
@@ -193,6 +194,18 @@ public class AzArmorRendererPipeline extends AzRendererPipeline<UUID, ItemStack>
     @Override
     public AzArmorRendererPipelineContext context() {
         return (AzArmorRendererPipelineContext) super.context();
+    }
+
+    public void setModelRenderTranslations(Matrix4f modelRenderTranslations) {
+        this.modelRenderTranslations = modelRenderTranslations;
+    }
+
+    public Matrix4f getEntityRenderTranslations() {
+        return entityRenderTranslations;
+    }
+
+    public Matrix4f getModelRenderTranslations() {
+        return modelRenderTranslations;
     }
 
     public AzArmorRenderer renderer() {

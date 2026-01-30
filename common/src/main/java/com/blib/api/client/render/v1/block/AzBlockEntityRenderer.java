@@ -8,8 +8,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.blib.api.client.animation.v1.animator.AzBlockAnimator;
+import com.blib.api.client.render.v1.block.pipeline.AzBlockEntityRendererPipeline;
 import com.blib.internal.client.render.AzProvider;
-import com.blib.internal.client.render.block.AzBlockEntityRendererPipeline;
 
 public abstract class AzBlockEntityRenderer<T extends BlockEntity> implements BlockEntityRenderer<T> {
 

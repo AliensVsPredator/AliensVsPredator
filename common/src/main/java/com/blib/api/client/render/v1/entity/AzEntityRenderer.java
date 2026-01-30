@@ -13,9 +13,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 import com.blib.api.client.animation.v1.animator.AzEntityAnimator;
+import com.blib.api.client.render.v1.entity.pipeline.AzEntityRendererPipeline;
 import com.blib.internal.client.render.AzProvider;
 import com.blib.internal.client.render.entity.AzEntityNameRenderUtil;
-import com.blib.internal.client.render.entity.AzEntityRendererPipeline;
 
 public abstract class AzEntityRenderer<T extends Entity> extends EntityRenderer<T> {
 

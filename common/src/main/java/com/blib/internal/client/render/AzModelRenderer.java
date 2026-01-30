@@ -12,10 +12,10 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import com.blib.api.client.animation.v1.animator.AzAnimator;
+import com.blib.api.client.render.v1.item.pipeline.AzItemRendererPipelineContext;
 import com.blib.internal.client.model.AzBone;
 import com.blib.internal.client.model.GeoCube;
 import com.blib.internal.client.model.GeoQuad;
-import com.blib.internal.client.render.item.AzItemRendererPipelineContext;
 import com.blib.internal.client.render.util.RenderUtil;
 
 public class AzModelRenderer<K, T> {

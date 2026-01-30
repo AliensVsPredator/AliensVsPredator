@@ -1,4 +1,4 @@
-package com.blib.internal.client.render.block;
+package com.blib.api.client.render.v1.block.model;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -12,6 +12,7 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
+import com.blib.api.client.render.v1.block.pipeline.AzBlockEntityRendererPipeline;
 import com.blib.internal.client.model.AzBone;
 import com.blib.internal.client.render.AzLayerRenderer;
 import com.blib.internal.client.render.AzModelRenderer;
@@ -46,7 +47,7 @@ public class AzBlockEntityModelRenderer<T extends BlockEntity> extends AzModelRe
             }
         }
 
-        blockEntityRendererPipeline.modelRenderTranslations = new Matrix4f(poseStack.last().pose());
+        blockEntityRendererPipeline.setModelRenderTranslations(new Matrix4f(poseStack.last().pose()));
 
         var textureLocation = blockEntityRendererPipeline.config().textureLocation(context.currentEntity(), entity);
         RenderSystem.setShaderTexture(0, textureLocation);
@@ -70,11 +71,11 @@ public class AzBlockEntityModelRenderer<T extends BlockEntity> extends AzModelRe
             Matrix4f poseState = new Matrix4f(poseStack.last().pose());
             Matrix4f localMatrix = RenderUtil.invertAndMultiplyMatrices(
                 poseState,
-                blockEntityRendererPipeline.entityRenderTranslations
+                blockEntityRendererPipeline.getEntityRenderTranslations()
             );
 
             bone.setModelSpaceMatrix(
-                RenderUtil.invertAndMultiplyMatrices(poseState, blockEntityRendererPipeline.modelRenderTranslations)
+                RenderUtil.invertAndMultiplyMatrices(poseState, blockEntityRendererPipeline.getModelRenderTranslations())
             );
             bone.setLocalSpaceMatrix(
                 RenderUtil.translateMatrix(localMatrix, Vec3.ZERO.toVector3f())

@@ -14,6 +14,9 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import com.blib.api.client.animation.v1.animator.AzAnimator;
+import com.blib.api.client.render.v1.item.model.AzItemModelRenderer;
+import com.blib.api.client.render.v1.item.pipeline.AzItemRendererPipeline;
+import com.blib.api.client.render.v1.item.pipeline.AzItemRendererPipelineContext;
 import com.blib.api.client.render.v1.layer.AzRenderLayer;
 import com.blib.internal.client.model.AzBone;
 import com.blib.internal.client.render.AzLayerRenderer;
@@ -21,9 +24,6 @@ import com.blib.internal.client.render.AzModelRenderer;
 import com.blib.internal.client.render.AzRendererConfig;
 import com.blib.internal.client.render.AzRendererPipeline;
 import com.blib.internal.client.render.AzRendererPipelineContext;
-import com.blib.internal.client.render.item.AzItemModelRenderer;
-import com.blib.internal.client.render.item.AzItemRendererPipeline;
-import com.blib.internal.client.render.item.AzItemRendererPipelineContext;
 
 public class AzItemRendererConfig extends AzRendererConfig<UUID, ItemStack> {
 

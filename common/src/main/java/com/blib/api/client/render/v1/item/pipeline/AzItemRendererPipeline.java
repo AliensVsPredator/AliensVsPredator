@@ -1,4 +1,4 @@
-package com.blib.internal.client.render.item;
+package com.blib.api.client.render.v1.item.pipeline;
 
 import net.minecraft.world.item.ItemStack;
 import org.joml.Matrix4f;
@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 
 import com.blib.api.client.render.v1.item.AzItemRenderer;
 import com.blib.api.client.render.v1.item.AzItemRendererConfig;
+import com.blib.api.client.render.v1.item.model.AzItemModelRenderer;
 import com.blib.internal.client.render.AzLayerRenderer;
 import com.blib.internal.client.render.AzRendererConfig;
 import com.blib.internal.client.render.AzRendererPipeline;
@@ -90,6 +91,18 @@ public class AzItemRendererPipeline extends AzRendererPipeline<UUID, ItemStack> 
     @Override
     public void updateAnimatedTextureFrame(ItemStack animatable) {
         AnimatableTexture.setAndUpdate(config.textureLocation(context().currentEntity(), animatable));
+    }
+
+    public void setModelRenderTranslations(Matrix4f modelRenderTranslations) {
+        this.modelRenderTranslations = modelRenderTranslations;
+    }
+
+    public Matrix4f getItemRenderTranslations() {
+        return itemRenderTranslations;
+    }
+
+    public Matrix4f getModelRenderTranslations() {
+        return modelRenderTranslations;
     }
 
     public AzItemRenderer getRenderer() {

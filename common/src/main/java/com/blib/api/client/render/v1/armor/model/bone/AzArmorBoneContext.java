@@ -1,4 +1,4 @@
-package com.blib.internal.client.render.armor.bone;
+package com.blib.api.client.render.v1.armor.model.bone;
 
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;

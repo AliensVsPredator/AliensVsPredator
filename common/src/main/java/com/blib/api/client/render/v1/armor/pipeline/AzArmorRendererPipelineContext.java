@@ -1,4 +1,4 @@
-package com.blib.internal.client.render.armor;
+package com.blib.api.client.render.v1.armor.pipeline;
 
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -13,9 +13,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
+import com.blib.api.client.render.v1.armor.model.bone.AzArmorBoneContext;
 import com.blib.internal.client.render.AzRendererPipeline;
 import com.blib.internal.client.render.AzRendererPipelineContext;
-import com.blib.internal.client.render.armor.bone.AzArmorBoneContext;
 import com.blib.internal.common.model.Color;
 
 public class AzArmorRendererPipelineContext extends AzRendererPipelineContext<UUID, ItemStack> {

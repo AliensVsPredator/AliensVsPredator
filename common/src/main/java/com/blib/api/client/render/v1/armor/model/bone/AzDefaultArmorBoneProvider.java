@@ -1,4 +1,4 @@
-package com.blib.internal.client.render.armor.bone;
+package com.blib.api.client.render.v1.armor.model.bone;
 
 import org.jetbrains.annotations.Nullable;
 

@@ -1,4 +1,4 @@
-package com.blib.internal.client.render.armor;
+package com.blib.api.client.render.v1.armor.model;
 
 import net.minecraft.world.item.ItemStack;
 import org.joml.Matrix4f;
@@ -6,6 +6,7 @@ import org.joml.Vector3f;
 
 import java.util.UUID;
 
+import com.blib.api.client.render.v1.armor.pipeline.AzArmorRendererPipeline;
 import com.blib.internal.client.model.AzBone;
 import com.blib.internal.client.render.AzLayerRenderer;
 import com.blib.internal.client.render.AzModelRenderer;
@@ -41,7 +42,7 @@ public class AzArmorModelRenderer extends AzModelRenderer<UUID, ItemStack> {
             }
         }
 
-        armorRendererPipeline.modelRenderTranslations = new Matrix4f(poseStack.last().pose());
+        armorRendererPipeline.setModelRenderTranslations(new Matrix4f(poseStack.last().pose()));
 
         super.render(context, isReRender);
         poseStack.popPose();
@@ -58,11 +59,11 @@ public class AzArmorModelRenderer extends AzModelRenderer<UUID, ItemStack> {
             Matrix4f poseState = new Matrix4f(poseStack.last().pose());
             Matrix4f localMatrix = RenderUtil.invertAndMultiplyMatrices(
                 poseState,
-                armorRendererPipeline.entityRenderTranslations
+                armorRendererPipeline.getEntityRenderTranslations()
             );
 
             bone.setModelSpaceMatrix(
-                RenderUtil.invertAndMultiplyMatrices(poseState, armorRendererPipeline.modelRenderTranslations)
+                RenderUtil.invertAndMultiplyMatrices(poseState, armorRendererPipeline.getModelRenderTranslations())
             );
             bone.setLocalSpaceMatrix(RenderUtil.translateMatrix(localMatrix, new Vector3f()));
             bone.setWorldSpaceMatrix(

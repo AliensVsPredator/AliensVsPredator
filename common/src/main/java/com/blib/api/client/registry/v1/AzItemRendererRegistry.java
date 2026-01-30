@@ -1,4 +1,4 @@
-package com.blib.internal.client.render.item;
+package com.blib.api.client.registry.v1;
 
 import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.Nullable;

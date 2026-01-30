@@ -1,4 +1,4 @@
-package com.blib.internal.client.render.armor;
+package com.blib.api.client.render.v1.armor.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -10,6 +10,8 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import com.blib.api.client.render.v1.armor.pipeline.AzArmorRendererPipeline;
 
 public class AzArmorModel<E extends LivingEntity> extends HumanoidModel<E> {
 

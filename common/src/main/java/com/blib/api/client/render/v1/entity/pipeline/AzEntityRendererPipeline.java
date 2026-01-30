@@ -1,4 +1,4 @@
-package com.blib.internal.client.render.entity;
+package com.blib.api.client.render.v1.entity.pipeline;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
@@ -9,11 +9,13 @@ import java.util.UUID;
 
 import com.blib.api.client.render.v1.entity.AzEntityRenderer;
 import com.blib.api.client.render.v1.entity.AzEntityRendererConfig;
+import com.blib.api.client.render.v1.entity.layer.AzEntityLayerRenderer;
 import com.blib.internal.client.render.AzLayerRenderer;
 import com.blib.internal.client.render.AzModelRenderer;
 import com.blib.internal.client.render.AzRendererConfig;
 import com.blib.internal.client.render.AzRendererPipeline;
 import com.blib.internal.client.render.AzRendererPipelineContext;
+import com.blib.internal.client.render.entity.AzEntityLeashRenderUtil;
 import com.blib.internal.client.texture.AnimatableTexture;
 
 public class AzEntityRendererPipeline<T extends Entity> extends AzRendererPipeline<UUID, T> {
@@ -108,6 +110,18 @@ public class AzEntityRendererPipeline<T extends Entity> extends AzRendererPipeli
     @Override
     protected void doPostRenderCleanup(AzRendererPipelineContext<UUID, T> context) {
         context.setCurrentEntity(null);
+    }
+
+    public void setModelRenderTranslations(Matrix4f modelRenderTranslations) {
+        this.modelRenderTranslations = modelRenderTranslations;
+    }
+
+    public Matrix4f getEntityRenderTranslations() {
+        return entityRenderTranslations;
+    }
+
+    public Matrix4f getModelRenderTranslations() {
+        return modelRenderTranslations;
     }
 
     public AzEntityRenderer<T> getRenderer() {

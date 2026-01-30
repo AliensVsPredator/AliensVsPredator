@@ -1,4 +1,4 @@
-package com.blib.internal.client.render.item;
+package com.blib.api.client.render.v1.item.model;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
@@ -9,10 +9,13 @@ import java.util.UUID;
 import com.blib.api.BLibAPI;
 import com.blib.api.client.animation.v1.controller.AzAnimationController;
 import com.blib.api.client.render.v1.item.AzItemRendererConfig;
+import com.blib.api.client.render.v1.item.pipeline.AzItemRendererPipeline;
+import com.blib.api.client.render.v1.item.pipeline.AzItemRendererPipelineContext;
 import com.blib.internal.client.model.AzBone;
 import com.blib.internal.client.render.AzLayerRenderer;
 import com.blib.internal.client.render.AzModelRenderer;
 import com.blib.internal.client.render.AzRendererPipelineContext;
+import com.blib.internal.client.render.item.AzItemArmRenderUtil;
 import com.blib.internal.client.render.util.RenderUtil;
 
 public class AzItemModelRenderer extends AzModelRenderer<UUID, ItemStack> {
@@ -40,7 +43,7 @@ public class AzItemModelRenderer extends AzModelRenderer<UUID, ItemStack> {
 
         var poseStack = context.poseStack();
 
-        itemRendererPipeline.modelRenderTranslations = new Matrix4f(poseStack.last().pose());
+        itemRendererPipeline.setModelRenderTranslations(new Matrix4f(poseStack.last().pose()));
 
         super.render(context, isReRender);
     }
@@ -112,11 +115,11 @@ public class AzItemModelRenderer extends AzModelRenderer<UUID, ItemStack> {
             var poseState = new Matrix4f(poseStack.last().pose());
             var localMatrix = RenderUtil.invertAndMultiplyMatrices(
                 poseState,
-                itemRendererPipeline.itemRenderTranslations
+                itemRendererPipeline.getItemRenderTranslations()
             );
 
             bone.setModelSpaceMatrix(
-                RenderUtil.invertAndMultiplyMatrices(poseState, itemRendererPipeline.modelRenderTranslations)
+                RenderUtil.invertAndMultiplyMatrices(poseState, itemRendererPipeline.getModelRenderTranslations())
             );
             bone.setLocalSpaceMatrix(
                 RenderUtil.translateMatrix(localMatrix, getRenderOffset(animatable, 1).toVector3f())

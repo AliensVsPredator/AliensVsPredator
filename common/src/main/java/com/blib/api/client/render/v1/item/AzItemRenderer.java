@@ -13,10 +13,10 @@ import java.util.UUID;
 
 import com.blib.api.client.animation.v1.animator.AzItemAnimator;
 import com.blib.api.client.model.v1.AzBakedModel;
+import com.blib.api.client.render.v1.item.pipeline.AzItemRendererPipeline;
+import com.blib.api.client.render.v1.item.pipeline.AzItemRendererPipelineContext;
 import com.blib.internal.client.render.AzProvider;
 import com.blib.internal.client.render.item.AzItemGuiRenderUtil;
-import com.blib.internal.client.render.item.AzItemRendererPipeline;
-import com.blib.internal.client.render.item.AzItemRendererPipelineContext;
 import com.blib.mod.common.registry.init.BLibDataComponents;
 
 public abstract class AzItemRenderer {
