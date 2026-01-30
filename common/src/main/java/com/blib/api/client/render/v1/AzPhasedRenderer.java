@@ -1,4 +1,4 @@
-package com.blib.internal.client.render;
+package com.blib.api.client.render.v1;
 
 public interface AzPhasedRenderer<K, T> {
 

@@ -6,9 +6,9 @@ import java.util.Collection;
 import java.util.UUID;
 import java.util.function.Supplier;
 
+import com.blib.api.client.render.v1.AzLayerRenderer;
+import com.blib.api.client.render.v1.AzRendererPipelineContext;
 import com.blib.api.client.render.v1.layer.AzRenderLayer;
-import com.blib.internal.client.render.AzLayerRenderer;
-import com.blib.internal.client.render.AzRendererPipelineContext;
 
 public class AzEntityLayerRenderer<T extends Entity> extends AzLayerRenderer<UUID, T> {
 

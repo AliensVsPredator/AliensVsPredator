@@ -22,9 +22,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 import com.blib.api.client.registry.v1.AzArmorRendererRegistry;
+import com.blib.api.client.render.v1.AzRendererPipelineContext;
 import com.blib.api.client.render.v1.armor.AzArmorRenderer;
 import com.blib.internal.client.model.AzBone;
-import com.blib.internal.client.render.AzRendererPipelineContext;
 import com.blib.internal.client.render.util.RenderUtil;
 import com.blib.internal.common.model.Color;
 

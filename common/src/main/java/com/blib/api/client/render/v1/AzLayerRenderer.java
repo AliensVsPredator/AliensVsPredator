@@ -1,4 +1,4 @@
-package com.blib.internal.client.render;
+package com.blib.api.client.render.v1;
 
 import java.util.Collection;
 import java.util.function.Supplier;

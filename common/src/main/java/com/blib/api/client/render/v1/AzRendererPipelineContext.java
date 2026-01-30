@@ -1,4 +1,4 @@
-package com.blib.internal.client.render;
+package com.blib.api.client.render.v1;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;

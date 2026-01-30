@@ -12,16 +12,16 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.blib.api.client.animation.v1.animator.AzAnimator;
+import com.blib.api.client.render.v1.AzLayerRenderer;
+import com.blib.api.client.render.v1.AzModelRenderer;
+import com.blib.api.client.render.v1.AzRendererConfig;
+import com.blib.api.client.render.v1.AzRendererPipeline;
+import com.blib.api.client.render.v1.AzRendererPipelineContext;
 import com.blib.api.client.render.v1.block.model.AzBlockEntityModelRenderer;
 import com.blib.api.client.render.v1.block.pipeline.AzBlockEntityRendererPipeline;
 import com.blib.api.client.render.v1.block.pipeline.AzBlockEntityRendererPipelineContext;
 import com.blib.api.client.render.v1.layer.AzRenderLayer;
 import com.blib.internal.client.model.AzBone;
-import com.blib.internal.client.render.AzLayerRenderer;
-import com.blib.internal.client.render.AzModelRenderer;
-import com.blib.internal.client.render.AzRendererConfig;
-import com.blib.internal.client.render.AzRendererPipeline;
-import com.blib.internal.client.render.AzRendererPipelineContext;
 
 public class AzBlockEntityRendererConfig<T extends BlockEntity> extends AzRendererConfig<Long, T> {
 

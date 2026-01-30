@@ -1,7 +1,7 @@
 package com.blib.api.client.render.v1.layer;
 
+import com.blib.api.client.render.v1.AzRendererPipelineContext;
 import com.blib.internal.client.model.AzBone;
-import com.blib.internal.client.render.AzRendererPipelineContext;
 
 public interface AzRenderLayer<K, T> {
 

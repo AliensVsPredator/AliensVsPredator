@@ -6,8 +6,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
-import com.blib.internal.client.render.AzRendererPipeline;
-import com.blib.internal.client.render.AzRendererPipelineContext;
+import com.blib.api.client.render.v1.AzRendererPipeline;
+import com.blib.api.client.render.v1.AzRendererPipelineContext;
 
 public class AzBlockEntityRendererPipelineContext<T extends BlockEntity> extends AzRendererPipelineContext<Long, T> {
 

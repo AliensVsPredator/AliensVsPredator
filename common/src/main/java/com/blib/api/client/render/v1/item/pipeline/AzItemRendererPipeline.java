@@ -6,13 +6,13 @@ import org.joml.Matrix4f;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import com.blib.api.client.render.v1.AzLayerRenderer;
+import com.blib.api.client.render.v1.AzRendererConfig;
+import com.blib.api.client.render.v1.AzRendererPipeline;
+import com.blib.api.client.render.v1.AzRendererPipelineContext;
 import com.blib.api.client.render.v1.item.AzItemRenderer;
 import com.blib.api.client.render.v1.item.AzItemRendererConfig;
 import com.blib.api.client.render.v1.item.model.AzItemModelRenderer;
-import com.blib.internal.client.render.AzLayerRenderer;
-import com.blib.internal.client.render.AzRendererConfig;
-import com.blib.internal.client.render.AzRendererPipeline;
-import com.blib.internal.client.render.AzRendererPipelineContext;
 import com.blib.internal.client.texture.AnimatableTexture;
 
 public class AzItemRendererPipeline extends AzRendererPipeline<UUID, ItemStack> {

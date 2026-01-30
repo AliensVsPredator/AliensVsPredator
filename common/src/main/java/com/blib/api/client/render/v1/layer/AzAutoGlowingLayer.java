@@ -5,8 +5,8 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.entity.Entity;
 
+import com.blib.api.client.render.v1.AzRendererPipelineContext;
 import com.blib.internal.client.model.AzBone;
-import com.blib.internal.client.render.AzRendererPipelineContext;
 import com.blib.internal.client.texture.AzAbstractTexture;
 
 public class AzAutoGlowingLayer<K, T> implements AzRenderLayer<K, T> {

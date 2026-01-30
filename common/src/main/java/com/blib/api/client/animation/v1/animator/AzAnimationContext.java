@@ -1,6 +1,6 @@
-package com.blib.internal.client.animation;
+package com.blib.api.client.animation.v1.animator;
 
-import com.blib.api.client.animation.v1.animator.AzAnimatorConfig;
+import com.blib.internal.client.animation.AzAnimationTimer;
 import com.blib.internal.client.animation.cache.AzBoneCache;
 
 public class AzAnimationContext<T> {

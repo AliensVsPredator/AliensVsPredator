@@ -1,4 +1,4 @@
-package com.blib.internal.client.render;
+package com.blib.api.client.render.v1;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.renderer.RenderType;

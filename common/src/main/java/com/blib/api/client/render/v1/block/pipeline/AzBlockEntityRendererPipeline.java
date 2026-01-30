@@ -3,13 +3,13 @@ package com.blib.api.client.render.v1.block.pipeline;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.joml.Matrix4f;
 
+import com.blib.api.client.render.v1.AzLayerRenderer;
+import com.blib.api.client.render.v1.AzModelRenderer;
+import com.blib.api.client.render.v1.AzRendererConfig;
+import com.blib.api.client.render.v1.AzRendererPipeline;
+import com.blib.api.client.render.v1.AzRendererPipelineContext;
 import com.blib.api.client.render.v1.block.AzBlockEntityRenderer;
 import com.blib.api.client.render.v1.block.AzBlockEntityRendererConfig;
-import com.blib.internal.client.render.AzLayerRenderer;
-import com.blib.internal.client.render.AzModelRenderer;
-import com.blib.internal.client.render.AzRendererConfig;
-import com.blib.internal.client.render.AzRendererPipeline;
-import com.blib.internal.client.render.AzRendererPipelineContext;
 import com.blib.internal.client.texture.AnimatableTexture;
 
 public class AzBlockEntityRendererPipeline<T extends BlockEntity> extends AzRendererPipeline<Long, T> {

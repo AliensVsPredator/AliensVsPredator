@@ -10,9 +10,9 @@ import java.util.UUID;
 
 import com.blib.api.client.animation.v1.animator.AzItemAnimator;
 import com.blib.api.client.model.v1.AzBakedModel;
+import com.blib.api.client.render.v1.AzRendererConfig;
 import com.blib.api.client.render.v1.armor.pipeline.AzArmorRendererPipeline;
 import com.blib.internal.client.render.AzProvider;
-import com.blib.internal.client.render.AzRendererConfig;
 import com.blib.mod.common.registry.init.BLibDataComponents;
 
 public class AzArmorRenderer {

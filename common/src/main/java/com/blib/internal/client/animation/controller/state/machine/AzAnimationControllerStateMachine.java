@@ -1,7 +1,7 @@
 package com.blib.internal.client.animation.controller.state.machine;
 
+import com.blib.api.client.animation.v1.animator.AzAnimationContext;
 import com.blib.api.client.animation.v1.controller.AzAnimationController;
-import com.blib.internal.client.animation.AzAnimationContext;
 import com.blib.internal.client.animation.controller.state.AzAnimationState;
 import com.blib.internal.client.animation.controller.state.impl.AzAnimationPauseState;
 import com.blib.internal.client.animation.controller.state.impl.AzAnimationPlayState;

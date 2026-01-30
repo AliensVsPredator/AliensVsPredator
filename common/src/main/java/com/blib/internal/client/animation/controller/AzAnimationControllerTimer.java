@@ -1,7 +1,7 @@
 package com.blib.internal.client.animation.controller;
 
+import com.blib.api.client.animation.v1.animator.AzAnimationContext;
 import com.blib.api.client.animation.v1.controller.AzAnimationController;
-import com.blib.internal.client.animation.AzAnimationContext;
 import com.blib.internal.client.animation.controller.state.machine.AzAnimationControllerStateMachine;
 
 public class AzAnimationControllerTimer<T> {

@@ -11,8 +11,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-import com.blib.internal.client.render.AzRendererPipeline;
-import com.blib.internal.client.render.AzRendererPipelineContext;
+import com.blib.api.client.render.v1.AzRendererPipeline;
+import com.blib.api.client.render.v1.AzRendererPipelineContext;
 
 public class AzEntityRendererPipelineContext<T extends Entity> extends AzRendererPipelineContext<UUID, T> {
 

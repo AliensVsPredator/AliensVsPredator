@@ -9,17 +9,17 @@ import org.joml.Matrix4f;
 
 import java.util.UUID;
 
+import com.blib.api.client.render.v1.AzLayerRenderer;
+import com.blib.api.client.render.v1.AzModelRenderer;
+import com.blib.api.client.render.v1.AzRendererConfig;
+import com.blib.api.client.render.v1.AzRendererPipeline;
+import com.blib.api.client.render.v1.AzRendererPipelineContext;
 import com.blib.api.client.render.v1.armor.AzArmorRenderer;
 import com.blib.api.client.render.v1.armor.AzArmorRendererConfig;
 import com.blib.api.client.render.v1.armor.model.AzArmorModel;
 import com.blib.api.client.render.v1.armor.model.bone.AzArmorBoneContext;
 import com.blib.internal.client.animation.AzAnimatorAccessor;
 import com.blib.internal.client.model.AzBone;
-import com.blib.internal.client.render.AzLayerRenderer;
-import com.blib.internal.client.render.AzModelRenderer;
-import com.blib.internal.client.render.AzRendererConfig;
-import com.blib.internal.client.render.AzRendererPipeline;
-import com.blib.internal.client.render.AzRendererPipelineContext;
 import com.blib.internal.client.render.armor.compat.ShoulderSurfingCompat;
 import com.blib.internal.client.texture.AnimatableTexture;
 
