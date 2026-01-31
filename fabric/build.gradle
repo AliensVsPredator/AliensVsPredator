@@ -180,9 +180,6 @@ if (keyPropsFile.exists()) {
             requires {
                 slug = "fabric-api"
             }
-            requires {
-                slug = "azurelib"
-            }
         }
 
         modrinth {
@@ -192,9 +189,6 @@ if (keyPropsFile.exists()) {
             announcementTitle = "Download from Modrinth"
             requires {
                 slug = "fabric-api"
-            }
-            requires {
-                slug = "azurelib"
             }
         }
     }

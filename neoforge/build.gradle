@@ -170,9 +170,6 @@ if (keyPropsFile.exists()) {
             javaVersions.add(JavaVersion.VERSION_21)
             clientRequired = true
             serverRequired = true
-            requires {
-                slug = "azurelib"
-            }
         }
 
         modrinth {
@@ -180,9 +177,6 @@ if (keyPropsFile.exists()) {
             accessToken = releaseProp.getProperty('modrinthKey')
             minecraftVersions.add(project.minecraft_version)
             announcementTitle = "Download from Modrinth"
-            requires {
-                slug = "azurelib"
-            }
         }
     }
 }
