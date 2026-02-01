@@ -31,15 +31,19 @@ import java.util.function.Supplier;
 import com.blib.api.common.entity.v1.spawning.BLibEntitySpawnData;
 import com.blib.api.common.event.v1.BLibBlockBreakEvent;
 import com.blib.api.common.event.v1.BLibCommonSetupEvent;
+import com.blib.api.common.event.v1.BLibEntityTickEvent;
 import com.blib.api.common.event.v1.BLibLevelTickEvent;
 import com.blib.api.common.event.v1.BLibPlayerTrackingEntityEvent;
 import com.blib.api.common.event.v1.BLibServerLifecycleEvent;
 import com.blib.api.common.event.v1.BLibTagsUpdatedEvent;
+import com.blib.api.common.event.v1.handle.BLibEventListenerHandle;
+import com.blib.api.common.event.v1.handle.BLibGlobalOnlyEventHandle;
 import com.blib.api.common.event.v1.handle.impl.BLibEventListenerContainer;
 import com.blib.api.common.event.v1.impl.BLibCommonSetupEvents;
 import com.blib.api.common.mod.v1.BLibMod;
 import com.blib.api.common.network.v1.NetworkHandler;
 import com.blib.api.common.registry.v1.BLibHolder;
+import com.blib.internal.common.event.BLibGlobalEvents;
 import com.blib.neoforge.event.BLibNeoForgeEventHandle;
 import com.blib.neoforge.internal.event.impl.BLibNeoForgeLevelTickEvents;
 import com.blib.neoforge.internal.event.impl.BLibNeoForgePlayerBlockBreakEvents;
@@ -73,6 +77,8 @@ public class BLibNeoForgeModContainer {
     private final List<NetworkHandler<?>> networkHandlers;
 
     private final BLibEventListenerContainer<BLibCommonSetupEvent> onCommonSetup;
+
+    private final BLibEventListenerHandle<BLibEntityTickEvent> onEntityTick;
 
     private final BLibNeoForgeEventHandle<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity;
 
@@ -108,6 +114,7 @@ public class BLibNeoForgeModContainer {
         this.literalArgumentBuilders = new ArrayList<>();
         this.networkHandlers = new ArrayList<>();
         this.onCommonSetup = BLibCommonSetupEvents.FACTORY.apply(mod);
+        this.onEntityTick = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.ENTITY_TICK);
         this.onPlayerStartTrackingEntity = BLibNeoForgePlayerTrackingEntityEvents.FACTORY.apply(mod);
         this.onTagsUpdated = BLibNeoForgeTagsUpdatedEvents.FACTORY.apply(mod);
         this.postLevelTick = BLibNeoForgeLevelTickEvents.POST_FACTORY.apply(mod);
@@ -135,6 +142,10 @@ public class BLibNeoForgeModContainer {
 
     public BLibEventListenerContainer<BLibCommonSetupEvent> onCommonSetup() {
         return onCommonSetup;
+    }
+
+    public BLibEventListenerHandle<BLibEntityTickEvent> onEntityTick() {
+        return onEntityTick;
     }
 
     public BLibNeoForgeEventHandle<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity() {
