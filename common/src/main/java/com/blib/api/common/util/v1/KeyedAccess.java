@@ -1,4 +1,4 @@
-package com.blib.api.common;
+package com.blib.api.common.util.v1;
 
 import com.just.core.functional.option.Option;
 import org.jetbrains.annotations.Nullable;

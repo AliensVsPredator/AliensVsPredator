@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.blib.api.common.KeyedAccess;
+import com.blib.api.common.util.v1.KeyedAccess;
 
 @ApiStatus.Internal
 public class BLibDecoratedPotPatternCache implements KeyedAccess<Item, ResourceKey<DecoratedPotPattern>> {
