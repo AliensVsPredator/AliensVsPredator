@@ -33,7 +33,7 @@ public class BLibDecoratedPotPatternRegistry {
         BLibInternalServices.EVENT
             .onCommonSetup(mod)
             .register(
-                () -> BLibDecoratedPotPatternCache.put(
+                () -> BLibDecoratedPotPatternCache.INSTANCE.put(
                     holder.get(),
                     mod.resources().createKey(Registries.DECORATED_POT_PATTERN, path)
                 )

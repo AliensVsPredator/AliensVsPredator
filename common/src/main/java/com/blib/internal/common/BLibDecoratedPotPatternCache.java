@@ -9,20 +9,25 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.blib.api.common.KeyedAccess;
+
 @ApiStatus.Internal
-public class BLibDecoratedPotPatternCache {
+public class BLibDecoratedPotPatternCache implements KeyedAccess<Item, ResourceKey<DecoratedPotPattern>> {
 
-    private static final Map<Item, ResourceKey<DecoratedPotPattern>> CACHE = new HashMap<>();
+    public static final BLibDecoratedPotPatternCache INSTANCE = new BLibDecoratedPotPatternCache();
 
-    public static @Nullable ResourceKey<DecoratedPotPattern> get(Item item) {
-        return CACHE.get(item);
-    }
-
-    public static void put(Item item, ResourceKey<DecoratedPotPattern> resourceKey) {
-        CACHE.put(item, resourceKey);
-    }
+    private final Map<Item, ResourceKey<DecoratedPotPattern>> cache;
 
     private BLibDecoratedPotPatternCache() {
-        throw new UnsupportedOperationException();
+        this.cache = new HashMap<>();
+    }
+
+    @Override
+    public @Nullable ResourceKey<DecoratedPotPattern> getOrNull(Item item) {
+        return cache.get(item);
+    }
+
+    public void put(Item item, ResourceKey<DecoratedPotPattern> resourceKey) {
+        cache.put(item, resourceKey);
     }
 }
