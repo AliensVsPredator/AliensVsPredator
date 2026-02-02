@@ -36,12 +36,14 @@ import java.util.function.Supplier;
 import com.blib.api.common.entity.v1.spawning.BLibEntitySpawnData;
 import com.blib.api.common.event.v1.BLibBlockBreakEvent;
 import com.blib.api.common.event.v1.BLibCommonSetupEvent;
+import com.blib.api.common.event.v1.BLibEntityTickEvent;
 import com.blib.api.common.event.v1.BLibLevelTickEvent;
 import com.blib.api.common.event.v1.BLibPlayerTrackingEntityEvent;
 import com.blib.api.common.event.v1.BLibServerLifecycleEvent;
 import com.blib.api.common.event.v1.BLibTagsUpdatedEvent;
 import com.blib.api.common.event.v1.handle.BLibEventHandle;
 import com.blib.api.common.event.v1.handle.BLibEventListenerHandle;
+import com.blib.api.common.event.v1.handle.BLibGlobalOnlyEventHandle;
 import com.blib.api.common.event.v1.handle.impl.BLibEventListenerContainer;
 import com.blib.api.common.event.v1.impl.BLibCommonSetupEvents;
 import com.blib.api.common.mod.v1.BLibMod;
@@ -52,6 +54,7 @@ import com.blib.fabric.internal.event.impl.BLibFabricPlayerBlockBreakEvents;
 import com.blib.fabric.internal.event.impl.BLibFabricPlayerTrackingEntityEvents;
 import com.blib.fabric.internal.event.impl.BLibFabricServerLifecycleEvents;
 import com.blib.fabric.internal.event.impl.BLibFabricTagsUpdatedEvents;
+import com.blib.internal.common.event.BLibGlobalEvents;
 import com.blib.internal.common.registry.util.BLibRegistrationUtil;
 
 @ApiStatus.Internal
@@ -76,6 +79,8 @@ public class BLibFabricModContainer {
     private final List<LiteralArgumentBuilder<CommandSourceStack>> literalArgumentBuilders;
 
     private final BLibEventListenerContainer<BLibCommonSetupEvent> onCommonSetup;
+
+    private final BLibEventListenerHandle<BLibEntityTickEvent> onEntityTick;
 
     private final BLibEventHandle<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity;
 
@@ -106,6 +111,7 @@ public class BLibFabricModContainer {
         this.deferredVillagerTradeRegistrations = new ArrayList<>();
         this.literalArgumentBuilders = new ArrayList<>();
         this.onCommonSetup = BLibCommonSetupEvents.FACTORY.apply(mod);
+        this.onEntityTick = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.ENTITY_TICK);
         this.onPlayerStartTrackingEntity = BLibFabricPlayerTrackingEntityEvents.FACTORY.apply(mod);
         this.onTagsUpdated = BLibFabricTagsUpdatedEvents.FACTORY.apply(mod);
         this.postLevelTick = BLibFabricLevelTickEvents.POST_FACTORY.apply(mod);
@@ -123,6 +129,10 @@ public class BLibFabricModContainer {
 
     public BLibEventListenerHandle<BLibCommonSetupEvent> onCommonSetup() {
         return onCommonSetup;
+    }
+
+    public BLibEventListenerHandle<BLibEntityTickEvent> onEntityTick() {
+        return onEntityTick;
     }
 
     public BLibEventHandle<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity() {

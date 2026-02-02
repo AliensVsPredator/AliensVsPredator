@@ -1,5 +1,9 @@
 package com.blib.api.common.entity.v1.ai.util;
 
+/**
+ * @deprecated Will be removed in a future version.
+ */
+@Deprecated(forRemoval = true)
 public sealed interface CombatResponse {
 
     enum FightType {

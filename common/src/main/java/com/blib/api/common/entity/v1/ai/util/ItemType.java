@@ -6,6 +6,10 @@ import net.minecraft.world.item.ItemStack;
 
 import com.blib.api.common.tag.v1.BLibItemTags;
 
+/**
+ * @deprecated Will be removed in a future version.
+ */
+@Deprecated(forRemoval = true)
 public sealed interface ItemType {
 
     static ItemType getForItem(ItemStack itemStack) {

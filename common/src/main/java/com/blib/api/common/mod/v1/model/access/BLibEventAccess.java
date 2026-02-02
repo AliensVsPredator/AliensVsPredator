@@ -4,6 +4,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.api.common.event.v1.BLibBlockBreakEvent;
 import com.blib.api.common.event.v1.BLibCommonSetupEvent;
+import com.blib.api.common.event.v1.BLibEntityTickEvent;
 import com.blib.api.common.event.v1.BLibLevelTickEvent;
 import com.blib.api.common.event.v1.BLibPlayerTrackingEntityEvent;
 import com.blib.api.common.event.v1.BLibServerLifecycleEvent;
@@ -24,6 +25,10 @@ public class BLibEventAccess {
 
     public BLibEventListenerHandle<BLibCommonSetupEvent> onCommonSetup() {
         return BLibInternalServices.EVENT.onCommonSetup(mod);
+    }
+
+    public BLibEventListenerHandle<BLibEntityTickEvent> onEntityTick() {
+        return BLibInternalServices.EVENT.onEntityTick(mod);
     }
 
     public BLibEventHandle<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity() {
