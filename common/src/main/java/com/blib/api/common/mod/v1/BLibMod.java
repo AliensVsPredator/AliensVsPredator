@@ -14,6 +14,7 @@ import com.blib.api.common.mod.v1.model.access.BLibModStateAccess;
 import com.blib.api.common.mod.v1.model.access.BLibNetworkAccess;
 import com.blib.api.common.mod.v1.model.access.BLibRegistryAccess;
 import com.blib.api.common.mod.v1.model.access.BLibResourceAccess;
+import com.blib.api.common.mod.v1.model.access.BLibStorageAccess;
 import com.blib.internal.service.BLibInternalServices;
 
 public class BLibMod implements BLibModStateAccess {
@@ -30,6 +31,8 @@ public class BLibMod implements BLibModStateAccess {
 
     private final BLibResourceAccess resourceAccess;
 
+    private final BLibStorageAccess storageAccess;
+
     private final @Nullable Version version;
 
     private volatile BLibModState state;
@@ -41,6 +44,7 @@ public class BLibMod implements BLibModStateAccess {
         this.networkAccess = new BLibNetworkAccess(this);
         this.registryAccess = new BLibRegistryAccess(this);
         this.resourceAccess = new BLibResourceAccess(this);
+        this.storageAccess = new BLibStorageAccess(this);
         this.version = BLibAPI.getModVersion(id);
         this.state = BLibModState.UNINITIALIZED;
     }
@@ -95,6 +99,10 @@ public class BLibMod implements BLibModStateAccess {
 
     public BLibResourceAccess resources() {
         return resourceAccess;
+    }
+
+    public BLibStorageAccess storage() {
+        return storageAccess;
     }
 
     public @Nullable Version version() {

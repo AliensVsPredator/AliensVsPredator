@@ -35,11 +35,15 @@ import java.util.function.Supplier;
 
 import com.blib.api.common.entity.v1.spawning.BLibEntitySpawnData;
 import com.blib.api.common.event.v1.BLibBlockBreakEvent;
+import com.blib.api.common.event.v1.BLibChunkSaveEvent;
+import com.blib.api.common.event.v1.BLibChunkUnloadEvent;
 import com.blib.api.common.event.v1.BLibCommonSetupEvent;
 import com.blib.api.common.event.v1.BLibEntityTickEvent;
+import com.blib.api.common.event.v1.BLibLevelSaveEvent;
 import com.blib.api.common.event.v1.BLibLevelTickEvent;
 import com.blib.api.common.event.v1.BLibPlayerTrackingEntityEvent;
 import com.blib.api.common.event.v1.BLibServerLifecycleEvent;
+import com.blib.api.common.event.v1.BLibServerSaveEvent;
 import com.blib.api.common.event.v1.BLibTagsUpdatedEvent;
 import com.blib.api.common.event.v1.handle.BLibEventHandle;
 import com.blib.api.common.event.v1.handle.BLibEventListenerHandle;
@@ -78,11 +82,19 @@ public class BLibFabricModContainer {
 
     private final List<LiteralArgumentBuilder<CommandSourceStack>> literalArgumentBuilders;
 
+    private final BLibEventListenerHandle<BLibChunkSaveEvent> onChunkSave;
+
+    private final BLibEventListenerHandle<BLibChunkUnloadEvent> onChunkUnload;
+
     private final BLibEventListenerContainer<BLibCommonSetupEvent> onCommonSetup;
 
     private final BLibEventListenerHandle<BLibEntityTickEvent> onEntityTick;
 
+    private final BLibEventListenerHandle<BLibLevelSaveEvent> onLevelSave;
+
     private final BLibEventHandle<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity;
+
+    private final BLibEventListenerHandle<BLibServerSaveEvent> onServerSave;
 
     private final BLibEventHandle<BLibTagsUpdatedEvent> onTagsUpdated;
 
@@ -110,9 +122,13 @@ public class BLibFabricModContainer {
         this.deferredRegistrations = new HashMap<>();
         this.deferredVillagerTradeRegistrations = new ArrayList<>();
         this.literalArgumentBuilders = new ArrayList<>();
+        this.onChunkSave = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.CHUNK_SAVE);
+        this.onChunkUnload = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.CHUNK_UNLOAD);
         this.onCommonSetup = BLibCommonSetupEvents.FACTORY.apply(mod);
         this.onEntityTick = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.ENTITY_TICK);
+        this.onLevelSave = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.LEVEL_SAVE);
         this.onPlayerStartTrackingEntity = BLibFabricPlayerTrackingEntityEvents.FACTORY.apply(mod);
+        this.onServerSave = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.SERVER_SAVE);
         this.onTagsUpdated = BLibFabricTagsUpdatedEvents.FACTORY.apply(mod);
         this.postLevelTick = BLibFabricLevelTickEvents.POST_FACTORY.apply(mod);
         this.preBlockBreak = BLibFabricPlayerBlockBreakEvents.FACTORY.apply(mod);
@@ -127,12 +143,24 @@ public class BLibFabricModContainer {
         return clientBoundPacketHandlers;
     }
 
+    public BLibEventListenerHandle<BLibChunkSaveEvent> onChunkSave() {
+        return onChunkSave;
+    }
+
+    public BLibEventListenerHandle<BLibChunkUnloadEvent> onChunkUnload() {
+        return onChunkUnload;
+    }
+
     public BLibEventListenerHandle<BLibCommonSetupEvent> onCommonSetup() {
         return onCommonSetup;
     }
 
     public BLibEventListenerHandle<BLibEntityTickEvent> onEntityTick() {
         return onEntityTick;
+    }
+
+    public BLibEventListenerHandle<BLibLevelSaveEvent> onLevelSave() {
+        return onLevelSave;
     }
 
     public BLibEventHandle<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity() {
@@ -155,20 +183,24 @@ public class BLibFabricModContainer {
         return preLevelTick;
     }
 
-    public BLibEventHandle<BLibServerLifecycleEvent.Started> serverStarted() {
+    public BLibEventHandle<BLibServerLifecycleEvent.Started> onServerStarted() {
         return serverStarted;
     }
 
-    public BLibEventHandle<BLibServerLifecycleEvent.Starting> serverStarting() {
+    public BLibEventHandle<BLibServerLifecycleEvent.Starting> onServerStarting() {
         return serverStarting;
     }
 
-    public BLibEventHandle<BLibServerLifecycleEvent.Stopped> serverStopped() {
+    public BLibEventHandle<BLibServerLifecycleEvent.Stopped> onServerStopped() {
         return serverStopped;
     }
 
-    public BLibEventHandle<BLibServerLifecycleEvent.Stopping> serverStopping() {
+    public BLibEventHandle<BLibServerLifecycleEvent.Stopping> onServerStopping() {
         return serverStopping;
+    }
+
+    public BLibEventListenerHandle<BLibServerSaveEvent> onServerSave() {
+        return onServerSave;
     }
 
     /* package-private */ <T> void deferRegistration(BLibHolder<T> holder, Supplier<? extends T> valueFactory) {

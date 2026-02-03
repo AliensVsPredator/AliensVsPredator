@@ -19,7 +19,10 @@
     "MixinShapedRecipeBuilder_Accessor",
     "MixinShapelessRecipeBuilder_Accessor",
     "MixinStructureTemplatePool_Accessor",
-    "server.MixinServerLevel_BlockBreakProgressManager"
+    "server.MixinChunkMap_SaveChunkData",
+    "server.MixinMinecraftServer_SaveGlobalData",
+    "server.MixinServerLevel_BlockBreakProgressManager",
+    "server.MixinServerLevel_Events"
   ],
   "client": [
     "azurelib.BlockEntityMixin_AzBlockEntityAnimatorCache",

@@ -14,6 +14,7 @@ import com.blib.api.common.data_sync.v1.model.DataUser;
 import com.blib.api.common.mod.v1.BLibMod;
 import com.blib.api.common.server.v1.ServerScheduler;
 import com.blib.internal.client.render.armor.compat.ShoulderSurfingCompat;
+import com.blib.internal.common.storage.BLibDataStoreManager;
 import com.blib.mod.common.network.BLibPacketDirections;
 import com.blib.mod.common.network.BLibServerPacketHandlers;
 import com.blib.mod.common.registry.init.BLibBlockEntityTypes;
@@ -55,6 +56,12 @@ public class BLib {
         BLib.MOD.events().postLevelTick().register(ServerScheduler::tick);
         // TODO: There's a small bug here. This runs for both client and server levels!
         BLib.MOD.events().postLevelTick().register(BlockBreakProgressManager::tick);
+
+        BLib.MOD.events().onChunkSave().register(BLibDataStoreManager.INSTANCE::saveChunkData);
+        BLib.MOD.events().onChunkUnload().register(BLibDataStoreManager.INSTANCE::onChunkUnload);
+        BLib.MOD.events().onServerSave().register(BLibDataStoreManager.INSTANCE::saveGlobalData);
+        BLib.MOD.events().onLevelSave().register(BLibDataStoreManager.INSTANCE::saveLevelData);
+        BLib.MOD.events().onServerStopped().register(BLibDataStoreManager.INSTANCE::onServerStopped);
     }
 
     private static void syncDataForTrackedEntity(Entity trackedEntity, Player player) {
