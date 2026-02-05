@@ -28,6 +28,7 @@ import com.blib.mod.common.network.BLibPacketDirections;
 import com.blib.mod.common.network.BLibServerPacketHandlers;
 import com.blib.mod.common.registry.init.BLibBlockEntityTypes;
 import com.blib.mod.common.registry.init.BLibBlocks;
+import com.blib.mod.common.registry.init.BLibCommands;
 import com.blib.mod.common.registry.init.BLibDataComponents;
 import com.blib.mod.common.registry.init.BLibDataSyncKeys;
 import com.blib.mod.common.registry.init.BLibFactionTypes;
@@ -58,6 +59,7 @@ public class BLib {
         BLibDataComponents.initialize();
         BLibDataSyncKeys.initialize();
         BLibFactionTypes.initialize();
+        BLibCommands.initialize();
         BLibLootItemConditionTypes.initialize();
         BLibPacketDirections.initialize();
         BLibServerPacketHandlers.initialize();
