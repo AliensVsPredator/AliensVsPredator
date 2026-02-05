@@ -29,13 +29,13 @@ public class BLibReputationManager implements ReputationManager {
 
     private final Map<ReputationKey, ReputationData> data;
 
-    private final Map<ReputationKey, Set<ReputationKey>> incomingIndex;
+    private final ReputationIndex reputationIndex;
 
     private final ShardManager<ReputationKey> shardManager;
 
     private BLibReputationManager() {
         this.data = new HashMap<>();
-        this.incomingIndex = new HashMap<>();
+        this.reputationIndex = new ReputationIndex();
         this.shardManager = new ShardManager<>(SHARD_SIZE);
     }
 
@@ -62,9 +62,9 @@ public class BLibReputationManager implements ReputationManager {
         reputationData.set(to, value);
 
         if (oldValue == 0 && value != 0) {
-            addToIncomingIndex(from, to);
+            reputationIndex.add(from, to);
         } else if (oldValue != 0 && value == 0) {
-            removeFromIncomingIndex(from, to);
+            reputationIndex.remove(from, to);
         }
     }
 
@@ -83,7 +83,7 @@ public class BLibReputationManager implements ReputationManager {
 
             if (oldValue != 0) {
                 reputationData.remove(to);
-                removeFromIncomingIndex(from, to);
+                reputationIndex.remove(from, to);
             }
         }
     }
@@ -94,13 +94,13 @@ public class BLibReputationManager implements ReputationManager {
 
         if (removedData != null) {
             for (var target : removedData.getAll().keySet()) {
-                removeFromIncomingIndex(reputationKey, target);
+                reputationIndex.remove(reputationKey, target);
             }
 
             shardManager.remove(reputationKey);
         }
 
-        var incomingFrom = incomingIndex.remove(reputationKey);
+        var incomingFrom = reputationIndex.removeAll(reputationKey);
 
         if (incomingFrom != null) {
             for (var from : incomingFrom) {
@@ -120,19 +120,11 @@ public class BLibReputationManager implements ReputationManager {
 
     public void load(MinecraftServer server) {
         data.clear();
-        incomingIndex.clear();
+        reputationIndex.clear();
         shardManager.clear();
 
         ReputationDataIO.loadAll(server, data, shardManager);
-
-        for (var entry : data.entrySet()) {
-            var from = entry.getKey();
-            var reputationData = entry.getValue();
-
-            for (var target : reputationData.getAll().keySet()) {
-                addToIncomingIndex(from, target);
-            }
-        }
+        reputationIndex.rebuild(data);
 
         LOGGER.info("Loaded {} reputation entries", data.size());
     }
@@ -169,23 +161,8 @@ public class BLibReputationManager implements ReputationManager {
 
     public void clear(MinecraftServer server) {
         data.clear();
-        incomingIndex.clear();
+        reputationIndex.clear();
         shardManager.clear();
     }
 
-    private void addToIncomingIndex(ReputationKey from, ReputationKey to) {
-        incomingIndex.computeIfAbsent(to, $ -> new HashSet<>()).add(from);
-    }
-
-    private void removeFromIncomingIndex(ReputationKey from, ReputationKey to) {
-        var set = incomingIndex.get(to);
-
-        if (set != null) {
-            set.remove(from);
-
-            if (set.isEmpty()) {
-                incomingIndex.remove(to);
-            }
-        }
-    }
 }
