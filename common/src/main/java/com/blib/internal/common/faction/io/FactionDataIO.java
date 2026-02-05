@@ -10,15 +10,15 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import com.blib.api.common.faction.v1.FactionData;
 import com.blib.api.common.registry.v1.BLibBuiltInRegistries;
 import com.blib.internal.common.faction.serializer.FactionDataSerializer;
-import com.blib.internal.common.util.ShardUtil;
 
 @ApiStatus.Internal
 public final class FactionDataIO {
@@ -26,6 +26,8 @@ public final class FactionDataIO {
     private static final Logger LOGGER = LoggerFactory.getLogger(FactionDataIO.class);
 
     private static final String KEY_DATA = "data";
+
+    private static final Pattern SHARD_FILE_PATTERN = Pattern.compile("faction_data_(\\d+)\\.nbt");
 
     private FactionDataIO() {
         throw new UnsupportedOperationException();
@@ -55,9 +57,7 @@ public final class FactionDataIO {
 
                     try (var files = Files.list(globalDir)) {
                         files
-                            .filter(
-                                p -> p.getFileName().toString().startsWith("faction_data_") && p.getFileName().toString().endsWith(".nbt")
-                            )
+                            .filter(p -> SHARD_FILE_PATTERN.matcher(p.getFileName().toString()).matches())
                             .forEach(shardFile -> loadShard(shardFile, knownFactionIds, data, factionIdToTypeId));
                     } catch (IOException e) {
                         LOGGER.error("Failed to list faction data shard files in {}", globalDir, e);
@@ -70,18 +70,14 @@ public final class FactionDataIO {
 
     public static void saveShard(
         MinecraftServer server,
+        List<ResourceLocation> factionIdsInShard,
         Map<ResourceLocation, FactionData> data,
         Map<ResourceLocation, ResourceLocation> factionIdToTypeId,
-        List<ResourceLocation> idList,
-        int shardIndex,
-        int shardSize
+        int shardIndex
     ) {
-        int startIndex = ShardUtil.shardStart(shardIndex, shardSize);
-        int endIndex = ShardUtil.shardEnd(shardIndex, shardSize, idList.size());
+        var namespaceToFactionsTag = new HashMap<String, CompoundTag>();
 
-        Map<String, CompoundTag> namespaceToFactionsTag = new LinkedHashMap<>();
-        for (int i = startIndex; i < endIndex; i++) {
-            var factionId = idList.get(i);
+        for (var factionId : factionIdsInShard) {
             var factionData = data.get(factionId);
             var typeId = factionIdToTypeId.get(factionId);
 
@@ -127,7 +123,6 @@ public final class FactionDataIO {
             if (factionType != null) {
                 var factionData = factionType.createInstance();
                 factionData.load(FactionDataSerializer.deserializeData(entryTag));
-                // Clear dirty since we just loaded.
                 factionData.clearDirty();
                 data.put(factionId, factionData);
             } else {

@@ -2,7 +2,7 @@ package com.blib.api.common.reputation.v1;
 
 public interface ReputationManager {
 
-    ReputationData getOrCreate(ReputationSubject subject);
+    ReputationData getOrCreate(ReputationSubject reputationSubject);
 
     int getReputation(ReputationSubject from, ReputationSubject to);
 
@@ -12,7 +12,7 @@ public interface ReputationManager {
 
     void removeReputation(ReputationSubject from, ReputationSubject to);
 
-    void removeSubject(ReputationSubject subject);
+    void removeSubject(ReputationSubject reputationSubject);
 
-    boolean exists(ReputationSubject subject);
+    boolean exists(ReputationSubject reputationSubject);
 }

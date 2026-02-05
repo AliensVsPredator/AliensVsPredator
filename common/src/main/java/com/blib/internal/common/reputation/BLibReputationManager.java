@@ -5,6 +5,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -15,7 +16,7 @@ import com.blib.api.common.reputation.v1.ReputationData;
 import com.blib.api.common.reputation.v1.ReputationManager;
 import com.blib.api.common.reputation.v1.ReputationSubject;
 import com.blib.internal.common.reputation.io.ReputationDataIO;
-import com.blib.internal.common.util.ShardUtil;
+import com.blib.internal.common.util.ShardManager;
 
 @ApiStatus.Internal
 public class BLibReputationManager implements ReputationManager {
@@ -30,14 +31,21 @@ public class BLibReputationManager implements ReputationManager {
 
     private final Map<ReputationSubject, Set<ReputationSubject>> incomingIndex;
 
+    private final ShardManager<ReputationSubject> shardManager;
+
     private BLibReputationManager() {
         this.data = new HashMap<>();
         this.incomingIndex = new HashMap<>();
+        this.shardManager = new ShardManager<>(SHARD_SIZE);
     }
 
     @Override
-    public ReputationData getOrCreate(ReputationSubject subject) {
-        return data.computeIfAbsent(subject, ReputationData::new);
+    public ReputationData getOrCreate(ReputationSubject reputationSubject) {
+        return data.computeIfAbsent(reputationSubject, $ -> {
+            var reputationData = new ReputationData(reputationSubject);
+            shardManager.assignShardIndex(reputationSubject);
+            return reputationData;
+        });
     }
 
     @Override
@@ -62,7 +70,7 @@ public class BLibReputationManager implements ReputationManager {
 
     @Override
     public void adjustReputation(ReputationSubject from, ReputationSubject to, int delta) {
-        int current = getReputation(from, to);
+        var current = getReputation(from, to);
         setReputation(from, to, current + delta);
     }
 
@@ -81,43 +89,47 @@ public class BLibReputationManager implements ReputationManager {
     }
 
     @Override
-    public void removeSubject(ReputationSubject subject) {
-        var removedData = data.remove(subject);
+    public void removeSubject(ReputationSubject reputationSubject) {
+        var removedData = data.remove(reputationSubject);
 
         if (removedData != null) {
             for (var target : removedData.getAll().keySet()) {
-                removeFromIncomingIndex(subject, target);
+                removeFromIncomingIndex(reputationSubject, target);
             }
+
+            shardManager.remove(reputationSubject);
         }
 
-        var incomingFrom = incomingIndex.remove(subject);
+        var incomingFrom = incomingIndex.remove(reputationSubject);
 
         if (incomingFrom != null) {
             for (var from : incomingFrom) {
                 var fromData = data.get(from);
 
                 if (fromData != null) {
-                    fromData.remove(subject);
+                    fromData.remove(reputationSubject);
                 }
             }
         }
     }
 
     @Override
-    public boolean exists(ReputationSubject subject) {
-        return data.containsKey(subject);
+    public boolean exists(ReputationSubject reputationSubject) {
+        return data.containsKey(reputationSubject);
     }
 
     public void load(MinecraftServer server) {
         data.clear();
         incomingIndex.clear();
+        shardManager.clear();
 
-        ReputationDataIO.loadAll(server, data);
+        ReputationDataIO.loadAll(server, data, shardManager);
 
         for (var entry : data.entrySet()) {
             var from = entry.getKey();
+            var reputationData = entry.getValue();
 
-            for (var target : entry.getValue().getAll().keySet()) {
+            for (var target : reputationData.getAll().keySet()) {
                 addToIncomingIndex(from, target);
             }
         }
@@ -130,19 +142,35 @@ public class BLibReputationManager implements ReputationManager {
             return;
         }
 
-        var subjectList = List.copyOf(data.keySet());
-        var dirtyShards = ShardUtil.findDirtyShards(subjectList, SHARD_SIZE, data::get);
+        Map<Integer, List<ReputationData>> shardToEntries = new HashMap<>();
+        Set<Integer> dirtyShards = new HashSet<>();
 
-        for (var shardIndex : dirtyShards) {
-            ReputationDataIO.saveShard(server, data, subjectList, shardIndex, SHARD_SIZE);
+        for (var entry : data.entrySet()) {
+            var reputationSubject = entry.getKey();
+            var reputationData = entry.getValue();
+            var shardIndex = shardManager.getShardIndex(reputationSubject);
+
+            shardToEntries.computeIfAbsent(shardIndex, k -> new ArrayList<>()).add(reputationData);
+
+            if (reputationData.isDirty()) {
+                dirtyShards.add(shardIndex);
+            }
         }
 
-        ShardUtil.clearAllDirty(data);
+        for (var shardIndex : dirtyShards) {
+            var entriesInShard = shardToEntries.get(shardIndex);
+            ReputationDataIO.saveShard(server, entriesInShard, shardIndex);
+        }
+
+        for (var reputationData : data.values()) {
+            reputationData.clearDirty();
+        }
     }
 
     public void clear(MinecraftServer server) {
         data.clear();
         incomingIndex.clear();
+        shardManager.clear();
     }
 
     private void addToIncomingIndex(ReputationSubject from, ReputationSubject to) {

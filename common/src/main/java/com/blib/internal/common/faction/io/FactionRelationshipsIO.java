@@ -12,10 +12,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import com.blib.api.common.faction.v1.FactionRelationships;
 import com.blib.internal.common.faction.serializer.FactionRelationshipsSerializer;
-import com.blib.internal.common.util.ShardUtil;
+import com.blib.internal.common.util.ShardManager;
 
 @ApiStatus.Internal
 public final class FactionRelationshipsIO {
@@ -24,11 +25,17 @@ public final class FactionRelationshipsIO {
 
     private static final String KEY_RELATIONSHIPS = "relationships";
 
+    private static final Pattern SHARD_FILE_PATTERN = Pattern.compile("faction_relationships_(\\d+)\\.nbt");
+
     private FactionRelationshipsIO() {
         throw new UnsupportedOperationException();
     }
 
-    public static void loadAll(MinecraftServer server, Map<ResourceLocation, FactionRelationships> relationships) {
+    public static void loadAll(
+        MinecraftServer server,
+        Map<ResourceLocation, FactionRelationships> relationships,
+        ShardManager<ResourceLocation> shardManager
+    ) {
         var relDir = FactionIO.getRelationshipsDirectory(server);
 
         if (!Files.isDirectory(relDir)) {
@@ -37,8 +44,8 @@ public final class FactionRelationshipsIO {
 
         try (var stream = Files.list(relDir)) {
             stream
-                .filter(p -> p.getFileName().toString().startsWith("faction_relationships_") && p.getFileName().toString().endsWith(".nbt"))
-                .forEach(shardFile -> loadShard(shardFile, relationships));
+                .filter(p -> SHARD_FILE_PATTERN.matcher(p.getFileName().toString()).matches())
+                .forEach(shardFile -> loadShard(shardFile, relationships, shardManager));
         } catch (IOException e) {
             LOGGER.error("Failed to list faction relationship shard files in {}", relDir, e);
         }
@@ -46,22 +53,13 @@ public final class FactionRelationshipsIO {
 
     public static void saveShard(
         MinecraftServer server,
-        Map<ResourceLocation, FactionRelationships> relationships,
-        List<ResourceLocation> idList,
-        int shardIndex,
-        int shardSize
+        List<FactionRelationships> entriesInShard,
+        int shardIndex
     ) {
-        int startIndex = ShardUtil.shardStart(shardIndex, shardSize);
-        int endIndex = ShardUtil.shardEnd(shardIndex, shardSize, idList.size());
-
         var relationshipsTag = new CompoundTag();
-        for (int i = startIndex; i < endIndex; i++) {
-            var factionId = idList.get(i);
-            var rel = relationships.get(factionId);
 
-            if (rel != null) {
-                relationshipsTag.put(factionId.toString(), FactionRelationshipsSerializer.serialize(rel));
-            }
+        for (var rel : entriesInShard) {
+            relationshipsTag.put(rel.getId().toString(), FactionRelationshipsSerializer.serialize(rel));
         }
 
         var rootTag = new CompoundTag();
@@ -70,16 +68,39 @@ public final class FactionRelationshipsIO {
         FactionIO.writeCompressed(FactionIO.getRelationshipsShardPath(server, shardIndex), rootTag);
     }
 
-    private static void loadShard(Path shardFile, Map<ResourceLocation, FactionRelationships> relationships) {
+    private static void loadShard(
+        Path shardFile,
+        Map<ResourceLocation, FactionRelationships> relationships,
+        ShardManager<ResourceLocation> shardManager
+    ) {
+        var shardIndex = parseShardIndex(shardFile);
+
+        if (shardIndex < 0) {
+            LOGGER.warn("Could not parse shard index from file: {}", shardFile);
+            return;
+        }
+
         var tag = FactionIO.readCompressed(shardFile);
         var relationshipsTag = tag.getCompound(KEY_RELATIONSHIPS);
 
         for (var key : relationshipsTag.getAllKeys()) {
             var factionTag = relationshipsTag.getCompound(key);
             var factionRelationships = FactionRelationshipsSerializer.deserialize(factionTag);
-            // Clear dirty since we just loaded.
+            var factionId = factionRelationships.getId();
+
             factionRelationships.clearDirty();
-            relationships.put(factionRelationships.getId(), factionRelationships);
+            relationships.put(factionId, factionRelationships);
+            shardManager.recordShardEntry(factionId, shardIndex);
         }
+    }
+
+    private static int parseShardIndex(Path shardFile) {
+        var matcher = SHARD_FILE_PATTERN.matcher(shardFile.getFileName().toString());
+
+        if (matcher.matches()) {
+            return Integer.parseInt(matcher.group(1));
+        }
+
+        return -1;
     }
 }

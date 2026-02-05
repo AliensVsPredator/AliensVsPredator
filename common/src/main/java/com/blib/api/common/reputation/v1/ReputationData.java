@@ -10,19 +10,19 @@ import com.blib.api.common.util.v1.Dirty;
 
 public class ReputationData implements Dirty {
 
-    private final ReputationSubject subject;
+    private final ReputationSubject reputationSubject;
 
     private final Map<ReputationSubject, Integer> reputations;
 
     private boolean dirty;
 
-    public ReputationData(ReputationSubject subject) {
-        this.subject = subject;
+    public ReputationData(ReputationSubject reputationSubject) {
+        this.reputationSubject = reputationSubject;
         this.reputations = new HashMap<>();
     }
 
     public ReputationSubject getSubject() {
-        return subject;
+        return reputationSubject;
     }
 
     public int get(ReputationSubject target) {

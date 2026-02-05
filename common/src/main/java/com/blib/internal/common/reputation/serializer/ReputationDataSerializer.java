@@ -49,8 +49,8 @@ public final class ReputationDataSerializer {
     }
 
     public static ReputationData deserialize(String subjectKey, CompoundTag tag) {
-        var subject = deserializeSubjectKey(subjectKey);
-        var data = new ReputationData(subject);
+        var reputationSubject = deserializeSubjectKey(subjectKey);
+        var data = new ReputationData(reputationSubject);
         var reputationsTag = tag.getCompound(KEY_REPUTATIONS);
 
         for (var key : reputationsTag.getAllKeys()) {
@@ -62,8 +62,8 @@ public final class ReputationDataSerializer {
         return data;
     }
 
-    public static String serializeSubjectKey(ReputationSubject subject) {
-        return switch (subject) {
+    public static String serializeSubjectKey(ReputationSubject reputationSubject) {
+        return switch (reputationSubject) {
             case ReputationSubject.Faction(var factionId) -> FACTION_PREFIX + factionId.toString();
             case ReputationSubject.Entity(var uuid) -> ENTITY_PREFIX + uuid.toString();
         };
@@ -77,7 +77,7 @@ public final class ReputationDataSerializer {
             var uuid = UUID.fromString(key.substring(ENTITY_PREFIX.length()));
             return new ReputationSubject.Entity(uuid);
         } else {
-            throw new IllegalArgumentException("Unknown subject key format: " + key);
+            throw new IllegalArgumentException("Unknown reputation subject key format: " + key);
         }
     }
 }

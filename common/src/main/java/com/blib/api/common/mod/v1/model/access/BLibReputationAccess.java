@@ -18,8 +18,8 @@ public class BLibReputationAccess implements ReputationManager {
     }
 
     @Override
-    public ReputationData getOrCreate(ReputationSubject subject) {
-        return BLibReputationManager.INSTANCE.getOrCreate(subject);
+    public ReputationData getOrCreate(ReputationSubject reputationSubject) {
+        return BLibReputationManager.INSTANCE.getOrCreate(reputationSubject);
     }
 
     @Override
@@ -43,12 +43,12 @@ public class BLibReputationAccess implements ReputationManager {
     }
 
     @Override
-    public void removeSubject(ReputationSubject subject) {
-        BLibReputationManager.INSTANCE.removeSubject(subject);
+    public void removeSubject(ReputationSubject reputationSubject) {
+        BLibReputationManager.INSTANCE.removeSubject(reputationSubject);
     }
 
     @Override
-    public boolean exists(ReputationSubject subject) {
-        return BLibReputationManager.INSTANCE.exists(subject);
+    public boolean exists(ReputationSubject reputationSubject) {
+        return BLibReputationManager.INSTANCE.exists(reputationSubject);
     }
 }
