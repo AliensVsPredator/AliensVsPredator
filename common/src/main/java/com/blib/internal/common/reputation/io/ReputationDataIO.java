@@ -59,7 +59,7 @@ public final class ReputationDataIO {
         var dataTag = new CompoundTag();
 
         for (var reputationData : entriesInShard) {
-            var reputationKey = ReputationDataSerializer.serializeReputationKey(reputationData.getSubject());
+            var reputationKey = ReputationDataSerializer.serializeReputationKey(reputationData.getKey());
             dataTag.put(reputationKey, ReputationDataSerializer.serialize(reputationData));
         }
 
@@ -87,11 +87,11 @@ public final class ReputationDataIO {
         for (var key : dataTag.getAllKeys()) {
             var entryTag = dataTag.getCompound(key);
             var reputationData = ReputationDataSerializer.deserialize(key, entryTag);
-            var reputationSubject = reputationData.getSubject();
+            var reputationKey = reputationData.getKey();
 
             reputationData.clearDirty();
-            data.put(reputationSubject, reputationData);
-            shardManager.recordShardEntry(reputationSubject, shardIndex);
+            data.put(reputationKey, reputationData);
+            shardManager.recordShardEntry(reputationKey, shardIndex);
         }
     }
 

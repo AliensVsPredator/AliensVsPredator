@@ -89,7 +89,7 @@ public class BLibReputationManager implements ReputationManager {
     }
 
     @Override
-    public void removeSubject(ReputationKey reputationKey) {
+    public void removeReputation(ReputationKey reputationKey) {
         var removedData = data.remove(reputationKey);
 
         if (removedData != null) {
@@ -146,9 +146,9 @@ public class BLibReputationManager implements ReputationManager {
         Set<Integer> dirtyShards = new HashSet<>();
 
         for (var entry : data.entrySet()) {
-            var reputationSubject = entry.getKey();
+            var reputationKey = entry.getKey();
             var reputationData = entry.getValue();
-            var shardIndex = shardManager.getShardIndex(reputationSubject);
+            var shardIndex = shardManager.getShardIndex(reputationKey);
 
             shardToEntries.computeIfAbsent(shardIndex, k -> new ArrayList<>()).add(reputationData);
 

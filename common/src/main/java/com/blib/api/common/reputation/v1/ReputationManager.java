@@ -12,7 +12,7 @@ public interface ReputationManager {
 
     void removeReputation(ReputationKey from, ReputationKey to);
 
-    void removeSubject(ReputationKey reputationKey);
+    void removeReputation(ReputationKey reputationKey);
 
     boolean exists(ReputationKey reputationKey);
 }

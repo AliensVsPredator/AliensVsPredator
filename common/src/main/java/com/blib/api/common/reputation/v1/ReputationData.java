@@ -21,7 +21,7 @@ public class ReputationData implements Dirty {
         this.reputations = new HashMap<>();
     }
 
-    public ReputationKey getSubject() {
+    public ReputationKey getKey() {
         return reputationKey;
     }
 

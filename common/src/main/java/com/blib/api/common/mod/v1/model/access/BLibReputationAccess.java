@@ -43,8 +43,8 @@ public class BLibReputationAccess implements ReputationManager {
     }
 
     @Override
-    public void removeSubject(ReputationKey reputationKey) {
-        BLibReputationManager.INSTANCE.removeSubject(reputationKey);
+    public void removeReputation(ReputationKey reputationKey) {
+        BLibReputationManager.INSTANCE.removeReputation(reputationKey);
     }
 
     @Override

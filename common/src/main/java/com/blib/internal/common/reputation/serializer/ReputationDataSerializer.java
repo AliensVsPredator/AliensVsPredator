@@ -31,7 +31,7 @@ public final class ReputationDataSerializer {
     public static CompoundTag serialize(ReputationData data) {
         var tag = new CompoundTag();
 
-        switch (data.getSubject()) {
+        switch (data.getKey()) {
             case ReputationKey.Faction faction -> tag.putString(KEY_TYPE, TYPE_FACTION);
             case ReputationKey.Entity entity -> tag.putString(KEY_TYPE, TYPE_ENTITY);
         }
@@ -48,13 +48,13 @@ public final class ReputationDataSerializer {
         return tag;
     }
 
-    public static ReputationData deserialize(String reputationKey, CompoundTag tag) {
-        var reputationSubject = deserializeSubjectKey(reputationKey);
-        var data = new ReputationData(reputationSubject);
+    public static ReputationData deserialize(String reputationKeyString, CompoundTag tag) {
+        var reputationKey = deserializeReputationKey(reputationKeyString);
+        var data = new ReputationData(reputationKey);
         var reputationsTag = tag.getCompound(KEY_REPUTATIONS);
 
         for (var key : reputationsTag.getAllKeys()) {
-            var target = deserializeSubjectKey(key);
+            var target = deserializeReputationKey(key);
             var value = reputationsTag.getInt(key);
             data.getReputationsInternal().put(target, value);
         }
@@ -69,7 +69,7 @@ public final class ReputationDataSerializer {
         };
     }
 
-    public static ReputationKey deserializeSubjectKey(String key) {
+    public static ReputationKey deserializeReputationKey(String key) {
         if (key.startsWith(FACTION_PREFIX)) {
             var factionId = ResourceLocation.parse(key.substring(FACTION_PREFIX.length()));
             return new ReputationKey.Faction(factionId);
