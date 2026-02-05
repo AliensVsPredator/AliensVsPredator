@@ -24,7 +24,7 @@ public final class ReputationIO {
 
     private static final String GLOBAL_FOLDER = "global";
 
-    private static final String REPUTATIONS_PREFIX = "reputations_";
+    private static final String REPUTATIONS_FOLDER = "reputations";
 
     private ReputationIO() {
         throw new UnsupportedOperationException();
@@ -35,16 +35,14 @@ public final class ReputationIO {
     }
 
     public static Path getReputationShardPath(MinecraftServer server, int shardIndex) {
-        return getBlibDataPath(server)
-            .resolve(BLIB_DATA_FOLDER)
-            .resolve(GLOBAL_FOLDER)
-            .resolve(REPUTATIONS_PREFIX + shardIndex + ".nbt");
+        return getReputationDirectory(server).resolve(REPUTATIONS_FOLDER + "_" + shardIndex + ".nbt");
     }
 
     public static Path getReputationDirectory(MinecraftServer server) {
         return getBlibDataPath(server)
             .resolve(BLIB_DATA_FOLDER)
-            .resolve(GLOBAL_FOLDER);
+            .resolve(GLOBAL_FOLDER)
+            .resolve(REPUTATIONS_FOLDER);
     }
 
     public static CompoundTag readCompressed(Path path) {

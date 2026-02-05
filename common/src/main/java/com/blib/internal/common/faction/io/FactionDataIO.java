@@ -49,18 +49,19 @@ public final class FactionDataIO {
             namespaceDirs
                 .filter(Files::isDirectory)
                 .forEach(namespaceDir -> {
-                    var globalDir = namespaceDir.resolve("global");
+                    var namespace = namespaceDir.getFileName().toString();
+                    var dataDir = FactionIO.getDataDirectory(server, namespace);
 
-                    if (!Files.isDirectory(globalDir)) {
+                    if (!Files.isDirectory(dataDir)) {
                         return;
                     }
 
-                    try (var files = Files.list(globalDir)) {
+                    try (var files = Files.list(dataDir)) {
                         files
                             .filter(p -> SHARD_FILE_PATTERN.matcher(p.getFileName().toString()).matches())
                             .forEach(shardFile -> loadShard(shardFile, knownFactionIds, data, factionIdToTypeId));
                     } catch (IOException e) {
-                        LOGGER.error("Failed to list faction data shard files in {}", globalDir, e);
+                        LOGGER.error("Failed to list faction data shard files in {}", dataDir, e);
                     }
                 });
         } catch (IOException e) {

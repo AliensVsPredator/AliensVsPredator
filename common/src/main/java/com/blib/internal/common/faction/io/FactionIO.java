@@ -24,9 +24,9 @@ public final class FactionIO {
 
     private static final String GLOBAL_FOLDER = "global";
 
-    private static final String RELATIONSHIPS_PREFIX = "faction_relationships_";
+    private static final String RELATIONSHIPS_FOLDER = "faction_relationships";
 
-    private static final String DATA_PREFIX = "faction_data_";
+    private static final String DATA_FOLDER = "faction_data";
 
     private FactionIO() {
         throw new UnsupportedOperationException();
@@ -37,23 +37,25 @@ public final class FactionIO {
     }
 
     public static Path getRelationshipsShardPath(MinecraftServer server, int shardIndex) {
-        return getBlibDataPath(server)
-            .resolve(BLIB_DATA_FOLDER)
-            .resolve(GLOBAL_FOLDER)
-            .resolve(RELATIONSHIPS_PREFIX + shardIndex + ".nbt");
+        return getRelationshipsDirectory(server).resolve(RELATIONSHIPS_FOLDER + "_" + shardIndex + ".nbt");
     }
 
     public static Path getDataShardPath(MinecraftServer server, String namespace, int shardIndex) {
-        return getBlibDataPath(server)
-            .resolve(namespace)
-            .resolve(GLOBAL_FOLDER)
-            .resolve(DATA_PREFIX + shardIndex + ".nbt");
+        return getDataDirectory(server, namespace).resolve(DATA_FOLDER + "_" + shardIndex + ".nbt");
     }
 
     public static Path getRelationshipsDirectory(MinecraftServer server) {
         return getBlibDataPath(server)
             .resolve(BLIB_DATA_FOLDER)
-            .resolve(GLOBAL_FOLDER);
+            .resolve(GLOBAL_FOLDER)
+            .resolve(RELATIONSHIPS_FOLDER);
+    }
+
+    public static Path getDataDirectory(MinecraftServer server, String namespace) {
+        return getBlibDataPath(server)
+            .resolve(namespace)
+            .resolve(GLOBAL_FOLDER)
+            .resolve(DATA_FOLDER);
     }
 
     public static CompoundTag readCompressed(Path path) {

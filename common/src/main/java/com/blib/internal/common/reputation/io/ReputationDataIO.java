@@ -1,6 +1,7 @@
 package com.blib.internal.common.reputation.io;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 import com.blib.api.common.reputation.v1.ReputationData;
@@ -23,9 +25,11 @@ public final class ReputationDataIO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ReputationDataIO.class);
 
-    private static final String KEY_DATA = "reputations";
+    private static final String KEY_FACTIONS = "factions";
 
-    private static final Pattern SHARD_FILE_PATTERN = Pattern.compile("reputation_(\\d+)\\.nbt");
+    private static final String KEY_ENTITIES = "entities";
+
+    private static final Pattern SHARD_FILE_PATTERN = Pattern.compile("reputations_(\\d+)\\.nbt");
 
     private ReputationDataIO() {
         throw new UnsupportedOperationException();
@@ -56,15 +60,27 @@ public final class ReputationDataIO {
         List<ReputationData> entriesInShard,
         int shardIndex
     ) {
-        var dataTag = new CompoundTag();
+        var factionsTag = new CompoundTag();
+        var entitiesTag = new CompoundTag();
 
         for (var reputationData : entriesInShard) {
-            var reputationKey = ReputationDataSerializer.serializeReputationKey(reputationData.getKey());
-            dataTag.put(reputationKey, ReputationDataSerializer.serialize(reputationData));
+            switch (reputationData.getKey()) {
+                case ReputationKey.Faction(var factionId) ->
+                    factionsTag.put(factionId.toString(), ReputationDataSerializer.serialize(reputationData));
+                case ReputationKey.Entity(var uuid) ->
+                    entitiesTag.put(uuid.toString(), ReputationDataSerializer.serialize(reputationData));
+            }
         }
 
         var rootTag = new CompoundTag();
-        rootTag.put(KEY_DATA, dataTag);
+
+        if (!factionsTag.isEmpty()) {
+            rootTag.put(KEY_FACTIONS, factionsTag);
+        }
+
+        if (!entitiesTag.isEmpty()) {
+            rootTag.put(KEY_ENTITIES, entitiesTag);
+        }
 
         ReputationIO.writeCompressed(ReputationIO.getReputationShardPath(server, shardIndex), rootTag);
     }
@@ -82,16 +98,35 @@ public final class ReputationDataIO {
         }
 
         var tag = ReputationIO.readCompressed(shardFile);
-        var dataTag = tag.getCompound(KEY_DATA);
 
-        for (var key : dataTag.getAllKeys()) {
-            var entryTag = dataTag.getCompound(key);
-            var reputationData = ReputationDataSerializer.deserialize(key, entryTag);
-            var reputationKey = reputationData.getKey();
+        if (tag.contains(KEY_FACTIONS)) {
+            var factionsTag = tag.getCompound(KEY_FACTIONS);
 
-            reputationData.clearDirty();
-            data.put(reputationKey, reputationData);
-            shardManager.recordShardEntry(reputationKey, shardIndex);
+            for (var key : factionsTag.getAllKeys()) {
+                var factionId = ResourceLocation.parse(key);
+                var reputationKey = new ReputationKey.Faction(factionId);
+                var entryTag = factionsTag.getCompound(key);
+                var reputationData = ReputationDataSerializer.deserialize(reputationKey, entryTag);
+
+                reputationData.clearDirty();
+                data.put(reputationKey, reputationData);
+                shardManager.recordShardEntry(reputationKey, shardIndex);
+            }
+        }
+
+        if (tag.contains(KEY_ENTITIES)) {
+            var entitiesTag = tag.getCompound(KEY_ENTITIES);
+
+            for (var key : entitiesTag.getAllKeys()) {
+                var uuid = UUID.fromString(key);
+                var reputationKey = new ReputationKey.Entity(uuid);
+                var entryTag = entitiesTag.getCompound(key);
+                var reputationData = ReputationDataSerializer.deserialize(reputationKey, entryTag);
+
+                reputationData.clearDirty();
+                data.put(reputationKey, reputationData);
+                shardManager.recordShardEntry(reputationKey, shardIndex);
+            }
         }
     }
 
