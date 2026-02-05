@@ -24,6 +24,7 @@ import com.blib.api.common.faction.v1.FactionManager;
 import com.blib.api.common.faction.v1.FactionMember;
 import com.blib.api.common.faction.v1.FactionRelationships;
 import com.blib.api.common.faction.v1.FactionType;
+import com.blib.api.common.registry.v1.BLibBuiltInRegistries;
 import com.blib.api.common.registry.v1.BLibHolder;
 import com.blib.internal.common.event.BLibGlobalEvents;
 import com.blib.internal.common.faction.io.FactionDataIO;
@@ -83,6 +84,33 @@ public class BLibFactionManager implements FactionManager {
         factionIdToTypeId.put(id, typeId);
 
         return Result.ok(new Tuple2<>(factionRelationships, factionData));
+    }
+
+    public Result<FactionRelationships, FactionDataError> getOrCreateByTypeId(ResourceLocation id, ResourceLocation typeId) {
+        var existingRel = relationships.get(id);
+
+        if (existingRel != null) {
+            return Result.ok(existingRel);
+        }
+
+        var factionType = BLibBuiltInRegistries.FACTION_TYPES.get(typeId);
+
+        if (factionType == null) {
+            return Result.err(new FactionDataError.UnknownType(id, null));
+        }
+
+        var factionRelationships = new FactionRelationships(id);
+        shardManager.assignShardIndex(id);
+        factionRelationships.markDirty();
+
+        var factionData = factionType.createInstance();
+        factionData.markDirty();
+
+        relationships.put(id, factionRelationships);
+        data.put(id, factionData);
+        factionIdToTypeId.put(id, typeId);
+
+        return Result.ok(factionRelationships);
     }
 
     @Override
