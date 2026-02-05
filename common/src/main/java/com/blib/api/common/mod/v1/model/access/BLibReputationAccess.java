@@ -4,8 +4,8 @@ import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.api.common.mod.v1.BLibMod;
 import com.blib.api.common.reputation.v1.ReputationData;
+import com.blib.api.common.reputation.v1.ReputationKey;
 import com.blib.api.common.reputation.v1.ReputationManager;
-import com.blib.api.common.reputation.v1.ReputationSubject;
 import com.blib.internal.common.reputation.BLibReputationManager;
 
 public class BLibReputationAccess implements ReputationManager {
@@ -18,37 +18,37 @@ public class BLibReputationAccess implements ReputationManager {
     }
 
     @Override
-    public ReputationData getOrCreate(ReputationSubject reputationSubject) {
-        return BLibReputationManager.INSTANCE.getOrCreate(reputationSubject);
+    public ReputationData getOrCreate(ReputationKey reputationKey) {
+        return BLibReputationManager.INSTANCE.getOrCreate(reputationKey);
     }
 
     @Override
-    public int getReputation(ReputationSubject from, ReputationSubject to) {
+    public int getReputation(ReputationKey from, ReputationKey to) {
         return BLibReputationManager.INSTANCE.getReputation(from, to);
     }
 
     @Override
-    public void setReputation(ReputationSubject from, ReputationSubject to, int value) {
+    public void setReputation(ReputationKey from, ReputationKey to, int value) {
         BLibReputationManager.INSTANCE.setReputation(from, to, value);
     }
 
     @Override
-    public void adjustReputation(ReputationSubject from, ReputationSubject to, int delta) {
+    public void adjustReputation(ReputationKey from, ReputationKey to, int delta) {
         BLibReputationManager.INSTANCE.adjustReputation(from, to, delta);
     }
 
     @Override
-    public void removeReputation(ReputationSubject from, ReputationSubject to) {
+    public void removeReputation(ReputationKey from, ReputationKey to) {
         BLibReputationManager.INSTANCE.removeReputation(from, to);
     }
 
     @Override
-    public void removeSubject(ReputationSubject reputationSubject) {
-        BLibReputationManager.INSTANCE.removeSubject(reputationSubject);
+    public void removeSubject(ReputationKey reputationKey) {
+        BLibReputationManager.INSTANCE.removeSubject(reputationKey);
     }
 
     @Override
-    public boolean exists(ReputationSubject reputationSubject) {
-        return BLibReputationManager.INSTANCE.exists(reputationSubject);
+    public boolean exists(ReputationKey reputationKey) {
+        return BLibReputationManager.INSTANCE.exists(reputationKey);
     }
 }

@@ -2,17 +2,17 @@ package com.blib.api.common.reputation.v1;
 
 public interface ReputationManager {
 
-    ReputationData getOrCreate(ReputationSubject reputationSubject);
+    ReputationData getOrCreate(ReputationKey reputationKey);
 
-    int getReputation(ReputationSubject from, ReputationSubject to);
+    int getReputation(ReputationKey from, ReputationKey to);
 
-    void setReputation(ReputationSubject from, ReputationSubject to, int value);
+    void setReputation(ReputationKey from, ReputationKey to, int value);
 
-    void adjustReputation(ReputationSubject from, ReputationSubject to, int delta);
+    void adjustReputation(ReputationKey from, ReputationKey to, int delta);
 
-    void removeReputation(ReputationSubject from, ReputationSubject to);
+    void removeReputation(ReputationKey from, ReputationKey to);
 
-    void removeSubject(ReputationSubject reputationSubject);
+    void removeSubject(ReputationKey reputationKey);
 
-    boolean exists(ReputationSubject reputationSubject);
+    boolean exists(ReputationKey reputationKey);
 }

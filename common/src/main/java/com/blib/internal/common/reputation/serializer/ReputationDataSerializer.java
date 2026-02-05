@@ -7,7 +7,7 @@ import org.jetbrains.annotations.ApiStatus;
 import java.util.UUID;
 
 import com.blib.api.common.reputation.v1.ReputationData;
-import com.blib.api.common.reputation.v1.ReputationSubject;
+import com.blib.api.common.reputation.v1.ReputationKey;
 
 @ApiStatus.Internal
 public final class ReputationDataSerializer {
@@ -32,14 +32,14 @@ public final class ReputationDataSerializer {
         var tag = new CompoundTag();
 
         switch (data.getSubject()) {
-            case ReputationSubject.Faction faction -> tag.putString(KEY_TYPE, TYPE_FACTION);
-            case ReputationSubject.Entity entity -> tag.putString(KEY_TYPE, TYPE_ENTITY);
+            case ReputationKey.Faction faction -> tag.putString(KEY_TYPE, TYPE_FACTION);
+            case ReputationKey.Entity entity -> tag.putString(KEY_TYPE, TYPE_ENTITY);
         }
 
         var reputationsTag = new CompoundTag();
 
         for (var entry : data.getAll().entrySet()) {
-            var targetKey = serializeSubjectKey(entry.getKey());
+            var targetKey = serializeReputationKey(entry.getKey());
             reputationsTag.putInt(targetKey, entry.getValue());
         }
 
@@ -48,8 +48,8 @@ public final class ReputationDataSerializer {
         return tag;
     }
 
-    public static ReputationData deserialize(String subjectKey, CompoundTag tag) {
-        var reputationSubject = deserializeSubjectKey(subjectKey);
+    public static ReputationData deserialize(String reputationKey, CompoundTag tag) {
+        var reputationSubject = deserializeSubjectKey(reputationKey);
         var data = new ReputationData(reputationSubject);
         var reputationsTag = tag.getCompound(KEY_REPUTATIONS);
 
@@ -62,22 +62,22 @@ public final class ReputationDataSerializer {
         return data;
     }
 
-    public static String serializeSubjectKey(ReputationSubject reputationSubject) {
-        return switch (reputationSubject) {
-            case ReputationSubject.Faction(var factionId) -> FACTION_PREFIX + factionId.toString();
-            case ReputationSubject.Entity(var uuid) -> ENTITY_PREFIX + uuid.toString();
+    public static String serializeReputationKey(ReputationKey reputationKey) {
+        return switch (reputationKey) {
+            case ReputationKey.Faction(var factionId) -> FACTION_PREFIX + factionId.toString();
+            case ReputationKey.Entity(var uuid) -> ENTITY_PREFIX + uuid.toString();
         };
     }
 
-    public static ReputationSubject deserializeSubjectKey(String key) {
+    public static ReputationKey deserializeSubjectKey(String key) {
         if (key.startsWith(FACTION_PREFIX)) {
             var factionId = ResourceLocation.parse(key.substring(FACTION_PREFIX.length()));
-            return new ReputationSubject.Faction(factionId);
+            return new ReputationKey.Faction(factionId);
         } else if (key.startsWith(ENTITY_PREFIX)) {
             var uuid = UUID.fromString(key.substring(ENTITY_PREFIX.length()));
-            return new ReputationSubject.Entity(uuid);
+            return new ReputationKey.Entity(uuid);
         } else {
-            throw new IllegalArgumentException("Unknown reputation subject key format: " + key);
+            throw new IllegalArgumentException("Unknown reputation key format: " + key);
         }
     }
 }

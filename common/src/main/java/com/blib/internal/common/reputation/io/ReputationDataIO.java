@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import com.blib.api.common.reputation.v1.ReputationData;
-import com.blib.api.common.reputation.v1.ReputationSubject;
+import com.blib.api.common.reputation.v1.ReputationKey;
 import com.blib.internal.common.reputation.serializer.ReputationDataSerializer;
 import com.blib.internal.common.util.ShardManager;
 
@@ -33,8 +33,8 @@ public final class ReputationDataIO {
 
     public static void loadAll(
         MinecraftServer server,
-        Map<ReputationSubject, ReputationData> data,
-        ShardManager<ReputationSubject> shardManager
+        Map<ReputationKey, ReputationData> data,
+        ShardManager<ReputationKey> shardManager
     ) {
         var reputationDir = ReputationIO.getReputationDirectory(server);
 
@@ -59,8 +59,8 @@ public final class ReputationDataIO {
         var dataTag = new CompoundTag();
 
         for (var reputationData : entriesInShard) {
-            var subjectKey = ReputationDataSerializer.serializeSubjectKey(reputationData.getSubject());
-            dataTag.put(subjectKey, ReputationDataSerializer.serialize(reputationData));
+            var reputationKey = ReputationDataSerializer.serializeReputationKey(reputationData.getSubject());
+            dataTag.put(reputationKey, ReputationDataSerializer.serialize(reputationData));
         }
 
         var rootTag = new CompoundTag();
@@ -71,8 +71,8 @@ public final class ReputationDataIO {
 
     private static void loadShard(
         Path shardFile,
-        Map<ReputationSubject, ReputationData> data,
-        ShardManager<ReputationSubject> shardManager
+        Map<ReputationKey, ReputationData> data,
+        ShardManager<ReputationKey> shardManager
     ) {
         var shardIndex = parseShardIndex(shardFile);
 

@@ -13,8 +13,8 @@ import java.util.Map;
 import java.util.Set;
 
 import com.blib.api.common.reputation.v1.ReputationData;
+import com.blib.api.common.reputation.v1.ReputationKey;
 import com.blib.api.common.reputation.v1.ReputationManager;
-import com.blib.api.common.reputation.v1.ReputationSubject;
 import com.blib.internal.common.reputation.io.ReputationDataIO;
 import com.blib.internal.common.util.ShardManager;
 
@@ -27,11 +27,11 @@ public class BLibReputationManager implements ReputationManager {
 
     private static final int SHARD_SIZE = 1000;
 
-    private final Map<ReputationSubject, ReputationData> data;
+    private final Map<ReputationKey, ReputationData> data;
 
-    private final Map<ReputationSubject, Set<ReputationSubject>> incomingIndex;
+    private final Map<ReputationKey, Set<ReputationKey>> incomingIndex;
 
-    private final ShardManager<ReputationSubject> shardManager;
+    private final ShardManager<ReputationKey> shardManager;
 
     private BLibReputationManager() {
         this.data = new HashMap<>();
@@ -40,22 +40,22 @@ public class BLibReputationManager implements ReputationManager {
     }
 
     @Override
-    public ReputationData getOrCreate(ReputationSubject reputationSubject) {
-        return data.computeIfAbsent(reputationSubject, $ -> {
-            var reputationData = new ReputationData(reputationSubject);
-            shardManager.assignShardIndex(reputationSubject);
+    public ReputationData getOrCreate(ReputationKey reputationKey) {
+        return data.computeIfAbsent(reputationKey, $ -> {
+            var reputationData = new ReputationData(reputationKey);
+            shardManager.assignShardIndex(reputationKey);
             return reputationData;
         });
     }
 
     @Override
-    public int getReputation(ReputationSubject from, ReputationSubject to) {
+    public int getReputation(ReputationKey from, ReputationKey to) {
         var reputationData = data.get(from);
         return reputationData != null ? reputationData.get(to) : 0;
     }
 
     @Override
-    public void setReputation(ReputationSubject from, ReputationSubject to, int value) {
+    public void setReputation(ReputationKey from, ReputationKey to, int value) {
         var reputationData = getOrCreate(from);
         var oldValue = reputationData.get(to);
 
@@ -69,13 +69,13 @@ public class BLibReputationManager implements ReputationManager {
     }
 
     @Override
-    public void adjustReputation(ReputationSubject from, ReputationSubject to, int delta) {
+    public void adjustReputation(ReputationKey from, ReputationKey to, int delta) {
         var current = getReputation(from, to);
         setReputation(from, to, current + delta);
     }
 
     @Override
-    public void removeReputation(ReputationSubject from, ReputationSubject to) {
+    public void removeReputation(ReputationKey from, ReputationKey to) {
         var reputationData = data.get(from);
 
         if (reputationData != null) {
@@ -89,33 +89,33 @@ public class BLibReputationManager implements ReputationManager {
     }
 
     @Override
-    public void removeSubject(ReputationSubject reputationSubject) {
-        var removedData = data.remove(reputationSubject);
+    public void removeSubject(ReputationKey reputationKey) {
+        var removedData = data.remove(reputationKey);
 
         if (removedData != null) {
             for (var target : removedData.getAll().keySet()) {
-                removeFromIncomingIndex(reputationSubject, target);
+                removeFromIncomingIndex(reputationKey, target);
             }
 
-            shardManager.remove(reputationSubject);
+            shardManager.remove(reputationKey);
         }
 
-        var incomingFrom = incomingIndex.remove(reputationSubject);
+        var incomingFrom = incomingIndex.remove(reputationKey);
 
         if (incomingFrom != null) {
             for (var from : incomingFrom) {
                 var fromData = data.get(from);
 
                 if (fromData != null) {
-                    fromData.remove(reputationSubject);
+                    fromData.remove(reputationKey);
                 }
             }
         }
     }
 
     @Override
-    public boolean exists(ReputationSubject reputationSubject) {
-        return data.containsKey(reputationSubject);
+    public boolean exists(ReputationKey reputationKey) {
+        return data.containsKey(reputationKey);
     }
 
     public void load(MinecraftServer server) {
@@ -173,11 +173,11 @@ public class BLibReputationManager implements ReputationManager {
         shardManager.clear();
     }
 
-    private void addToIncomingIndex(ReputationSubject from, ReputationSubject to) {
+    private void addToIncomingIndex(ReputationKey from, ReputationKey to) {
         incomingIndex.computeIfAbsent(to, $ -> new HashSet<>()).add(from);
     }
 
-    private void removeFromIncomingIndex(ReputationSubject from, ReputationSubject to) {
+    private void removeFromIncomingIndex(ReputationKey from, ReputationKey to) {
         var set = incomingIndex.get(to);
 
         if (set != null) {

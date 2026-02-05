@@ -10,26 +10,26 @@ import com.blib.api.common.util.v1.Dirty;
 
 public class ReputationData implements Dirty {
 
-    private final ReputationSubject reputationSubject;
+    private final ReputationKey reputationKey;
 
-    private final Map<ReputationSubject, Integer> reputations;
+    private final Map<ReputationKey, Integer> reputations;
 
     private boolean dirty;
 
-    public ReputationData(ReputationSubject reputationSubject) {
-        this.reputationSubject = reputationSubject;
+    public ReputationData(ReputationKey reputationKey) {
+        this.reputationKey = reputationKey;
         this.reputations = new HashMap<>();
     }
 
-    public ReputationSubject getSubject() {
-        return reputationSubject;
+    public ReputationKey getSubject() {
+        return reputationKey;
     }
 
-    public int get(ReputationSubject target) {
+    public int get(ReputationKey target) {
         return reputations.getOrDefault(target, 0);
     }
 
-    public void set(ReputationSubject target, int value) {
+    public void set(ReputationKey target, int value) {
         if (value == 0) {
             remove(target);
         } else {
@@ -38,23 +38,23 @@ public class ReputationData implements Dirty {
         }
     }
 
-    public void adjust(ReputationSubject target, int delta) {
+    public void adjust(ReputationKey target, int delta) {
         int current = get(target);
         set(target, current + delta);
     }
 
-    public void remove(ReputationSubject target) {
+    public void remove(ReputationKey target) {
         if (reputations.remove(target) != null) {
             markDirty();
         }
     }
 
-    public Map<ReputationSubject, Integer> getAll() {
+    public Map<ReputationKey, Integer> getAll() {
         return Collections.unmodifiableMap(reputations);
     }
 
     @ApiStatus.Internal
-    public Map<ReputationSubject, Integer> getReputationsInternal() {
+    public Map<ReputationKey, Integer> getReputationsInternal() {
         return reputations;
     }
 
