@@ -6,7 +6,7 @@ import net.minecraft.world.entity.Entity;
 import java.util.Set;
 import java.util.UUID;
 
-public interface ReadableFaction {
+public interface ReadableFactionRelationships {
 
     ResourceLocation getId();
 

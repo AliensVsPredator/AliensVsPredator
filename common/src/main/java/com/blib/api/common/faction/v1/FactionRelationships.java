@@ -2,7 +2,6 @@ package com.blib.api.common.faction.v1;
 
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -11,19 +10,23 @@ import java.util.Set;
 import com.blib.api.common.util.v1.Dirty;
 import com.blib.internal.common.faction.BLibFactionManager;
 
-public class FactionRelationships implements WritableFaction, Dirty {
+public class FactionRelationships implements WritableFactionRelationships, Dirty {
 
     private final ResourceLocation id;
 
-    private final Set<FactionMember> members = new LinkedHashSet<>();
-
-    private @Nullable ResourceLocation parentFactionId;
+    private final Set<FactionMember> members;
 
     private boolean dirty;
 
     @ApiStatus.Internal
     public FactionRelationships(ResourceLocation id) {
+        this(id, new LinkedHashSet<>());
+    }
+
+    @ApiStatus.Internal
+    public FactionRelationships(ResourceLocation id, Set<FactionMember> members) {
         this.id = id;
+        this.members = members;
     }
 
     @Override
@@ -42,36 +45,31 @@ public class FactionRelationships implements WritableFaction, Dirty {
     }
 
     @Override
-    public void addMember(FactionMember member) {
+    public boolean addMember(FactionMember member) {
         if (member instanceof FactionMember.SubFaction(var factionId)) {
             if (!BLibFactionManager.INSTANCE.exists(factionId)) {
-                throw new IllegalArgumentException(
-                    "Cannot add subfaction member referencing non-existent faction '" + factionId + "'"
-                );
+                return false;
             }
         }
 
         if (members.add(member)) {
             markDirty();
             BLibFactionManager.INSTANCE.onMemberChanged(id, member, true);
+            return true;
         }
+
+        return false;
     }
 
     @Override
-    public void removeMember(FactionMember member) {
+    public boolean removeMember(FactionMember member) {
         if (members.remove(member)) {
             markDirty();
             BLibFactionManager.INSTANCE.onMemberChanged(id, member, false);
+            return true;
         }
-    }
 
-    public @Nullable ResourceLocation getParentFactionId() {
-        return parentFactionId;
-    }
-
-    public void setParentFactionId(@Nullable ResourceLocation parentFactionId) {
-        this.parentFactionId = parentFactionId;
-        markDirty();
+        return false;
     }
 
     @Override

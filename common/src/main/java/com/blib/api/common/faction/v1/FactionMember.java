@@ -8,7 +8,7 @@ public sealed interface FactionMember permits FactionMember.Entity, FactionMembe
 
     boolean matches(net.minecraft.world.entity.Entity entity);
 
-    boolean matches(ReadableFaction faction);
+    boolean matches(ReadableFactionRelationships faction);
 
     static FactionMember entity(UUID uuid) {
         return new Entity(uuid);
@@ -30,7 +30,7 @@ public sealed interface FactionMember permits FactionMember.Entity, FactionMembe
         }
 
         @Override
-        public boolean matches(ReadableFaction faction) {
+        public boolean matches(ReadableFactionRelationships faction) {
             return false;
         }
     }
@@ -43,7 +43,7 @@ public sealed interface FactionMember permits FactionMember.Entity, FactionMembe
         }
 
         @Override
-        public boolean matches(ReadableFaction faction) {
+        public boolean matches(ReadableFactionRelationships faction) {
             return faction.getId().equals(factionId);
         }
     }
