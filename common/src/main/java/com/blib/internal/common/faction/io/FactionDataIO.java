@@ -127,6 +127,8 @@ public final class FactionDataIO {
             if (factionType != null) {
                 var factionData = factionType.createInstance();
                 factionData.load(FactionDataSerializer.deserializeData(entryTag));
+                // Clear dirty since we just loaded.
+                factionData.clearDirty();
                 data.put(factionId, factionData);
             } else {
                 LOGGER.warn("Unknown faction type '{}' for faction '{}', skipping data creation", typeId, factionId);

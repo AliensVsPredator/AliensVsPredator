@@ -76,8 +76,10 @@ public final class FactionRelationshipsIO {
 
         for (var key : relationshipsTag.getAllKeys()) {
             var factionTag = relationshipsTag.getCompound(key);
-            var rel = FactionRelationshipsSerializer.deserialize(factionTag);
-            relationships.put(rel.getId(), rel);
+            var factionRelationships = FactionRelationshipsSerializer.deserialize(factionTag);
+            // Clear dirty since we just loaded.
+            factionRelationships.clearDirty();
+            relationships.put(factionRelationships.getId(), factionRelationships);
         }
     }
 }

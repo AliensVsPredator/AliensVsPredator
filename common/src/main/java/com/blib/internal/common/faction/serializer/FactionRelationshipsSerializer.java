@@ -72,8 +72,6 @@ public final class FactionRelationshipsSerializer {
             relationships.addMember(new FactionMember.SubFaction(ResourceLocation.parse(subfactionList.getString(i))));
         }
 
-        // Clear dirty since we just loaded
-        relationships.clearDirty();
         return relationships;
     }
 }
