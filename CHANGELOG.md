@@ -3,11 +3,6 @@
 ## ✍️ Developer Notes
 - For help or other questions, concerns, etc. check out our Discord server: https://discord.gg/wp7mvmbkVb
 
-## ☢️ Breaking Changes
-- Removed `DataStoreKey<T>` in favor of registry-based `DataStoreType<T>`
-- Removed `BLibResourceAccess#createDataStoreKey()`
-- `DataStoreManager` methods now accept `BLibHolder<DataStoreType<T>>` instead of `DataStoreKey<T>`
-
 ## ✨ What's New
 - Added Storage API (`api.common.storage.v1`) for persistent data storage at three scopes:
   - `DataStore` interface (extends `NBTSerializable`) for storable data
@@ -28,6 +23,24 @@
 - Added `BLibStorageAccess` for type-safe data store access
 - Added `BLibServerSaveEvent`, `BLibLevelSaveEvent`, `BLibChunkSaveEvent`, and `BLibChunkUnloadEvent`
 - Added `BLibEventAccess#onServerSave()`, `onLevelSave()`, `onChunkSave()`, and `onChunkUnload()` event accessors
+- Added Faction API (`api.common.faction.v1`) for persistent, type-safe faction management:
+  - `FactionManager` interface for creating, accessing, and removing factions
+  - `FactionType<T>` for defining custom faction data types, registered to the `FACTION_TYPES` registry
+  - `FactionKey<T>` record for type-safe faction identification (couples faction ID with its type)
+  - `FactionData` base class for custom per-faction data
+  - `FactionRelationships` for tracking faction members and parent-faction relationships
+  - `FactionMember` sealed interface with `Entity` and `SubFaction` variants
+  - `FactionDataError` sealed interface with `UnknownType` and `TypeMismatch` error variants
+  - Type-validated data access returning `Result<T, FactionDataError>` to prevent type mismatches
+  - Shard-based persistence (1000 entries per shard, dirty-tracking for incremental saves)
+  - Reverse entity-to-faction index for efficient UUID-to-faction lookups via `FactionManager#getFactionIds(UUID)`
+  - Automatic faction membership cleanup when non-player entities are killed or discarded
+- Added `FACTION_TYPES` registry to `BLibRegistries` and `BLibBuiltInRegistries`
+- Added `BLibMod#factions()` method to access factions through the mod facade
+- Added `BLibFactionAccess` for type-safe faction access
+- Added `BLibEntityRemoveEvent` for entity removal events (provides `Entity` and `RemovalReason`)
+- Added `BLibEventAccess#onEntityRemove()` event accessor
+- Added `Dirty` interface (`api.common.util.v1`) for reusable dirty-tracking
 
 ## ♻️ Changes
 - Renamed server lifecycle event methods for consistency (prefixed with "on"):
@@ -36,15 +49,6 @@
   - `onServerStopped()` (replaces `serverStopped()`)
   - `onServerStopping()` (replaces `serverStopping()`)
 - Deprecated `serverStarted()`, `serverStarting()`, `serverStopped()`, `serverStopping()` for removal
-
-## 🐞 Fixes
-- N/A
-
-## 🧪 Experimental
-- N/A
-
-## 🛠 Data Pack
-- N/A
 
 ## 🔬 Technical Changes
 - Split `BLibDataStoreManager` into dedicated sub-managers:
@@ -57,3 +61,9 @@
   - `MixinServerLevel_Events` hooks into `save()` and `unload()`
   - `MixinChunkMap_SaveChunkData` hooks into `ChunkMap#save()`
 - Added `BLibGlobalEvents.SERVER_SAVE`, `LEVEL_SAVE`, `CHUNK_SAVE`, and `CHUNK_UNLOAD` global event handles
+- Added `ShardUtil` utility for shard index calculations and dirty shard detection
+- Added `BLibFactionManager` internal implementation with shard-based IO and reverse entity index
+- Added `FactionDataIO`, `FactionRelationshipsIO`, and `FactionIO` for faction persistence
+- Added `FactionDataSerializer` and `FactionRelationshipsSerializer` for faction NBT serialization
+- Added `BLibGlobalEvents.ENTITY_REMOVE` global event handle
+- Renamed mixin `MixinEntity_TickEvent` to `MixinEntity_Events` (now handles both tick and remove events)

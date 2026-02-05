@@ -14,7 +14,7 @@
     "MixinEntityTypeBuilder_SilenceDataFixerError",
     "MixinHolder",
     "MixinLivingEntity_GOAPUser",
-    "MixinEntity_TickEvent",
+    "MixinEntity_Events",
     "MixinRegistry_ApplyDataFixes",
     "MixinShapedRecipeBuilder_Accessor",
     "MixinShapelessRecipeBuilder_Accessor",

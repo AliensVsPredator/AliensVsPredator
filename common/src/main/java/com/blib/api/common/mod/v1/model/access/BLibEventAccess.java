@@ -6,6 +6,7 @@ import com.blib.api.common.event.v1.BLibBlockBreakEvent;
 import com.blib.api.common.event.v1.BLibChunkSaveEvent;
 import com.blib.api.common.event.v1.BLibChunkUnloadEvent;
 import com.blib.api.common.event.v1.BLibCommonSetupEvent;
+import com.blib.api.common.event.v1.BLibEntityRemoveEvent;
 import com.blib.api.common.event.v1.BLibEntityTickEvent;
 import com.blib.api.common.event.v1.BLibLevelSaveEvent;
 import com.blib.api.common.event.v1.BLibLevelTickEvent;
@@ -37,6 +38,10 @@ public class BLibEventAccess {
 
     public BLibEventListenerHandle<BLibCommonSetupEvent> onCommonSetup() {
         return BLibInternalServices.EVENT.onCommonSetup(mod);
+    }
+
+    public BLibEventListenerHandle<BLibEntityRemoveEvent> onEntityRemove() {
+        return BLibInternalServices.EVENT.onEntityRemove(mod);
     }
 
     public BLibEventListenerHandle<BLibEntityTickEvent> onEntityTick() {

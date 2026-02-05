@@ -33,6 +33,7 @@ import com.blib.api.common.event.v1.BLibBlockBreakEvent;
 import com.blib.api.common.event.v1.BLibChunkSaveEvent;
 import com.blib.api.common.event.v1.BLibChunkUnloadEvent;
 import com.blib.api.common.event.v1.BLibCommonSetupEvent;
+import com.blib.api.common.event.v1.BLibEntityRemoveEvent;
 import com.blib.api.common.event.v1.BLibEntityTickEvent;
 import com.blib.api.common.event.v1.BLibLevelSaveEvent;
 import com.blib.api.common.event.v1.BLibLevelTickEvent;
@@ -86,6 +87,8 @@ public class BLibNeoForgeModContainer {
 
     private final BLibEventListenerContainer<BLibCommonSetupEvent> onCommonSetup;
 
+    private final BLibEventListenerHandle<BLibEntityRemoveEvent> onEntityRemove;
+
     private final BLibEventListenerHandle<BLibEntityTickEvent> onEntityTick;
 
     private final BLibEventListenerHandle<BLibLevelSaveEvent> onLevelSave;
@@ -128,6 +131,7 @@ public class BLibNeoForgeModContainer {
         this.onChunkSave = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.CHUNK_SAVE);
         this.onChunkUnload = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.CHUNK_UNLOAD);
         this.onCommonSetup = BLibCommonSetupEvents.FACTORY.apply(mod);
+        this.onEntityRemove = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.ENTITY_REMOVE);
         this.onEntityTick = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.ENTITY_TICK);
         this.onLevelSave = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.LEVEL_SAVE);
         this.onPlayerStartTrackingEntity = BLibNeoForgePlayerTrackingEntityEvents.FACTORY.apply(mod);
@@ -166,6 +170,10 @@ public class BLibNeoForgeModContainer {
 
     public BLibEventListenerContainer<BLibCommonSetupEvent> onCommonSetup() {
         return onCommonSetup;
+    }
+
+    public BLibEventListenerHandle<BLibEntityRemoveEvent> onEntityRemove() {
+        return onEntityRemove;
     }
 
     public BLibEventListenerHandle<BLibEntityTickEvent> onEntityTick() {
