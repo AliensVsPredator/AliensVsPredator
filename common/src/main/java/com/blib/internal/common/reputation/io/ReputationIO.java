@@ -24,7 +24,7 @@ public final class ReputationIO {
 
     private static final String GLOBAL_FOLDER = "global";
 
-    private static final String REPUTATION_PREFIX = "reputation_";
+    private static final String REPUTATIONS_PREFIX = "reputations_";
 
     private ReputationIO() {
         throw new UnsupportedOperationException();
@@ -38,7 +38,7 @@ public final class ReputationIO {
         return getBlibDataPath(server)
             .resolve(BLIB_DATA_FOLDER)
             .resolve(GLOBAL_FOLDER)
-            .resolve(REPUTATION_PREFIX + shardIndex + ".nbt");
+            .resolve(REPUTATIONS_PREFIX + shardIndex + ".nbt");
     }
 
     public static Path getReputationDirectory(MinecraftServer server) {

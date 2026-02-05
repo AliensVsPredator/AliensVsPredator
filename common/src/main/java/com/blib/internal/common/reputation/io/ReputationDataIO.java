@@ -23,7 +23,7 @@ public final class ReputationDataIO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ReputationDataIO.class);
 
-    private static final String KEY_DATA = "data";
+    private static final String KEY_DATA = "reputations";
 
     private static final Pattern SHARD_FILE_PATTERN = Pattern.compile("reputation_(\\d+)\\.nbt");
 
