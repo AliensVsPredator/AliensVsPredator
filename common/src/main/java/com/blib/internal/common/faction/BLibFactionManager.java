@@ -11,8 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,16 +43,13 @@ public class BLibFactionManager implements FactionManager {
 
     private final Map<ResourceLocation, FactionRelationships> relationships;
 
-    private final Map<UUID, Set<ResourceLocation>> entityToFactions;
-
-    private final Map<ResourceLocation, Set<ResourceLocation>> subfactionToParentFactions;
+    private final FactionMemberIndex memberIndex;
 
     private BLibFactionManager() {
-        this.data = new LinkedHashMap<>();
-        this.factionIdToTypeId = new LinkedHashMap<>();
-        this.relationships = new LinkedHashMap<>();
-        this.entityToFactions = new LinkedHashMap<>();
-        this.subfactionToParentFactions = new LinkedHashMap<>();
+        this.data = new HashMap<>();
+        this.factionIdToTypeId = new HashMap<>();
+        this.relationships = new HashMap<>();
+        this.memberIndex = new FactionMemberIndex();
     }
 
     @Override
@@ -114,12 +110,12 @@ public class BLibFactionManager implements FactionManager {
 
     @Override
     public Set<ResourceLocation> getFactionIds(UUID entityUuid) {
-        return Collections.unmodifiableSet(entityToFactions.getOrDefault(entityUuid, Set.of()));
+        return memberIndex.getFactionIds(entityUuid);
     }
 
     @Override
     public Set<ResourceLocation> getParentFactionIds(ResourceLocation subfactionId) {
-        return Collections.unmodifiableSet(subfactionToParentFactions.getOrDefault(subfactionId, Set.of()));
+        return memberIndex.getParentFactionIds(subfactionId);
     }
 
     @Override
@@ -127,7 +123,7 @@ public class BLibFactionManager implements FactionManager {
         var removedRelationships = relationships.remove(id);
 
         if (removedRelationships != null) {
-            removeFactionFromMemberIndices(id, removedRelationships);
+            memberIndex.removeFaction(id, removedRelationships);
         }
 
         data.remove(id);
@@ -150,24 +146,11 @@ public class BLibFactionManager implements FactionManager {
         relationships.clear();
         data.clear();
         factionIdToTypeId.clear();
-        entityToFactions.clear();
-        subfactionToParentFactions.clear();
 
         FactionRelationshipsIO.loadAll(server, relationships);
         FactionDataIO.loadAll(server, relationships.keySet(), data, factionIdToTypeId);
 
-        for (var factionRelationships : relationships.values()) {
-            var factionId = factionRelationships.getId();
-
-            for (var member : factionRelationships.getMembers()) {
-                switch (member) {
-                    case FactionMember.Entity(var uuid) ->
-                        entityToFactions.computeIfAbsent(uuid, $ -> new LinkedHashSet<>()).add(factionId);
-                    case FactionMember.SubFaction(var subfactionId) ->
-                        subfactionToParentFactions.computeIfAbsent(subfactionId, $ -> new LinkedHashSet<>()).add(factionId);
-                }
-            }
-        }
+        memberIndex.rebuild(relationships);
 
         LOGGER.info("Loaded {} factions", relationships.size());
     }
@@ -187,39 +170,11 @@ public class BLibFactionManager implements FactionManager {
         relationships.clear();
         data.clear();
         factionIdToTypeId.clear();
-        entityToFactions.clear();
-        subfactionToParentFactions.clear();
+        memberIndex.clear();
     }
 
     public void onMemberChanged(ResourceLocation factionId, FactionMember member, boolean added) {
-        switch (member) {
-            case FactionMember.Entity(var uuid) -> {
-                if (added) {
-                    entityToFactions.computeIfAbsent(uuid, $ -> new LinkedHashSet<>()).add(factionId);
-                } else {
-                    removeFromIndex(entityToFactions, uuid, factionId);
-                }
-            }
-            case FactionMember.SubFaction(var subfactionId) -> {
-                if (added) {
-                    subfactionToParentFactions.computeIfAbsent(subfactionId, $ -> new LinkedHashSet<>()).add(factionId);
-                } else {
-                    removeFromIndex(subfactionToParentFactions, subfactionId, factionId);
-                }
-            }
-        }
-    }
-
-    private <K> void removeFromIndex(Map<K, Set<ResourceLocation>> index, K key, ResourceLocation value) {
-        var set = index.get(key);
-
-        if (set != null) {
-            set.remove(value);
-
-            if (set.isEmpty()) {
-                index.remove(key);
-            }
-        }
+        memberIndex.onMemberChanged(factionId, member, added);
     }
 
     private void saveRelationships(MinecraftServer server, List<@NotNull ResourceLocation> idList) {
@@ -240,14 +195,5 @@ public class BLibFactionManager implements FactionManager {
         }
 
         ShardUtil.clearAllDirty(data);
-    }
-
-    private void removeFactionFromMemberIndices(ResourceLocation id, FactionRelationships removedRelationships) {
-        for (var member : removedRelationships.getMembers()) {
-            switch (member) {
-                case FactionMember.Entity(var uuid) -> removeFromIndex(entityToFactions, uuid, id);
-                case FactionMember.SubFaction(var subfactionId) -> removeFromIndex(subfactionToParentFactions, subfactionId, id);
-            }
-        }
     }
 }
