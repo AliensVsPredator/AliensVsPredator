@@ -9,15 +9,9 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.blib.api.common.util.v1.Dirty;
+import com.blib.internal.common.faction.BLibFactionManager;
 
 public class FactionRelationships implements WritableFaction, Dirty {
-
-    @ApiStatus.Internal
-    @FunctionalInterface
-    public interface MembershipListener {
-
-        void onMemberChanged(ResourceLocation factionId, FactionMember member, boolean added);
-    }
 
     private final ResourceLocation id;
 
@@ -25,18 +19,11 @@ public class FactionRelationships implements WritableFaction, Dirty {
 
     private @Nullable ResourceLocation parentFactionId;
 
-    private @Nullable MembershipListener membershipListener;
-
     private boolean dirty;
 
     @ApiStatus.Internal
     public FactionRelationships(ResourceLocation id) {
         this.id = id;
-    }
-
-    @ApiStatus.Internal
-    public void setMembershipListener(@Nullable MembershipListener listener) {
-        this.membershipListener = listener;
     }
 
     @Override
@@ -56,12 +43,17 @@ public class FactionRelationships implements WritableFaction, Dirty {
 
     @Override
     public void addMember(FactionMember member) {
+        if (member instanceof FactionMember.SubFaction(var factionId)) {
+            if (!BLibFactionManager.INSTANCE.exists(factionId)) {
+                throw new IllegalArgumentException(
+                    "Cannot add subfaction member referencing non-existent faction '" + factionId + "'"
+                );
+            }
+        }
+
         if (members.add(member)) {
             markDirty();
-
-            if (membershipListener != null) {
-                membershipListener.onMemberChanged(id, member, true);
-            }
+            BLibFactionManager.INSTANCE.onMemberChanged(id, member, true);
         }
     }
 
@@ -69,10 +61,7 @@ public class FactionRelationships implements WritableFaction, Dirty {
     public void removeMember(FactionMember member) {
         if (members.remove(member)) {
             markDirty();
-
-            if (membershipListener != null) {
-                membershipListener.onMemberChanged(id, member, false);
-            }
+            BLibFactionManager.INSTANCE.onMemberChanged(id, member, false);
         }
     }
 

@@ -68,7 +68,6 @@ public class BLibFactionManager implements FactionManager {
         var factionType = type.value();
 
         var factionRelationships = new FactionRelationships(id);
-        attachListener(factionRelationships);
         factionRelationships.markDirty();
 
         var factionData = factionType.createInstance();
@@ -83,11 +82,7 @@ public class BLibFactionManager implements FactionManager {
 
     @Override
     public FactionRelationships getRelationships(ResourceLocation id) {
-        return relationships.computeIfAbsent(id, $ -> {
-            var factionRelationships = new FactionRelationships(id);
-            attachListener(factionRelationships);
-            return factionRelationships;
-        });
+        return relationships.computeIfAbsent(id, $ -> new FactionRelationships(id));
     }
 
     @Override
@@ -153,8 +148,6 @@ public class BLibFactionManager implements FactionManager {
         FactionDataIO.loadAll(server, relationships.keySet(), data, factionIdToTypeId);
 
         for (var factionRelationships : relationships.values()) {
-            attachListener(factionRelationships);
-
             for (var member : factionRelationships.getMembers()) {
                 if (member instanceof FactionMember.Entity(var uuid)) {
                     entityToFactions.computeIfAbsent(uuid, $ -> new LinkedHashSet<>()).add(factionRelationships.getId());
@@ -181,6 +174,24 @@ public class BLibFactionManager implements FactionManager {
         data.clear();
         factionIdToTypeId.clear();
         entityToFactions.clear();
+    }
+
+    public void onMemberChanged(ResourceLocation factionId, FactionMember member, boolean added) {
+        if (member instanceof FactionMember.Entity(var uuid)) {
+            if (added) {
+                entityToFactions.computeIfAbsent(uuid, $ -> new LinkedHashSet<>()).add(factionId);
+            } else {
+                var factions = entityToFactions.get(uuid);
+
+                if (factions != null) {
+                    factions.remove(factionId);
+
+                    if (factions.isEmpty()) {
+                        entityToFactions.remove(uuid);
+                    }
+                }
+            }
+        }
     }
 
     private void saveRelationships(MinecraftServer server, List<@NotNull ResourceLocation> idList) {
@@ -217,29 +228,5 @@ public class BLibFactionManager implements FactionManager {
                 }
             }
         }
-
-        removedRelationships.setMembershipListener(null);
-    }
-
-    private void onMemberChanged(ResourceLocation factionId, FactionMember member, boolean added) {
-        if (member instanceof FactionMember.Entity(var uuid)) {
-            if (added) {
-                entityToFactions.computeIfAbsent(uuid, $ -> new LinkedHashSet<>()).add(factionId);
-            } else {
-                var factions = entityToFactions.get(uuid);
-
-                if (factions != null) {
-                    factions.remove(factionId);
-
-                    if (factions.isEmpty()) {
-                        entityToFactions.remove(uuid);
-                    }
-                }
-            }
-        }
-    }
-
-    private void attachListener(FactionRelationships factionRelationships) {
-        factionRelationships.setMembershipListener(this::onMemberChanged);
     }
 }
