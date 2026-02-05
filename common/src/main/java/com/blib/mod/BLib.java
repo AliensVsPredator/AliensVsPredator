@@ -18,6 +18,7 @@ import com.blib.api.common.data_sync.v1.model.DataUser;
 import com.blib.api.common.faction.v1.FactionKey;
 import com.blib.api.common.faction.v1.FactionMember;
 import com.blib.api.common.mod.v1.BLibMod;
+import com.blib.api.common.reputation.v1.ReputationKey;
 import com.blib.api.common.server.v1.ServerScheduler;
 import com.blib.internal.client.render.armor.compat.ShoulderSurfingCompat;
 import com.blib.internal.common.faction.BLibFactionManager;
@@ -82,6 +83,10 @@ public class BLib {
         BLib.MOD.events().onServerStopped().register(BLibReputationManager.INSTANCE::clear);
 
         BLib.MOD.events()
+            .onFactionRemove()
+            .register(factionId -> BLibReputationManager.INSTANCE.removeReputation(ReputationKey.faction(factionId)));
+
+        BLib.MOD.events()
             .onEntityRemove()
             .register((entity, reason) -> {
                 switch (reason) {
@@ -97,6 +102,8 @@ public class BLib {
                         for (var factionId : factionIds) {
                             BLibFactionManager.INSTANCE.getRelationships(factionId).removeMember(member);
                         }
+
+                        BLibReputationManager.INSTANCE.removeReputation(ReputationKey.entity(uuid));
                     }
                     case UNLOADED_TO_CHUNK, UNLOADED_WITH_PLAYER, CHANGED_DIMENSION -> {}
                 }

@@ -8,6 +8,7 @@ import com.blib.api.common.event.v1.BLibChunkUnloadEvent;
 import com.blib.api.common.event.v1.BLibCommonSetupEvent;
 import com.blib.api.common.event.v1.BLibEntityRemoveEvent;
 import com.blib.api.common.event.v1.BLibEntityTickEvent;
+import com.blib.api.common.event.v1.BLibFactionRemoveEvent;
 import com.blib.api.common.event.v1.BLibLevelSaveEvent;
 import com.blib.api.common.event.v1.BLibLevelTickEvent;
 import com.blib.api.common.event.v1.BLibPlayerTrackingEntityEvent;
@@ -30,6 +31,8 @@ public interface BLibEventService {
     BLibEventListenerHandle<BLibEntityRemoveEvent> onEntityRemove(BLibMod mod);
 
     BLibEventListenerHandle<BLibEntityTickEvent> onEntityTick(BLibMod mod);
+
+    BLibEventListenerHandle<BLibFactionRemoveEvent> onFactionRemove(BLibMod mod);
 
     BLibEventListenerHandle<BLibLevelSaveEvent> onLevelSave(BLibMod mod);
 

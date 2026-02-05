@@ -25,6 +25,7 @@ import com.blib.api.common.faction.v1.FactionMember;
 import com.blib.api.common.faction.v1.FactionRelationships;
 import com.blib.api.common.faction.v1.FactionType;
 import com.blib.api.common.registry.v1.BLibHolder;
+import com.blib.internal.common.event.BLibGlobalEvents;
 import com.blib.internal.common.faction.io.FactionDataIO;
 import com.blib.internal.common.faction.io.FactionRelationshipsIO;
 import com.blib.internal.common.util.ShardManager;
@@ -138,6 +139,12 @@ public class BLibFactionManager implements FactionManager {
 
         data.remove(id);
         factionIdToTypeId.remove(id);
+
+        if (removedRelationships != null) {
+            for (var listener : BLibGlobalEvents.FACTION_REMOVE.listeners()) {
+                listener.invoke(id);
+            }
+        }
 
         return removedRelationships != null;
     }
