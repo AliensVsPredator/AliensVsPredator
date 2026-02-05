@@ -14,6 +14,7 @@ import com.blib.api.common.mod.v1.model.access.BLibFactoryAccess;
 import com.blib.api.common.mod.v1.model.access.BLibModStateAccess;
 import com.blib.api.common.mod.v1.model.access.BLibNetworkAccess;
 import com.blib.api.common.mod.v1.model.access.BLibRegistryAccess;
+import com.blib.api.common.mod.v1.model.access.BLibReputationAccess;
 import com.blib.api.common.mod.v1.model.access.BLibResourceAccess;
 import com.blib.api.common.mod.v1.model.access.BLibStorageAccess;
 import com.blib.internal.service.BLibInternalServices;
@@ -32,6 +33,8 @@ public class BLibMod implements BLibModStateAccess {
 
     private final BLibRegistryAccess registryAccess;
 
+    private final BLibReputationAccess reputationAccess;
+
     private final BLibResourceAccess resourceAccess;
 
     private final BLibStorageAccess storageAccess;
@@ -47,6 +50,7 @@ public class BLibMod implements BLibModStateAccess {
         this.factoryAccess = new BLibFactoryAccess(this);
         this.networkAccess = new BLibNetworkAccess(this);
         this.registryAccess = new BLibRegistryAccess(this);
+        this.reputationAccess = new BLibReputationAccess(this);
         this.resourceAccess = new BLibResourceAccess(this);
         this.storageAccess = new BLibStorageAccess(this);
         this.version = BLibAPI.getModVersion(id);
@@ -103,6 +107,10 @@ public class BLibMod implements BLibModStateAccess {
 
     public BLibRegistryAccess registries() {
         return registryAccess;
+    }
+
+    public BLibReputationAccess reputation() {
+        return reputationAccess;
     }
 
     public BLibResourceAccess resources() {

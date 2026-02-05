@@ -41,6 +41,16 @@
 - Added `BLibEntityRemoveEvent` for entity removal events (provides `Entity` and `RemovalReason`)
 - Added `BLibEventAccess#onEntityRemove()` event accessor
 - Added `Dirty` interface (`api.common.util.v1`) for reusable dirty-tracking
+- Added Reputation API (`api.common.reputation.v1`) for asymmetric reputation tracking:
+  - `ReputationManager` interface for reputation operations
+  - `ReputationSubject` sealed interface with `Faction(ResourceLocation)` and `Entity(UUID)` variants
+  - `ReputationData` class for holding a subject's outgoing reputation map (implements `Dirty`)
+  - Supports faction-to-faction, faction-to-entity, entity-to-faction, and entity-to-entity relationships
+  - Asymmetric design: A's reputation toward B is independent of B's reputation toward A
+  - Shard-based persistence (1000 entries per shard, dirty-tracking for incremental saves)
+  - Reverse incoming index for efficient cleanup when subjects are removed
+- Added `BLibMod#reputation()` method to access reputation through the mod facade
+- Added `BLibReputationAccess` for reputation access
 
 ## ♻️ Changes
 - Renamed server lifecycle event methods for consistency (prefixed with "on"):
@@ -67,3 +77,7 @@
 - Added `FactionDataSerializer` and `FactionRelationshipsSerializer` for faction NBT serialization
 - Added `BLibGlobalEvents.ENTITY_REMOVE` global event handle
 - Renamed mixin `MixinEntity_TickEvent` to `MixinEntity_Events` (now handles both tick and remove events)
+- Added `BLibReputationManager` internal implementation with shard-based IO and reverse incoming index
+- Added `ReputationDataIO` and `ReputationIO` for reputation persistence
+- Added `ReputationDataSerializer` for reputation NBT serialization
+- Extracted `FactionMemberIndex` from `BLibFactionManager` for cleaner separation of concerns

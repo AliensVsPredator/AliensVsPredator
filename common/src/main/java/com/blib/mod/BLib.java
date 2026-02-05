@@ -21,6 +21,7 @@ import com.blib.api.common.mod.v1.BLibMod;
 import com.blib.api.common.server.v1.ServerScheduler;
 import com.blib.internal.client.render.armor.compat.ShoulderSurfingCompat;
 import com.blib.internal.common.faction.BLibFactionManager;
+import com.blib.internal.common.reputation.BLibReputationManager;
 import com.blib.internal.common.storage.BLibDataStoreManager;
 import com.blib.mod.common.network.BLibPacketDirections;
 import com.blib.mod.common.network.BLibServerPacketHandlers;
@@ -75,6 +76,10 @@ public class BLib {
         BLib.MOD.events().onServerStarted().register(BLibFactionManager.INSTANCE::load);
         BLib.MOD.events().onServerSave().register(BLibFactionManager.INSTANCE::save);
         BLib.MOD.events().onServerStopped().register(BLibFactionManager.INSTANCE::clear);
+
+        BLib.MOD.events().onServerStarted().register(BLibReputationManager.INSTANCE::load);
+        BLib.MOD.events().onServerSave().register(BLibReputationManager.INSTANCE::save);
+        BLib.MOD.events().onServerStopped().register(BLibReputationManager.INSTANCE::clear);
 
         BLib.MOD.events()
             .onEntityRemove()
