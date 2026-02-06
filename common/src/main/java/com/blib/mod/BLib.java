@@ -1,6 +1,5 @@
 package com.blib.mod;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -9,13 +8,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Set;
-import java.util.UUID;
 
 import com.blib.api.BLibAPI;
 import com.blib.api.common.block.v1.BlockBreakProgressManager;
 import com.blib.api.common.data_sync.v1.DataContainer;
 import com.blib.api.common.data_sync.v1.model.DataUser;
-import com.blib.api.common.faction.v1.FactionKey;
 import com.blib.api.common.faction.v1.FactionMember;
 import com.blib.api.common.mod.v1.BLibMod;
 import com.blib.api.common.reputation.v1.ReputationKey;
@@ -30,8 +27,8 @@ import com.blib.mod.common.registry.init.BLibBlockEntityTypes;
 import com.blib.mod.common.registry.init.BLibBlocks;
 import com.blib.mod.common.registry.init.BLibCommands;
 import com.blib.mod.common.registry.init.BLibDataComponents;
+import com.blib.mod.common.registry.init.BLibDataStoreTypes;
 import com.blib.mod.common.registry.init.BLibDataSyncKeys;
-import com.blib.mod.common.registry.init.BLibFactionTypes;
 import com.blib.mod.common.registry.init.BLibLootItemConditionTypes;
 import com.blib.mod.common.registry.init.BLibReloadListeners;
 
@@ -58,7 +55,7 @@ public class BLib {
         BLibReloadListeners.initialize();
         BLibDataComponents.initialize();
         BLibDataSyncKeys.initialize();
-        BLibFactionTypes.initialize();
+        BLibDataStoreTypes.initialize();
         BLibCommands.initialize();
         BLibLootItemConditionTypes.initialize();
         BLibPacketDirections.initialize();
@@ -109,40 +106,6 @@ public class BLib {
                     }
                     case UNLOADED_TO_CHUNK, UNLOADED_WITH_PLAYER, CHANGED_DIMENSION -> {}
                 }
-            });
-
-        BLib.MOD.events()
-            .onServerStarted()
-            .register(minecraftServer -> {
-                var jungleClanKey = new FactionKey<>(
-                    ResourceLocation.fromNamespaceAndPath("avp_predator", "jungle_clan"),
-                    BLibFactionTypes.PREDATOR_CLAN
-                );
-
-                MOD.factions()
-                    .getOrCreate(jungleClanKey)
-                    .inspect(jungleClanFactionInfo -> {
-                        // Adding a predator, this would be called when the predator spawns.
-                        jungleClanFactionInfo.v1().addMember(new FactionMember.Entity(UUID.randomUUID()));
-                        // Updating the jungle clan population to have 3 predators.
-                        jungleClanFactionInfo.v2().setPopulation(3);
-                    });
-
-                var darkClanKey = new FactionKey<>(
-                    ResourceLocation.fromNamespaceAndPath("avp_predator", "dark_clan"),
-                    BLibFactionTypes.PREDATOR_CLAN
-                );
-
-                MOD.factions()
-                    .getOrCreate(darkClanKey)
-                    .inspect(darkClanFactionInfo -> {
-                        // Adding a predator, this would be called when the predator spawns.
-                        darkClanFactionInfo.v1().addMember(new FactionMember.Entity(UUID.randomUUID()));
-                        // Updating the dark clan population to have 3 predators.
-                        darkClanFactionInfo.v2().setPopulation(3);
-                        // Dark clan is a subfaction of the jungle clan.
-                        darkClanFactionInfo.v1().addMember(new FactionMember.SubFaction(jungleClanKey.id()));
-                    });
             });
     }
 
