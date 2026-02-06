@@ -7,6 +7,7 @@ import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.S2CBlockEntityDispatchCommandPayload;
 import com.blib.mod.common.network.packet.S2CEntityDataSyncPayload;
 import com.blib.mod.common.network.packet.S2CEntityDispatchCommandPayload;
+import com.blib.mod.common.network.packet.S2CGOAPDebugPayload;
 import com.blib.mod.common.network.packet.S2CItemStackDispatchCommandPayload;
 
 public class BLibServerPacketHandlers {
@@ -23,6 +24,14 @@ public class BLibServerPacketHandlers {
                 S2CEntityDataSyncPayload.TYPE,
                 S2CEntityDataSyncPayload.CODEC,
                 BLibClientListener::handleEntityDataSync
+            )
+        );
+
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromServer<>(
+                S2CGOAPDebugPayload.TYPE,
+                S2CGOAPDebugPayload.CODEC,
+                BLibClientListener::handleGOAPDebug
             )
         );
 

@@ -3,6 +3,7 @@ package com.blib.mod;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,7 @@ import com.blib.api.common.reputation.v1.ReputationKey;
 import com.blib.api.common.server.v1.ServerScheduler;
 import com.blib.internal.client.render.armor.compat.ShoulderSurfingCompat;
 import com.blib.internal.common.faction.BLibFactionManager;
+import com.blib.internal.common.goap.GOAPDebugTracker;
 import com.blib.internal.common.reputation.BLibReputationManager;
 import com.blib.internal.common.storage.BLibDataStoreManager;
 import com.blib.mod.common.network.BLibPacketDirections;
@@ -67,11 +69,18 @@ public class BLib {
         // TODO: There's a small bug here. This runs for both client and server levels!
         BLib.MOD.events().postLevelTick().register(BlockBreakProgressManager::tick);
 
+        BLib.MOD.events().postLevelTick().register(level -> {
+            if (!level.isClientSide && level.dimension() == Level.OVERWORLD) {
+                GOAPDebugTracker.INSTANCE.tick(level.getServer());
+            }
+        });
+
         BLib.MOD.events().onChunkSave().register(BLibDataStoreManager.INSTANCE::saveChunkData);
         BLib.MOD.events().onChunkUnload().register(BLibDataStoreManager.INSTANCE::onChunkUnload);
         BLib.MOD.events().onServerSave().register(BLibDataStoreManager.INSTANCE::saveGlobalData);
         BLib.MOD.events().onLevelSave().register(BLibDataStoreManager.INSTANCE::saveLevelData);
         BLib.MOD.events().onServerStopped().register(BLibDataStoreManager.INSTANCE::onServerStopped);
+        BLib.MOD.events().onServerStopped().register(GOAPDebugTracker.INSTANCE::clear);
 
         BLib.MOD.events().onServerStarted().register(BLibFactionManager.INSTANCE::load);
         BLib.MOD.events().onServerSave().register(BLibFactionManager.INSTANCE::save);

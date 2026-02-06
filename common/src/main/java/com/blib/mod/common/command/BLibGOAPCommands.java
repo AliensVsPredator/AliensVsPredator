@@ -24,10 +24,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.UUID;
 
 import com.blib.api.common.goap.v1.GOAPUser;
 import com.blib.api.common.goap.v1.LivingEntityAgent;
 import com.blib.api.common.goap.v1.action.BLibAction;
+import com.blib.internal.common.goap.GOAPDebugTracker;
 
 @ApiStatus.Internal
 public final class BLibGOAPCommands {
@@ -41,6 +44,25 @@ public final class BLibGOAPCommands {
     public static LiteralArgumentBuilder<CommandSourceStack> build() {
         return Commands.literal("goap")
             .then(
+                Commands.literal("track")
+                    .then(
+                        Commands.argument("targets", EntityArgument.entities())
+                            .executes(BLibGOAPCommands::executeTrack)
+                    )
+            )
+            .then(
+                Commands.literal("untrack")
+                    .executes(BLibGOAPCommands::executeUntrack)
+            )
+            .then(
+                Commands.literal("next")
+                    .executes(BLibGOAPCommands::executeNext)
+            )
+            .then(
+                Commands.literal("previous")
+                    .executes(BLibGOAPCommands::executePrevious)
+            )
+            .then(
                 Commands.argument("targets", EntityArgument.entities())
                     .executes(BLibGOAPCommands::executeInspect)
                     .then(
@@ -49,6 +71,85 @@ public final class BLibGOAPCommands {
                     )
             );
     }
+
+    // region tracking
+
+    @SuppressWarnings("unchecked")
+    private static int executeTrack(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var source = context.getSource();
+        var player = source.getPlayerOrException();
+        var entities = EntityArgument.getEntities(context, "targets");
+        var uuids = new ArrayList<UUID>();
+
+        for (var entity : entities) {
+            if (!(entity instanceof LivingEntity livingEntity)) {
+                continue;
+            }
+
+            var goapUser = (GOAPUser<LivingEntity>) livingEntity;
+
+            if (goapUser.blib$getGOAPGraphOrNull() == null) {
+                continue;
+            }
+
+            if (goapUser.blib$getGOAPAgentOrNull() == null) {
+                continue;
+            }
+
+            uuids.add(entity.getUUID());
+        }
+
+        if (uuids.isEmpty()) {
+            source.sendFailure(Component.literal("No entities with GOAP agents found."));
+            return 0;
+        }
+
+        GOAPDebugTracker.INSTANCE.track(player.getUUID(), uuids);
+        var count = uuids.size();
+        source.sendSuccess(() -> Component.literal("Now tracking %d GOAP agent(s).".formatted(count)), false);
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int executeUntrack(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var source = context.getSource();
+        var player = source.getPlayerOrException();
+
+        GOAPDebugTracker.INSTANCE.untrack(player.getUUID());
+        source.sendSuccess(() -> Component.literal("Stopped tracking all GOAP agents."), false);
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int executeNext(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var source = context.getSource();
+        var player = source.getPlayerOrException();
+        var newIndex = GOAPDebugTracker.INSTANCE.next(player.getUUID());
+
+        if (newIndex == -1) {
+            source.sendFailure(Component.literal("Not tracking any GOAP agents."));
+            return 0;
+        }
+
+        var displayIndex = newIndex + 1;
+        source.sendSuccess(() -> Component.literal("Switched to tracked agent #%d.".formatted(displayIndex)), false);
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int executePrevious(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var source = context.getSource();
+        var player = source.getPlayerOrException();
+        var newIndex = GOAPDebugTracker.INSTANCE.previous(player.getUUID());
+
+        if (newIndex == -1) {
+            source.sendFailure(Component.literal("Not tracking any GOAP agents."));
+            return 0;
+        }
+
+        var displayIndex = newIndex + 1;
+        source.sendSuccess(() -> Component.literal("Switched to tracked agent #%d.".formatted(displayIndex)), false);
+        return Command.SINGLE_SUCCESS;
+    }
+
+    // endregion
 
     // region inspect
 
