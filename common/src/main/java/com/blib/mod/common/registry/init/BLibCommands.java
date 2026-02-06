@@ -6,6 +6,7 @@ import org.jetbrains.annotations.ApiStatus;
 import com.blib.api.common.registry.v1.impl.BLibCommandRegistry;
 import com.blib.mod.BLib;
 import com.blib.mod.common.command.BLibFactionCommands;
+import com.blib.mod.common.command.BLibGOAPCommands;
 import com.blib.mod.common.command.BLibReputationCommands;
 
 @ApiStatus.Internal
@@ -19,6 +20,7 @@ public class BLibCommands {
                 .requires(source -> source.hasPermission(2))
                 .then(BLibFactionCommands.build())
                 .then(BLibReputationCommands.build())
+                .then(BLibGOAPCommands.build())
         );
     }
 }

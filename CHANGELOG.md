@@ -40,10 +40,12 @@
 - Added `BLibFactionAccess` for type-safe faction access
 - Added `BLibEntityRemoveEvent` for entity removal events (provides `Entity` and `RemovalReason`)
 - Added `BLibEventAccess#onEntityRemove()` event accessor
+- Added `BLibFactionRemoveEvent` for faction removal events
+- Added `BLibEventAccess#onFactionRemove()` event accessor
 - Added `Dirty` interface (`api.common.util.v1`) for reusable dirty-tracking
 - Added Reputation API (`api.common.reputation.v1`) for asymmetric reputation tracking:
   - `ReputationManager` interface for reputation operations
-  - `ReputationSubject` sealed interface with `Faction(ResourceLocation)` and `Entity(UUID)` variants
+  - `ReputationKey` sealed interface with `Faction(ResourceLocation)` and `Entity(UUID)` variants
   - `ReputationData` class for holding a subject's outgoing reputation map (implements `Dirty`)
   - Supports faction-to-faction, faction-to-entity, entity-to-faction, and entity-to-entity relationships
   - Asymmetric design: A's reputation toward B is independent of B's reputation toward A
@@ -51,6 +53,11 @@
   - Reverse incoming index for efficient cleanup when subjects are removed
 - Added `BLibMod#reputation()` method to access reputation through the mod facade
 - Added `BLibReputationAccess` for reputation access
+- Added `/blib` operator commands (permission level 2) for debugging and management:
+  - `/blib factions create|remove|add-member|remove-member|list` — faction management
+  - `/blib reputation get|set|remove` — reputation management between factions and entities
+  - `/blib goap <targets>` — inspect GOAP agent state in chat
+  - `/blib goap <targets> snapshot` — dump detailed GOAP agent snapshots to `blib_goap_snapshots/`
 
 ## ♻️ Changes
 - Renamed server lifecycle event methods for consistency (prefixed with "on"):
@@ -81,3 +88,7 @@
 - Added `ReputationDataIO` and `ReputationIO` for reputation persistence
 - Added `ReputationDataSerializer` for reputation NBT serialization
 - Extracted `FactionMemberIndex` from `BLibFactionManager` for cleaner separation of concerns
+- Added `ShardManager` to generalize shard-based persistence across faction and reputation systems
+- Added `BLibCommandSuggestions` utility with suggestion providers for faction IDs and faction type IDs
+- Added `BLibFactionCommands`, `BLibReputationCommands`, and `BLibGOAPCommands` command implementations
+- Added `BLibCommands` init class for registering the `/blib` command tree
