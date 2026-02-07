@@ -7,6 +7,7 @@ import com.just.goap.graph.Graph;
 import com.just.goap.plan.Plan;
 import com.just.goap.plan.executor.impl.ConcurrentPlanExecutor;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -25,12 +26,16 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import com.blib.api.common.goap.v1.GOAPUser;
 import com.blib.api.common.goap.v1.LivingEntityAgent;
 import com.blib.api.common.goap.v1.action.BLibAction;
 import com.blib.internal.common.goap.GOAPDebugTracker;
+import com.blib.internal.mixin.MixinPlan_Accessor;
+import com.blib.mod.BLib;
+import com.blib.mod.common.network.packet.S2CGOAPDebugPayload;
 
 @ApiStatus.Internal
 public final class BLibGOAPCommands {
@@ -61,6 +66,28 @@ public final class BLibGOAPCommands {
             .then(
                 Commands.literal("previous")
                     .executes(BLibGOAPCommands::executePrevious)
+            )
+            .then(
+                Commands.literal("worldstate")
+                    .then(
+                        Commands.literal("next")
+                            .executes(BLibGOAPCommands::executeWorldStateNext)
+                    )
+                    .then(
+                        Commands.literal("previous")
+                            .executes(BLibGOAPCommands::executeWorldStatePrevious)
+                    )
+                    .then(
+                        Commands.literal("page")
+                            .then(
+                                Commands.argument("page", IntegerArgumentType.integer(1))
+                                    .executes(BLibGOAPCommands::executeWorldStatePage)
+                            )
+                    )
+                    .then(
+                        Commands.literal("auto")
+                            .executes(BLibGOAPCommands::executeWorldStateAuto)
+                    )
             )
             .then(
                 Commands.argument("targets", EntityArgument.entities())
@@ -115,6 +142,7 @@ public final class BLibGOAPCommands {
         var player = source.getPlayerOrException();
 
         GOAPDebugTracker.INSTANCE.untrack(player.getUUID());
+        BLib.MOD.networking().sendToClient(player, new S2CGOAPDebugPayload(List.of(), 0, true, 0));
         source.sendSuccess(() -> Component.literal("Stopped tracking all GOAP agents."), false);
         return Command.SINGLE_SUCCESS;
     }
@@ -146,6 +174,103 @@ public final class BLibGOAPCommands {
 
         var displayIndex = newIndex + 1;
         source.sendSuccess(() -> Component.literal("Switched to tracked agent #%d.".formatted(displayIndex)), false);
+        return Command.SINGLE_SUCCESS;
+    }
+
+    // endregion
+
+    // region worldstate
+
+    private static int executeWorldStateNext(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var source = context.getSource();
+        var player = source.getPlayerOrException();
+
+        if (!GOAPDebugTracker.INSTANCE.worldStateNext(player.getUUID())) {
+            source.sendFailure(Component.literal("Not tracking any GOAP agents."));
+            return 0;
+        }
+
+        source.sendSuccess(() -> Component.literal("World state: next page."), false);
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int executeWorldStatePrevious(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var source = context.getSource();
+        var player = source.getPlayerOrException();
+
+        if (!GOAPDebugTracker.INSTANCE.worldStatePrevious(player.getUUID())) {
+            source.sendFailure(Component.literal("Not tracking any GOAP agents."));
+            return 0;
+        }
+
+        source.sendSuccess(() -> Component.literal("World state: previous page."), false);
+        return Command.SINGLE_SUCCESS;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static int executeWorldStatePage(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var source = context.getSource();
+        var player = source.getPlayerOrException();
+        var page = IntegerArgumentType.getInteger(context, "page");
+
+        var state = GOAPDebugTracker.INSTANCE.getTrackingState(player.getUUID());
+
+        if (state == null) {
+            source.sendFailure(Component.literal("Not tracking any GOAP agents."));
+            return 0;
+        }
+
+        var server = source.getServer();
+        var selectedIndex = state.selectedIndex();
+
+        if (selectedIndex >= state.entityUuids().size()) {
+            source.sendFailure(Component.literal("No selected agent."));
+            return 0;
+        }
+
+        var entityUuid = state.entityUuids().get(selectedIndex);
+        var totalPages = 1;
+
+        for (var level : server.getAllLevels()) {
+            var entity = level.getEntity(entityUuid);
+
+            if (entity instanceof LivingEntity livingEntity) {
+                var goapUser = (GOAPUser<LivingEntity>) livingEntity;
+                var graph = goapUser.blib$getGOAPGraphOrNull();
+
+                if (graph != null) {
+                    var sensorCount = graph.getSensorMap().size();
+                    totalPages = Math.max(
+                        1,
+                        (sensorCount + GOAPDebugTracker.WORLD_STATE_PAGE_SIZE - 1) / GOAPDebugTracker.WORLD_STATE_PAGE_SIZE
+                    );
+                }
+
+                break;
+            }
+        }
+
+        if (page > totalPages) {
+            var max = totalPages;
+            source.sendFailure(Component.literal("Invalid page. Max page: %d.".formatted(max)));
+            return 0;
+        }
+
+        GOAPDebugTracker.INSTANCE.worldStatePage(player.getUUID(), page - 1);
+        source.sendSuccess(() -> Component.literal("World state: page %d.".formatted(page)), false);
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int executeWorldStateAuto(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var source = context.getSource();
+        var player = source.getPlayerOrException();
+
+        if (!GOAPDebugTracker.INSTANCE.worldStateAuto(player.getUUID())) {
+            source.sendFailure(Component.literal("Not tracking any GOAP agents."));
+            return 0;
+        }
+
+        source.sendSuccess(() -> Component.literal("World state: auto page cycling enabled."), false);
         return Command.SINGLE_SUCCESS;
     }
 
@@ -252,11 +377,11 @@ public final class BLibGOAPCommands {
 
     private static void formatPlanActions(Plan<LivingEntity> plan, CommandSourceStack source) {
         var actions = plan.getActions();
-        var currentActionTick = plan.getActionTick();
+        var currentActionIndex = ((MixinPlan_Accessor) (Object) plan).getCurrentActionIndex();
 
         for (var j = 0; j < actions.size(); j++) {
             var action = actions.get(j);
-            var marker = j == currentActionTick ? " >> " : "    ";
+            var marker = j == currentActionIndex ? " >> " : "    ";
             var actionIndex = j;
 
             source.sendSuccess(
@@ -386,7 +511,8 @@ public final class BLibGOAPCommands {
         w.println("    State: " + plan.getPlanState());
         w.println("    Initial Cost: " + plan.getInitialCost());
         w.println("    Plan Tick: " + plan.getTick());
-        w.println("    Current Action Index: " + plan.getActionTick());
+        var currentActionIndex = ((MixinPlan_Accessor) (Object) plan).getCurrentActionIndex();
+        w.println("    Current Action Index: " + currentActionIndex);
 
         writeGoalDetails(w, plan.getGoal(), "    ");
 
@@ -395,7 +521,7 @@ public final class BLibGOAPCommands {
 
         for (int j = 0; j < actions.size(); j++) {
             var action = actions.get(j);
-            var marker = j == plan.getActionTick() ? " >> " : "    ";
+            var marker = j == currentActionIndex ? " >> " : "    ";
             w.println("      " + marker + (j + 1) + ". " + action.getName());
             writeActionDetails(w, action, "            ");
         }

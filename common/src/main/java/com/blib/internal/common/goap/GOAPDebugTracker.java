@@ -9,12 +9,17 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.blib.api.common.goap.v1.GOAPUser;
+import com.blib.internal.mixin.MixinAgent_Accessor;
+import com.blib.internal.mixin.MixinBlackboard_Accessor;
+import com.blib.internal.mixin.MixinPlan_Accessor;
 import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.S2CGOAPDebugPayload;
 import com.blib.mod.common.network.packet.S2CGOAPDebugPayload.GOAPAgentDebugData;
@@ -24,6 +29,8 @@ import com.blib.mod.common.network.packet.S2CGOAPDebugPayload.GOAPPlanDebugData;
 public final class GOAPDebugTracker {
 
     public static final GOAPDebugTracker INSTANCE = new GOAPDebugTracker();
+
+    public static final int WORLD_STATE_PAGE_SIZE = 30;
 
     private static final int DEDICATED_TICK_INTERVAL = 10;
 
@@ -65,6 +72,53 @@ public final class GOAPDebugTracker {
 
     public @Nullable TrackingState getTrackingState(UUID playerUuid) {
         return trackingByPlayer.get(playerUuid);
+    }
+
+    public boolean worldStateNext(UUID playerUuid) {
+        var state = trackingByPlayer.get(playerUuid);
+
+        if (state == null) {
+            return false;
+        }
+
+        state.worldStateAutoPage = false;
+        state.worldStatePage++;
+        return true;
+    }
+
+    public boolean worldStatePrevious(UUID playerUuid) {
+        var state = trackingByPlayer.get(playerUuid);
+
+        if (state == null) {
+            return false;
+        }
+
+        state.worldStateAutoPage = false;
+        state.worldStatePage--;
+        return true;
+    }
+
+    public boolean worldStatePage(UUID playerUuid, int page) {
+        var state = trackingByPlayer.get(playerUuid);
+
+        if (state == null) {
+            return false;
+        }
+
+        state.worldStateAutoPage = false;
+        state.worldStatePage = page;
+        return true;
+    }
+
+    public boolean worldStateAuto(UUID playerUuid) {
+        var state = trackingByPlayer.get(playerUuid);
+
+        if (state == null) {
+            return false;
+        }
+
+        state.worldStateAutoPage = true;
+        return true;
     }
 
     public void clear(MinecraftServer server) {
@@ -109,6 +163,7 @@ public final class GOAPDebugTracker {
             }
 
             var goapUser = (GOAPUser<LivingEntity>) livingEntity;
+            var graph = goapUser.blib$getGOAPGraphOrNull();
             var livingEntityAgent = goapUser.blib$getGOAPAgentOrNull();
 
             if (livingEntityAgent == null) {
@@ -127,25 +182,59 @@ public final class GOAPDebugTracker {
                         actionNames.add(action.getName());
                     }
 
+                    var planAccessor = (MixinPlan_Accessor) (Object) plan;
+
+                    var actionBlackboard = snapshotBlackboard(planAccessor.getActionBlackboard());
+                    var planBlackboard = snapshotBlackboard(plan.getBlackboard());
+
                     plans.add(
                         new GOAPPlanDebugData(
                             plan.getGoal().getName(),
                             plan.getPlanState().name(),
                             plan.getInitialCost(),
-                            plan.getActionTick(),
-                            actionNames
+                            planAccessor.getCurrentActionIndex(),
+                            actionNames,
+                            actionBlackboard,
+                            planBlackboard
                         )
                     );
                 }
             }
 
+            var graphGoalCount = 0;
+            var graphActionCount = 0;
+            var graphSensorKeys = new ArrayList<String>();
+
+            if (graph != null) {
+                graphGoalCount = graph.getAvailableGoals().size();
+                graphActionCount = graph.getAvailableActions().size();
+
+                for (var sensorKey : graph.getSensorMap().keySet()) {
+                    graphSensorKeys.add(truncate(sensorKey.id()));
+                }
+
+                graphSensorKeys.sort(String::compareTo);
+            }
+
+            var agentAccessor = (MixinAgent_Accessor) (Object) agent;
+            var worldState = snapshotWorldState(agentAccessor.getCurrentWorldState());
+            var pos = livingEntity.blockPosition();
+
             agents.add(
                 new GOAPAgentDebugData(
                     livingEntity.getId(),
                     livingEntity.getName().getString(),
+                    livingEntity.getUUID().toString(),
+                    pos.getX(),
+                    pos.getY(),
+                    pos.getZ(),
                     agent.getTick(),
                     agent.hasPlan(),
-                    plans
+                    plans,
+                    graphGoalCount,
+                    graphActionCount,
+                    graphSensorKeys,
+                    worldState
                 )
             );
         }
@@ -154,8 +243,49 @@ public final class GOAPDebugTracker {
             state.selectedIndex = 0;
         }
 
-        var payload = new S2CGOAPDebugPayload(agents, state.selectedIndex);
+        var wsPage = state.worldStatePage;
+
+        if (!state.worldStateAutoPage && !agents.isEmpty() && state.selectedIndex < agents.size()) {
+            var selectedAgent = agents.get(state.selectedIndex);
+            var totalPages = Math.max(
+                1,
+                (selectedAgent.graphSensorKeys().size() + WORLD_STATE_PAGE_SIZE - 1) / WORLD_STATE_PAGE_SIZE
+            );
+            wsPage = ((wsPage % totalPages) + totalPages) % totalPages;
+            state.worldStatePage = wsPage;
+        }
+
+        var payload = new S2CGOAPDebugPayload(agents, state.selectedIndex, state.worldStateAutoPage, wsPage);
         BLib.MOD.networking().sendToClient(player, payload);
+    }
+
+    private static Map<String, String> snapshotWorldState(
+        com.just.goap.state.SensingWorldState<?> worldState
+    ) {
+        var result = new TreeMap<String, String>();
+
+        for (var entry : worldState.getMap().entrySet()) {
+            result.put(truncate(entry.getKey().id()), truncate(String.valueOf(entry.getValue())));
+        }
+
+        return result;
+    }
+
+    private static Map<String, String> snapshotBlackboard(
+        com.just.goap.state.Blackboard blackboard
+    ) {
+        var result = new LinkedHashMap<String, String>();
+        var stateMap = ((MixinBlackboard_Accessor) (Object) blackboard).getStateMap();
+
+        for (var bbEntry : stateMap.entrySet()) {
+            result.put(bbEntry.getKey().id(), String.valueOf(bbEntry.getValue()));
+        }
+
+        return result;
+    }
+
+    private static String truncate(String value) {
+        return value.length() > 32 ? value.substring(0, 32) + "..." : value;
     }
 
     private @Nullable Entity resolveEntity(MinecraftServer server, UUID entityUuid) {
@@ -175,6 +305,10 @@ public final class GOAPDebugTracker {
         private final List<UUID> entityUuids;
 
         private int selectedIndex;
+
+        private boolean worldStateAutoPage = true;
+
+        private int worldStatePage;
 
         TrackingState(List<UUID> entityUuids, int selectedIndex) {
             this.entityUuids = entityUuids;
