@@ -31,6 +31,7 @@ import com.blib.mod.common.registry.init.BLibCommands;
 import com.blib.mod.common.registry.init.BLibDataComponents;
 import com.blib.mod.common.registry.init.BLibDataStoreTypes;
 import com.blib.mod.common.registry.init.BLibDataSyncKeys;
+import com.blib.mod.common.registry.init.BLibFactionDataTypes;
 import com.blib.mod.common.registry.init.BLibLootItemConditionTypes;
 import com.blib.mod.common.registry.init.BLibReloadListeners;
 
@@ -52,15 +53,16 @@ public class BLib {
     }
 
     private static void runInitialization() {
-        BLibBlocks.initialize();
         BLibBlockEntityTypes.initialize();
-        BLibReloadListeners.initialize();
+        BLibBlocks.initialize();
+        BLibCommands.initialize();
         BLibDataComponents.initialize();
         BLibDataSyncKeys.initialize();
         BLibDataStoreTypes.initialize();
-        BLibCommands.initialize();
+        BLibFactionDataTypes.initialize();
         BLibLootItemConditionTypes.initialize();
         BLibPacketDirections.initialize();
+        BLibReloadListeners.initialize();
         BLibServerPacketHandlers.initialize();
 
         BLib.MOD.events().onPlayerStartTrackingEntity().register(BLib::syncDataForTrackedEntity);

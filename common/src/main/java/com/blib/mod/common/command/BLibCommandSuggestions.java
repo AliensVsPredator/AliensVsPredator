@@ -15,7 +15,7 @@ public final class BLibCommandSuggestions {
         .suggestResource(BLibFactionManager.INSTANCE.getAllIds(), builder);
 
     public static final SuggestionProvider<CommandSourceStack> FACTION_TYPE_IDS = (context, builder) -> SharedSuggestionProvider
-        .suggestResource(BLibBuiltInRegistries.FACTION_TYPES.keySet(), builder);
+        .suggestResource(BLibBuiltInRegistries.FACTION_DATA_TYPES.keySet(), builder);
 
     private BLibCommandSuggestions() {
         throw new UnsupportedOperationException();

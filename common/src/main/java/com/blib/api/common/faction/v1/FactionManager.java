@@ -14,18 +14,18 @@ public interface FactionManager {
 
     <T extends FactionData> Result<Tuple2<FactionRelationships, T>, FactionDataError> getOrCreate(
         ResourceLocation id,
-        BLibHolder<FactionType<T>> type
+        BLibHolder<FactionDataType<T>> type
     );
 
-    default <T extends FactionData> Result<Tuple2<FactionRelationships, T>, FactionDataError> getOrCreate(FactionKey<T> key) {
+    default <T extends FactionData> Result<Tuple2<FactionRelationships, T>, FactionDataError> getOrCreate(FactionDataKey<T> key) {
         return getOrCreate(key.id(), key.type());
     }
 
     FactionRelationships getRelationships(ResourceLocation id);
 
-    <T extends FactionData> Result<T, FactionDataError> getData(ResourceLocation id, BLibHolder<FactionType<T>> type);
+    <T extends FactionData> Result<T, FactionDataError> getData(ResourceLocation id, BLibHolder<FactionDataType<T>> type);
 
-    default <T extends FactionData> Result<T, FactionDataError> getData(FactionKey<T> key) {
+    default <T extends FactionData> Result<T, FactionDataError> getData(FactionDataKey<T> key) {
         return getData(key.id(), key.type());
     }
 

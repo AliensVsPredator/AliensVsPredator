@@ -119,10 +119,10 @@ public final class FactionDataIO {
 
             factionIdToTypeId.put(factionId, typeId);
 
-            var factionType = BLibBuiltInRegistries.FACTION_TYPES.get(typeId);
+            var factionDataType = BLibBuiltInRegistries.FACTION_DATA_TYPES.get(typeId);
 
-            if (factionType != null) {
-                var factionData = factionType.createInstance();
+            if (factionDataType != null) {
+                var factionData = factionDataType.createInstance();
                 factionData.load(FactionDataSerializer.deserializeData(entryTag));
                 factionData.clearDirty();
                 data.put(factionId, factionData);

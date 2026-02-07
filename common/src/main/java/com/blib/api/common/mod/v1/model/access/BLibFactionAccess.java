@@ -11,9 +11,9 @@ import java.util.UUID;
 
 import com.blib.api.common.faction.v1.FactionData;
 import com.blib.api.common.faction.v1.FactionDataError;
+import com.blib.api.common.faction.v1.FactionDataType;
 import com.blib.api.common.faction.v1.FactionManager;
 import com.blib.api.common.faction.v1.FactionRelationships;
-import com.blib.api.common.faction.v1.FactionType;
 import com.blib.api.common.mod.v1.BLibMod;
 import com.blib.api.common.registry.v1.BLibHolder;
 import com.blib.internal.common.faction.BLibFactionManager;
@@ -30,7 +30,7 @@ public class BLibFactionAccess implements FactionManager {
     @Override
     public <T extends FactionData> Result<Tuple2<FactionRelationships, T>, FactionDataError> getOrCreate(
         ResourceLocation id,
-        BLibHolder<FactionType<T>> type
+        BLibHolder<FactionDataType<T>> type
     ) {
         return BLibFactionManager.INSTANCE.getOrCreate(id, type);
     }
@@ -41,7 +41,7 @@ public class BLibFactionAccess implements FactionManager {
     }
 
     @Override
-    public <T extends FactionData> Result<T, FactionDataError> getData(ResourceLocation id, BLibHolder<FactionType<T>> type) {
+    public <T extends FactionData> Result<T, FactionDataError> getData(ResourceLocation id, BLibHolder<FactionDataType<T>> type) {
         return BLibFactionManager.INSTANCE.getData(id, type);
     }
 
