@@ -56,8 +56,6 @@
 - Added `/blib` operator commands (permission level 2) for debugging and management:
   - `/blib factions create|remove|add-member|remove-member|list` — faction management
   - `/blib reputation get|set|remove` — reputation management between factions and entities
-  - `/blib goap <targets>` — inspect GOAP agent state in chat
-  - `/blib goap <targets> snapshot` — dump detailed GOAP agent snapshots to `blib_goap_snapshots/`
 
 ## ♻️ Changes
 - Renamed server lifecycle event methods for consistency (prefixed with "on"):

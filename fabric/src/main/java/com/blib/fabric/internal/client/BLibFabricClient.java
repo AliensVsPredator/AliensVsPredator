@@ -11,6 +11,6 @@ public class BLibFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         BLibClient.initialize();
-        BLibFabricGOAPDebugHud.register();
+        BLibFabricGOAPDebugHUD.register();
     }
 }

@@ -13,6 +13,6 @@ public class BLibNeoForgeClient {
 
     public BLibNeoForgeClient() {
         BLibClient.initialize();
-        BLibNeoForgeGOAPDebugHud.register();
+        BLibNeoForgeGOAPDebugHUD.register();
     }
 }

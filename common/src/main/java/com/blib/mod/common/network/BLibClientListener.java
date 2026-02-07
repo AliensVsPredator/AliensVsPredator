@@ -8,7 +8,7 @@ import com.blib.api.common.data_sync.v1.model.DataUser;
 import com.blib.internal.client.animation.AzAnimatorAccessor;
 import com.blib.internal.client.animation.cache.AzIdentifiableItemStackAnimatorCache;
 import com.blib.internal.client.animation.dispatch.AzDispatchSide;
-import com.blib.internal.client.goap.GOAPDebugHud;
+import com.blib.mod.client.render.goap.GOAPDebugHUD;
 import com.blib.mod.common.network.packet.S2CBlockEntityDispatchCommandPayload;
 import com.blib.mod.common.network.packet.S2CEntityDataSyncPayload;
 import com.blib.mod.common.network.packet.S2CEntityDispatchCommandPayload;
@@ -76,7 +76,7 @@ public final class BLibClientListener {
     }
 
     public static void handleGOAPDebug(S2CGOAPDebugPayload payload, Player player) {
-        GOAPDebugHud.INSTANCE.update(payload);
+        GOAPDebugHUD.INSTANCE.update(payload);
     }
 
     private BLibClientListener() {
