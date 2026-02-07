@@ -5,6 +5,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.api.common.data_sync.v1.model.DataSyncKey;
 import com.blib.api.common.faction.v1.FactionDataType;
+import com.blib.api.common.property.v1.BLibPropertyContainerType;
 import com.blib.api.common.storage.v1.DataStoreType;
 import com.blib.mod.BLib;
 
@@ -24,6 +25,13 @@ public class BLibBuiltInRegistries {
     public static final Registry<FactionDataType<?>> FACTION_DATA_TYPES = BLibCustomRegistryBuilder.create(
         BLib.MOD,
         BLibRegistries.FACTION_TYPES
+    )
+        .shouldSync(false)
+        .build();
+
+    public static final Registry<BLibPropertyContainerType> PROPERTY_CONTAINER_TYPES = BLibCustomRegistryBuilder.create(
+        BLib.MOD,
+        BLibRegistries.PROPERTY_CONTAINER_TYPES
     )
         .shouldSync(false)
         .build();
