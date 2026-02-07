@@ -33,7 +33,6 @@ import com.blib.api.common.goap.v1.GOAPUser;
 import com.blib.api.common.goap.v1.LivingEntityAgent;
 import com.blib.api.common.goap.v1.action.BLibAction;
 import com.blib.internal.common.goap.GOAPDebugTracker;
-import com.blib.internal.mixin.MixinPlan_Accessor;
 import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.S2CGOAPDebugPayload;
 
@@ -98,8 +97,6 @@ public final class BLibGOAPCommands {
                     )
             );
     }
-
-    // region tracking
 
     @SuppressWarnings("unchecked")
     private static int executeTrack(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
@@ -176,10 +173,6 @@ public final class BLibGOAPCommands {
         source.sendSuccess(() -> Component.literal("Switched to tracked agent #%d.".formatted(displayIndex)), false);
         return Command.SINGLE_SUCCESS;
     }
-
-    // endregion
-
-    // region worldstate
 
     private static int executeWorldStateNext(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         var source = context.getSource();
@@ -273,10 +266,6 @@ public final class BLibGOAPCommands {
         source.sendSuccess(() -> Component.literal("World state: auto page cycling enabled."), false);
         return Command.SINGLE_SUCCESS;
     }
-
-    // endregion
-
-    // region inspect
 
     @SuppressWarnings("unchecked")
     private static int executeInspect(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
@@ -377,7 +366,7 @@ public final class BLibGOAPCommands {
 
     private static void formatPlanActions(Plan<LivingEntity> plan, CommandSourceStack source) {
         var actions = plan.getActions();
-        var currentActionIndex = ((MixinPlan_Accessor) (Object) plan).getCurrentActionIndex();
+        var currentActionIndex = plan.getCurrentActionIndex();
 
         for (var j = 0; j < actions.size(); j++) {
             var action = actions.get(j);
@@ -392,10 +381,6 @@ public final class BLibGOAPCommands {
             );
         }
     }
-
-    // endregion
-
-    // region snapshot
 
     @SuppressWarnings("unchecked")
     private static int executeSnapshot(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
@@ -511,7 +496,7 @@ public final class BLibGOAPCommands {
         w.println("    State: " + plan.getPlanState());
         w.println("    Initial Cost: " + plan.getInitialCost());
         w.println("    Plan Tick: " + plan.getTick());
-        var currentActionIndex = ((MixinPlan_Accessor) (Object) plan).getCurrentActionIndex();
+        var currentActionIndex = plan.getCurrentActionIndex();
         w.println("    Current Action Index: " + currentActionIndex);
 
         writeGoalDetails(w, plan.getGoal(), "    ");
@@ -526,10 +511,6 @@ public final class BLibGOAPCommands {
             writeActionDetails(w, action, "            ");
         }
     }
-
-    // endregion
-
-    // region shared formatting
 
     private static void writeGoalDetails(PrintWriter w, Goal goal, String indent) {
         var preconditions = goal.getPreconditions().getConditions();
@@ -612,6 +593,4 @@ public final class BLibGOAPCommands {
             w.println("  " + entry.getKey().id() + " -> " + entry.getValue().getClass().getSimpleName());
         }
     }
-
-    // endregion
 }

@@ -1,6 +1,7 @@
 package com.blib.internal.common.goap;
 
 import com.just.goap.plan.executor.impl.ConcurrentPlanExecutor;
+import com.just.goap.state.ReadableWorldState;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -17,9 +18,6 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.blib.api.common.goap.v1.GOAPUser;
-import com.blib.internal.mixin.MixinAgent_Accessor;
-import com.blib.internal.mixin.MixinBlackboard_Accessor;
-import com.blib.internal.mixin.MixinPlan_Accessor;
 import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.S2CGOAPDebugPayload;
 import com.blib.mod.common.network.packet.S2CGOAPDebugPayload.GOAPAgentDebugData;
@@ -182,9 +180,7 @@ public final class GOAPDebugTracker {
                         actionNames.add(action.getName());
                     }
 
-                    var planAccessor = (MixinPlan_Accessor) (Object) plan;
-
-                    var actionBlackboard = snapshotBlackboard(planAccessor.getActionBlackboard());
+                    var actionBlackboard = snapshotBlackboard(plan.getActionBlackboard());
                     var planBlackboard = snapshotBlackboard(plan.getBlackboard());
 
                     plans.add(
@@ -192,7 +188,7 @@ public final class GOAPDebugTracker {
                             plan.getGoal().getName(),
                             plan.getPlanState().name(),
                             plan.getInitialCost(),
-                            planAccessor.getCurrentActionIndex(),
+                            plan.getCurrentActionIndex(),
                             actionNames,
                             actionBlackboard,
                             planBlackboard
@@ -216,8 +212,9 @@ public final class GOAPDebugTracker {
                 graphSensorKeys.sort(String::compareTo);
             }
 
-            var agentAccessor = (MixinAgent_Accessor) (Object) agent;
-            var worldState = snapshotWorldState(agentAccessor.getCurrentWorldState());
+            var worldState = agent.getCurrentWorldState() == null
+                ? Map.<String, String>of()
+                : snapshotWorldState(agent.getCurrentWorldState());
             var pos = livingEntity.blockPosition();
 
             agents.add(
@@ -260,7 +257,7 @@ public final class GOAPDebugTracker {
     }
 
     private static Map<String, String> snapshotWorldState(
-        com.just.goap.state.SensingWorldState<?> worldState
+        ReadableWorldState worldState
     ) {
         var result = new TreeMap<String, String>();
 
@@ -275,7 +272,7 @@ public final class GOAPDebugTracker {
         com.just.goap.state.Blackboard blackboard
     ) {
         var result = new LinkedHashMap<String, String>();
-        var stateMap = ((MixinBlackboard_Accessor) (Object) blackboard).getStateMap();
+        var stateMap = blackboard.getStateMap();
 
         for (var bbEntry : stateMap.entrySet()) {
             result.put(bbEntry.getKey().id(), String.valueOf(bbEntry.getValue()));
