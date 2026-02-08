@@ -25,6 +25,7 @@ import com.blib.internal.common.storage.BLibDataStoreManager;
 import com.blib.mod.common.gameplay.goap.GOAPDebugTracker;
 import com.blib.mod.common.network.BLibPacketDirections;
 import com.blib.mod.common.network.BLibServerPacketHandlers;
+import com.blib.mod.common.property.BLibModPropertyAccess;
 import com.blib.mod.common.registry.init.BLibBlockEntityTypes;
 import com.blib.mod.common.registry.init.BLibBlocks;
 import com.blib.mod.common.registry.init.BLibCommands;
@@ -48,6 +49,8 @@ public class BLib {
         ShoulderSurfingCompat.init();
 
         LOGGER.info("Initializing BLib for platform '{}'", BLibAPI.getModLoaderType());
+
+        BLibModPropertyAccess.INSTANCE.save();
 
         BLib.MOD.initialize(BLib::runInitialization);
     }
