@@ -20,6 +20,7 @@ import com.blib.api.common.reputation.v1.ReputationKey;
 import com.blib.api.common.server.v1.ServerScheduler;
 import com.blib.internal.client.render.armor.compat.ShoulderSurfingCompat;
 import com.blib.internal.common.faction.BLibFactionManager;
+import com.blib.internal.common.property.BLibPropertyContainerSaveHandler;
 import com.blib.internal.common.reputation.BLibReputationManager;
 import com.blib.internal.common.storage.BLibDataStoreManager;
 import com.blib.mod.common.gameplay.goap.GOAPDebugTracker;
@@ -34,6 +35,7 @@ import com.blib.mod.common.registry.init.BLibDataStoreTypes;
 import com.blib.mod.common.registry.init.BLibDataSyncKeys;
 import com.blib.mod.common.registry.init.BLibFactionDataTypes;
 import com.blib.mod.common.registry.init.BLibLootItemConditionTypes;
+import com.blib.mod.common.registry.init.BLibPropertyContainerTypes;
 import com.blib.mod.common.registry.init.BLibReloadListeners;
 
 @ApiStatus.Internal
@@ -65,6 +67,7 @@ public class BLib {
         BLibFactionDataTypes.initialize();
         BLibLootItemConditionTypes.initialize();
         BLibPacketDirections.initialize();
+        BLibPropertyContainerTypes.initialize();
         BLibReloadListeners.initialize();
         BLibServerPacketHandlers.initialize();
 
@@ -83,6 +86,7 @@ public class BLib {
         BLib.MOD.events().onChunkSave().register(BLibDataStoreManager.INSTANCE::saveChunkData);
         BLib.MOD.events().onChunkUnload().register(BLibDataStoreManager.INSTANCE::onChunkUnload);
         BLib.MOD.events().onServerSave().register(BLibDataStoreManager.INSTANCE::saveGlobalData);
+        BLib.MOD.events().onServerSave().register(BLibPropertyContainerSaveHandler.INSTANCE::save);
         BLib.MOD.events().onLevelSave().register(BLibDataStoreManager.INSTANCE::saveLevelData);
         BLib.MOD.events().onServerStopped().register(BLibDataStoreManager.INSTANCE::onServerStopped);
         BLib.MOD.events().onServerStopped().register(GOAPDebugTracker.INSTANCE::clear);

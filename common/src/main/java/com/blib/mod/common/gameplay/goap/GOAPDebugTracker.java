@@ -10,14 +10,17 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.blib.mod.common.property.BLibModProperties;
+import com.blib.mod.common.property.BLibModPropertyAccess;
+
 @ApiStatus.Internal
 public final class GOAPDebugTracker {
 
     public static final GOAPDebugTracker INSTANCE = new GOAPDebugTracker();
 
-    public static final int WORLD_STATE_PAGE_SIZE = 30;
-
-    private static final int DEDICATED_TICK_INTERVAL = 10;
+    public static int getWorldStatePageSize() {
+        return BLibModPropertyAccess.INSTANCE.get(BLibModProperties.Goap.Debug.WORLD_STATE_PAGE_SIZE);
+    }
 
     private final Map<UUID, GOAPDebugTrackingState> trackingByPlayer = new ConcurrentHashMap<>();
 
@@ -115,7 +118,7 @@ public final class GOAPDebugTracker {
         if (server.isDedicatedServer()) {
             tickCounter++;
 
-            if (tickCounter < DEDICATED_TICK_INTERVAL) {
+            if (tickCounter < BLibModPropertyAccess.INSTANCE.get(BLibModProperties.Goap.Debug.DEDICATED_TICK_INTERVAL)) {
                 return;
             }
 

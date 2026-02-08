@@ -37,7 +37,7 @@ public final class GOAPDebugWorldStatePanel {
         keys.sort(String.CASE_INSENSITIVE_ORDER);
         var worldState = agent.worldState();
         var totalKeys = keys.size();
-        var pageSize = GOAPDebugTracker.WORLD_STATE_PAGE_SIZE;
+        var pageSize = GOAPDebugTracker.getWorldStatePageSize();
         var totalPages = Math.max(1, (totalKeys + pageSize - 1) / pageSize);
 
         var currentPage = resolveCurrentPage(payload, totalPages);

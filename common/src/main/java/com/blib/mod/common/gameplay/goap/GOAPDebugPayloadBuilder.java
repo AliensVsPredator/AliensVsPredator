@@ -152,8 +152,8 @@ final class GOAPDebugPayloadBuilder {
             var selectedAgent = agents.get(state.selectedIndex());
             var totalPages = Math.max(
                 1,
-                (selectedAgent.graphSensorKeys().size() + GOAPDebugTracker.WORLD_STATE_PAGE_SIZE - 1)
-                    / GOAPDebugTracker.WORLD_STATE_PAGE_SIZE
+                (selectedAgent.graphSensorKeys().size() + GOAPDebugTracker.getWorldStatePageSize() - 1)
+                    / GOAPDebugTracker.getWorldStatePageSize()
             );
             wsPage = ((wsPage % totalPages) + totalPages) % totalPages;
             state.setWorldStatePage(wsPage);

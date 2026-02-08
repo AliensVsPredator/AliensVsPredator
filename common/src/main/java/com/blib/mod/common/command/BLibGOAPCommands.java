@@ -214,7 +214,7 @@ public final class BLibGOAPCommands {
 
                 if (graph != null) {
                     var sensorCount = graph.getSensorMap().size();
-                    var limit = (sensorCount + GOAPDebugTracker.WORLD_STATE_PAGE_SIZE - 1) / GOAPDebugTracker.WORLD_STATE_PAGE_SIZE;
+                    var limit = (sensorCount + GOAPDebugTracker.getWorldStatePageSize() - 1) / GOAPDebugTracker.getWorldStatePageSize();
 
                     totalPages = Math.max(1, limit);
                 }
