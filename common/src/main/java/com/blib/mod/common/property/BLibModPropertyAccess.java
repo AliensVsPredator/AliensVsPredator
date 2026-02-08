@@ -14,7 +14,7 @@ import com.blib.api.common.property.v1.BLibPropertyKey;
 
 public class BLibModPropertyAccess {
 
-    private static final Path PATH = BLibAPI.getGameDirectory().resolve(Path.of("blib.properties"));
+    private static final Path PATH = BLibAPI.getGameDirectory().resolve(Path.of("config/blib.properties"));
 
     public static final BLibModPropertyAccess INSTANCE = new BLibModPropertyAccess();
 
