@@ -19,7 +19,7 @@ public final class GOAPDebugTracker {
     public static final GOAPDebugTracker INSTANCE = new GOAPDebugTracker();
 
     public static int getWorldStatePageSize() {
-        return BLibModPropertyAccess.INSTANCE.get(BLibModProperties.Goap.Debug.WORLD_STATE_PAGE_SIZE);
+        return BLibModPropertyAccess.INSTANCE.get(BLibModProperties.Debug.Render.Goap.WORLD_STATE_PAGE_SIZE);
     }
 
     private final Map<UUID, GOAPDebugTrackingState> trackingByPlayer = new ConcurrentHashMap<>();
@@ -27,6 +27,31 @@ public final class GOAPDebugTracker {
     private int tickCounter;
 
     private GOAPDebugTracker() {}
+
+    public void tick(MinecraftServer server) {
+        if (server.isDedicatedServer()) {
+            tickCounter++;
+
+            if (tickCounter < BLibModPropertyAccess.INSTANCE.get(BLibModProperties.Debug.Render.Goap.DEDICATED_TICK_INTERVAL)) {
+                return;
+            }
+
+            tickCounter = 0;
+        }
+
+        for (var entry : trackingByPlayer.entrySet()) {
+            var playerUuid = entry.getKey();
+            var state = entry.getValue();
+
+            var player = server.getPlayerList().getPlayer(playerUuid);
+
+            if (player == null) {
+                continue;
+            }
+
+            GOAPDebugPayloadBuilder.buildAndSend(server, player, state);
+        }
+    }
 
     public void track(UUID playerUuid, List<UUID> entityUuids) {
         trackingByPlayer.put(playerUuid, new GOAPDebugTrackingState(new ArrayList<>(entityUuids), 0));
@@ -112,30 +137,5 @@ public final class GOAPDebugTracker {
     public void clear(MinecraftServer server) {
         trackingByPlayer.clear();
         tickCounter = 0;
-    }
-
-    public void tick(MinecraftServer server) {
-        if (server.isDedicatedServer()) {
-            tickCounter++;
-
-            if (tickCounter < BLibModPropertyAccess.INSTANCE.get(BLibModProperties.Goap.Debug.DEDICATED_TICK_INTERVAL)) {
-                return;
-            }
-
-            tickCounter = 0;
-        }
-
-        for (var entry : trackingByPlayer.entrySet()) {
-            var playerUuid = entry.getKey();
-            var state = entry.getValue();
-
-            var player = server.getPlayerList().getPlayer(playerUuid);
-
-            if (player == null) {
-                continue;
-            }
-
-            GOAPDebugPayloadBuilder.buildAndSend(server, player, state);
-        }
     }
 }
