@@ -3,11 +3,17 @@ package com.blib.fabric.internal.service.impl;
 import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.api.common.event.v1.BLibBlockBreakEvent;
+import com.blib.api.common.event.v1.BLibChunkSaveEvent;
+import com.blib.api.common.event.v1.BLibChunkUnloadEvent;
 import com.blib.api.common.event.v1.BLibCommonSetupEvent;
+import com.blib.api.common.event.v1.BLibEntityRemoveEvent;
 import com.blib.api.common.event.v1.BLibEntityTickEvent;
+import com.blib.api.common.event.v1.BLibFactionRemoveEvent;
+import com.blib.api.common.event.v1.BLibLevelSaveEvent;
 import com.blib.api.common.event.v1.BLibLevelTickEvent;
 import com.blib.api.common.event.v1.BLibPlayerTrackingEntityEvent;
 import com.blib.api.common.event.v1.BLibServerLifecycleEvent;
+import com.blib.api.common.event.v1.BLibServerSaveEvent;
 import com.blib.api.common.event.v1.BLibTagsUpdatedEvent;
 import com.blib.api.common.event.v1.handle.BLibEventHandle;
 import com.blib.api.common.event.v1.handle.BLibEventListenerHandle;
@@ -18,15 +24,45 @@ import com.blib.internal.service.BLibEventService;
 public class BLibFabricEventServiceImpl implements BLibEventService {
 
     @Override
+    public BLibEventListenerHandle<BLibChunkSaveEvent> onChunkSave(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .onChunkSave();
+    }
+
+    @Override
+    public BLibEventListenerHandle<BLibChunkUnloadEvent> onChunkUnload(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .onChunkUnload();
+    }
+
+    @Override
     public BLibEventListenerHandle<BLibCommonSetupEvent> onCommonSetup(BLibMod mod) {
         return BLibFabricModContainerLookup.INSTANCE.get(mod)
             .onCommonSetup();
     }
 
     @Override
+    public BLibEventListenerHandle<BLibEntityRemoveEvent> onEntityRemove(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .onEntityRemove();
+    }
+
+    @Override
     public BLibEventListenerHandle<BLibEntityTickEvent> onEntityTick(BLibMod mod) {
         return BLibFabricModContainerLookup.INSTANCE.get(mod)
             .onEntityTick();
+    }
+
+    @Override
+    public BLibEventListenerHandle<BLibFactionRemoveEvent> onFactionRemove(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .onFactionRemove();
+    }
+
+    @Override
+    public BLibEventListenerHandle<BLibLevelSaveEvent> onLevelSave(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .onLevelSave();
     }
 
     @Override
@@ -60,26 +96,32 @@ public class BLibFabricEventServiceImpl implements BLibEventService {
     }
 
     @Override
-    public BLibEventHandle<BLibServerLifecycleEvent.Started> serverStarted(BLibMod mod) {
+    public BLibEventHandle<BLibServerLifecycleEvent.Started> onServerStarted(BLibMod mod) {
         return BLibFabricModContainerLookup.INSTANCE.get(mod)
-            .serverStarted();
+            .onServerStarted();
     }
 
     @Override
-    public BLibEventHandle<BLibServerLifecycleEvent.Starting> serverStarting(BLibMod mod) {
+    public BLibEventHandle<BLibServerLifecycleEvent.Starting> onServerStarting(BLibMod mod) {
         return BLibFabricModContainerLookup.INSTANCE.get(mod)
-            .serverStarting();
+            .onServerStarting();
     }
 
     @Override
-    public BLibEventHandle<BLibServerLifecycleEvent.Stopped> serverStopped(BLibMod mod) {
+    public BLibEventHandle<BLibServerLifecycleEvent.Stopped> onServerStopped(BLibMod mod) {
         return BLibFabricModContainerLookup.INSTANCE.get(mod)
-            .serverStopped();
+            .onServerStopped();
     }
 
     @Override
-    public BLibEventHandle<BLibServerLifecycleEvent.Stopping> serverStopping(BLibMod mod) {
+    public BLibEventHandle<BLibServerLifecycleEvent.Stopping> onServerStopping(BLibMod mod) {
         return BLibFabricModContainerLookup.INSTANCE.get(mod)
-            .serverStopping();
+            .onServerStopping();
+    }
+
+    @Override
+    public BLibEventListenerHandle<BLibServerSaveEvent> onServerSave(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .onServerSave();
     }
 }

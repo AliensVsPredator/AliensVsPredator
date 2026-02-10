@@ -36,5 +36,8 @@ replay_*.log
 *.hprof
 *.jfr
 
+# claude
+.claude/
+
 # publishing
 key.properties

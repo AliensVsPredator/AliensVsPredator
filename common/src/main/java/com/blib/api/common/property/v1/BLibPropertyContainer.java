@@ -6,11 +6,15 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 import java.util.Objects;
 
-public class BLibPropertyContainer {
+import com.blib.api.common.util.v1.Dirty;
+
+public class BLibPropertyContainer implements Dirty {
 
     private final Map<String, BLibPropertyValue<?>> pathToValueMap;
 
     private final BLibPropertySchema schema;
+
+    private boolean dirty;
 
     public BLibPropertyContainer(Map<String, BLibPropertyValue<?>> pathToValueMap, BLibPropertySchema schema) {
         this.pathToValueMap = pathToValueMap;
@@ -61,6 +65,7 @@ public class BLibPropertyContainer {
 
     public <T> void set(BLibPropertyKey.Leaf<T> propertyKey, T value) {
         pathToValueMap.put(propertyKey.path(), new BLibPropertyValue.Deserialized<>(value));
+        markDirty();
     }
 
     public Map<String, BLibPropertyValue<?>> getPathToValueMap() {
@@ -69,5 +74,20 @@ public class BLibPropertyContainer {
 
     public BLibPropertySchema getSchema() {
         return schema;
+    }
+
+    @Override
+    public void markDirty() {
+        this.dirty = true;
+    }
+
+    @Override
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    @Override
+    public void clearDirty() {
+        this.dirty = false;
     }
 }

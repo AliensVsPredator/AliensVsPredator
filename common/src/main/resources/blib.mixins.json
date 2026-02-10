@@ -9,24 +9,30 @@
     "azurelib.ItemStackMixin_AzItemStackIdentityRegistry",
     "BlockBehaviourInvoker",
     "MixinDataComponentPatch_Accessor",
+    "MixinDebugPackets",
     "MixinDecoratedPotPatterns_GetPatternForCustomSherds",
     "MixinEntity_DataUser",
+    "MixinEntity_Events",
     "MixinEntityTypeBuilder_SilenceDataFixerError",
     "MixinHolder",
     "MixinLivingEntity_GOAPUser",
-    "MixinEntity_TickEvent",
+    "MixinPath_Debug",
     "MixinRegistry_ApplyDataFixes",
     "MixinShapedRecipeBuilder_Accessor",
     "MixinShapelessRecipeBuilder_Accessor",
     "MixinStructureTemplatePool_Accessor",
-    "server.MixinServerLevel_BlockBreakProgressManager"
+    "server.MixinChunkMap_SaveChunkData",
+    "server.MixinMinecraftServer_SaveGlobalData",
+    "server.MixinServerLevel_BlockBreakProgressManager",
+    "server.MixinServerLevel_Events"
   ],
   "client": [
     "azurelib.BlockEntityMixin_AzBlockEntityAnimatorCache",
     "azurelib.EntityMixin_AzEntityAnimatorCache",
     "azurelib.ItemStackMixin_AzItemAnimatorCache",
     "azurelib.MixinItemRenderer",
-    "azurelib.TextureManagerMixin"
+    "azurelib.TextureManagerMixin",
+    "MixinDebugRenderer"
   ],
   "server": [],
   "injectors": {

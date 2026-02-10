@@ -7,6 +7,7 @@ import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.S2CBlockEntityDispatchCommandPayload;
 import com.blib.mod.common.network.packet.S2CEntityDataSyncPayload;
 import com.blib.mod.common.network.packet.S2CEntityDispatchCommandPayload;
+import com.blib.mod.common.network.packet.S2CGOAPDebugPayload;
 import com.blib.mod.common.network.packet.S2CItemStackDispatchCommandPayload;
 
 public class BLibPacketDirections {
@@ -15,6 +16,7 @@ public class BLibPacketDirections {
 
     public static void initialize() {
         REGISTRY.registerPacketDirection(new PacketDirection.S2C<>(S2CEntityDataSyncPayload.TYPE, S2CEntityDataSyncPayload.CODEC));
+        REGISTRY.registerPacketDirection(new PacketDirection.S2C<>(S2CGOAPDebugPayload.TYPE, S2CGOAPDebugPayload.CODEC));
 
         REGISTRY.registerPacketDirection(
             new PacketDirection.S2C<>(

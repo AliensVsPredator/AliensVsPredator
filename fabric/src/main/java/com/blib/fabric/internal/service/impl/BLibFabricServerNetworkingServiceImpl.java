@@ -29,7 +29,7 @@ public class BLibFabricServerNetworkingServiceImpl implements BLibServerNetworki
 
     @Override
     public void sendToAllClientsTrackingChunk(ServerLevel level, BlockPos blockPos, CustomPacketPayload payload) {
-        for (ServerPlayer player : PlayerLookup.tracking(level, blockPos)) {
+        for (var player : PlayerLookup.tracking(level, blockPos)) {
             sendToClient(player, payload);
         }
     }

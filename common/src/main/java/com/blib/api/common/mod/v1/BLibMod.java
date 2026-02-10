@@ -9,11 +9,14 @@ import com.blib.api.common.mod.v1.exception.BLibModInitializationException;
 import com.blib.api.common.mod.v1.model.BLibModState;
 import com.blib.api.common.mod.v1.model.Version;
 import com.blib.api.common.mod.v1.model.access.BLibEventAccess;
+import com.blib.api.common.mod.v1.model.access.BLibFactionAccess;
 import com.blib.api.common.mod.v1.model.access.BLibFactoryAccess;
 import com.blib.api.common.mod.v1.model.access.BLibModStateAccess;
 import com.blib.api.common.mod.v1.model.access.BLibNetworkAccess;
 import com.blib.api.common.mod.v1.model.access.BLibRegistryAccess;
+import com.blib.api.common.mod.v1.model.access.BLibReputationAccess;
 import com.blib.api.common.mod.v1.model.access.BLibResourceAccess;
+import com.blib.api.common.mod.v1.model.access.BLibStorageAccess;
 import com.blib.internal.service.BLibInternalServices;
 
 public class BLibMod implements BLibModStateAccess {
@@ -22,13 +25,19 @@ public class BLibMod implements BLibModStateAccess {
 
     private final BLibEventAccess eventAccess;
 
+    private final BLibFactionAccess factionAccess;
+
     private final BLibFactoryAccess factoryAccess;
 
     private final BLibNetworkAccess networkAccess;
 
     private final BLibRegistryAccess registryAccess;
 
+    private final BLibReputationAccess reputationAccess;
+
     private final BLibResourceAccess resourceAccess;
+
+    private final BLibStorageAccess storageAccess;
 
     private final @Nullable Version version;
 
@@ -37,10 +46,13 @@ public class BLibMod implements BLibModStateAccess {
     public BLibMod(String id) {
         this.id = id;
         this.eventAccess = new BLibEventAccess(this);
+        this.factionAccess = new BLibFactionAccess(this);
         this.factoryAccess = new BLibFactoryAccess(this);
         this.networkAccess = new BLibNetworkAccess(this);
         this.registryAccess = new BLibRegistryAccess(this);
+        this.reputationAccess = new BLibReputationAccess(this);
         this.resourceAccess = new BLibResourceAccess(this);
+        this.storageAccess = new BLibStorageAccess(this);
         this.version = BLibAPI.getModVersion(id);
         this.state = BLibModState.UNINITIALIZED;
     }
@@ -77,6 +89,10 @@ public class BLibMod implements BLibModStateAccess {
         return eventAccess;
     }
 
+    public BLibFactionAccess factions() {
+        return factionAccess;
+    }
+
     public BLibFactoryAccess factories() {
         return factoryAccess;
     }
@@ -93,8 +109,16 @@ public class BLibMod implements BLibModStateAccess {
         return registryAccess;
     }
 
+    public BLibReputationAccess reputation() {
+        return reputationAccess;
+    }
+
     public BLibResourceAccess resources() {
         return resourceAccess;
+    }
+
+    public BLibStorageAccess storage() {
+        return storageAccess;
     }
 
     public @Nullable Version version() {

@@ -30,11 +30,17 @@ import java.util.function.Supplier;
 
 import com.blib.api.common.entity.v1.spawning.BLibEntitySpawnData;
 import com.blib.api.common.event.v1.BLibBlockBreakEvent;
+import com.blib.api.common.event.v1.BLibChunkSaveEvent;
+import com.blib.api.common.event.v1.BLibChunkUnloadEvent;
 import com.blib.api.common.event.v1.BLibCommonSetupEvent;
+import com.blib.api.common.event.v1.BLibEntityRemoveEvent;
 import com.blib.api.common.event.v1.BLibEntityTickEvent;
+import com.blib.api.common.event.v1.BLibFactionRemoveEvent;
+import com.blib.api.common.event.v1.BLibLevelSaveEvent;
 import com.blib.api.common.event.v1.BLibLevelTickEvent;
 import com.blib.api.common.event.v1.BLibPlayerTrackingEntityEvent;
 import com.blib.api.common.event.v1.BLibServerLifecycleEvent;
+import com.blib.api.common.event.v1.BLibServerSaveEvent;
 import com.blib.api.common.event.v1.BLibTagsUpdatedEvent;
 import com.blib.api.common.event.v1.handle.BLibEventListenerHandle;
 import com.blib.api.common.event.v1.handle.BLibGlobalOnlyEventHandle;
@@ -76,11 +82,23 @@ public class BLibNeoForgeModContainer {
 
     private final List<NetworkHandler<?>> networkHandlers;
 
+    private final BLibEventListenerHandle<BLibChunkSaveEvent> onChunkSave;
+
+    private final BLibEventListenerHandle<BLibChunkUnloadEvent> onChunkUnload;
+
     private final BLibEventListenerContainer<BLibCommonSetupEvent> onCommonSetup;
+
+    private final BLibEventListenerHandle<BLibEntityRemoveEvent> onEntityRemove;
 
     private final BLibEventListenerHandle<BLibEntityTickEvent> onEntityTick;
 
+    private final BLibEventListenerHandle<BLibFactionRemoveEvent> onFactionRemove;
+
+    private final BLibEventListenerHandle<BLibLevelSaveEvent> onLevelSave;
+
     private final BLibNeoForgeEventHandle<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity;
+
+    private final BLibEventListenerHandle<BLibServerSaveEvent> onServerSave;
 
     private final BLibNeoForgeEventHandle<BLibTagsUpdatedEvent> onTagsUpdated;
 
@@ -113,9 +131,15 @@ public class BLibNeoForgeModContainer {
         this.furnaceFuelData = new ArrayList<>();
         this.literalArgumentBuilders = new ArrayList<>();
         this.networkHandlers = new ArrayList<>();
+        this.onChunkSave = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.CHUNK_SAVE);
+        this.onChunkUnload = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.CHUNK_UNLOAD);
         this.onCommonSetup = BLibCommonSetupEvents.FACTORY.apply(mod);
+        this.onEntityRemove = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.ENTITY_REMOVE);
         this.onEntityTick = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.ENTITY_TICK);
+        this.onFactionRemove = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.FACTION_REMOVE);
+        this.onLevelSave = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.LEVEL_SAVE);
         this.onPlayerStartTrackingEntity = BLibNeoForgePlayerTrackingEntityEvents.FACTORY.apply(mod);
+        this.onServerSave = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.SERVER_SAVE);
         this.onTagsUpdated = BLibNeoForgeTagsUpdatedEvents.FACTORY.apply(mod);
         this.postLevelTick = BLibNeoForgeLevelTickEvents.POST_FACTORY.apply(mod);
         this.preBlockBreak = BLibNeoForgePlayerBlockBreakEvents.FACTORY.apply(mod);
@@ -140,12 +164,32 @@ public class BLibNeoForgeModContainer {
         return Collections.unmodifiableList(furnaceFuelData);
     }
 
+    public BLibEventListenerHandle<BLibChunkSaveEvent> onChunkSave() {
+        return onChunkSave;
+    }
+
+    public BLibEventListenerHandle<BLibChunkUnloadEvent> onChunkUnload() {
+        return onChunkUnload;
+    }
+
     public BLibEventListenerContainer<BLibCommonSetupEvent> onCommonSetup() {
         return onCommonSetup;
     }
 
+    public BLibEventListenerHandle<BLibEntityRemoveEvent> onEntityRemove() {
+        return onEntityRemove;
+    }
+
     public BLibEventListenerHandle<BLibEntityTickEvent> onEntityTick() {
         return onEntityTick;
+    }
+
+    public BLibEventListenerHandle<BLibFactionRemoveEvent> onFactionRemove() {
+        return onFactionRemove;
+    }
+
+    public BLibEventListenerHandle<BLibLevelSaveEvent> onLevelSave() {
+        return onLevelSave;
     }
 
     public BLibNeoForgeEventHandle<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity() {
@@ -168,20 +212,24 @@ public class BLibNeoForgeModContainer {
         return preLevelTick;
     }
 
-    public BLibNeoForgeEventHandle<BLibServerLifecycleEvent.Started> serverStarted() {
+    public BLibNeoForgeEventHandle<BLibServerLifecycleEvent.Started> onServerStarted() {
         return serverStarted;
     }
 
-    public BLibNeoForgeEventHandle<BLibServerLifecycleEvent.Starting> serverStarting() {
+    public BLibNeoForgeEventHandle<BLibServerLifecycleEvent.Starting> onServerStarting() {
         return serverStarting;
     }
 
-    public BLibNeoForgeEventHandle<BLibServerLifecycleEvent.Stopped> serverStopped() {
+    public BLibNeoForgeEventHandle<BLibServerLifecycleEvent.Stopped> onServerStopped() {
         return serverStopped;
     }
 
-    public BLibNeoForgeEventHandle<BLibServerLifecycleEvent.Stopping> serverStopping() {
+    public BLibNeoForgeEventHandle<BLibServerLifecycleEvent.Stopping> onServerStopping() {
         return serverStopping;
+    }
+
+    public BLibEventListenerHandle<BLibServerSaveEvent> onServerSave() {
+        return onServerSave;
     }
 
     /* package-private */ List<Registry<?>> getCustomRegistryEntries() {
