@@ -1,4 +1,4 @@
-# vMAJOR.MINOR.PATCH-DIST
+# v0.2.2
 
 ## ✍️ Developer Notes
 - For help or other questions, concerns, etc. check out our Discord server: https://discord.gg/wp7mvmbkVb
