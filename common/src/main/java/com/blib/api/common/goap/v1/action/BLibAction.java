@@ -24,9 +24,6 @@ public class BLibAction<T> extends DelegatingAction<T> {
         return masks;
     }
 
-    /**
-     * Abstract builder for BLibAction.
-     */
     public abstract static class Builder<T, B extends Builder<T, B>> extends DelegatingAction.Builder<T, B> {
 
         protected final Set<ActionMask> masks;
@@ -58,9 +55,6 @@ public class BLibAction<T> extends DelegatingAction<T> {
         }
     }
 
-    /**
-     * Concrete terminal builder for BLibAction.
-     */
     public static class ConcreteBuilder<T> extends Builder<T, ConcreteBuilder<T>> {
 
         protected ConcreteBuilder(String name) {
