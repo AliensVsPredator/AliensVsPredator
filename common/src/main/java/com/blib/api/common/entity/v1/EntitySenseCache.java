@@ -6,12 +6,14 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.phys.AABB;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.function.ToIntFunction;
+import java.util.Set;
 
 public class EntitySenseCache {
 
@@ -23,24 +25,42 @@ public class EntitySenseCache {
 
     private final Map<Item, List<ItemEntity>> itemEntitiesByItemMap;
 
+    private final Set<TagKey<EntityType<?>>> trackedTags;
+
+    private final Map<TagKey<EntityType<?>>, List<Entity>> entitiesByTagMap;
+
     private final int scanRadius;
 
-    private final ToIntFunction<Entity> tickFrequencyFunction;
+    private final RefreshPolicy<EntitySenseCache> refreshPolicy;
 
     private int lastSenseTick;
 
-    private EntitySenseCache(Entity entity, int scanRadius, ToIntFunction<Entity> tickFrequencyFunction) {
+    private EntitySenseCache(
+        Entity entity,
+        int scanRadius,
+        RefreshPolicy<EntitySenseCache> refreshPolicy,
+        Set<TagKey<EntityType<?>>> trackedTags
+    ) {
         this.entity = entity;
         this.entitiesByClassMap = new HashMap<>();
         this.entitiesByTypeMap = new HashMap<>();
         this.itemEntitiesByItemMap = new HashMap<>();
+        this.trackedTags = trackedTags;
+        this.entitiesByTagMap = new HashMap<>();
         this.scanRadius = scanRadius;
-        this.tickFrequencyFunction = tickFrequencyFunction;
+        this.refreshPolicy = refreshPolicy;
         this.lastSenseTick = 0;
     }
 
     public static Builder builder(Entity entity) {
         return new Builder(entity);
+    }
+
+    public void clear() {
+        entitiesByClassMap.clear();
+        entitiesByTypeMap.clear();
+        itemEntitiesByItemMap.clear();
+        entitiesByTagMap.clear();
     }
 
     /**
@@ -90,6 +110,14 @@ public class EntitySenseCache {
     public List<Entity> getByTag(TagKey<EntityType<?>> tagKey) {
         tryPopulateCache();
 
+        if (trackedTags.contains(tagKey)) {
+            return entitiesByTagMap.getOrDefault(tagKey, List.of());
+        }
+
+        return getByTagMatch(tagKey);
+    }
+
+    private @NotNull List<Entity> getByTagMatch(TagKey<EntityType<?>> tagKey) {
         List<Entity> collectedEntities = null;
 
         for (var entityType : entitiesByTypeMap.keySet()) {
@@ -118,16 +146,20 @@ public class EntitySenseCache {
         return (List<T>) entitiesByTypeMap.getOrDefault(entityType, List.of());
     }
 
-    private void tryPopulateCache() {
-        var tickFrequency = tickFrequencyFunction.applyAsInt(entity);
+    public Entity getEntity() {
+        return entity;
+    }
 
-        if (entity.tickCount <= lastSenseTick + tickFrequency) {
+    public int getLastSenseTick() {
+        return lastSenseTick;
+    }
+
+    private void tryPopulateCache() {
+        if (!refreshPolicy.shouldRefresh(this)) {
             return;
         }
 
-        entitiesByClassMap.clear();
-        entitiesByTypeMap.clear();
-        itemEntitiesByItemMap.clear();
+        clear();
 
         var diameter = scanRadius * 2;
         var scanArea = AABB.ofSize(entity.getEyePosition(), diameter, diameter, diameter);
@@ -144,6 +176,13 @@ public class EntitySenseCache {
                 itemEntitiesByItemMap.computeIfAbsent(itemEntity.getItem().getItem(), $ -> new ArrayList<>())
                     .add(itemEntity);
             }
+
+            for (var tagKey : trackedTags) {
+                if (entity.getType().is(tagKey)) {
+                    entitiesByTagMap.computeIfAbsent(tagKey, $ -> new ArrayList<>())
+                        .add(entity);
+                }
+            }
         }
 
         this.lastSenseTick = entity.tickCount;
@@ -153,12 +192,23 @@ public class EntitySenseCache {
 
         private final Entity entity;
 
-        private int scanRadius = 16;
+        private final Set<TagKey<EntityType<?>>> trackedTags;
 
-        private ToIntFunction<Entity> tickFrequencyFunction = $ -> 20;
+        private RefreshPolicy<EntitySenseCache> refreshPolicy;
+
+        private int scanRadius;
 
         private Builder(Entity entity) {
             this.entity = entity;
+            this.trackedTags = new HashSet<>();
+
+            this.refreshPolicy = context -> context.getEntity().tickCount > context.getLastSenseTick() + 20;
+            this.scanRadius = 16;
+        }
+
+        public Builder withRefreshPolicy(RefreshPolicy<EntitySenseCache> refreshPolicy) {
+            this.refreshPolicy = refreshPolicy;
+            return this;
         }
 
         public Builder withScanRadius(int scanRadius) {
@@ -166,18 +216,13 @@ public class EntitySenseCache {
             return this;
         }
 
-        public Builder withTickFrequency(int tickFrequency) {
-            this.tickFrequencyFunction = $ -> tickFrequency;
-            return this;
-        }
-
-        public Builder withTickFrequency(ToIntFunction<Entity> tickFrequencyFunction) {
-            this.tickFrequencyFunction = tickFrequencyFunction;
+        public Builder addTrackedTag(TagKey<EntityType<?>> tagKey) {
+            this.trackedTags.add(tagKey);
             return this;
         }
 
         public EntitySenseCache build() {
-            return new EntitySenseCache(entity, scanRadius, tickFrequencyFunction);
+            return new EntitySenseCache(entity, scanRadius, refreshPolicy, trackedTags);
         }
     }
 }
