@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.ToIntFunction;
 
 public class EntitySenseCache {
 
@@ -21,34 +22,34 @@ public class EntitySenseCache {
 
     private final Map<Class<? extends Entity>, List<Entity>> entitiesByClassMap;
 
+    private final Map<TagKey<EntityType<?>>, List<Entity>> entitiesByTagMap;
+
     private final Map<EntityType<?>, List<Entity>> entitiesByTypeMap;
 
     private final Map<Item, List<ItemEntity>> itemEntitiesByItemMap;
 
-    private final Set<TagKey<EntityType<?>>> trackedTags;
-
-    private final Map<TagKey<EntityType<?>>, List<Entity>> entitiesByTagMap;
-
-    private final int scanRadius;
-
     private final RefreshPolicy<EntitySenseCache> refreshPolicy;
+
+    private final ToIntFunction<EntitySenseCache> scanRadiusFunction;
+
+    private final Set<TagKey<EntityType<?>>> trackedTags;
 
     private int lastSenseTick;
 
     private EntitySenseCache(
         Entity entity,
-        int scanRadius,
         RefreshPolicy<EntitySenseCache> refreshPolicy,
+        ToIntFunction<EntitySenseCache> scanRadiusFunction,
         Set<TagKey<EntityType<?>>> trackedTags
     ) {
         this.entity = entity;
         this.entitiesByClassMap = new HashMap<>();
+        this.entitiesByTagMap = new HashMap<>();
         this.entitiesByTypeMap = new HashMap<>();
         this.itemEntitiesByItemMap = new HashMap<>();
-        this.trackedTags = trackedTags;
-        this.entitiesByTagMap = new HashMap<>();
-        this.scanRadius = scanRadius;
         this.refreshPolicy = refreshPolicy;
+        this.scanRadiusFunction = scanRadiusFunction;
+        this.trackedTags = trackedTags;
         this.lastSenseTick = 0;
     }
 
@@ -161,6 +162,7 @@ public class EntitySenseCache {
 
         clear();
 
+        var scanRadius = scanRadiusFunction.applyAsInt(this);
         var diameter = scanRadius * 2;
         var scanArea = AABB.ofSize(entity.getEyePosition(), diameter, diameter, diameter);
 
@@ -196,14 +198,14 @@ public class EntitySenseCache {
 
         private RefreshPolicy<EntitySenseCache> refreshPolicy;
 
-        private int scanRadius;
+        private ToIntFunction<EntitySenseCache> scanRadiusFunction;
 
         private Builder(Entity entity) {
             this.entity = entity;
             this.trackedTags = new HashSet<>();
 
             this.refreshPolicy = context -> context.getEntity().tickCount > context.getLastSenseTick() + 20;
-            this.scanRadius = 16;
+            this.scanRadiusFunction = $ -> 16;
         }
 
         public Builder withRefreshPolicy(RefreshPolicy<EntitySenseCache> refreshPolicy) {
@@ -212,7 +214,12 @@ public class EntitySenseCache {
         }
 
         public Builder withScanRadius(int scanRadius) {
-            this.scanRadius = scanRadius;
+            this.scanRadiusFunction = $ -> scanRadius;
+            return this;
+        }
+
+        public Builder withScanRadius(ToIntFunction<EntitySenseCache> scanRadiusFunction) {
+            this.scanRadiusFunction = scanRadiusFunction;
             return this;
         }
 
@@ -222,7 +229,7 @@ public class EntitySenseCache {
         }
 
         public EntitySenseCache build() {
-            return new EntitySenseCache(entity, scanRadius, refreshPolicy, trackedTags);
+            return new EntitySenseCache(entity, refreshPolicy, scanRadiusFunction, trackedTags);
         }
     }
 }
