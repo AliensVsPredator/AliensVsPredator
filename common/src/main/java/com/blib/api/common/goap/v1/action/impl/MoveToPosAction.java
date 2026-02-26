@@ -69,6 +69,10 @@ public class MoveToPosAction {
         return Result.MOVING;
     }
 
+    public static void onFinish(Action.Context<? extends PathfinderMob> context) {
+        context.getActor().getNavigation().stop();
+    }
+
     private static void handleDoorInteractions(PathfinderMob pathfinderMob, Blackboard blackboard) {
         if (
             !(pathfinderMob.getNavigation() instanceof GroundPathNavigation groundNavigation)
