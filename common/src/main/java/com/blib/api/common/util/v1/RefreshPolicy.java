@@ -1,4 +1,4 @@
-package com.blib.api.common.entity.v1;
+package com.blib.api.common.util.v1;
 
 @FunctionalInterface
 public interface RefreshPolicy<T> {

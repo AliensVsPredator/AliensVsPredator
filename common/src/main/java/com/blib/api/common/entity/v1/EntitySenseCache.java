@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.ToIntFunction;
 
+import com.blib.api.common.util.v1.RefreshPolicy;
+
 public class EntitySenseCache {
 
     private final Entity entity;

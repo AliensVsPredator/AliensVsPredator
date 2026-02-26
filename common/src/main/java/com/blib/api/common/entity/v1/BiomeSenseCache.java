@@ -11,6 +11,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.ToIntFunction;
 
+import com.blib.api.common.util.v1.RefreshPolicy;
+
 public class BiomeSenseCache {
 
     private final Entity entity;
