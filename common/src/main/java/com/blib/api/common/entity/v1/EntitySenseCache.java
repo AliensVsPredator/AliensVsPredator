@@ -22,6 +22,8 @@ public class EntitySenseCache {
 
     private final Map<Item, List<ItemEntity>> itemEntitiesByItemMap;
 
+    private final int scanRadius;
+
     private final int tickFrequency;
 
     private int lastSenseTick;
@@ -31,6 +33,7 @@ public class EntitySenseCache {
         this.entitiesByClassMap = new HashMap<>();
         this.entitiesByTypeMap = new HashMap<>();
         this.itemEntitiesByItemMap = new HashMap<>();
+        this.scanRadius = 16;
         this.tickFrequency = tickFrequency;
         this.lastSenseTick = 0;
     }
@@ -119,7 +122,8 @@ public class EntitySenseCache {
         entitiesByTypeMap.clear();
         itemEntitiesByItemMap.clear();
 
-        var scanArea = AABB.ofSize(entity.getEyePosition(), 16, 16, 16);
+        var diameter = scanRadius * 2;
+        var scanArea = AABB.ofSize(entity.getEyePosition(), diameter, diameter, diameter);
 
         var entities = entity.level().getEntitiesOfClass(Entity.class, scanArea);
 
