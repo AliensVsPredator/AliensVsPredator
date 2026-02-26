@@ -9,6 +9,7 @@ import net.minecraft.world.level.biome.Biome;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.ToIntFunction;
 
 public class BiomeSenseCache {
 
@@ -16,21 +17,45 @@ public class BiomeSenseCache {
 
     private final Set<Holder<Biome>> nearbyBiomes;
 
-    private final int radiusInBlocks;
+    private final RefreshPolicy<BiomeSenseCache> refreshPolicy;
 
-    private final int tickFrequency;
+    private final ToIntFunction<BiomeSenseCache> scanRadiusFunction;
 
     private BlockPos lastSensePosition;
 
     private int lastSenseTick;
 
-    public BiomeSenseCache(Entity entity, int radiusInBlocks, int tickFrequency) {
+    private BiomeSenseCache(
+        Entity entity,
+        RefreshPolicy<BiomeSenseCache> refreshPolicy,
+        ToIntFunction<BiomeSenseCache> scanRadiusFunction
+    ) {
         this.entity = entity;
         this.nearbyBiomes = new HashSet<>();
-        this.radiusInBlocks = radiusInBlocks;
-        this.tickFrequency = tickFrequency;
+        this.refreshPolicy = refreshPolicy;
+        this.scanRadiusFunction = scanRadiusFunction;
         this.lastSensePosition = entity.blockPosition();
         this.lastSenseTick = 0;
+    }
+
+    public static Builder builder(Entity entity) {
+        return new Builder(entity);
+    }
+
+    public void clear() {
+        nearbyBiomes.clear();
+    }
+
+    public Entity getEntity() {
+        return entity;
+    }
+
+    public BlockPos getLastSensePosition() {
+        return lastSensePosition;
+    }
+
+    public int getLastSenseTick() {
+        return lastSenseTick;
     }
 
     public boolean isNearby(TagKey<Biome> tagKey) {
@@ -52,22 +77,22 @@ public class BiomeSenseCache {
     }
 
     private void tryPopulateCache() {
-        if (
-            entity.tickCount <= lastSenseTick + tickFrequency
-                && entity.blockPosition().equals(lastSensePosition)
-        ) {
+        if (!refreshPolicy.shouldRefresh(this)) {
             return;
         }
 
-        nearbyBiomes.clear();
+        clear();
 
-        nearbyBiomes.addAll(sense(entity));
+        var biomes = sense(entity);
+
+        nearbyBiomes.addAll(biomes);
 
         this.lastSensePosition = entity.blockPosition();
         this.lastSenseTick = entity.tickCount;
     }
 
     private Set<Holder<Biome>> sense(Entity entity) {
+        var radiusInBlocks = scanRadiusFunction.applyAsInt(this);
         var level = entity.level();
         var origin = entity.blockPosition();
 
@@ -97,5 +122,41 @@ public class BiomeSenseCache {
         }
 
         return result;
+    }
+
+    public static class Builder {
+
+        private final Entity entity;
+
+        private RefreshPolicy<BiomeSenseCache> refreshPolicy;
+
+        private ToIntFunction<BiomeSenseCache> scanRadiusFunction;
+
+        private Builder(Entity entity) {
+            this.entity = entity;
+
+            this.refreshPolicy = context -> context.getEntity().tickCount > context.getLastSenseTick() + 20
+                || !context.getEntity().blockPosition().equals(context.getLastSensePosition());
+            this.scanRadiusFunction = $ -> 64;
+        }
+
+        public Builder withRefreshPolicy(RefreshPolicy<BiomeSenseCache> refreshPolicy) {
+            this.refreshPolicy = refreshPolicy;
+            return this;
+        }
+
+        public Builder withScanRadius(int scanRadius) {
+            this.scanRadiusFunction = $ -> scanRadius;
+            return this;
+        }
+
+        public Builder withScanRadius(ToIntFunction<BiomeSenseCache> scanRadiusFunction) {
+            this.scanRadiusFunction = scanRadiusFunction;
+            return this;
+        }
+
+        public BiomeSenseCache build() {
+            return new BiomeSenseCache(entity, refreshPolicy, scanRadiusFunction);
+        }
     }
 }
