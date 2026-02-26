@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.ToIntFunction;
 
 public class EntitySenseCache {
 
@@ -24,18 +25,22 @@ public class EntitySenseCache {
 
     private final int scanRadius;
 
-    private final int tickFrequency;
+    private final ToIntFunction<Entity> tickFrequencyFunction;
 
     private int lastSenseTick;
 
-    public EntitySenseCache(Entity entity, int tickFrequency) {
+    private EntitySenseCache(Entity entity, int scanRadius, ToIntFunction<Entity> tickFrequencyFunction) {
         this.entity = entity;
         this.entitiesByClassMap = new HashMap<>();
         this.entitiesByTypeMap = new HashMap<>();
         this.itemEntitiesByItemMap = new HashMap<>();
-        this.scanRadius = 16;
-        this.tickFrequency = tickFrequency;
+        this.scanRadius = scanRadius;
+        this.tickFrequencyFunction = tickFrequencyFunction;
         this.lastSenseTick = 0;
+    }
+
+    public static Builder builder(Entity entity) {
+        return new Builder(entity);
     }
 
     /**
@@ -114,6 +119,8 @@ public class EntitySenseCache {
     }
 
     private void tryPopulateCache() {
+        var tickFrequency = tickFrequencyFunction.applyAsInt(entity);
+
         if (entity.tickCount <= lastSenseTick + tickFrequency) {
             return;
         }
@@ -140,5 +147,37 @@ public class EntitySenseCache {
         }
 
         this.lastSenseTick = entity.tickCount;
+    }
+
+    public static class Builder {
+
+        private final Entity entity;
+
+        private int scanRadius = 16;
+
+        private ToIntFunction<Entity> tickFrequencyFunction = $ -> 20;
+
+        private Builder(Entity entity) {
+            this.entity = entity;
+        }
+
+        public Builder withScanRadius(int scanRadius) {
+            this.scanRadius = scanRadius;
+            return this;
+        }
+
+        public Builder withTickFrequency(int tickFrequency) {
+            this.tickFrequencyFunction = $ -> tickFrequency;
+            return this;
+        }
+
+        public Builder withTickFrequency(ToIntFunction<Entity> tickFrequencyFunction) {
+            this.tickFrequencyFunction = tickFrequencyFunction;
+            return this;
+        }
+
+        public EntitySenseCache build() {
+            return new EntitySenseCache(entity, scanRadius, tickFrequencyFunction);
+        }
     }
 }
