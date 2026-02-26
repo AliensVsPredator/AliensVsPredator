@@ -1,6 +1,7 @@
 package com.blib.api.common.goap.v1.action.impl;
 
 import com.just.goap.StateKey;
+import com.just.goap.action.Action;
 import com.just.goap.state.Blackboard;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.PathfinderMob;
@@ -17,11 +18,12 @@ public class MoveToPosAction {
     private static final StateKey<BlockPos> LAST_OPENED_DOOR_POS = StateKey.sensed("last_opened_door_pos");
 
     public static Result perform(
-        PathfinderMob pathfinderMob,
-        Blackboard blackboard,
+        Action.Context<? extends PathfinderMob> context,
         Vec3 targetPos,
         double speedMultiplier
     ) {
+        var pathfinderMob = context.getActor();
+        var blackboard = context.getBlackboard(Blackboard.Scope.ACTION);
         var navigation = pathfinderMob.getNavigation();
         var ticksUntilNextPathRecalculation = blackboard.getOrDefault(TICKS_UNTIL_NEXT_PATH_RECALCULATION, 0);
 
