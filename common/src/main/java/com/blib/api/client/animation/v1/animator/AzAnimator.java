@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.WeakHashMap;
 
-import com.blib.api.client.animation.v1.controller.AzAnimationControllerContainer;
+import com.blib.api.client.animation.v1.track.AzAnimationTrackContainer;
 import com.blib.internal.client.animation.AzAnimationTimer;
 import com.blib.internal.client.animation.cache.AzBakedAnimationCache;
 import com.blib.internal.client.animation.cache.AzBoneCache;
@@ -20,7 +20,7 @@ public abstract class AzAnimator<K, T> {
 
     private final WeakHashMap<K, AzAnimationContext<T>> contextCache = new WeakHashMap<>();
 
-    private final AzAnimationControllerContainer<T> animationControllerContainer;
+    private final AzAnimationTrackContainer<T> animationTrackContainer;
 
     protected final AzAnimatorConfig config;
 
@@ -31,7 +31,7 @@ public abstract class AzAnimator<K, T> {
     }
 
     protected AzAnimator(AzAnimatorConfig config) {
-        this.animationControllerContainer = new AzAnimationControllerContainer<>();
+        this.animationTrackContainer = new AzAnimationTrackContainer<>();
 
         this.config = config;
     }
@@ -53,7 +53,7 @@ public abstract class AzAnimator<K, T> {
         return ctx;
     }
 
-    public abstract void registerControllers(AzAnimationControllerContainer<T> animationControllerContainer);
+    public abstract void registerTracks(AzAnimationTrackContainer<T> animationTrackContainer);
 
     public abstract @NotNull ResourceLocation getAnimationLocation(T animatable);
 
@@ -71,8 +71,8 @@ public abstract class AzAnimator<K, T> {
 
         if (!boneCache.isEmpty()) {
 
-            for (var controller : animationControllerContainer.getAll()) {
-                controller.update();
+            for (var track : animationTrackContainer.getAll()) {
+                track.update();
             }
 
             this.reloadAnimations = false;
@@ -118,7 +118,7 @@ public abstract class AzAnimator<K, T> {
         return currentContext;
     }
 
-    public AzAnimationControllerContainer<T> getAnimationControllerContainer() {
-        return animationControllerContainer;
+    public AzAnimationTrackContainer<T> getAnimationTrackContainer() {
+        return animationTrackContainer;
     }
 }

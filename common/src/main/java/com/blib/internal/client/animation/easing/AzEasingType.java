@@ -7,7 +7,7 @@ import net.minecraft.network.codec.StreamCodec;
 import java.util.Objects;
 
 import com.blib.internal.client.animation.Interpolations;
-import com.blib.internal.client.animation.controller.keyframe.AzAnimationPoint;
+import com.blib.internal.client.animation.track.keyframe.AzAnimationPoint;
 
 public interface AzEasingType {
 

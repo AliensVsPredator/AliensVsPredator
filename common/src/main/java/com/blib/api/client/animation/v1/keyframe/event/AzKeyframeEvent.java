@@ -1,7 +1,7 @@
 package com.blib.api.client.animation.v1.keyframe.event;
 
-import com.blib.api.client.animation.v1.controller.AzAnimationController;
 import com.blib.api.client.animation.v1.keyframe.data.KeyFrameData;
+import com.blib.api.client.animation.v1.track.AzAnimationTrack;
 
 public abstract class AzKeyframeEvent<T, E extends KeyFrameData> {
 
@@ -9,19 +9,19 @@ public abstract class AzKeyframeEvent<T, E extends KeyFrameData> {
 
     private final double animationTick;
 
-    private final AzAnimationController<T> controller;
+    private final AzAnimationTrack<T> track;
 
     private final E eventKeyframe;
 
     protected AzKeyframeEvent(
         T animatable,
         double animationTick,
-        AzAnimationController<T> controller,
+        AzAnimationTrack<T> track,
         E eventKeyframe
     ) {
         this.animatable = animatable;
         this.animationTick = animationTick;
-        this.controller = controller;
+        this.track = track;
         this.eventKeyframe = eventKeyframe;
     }
 
@@ -33,8 +33,8 @@ public abstract class AzKeyframeEvent<T, E extends KeyFrameData> {
         return animatable;
     }
 
-    public AzAnimationController<T> getController() {
-        return controller;
+    public AzAnimationTrack<T> getTrack() {
+        return track;
     }
 
     public E getKeyframeData() {

@@ -6,7 +6,7 @@ import org.apache.commons.lang3.function.TriFunction;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.blib.api.client.animation.v1.controller.AzAnimationController;
+import com.blib.api.client.animation.v1.track.AzAnimationTrack;
 
 @Deprecated(forRemoval = true)
 public interface AzLoopType {
@@ -15,20 +15,20 @@ public interface AzLoopType {
 
     boolean shouldPlayAgain(
         Object animatable,
-        AzAnimationController<?> controller,
+        AzAnimationTrack<?> track,
         AzBakedAnimation currentAnimation
     );
 
     Map<String, AzLoopType> LOOP_TYPES = new ConcurrentHashMap<>(5);
 
-    AzLoopType FALSE = register("false", (animatable, controller, currentAnimation) -> false);
+    AzLoopType FALSE = register("false", (animatable, track, currentAnimation) -> false);
 
-    AzLoopType TRUE = register("true", (animatable, controller, currentAnimation) -> true);
+    AzLoopType TRUE = register("true", (animatable, track, currentAnimation) -> true);
 
     AzLoopType PLAY_ONCE = register("play_once", FALSE);
 
-    AzLoopType HOLD_ON_LAST_FRAME = register("hold_on_last_frame", (animatable, controller, currentAnimation) -> {
-        controller.stateMachine().pause();
+    AzLoopType HOLD_ON_LAST_FRAME = register("hold_on_last_frame", (animatable, track, currentAnimation) -> {
+        track.stateMachine().pause();
 
         return true;
     });
@@ -63,7 +63,7 @@ public interface AzLoopType {
 
     static AzLoopType register(
         String name,
-        TriFunction<Object, AzAnimationController<?>, AzBakedAnimation, Boolean> shouldPlayAgainFunction
+        TriFunction<Object, AzAnimationTrack<?>, AzBakedAnimation, Boolean> shouldPlayAgainFunction
     ) {
         var loopType = new AzLoopType() {
 
@@ -75,10 +75,10 @@ public interface AzLoopType {
             @Override
             public boolean shouldPlayAgain(
                 Object animatable,
-                AzAnimationController<?> controller,
+                AzAnimationTrack<?> track,
                 AzBakedAnimation currentAnimation
             ) {
-                return shouldPlayAgainFunction.apply(animatable, controller, currentAnimation);
+                return shouldPlayAgainFunction.apply(animatable, track, currentAnimation);
             }
         };
 

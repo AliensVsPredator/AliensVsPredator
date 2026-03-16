@@ -3,8 +3,8 @@ package com.blib.internal.client.animation.easing;
 import it.unimi.dsi.fastutil.doubles.Double2DoubleFunction;
 
 import com.blib.internal.client.animation.Interpolations;
-import com.blib.internal.client.animation.controller.keyframe.AzAnimationPoint;
 import com.blib.internal.client.animation.easing.bedrock_easings.BezierEasing;
+import com.blib.internal.client.animation.track.keyframe.AzAnimationPoint;
 
 public class AzEasingTypes {
 

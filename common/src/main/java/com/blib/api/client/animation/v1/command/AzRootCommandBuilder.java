@@ -8,7 +8,6 @@ import com.blib.internal.client.animation.dispatch.command.action.impl.root.AzRo
 import com.blib.internal.client.animation.dispatch.command.action.impl.root.AzRootSetAnimationSpeedAction;
 import com.blib.internal.client.animation.dispatch.command.action.impl.root.AzRootSetEasingTypeAction;
 import com.blib.internal.client.animation.dispatch.command.action.impl.root.AzRootSetFreezeTickAction;
-import com.blib.internal.client.animation.dispatch.command.action.impl.root.AzRootSetRepeatTimesAction;
 import com.blib.internal.client.animation.dispatch.command.action.impl.root.AzRootSetReverseAction;
 import com.blib.internal.client.animation.dispatch.command.action.impl.root.AzRootSetStartTickOffsetAction;
 import com.blib.internal.client.animation.dispatch.command.action.impl.root.AzRootSetTransitionSpeedAction;
@@ -48,11 +47,6 @@ public class AzRootCommandBuilder extends AzCommandBuilder {
 
     public AzRootCommandBuilder setFreezeTickOffset(float freezeTickOffset) {
         actions.add(new AzRootSetFreezeTickAction(freezeTickOffset));
-        return this;
-    }
-
-    public AzRootCommandBuilder setRepeatAmount(float repeatAmount) {
-        actions.add(new AzRootSetRepeatTimesAction(repeatAmount));
         return this;
     }
 

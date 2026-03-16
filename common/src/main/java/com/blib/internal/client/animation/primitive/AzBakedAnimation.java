@@ -1,6 +1,6 @@
 package com.blib.internal.client.animation.primitive;
 
-import com.blib.internal.client.animation.controller.keyframe.AzBoneAnimation;
+import com.blib.internal.client.animation.track.keyframe.AzBoneAnimation;
 
 public record AzBakedAnimation(
     String name,

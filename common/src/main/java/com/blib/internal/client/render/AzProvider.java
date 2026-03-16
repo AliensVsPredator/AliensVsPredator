@@ -72,15 +72,15 @@ public class AzProvider<K, T> {
                 // Create a per-instance context now
                 var ctx = cachedAnimator.getOrCreateContext(UUIDProvider.apply(animatable));
 
-                // Install a deep-copied model into the bone cache BEFORE controllers
+                // Install a deep-copied model into the bone cache BEFORE tracks
                 var modelLocation = modelLocationProvider.apply(entity, animatable);
                 var shared = AzBakedModelCache.getInstance().getOrNull(modelLocation);
                 if (shared != null) {
                     ctx.boneCache().setActiveModel(shared); // setActiveModel deep-copies internally
                 }
 
-                // Controllers see a ready context & model
-                cachedAnimator.registerControllers(cachedAnimator.getAnimationControllerContainer());
+                // Tracks see a ready context & model
+                cachedAnimator.registerTracks(cachedAnimator.getAnimationTrackContainer());
                 accessor.setAnimator(cachedAnimator);
             }
         }
