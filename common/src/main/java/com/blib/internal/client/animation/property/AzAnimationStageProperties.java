@@ -32,7 +32,7 @@ public class AzAnimationStageProperties extends AzAnimationProperties {
         null
     );
 
-    private AzPlayBehavior playBehavior;
+    private final AzPlayBehavior playBehavior;
 
     public AzAnimationStageProperties(
         @Nullable Double animationSpeed,
@@ -52,7 +52,6 @@ public class AzAnimationStageProperties extends AzAnimationProperties {
             isReversing
         );
         this.playBehavior = playBehavior;
-        this.startTickOffset = startTickOffset;
     }
 
     public boolean hasPlayBehavior() {
@@ -61,7 +60,6 @@ public class AzAnimationStageProperties extends AzAnimationProperties {
 
     @Override
     public AzAnimationStageProperties withAnimationSpeed(double animationSpeed) {
-        this.animationSpeed = animationSpeed;
         return new AzAnimationStageProperties(
             animationSpeed,
             easingType,
@@ -75,7 +73,6 @@ public class AzAnimationStageProperties extends AzAnimationProperties {
 
     @Override
     public AzAnimationStageProperties withEasingType(@NotNull AzEasingType easingType) {
-        this.easingType = easingType;
         return new AzAnimationStageProperties(
             animationSpeed,
             easingType,
@@ -88,7 +85,6 @@ public class AzAnimationStageProperties extends AzAnimationProperties {
     }
 
     public AzAnimationStageProperties withPlayBehavior(@NotNull AzPlayBehavior playBehavior) {
-        this.playBehavior = playBehavior;
         return new AzAnimationStageProperties(
             animationSpeed,
             easingType,
@@ -102,7 +98,6 @@ public class AzAnimationStageProperties extends AzAnimationProperties {
 
     @Override
     public AzAnimationStageProperties withTransitionLength(float transitionLength) {
-        this.transitionLength = transitionLength;
         return new AzAnimationStageProperties(
             animationSpeed,
             easingType,
@@ -116,7 +111,6 @@ public class AzAnimationStageProperties extends AzAnimationProperties {
 
     @Override
     public AzAnimationStageProperties withStartTickOffset(double startTickOffset) {
-        this.startTickOffset = startTickOffset;
         return new AzAnimationStageProperties(
             animationSpeed,
             easingType,
@@ -130,7 +124,6 @@ public class AzAnimationStageProperties extends AzAnimationProperties {
 
     @Override
     public AzAnimationStageProperties withFreezeTickOffset(double freezeTickOffset) {
-        this.freezeTickOffset = freezeTickOffset;
         return new AzAnimationStageProperties(
             animationSpeed,
             easingType,
@@ -144,7 +137,6 @@ public class AzAnimationStageProperties extends AzAnimationProperties {
 
     @Override
     public AzAnimationStageProperties withShouldReverse(boolean isReversing) {
-        this.isReversing = isReversing;
         return new AzAnimationStageProperties(
             animationSpeed,
             easingType,

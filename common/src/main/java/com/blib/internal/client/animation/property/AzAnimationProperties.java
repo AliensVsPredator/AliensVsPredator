@@ -20,17 +20,17 @@ public class AzAnimationProperties {
         null
     );
 
-    protected @Nullable Double animationSpeed;
+    protected final @Nullable Double animationSpeed;
 
-    protected @Nullable AzEasingType easingType;
+    protected final @Nullable AzEasingType easingType;
 
-    protected @Nullable Float transitionLength;
+    protected final @Nullable Float transitionLength;
 
-    protected @Nullable Double startTickOffset;
+    protected final @Nullable Double startTickOffset;
 
-    protected @Nullable Double freezeTickOffset;
+    protected final @Nullable Double freezeTickOffset;
 
-    protected @Nullable Boolean isReversing;
+    protected final @Nullable Boolean isReversing;
 
     public AzAnimationProperties(
         @Nullable Double animationSpeed,
@@ -73,7 +73,6 @@ public class AzAnimationProperties {
     }
 
     public AzAnimationProperties withAnimationSpeed(double animationSpeed) {
-        this.animationSpeed = animationSpeed;
         return new AzAnimationProperties(
             animationSpeed,
             easingType,
@@ -85,7 +84,6 @@ public class AzAnimationProperties {
     }
 
     public AzAnimationProperties withEasingType(@NotNull AzEasingType easingType) {
-        this.easingType = easingType;
         return new AzAnimationProperties(
             animationSpeed,
             easingType,
@@ -97,7 +95,6 @@ public class AzAnimationProperties {
     }
 
     public AzAnimationProperties withTransitionLength(float transitionLength) {
-        this.transitionLength = transitionLength;
         return new AzAnimationProperties(
             animationSpeed,
             easingType,
@@ -109,7 +106,6 @@ public class AzAnimationProperties {
     }
 
     public AzAnimationProperties withStartTickOffset(double startTickOffset) {
-        this.startTickOffset = startTickOffset;
         return new AzAnimationProperties(
             animationSpeed,
             easingType,
@@ -121,7 +117,6 @@ public class AzAnimationProperties {
     }
 
     public AzAnimationProperties withFreezeTickOffset(double freezeTickOffset) {
-        this.freezeTickOffset = freezeTickOffset;
         return new AzAnimationProperties(
             animationSpeed,
             easingType,
@@ -133,7 +128,6 @@ public class AzAnimationProperties {
     }
 
     public AzAnimationProperties withShouldReverse(boolean isReversing) {
-        this.isReversing = isReversing;
         return new AzAnimationProperties(
             animationSpeed,
             easingType,
