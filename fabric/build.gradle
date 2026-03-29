@@ -57,14 +57,11 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
     // Manually added dependencies
-    // TODO: Shouldn't need this implementation call, figure out how to remove.
-    implementation "com.just:just-codec:${project.just_codec_version}"
+    api "com.just:just-codec:${project.just_codec_version}"
     include "com.just:just-codec:${project.just_codec_version}"
-    // TODO: Shouldn't need this implementation call, figure out how to remove.
-    implementation "com.just:just-core:${project.just_core_version}"
+    api "com.just:just-core:${project.just_core_version}"
     include "com.just:just-core:${project.just_core_version}"
-    // TODO: Shouldn't need this implementation call, figure out how to remove.
-    implementation "com.just:just-goap:${project.just_goap_version}"
+    api "com.just:just-goap:${project.just_goap_version}"
     include "com.just:just-goap:${project.just_goap_version}"
 
     modApi "com.terraformersmc:modmenu:${project.modmenu_version}"

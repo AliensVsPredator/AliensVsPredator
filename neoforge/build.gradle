@@ -64,13 +64,13 @@ neoForge {
 }
 
 dependencies {
-    jarJar(implementation("com.just:just-codec:${project.just_codec_version}"))
+    jarJar(api("com.just:just-codec:${project.just_codec_version}"))
     additionalRuntimeClasspath "com.just:just-codec:${project.just_codec_version}"
 
-    jarJar(implementation("com.just:just-core:${project.just_core_version}"))
+    jarJar(api("com.just:just-core:${project.just_core_version}"))
     additionalRuntimeClasspath "com.just:just-core:${project.just_core_version}"
 
-    jarJar(implementation("com.just:just-goap:${project.just_goap_version}"))
+    jarJar(api("com.just:just-goap:${project.just_goap_version}"))
     additionalRuntimeClasspath "com.just:just-goap:${project.just_goap_version}"
 
     compileOnly "maven.modrinth:shoulder-surfing-reloaded:1.21.1-4.14.3+neoforge"
