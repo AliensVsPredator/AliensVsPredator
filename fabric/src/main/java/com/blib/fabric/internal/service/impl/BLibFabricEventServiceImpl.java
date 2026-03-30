@@ -6,6 +6,7 @@ import com.blib.api.common.event.v1.BLibBlockBreakEvent;
 import com.blib.api.common.event.v1.BLibChunkSaveEvent;
 import com.blib.api.common.event.v1.BLibChunkUnloadEvent;
 import com.blib.api.common.event.v1.BLibCommonSetupEvent;
+import com.blib.api.common.event.v1.BLibEntityLoadEvent;
 import com.blib.api.common.event.v1.BLibEntityRemoveEvent;
 import com.blib.api.common.event.v1.BLibEntityTickEvent;
 import com.blib.api.common.event.v1.BLibFactionRemoveEvent;
@@ -39,6 +40,12 @@ public class BLibFabricEventServiceImpl implements BLibEventService {
     public BLibEventListenerHandle<BLibCommonSetupEvent> onCommonSetup(BLibMod mod) {
         return BLibFabricModContainerLookup.INSTANCE.get(mod)
             .onCommonSetup();
+    }
+
+    @Override
+    public BLibEventListenerHandle<BLibEntityLoadEvent> onEntityLoad(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .onEntityLoad();
     }
 
     @Override

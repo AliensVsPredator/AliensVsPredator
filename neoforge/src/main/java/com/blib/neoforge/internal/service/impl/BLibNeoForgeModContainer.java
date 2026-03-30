@@ -33,6 +33,7 @@ import com.blib.api.common.event.v1.BLibBlockBreakEvent;
 import com.blib.api.common.event.v1.BLibChunkSaveEvent;
 import com.blib.api.common.event.v1.BLibChunkUnloadEvent;
 import com.blib.api.common.event.v1.BLibCommonSetupEvent;
+import com.blib.api.common.event.v1.BLibEntityLoadEvent;
 import com.blib.api.common.event.v1.BLibEntityRemoveEvent;
 import com.blib.api.common.event.v1.BLibEntityTickEvent;
 import com.blib.api.common.event.v1.BLibFactionRemoveEvent;
@@ -88,6 +89,8 @@ public class BLibNeoForgeModContainer {
 
     private final BLibEventListenerContainer<BLibCommonSetupEvent> onCommonSetup;
 
+    private final BLibEventListenerHandle<BLibEntityLoadEvent> onEntityLoad;
+
     private final BLibEventListenerHandle<BLibEntityRemoveEvent> onEntityRemove;
 
     private final BLibEventListenerHandle<BLibEntityTickEvent> onEntityTick;
@@ -134,6 +137,7 @@ public class BLibNeoForgeModContainer {
         this.onChunkSave = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.CHUNK_SAVE);
         this.onChunkUnload = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.CHUNK_UNLOAD);
         this.onCommonSetup = BLibCommonSetupEvents.FACTORY.apply(mod);
+        this.onEntityLoad = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.ENTITY_LOAD);
         this.onEntityRemove = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.ENTITY_REMOVE);
         this.onEntityTick = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.ENTITY_TICK);
         this.onFactionRemove = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.FACTION_REMOVE);
@@ -174,6 +178,10 @@ public class BLibNeoForgeModContainer {
 
     public BLibEventListenerContainer<BLibCommonSetupEvent> onCommonSetup() {
         return onCommonSetup;
+    }
+
+    public BLibEventListenerHandle<BLibEntityLoadEvent> onEntityLoad() {
+        return onEntityLoad;
     }
 
     public BLibEventListenerHandle<BLibEntityRemoveEvent> onEntityRemove() {
