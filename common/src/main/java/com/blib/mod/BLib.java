@@ -104,6 +104,21 @@ public class BLib {
             .register(factionId -> BLibReputationManager.INSTANCE.removeReputation(ReputationKey.faction(factionId)));
 
         BLib.MOD.events()
+            .onEntityLoad()
+            .register(entity -> {
+                var uuid = entity.getUUID();
+                var factionIds = BLibFactionManager.INSTANCE.getFactionIds(uuid);
+
+                for (var factionId : factionIds) {
+                    var factionData = BLibFactionManager.INSTANCE.getRawData(factionId);
+
+                    if (factionData != null) {
+                        factionData.onMemberLoaded(entity);
+                    }
+                }
+            });
+
+        BLib.MOD.events()
             .onEntityRemove()
             .register((entity, reason) -> {
                 switch (reason) {
@@ -122,7 +137,18 @@ public class BLib {
 
                         BLibReputationManager.INSTANCE.removeReputation(ReputationKey.entity(uuid));
                     }
-                    case UNLOADED_TO_CHUNK, UNLOADED_WITH_PLAYER, CHANGED_DIMENSION -> {}
+                    case UNLOADED_TO_CHUNK, UNLOADED_WITH_PLAYER, CHANGED_DIMENSION -> {
+                        var uuid = entity.getUUID();
+                        var factionIds = BLibFactionManager.INSTANCE.getFactionIds(uuid);
+
+                        for (var factionId : factionIds) {
+                            var factionData = BLibFactionManager.INSTANCE.getRawData(factionId);
+
+                            if (factionData != null) {
+                                factionData.onMemberUnloaded(entity);
+                            }
+                        }
+                    }
                 }
             });
     }

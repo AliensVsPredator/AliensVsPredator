@@ -5,6 +5,7 @@ import com.just.core.functional.tuple.Tuple2;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -218,8 +219,22 @@ public class BLibFactionManager implements FactionManager {
         shardManager.clear();
     }
 
+    public @Nullable FactionData getRawData(ResourceLocation factionId) {
+        return data.get(factionId);
+    }
+
     public void onMemberChanged(ResourceLocation factionId, FactionMember member, boolean added) {
         memberIndex.onMemberChanged(factionId, member, added);
+
+        var factionData = data.get(factionId);
+
+        if (factionData != null) {
+            if (added) {
+                factionData.onMemberAdded(member);
+            } else {
+                factionData.onMemberRemoved(member);
+            }
+        }
     }
 
     private void saveRelationships(MinecraftServer server) {

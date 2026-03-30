@@ -24,7 +24,7 @@ public abstract class MixinEntity_Events {
             return;
         }
 
-        var self = (Entity) (Object) this;
+        var self = Entity.class.cast(this);
 
         for (var listener : listeners) {
             listener.invoke(self);
@@ -39,7 +39,7 @@ public abstract class MixinEntity_Events {
             return;
         }
 
-        var self = (Entity) (Object) this;
+        var self = Entity.class.cast(this);
 
         for (var listener : listeners) {
             listener.invoke(self);
@@ -54,7 +54,7 @@ public abstract class MixinEntity_Events {
             return;
         }
 
-        var self = (Entity) (Object) this;
+        var self = Entity.class.cast(this);
 
         for (var listener : listeners) {
             listener.invoke(self, removalReason);
