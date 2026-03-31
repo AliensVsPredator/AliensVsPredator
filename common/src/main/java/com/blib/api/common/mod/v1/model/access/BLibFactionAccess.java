@@ -1,19 +1,18 @@
 package com.blib.api.common.mod.v1.model.access;
 
-import com.just.core.functional.result.Result;
-import com.just.core.functional.tuple.Tuple2;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 
+import com.blib.api.common.faction.v1.Faction;
 import com.blib.api.common.faction.v1.FactionData;
-import com.blib.api.common.faction.v1.FactionDataError;
 import com.blib.api.common.faction.v1.FactionDataType;
 import com.blib.api.common.faction.v1.FactionManager;
-import com.blib.api.common.faction.v1.FactionRelationships;
 import com.blib.api.common.mod.v1.BLibMod;
 import com.blib.api.common.registry.v1.BLibHolder;
 import com.blib.internal.common.faction.BLibFactionManager;
@@ -28,26 +27,23 @@ public class BLibFactionAccess implements FactionManager {
     }
 
     @Override
-    public <T extends FactionData> Result<Tuple2<FactionRelationships, T>, FactionDataError> getOrCreate(
-        ResourceLocation id,
-        BLibHolder<FactionDataType<T>> type
-    ) {
+    public <T extends FactionData> Faction<T> getOrCreate(ResourceLocation id, BLibHolder<FactionDataType<T>> type) {
         return BLibFactionManager.INSTANCE.getOrCreate(id, type);
     }
 
     @Override
-    public FactionRelationships getRelationships(ResourceLocation id) {
-        return BLibFactionManager.INSTANCE.getRelationships(id);
-    }
-
-    @Override
-    public <T extends FactionData> Result<T, FactionDataError> getData(ResourceLocation id, BLibHolder<FactionDataType<T>> type) {
-        return BLibFactionManager.INSTANCE.getData(id, type);
+    public @Nullable Faction<?> get(ResourceLocation id) {
+        return BLibFactionManager.INSTANCE.get(id);
     }
 
     @Override
     public Set<ResourceLocation> getFactionIds(UUID entityUuid) {
         return BLibFactionManager.INSTANCE.getFactionIds(entityUuid);
+    }
+
+    @Override
+    public Set<ResourceLocation> getFactionsByTag(TagKey<FactionDataType<?>> tag) {
+        return BLibFactionManager.INSTANCE.getFactionsByTag(tag);
     }
 
     @Override

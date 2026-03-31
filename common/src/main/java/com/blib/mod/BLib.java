@@ -178,10 +178,10 @@ public class BLib {
                 var factionIds = BLibFactionManager.INSTANCE.getFactionIds(uuid);
 
                 for (var factionId : factionIds) {
-                    var factionData = BLibFactionManager.INSTANCE.getRawData(factionId);
+                    var faction = BLibFactionManager.INSTANCE.get(factionId);
 
-                    if (factionData != null) {
-                        factionData.onMemberLoaded(entity);
+                    if (faction != null && faction.data() != null) {
+                        faction.data().onMemberLoaded(entity);
                     }
                 }
             });
@@ -200,7 +200,11 @@ public class BLib {
                         var member = new FactionMember.Entity(uuid);
 
                         for (var factionId : factionIds) {
-                            BLibFactionManager.INSTANCE.getRelationships(factionId).removeMember(member);
+                            var faction = BLibFactionManager.INSTANCE.get(factionId);
+
+                            if (faction != null) {
+                                faction.relationships().removeMember(member);
+                            }
                         }
 
                         BLibReputationManager.INSTANCE.removeReputation(ReputationKey.entity(uuid));
@@ -211,10 +215,10 @@ public class BLib {
                         var factionIds = BLibFactionManager.INSTANCE.getFactionIds(uuid);
 
                         for (var factionId : factionIds) {
-                            var factionData = BLibFactionManager.INSTANCE.getRawData(factionId);
+                            var faction = BLibFactionManager.INSTANCE.get(factionId);
 
-                            if (factionData != null) {
-                                factionData.onMemberUnloaded(entity);
+                            if (faction != null && faction.data() != null) {
+                                faction.data().onMemberUnloaded(entity);
                             }
                         }
                     }

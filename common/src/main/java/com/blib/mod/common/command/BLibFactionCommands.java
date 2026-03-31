@@ -92,9 +92,9 @@ public final class BLibFactionCommands {
             return 0;
         }
 
-        var result = BLibFactionManager.INSTANCE.getOrCreateByTypeId(factionId, typeId);
+        var faction = BLibFactionManager.INSTANCE.getOrCreateByTypeId(factionId, typeId);
 
-        if (result.isErr()) {
+        if (faction == null) {
             source.sendFailure(Component.literal("Unknown faction type '%s'.".formatted(typeId)));
             return 0;
         }
@@ -130,16 +130,16 @@ public final class BLibFactionCommands {
     private static int addMember(CommandContext<CommandSourceStack> context, UUID uuid) {
         var source = context.getSource();
         var factionId = ResourceLocationArgument.getId(context, "faction_id");
+        var faction = BLibFactionManager.INSTANCE.get(factionId);
 
-        if (!BLibFactionManager.INSTANCE.exists(factionId)) {
+        if (faction == null) {
             source.sendFailure(Component.literal("Faction '%s' not found.".formatted(factionId)));
             return 0;
         }
 
-        var relationships = BLibFactionManager.INSTANCE.getRelationships(factionId);
         var member = new FactionMember.Entity(uuid);
 
-        if (!relationships.addMember(member)) {
+        if (!faction.relationships().addMember(member)) {
             source.sendFailure(Component.literal("Entity '%s' is already a member of faction '%s'.".formatted(uuid, factionId)));
             return 0;
         }
@@ -159,16 +159,16 @@ public final class BLibFactionCommands {
     private static int removeMember(CommandContext<CommandSourceStack> context, UUID uuid) {
         var source = context.getSource();
         var factionId = ResourceLocationArgument.getId(context, "faction_id");
+        var faction = BLibFactionManager.INSTANCE.get(factionId);
 
-        if (!BLibFactionManager.INSTANCE.exists(factionId)) {
+        if (faction == null) {
             source.sendFailure(Component.literal("Faction '%s' not found.".formatted(factionId)));
             return 0;
         }
 
-        var relationships = BLibFactionManager.INSTANCE.getRelationships(factionId);
         var member = new FactionMember.Entity(uuid);
 
-        if (!relationships.removeMember(member)) {
+        if (!faction.relationships().removeMember(member)) {
             source.sendFailure(Component.literal("Entity '%s' is not a member of faction '%s'.".formatted(uuid, factionId)));
             return 0;
         }
