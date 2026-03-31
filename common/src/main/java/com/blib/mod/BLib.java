@@ -23,6 +23,7 @@ import com.blib.internal.common.faction.BLibFactionManager;
 import com.blib.internal.common.property.BLibPropertyContainerSaveHandler;
 import com.blib.internal.common.reputation.BLibReputationManager;
 import com.blib.internal.common.storage.BLibDataStoreManager;
+import com.blib.internal.common.territory.BLibTerritoryManager;
 import com.blib.mod.common.gameplay.goap.GOAPDebugTracker;
 import com.blib.mod.common.network.BLibPacketDirections;
 import com.blib.mod.common.network.BLibServerPacketHandlers;
@@ -37,6 +38,7 @@ import com.blib.mod.common.registry.init.BLibFactionDataTypes;
 import com.blib.mod.common.registry.init.BLibLootItemConditionTypes;
 import com.blib.mod.common.registry.init.BLibPropertyContainerTypes;
 import com.blib.mod.common.registry.init.BLibReloadListeners;
+import com.blib.mod.common.registry.init.BLibTerritoryDataStoreTypes;
 
 @ApiStatus.Internal
 public class BLib {
@@ -66,6 +68,7 @@ public class BLib {
         BLibDataStoreTypes.initialize();
         BLibFactionDataTypes.initialize();
         BLibLootItemConditionTypes.initialize();
+        BLibTerritoryDataStoreTypes.initialize();
         BLibPacketDirections.initialize();
         BLibPropertyContainerTypes.initialize();
         BLibReloadListeners.initialize();
@@ -99,9 +102,26 @@ public class BLib {
         BLib.MOD.events().onServerSave().register(BLibReputationManager.INSTANCE::save);
         BLib.MOD.events().onServerStopped().register(BLibReputationManager.INSTANCE::clear);
 
+        BLib.MOD.events().onServerStarted().register(BLibTerritoryManager.INSTANCE::onServerStarted);
+        BLib.MOD.events().onServerStopped().register(BLibTerritoryManager.INSTANCE::onServerStopped);
+        BLib.MOD.events().onChunkLoad().register(BLibTerritoryManager.INSTANCE::onChunkLoaded);
+        BLib.MOD.events().onChunkUnload().register(BLibTerritoryManager.INSTANCE::onChunkUnloaded);
+
+        BLib.MOD.events()
+            .onChunkClaimAdded()
+            .register(BLibTerritoryManager.INSTANCE::onClaimAdded);
+
+        BLib.MOD.events()
+            .onChunkClaimRemoved()
+            .register(BLibTerritoryManager.INSTANCE::onClaimRemoved);
+
         BLib.MOD.events()
             .onFactionRemove()
             .register(factionId -> BLibReputationManager.INSTANCE.removeReputation(ReputationKey.faction(factionId)));
+
+        BLib.MOD.events()
+            .onFactionRemove()
+            .register(BLibTerritoryManager.INSTANCE::onFactionRemoved);
 
         BLib.MOD.events()
             .onEntityLoad()
@@ -136,6 +156,7 @@ public class BLib {
                         }
 
                         BLibReputationManager.INSTANCE.removeReputation(ReputationKey.entity(uuid));
+                        BLibTerritoryManager.INSTANCE.onEntityRemoved(uuid);
                     }
                     case UNLOADED_TO_CHUNK, UNLOADED_WITH_PLAYER, CHANGED_DIMENSION -> {
                         var uuid = entity.getUUID();

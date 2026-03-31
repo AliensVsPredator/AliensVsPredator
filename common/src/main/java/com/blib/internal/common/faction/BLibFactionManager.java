@@ -237,6 +237,16 @@ public class BLibFactionManager implements FactionManager {
         }
     }
 
+    public void onEntityMemberAdded(ResourceLocation factionId, FactionMember member, net.minecraft.world.entity.Entity entity) {
+        memberIndex.onMemberChanged(factionId, member, true);
+
+        var factionData = data.get(factionId);
+
+        if (factionData != null) {
+            factionData.onMemberAdded(member, entity);
+        }
+    }
+
     private void saveRelationships(MinecraftServer server) {
         Map<Integer, List<FactionRelationships>> shardToEntries = new HashMap<>();
         Set<Integer> dirtyShards = new HashSet<>();

@@ -9,6 +9,7 @@ import com.blib.mod.common.command.BLibFactionCommands;
 import com.blib.mod.common.command.BLibGOAPCommands;
 import com.blib.mod.common.command.BLibPropertyCommands;
 import com.blib.mod.common.command.BLibReputationCommands;
+import com.blib.mod.common.command.BLibTerritoryCommands;
 
 @ApiStatus.Internal
 public class BLibCommands {
@@ -23,6 +24,7 @@ public class BLibCommands {
                 .then(BLibReputationCommands.build())
                 .then(BLibGOAPCommands.build())
                 .then(BLibPropertyCommands.build())
+                .then(BLibTerritoryCommands.build())
         );
     }
 }

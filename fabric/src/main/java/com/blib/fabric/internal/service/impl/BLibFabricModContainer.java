@@ -35,6 +35,9 @@ import java.util.function.Supplier;
 
 import com.blib.api.common.entity.v1.spawning.BLibEntitySpawnData;
 import com.blib.api.common.event.v1.BLibBlockBreakEvent;
+import com.blib.api.common.event.v1.BLibChunkClaimAddedEvent;
+import com.blib.api.common.event.v1.BLibChunkClaimRemovedEvent;
+import com.blib.api.common.event.v1.BLibChunkLoadEvent;
 import com.blib.api.common.event.v1.BLibChunkSaveEvent;
 import com.blib.api.common.event.v1.BLibChunkUnloadEvent;
 import com.blib.api.common.event.v1.BLibCommonSetupEvent;
@@ -85,6 +88,12 @@ public class BLibFabricModContainer {
 
     private final List<LiteralArgumentBuilder<CommandSourceStack>> literalArgumentBuilders;
 
+    private final BLibEventListenerHandle<BLibChunkClaimAddedEvent> onChunkClaimAdded;
+
+    private final BLibEventListenerHandle<BLibChunkClaimRemovedEvent> onChunkClaimRemoved;
+
+    private final BLibEventListenerHandle<BLibChunkLoadEvent> onChunkLoad;
+
     private final BLibEventListenerHandle<BLibChunkSaveEvent> onChunkSave;
 
     private final BLibEventListenerHandle<BLibChunkUnloadEvent> onChunkUnload;
@@ -131,6 +140,9 @@ public class BLibFabricModContainer {
         this.deferredRegistrations = new HashMap<>();
         this.deferredVillagerTradeRegistrations = new ArrayList<>();
         this.literalArgumentBuilders = new ArrayList<>();
+        this.onChunkClaimAdded = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.CHUNK_CLAIM_ADDED);
+        this.onChunkClaimRemoved = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.CHUNK_CLAIM_REMOVED);
+        this.onChunkLoad = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.CHUNK_LOAD);
         this.onChunkSave = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.CHUNK_SAVE);
         this.onChunkUnload = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.CHUNK_UNLOAD);
         this.onCommonSetup = BLibCommonSetupEvents.FACTORY.apply(mod);
@@ -153,6 +165,18 @@ public class BLibFabricModContainer {
 
     public List<NetworkHandler<?>> getClientBoundPacketHandlers() {
         return clientBoundPacketHandlers;
+    }
+
+    public BLibEventListenerHandle<BLibChunkClaimAddedEvent> onChunkClaimAdded() {
+        return onChunkClaimAdded;
+    }
+
+    public BLibEventListenerHandle<BLibChunkClaimRemovedEvent> onChunkClaimRemoved() {
+        return onChunkClaimRemoved;
+    }
+
+    public BLibEventListenerHandle<BLibChunkLoadEvent> onChunkLoad() {
+        return onChunkLoad;
     }
 
     public BLibEventListenerHandle<BLibChunkSaveEvent> onChunkSave() {

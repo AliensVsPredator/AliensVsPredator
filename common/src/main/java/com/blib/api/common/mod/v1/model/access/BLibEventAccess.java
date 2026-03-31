@@ -3,6 +3,9 @@ package com.blib.api.common.mod.v1.model.access;
 import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.api.common.event.v1.BLibBlockBreakEvent;
+import com.blib.api.common.event.v1.BLibChunkClaimAddedEvent;
+import com.blib.api.common.event.v1.BLibChunkClaimRemovedEvent;
+import com.blib.api.common.event.v1.BLibChunkLoadEvent;
 import com.blib.api.common.event.v1.BLibChunkSaveEvent;
 import com.blib.api.common.event.v1.BLibChunkUnloadEvent;
 import com.blib.api.common.event.v1.BLibCommonSetupEvent;
@@ -28,6 +31,18 @@ public class BLibEventAccess {
     @ApiStatus.Internal
     public BLibEventAccess(BLibMod mod) {
         this.mod = mod;
+    }
+
+    public BLibEventListenerHandle<BLibChunkClaimAddedEvent> onChunkClaimAdded() {
+        return BLibInternalServices.EVENT.onChunkClaimAdded(mod);
+    }
+
+    public BLibEventListenerHandle<BLibChunkClaimRemovedEvent> onChunkClaimRemoved() {
+        return BLibInternalServices.EVENT.onChunkClaimRemoved(mod);
+    }
+
+    public BLibEventListenerHandle<BLibChunkLoadEvent> onChunkLoad() {
+        return BLibInternalServices.EVENT.onChunkLoad(mod);
     }
 
     public BLibEventListenerHandle<BLibChunkSaveEvent> onChunkSave() {

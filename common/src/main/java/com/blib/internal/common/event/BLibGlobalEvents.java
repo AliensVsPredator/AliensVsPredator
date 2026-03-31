@@ -2,6 +2,9 @@ package com.blib.internal.common.event;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import com.blib.api.common.event.v1.BLibChunkClaimAddedEvent;
+import com.blib.api.common.event.v1.BLibChunkClaimRemovedEvent;
+import com.blib.api.common.event.v1.BLibChunkLoadEvent;
 import com.blib.api.common.event.v1.BLibChunkSaveEvent;
 import com.blib.api.common.event.v1.BLibChunkUnloadEvent;
 import com.blib.api.common.event.v1.BLibEntityLoadEvent;
@@ -14,6 +17,12 @@ import com.blib.api.common.event.v1.handle.BLibGlobalEventHandle;
 
 @ApiStatus.Internal
 public final class BLibGlobalEvents {
+
+    public static final BLibGlobalEventHandle<BLibChunkClaimAddedEvent> CHUNK_CLAIM_ADDED = new BLibGlobalEventHandle<>();
+
+    public static final BLibGlobalEventHandle<BLibChunkClaimRemovedEvent> CHUNK_CLAIM_REMOVED = new BLibGlobalEventHandle<>();
+
+    public static final BLibGlobalEventHandle<BLibChunkLoadEvent> CHUNK_LOAD = new BLibGlobalEventHandle<>();
 
     public static final BLibGlobalEventHandle<BLibChunkSaveEvent> CHUNK_SAVE = new BLibGlobalEventHandle<>();
 

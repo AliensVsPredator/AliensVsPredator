@@ -17,6 +17,7 @@ import com.blib.api.common.mod.v1.model.access.BLibRegistryAccess;
 import com.blib.api.common.mod.v1.model.access.BLibReputationAccess;
 import com.blib.api.common.mod.v1.model.access.BLibResourceAccess;
 import com.blib.api.common.mod.v1.model.access.BLibStorageAccess;
+import com.blib.api.common.mod.v1.model.access.BLibTerritoryAccess;
 import com.blib.internal.service.BLibInternalServices;
 
 public class BLibMod implements BLibModStateAccess {
@@ -39,6 +40,8 @@ public class BLibMod implements BLibModStateAccess {
 
     private final BLibStorageAccess storageAccess;
 
+    private final BLibTerritoryAccess territoryAccess;
+
     private final @Nullable Version version;
 
     private volatile BLibModState state;
@@ -53,6 +56,7 @@ public class BLibMod implements BLibModStateAccess {
         this.reputationAccess = new BLibReputationAccess(this);
         this.resourceAccess = new BLibResourceAccess(this);
         this.storageAccess = new BLibStorageAccess(this);
+        this.territoryAccess = new BLibTerritoryAccess(this);
         this.version = BLibAPI.getModVersion(id);
         this.state = BLibModState.UNINITIALIZED;
     }
@@ -119,6 +123,10 @@ public class BLibMod implements BLibModStateAccess {
 
     public BLibStorageAccess storage() {
         return storageAccess;
+    }
+
+    public BLibTerritoryAccess territory() {
+        return territoryAccess;
     }
 
     public @Nullable Version version() {

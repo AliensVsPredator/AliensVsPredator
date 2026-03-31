@@ -3,6 +3,9 @@ package com.blib.fabric.internal.service.impl;
 import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.api.common.event.v1.BLibBlockBreakEvent;
+import com.blib.api.common.event.v1.BLibChunkClaimAddedEvent;
+import com.blib.api.common.event.v1.BLibChunkClaimRemovedEvent;
+import com.blib.api.common.event.v1.BLibChunkLoadEvent;
 import com.blib.api.common.event.v1.BLibChunkSaveEvent;
 import com.blib.api.common.event.v1.BLibChunkUnloadEvent;
 import com.blib.api.common.event.v1.BLibCommonSetupEvent;
@@ -23,6 +26,24 @@ import com.blib.internal.service.BLibEventService;
 
 @ApiStatus.Internal
 public class BLibFabricEventServiceImpl implements BLibEventService {
+
+    @Override
+    public BLibEventListenerHandle<BLibChunkClaimAddedEvent> onChunkClaimAdded(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .onChunkClaimAdded();
+    }
+
+    @Override
+    public BLibEventListenerHandle<BLibChunkClaimRemovedEvent> onChunkClaimRemoved(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .onChunkClaimRemoved();
+    }
+
+    @Override
+    public BLibEventListenerHandle<BLibChunkLoadEvent> onChunkLoad(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .onChunkLoad();
+    }
 
     @Override
     public BLibEventListenerHandle<BLibChunkSaveEvent> onChunkSave(BLibMod mod) {
