@@ -3,6 +3,7 @@ package com.blib.internal.common.territory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.LevelChunk;
 import org.jetbrains.annotations.ApiStatus;
@@ -16,6 +17,8 @@ import java.util.UUID;
 import com.blib.api.common.territory.v1.ChunkClaim;
 import com.blib.api.common.territory.v1.Claimant;
 import com.blib.internal.common.storage.BLibDataStoreManager;
+import com.blib.mod.BLib;
+import com.blib.mod.common.network.packet.S2CChunkClaimsSyncPayload;
 import com.blib.mod.common.registry.init.BLibTerritoryDataStoreTypes;
 
 @ApiStatus.Internal
@@ -163,6 +166,35 @@ public class BLibTerritoryManager {
                 }
             }
         }
+    }
+
+    public void syncAllClaimsToPlayer(ServerPlayer player) {
+        if (server == null) {
+            return;
+        }
+
+        for (var level : server.getAllLevels()) {
+            var index = indexes.get(level);
+
+            if (index == null) {
+                continue;
+            }
+
+            for (var pos : index.getAllClaimedChunks()) {
+                var payload = buildSyncPayload(level, pos);
+                BLib.MOD.networking().sendToClient(player, payload);
+            }
+        }
+    }
+
+    public S2CChunkClaimsSyncPayload buildSyncPayload(ServerLevel level, ChunkPos pos) {
+        var claims = getClaims(level, pos);
+
+        var claimDataList = claims.stream()
+            .map(claim -> new S2CChunkClaimsSyncPayload.ClaimData(claim.claimant(), claim.reason()))
+            .toList();
+
+        return new S2CChunkClaimsSyncPayload(pos.x, pos.z, claimDataList);
     }
 
     private BLibTerritoryIndex getOrCreateIndex(ServerLevel level) {

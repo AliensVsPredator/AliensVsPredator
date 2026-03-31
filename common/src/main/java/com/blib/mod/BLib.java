@@ -19,6 +19,7 @@ import com.blib.api.common.mod.v1.BLibMod;
 import com.blib.api.common.reputation.v1.ReputationKey;
 import com.blib.api.common.server.v1.ServerScheduler;
 import com.blib.internal.client.render.armor.compat.ShoulderSurfingCompat;
+import com.blib.internal.client.territory.compat.XaeroWorldMapCompat;
 import com.blib.internal.common.faction.BLibFactionManager;
 import com.blib.internal.common.property.BLibPropertyContainerSaveHandler;
 import com.blib.internal.common.reputation.BLibReputationManager;
@@ -51,6 +52,7 @@ public class BLib {
 
     public static void initialize() {
         ShoulderSurfingCompat.init();
+        XaeroWorldMapCompat.init();
 
         LOGGER.info("Initializing BLib for platform '{}'", BLibAPI.getModLoaderType());
 
@@ -107,6 +109,21 @@ public class BLib {
         BLib.MOD.events().onChunkLoad().register(BLibTerritoryManager.INSTANCE::onChunkLoaded);
         BLib.MOD.events().onChunkUnload().register(BLibTerritoryManager.INSTANCE::onChunkUnloaded);
 
+        BLib.MOD.events().onChunkLoad().register((level, chunk) -> {
+            var pos = chunk.getPos();
+            var claims = BLibTerritoryManager.INSTANCE.getClaims(level, pos);
+
+            if (!claims.isEmpty()) {
+                var payload = BLibTerritoryManager.INSTANCE.buildSyncPayload(level, pos);
+
+                for (var player : level.getServer().getPlayerList().getPlayers()) {
+                    if (player.connection != null) {
+                        BLib.MOD.networking().sendToClient(player, payload);
+                    }
+                }
+            }
+        });
+
         BLib.MOD.events()
             .onChunkClaimAdded()
             .register(BLibTerritoryManager.INSTANCE::onClaimAdded);
@@ -116,12 +133,43 @@ public class BLib {
             .register(BLibTerritoryManager.INSTANCE::onClaimRemoved);
 
         BLib.MOD.events()
+            .onChunkClaimAdded()
+            .register((level, pos, claim) -> {
+                var payload = BLibTerritoryManager.INSTANCE.buildSyncPayload(level, pos);
+                BLib.MOD.networking().sendToAllClientsTrackingChunk(level, pos.getWorldPosition(), payload);
+            });
+
+        BLib.MOD.events()
+            .onChunkClaimRemoved()
+            .register((level, pos, claim) -> {
+                var payload = BLibTerritoryManager.INSTANCE.buildSyncPayload(level, pos);
+                BLib.MOD.networking().sendToAllClientsTrackingChunk(level, pos.getWorldPosition(), payload);
+            });
+
+        BLib.MOD.events()
             .onFactionRemove()
             .register(factionId -> BLibReputationManager.INSTANCE.removeReputation(ReputationKey.faction(factionId)));
 
         BLib.MOD.events()
             .onFactionRemove()
             .register(BLibTerritoryManager.INSTANCE::onFactionRemoved);
+
+        BLib.MOD.events()
+            .onEntityLoad()
+            .register(entity -> {
+                if (entity instanceof net.minecraft.server.level.ServerPlayer player) {
+                    player.server.tell(
+                        new net.minecraft.server.TickTask(
+                            player.server.getTickCount() + 20,
+                            () -> {
+                                if (player.connection != null) {
+                                    BLibTerritoryManager.INSTANCE.syncAllClaimsToPlayer(player);
+                                }
+                            }
+                        )
+                    );
+                }
+            });
 
         BLib.MOD.events()
             .onEntityLoad()

@@ -143,6 +143,10 @@ public class BLibTerritoryIndex {
         return Collections.unmodifiableSet(result);
     }
 
+    public Set<ChunkPos> getAllClaimedChunks() {
+        return Collections.unmodifiableSet(allClaimedChunks);
+    }
+
     public boolean isClaimed(ChunkPos pos) {
         return allClaimedChunks.contains(pos);
     }

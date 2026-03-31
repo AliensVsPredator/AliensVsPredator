@@ -74,6 +74,7 @@ dependencies {
     additionalRuntimeClasspath "com.just:just-goap:${project.just_goap_version}"
 
     compileOnly "maven.modrinth:shoulder-surfing-reloaded:1.21.1-4.14.3+neoforge"
+    compileOnly "maven.modrinth:xaeros-world-map:neoforge-1.21.1-1.40.11"
 
     localRuntime "dev.architectury:architectury-neoforge:${project.architectury_version}"
     localRuntime "me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_version}"

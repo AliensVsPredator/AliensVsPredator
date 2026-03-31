@@ -8,9 +8,13 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import com.blib.internal.common.event.BLibGlobalEvents;
 
@@ -21,9 +25,16 @@ public abstract class MixinChunkMap_ChunkLoadEvent {
     @Final
     ServerLevel level;
 
+    @Unique
+    private final Set<ChunkPos> blib$firedChunks = new HashSet<>();
+
     @Inject(at = @At("TAIL"), method = "onFullChunkStatusChange")
     private void blib$onChunkLoad(ChunkPos pos, FullChunkStatus fullChunkStatus, CallbackInfo ci) {
-        if (fullChunkStatus != FullChunkStatus.FULL) {
+        if (!fullChunkStatus.isOrAfter(FullChunkStatus.FULL)) {
+            return;
+        }
+
+        if (!blib$firedChunks.add(pos)) {
             return;
         }
 
