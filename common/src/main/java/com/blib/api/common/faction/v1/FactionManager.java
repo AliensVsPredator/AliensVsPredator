@@ -31,8 +31,6 @@ public interface FactionManager {
 
     Set<ResourceLocation> getFactionIds(UUID entityUuid);
 
-    Set<ResourceLocation> getParentFactionIds(ResourceLocation subfactionId);
-
     boolean remove(ResourceLocation id);
 
     Collection<ResourceLocation> getAllIds();

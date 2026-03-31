@@ -153,11 +153,6 @@ public class BLibFactionManager implements FactionManager {
     }
 
     @Override
-    public Set<ResourceLocation> getParentFactionIds(ResourceLocation subfactionId) {
-        return memberIndex.getParentFactionIds(subfactionId);
-    }
-
-    @Override
     public boolean remove(ResourceLocation id) {
         var removedRelationships = relationships.remove(id);
 

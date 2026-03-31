@@ -18,63 +18,41 @@ public class FactionMemberIndex {
 
     private final Map<UUID, Set<ResourceLocation>> entityToFactions;
 
-    private final Map<ResourceLocation, Set<ResourceLocation>> subfactionToParentFactions;
-
     public FactionMemberIndex() {
         this.entityToFactions = new HashMap<>();
-        this.subfactionToParentFactions = new HashMap<>();
     }
 
     public Set<ResourceLocation> getFactionIds(UUID entityUuid) {
         return Collections.unmodifiableSet(entityToFactions.getOrDefault(entityUuid, Set.of()));
     }
 
-    public Set<ResourceLocation> getParentFactionIds(ResourceLocation subfactionId) {
-        return Collections.unmodifiableSet(subfactionToParentFactions.getOrDefault(subfactionId, Set.of()));
-    }
-
     public void onMemberChanged(ResourceLocation factionId, FactionMember member, boolean added) {
-        switch (member) {
-            case FactionMember.Entity(var uuid) -> {
-                if (added) {
-                    entityToFactions.computeIfAbsent(uuid, $ -> new HashSet<>()).add(factionId);
-                } else {
-                    removeFromIndex(entityToFactions, uuid, factionId);
-                }
-            }
-            case FactionMember.SubFaction(var subfactionId) -> {
-                if (added) {
-                    subfactionToParentFactions.computeIfAbsent(subfactionId, $ -> new HashSet<>()).add(factionId);
-                } else {
-                    removeFromIndex(subfactionToParentFactions, subfactionId, factionId);
-                }
+        if (member instanceof FactionMember.Entity(var uuid)) {
+            if (added) {
+                entityToFactions.computeIfAbsent(uuid, $ -> new HashSet<>()).add(factionId);
+            } else {
+                removeFromIndex(uuid, factionId);
             }
         }
     }
 
     public void removeFaction(ResourceLocation factionId, FactionRelationships relationships) {
         for (var member : relationships.getMembers()) {
-            switch (member) {
-                case FactionMember.Entity(var uuid) -> removeFromIndex(entityToFactions, uuid, factionId);
-                case FactionMember.SubFaction(var subfactionId) ->
-                    removeFromIndex(subfactionToParentFactions, subfactionId, factionId);
+            if (member instanceof FactionMember.Entity(var uuid)) {
+                removeFromIndex(uuid, factionId);
             }
         }
     }
 
     public void rebuild(Map<ResourceLocation, FactionRelationships> relationships) {
         entityToFactions.clear();
-        subfactionToParentFactions.clear();
 
         for (var factionRelationships : relationships.values()) {
             var factionId = factionRelationships.getId();
 
             for (var member : factionRelationships.getMembers()) {
-                switch (member) {
-                    case FactionMember.Entity(var uuid) ->
-                        entityToFactions.computeIfAbsent(uuid, $ -> new HashSet<>()).add(factionId);
-                    case FactionMember.SubFaction(var subfactionId) ->
-                        subfactionToParentFactions.computeIfAbsent(subfactionId, $ -> new HashSet<>()).add(factionId);
+                if (member instanceof FactionMember.Entity(var uuid)) {
+                    entityToFactions.computeIfAbsent(uuid, $ -> new HashSet<>()).add(factionId);
                 }
             }
         }
@@ -82,17 +60,16 @@ public class FactionMemberIndex {
 
     public void clear() {
         entityToFactions.clear();
-        subfactionToParentFactions.clear();
     }
 
-    private <K> void removeFromIndex(Map<K, Set<ResourceLocation>> index, K key, ResourceLocation value) {
-        var set = index.get(key);
+    private void removeFromIndex(UUID key, ResourceLocation value) {
+        var set = entityToFactions.get(key);
 
         if (set != null) {
             set.remove(value);
 
             if (set.isEmpty()) {
-                index.remove(key);
+                entityToFactions.remove(key);
             }
         }
     }

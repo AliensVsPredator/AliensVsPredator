@@ -10,7 +10,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.ChunkPos;
 import org.jetbrains.annotations.ApiStatus;
 
-import com.blib.api.common.territory.v1.ChunkClaim;
 import com.blib.api.common.territory.v1.Claimant;
 import com.blib.internal.common.territory.BLibTerritoryManager;
 
@@ -35,10 +34,7 @@ public final class BLibTerritoryCommands {
             .then(
                 Commands.argument("faction_id", ResourceLocationArgument.id())
                     .suggests(BLibCommandSuggestions.FACTION_IDS)
-                    .then(
-                        Commands.argument("reason", ResourceLocationArgument.id())
-                            .executes(BLibTerritoryCommands::executeClaim)
-                    )
+                    .executes(BLibTerritoryCommands::executeClaim)
             );
     }
 
@@ -47,10 +43,7 @@ public final class BLibTerritoryCommands {
             .then(
                 Commands.argument("faction_id", ResourceLocationArgument.id())
                     .suggests(BLibCommandSuggestions.FACTION_IDS)
-                    .then(
-                        Commands.argument("reason", ResourceLocationArgument.id())
-                            .executes(BLibTerritoryCommands::executeUnclaim)
-                    )
+                    .executes(BLibTerritoryCommands::executeUnclaim)
             );
     }
 
@@ -76,20 +69,17 @@ public final class BLibTerritoryCommands {
     private static int executeClaim(CommandContext<CommandSourceStack> context) {
         var source = context.getSource();
         var factionId = ResourceLocationArgument.getId(context, "faction_id");
-        var reason = ResourceLocationArgument.getId(context, "reason");
         var level = source.getLevel();
         var pos = new ChunkPos(net.minecraft.core.BlockPos.containing(source.getPosition()));
         var claimant = Claimant.faction(factionId);
-        var tick = level.getServer().getTickCount();
-        var claim = new ChunkClaim(claimant, reason, tick);
 
-        if (!BLibTerritoryManager.INSTANCE.addClaim(level, pos, claim)) {
-            source.sendFailure(Component.literal("Claim already exists on chunk [%d, %d].".formatted(pos.x, pos.z)));
+        if (!BLibTerritoryManager.INSTANCE.addClaim(level, pos, claimant)) {
+            source.sendFailure(Component.literal("Chunk [%d, %d] is already claimed by faction '%s'.".formatted(pos.x, pos.z, factionId)));
             return 0;
         }
 
         source.sendSuccess(
-            () -> Component.literal("Claimed chunk [%d, %d] for faction '%s' with reason '%s'.".formatted(pos.x, pos.z, factionId, reason)),
+            () -> Component.literal("Claimed chunk [%d, %d] for faction '%s'.".formatted(pos.x, pos.z, factionId)),
             true
         );
         return Command.SINGLE_SUCCESS;
@@ -98,20 +88,17 @@ public final class BLibTerritoryCommands {
     private static int executeUnclaim(CommandContext<CommandSourceStack> context) {
         var source = context.getSource();
         var factionId = ResourceLocationArgument.getId(context, "faction_id");
-        var reason = ResourceLocationArgument.getId(context, "reason");
         var level = source.getLevel();
         var pos = new ChunkPos(net.minecraft.core.BlockPos.containing(source.getPosition()));
         var claimant = Claimant.faction(factionId);
 
-        if (!BLibTerritoryManager.INSTANCE.removeClaim(level, pos, claimant, reason)) {
-            source.sendFailure(Component.literal("No matching claim found on chunk [%d, %d].".formatted(pos.x, pos.z)));
+        if (!BLibTerritoryManager.INSTANCE.removeClaim(level, pos, claimant)) {
+            source.sendFailure(Component.literal("No claim by faction '%s' on chunk [%d, %d].".formatted(factionId, pos.x, pos.z)));
             return 0;
         }
 
         source.sendSuccess(
-            () -> Component.literal(
-                "Removed claim on chunk [%d, %d] for faction '%s' with reason '%s'.".formatted(pos.x, pos.z, factionId, reason)
-            ),
+            () -> Component.literal("Removed claim on chunk [%d, %d] for faction '%s'.".formatted(pos.x, pos.z, factionId)),
             true
         );
         return Command.SINGLE_SUCCESS;
@@ -121,9 +108,9 @@ public final class BLibTerritoryCommands {
         var source = context.getSource();
         var level = source.getLevel();
         var pos = new ChunkPos(net.minecraft.core.BlockPos.containing(source.getPosition()));
-        var claims = BLibTerritoryManager.INSTANCE.getClaims(level, pos);
+        var claimants = BLibTerritoryManager.INSTANCE.getClaimants(level, pos);
 
-        if (claims.isEmpty()) {
+        if (claimants.isEmpty()) {
             source.sendSuccess(() -> Component.literal("Chunk [%d, %d] has no claims.".formatted(pos.x, pos.z)), false);
             return 0;
         }
@@ -132,21 +119,19 @@ public final class BLibTerritoryCommands {
 
         source.sendSuccess(
             () -> Component.literal(
-                "Chunk [%d, %d] — %d claim(s)%s:".formatted(
+                "Chunk [%d, %d] — %d claimant(s)%s:".formatted(
                     pos.x,
                     pos.z,
-                    claims.size(),
+                    claimants.size(),
                     contested ? " (CONTESTED)" : ""
                 )
             ),
             false
         );
 
-        for (var claim : claims) {
-            var claimantName = formatClaimant(claim.claimant());
-
+        for (var claimant : claimants) {
             source.sendSuccess(
-                () -> Component.literal("  - %s | reason: %s | tick: %d".formatted(claimantName, claim.reason(), claim.claimedAtTick())),
+                () -> Component.literal("  - %s".formatted(formatClaimant(claimant))),
                 false
             );
         }

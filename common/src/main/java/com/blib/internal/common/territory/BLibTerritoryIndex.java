@@ -1,6 +1,5 @@
 package com.blib.internal.common.territory;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -10,7 +9,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.blib.api.common.territory.v1.ChunkClaim;
 import com.blib.api.common.territory.v1.Claimant;
 
 @ApiStatus.Internal
@@ -18,22 +16,19 @@ public class BLibTerritoryIndex {
 
     private final Map<Claimant, Set<ChunkPos>> claimantToChunks;
 
-    private final Map<ResourceLocation, Set<ChunkPos>> contestedByReason;
-
     private final Map<ChunkPos, Set<Claimant>> chunkToClaimants;
 
     private final Set<ChunkPos> allClaimedChunks;
 
     public BLibTerritoryIndex() {
         this.claimantToChunks = new HashMap<>();
-        this.contestedByReason = new HashMap<>();
         this.chunkToClaimants = new HashMap<>();
         this.allClaimedChunks = new HashSet<>();
     }
 
-    public void onChunkLoaded(ChunkPos pos, Set<ChunkClaim> claims) {
-        for (var claim : claims) {
-            onClaimAdded(pos, claim);
+    public void onChunkLoaded(ChunkPos pos, Set<Claimant> claimants) {
+        for (var claimant : claimants) {
+            onClaimAdded(pos, claimant);
         }
     }
 
@@ -57,70 +52,39 @@ public class BLibTerritoryIndex {
                 }
             }
         }
-
-        for (var entry : contestedByReason.entrySet()) {
-            entry.getValue().remove(pos);
-        }
-
-        contestedByReason.values().removeIf(Set::isEmpty);
     }
 
-    public void onClaimAdded(ChunkPos pos, ChunkClaim claim) {
+    public void onClaimAdded(ChunkPos pos, Claimant claimant) {
         claimantToChunks
-            .computeIfAbsent(claim.claimant(), $ -> new HashSet<>())
+            .computeIfAbsent(claimant, $ -> new HashSet<>())
             .add(pos);
 
         chunkToClaimants
             .computeIfAbsent(pos, $ -> new HashSet<>())
-            .add(claim.claimant());
+            .add(claimant);
 
         allClaimedChunks.add(pos);
-
-        updateContested(pos, claim.reason());
     }
 
-    public void onClaimRemoved(ChunkPos pos, ChunkClaim claim) {
-        var chunks = claimantToChunks.get(claim.claimant());
+    public void onClaimRemoved(ChunkPos pos, Claimant claimant) {
+        var chunks = claimantToChunks.get(claimant);
 
         if (chunks != null) {
             chunks.remove(pos);
 
             if (chunks.isEmpty()) {
-                claimantToChunks.remove(claim.claimant());
+                claimantToChunks.remove(claimant);
             }
         }
 
         var claimants = chunkToClaimants.get(pos);
 
         if (claimants != null) {
-            claimants.remove(claim.claimant());
+            claimants.remove(claimant);
 
             if (claimants.isEmpty()) {
                 chunkToClaimants.remove(pos);
                 allClaimedChunks.remove(pos);
-            }
-        }
-
-        updateContested(pos, claim.reason());
-    }
-
-    private void updateContested(ChunkPos pos, ResourceLocation reason) {
-        var claimants = chunkToClaimants.get(pos);
-        var claimantCount = claimants == null ? 0 : claimants.size();
-
-        if (claimantCount > 1) {
-            contestedByReason
-                .computeIfAbsent(reason, $ -> new HashSet<>())
-                .add(pos);
-        } else {
-            var contested = contestedByReason.get(reason);
-
-            if (contested != null) {
-                contested.remove(pos);
-
-                if (contested.isEmpty()) {
-                    contestedByReason.remove(reason);
-                }
             }
         }
     }
@@ -129,15 +93,13 @@ public class BLibTerritoryIndex {
         return Collections.unmodifiableSet(claimantToChunks.getOrDefault(claimant, Set.of()));
     }
 
-    public Set<ChunkPos> getContestedChunks(ResourceLocation reason) {
-        return Collections.unmodifiableSet(contestedByReason.getOrDefault(reason, Set.of()));
-    }
-
     public Set<ChunkPos> getAllContestedChunks() {
         var result = new HashSet<ChunkPos>();
 
-        for (var chunks : contestedByReason.values()) {
-            result.addAll(chunks);
+        for (var entry : chunkToClaimants.entrySet()) {
+            if (entry.getValue().size() > 1) {
+                result.add(entry.getKey());
+            }
         }
 
         return Collections.unmodifiableSet(result);
@@ -149,6 +111,11 @@ public class BLibTerritoryIndex {
 
     public boolean isClaimed(ChunkPos pos) {
         return allClaimedChunks.contains(pos);
+    }
+
+    public boolean isClaimedBy(ChunkPos pos, Claimant claimant) {
+        var claimants = chunkToClaimants.get(pos);
+        return claimants != null && claimants.contains(claimant);
     }
 
     public boolean isContested(ChunkPos pos) {
@@ -179,7 +146,6 @@ public class BLibTerritoryIndex {
 
     public void clear() {
         claimantToChunks.clear();
-        contestedByReason.clear();
         chunkToClaimants.clear();
         allClaimedChunks.clear();
     }

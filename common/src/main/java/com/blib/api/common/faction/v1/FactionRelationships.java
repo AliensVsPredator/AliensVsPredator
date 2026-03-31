@@ -47,12 +47,6 @@ public class FactionRelationships implements WritableFactionRelationships, Dirty
 
     @Override
     public boolean addMember(FactionMember member) {
-        if (member instanceof FactionMember.SubFaction(var factionId)) {
-            if (!BLibFactionManager.INSTANCE.exists(factionId)) {
-                return false;
-            }
-        }
-
         if (members.add(member)) {
             markDirty();
             BLibFactionManager.INSTANCE.onMemberChanged(id, member, true);

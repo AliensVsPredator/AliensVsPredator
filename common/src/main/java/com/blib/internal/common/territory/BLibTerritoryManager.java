@@ -9,12 +9,15 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import com.blib.api.common.territory.v1.ChunkClaim;
 import com.blib.api.common.territory.v1.Claimant;
 import com.blib.internal.common.storage.BLibDataStoreManager;
 import com.blib.mod.BLib;
@@ -51,10 +54,10 @@ public class BLibTerritoryManager {
             return;
         }
 
-        var claims = store.getClaims();
+        var claimants = store.getClaimants();
 
-        if (!claims.isEmpty()) {
-            getOrCreateIndex(level).onChunkLoaded(pos, claims);
+        if (!claimants.isEmpty()) {
+            getOrCreateIndex(level).onChunkLoaded(pos, claimants);
         }
     }
 
@@ -66,58 +69,73 @@ public class BLibTerritoryManager {
         }
     }
 
-    public boolean addClaim(ServerLevel level, ChunkPos pos, ChunkClaim claim) {
+    public boolean addClaim(ServerLevel level, ChunkPos pos, Claimant claimant) {
         var store = getOrCreateStore(level, pos);
 
         if (store == null) {
             return false;
         }
 
-        return store.addClaim(claim);
+        return store.addClaim(claimant);
     }
 
-    public boolean removeClaim(ServerLevel level, ChunkPos pos, Claimant claimant, ResourceLocation reason) {
+    public boolean removeClaim(ServerLevel level, ChunkPos pos, Claimant claimant) {
         var store = getOrCreateStore(level, pos);
 
         if (store == null) {
             return false;
         }
 
-        return store.removeClaim(claimant, reason);
+        return store.removeClaim(claimant);
     }
 
-    public void removeAllClaims(ServerLevel level, ChunkPos pos, Claimant claimant) {
+    public boolean transferClaim(ServerLevel level, ChunkPos pos, Claimant from, Claimant to) {
         var store = getOrCreateStore(level, pos);
 
-        if (store != null) {
-            store.removeAllClaims(claimant);
+        if (store == null) {
+            return false;
         }
+
+        return store.transferClaim(from, to);
     }
 
-    public Set<ChunkClaim> getClaims(ServerLevel level, ChunkPos pos) {
+    public Set<Claimant> getClaimants(ServerLevel level, ChunkPos pos) {
         var store = getOrCreateStore(level, pos);
 
         if (store == null) {
             return Set.of();
         }
 
-        return store.getClaims();
+        return store.getClaimants();
     }
 
     public boolean isClaimed(ServerLevel level, ChunkPos pos) {
         return getOrCreateIndex(level).isClaimed(pos);
     }
 
+    public boolean isClaimedBy(ServerLevel level, ChunkPos pos, Claimant claimant) {
+        return getOrCreateIndex(level).isClaimedBy(pos, claimant);
+    }
+
     public boolean isContested(ServerLevel level, ChunkPos pos) {
         return getOrCreateIndex(level).isContested(pos);
     }
 
-    public Set<ChunkPos> getChunks(ServerLevel level, Claimant claimant) {
-        return getOrCreateIndex(level).getChunks(claimant);
+    public Set<ChunkPos> getAdjacentClaimedChunks(ServerLevel level, ChunkPos pos, Claimant claimant) {
+        var index = getOrCreateIndex(level);
+        var result = new HashSet<ChunkPos>();
+
+        for (var neighbor : getCardinalNeighbors(pos)) {
+            if (index.isClaimedBy(neighbor, claimant)) {
+                result.add(neighbor);
+            }
+        }
+
+        return Collections.unmodifiableSet(result);
     }
 
-    public Set<ChunkPos> getContestedChunks(ServerLevel level, ResourceLocation reason) {
-        return getOrCreateIndex(level).getContestedChunks(reason);
+    public Set<ChunkPos> getChunks(ServerLevel level, Claimant claimant) {
+        return getOrCreateIndex(level).getChunks(claimant);
     }
 
     public Set<ChunkPos> getAllContestedChunks(ServerLevel level) {
@@ -128,12 +146,12 @@ public class BLibTerritoryManager {
         return getOrCreateIndex(level).getUnclaimedChunks(center, radius);
     }
 
-    public void onClaimAdded(ServerLevel level, ChunkPos pos, ChunkClaim claim) {
-        getOrCreateIndex(level).onClaimAdded(pos, claim);
+    public void onClaimAdded(ServerLevel level, ChunkPos pos, Claimant claimant) {
+        getOrCreateIndex(level).onClaimAdded(pos, claimant);
     }
 
-    public void onClaimRemoved(ServerLevel level, ChunkPos pos, ChunkClaim claim) {
-        getOrCreateIndex(level).onClaimRemoved(pos, claim);
+    public void onClaimRemoved(ServerLevel level, ChunkPos pos, Claimant claimant) {
+        getOrCreateIndex(level).onClaimRemoved(pos, claimant);
     }
 
     public void onEntityRemoved(UUID entityId) {
@@ -162,7 +180,7 @@ public class BLibTerritoryManager {
                 var store = getOrCreateStore(level, pos);
 
                 if (store != null) {
-                    store.removeAllClaims(claimant);
+                    store.removeClaim(claimant);
                 }
             }
         }
@@ -188,13 +206,9 @@ public class BLibTerritoryManager {
     }
 
     public S2CChunkClaimsSyncPayload buildSyncPayload(ServerLevel level, ChunkPos pos) {
-        var claims = getClaims(level, pos);
+        var claimants = getClaimants(level, pos);
 
-        var claimDataList = claims.stream()
-            .map(claim -> new S2CChunkClaimsSyncPayload.ClaimData(claim.claimant(), claim.reason()))
-            .toList();
-
-        return new S2CChunkClaimsSyncPayload(pos.x, pos.z, claimDataList);
+        return new S2CChunkClaimsSyncPayload(pos.x, pos.z, new ArrayList<>(claimants));
     }
 
     private BLibTerritoryIndex getOrCreateIndex(ServerLevel level) {
@@ -206,5 +220,14 @@ public class BLibTerritoryManager {
             .getChunk(level, pos, BLibTerritoryDataStoreTypes.CHUNK_CLAIMS)
             .inspect(store -> store.setContext(level, pos))
             .unwrapOr(null);
+    }
+
+    private static List<ChunkPos> getCardinalNeighbors(ChunkPos pos) {
+        return List.of(
+            new ChunkPos(pos.x, pos.z - 1),
+            new ChunkPos(pos.x + 1, pos.z),
+            new ChunkPos(pos.x, pos.z + 1),
+            new ChunkPos(pos.x - 1, pos.z)
+        );
     }
 }

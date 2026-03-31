@@ -6,32 +6,29 @@ import org.jetbrains.annotations.ApiStatus;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.blib.api.common.territory.v1.Claimant;
 import com.blib.internal.client.territory.compat.XaeroWorldMapCompat;
 import com.blib.internal.client.territory.compat.xaero.BLibChunkHighlighter;
-import com.blib.mod.common.network.packet.S2CChunkClaimsSyncPayload.ClaimData;
 
 @ApiStatus.Internal
 public class ClientTerritoryCache {
 
     public static final ClientTerritoryCache INSTANCE = new ClientTerritoryCache();
 
-    private final Map<ChunkPos, List<ClaimData>> claimsByChunk;
+    private final Map<ChunkPos, List<Claimant>> claimantsByChunk;
 
     private ClientTerritoryCache() {
-        this.claimsByChunk = new HashMap<>();
+        this.claimantsByChunk = new HashMap<>();
     }
 
-    public void updateChunk(int chunkX, int chunkZ, List<ClaimData> claims) {
+    public void updateChunk(int chunkX, int chunkZ, List<Claimant> claimants) {
         var pos = new ChunkPos(chunkX, chunkZ);
 
-        if (claims.isEmpty()) {
-            claimsByChunk.remove(pos);
+        if (claimants.isEmpty()) {
+            claimantsByChunk.remove(pos);
         } else {
-            claimsByChunk.put(pos, List.copyOf(claims));
+            claimantsByChunk.put(pos, List.copyOf(claimants));
         }
 
         if (XaeroWorldMapCompat.isLoaded()) {
@@ -39,31 +36,20 @@ public class ClientTerritoryCache {
         }
     }
 
-    public List<ClaimData> getClaims(ChunkPos pos) {
-        return claimsByChunk.getOrDefault(pos, List.of());
+    public List<Claimant> getClaimants(ChunkPos pos) {
+        return claimantsByChunk.getOrDefault(pos, List.of());
     }
 
     public boolean isClaimed(ChunkPos pos) {
-        return claimsByChunk.containsKey(pos);
+        return claimantsByChunk.containsKey(pos);
     }
 
     public boolean isContested(ChunkPos pos) {
-        var claims = claimsByChunk.get(pos);
-
-        if (claims == null || claims.size() < 2) {
-            return false;
-        }
-
-        return getDistinctClaimants(claims).size() > 1;
+        var claimants = claimantsByChunk.get(pos);
+        return claimants != null && claimants.size() > 1;
     }
 
     public void clear() {
-        claimsByChunk.clear();
-    }
-
-    private Set<Claimant> getDistinctClaimants(List<ClaimData> claims) {
-        return claims.stream()
-            .map(ClaimData::claimant)
-            .collect(Collectors.toSet());
+        claimantsByChunk.clear();
     }
 }

@@ -14,7 +14,7 @@ import com.blib.mod.common.network.packet.S2CGOAPDebugPayload;
 public final class BLibClientListener {
 
     public static void handleChunkClaimsSync(S2CChunkClaimsSyncPayload payload, Player player) {
-        ClientTerritoryCache.INSTANCE.updateChunk(payload.chunkX(), payload.chunkZ(), payload.claims());
+        ClientTerritoryCache.INSTANCE.updateChunk(payload.chunkX(), payload.chunkZ(), payload.claimants());
     }
 
     public static void handleEntityDataSync(S2CEntityDataSyncPayload entityDataSyncPayload, Player player) {

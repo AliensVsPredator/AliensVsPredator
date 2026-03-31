@@ -84,13 +84,13 @@ public class BLibChunkHighlighter extends ChunkHighlighter {
     protected int[] getColors(ResourceKey<Level> dimension, int x, int z) {
         var cache = ClientTerritoryCache.INSTANCE;
         var pos = new ChunkPos(x, z);
-        var claims = cache.getClaims(pos);
+        var claimants = cache.getClaimants(pos);
 
-        if (claims.isEmpty()) {
+        if (claimants.isEmpty()) {
             return null;
         }
 
-        var primaryClaimant = claims.getFirst().claimant();
+        var primaryClaimant = claimants.getFirst();
         var rgb = colorFromClaimant(primaryClaimant);
         var packed = packColor(rgb);
         var fill = (packed & 0xFFFFFF00) | FILL_OPACITY;
@@ -114,11 +114,10 @@ public class BLibChunkHighlighter extends ChunkHighlighter {
 
         for (var x = startX; x < startX + 32; x++) {
             for (var z = startZ; z < startZ + 32; z++) {
-                var claims = cache.getClaims(new ChunkPos(x, z));
+                var claimants = cache.getClaimants(new ChunkPos(x, z));
 
-                for (var claim : claims) {
-                    hash = hash * 37L + claim.claimant().hashCode();
-                    hash = hash * 37L + claim.reason().hashCode();
+                for (var claimant : claimants) {
+                    hash = hash * 37L + claimant.hashCode();
                 }
 
                 hash = hash * 37L;
@@ -130,13 +129,13 @@ public class BLibChunkHighlighter extends ChunkHighlighter {
 
     @Override
     public Component getChunkHighlightSubtleTooltip(ResourceKey<Level> dimension, int x, int z) {
-        var claims = ClientTerritoryCache.INSTANCE.getClaims(new ChunkPos(x, z));
+        var claimants = ClientTerritoryCache.INSTANCE.getClaimants(new ChunkPos(x, z));
 
-        if (claims.isEmpty()) {
+        if (claimants.isEmpty()) {
             return Component.empty();
         }
 
-        var claimant = claims.getFirst().claimant();
+        var claimant = claimants.getFirst();
 
         return switch (claimant) {
             case Claimant.FactionClaimant factionClaimant ->
@@ -161,13 +160,13 @@ public class BLibChunkHighlighter extends ChunkHighlighter {
     ) {}
 
     private static boolean sameOwner(ClientTerritoryCache cache, int x, int z, Claimant claimant) {
-        var neighborClaims = cache.getClaims(new ChunkPos(x, z));
+        var neighborClaimants = cache.getClaimants(new ChunkPos(x, z));
 
-        if (neighborClaims.isEmpty()) {
+        if (neighborClaimants.isEmpty()) {
             return false;
         }
 
-        return neighborClaims.getFirst().claimant().equals(claimant);
+        return neighborClaimants.getFirst().equals(claimant);
     }
 
     private static int colorFromClaimant(Claimant claimant) {

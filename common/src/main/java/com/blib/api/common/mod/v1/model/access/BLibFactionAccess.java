@@ -51,11 +51,6 @@ public class BLibFactionAccess implements FactionManager {
     }
 
     @Override
-    public Set<ResourceLocation> getParentFactionIds(ResourceLocation subfactionId) {
-        return BLibFactionManager.INSTANCE.getParentFactionIds(subfactionId);
-    }
-
-    @Override
     public boolean remove(ResourceLocation id) {
         return BLibFactionManager.INSTANCE.remove(id);
     }

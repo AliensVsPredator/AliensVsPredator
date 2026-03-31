@@ -10,27 +10,25 @@ import org.jetbrains.annotations.ApiStatus;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.blib.api.common.storage.v1.DataStore;
-import com.blib.api.common.territory.v1.ChunkClaim;
 import com.blib.api.common.territory.v1.Claimant;
 import com.blib.internal.common.event.BLibGlobalEvents;
-import com.blib.internal.common.territory.serializer.ChunkClaimSerializer;
+import com.blib.internal.common.territory.serializer.ClaimantSerializer;
 
 @ApiStatus.Internal
 public class ChunkClaimDataStore implements DataStore {
 
-    private static final String CLAIMS_KEY = "claims";
+    private static final String CLAIMANTS_KEY = "claimants";
 
-    private final Set<ChunkClaim> claims;
+    private final Set<Claimant> claimants;
 
     private ServerLevel level;
 
     private ChunkPos chunkPos;
 
     public ChunkClaimDataStore() {
-        this.claims = new HashSet<>();
+        this.claimants = new HashSet<>();
     }
 
     public void setContext(ServerLevel level, ChunkPos chunkPos) {
@@ -38,131 +36,109 @@ public class ChunkClaimDataStore implements DataStore {
         this.chunkPos = chunkPos;
     }
 
-    public boolean addClaim(ChunkClaim claim) {
-        if (!claims.add(claim)) {
+    public boolean addClaim(Claimant claimant) {
+        if (!claimants.add(claimant)) {
             return false;
         }
 
-        fireClaimAdded(claim);
+        fireClaimAdded(claimant);
 
         return true;
     }
 
-    public boolean removeClaim(Claimant claimant, net.minecraft.resources.ResourceLocation reason) {
-        var removed = claims.removeIf(
-            claim -> claim.claimant().equals(claimant) && claim.reason().equals(reason)
-        );
-
-        if (removed) {
-            fireClaimRemoved(new ChunkClaim(claimant, reason, 0));
+    public boolean removeClaim(Claimant claimant) {
+        if (!claimants.remove(claimant)) {
+            return false;
         }
 
-        return removed;
+        fireClaimRemoved(claimant);
+
+        return true;
     }
 
-    public void removeAllClaims(Claimant claimant) {
-        var toRemove = claims.stream()
-            .filter(claim -> claim.claimant().equals(claimant))
-            .toList();
-
-        for (var claim : toRemove) {
-            claims.remove(claim);
-            fireClaimRemoved(claim);
+    public boolean transferClaim(Claimant from, Claimant to) {
+        if (!claimants.remove(from)) {
+            return false;
         }
-    }
 
-    public Set<ChunkClaim> getClaims() {
-        return Collections.unmodifiableSet(claims);
-    }
+        claimants.add(to);
+        fireClaimRemoved(from);
+        fireClaimAdded(to);
 
-    public Set<ChunkClaim> getClaims(net.minecraft.resources.ResourceLocation reason) {
-        return claims.stream()
-            .filter(claim -> claim.reason().equals(reason))
-            .collect(Collectors.toUnmodifiableSet());
+        return true;
     }
 
     public Set<Claimant> getClaimants() {
-        return claims.stream()
-            .map(ChunkClaim::claimant)
-            .collect(Collectors.toUnmodifiableSet());
+        return Collections.unmodifiableSet(claimants);
     }
 
     public boolean isClaimedBy(Claimant claimant) {
-        return claims.stream().anyMatch(claim -> claim.claimant().equals(claimant));
+        return claimants.contains(claimant);
     }
 
     public boolean isContested() {
-        return getClaimants().size() > 1;
-    }
-
-    public boolean isContested(net.minecraft.resources.ResourceLocation reason) {
-        var claimantsForReason = claims.stream()
-            .filter(claim -> claim.reason().equals(reason))
-            .map(ChunkClaim::claimant)
-            .collect(Collectors.toSet());
-
-        return claimantsForReason.size() > 1;
+        return claimants.size() > 1;
     }
 
     public boolean isEmpty() {
-        return claims.isEmpty();
+        return claimants.isEmpty();
     }
 
     public int claimCount() {
-        return claims.size();
+        return claimants.size();
     }
 
-    private void fireClaimAdded(ChunkClaim claim) {
+    private void fireClaimAdded(Claimant claimant) {
         if (level == null || chunkPos == null) {
             return;
         }
 
         for (var listener : BLibGlobalEvents.CHUNK_CLAIM_ADDED.listeners()) {
-            listener.invoke(level, chunkPos, claim);
+            listener.invoke(level, chunkPos, claimant);
         }
     }
 
-    private void fireClaimRemoved(ChunkClaim claim) {
+    private void fireClaimRemoved(Claimant claimant) {
         if (level == null || chunkPos == null) {
             return;
         }
 
         for (var listener : BLibGlobalEvents.CHUNK_CLAIM_REMOVED.listeners()) {
-            listener.invoke(level, chunkPos, claim);
+            listener.invoke(level, chunkPos, claimant);
         }
     }
 
     @Override
     public void load(CompoundTag compoundTag) {
-        claims.clear();
+        claimants.clear();
 
-        if (!compoundTag.contains(CLAIMS_KEY)) {
+        if (!compoundTag.contains(CLAIMANTS_KEY)) {
             return;
         }
 
-        var listTag = compoundTag.getList(CLAIMS_KEY, Tag.TAG_COMPOUND);
+        var listTag = compoundTag.getList(CLAIMANTS_KEY, Tag.TAG_COMPOUND);
 
         for (var i = 0; i < listTag.size(); i++) {
-            var claim = ChunkClaimSerializer.deserialize(listTag.getCompound(i));
+            var claimant = ClaimantSerializer.deserialize(listTag.getCompound(i));
 
-            if (claim != null) {
-                claims.add(claim);
+            if (claimant != null) {
+                claimants.add(claimant);
             }
         }
     }
 
     @Override
     public void save(CompoundTag compoundTag) {
-        if (claims.isEmpty()) {
+        if (claimants.isEmpty()) {
             return;
         }
 
         var listTag = new ListTag();
 
-        for (var claim : claims) {
-            listTag.add(ChunkClaimSerializer.serialize(claim));
+        for (var claimant : claimants) {
+            listTag.add(ClaimantSerializer.serialize(claimant));
         }
 
-        compoundTag.put(CLAIMS_KEY, listTag);
+        compoundTag.put(CLAIMANTS_KEY, listTag);
     }
 }

@@ -111,9 +111,9 @@ public class BLib {
 
         BLib.MOD.events().onChunkLoad().register((level, chunk) -> {
             var pos = chunk.getPos();
-            var claims = BLibTerritoryManager.INSTANCE.getClaims(level, pos);
+            var claimants = BLibTerritoryManager.INSTANCE.getClaimants(level, pos);
 
-            if (!claims.isEmpty()) {
+            if (!claimants.isEmpty()) {
                 var payload = BLibTerritoryManager.INSTANCE.buildSyncPayload(level, pos);
 
                 for (var player : level.getServer().getPlayerList().getPlayers()) {
@@ -134,14 +134,14 @@ public class BLib {
 
         BLib.MOD.events()
             .onChunkClaimAdded()
-            .register((level, pos, claim) -> {
+            .register((level, pos, claimant) -> {
                 var payload = BLibTerritoryManager.INSTANCE.buildSyncPayload(level, pos);
                 BLib.MOD.networking().sendToAllClientsTrackingChunk(level, pos.getWorldPosition(), payload);
             });
 
         BLib.MOD.events()
             .onChunkClaimRemoved()
-            .register((level, pos, claim) -> {
+            .register((level, pos, claimant) -> {
                 var payload = BLibTerritoryManager.INSTANCE.buildSyncPayload(level, pos);
                 BLib.MOD.networking().sendToAllClientsTrackingChunk(level, pos.getWorldPosition(), payload);
             });

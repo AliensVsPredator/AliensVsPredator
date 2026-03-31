@@ -21,8 +21,4 @@ public interface ReadableFactionRelationships {
     default boolean hasEntity(Entity entity) {
         return hasMember(FactionMember.entity(entity));
     }
-
-    default boolean hasSubFaction(ResourceLocation factionId) {
-        return hasMember(FactionMember.subFaction(factionId));
-    }
 }
