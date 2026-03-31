@@ -15,9 +15,7 @@ public interface WritableFactionRelationships extends ReadableFactionRelationshi
         return addMember(FactionMember.entity(uuid));
     }
 
-    default boolean addEntity(Entity entity) {
-        return addMember(FactionMember.entity(entity));
-    }
+    boolean addEntity(Entity entity);
 
     default boolean addSubFaction(ResourceLocation factionId) {
         return addMember(FactionMember.subFaction(factionId));

@@ -12,6 +12,10 @@ public abstract class FactionData implements NBTSerializable, Dirty {
 
     public void onMemberAdded(FactionMember member) {}
 
+    public void onMemberAdded(FactionMember member, Entity entity) {
+        onMemberAdded(member);
+    }
+
     public void onMemberRemoved(FactionMember member) {}
 
     public void onMemberLoaded(Entity entity) {}

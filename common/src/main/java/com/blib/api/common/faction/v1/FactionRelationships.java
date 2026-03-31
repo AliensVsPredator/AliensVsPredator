@@ -1,6 +1,7 @@
 package com.blib.api.common.faction.v1;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Collections;
@@ -55,6 +56,19 @@ public class FactionRelationships implements WritableFactionRelationships, Dirty
         if (members.add(member)) {
             markDirty();
             BLibFactionManager.INSTANCE.onMemberChanged(id, member, true);
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean addEntity(Entity entity) {
+        var member = FactionMember.entity(entity);
+
+        if (members.add(member)) {
+            markDirty();
+            BLibFactionManager.INSTANCE.onEntityMemberAdded(id, member, entity);
             return true;
         }
 
