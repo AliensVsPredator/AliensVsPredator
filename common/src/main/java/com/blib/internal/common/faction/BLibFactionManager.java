@@ -25,11 +25,14 @@ import com.blib.api.common.faction.v1.FactionDataType;
 import com.blib.api.common.faction.v1.FactionManager;
 import com.blib.api.common.faction.v1.FactionMember;
 import com.blib.api.common.faction.v1.FactionMembership;
+import com.blib.api.common.faction.v1.RelationshipState;
 import com.blib.api.common.registry.v1.BLibBuiltInRegistries;
 import com.blib.api.common.registry.v1.BLibHolder;
 import com.blib.internal.common.event.BLibGlobalEvents;
 import com.blib.internal.common.faction.io.FactionDataIO;
+import com.blib.internal.common.faction.io.FactionIO;
 import com.blib.internal.common.faction.io.FactionMembershipIO;
+import com.blib.internal.common.faction.serializer.FactionRelationshipTableSerializer;
 import com.blib.internal.common.util.ShardManager;
 import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.S2CFactionMetadataSyncPayload;
@@ -47,11 +50,14 @@ public class BLibFactionManager implements FactionManager {
 
     private final FactionMemberIndex memberIndex;
 
+    private final FactionRelationshipTable relationshipTable;
+
     private final ShardManager<ResourceLocation> shardManager;
 
     private BLibFactionManager() {
         this.factions = new HashMap<>();
         this.memberIndex = new FactionMemberIndex();
+        this.relationshipTable = new FactionRelationshipTable();
         this.shardManager = new ShardManager<>(SHARD_SIZE);
     }
 
@@ -131,6 +137,21 @@ public class BLibFactionManager implements FactionManager {
     }
 
     @Override
+    public RelationshipState getRelationship(ResourceLocation factionA, ResourceLocation factionB) {
+        return relationshipTable.getRelationship(factionA, factionB);
+    }
+
+    @Override
+    public void setRelationship(ResourceLocation factionA, ResourceLocation factionB, RelationshipState state) {
+        relationshipTable.setRelationship(factionA, factionB, state);
+    }
+
+    @Override
+    public Set<ResourceLocation> getFactionsWithState(ResourceLocation factionId, RelationshipState state) {
+        return relationshipTable.getFactionsWithState(factionId, state);
+    }
+
+    @Override
     public boolean remove(ResourceLocation id) {
         var faction = factions.remove(id);
 
@@ -139,6 +160,7 @@ public class BLibFactionManager implements FactionManager {
         }
 
         memberIndex.removeFaction(id, faction.membership());
+        relationshipTable.removeFaction(id);
         shardManager.remove(id);
 
         for (var listener : BLibGlobalEvents.FACTION_REMOVE.listeners()) {
@@ -189,6 +211,9 @@ public class BLibFactionManager implements FactionManager {
 
         memberIndex.rebuild(relationships);
 
+        relationshipTable.clear();
+        loadRelationshipTable(server);
+
         LOGGER.info("Loaded {} factions", factions.size());
     }
 
@@ -197,13 +222,15 @@ public class BLibFactionManager implements FactionManager {
             return;
         }
 
-        saveRelationships(server);
+        saveMemberships(server);
         saveData(server);
+        saveRelationshipTable(server);
     }
 
     public void clear(MinecraftServer minecraftServer) {
         factions.clear();
         memberIndex.clear();
+        relationshipTable.clear();
         shardManager.clear();
     }
 
@@ -259,7 +286,7 @@ public class BLibFactionManager implements FactionManager {
         }
     }
 
-    private void saveRelationships(MinecraftServer server) {
+    private void saveMemberships(MinecraftServer server) {
         Map<Integer, List<FactionMembership>> shardToEntries = new HashMap<>();
         Set<Integer> dirtyShards = new HashSet<>();
 
@@ -314,5 +341,26 @@ public class BLibFactionManager implements FactionManager {
         for (var faction : factions.values()) {
             faction.internalData().clearDirty();
         }
+    }
+
+    private void loadRelationshipTable(MinecraftServer server) {
+        var path = FactionIO.getRelationshipsPath(server);
+
+        if (!java.nio.file.Files.exists(path)) {
+            return;
+        }
+
+        var tag = FactionIO.readCompressed(path);
+        FactionRelationshipTableSerializer.deserialize(tag, relationshipTable);
+    }
+
+    private void saveRelationshipTable(MinecraftServer server) {
+        if (!relationshipTable.isDirty()) {
+            return;
+        }
+
+        var tag = FactionRelationshipTableSerializer.serialize(relationshipTable);
+        FactionIO.writeCompressed(FactionIO.getRelationshipsPath(server), tag);
+        relationshipTable.clearDirty();
     }
 }

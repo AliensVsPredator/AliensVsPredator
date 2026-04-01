@@ -25,6 +25,28 @@ public interface FactionManager {
 
     Set<ResourceLocation> getFactionsByTag(TagKey<FactionDataType<?>> tag);
 
+    RelationshipState getRelationship(ResourceLocation factionA, ResourceLocation factionB);
+
+    default RelationshipState getRelationship(Faction<?> factionA, Faction<?> factionB) {
+        return getRelationship(factionA.id(), factionB.id());
+    }
+
+    void setRelationship(ResourceLocation factionA, ResourceLocation factionB, RelationshipState state);
+
+    default void setRelationship(Faction<?> factionA, Faction<?> factionB, RelationshipState state) {
+        setRelationship(factionA.id(), factionB.id(), state);
+    }
+
+    Set<ResourceLocation> getFactionsWithState(ResourceLocation factionId, RelationshipState state);
+
+    default Set<ResourceLocation> getAllies(ResourceLocation factionId) {
+        return getFactionsWithState(factionId, RelationshipState.ALLIED);
+    }
+
+    default Set<ResourceLocation> getHostiles(ResourceLocation factionId) {
+        return getFactionsWithState(factionId, RelationshipState.HOSTILE);
+    }
+
     boolean remove(ResourceLocation id);
 
     Collection<ResourceLocation> getAllIds();

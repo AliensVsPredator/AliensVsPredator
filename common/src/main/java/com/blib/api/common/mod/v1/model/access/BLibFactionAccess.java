@@ -13,6 +13,7 @@ import com.blib.api.common.faction.v1.Faction;
 import com.blib.api.common.faction.v1.FactionData;
 import com.blib.api.common.faction.v1.FactionDataType;
 import com.blib.api.common.faction.v1.FactionManager;
+import com.blib.api.common.faction.v1.RelationshipState;
 import com.blib.api.common.mod.v1.BLibMod;
 import com.blib.api.common.registry.v1.BLibHolder;
 import com.blib.internal.common.faction.BLibFactionManager;
@@ -44,6 +45,21 @@ public class BLibFactionAccess implements FactionManager {
     @Override
     public Set<ResourceLocation> getFactionsByTag(TagKey<FactionDataType<?>> tag) {
         return BLibFactionManager.INSTANCE.getFactionsByTag(tag);
+    }
+
+    @Override
+    public RelationshipState getRelationship(ResourceLocation factionA, ResourceLocation factionB) {
+        return BLibFactionManager.INSTANCE.getRelationship(factionA, factionB);
+    }
+
+    @Override
+    public void setRelationship(ResourceLocation factionA, ResourceLocation factionB, RelationshipState state) {
+        BLibFactionManager.INSTANCE.setRelationship(factionA, factionB, state);
+    }
+
+    @Override
+    public Set<ResourceLocation> getFactionsWithState(ResourceLocation factionId, RelationshipState state) {
+        return BLibFactionManager.INSTANCE.getFactionsWithState(factionId, state);
     }
 
     @Override

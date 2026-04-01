@@ -28,6 +28,8 @@ public final class FactionIO {
 
     private static final String DATA_FOLDER = "faction_data";
 
+    private static final String RELATIONSHIPS_FILE = "faction_relationships.nbt";
+
     private FactionIO() {
         throw new UnsupportedOperationException();
     }
@@ -38,6 +40,13 @@ public final class FactionIO {
 
     public static Path getMembershipShardPath(MinecraftServer server, int shardIndex) {
         return getMembershipDirectory(server).resolve(MEMBERSHIPS_FOLDER + "_" + shardIndex + ".nbt");
+    }
+
+    public static Path getRelationshipsPath(MinecraftServer server) {
+        return getBlibDataPath(server)
+            .resolve(BLIB_DATA_FOLDER)
+            .resolve(GLOBAL_FOLDER)
+            .resolve(RELATIONSHIPS_FILE);
     }
 
     public static Path getDataShardPath(MinecraftServer server, String namespace, int shardIndex) {
