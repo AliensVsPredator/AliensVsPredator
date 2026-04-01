@@ -118,11 +118,13 @@ public class BLib {
             var claimants = BLibTerritoryManager.INSTANCE.getClaimants(level, pos);
 
             if (!claimants.isEmpty()) {
-                var payload = BLibTerritoryManager.INSTANCE.buildSyncPayload(level, pos);
-
                 for (var player : level.getServer().getPlayerList().getPlayers()) {
                     if (player.connection != null) {
-                        BLib.MOD.networking().sendToClient(player, payload);
+                        var payload = BLibTerritoryManager.INSTANCE.buildSyncPayloadForPlayer(level, pos, player);
+
+                        if (!payload.claimants().isEmpty()) {
+                            BLib.MOD.networking().sendToClient(player, payload);
+                        }
                     }
                 }
             }
@@ -139,15 +141,19 @@ public class BLib {
         BLib.MOD.events()
             .onChunkClaimAdded()
             .register((level, pos, claimant) -> {
-                var payload = BLibTerritoryManager.INSTANCE.buildSyncPayload(level, pos);
-                BLib.MOD.networking().sendToAllClientsTrackingChunk(level, pos.getWorldPosition(), payload);
+                for (var player : level.getServer().getPlayerList().getPlayers()) {
+                    var payload = BLibTerritoryManager.INSTANCE.buildSyncPayloadForPlayer(level, pos, player);
+                    BLib.MOD.networking().sendToClient(player, payload);
+                }
             });
 
         BLib.MOD.events()
             .onChunkClaimRemoved()
             .register((level, pos, claimant) -> {
-                var payload = BLibTerritoryManager.INSTANCE.buildSyncPayload(level, pos);
-                BLib.MOD.networking().sendToAllClientsTrackingChunk(level, pos.getWorldPosition(), payload);
+                for (var player : level.getServer().getPlayerList().getPlayers()) {
+                    var payload = BLibTerritoryManager.INSTANCE.buildSyncPayloadForPlayer(level, pos, player);
+                    BLib.MOD.networking().sendToClient(player, payload);
+                }
             });
 
         BLib.MOD.events()

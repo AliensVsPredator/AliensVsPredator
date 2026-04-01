@@ -18,7 +18,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import com.blib.api.common.faction.v1.ClaimVisibility;
+import com.blib.api.common.faction.v1.RelationshipState;
 import com.blib.api.common.territory.v1.Claimant;
+import com.blib.internal.common.faction.BLibFactionManager;
 import com.blib.internal.common.storage.BLibDataStoreManager;
 import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.S2CChunkClaimsSyncPayload;
@@ -199,8 +202,11 @@ public class BLibTerritoryManager {
             }
 
             for (var pos : index.getAllClaimedChunks()) {
-                var payload = buildSyncPayload(level, pos);
-                BLib.MOD.networking().sendToClient(player, payload);
+                var payload = buildSyncPayloadForPlayer(level, pos, player);
+
+                if (!payload.claimants().isEmpty()) {
+                    BLib.MOD.networking().sendToClient(player, payload);
+                }
             }
         }
     }
@@ -209,6 +215,62 @@ public class BLibTerritoryManager {
         var claimants = getClaimants(level, pos);
 
         return new S2CChunkClaimsSyncPayload(pos.x, pos.z, new ArrayList<>(claimants));
+    }
+
+    public S2CChunkClaimsSyncPayload buildSyncPayloadForPlayer(ServerLevel level, ChunkPos pos, ServerPlayer player) {
+        var claimants = getClaimants(level, pos);
+
+        var visibleClaimants = claimants.stream()
+            .filter(claimant -> isClaimVisibleToPlayer(claimant, player))
+            .toList();
+
+        return new S2CChunkClaimsSyncPayload(pos.x, pos.z, visibleClaimants);
+    }
+
+    private boolean isClaimVisibleToPlayer(Claimant claimant, ServerPlayer player) {
+        if (!(claimant instanceof Claimant.FactionClaimant factionClaimant)) {
+            return true;
+        }
+
+        var faction = BLibFactionManager.INSTANCE.get(factionClaimant.factionId());
+
+        if (faction == null) {
+            return true;
+        }
+
+        var visibility = faction.claimVisibility();
+
+        if (visibility == ClaimVisibility.PUBLIC) {
+            return true;
+        }
+
+        if (visibility == ClaimVisibility.PRIVATE) {
+            return isPlayerInFaction(player, factionClaimant.factionId());
+        }
+
+        if (visibility == ClaimVisibility.ALLIED) {
+            if (isPlayerInFaction(player, factionClaimant.factionId())) {
+                return true;
+            }
+
+            var playerFactionIds = BLibFactionManager.INSTANCE.getFactionIds(player.getUUID());
+
+            for (var playerFactionId : playerFactionIds) {
+                var state = BLibFactionManager.INSTANCE.getRelationship(playerFactionId, factionClaimant.factionId());
+
+                if (state == RelationshipState.ALLIED) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean isPlayerInFaction(ServerPlayer player, ResourceLocation factionId) {
+        return BLibFactionManager.INSTANCE.getFactionIds(player.getUUID()).contains(factionId);
     }
 
     private BLibTerritoryIndex getOrCreateIndex(ServerLevel level) {

@@ -55,6 +55,14 @@ public class Faction<T extends FactionData> {
         internalData.setColor(color);
     }
 
+    public ClaimVisibility claimVisibility() {
+        return internalData.claimVisibility();
+    }
+
+    public void setClaimVisibility(ClaimVisibility claimVisibility) {
+        internalData.setClaimVisibility(claimVisibility);
+    }
+
     public FactionMembership membership() {
         return membership;
     }

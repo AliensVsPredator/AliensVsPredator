@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.awt.Color;
 
+import com.blib.api.common.faction.v1.ClaimVisibility;
 import com.blib.api.common.faction.v1.FactionData;
 import com.blib.api.common.util.v1.Dirty;
 
@@ -16,11 +17,15 @@ public class BLibFactionData implements Dirty {
 
     private static final String KEY_COLOR = "color";
 
+    private static final String KEY_CLAIM_VISIBILITY = "claim_visibility";
+
     private static final String KEY_MOD_DATA = "mod_data";
 
     private String name;
 
     private int color;
+
+    private ClaimVisibility claimVisibility;
 
     private @Nullable FactionData modData;
 
@@ -29,6 +34,7 @@ public class BLibFactionData implements Dirty {
     public BLibFactionData(String name, int color, @Nullable FactionData modData) {
         this.name = name;
         this.color = color;
+        this.claimVisibility = ClaimVisibility.PUBLIC;
         this.modData = modData;
     }
 
@@ -50,6 +56,15 @@ public class BLibFactionData implements Dirty {
         markDirty();
     }
 
+    public ClaimVisibility claimVisibility() {
+        return claimVisibility;
+    }
+
+    public void setClaimVisibility(ClaimVisibility claimVisibility) {
+        this.claimVisibility = claimVisibility;
+        markDirty();
+    }
+
     public @Nullable FactionData modData() {
         return modData;
     }
@@ -61,6 +76,7 @@ public class BLibFactionData implements Dirty {
     public void save(CompoundTag tag) {
         tag.putString(KEY_NAME, name);
         tag.putInt(KEY_COLOR, color);
+        tag.putString(KEY_CLAIM_VISIBILITY, claimVisibility.name());
 
         if (modData != null) {
             var modDataTag = new CompoundTag();
@@ -72,6 +88,14 @@ public class BLibFactionData implements Dirty {
     public void load(CompoundTag tag) {
         name = tag.getString(KEY_NAME);
         color = tag.getInt(KEY_COLOR);
+
+        if (tag.contains(KEY_CLAIM_VISIBILITY)) {
+            try {
+                claimVisibility = ClaimVisibility.valueOf(tag.getString(KEY_CLAIM_VISIBILITY));
+            } catch (IllegalArgumentException e) {
+                claimVisibility = ClaimVisibility.PUBLIC;
+            }
+        }
 
         if (modData != null && tag.contains(KEY_MOD_DATA)) {
             modData.load(tag.getCompound(KEY_MOD_DATA));

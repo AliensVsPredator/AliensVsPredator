@@ -14,6 +14,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 import java.util.UUID;
 
+import com.blib.api.common.faction.v1.ClaimVisibility;
 import com.blib.api.common.faction.v1.FactionMember;
 import com.blib.api.common.faction.v1.RelationshipState;
 import com.blib.internal.common.faction.BLibFactionManager;
@@ -34,6 +35,7 @@ public final class BLibFactionCommands {
             .then(buildSetName())
             .then(buildSetColor())
             .then(buildSetRelationship())
+            .then(buildSetVisibility())
             .then(buildList());
     }
 
@@ -288,6 +290,47 @@ public final class BLibFactionCommands {
         } catch (NumberFormatException e) {
             return -1;
         }
+    }
+
+    private static LiteralArgumentBuilder<CommandSourceStack> buildSetVisibility() {
+        return Commands.literal("set-visibility")
+            .then(
+                Commands.argument("faction_id", ResourceLocationArgument.id())
+                    .suggests(BLibCommandSuggestions.FACTION_IDS)
+                    .then(
+                        Commands.argument("visibility", StringArgumentType.word())
+                            .executes(BLibFactionCommands::executeSetVisibility)
+                    )
+            );
+    }
+
+    private static int executeSetVisibility(CommandContext<CommandSourceStack> context) {
+        var source = context.getSource();
+        var factionId = ResourceLocationArgument.getId(context, "faction_id");
+        var visibilityString = StringArgumentType.getString(context, "visibility").toUpperCase();
+        var faction = BLibFactionManager.INSTANCE.get(factionId);
+
+        if (faction == null) {
+            source.sendFailure(Component.literal("Faction '%s' not found.".formatted(factionId)));
+            return 0;
+        }
+
+        ClaimVisibility visibility;
+
+        try {
+            visibility = ClaimVisibility.valueOf(visibilityString);
+        } catch (IllegalArgumentException e) {
+            source.sendFailure(Component.literal("Invalid visibility '%s'. Use: public, allied, private.".formatted(visibilityString)));
+            return 0;
+        }
+
+        faction.setClaimVisibility(visibility);
+
+        source.sendSuccess(
+            () -> Component.literal("Set faction '%s' claim visibility to %s.".formatted(factionId, visibility)),
+            true
+        );
+        return Command.SINGLE_SUCCESS;
     }
 
     private static int executeSetRelationship(CommandContext<CommandSourceStack> context) {
