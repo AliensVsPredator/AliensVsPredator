@@ -36,6 +36,7 @@ public final class BLibFactionCommands {
             .then(buildSetColor())
             .then(buildSetRelationship())
             .then(buildSetVisibility())
+            .then(buildRelationships())
             .then(buildList());
     }
 
@@ -364,6 +365,45 @@ public final class BLibFactionCommands {
             () -> Component.literal("Set relationship between '%s' and '%s' to %s.".formatted(factionAId, factionBId, state)),
             true
         );
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static LiteralArgumentBuilder<CommandSourceStack> buildRelationships() {
+        return Commands.literal("relationships")
+            .then(
+                Commands.argument("faction_id", ResourceLocationArgument.id())
+                    .suggests(BLibCommandSuggestions.FACTION_IDS)
+                    .executes(BLibFactionCommands::executeRelationships)
+            );
+    }
+
+    private static int executeRelationships(CommandContext<CommandSourceStack> context) {
+        var source = context.getSource();
+        var factionId = ResourceLocationArgument.getId(context, "faction_id");
+
+        if (!BLibFactionManager.INSTANCE.exists(factionId)) {
+            source.sendFailure(Component.literal("Faction '%s' not found.".formatted(factionId)));
+            return 0;
+        }
+
+        var allies = BLibFactionManager.INSTANCE.getAllies(factionId);
+        var hostiles = BLibFactionManager.INSTANCE.getHostiles(factionId);
+
+        if (allies.isEmpty() && hostiles.isEmpty()) {
+            source.sendSuccess(() -> Component.literal("Faction '%s' has no relationships.".formatted(factionId)), false);
+            return 0;
+        }
+
+        source.sendSuccess(() -> Component.literal("Relationships for '%s':".formatted(factionId)), false);
+
+        for (var ally : allies) {
+            source.sendSuccess(() -> Component.literal("  ALLIED — %s".formatted(ally)), false);
+        }
+
+        for (var hostile : hostiles) {
+            source.sendSuccess(() -> Component.literal("  HOSTILE — %s".formatted(hostile)), false);
+        }
+
         return Command.SINGLE_SUCCESS;
     }
 
