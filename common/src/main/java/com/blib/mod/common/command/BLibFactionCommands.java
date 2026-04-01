@@ -1,6 +1,7 @@
 package com.blib.mod.common.command;
 
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -29,6 +30,8 @@ public final class BLibFactionCommands {
             .then(buildRemove())
             .then(buildAddMember())
             .then(buildRemoveMember())
+            .then(buildSetName())
+            .then(buildSetColor())
             .then(buildList());
     }
 
@@ -73,6 +76,30 @@ public final class BLibFactionCommands {
                     .then(
                         Commands.argument("target", EntityArgument.entity())
                             .executes(BLibFactionCommands::executeRemoveMemberEntity)
+                    )
+            );
+    }
+
+    private static LiteralArgumentBuilder<CommandSourceStack> buildSetName() {
+        return Commands.literal("set-name")
+            .then(
+                Commands.argument("faction_id", ResourceLocationArgument.id())
+                    .suggests(BLibCommandSuggestions.FACTION_IDS)
+                    .then(
+                        Commands.argument("name", StringArgumentType.greedyString())
+                            .executes(BLibFactionCommands::executeSetName)
+                    )
+            );
+    }
+
+    private static LiteralArgumentBuilder<CommandSourceStack> buildSetColor() {
+        return Commands.literal("set-color")
+            .then(
+                Commands.argument("faction_id", ResourceLocationArgument.id())
+                    .suggests(BLibCommandSuggestions.FACTION_IDS)
+                    .then(
+                        Commands.argument("color", StringArgumentType.word())
+                            .executes(BLibFactionCommands::executeSetColor)
                     )
             );
     }
@@ -178,6 +205,71 @@ public final class BLibFactionCommands {
             true
         );
         return Command.SINGLE_SUCCESS;
+    }
+
+    private static int executeSetName(CommandContext<CommandSourceStack> context) {
+        var source = context.getSource();
+        var factionId = ResourceLocationArgument.getId(context, "faction_id");
+        var name = StringArgumentType.getString(context, "name");
+        var faction = BLibFactionManager.INSTANCE.get(factionId);
+
+        if (faction == null) {
+            source.sendFailure(Component.literal("Faction '%s' not found.".formatted(factionId)));
+            return 0;
+        }
+
+        faction.setName(name);
+        BLibFactionManager.INSTANCE.syncFactionMetadataToAllClients(source.getServer(), faction);
+
+        source.sendSuccess(
+            () -> Component.literal("Set faction '%s' name to '%s'.".formatted(factionId, name)),
+            true
+        );
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int executeSetColor(CommandContext<CommandSourceStack> context) {
+        var source = context.getSource();
+        var factionId = ResourceLocationArgument.getId(context, "faction_id");
+        var colorString = StringArgumentType.getString(context, "color");
+        var faction = BLibFactionManager.INSTANCE.get(factionId);
+
+        if (faction == null) {
+            source.sendFailure(Component.literal("Faction '%s' not found.".formatted(factionId)));
+            return 0;
+        }
+
+        var color = parseColor(colorString);
+
+        if (color < 0) {
+            source.sendFailure(Component.literal("Invalid color '%s'. Use hex (e.g., #FF00AA) or decimal.".formatted(colorString)));
+            return 0;
+        }
+
+        faction.setColor(color);
+        BLibFactionManager.INSTANCE.syncFactionMetadataToAllClients(source.getServer(), faction);
+
+        source.sendSuccess(
+            () -> Component.literal("Set faction '%s' color to #%06X.".formatted(factionId, color)),
+            true
+        );
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int parseColor(String input) {
+        try {
+            var hex = input.startsWith("#") ? input.substring(1) : input;
+
+            var value = Integer.parseUnsignedInt(hex, 16);
+
+            if (value > 0xFFFFFF) {
+                return -1;
+            }
+
+            return value;
+        } catch (NumberFormatException e) {
+            return -1;
+        }
     }
 
     private static int executeList(CommandContext<CommandSourceStack> context) {

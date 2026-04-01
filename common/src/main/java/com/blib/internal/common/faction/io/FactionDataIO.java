@@ -16,8 +16,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import com.blib.api.common.faction.v1.FactionData;
 import com.blib.api.common.registry.v1.BLibBuiltInRegistries;
+import com.blib.internal.common.faction.BLibFactionData;
 import com.blib.internal.common.faction.serializer.FactionDataSerializer;
 
 @ApiStatus.Internal
@@ -36,7 +36,7 @@ public final class FactionDataIO {
     public static void loadAll(
         MinecraftServer server,
         Set<ResourceLocation> knownFactionIds,
-        Map<ResourceLocation, FactionData> data,
+        Map<ResourceLocation, BLibFactionData> internalDataMap,
         Map<ResourceLocation, ResourceLocation> factionIdToTypeId
     ) {
         var baseDir = FactionIO.getBlibDataPath(server);
@@ -59,7 +59,7 @@ public final class FactionDataIO {
                     try (var files = Files.list(dataDir)) {
                         files
                             .filter(p -> SHARD_FILE_PATTERN.matcher(p.getFileName().toString()).matches())
-                            .forEach(shardFile -> loadShard(shardFile, knownFactionIds, data, factionIdToTypeId));
+                            .forEach(shardFile -> loadShard(shardFile, knownFactionIds, internalDataMap, factionIdToTypeId));
                     } catch (IOException e) {
                         LOGGER.error("Failed to list faction data shard files in {}", dataDir, e);
                     }
@@ -72,21 +72,21 @@ public final class FactionDataIO {
     public static void saveShard(
         MinecraftServer server,
         List<ResourceLocation> factionIdsInShard,
-        Map<ResourceLocation, FactionData> data,
+        Map<ResourceLocation, BLibFactionData> internalDataMap,
         Map<ResourceLocation, ResourceLocation> factionIdToTypeId,
         int shardIndex
     ) {
         var namespaceToFactionsTag = new HashMap<String, CompoundTag>();
 
         for (var factionId : factionIdsInShard) {
-            var factionData = data.get(factionId);
+            var internalData = internalDataMap.get(factionId);
             var typeId = factionIdToTypeId.get(factionId);
 
-            if (factionData != null && typeId != null) {
+            if (internalData != null && typeId != null) {
                 var namespace = typeId.getNamespace();
                 var factionsTag = namespaceToFactionsTag.computeIfAbsent(namespace, k -> new CompoundTag());
 
-                factionsTag.put(factionId.toString(), FactionDataSerializer.serialize(factionData, typeId));
+                factionsTag.put(factionId.toString(), FactionDataSerializer.serialize(internalData, typeId));
             }
         }
 
@@ -101,7 +101,7 @@ public final class FactionDataIO {
     private static void loadShard(
         Path shardFile,
         Set<ResourceLocation> knownFactionIds,
-        Map<ResourceLocation, FactionData> data,
+        Map<ResourceLocation, BLibFactionData> internalDataMap,
         Map<ResourceLocation, ResourceLocation> factionIdToTypeId
     ) {
         var tag = FactionIO.readCompressed(shardFile);
@@ -120,15 +120,18 @@ public final class FactionDataIO {
             factionIdToTypeId.put(factionId, typeId);
 
             var factionDataType = BLibBuiltInRegistries.FACTION_DATA_TYPES.get(typeId);
+            var modData = factionDataType != null ? factionDataType.createInstance() : null;
 
-            if (factionDataType != null) {
-                var factionData = factionDataType.createInstance();
-                factionData.load(FactionDataSerializer.deserializeData(entryTag));
-                factionData.clearDirty();
-                data.put(factionId, factionData);
-            } else {
-                LOGGER.warn("Unknown faction type '{}' for faction '{}', skipping data creation", typeId, factionId);
+            if (factionDataType == null) {
+                LOGGER.warn("Unknown faction type '{}' for faction '{}', skipping mod data creation", typeId, factionId);
             }
+
+            var blibDataTag = FactionDataSerializer.deserializeBlibData(entryTag);
+            var internalData = new BLibFactionData(factionId.getPath(), BLibFactionData.randomColor(), modData);
+            internalData.load(blibDataTag);
+            internalData.clearDirty();
+
+            internalDataMap.put(factionId, internalData);
         }
     }
 }

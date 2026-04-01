@@ -5,6 +5,7 @@ import com.blib.api.common.registry.v1.impl.BLibNetworkRegistry;
 import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.S2CChunkClaimsSyncPayload;
 import com.blib.mod.common.network.packet.S2CEntityDataSyncPayload;
+import com.blib.mod.common.network.packet.S2CFactionMetadataSyncPayload;
 import com.blib.mod.common.network.packet.S2CGOAPDebugPayload;
 
 public class BLibServerPacketHandlers {
@@ -21,6 +22,14 @@ public class BLibServerPacketHandlers {
                 S2CChunkClaimsSyncPayload.TYPE,
                 S2CChunkClaimsSyncPayload.CODEC,
                 BLibClientListener::handleChunkClaimsSync
+            )
+        );
+
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromServer<>(
+                S2CFactionMetadataSyncPayload.TYPE,
+                S2CFactionMetadataSyncPayload.CODEC,
+                BLibClientListener::handleFactionMetadataSync
             )
         );
 

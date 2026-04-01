@@ -6,6 +6,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import com.blib.api.common.registry.v1.BLibBuiltInRegistries;
+import com.blib.internal.common.faction.BLibFactionData;
 
 public class Faction<T extends FactionData> {
 
@@ -15,15 +16,19 @@ public class Faction<T extends FactionData> {
 
     private final FactionRelationships relationships;
 
-    private @Nullable T data;
+    private final BLibFactionData internalData;
 
     @ApiStatus.Internal
-    @SuppressWarnings("unchecked")
-    public Faction(ResourceLocation id, ResourceLocation typeId, FactionRelationships relationships, @Nullable FactionData data) {
+    public Faction(
+        ResourceLocation id,
+        ResourceLocation typeId,
+        FactionRelationships relationships,
+        BLibFactionData internalData
+    ) {
         this.id = id;
         this.typeId = typeId;
         this.relationships = relationships;
-        this.data = (T) data;
+        this.internalData = internalData;
     }
 
     public ResourceLocation id() {
@@ -34,12 +39,29 @@ public class Faction<T extends FactionData> {
         return typeId;
     }
 
+    public String name() {
+        return internalData.name();
+    }
+
+    public void setName(String name) {
+        internalData.setName(name);
+    }
+
+    public int color() {
+        return internalData.color();
+    }
+
+    public void setColor(int color) {
+        internalData.setColor(color);
+    }
+
     public FactionRelationships relationships() {
         return relationships;
     }
 
+    @SuppressWarnings("unchecked")
     public @Nullable T data() {
-        return data;
+        return (T) internalData.modData();
     }
 
     public boolean isType(TagKey<FactionDataType<?>> tag) {
@@ -49,8 +71,7 @@ public class Faction<T extends FactionData> {
     }
 
     @ApiStatus.Internal
-    @SuppressWarnings("unchecked")
-    public void setData(FactionData data) {
-        this.data = (T) data;
+    public BLibFactionData internalData() {
+        return internalData;
     }
 }

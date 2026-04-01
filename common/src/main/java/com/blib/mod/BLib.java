@@ -18,7 +18,9 @@ import com.blib.api.common.faction.v1.FactionMember;
 import com.blib.api.common.mod.v1.BLibMod;
 import com.blib.api.common.reputation.v1.ReputationKey;
 import com.blib.api.common.server.v1.ServerScheduler;
+import com.blib.internal.client.faction.ClientFactionCache;
 import com.blib.internal.client.render.armor.compat.ShoulderSurfingCompat;
+import com.blib.internal.client.territory.ClientTerritoryCache;
 import com.blib.internal.client.territory.compat.XaeroWorldMapCompat;
 import com.blib.internal.common.faction.BLibFactionManager;
 import com.blib.internal.common.property.BLibPropertyContainerSaveHandler;
@@ -95,6 +97,8 @@ public class BLib {
         BLib.MOD.events().onLevelSave().register(BLibDataStoreManager.INSTANCE::saveLevelData);
         BLib.MOD.events().onServerStopped().register(BLibDataStoreManager.INSTANCE::onServerStopped);
         BLib.MOD.events().onServerStopped().register(GOAPDebugTracker.INSTANCE::clear);
+        BLib.MOD.events().onServerStopped().register(server -> ClientTerritoryCache.INSTANCE.clear());
+        BLib.MOD.events().onServerStopped().register(server -> ClientFactionCache.INSTANCE.clear());
 
         BLib.MOD.events().onServerStarted().register(BLibFactionManager.INSTANCE::load);
         BLib.MOD.events().onServerSave().register(BLibFactionManager.INSTANCE::save);
@@ -163,6 +167,7 @@ public class BLib {
                             player.server.getTickCount() + 20,
                             () -> {
                                 if (player.connection != null) {
+                                    BLibFactionManager.INSTANCE.syncAllFactionMetadataToPlayer(player);
                                     BLibTerritoryManager.INSTANCE.syncAllClaimsToPlayer(player);
                                 }
                             }
