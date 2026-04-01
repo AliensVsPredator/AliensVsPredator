@@ -11,7 +11,7 @@ import java.util.Set;
 import com.blib.api.common.util.v1.Dirty;
 import com.blib.internal.common.faction.BLibFactionManager;
 
-public class FactionRelationships implements WritableFactionRelationships, Dirty {
+public class FactionMembership implements WritableFactionMembership, Dirty {
 
     private final ResourceLocation id;
 
@@ -20,12 +20,12 @@ public class FactionRelationships implements WritableFactionRelationships, Dirty
     private boolean dirty;
 
     @ApiStatus.Internal
-    public FactionRelationships(ResourceLocation id) {
+    public FactionMembership(ResourceLocation id) {
         this(id, new LinkedHashSet<>());
     }
 
     @ApiStatus.Internal
-    public FactionRelationships(ResourceLocation id, Set<FactionMember> members) {
+    public FactionMembership(ResourceLocation id, Set<FactionMember> members) {
         this.id = id;
         this.members = members;
     }

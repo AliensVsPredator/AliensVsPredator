@@ -14,7 +14,7 @@ public class Faction<T extends FactionData> {
 
     private final ResourceLocation typeId;
 
-    private final FactionRelationships relationships;
+    private final FactionMembership membership;
 
     private final BLibFactionData internalData;
 
@@ -22,12 +22,12 @@ public class Faction<T extends FactionData> {
     public Faction(
         ResourceLocation id,
         ResourceLocation typeId,
-        FactionRelationships relationships,
+        FactionMembership membership,
         BLibFactionData internalData
     ) {
         this.id = id;
         this.typeId = typeId;
-        this.relationships = relationships;
+        this.membership = membership;
         this.internalData = internalData;
     }
 
@@ -55,8 +55,8 @@ public class Faction<T extends FactionData> {
         internalData.setColor(color);
     }
 
-    public FactionRelationships relationships() {
-        return relationships;
+    public FactionMembership membership() {
+        return membership;
     }
 
     @SuppressWarnings("unchecked")

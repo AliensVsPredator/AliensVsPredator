@@ -24,7 +24,7 @@ public final class FactionIO {
 
     private static final String GLOBAL_FOLDER = "global";
 
-    private static final String RELATIONSHIPS_FOLDER = "faction_relationships";
+    private static final String MEMBERSHIPS_FOLDER = "faction_memberships";
 
     private static final String DATA_FOLDER = "faction_data";
 
@@ -36,19 +36,19 @@ public final class FactionIO {
         return server.getWorldPath(LevelResource.ROOT).resolve(BLIB_DATA_FOLDER).resolve(DATA_STORAGE_FOLDER);
     }
 
-    public static Path getRelationshipsShardPath(MinecraftServer server, int shardIndex) {
-        return getRelationshipsDirectory(server).resolve(RELATIONSHIPS_FOLDER + "_" + shardIndex + ".nbt");
+    public static Path getMembershipShardPath(MinecraftServer server, int shardIndex) {
+        return getMembershipDirectory(server).resolve(MEMBERSHIPS_FOLDER + "_" + shardIndex + ".nbt");
     }
 
     public static Path getDataShardPath(MinecraftServer server, String namespace, int shardIndex) {
         return getDataDirectory(server, namespace).resolve(DATA_FOLDER + "_" + shardIndex + ".nbt");
     }
 
-    public static Path getRelationshipsDirectory(MinecraftServer server) {
+    public static Path getMembershipDirectory(MinecraftServer server) {
         return getBlibDataPath(server)
             .resolve(BLIB_DATA_FOLDER)
             .resolve(GLOBAL_FOLDER)
-            .resolve(RELATIONSHIPS_FOLDER);
+            .resolve(MEMBERSHIPS_FOLDER);
     }
 
     public static Path getDataDirectory(MinecraftServer server, String namespace) {

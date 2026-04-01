@@ -166,7 +166,7 @@ public final class BLibFactionCommands {
 
         var member = new FactionMember.Entity(uuid);
 
-        if (!faction.relationships().addMember(member)) {
+        if (!faction.membership().addMember(member)) {
             source.sendFailure(Component.literal("Entity '%s' is already a member of faction '%s'.".formatted(uuid, factionId)));
             return 0;
         }
@@ -195,7 +195,7 @@ public final class BLibFactionCommands {
 
         var member = new FactionMember.Entity(uuid);
 
-        if (!faction.relationships().removeMember(member)) {
+        if (!faction.membership().removeMember(member)) {
             source.sendFailure(Component.literal("Entity '%s' is not a member of faction '%s'.".formatted(uuid, factionId)));
             return 0;
         }

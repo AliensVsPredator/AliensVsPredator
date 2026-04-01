@@ -208,7 +208,7 @@ public class BLib {
                             var faction = BLibFactionManager.INSTANCE.get(factionId);
 
                             if (faction != null) {
-                                faction.relationships().removeMember(member);
+                                faction.membership().removeMember(member);
                             }
                         }
 

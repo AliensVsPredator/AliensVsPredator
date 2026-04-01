@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.blib.api.common.faction.v1.FactionMember;
-import com.blib.api.common.faction.v1.FactionRelationships;
+import com.blib.api.common.faction.v1.FactionMembership;
 
 @ApiStatus.Internal
 public class FactionMemberIndex {
@@ -36,7 +36,7 @@ public class FactionMemberIndex {
         }
     }
 
-    public void removeFaction(ResourceLocation factionId, FactionRelationships relationships) {
+    public void removeFaction(ResourceLocation factionId, FactionMembership relationships) {
         for (var member : relationships.getMembers()) {
             if (member instanceof FactionMember.Entity(var uuid)) {
                 removeFromIndex(uuid, factionId);
@@ -44,7 +44,7 @@ public class FactionMemberIndex {
         }
     }
 
-    public void rebuild(Map<ResourceLocation, FactionRelationships> relationships) {
+    public void rebuild(Map<ResourceLocation, FactionMembership> relationships) {
         entityToFactions.clear();
 
         for (var factionRelationships : relationships.values()) {

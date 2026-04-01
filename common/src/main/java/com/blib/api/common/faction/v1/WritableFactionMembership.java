@@ -4,7 +4,7 @@ import net.minecraft.world.entity.Entity;
 
 import java.util.UUID;
 
-public interface WritableFactionRelationships extends ReadableFactionRelationships {
+public interface WritableFactionMembership extends ReadableFactionMembership {
 
     boolean addMember(FactionMember member);
 

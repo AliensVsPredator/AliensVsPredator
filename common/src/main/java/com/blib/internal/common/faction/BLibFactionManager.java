@@ -24,12 +24,12 @@ import com.blib.api.common.faction.v1.FactionData;
 import com.blib.api.common.faction.v1.FactionDataType;
 import com.blib.api.common.faction.v1.FactionManager;
 import com.blib.api.common.faction.v1.FactionMember;
-import com.blib.api.common.faction.v1.FactionRelationships;
+import com.blib.api.common.faction.v1.FactionMembership;
 import com.blib.api.common.registry.v1.BLibBuiltInRegistries;
 import com.blib.api.common.registry.v1.BLibHolder;
 import com.blib.internal.common.event.BLibGlobalEvents;
 import com.blib.internal.common.faction.io.FactionDataIO;
-import com.blib.internal.common.faction.io.FactionRelationshipsIO;
+import com.blib.internal.common.faction.io.FactionMembershipIO;
 import com.blib.internal.common.util.ShardManager;
 import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.S2CFactionMetadataSyncPayload;
@@ -67,7 +67,7 @@ public class BLibFactionManager implements FactionManager {
         var typeId = type.getResourceLocation();
         var factionDataType = type.value();
 
-        var relationships = new FactionRelationships(id);
+        var relationships = new FactionMembership(id);
         shardManager.assignShardIndex(id);
         relationships.markDirty();
 
@@ -96,7 +96,7 @@ public class BLibFactionManager implements FactionManager {
             return null;
         }
 
-        var relationships = new FactionRelationships(id);
+        var relationships = new FactionMembership(id);
         shardManager.assignShardIndex(id);
         relationships.markDirty();
 
@@ -138,7 +138,7 @@ public class BLibFactionManager implements FactionManager {
             return false;
         }
 
-        memberIndex.removeFaction(id, faction.relationships());
+        memberIndex.removeFaction(id, faction.membership());
         shardManager.remove(id);
 
         for (var listener : BLibGlobalEvents.FACTION_REMOVE.listeners()) {
@@ -162,11 +162,11 @@ public class BLibFactionManager implements FactionManager {
         factions.clear();
         shardManager.clear();
 
-        var relationships = new HashMap<ResourceLocation, FactionRelationships>();
+        var relationships = new HashMap<ResourceLocation, FactionMembership>();
         var internalDataMap = new HashMap<ResourceLocation, BLibFactionData>();
         var factionIdToTypeId = new HashMap<ResourceLocation, ResourceLocation>();
 
-        FactionRelationshipsIO.loadAll(server, relationships, shardManager);
+        FactionMembershipIO.loadAll(server, relationships, shardManager);
         FactionDataIO.loadAll(server, relationships.keySet(), internalDataMap, factionIdToTypeId);
 
         for (var entry : relationships.entrySet()) {
@@ -225,10 +225,10 @@ public class BLibFactionManager implements FactionManager {
         return faction != null ? faction.data() : null;
     }
 
-    public @Nullable FactionRelationships getRelationships(ResourceLocation id) {
+    public @Nullable FactionMembership getMembership(ResourceLocation id) {
         var faction = factions.get(id);
 
-        return faction != null ? faction.relationships() : null;
+        return faction != null ? faction.membership() : null;
     }
 
     public void onMemberChanged(ResourceLocation factionId, FactionMember member, boolean added) {
@@ -260,12 +260,12 @@ public class BLibFactionManager implements FactionManager {
     }
 
     private void saveRelationships(MinecraftServer server) {
-        Map<Integer, List<FactionRelationships>> shardToEntries = new HashMap<>();
+        Map<Integer, List<FactionMembership>> shardToEntries = new HashMap<>();
         Set<Integer> dirtyShards = new HashSet<>();
 
         for (var faction : factions.values()) {
             var factionId = faction.id();
-            var relationships = faction.relationships();
+            var relationships = faction.membership();
             var shardIndex = shardManager.getShardIndex(factionId);
 
             shardToEntries.computeIfAbsent(shardIndex, k -> new ArrayList<>()).add(relationships);
@@ -277,11 +277,11 @@ public class BLibFactionManager implements FactionManager {
 
         for (var shardIndex : dirtyShards) {
             var entriesInShard = shardToEntries.get(shardIndex);
-            FactionRelationshipsIO.saveShard(server, entriesInShard, shardIndex);
+            FactionMembershipIO.saveShard(server, entriesInShard, shardIndex);
         }
 
         for (var faction : factions.values()) {
-            faction.relationships().clearDirty();
+            faction.membership().clearDirty();
         }
     }
 
