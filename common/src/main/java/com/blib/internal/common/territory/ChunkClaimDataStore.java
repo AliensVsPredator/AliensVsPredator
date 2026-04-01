@@ -2,7 +2,9 @@ package com.blib.internal.common.territory;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import org.jetbrains.annotations.ApiStatus;
@@ -12,16 +14,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.blib.api.common.storage.v1.DataStore;
-import com.blib.api.common.territory.v1.Claimant;
 import com.blib.internal.common.event.BLibGlobalEvents;
-import com.blib.internal.common.territory.serializer.ClaimantSerializer;
 
 @ApiStatus.Internal
 public class ChunkClaimDataStore implements DataStore {
 
     private static final String CLAIMANTS_KEY = "claimants";
 
-    private final Set<Claimant> claimants;
+    private final Set<ResourceLocation> claimants;
 
     private ServerLevel level;
 
@@ -36,27 +36,27 @@ public class ChunkClaimDataStore implements DataStore {
         this.chunkPos = chunkPos;
     }
 
-    public boolean addClaim(Claimant claimant) {
-        if (!claimants.add(claimant)) {
+    public boolean addClaim(ResourceLocation factionId) {
+        if (!claimants.add(factionId)) {
             return false;
         }
 
-        fireClaimAdded(claimant);
+        fireClaimAdded(factionId);
 
         return true;
     }
 
-    public boolean removeClaim(Claimant claimant) {
-        if (!claimants.remove(claimant)) {
+    public boolean removeClaim(ResourceLocation factionId) {
+        if (!claimants.remove(factionId)) {
             return false;
         }
 
-        fireClaimRemoved(claimant);
+        fireClaimRemoved(factionId);
 
         return true;
     }
 
-    public boolean transferClaim(Claimant from, Claimant to) {
+    public boolean transferClaim(ResourceLocation from, ResourceLocation to) {
         if (!claimants.remove(from)) {
             return false;
         }
@@ -68,12 +68,12 @@ public class ChunkClaimDataStore implements DataStore {
         return true;
     }
 
-    public Set<Claimant> getClaimants() {
+    public Set<ResourceLocation> getClaimants() {
         return Collections.unmodifiableSet(claimants);
     }
 
-    public boolean isClaimedBy(Claimant claimant) {
-        return claimants.contains(claimant);
+    public boolean isClaimedBy(ResourceLocation factionId) {
+        return claimants.contains(factionId);
     }
 
     public boolean isContested() {
@@ -88,23 +88,23 @@ public class ChunkClaimDataStore implements DataStore {
         return claimants.size();
     }
 
-    private void fireClaimAdded(Claimant claimant) {
+    private void fireClaimAdded(ResourceLocation factionId) {
         if (level == null || chunkPos == null) {
             return;
         }
 
         for (var listener : BLibGlobalEvents.CHUNK_CLAIM_ADDED.listeners()) {
-            listener.invoke(level, chunkPos, claimant);
+            listener.invoke(level, chunkPos, factionId);
         }
     }
 
-    private void fireClaimRemoved(Claimant claimant) {
+    private void fireClaimRemoved(ResourceLocation factionId) {
         if (level == null || chunkPos == null) {
             return;
         }
 
         for (var listener : BLibGlobalEvents.CHUNK_CLAIM_REMOVED.listeners()) {
-            listener.invoke(level, chunkPos, claimant);
+            listener.invoke(level, chunkPos, factionId);
         }
     }
 
@@ -116,13 +116,13 @@ public class ChunkClaimDataStore implements DataStore {
             return;
         }
 
-        var listTag = compoundTag.getList(CLAIMANTS_KEY, Tag.TAG_COMPOUND);
+        var listTag = compoundTag.getList(CLAIMANTS_KEY, Tag.TAG_STRING);
 
         for (var i = 0; i < listTag.size(); i++) {
-            var claimant = ClaimantSerializer.deserialize(listTag.getCompound(i));
+            var factionId = ResourceLocation.tryParse(listTag.getString(i));
 
-            if (claimant != null) {
-                claimants.add(claimant);
+            if (factionId != null) {
+                claimants.add(factionId);
             }
         }
     }
@@ -135,8 +135,8 @@ public class ChunkClaimDataStore implements DataStore {
 
         var listTag = new ListTag();
 
-        for (var claimant : claimants) {
-            listTag.add(ClaimantSerializer.serialize(claimant));
+        for (var factionId : claimants) {
+            listTag.add(StringTag.valueOf(factionId.toString()));
         }
 
         compoundTag.put(CLAIMANTS_KEY, listTag);

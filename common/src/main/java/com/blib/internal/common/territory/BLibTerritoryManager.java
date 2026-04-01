@@ -16,11 +16,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import com.blib.api.common.faction.v1.ClaimVisibility;
 import com.blib.api.common.faction.v1.RelationshipState;
-import com.blib.api.common.territory.v1.Claimant;
 import com.blib.internal.common.faction.BLibFactionManager;
 import com.blib.internal.common.storage.BLibDataStoreManager;
 import com.blib.mod.BLib;
@@ -72,27 +70,27 @@ public class BLibTerritoryManager {
         }
     }
 
-    public boolean addClaim(ServerLevel level, ChunkPos pos, Claimant claimant) {
+    public boolean addClaim(ServerLevel level, ChunkPos pos, ResourceLocation factionId) {
         var store = getOrCreateStore(level, pos);
 
         if (store == null) {
             return false;
         }
 
-        return store.addClaim(claimant);
+        return store.addClaim(factionId);
     }
 
-    public boolean removeClaim(ServerLevel level, ChunkPos pos, Claimant claimant) {
+    public boolean removeClaim(ServerLevel level, ChunkPos pos, ResourceLocation factionId) {
         var store = getOrCreateStore(level, pos);
 
         if (store == null) {
             return false;
         }
 
-        return store.removeClaim(claimant);
+        return store.removeClaim(factionId);
     }
 
-    public boolean transferClaim(ServerLevel level, ChunkPos pos, Claimant from, Claimant to) {
+    public boolean transferClaim(ServerLevel level, ChunkPos pos, ResourceLocation from, ResourceLocation to) {
         var store = getOrCreateStore(level, pos);
 
         if (store == null) {
@@ -102,7 +100,7 @@ public class BLibTerritoryManager {
         return store.transferClaim(from, to);
     }
 
-    public Set<Claimant> getClaimants(ServerLevel level, ChunkPos pos) {
+    public Set<ResourceLocation> getClaimants(ServerLevel level, ChunkPos pos) {
         var store = getOrCreateStore(level, pos);
 
         if (store == null) {
@@ -116,20 +114,20 @@ public class BLibTerritoryManager {
         return getOrCreateIndex(level).isClaimed(pos);
     }
 
-    public boolean isClaimedBy(ServerLevel level, ChunkPos pos, Claimant claimant) {
-        return getOrCreateIndex(level).isClaimedBy(pos, claimant);
+    public boolean isClaimedBy(ServerLevel level, ChunkPos pos, ResourceLocation factionId) {
+        return getOrCreateIndex(level).isClaimedBy(pos, factionId);
     }
 
     public boolean isContested(ServerLevel level, ChunkPos pos) {
         return getOrCreateIndex(level).isContested(pos);
     }
 
-    public Set<ChunkPos> getAdjacentClaimedChunks(ServerLevel level, ChunkPos pos, Claimant claimant) {
+    public Set<ChunkPos> getAdjacentClaimedChunks(ServerLevel level, ChunkPos pos, ResourceLocation factionId) {
         var index = getOrCreateIndex(level);
         var result = new HashSet<ChunkPos>();
 
         for (var neighbor : getCardinalNeighbors(pos)) {
-            if (index.isClaimedBy(neighbor, claimant)) {
+            if (index.isClaimedBy(neighbor, factionId)) {
                 result.add(neighbor);
             }
         }
@@ -137,8 +135,8 @@ public class BLibTerritoryManager {
         return Collections.unmodifiableSet(result);
     }
 
-    public Set<ChunkPos> getChunks(ServerLevel level, Claimant claimant) {
-        return getOrCreateIndex(level).getChunks(claimant);
+    public Set<ChunkPos> getChunks(ServerLevel level, ResourceLocation factionId) {
+        return getOrCreateIndex(level).getChunks(factionId);
     }
 
     public Set<ChunkPos> getAllContestedChunks(ServerLevel level) {
@@ -149,23 +147,15 @@ public class BLibTerritoryManager {
         return getOrCreateIndex(level).getUnclaimedChunks(center, radius);
     }
 
-    public void onClaimAdded(ServerLevel level, ChunkPos pos, Claimant claimant) {
-        getOrCreateIndex(level).onClaimAdded(pos, claimant);
+    public void onClaimAdded(ServerLevel level, ChunkPos pos, ResourceLocation factionId) {
+        getOrCreateIndex(level).onClaimAdded(pos, factionId);
     }
 
-    public void onClaimRemoved(ServerLevel level, ChunkPos pos, Claimant claimant) {
-        getOrCreateIndex(level).onClaimRemoved(pos, claimant);
-    }
-
-    public void onEntityRemoved(UUID entityId) {
-        removeAllClaimsForClaimant(Claimant.entity(entityId));
+    public void onClaimRemoved(ServerLevel level, ChunkPos pos, ResourceLocation factionId) {
+        getOrCreateIndex(level).onClaimRemoved(pos, factionId);
     }
 
     public void onFactionRemoved(ResourceLocation factionId) {
-        removeAllClaimsForClaimant(Claimant.faction(factionId));
-    }
-
-    private void removeAllClaimsForClaimant(Claimant claimant) {
         if (server == null) {
             return;
         }
@@ -177,13 +167,13 @@ public class BLibTerritoryManager {
                 continue;
             }
 
-            var chunks = Set.copyOf(index.getChunks(claimant));
+            var chunks = Set.copyOf(index.getChunks(factionId));
 
             for (var pos : chunks) {
                 var store = getOrCreateStore(level, pos);
 
                 if (store != null) {
-                    store.removeClaim(claimant);
+                    store.removeClaim(factionId);
                 }
             }
         }
@@ -204,7 +194,7 @@ public class BLibTerritoryManager {
             for (var pos : index.getAllClaimedChunks()) {
                 var payload = buildSyncPayloadForPlayer(level, pos, player);
 
-                if (!payload.claimants().isEmpty()) {
+                if (!payload.factionIds().isEmpty()) {
                     BLib.MOD.networking().sendToClient(player, payload);
                 }
             }
@@ -220,19 +210,15 @@ public class BLibTerritoryManager {
     public S2CChunkClaimsSyncPayload buildSyncPayloadForPlayer(ServerLevel level, ChunkPos pos, ServerPlayer player) {
         var claimants = getClaimants(level, pos);
 
-        var visibleClaimants = claimants.stream()
-            .filter(claimant -> isClaimVisibleToPlayer(claimant, player))
+        var visibleFactions = claimants.stream()
+            .filter(factionId -> isFactionVisibleToPlayer(factionId, player))
             .toList();
 
-        return new S2CChunkClaimsSyncPayload(pos.x, pos.z, visibleClaimants);
+        return new S2CChunkClaimsSyncPayload(pos.x, pos.z, visibleFactions);
     }
 
-    private boolean isClaimVisibleToPlayer(Claimant claimant, ServerPlayer player) {
-        if (!(claimant instanceof Claimant.FactionClaimant factionClaimant)) {
-            return true;
-        }
-
-        var faction = BLibFactionManager.INSTANCE.get(factionClaimant.factionId());
+    private boolean isFactionVisibleToPlayer(ResourceLocation factionId, ServerPlayer player) {
+        var faction = BLibFactionManager.INSTANCE.get(factionId);
 
         if (faction == null) {
             return true;
@@ -245,18 +231,18 @@ public class BLibTerritoryManager {
         }
 
         if (visibility == ClaimVisibility.PRIVATE) {
-            return isPlayerInFaction(player, factionClaimant.factionId());
+            return isPlayerInFaction(player, factionId);
         }
 
         if (visibility == ClaimVisibility.ALLIED) {
-            if (isPlayerInFaction(player, factionClaimant.factionId())) {
+            if (isPlayerInFaction(player, factionId)) {
                 return true;
             }
 
             var playerFactionIds = BLibFactionManager.INSTANCE.getFactionIds(player.getUUID());
 
             for (var playerFactionId : playerFactionIds) {
-                var state = BLibFactionManager.INSTANCE.getRelationship(playerFactionId, factionClaimant.factionId());
+                var state = BLibFactionManager.INSTANCE.getRelationship(playerFactionId, factionId);
 
                 if (state == RelationshipState.ALLIED) {
                     return true;

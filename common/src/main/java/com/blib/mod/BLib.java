@@ -122,7 +122,7 @@ public class BLib {
                     if (player.connection != null) {
                         var payload = BLibTerritoryManager.INSTANCE.buildSyncPayloadForPlayer(level, pos, player);
 
-                        if (!payload.claimants().isEmpty()) {
+                        if (!payload.factionIds().isEmpty()) {
                             BLib.MOD.networking().sendToClient(player, payload);
                         }
                     }
@@ -219,7 +219,7 @@ public class BLib {
                         }
 
                         BLibReputationManager.INSTANCE.removeReputation(ReputationKey.entity(uuid));
-                        BLibTerritoryManager.INSTANCE.onEntityRemoved(uuid);
+
                     }
                     case UNLOADED_TO_CHUNK, UNLOADED_WITH_PLAYER, CHANGED_DIMENSION -> {
                         var uuid = entity.getUUID();

@@ -10,7 +10,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.ChunkPos;
 import org.jetbrains.annotations.ApiStatus;
 
-import com.blib.api.common.territory.v1.Claimant;
 import com.blib.internal.common.territory.BLibTerritoryManager;
 
 @ApiStatus.Internal
@@ -71,9 +70,8 @@ public final class BLibTerritoryCommands {
         var factionId = ResourceLocationArgument.getId(context, "faction_id");
         var level = source.getLevel();
         var pos = new ChunkPos(net.minecraft.core.BlockPos.containing(source.getPosition()));
-        var claimant = Claimant.faction(factionId);
 
-        if (!BLibTerritoryManager.INSTANCE.addClaim(level, pos, claimant)) {
+        if (!BLibTerritoryManager.INSTANCE.addClaim(level, pos, factionId)) {
             source.sendFailure(Component.literal("Chunk [%d, %d] is already claimed by faction '%s'.".formatted(pos.x, pos.z, factionId)));
             return 0;
         }
@@ -90,9 +88,8 @@ public final class BLibTerritoryCommands {
         var factionId = ResourceLocationArgument.getId(context, "faction_id");
         var level = source.getLevel();
         var pos = new ChunkPos(net.minecraft.core.BlockPos.containing(source.getPosition()));
-        var claimant = Claimant.faction(factionId);
 
-        if (!BLibTerritoryManager.INSTANCE.removeClaim(level, pos, claimant)) {
+        if (!BLibTerritoryManager.INSTANCE.removeClaim(level, pos, factionId)) {
             source.sendFailure(Component.literal("No claim by faction '%s' on chunk [%d, %d].".formatted(factionId, pos.x, pos.z)));
             return 0;
         }
@@ -108,9 +105,9 @@ public final class BLibTerritoryCommands {
         var source = context.getSource();
         var level = source.getLevel();
         var pos = new ChunkPos(net.minecraft.core.BlockPos.containing(source.getPosition()));
-        var claimants = BLibTerritoryManager.INSTANCE.getClaimants(level, pos);
+        var factionIds = BLibTerritoryManager.INSTANCE.getClaimants(level, pos);
 
-        if (claimants.isEmpty()) {
+        if (factionIds.isEmpty()) {
             source.sendSuccess(() -> Component.literal("Chunk [%d, %d] has no claims.".formatted(pos.x, pos.z)), false);
             return 0;
         }
@@ -119,19 +116,19 @@ public final class BLibTerritoryCommands {
 
         source.sendSuccess(
             () -> Component.literal(
-                "Chunk [%d, %d] — %d claimant(s)%s:".formatted(
+                "Chunk [%d, %d] — %d faction(s)%s:".formatted(
                     pos.x,
                     pos.z,
-                    claimants.size(),
+                    factionIds.size(),
                     contested ? " (CONTESTED)" : ""
                 )
             ),
             false
         );
 
-        for (var claimant : claimants) {
+        for (var factionId : factionIds) {
             source.sendSuccess(
-                () -> Component.literal("  - %s".formatted(formatClaimant(claimant))),
+                () -> Component.literal("  - %s".formatted(factionId)),
                 false
             );
         }
@@ -143,8 +140,7 @@ public final class BLibTerritoryCommands {
         var source = context.getSource();
         var factionId = ResourceLocationArgument.getId(context, "faction_id");
         var level = source.getLevel();
-        var claimant = Claimant.faction(factionId);
-        var chunks = BLibTerritoryManager.INSTANCE.getChunks(level, claimant);
+        var chunks = BLibTerritoryManager.INSTANCE.getChunks(level, factionId);
 
         if (chunks.isEmpty()) {
             source.sendSuccess(
@@ -192,12 +188,5 @@ public final class BLibTerritoryCommands {
         }
 
         return Command.SINGLE_SUCCESS;
-    }
-
-    private static String formatClaimant(Claimant claimant) {
-        return switch (claimant) {
-            case Claimant.EntityClaimant(var entityId) -> "entity:%s".formatted(entityId);
-            case Claimant.FactionClaimant(var factionId) -> "faction:%s".formatted(factionId);
-        };
     }
 }
