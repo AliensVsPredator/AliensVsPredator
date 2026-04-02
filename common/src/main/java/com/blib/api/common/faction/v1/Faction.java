@@ -63,6 +63,62 @@ public class Faction<T extends FactionData> {
         internalData.setClaimVisibility(claimVisibility);
     }
 
+    public ProtectionMode blockBreakProtection() {
+        return internalData.blockBreakProtection();
+    }
+
+    public void setBlockBreakProtection(ProtectionMode blockBreakProtection) {
+        internalData.setBlockBreakProtection(blockBreakProtection);
+    }
+
+    public ProtectionMode blockInteractProtection() {
+        return internalData.blockInteractProtection();
+    }
+
+    public void setBlockInteractProtection(ProtectionMode blockInteractProtection) {
+        internalData.setBlockInteractProtection(blockInteractProtection);
+    }
+
+    public ProtectionMode entityInteractProtection() {
+        return internalData.entityInteractProtection();
+    }
+
+    public void setEntityInteractProtection(ProtectionMode entityInteractProtection) {
+        internalData.setEntityInteractProtection(entityInteractProtection);
+    }
+
+    public ProtectionMode nonLivingEntityAttackProtection() {
+        return internalData.nonLivingEntityAttackProtection();
+    }
+
+    public void setNonLivingEntityAttackProtection(ProtectionMode nonLivingEntityAttackProtection) {
+        internalData.setNonLivingEntityAttackProtection(nonLivingEntityAttackProtection);
+    }
+
+    public boolean allowPvp() {
+        return internalData.allowPvp();
+    }
+
+    public void setAllowPvp(boolean allowPvp) {
+        internalData.setAllowPvp(allowPvp);
+    }
+
+    public boolean allowExplosions() {
+        return internalData.allowExplosions();
+    }
+
+    public void setAllowExplosions(boolean allowExplosions) {
+        internalData.setAllowExplosions(allowExplosions);
+    }
+
+    public boolean allowMobGriefing() {
+        return internalData.allowMobGriefing();
+    }
+
+    public void setAllowMobGriefing(boolean allowMobGriefing) {
+        internalData.setAllowMobGriefing(allowMobGriefing);
+    }
+
     public FactionMembership membership() {
         return membership;
     }

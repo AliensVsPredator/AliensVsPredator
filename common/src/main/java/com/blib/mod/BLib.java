@@ -157,6 +157,10 @@ public class BLib {
             });
 
         BLib.MOD.events()
+            .preBlockBreak()
+            .register(BLib::handleBlockBreakProtection);
+
+        BLib.MOD.events()
             .onFactionRemove()
             .register(factionId -> BLibReputationManager.INSTANCE.removeReputation(ReputationKey.faction(factionId)));
 
@@ -235,6 +239,124 @@ public class BLib {
                     }
                 }
             });
+    }
+
+    private static boolean handleBlockBreakProtection(
+        net.minecraft.world.level.Level level,
+        Player player,
+        net.minecraft.core.BlockPos blockPos,
+        net.minecraft.world.level.block.state.BlockState blockState
+    ) {
+        return checkProtection(level, player, blockPos, com.blib.api.common.faction.v1.Faction::blockBreakProtection);
+    }
+
+    public static boolean checkBlockInteractProtection(
+        net.minecraft.world.level.Level level,
+        Player player,
+        net.minecraft.core.BlockPos blockPos
+    ) {
+        return checkProtection(level, player, blockPos, com.blib.api.common.faction.v1.Faction::blockInteractProtection);
+    }
+
+    public static boolean checkEntityInteractProtection(
+        net.minecraft.world.level.Level level,
+        Player player,
+        net.minecraft.core.BlockPos entityPos
+    ) {
+        return checkProtection(level, player, entityPos, com.blib.api.common.faction.v1.Faction::entityInteractProtection);
+    }
+
+    public static boolean checkNonLivingEntityAttackProtection(
+        net.minecraft.world.level.Level level,
+        Player player,
+        net.minecraft.core.BlockPos entityPos
+    ) {
+        return checkProtection(level, player, entityPos, com.blib.api.common.faction.v1.Faction::nonLivingEntityAttackProtection);
+    }
+
+    public static boolean checkPvpProtection(
+        net.minecraft.world.level.Level level,
+        net.minecraft.core.BlockPos pos
+    ) {
+        if (level.isClientSide || !(level instanceof net.minecraft.server.level.ServerLevel serverLevel)) {
+            return true;
+        }
+
+        var chunkPos = new net.minecraft.world.level.ChunkPos(pos);
+        var claimants = BLibTerritoryManager.INSTANCE.getClaimants(serverLevel, chunkPos);
+
+        for (var factionId : claimants) {
+            var faction = BLibFactionManager.INSTANCE.get(factionId);
+
+            if (faction != null && !faction.allowPvp()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static boolean checkProtection(
+        net.minecraft.world.level.Level level,
+        Player player,
+        net.minecraft.core.BlockPos blockPos,
+        java.util.function.Function<com.blib.api.common.faction.v1.Faction<?>, com.blib.api.common.faction.v1.ProtectionMode> protectionGetter
+    ) {
+        if (level.isClientSide || !(level instanceof net.minecraft.server.level.ServerLevel serverLevel)) {
+            return true;
+        }
+
+        var chunkPos = new net.minecraft.world.level.ChunkPos(blockPos);
+        var claimants = BLibTerritoryManager.INSTANCE.getClaimants(serverLevel, chunkPos);
+
+        if (claimants.isEmpty()) {
+            return true;
+        }
+
+        var playerUuid = player.getUUID();
+        var playerFactionIds = BLibFactionManager.INSTANCE.getFactionIds(playerUuid);
+
+        for (var claimantFactionId : claimants) {
+            var faction = BLibFactionManager.INSTANCE.get(claimantFactionId);
+
+            if (faction == null) {
+                continue;
+            }
+
+            var protection = protectionGetter.apply(faction);
+
+            if (protection == com.blib.api.common.faction.v1.ProtectionMode.PUBLIC) {
+                continue;
+            }
+
+            if (playerFactionIds.contains(claimantFactionId)) {
+                continue;
+            }
+
+            if (protection == com.blib.api.common.faction.v1.ProtectionMode.ALLIED) {
+                var isAllied = false;
+
+                for (var playerFactionId : playerFactionIds) {
+                    if (
+                        BLibFactionManager.INSTANCE.getRelationship(
+                            playerFactionId,
+                            claimantFactionId
+                        ) == com.blib.api.common.faction.v1.RelationshipState.ALLIED
+                    ) {
+                        isAllied = true;
+                        break;
+                    }
+                }
+
+                if (isAllied) {
+                    continue;
+                }
+            }
+
+            return false;
+        }
+
+        return true;
     }
 
     private static void syncDataForTrackedEntity(Entity trackedEntity, Player player) {

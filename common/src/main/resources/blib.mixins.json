@@ -22,6 +22,7 @@
     "MixinShapelessRecipeBuilder_Accessor",
     "MixinStructureTemplatePool_Accessor",
     "server.MixinChunkMap_ChunkLoadEvent",
+    "server.MixinExplosion_TerritoryProtection",
     "server.MixinChunkMap_SaveChunkData",
     "server.MixinMinecraftServer_SaveGlobalData",
     "server.MixinServerLevel_BlockBreakProgressManager",

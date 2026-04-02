@@ -1,6 +1,7 @@
 package com.blib.mod.common.command;
 
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -16,6 +17,7 @@ import java.util.UUID;
 
 import com.blib.api.common.faction.v1.ClaimVisibility;
 import com.blib.api.common.faction.v1.FactionMember;
+import com.blib.api.common.faction.v1.ProtectionMode;
 import com.blib.api.common.faction.v1.RelationshipState;
 import com.blib.internal.common.faction.BLibFactionManager;
 
@@ -36,6 +38,13 @@ public final class BLibFactionCommands {
             .then(buildSetColor())
             .then(buildSetRelationship())
             .then(buildSetVisibility())
+            .then(buildSetBlockProtection())
+            .then(buildSetBlockInteraction())
+            .then(buildSetEntityInteraction())
+            .then(buildSetNonLivingEntityAttack())
+            .then(buildSetPvp())
+            .then(buildSetExplosions())
+            .then(buildSetMobGriefing())
             .then(buildRelationships())
             .then(buildList());
     }
@@ -305,6 +314,47 @@ public final class BLibFactionCommands {
             );
     }
 
+    private static LiteralArgumentBuilder<CommandSourceStack> buildSetBlockProtection() {
+        return Commands.literal("set-block-protection")
+            .then(
+                Commands.argument("faction_id", ResourceLocationArgument.id())
+                    .suggests(BLibCommandSuggestions.FACTION_IDS)
+                    .then(
+                        Commands.argument("mode", StringArgumentType.word())
+                            .executes(BLibFactionCommands::executeSetBlockProtection)
+                    )
+            );
+    }
+
+    private static int executeSetBlockProtection(CommandContext<CommandSourceStack> context) {
+        var source = context.getSource();
+        var factionId = ResourceLocationArgument.getId(context, "faction_id");
+        var modeString = StringArgumentType.getString(context, "mode").toUpperCase();
+        var faction = BLibFactionManager.INSTANCE.get(factionId);
+
+        if (faction == null) {
+            source.sendFailure(Component.literal("Faction '%s' not found.".formatted(factionId)));
+            return 0;
+        }
+
+        ProtectionMode mode;
+
+        try {
+            mode = ProtectionMode.valueOf(modeString);
+        } catch (IllegalArgumentException e) {
+            source.sendFailure(Component.literal("Invalid mode '%s'. Use: public, allied, private.".formatted(modeString)));
+            return 0;
+        }
+
+        faction.setBlockBreakProtection(mode);
+
+        source.sendSuccess(
+            () -> Component.literal("Set faction '%s' block break protection to %s.".formatted(factionId, mode)),
+            true
+        );
+        return Command.SINGLE_SUCCESS;
+    }
+
     private static int executeSetVisibility(CommandContext<CommandSourceStack> context) {
         var source = context.getSource();
         var factionId = ResourceLocationArgument.getId(context, "faction_id");
@@ -363,6 +413,225 @@ public final class BLibFactionCommands {
 
         source.sendSuccess(
             () -> Component.literal("Set relationship between '%s' and '%s' to %s.".formatted(factionAId, factionBId, state)),
+            true
+        );
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static LiteralArgumentBuilder<CommandSourceStack> buildSetBlockInteraction() {
+        return Commands.literal("set-block-interaction")
+            .then(
+                Commands.argument("faction_id", ResourceLocationArgument.id())
+                    .suggests(BLibCommandSuggestions.FACTION_IDS)
+                    .then(
+                        Commands.argument("mode", StringArgumentType.word())
+                            .executes(BLibFactionCommands::executeSetBlockInteraction)
+                    )
+            );
+    }
+
+    private static int executeSetBlockInteraction(CommandContext<CommandSourceStack> context) {
+        var source = context.getSource();
+        var factionId = ResourceLocationArgument.getId(context, "faction_id");
+        var modeString = StringArgumentType.getString(context, "mode").toUpperCase();
+        var faction = BLibFactionManager.INSTANCE.get(factionId);
+
+        if (faction == null) {
+            source.sendFailure(Component.literal("Faction '%s' not found.".formatted(factionId)));
+            return 0;
+        }
+
+        ProtectionMode mode;
+
+        try {
+            mode = ProtectionMode.valueOf(modeString);
+        } catch (IllegalArgumentException e) {
+            source.sendFailure(Component.literal("Invalid mode '%s'. Use: public, allied, private.".formatted(modeString)));
+            return 0;
+        }
+
+        faction.setBlockInteractProtection(mode);
+
+        source.sendSuccess(
+            () -> Component.literal("Set faction '%s' block interaction protection to %s.".formatted(factionId, mode)),
+            true
+        );
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static LiteralArgumentBuilder<CommandSourceStack> buildSetEntityInteraction() {
+        return Commands.literal("set-entity-interaction")
+            .then(
+                Commands.argument("faction_id", ResourceLocationArgument.id())
+                    .suggests(BLibCommandSuggestions.FACTION_IDS)
+                    .then(
+                        Commands.argument("mode", StringArgumentType.word())
+                            .executes(BLibFactionCommands::executeSetEntityInteraction)
+                    )
+            );
+    }
+
+    private static int executeSetEntityInteraction(CommandContext<CommandSourceStack> context) {
+        var source = context.getSource();
+        var factionId = ResourceLocationArgument.getId(context, "faction_id");
+        var modeString = StringArgumentType.getString(context, "mode").toUpperCase();
+        var faction = BLibFactionManager.INSTANCE.get(factionId);
+
+        if (faction == null) {
+            source.sendFailure(Component.literal("Faction '%s' not found.".formatted(factionId)));
+            return 0;
+        }
+
+        ProtectionMode mode;
+
+        try {
+            mode = ProtectionMode.valueOf(modeString);
+        } catch (IllegalArgumentException e) {
+            source.sendFailure(Component.literal("Invalid mode '%s'. Use: public, allied, private.".formatted(modeString)));
+            return 0;
+        }
+
+        faction.setEntityInteractProtection(mode);
+
+        source.sendSuccess(
+            () -> Component.literal("Set faction '%s' entity interaction protection to %s.".formatted(factionId, mode)),
+            true
+        );
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static LiteralArgumentBuilder<CommandSourceStack> buildSetNonLivingEntityAttack() {
+        return Commands.literal("set-nonliving-entity-attack")
+            .then(
+                Commands.argument("faction_id", ResourceLocationArgument.id())
+                    .suggests(BLibCommandSuggestions.FACTION_IDS)
+                    .then(
+                        Commands.argument("mode", StringArgumentType.word())
+                            .executes(BLibFactionCommands::executeSetNonLivingEntityAttack)
+                    )
+            );
+    }
+
+    private static int executeSetNonLivingEntityAttack(CommandContext<CommandSourceStack> context) {
+        var source = context.getSource();
+        var factionId = ResourceLocationArgument.getId(context, "faction_id");
+        var modeString = StringArgumentType.getString(context, "mode").toUpperCase();
+        var faction = BLibFactionManager.INSTANCE.get(factionId);
+
+        if (faction == null) {
+            source.sendFailure(Component.literal("Faction '%s' not found.".formatted(factionId)));
+            return 0;
+        }
+
+        ProtectionMode mode;
+
+        try {
+            mode = ProtectionMode.valueOf(modeString);
+        } catch (IllegalArgumentException e) {
+            source.sendFailure(Component.literal("Invalid mode '%s'. Use: public, allied, private.".formatted(modeString)));
+            return 0;
+        }
+
+        faction.setNonLivingEntityAttackProtection(mode);
+
+        source.sendSuccess(
+            () -> Component.literal("Set faction '%s' non-living entity attack protection to %s.".formatted(factionId, mode)),
+            true
+        );
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static LiteralArgumentBuilder<CommandSourceStack> buildSetPvp() {
+        return Commands.literal("set-pvp")
+            .then(
+                Commands.argument("faction_id", ResourceLocationArgument.id())
+                    .suggests(BLibCommandSuggestions.FACTION_IDS)
+                    .then(
+                        Commands.argument("allowed", BoolArgumentType.bool())
+                            .executes(BLibFactionCommands::executeSetPvp)
+                    )
+            );
+    }
+
+    private static int executeSetPvp(CommandContext<CommandSourceStack> context) {
+        var source = context.getSource();
+        var factionId = ResourceLocationArgument.getId(context, "faction_id");
+        var allowed = BoolArgumentType.getBool(context, "allowed");
+        var faction = BLibFactionManager.INSTANCE.get(factionId);
+
+        if (faction == null) {
+            source.sendFailure(Component.literal("Faction '%s' not found.".formatted(factionId)));
+            return 0;
+        }
+
+        faction.setAllowPvp(allowed);
+
+        source.sendSuccess(
+            () -> Component.literal("Set faction '%s' allow PvP to %s.".formatted(factionId, allowed)),
+            true
+        );
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static LiteralArgumentBuilder<CommandSourceStack> buildSetExplosions() {
+        return Commands.literal("set-explosions")
+            .then(
+                Commands.argument("faction_id", ResourceLocationArgument.id())
+                    .suggests(BLibCommandSuggestions.FACTION_IDS)
+                    .then(
+                        Commands.argument("allowed", BoolArgumentType.bool())
+                            .executes(BLibFactionCommands::executeSetExplosions)
+                    )
+            );
+    }
+
+    private static int executeSetExplosions(CommandContext<CommandSourceStack> context) {
+        var source = context.getSource();
+        var factionId = ResourceLocationArgument.getId(context, "faction_id");
+        var allowed = BoolArgumentType.getBool(context, "allowed");
+        var faction = BLibFactionManager.INSTANCE.get(factionId);
+
+        if (faction == null) {
+            source.sendFailure(Component.literal("Faction '%s' not found.".formatted(factionId)));
+            return 0;
+        }
+
+        faction.setAllowExplosions(allowed);
+
+        source.sendSuccess(
+            () -> Component.literal("Set faction '%s' allow explosions to %s.".formatted(factionId, allowed)),
+            true
+        );
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static LiteralArgumentBuilder<CommandSourceStack> buildSetMobGriefing() {
+        return Commands.literal("set-mob-griefing")
+            .then(
+                Commands.argument("faction_id", ResourceLocationArgument.id())
+                    .suggests(BLibCommandSuggestions.FACTION_IDS)
+                    .then(
+                        Commands.argument("allowed", BoolArgumentType.bool())
+                            .executes(BLibFactionCommands::executeSetMobGriefing)
+                    )
+            );
+    }
+
+    private static int executeSetMobGriefing(CommandContext<CommandSourceStack> context) {
+        var source = context.getSource();
+        var factionId = ResourceLocationArgument.getId(context, "faction_id");
+        var allowed = BoolArgumentType.getBool(context, "allowed");
+        var faction = BLibFactionManager.INSTANCE.get(factionId);
+
+        if (faction == null) {
+            source.sendFailure(Component.literal("Faction '%s' not found.".formatted(factionId)));
+            return 0;
+        }
+
+        faction.setAllowMobGriefing(allowed);
+
+        source.sendSuccess(
+            () -> Component.literal("Set faction '%s' allow mob griefing to %s.".formatted(factionId, allowed)),
             true
         );
         return Command.SINGLE_SUCCESS;

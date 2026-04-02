@@ -207,6 +207,34 @@ public class BLibTerritoryManager {
         return new S2CChunkClaimsSyncPayload(pos.x, pos.z, new ArrayList<>(claimants));
     }
 
+    public boolean allowExplosionsAt(ServerLevel level, ChunkPos pos) {
+        var claimants = getClaimants(level, pos);
+
+        for (var factionId : claimants) {
+            var faction = BLibFactionManager.INSTANCE.get(factionId);
+
+            if (faction != null && !faction.allowExplosions()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public boolean allowMobGriefingAt(ServerLevel level, ChunkPos pos) {
+        var claimants = getClaimants(level, pos);
+
+        for (var factionId : claimants) {
+            var faction = BLibFactionManager.INSTANCE.get(factionId);
+
+            if (faction != null && !faction.allowMobGriefing()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public S2CChunkClaimsSyncPayload buildSyncPayloadForPlayer(ServerLevel level, ChunkPos pos, ServerPlayer player) {
         var claimants = getClaimants(level, pos);
 
