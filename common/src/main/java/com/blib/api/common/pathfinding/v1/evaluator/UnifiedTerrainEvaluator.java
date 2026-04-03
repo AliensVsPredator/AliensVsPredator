@@ -127,11 +127,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     private int addGroundCardinalNeighbors(PathNode node, PathNode[] neighbors, int count) {
         for (var offset : HORIZONTAL_OFFSETS) {
-            var neighbor = findGroundNeighbor(node, offset[0], offset[1]);
-
-            if (neighbor != null) {
-                neighbors[count++] = neighbor;
-            }
+            count = addGroundNeighborsForDirection(node, offset[0], offset[1], neighbors, count);
         }
 
         return count;
@@ -139,58 +135,67 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     private int addGroundDiagonalNeighbors(PathNode node, PathNode[] neighbors, int count) {
         for (var offset : DIAGONAL_OFFSETS) {
-            var neighbor = findGroundNeighbor(node, offset[0], offset[1]);
-
-            if (neighbor == null) {
-                continue;
-            }
-
             if (!isDiagonalValid(node, offset[0], offset[1])) {
                 continue;
             }
 
-            neighbors[count++] = neighbor;
+            var sameLevel = tryCreateNode(node.getX() + offset[0], node.getY(), node.getZ() + offset[1]);
+
+            if (sameLevel != null) {
+                neighbors[count++] = sameLevel;
+            }
         }
 
         return count;
     }
 
-    private @Nullable PathNode findGroundNeighbor(PathNode from, int dx, int dz) {
+    private int addGroundNeighborsForDirection(PathNode from, int dx, int dz, PathNode[] neighbors, int count) {
         var baseX = from.getX() + dx;
         var baseY = from.getY();
         var baseZ = from.getZ() + dz;
 
+        // Same level.
         var sameLevel = tryCreateNode(baseX, baseY, baseZ);
 
         if (sameLevel != null) {
-            return sameLevel;
+            neighbors[count++] = sameLevel;
+
+            // If same-level is walkable (not breakable), no need to check step-up.
+            if (sameLevel.getTerrainType() != TerrainType.BREAKABLE) {
+                return count;
+            }
         }
 
+        // Step-up: always check if same-level was null or BREAKABLE.
         for (int stepUp = 1; stepUp <= config.getMaxStepHeight(); stepUp++) {
             var steppedUp = tryCreateNode(baseX, baseY + stepUp, baseZ);
 
-            if (steppedUp != null && steppedUp.getTerrainType() != TerrainType.BREAKABLE) {
-                return steppedUp;
-            }
-        }
-
-        for (int stepDown = 1; stepDown <= config.getMaxFallDistance(); stepDown++) {
-            var checkPos = new BlockPos(baseX, baseY - stepDown, baseZ);
-            var checkState = level.getBlockState(checkPos);
-
-            // Can't fall through solid blocks — stop searching deeper.
-            if (checkState.isSolid()) {
+            if (steppedUp != null) {
+                neighbors[count++] = steppedUp;
                 break;
             }
+        }
 
-            var steppedDown = tryCreateNode(baseX, baseY - stepDown, baseZ);
+        // Step-down / fall: only if same-level was null (no walkable or breakable block at this level).
+        if (sameLevel == null) {
+            for (int stepDown = 1; stepDown <= config.getMaxFallDistance(); stepDown++) {
+                var checkPos = new BlockPos(baseX, baseY - stepDown, baseZ);
+                var checkState = level.getBlockState(checkPos);
 
-            if (steppedDown != null && steppedDown.getTerrainType() != TerrainType.BREAKABLE) {
-                return steppedDown;
+                if (checkState.isSolid()) {
+                    break;
+                }
+
+                var steppedDown = tryCreateNode(baseX, baseY - stepDown, baseZ);
+
+                if (steppedDown != null && steppedDown.getTerrainType() != TerrainType.BREAKABLE) {
+                    neighbors[count++] = steppedDown;
+                    break;
+                }
             }
         }
 
-        return null;
+        return count;
     }
 
     // --- BREAKABLE neighbor generation ---

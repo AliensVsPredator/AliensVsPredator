@@ -9,5 +9,5 @@ package com.blib.api.common.pathfinding.v1.search;
  */
 public record SearchConfig(int maxSearchNodes, float heuristicWeight, int maxPathLength) {
 
-    public static final SearchConfig DEFAULT = new SearchConfig(256, 1.4f, 128);
+    public static final SearchConfig DEFAULT = new SearchConfig(256, 1.0f, 128);
 }
