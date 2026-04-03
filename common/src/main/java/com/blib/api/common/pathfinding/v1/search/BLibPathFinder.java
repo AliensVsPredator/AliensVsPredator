@@ -18,7 +18,7 @@ import java.util.PriorityQueue;
  */
 public final class BLibPathFinder {
 
-    private static final int MAX_NEIGHBORS = 20;
+    private static final int MAX_NEIGHBORS = 26;
 
     private final TerrainEvaluator evaluator;
 

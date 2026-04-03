@@ -139,10 +139,10 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                 continue;
             }
 
-            var sameLevel = tryCreateNode(node.getX() + offset[0], node.getY(), node.getZ() + offset[1]);
+            var neighbor = tryCreateNode(node.getX() + offset[0], node.getY(), node.getZ() + offset[1]);
 
-            if (sameLevel != null) {
-                neighbors[count++] = sameLevel;
+            if (neighbor != null && neighbor.getTerrainType() != TerrainType.BREAKABLE) {
+                neighbors[count++] = neighbor;
             }
         }
 
@@ -167,12 +167,18 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
 
         // Step-up: always check if same-level was null or BREAKABLE.
-        for (int stepUp = 1; stepUp <= config.getMaxStepHeight(); stepUp++) {
-            var steppedUp = tryCreateNode(baseX, baseY + stepUp, baseZ);
+        // Requires headroom above the entity's head at the current position.
+        var headroomPos = new BlockPos(from.getX(), from.getY() + config.getEntityHeight(), from.getZ());
+        var headroomClear = !level.getBlockState(headroomPos).isSolid();
 
-            if (steppedUp != null) {
-                neighbors[count++] = steppedUp;
-                break;
+        if (headroomClear) {
+            for (int stepUp = 1; stepUp <= config.getMaxStepHeight(); stepUp++) {
+                var steppedUp = tryCreateNode(baseX, baseY + stepUp, baseZ);
+
+                if (steppedUp != null) {
+                    neighbors[count++] = steppedUp;
+                    break;
+                }
             }
         }
 
@@ -230,7 +236,8 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         var adjacentX = tryCreateNode(from.getX() + dx, from.getY(), from.getZ());
         var adjacentZ = tryCreateNode(from.getX(), from.getY(), from.getZ() + dz);
 
-        return adjacentX != null && adjacentZ != null;
+        return adjacentX != null && adjacentX.getTerrainType() != TerrainType.BREAKABLE
+            && adjacentZ != null && adjacentZ.getTerrainType() != TerrainType.BREAKABLE;
     }
 
     // --- WATER neighbor generation ---
