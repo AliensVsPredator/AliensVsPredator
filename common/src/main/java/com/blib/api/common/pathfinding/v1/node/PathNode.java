@@ -22,6 +22,8 @@ public final class PathNode {
 
     private float hCost;
 
+    private float costMalus;
+
     private PathNode parent;
 
     private boolean closed;
@@ -85,6 +87,14 @@ public final class PathNode {
         this.hCost = hCost;
     }
 
+    public float getCostMalus() {
+        return costMalus;
+    }
+
+    public void setCostMalus(float costMalus) {
+        this.costMalus = costMalus;
+    }
+
     public PathNode getParent() {
         return parent;
     }
@@ -104,6 +114,7 @@ public final class PathNode {
     public void reset() {
         this.gCost = 0;
         this.hCost = 0;
+        this.costMalus = 0;
         this.parent = null;
         this.closed = false;
     }

@@ -9,6 +9,8 @@ import com.blib.api.common.pathfinding.v1.transition.TerrainTransition;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Standalone path navigator. Manages path planning, following, stuck detection,
@@ -21,6 +23,8 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class PathNavigator {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(PathNavigator.class);
+
     private final PathNavigatorConfig config;
 
     private final BLibPathFinder pathFinder;
@@ -32,6 +36,8 @@ public final class PathNavigator {
     private @Nullable BlockPos targetPos;
 
     private @Nullable TerrainType currentTerrain;
+
+    private boolean waitingForBlockBreak;
 
     private int lastPathComputeTick;
 
@@ -81,7 +87,16 @@ public final class PathNavigator {
             return;
         }
 
+        if (waitingForBlockBreak) {
+            return;
+        }
+
         advanceWaypoints(entityPos);
+
+        if (waitingForBlockBreak) {
+            return;
+        }
+
         detectStuck(entityPos);
         checkRecalculate(entityPos);
     }
@@ -93,6 +108,7 @@ public final class PathNavigator {
         this.currentPath = null;
         this.targetPos = null;
         this.currentTerrain = null;
+        this.waitingForBlockBreak = false;
     }
 
     /**
@@ -124,6 +140,35 @@ public final class PathNavigator {
         return currentTerrain;
     }
 
+    /**
+     * Returns true if the navigator is paused at a BREAKABLE node,
+     * waiting for the consuming code to break the block and call {@link #confirmBlockBroken()}.
+     */
+    public boolean isWaitingForBlockBreak() {
+        return waitingForBlockBreak;
+    }
+
+    /**
+     * Returns the position of the block that needs to be broken, or null if not waiting.
+     */
+    public @Nullable BlockPos getBlockToBreak() {
+        if (!waitingForBlockBreak || currentPath == null || currentPath.isDone()) {
+            return null;
+        }
+
+        var node = currentPath.getCurrentNode();
+
+        return new BlockPos(node.getX(), node.getY(), node.getZ());
+    }
+
+    /**
+     * Signals that the block at the current BREAKABLE node has been broken.
+     * The navigator resumes path following.
+     */
+    public void confirmBlockBroken() {
+        this.waitingForBlockBreak = false;
+    }
+
     public @Nullable BlockPos getTargetPos() {
         return targetPos;
     }
@@ -145,6 +190,10 @@ public final class PathNavigator {
             var waypoint = currentPath.getCurrentNode();
             var distanceSquared = entityDistanceSquared(entityPos, waypoint);
 
+            LOGGER.info("[Nav] Waypoint check: entity={}, node=({},{},{}) terrain={}, dist²={}, reach²={}",
+                entityPos, waypoint.getX(), waypoint.getY(), waypoint.getZ(),
+                waypoint.getTerrainType(), distanceSquared, reachDistanceSquared);
+
             if (distanceSquared > reachDistanceSquared) {
                 break;
             }
@@ -156,7 +205,20 @@ public final class PathNavigator {
             lastDistanceToTarget = Double.MAX_VALUE;
 
             if (!currentPath.isDone()) {
-                var newTerrain = currentPath.getCurrentNode().getTerrainType();
+                var nextNode = currentPath.getCurrentNode();
+                var newTerrain = nextNode.getTerrainType();
+
+                LOGGER.info("[Nav] Advanced to node ({},{},{}) terrain={}",
+                    nextNode.getX(), nextNode.getY(), nextNode.getZ(), newTerrain);
+
+                if (newTerrain == TerrainType.BREAKABLE) {
+                    LOGGER.info("[Nav] BREAKABLE detected — waiting for block break at ({},{},{})",
+                        nextNode.getX(), nextNode.getY(), nextNode.getZ());
+                    waitingForBlockBreak = true;
+                    currentTerrain = newTerrain;
+                    fireTransitionHandlers(previousTerrain, newTerrain);
+                    break;
+                }
 
                 if (newTerrain != previousTerrain) {
                     fireTransitionHandlers(previousTerrain, newTerrain);

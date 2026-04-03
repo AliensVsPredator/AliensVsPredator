@@ -1,8 +1,11 @@
 package com.blib.api.common.pathfinding.v1.evaluator;
 
+import com.blib.api.common.pathfinding.v1.terrain.BlockBreakabilityEvaluator;
 import com.blib.api.common.pathfinding.v1.terrain.TerrainClassifier;
 import com.blib.api.common.pathfinding.v1.terrain.TerrainClassifiers;
 import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -26,6 +29,8 @@ public final class TerrainEvaluatorConfig {
 
     private final TerrainClassifier terrainClassifier;
 
+    private final @Nullable BlockBreakabilityEvaluator breakabilityEvaluator;
+
     private final int entityWidth;
 
     private final int entityHeight;
@@ -41,6 +46,7 @@ public final class TerrainEvaluatorConfig {
     private TerrainEvaluatorConfig(
         Map<TerrainType, Supplier<Float>> terrainCostSuppliers,
         TerrainClassifier terrainClassifier,
+        @Nullable BlockBreakabilityEvaluator breakabilityEvaluator,
         int entityWidth,
         int entityHeight,
         int maxFallDistance,
@@ -50,6 +56,7 @@ public final class TerrainEvaluatorConfig {
     ) {
         this.terrainCostSuppliers = Map.copyOf(terrainCostSuppliers);
         this.terrainClassifier = terrainClassifier;
+        this.breakabilityEvaluator = breakabilityEvaluator;
         this.entityWidth = entityWidth;
         this.entityHeight = entityHeight;
         this.maxFallDistance = maxFallDistance;
@@ -82,6 +89,10 @@ public final class TerrainEvaluatorConfig {
 
     public Set<TerrainType> getSupportedTerrains() {
         return terrainCostSuppliers.keySet();
+    }
+
+    public @Nullable BlockBreakabilityEvaluator getBreakabilityEvaluator() {
+        return breakabilityEvaluator;
     }
 
     public TerrainClassifier getTerrainClassifier() {
@@ -125,6 +136,8 @@ public final class TerrainEvaluatorConfig {
         private int maxFallDistance;
 
         private int maxStepHeight;
+
+        private @Nullable BlockBreakabilityEvaluator breakabilityEvaluator;
 
         private boolean canOpenDoors;
 
@@ -207,6 +220,11 @@ public final class TerrainEvaluatorConfig {
             return this;
         }
 
+        public Builder withBreakabilityEvaluator(BlockBreakabilityEvaluator evaluator) {
+            this.breakabilityEvaluator = evaluator;
+            return this;
+        }
+
         public TerrainEvaluatorConfig build() {
             if (terrainCostSuppliers.isEmpty()) {
                 terrainCostSuppliers.put(TerrainType.GROUND, () -> DEFAULT_COST);
@@ -215,6 +233,7 @@ public final class TerrainEvaluatorConfig {
             return new TerrainEvaluatorConfig(
                 terrainCostSuppliers,
                 terrainClassifier,
+                breakabilityEvaluator,
                 entityWidth,
                 entityHeight,
                 maxFallDistance,

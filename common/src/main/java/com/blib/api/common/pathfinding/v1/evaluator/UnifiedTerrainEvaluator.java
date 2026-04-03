@@ -7,6 +7,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
 import org.jetbrains.annotations.Nullable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -26,6 +29,8 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     private static final int[][] DIAGONAL_OFFSETS = {
         {-1, -1}, {-1, 1}, {1, -1}, {1, 1}
     };
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UnifiedTerrainEvaluator.class);
 
     private final TerrainEvaluatorConfig config;
 
@@ -73,6 +78,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         return switch (node.getTerrainType()) {
             case GROUND -> getGroundNeighbors(node, neighbors);
             case WATER -> getWaterNeighbors(node, neighbors);
+            case BREAKABLE -> getBreakableNeighbors(node, neighbors);
             default -> 0;
         };
     }
@@ -94,6 +100,27 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
         count = addGroundCardinalNeighbors(node, neighbors, count);
         count = addGroundDiagonalNeighbors(node, neighbors, count);
+        count = addVerticalBreakableNeighbors(node, neighbors, count);
+
+        return count;
+    }
+
+    private int addVerticalBreakableNeighbors(PathNode node, PathNode[] neighbors, int count) {
+        var below = tryCreateBreakableNode(new BlockPos(node.getX(), node.getY() - 1, node.getZ()));
+
+        if (below != null) {
+            neighbors[count++] = below;
+        }
+
+        var above = tryCreateNode(node.getX(), node.getY() + 1, node.getZ());
+
+        if (above == null) {
+            above = tryCreateBreakableNode(new BlockPos(node.getX(), node.getY() + 1, node.getZ()));
+        }
+
+        if (above != null) {
+            neighbors[count++] = above;
+        }
 
         return count;
     }
@@ -142,20 +169,56 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         for (int stepUp = 1; stepUp <= config.getMaxStepHeight(); stepUp++) {
             var steppedUp = tryCreateNode(baseX, baseY + stepUp, baseZ);
 
-            if (steppedUp != null) {
+            if (steppedUp != null && steppedUp.getTerrainType() != TerrainType.BREAKABLE) {
                 return steppedUp;
             }
         }
 
         for (int stepDown = 1; stepDown <= config.getMaxFallDistance(); stepDown++) {
+            var checkPos = new BlockPos(baseX, baseY - stepDown, baseZ);
+            var checkState = level.getBlockState(checkPos);
+
+            // Can't fall through solid blocks — stop searching deeper.
+            if (checkState.isSolid()) {
+                break;
+            }
+
             var steppedDown = tryCreateNode(baseX, baseY - stepDown, baseZ);
 
-            if (steppedDown != null) {
+            if (steppedDown != null && steppedDown.getTerrainType() != TerrainType.BREAKABLE) {
                 return steppedDown;
             }
         }
 
         return null;
+    }
+
+    // --- BREAKABLE neighbor generation ---
+
+    private int getBreakableNeighbors(PathNode node, PathNode[] neighbors) {
+        var count = 0;
+
+        for (var offset : HORIZONTAL_OFFSETS) {
+            var neighbor = tryCreateNode(node.getX() + offset[0], node.getY(), node.getZ() + offset[1]);
+
+            if (neighbor != null) {
+                neighbors[count++] = neighbor;
+            }
+        }
+
+        var above = tryCreateNode(node.getX(), node.getY() + 1, node.getZ());
+
+        if (above != null) {
+            neighbors[count++] = above;
+        }
+
+        var below = tryCreateNode(node.getX(), node.getY() - 1, node.getZ());
+
+        if (below != null) {
+            neighbors[count++] = below;
+        }
+
+        return count;
     }
 
     private boolean isDiagonalValid(PathNode from, int dx, int dz) {
@@ -225,15 +288,72 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         var pos = new BlockPos(x, y, z);
         var terrainType = config.getTerrainClassifier().classify(level, pos);
 
-        if (terrainType == null || !config.supportsTerrain(terrainType)) {
+        if (terrainType != null && config.supportsTerrain(terrainType)) {
+            if (!hasEntityClearance(x, y, z, terrainType)) {
+                return null;
+            }
+
+            return nodePool.getOrCreate(x, y, z, terrainType);
+        }
+
+        var breakableNode = tryCreateBreakableNode(pos);
+
+        if (breakableNode != null) {
+            LOGGER.info("[Evaluator] Created BREAKABLE node at ({},{},{}) costMalus={}", x, y, z, breakableNode.getCostMalus());
+        }
+
+        return breakableNode;
+    }
+
+    private @Nullable PathNode tryCreateBreakableNode(BlockPos pos) {
+        var breakabilityEvaluator = config.getBreakabilityEvaluator();
+
+        if (breakabilityEvaluator == null) {
+            LOGGER.info("[Evaluator] No breakability evaluator configured");
             return null;
         }
 
-        if (!hasEntityClearance(x, y, z, terrainType)) {
+        if (!config.supportsTerrain(TerrainType.BREAKABLE)) {
+            LOGGER.info("[Evaluator] BREAKABLE terrain not supported");
             return null;
         }
 
-        return nodePool.getOrCreate(x, y, z, terrainType);
+        var width = config.getEntityWidth();
+        var height = config.getEntityHeight();
+        var halfWidth = width / 2;
+        var totalCost = 0.0f;
+        var hasBreakableBlock = false;
+
+        for (int dx = -halfWidth; dx <= halfWidth; dx++) {
+            for (int dz = -halfWidth; dz <= halfWidth; dz++) {
+                for (int dy = 0; dy < height; dy++) {
+                    var checkPos = new BlockPos(pos.getX() + dx, pos.getY() + dy, pos.getZ() + dz);
+                    var checkState = level.getBlockState(checkPos);
+
+                    if (!checkState.isSolid()) {
+                        continue;
+                    }
+
+                    var result = breakabilityEvaluator.evaluate(level, checkPos, checkState);
+
+                    if (!result.canBreak()) {
+                        return null;
+                    }
+
+                    totalCost += result.cost();
+                    hasBreakableBlock = true;
+                }
+            }
+        }
+
+        if (!hasBreakableBlock) {
+            return null;
+        }
+
+        var node = nodePool.getOrCreate(pos.getX(), pos.getY(), pos.getZ(), TerrainType.BREAKABLE);
+        node.setCostMalus(totalCost);
+
+        return node;
     }
 
     private boolean hasEntityClearance(int x, int y, int z, TerrainType terrainType) {

@@ -24,7 +24,8 @@ public final class NeoMoveToPosAction {
     public enum Result {
         FINISHED,
         MOVING,
-        NO_PATH
+        NO_PATH,
+        WAITING_FOR_BLOCK_BREAK
     }
 
     /**
@@ -69,6 +70,10 @@ public final class NeoMoveToPosAction {
 
         if (navigator.isDone()) {
             return Result.FINISHED;
+        }
+
+        if (navigator.isWaitingForBlockBreak()) {
+            return Result.WAITING_FOR_BLOCK_BREAK;
         }
 
         var waypointPos = navigator.getCurrentTargetPos();

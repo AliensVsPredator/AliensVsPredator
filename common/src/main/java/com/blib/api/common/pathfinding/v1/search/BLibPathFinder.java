@@ -84,7 +84,7 @@ public final class BLibPathFinder {
                     continue;
                 }
 
-                var edgeCost = current.distanceTo(neighbor) * evaluator.getTerrainCost(neighbor.getTerrainType());
+                var edgeCost = current.distanceTo(neighbor) * evaluator.getTerrainCost(neighbor.getTerrainType()) + neighbor.getCostMalus();
                 var tentativeG = current.getGCost() + edgeCost;
 
                 if (tentativeG >= neighbor.getGCost() && neighbor.getGCost() > 0) {
