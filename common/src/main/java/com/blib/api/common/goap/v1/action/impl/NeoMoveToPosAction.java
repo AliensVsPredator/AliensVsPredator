@@ -1,0 +1,94 @@
+package com.blib.api.common.goap.v1.action.impl;
+
+import com.blib.api.common.pathfinding.v1.navigator.PathNavigator;
+import com.blib.api.common.pathfinding.v1.navigator.PathNavigatorUser;
+import com.just.goap.action.Action;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.phys.Vec3;
+
+/**
+ * GOAP action utility for pathfinding using BLib's {@link PathNavigator}.
+ * Requires the entity to implement {@link PathNavigatorUser}.
+ *
+ * <p>Unlike {@link MoveToPosAction} which delegates to Minecraft's vanilla PathNavigation,
+ * this action uses BLib's standalone pathfinding system with multi-terrain support.</p>
+ */
+public final class NeoMoveToPosAction {
+
+    /**
+     * Result of a movement tick.
+     */
+    public enum Result {
+        FINISHED,
+        MOVING,
+        NO_PATH
+    }
+
+    /**
+     * Performs one tick of pathfinding toward the target position.
+     * Plans a path on first call, then follows it on subsequent ticks.
+     *
+     * @param context         the GOAP action context
+     * @param targetPos       the position to navigate to
+     * @param speedMultiplier movement speed multiplier
+     * @return the result of this tick
+     */
+    public static Result perform(
+        Action.Context<? extends PathfinderMob> context,
+        Vec3 targetPos,
+        double speedMultiplier
+    ) {
+        var actor = context.getActor();
+
+        if (!(actor instanceof PathNavigatorUser navigatorUser)) {
+            return Result.NO_PATH;
+        }
+
+        var navigator = navigatorUser.getPathNavigator();
+        var entityPos = actor.blockPosition();
+        var targetBlockPos = BlockPos.containing(targetPos);
+
+        if (!navigator.isNavigating()) {
+            var found = navigator.navigateTo(entityPos, targetBlockPos);
+
+            if (!found) {
+                return Result.NO_PATH;
+            }
+        }
+
+        navigator.tick(entityPos);
+
+        if (navigator.isDone()) {
+            return Result.FINISHED;
+        }
+
+        var waypointPos = navigator.getCurrentTargetPos();
+
+        if (waypointPos == null) {
+            return Result.NO_PATH;
+        }
+
+        actor.getMoveControl().setWantedPosition(
+            waypointPos.getX() + 0.5,
+            waypointPos.getY(),
+            waypointPos.getZ() + 0.5,
+            speedMultiplier
+        );
+
+        return Result.MOVING;
+    }
+
+    /**
+     * Stops the navigator when the action finishes or is interrupted.
+     */
+    public static void onFinish(Action.Context<? extends PathfinderMob> context) {
+        if (context.getActor() instanceof PathNavigatorUser navigatorUser) {
+            navigatorUser.getPathNavigator().stop();
+        }
+    }
+
+    private NeoMoveToPosAction() {
+        throw new UnsupportedOperationException();
+    }
+}
