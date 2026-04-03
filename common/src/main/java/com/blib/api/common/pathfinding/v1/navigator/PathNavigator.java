@@ -128,6 +128,15 @@ public final class PathNavigator {
         return targetPos;
     }
 
+    /**
+     * Updates the destination without forcing an immediate path recomputation.
+     * The navigator will recompute the path on its next recalculation cycle
+     * using this updated target.
+     */
+    public void updateTarget(BlockPos newTarget) {
+        this.targetPos = newTarget;
+    }
+
     private void advanceWaypoints(BlockPos entityPos) {
         var reachDistance = config.getWaypointReachDistance();
         var reachDistanceSquared = reachDistance * reachDistance;

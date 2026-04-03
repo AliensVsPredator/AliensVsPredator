@@ -80,7 +80,7 @@ public final class PathNavigatorConfig {
 
         private static final int DEFAULT_STUCK_TIMEOUT_IN_TICKS = 40;
 
-        private static final int DEFAULT_PATH_RECALCULATE_INTERVAL_IN_TICKS = 20;
+        private static final int DEFAULT_PATH_RECALCULATE_INTERVAL_IN_TICKS = 5;
 
         private final TerrainEvaluatorConfig evaluatorConfig;
 

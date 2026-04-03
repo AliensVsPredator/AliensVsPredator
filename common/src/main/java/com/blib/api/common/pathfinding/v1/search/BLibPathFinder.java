@@ -18,7 +18,7 @@ import java.util.PriorityQueue;
  */
 public final class BLibPathFinder {
 
-    private static final int MAX_NEIGHBORS = 12;
+    private static final int MAX_NEIGHBORS = 16;
 
     private final TerrainEvaluator evaluator;
 
@@ -84,7 +84,8 @@ public final class BLibPathFinder {
                     continue;
                 }
 
-                var tentativeG = current.getGCost() + current.distanceTo(neighbor);
+                var edgeCost = current.distanceTo(neighbor) * evaluator.getTerrainCost(neighbor.getTerrainType());
+                var tentativeG = current.getGCost() + edgeCost;
 
                 if (tentativeG >= neighbor.getGCost() && neighbor.getGCost() > 0) {
                     continue;

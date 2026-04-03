@@ -7,10 +7,12 @@ import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * Describes an entity's pathfinding capabilities: which terrain types it can traverse,
  * the cost of each, and physical dimensions for clearance checks.
+ * Terrain costs can be static or dynamic (re-evaluated each pathfind call).
  */
 public final class TerrainEvaluatorConfig {
 
@@ -20,7 +22,7 @@ public final class TerrainEvaluatorConfig {
 
     private static final int DEFAULT_MAX_STEP_HEIGHT = 1;
 
-    private final Map<TerrainType, Float> terrainCosts;
+    private final Map<TerrainType, Supplier<Float>> terrainCostSuppliers;
 
     private final TerrainClassifier terrainClassifier;
 
@@ -37,7 +39,7 @@ public final class TerrainEvaluatorConfig {
     private final boolean canWalkOverFences;
 
     private TerrainEvaluatorConfig(
-        Map<TerrainType, Float> terrainCosts,
+        Map<TerrainType, Supplier<Float>> terrainCostSuppliers,
         TerrainClassifier terrainClassifier,
         int entityWidth,
         int entityHeight,
@@ -46,7 +48,7 @@ public final class TerrainEvaluatorConfig {
         boolean canOpenDoors,
         boolean canWalkOverFences
     ) {
-        this.terrainCosts = Map.copyOf(terrainCosts);
+        this.terrainCostSuppliers = Map.copyOf(terrainCostSuppliers);
         this.terrainClassifier = terrainClassifier;
         this.entityWidth = entityWidth;
         this.entityHeight = entityHeight;
@@ -61,15 +63,25 @@ public final class TerrainEvaluatorConfig {
     }
 
     public boolean supportsTerrain(TerrainType terrainType) {
-        return terrainCosts.containsKey(terrainType);
+        return terrainCostSuppliers.containsKey(terrainType);
     }
 
+    /**
+     * Returns the current cost for the given terrain type.
+     * Dynamic costs are re-evaluated on each call.
+     */
     public float getCost(TerrainType terrainType) {
-        return terrainCosts.getOrDefault(terrainType, Float.MAX_VALUE);
+        var supplier = terrainCostSuppliers.get(terrainType);
+
+        if (supplier == null) {
+            return Float.MAX_VALUE;
+        }
+
+        return supplier.get();
     }
 
     public Set<TerrainType> getSupportedTerrains() {
-        return terrainCosts.keySet();
+        return terrainCostSuppliers.keySet();
     }
 
     public TerrainClassifier getTerrainClassifier() {
@@ -102,7 +114,7 @@ public final class TerrainEvaluatorConfig {
 
     public static final class Builder {
 
-        private final Map<TerrainType, Float> terrainCosts;
+        private final Map<TerrainType, Supplier<Float>> terrainCostSuppliers;
 
         private TerrainClassifier terrainClassifier;
 
@@ -119,7 +131,7 @@ public final class TerrainEvaluatorConfig {
         private boolean canWalkOverFences;
 
         private Builder() {
-            this.terrainCosts = new EnumMap<>(TerrainType.class);
+            this.terrainCostSuppliers = new EnumMap<>(TerrainType.class);
             this.terrainClassifier = TerrainClassifiers.GROUND_ONLY;
             this.entityWidth = 1;
             this.entityHeight = 2;
@@ -127,8 +139,40 @@ public final class TerrainEvaluatorConfig {
             this.maxStepHeight = DEFAULT_MAX_STEP_HEIGHT;
         }
 
+        /**
+         * Adds a terrain type with a fixed cost.
+         */
         public Builder addTerrain(TerrainType type, float cost) {
-            terrainCosts.put(type, cost);
+            terrainCostSuppliers.put(type, () -> cost);
+            return this;
+        }
+
+        /**
+         * Adds a terrain type with a dynamic cost supplier.
+         * The supplier is evaluated each time the pathfinder needs the cost,
+         * allowing costs to change at runtime (e.g., based on status effects or entity state).
+         */
+        public Builder addTerrain(TerrainType type, Supplier<Float> costSupplier) {
+            terrainCostSuppliers.put(type, costSupplier);
+            return this;
+        }
+
+        /**
+         * Adds a terrain type with a fixed cost derived from the speed ratio between ground
+         * and the target terrain. Cost = groundSpeed / terrainSpeed.
+         */
+        public Builder addTerrainFromSpeedRatio(TerrainType type, float groundSpeed, float terrainSpeed) {
+            terrainCostSuppliers.put(type, () -> groundSpeed / terrainSpeed);
+            return this;
+        }
+
+        /**
+         * Adds a terrain type with a dynamic cost derived from speed suppliers.
+         * Re-evaluated each pathfind call, so speed changes from effects or damage
+         * are reflected automatically.
+         */
+        public Builder addTerrainFromSpeedRatio(TerrainType type, Supplier<Float> groundSpeedSupplier, Supplier<Float> terrainSpeedSupplier) {
+            terrainCostSuppliers.put(type, () -> groundSpeedSupplier.get() / terrainSpeedSupplier.get());
             return this;
         }
 
@@ -164,12 +208,12 @@ public final class TerrainEvaluatorConfig {
         }
 
         public TerrainEvaluatorConfig build() {
-            if (terrainCosts.isEmpty()) {
-                terrainCosts.put(TerrainType.GROUND, DEFAULT_COST);
+            if (terrainCostSuppliers.isEmpty()) {
+                terrainCostSuppliers.put(TerrainType.GROUND, () -> DEFAULT_COST);
             }
 
             return new TerrainEvaluatorConfig(
-                terrainCosts,
+                terrainCostSuppliers,
                 terrainClassifier,
                 entityWidth,
                 entityHeight,

@@ -1,9 +1,11 @@
 package com.blib.api.common.goap.v1.action.impl;
 
+import com.blib.api.common.pathfinding.v1.debug.PathDebugUtil;
 import com.blib.api.common.pathfinding.v1.navigator.PathNavigator;
 import com.blib.api.common.pathfinding.v1.navigator.PathNavigatorUser;
 import com.just.goap.action.Action;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.phys.Vec3;
 
@@ -55,9 +57,15 @@ public final class NeoMoveToPosAction {
             if (!found) {
                 return Result.NO_PATH;
             }
+        } else {
+            navigator.updateTarget(targetBlockPos);
         }
 
         navigator.tick(entityPos);
+
+        if (actor instanceof Mob mob) {
+            PathDebugUtil.sendDebugPath(mob, navigator.getCurrentPath());
+        }
 
         if (navigator.isDone()) {
             return Result.FINISHED;

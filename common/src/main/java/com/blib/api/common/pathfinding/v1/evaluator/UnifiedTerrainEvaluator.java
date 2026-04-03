@@ -7,9 +7,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 /**
  * Core terrain evaluator that handles neighbor generation across all supported terrain types.
- * Phase 1 supports GROUND only. Future phases add WATER, BREAKABLE, etc.
+ * Dispatches neighbor generation based on the current node's terrain type:
+ * GROUND uses gravity-based horizontal movement with step-up/fall/diagonal.
+ * WATER uses 3D movement in all 6 cardinal directions.
+ * Cross-terrain transitions (GROUND↔WATER) are discovered naturally via the classifier.
  */
 public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
@@ -25,43 +31,55 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     private final PathNodePool nodePool;
 
+    private final Map<TerrainType, Float> snapshotCosts;
+
     private LevelReader level;
 
     public UnifiedTerrainEvaluator(TerrainEvaluatorConfig config) {
         this.config = config;
         this.nodePool = new PathNodePool();
+        this.snapshotCosts = new EnumMap<>(TerrainType.class);
     }
 
     @Override
     public void prepare(LevelReader level) {
         this.level = level;
         nodePool.reset();
+        snapshotCosts.clear();
+
+        for (var terrainType : config.getSupportedTerrains()) {
+            snapshotCosts.put(terrainType, config.getCost(terrainType));
+        }
     }
 
     @Override
     public PathNode getStartNode(BlockPos entityPos) {
-        var groundPos = findGround(entityPos);
-        var terrainType = classifyOrDefault(groundPos, TerrainType.GROUND);
+        var resolvedPos = findStandablePosition(entityPos);
+        var terrainType = classifyOrDefault(resolvedPos);
 
-        return nodePool.getOrCreate(groundPos.getX(), groundPos.getY(), groundPos.getZ(), terrainType);
+        return nodePool.getOrCreate(resolvedPos.getX(), resolvedPos.getY(), resolvedPos.getZ(), terrainType);
     }
 
     @Override
     public PathNode getGoalNode(BlockPos targetPos) {
-        var groundPos = findGround(targetPos);
-        var terrainType = classifyOrDefault(groundPos, TerrainType.GROUND);
+        var resolvedPos = findStandablePosition(targetPos);
+        var terrainType = classifyOrDefault(resolvedPos);
 
-        return nodePool.getOrCreate(groundPos.getX(), groundPos.getY(), groundPos.getZ(), terrainType);
+        return nodePool.getOrCreate(resolvedPos.getX(), resolvedPos.getY(), resolvedPos.getZ(), terrainType);
     }
 
     @Override
     public int getNeighbors(PathNode node, PathNode[] neighbors) {
-        var count = 0;
+        return switch (node.getTerrainType()) {
+            case GROUND -> getGroundNeighbors(node, neighbors);
+            case WATER -> getWaterNeighbors(node, neighbors);
+            default -> 0;
+        };
+    }
 
-        count = addCardinalNeighbors(node, neighbors, count);
-        count = addDiagonalNeighbors(node, neighbors, count);
-
-        return count;
+    @Override
+    public float getTerrainCost(TerrainType terrainType) {
+        return snapshotCosts.getOrDefault(terrainType, Float.MAX_VALUE);
     }
 
     @Override
@@ -69,7 +87,18 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         this.level = null;
     }
 
-    private int addCardinalNeighbors(PathNode node, PathNode[] neighbors, int count) {
+    // --- GROUND neighbor generation ---
+
+    private int getGroundNeighbors(PathNode node, PathNode[] neighbors) {
+        var count = 0;
+
+        count = addGroundCardinalNeighbors(node, neighbors, count);
+        count = addGroundDiagonalNeighbors(node, neighbors, count);
+
+        return count;
+    }
+
+    private int addGroundCardinalNeighbors(PathNode node, PathNode[] neighbors, int count) {
         for (var offset : HORIZONTAL_OFFSETS) {
             var neighbor = findGroundNeighbor(node, offset[0], offset[1]);
 
@@ -81,7 +110,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         return count;
     }
 
-    private int addDiagonalNeighbors(PathNode node, PathNode[] neighbors, int count) {
+    private int addGroundDiagonalNeighbors(PathNode node, PathNode[] neighbors, int count) {
         for (var offset : DIAGONAL_OFFSETS) {
             var neighbor = findGroundNeighbor(node, offset[0], offset[1]);
 
@@ -104,25 +133,22 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         var baseY = from.getY();
         var baseZ = from.getZ() + dz;
 
-        // Try same level.
-        var sameLevel = tryCreateGroundNode(baseX, baseY, baseZ);
+        var sameLevel = tryCreateNode(baseX, baseY, baseZ);
 
         if (sameLevel != null) {
             return sameLevel;
         }
 
-        // Try step-up (up to maxStepHeight).
         for (int stepUp = 1; stepUp <= config.getMaxStepHeight(); stepUp++) {
-            var steppedUp = tryCreateGroundNode(baseX, baseY + stepUp, baseZ);
+            var steppedUp = tryCreateNode(baseX, baseY + stepUp, baseZ);
 
             if (steppedUp != null) {
                 return steppedUp;
             }
         }
 
-        // Try step-down / fall (up to maxFallDistance).
         for (int stepDown = 1; stepDown <= config.getMaxFallDistance(); stepDown++) {
-            var steppedDown = tryCreateGroundNode(baseX, baseY - stepDown, baseZ);
+            var steppedDown = tryCreateNode(baseX, baseY - stepDown, baseZ);
 
             if (steppedDown != null) {
                 return steppedDown;
@@ -132,7 +158,70 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         return null;
     }
 
-    private @Nullable PathNode tryCreateGroundNode(int x, int y, int z) {
+    private boolean isDiagonalValid(PathNode from, int dx, int dz) {
+        var adjacentX = tryCreateNode(from.getX() + dx, from.getY(), from.getZ());
+        var adjacentZ = tryCreateNode(from.getX(), from.getY(), from.getZ() + dz);
+
+        return adjacentX != null && adjacentZ != null;
+    }
+
+    // --- WATER neighbor generation ---
+
+    private int getWaterNeighbors(PathNode node, PathNode[] neighbors) {
+        var count = 0;
+
+        // All 6 cardinal directions for 3D water movement.
+        for (var offset : HORIZONTAL_OFFSETS) {
+            var neighbor = findWaterNeighbor(node, offset[0], 0, offset[1]);
+
+            if (neighbor != null) {
+                neighbors[count++] = neighbor;
+            }
+        }
+
+        var above = findWaterNeighbor(node, 0, 1, 0);
+
+        if (above != null) {
+            neighbors[count++] = above;
+        }
+
+        var below = findWaterNeighbor(node, 0, -1, 0);
+
+        if (below != null) {
+            neighbors[count++] = below;
+        }
+
+        return count;
+    }
+
+    private @Nullable PathNode findWaterNeighbor(PathNode from, int dx, int dy, int dz) {
+        var x = from.getX() + dx;
+        var y = from.getY() + dy;
+        var z = from.getZ() + dz;
+
+        var directNode = tryCreateNode(x, y, z);
+
+        if (directNode != null) {
+            return directNode;
+        }
+
+        // For horizontal water movement, check step-up to find GROUND at the water edge.
+        if (dy == 0) {
+            for (int stepUp = 1; stepUp <= config.getMaxStepHeight() + 1; stepUp++) {
+                var steppedUp = tryCreateNode(x, y + stepUp, z);
+
+                if (steppedUp != null) {
+                    return steppedUp;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    // --- Shared node creation ---
+
+    private @Nullable PathNode tryCreateNode(int x, int y, int z) {
         var pos = new BlockPos(x, y, z);
         var terrainType = config.getTerrainClassifier().classify(level, pos);
 
@@ -140,14 +229,14 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             return null;
         }
 
-        if (!hasEntityClearance(x, y, z)) {
+        if (!hasEntityClearance(x, y, z, terrainType)) {
             return null;
         }
 
         return nodePool.getOrCreate(x, y, z, terrainType);
     }
 
-    private boolean hasEntityClearance(int x, int y, int z) {
+    private boolean hasEntityClearance(int x, int y, int z, TerrainType terrainType) {
         var width = config.getEntityWidth();
         var height = config.getEntityHeight();
         var halfWidth = width / 2;
@@ -161,6 +250,10 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                     if (state.isSolid()) {
                         return false;
                     }
+
+                    if (terrainType == TerrainType.GROUND && state.liquid()) {
+                        return false;
+                    }
                 }
             }
         }
@@ -168,24 +261,24 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         return true;
     }
 
-    private boolean isDiagonalValid(PathNode from, int dx, int dz) {
-        // Check that both cardinal components of the diagonal are passable.
-        // Prevents cutting through wall corners.
-        var adjacentX = tryCreateGroundNode(from.getX() + dx, from.getY(), from.getZ());
-        var adjacentZ = tryCreateGroundNode(from.getX(), from.getY(), from.getZ() + dz);
+    // --- Position resolution ---
 
-        return adjacentX != null && adjacentZ != null;
-    }
+    private BlockPos findStandablePosition(BlockPos pos) {
+        // Check if the position is already valid (GROUND or WATER).
+        var classified = config.getTerrainClassifier().classify(level, pos);
 
-    private BlockPos findGround(BlockPos pos) {
+        if (classified != null && config.supportsTerrain(classified)) {
+            return pos;
+        }
+
+        // Search downward for a valid position.
         var mutablePos = pos.mutable();
 
-        // Search downward for a solid block to stand on.
-        for (int dy = 0; dy <= config.getMaxFallDistance(); dy++) {
+        for (int dy = 1; dy <= config.getMaxFallDistance(); dy++) {
             mutablePos.setY(pos.getY() - dy);
-            var below = mutablePos.below();
+            var classifiedBelow = config.getTerrainClassifier().classify(level, mutablePos);
 
-            if (!level.getBlockState(mutablePos).isSolid() && level.getBlockState(below).isSolid()) {
+            if (classifiedBelow != null && config.supportsTerrain(classifiedBelow)) {
                 return mutablePos.immutable();
             }
         }
@@ -193,9 +286,9 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         return pos;
     }
 
-    private TerrainType classifyOrDefault(BlockPos pos, TerrainType defaultType) {
+    private TerrainType classifyOrDefault(BlockPos pos) {
         var classified = config.getTerrainClassifier().classify(level, pos);
 
-        return classified != null ? classified : defaultType;
+        return classified != null ? classified : TerrainType.GROUND;
     }
 }

@@ -1,6 +1,7 @@
 package com.blib.api.common.pathfinding.v1.evaluator;
 
 import com.blib.api.common.pathfinding.v1.node.PathNode;
+import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
 
@@ -30,6 +31,12 @@ public interface TerrainEvaluator {
      * Returns the number of neighbors added.
      */
     int getNeighbors(PathNode node, PathNode[] neighbors);
+
+    /**
+     * Returns the traversal cost multiplier for the given terrain type.
+     * Costs are snapshotted at {@link #prepare} time for consistency within a search.
+     */
+    float getTerrainCost(TerrainType terrainType);
 
     /**
      * Cleans up after a pathfinding search.

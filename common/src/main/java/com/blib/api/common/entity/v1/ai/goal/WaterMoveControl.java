@@ -22,7 +22,7 @@ public class WaterMoveControl extends MoveControl {
                 pathfinderMob.setDeltaMovement(pathfinderMob.getDeltaMovement().add(0.0, 0.002, 0.0));
             }
 
-            if (operation != MoveControl.Operation.MOVE_TO || pathfinderMob.getNavigation().isDone()) {
+            if (operation != MoveControl.Operation.MOVE_TO) {
                 pathfinderMob.setSpeed(0.0F);
                 return;
             }
