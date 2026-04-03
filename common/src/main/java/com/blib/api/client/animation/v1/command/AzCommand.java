@@ -1,16 +1,33 @@
 package com.blib.api.client.animation.v1.command;
 
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import com.blib.api.BLibAPI;
 import com.blib.api.client.animation.v1.command.play_behavior.AzPlayBehavior;
 import com.blib.api.client.animation.v1.command.play_behavior.AzPlayBehaviors;
 import com.blib.internal.client.animation.AzAnimatorAccessor;
 import com.blib.internal.client.animation.dispatch.command.action.AzAction;
 
 public record AzCommand(List<AzAction> actions) {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AzCommand.class);
+
+    private static final String SERVER_SIDE_DISPATCH_MESSAGE =
+        "AzCommand.dispatch() was called on the server for %s '%s'. "
+            + "Animation commands only work client-side. "
+            + "Use a data-synced flag or network packet to trigger animations from the server.";
+
+    private static final String SERVER_SIDE_DISPATCH_MESSAGE_LOG = SERVER_SIDE_DISPATCH_MESSAGE.replaceAll("%s", "{}");
 
     public static AzRootCommandBuilder rootBuilder() {
         return new AzRootCommandBuilder();
@@ -103,11 +120,43 @@ public record AzCommand(List<AzAction> actions) {
             .build();
     }
 
-    public <T> void dispatch(T animatable) {
+    public void dispatchForEntity(Entity entity) {
+        validateClientSide(entity.level(), "Entity", entity);
+        dispatch(entity);
+    }
+
+    public void dispatchForBlockEntity(BlockEntity blockEntity) {
+        var level = blockEntity.getLevel();
+
+        if (level != null) {
+            validateClientSide(level, "BlockEntity", blockEntity);
+        }
+
+        dispatch(blockEntity);
+    }
+
+    public void dispatchForItem(Entity entity, ItemStack itemStack) {
+        validateClientSide(entity.level(), "ItemStack", itemStack);
+        dispatch(itemStack);
+    }
+
+    private <T> void dispatch(T animatable) {
         var animator = AzAnimatorAccessor.getOrNull(animatable);
 
         if (animator != null) {
             actions.forEach(action -> action.handle(animator));
         }
+    }
+
+    private void validateClientSide(Level level, String type, Object animatable) {
+        if (level.isClientSide()) {
+            return;
+        }
+
+        if (BLibAPI.isDevelopmentEnvironment()) {
+            throw new IllegalStateException(SERVER_SIDE_DISPATCH_MESSAGE.formatted(type, animatable));
+        }
+
+        LOGGER.warn(SERVER_SIDE_DISPATCH_MESSAGE_LOG, type, animatable);
     }
 }
