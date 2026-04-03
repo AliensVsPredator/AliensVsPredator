@@ -8,8 +8,10 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRe
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.fabricmc.fabric.api.object.builder.v1.world.poi.PointOfInterestHelper;
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
+import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -22,6 +24,8 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -73,6 +77,8 @@ public class BLibFabricModContainer {
     private final BLibMod mod;
 
     private final List<NetworkHandler<?>> clientBoundPacketHandlers;
+
+    private final List<Runnable> deferredBrewingRecipeRegistrations;
 
     private final List<Runnable> deferredCompostableRegistrations;
 
@@ -133,6 +139,7 @@ public class BLibFabricModContainer {
     public BLibFabricModContainer(BLibMod mod) {
         this.mod = mod;
         this.clientBoundPacketHandlers = new ArrayList<>();
+        this.deferredBrewingRecipeRegistrations = new ArrayList<>();
         this.deferredCompostableRegistrations = new ArrayList<>();
         this.deferredEntityAttributeRegistrations = new ArrayList<>();
         this.deferredEntitySpawnDataRegistrations = new ArrayList<>();
@@ -309,6 +316,16 @@ public class BLibFabricModContainer {
         });
     }
 
+    /* package-private */ void deferBrewingRecipeRegistration(
+        Holder<Potion> input,
+        Supplier<? extends Item> ingredient,
+        Holder<Potion> output
+    ) {
+        deferredBrewingRecipeRegistrations.add(() -> FabricBrewingRecipeRegistryBuilder.BUILD.register(
+            builder -> builder.registerPotionRecipe(input, net.minecraft.world.item.crafting.Ingredient.of(ingredient.get()), output)
+        ));
+    }
+
     /* package-private */ void deferCompostableRegistration(BLibHolder<? extends ItemLike> holder, float chance) {
         deferredCompostableRegistrations.add(() -> CompostingChanceRegistry.INSTANCE.add(holder.get(), chance));
     }
@@ -339,6 +356,8 @@ public class BLibFabricModContainer {
             .stream()
             .filter(registry -> !orderSensitiveRegistrySet.contains(registry))
             .forEach(this::runRegistrationsFor);
+        // Run brewing recipe registrations after primary registries are ran.
+        deferredBrewingRecipeRegistrations.forEach(Runnable::run);
         // Run compostable registrations after primary registries are ran.
         deferredCompostableRegistrations.forEach(Runnable::run);
         // Run furnace fuel registrations after primary registries are ran.

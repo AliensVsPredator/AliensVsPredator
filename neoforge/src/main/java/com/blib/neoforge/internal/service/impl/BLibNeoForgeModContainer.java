@@ -15,6 +15,9 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.core.Holder;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.ApiStatus;
@@ -71,6 +74,8 @@ public class BLibNeoForgeModContainer {
     private final BLibMod mod;
 
     private final Map<Registry<?>, DeferredRegister<?>> registryToDeferredRegisterMap;
+
+    private final List<Tuple3<Holder<Potion>, Supplier<? extends Item>, Holder<Potion>>> brewingRecipeData;
 
     private final List<Tuple4<BLibHolder<? extends ItemLike>, Float, Boolean, Boolean>> compostableData;
 
@@ -136,6 +141,7 @@ public class BLibNeoForgeModContainer {
         this.mod = mod;
         this.registryToDeferredRegisterMap = new HashMap<>();
 
+        this.brewingRecipeData = new ArrayList<>();
         this.compostableData = new ArrayList<>();
         this.customRegistryEntries = new ArrayList<>();
         this.entityAttributeSupplierPairs = new ArrayList<>();
@@ -302,6 +308,14 @@ public class BLibNeoForgeModContainer {
 
     /* package-private */ void registerCommand(LiteralArgumentBuilder<CommandSourceStack> literalArgumentBuilder) {
         literalArgumentBuilders.add(literalArgumentBuilder);
+    }
+
+    /* package-private */ void registerBrewingRecipe(Holder<Potion> input, Supplier<? extends Item> ingredient, Holder<Potion> output) {
+        brewingRecipeData.add(new Tuple3<>(input, ingredient, output));
+    }
+
+    /* package-private */ List<Tuple3<Holder<Potion>, Supplier<? extends Item>, Holder<Potion>>> getBrewingRecipeData() {
+        return Collections.unmodifiableList(brewingRecipeData);
     }
 
     /* package-private */ void registerCompostable(Tuple4<BLibHolder<? extends ItemLike>, Float, Boolean, Boolean> tuple) {

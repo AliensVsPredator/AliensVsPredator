@@ -19,6 +19,8 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -77,6 +79,12 @@ public class BLibFabricRegistryServiceImpl implements BLibRegistryService {
     public <T extends Mob> void registerEntitySpawnData(BLibEntitySpawnData<T> spawnData) {
         getModContainer(spawnData.getEntityTypeHolder())
             .deferEntitySpawnDataRegistration(spawnData);
+    }
+
+    @Override
+    public void registerBrewingRecipe(BLibMod mod, Holder<Potion> input, Supplier<? extends Item> ingredient, Holder<Potion> output) {
+        getModContainer(mod)
+            .deferBrewingRecipeRegistration(input, ingredient, output);
     }
 
     @Override

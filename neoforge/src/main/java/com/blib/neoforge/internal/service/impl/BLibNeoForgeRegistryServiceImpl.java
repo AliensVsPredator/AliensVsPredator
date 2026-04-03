@@ -17,6 +17,8 @@ import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -27,6 +29,7 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
+import net.neoforged.neoforge.event.brewing.RegisterBrewingRecipesEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
 import net.neoforged.neoforge.network.registration.HandlerThread;
@@ -94,6 +97,12 @@ public class BLibNeoForgeRegistryServiceImpl implements BLibRegistryService {
     public <T extends Mob> void registerEntitySpawnData(BLibEntitySpawnData<T> spawnData) {
         getModContainer(spawnData.getEntityTypeHolder())
             .registerEntitySpawnData(spawnData);
+    }
+
+    @Override
+    public void registerBrewingRecipe(BLibMod mod, Holder<Potion> input, Supplier<? extends Item> ingredient, Holder<Potion> output) {
+        getModContainer(mod)
+            .registerBrewingRecipe(input, ingredient, output);
     }
 
     @Override
@@ -203,6 +212,13 @@ public class BLibNeoForgeRegistryServiceImpl implements BLibRegistryService {
                         );
                     }
                 });
+        });
+
+        NeoForge.EVENT_BUS.<RegisterBrewingRecipesEvent>addListener(event -> {
+            var builder = event.getBuilder();
+
+            modContainer.getBrewingRecipeData()
+                .forEach(recipe -> builder.addMix(recipe.v1(), recipe.v2().get(), recipe.v3()));
         });
 
         NeoForge.EVENT_BUS.<RegisterCommandsEvent>addListener(
