@@ -9,5 +9,8 @@ import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
  * @param to        the terrain type being entered
  * @param nodeIndex the index of the first node in the new terrain
  */
-public record TerrainTransition(TerrainType from, TerrainType to, int nodeIndex) {
-}
+public record TerrainTransition(
+    TerrainType from,
+    TerrainType to,
+    int nodeIndex
+) {}

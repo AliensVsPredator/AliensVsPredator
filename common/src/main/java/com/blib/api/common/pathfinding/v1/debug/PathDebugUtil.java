@@ -1,8 +1,5 @@
 package com.blib.api.common.pathfinding.v1.debug;
 
-import com.blib.api.common.pathfinding.v1.path.BLibPath;
-import com.blib.mod.common.property.BLibModProperties;
-import com.blib.mod.common.property.BLibModPropertyAccess;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.DebugPackets;
 import net.minecraft.world.entity.Mob;
@@ -12,10 +9,16 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
+import com.blib.api.common.pathfinding.v1.navigator.PathNavigator;
+import com.blib.api.common.pathfinding.v1.path.BLibPath;
+import com.blib.mod.BLib;
+import com.blib.mod.common.network.packet.S2CPathfindingSearchDebugPayload;
+import com.blib.mod.common.property.BLibModProperties;
+import com.blib.mod.common.property.BLibModPropertyAccess;
+
 /**
- * Debug utilities for BLib pathfinding. Converts BLibPath to vanilla Path
- * and sends debug packets to clients for rendering via Minecraft's built-in
- * pathfinding debug renderer.
+ * Debug utilities for BLib pathfinding. Converts BLibPath to vanilla Path and sends debug packets to clients for
+ * rendering via Minecraft's built-in pathfinding debug renderer.
  */
 public final class PathDebugUtil {
 
@@ -62,6 +65,35 @@ public final class PathDebugUtil {
         }
 
         return path;
+    }
+
+    /**
+     * Sends the last A* search snapshot as a debug packet if search debug rendering is enabled.
+     */
+    public static void sendDebugSearchSnapshot(Mob mob, PathNavigator navigator) {
+        if (!BLibModPropertyAccess.INSTANCE.get(BLibModProperties.Debug.Render.ENABLED)) {
+            return;
+        }
+
+        if (!BLibModPropertyAccess.INSTANCE.get(BLibModProperties.Debug.Render.PathSearch.ENABLED)) {
+            return;
+        }
+
+        var snapshot = navigator.getLastSearchSnapshot();
+
+        if (snapshot == null) {
+            return;
+        }
+
+        var payload = new S2CPathfindingSearchDebugPayload(
+            mob.getId(),
+            snapshot.nodes(),
+            snapshot.corridorKeys(),
+            snapshot.visitedCount(),
+            snapshot.maxSearchNodes()
+        );
+
+        BLib.MOD.networking().sendToAllClientsTrackingEntity(mob, payload);
     }
 
     private PathDebugUtil() {

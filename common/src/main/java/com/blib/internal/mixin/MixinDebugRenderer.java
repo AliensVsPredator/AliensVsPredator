@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.blib.mod.client.render.debug.PathfindingSearchDebugRenderer;
 import com.blib.mod.common.property.BLibModProperties;
 import com.blib.mod.common.property.BLibModPropertyAccess;
 
@@ -137,6 +138,10 @@ public class MixinDebugRenderer {
 
         if (access.get(BLibModProperties.Debug.Render.SkyLight.ENABLED)) {
             skyLightSectionDebugRenderer.render(poseStack, bufferSource, camX, camY, camZ);
+        }
+
+        if (access.get(BLibModProperties.Debug.Render.PathSearch.ENABLED)) {
+            PathfindingSearchDebugRenderer.INSTANCE.render(poseStack, bufferSource, camX, camY, camZ);
         }
     }
 }

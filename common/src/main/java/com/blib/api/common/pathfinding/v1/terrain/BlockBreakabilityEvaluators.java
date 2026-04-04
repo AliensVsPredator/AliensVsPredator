@@ -1,10 +1,7 @@
 package com.blib.api.common.pathfinding.v1.terrain;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Default {@link BlockBreakabilityEvaluator} implementations.
@@ -12,13 +9,13 @@ import net.minecraft.world.level.block.state.BlockState;
 public final class BlockBreakabilityEvaluators {
 
     /**
-     * Creates an evaluator that considers blocks breakable if their destroy time
-     * is non-negative and below the given threshold. Cost is normalized to 0-1
-     * using maxDestroyTime as the ceiling, keeping break costs comparable to
-     * movement costs. The BREAKABLE terrain cost multiplier on the entity's config
-     * controls the overall weight of breaking vs walking around.
-     *
-     * <p>Blocks with block entities or indestructible blocks (-1 destroy time) are excluded.</p>
+     * Creates an evaluator that considers blocks breakable if their destroy time is non-negative and below the given
+     * threshold. Cost is normalized to 0-1 using maxDestroyTime as the ceiling, keeping break costs comparable to
+     * movement costs. The BREAKABLE terrain cost multiplier on the entity's config controls the overall weight of
+     * breaking vs walking around.
+     * <p>
+     * Blocks with block entities or indestructible blocks (-1 destroy time) are excluded.
+     * </p>
      */
     public static BlockBreakabilityEvaluator defaultEvaluator(float maxDestroyTime) {
         return (level, pos, state) -> {

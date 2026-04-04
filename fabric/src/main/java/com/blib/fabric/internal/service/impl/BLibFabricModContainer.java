@@ -321,9 +321,11 @@ public class BLibFabricModContainer {
         Supplier<? extends Item> ingredient,
         Holder<Potion> output
     ) {
-        deferredBrewingRecipeRegistrations.add(() -> FabricBrewingRecipeRegistryBuilder.BUILD.register(
-            builder -> builder.registerPotionRecipe(input, net.minecraft.world.item.crafting.Ingredient.of(ingredient.get()), output)
-        ));
+        deferredBrewingRecipeRegistrations.add(
+            () -> FabricBrewingRecipeRegistryBuilder.BUILD.register(
+                builder -> builder.registerPotionRecipe(input, net.minecraft.world.item.crafting.Ingredient.of(ingredient.get()), output)
+            )
+        );
     }
 
     /* package-private */ void deferCompostableRegistration(BLibHolder<? extends ItemLike> holder, float chance) {

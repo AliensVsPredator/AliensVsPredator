@@ -1,14 +1,14 @@
 package com.blib.api.common.pathfinding.v1.node;
 
-import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
-
 import java.util.HashMap;
 import java.util.Map;
 
+import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
+
 /**
- * Object pool for {@link PathNode} instances. Ensures that each (x, y, z, posture)
- * combination maps to exactly one node during a pathfinding search, avoiding duplicate allocations.
- * Call {@link #reset()} between pathfinding calls to clear the pool.
+ * Object pool for {@link PathNode} instances. Ensures that each (x, y, z, posture, terrainType) combination maps to
+ * exactly one node during a pathfinding search, avoiding duplicate allocations. Call {@link #reset()} between
+ * pathfinding calls to clear the pool.
  */
 public final class PathNodePool {
 
@@ -19,7 +19,7 @@ public final class PathNodePool {
     }
 
     public PathNode getOrCreate(int x, int y, int z, TerrainType terrainType, int postureIndex) {
-        var key = packPosition(x, y, z, postureIndex);
+        var key = packPosition(x, y, z, postureIndex, terrainType.ordinal());
         var existing = nodes.get(key);
 
         if (existing != null) {
@@ -40,10 +40,7 @@ public final class PathNodePool {
         return nodes.size();
     }
 
-    private static long packPosition(int x, int y, int z, int postureIndex) {
-        return ((long) postureIndex & 0x3L) << 62
-            | ((long) x & 0x3FFFFFFL) << 36
-            | ((long) y & 0xFFFL) << 24
-            | ((long) z & 0xFFFFFFL);
+    private static long packPosition(int x, int y, int z, int postureIndex, int terrainTypeOrdinal) {
+        return ((long) postureIndex & 0x3L) << 62 | ((long) terrainTypeOrdinal & 0x7L) << 59 | ((long) x & 0x7FFFFL) << 40 | ((long) y & 0xFFFL) << 28 | ((long) z & 0xFFFFFFFL);
     }
 }

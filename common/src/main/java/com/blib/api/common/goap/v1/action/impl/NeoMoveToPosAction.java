@@ -1,20 +1,22 @@
 package com.blib.api.common.goap.v1.action.impl;
 
-import com.blib.api.common.pathfinding.v1.debug.PathDebugUtil;
-import com.blib.api.common.pathfinding.v1.navigator.PathNavigator;
-import com.blib.api.common.pathfinding.v1.navigator.PathNavigatorUser;
 import com.just.goap.action.Action;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.phys.Vec3;
 
+import com.blib.api.common.pathfinding.v1.debug.PathDebugUtil;
+import com.blib.api.common.pathfinding.v1.navigator.PathNavigator;
+import com.blib.api.common.pathfinding.v1.navigator.PathNavigatorUser;
+
 /**
- * GOAP action utility for pathfinding using BLib's {@link PathNavigator}.
- * Requires the entity to implement {@link PathNavigatorUser}.
- *
- * <p>Unlike {@link MoveToPosAction} which delegates to Minecraft's vanilla PathNavigation,
- * this action uses BLib's standalone pathfinding system with multi-terrain support.</p>
+ * GOAP action utility for pathfinding using BLib's {@link PathNavigator}. Requires the entity to implement
+ * {@link PathNavigatorUser}.
+ * <p>
+ * Unlike {@link MoveToPosAction} which delegates to Minecraft's vanilla PathNavigation, this action uses BLib's
+ * standalone pathfinding system with multi-terrain support.
+ * </p>
  */
 public final class NeoMoveToPosAction {
 
@@ -29,8 +31,8 @@ public final class NeoMoveToPosAction {
     }
 
     /**
-     * Performs one tick of pathfinding toward the target position.
-     * Plans a path on first call, then follows it on subsequent ticks.
+     * Performs one tick of pathfinding toward the target position. Plans a path on first call, then follows it on
+     * subsequent ticks.
      *
      * @param context         the GOAP action context
      * @param targetPos       the position to navigate to
@@ -66,6 +68,7 @@ public final class NeoMoveToPosAction {
 
         if (actor instanceof Mob mob) {
             PathDebugUtil.sendDebugPath(mob, navigator.getCurrentPath());
+            PathDebugUtil.sendDebugSearchSnapshot(mob, navigator);
         }
 
         if (navigator.isDone()) {
@@ -82,12 +85,13 @@ public final class NeoMoveToPosAction {
             return Result.NO_PATH;
         }
 
-        actor.getMoveControl().setWantedPosition(
-            waypointPos.getX() + 0.5,
-            waypointPos.getY(),
-            waypointPos.getZ() + 0.5,
-            speedMultiplier
-        );
+        actor.getMoveControl()
+            .setWantedPosition(
+                waypointPos.getX() + 0.5,
+                waypointPos.getY(),
+                waypointPos.getZ() + 0.5,
+                speedMultiplier
+            );
 
         return Result.MOVING;
     }

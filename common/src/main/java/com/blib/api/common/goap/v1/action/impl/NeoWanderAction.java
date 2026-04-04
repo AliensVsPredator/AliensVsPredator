@@ -1,6 +1,5 @@
 package com.blib.api.common.goap.v1.action.impl;
 
-import com.blib.api.common.pathfinding.v1.navigator.PathNavigatorUser;
 import com.just.goap.StateKey;
 import com.just.goap.action.Action;
 import com.just.goap.state.Blackboard;
@@ -10,10 +9,12 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.function.Consumer;
 
+import com.blib.api.common.pathfinding.v1.navigator.PathNavigatorUser;
+
 /**
- * GOAP wander action using BLib's {@link com.blib.api.common.pathfinding.v1.navigator.PathNavigator}.
- * Picks a random land position and navigates to it. Falls back to {@link WanderAction}
- * for entities that don't implement {@link PathNavigatorUser}.
+ * GOAP wander action using BLib's {@link com.blib.api.common.pathfinding.v1.navigator.PathNavigator}. Picks a random
+ * land position and navigates to it. Falls back to {@link WanderAction} for entities that don't implement
+ * {@link PathNavigatorUser}.
  */
 public final class NeoWanderAction {
 

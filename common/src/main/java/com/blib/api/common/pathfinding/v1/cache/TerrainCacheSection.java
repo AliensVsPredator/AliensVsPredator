@@ -1,7 +1,5 @@
 package com.blib.api.common.pathfinding.v1.cache;
 
-import com.blib.api.common.pathfinding.v1.terrain.TerrainClassifier;
-import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
 import org.jetbrains.annotations.Nullable;
@@ -9,10 +7,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.EnumSet;
 import java.util.Set;
 
+import com.blib.api.common.pathfinding.v1.terrain.TerrainClassifier;
+import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
+
 /**
- * Caches terrain classifications for a 16x16x16 block section.
- * Lazily populated on first access. Each position stores a TerrainType
- * or null (impassable).
+ * Caches terrain classifications for a 16x16x16 block section. Lazily populated on first access. Each position stores a
+ * TerrainType or null (impassable).
  */
 final class TerrainCacheSection {
 
@@ -68,7 +68,8 @@ final class TerrainCacheSection {
         this.populated = true;
     }
 
-    @Nullable TerrainType get(int localX, int localY, int localZ) {
+    @Nullable
+    TerrainType get(int localX, int localY, int localZ) {
         var value = classifications[packLocal(localX, localY, localZ)];
 
         if (value == UNCLASSIFIED || value == IMPASSABLE) {

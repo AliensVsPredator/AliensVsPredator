@@ -1,29 +1,37 @@
 package com.blib.api.common.pathfinding.v1.evaluator;
 
-import com.blib.api.common.pathfinding.v1.cache.TerrainClassificationCache;
-import com.blib.api.common.pathfinding.v1.node.PathNode;
-import com.blib.api.common.pathfinding.v1.node.PathNodePool;
-import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.LevelReader;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumMap;
 import java.util.Map;
 
+import com.blib.api.common.pathfinding.v1.cache.TerrainClassificationCache;
+import com.blib.api.common.pathfinding.v1.node.PathNode;
+import com.blib.api.common.pathfinding.v1.node.PathNodePool;
+import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
+
 /**
- * Core terrain evaluator with multi-posture support. Each node carries a posture index.
- * The evaluator generates neighbors for the current posture AND posture-switch neighbors
- * at the same position. The A* naturally finds paths that switch postures when cheaper.
+ * Core terrain evaluator with multi-posture support. Each node carries a posture index. The evaluator generates
+ * neighbors for the current posture AND posture-switch neighbors at the same position. The A* naturally finds paths
+ * that switch postures when cheaper.
  */
 public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     private static final int[][] HORIZONTAL_OFFSETS = {
-        {-1, 0}, {1, 0}, {0, -1}, {0, 1}
+        { -1, 0 },
+        { 1, 0 },
+        { 0, -1 },
+        { 0, 1 }
     };
 
     private static final int[][] DIAGONAL_OFFSETS = {
-        {-1, -1}, {-1, 1}, {1, -1}, {1, 1}
+        { -1, -1 },
+        { -1, 1 },
+        { 1, -1 },
+        { 1, 1 }
     };
 
     private final TerrainEvaluatorConfig config;
@@ -80,8 +88,13 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             case GROUND -> getGroundNeighbors(node, neighbors);
             case WATER -> getWaterNeighbors(node, neighbors);
             case BREAKABLE -> getBreakableNeighbors(node, neighbors);
+            case CLIMBABLE -> getClimbableNeighbors(node, neighbors);
             default -> 0;
         };
+
+        if (config.supportsTerrain(TerrainType.CLIMBABLE) && node.getTerrainType() == TerrainType.GROUND) {
+            count = addClimbableFromGround(node, neighbors, count);
+        }
 
         count = addPostureSwitchNeighbors(node, neighbors, count);
 
@@ -108,11 +121,22 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                 continue;
             }
 
-            if (!hasEntityClearance(node.getX(), node.getY(), node.getZ(), node.getTerrainType(), p)) {
-                continue;
+            PathNode switchNode;
+
+            if (node.getTerrainType() == TerrainType.CLIMBABLE) {
+                switchNode = tryCreateAnyClimbableNode(node.getX(), node.getY(), node.getZ(), p);
+
+                if (switchNode == null) {
+                    continue;
+                }
+            } else {
+                if (!hasEntityClearance(node.getX(), node.getY(), node.getZ(), node.getTerrainType(), p)) {
+                    continue;
+                }
+
+                switchNode = nodePool.getOrCreate(node.getX(), node.getY(), node.getZ(), node.getTerrainType(), p);
             }
 
-            var switchNode = nodePool.getOrCreate(node.getX(), node.getY(), node.getZ(), node.getTerrainType(), p);
             switchNode.setCostMalus(config.getPostureTransitionCost(p));
             neighbors[count++] = switchNode;
         }
@@ -320,6 +344,146 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
 
         return count;
+    }
+
+    // --- CLIMBABLE neighbor generation ---
+
+    private int addClimbableFromGround(PathNode node, PathNode[] neighbors, int count) {
+        var climbNode = tryCreateAnyClimbableNode(node.getX(), node.getY(), node.getZ(), node.getPostureIndex());
+
+        if (climbNode != null) {
+            neighbors[count++] = climbNode;
+        }
+
+        return count;
+    }
+
+    private int getClimbableNeighbors(PathNode node, PathNode[] neighbors) {
+        var count = 0;
+        var posture = node.getPostureIndex();
+
+        // Cardinal neighbors — covers same-surface continuation and inner corners.
+        for (var direction : Direction.values()) {
+            var nx = node.getX() + direction.getStepX();
+            var ny = node.getY() + direction.getStepY();
+            var nz = node.getZ() + direction.getStepZ();
+
+            var climbable = tryCreateAnyClimbableNode(nx, ny, nz, posture);
+
+            if (climbable != null) {
+                neighbors[count++] = climbable;
+            }
+        }
+
+        // Outer edge wrapping — for each available surface, check diagonal "over the edge" positions.
+        for (var surface : Direction.values()) {
+            if (!node.hasAvailableSurface(surface)) {
+                continue;
+            }
+
+            for (var perpendicular : Direction.values()) {
+                if (perpendicular.getAxis() == surface.getAxis()) {
+                    continue;
+                }
+
+                var edgeX = node.getX() + perpendicular.getStepX() + surface.getStepX();
+                var edgeY = node.getY() + perpendicular.getStepY() + surface.getStepY();
+                var edgeZ = node.getZ() + perpendicular.getStepZ() + surface.getStepZ();
+
+                var edgeClimbable = tryCreateAnyClimbableNode(edgeX, edgeY, edgeZ, posture);
+
+                if (edgeClimbable != null) {
+                    neighbors[count++] = edgeClimbable;
+                }
+
+                var edgeGround = tryCreateNode(edgeX, edgeY, edgeZ, posture);
+
+                if (edgeGround != null) {
+                    neighbors[count++] = edgeGround;
+                }
+            }
+        }
+
+        // Transition to GROUND at current position.
+        var groundNode = tryCreateNode(node.getX(), node.getY(), node.getZ(), posture);
+
+        if (groundNode != null && groundNode.getTerrainType() == TerrainType.GROUND) {
+            neighbors[count++] = groundNode;
+        }
+
+        // Detach from each available surface into open space.
+        for (var surface : Direction.values()) {
+            if (!node.hasAvailableSurface(surface)) {
+                continue;
+            }
+
+            var away = surface.getOpposite();
+            var detachX = node.getX() + away.getStepX();
+            var detachY = node.getY() + away.getStepY();
+            var detachZ = node.getZ() + away.getStepZ();
+            var detachNode = tryCreateNode(detachX, detachY, detachZ, posture);
+
+            if (detachNode != null && detachNode.getTerrainType() == TerrainType.GROUND) {
+                neighbors[count++] = detachNode;
+            }
+        }
+
+        return count;
+    }
+
+    private @Nullable PathNode tryCreateAnyClimbableNode(int x, int y, int z, int postureIndex) {
+        if (!config.supportsTerrain(TerrainType.CLIMBABLE)) {
+            return null;
+        }
+
+        var pos = new BlockPos(x, y, z);
+
+        if (level.getBlockState(pos).isSolid()) {
+            return null;
+        }
+
+        var surfaceMask = 0;
+
+        for (var surface : Direction.values()) {
+            var surfaceBlockPos = pos.relative(surface);
+
+            if (!level.getBlockState(surfaceBlockPos).isSolid()) {
+                continue;
+            }
+
+            if (!hasClimbableClearance(x, y, z, postureIndex, surface)) {
+                continue;
+            }
+
+            surfaceMask |= (1 << surface.ordinal());
+        }
+
+        if (surfaceMask == 0) {
+            return null;
+        }
+
+        var node = nodePool.getOrCreate(x, y, z, TerrainType.CLIMBABLE, postureIndex);
+        node.setAvailableSurfaces(node.getAvailableSurfaces() | surfaceMask);
+
+        return node;
+    }
+
+    private boolean hasClimbableClearance(int x, int y, int z, int postureIndex, Direction surface) {
+        var height = config.getEntityHeight(postureIndex);
+        var awayFromSurface = surface.getOpposite();
+        var stepX = awayFromSurface.getStepX();
+        var stepY = awayFromSurface.getStepY();
+        var stepZ = awayFromSurface.getStepZ();
+
+        for (int i = 0; i < height; i++) {
+            var checkPos = new BlockPos(x + stepX * i, y + stepY * i, z + stepZ * i);
+
+            if (level.getBlockState(checkPos).isSolid()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     // --- Shared node creation ---

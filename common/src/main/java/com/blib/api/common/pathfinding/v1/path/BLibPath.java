@@ -1,15 +1,15 @@
 package com.blib.api.common.pathfinding.v1.path;
 
-import com.blib.api.common.pathfinding.v1.node.PathNode;
-import com.blib.api.common.pathfinding.v1.transition.TerrainTransition;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.blib.api.common.pathfinding.v1.node.PathNode;
+import com.blib.api.common.pathfinding.v1.transition.TerrainTransition;
+
 /**
- * The result of a pathfinding search. Contains an ordered list of nodes from start to goal,
- * with computed terrain segments and transition points.
+ * The result of a pathfinding search. Contains an ordered list of nodes from start to goal, with computed terrain
+ * segments and transition points.
  */
 public final class BLibPath {
 

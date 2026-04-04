@@ -10,14 +10,14 @@ import org.jetbrains.annotations.Nullable;
 public final class TerrainClassifiers {
 
     /**
-     * Classifies positions for ground-only pathfinding.
-     * A position is GROUND if the block at feet level is passable and the block below is solid.
+     * Classifies positions for ground-only pathfinding. A position is GROUND if the block at feet level is passable and
+     * the block below is solid.
      */
     public static final TerrainClassifier GROUND_ONLY = TerrainClassifiers::classifyGroundOnly;
 
     /**
-     * Classifies positions for ground and water pathfinding.
-     * Checks WATER first (fluid blocks), then GROUND (passable above solid).
+     * Classifies positions for ground and water pathfinding. Checks WATER first (fluid blocks), then GROUND (passable
+     * above solid).
      */
     public static final TerrainClassifier GROUND_AND_WATER = TerrainClassifiers::classifyGroundAndWater;
 

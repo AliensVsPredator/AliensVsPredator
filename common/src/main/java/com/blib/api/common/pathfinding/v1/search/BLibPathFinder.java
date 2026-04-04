@@ -1,11 +1,7 @@
 package com.blib.api.common.pathfinding.v1.search;
 
-import com.blib.api.common.pathfinding.v1.cache.TerrainClassificationCache;
-import com.blib.api.common.pathfinding.v1.evaluator.TerrainEvaluator;
-import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
-import com.blib.api.common.pathfinding.v1.node.PathNode;
-import com.blib.api.common.pathfinding.v1.path.BLibPath;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.LevelReader;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -15,21 +11,28 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
 
+import com.blib.api.common.pathfinding.v1.cache.TerrainClassificationCache;
+import com.blib.api.common.pathfinding.v1.debug.DebugNodeEntry;
+import com.blib.api.common.pathfinding.v1.debug.PathSearchSnapshot;
+import com.blib.api.common.pathfinding.v1.evaluator.TerrainEvaluator;
+import com.blib.api.common.pathfinding.v1.node.PathNode;
+import com.blib.api.common.pathfinding.v1.path.BLibPath;
+import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
+
 /**
- * A* pathfinding with optional two-level hierarchical search.
- * When a {@link TerrainClassificationCache} is provided, the pathfinder first runs
- * a fast section-level A* to identify a corridor of 16x16x16 sections, then runs
- * the block-level A* restricted to that corridor. This prevents budget waste on
- * irrelevant areas.
+ * A* pathfinding with optional two-level hierarchical search. When a {@link TerrainClassificationCache} is provided,
+ * the pathfinder first runs a fast section-level A* to identify a corridor of 16x16x16 sections, then runs the
+ * block-level A* restricted to that corridor. This prevents budget waste on irrelevant areas.
  */
 public final class BLibPathFinder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BLibPathFinder.class);
 
-    private static final int MAX_NEIGHBORS = 30;
+    private static final int MAX_NEIGHBORS = 40;
 
     private static final int MAX_SECTION_SEARCH_NODES = 128;
 
@@ -39,6 +42,8 @@ public final class BLibPathFinder {
 
     private final @Nullable TerrainClassificationCache classificationCache;
 
+    private @Nullable PathSearchSnapshot lastSearchSnapshot;
+
     public BLibPathFinder(TerrainEvaluator evaluator, SearchConfig config) {
         this(evaluator, config, null);
     }
@@ -47,6 +52,10 @@ public final class BLibPathFinder {
         this.evaluator = evaluator;
         this.config = config;
         this.classificationCache = classificationCache;
+    }
+
+    public @Nullable PathSearchSnapshot getLastSearchSnapshot() {
+        return lastSearchSnapshot;
     }
 
     public @Nullable BLibPath findPath(LevelReader level, BlockPos startPos, BlockPos targetPos) {
@@ -78,7 +87,15 @@ public final class BLibPathFinder {
         var startKey = packSectionKey(startSX, startSY, startSZ);
         var goalKey = packSectionKey(goalSX, goalSY, goalSZ);
 
-        record SectionEntry(long key, int x, int y, int z, float gCost, float fCost, @Nullable SectionEntry parent) {}
+        record SectionEntry(
+            long key,
+            int x,
+            int y,
+            int z,
+            float gCost,
+            float fCost,
+            @Nullable SectionEntry parent
+        ) {}
 
         var openSet = new PriorityQueue<SectionEntry>(Comparator.comparingDouble(SectionEntry::fCost));
         var closedSet = new HashSet<Long>();
@@ -99,8 +116,16 @@ public final class BLibPathFinder {
             closedSet.add(current.key());
             visitedCount++;
 
-            if (bestEntry == null || sectionDistance(current.x(), current.y(), current.z(), goalSX, goalSY, goalSZ)
-                < sectionDistance(bestEntry.x(), bestEntry.y(), bestEntry.z(), goalSX, goalSY, goalSZ)) {
+            if (
+                bestEntry == null || sectionDistance(current.x(), current.y(), current.z(), goalSX, goalSY, goalSZ) < sectionDistance(
+                    bestEntry.x(),
+                    bestEntry.y(),
+                    bestEntry.z(),
+                    goalSX,
+                    goalSY,
+                    goalSZ
+                )
+            ) {
                 bestEntry = current;
             }
 
@@ -132,8 +157,9 @@ public final class BLibPathFinder {
 
                         var sectionPassable = classificationCache.isSectionPassable(level, nx, ny, nz);
                         var supportsBreakable = evaluator.getTerrainCost(TerrainType.BREAKABLE) < Float.MAX_VALUE;
+                        var supportsClimbable = evaluator.getTerrainCost(TerrainType.CLIMBABLE) < Float.MAX_VALUE;
 
-                        if (!sectionPassable && !supportsBreakable) {
+                        if (!sectionPassable && !supportsBreakable && !supportsClimbable) {
                             continue;
                         }
 
@@ -159,6 +185,14 @@ public final class BLibPathFinder {
                             }
                         }
 
+                        if (supportsClimbable) {
+                            var climbableCost = evaluator.getTerrainCost(TerrainType.CLIMBABLE);
+
+                            if (climbableCost < cheapestCost) {
+                                cheapestCost = climbableCost;
+                            }
+                        }
+
                         if (cheapestCost == Float.MAX_VALUE) {
                             continue;
                         }
@@ -172,17 +206,35 @@ public final class BLibPathFinder {
             }
         }
 
-        // Build corridor from exact path sections only — no buffer.
-        var corridor = new HashSet<Long>();
+        // Build corridor from path sections with a 1-section buffer.
+        // The buffer ensures the block-level A* can reach climbable structures
+        // slightly off the direct section path.
+        var corePath = new ArrayList<long[]>();
         var entry = bestEntry;
 
         while (entry != null) {
-            corridor.add(packSectionKey(entry.x(), entry.y(), entry.z()));
+            corePath.add(new long[] { entry.x(), entry.y(), entry.z() });
             entry = entry.parent();
         }
 
-        corridor.add(startKey);
-        corridor.add(goalKey);
+        corePath.add(new long[] { startSX, startSY, startSZ });
+        corePath.add(new long[] { goalSX, goalSY, goalSZ });
+
+        var corridor = new HashSet<Long>();
+
+        for (var sectionCoords : corePath) {
+            var sx = (int) sectionCoords[0];
+            var sy = (int) sectionCoords[1];
+            var sz = (int) sectionCoords[2];
+
+            for (int dx = -1; dx <= 1; dx++) {
+                for (int dy = -1; dy <= 1; dy++) {
+                    for (int dz = -1; dz <= 1; dz++) {
+                        corridor.add(packSectionKey(sx + dx, sy + dy, sz + dz));
+                    }
+                }
+            }
+        }
 
         return corridor;
     }
@@ -207,6 +259,7 @@ public final class BLibPathFinder {
         var openSet = new PriorityQueue<PathNode>(Comparator.comparingDouble(PathNode::totalCost));
         openSet.add(startNode);
 
+        var closedNodes = new ArrayList<PathNode>();
         var neighbors = new PathNode[MAX_NEIGHBORS];
         var visitedCount = 0;
         PathNode bestNode = startNode;
@@ -219,10 +272,16 @@ public final class BLibPathFinder {
             }
 
             current.setClosed(true);
+            closedNodes.add(current);
             visitedCount++;
 
             if (current.equals(goalNode)) {
-                return reconstructPath(current, true);
+                var path = reconstructPath(current, true);
+
+                assignSurfaceDirections(path);
+                lastSearchSnapshot = buildSnapshot(closedNodes, path, corridor, visitedCount);
+
+                return path;
             }
 
             if (current.distanceSquaredTo(goalNode) < bestNode.distanceSquaredTo(goalNode)) {
@@ -256,15 +315,60 @@ public final class BLibPathFinder {
             }
         }
 
-        LOGGER.info("[A*] Visited {}/{} nodes | budget exhausted={} | corridor={}",
-            visitedCount, config.maxSearchNodes(), visitedCount >= config.maxSearchNodes(),
-            corridor != null ? corridor.size() + " sections" : "none");
+        LOGGER.info(
+            "[A*] Visited {}/{} nodes | budget exhausted={} | corridor={}",
+            visitedCount,
+            config.maxSearchNodes(),
+            visitedCount >= config.maxSearchNodes(),
+            corridor != null ? corridor.size() + " sections" : "none"
+        );
+
+        BLibPath path = null;
 
         if (bestNode != startNode) {
-            return reconstructPath(bestNode, false);
+            path = reconstructPath(bestNode, false);
+            assignSurfaceDirections(path);
         }
 
-        return null;
+        lastSearchSnapshot = buildSnapshot(closedNodes, path, corridor, visitedCount);
+
+        return path;
+    }
+
+    private PathSearchSnapshot buildSnapshot(
+        List<PathNode> closedNodes,
+        @Nullable BLibPath path,
+        @Nullable Set<Long> corridor,
+        int visitedCount
+    ) {
+        var pathNodeSet = new HashSet<PathNode>();
+
+        if (path != null) {
+            for (int i = 0; i < path.getNodeCount(); i++) {
+                pathNodeSet.add(path.getNode(i));
+            }
+        }
+
+        var entries = new ArrayList<DebugNodeEntry>(closedNodes.size());
+
+        for (var node : closedNodes) {
+            entries.add(
+                new DebugNodeEntry(
+                    node.getX(),
+                    node.getY(),
+                    node.getZ(),
+                    node.getTerrainType().ordinal(),
+                    node.getPostureIndex(),
+                    node.getSurfaceDirection(),
+                    node.getAvailableSurfaces(),
+                    pathNodeSet.contains(node)
+                )
+            );
+        }
+
+        var corridorKeys = corridor != null ? List.copyOf(corridor) : List.<Long>of();
+
+        return new PathSearchSnapshot(entries, corridorKeys, visitedCount, config.maxSearchNodes());
     }
 
     private static boolean isInCorridor(PathNode node, Set<Long> corridor) {
@@ -274,7 +378,67 @@ public final class BLibPathFinder {
     }
 
     private float heuristic(PathNode from, PathNode to) {
-        return from.distanceTo(to) * config.heuristicWeight();
+        var dx = (float) (to.getX() - from.getX());
+        var dy = (float) (to.getY() - from.getY()) * config.elevationWeight();
+        var dz = (float) (to.getZ() - from.getZ());
+
+        return (float) Math.sqrt(dx * dx + dy * dy + dz * dz) * config.heuristicWeight();
+    }
+
+    // --- TPO: Surface direction assignment ---
+
+    private void assignSurfaceDirections(BLibPath path) {
+        var previousSurface = -1;
+
+        for (int i = 0; i < path.getNodeCount(); i++) {
+            var node = path.getNode(i);
+
+            if (node.getTerrainType() != TerrainType.CLIMBABLE) {
+                node.setSurfaceDirection(0);
+                previousSurface = -1;
+                continue;
+            }
+
+            var available = node.getAvailableSurfaces();
+
+            if (previousSurface >= 0 && (available & (1 << previousSurface)) != 0) {
+                node.setSurfaceDirection(previousSurface);
+            } else {
+                node.setSurfaceDirection(pickBestSurface(path, i, available));
+            }
+
+            previousSurface = node.getSurfaceDirection();
+        }
+    }
+
+    private static int pickBestSurface(BLibPath path, int index, int availableMask) {
+        if (index > 0) {
+            var prev = path.getNode(index - 1);
+            var current = path.getNode(index);
+            var dx = current.getX() - prev.getX();
+            var dy = current.getY() - prev.getY();
+            var dz = current.getZ() - prev.getZ();
+
+            Direction.Axis movementAxis = null;
+
+            if (dx != 0 && dy == 0 && dz == 0) {
+                movementAxis = Direction.Axis.X;
+            } else if (dy != 0 && dx == 0 && dz == 0) {
+                movementAxis = Direction.Axis.Y;
+            } else if (dz != 0 && dx == 0 && dy == 0) {
+                movementAxis = Direction.Axis.Z;
+            }
+
+            if (movementAxis != null) {
+                for (var direction : Direction.values()) {
+                    if (direction.getAxis() != movementAxis && (availableMask & (1 << direction.ordinal())) != 0) {
+                        return direction.ordinal();
+                    }
+                }
+            }
+        }
+
+        return Integer.numberOfTrailingZeros(availableMask);
     }
 
     private BLibPath reconstructPath(PathNode endNode, boolean reached) {
@@ -292,8 +456,6 @@ public final class BLibPathFinder {
     }
 
     private static long packSectionKey(int sectionX, int sectionY, int sectionZ) {
-        return ((long) sectionX & 0x3FFFFFFL) << 38
-            | ((long) sectionY & 0xFFFL) << 26
-            | ((long) sectionZ & 0x3FFFFFFL);
+        return ((long) sectionX & 0x3FFFFFFL) << 38 | ((long) sectionY & 0xFFFL) << 26 | ((long) sectionZ & 0x3FFFFFFL);
     }
 }

@@ -1,13 +1,15 @@
 package com.blib.api.common.pathfinding.v1.node;
 
-import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
+import net.minecraft.core.Direction;
 
 import java.util.Objects;
 
+import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
+
 /**
- * A single position in pathfinding space with terrain classification, posture, and A* costs.
- * Position, terrain type, and posture index are fixed at creation.
- * Costs and parent are mutable for A* use.
+ * A single position in pathfinding space with terrain classification, posture, and A* costs. Position, terrain type,
+ * and posture index are fixed at creation. Surface direction is mutable — assigned by TPO post-processing after path
+ * reconstruction. Costs and parent are mutable for A* use.
  */
 public final class PathNode {
 
@@ -20,6 +22,10 @@ public final class PathNode {
     private final TerrainType terrainType;
 
     private final int postureIndex;
+
+    private int surfaceDirection;
+
+    private int availableSurfaces;
 
     private float gCost;
 
@@ -79,6 +85,30 @@ public final class PathNode {
         return postureIndex;
     }
 
+    public int getSurfaceDirection() {
+        return surfaceDirection;
+    }
+
+    public void setSurfaceDirection(int surfaceDirection) {
+        this.surfaceDirection = surfaceDirection;
+    }
+
+    public int getAvailableSurfaces() {
+        return availableSurfaces;
+    }
+
+    public void setAvailableSurfaces(int availableSurfaces) {
+        this.availableSurfaces = availableSurfaces;
+    }
+
+    public void addAvailableSurface(Direction direction) {
+        this.availableSurfaces |= (1 << direction.ordinal());
+    }
+
+    public boolean hasAvailableSurface(Direction direction) {
+        return (availableSurfaces & (1 << direction.ordinal())) != 0;
+    }
+
     public float getGCost() {
         return gCost;
     }
@@ -123,6 +153,8 @@ public final class PathNode {
         this.gCost = 0;
         this.hCost = 0;
         this.costMalus = 0;
+        this.surfaceDirection = 0;
+        this.availableSurfaces = 0;
         this.parent = null;
         this.closed = false;
     }
@@ -137,16 +169,18 @@ public final class PathNode {
             return false;
         }
 
-        return x == other.x && y == other.y && z == other.z && postureIndex == other.postureIndex;
+        return x == other.x && y == other.y && z == other.z
+            && postureIndex == other.postureIndex && terrainType == other.terrainType;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(x, y, z, postureIndex);
+        return Objects.hash(x, y, z, postureIndex, terrainType);
     }
 
     @Override
     public String toString() {
-        return "PathNode[x=" + x + ", y=" + y + ", z=" + z + ", terrain=" + terrainType + ", posture=" + postureIndex + "]";
+        return "PathNode[x=" + x + ", y=" + y + ", z=" + z + ", terrain=" + terrainType
+            + ", posture=" + postureIndex + ", surface=" + surfaceDirection + "]";
     }
 }

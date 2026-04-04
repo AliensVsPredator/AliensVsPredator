@@ -1,26 +1,28 @@
 package com.blib.api.common.pathfinding.v1.navigator;
 
-import com.blib.api.common.pathfinding.v1.cache.TerrainClassificationCache;
-import com.blib.api.common.pathfinding.v1.evaluator.UnifiedTerrainEvaluator;
-import com.blib.api.common.pathfinding.v1.node.PathNode;
-import com.blib.api.common.pathfinding.v1.path.BLibPath;
-import com.blib.api.common.pathfinding.v1.search.BLibPathFinder;
-import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
-import com.blib.api.common.pathfinding.v1.transition.TerrainTransition;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blib.api.common.pathfinding.v1.cache.TerrainClassificationCache;
+import com.blib.api.common.pathfinding.v1.debug.PathSearchSnapshot;
+import com.blib.api.common.pathfinding.v1.evaluator.UnifiedTerrainEvaluator;
+import com.blib.api.common.pathfinding.v1.node.PathNode;
+import com.blib.api.common.pathfinding.v1.path.BLibPath;
+import com.blib.api.common.pathfinding.v1.search.BLibPathFinder;
+import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
+import com.blib.api.common.pathfinding.v1.transition.TerrainTransition;
+
 /**
- * Standalone path navigator. Manages path planning, following, stuck detection,
- * and terrain transition callbacks. Does not extend any Minecraft class.
- *
- * <p>The consuming code calls {@link #tick(BlockPos)} each tick with the entity's current
- * position. The navigator advances along the path and provides the next waypoint
- * via {@link #getCurrentTargetPos()}. The calling code is responsible for actually
- * moving the entity toward the waypoint.</p>
+ * Standalone path navigator. Manages path planning, following, stuck detection, and terrain transition callbacks. Does
+ * not extend any Minecraft class.
+ * <p>
+ * The consuming code calls {@link #tick(BlockPos)} each tick with the entity's current position. The navigator advances
+ * along the path and provides the next waypoint via {@link #getCurrentTargetPos()}. The calling code is responsible for
+ * actually moving the entity toward the waypoint.
+ * </p>
  */
 public final class PathNavigator {
 
@@ -41,6 +43,8 @@ public final class PathNavigator {
     private @Nullable TerrainType currentTerrain;
 
     private int currentPostureIndex;
+
+    private int currentSurfaceDirection;
 
     private boolean waitingForBlockBreak;
 
@@ -90,8 +94,21 @@ public final class PathNavigator {
             this.currentPostureIndex = startNode.getPostureIndex();
             config.firePostureEnter(currentPostureIndex);
 
-            LOGGER.info("[Pathfinding] {}µs | {} nodes | reached={} | from={} to={}",
-                elapsedMicros, currentPath.getNodeCount(), currentPath.isReached(), entityPos, target);
+            var newSurface = startNode.getSurfaceDirection();
+
+            if (newSurface != currentSurfaceDirection) {
+                config.fireSurfaceDirectionChange(currentSurfaceDirection, newSurface);
+                currentSurfaceDirection = newSurface;
+            }
+
+            LOGGER.info(
+                "[Pathfinding] {}µs | {} nodes | reached={} | from={} to={}",
+                elapsedMicros,
+                currentPath.getNodeCount(),
+                currentPath.isReached(),
+                entityPos,
+                target
+            );
         } else {
             LOGGER.info("[Pathfinding] {}µs | no path | from={} to={}", elapsedMicros, entityPos, target);
         }
@@ -100,9 +117,8 @@ public final class PathNavigator {
     }
 
     /**
-     * Advances the navigator one tick. Call this every tick with the entity's current position.
-     * The navigator checks waypoint proximity, advances the path, fires transition handlers,
-     * and detects stuck conditions.
+     * Advances the navigator one tick. Call this every tick with the entity's current position. The navigator checks
+     * waypoint proximity, advances the path, fires transition handlers, and detects stuck conditions.
      */
     public void tick(BlockPos entityPos) {
         tickCount++;
@@ -146,6 +162,13 @@ public final class PathNavigator {
     }
 
     /**
+     * Returns the snapshot from the most recent A* search, or null if no search has been performed.
+     */
+    public @Nullable PathSearchSnapshot getLastSearchSnapshot() {
+        return pathFinder.getLastSearchSnapshot();
+    }
+
+    /**
      * Returns the position the entity should move toward, or null if not navigating.
      */
     public @Nullable BlockPos getCurrentTargetPos() {
@@ -175,8 +198,8 @@ public final class PathNavigator {
     }
 
     /**
-     * Returns true if the navigator is paused at a BREAKABLE node,
-     * waiting for the consuming code to break the block and call {@link #confirmBlockBroken()}.
+     * Returns true if the navigator is paused at a BREAKABLE node, waiting for the consuming code to break the block
+     * and call {@link #confirmBlockBroken()}.
      */
     public boolean isWaitingForBlockBreak() {
         return waitingForBlockBreak;
@@ -196,8 +219,7 @@ public final class PathNavigator {
     }
 
     /**
-     * Signals that the block at the current BREAKABLE node has been broken.
-     * The navigator resumes path following.
+     * Signals that the block at the current BREAKABLE node has been broken. The navigator resumes path following.
      */
     public void confirmBlockBroken() {
         this.waitingForBlockBreak = false;
@@ -208,14 +230,18 @@ public final class PathNavigator {
     }
 
     /**
-     * Updates the destination without forcing an immediate path recomputation.
-     * The navigator will recompute the path on its next recalculation cycle
-     * using this updated target.
+     * Updates the destination without forcing an immediate path recomputation. The navigator will recompute the path on
+     * its next recalculation cycle using this updated target.
      */
     private void resetPosture() {
         if (currentPostureIndex != 0) {
             currentPostureIndex = 0;
             config.firePostureEnter(0);
+        }
+
+        if (currentSurfaceDirection != 0) {
+            config.fireSurfaceDirectionChange(currentSurfaceDirection, 0);
+            currentSurfaceDirection = 0;
         }
     }
 
@@ -249,6 +275,13 @@ public final class PathNavigator {
                 if (newPosture != currentPostureIndex) {
                     currentPostureIndex = newPosture;
                     config.firePostureEnter(newPosture);
+                }
+
+                var newSurface = nextNode.getSurfaceDirection();
+
+                if (newSurface != currentSurfaceDirection) {
+                    config.fireSurfaceDirectionChange(currentSurfaceDirection, newSurface);
+                    currentSurfaceDirection = newSurface;
                 }
 
                 if (newTerrain == TerrainType.BREAKABLE) {

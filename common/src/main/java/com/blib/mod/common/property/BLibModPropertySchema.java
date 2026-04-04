@@ -49,6 +49,11 @@ public class BLibModPropertySchema {
         )
         .addComment("Render entity pathfinding debug info.")
         .addProperty(BLibModProperties.Debug.Render.Path.ENABLED.key(), BLibModProperties.Debug.Render.Path.ENABLED.defaultValue())
+        .addComment("Render A* search exploration debug info (explored nodes, corridor, surface directions).")
+        .addProperty(
+            BLibModProperties.Debug.Render.PathSearch.ENABLED.key(),
+            BLibModProperties.Debug.Render.PathSearch.ENABLED.defaultValue()
+        )
         .addComment("Render sky light section debug info.")
         .addProperty(BLibModProperties.Debug.Render.SkyLight.ENABLED.key(), BLibModProperties.Debug.Render.SkyLight.ENABLED.defaultValue())
         .addComment("Render solid face debug info.")

@@ -1,14 +1,17 @@
 package com.blib.api.common.pathfinding.v1.navigator;
 
-import com.blib.api.common.pathfinding.v1.evaluator.TerrainEvaluatorConfig;
-import com.blib.api.common.pathfinding.v1.search.SearchConfig;
-import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
-import com.blib.api.common.pathfinding.v1.transition.TerrainTransitionHandler;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
+
+import com.blib.api.common.pathfinding.v1.evaluator.TerrainEvaluatorConfig;
+import com.blib.api.common.pathfinding.v1.search.SearchConfig;
+import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
+import com.blib.api.common.pathfinding.v1.transition.TerrainTransitionHandler;
 
 /**
  * Configuration for a {@link PathNavigator}. Built via the {@link Builder}.
@@ -23,6 +26,8 @@ public final class PathNavigatorConfig {
 
     private final Map<Integer, Runnable> postureEnterCallbacks;
 
+    private final @Nullable BiConsumer<Integer, Integer> surfaceDirectionChangeCallback;
+
     private final float waypointReachDistance;
 
     private final int stuckTimeoutInTicks;
@@ -34,6 +39,7 @@ public final class PathNavigatorConfig {
         SearchConfig searchConfig,
         Map<TransitionKey, List<TerrainTransitionHandler>> transitionHandlers,
         Map<Integer, Runnable> postureEnterCallbacks,
+        @Nullable BiConsumer<Integer, Integer> surfaceDirectionChangeCallback,
         float waypointReachDistance,
         int stuckTimeoutInTicks,
         int pathRecalculateIntervalInTicks
@@ -42,6 +48,7 @@ public final class PathNavigatorConfig {
         this.searchConfig = searchConfig;
         this.transitionHandlers = Map.copyOf(transitionHandlers);
         this.postureEnterCallbacks = Map.copyOf(postureEnterCallbacks);
+        this.surfaceDirectionChangeCallback = surfaceDirectionChangeCallback;
         this.waypointReachDistance = waypointReachDistance;
         this.stuckTimeoutInTicks = stuckTimeoutInTicks;
         this.pathRecalculateIntervalInTicks = pathRecalculateIntervalInTicks;
@@ -71,6 +78,12 @@ public final class PathNavigatorConfig {
         }
     }
 
+    public void fireSurfaceDirectionChange(int fromDirection, int toDirection) {
+        if (surfaceDirectionChangeCallback != null) {
+            surfaceDirectionChangeCallback.accept(fromDirection, toDirection);
+        }
+    }
+
     public float getWaypointReachDistance() {
         return waypointReachDistance;
     }
@@ -83,8 +96,10 @@ public final class PathNavigatorConfig {
         return pathRecalculateIntervalInTicks;
     }
 
-    private record TransitionKey(TerrainType from, TerrainType to) {
-    }
+    private record TransitionKey(
+        TerrainType from,
+        TerrainType to
+    ) {}
 
     public static final class Builder {
 
@@ -99,6 +114,8 @@ public final class PathNavigatorConfig {
         private final Map<TransitionKey, List<TerrainTransitionHandler>> transitionHandlers;
 
         private final Map<Integer, Runnable> postureEnterCallbacks;
+
+        private @Nullable BiConsumer<Integer, Integer> surfaceDirectionChangeCallback;
 
         private SearchConfig searchConfig;
 
@@ -128,6 +145,11 @@ public final class PathNavigatorConfig {
             return this;
         }
 
+        public Builder onSurfaceDirectionChange(BiConsumer<Integer, Integer> callback) {
+            this.surfaceDirectionChangeCallback = callback;
+            return this;
+        }
+
         public Builder addTransitionHandler(TerrainType from, TerrainType to, TerrainTransitionHandler handler) {
             transitionHandlers.computeIfAbsent(new TransitionKey(from, to), $ -> new ArrayList<>()).add(handler);
             return this;
@@ -154,6 +176,7 @@ public final class PathNavigatorConfig {
                 searchConfig,
                 transitionHandlers,
                 postureEnterCallbacks,
+                surfaceDirectionChangeCallback,
                 waypointReachDistance,
                 stuckTimeoutInTicks,
                 pathRecalculateIntervalInTicks

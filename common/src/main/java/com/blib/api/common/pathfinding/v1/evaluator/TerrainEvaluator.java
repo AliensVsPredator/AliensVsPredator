@@ -1,13 +1,14 @@
 package com.blib.api.common.pathfinding.v1.evaluator;
 
-import com.blib.api.common.pathfinding.v1.node.PathNode;
-import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
 
+import com.blib.api.common.pathfinding.v1.node.PathNode;
+import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
+
 /**
- * Evaluates terrain for pathfinding. Determines the start and goal nodes,
- * and generates valid neighbors for a given node.
+ * Evaluates terrain for pathfinding. Determines the start and goal nodes, and generates valid neighbors for a given
+ * node.
  */
 public interface TerrainEvaluator {
 
@@ -27,14 +28,13 @@ public interface TerrainEvaluator {
     PathNode getGoalNode(BlockPos targetPos);
 
     /**
-     * Populates the neighbors array with valid neighbors of the given node.
-     * Returns the number of neighbors added.
+     * Populates the neighbors array with valid neighbors of the given node. Returns the number of neighbors added.
      */
     int getNeighbors(PathNode node, PathNode[] neighbors);
 
     /**
-     * Returns the traversal cost multiplier for the given terrain type.
-     * Costs are snapshotted at {@link #prepare} time for consistency within a search.
+     * Returns the traversal cost multiplier for the given terrain type. Costs are snapshotted at {@link #prepare} time
+     * for consistency within a search.
      */
     float getTerrainCost(TerrainType terrainType);
 

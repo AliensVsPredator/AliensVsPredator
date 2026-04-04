@@ -1,7 +1,5 @@
 package com.blib.api.common.pathfinding.v1.cache;
 
-import com.blib.api.common.pathfinding.v1.terrain.TerrainClassifier;
-import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
 import org.jetbrains.annotations.Nullable;
@@ -9,16 +7,21 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.blib.api.common.pathfinding.v1.terrain.TerrainClassifier;
+import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
+
 /**
- * Section-based cache for terrain classifications. Stores pre-computed {@link TerrainType}
- * results in 16x16x16 sections, avoiding redundant classifier calls across pathfind operations.
- *
- * <p>Sections are lazily populated on first access. Block changes invalidate the affected
- * section and its immediate neighbors (since a change can affect adjacent positions'
- * classifications — e.g., breaking a floor block changes the GROUND status of the block above).</p>
- *
- * <p>Caches are shared between entities with the same {@link TerrainClassifier} configuration.
- * Thread-safe via concurrent map.</p>
+ * Section-based cache for terrain classifications. Stores pre-computed {@link TerrainType} results in 16x16x16
+ * sections, avoiding redundant classifier calls across pathfind operations.
+ * <p>
+ * Sections are lazily populated on first access. Block changes invalidate the affected section and its immediate
+ * neighbors (since a change can affect adjacent positions' classifications — e.g., breaking a floor block changes the
+ * GROUND status of the block above).
+ * </p>
+ * <p>
+ * Caches are shared between entities with the same {@link TerrainClassifier} configuration. Thread-safe via concurrent
+ * map.
+ * </p>
  */
 public final class TerrainClassificationCache {
 
@@ -32,8 +35,7 @@ public final class TerrainClassificationCache {
     }
 
     /**
-     * Returns the cached terrain classification for the given position,
-     * populating the section lazily if needed.
+     * Returns the cached terrain classification for the given position, populating the section lazily if needed.
      */
     public @Nullable TerrainType getClassification(LevelReader level, BlockPos pos) {
         var sectionX = pos.getX() >> 4;
@@ -60,8 +62,8 @@ public final class TerrainClassificationCache {
     }
 
     /**
-     * Returns whether the section at the given section coordinates has any passable blocks.
-     * Populates the section lazily if needed.
+     * Returns whether the section at the given section coordinates has any passable blocks. Populates the section
+     * lazily if needed.
      */
     public boolean isSectionPassable(LevelReader level, int sectionX, int sectionY, int sectionZ) {
         var section = getOrPopulateSection(level, sectionX, sectionY, sectionZ);
@@ -70,8 +72,8 @@ public final class TerrainClassificationCache {
     }
 
     /**
-     * Returns the set of terrain types present in the section at the given section coordinates.
-     * Populates the section lazily if needed.
+     * Returns the set of terrain types present in the section at the given section coordinates. Populates the section
+     * lazily if needed.
      */
     public java.util.Set<TerrainType> getSectionTerrainTypes(LevelReader level, int sectionX, int sectionY, int sectionZ) {
         var section = getOrPopulateSection(level, sectionX, sectionY, sectionZ);
@@ -80,9 +82,8 @@ public final class TerrainClassificationCache {
     }
 
     /**
-     * Invalidates the section containing the given block position and its
-     * immediate neighbor sections (a block change can affect adjacent positions'
-     * classifications).
+     * Invalidates the section containing the given block position and its immediate neighbor sections (a block change
+     * can affect adjacent positions' classifications).
      */
     public void invalidateBlock(BlockPos pos) {
         var sectionX = pos.getX() >> 4;
@@ -95,12 +96,18 @@ public final class TerrainClassificationCache {
 
         invalidateSection(sectionX, sectionY, sectionZ);
 
-        if (localX == 0) invalidateSection(sectionX - 1, sectionY, sectionZ);
-        if (localX == 15) invalidateSection(sectionX + 1, sectionY, sectionZ);
-        if (localY == 0) invalidateSection(sectionX, sectionY - 1, sectionZ);
-        if (localY == 15) invalidateSection(sectionX, sectionY + 1, sectionZ);
-        if (localZ == 0) invalidateSection(sectionX, sectionY, sectionZ - 1);
-        if (localZ == 15) invalidateSection(sectionX, sectionY, sectionZ + 1);
+        if (localX == 0)
+            invalidateSection(sectionX - 1, sectionY, sectionZ);
+        if (localX == 15)
+            invalidateSection(sectionX + 1, sectionY, sectionZ);
+        if (localY == 0)
+            invalidateSection(sectionX, sectionY - 1, sectionZ);
+        if (localY == 15)
+            invalidateSection(sectionX, sectionY + 1, sectionZ);
+        if (localZ == 0)
+            invalidateSection(sectionX, sectionY, sectionZ - 1);
+        if (localZ == 15)
+            invalidateSection(sectionX, sectionY, sectionZ + 1);
     }
 
     /**
@@ -127,8 +134,6 @@ public final class TerrainClassificationCache {
     }
 
     private static long packSectionKey(int sectionX, int sectionY, int sectionZ) {
-        return ((long) sectionX & 0x3FFFFFFL) << 38
-            | ((long) sectionY & 0xFFFL) << 26
-            | ((long) sectionZ & 0x3FFFFFFL);
+        return ((long) sectionX & 0x3FFFFFFL) << 38 | ((long) sectionY & 0xFFFL) << 26 | ((long) sectionZ & 0x3FFFFFFL);
     }
 }

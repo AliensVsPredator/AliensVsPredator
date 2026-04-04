@@ -1,10 +1,5 @@
 package com.blib.api.common.pathfinding.v1.evaluator;
 
-import com.blib.api.common.pathfinding.v1.terrain.BlockBreakabilityEvaluator;
-import com.blib.api.common.pathfinding.v1.terrain.TerrainClassifier;
-import com.blib.api.common.pathfinding.v1.terrain.TerrainClassifiers;
-import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
-
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -15,9 +10,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import com.blib.api.common.pathfinding.v1.terrain.BlockBreakabilityEvaluator;
+import com.blib.api.common.pathfinding.v1.terrain.TerrainClassifier;
+import com.blib.api.common.pathfinding.v1.terrain.TerrainClassifiers;
+import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
+
 /**
- * Describes an entity's pathfinding capabilities: supported terrain types with costs,
- * postures with dimensions, and physical constraints.
+ * Describes an entity's pathfinding capabilities: supported terrain types with costs, postures with dimensions, and
+ * physical constraints.
  */
 public final class TerrainEvaluatorConfig {
 
@@ -181,7 +181,11 @@ public final class TerrainEvaluatorConfig {
             return this;
         }
 
-        public Builder addTerrainFromSpeedRatio(TerrainType type, Supplier<Float> groundSpeedSupplier, Supplier<Float> terrainSpeedSupplier) {
+        public Builder addTerrainFromSpeedRatio(
+            TerrainType type,
+            Supplier<Float> groundSpeedSupplier,
+            Supplier<Float> terrainSpeedSupplier
+        ) {
             terrainCostSuppliers.put(type, () -> groundSpeedSupplier.get() / terrainSpeedSupplier.get());
             return this;
         }
