@@ -15,6 +15,7 @@
     "MixinEntity_Events",
     "MixinEntityTypeBuilder_SilenceDataFixerError",
     "MixinHolder",
+    "MixinLevelChunk_TerrainCacheInvalidation",
     "MixinLivingEntity_GOAPUser",
     "MixinPath_Debug",
     "MixinRegistry_ApplyDataFixes",

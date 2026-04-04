@@ -1,14 +1,12 @@
 package com.blib.api.common.pathfinding.v1.evaluator;
 
+import com.blib.api.common.pathfinding.v1.cache.TerrainClassificationCache;
 import com.blib.api.common.pathfinding.v1.node.PathNode;
 import com.blib.api.common.pathfinding.v1.node.PathNodePool;
 import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
 import org.jetbrains.annotations.Nullable;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -30,20 +28,25 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         {-1, -1}, {-1, 1}, {1, -1}, {1, 1}
     };
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UnifiedTerrainEvaluator.class);
-
     private final TerrainEvaluatorConfig config;
 
     private final PathNodePool nodePool;
 
     private final Map<TerrainType, Float> snapshotCosts;
 
+    private final @Nullable TerrainClassificationCache classificationCache;
+
     private LevelReader level;
 
     public UnifiedTerrainEvaluator(TerrainEvaluatorConfig config) {
+        this(config, null);
+    }
+
+    public UnifiedTerrainEvaluator(TerrainEvaluatorConfig config, @Nullable TerrainClassificationCache classificationCache) {
         this.config = config;
         this.nodePool = new PathNodePool();
         this.snapshotCosts = new EnumMap<>(TerrainType.class);
+        this.classificationCache = classificationCache;
     }
 
     @Override
@@ -245,22 +248,17 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     private int getWaterNeighbors(PathNode node, PathNode[] neighbors) {
         var count = 0;
 
-        // All 6 cardinal directions for 3D water movement.
         for (var offset : HORIZONTAL_OFFSETS) {
-            var neighbor = findWaterNeighbor(node, offset[0], 0, offset[1]);
-
-            if (neighbor != null) {
-                neighbors[count++] = neighbor;
-            }
+            count = addWaterNeighborsForDirection(node, offset[0], offset[1], neighbors, count);
         }
 
-        var above = findWaterNeighbor(node, 0, 1, 0);
+        var above = tryCreateNode(node.getX(), node.getY() + 1, node.getZ());
 
         if (above != null) {
             neighbors[count++] = above;
         }
 
-        var below = findWaterNeighbor(node, 0, -1, 0);
+        var below = tryCreateNode(node.getX(), node.getY() - 1, node.getZ());
 
         if (below != null) {
             neighbors[count++] = below;
@@ -269,36 +267,40 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         return count;
     }
 
-    private @Nullable PathNode findWaterNeighbor(PathNode from, int dx, int dy, int dz) {
+    private int addWaterNeighborsForDirection(PathNode from, int dx, int dz, PathNode[] neighbors, int count) {
         var x = from.getX() + dx;
-        var y = from.getY() + dy;
+        var y = from.getY();
         var z = from.getZ() + dz;
 
         var directNode = tryCreateNode(x, y, z);
 
         if (directNode != null) {
-            return directNode;
-        }
+            neighbors[count++] = directNode;
 
-        // For horizontal water movement, check step-up to find GROUND at the water edge.
-        if (dy == 0) {
-            for (int stepUp = 1; stepUp <= config.getMaxStepHeight() + 1; stepUp++) {
-                var steppedUp = tryCreateNode(x, y + stepUp, z);
-
-                if (steppedUp != null) {
-                    return steppedUp;
-                }
+            // If direct neighbor is walkable (WATER/GROUND), no need to check step-up.
+            if (directNode.getTerrainType() != TerrainType.BREAKABLE) {
+                return count;
             }
         }
 
-        return null;
+        // Check step-up to find GROUND/WATER at the water edge.
+        for (int stepUp = 1; stepUp <= config.getMaxStepHeight() + 1; stepUp++) {
+            var steppedUp = tryCreateNode(x, y + stepUp, z);
+
+            if (steppedUp != null) {
+                neighbors[count++] = steppedUp;
+                break;
+            }
+        }
+
+        return count;
     }
 
     // --- Shared node creation ---
 
     private @Nullable PathNode tryCreateNode(int x, int y, int z) {
         var pos = new BlockPos(x, y, z);
-        var terrainType = config.getTerrainClassifier().classify(level, pos);
+        var terrainType = classifyTerrain(pos);
 
         if (terrainType != null && config.supportsTerrain(terrainType)) {
             if (!hasEntityClearance(x, y, z, terrainType)) {
@@ -308,25 +310,13 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             return nodePool.getOrCreate(x, y, z, terrainType);
         }
 
-        var breakableNode = tryCreateBreakableNode(pos);
-
-        if (breakableNode != null) {
-            LOGGER.info("[Evaluator] Created BREAKABLE node at ({},{},{}) costMalus={}", x, y, z, breakableNode.getCostMalus());
-        }
-
-        return breakableNode;
+        return tryCreateBreakableNode(pos);
     }
 
     private @Nullable PathNode tryCreateBreakableNode(BlockPos pos) {
         var breakabilityEvaluator = config.getBreakabilityEvaluator();
 
-        if (breakabilityEvaluator == null) {
-            LOGGER.info("[Evaluator] No breakability evaluator configured");
-            return null;
-        }
-
-        if (!config.supportsTerrain(TerrainType.BREAKABLE)) {
-            LOGGER.info("[Evaluator] BREAKABLE terrain not supported");
+        if (breakabilityEvaluator == null || !config.supportsTerrain(TerrainType.BREAKABLE)) {
             return null;
         }
 
@@ -396,19 +386,17 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     // --- Position resolution ---
 
     private BlockPos findStandablePosition(BlockPos pos) {
-        // Check if the position is already valid (GROUND or WATER).
-        var classified = config.getTerrainClassifier().classify(level, pos);
+        var classified = classifyTerrain(pos);
 
         if (classified != null && config.supportsTerrain(classified)) {
             return pos;
         }
 
-        // Search downward for a valid position.
         var mutablePos = pos.mutable();
 
         for (int dy = 1; dy <= config.getMaxFallDistance(); dy++) {
             mutablePos.setY(pos.getY() - dy);
-            var classifiedBelow = config.getTerrainClassifier().classify(level, mutablePos);
+            var classifiedBelow = classifyTerrain(mutablePos);
 
             if (classifiedBelow != null && config.supportsTerrain(classifiedBelow)) {
                 return mutablePos.immutable();
@@ -419,8 +407,16 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     }
 
     private TerrainType classifyOrDefault(BlockPos pos) {
-        var classified = config.getTerrainClassifier().classify(level, pos);
+        var classified = classifyTerrain(pos);
 
         return classified != null ? classified : TerrainType.GROUND;
+    }
+
+    private @Nullable TerrainType classifyTerrain(BlockPos pos) {
+        if (classificationCache != null) {
+            return classificationCache.getClassification(level, pos);
+        }
+
+        return config.getTerrainClassifier().classify(level, pos);
     }
 }

@@ -28,7 +28,7 @@ public final class BlockBreakabilityEvaluators {
                 return BlockBreakabilityEvaluator.Result.NOT_BREAKABLE;
             }
 
-            var cost = Math.max(0.25f, destroyTime / maxDestroyTime);
+            var cost = Math.max(0.01f, destroyTime / maxDestroyTime);
 
             return new BlockBreakabilityEvaluator.Result(true, cost);
         };

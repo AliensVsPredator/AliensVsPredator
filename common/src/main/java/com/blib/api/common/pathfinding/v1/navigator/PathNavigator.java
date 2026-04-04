@@ -1,5 +1,6 @@
 package com.blib.api.common.pathfinding.v1.navigator;
 
+import com.blib.api.common.pathfinding.v1.cache.TerrainClassificationCache;
 import com.blib.api.common.pathfinding.v1.evaluator.UnifiedTerrainEvaluator;
 import com.blib.api.common.pathfinding.v1.node.PathNode;
 import com.blib.api.common.pathfinding.v1.path.BLibPath;
@@ -48,11 +49,16 @@ public final class PathNavigator {
     private int tickCount;
 
     public PathNavigator(LevelReader level, PathNavigatorConfig config) {
+        this(level, config, null);
+    }
+
+    public PathNavigator(LevelReader level, PathNavigatorConfig config, @Nullable TerrainClassificationCache classificationCache) {
         this.level = level;
         this.config = config;
         this.pathFinder = new BLibPathFinder(
-            new UnifiedTerrainEvaluator(config.getEvaluatorConfig()),
-            config.getSearchConfig()
+            new UnifiedTerrainEvaluator(config.getEvaluatorConfig(), classificationCache),
+            config.getSearchConfig(),
+            classificationCache
         );
     }
 
@@ -63,13 +69,21 @@ public final class PathNavigator {
      */
     public boolean navigateTo(BlockPos entityPos, BlockPos target) {
         this.targetPos = target;
+
+        var startTime = System.nanoTime();
         this.currentPath = pathFinder.findPath(level, entityPos, target);
+        var elapsedMicros = (System.nanoTime() - startTime) / 1000;
+
         this.lastPathComputeTick = tickCount;
         this.lastProgressTick = tickCount;
         this.lastDistanceToTarget = Double.MAX_VALUE;
 
         if (currentPath != null) {
             this.currentTerrain = currentPath.getCurrentNode().getTerrainType();
+            LOGGER.info("[Pathfinding] {}µs | {} nodes | reached={} | from={} to={}",
+                elapsedMicros, currentPath.getNodeCount(), currentPath.isReached(), entityPos, target);
+        } else {
+            LOGGER.info("[Pathfinding] {}µs | no path | from={} to={}", elapsedMicros, entityPos, target);
         }
 
         return currentPath != null;
@@ -190,10 +204,6 @@ public final class PathNavigator {
             var waypoint = currentPath.getCurrentNode();
             var distanceSquared = entityDistanceSquared(entityPos, waypoint);
 
-            LOGGER.info("[Nav] Waypoint check: entity={}, node=({},{},{}) terrain={}, dist²={}, reach²={}",
-                entityPos, waypoint.getX(), waypoint.getY(), waypoint.getZ(),
-                waypoint.getTerrainType(), distanceSquared, reachDistanceSquared);
-
             if (distanceSquared > reachDistanceSquared) {
                 break;
             }
@@ -208,12 +218,7 @@ public final class PathNavigator {
                 var nextNode = currentPath.getCurrentNode();
                 var newTerrain = nextNode.getTerrainType();
 
-                LOGGER.info("[Nav] Advanced to node ({},{},{}) terrain={}",
-                    nextNode.getX(), nextNode.getY(), nextNode.getZ(), newTerrain);
-
                 if (newTerrain == TerrainType.BREAKABLE) {
-                    LOGGER.info("[Nav] BREAKABLE detected — waiting for block break at ({},{},{})",
-                        nextNode.getX(), nextNode.getY(), nextNode.getZ());
                     waitingForBlockBreak = true;
                     currentTerrain = newTerrain;
                     fireTransitionHandlers(previousTerrain, newTerrain);
