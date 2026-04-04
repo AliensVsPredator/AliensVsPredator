@@ -36,6 +36,8 @@ public final class PathNavigator {
 
     private @Nullable BlockPos targetPos;
 
+    private @Nullable BlockPos lastComputedTargetPos;
+
     private @Nullable TerrainType currentTerrain;
 
     private boolean waitingForBlockBreak;
@@ -69,6 +71,7 @@ public final class PathNavigator {
      */
     public boolean navigateTo(BlockPos entityPos, BlockPos target) {
         this.targetPos = target;
+        this.lastComputedTargetPos = target;
 
         var startTime = System.nanoTime();
         this.currentPath = pathFinder.findPath(level, entityPos, target);
@@ -251,12 +254,21 @@ public final class PathNavigator {
         }
     }
 
+    private static final double MIN_TARGET_MOVE_DISTANCE_SQUARED = 9.0;
+
     private void checkRecalculate(BlockPos entityPos) {
         if (targetPos == null) {
             return;
         }
 
-        if (tickCount - lastPathComputeTick >= config.getPathRecalculateIntervalInTicks()) {
+        if (tickCount - lastPathComputeTick < config.getPathRecalculateIntervalInTicks()) {
+            return;
+        }
+
+        var targetMoved = lastComputedTargetPos == null
+            || targetPos.distSqr(lastComputedTargetPos) >= MIN_TARGET_MOVE_DISTANCE_SQUARED;
+
+        if (targetMoved) {
             navigateTo(entityPos, targetPos);
         }
     }
