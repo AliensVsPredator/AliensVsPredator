@@ -40,6 +40,8 @@ public final class PathNavigator {
 
     private @Nullable TerrainType currentTerrain;
 
+    private int currentPostureIndex;
+
     private boolean waitingForBlockBreak;
 
     private int lastPathComputeTick;
@@ -82,7 +84,12 @@ public final class PathNavigator {
         this.lastDistanceToTarget = Double.MAX_VALUE;
 
         if (currentPath != null) {
-            this.currentTerrain = currentPath.getCurrentNode().getTerrainType();
+            var startNode = currentPath.getCurrentNode();
+
+            this.currentTerrain = startNode.getTerrainType();
+            this.currentPostureIndex = startNode.getPostureIndex();
+            config.firePostureEnter(currentPostureIndex);
+
             LOGGER.info("[Pathfinding] {}µs | {} nodes | reached={} | from={} to={}",
                 elapsedMicros, currentPath.getNodeCount(), currentPath.isReached(), entityPos, target);
         } else {
@@ -110,6 +117,11 @@ public final class PathNavigator {
 
         advanceWaypoints(entityPos);
 
+        if (currentPath.isDone()) {
+            resetPosture();
+            return;
+        }
+
         if (waitingForBlockBreak) {
             return;
         }
@@ -125,6 +137,7 @@ public final class PathNavigator {
         this.currentPath = null;
         this.targetPos = null;
         this.currentTerrain = null;
+        resetPosture();
         this.waitingForBlockBreak = false;
     }
 
@@ -199,6 +212,13 @@ public final class PathNavigator {
      * The navigator will recompute the path on its next recalculation cycle
      * using this updated target.
      */
+    private void resetPosture() {
+        if (currentPostureIndex != 0) {
+            currentPostureIndex = 0;
+            config.firePostureEnter(0);
+        }
+    }
+
     public void updateTarget(BlockPos newTarget) {
         this.targetPos = newTarget;
     }
@@ -224,6 +244,12 @@ public final class PathNavigator {
             if (!currentPath.isDone()) {
                 var nextNode = currentPath.getCurrentNode();
                 var newTerrain = nextNode.getTerrainType();
+                var newPosture = nextNode.getPostureIndex();
+
+                if (newPosture != currentPostureIndex) {
+                    currentPostureIndex = newPosture;
+                    config.firePostureEnter(newPosture);
+                }
 
                 if (newTerrain == TerrainType.BREAKABLE) {
                     waitingForBlockBreak = true;

@@ -21,6 +21,8 @@ public final class PathNavigatorConfig {
 
     private final Map<TransitionKey, List<TerrainTransitionHandler>> transitionHandlers;
 
+    private final Map<Integer, Runnable> postureEnterCallbacks;
+
     private final float waypointReachDistance;
 
     private final int stuckTimeoutInTicks;
@@ -31,6 +33,7 @@ public final class PathNavigatorConfig {
         TerrainEvaluatorConfig evaluatorConfig,
         SearchConfig searchConfig,
         Map<TransitionKey, List<TerrainTransitionHandler>> transitionHandlers,
+        Map<Integer, Runnable> postureEnterCallbacks,
         float waypointReachDistance,
         int stuckTimeoutInTicks,
         int pathRecalculateIntervalInTicks
@@ -38,6 +41,7 @@ public final class PathNavigatorConfig {
         this.evaluatorConfig = evaluatorConfig;
         this.searchConfig = searchConfig;
         this.transitionHandlers = Map.copyOf(transitionHandlers);
+        this.postureEnterCallbacks = Map.copyOf(postureEnterCallbacks);
         this.waypointReachDistance = waypointReachDistance;
         this.stuckTimeoutInTicks = stuckTimeoutInTicks;
         this.pathRecalculateIntervalInTicks = pathRecalculateIntervalInTicks;
@@ -57,6 +61,14 @@ public final class PathNavigatorConfig {
 
     public List<TerrainTransitionHandler> getTransitionHandlers(TerrainType from, TerrainType to) {
         return transitionHandlers.getOrDefault(new TransitionKey(from, to), List.of());
+    }
+
+    public void firePostureEnter(int postureIndex) {
+        var callback = postureEnterCallbacks.get(postureIndex);
+
+        if (callback != null) {
+            callback.run();
+        }
     }
 
     public float getWaypointReachDistance() {
@@ -86,6 +98,8 @@ public final class PathNavigatorConfig {
 
         private final Map<TransitionKey, List<TerrainTransitionHandler>> transitionHandlers;
 
+        private final Map<Integer, Runnable> postureEnterCallbacks;
+
         private SearchConfig searchConfig;
 
         private float waypointReachDistance;
@@ -97,6 +111,7 @@ public final class PathNavigatorConfig {
         private Builder(TerrainEvaluatorConfig evaluatorConfig) {
             this.evaluatorConfig = evaluatorConfig;
             this.transitionHandlers = new HashMap<>();
+            this.postureEnterCallbacks = new HashMap<>();
             this.searchConfig = SearchConfig.DEFAULT;
             this.waypointReachDistance = DEFAULT_WAYPOINT_REACH_DISTANCE;
             this.stuckTimeoutInTicks = DEFAULT_STUCK_TIMEOUT_IN_TICKS;
@@ -105,6 +120,11 @@ public final class PathNavigatorConfig {
 
         public Builder withSearchConfig(SearchConfig config) {
             this.searchConfig = config;
+            return this;
+        }
+
+        public Builder onPostureEnter(int postureIndex, Runnable callback) {
+            postureEnterCallbacks.put(postureIndex, callback);
             return this;
         }
 
@@ -133,6 +153,7 @@ public final class PathNavigatorConfig {
                 evaluatorConfig,
                 searchConfig,
                 transitionHandlers,
+                postureEnterCallbacks,
                 waypointReachDistance,
                 stuckTimeoutInTicks,
                 pathRecalculateIntervalInTicks
