@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Object pool for {@link PathNode} instances. Ensures that each (x, y, z) position
- * maps to exactly one node during a pathfinding search, avoiding duplicate allocations.
+ * Object pool for {@link PathNode} instances. Ensures that each (x, y, z, posture)
+ * combination maps to exactly one node during a pathfinding search, avoiding duplicate allocations.
  * Call {@link #reset()} between pathfinding calls to clear the pool.
  */
 public final class PathNodePool {
@@ -18,15 +18,15 @@ public final class PathNodePool {
         this.nodes = new HashMap<>();
     }
 
-    public PathNode getOrCreate(int x, int y, int z, TerrainType terrainType) {
-        var key = packPosition(x, y, z);
+    public PathNode getOrCreate(int x, int y, int z, TerrainType terrainType, int postureIndex) {
+        var key = packPosition(x, y, z, postureIndex);
         var existing = nodes.get(key);
 
         if (existing != null) {
             return existing;
         }
 
-        var node = new PathNode(x, y, z, terrainType);
+        var node = new PathNode(x, y, z, terrainType, postureIndex);
         nodes.put(key, node);
 
         return node;
@@ -40,9 +40,10 @@ public final class PathNodePool {
         return nodes.size();
     }
 
-    private static long packPosition(int x, int y, int z) {
-        return ((long) x & 0x3FFFFFFL) << 38
-            | ((long) y & 0xFFFL) << 26
-            | ((long) z & 0x3FFFFFFL);
+    private static long packPosition(int x, int y, int z, int postureIndex) {
+        return ((long) postureIndex & 0x3L) << 62
+            | ((long) x & 0x3FFFFFFL) << 36
+            | ((long) y & 0xFFFL) << 24
+            | ((long) z & 0xFFFFFFL);
     }
 }

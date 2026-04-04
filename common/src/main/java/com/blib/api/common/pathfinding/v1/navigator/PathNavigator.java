@@ -128,6 +128,10 @@ public final class PathNavigator {
         this.waitingForBlockBreak = false;
     }
 
+    public PathNavigatorConfig getConfig() {
+        return config;
+    }
+
     /**
      * Returns the position the entity should move toward, or null if not navigating.
      */

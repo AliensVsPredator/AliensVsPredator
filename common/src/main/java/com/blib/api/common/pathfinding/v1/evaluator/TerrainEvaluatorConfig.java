@@ -7,15 +7,17 @@ import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
 /**
- * Describes an entity's pathfinding capabilities: which terrain types it can traverse,
- * the cost of each, and physical dimensions for clearance checks.
- * Terrain costs can be static or dynamic (re-evaluated each pathfind call).
+ * Describes an entity's pathfinding capabilities: supported terrain types with costs,
+ * postures with dimensions, and physical constraints.
  */
 public final class TerrainEvaluatorConfig {
 
@@ -31,9 +33,9 @@ public final class TerrainEvaluatorConfig {
 
     private final @Nullable BlockBreakabilityEvaluator breakabilityEvaluator;
 
-    private final int entityWidth;
+    private final List<Posture> postures;
 
-    private final int entityHeight;
+    private final Map<Integer, Float> postureTransitionCosts;
 
     private final int maxFallDistance;
 
@@ -47,8 +49,8 @@ public final class TerrainEvaluatorConfig {
         Map<TerrainType, Supplier<Float>> terrainCostSuppliers,
         TerrainClassifier terrainClassifier,
         @Nullable BlockBreakabilityEvaluator breakabilityEvaluator,
-        int entityWidth,
-        int entityHeight,
+        List<Posture> postures,
+        Map<Integer, Float> postureTransitionCosts,
         int maxFallDistance,
         int maxStepHeight,
         boolean canOpenDoors,
@@ -57,8 +59,8 @@ public final class TerrainEvaluatorConfig {
         this.terrainCostSuppliers = Map.copyOf(terrainCostSuppliers);
         this.terrainClassifier = terrainClassifier;
         this.breakabilityEvaluator = breakabilityEvaluator;
-        this.entityWidth = entityWidth;
-        this.entityHeight = entityHeight;
+        this.postures = List.copyOf(postures);
+        this.postureTransitionCosts = Map.copyOf(postureTransitionCosts);
         this.maxFallDistance = maxFallDistance;
         this.maxStepHeight = maxStepHeight;
         this.canOpenDoors = canOpenDoors;
@@ -73,10 +75,6 @@ public final class TerrainEvaluatorConfig {
         return terrainCostSuppliers.containsKey(terrainType);
     }
 
-    /**
-     * Returns the current cost for the given terrain type.
-     * Dynamic costs are re-evaluated on each call.
-     */
     public float getCost(TerrainType terrainType) {
         var supplier = terrainCostSuppliers.get(terrainType);
 
@@ -99,12 +97,28 @@ public final class TerrainEvaluatorConfig {
         return terrainClassifier;
     }
 
-    public int getEntityWidth() {
-        return entityWidth;
+    public List<Posture> getPostures() {
+        return postures;
     }
 
-    public int getEntityHeight() {
-        return entityHeight;
+    public int getPostureCount() {
+        return postures.size();
+    }
+
+    public Posture getPosture(int index) {
+        return postures.get(index);
+    }
+
+    public int getEntityWidth(int postureIndex) {
+        return postures.get(postureIndex).width();
+    }
+
+    public int getEntityHeight(int postureIndex) {
+        return postures.get(postureIndex).height();
+    }
+
+    public float getPostureTransitionCost(int postureIndex) {
+        return postureTransitionCosts.getOrDefault(postureIndex, 0.0f);
     }
 
     public int getMaxFallDistance() {
@@ -127,11 +141,11 @@ public final class TerrainEvaluatorConfig {
 
         private final Map<TerrainType, Supplier<Float>> terrainCostSuppliers;
 
+        private final List<Posture> postures;
+
+        private final Map<Integer, Float> postureTransitionCosts;
+
         private TerrainClassifier terrainClassifier;
-
-        private int entityWidth;
-
-        private int entityHeight;
 
         private int maxFallDistance;
 
@@ -145,58 +159,55 @@ public final class TerrainEvaluatorConfig {
 
         private Builder() {
             this.terrainCostSuppliers = new EnumMap<>(TerrainType.class);
+            this.postures = new ArrayList<>();
+            this.postureTransitionCosts = new HashMap<>();
             this.terrainClassifier = TerrainClassifiers.GROUND_ONLY;
-            this.entityWidth = 1;
-            this.entityHeight = 2;
             this.maxFallDistance = DEFAULT_MAX_FALL_DISTANCE;
             this.maxStepHeight = DEFAULT_MAX_STEP_HEIGHT;
         }
 
-        /**
-         * Adds a terrain type with a fixed cost.
-         */
         public Builder addTerrain(TerrainType type, float cost) {
             terrainCostSuppliers.put(type, () -> cost);
             return this;
         }
 
-        /**
-         * Adds a terrain type with a dynamic cost supplier.
-         * The supplier is evaluated each time the pathfinder needs the cost,
-         * allowing costs to change at runtime (e.g., based on status effects or entity state).
-         */
         public Builder addTerrain(TerrainType type, Supplier<Float> costSupplier) {
             terrainCostSuppliers.put(type, costSupplier);
             return this;
         }
 
-        /**
-         * Adds a terrain type with a fixed cost derived from the speed ratio between ground
-         * and the target terrain. Cost = groundSpeed / terrainSpeed.
-         */
         public Builder addTerrainFromSpeedRatio(TerrainType type, float groundSpeed, float terrainSpeed) {
             terrainCostSuppliers.put(type, () -> groundSpeed / terrainSpeed);
             return this;
         }
 
-        /**
-         * Adds a terrain type with a dynamic cost derived from speed suppliers.
-         * Re-evaluated each pathfind call, so speed changes from effects or damage
-         * are reflected automatically.
-         */
         public Builder addTerrainFromSpeedRatio(TerrainType type, Supplier<Float> groundSpeedSupplier, Supplier<Float> terrainSpeedSupplier) {
             terrainCostSuppliers.put(type, () -> groundSpeedSupplier.get() / terrainSpeedSupplier.get());
             return this;
         }
 
-        public Builder withTerrainClassifier(TerrainClassifier classifier) {
-            this.terrainClassifier = classifier;
+        /**
+         * Adds a posture with zero transition cost. The first posture added is the default (index 0).
+         */
+        public Builder addPosture(Posture posture) {
+            postures.add(posture);
             return this;
         }
 
-        public Builder withEntityDimensions(int width, int height) {
-            this.entityWidth = width;
-            this.entityHeight = height;
+        /**
+         * Adds a posture with a transition cost. The cost is applied when switching TO this posture.
+         */
+        public Builder addPosture(Posture posture, float transitionCost) {
+            var index = postures.size();
+
+            postures.add(posture);
+            postureTransitionCosts.put(index, transitionCost);
+
+            return this;
+        }
+
+        public Builder withTerrainClassifier(TerrainClassifier classifier) {
+            this.terrainClassifier = classifier;
             return this;
         }
 
@@ -230,12 +241,16 @@ public final class TerrainEvaluatorConfig {
                 terrainCostSuppliers.put(TerrainType.GROUND, () -> DEFAULT_COST);
             }
 
+            if (postures.isEmpty()) {
+                postures.add(Posture.DEFAULT);
+            }
+
             return new TerrainEvaluatorConfig(
                 terrainCostSuppliers,
                 terrainClassifier,
                 breakabilityEvaluator,
-                entityWidth,
-                entityHeight,
+                postures,
+                postureTransitionCosts,
                 maxFallDistance,
                 maxStepHeight,
                 canOpenDoors,

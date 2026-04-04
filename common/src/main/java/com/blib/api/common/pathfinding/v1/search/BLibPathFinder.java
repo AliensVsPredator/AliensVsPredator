@@ -29,7 +29,7 @@ public final class BLibPathFinder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BLibPathFinder.class);
 
-    private static final int MAX_NEIGHBORS = 26;
+    private static final int MAX_NEIGHBORS = 30;
 
     private static final int MAX_SECTION_SEARCH_NODES = 128;
 

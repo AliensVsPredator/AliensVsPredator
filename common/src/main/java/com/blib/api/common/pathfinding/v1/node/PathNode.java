@@ -5,8 +5,9 @@ import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
 import java.util.Objects;
 
 /**
- * A single position in pathfinding space with terrain classification and A* costs.
- * Position and terrain type are fixed at creation. Costs and parent are mutable for A* use.
+ * A single position in pathfinding space with terrain classification, posture, and A* costs.
+ * Position, terrain type, and posture index are fixed at creation.
+ * Costs and parent are mutable for A* use.
  */
 public final class PathNode {
 
@@ -18,6 +19,8 @@ public final class PathNode {
 
     private final TerrainType terrainType;
 
+    private final int postureIndex;
+
     private float gCost;
 
     private float hCost;
@@ -28,11 +31,12 @@ public final class PathNode {
 
     private boolean closed;
 
-    public PathNode(int x, int y, int z, TerrainType terrainType) {
+    public PathNode(int x, int y, int z, TerrainType terrainType, int postureIndex) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.terrainType = terrainType;
+        this.postureIndex = postureIndex;
     }
 
     public float totalCost() {
@@ -69,6 +73,10 @@ public final class PathNode {
 
     public TerrainType getTerrainType() {
         return terrainType;
+    }
+
+    public int getPostureIndex() {
+        return postureIndex;
     }
 
     public float getGCost() {
@@ -129,16 +137,16 @@ public final class PathNode {
             return false;
         }
 
-        return x == other.x && y == other.y && z == other.z;
+        return x == other.x && y == other.y && z == other.z && postureIndex == other.postureIndex;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(x, y, z);
+        return Objects.hash(x, y, z, postureIndex);
     }
 
     @Override
     public String toString() {
-        return "PathNode[x=" + x + ", y=" + y + ", z=" + z + ", terrain=" + terrainType + "]";
+        return "PathNode[x=" + x + ", y=" + y + ", z=" + z + ", terrain=" + terrainType + ", posture=" + postureIndex + "]";
     }
 }
