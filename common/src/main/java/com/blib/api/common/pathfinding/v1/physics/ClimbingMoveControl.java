@@ -5,6 +5,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.phys.Vec3;
 
 import com.blib.api.common.pathfinding.v1.navigator.PathNavigator;
 import com.blib.api.common.pathfinding.v1.navigator.PathNavigatorUser;
@@ -13,25 +14,14 @@ import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
 /**
  * A {@link MoveControl} that handles 3D movement on walls and ceilings.
  * <p>
- * When the entity's {@link PathNavigator} reports {@link TerrainType#CLIMBABLE} terrain, this control cancels gravity,
- * computes 3D velocity toward the waypoint, and applies a sticking force toward the climbing surface. When on any other
- * terrain, it delegates to vanilla ground movement.
+ * Computes surface-relative target positions based on the entity's bounding box width, ensuring the entity doesn't
+ * target unreachable block centers inside walls. Detects edge transitions (surface changes) and temporarily disables
+ * sticking force so the entity can clear corners and ledges.
  * </p>
  * <p>
  * The entity must implement {@link PathNavigatorUser}. The navigator is resolved lazily each tick to avoid constructor
  * ordering issues.
  * </p>
- * <p>
- * Usage:
- * </p>
- *
- * <pre>{@code
- *
- * var moveControl = new ClimbingMoveControl(mob);
- *
- * // or with custom parameters:
- * var moveControl = new ClimbingMoveControl(mob, 0.05f, 0.8f);
- * }</pre>
  */
 public class ClimbingMoveControl extends MoveControl {
 
@@ -45,11 +35,15 @@ public class ClimbingMoveControl extends MoveControl {
 
     private static final float YAW_ROTATION_SPEED = 90.0f;
 
+    private static final int TRANSITION_GRACE_TICKS = 10;
+
     private final float stickingForce;
 
     private final float climbingSpeedMultiplier;
 
     private boolean wasClimbing;
+
+    private int climbingGraceTicks;
 
     public ClimbingMoveControl(Mob mob) {
         this(mob, DEFAULT_STICKING_FORCE, DEFAULT_CLIMBING_SPEED_MULTIPLIER);
@@ -64,8 +58,17 @@ public class ClimbingMoveControl extends MoveControl {
     @Override
     public void tick() {
         var navigator = resolveNavigator();
+        var terrainIsClimbable = navigator != null && navigator.getCurrentTerrain() == TerrainType.CLIMBABLE;
 
-        if (navigator == null || navigator.getCurrentTerrain() != TerrainType.CLIMBABLE) {
+        if (terrainIsClimbable) {
+            climbingGraceTicks = TRANSITION_GRACE_TICKS;
+        } else if (climbingGraceTicks > 0 && mob.onGround()) {
+            climbingGraceTicks--;
+        }
+
+        var shouldClimb = terrainIsClimbable || climbingGraceTicks > 0;
+
+        if (!shouldClimb) {
             if (wasClimbing) {
                 mob.setNoGravity(false);
                 wasClimbing = false;
@@ -80,10 +83,10 @@ public class ClimbingMoveControl extends MoveControl {
             wasClimbing = true;
         }
 
-        tickClimbing(navigator);
+        tickClimbing(navigator, terrainIsClimbable);
     }
 
-    private void tickClimbing(PathNavigator navigator) {
+    private void tickClimbing(PathNavigator navigator, boolean terrainIsClimbable) {
         mob.setXxa(0);
         mob.setZza(0);
 
@@ -94,9 +97,13 @@ public class ClimbingMoveControl extends MoveControl {
 
         operation = Operation.WAIT;
 
-        var dx = wantedX - mob.getX();
-        var dy = wantedY - mob.getY();
-        var dz = wantedZ - mob.getZ();
+        var target = terrainIsClimbable
+            ? computeSurfaceTarget(navigator)
+            : new Vec3(wantedX, wantedY, wantedZ);
+
+        var dx = target.x - mob.getX();
+        var dy = target.y - mob.getY();
+        var dz = target.z - mob.getZ();
         var distanceSquared = dx * dx + dy * dy + dz * dz;
 
         if (distanceSquared < ARRIVAL_THRESHOLD * ARRIVAL_THRESHOLD) {
@@ -107,11 +114,11 @@ public class ClimbingMoveControl extends MoveControl {
         var distance = Math.sqrt(distanceSquared);
         var speed = mob.getAttributeValue(Attributes.MOVEMENT_SPEED) * speedModifier * climbingSpeedMultiplier;
 
-        var velocityX = (dx / distance) * speed;
-        var velocityY = (dy / distance) * speed;
-        var velocityZ = (dz / distance) * speed;
-
-        mob.setDeltaMovement(velocityX, velocityY, velocityZ);
+        mob.setDeltaMovement(
+            (dx / distance) * speed,
+            (dy / distance) * speed,
+            (dz / distance) * speed
+        );
 
         var horizontalDistanceSquared = dx * dx + dz * dz;
 
@@ -121,7 +128,48 @@ public class ClimbingMoveControl extends MoveControl {
             mob.setYRot(rotlerp(mob.getYRot(), targetYaw, YAW_ROTATION_SPEED));
         }
 
-        applySurfaceStickingForce(navigator);
+        if (terrainIsClimbable && !isNearEdgeTransition(navigator)) {
+            applySurfaceStickingForce(navigator);
+        }
+    }
+
+    private Vec3 computeSurfaceTarget(PathNavigator navigator) {
+        var node = navigator.getCurrentNode();
+
+        if (node == null || node.getTerrainType() != TerrainType.CLIMBABLE) {
+            return new Vec3(wantedX, wantedY, wantedZ);
+        }
+
+        var surface = Direction.values()[node.getSurfaceDirection()];
+        var opposite = surface.getOpposite();
+        var halfWidth = mob.getBbWidth() / 2.0;
+        var offset = 0.5 - halfWidth;
+
+        var targetX = node.getX() + 0.5 + opposite.getStepX() * offset;
+        var targetY = node.getY() + 0.5 + opposite.getStepY() * offset;
+        var targetZ = node.getZ() + 0.5 + opposite.getStepZ() * offset;
+
+        return new Vec3(targetX, targetY, targetZ);
+    }
+
+    private boolean isNearEdgeTransition(PathNavigator navigator) {
+        var path = navigator.getCurrentPath();
+
+        if (path == null) {
+            return false;
+        }
+
+        var nextIndex = path.getCurrentNodeIndex() + 1;
+
+        if (nextIndex >= path.getNodeCount()) {
+            return true;
+        }
+
+        var currentNode = path.getCurrentNode();
+        var nextNode = path.getNode(nextIndex);
+
+        return nextNode.getTerrainType() != TerrainType.CLIMBABLE
+            || nextNode.getSurfaceDirection() != currentNode.getSurfaceDirection();
     }
 
     private void applySurfaceStickingForce(PathNavigator navigator) {

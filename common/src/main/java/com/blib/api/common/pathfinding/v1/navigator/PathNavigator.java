@@ -178,6 +178,17 @@ public final class PathNavigator {
     }
 
     /**
+     * Returns the current path node, or null if not navigating.
+     */
+    public @Nullable PathNode getCurrentNode() {
+        if (currentPath == null || currentPath.isDone()) {
+            return null;
+        }
+
+        return currentPath.getCurrentNode();
+    }
+
+    /**
      * Returns the position the entity should move toward, or null if not navigating.
      */
     public @Nullable BlockPos getCurrentTargetPos() {

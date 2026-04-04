@@ -405,12 +405,6 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                 if (edgeClimbable != null) {
                     neighbors[count++] = edgeClimbable;
                 }
-
-                var edgeGround = tryCreateNode(edgeX, edgeY, edgeZ, posture);
-
-                if (edgeGround != null) {
-                    neighbors[count++] = edgeGround;
-                }
             }
         }
 
