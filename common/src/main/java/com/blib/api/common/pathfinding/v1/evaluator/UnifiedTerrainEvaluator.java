@@ -376,6 +376,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
 
         // Outer edge wrapping — for each available surface, check diagonal "over the edge" positions.
+        // Only allowed if the intermediate cardinal position (perpendicular step) is not blocked.
         for (var surface : Direction.values()) {
             if (!node.hasAvailableSurface(surface)) {
                 continue;
@@ -386,9 +387,18 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                     continue;
                 }
 
-                var edgeX = node.getX() + perpendicular.getStepX() + surface.getStepX();
-                var edgeY = node.getY() + perpendicular.getStepY() + surface.getStepY();
-                var edgeZ = node.getZ() + perpendicular.getStepZ() + surface.getStepZ();
+                // Check that the intermediate position is not solid (prevents corner-cutting).
+                var midX = node.getX() + perpendicular.getStepX();
+                var midY = node.getY() + perpendicular.getStepY();
+                var midZ = node.getZ() + perpendicular.getStepZ();
+
+                if (level.getBlockState(new BlockPos(midX, midY, midZ)).isSolid()) {
+                    continue;
+                }
+
+                var edgeX = midX + surface.getStepX();
+                var edgeY = midY + surface.getStepY();
+                var edgeZ = midZ + surface.getStepZ();
 
                 var edgeClimbable = tryCreateAnyClimbableNode(edgeX, edgeY, edgeZ, posture);
 
