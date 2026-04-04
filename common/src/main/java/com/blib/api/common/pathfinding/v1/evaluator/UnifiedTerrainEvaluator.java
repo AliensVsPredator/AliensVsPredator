@@ -440,6 +440,9 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             return null;
         }
 
+        var climbingPosture = config.getClimbingPostureIndex();
+        var effectivePosture = climbingPosture >= 0 ? climbingPosture : postureIndex;
+
         var pos = new BlockPos(x, y, z);
 
         if (level.getBlockState(pos).isSolid()) {
@@ -455,7 +458,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                 continue;
             }
 
-            if (!hasClimbableClearance(x, y, z, postureIndex, surface)) {
+            if (!hasClimbableClearance(x, y, z, effectivePosture, surface)) {
                 continue;
             }
 
@@ -466,7 +469,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             return null;
         }
 
-        var node = nodePool.getOrCreate(x, y, z, TerrainType.CLIMBABLE, postureIndex);
+        var node = nodePool.getOrCreate(x, y, z, TerrainType.CLIMBABLE, effectivePosture);
         node.setAvailableSurfaces(node.getAvailableSurfaces() | surfaceMask);
 
         return node;

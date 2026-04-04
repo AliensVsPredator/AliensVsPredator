@@ -17,6 +17,7 @@ import com.blib.api.client.render.v1.AzLayerRenderer;
 import com.blib.api.client.render.v1.AzModelRenderer;
 import com.blib.api.client.render.v1.AzRendererPipelineContext;
 import com.blib.api.client.render.v1.entity.pipeline.AzEntityRendererPipeline;
+import com.blib.api.common.pathfinding.v1.physics.ClimbingOrientationProvider;
 import com.blib.internal.client.render.util.RenderUtil;
 
 public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUID, T> {
@@ -58,6 +59,7 @@ public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUI
         float ageInTicks = animatable.tickCount + partialTick;
 
         poseStack.scale(nativeScale, nativeScale, nativeScale);
+        applyClimbingOrientation(animatable, poseStack);
         applyRotations(animatable, poseStack, ageInTicks, lerpBodyRot, partialTick, nativeScale);
 
         if (!isReRender) {
@@ -212,5 +214,49 @@ public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUI
                 poseStack.mulPose(Axis.ZP.rotationDegrees(180f));
             }
         }
+    }
+
+    /**
+     * Applies climbing surface orientation BEFORE the vanilla yaw rotation. Computes yaw, pitch, and roll correction
+     * from the surface normal using the same algorithm as crawling-port. The vanilla yaw then operates within the
+     * rotated coordinate system, naturally facing the entity along the surface.
+     */
+    private void applyClimbingOrientation(T animatable, PoseStack poseStack) {
+        if (!(animatable instanceof ClimbingOrientationProvider provider)) {
+            return;
+        }
+
+        var surfaceOrdinal = provider.getClimbingSurfaceDirection();
+
+        if (surfaceOrdinal <= 0) {
+            return;
+        }
+
+        var surface = Direction.values()[surfaceOrdinal];
+        var normal = surface.getOpposite().step();
+        var normalX = normal.x;
+        var normalY = normal.y;
+        var normalZ = normal.z;
+
+        // Phase 1: compute orientation yaw from the normal's XZ projection.
+        var componentZ = normalZ;
+        var componentX = normalX;
+        var orientationYaw = (float) Math.toDegrees(Mth.atan2(componentX, componentZ));
+
+        // Phase 2: recompute basis vectors with yaw applied, then compute pitch.
+        var yawRad = Math.toRadians(orientationYaw);
+        var recomputedZ = (float) (Math.sin(yawRad) * normalX + Math.cos(yawRad) * normalZ);
+        var recomputedY = normalY;
+        var recomputedX = (float) (Math.sin(yawRad - Math.PI / 2) * normalX + Math.cos(yawRad - Math.PI / 2) * normalZ);
+
+        var horizontalLength = Mth.sqrt(recomputedX * recomputedX + recomputedZ * recomputedZ);
+        var orientationPitch = (float) Math.toDegrees(Mth.atan2(horizontalLength, recomputedY));
+
+        // Phase 3: roll correction to prevent flipping at certain angles.
+        var rollSign = Math.signum(0.5f - recomputedY - recomputedZ - recomputedX);
+
+        poseStack.mulPose(Axis.YP.rotationDegrees(orientationYaw));
+        poseStack.mulPose(Axis.XP.rotationDegrees(orientationPitch));
+        poseStack.mulPose(Axis.YP.rotationDegrees(rollSign * orientationYaw));
     }
 }

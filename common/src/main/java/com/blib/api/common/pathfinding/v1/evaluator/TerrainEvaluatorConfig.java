@@ -45,6 +45,8 @@ public final class TerrainEvaluatorConfig {
 
     private final boolean canWalkOverFences;
 
+    private final int climbingPostureIndex;
+
     private TerrainEvaluatorConfig(
         Map<TerrainType, Supplier<Float>> terrainCostSuppliers,
         TerrainClassifier terrainClassifier,
@@ -54,7 +56,8 @@ public final class TerrainEvaluatorConfig {
         int maxFallDistance,
         int maxStepHeight,
         boolean canOpenDoors,
-        boolean canWalkOverFences
+        boolean canWalkOverFences,
+        int climbingPostureIndex
     ) {
         this.terrainCostSuppliers = Map.copyOf(terrainCostSuppliers);
         this.terrainClassifier = terrainClassifier;
@@ -65,6 +68,7 @@ public final class TerrainEvaluatorConfig {
         this.maxStepHeight = maxStepHeight;
         this.canOpenDoors = canOpenDoors;
         this.canWalkOverFences = canWalkOverFences;
+        this.climbingPostureIndex = climbingPostureIndex;
     }
 
     public static Builder builder() {
@@ -137,6 +141,13 @@ public final class TerrainEvaluatorConfig {
         return canWalkOverFences;
     }
 
+    /**
+     * Returns the posture index required for CLIMBABLE terrain, or -1 if no specific posture is required.
+     */
+    public int getClimbingPostureIndex() {
+        return climbingPostureIndex;
+    }
+
     public static final class Builder {
 
         private final Map<TerrainType, Supplier<Float>> terrainCostSuppliers;
@@ -156,6 +167,8 @@ public final class TerrainEvaluatorConfig {
         private boolean canOpenDoors;
 
         private boolean canWalkOverFences;
+
+        private int climbingPostureIndex = -1;
 
         private Builder() {
             this.terrainCostSuppliers = new EnumMap<>(TerrainType.class);
@@ -240,6 +253,16 @@ public final class TerrainEvaluatorConfig {
             return this;
         }
 
+        /**
+         * Sets the posture index that CLIMBABLE nodes must use. All climbable path nodes will be generated with this
+         * posture, ensuring the entity adopts the correct dimensions and animation while climbing. Defaults to -1 (no
+         * forced posture).
+         */
+        public Builder withClimbingPostureIndex(int postureIndex) {
+            this.climbingPostureIndex = postureIndex;
+            return this;
+        }
+
         public TerrainEvaluatorConfig build() {
             if (terrainCostSuppliers.isEmpty()) {
                 terrainCostSuppliers.put(TerrainType.GROUND, () -> DEFAULT_COST);
@@ -258,7 +281,8 @@ public final class TerrainEvaluatorConfig {
                 maxFallDistance,
                 maxStepHeight,
                 canOpenDoors,
-                canWalkOverFences
+                canWalkOverFences,
+                climbingPostureIndex
             );
         }
     }

@@ -19,6 +19,11 @@ import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
  * sticking force so the entity can clear corners and ledges.
  * </p>
  * <p>
+ * This control only handles physics (gravity, velocity, sticking force). Posture and animation are managed by the
+ * pathfinding posture system via
+ * {@link com.blib.api.common.pathfinding.v1.evaluator.TerrainEvaluatorConfig.Builder#withClimbingPostureIndex(int)}.
+ * </p>
+ * <p>
  * The entity must implement {@link PathNavigatorUser}. The navigator is resolved lazily each tick to avoid constructor
  * ordering issues.
  * </p>
@@ -120,16 +125,20 @@ public class ClimbingMoveControl extends MoveControl {
             (dz / distance) * speed
         );
 
+        updateYaw(dx, dz);
+
+        if (terrainIsClimbable && !isNearEdgeTransition(navigator)) {
+            applySurfaceStickingForce(navigator);
+        }
+    }
+
+    private void updateYaw(double dx, double dz) {
         var horizontalDistanceSquared = dx * dx + dz * dz;
 
         if (horizontalDistanceSquared > 0.001) {
             var targetYaw = (float) (Mth.atan2(dz, dx) * (180.0 / Math.PI)) - 90.0f;
 
             mob.setYRot(rotlerp(mob.getYRot(), targetYaw, YAW_ROTATION_SPEED));
-        }
-
-        if (terrainIsClimbable && !isNearEdgeTransition(navigator)) {
-            applySurfaceStickingForce(navigator);
         }
     }
 
