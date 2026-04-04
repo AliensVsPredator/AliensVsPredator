@@ -169,6 +169,15 @@ public final class PathNavigator {
     }
 
     /**
+     * Returns the surface direction ordinal of the current path node. Only meaningful when {@link #getCurrentTerrain()}
+     * is {@link TerrainType#CLIMBABLE}. Maps to {@link net.minecraft.core.Direction#ordinal()}: 0=DOWN, 1=UP, 2=NORTH,
+     * 3=SOUTH, 4=WEST, 5=EAST.
+     */
+    public int getCurrentSurfaceDirection() {
+        return currentSurfaceDirection;
+    }
+
+    /**
      * Returns the position the entity should move toward, or null if not navigating.
      */
     public @Nullable BlockPos getCurrentTargetPos() {
