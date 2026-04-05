@@ -9,7 +9,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import org.joml.Matrix4f;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import com.blib.api.client.model.v1.AzBone;
@@ -22,7 +26,19 @@ import com.blib.internal.client.render.util.RenderUtil;
 
 public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUID, T> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AzEntityModelRenderer.class);
+
+    private static final int CLIENT_LOG_INTERVAL = 20;
+
+    private static final float SURFACE_BLEND_SPEED = 0.25f;
+
     protected final AzEntityRendererPipeline<T> entityRendererPipeline;
+
+    private final Map<Integer, float[]> displayedNormals = new HashMap<>();
+
+    private int previousSurfaceOrdinal;
+
+    private int clientLogCounter;
 
     public AzEntityModelRenderer(
         AzEntityRendererPipeline<T> entityRendererPipeline,
@@ -39,7 +55,7 @@ public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUI
         var poseStack = context.poseStack();
 
         poseStack.pushPose();
-        float lerpBodyRot = getClimbingAwareBodyRot(animatable, partialTick);
+        float lerpBodyRot = getLerpRot(animatable, partialTick);
 
         if (animatable.getPose() == Pose.SLEEPING && animatable instanceof LivingEntity livingEntity) {
             Direction bedDirection = livingEntity.getBedOrientation();
@@ -217,9 +233,10 @@ public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUI
     }
 
     /**
-     * Applies climbing surface orientation BEFORE the vanilla yaw rotation. Computes yaw, pitch, and roll correction
-     * from the surface normal using the same algorithm as crawling-port. The vanilla yaw then operates within the
-     * rotated coordinate system, naturally facing the entity along the surface.
+     * Applies climbing surface orientation using normal-vector blending (crawling-port approach). The raw surface
+     * normal is smoothly interpolated per-frame, then yaw/pitch/roll are computed from the blended normal. This avoids
+     * Euler angle interpolation artifacts. Body rotation uses vanilla's yBodyRot (set by ClimbingMoveControl to track
+     * world-space movement direction).
      */
     private void applyClimbingOrientation(T animatable, PoseStack poseStack) {
         if (!(animatable instanceof ClimbingOrientationProvider provider)) {
@@ -227,23 +244,89 @@ public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUI
         }
 
         var surfaceOrdinal = provider.getClimbingSurfaceDirection();
+        var entityId = animatable.getId();
+
+        if (surfaceOrdinal != previousSurfaceOrdinal) {
+            var prevDir = Direction.values()[Math.min(previousSurfaceOrdinal, 5)];
+            var newDir = Direction.values()[Math.min(surfaceOrdinal, 5)];
+
+            LOGGER.info(
+                "[RENDER] {} surface {} -> {} entityPos=({}, {}, {}) blockPos={}",
+                animatable.getName().getString(),
+                previousSurfaceOrdinal == 0 ? "GROUND" : prevDir.toString(),
+                surfaceOrdinal == 0 ? "GROUND" : newDir.toString(),
+                String.format("%.2f", animatable.getX()),
+                String.format("%.2f", animatable.getY()),
+                String.format("%.2f", animatable.getZ()),
+                animatable.blockPosition()
+            );
+
+            previousSurfaceOrdinal = surfaceOrdinal;
+        }
+
+        var displayed = displayedNormals.get(entityId);
 
         if (surfaceOrdinal <= 0) {
+            if (displayed != null) {
+                displayed[0] = Mth.lerp(SURFACE_BLEND_SPEED, displayed[0], 0);
+                displayed[1] = Mth.lerp(SURFACE_BLEND_SPEED, displayed[1], 0);
+                displayed[2] = Mth.lerp(SURFACE_BLEND_SPEED, displayed[2], 0);
+
+                var remaining = Math.abs(displayed[0]) + Math.abs(displayed[1]) + Math.abs(displayed[2]);
+
+                if (remaining < 0.01f) {
+                    displayedNormals.remove(entityId);
+                    return;
+                }
+
+                applyNormalRotation(poseStack, displayed[0], displayed[1], displayed[2], animatable.getBbHeight());
+            }
+
             return;
         }
 
         var surface = Direction.values()[surfaceOrdinal];
-        var normal = surface.getOpposite().step();
-        var normalX = normal.x;
-        var normalY = normal.y;
-        var normalZ = normal.z;
+        var targetNormal = surface.getOpposite().step();
 
-        // Phase 1: compute orientation yaw from the normal's XZ projection.
-        var componentZ = normalZ;
-        var componentX = normalX;
-        var orientationYaw = (float) Math.toDegrees(Mth.atan2(componentX, componentZ));
+        if (displayed == null) {
+            displayed = new float[] { targetNormal.x, targetNormal.y, targetNormal.z };
+            displayedNormals.put(entityId, displayed);
+        } else {
+            displayed[0] = Mth.lerp(SURFACE_BLEND_SPEED, displayed[0], targetNormal.x);
+            displayed[1] = Mth.lerp(SURFACE_BLEND_SPEED, displayed[1], targetNormal.y);
+            displayed[2] = Mth.lerp(SURFACE_BLEND_SPEED, displayed[2], targetNormal.z);
+        }
 
-        // Phase 2: recompute basis vectors with yaw applied, then compute pitch.
+        var length = Mth.sqrt(displayed[0] * displayed[0] + displayed[1] * displayed[1] + displayed[2] * displayed[2]);
+
+        if (length < 0.001f) {
+            return;
+        }
+
+        var normalX = displayed[0] / length;
+        var normalY = displayed[1] / length;
+        var normalZ = displayed[2] / length;
+
+        clientLogCounter++;
+
+        if (clientLogCounter % CLIENT_LOG_INTERVAL == 0) {
+            LOGGER.info(
+                "[RENDER] {} surface={} blendedNormal=({},{},{}) bbHeight={}",
+                animatable.getName().getString(),
+                surface,
+                String.format("%.2f", normalX),
+                String.format("%.2f", normalY),
+                String.format("%.2f", normalZ),
+                String.format("%.2f", animatable.getBbHeight())
+            );
+        }
+
+        applyNormalRotation(poseStack, normalX, normalY, normalZ, animatable.getBbHeight());
+    }
+
+    private static void applyNormalRotation(PoseStack poseStack, float normalX, float normalY, float normalZ, float entityHeight) {
+        var orientationYaw = (float) Math.toDegrees(Mth.atan2(normalX, normalZ));
+
         var yawRad = Math.toRadians(orientationYaw);
         var recomputedZ = (float) (Math.sin(yawRad) * normalX + Math.cos(yawRad) * normalZ);
         var recomputedY = normalY;
@@ -252,35 +335,14 @@ public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUI
         var horizontalLength = Mth.sqrt(recomputedX * recomputedX + recomputedZ * recomputedZ);
         var orientationPitch = (float) Math.toDegrees(Mth.atan2(horizontalLength, recomputedY));
 
-        // Phase 3: roll correction to prevent flipping at certain angles.
         var rollSign = Math.signum(0.5f - recomputedY - recomputedZ - recomputedX);
-
-        // Vertical offset translation: pivot around the entity's center of mass
-        // instead of the feet, so the rotated model stays aligned with the hitbox.
-        var halfHeight = animatable.getBbHeight() / 2.0;
-
         var roll = rollSign * orientationYaw;
+
+        var halfHeight = entityHeight / 2.0;
 
         poseStack.translate(-normalX * halfHeight, -normalY * halfHeight, -normalZ * halfHeight);
         poseStack.mulPose(Axis.YP.rotationDegrees(orientationYaw));
         poseStack.mulPose(Axis.XP.rotationDegrees(orientationPitch));
         poseStack.mulPose(Axis.YP.rotationDegrees(roll));
-    }
-
-    /**
-     * Returns the body rotation for rendering. For climbing entities, reads the dedicated climbing yaw from
-     * {@link ClimbingOrientationProvider} — a value managed entirely by
-     * {@link com.blib.api.common.pathfinding.v1.physics.ClimbingMoveControl}, completely independent of vanilla's
-     * yRot/yBodyRot which LookControl and body rotation logic can corrupt.
-     */
-    private float getClimbingAwareBodyRot(T animatable, float partialTick) {
-        if (
-            animatable instanceof ClimbingOrientationProvider provider
-                && provider.getClimbingSurfaceDirection() > 0
-        ) {
-            return Mth.rotLerp(partialTick, provider.getClimbingYawOld(), provider.getClimbingYaw());
-        }
-
-        return getLerpRot(animatable, partialTick);
     }
 }

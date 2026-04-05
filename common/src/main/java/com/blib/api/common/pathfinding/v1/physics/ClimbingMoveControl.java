@@ -46,6 +46,10 @@ public class ClimbingMoveControl extends MoveControl {
 
     private boolean nearEdgeTransition;
 
+    private boolean surfaceChangedThisTick;
+
+    private @Nullable Direction previousClimbingSurface;
+
     private int tickCounter;
 
     public ClimbingMoveControl(Mob mob) {
@@ -72,6 +76,7 @@ public class ClimbingMoveControl extends MoveControl {
     @Override
     public void tick() {
         tickCounter++;
+        surfaceChangedThisTick = false;
 
         var navigator = resolveNavigator();
         var terrain = navigator != null ? navigator.getCurrentTerrain() : null;
@@ -90,12 +95,20 @@ public class ClimbingMoveControl extends MoveControl {
             activeSurface = surfaceOrdinal > 0 ? Direction.values()[surfaceOrdinal] : physicalSurface;
             nearEdgeTransition = isNearEdgeTransition(navigator);
 
+            if (tickCounter % LOG_INTERVAL_TICKS == 0) {
+                logClimbingState("CLIMBING", navigator, physicalSurface);
+            }
+
             maintainClimbingPosture(navigator);
             tickClimbingMovement(navigator);
         } else if (onSurface) {
             wasClimbing = true;
             activeSurface = physicalSurface;
             nearEdgeTransition = true;
+
+            if (tickCounter % LOG_INTERVAL_TICKS == 0) {
+                logClimbingState("ON_SURFACE", navigator, physicalSurface);
+            }
 
             if (navigator != null) {
                 tickClimbingMovement(navigator);
@@ -104,6 +117,14 @@ public class ClimbingMoveControl extends MoveControl {
             wasClimbing = false;
             activeSurface = null;
             nearEdgeTransition = false;
+
+            LOGGER.info(
+                "[CMC] {} CLIMBING->GROUND entityPos=({}, {}, {}) onGround=true",
+                mob.getName().getString(),
+                String.format("%.2f", mob.getX()),
+                String.format("%.2f", mob.getY()),
+                String.format("%.2f", mob.getZ())
+            );
 
             resetClimbingPosture(navigator);
             tickGroundMovement();
@@ -200,6 +221,14 @@ public class ClimbingMoveControl extends MoveControl {
             (dz / distance) * speed
         );
 
+        if (dx * dx + dz * dz > YAW_THRESHOLD) {
+            var worldYaw = (float) (Mth.atan2(dz, dx) * 180.0F / Math.PI) - 90.0F;
+
+            mob.setYRot(rotlerp(mob.getYRot(), worldYaw, MAX_YAW_CHANGE_PER_TICK));
+            mob.yBodyRot = mob.getYRot();
+            mob.yBodyRotO = mob.yRotO;
+        }
+
         updateClimbingYaw(navigator, dx, dy, dz);
 
         if (tickCounter % LOG_INTERVAL_TICKS == 0) {
@@ -234,6 +263,9 @@ public class ClimbingMoveControl extends MoveControl {
             return;
         }
 
+        var previousSurface = provider.getClimbingSurfaceDirection();
+        int newSurface;
+
         if (isClimbingTerrain) {
             var surfaceOrdinal = navigator.getCurrentSurfaceDirection();
 
@@ -242,17 +274,55 @@ public class ClimbingMoveControl extends MoveControl {
                 var entityPos = mob.blockPosition();
 
                 if (mob.level().getBlockState(entityPos.relative(surface)).isSolid()) {
-                    provider.setClimbingSurfaceDirection(surfaceOrdinal);
+                    newSurface = surfaceOrdinal;
+
+                    if (newSurface != previousSurface) {
+                        surfaceChangedThisTick = true;
+                        previousClimbingSurface = previousSurface > 0 ? Direction.values()[previousSurface] : null;
+                    }
+
+                    provider.setClimbingSurfaceDirection(newSurface);
+                    logSurfaceChange(previousSurface, newSurface, "nav_validated");
                     return;
                 }
+            }
+
+            // Nav surface not yet reachable — keep previous surface until the entity arrives.
+            if (previousSurface > 0) {
+                return;
             }
         }
 
         if (physicalSurface != null) {
-            provider.setClimbingSurfaceDirection(physicalSurface.ordinal());
+            newSurface = physicalSurface.ordinal();
+            provider.setClimbingSurfaceDirection(newSurface);
+            logSurfaceChange(previousSurface, newSurface, "physical_fallback");
         } else {
-            provider.setClimbingSurfaceDirection(0);
+            newSurface = 0;
+            provider.setClimbingSurfaceDirection(newSurface);
+            logSurfaceChange(previousSurface, newSurface, "reset_to_ground");
         }
+    }
+
+    private void logSurfaceChange(int previousSurface, int newSurface, String reason) {
+        if (previousSurface == newSurface) {
+            return;
+        }
+
+        var prevDir = Direction.values()[Math.min(previousSurface, 5)];
+        var newDir = Direction.values()[Math.min(newSurface, 5)];
+
+        LOGGER.info(
+            "[CMC_SURFACE] {} surface {} -> {} ({}) entityPos=({}, {}, {}) blockPos={}",
+            mob.getName().getString(),
+            prevDir,
+            newDir,
+            reason,
+            String.format("%.2f", mob.getX()),
+            String.format("%.2f", mob.getY()),
+            String.format("%.2f", mob.getZ()),
+            mob.blockPosition()
+        );
     }
 
     private void maintainClimbingPosture(PathNavigator navigator) {
@@ -339,56 +409,110 @@ public class ClimbingMoveControl extends MoveControl {
     private static final float YAW_THRESHOLD = 0.0001f;
 
     /**
-     * Updates the climbing yaw on the {@link ClimbingOrientationProvider}. Transforms the movement direction through
-     * the inverse of the renderer's orientation rotation and extracts the yaw from the result.
+     * Updates the climbing yaw on the {@link ClimbingOrientationProvider}. When the surface changes, converts the
+     * previous yaw to the new coordinate system so the visual facing direction is preserved at the transition point.
      */
     private void updateClimbingYaw(PathNavigator navigator, double dx, double dy, double dz) {
         if (!(mob instanceof ClimbingOrientationProvider provider)) {
             return;
         }
 
-        provider.setClimbingYawOld(provider.getClimbingYaw());
-
         var surfaceOrdinal = navigator.getCurrentSurfaceDirection();
 
         if (surfaceOrdinal <= 0) {
+            provider.setClimbingYawOld(provider.getClimbingYaw());
             return;
         }
+
+        var surface = Direction.values()[surfaceOrdinal];
+
+        if (surfaceChangedThisTick && previousClimbingSurface != null) {
+            var converted = convertClimbYaw(provider.getClimbingYaw(), previousClimbingSurface, surface);
+
+            provider.setClimbingYaw(converted);
+        }
+
+        provider.setClimbingYawOld(provider.getClimbingYaw());
 
         if (dx * dx + dy * dy + dz * dz <= YAW_THRESHOLD) {
             return;
         }
 
-        var surface = Direction.values()[surfaceOrdinal];
-        var normal = surface.getOpposite().step();
-        float normalX = normal.x;
-        float normalY = normal.y;
-        float normalZ = normal.z;
+        var targetYaw = worldToLocalYaw((float) dx, (float) dy, (float) dz, surface);
 
-        var orientationYaw = (float) Math.toDegrees(Mth.atan2(normalX, normalZ));
-        var yawRad = Math.toRadians(orientationYaw);
-        var recomputedZ = (float) (Math.sin(yawRad) * normalX + Math.cos(yawRad) * normalZ);
-        var recomputedY = normalY;
-        var recomputedX = (float) (Math.sin(yawRad - Math.PI / 2) * normalX + Math.cos(yawRad - Math.PI / 2) * normalZ);
+        provider.setClimbingYaw(rotlerp(provider.getClimbingYaw(), targetYaw, YAW_ROTATION_SPEED));
+    }
 
-        var horizontalLength = Mth.sqrt(recomputedX * recomputedX + recomputedZ * recomputedZ);
-        var orientationPitch = (float) Math.toDegrees(Mth.atan2(horizontalLength, recomputedY));
-        var roll = Math.signum(0.5f - recomputedY - recomputedZ - recomputedX) * orientationYaw;
+    /**
+     * Converts a climbYaw from one surface's local coordinate system to another, preserving the world-space facing
+     * direction.
+     */
+    private static float convertClimbYaw(float climbYaw, Direction oldSurface, Direction newSurface) {
+        var worldFacing = localYawToWorld(climbYaw, oldSurface);
 
-        var vx = (float) dx;
-        var vy = (float) dy;
-        var vz = (float) dz;
+        return worldToLocalYaw(worldFacing[0], worldFacing[1], worldFacing[2], newSurface);
+    }
 
-        // Step 1: YP(-yaw)
-        var cosY = Mth.cos((float) Math.toRadians(-orientationYaw));
-        var sinY = Mth.sin((float) Math.toRadians(-orientationYaw));
-        var rx = vx * cosY + vz * sinY;
-        var ry = vy;
-        var rz = -vx * sinY + vz * cosY;
+    /**
+     * Transforms a local climbYaw + surface orientation into a world-space facing direction. This is the forward
+     * transform: applies the renderer's rotation chain (orientation yaw, pitch, roll, then body rotation) to the
+     * forward vector.
+     */
+    private static float[] localYawToWorld(float climbYaw, Direction surface) {
+        var bodyRad = (float) Math.toRadians(180.0f - climbYaw);
+        var localX = Mth.sin(bodyRad);
+        var localY = 0.0f;
+        var localZ = Mth.cos(bodyRad);
 
-        // Step 2: XP(-pitch)
-        var cosP = Mth.cos((float) Math.toRadians(-orientationPitch));
-        var sinP = Mth.sin((float) Math.toRadians(-orientationPitch));
+        var orientParams = computeOrientationParams(surface);
+        var orientYaw = orientParams[0];
+        var orientPitch = orientParams[1];
+        var roll = orientParams[2];
+
+        // Apply YP(roll)
+        var cosR = Mth.cos((float) Math.toRadians(roll));
+        var sinR = Mth.sin((float) Math.toRadians(roll));
+        var r1x = localX * cosR + localZ * sinR;
+        var r1y = localY;
+        var r1z = -localX * sinR + localZ * cosR;
+
+        // Apply XP(orientPitch)
+        var cosP = Mth.cos((float) Math.toRadians(orientPitch));
+        var sinP = Mth.sin((float) Math.toRadians(orientPitch));
+        var r2x = r1x;
+        var r2y = r1y * cosP - r1z * sinP;
+        var r2z = r1y * sinP + r1z * cosP;
+
+        // Apply YP(orientYaw)
+        var cosY = Mth.cos((float) Math.toRadians(orientYaw));
+        var sinY = Mth.sin((float) Math.toRadians(orientYaw));
+        var worldX = r2x * cosY + r2z * sinY;
+        var worldY = r2y;
+        var worldZ = -r2x * sinY + r2z * cosY;
+
+        return new float[] { worldX, worldY, worldZ };
+    }
+
+    /**
+     * Transforms a world-space direction into a local climbYaw for the given surface. This is the inverse transform
+     * used by the renderer: applies YP(-orientYaw), XP(-orientPitch), YP(-roll) and extracts the yaw.
+     */
+    private static float worldToLocalYaw(float dx, float dy, float dz, Direction surface) {
+        var orientParams = computeOrientationParams(surface);
+        var orientYaw = orientParams[0];
+        var orientPitch = orientParams[1];
+        var roll = orientParams[2];
+
+        // Step 1: YP(-orientYaw)
+        var cosY = Mth.cos((float) Math.toRadians(-orientYaw));
+        var sinY = Mth.sin((float) Math.toRadians(-orientYaw));
+        var rx = dx * cosY + dz * sinY;
+        var ry = dy;
+        var rz = -dx * sinY + dz * cosY;
+
+        // Step 2: XP(-orientPitch)
+        var cosP = Mth.cos((float) Math.toRadians(-orientPitch));
+        var sinP = Mth.sin((float) Math.toRadians(-orientPitch));
         var px = rx;
         var pz = ry * sinP + rz * cosP;
 
@@ -398,9 +522,30 @@ public class ClimbingMoveControl extends MoveControl {
         var fx = px * cosR + pz * sinR;
         var fz = -px * sinR + pz * cosR;
 
-        var targetYaw = (float) Math.toDegrees(Mth.atan2(-fx, fz));
+        return (float) Math.toDegrees(Mth.atan2(-fx, fz));
+    }
 
-        provider.setClimbingYaw(rotlerp(provider.getClimbingYaw(), targetYaw, YAW_ROTATION_SPEED));
+    /**
+     * Computes the orientation yaw, pitch, and roll for a given surface direction. Shared between the forward and
+     * inverse transforms.
+     */
+    private static float[] computeOrientationParams(Direction surface) {
+        var normal = surface.getOpposite().step();
+        float normalX = normal.x;
+        float normalY = normal.y;
+        float normalZ = normal.z;
+
+        var orientYaw = (float) Math.toDegrees(Mth.atan2(normalX, normalZ));
+        var yawRad = Math.toRadians(orientYaw);
+        var recomputedZ = (float) (Math.sin(yawRad) * normalX + Math.cos(yawRad) * normalZ);
+        var recomputedY = normalY;
+        var recomputedX = (float) (Math.sin(yawRad - Math.PI / 2) * normalX + Math.cos(yawRad - Math.PI / 2) * normalZ);
+
+        var horizontalLength = Mth.sqrt(recomputedX * recomputedX + recomputedZ * recomputedZ);
+        var orientPitch = (float) Math.toDegrees(Mth.atan2(horizontalLength, recomputedY));
+        var roll = Math.signum(0.5f - recomputedY - recomputedZ - recomputedX) * orientYaw;
+
+        return new float[] { orientYaw, orientPitch, roll };
     }
 
     // --- Debug ---
@@ -421,6 +566,43 @@ public class ClimbingMoveControl extends MoveControl {
 
         var target = navigator.getTargetPos();
         provider.setDebugTargetPos(target != null ? target.asLong() : 0);
+    }
+
+    // --- Logging ---
+
+    private void logClimbingState(String branch, PathNavigator navigator, Direction physicalSurface) {
+        var path = navigator != null ? navigator.getCurrentPath() : null;
+        var currentNode = navigator != null ? navigator.getCurrentNode() : null;
+        var navSurface = navigator != null ? navigator.getCurrentSurfaceDirection() : -1;
+        var navTerrain = navigator != null ? navigator.getCurrentTerrain() : null;
+
+        LOGGER.info(
+            "[CMC] {} branch={} entityPos=({}, {}, {}) blockPos={}"
+                + " navTerrain={} navSurface={} physSurface={} activeSurface={} edgeTrans={}"
+                + " node={} nodeIdx={}/{}",
+            mob.getName().getString(),
+            branch,
+            String.format("%.2f", mob.getX()),
+            String.format("%.2f", mob.getY()),
+            String.format("%.2f", mob.getZ()),
+            mob.blockPosition(),
+            navTerrain,
+            navSurface >= 0 ? Direction.values()[Math.min(navSurface, 5)] : "none",
+            physicalSurface,
+            activeSurface,
+            nearEdgeTransition,
+            currentNode != null
+                ? "(%d,%d,%d t=%s s=%d)".formatted(
+                    currentNode.getX(),
+                    currentNode.getY(),
+                    currentNode.getZ(),
+                    currentNode.getTerrainType(),
+                    currentNode.getSurfaceDirection()
+                )
+                : "none",
+            path != null ? path.getCurrentNodeIndex() : -1,
+            path != null ? path.getNodeCount() : -1
+        );
     }
 
     // --- Utilities ---

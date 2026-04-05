@@ -307,6 +307,18 @@ public final class PathNavigator {
                 var newPosture = nextNode.getPostureIndex();
 
                 if (newPosture != currentPostureIndex) {
+                    LOGGER.info(
+                        "[PathNav] posture {} -> {} at node ({},{},{}) entity=({},{},{})",
+                        currentPostureIndex,
+                        newPosture,
+                        nextNode.getX(),
+                        nextNode.getY(),
+                        nextNode.getZ(),
+                        String.format("%.2f", entityX),
+                        String.format("%.2f", entityY),
+                        String.format("%.2f", entityZ)
+                    );
+
                     currentPostureIndex = newPosture;
                     config.firePostureEnter(newPosture);
                 }
@@ -314,8 +326,27 @@ public final class PathNavigator {
                 var newSurface = nextNode.getSurfaceDirection();
 
                 if (newSurface != currentSurfaceDirection) {
+                    LOGGER.info(
+                        "[PathNav] surface {} -> {} at node ({},{},{}) terrain={} entity=({},{},{})",
+                        currentSurfaceDirection,
+                        newSurface,
+                        nextNode.getX(),
+                        nextNode.getY(),
+                        nextNode.getZ(),
+                        newTerrain,
+                        String.format("%.2f", entityX),
+                        String.format("%.2f", entityY),
+                        String.format("%.2f", entityZ)
+                    );
+
+                    var previousSurface = currentSurfaceDirection;
+
                     config.fireSurfaceDirectionChange(currentSurfaceDirection, newSurface);
                     currentSurfaceDirection = newSurface;
+
+                    if (newTerrain == TerrainType.CLIMBABLE && previousSurface > 0) {
+                        break;
+                    }
                 }
 
                 if (newTerrain == TerrainType.BREAKABLE) {
@@ -326,8 +357,22 @@ public final class PathNavigator {
                 }
 
                 if (newTerrain != previousTerrain) {
+                    LOGGER.info(
+                        "[PathNav] terrain {} -> {} at node ({},{},{}) surface={} entity=({},{},{})",
+                        previousTerrain,
+                        newTerrain,
+                        nextNode.getX(),
+                        nextNode.getY(),
+                        nextNode.getZ(),
+                        newSurface,
+                        String.format("%.2f", entityX),
+                        String.format("%.2f", entityY),
+                        String.format("%.2f", entityZ)
+                    );
+
                     fireTransitionHandlers(previousTerrain, newTerrain);
                     currentTerrain = newTerrain;
+                    break;
                 }
             }
         }
