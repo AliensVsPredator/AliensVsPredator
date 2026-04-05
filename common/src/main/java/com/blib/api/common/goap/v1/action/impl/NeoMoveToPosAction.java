@@ -75,7 +75,8 @@ public final class NeoMoveToPosAction {
             actor.getZ(),
             actor.getBbWidth(),
             actor.getBbHeight(),
-            surfaceDirection
+            surfaceDirection,
+            actor.onGround()
         );
 
         if (actor instanceof Mob mob) {

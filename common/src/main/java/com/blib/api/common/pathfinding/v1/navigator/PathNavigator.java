@@ -19,7 +19,7 @@ import com.blib.api.common.pathfinding.v1.transition.TerrainTransition;
  * Standalone path navigator. Manages path planning, following, stuck detection, and terrain transition callbacks. Does
  * not extend any Minecraft class.
  * <p>
- * The consuming code calls {@link #tick(double, double, double, float, float, int)} each tick with the entity's exact
+ * The consuming code calls {@link #tick(double, double, double, float, float, int, boolean)} each tick with the entity's exact
  * position, bounding box dimensions, and climbing surface. The navigator advances along the path and provides the next
  * waypoint via {@link #getCurrentTargetPos()}. The calling code is responsible for actually moving the entity toward
  * the waypoint.
@@ -146,8 +146,17 @@ public final class PathNavigator {
      * @param entityWidth            bounding box width of the entity
      * @param entityHeight           bounding box height of the entity
      * @param entitySurfaceDirection the entity's current climbing surface ordinal (0 if not climbing)
+     * @param entityOnGround         whether the entity is currently on the ground
      */
-    public void tick(double entityX, double entityY, double entityZ, float entityWidth, float entityHeight, int entitySurfaceDirection) {
+    public void tick(
+        double entityX,
+        double entityY,
+        double entityZ,
+        float entityWidth,
+        float entityHeight,
+        int entitySurfaceDirection,
+        boolean entityOnGround
+    ) {
         tickCount++;
 
         if (currentPath == null || currentPath.isDone()) {
@@ -158,7 +167,7 @@ public final class PathNavigator {
             return;
         }
 
-        advanceWaypoints(entityX, entityY, entityZ, entityWidth, entityHeight, entitySurfaceDirection);
+        advanceWaypoints(entityX, entityY, entityZ, entityWidth, entityHeight, entitySurfaceDirection, entityOnGround);
 
         var entityBlockPos = BlockPos.containing(entityX, entityY, entityZ);
 
@@ -315,7 +324,8 @@ public final class PathNavigator {
         double entityZ,
         float entityWidth,
         float entityHeight,
-        int entitySurfaceDirection
+        int entitySurfaceDirection,
+        boolean entityOnGround
     ) {
         var reachXZ = entityWidth > 0.75f ? entityWidth / 2.0 : 0.75 - entityWidth / 2.0;
         var reachY = Math.max(1.0, entityHeight > 0.75f ? entityHeight / 2.0 : 0.75 - entityHeight / 2.0);
@@ -340,6 +350,12 @@ public final class PathNavigator {
                     && entitySurfaceDirection > 0
                     && entitySurfaceDirection != waypoint.getSurfaceDirection()
             ) {
+                break;
+            }
+
+            // For ground nodes, the entity must actually be on the ground before advancing.
+            // Prevents completing a path while still climbing the side of a bridge.
+            if (waypoint.getTerrainType() == TerrainType.GROUND && entitySurfaceDirection > 0 && !entityOnGround) {
                 break;
             }
 
