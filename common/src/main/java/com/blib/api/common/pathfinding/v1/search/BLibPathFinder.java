@@ -445,8 +445,6 @@ public final class BLibPathFinder {
      * corner node sits in the air at the outer corner, giving the entity a waypoint to swing around.
      */
     private static void insertCornerNodes(LevelReader level, List<PathNode> nodes) {
-        var transitionsFound = 0;
-
         for (int i = 0; i < nodes.size() - 1; i++) {
             var current = nodes.get(i);
             var next = nodes.get(i + 1);
@@ -462,12 +460,10 @@ public final class BLibPathFinder {
                 continue;
             }
 
-            transitionsFound++;
             var currentDir = Direction.values()[currentSurface];
             var nextDir = Direction.values()[nextSurface];
 
             if (currentDir == nextDir.getOpposite()) {
-                LOGGER.info("[CornerInsert] transition {}: {} -> {} SKIP opposite", i, currentDir, nextDir);
                 continue;
             }
 
@@ -479,13 +475,8 @@ public final class BLibPathFinder {
             );
 
             if (level.getBlockState(cornerPos).isSolid()) {
-                LOGGER.info("[CornerInsert] transition {}: {} -> {} SKIP cornerBlock {} solid",
-                    i, currentDir, nextDir, cornerPos);
                 continue;
             }
-
-            LOGGER.info("[CornerInsert] transition {}: {} -> {} INSERTED corner at {}",
-                i, currentDir, nextDir, cornerPos);
 
             var cornerNode = new PathNode(
                 cornerPos.getX(), cornerPos.getY(), cornerPos.getZ(),
@@ -495,10 +486,6 @@ public final class BLibPathFinder {
             cornerNode.setSurfaceDirection(currentSurface);
             nodes.add(i + 1, cornerNode);
             i++;
-        }
-
-        if (transitionsFound == 0) {
-            LOGGER.info("[CornerInsert] no surface transitions found in {} CLIMBABLE nodes", nodes.size());
         }
     }
 

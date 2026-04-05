@@ -127,10 +127,18 @@ public class ClimbingMoveControl extends MoveControl {
 
         var surface = Direction.values()[surfaceOrdinal];
         var entityPos = mob.blockPosition();
-        var surfaceBlockPos = entityPos.relative(surface);
 
-        if (mob.level().getBlockState(surfaceBlockPos).isSolid()) {
+        if (mob.level().getBlockState(entityPos.relative(surface)).isSolid()) {
             provider.setClimbingSurfaceDirection(surfaceOrdinal);
+            return;
+        }
+
+        // Navigator's surface isn't adjacent — scan for the entity's actual surface.
+        for (var direction : Direction.values()) {
+            if (mob.level().getBlockState(entityPos.relative(direction)).isSolid()) {
+                provider.setClimbingSurfaceDirection(direction.ordinal());
+                return;
+            }
         }
     }
 
@@ -266,34 +274,6 @@ public class ClimbingMoveControl extends MoveControl {
         var smoothedYaw = rotlerp(provider.getClimbingYaw(), targetYaw, YAW_ROTATION_SPEED);
 
         provider.setClimbingYaw(smoothedYaw);
-
-        if (tickCounter % LOG_INTERVAL_TICKS == 0) {
-            LOGGER.info(
-                "[ClimbingYaw] entity={} surface={} normal=({}, {}, {}) movement=({}, {}, {})",
-                mob.getName().getString(),
-                surface,
-                normalX, normalY, normalZ,
-                String.format("%.4f", dx), String.format("%.4f", dy), String.format("%.4f", dz)
-            );
-            LOGGER.info(
-                "[ClimbingYaw]   orientationYaw={} orientationPitch={} roll={}",
-                String.format("%.2f", orientationYaw),
-                String.format("%.2f", orientationPitch),
-                String.format("%.2f", roll)
-            );
-            LOGGER.info(
-                "[ClimbingYaw]   afterYaw=({}, {}, {}) afterPitch=({}, {}, {}) afterRoll=({}, {})",
-                String.format("%.4f", rx), String.format("%.4f", ry), String.format("%.4f", rz),
-                String.format("%.4f", px), String.format("%.4f", py), String.format("%.4f", pz),
-                String.format("%.4f", fx), String.format("%.4f", fz)
-            );
-            LOGGER.info(
-                "[ClimbingYaw]   targetYaw={} previousYaw={} smoothedYaw={}",
-                String.format("%.2f", targetYaw),
-                String.format("%.2f", provider.getClimbingYawOld()),
-                String.format("%.2f", smoothedYaw)
-            );
-        }
     }
 
     private Vec3 computeSurfaceTarget(PathNavigator navigator) {

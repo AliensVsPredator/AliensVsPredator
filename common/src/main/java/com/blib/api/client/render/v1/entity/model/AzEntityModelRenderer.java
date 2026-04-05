@@ -12,9 +12,6 @@ import org.joml.Matrix4f;
 
 import java.util.UUID;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.blib.api.client.model.v1.AzBone;
 import com.blib.api.client.render.v1.AzLayerRenderer;
 import com.blib.api.client.render.v1.AzModelRenderer;
@@ -24,12 +21,6 @@ import com.blib.api.common.pathfinding.v1.physics.ClimbingOrientationProvider;
 import com.blib.internal.client.render.util.RenderUtil;
 
 public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUID, T> {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AzEntityModelRenderer.class);
-
-    private static final int LOG_INTERVAL_FRAMES = 20;
-
-    private int frameCounter;
 
     protected final AzEntityRendererPipeline<T> entityRendererPipeline;
 
@@ -46,8 +37,6 @@ public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUI
         var animatable = context.animatable();
         var partialTick = context.partialTick();
         var poseStack = context.poseStack();
-
-        frameCounter++;
 
         poseStack.pushPose();
         float lerpBodyRot = getClimbingAwareBodyRot(animatable, partialTick);
@@ -277,28 +266,6 @@ public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUI
         poseStack.mulPose(Axis.XP.rotationDegrees(orientationPitch));
         poseStack.mulPose(Axis.YP.rotationDegrees(roll));
 
-        if (frameCounter % LOG_INTERVAL_FRAMES == 0) {
-            LOGGER.info(
-                "[ClimbingRender] entity={} surface={} normal=({}, {}, {})",
-                animatable.getName().getString(),
-                surface,
-                normalX, normalY, normalZ
-            );
-            LOGGER.info(
-                "[ClimbingRender]   orientationYaw={} orientationPitch={} roll={} rollSign={}",
-                String.format("%.2f", orientationYaw),
-                String.format("%.2f", orientationPitch),
-                String.format("%.2f", roll),
-                String.format("%.1f", rollSign)
-            );
-            LOGGER.info(
-                "[ClimbingRender]   translate=({}, {}, {}) halfHeight={}",
-                String.format("%.4f", -normalX * halfHeight),
-                String.format("%.4f", -normalY * halfHeight),
-                String.format("%.4f", -normalZ * halfHeight),
-                String.format("%.4f", halfHeight)
-            );
-        }
     }
 
     /**
@@ -312,23 +279,7 @@ public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUI
             animatable instanceof ClimbingOrientationProvider provider
                 && provider.getClimbingSurfaceDirection() > 0
         ) {
-            var lerpedYaw = Mth.rotLerp(partialTick, provider.getClimbingYawOld(), provider.getClimbingYaw());
-
-            if (frameCounter % LOG_INTERVAL_FRAMES == 0) {
-                var vanillaBodyRot = getLerpRot(animatable, partialTick);
-
-                LOGGER.info(
-                    "[ClimbingBodyRot] entity={} climbingYawOld={} climbingYaw={} lerpedYaw={} vanillaBodyRot={} partialTick={}",
-                    animatable.getName().getString(),
-                    String.format("%.2f", provider.getClimbingYawOld()),
-                    String.format("%.2f", provider.getClimbingYaw()),
-                    String.format("%.2f", lerpedYaw),
-                    String.format("%.2f", vanillaBodyRot),
-                    String.format("%.4f", partialTick)
-                );
-            }
-
-            return lerpedYaw;
+            return Mth.rotLerp(partialTick, provider.getClimbingYawOld(), provider.getClimbingYaw());
         }
 
         return getLerpRot(animatable, partialTick);
