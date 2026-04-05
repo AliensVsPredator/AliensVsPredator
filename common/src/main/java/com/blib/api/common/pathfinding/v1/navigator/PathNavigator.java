@@ -20,9 +20,8 @@ import com.blib.api.common.pathfinding.v1.transition.TerrainTransition;
  * not extend any Minecraft class.
  * <p>
  * The consuming code calls {@link #tick(double, double, double, float, float)} each tick with the entity's exact
- * position and bounding box dimensions. The navigator advances
- * along the path and provides the next waypoint via {@link #getCurrentTargetPos()}. The calling code is responsible for
- * actually moving the entity toward the waypoint.
+ * position and bounding box dimensions. The navigator advances along the path and provides the next waypoint via
+ * {@link #getCurrentTargetPos()}. The calling code is responsible for actually moving the entity toward the waypoint.
  * </p>
  */
 public final class PathNavigator {

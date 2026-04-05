@@ -97,8 +97,6 @@ public class ClimbingMoveControl extends MoveControl {
             activeSurface = physicalSurface;
             nearEdgeTransition = true;
 
-            maintainClimbingPosture(navigator);
-
             if (navigator != null) {
                 tickClimbingMovement(navigator);
             }

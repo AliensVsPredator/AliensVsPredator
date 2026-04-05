@@ -68,6 +68,12 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     @Override
     public PathNode getStartNode(BlockPos entityPos) {
+        var classified = classifyTerrain(entityPos);
+
+        if (classified != null && config.supportsTerrain(classified)) {
+            return nodePool.getOrCreate(entityPos.getX(), entityPos.getY(), entityPos.getZ(), classified, 0);
+        }
+
         var climbableStart = tryCreateAnyClimbableNode(entityPos.getX(), entityPos.getY(), entityPos.getZ(), 0);
 
         if (climbableStart != null) {
@@ -441,6 +447,10 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         var surfaceMask = 0;
 
         for (var surface : Direction.values()) {
+            if (surface == Direction.DOWN) {
+                continue;
+            }
+
             var surfaceBlockPos = pos.relative(surface);
 
             if (!level.getBlockState(surfaceBlockPos).isSolid()) {
