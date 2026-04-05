@@ -1,36 +1,36 @@
 package com.blib.api.common.pathfinding.v1.physics;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.phys.Vec3;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.blib.api.common.pathfinding.v1.navigator.PathNavigator;
 import com.blib.api.common.pathfinding.v1.navigator.PathNavigatorUser;
 import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
 
 /**
- * A {@link MoveControl} that handles 3D movement on walls and ceilings.
+ * A unified {@link MoveControl} for entities using BLib's {@link PathNavigator}. Handles ground walking, wall/ceiling
+ * climbing, and idle surface attachment without delegating to vanilla's move control. Reads movement targets directly
+ * from the navigator's path nodes rather than relying on the {@link #setWantedPosition} intermediary.
  * <p>
- * Computes surface-relative target positions based on the entity's bounding box width, ensuring the entity doesn't
- * target unreachable block centers inside walls. Detects edge transitions (surface changes) and temporarily disables
- * sticking force so the entity can clear corners and ledges.
- * </p>
- * <p>
- * This control only handles physics (gravity, velocity, sticking force). Posture and animation are managed by the
- * pathfinding posture system via
- * {@link com.blib.api.common.pathfinding.v1.evaluator.TerrainEvaluatorConfig.Builder#withClimbingPostureIndex(int)}.
- * </p>
- * <p>
- * The entity must implement {@link PathNavigatorUser}. The navigator is resolved lazily each tick to avoid constructor
- * ordering issues.
+ * The entity must implement {@link PathNavigatorUser}. Climbing orientation is synced to clients via
+ * {@link ClimbingOrientationProvider} if the entity implements it.
  * </p>
  */
 public class ClimbingMoveControl extends MoveControl {
 
-    private static final float DEFAULT_STICKING_FORCE = 0.05f;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClimbingMoveControl.class);
+
+    private static final int LOG_INTERVAL_TICKS = 20;
+
+    private static final double VANILLA_GRAVITY = 0.08;
 
     private static final float DEFAULT_CLIMBING_SPEED_MULTIPLIER = 0.8f;
 
@@ -40,7 +40,7 @@ public class ClimbingMoveControl extends MoveControl {
 
     private static final float YAW_ROTATION_SPEED = 90.0f;
 
-    private final float stickingForce;
+    private static final float MAX_YAW_CHANGE_PER_TICK = 90.0f;
 
     private final float climbingSpeedMultiplier;
 
@@ -49,12 +49,11 @@ public class ClimbingMoveControl extends MoveControl {
     private int tickCounter;
 
     public ClimbingMoveControl(Mob mob) {
-        this(mob, DEFAULT_STICKING_FORCE, DEFAULT_CLIMBING_SPEED_MULTIPLIER);
+        this(mob, DEFAULT_CLIMBING_SPEED_MULTIPLIER);
     }
 
-    public ClimbingMoveControl(Mob mob, float stickingForce, float climbingSpeedMultiplier) {
+    public ClimbingMoveControl(Mob mob, float climbingSpeedMultiplier) {
         super(mob);
-        this.stickingForce = stickingForce;
         this.climbingSpeedMultiplier = climbingSpeedMultiplier;
     }
 
@@ -63,119 +62,149 @@ public class ClimbingMoveControl extends MoveControl {
         tickCounter++;
 
         var navigator = resolveNavigator();
-        var terrainIsClimbable = navigator != null && navigator.getCurrentTerrain() == TerrainType.CLIMBABLE;
+        var terrain = navigator != null ? navigator.getCurrentTerrain() : null;
+        var isClimbingTerrain = terrain == TerrainType.CLIMBABLE;
         var physicalSurface = wasClimbing ? findPhysicalSurface() : null;
-        var isPhysicallyOnSurface = physicalSurface != null;
+        var onSurface = physicalSurface != null;
 
-        updateClimbingSurface(navigator, terrainIsClimbable, physicalSurface);
+        updateClimbingSurface(navigator, isClimbingTerrain, physicalSurface);
         updateDebugWaypoints(navigator);
 
-        if (terrainIsClimbable || isPhysicallyOnSurface) {
-            if (!wasClimbing) {
-                mob.setNoGravity(true);
-                wasClimbing = true;
-            }
-
-            applyPhysicalStickingForce(physicalSurface);
+        if (isClimbingTerrain) {
+            wasClimbing = true;
+            applySurfaceStickingForce(physicalSurface);
             maintainClimbingPosture(navigator);
-
-            if (terrainIsClimbable) {
-                tickClimbing(navigator, true);
-            } else {
-                mob.setDeltaMovement(mob.getDeltaMovement().scale(CLIMBING_DRAG));
-            }
-        } else if (wasClimbing) {
-            mob.setNoGravity(false);
-
-            if (mob.onGround()) {
-                wasClimbing = false;
-                resetClimbingPosture(navigator);
-            }
-
-            super.tick();
+            tickClimbingMovement(navigator);
+        } else if (onSurface) {
+            wasClimbing = true;
+            applySurfaceStickingForce(physicalSurface);
+            maintainClimbingPosture(navigator);
+            mob.setDeltaMovement(mob.getDeltaMovement().scale(CLIMBING_DRAG));
+        } else if (wasClimbing && mob.onGround()) {
+            wasClimbing = false;
+            resetClimbingPosture(navigator);
+            tickGroundMovement();
         } else {
-            super.tick();
+            tickGroundMovement();
         }
     }
 
-    /**
-     * Ensures the climbing posture stays active while the entity is on a surface. The navigator's posture callbacks
-     * reset the posture when a path ends, but the entity should remain in climbing posture as long as it's physically
-     * attached.
-     */
-    private void maintainClimbingPosture(PathNavigator navigator) {
-        if (navigator == null) {
+    // --- Ground movement ---
+
+    private void tickGroundMovement() {
+        mob.setXxa(0);
+        mob.setZza(0);
+
+        if (operation != Operation.MOVE_TO) {
             return;
         }
 
-        var climbingPosture = navigator.getConfig().getEvaluatorConfig().getClimbingPostureIndex();
+        operation = Operation.WAIT;
 
-        if (climbingPosture >= 0) {
-            navigator.getConfig().firePostureEnter(climbingPosture);
-        }
-    }
+        var dx = wantedX - mob.getX();
+        var dz = wantedZ - mob.getZ();
+        var dy = wantedY - mob.getY();
+        var horizontalDistanceSqr = dx * dx + dz * dz;
 
-    private void resetClimbingPosture(PathNavigator navigator) {
-        if (navigator == null) {
+        if (horizontalDistanceSqr + dy * dy < MIN_SPEED_SQR) {
+            mob.setZza(0);
             return;
         }
 
-        navigator.getConfig().firePostureEnter(0);
+        var targetYaw = (float) (Mth.atan2(dz, dx) * 180.0F / Math.PI) - 90.0F;
+
+        mob.setYRot(rotlerp(mob.getYRot(), targetYaw, MAX_YAW_CHANGE_PER_TICK));
+
+        var speed = (float) (speedModifier * mob.getAttributeValue(Attributes.MOVEMENT_SPEED));
+
+        mob.setSpeed(speed);
+        mob.setZza(speed);
+
+        var blockPos = mob.blockPosition();
+        var blockState = mob.level().getBlockState(blockPos);
+        var collisionShape = blockState.getCollisionShape(mob.level(), blockPos);
+
+        var needsJump = (dy > mob.maxUpStep() && horizontalDistanceSqr < Math.max(1.0F, mob.getBbWidth()))
+            || (!collisionShape.isEmpty()
+                && mob.getY() < collisionShape.max(Direction.Axis.Y) + blockPos.getY()
+                && !blockState.is(BlockTags.DOORS)
+                && !blockState.is(BlockTags.FENCES));
+
+        if (needsJump && mob.onGround()) {
+            mob.getJumpControl().jump();
+        }
     }
 
-    /**
-     * Scans adjacent blocks for a solid surface the entity is clinging to. Returns the direction toward the surface, or
-     * null if the entity is not adjacent to any solid block.
-     */
-    private void updateDebugWaypoints(PathNavigator navigator) {
+    // --- Climbing movement ---
+
+    private void tickClimbingMovement(PathNavigator navigator) {
+        mob.setXxa(0);
+        mob.setZza(0);
+
+        if (operation != Operation.MOVE_TO) {
+            if (tickCounter % LOG_INTERVAL_TICKS == 0) {
+                LOGGER.info("[ClimbTick] {} IDLE nav.isNavigating={}",
+                    mob.getName().getString(), navigator.isNavigating());
+            }
+
+            mob.setDeltaMovement(mob.getDeltaMovement().scale(CLIMBING_DRAG));
+            return;
+        }
+
+        operation = Operation.WAIT;
+
+        var target = computeSurfaceTarget(navigator);
+        var dx = target.x - mob.getX();
+        var dy = target.y - mob.getY();
+        var dz = target.z - mob.getZ();
+        var distanceSquared = dx * dx + dy * dy + dz * dz;
+
+        if (distanceSquared < ARRIVAL_THRESHOLD * ARRIVAL_THRESHOLD) {
+            mob.setDeltaMovement(mob.getDeltaMovement().scale(CLIMBING_DRAG));
+            return;
+        }
+
+        var distance = Math.sqrt(distanceSquared);
+        var speed = mob.getAttributeValue(Attributes.MOVEMENT_SPEED) * speedModifier * climbingSpeedMultiplier;
+        var edgeTransition = isNearEdgeTransition(navigator);
+
+        mob.setDeltaMovement(
+            (dx / distance) * speed,
+            (dy / distance) * speed,
+            (dz / distance) * speed
+        );
+
+        updateClimbingYaw(navigator, dx, dy, dz);
+
+        if (!edgeTransition) {
+            var surfaceOrdinal = navigator.getCurrentSurfaceDirection();
+            applySurfaceStickingForce(Direction.values()[surfaceOrdinal]);
+        }
+
+        if (tickCounter % LOG_INTERVAL_TICKS == 0) {
+            var path = navigator.getCurrentPath();
+
+            LOGGER.info("[ClimbTick] {} MOVING dist={} speed={} edgeTrans={} node={}/{} surface={}",
+                mob.getName().getString(),
+                String.format("%.3f", distance), String.format("%.4f", speed), edgeTransition,
+                path != null ? path.getCurrentNodeIndex() : -1,
+                path != null ? path.getNodeCount() : -1,
+                navigator.getCurrentSurfaceDirection());
+            LOGGER.info("[ClimbTick]   entityPos=({}, {}, {}) target=({}, {}, {})",
+                String.format("%.2f", mob.getX()), String.format("%.2f", mob.getY()),
+                String.format("%.2f", mob.getZ()), String.format("%.2f", target.x),
+                String.format("%.2f", target.y), String.format("%.2f", target.z));
+        }
+    }
+
+    // --- Surface and posture management ---
+
+    private void updateClimbingSurface(PathNavigator navigator, boolean isClimbingTerrain, Direction physicalSurface) {
         if (!(mob instanceof ClimbingOrientationProvider provider)) {
             return;
         }
 
-        if (navigator == null || !navigator.isNavigating()) {
-            provider.setDebugCurrentWaypoint(0);
-            provider.setDebugTargetPos(0);
-            return;
-        }
-
-        var waypoint = navigator.getCurrentTargetPos();
-        provider.setDebugCurrentWaypoint(waypoint != null ? waypoint.asLong() : 0);
-
-        var target = navigator.getTargetPos();
-        provider.setDebugTargetPos(target != null ? target.asLong() : 0);
-    }
-
-    private Direction findPhysicalSurface() {
-        var entityPos = mob.blockPosition();
-
-        for (var direction : Direction.values()) {
-            if (direction == Direction.DOWN) {
-                continue;
-            }
-
-            if (mob.level().getBlockState(entityPos.relative(direction)).isSolid()) {
-                return direction;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Updates the climbing surface direction on the {@link ClimbingOrientationProvider}. Prefers the navigator's surface
-     * when available, falls back to the physical surface scan, and clears the surface when the entity is on the ground
-     * with no climbing path.
-     */
-    private void updateClimbingSurface(
-        PathNavigator navigator,
-        boolean terrainIsClimbable,
-        Direction physicalSurface
-    ) {
-        if (!(mob instanceof ClimbingOrientationProvider provider)) {
-            return;
-        }
-
-        if (terrainIsClimbable) {
+        if (isClimbingTerrain) {
             var surfaceOrdinal = navigator.getCurrentSurfaceDirection();
 
             if (surfaceOrdinal > 0) {
@@ -196,139 +225,68 @@ public class ClimbingMoveControl extends MoveControl {
         }
     }
 
-    private void tickClimbing(PathNavigator navigator, boolean terrainIsClimbable) {
-        mob.setXxa(0);
-        mob.setZza(0);
-
-        if (operation != Operation.MOVE_TO) {
-            mob.setDeltaMovement(mob.getDeltaMovement().scale(CLIMBING_DRAG));
+    private void maintainClimbingPosture(PathNavigator navigator) {
+        if (navigator == null) {
             return;
         }
 
-        operation = Operation.WAIT;
+        var climbingPosture = navigator.getConfig().getEvaluatorConfig().getClimbingPostureIndex();
 
-        var target = terrainIsClimbable
-            ? computeSurfaceTarget(navigator)
-            : new Vec3(wantedX, wantedY, wantedZ);
-
-        var dx = target.x - mob.getX();
-        var dy = target.y - mob.getY();
-        var dz = target.z - mob.getZ();
-        var distanceSquared = dx * dx + dy * dy + dz * dz;
-
-        if (distanceSquared < ARRIVAL_THRESHOLD * ARRIVAL_THRESHOLD) {
-            mob.setDeltaMovement(mob.getDeltaMovement().scale(CLIMBING_DRAG));
-            return;
-        }
-
-        var distance = Math.sqrt(distanceSquared);
-        var speed = mob.getAttributeValue(Attributes.MOVEMENT_SPEED) * speedModifier * climbingSpeedMultiplier;
-
-        mob.setDeltaMovement(
-            (dx / distance) * speed,
-            (dy / distance) * speed,
-            (dz / distance) * speed
-        );
-
-        updateClimbingYaw(navigator, terrainIsClimbable, dx, dy, dz);
-
-        if (terrainIsClimbable && !isNearEdgeTransition(navigator)) {
-            applySurfaceStickingForce(navigator);
+        if (climbingPosture >= 0) {
+            navigator.getConfig().firePostureEnter(climbingPosture);
         }
     }
 
-    private static final float YAW_THRESHOLD = 0.0001f;
+    private void resetClimbingPosture(PathNavigator navigator) {
+        if (navigator == null) {
+            return;
+        }
+
+        navigator.getConfig().firePostureEnter(0);
+    }
+
+    // --- Physical surface detection ---
+
+    private Direction findPhysicalSurface() {
+        var entityPos = mob.blockPosition();
+
+        for (var direction : Direction.values()) {
+            if (direction == Direction.DOWN) {
+                continue;
+            }
+
+            if (mob.level().getBlockState(entityPos.relative(direction)).isSolid()) {
+                return direction;
+            }
+        }
+
+        return null;
+    }
 
     /**
-     * Updates the climbing yaw on the {@link ClimbingOrientationProvider}. Transforms the movement direction through
-     * the inverse of the renderer's orientation rotation and extracts the yaw from the result. This produces the
-     * correct yaw for ANY surface without per-surface special cases.
+     * Applies a sticking force that counteracts gravity by pushing the entity into the surface. The force scales with
+     * how non-upright the surface is: walls get full counter-gravity force, floors get none (gravity already handles
+     * it), ceilings get upward force to hold the entity against the ceiling.
      */
-    private void updateClimbingYaw(
-        PathNavigator navigator,
-        boolean terrainIsClimbable,
-        double dx,
-        double dy,
-        double dz
-    ) {
-        if (!(mob instanceof ClimbingOrientationProvider provider)) {
+    private void applySurfaceStickingForce(Direction surface) {
+        if (surface == null) {
             return;
         }
 
-        provider.setClimbingYawOld(provider.getClimbingYaw());
+        var normal = surface.step();
+        var uprightness = Math.max(normal.y, 0);
+        var stickingMagnitude = VANILLA_GRAVITY * uprightness + VANILLA_GRAVITY * (1 - uprightness);
 
-        if (!terrainIsClimbable) {
-            return;
-        }
-
-        var surfaceOrdinal = navigator.getCurrentSurfaceDirection();
-
-        if (surfaceOrdinal <= 0) {
-            return;
-        }
-
-        var movementLengthSquared = dx * dx + dy * dy + dz * dz;
-
-        if (movementLengthSquared <= YAW_THRESHOLD) {
-            return;
-        }
-
-        // Compute the same orientation yaw/pitch/roll that the renderer uses.
-        var surface = Direction.values()[surfaceOrdinal];
-        var normal = surface.getOpposite().step();
-        float normalX = normal.x;
-        float normalY = normal.y;
-        float normalZ = normal.z;
-
-        var componentZ = normalZ;
-        var componentX = normalX;
-        var orientationYaw = (float) Math.toDegrees(Mth.atan2(componentX, componentZ));
-
-        var yawRad = Math.toRadians(orientationYaw);
-        var recomputedZ = (float) (Math.sin(yawRad) * normalX + Math.cos(yawRad) * normalZ);
-        var recomputedY = normalY;
-        var recomputedX = (float) (Math.sin(yawRad - Math.PI / 2) * normalX + Math.cos(yawRad - Math.PI / 2) * normalZ);
-
-        var horizontalLength = Mth.sqrt(recomputedX * recomputedX + recomputedZ * recomputedZ);
-        var orientationPitch = (float) Math.toDegrees(Mth.atan2(horizontalLength, recomputedY));
-        var rollSign = Math.signum(0.5f - recomputedY - recomputedZ - recomputedX);
-        var roll = rollSign * orientationYaw;
-
-        // Transform movement through inverse orientation: R^(-1) = YP(-roll) * XP(-pitch) * YP(-yaw).
-        // Applied to the vector in order: YP(-yaw) first, XP(-pitch) second, YP(-roll) last.
-        var vx = (float) dx;
-        var vy = (float) dy;
-        var vz = (float) dz;
-
-        // Step 1: YP(-yaw)
-        var oYawRad = (float) Math.toRadians(-orientationYaw);
-        var cosY = Mth.cos(oYawRad);
-        var sinY = Mth.sin(oYawRad);
-        var rx = vx * cosY + vz * sinY;
-        var ry = vy;
-        var rz = -vx * sinY + vz * cosY;
-
-        // Step 2: XP(-pitch)
-        var pitchRad = (float) Math.toRadians(-orientationPitch);
-        var cosP = Mth.cos(pitchRad);
-        var sinP = Mth.sin(pitchRad);
-        var px = rx;
-        var py = ry * cosP - rz * sinP;
-        var pz = ry * sinP + rz * cosP;
-
-        // Step 3: YP(-roll)
-        var rollRad = (float) Math.toRadians(-roll);
-        var cosR = Mth.cos(rollRad);
-        var sinR = Mth.sin(rollRad);
-        var fx = px * cosR + pz * sinR;
-        var fz = -px * sinR + pz * cosR;
-
-        // Extract yaw: climbingYaw = atan2(-fx, fz) in degrees
-        var targetYaw = (float) Math.toDegrees(Mth.atan2(-fx, fz));
-        var smoothedYaw = rotlerp(provider.getClimbingYaw(), targetYaw, YAW_ROTATION_SPEED);
-
-        provider.setClimbingYaw(smoothedYaw);
+        mob.setDeltaMovement(
+            mob.getDeltaMovement().add(
+                normal.x * stickingMagnitude,
+                normal.y * stickingMagnitude,
+                normal.z * stickingMagnitude
+            )
+        );
     }
+
+    // --- Climbing target computation ---
 
     private Vec3 computeSurfaceTarget(PathNavigator navigator) {
         var node = navigator.getCurrentNode();
@@ -342,11 +300,11 @@ public class ClimbingMoveControl extends MoveControl {
         var halfWidth = mob.getBbWidth() / 2.0;
         var offset = 0.5 - halfWidth;
 
-        var targetX = node.getX() + 0.5 + opposite.getStepX() * offset;
-        var targetY = node.getY() + 0.5 + opposite.getStepY() * offset;
-        var targetZ = node.getZ() + 0.5 + opposite.getStepZ() * offset;
-
-        return new Vec3(targetX, targetY, targetZ);
+        return new Vec3(
+            node.getX() + 0.5 + opposite.getStepX() * offset,
+            node.getY() + 0.5 + opposite.getStepY() * offset,
+            node.getZ() + 0.5 + opposite.getStepZ() * offset
+        );
     }
 
     private boolean isNearEdgeTransition(PathNavigator navigator) {
@@ -369,27 +327,96 @@ public class ClimbingMoveControl extends MoveControl {
             || nextNode.getSurfaceDirection() != currentNode.getSurfaceDirection();
     }
 
-    private void applySurfaceStickingForce(PathNavigator navigator) {
-        var surfaceOrdinal = navigator.getCurrentSurfaceDirection();
-        var surface = Direction.values()[surfaceOrdinal];
+    // --- Climbing yaw ---
 
-        applyPhysicalStickingForce(surface);
-    }
+    private static final float YAW_THRESHOLD = 0.0001f;
 
-    private void applyPhysicalStickingForce(Direction surface) {
-        if (surface == null) {
+    /**
+     * Updates the climbing yaw on the {@link ClimbingOrientationProvider}. Transforms the movement direction through
+     * the inverse of the renderer's orientation rotation and extracts the yaw from the result.
+     */
+    private void updateClimbingYaw(PathNavigator navigator, double dx, double dy, double dz) {
+        if (!(mob instanceof ClimbingOrientationProvider provider)) {
             return;
         }
 
-        mob.setDeltaMovement(
-            mob.getDeltaMovement()
-                .add(
-                    surface.getStepX() * stickingForce,
-                    surface.getStepY() * stickingForce,
-                    surface.getStepZ() * stickingForce
-                )
-        );
+        provider.setClimbingYawOld(provider.getClimbingYaw());
+
+        var surfaceOrdinal = navigator.getCurrentSurfaceDirection();
+
+        if (surfaceOrdinal <= 0) {
+            return;
+        }
+
+        if (dx * dx + dy * dy + dz * dz <= YAW_THRESHOLD) {
+            return;
+        }
+
+        var surface = Direction.values()[surfaceOrdinal];
+        var normal = surface.getOpposite().step();
+        float normalX = normal.x;
+        float normalY = normal.y;
+        float normalZ = normal.z;
+
+        var orientationYaw = (float) Math.toDegrees(Mth.atan2(normalX, normalZ));
+        var yawRad = Math.toRadians(orientationYaw);
+        var recomputedZ = (float) (Math.sin(yawRad) * normalX + Math.cos(yawRad) * normalZ);
+        var recomputedY = normalY;
+        var recomputedX = (float) (Math.sin(yawRad - Math.PI / 2) * normalX + Math.cos(yawRad - Math.PI / 2) * normalZ);
+
+        var horizontalLength = Mth.sqrt(recomputedX * recomputedX + recomputedZ * recomputedZ);
+        var orientationPitch = (float) Math.toDegrees(Mth.atan2(horizontalLength, recomputedY));
+        var roll = Math.signum(0.5f - recomputedY - recomputedZ - recomputedX) * orientationYaw;
+
+        var vx = (float) dx;
+        var vy = (float) dy;
+        var vz = (float) dz;
+
+        // Step 1: YP(-yaw)
+        var cosY = Mth.cos((float) Math.toRadians(-orientationYaw));
+        var sinY = Mth.sin((float) Math.toRadians(-orientationYaw));
+        var rx = vx * cosY + vz * sinY;
+        var ry = vy;
+        var rz = -vx * sinY + vz * cosY;
+
+        // Step 2: XP(-pitch)
+        var cosP = Mth.cos((float) Math.toRadians(-orientationPitch));
+        var sinP = Mth.sin((float) Math.toRadians(-orientationPitch));
+        var px = rx;
+        var pz = ry * sinP + rz * cosP;
+
+        // Step 3: YP(-roll)
+        var cosR = Mth.cos((float) Math.toRadians(-roll));
+        var sinR = Mth.sin((float) Math.toRadians(-roll));
+        var fx = px * cosR + pz * sinR;
+        var fz = -px * sinR + pz * cosR;
+
+        var targetYaw = (float) Math.toDegrees(Mth.atan2(-fx, fz));
+
+        provider.setClimbingYaw(rotlerp(provider.getClimbingYaw(), targetYaw, YAW_ROTATION_SPEED));
     }
+
+    // --- Debug ---
+
+    private void updateDebugWaypoints(PathNavigator navigator) {
+        if (!(mob instanceof ClimbingOrientationProvider provider)) {
+            return;
+        }
+
+        if (navigator == null || !navigator.isNavigating()) {
+            provider.setDebugCurrentWaypoint(0);
+            provider.setDebugTargetPos(0);
+            return;
+        }
+
+        var waypoint = navigator.getCurrentTargetPos();
+        provider.setDebugCurrentWaypoint(waypoint != null ? waypoint.asLong() : 0);
+
+        var target = navigator.getTargetPos();
+        provider.setDebugTargetPos(target != null ? target.asLong() : 0);
+    }
+
+    // --- Utilities ---
 
     private PathNavigator resolveNavigator() {
         if (mob instanceof PathNavigatorUser user) {

@@ -134,6 +134,7 @@ public final class PathNavigator {
         advanceWaypoints(entityPos);
 
         if (currentPath.isDone()) {
+            LOGGER.info("[PathNav] path completed at entityPos={}", entityPos);
             resetPosture();
             return;
         }
@@ -332,8 +333,23 @@ public final class PathNavigator {
             return;
         }
 
-        if (tickCount - lastProgressTick >= config.getStuckTimeoutInTicks()) {
+        var ticksSinceProgress = tickCount - lastProgressTick;
+
+        if (ticksSinceProgress >= config.getStuckTimeoutInTicks()) {
+            var node = currentPath != null && !currentPath.isDone() ? currentPath.getCurrentNode() : null;
+
+            LOGGER.info("[Stuck] path abandoned after {} ticks | entityPos={} targetPos={} distSqr={} node={} terrain={} surface={}",
+                ticksSinceProgress, entityPos, targetPos,
+                String.format("%.2f", currentDistance),
+                node != null ? "(%d,%d,%d)".formatted(node.getX(), node.getY(), node.getZ()) : "none",
+                currentTerrain,
+                currentSurfaceDirection);
+
             stop();
+        } else if (ticksSinceProgress > 0 && tickCount % 20 == 0) {
+            LOGGER.info("[StuckWatch] no progress for {} ticks (timeout={}) | entityPos={} distToTarget={}",
+                ticksSinceProgress, config.getStuckTimeoutInTicks(),
+                entityPos, String.format("%.2f", Math.sqrt(currentDistance)));
         }
     }
 
