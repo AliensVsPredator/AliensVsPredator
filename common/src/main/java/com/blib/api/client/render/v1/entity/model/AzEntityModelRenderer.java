@@ -10,8 +10,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import org.joml.Matrix4f;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import com.blib.api.client.model.v1.AzBone;
@@ -27,8 +25,6 @@ public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUI
     private static final float FORWARD_BLEND_SPEED = 0.25f;
 
     protected final AzEntityRendererPipeline<T> entityRendererPipeline;
-
-    private final Map<Integer, float[]> displayedForwards = new HashMap<>();
 
     public AzEntityModelRenderer(
         AzEntityRendererPipeline<T> entityRendererPipeline,
@@ -234,10 +230,14 @@ public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUI
         }
 
         var surfaceOrdinal = provider.getClimbingSurfaceDirection();
-        var entityId = animatable.getId();
+        var renderState = provider.getClimbingRenderState();
+
+        if (renderState == null) {
+            return;
+        }
 
         if (surfaceOrdinal <= 0) {
-            displayedForwards.remove(entityId);
+            renderState.clearDisplayedForward();
             return;
         }
 
@@ -248,7 +248,7 @@ public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUI
         float upZ = normal.z;
 
         var delta = animatable.getDeltaMovement();
-        var stored = displayedForwards.get(entityId);
+        var hasForward = renderState.hasDisplayedForward();
 
         float targetFwdX = (float) delta.x;
         float targetFwdY = (float) delta.y;
@@ -262,28 +262,31 @@ public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUI
         targetFwdZ -= upZ * dot;
 
         var targetLen = Mth.sqrt(targetFwdX * targetFwdX + targetFwdY * targetFwdY + targetFwdZ * targetFwdZ);
-        var minProjectedLength = stored == null ? 0.1f : 0.001f;
+        var minProjectedLength = hasForward ? 0.001f : 0.1f;
 
         if (targetLen > minProjectedLength) {
             targetFwdX /= targetLen;
             targetFwdY /= targetLen;
             targetFwdZ /= targetLen;
 
-            if (stored == null) {
-                stored = new float[] { targetFwdX, targetFwdY, targetFwdZ };
-                displayedForwards.put(entityId, stored);
+            if (!hasForward) {
+                renderState.setDisplayedForward(targetFwdX, targetFwdY, targetFwdZ);
             } else {
-                stored[0] = Mth.lerp(FORWARD_BLEND_SPEED, stored[0], targetFwdX);
-                stored[1] = Mth.lerp(FORWARD_BLEND_SPEED, stored[1], targetFwdY);
-                stored[2] = Mth.lerp(FORWARD_BLEND_SPEED, stored[2], targetFwdZ);
+                var stored = renderState.getDisplayedForward();
+
+                renderState.setDisplayedForward(
+                    Mth.lerp(FORWARD_BLEND_SPEED, stored[0], targetFwdX),
+                    Mth.lerp(FORWARD_BLEND_SPEED, stored[1], targetFwdY),
+                    Mth.lerp(FORWARD_BLEND_SPEED, stored[2], targetFwdZ)
+                );
             }
         }
 
-        if (stored == null) {
+        if (!renderState.hasDisplayedForward()) {
             return;
         }
 
-        // Normalize the displayed forward.
+        var stored = renderState.getDisplayedForward();
         var fwdLen = Mth.sqrt(stored[0] * stored[0] + stored[1] * stored[1] + stored[2] * stored[2]);
 
         if (fwdLen < 0.001f) {
@@ -336,12 +339,12 @@ public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUI
      * {@code YP(180 - bodyRot)} rotation, since {@code applyClimbingOrientation} already handles the full orientation.
      */
     private float getClimbingAwareBodyRot(T animatable, float partialTick) {
-        if (
-            animatable instanceof ClimbingOrientationProvider provider
-                && provider.getClimbingSurfaceDirection() > 0
-                && displayedForwards.containsKey(animatable.getId())
-        ) {
-            return 180.0f;
+        if (animatable instanceof ClimbingOrientationProvider provider && provider.getClimbingSurfaceDirection() > 0) {
+            var renderState = provider.getClimbingRenderState();
+
+            if (renderState != null && renderState.hasDisplayedForward()) {
+                return 180.0f;
+            }
         }
 
         return getLerpRot(animatable, partialTick);

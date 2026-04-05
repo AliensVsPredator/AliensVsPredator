@@ -60,4 +60,12 @@ public interface ClimbingOrientationProvider {
      * Sets the packed final target position for debug rendering.
      */
     void setDebugTargetPos(long packed);
+
+    /**
+     * Returns the client-side render state for climbing orientation, or {@code null} if this entity does not support
+     * it. Implementing entities should hold a single {@link ClimbingRenderState} instance as a field.
+     */
+    default ClimbingRenderState getClimbingRenderState() {
+        return null;
+    }
 }
