@@ -26,7 +26,7 @@ import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
 /**
  * A* pathfinding with optional two-level hierarchical search. When a {@link TerrainClassificationCache} is provided,
  * the pathfinder first runs a fast section-level A* to identify a corridor of 16x16x16 sections, then runs the
- * block-level A* restricted to that corridor. This prevents budget waste on irrelevant areas.
+ * block-level A* restricted to that corridor.
  */
 public final class BLibPathFinder {
 
@@ -68,7 +68,7 @@ public final class BLibPathFinder {
                 corridor = findSectionCorridor(level, startPos, targetPos);
             }
 
-            return searchBlocks(startPos, targetPos, corridor);
+            return searchBlocks(level, startPos, targetPos, corridor);
         } finally {
             evaluator.cleanup();
         }
@@ -87,15 +87,8 @@ public final class BLibPathFinder {
         var startKey = packSectionKey(startSX, startSY, startSZ);
         var goalKey = packSectionKey(goalSX, goalSY, goalSZ);
 
-        record SectionEntry(
-            long key,
-            int x,
-            int y,
-            int z,
-            float gCost,
-            float fCost,
-            @Nullable SectionEntry parent
-        ) {}
+        record SectionEntry(long key, int x, int y, int z, float gCost, float fCost,
+            @Nullable SectionEntry parent) {}
 
         var openSet = new PriorityQueue<SectionEntry>(Comparator.comparingDouble(SectionEntry::fCost));
         var closedSet = new HashSet<Long>();
@@ -116,16 +109,12 @@ public final class BLibPathFinder {
             closedSet.add(current.key());
             visitedCount++;
 
-            if (
-                bestEntry == null || sectionDistance(current.x(), current.y(), current.z(), goalSX, goalSY, goalSZ) < sectionDistance(
-                    bestEntry.x(),
-                    bestEntry.y(),
-                    bestEntry.z(),
-                    goalSX,
-                    goalSY,
-                    goalSZ
-                )
-            ) {
+            var currentDist = sectionDistance(current.x(), current.y(), current.z(), goalSX, goalSY, goalSZ);
+            var bestDist = bestEntry == null
+                ? Float.MAX_VALUE
+                : sectionDistance(bestEntry.x(), bestEntry.y(), bestEntry.z(), goalSX, goalSY, goalSZ);
+
+            if (currentDist < bestDist) {
                 bestEntry = current;
             }
 
@@ -207,8 +196,6 @@ public final class BLibPathFinder {
         }
 
         // Build corridor from path sections with a 1-section buffer.
-        // The buffer ensures the block-level A* can reach climbable structures
-        // slightly off the direct section path.
         var corePath = new ArrayList<long[]>();
         var entry = bestEntry;
 
@@ -240,16 +227,11 @@ public final class BLibPathFinder {
     }
 
     private static float sectionDistance(int ax, int ay, int az, int bx, int by, int bz) {
-        var dx = bx - ax;
-        var dy = by - ay;
-        var dz = bz - az;
-
+        int dx = bx - ax, dy = by - ay, dz = bz - az;
         return (float) Math.sqrt(dx * dx + dy * dy + dz * dz);
     }
 
-    // --- Block-level A* ---
-
-    private @Nullable BLibPath searchBlocks(BlockPos startPos, BlockPos targetPos, @Nullable Set<Long> corridor) {
+    private @Nullable BLibPath searchBlocks(LevelReader level, BlockPos startPos, BlockPos targetPos, @Nullable Set<Long> corridor) {
         var startNode = evaluator.getStartNode(startPos);
         var goalNode = evaluator.getGoalNode(targetPos);
 
@@ -276,9 +258,8 @@ public final class BLibPathFinder {
             visitedCount++;
 
             if (current.equals(goalNode)) {
-                var path = reconstructPath(current, true);
+                var path = buildPath(level, current, true);
 
-                assignSurfaceDirections(path);
                 lastSearchSnapshot = buildSnapshot(closedNodes, path, corridor, visitedCount);
 
                 return path;
@@ -315,19 +296,14 @@ public final class BLibPathFinder {
             }
         }
 
-        LOGGER.info(
-            "[A*] Visited {}/{} nodes | budget exhausted={} | corridor={}",
-            visitedCount,
-            config.maxSearchNodes(),
-            visitedCount >= config.maxSearchNodes(),
-            corridor != null ? corridor.size() + " sections" : "none"
-        );
+        LOGGER.info("[A*] Visited {}/{} nodes | exhausted={} | corridor={}",
+            visitedCount, config.maxSearchNodes(), visitedCount >= config.maxSearchNodes(),
+            corridor != null ? corridor.size() + " sections" : "none");
 
         BLibPath path = null;
 
         if (bestNode != startNode) {
-            path = reconstructPath(bestNode, false);
-            assignSurfaceDirections(path);
+            path = buildPath(level, bestNode, false);
         }
 
         lastSearchSnapshot = buildSnapshot(closedNodes, path, corridor, visitedCount);
@@ -352,23 +328,18 @@ public final class BLibPathFinder {
         var entries = new ArrayList<DebugNodeEntry>(closedNodes.size());
 
         for (var node : closedNodes) {
-            entries.add(
-                new DebugNodeEntry(
-                    node.getX(),
-                    node.getY(),
-                    node.getZ(),
-                    node.getTerrainType().ordinal(),
-                    node.getPostureIndex(),
-                    node.getSurfaceDirection(),
-                    node.getAvailableSurfaces(),
-                    pathNodeSet.contains(node)
-                )
-            );
+            entries.add(new DebugNodeEntry(
+                node.getX(), node.getY(), node.getZ(), node.getTerrainType().ordinal(),
+                node.getPostureIndex(), node.getSurfaceDirection(), node.getAvailableSurfaces(),
+                pathNodeSet.contains(node)
+            ));
         }
 
-        var corridorKeys = corridor != null ? List.copyOf(corridor) : List.<Long>of();
-
-        return new PathSearchSnapshot(entries, corridorKeys, visitedCount, config.maxSearchNodes());
+        return new PathSearchSnapshot(
+            entries,
+            corridor != null ? List.copyOf(corridor) : List.<Long>of(),
+            visitedCount, config.maxSearchNodes()
+        );
     }
 
     private static boolean isInCorridor(PathNode node, Set<Long> corridor) {
@@ -385,13 +356,38 @@ public final class BLibPathFinder {
         return (float) Math.sqrt(dx * dx + dy * dy + dz * dz) * config.heuristicWeight();
     }
 
+    // --- Path post-processing pipeline ---
+
+    private BLibPath buildPath(LevelReader level, PathNode endNode, boolean reached) {
+        var nodes = reconstructNodes(endNode);
+
+        assignSurfaceDirections(nodes);
+        insertCornerNodes(level, nodes);
+
+        return new BLibPath(nodes, reached);
+    }
+
+    private List<PathNode> reconstructNodes(PathNode endNode) {
+        var nodes = new ArrayList<PathNode>();
+        var current = endNode;
+
+        while (current != null && nodes.size() < config.maxPathLength()) {
+            nodes.add(current);
+            current = current.getParent();
+        }
+
+        Collections.reverse(nodes);
+
+        return nodes;
+    }
+
     // --- TPO: Surface direction assignment ---
 
-    private void assignSurfaceDirections(BLibPath path) {
+    private void assignSurfaceDirections(List<PathNode> nodes) {
         var previousSurface = -1;
 
-        for (int i = 0; i < path.getNodeCount(); i++) {
-            var node = path.getNode(i);
+        for (int i = 0; i < nodes.size(); i++) {
+            var node = nodes.get(i);
 
             if (node.getTerrainType() != TerrainType.CLIMBABLE) {
                 node.setSurfaceDirection(0);
@@ -404,17 +400,17 @@ public final class BLibPathFinder {
             if (previousSurface >= 0 && (available & (1 << previousSurface)) != 0) {
                 node.setSurfaceDirection(previousSurface);
             } else {
-                node.setSurfaceDirection(pickBestSurface(path, i, available));
+                node.setSurfaceDirection(pickBestSurface(nodes, i, available));
             }
 
             previousSurface = node.getSurfaceDirection();
         }
     }
 
-    private static int pickBestSurface(BLibPath path, int index, int availableMask) {
+    private static int pickBestSurface(List<PathNode> nodes, int index, int availableMask) {
         if (index > 0) {
-            var prev = path.getNode(index - 1);
-            var current = path.getNode(index);
+            var prev = nodes.get(index - 1);
+            var current = nodes.get(index);
             var dx = current.getX() - prev.getX();
             var dy = current.getY() - prev.getY();
             var dz = current.getZ() - prev.getZ();
@@ -441,18 +437,69 @@ public final class BLibPathFinder {
         return Integer.numberOfTrailingZeros(availableMask);
     }
 
-    private BLibPath reconstructPath(PathNode endNode, boolean reached) {
-        var nodes = new ArrayList<PathNode>();
-        var current = endNode;
+    // --- Corner node injection for convex surface transitions ---
 
-        while (current != null && nodes.size() < config.maxPathLength()) {
-            nodes.add(current);
-            current = current.getParent();
+    /**
+     * Inserts intermediate corner nodes where the path transitions between perpendicular climbing surfaces. At a convex
+     * corner, the entity cannot move in a straight line between surfaces because the pillar block is in the way. The
+     * corner node sits in the air at the outer corner, giving the entity a waypoint to swing around.
+     */
+    private static void insertCornerNodes(LevelReader level, List<PathNode> nodes) {
+        var transitionsFound = 0;
+
+        for (int i = 0; i < nodes.size() - 1; i++) {
+            var current = nodes.get(i);
+            var next = nodes.get(i + 1);
+
+            if (current.getTerrainType() != TerrainType.CLIMBABLE || next.getTerrainType() != TerrainType.CLIMBABLE) {
+                continue;
+            }
+
+            var currentSurface = current.getSurfaceDirection();
+            var nextSurface = next.getSurfaceDirection();
+
+            if (currentSurface <= 0 || nextSurface <= 0 || currentSurface == nextSurface) {
+                continue;
+            }
+
+            transitionsFound++;
+            var currentDir = Direction.values()[currentSurface];
+            var nextDir = Direction.values()[nextSurface];
+
+            if (currentDir == nextDir.getOpposite()) {
+                LOGGER.info("[CornerInsert] transition {}: {} -> {} SKIP opposite", i, currentDir, nextDir);
+                continue;
+            }
+
+            var opposite = nextDir.getOpposite();
+            var cornerPos = new BlockPos(
+                current.getX() + opposite.getStepX(),
+                current.getY() + opposite.getStepY(),
+                current.getZ() + opposite.getStepZ()
+            );
+
+            if (level.getBlockState(cornerPos).isSolid()) {
+                LOGGER.info("[CornerInsert] transition {}: {} -> {} SKIP cornerBlock {} solid",
+                    i, currentDir, nextDir, cornerPos);
+                continue;
+            }
+
+            LOGGER.info("[CornerInsert] transition {}: {} -> {} INSERTED corner at {}",
+                i, currentDir, nextDir, cornerPos);
+
+            var cornerNode = new PathNode(
+                cornerPos.getX(), cornerPos.getY(), cornerPos.getZ(),
+                TerrainType.CLIMBABLE, current.getPostureIndex()
+            );
+
+            cornerNode.setSurfaceDirection(currentSurface);
+            nodes.add(i + 1, cornerNode);
+            i++;
         }
 
-        Collections.reverse(nodes);
-
-        return new BLibPath(nodes, reached);
+        if (transitionsFound == 0) {
+            LOGGER.info("[CornerInsert] no surface transitions found in {} CLIMBABLE nodes", nodes.size());
+        }
     }
 
     private static long packSectionKey(int sectionX, int sectionY, int sectionZ) {
