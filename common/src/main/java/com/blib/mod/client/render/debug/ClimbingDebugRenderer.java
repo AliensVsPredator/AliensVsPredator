@@ -5,11 +5,10 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-
-import net.minecraft.core.BlockPos;
 
 import com.blib.api.common.pathfinding.v1.physics.ClimbingOrientationProvider;
 
@@ -158,12 +157,19 @@ public final class ClimbingDebugRenderer {
             var scale = 10.0f;
 
             drawLine(
-                consumer, matrix, pose,
-                centerX, centerY, centerZ,
+                consumer,
+                matrix,
+                pose,
+                centerX,
+                centerY,
+                centerZ,
                 centerX + (float) delta.x * scale,
                 centerY + (float) delta.y * scale,
                 centerZ + (float) delta.z * scale,
-                0.0f, 1.0f, 0.0f, 1.0f
+                0.0f,
+                1.0f,
+                0.0f,
+                1.0f
             );
         }
 
@@ -174,12 +180,19 @@ public final class ClimbingDebugRenderer {
             var waypoint = BlockPos.of(waypointPacked);
 
             drawLine(
-                consumer, matrix, pose,
-                centerX, centerY, centerZ,
+                consumer,
+                matrix,
+                pose,
+                centerX,
+                centerY,
+                centerZ,
                 (float) (waypoint.getX() + 0.5 - cameraX),
                 (float) (waypoint.getY() + 0.5 - cameraY),
                 (float) (waypoint.getZ() + 0.5 - cameraZ),
-                1.0f, 1.0f, 0.0f, 1.0f
+                1.0f,
+                1.0f,
+                0.0f,
+                1.0f
             );
         }
 
@@ -190,12 +203,19 @@ public final class ClimbingDebugRenderer {
             var target = BlockPos.of(targetPacked);
 
             drawLine(
-                consumer, matrix, pose,
-                centerX, centerY, centerZ,
+                consumer,
+                matrix,
+                pose,
+                centerX,
+                centerY,
+                centerZ,
                 (float) (target.getX() + 0.5 - cameraX),
                 (float) (target.getY() + 0.5 - cameraY),
                 (float) (target.getZ() + 0.5 - cameraZ),
-                1.0f, 1.0f, 1.0f, 1.0f
+                1.0f,
+                1.0f,
+                1.0f,
+                1.0f
             );
         }
 

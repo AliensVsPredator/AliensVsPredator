@@ -64,7 +64,7 @@ public final class NeoMoveToPosAction {
             navigator.updateTarget(targetBlockPos);
         }
 
-        navigator.tick(entityPos);
+        navigator.tick(actor.getX(), actor.getY(), actor.getZ(), actor.getBbWidth(), actor.getBbHeight());
 
         if (actor instanceof Mob mob) {
             PathDebugUtil.sendDebugPath(mob, navigator.getCurrentPath());

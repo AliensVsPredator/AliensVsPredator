@@ -265,7 +265,6 @@ public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUI
         poseStack.mulPose(Axis.YP.rotationDegrees(orientationYaw));
         poseStack.mulPose(Axis.XP.rotationDegrees(orientationPitch));
         poseStack.mulPose(Axis.YP.rotationDegrees(roll));
-
     }
 
     /**

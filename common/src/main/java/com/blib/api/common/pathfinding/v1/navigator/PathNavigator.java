@@ -19,7 +19,8 @@ import com.blib.api.common.pathfinding.v1.transition.TerrainTransition;
  * Standalone path navigator. Manages path planning, following, stuck detection, and terrain transition callbacks. Does
  * not extend any Minecraft class.
  * <p>
- * The consuming code calls {@link #tick(BlockPos)} each tick with the entity's current position. The navigator advances
+ * The consuming code calls {@link #tick(double, double, double, float, float)} each tick with the entity's exact
+ * position and bounding box dimensions. The navigator advances
  * along the path and provides the next waypoint via {@link #getCurrentTargetPos()}. The calling code is responsible for
  * actually moving the entity toward the waypoint.
  * </p>
@@ -117,10 +118,17 @@ public final class PathNavigator {
     }
 
     /**
-     * Advances the navigator one tick. Call this every tick with the entity's current position. The navigator checks
-     * waypoint proximity, advances the path, fires transition handlers, and detects stuck conditions.
+     * Advances the navigator one tick. Call this every tick with the entity's exact position. The navigator checks
+     * waypoint proximity using per-axis distance and entity dimensions, advances the path, fires transition handlers,
+     * and detects stuck conditions.
+     *
+     * @param entityX      exact X position of the entity
+     * @param entityY      exact Y position of the entity (feet)
+     * @param entityZ      exact Z position of the entity
+     * @param entityWidth  bounding box width of the entity
+     * @param entityHeight bounding box height of the entity
      */
-    public void tick(BlockPos entityPos) {
+    public void tick(double entityX, double entityY, double entityZ, float entityWidth, float entityHeight) {
         tickCount++;
 
         if (currentPath == null || currentPath.isDone()) {
@@ -131,10 +139,12 @@ public final class PathNavigator {
             return;
         }
 
-        advanceWaypoints(entityPos);
+        advanceWaypoints(entityX, entityY, entityZ, entityWidth, entityHeight);
+
+        var entityBlockPos = BlockPos.containing(entityX, entityY, entityZ);
 
         if (currentPath.isDone()) {
-            LOGGER.info("[PathNav] path completed at entityPos={}", entityPos);
+            LOGGER.info("[PathNav] path completed at entityPos={}", entityBlockPos);
             resetPosture();
             return;
         }
@@ -143,8 +153,8 @@ public final class PathNavigator {
             return;
         }
 
-        detectStuck(entityPos);
-        checkRecalculate(entityPos);
+        detectStuck(entityBlockPos);
+        checkRecalculate(entityBlockPos);
     }
 
     /**
@@ -270,15 +280,19 @@ public final class PathNavigator {
         this.targetPos = newTarget;
     }
 
-    private void advanceWaypoints(BlockPos entityPos) {
-        var reachDistance = config.getWaypointReachDistance();
-        var reachDistanceSquared = reachDistance * reachDistance;
+    private void advanceWaypoints(double entityX, double entityY, double entityZ, float entityWidth, float entityHeight) {
+        var reachXZ = entityWidth > 0.75f ? entityWidth / 2.0 : 0.75 - entityWidth / 2.0;
+        var reachY = Math.max(1.0, entityHeight > 0.75f ? entityHeight / 2.0 : 0.75 - entityHeight / 2.0);
+        var nodeCenterOffset = (int) (entityWidth + 1.0f) * 0.5;
 
         while (!currentPath.isDone()) {
             var waypoint = currentPath.getCurrentNode();
-            var distanceSquared = entityDistanceSquared(entityPos, waypoint);
 
-            if (distanceSquared > reachDistanceSquared) {
+            var dx = Math.abs(waypoint.getX() + nodeCenterOffset - entityX);
+            var dy = Math.abs(waypoint.getY() - entityY);
+            var dz = Math.abs(waypoint.getZ() + nodeCenterOffset - entityZ);
+
+            if (dx > reachXZ || dy > reachY || dz > reachXZ) {
                 break;
             }
 
@@ -338,18 +352,26 @@ public final class PathNavigator {
         if (ticksSinceProgress >= config.getStuckTimeoutInTicks()) {
             var node = currentPath != null && !currentPath.isDone() ? currentPath.getCurrentNode() : null;
 
-            LOGGER.info("[Stuck] path abandoned after {} ticks | entityPos={} targetPos={} distSqr={} node={} terrain={} surface={}",
-                ticksSinceProgress, entityPos, targetPos,
+            LOGGER.info(
+                "[Stuck] path abandoned after {} ticks | entityPos={} targetPos={} distSqr={} node={} terrain={} surface={}",
+                ticksSinceProgress,
+                entityPos,
+                targetPos,
                 String.format("%.2f", currentDistance),
                 node != null ? "(%d,%d,%d)".formatted(node.getX(), node.getY(), node.getZ()) : "none",
                 currentTerrain,
-                currentSurfaceDirection);
+                currentSurfaceDirection
+            );
 
             stop();
         } else if (ticksSinceProgress > 0 && tickCount % 20 == 0) {
-            LOGGER.info("[StuckWatch] no progress for {} ticks (timeout={}) | entityPos={} distToTarget={}",
-                ticksSinceProgress, config.getStuckTimeoutInTicks(),
-                entityPos, String.format("%.2f", Math.sqrt(currentDistance)));
+            LOGGER.info(
+                "[StuckWatch] no progress for {} ticks (timeout={}) | entityPos={} distToTarget={}",
+                ticksSinceProgress,
+                config.getStuckTimeoutInTicks(),
+                entityPos,
+                String.format("%.2f", Math.sqrt(currentDistance))
+            );
         }
     }
 
@@ -385,11 +407,4 @@ public final class PathNavigator {
         }
     }
 
-    private static double entityDistanceSquared(BlockPos entityPos, PathNode node) {
-        var dx = entityPos.getX() - node.getX();
-        var dy = entityPos.getY() - node.getY();
-        var dz = entityPos.getZ() - node.getZ();
-
-        return dx * dx + dy * dy + dz * dz;
-    }
 }

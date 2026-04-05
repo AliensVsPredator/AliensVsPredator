@@ -68,6 +68,12 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     @Override
     public PathNode getStartNode(BlockPos entityPos) {
+        var climbableStart = tryCreateAnyClimbableNode(entityPos.getX(), entityPos.getY(), entityPos.getZ(), 0);
+
+        if (climbableStart != null) {
+            return climbableStart;
+        }
+
         var resolvedPos = findStandablePosition(entityPos);
         var terrainType = classifyOrDefault(resolvedPos);
 
@@ -375,44 +381,27 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             }
         }
 
-        // Outer edge wrapping — for each available surface, check diagonal "over the edge" positions.
-        // Only allowed if the intermediate cardinal position (perpendicular step) is not blocked.
-        for (var surface : Direction.values()) {
-            if (!node.hasAvailableSurface(surface)) {
-                continue;
-            }
-
-            for (var perpendicular : Direction.values()) {
-                if (perpendicular.getAxis() == surface.getAxis()) {
-                    continue;
-                }
-
-                // Check that the intermediate position is not solid (prevents corner-cutting).
-                var midX = node.getX() + perpendicular.getStepX();
-                var midY = node.getY() + perpendicular.getStepY();
-                var midZ = node.getZ() + perpendicular.getStepZ();
-
-                if (level.getBlockState(new BlockPos(midX, midY, midZ)).isSolid()) {
-                    continue;
-                }
-
-                var edgeX = midX + surface.getStepX();
-                var edgeY = midY + surface.getStepY();
-                var edgeZ = midZ + surface.getStepZ();
-
-                var edgeClimbable = tryCreateAnyClimbableNode(edgeX, edgeY, edgeZ, posture);
-
-                if (edgeClimbable != null) {
-                    neighbors[count++] = edgeClimbable;
-                }
-            }
-        }
-
         // Transition to GROUND at current position.
         var groundNode = tryCreateNode(node.getX(), node.getY(), node.getZ(), posture);
 
         if (groundNode != null && groundNode.getTerrainType() == TerrainType.GROUND) {
             neighbors[count++] = groundNode;
+        }
+
+        // Clamber onto surface top — move up and over the edge of a wall.
+        for (var surface : Direction.values()) {
+            if (!node.hasAvailableSurface(surface) || surface.getAxis() == Direction.Axis.Y) {
+                continue;
+            }
+
+            var clamberX = node.getX() + surface.getStepX();
+            var clamberY = node.getY() + 1;
+            var clamberZ = node.getZ() + surface.getStepZ();
+            var clamberNode = tryCreateNode(clamberX, clamberY, clamberZ, posture);
+
+            if (clamberNode != null && clamberNode.getTerrainType() == TerrainType.GROUND) {
+                neighbors[count++] = clamberNode;
+            }
         }
 
         // Detach from each available surface into open space.

@@ -1,6 +1,5 @@
 package com.blib.api.common.pathfinding.v1.physics;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
@@ -8,6 +7,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,11 +30,7 @@ public class ClimbingMoveControl extends MoveControl {
 
     private static final int LOG_INTERVAL_TICKS = 20;
 
-    private static final double VANILLA_GRAVITY = 0.08;
-
     private static final float DEFAULT_CLIMBING_SPEED_MULTIPLIER = 0.8f;
-
-    private static final float CLIMBING_DRAG = 0.5f;
 
     private static final float ARRIVAL_THRESHOLD = 0.25f;
 
@@ -46,6 +42,10 @@ public class ClimbingMoveControl extends MoveControl {
 
     private boolean wasClimbing;
 
+    private @Nullable Direction activeSurface;
+
+    private boolean nearEdgeTransition;
+
     private int tickCounter;
 
     public ClimbingMoveControl(Mob mob) {
@@ -55,6 +55,18 @@ public class ClimbingMoveControl extends MoveControl {
     public ClimbingMoveControl(Mob mob, float climbingSpeedMultiplier) {
         super(mob);
         this.climbingSpeedMultiplier = climbingSpeedMultiplier;
+    }
+
+    /**
+     * Returns the surface the entity is currently attached to, or {@code null} if the entity is not climbing. Set
+     * during {@link #tick()} before {@code travel()} runs each server tick.
+     */
+    public @Nullable Direction getActiveSurface() {
+        return activeSurface;
+    }
+
+    public boolean isNearEdgeTransition() {
+        return nearEdgeTransition;
     }
 
     @Override
@@ -72,19 +84,35 @@ public class ClimbingMoveControl extends MoveControl {
 
         if (isClimbingTerrain) {
             wasClimbing = true;
-            applySurfaceStickingForce(physicalSurface);
+
+            var surfaceOrdinal = navigator.getCurrentSurfaceDirection();
+
+            activeSurface = surfaceOrdinal > 0 ? Direction.values()[surfaceOrdinal] : physicalSurface;
+            nearEdgeTransition = isNearEdgeTransition(navigator);
+
             maintainClimbingPosture(navigator);
             tickClimbingMovement(navigator);
         } else if (onSurface) {
             wasClimbing = true;
-            applySurfaceStickingForce(physicalSurface);
+            activeSurface = physicalSurface;
+            nearEdgeTransition = true;
+
             maintainClimbingPosture(navigator);
-            mob.setDeltaMovement(mob.getDeltaMovement().scale(CLIMBING_DRAG));
+
+            if (navigator != null) {
+                tickClimbingMovement(navigator);
+            }
         } else if (wasClimbing && mob.onGround()) {
             wasClimbing = false;
+            activeSurface = null;
+            nearEdgeTransition = false;
+
             resetClimbingPosture(navigator);
             tickGroundMovement();
         } else {
+            activeSurface = null;
+            nearEdgeTransition = false;
+
             tickGroundMovement();
         }
     }
@@ -143,11 +171,13 @@ public class ClimbingMoveControl extends MoveControl {
 
         if (operation != Operation.MOVE_TO) {
             if (tickCounter % LOG_INTERVAL_TICKS == 0) {
-                LOGGER.info("[ClimbTick] {} IDLE nav.isNavigating={}",
-                    mob.getName().getString(), navigator.isNavigating());
+                LOGGER.info(
+                    "[ClimbTick] {} IDLE nav.isNavigating={}",
+                    mob.getName().getString(),
+                    navigator.isNavigating()
+                );
             }
 
-            mob.setDeltaMovement(mob.getDeltaMovement().scale(CLIMBING_DRAG));
             return;
         }
 
@@ -160,13 +190,11 @@ public class ClimbingMoveControl extends MoveControl {
         var distanceSquared = dx * dx + dy * dy + dz * dz;
 
         if (distanceSquared < ARRIVAL_THRESHOLD * ARRIVAL_THRESHOLD) {
-            mob.setDeltaMovement(mob.getDeltaMovement().scale(CLIMBING_DRAG));
             return;
         }
 
         var distance = Math.sqrt(distanceSquared);
         var speed = mob.getAttributeValue(Attributes.MOVEMENT_SPEED) * speedModifier * climbingSpeedMultiplier;
-        var edgeTransition = isNearEdgeTransition(navigator);
 
         mob.setDeltaMovement(
             (dx / distance) * speed,
@@ -176,24 +204,28 @@ public class ClimbingMoveControl extends MoveControl {
 
         updateClimbingYaw(navigator, dx, dy, dz);
 
-        if (!edgeTransition) {
-            var surfaceOrdinal = navigator.getCurrentSurfaceDirection();
-            applySurfaceStickingForce(Direction.values()[surfaceOrdinal]);
-        }
-
         if (tickCounter % LOG_INTERVAL_TICKS == 0) {
             var path = navigator.getCurrentPath();
 
-            LOGGER.info("[ClimbTick] {} MOVING dist={} speed={} edgeTrans={} node={}/{} surface={}",
+            LOGGER.info(
+                "[ClimbTick] {} MOVING dist={} speed={} edgeTrans={} node={}/{} surface={}",
                 mob.getName().getString(),
-                String.format("%.3f", distance), String.format("%.4f", speed), edgeTransition,
+                String.format("%.3f", distance),
+                String.format("%.4f", speed),
+                nearEdgeTransition,
                 path != null ? path.getCurrentNodeIndex() : -1,
                 path != null ? path.getNodeCount() : -1,
-                navigator.getCurrentSurfaceDirection());
-            LOGGER.info("[ClimbTick]   entityPos=({}, {}, {}) target=({}, {}, {})",
-                String.format("%.2f", mob.getX()), String.format("%.2f", mob.getY()),
-                String.format("%.2f", mob.getZ()), String.format("%.2f", target.x),
-                String.format("%.2f", target.y), String.format("%.2f", target.z));
+                navigator.getCurrentSurfaceDirection()
+            );
+            LOGGER.info(
+                "[ClimbTick]   entityPos=({}, {}, {}) target=({}, {}, {})",
+                String.format("%.2f", mob.getX()),
+                String.format("%.2f", mob.getY()),
+                String.format("%.2f", mob.getZ()),
+                String.format("%.2f", target.x),
+                String.format("%.2f", target.y),
+                String.format("%.2f", target.z)
+            );
         }
     }
 
@@ -261,29 +293,6 @@ public class ClimbingMoveControl extends MoveControl {
         }
 
         return null;
-    }
-
-    /**
-     * Applies a sticking force that counteracts gravity by pushing the entity into the surface. The force scales with
-     * how non-upright the surface is: walls get full counter-gravity force, floors get none (gravity already handles
-     * it), ceilings get upward force to hold the entity against the ceiling.
-     */
-    private void applySurfaceStickingForce(Direction surface) {
-        if (surface == null) {
-            return;
-        }
-
-        var normal = surface.step();
-        var uprightness = Math.max(normal.y, 0);
-        var stickingMagnitude = VANILLA_GRAVITY * uprightness + VANILLA_GRAVITY * (1 - uprightness);
-
-        mob.setDeltaMovement(
-            mob.getDeltaMovement().add(
-                normal.x * stickingMagnitude,
-                normal.y * stickingMagnitude,
-                normal.z * stickingMagnitude
-            )
-        );
     }
 
     // --- Climbing target computation ---

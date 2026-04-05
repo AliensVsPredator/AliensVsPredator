@@ -87,8 +87,15 @@ public final class BLibPathFinder {
         var startKey = packSectionKey(startSX, startSY, startSZ);
         var goalKey = packSectionKey(goalSX, goalSY, goalSZ);
 
-        record SectionEntry(long key, int x, int y, int z, float gCost, float fCost,
-            @Nullable SectionEntry parent) {}
+        record SectionEntry(
+            long key,
+            int x,
+            int y,
+            int z,
+            float gCost,
+            float fCost,
+            @Nullable SectionEntry parent
+        ) {}
 
         var openSet = new PriorityQueue<SectionEntry>(Comparator.comparingDouble(SectionEntry::fCost));
         var closedSet = new HashSet<Long>();
@@ -296,9 +303,13 @@ public final class BLibPathFinder {
             }
         }
 
-        LOGGER.info("[A*] Visited {}/{} nodes | exhausted={} | corridor={}",
-            visitedCount, config.maxSearchNodes(), visitedCount >= config.maxSearchNodes(),
-            corridor != null ? corridor.size() + " sections" : "none");
+        LOGGER.info(
+            "[A*] Visited {}/{} nodes | exhausted={} | corridor={}",
+            visitedCount,
+            config.maxSearchNodes(),
+            visitedCount >= config.maxSearchNodes(),
+            corridor != null ? corridor.size() + " sections" : "none"
+        );
 
         BLibPath path = null;
 
@@ -328,17 +339,25 @@ public final class BLibPathFinder {
         var entries = new ArrayList<DebugNodeEntry>(closedNodes.size());
 
         for (var node : closedNodes) {
-            entries.add(new DebugNodeEntry(
-                node.getX(), node.getY(), node.getZ(), node.getTerrainType().ordinal(),
-                node.getPostureIndex(), node.getSurfaceDirection(), node.getAvailableSurfaces(),
-                pathNodeSet.contains(node)
-            ));
+            entries.add(
+                new DebugNodeEntry(
+                    node.getX(),
+                    node.getY(),
+                    node.getZ(),
+                    node.getTerrainType().ordinal(),
+                    node.getPostureIndex(),
+                    node.getSurfaceDirection(),
+                    node.getAvailableSurfaces(),
+                    pathNodeSet.contains(node)
+                )
+            );
         }
 
         return new PathSearchSnapshot(
             entries,
             corridor != null ? List.copyOf(corridor) : List.<Long>of(),
-            visitedCount, config.maxSearchNodes()
+            visitedCount,
+            config.maxSearchNodes()
         );
     }
 
@@ -479,8 +498,11 @@ public final class BLibPathFinder {
             }
 
             var cornerNode = new PathNode(
-                cornerPos.getX(), cornerPos.getY(), cornerPos.getZ(),
-                TerrainType.CLIMBABLE, current.getPostureIndex()
+                cornerPos.getX(),
+                cornerPos.getY(),
+                cornerPos.getZ(),
+                TerrainType.CLIMBABLE,
+                current.getPostureIndex()
             );
 
             cornerNode.setSurfaceDirection(currentSurface);
