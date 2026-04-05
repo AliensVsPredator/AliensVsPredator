@@ -396,7 +396,12 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
         // Clamber onto surface top — move up and over the edge of a wall.
         for (var surface : Direction.values()) {
-            if (!node.hasAvailableSurface(surface) || surface.getAxis() == Direction.Axis.Y) {
+            if (!node.hasAvailableSurface(surface) || surface == Direction.DOWN) {
+                continue;
+            }
+
+            if (surface == Direction.UP) {
+                count = addCeilingEdgeClamberNeighbors(node, posture, neighbors, count);
                 continue;
             }
 
@@ -424,6 +429,25 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
             if (detachNode != null && detachNode.getTerrainType() == TerrainType.GROUND) {
                 neighbors[count++] = detachNode;
+            }
+        }
+
+        return count;
+    }
+
+    /**
+     * From a ceiling position, generates GROUND neighbors at horizontal offsets one block up — the positions at the
+     * edge of the ceiling surface where the entity can climb around and onto the top.
+     */
+    private int addCeilingEdgeClamberNeighbors(PathNode node, int posture, PathNode[] neighbors, int count) {
+        for (var offset : HORIZONTAL_OFFSETS) {
+            var clamberX = node.getX() + offset[0];
+            var clamberY = node.getY() + 1;
+            var clamberZ = node.getZ() + offset[1];
+            var clamberNode = tryCreateNode(clamberX, clamberY, clamberZ, posture);
+
+            if (clamberNode != null && clamberNode.getTerrainType() == TerrainType.GROUND) {
+                neighbors[count++] = clamberNode;
             }
         }
 
