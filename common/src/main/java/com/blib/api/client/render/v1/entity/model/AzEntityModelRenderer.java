@@ -262,8 +262,9 @@ public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUI
         targetFwdZ -= upZ * dot;
 
         var targetLen = Mth.sqrt(targetFwdX * targetFwdX + targetFwdY * targetFwdY + targetFwdZ * targetFwdZ);
+        var minProjectedLength = stored == null ? 0.1f : 0.001f;
 
-        if (targetLen > 0.001f) {
+        if (targetLen > minProjectedLength) {
             targetFwdX /= targetLen;
             targetFwdY /= targetLen;
             targetFwdZ /= targetLen;
@@ -338,6 +339,7 @@ public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUI
         if (
             animatable instanceof ClimbingOrientationProvider provider
                 && provider.getClimbingSurfaceDirection() > 0
+                && displayedForwards.containsKey(animatable.getId())
         ) {
             return 180.0f;
         }
