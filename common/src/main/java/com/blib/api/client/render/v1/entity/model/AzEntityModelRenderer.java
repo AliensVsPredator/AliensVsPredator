@@ -305,20 +305,20 @@ public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUI
 
         // Build rotation matrix (JOML column-major constructor).
         // Column 0: model +X → right
-        // Column 1: model +Y (head) → forward (direction of travel on surface)
-        // Column 2: model +Z (back) → surface normal (away from surface, so belly faces surface)
+        // Column 1: model +Y (top/back) → surface normal (away from surface)
+        // Column 2: model -Z (head/face) → forward, so +Z → -forward
         var matrix = new Matrix4f(
             rightX,
             rightY,
             rightZ,
             0,
-            fwdX,
-            fwdY,
-            fwdZ,
-            0,
             upX,
             upY,
             upZ,
+            0,
+            -fwdX,
+            -fwdY,
+            -fwdZ,
             0,
             0,
             0,
