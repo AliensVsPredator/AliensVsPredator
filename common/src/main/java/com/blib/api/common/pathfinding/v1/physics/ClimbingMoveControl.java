@@ -68,6 +68,7 @@ public class ClimbingMoveControl extends MoveControl {
         var isPhysicallyOnSurface = physicalSurface != null;
 
         updateClimbingSurface(navigator, terrainIsClimbable, physicalSurface);
+        updateDebugWaypoints(navigator);
 
         if (terrainIsClimbable || isPhysicallyOnSurface) {
             if (!wasClimbing) {
@@ -126,6 +127,24 @@ public class ClimbingMoveControl extends MoveControl {
      * Scans adjacent blocks for a solid surface the entity is clinging to. Returns the direction toward the surface, or
      * null if the entity is not adjacent to any solid block.
      */
+    private void updateDebugWaypoints(PathNavigator navigator) {
+        if (!(mob instanceof ClimbingOrientationProvider provider)) {
+            return;
+        }
+
+        if (navigator == null || !navigator.isNavigating()) {
+            provider.setDebugCurrentWaypoint(0);
+            provider.setDebugTargetPos(0);
+            return;
+        }
+
+        var waypoint = navigator.getCurrentTargetPos();
+        provider.setDebugCurrentWaypoint(waypoint != null ? waypoint.asLong() : 0);
+
+        var target = navigator.getTargetPos();
+        provider.setDebugTargetPos(target != null ? target.asLong() : 0);
+    }
+
     private Direction findPhysicalSurface() {
         var entityPos = mob.blockPosition();
 

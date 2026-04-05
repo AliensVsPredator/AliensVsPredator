@@ -40,4 +40,24 @@ public interface ClimbingOrientationProvider {
      * Sets the previous tick's climbing yaw.
      */
     void setClimbingYawOld(float yaw);
+
+    /**
+     * Returns the packed {@link net.minecraft.core.BlockPos} of the current waypoint for debug rendering, or 0 if none.
+     */
+    long getDebugCurrentWaypoint();
+
+    /**
+     * Sets the packed current waypoint position for debug rendering.
+     */
+    void setDebugCurrentWaypoint(long packed);
+
+    /**
+     * Returns the packed {@link net.minecraft.core.BlockPos} of the final target for debug rendering, or 0 if none.
+     */
+    long getDebugTargetPos();
+
+    /**
+     * Sets the packed final target position for debug rendering.
+     */
+    void setDebugTargetPos(long packed);
 }
