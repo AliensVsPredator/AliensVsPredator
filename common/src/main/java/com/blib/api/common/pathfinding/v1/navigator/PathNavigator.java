@@ -19,10 +19,10 @@ import com.blib.api.common.pathfinding.v1.transition.TerrainTransition;
  * Standalone path navigator. Manages path planning, following, stuck detection, and terrain transition callbacks. Does
  * not extend any Minecraft class.
  * <p>
- * The consuming code calls {@link #tick(double, double, double, float, float, int, boolean)} each tick with the entity's exact
- * position, bounding box dimensions, and climbing surface. The navigator advances along the path and provides the next
- * waypoint via {@link #getCurrentTargetPos()}. The calling code is responsible for actually moving the entity toward
- * the waypoint.
+ * The consuming code calls {@link #tick(double, double, double, float, float, int, boolean)} each tick with the
+ * entity's exact position, bounding box dimensions, and climbing surface. The navigator advances along the path and
+ * provides the next waypoint via {@link #getCurrentTargetPos()}. The calling code is responsible for actually moving
+ * the entity toward the waypoint.
  * </p>
  */
 public final class PathNavigator {

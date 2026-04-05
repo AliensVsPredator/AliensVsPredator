@@ -88,6 +88,34 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     @Override
     public PathNode getGoalNode(BlockPos targetPos) {
+        var classified = classifyTerrain(targetPos);
+
+        if (classified != null && config.supportsTerrain(classified)) {
+            return nodePool.getOrCreate(targetPos.getX(), targetPos.getY(), targetPos.getZ(), classified, 0);
+        }
+
+        // Target might be on the edge/corner of an adjacent block (blockPosition floors to air).
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dz = -1; dz <= 1; dz++) {
+                if (dx == 0 && dz == 0) {
+                    continue;
+                }
+
+                var neighborPos = targetPos.offset(dx, 0, dz);
+                var neighborClassified = classifyTerrain(neighborPos);
+
+                if (neighborClassified != null && config.supportsTerrain(neighborClassified)) {
+                    return nodePool.getOrCreate(
+                        neighborPos.getX(),
+                        neighborPos.getY(),
+                        neighborPos.getZ(),
+                        neighborClassified,
+                        0
+                    );
+                }
+            }
+        }
+
         var resolvedPos = findStandablePosition(targetPos);
         var terrainType = classifyOrDefault(resolvedPos);
 
