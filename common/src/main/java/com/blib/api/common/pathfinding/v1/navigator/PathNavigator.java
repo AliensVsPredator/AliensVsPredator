@@ -109,6 +109,24 @@ public final class PathNavigator {
                 entityPos,
                 target
             );
+
+            var nodeCount = currentPath.getNodeCount();
+            var dumpStart = Math.max(0, nodeCount - 6);
+
+            for (int i = dumpStart; i < nodeCount; i++) {
+                var node = currentPath.getNode(i);
+
+                LOGGER.info(
+                    "[Pathfinding]   node[{}] ({},{},{}) terrain={} posture={} surface={}",
+                    i,
+                    node.getX(),
+                    node.getY(),
+                    node.getZ(),
+                    node.getTerrainType(),
+                    node.getPostureIndex(),
+                    node.getSurfaceDirection()
+                );
+            }
         } else {
             LOGGER.info("[Pathfinding] {}µs | no path | from={} to={}", elapsedMicros, entityPos, target);
         }
@@ -143,7 +161,17 @@ public final class PathNavigator {
         var entityBlockPos = BlockPos.containing(entityX, entityY, entityZ);
 
         if (currentPath.isDone()) {
-            LOGGER.info("[PathNav] path completed at entityPos={}", entityBlockPos);
+            LOGGER.info(
+                "[PathNav] path completed | entityPos=({},{},{}) targetPos={} reached={} nodeIdx={}/{}",
+                String.format("%.2f", entityX),
+                String.format("%.2f", entityY),
+                String.format("%.2f", entityZ),
+                targetPos,
+                currentPath.isReached(),
+                currentPath.getCurrentNodeIndex(),
+                currentPath.getNodeCount()
+            );
+
             resetPosture();
             return;
         }
@@ -434,6 +462,14 @@ public final class PathNavigator {
             || targetPos.distSqr(lastComputedTargetPos) >= MIN_TARGET_MOVE_DISTANCE_SQUARED;
 
         if (targetMoved) {
+            LOGGER.info(
+                "[PathNav] recalculating | entityPos={} targetPos={} lastComputedTarget={} ticksSinceCompute={}",
+                entityPos,
+                targetPos,
+                lastComputedTargetPos,
+                tickCount - lastPathComputeTick
+            );
+
             navigateTo(entityPos, targetPos);
         }
     }

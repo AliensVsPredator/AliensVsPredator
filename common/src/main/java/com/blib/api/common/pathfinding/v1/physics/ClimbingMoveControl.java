@@ -129,6 +129,19 @@ public class ClimbingMoveControl extends MoveControl {
             resetClimbingPosture(navigator);
             tickGroundMovement();
         } else {
+            if (wasClimbing) {
+                LOGGER.info(
+                    "[CMC] {} FALLING entityPos=({}, {}, {}) onGround={} terrain={} physSurface={}",
+                    mob.getName().getString(),
+                    String.format("%.2f", mob.getX()),
+                    String.format("%.2f", mob.getY()),
+                    String.format("%.2f", mob.getZ()),
+                    mob.onGround(),
+                    navigator != null ? navigator.getCurrentTerrain() : "null",
+                    physicalSurface
+                );
+            }
+
             activeSurface = null;
             nearEdgeTransition = false;
 

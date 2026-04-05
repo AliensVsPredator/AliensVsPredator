@@ -401,7 +401,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             }
 
             if (surface == Direction.UP) {
-                count = addCeilingEdgeClamberNeighbors(node, posture, neighbors, count);
+                count = addCeilingSideNeighbors(node, posture, neighbors, count);
                 continue;
             }
 
@@ -436,18 +436,19 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     }
 
     /**
-     * From a ceiling position, generates GROUND neighbors at horizontal offsets one block up — the positions at the
-     * edge of the ceiling surface where the entity can climb around and onto the top.
+     * From a ceiling node, generates CLIMBABLE neighbors on the sides of the ceiling block at horizontal offsets one
+     * block up. These are physically valid positions where the entity transitions from ceiling crawling to wall
+     * climbing on the side of the ceiling block, enabling the existing wall clamber to reach the top.
      */
-    private int addCeilingEdgeClamberNeighbors(PathNode node, int posture, PathNode[] neighbors, int count) {
+    private int addCeilingSideNeighbors(PathNode node, int posture, PathNode[] neighbors, int count) {
         for (var offset : HORIZONTAL_OFFSETS) {
-            var clamberX = node.getX() + offset[0];
-            var clamberY = node.getY() + 1;
-            var clamberZ = node.getZ() + offset[1];
-            var clamberNode = tryCreateNode(clamberX, clamberY, clamberZ, posture);
+            var sideX = node.getX() + offset[0];
+            var sideY = node.getY() + 1;
+            var sideZ = node.getZ() + offset[1];
+            var climbable = tryCreateAnyClimbableNode(sideX, sideY, sideZ, posture);
 
-            if (clamberNode != null && clamberNode.getTerrainType() == TerrainType.GROUND) {
-                neighbors[count++] = clamberNode;
+            if (climbable != null) {
+                neighbors[count++] = climbable;
             }
         }
 
