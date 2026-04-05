@@ -232,18 +232,19 @@ public class ClimbingMoveControl extends MoveControl {
         var rollSign = Math.signum(0.5f - recomputedY - recomputedZ - recomputedX);
         var roll = rollSign * orientationYaw;
 
-        // Transform movement through inverse orientation: YP(-roll) * XP(-pitch) * YP(-yaw)
+        // Transform movement through inverse orientation: R^(-1) = YP(-roll) * XP(-pitch) * YP(-yaw).
+        // Applied to the vector in order: YP(-yaw) first, XP(-pitch) second, YP(-roll) last.
         var vx = (float) dx;
         var vy = (float) dy;
         var vz = (float) dz;
 
-        // Step 1: YP(-roll)
-        var rollRad = (float) Math.toRadians(-roll);
-        var cosR = Mth.cos(rollRad);
-        var sinR = Mth.sin(rollRad);
-        var rx = vx * cosR + vz * sinR;
+        // Step 1: YP(-yaw)
+        var oYawRad = (float) Math.toRadians(-orientationYaw);
+        var cosY = Mth.cos(oYawRad);
+        var sinY = Mth.sin(oYawRad);
+        var rx = vx * cosY + vz * sinY;
         var ry = vy;
-        var rz = -vx * sinR + vz * cosR;
+        var rz = -vx * sinY + vz * cosY;
 
         // Step 2: XP(-pitch)
         var pitchRad = (float) Math.toRadians(-orientationPitch);
@@ -253,12 +254,12 @@ public class ClimbingMoveControl extends MoveControl {
         var py = ry * cosP - rz * sinP;
         var pz = ry * sinP + rz * cosP;
 
-        // Step 3: YP(-yaw)
-        var oYawRad = (float) Math.toRadians(-orientationYaw);
-        var cosY = Mth.cos(oYawRad);
-        var sinY = Mth.sin(oYawRad);
-        var fx = px * cosY + pz * sinY;
-        var fz = -px * sinY + pz * cosY;
+        // Step 3: YP(-roll)
+        var rollRad = (float) Math.toRadians(-roll);
+        var cosR = Mth.cos(rollRad);
+        var sinR = Mth.sin(rollRad);
+        var fx = px * cosR + pz * sinR;
+        var fz = -px * sinR + pz * cosR;
 
         // Extract yaw: climbingYaw = atan2(-fx, fz) in degrees
         var targetYaw = (float) Math.toDegrees(Mth.atan2(-fx, fz));
@@ -281,7 +282,7 @@ public class ClimbingMoveControl extends MoveControl {
                 String.format("%.2f", roll)
             );
             LOGGER.info(
-                "[ClimbingYaw]   afterRoll=({}, {}, {}) afterPitch=({}, {}, {}) afterYaw=({}, {})",
+                "[ClimbingYaw]   afterYaw=({}, {}, {}) afterPitch=({}, {}, {}) afterRoll=({}, {})",
                 String.format("%.4f", rx), String.format("%.4f", ry), String.format("%.4f", rz),
                 String.format("%.4f", px), String.format("%.4f", py), String.format("%.4f", pz),
                 String.format("%.4f", fx), String.format("%.4f", fz)
