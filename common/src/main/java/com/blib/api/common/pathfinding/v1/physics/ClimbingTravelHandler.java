@@ -45,15 +45,18 @@ public final class ClimbingTravelHandler {
      * transitions to allow smoother surface changes.
      */
     private static void applyStickingForce(Mob mob, Direction surface, boolean nearEdgeTransition) {
-        if (nearEdgeTransition) {
-            var boost = mob.getGravity();
-
-            mob.setDeltaMovement(mob.getDeltaMovement().add(0, boost, 0));
-            return;
-        }
-
         var normal = surface.step();
         var gravity = mob.getGravity();
+
+        if (nearEdgeTransition) {
+            if (surface != Direction.UP) {
+                // Wall edge: boost upward to clear the wall top.
+                mob.setDeltaMovement(mob.getDeltaMovement().add(0, gravity, 0));
+            }
+
+            // Ceiling edge: no boost, no sticking force — momentum carries the entity past the edge.
+            return;
+        }
 
         mob.setDeltaMovement(
             mob.getDeltaMovement()

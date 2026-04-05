@@ -92,7 +92,18 @@ public class ClimbingMoveControl extends MoveControl {
 
             var surfaceOrdinal = navigator.getCurrentSurfaceDirection();
 
-            activeSurface = surfaceOrdinal > 0 ? Direction.values()[surfaceOrdinal] : physicalSurface;
+            if (surfaceOrdinal > 0) {
+                var navSurface = Direction.values()[surfaceOrdinal];
+
+                if (mob.level().getBlockState(mob.blockPosition().relative(navSurface)).isSolid()) {
+                    activeSurface = navSurface;
+                } else {
+                    activeSurface = physicalSurface;
+                }
+            } else {
+                activeSurface = physicalSurface;
+            }
+
             nearEdgeTransition = isNearEdgeTransition(navigator);
 
             if (tickCounter % LOG_INTERVAL_TICKS == 0) {

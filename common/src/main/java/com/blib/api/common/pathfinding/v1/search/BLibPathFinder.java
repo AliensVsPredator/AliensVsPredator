@@ -337,6 +337,7 @@ public final class BLibPathFinder {
         }
 
         var entries = new ArrayList<DebugNodeEntry>(closedNodes.size());
+        var closedNodeSet = new HashSet<>(closedNodes);
 
         for (var node : closedNodes) {
             entries.add(
@@ -351,6 +352,28 @@ public final class BLibPathFinder {
                     pathNodeSet.contains(node)
                 )
             );
+        }
+
+        // Add corner nodes inserted during post-processing (not explored by A*).
+        if (path != null) {
+            for (int i = 0; i < path.getNodeCount(); i++) {
+                var node = path.getNode(i);
+
+                if (!closedNodeSet.contains(node)) {
+                    entries.add(
+                        new DebugNodeEntry(
+                            node.getX(),
+                            node.getY(),
+                            node.getZ(),
+                            node.getTerrainType().ordinal(),
+                            node.getPostureIndex(),
+                            node.getSurfaceDirection(),
+                            node.getAvailableSurfaces(),
+                            true
+                        )
+                    );
+                }
+            }
         }
 
         return new PathSearchSnapshot(
@@ -486,6 +509,7 @@ public final class BLibPathFinder {
                 continue;
             }
 
+            // Wall-to-wall convex corner: swing outward around the pillar.
             var opposite = nextDir.getOpposite();
             var cornerPos = new BlockPos(
                 current.getX() + opposite.getStepX(),

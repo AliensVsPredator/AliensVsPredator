@@ -19,9 +19,10 @@ import com.blib.api.common.pathfinding.v1.transition.TerrainTransition;
  * Standalone path navigator. Manages path planning, following, stuck detection, and terrain transition callbacks. Does
  * not extend any Minecraft class.
  * <p>
- * The consuming code calls {@link #tick(double, double, double, float, float)} each tick with the entity's exact
- * position and bounding box dimensions. The navigator advances along the path and provides the next waypoint via
- * {@link #getCurrentTargetPos()}. The calling code is responsible for actually moving the entity toward the waypoint.
+ * The consuming code calls {@link #tick(double, double, double, float, float, int)} each tick with the entity's exact
+ * position, bounding box dimensions, and climbing surface. The navigator advances along the path and provides the next
+ * waypoint via {@link #getCurrentTargetPos()}. The calling code is responsible for actually moving the entity toward
+ * the waypoint.
  * </p>
  */
 public final class PathNavigator {
@@ -139,13 +140,14 @@ public final class PathNavigator {
      * waypoint proximity using per-axis distance and entity dimensions, advances the path, fires transition handlers,
      * and detects stuck conditions.
      *
-     * @param entityX      exact X position of the entity
-     * @param entityY      exact Y position of the entity (feet)
-     * @param entityZ      exact Z position of the entity
-     * @param entityWidth  bounding box width of the entity
-     * @param entityHeight bounding box height of the entity
+     * @param entityX                exact X position of the entity
+     * @param entityY                exact Y position of the entity (feet)
+     * @param entityZ                exact Z position of the entity
+     * @param entityWidth            bounding box width of the entity
+     * @param entityHeight           bounding box height of the entity
+     * @param entitySurfaceDirection the entity's current climbing surface ordinal (0 if not climbing)
      */
-    public void tick(double entityX, double entityY, double entityZ, float entityWidth, float entityHeight) {
+    public void tick(double entityX, double entityY, double entityZ, float entityWidth, float entityHeight, int entitySurfaceDirection) {
         tickCount++;
 
         if (currentPath == null || currentPath.isDone()) {
@@ -156,7 +158,7 @@ public final class PathNavigator {
             return;
         }
 
-        advanceWaypoints(entityX, entityY, entityZ, entityWidth, entityHeight);
+        advanceWaypoints(entityX, entityY, entityZ, entityWidth, entityHeight, entitySurfaceDirection);
 
         var entityBlockPos = BlockPos.containing(entityX, entityY, entityZ);
 
@@ -307,7 +309,14 @@ public final class PathNavigator {
         this.targetPos = newTarget;
     }
 
-    private void advanceWaypoints(double entityX, double entityY, double entityZ, float entityWidth, float entityHeight) {
+    private void advanceWaypoints(
+        double entityX,
+        double entityY,
+        double entityZ,
+        float entityWidth,
+        float entityHeight,
+        int entitySurfaceDirection
+    ) {
         var reachXZ = entityWidth > 0.75f ? entityWidth / 2.0 : 0.75 - entityWidth / 2.0;
         var reachY = Math.max(1.0, entityHeight > 0.75f ? entityHeight / 2.0 : 0.75 - entityHeight / 2.0);
         var nodeCenterOffset = (int) (entityWidth + 1.0f) * 0.5;
@@ -320,6 +329,17 @@ public final class PathNavigator {
             var dz = Math.abs(waypoint.getZ() + nodeCenterOffset - entityZ);
 
             if (dx > reachXZ || dy > reachY || dz > reachXZ) {
+                break;
+            }
+
+            // For climbable nodes, the entity must be on the matching surface before advancing.
+            // Prevents skipping a side node while still on the ceiling (crawling-port approach).
+            if (
+                waypoint.getTerrainType() == TerrainType.CLIMBABLE
+                    && waypoint.getSurfaceDirection() > 0
+                    && entitySurfaceDirection > 0
+                    && entitySurfaceDirection != waypoint.getSurfaceDirection()
+            ) {
                 break;
             }
 
