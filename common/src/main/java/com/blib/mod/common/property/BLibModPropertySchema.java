@@ -54,6 +54,11 @@ public class BLibModPropertySchema {
             BLibModProperties.Debug.Render.PathSearch.ENABLED.key(),
             BLibModProperties.Debug.Render.PathSearch.ENABLED.defaultValue()
         )
+        .addComment("Render climbing debug info (surface arrows, yaw vectors, state labels).")
+        .addProperty(
+            BLibModProperties.Debug.Render.Climbing.ENABLED.key(),
+            BLibModProperties.Debug.Render.Climbing.ENABLED.defaultValue()
+        )
         .addComment("Render sky light section debug info.")
         .addProperty(BLibModProperties.Debug.Render.SkyLight.ENABLED.key(), BLibModProperties.Debug.Render.SkyLight.ENABLED.defaultValue())
         .addComment("Render solid face debug info.")
