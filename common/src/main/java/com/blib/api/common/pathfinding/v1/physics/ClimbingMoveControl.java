@@ -440,7 +440,12 @@ public class ClimbingMoveControl extends MoveControl {
 
         var targetYaw = worldToLocalYaw((float) dx, (float) dy, (float) dz, surface);
 
-        provider.setClimbingYaw(rotlerp(provider.getClimbingYaw(), targetYaw, YAW_ROTATION_SPEED));
+        if (surfaceChangedThisTick) {
+            provider.setClimbingYaw(targetYaw);
+            provider.setClimbingYawOld(targetYaw);
+        } else {
+            provider.setClimbingYaw(rotlerp(provider.getClimbingYaw(), targetYaw, YAW_ROTATION_SPEED));
+        }
     }
 
     /**
