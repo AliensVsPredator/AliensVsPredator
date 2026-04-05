@@ -6,8 +6,6 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.phys.Vec3;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.blib.api.common.pathfinding.v1.navigator.PathNavigator;
 import com.blib.api.common.pathfinding.v1.navigator.PathNavigatorUser;
@@ -32,10 +30,6 @@ import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
  */
 public class ClimbingMoveControl extends MoveControl {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ClimbingMoveControl.class);
-
-    private static final int LOG_INTERVAL_TICKS = 20;
-
     private static final float DEFAULT_STICKING_FORCE = 0.05f;
 
     private static final float DEFAULT_CLIMBING_SPEED_MULTIPLIER = 0.8f;
@@ -46,15 +40,11 @@ public class ClimbingMoveControl extends MoveControl {
 
     private static final float YAW_ROTATION_SPEED = 90.0f;
 
-    private static final int TRANSITION_GRACE_TICKS = 10;
-
     private final float stickingForce;
 
     private final float climbingSpeedMultiplier;
 
     private boolean wasClimbing;
-
-    private int climbingGraceTicks;
 
     private int tickCounter;
 
@@ -74,71 +64,116 @@ public class ClimbingMoveControl extends MoveControl {
 
         var navigator = resolveNavigator();
         var terrainIsClimbable = navigator != null && navigator.getCurrentTerrain() == TerrainType.CLIMBABLE;
+        var physicalSurface = wasClimbing ? findPhysicalSurface() : null;
+        var isPhysicallyOnSurface = physicalSurface != null;
 
-        if (terrainIsClimbable) {
-            climbingGraceTicks = TRANSITION_GRACE_TICKS;
-        } else if (climbingGraceTicks > 0 && mob.onGround()) {
-            climbingGraceTicks--;
-        }
+        updateClimbingSurface(navigator, terrainIsClimbable, physicalSurface);
 
-        var shouldClimb = terrainIsClimbable || climbingGraceTicks > 0;
-
-        if (!shouldClimb) {
-            if (wasClimbing) {
-                mob.setNoGravity(false);
-                wasClimbing = false;
+        if (terrainIsClimbable || isPhysicallyOnSurface) {
+            if (!wasClimbing) {
+                mob.setNoGravity(true);
+                wasClimbing = true;
             }
 
-            updateClimbingSurface(navigator, false);
+            applyPhysicalStickingForce(physicalSurface);
+            maintainClimbingPosture(navigator);
+
+            if (terrainIsClimbable) {
+                tickClimbing(navigator, true);
+            } else {
+                mob.setDeltaMovement(mob.getDeltaMovement().scale(CLIMBING_DRAG));
+            }
+        } else if (wasClimbing) {
+            mob.setNoGravity(false);
+
+            if (mob.onGround()) {
+                wasClimbing = false;
+                resetClimbingPosture(navigator);
+            }
+
             super.tick();
-            return;
+        } else {
+            super.tick();
         }
-
-        if (!wasClimbing) {
-            mob.setNoGravity(true);
-            wasClimbing = true;
-        }
-
-        updateClimbingSurface(navigator, terrainIsClimbable);
-        tickClimbing(navigator, terrainIsClimbable);
     }
 
     /**
-     * Computes the climbing surface from the entity's actual physical surroundings, not from pathfinding waypoints.
-     * Only sets a surface when there's a solid block in the navigator's surface direction from the entity's current
-     * position.
+     * Ensures the climbing posture stays active while the entity is on a surface. The navigator's posture callbacks
+     * reset the posture when a path ends, but the entity should remain in climbing posture as long as it's physically
+     * attached.
      */
-    private void updateClimbingSurface(PathNavigator navigator, boolean terrainIsClimbable) {
+    private void maintainClimbingPosture(PathNavigator navigator) {
+        if (navigator == null) {
+            return;
+        }
+
+        var climbingPosture = navigator.getConfig().getEvaluatorConfig().getClimbingPostureIndex();
+
+        if (climbingPosture >= 0) {
+            navigator.getConfig().firePostureEnter(climbingPosture);
+        }
+    }
+
+    private void resetClimbingPosture(PathNavigator navigator) {
+        if (navigator == null) {
+            return;
+        }
+
+        navigator.getConfig().firePostureEnter(0);
+    }
+
+    /**
+     * Scans adjacent blocks for a solid surface the entity is clinging to. Returns the direction toward the surface, or
+     * null if the entity is not adjacent to any solid block.
+     */
+    private Direction findPhysicalSurface() {
+        var entityPos = mob.blockPosition();
+
+        for (var direction : Direction.values()) {
+            if (direction == Direction.DOWN) {
+                continue;
+            }
+
+            if (mob.level().getBlockState(entityPos.relative(direction)).isSolid()) {
+                return direction;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Updates the climbing surface direction on the {@link ClimbingOrientationProvider}. Prefers the navigator's surface
+     * when available, falls back to the physical surface scan, and clears the surface when the entity is on the ground
+     * with no climbing path.
+     */
+    private void updateClimbingSurface(
+        PathNavigator navigator,
+        boolean terrainIsClimbable,
+        Direction physicalSurface
+    ) {
         if (!(mob instanceof ClimbingOrientationProvider provider)) {
             return;
         }
 
-        if (!terrainIsClimbable) {
-            provider.setClimbingSurfaceDirection(0);
-            return;
-        }
+        if (terrainIsClimbable) {
+            var surfaceOrdinal = navigator.getCurrentSurfaceDirection();
 
-        var surfaceOrdinal = navigator.getCurrentSurfaceDirection();
+            if (surfaceOrdinal > 0) {
+                var surface = Direction.values()[surfaceOrdinal];
+                var entityPos = mob.blockPosition();
 
-        if (surfaceOrdinal <= 0) {
-            provider.setClimbingSurfaceDirection(0);
-            return;
-        }
-
-        var surface = Direction.values()[surfaceOrdinal];
-        var entityPos = mob.blockPosition();
-
-        if (mob.level().getBlockState(entityPos.relative(surface)).isSolid()) {
-            provider.setClimbingSurfaceDirection(surfaceOrdinal);
-            return;
-        }
-
-        // Navigator's surface isn't adjacent — scan for the entity's actual surface.
-        for (var direction : Direction.values()) {
-            if (mob.level().getBlockState(entityPos.relative(direction)).isSolid()) {
-                provider.setClimbingSurfaceDirection(direction.ordinal());
-                return;
+                if (mob.level().getBlockState(entityPos.relative(surface)).isSolid()) {
+                    provider.setClimbingSurfaceDirection(surfaceOrdinal);
+                    return;
+                }
             }
+        }
+
+        if (physicalSurface != null) {
+            provider.setClimbingSurfaceDirection(physicalSurface.ordinal());
+        } else {
+            provider.setClimbingSurfaceDirection(0);
         }
     }
 
@@ -318,6 +353,14 @@ public class ClimbingMoveControl extends MoveControl {
     private void applySurfaceStickingForce(PathNavigator navigator) {
         var surfaceOrdinal = navigator.getCurrentSurfaceDirection();
         var surface = Direction.values()[surfaceOrdinal];
+
+        applyPhysicalStickingForce(surface);
+    }
+
+    private void applyPhysicalStickingForce(Direction surface) {
+        if (surface == null) {
+            return;
+        }
 
         mob.setDeltaMovement(
             mob.getDeltaMovement()
