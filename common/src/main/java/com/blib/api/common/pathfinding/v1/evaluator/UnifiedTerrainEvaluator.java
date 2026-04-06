@@ -365,6 +365,8 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             count = addWaterNeighborsForDirection(node, offset[0], offset[1], neighbors, count);
         }
 
+        count = addWaterDiagonalNeighbors(node, neighbors, count);
+
         var above = tryCreateNode(node.getX(), node.getY() + 1, node.getZ(), posture);
 
         if (above != null) {
@@ -375,6 +377,27 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
         if (below != null) {
             neighbors[count++] = below;
+        }
+
+        return count;
+    }
+
+    private int addWaterDiagonalNeighbors(PathNode node, PathNode[] neighbors, int count) {
+        var posture = node.getPostureIndex();
+
+        for (var offset : DIAGONAL_OFFSETS) {
+            var adjacentX = tryCreateNode(node.getX() + offset[0], node.getY(), node.getZ(), posture);
+            var adjacentZ = tryCreateNode(node.getX(), node.getY(), node.getZ() + offset[1], posture);
+
+            if (adjacentX == null || adjacentZ == null) {
+                continue;
+            }
+
+            var diagonal = tryCreateNode(node.getX() + offset[0], node.getY(), node.getZ() + offset[1], posture);
+
+            if (diagonal != null && diagonal.getTerrainType() != TerrainType.BREAKABLE) {
+                neighbors[count++] = diagonal;
+            }
         }
 
         return count;
