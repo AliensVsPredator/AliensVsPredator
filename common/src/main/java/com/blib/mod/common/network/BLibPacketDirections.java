@@ -7,6 +7,7 @@ import com.blib.mod.common.network.packet.S2CChunkClaimsSyncPayload;
 import com.blib.mod.common.network.packet.S2CEntityDataSyncPayload;
 import com.blib.mod.common.network.packet.S2CFactionMetadataSyncPayload;
 import com.blib.mod.common.network.packet.S2CGOAPDebugPayload;
+import com.blib.mod.common.network.packet.S2CPathfindingNavDebugPayload;
 import com.blib.mod.common.network.packet.S2CPathfindingSearchDebugPayload;
 
 public class BLibPacketDirections {
@@ -22,6 +23,9 @@ public class BLibPacketDirections {
         REGISTRY.registerPacketDirection(new PacketDirection.S2C<>(S2CGOAPDebugPayload.TYPE, S2CGOAPDebugPayload.CODEC));
         REGISTRY.registerPacketDirection(
             new PacketDirection.S2C<>(S2CPathfindingSearchDebugPayload.TYPE, S2CPathfindingSearchDebugPayload.CODEC)
+        );
+        REGISTRY.registerPacketDirection(
+            new PacketDirection.S2C<>(S2CPathfindingNavDebugPayload.TYPE, S2CPathfindingNavDebugPayload.CODEC)
         );
     }
 }

@@ -12,5 +12,6 @@ public class BLibFabricClient implements ClientModInitializer {
     public void onInitializeClient() {
         BLibClient.initialize();
         BLibFabricGOAPDebugHUD.register();
+        BLibFabricPathfindingNavDebugHUD.register();
     }
 }

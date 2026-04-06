@@ -8,6 +8,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+
 import com.blib.api.common.pathfinding.v1.navigator.PathNavigator;
 import com.blib.api.common.pathfinding.v1.navigator.PathNavigatorUser;
 import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
@@ -41,6 +42,8 @@ public class ClimbingMoveControl extends MoveControl {
 
     private boolean surfaceChangedThisTick;
 
+    private int ticksSinceSurfaceChange;
+
     private @Nullable Direction previousClimbingSurface;
 
     public ClimbingMoveControl(Mob mob) {
@@ -64,9 +67,30 @@ public class ClimbingMoveControl extends MoveControl {
         return nearEdgeTransition;
     }
 
+    public boolean wasClimbing() {
+        return wasClimbing;
+    }
+
+    public int getTicksSinceSurfaceChange() {
+        return ticksSinceSurfaceChange;
+    }
+
+    public String getOperationName() {
+        return operation.name();
+    }
+
+    public double getSpeedModifier() {
+        return speedModifier;
+    }
+
+    public float getClimbingSpeedMultiplier() {
+        return climbingSpeedMultiplier;
+    }
+
     @Override
     public void tick() {
         surfaceChangedThisTick = false;
+        ticksSinceSurfaceChange++;
 
         var navigator = resolveNavigator();
         var terrain = navigator != null ? navigator.getCurrentTerrain() : null;
@@ -106,12 +130,25 @@ public class ClimbingMoveControl extends MoveControl {
             maintainClimbingPosture(navigator);
             tickClimbingMovement(navigator);
         } else if (onSurface) {
-            wasClimbing = true;
-            activeSurface = physicalSurface;
-            nearEdgeTransition = true;
+            // The path's current node is non-climbable but the entity is still next to a wall.
+            // If the navigator is actively heading to a GROUND waypoint, this is a climb → walk
+            // transition: release the wall so vanilla gravity + ground movement can land the
+            // entity on the floor. Otherwise (idle or transitioning between climbable surfaces),
+            // keep climbing physics active so the entity stays attached to its current wall.
+            if (navigator != null && navigator.isNavigating() && navigator.getCurrentTerrain() == TerrainType.GROUND) {
+                wasClimbing = false;
+                activeSurface = null;
+                nearEdgeTransition = false;
 
-            if (navigator != null) {
-                tickClimbingMovement(navigator);
+                tickGroundMovement();
+            } else {
+                wasClimbing = true;
+                activeSurface = physicalSurface;
+                nearEdgeTransition = true;
+
+                if (navigator != null) {
+                    tickClimbingMovement(navigator);
+                }
             }
         } else if (wasClimbing && mob.onGround()) {
             wasClimbing = false;
@@ -163,14 +200,19 @@ public class ClimbingMoveControl extends MoveControl {
         var blockState = mob.level().getBlockState(blockPos);
         var collisionShape = blockState.getCollisionShape(mob.level(), blockPos);
 
-        var needsJump = (dy > mob.maxUpStep() && horizontalDistanceSqr < Math.max(1.0F, mob.getBbWidth()))
-            || (!collisionShape.isEmpty()
-                && mob.getY() < collisionShape.max(Direction.Axis.Y) + blockPos.getY()
-                && !blockState.is(BlockTags.DOORS)
-                && !blockState.is(BlockTags.FENCES));
+        if (mob.isInWater() && dy > 0) {
+            var upwardSpeed = speed * 0.5;
+            mob.setDeltaMovement(mob.getDeltaMovement().add(0, upwardSpeed, 0));
+        } else {
+            var needsJump = (dy > mob.maxUpStep() && horizontalDistanceSqr < Math.max(1.0F, mob.getBbWidth()))
+                || (!collisionShape.isEmpty()
+                    && mob.getY() < collisionShape.max(Direction.Axis.Y) + blockPos.getY()
+                    && !blockState.is(BlockTags.DOORS)
+                    && !blockState.is(BlockTags.FENCES));
 
-        if (needsJump && mob.onGround()) {
-            mob.getJumpControl().jump();
+            if (needsJump && mob.onGround()) {
+                mob.getJumpControl().jump();
+            }
         }
     }
 
@@ -252,6 +294,7 @@ public class ClimbingMoveControl extends MoveControl {
 
                     if (newSurface != previousSurface) {
                         surfaceChangedThisTick = true;
+                        ticksSinceSurfaceChange = 0;
                         previousClimbingSurface = previousSurface > 0 ? Direction.values()[previousSurface] : null;
                     }
 
@@ -264,6 +307,16 @@ public class ClimbingMoveControl extends MoveControl {
             if (previousSurface > 0) {
                 return;
             }
+        }
+
+        // Once the entity has landed, clear any leftover climbing surface state. This ensures
+        // that after a climb → walk transition the rendering and gameplay state reflect the
+        // entity's actual standing posture instead of staying latched to the old wall.
+        if (mob.onGround()) {
+            if (previousSurface != 0) {
+                provider.setClimbingSurfaceDirection(0);
+            }
+            return;
         }
 
         if (physicalSurface != null) {

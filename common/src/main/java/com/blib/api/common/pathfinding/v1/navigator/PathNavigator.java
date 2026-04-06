@@ -41,6 +41,8 @@ public final class PathNavigator {
 
     private int currentPostureIndex;
 
+    private int pendingPostureIndex;
+
     private int currentSurfaceDirection;
 
     private boolean waitingForBlockBreak;
@@ -65,7 +67,10 @@ public final class PathNavigator {
             config.getSearchConfig(),
             classificationCache
         );
+        this.pendingPostureIndex = NO_PENDING_POSTURE;
     }
+
+    private static final int NO_PENDING_POSTURE = -1;
 
     /**
      * Plans a path to the target position and begins following it.
@@ -81,6 +86,7 @@ public final class PathNavigator {
         this.lastPathComputeTick = tickCount;
         this.lastProgressTick = tickCount;
         this.lastDistanceToTarget = Double.MAX_VALUE;
+        this.pendingPostureIndex = NO_PENDING_POSTURE;
 
         if (currentPath != null) {
             var startNode = currentPath.getCurrentNode();
@@ -132,6 +138,7 @@ public final class PathNavigator {
             return;
         }
 
+        flushPendingPosture(entityOnGround);
         advanceWaypoints(entityX, entityY, entityZ, entityWidth, entityHeight, entitySurfaceDirection, entityOnGround);
 
         var entityBlockPos = BlockPos.containing(entityX, entityY, entityZ);
@@ -156,10 +163,32 @@ public final class PathNavigator {
         this.targetPos = null;
         this.currentTerrain = null;
         this.waitingForBlockBreak = false;
+        this.pendingPostureIndex = NO_PENDING_POSTURE;
     }
 
     public PathNavigatorConfig getConfig() {
         return config;
+    }
+
+    /**
+     * Returns the navigator's internal tick counter, incremented once per {@link #tick} call.
+     */
+    public int getTickCount() {
+        return tickCount;
+    }
+
+    /**
+     * Returns the tick at which the current path was computed.
+     */
+    public int getLastPathComputeTick() {
+        return lastPathComputeTick;
+    }
+
+    /**
+     * Returns the tick at which the navigator last advanced to a new node (i.e. made measurable progress).
+     */
+    public int getLastProgressTick() {
+        return lastProgressTick;
     }
 
     /**
@@ -270,6 +299,26 @@ public final class PathNavigator {
         this.targetPos = newTarget;
     }
 
+    /**
+     * Applies a deferred posture change if the entity has reached the ground. Posture transitions are gated by ground
+     * state so that an entity in the middle of climbing → walking transition stays in its climbing posture until it
+     * physically lands.
+     */
+    private void flushPendingPosture(boolean entityOnGround) {
+        if (pendingPostureIndex == NO_PENDING_POSTURE || !entityOnGround) {
+            return;
+        }
+
+        if (pendingPostureIndex == currentPostureIndex) {
+            pendingPostureIndex = NO_PENDING_POSTURE;
+            return;
+        }
+
+        currentPostureIndex = pendingPostureIndex;
+        pendingPostureIndex = NO_PENDING_POSTURE;
+        config.firePostureEnter(currentPostureIndex);
+    }
+
     private void advanceWaypoints(
         double entityX,
         double entityY,
@@ -324,8 +373,17 @@ public final class PathNavigator {
                 var newPosture = nextNode.getPostureIndex();
 
                 if (newPosture != currentPostureIndex) {
-                    currentPostureIndex = newPosture;
-                    config.firePostureEnter(newPosture);
+                    if (entityOnGround) {
+                        currentPostureIndex = newPosture;
+                        pendingPostureIndex = NO_PENDING_POSTURE;
+                        config.firePostureEnter(newPosture);
+                    } else {
+                        // Defer the posture change until the entity has actually landed.
+                        // The path index still advances so the move control sees the new
+                        // waypoint as its target, but the entity stays in its current posture
+                        // until it crawls onto the ground (see flushPendingPosture).
+                        pendingPostureIndex = newPosture;
+                    }
                 }
 
                 var newSurface = nextNode.getSurfaceDirection();

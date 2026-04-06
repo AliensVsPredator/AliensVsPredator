@@ -82,6 +82,7 @@ public final class NeoMoveToPosAction {
         if (actor instanceof Mob mob) {
             PathDebugUtil.sendDebugPath(mob, navigator.getCurrentPath());
             PathDebugUtil.sendDebugSearchSnapshot(mob, navigator);
+            PathDebugUtil.sendDebugNavState(mob, navigator);
         }
 
         if (navigator.isDone()) {

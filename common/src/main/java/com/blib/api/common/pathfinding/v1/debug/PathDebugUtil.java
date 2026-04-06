@@ -1,17 +1,24 @@
 package com.blib.api.common.pathfinding.v1.debug;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.game.DebugPackets;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.pathfinder.Node;
 import net.minecraft.world.level.pathfinder.Path;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.blib.api.common.pathfinding.v1.navigator.PathNavigator;
+import com.blib.api.common.pathfinding.v1.node.PathNode;
 import com.blib.api.common.pathfinding.v1.path.BLibPath;
+import com.blib.api.common.pathfinding.v1.physics.ClimbingMoveControl;
+import com.blib.api.common.pathfinding.v1.physics.ClimbingOrientationProvider;
 import com.blib.mod.BLib;
+import com.blib.mod.common.network.packet.S2CPathfindingNavDebugPayload;
 import com.blib.mod.common.network.packet.S2CPathfindingSearchDebugPayload;
 import com.blib.mod.common.property.BLibModProperties;
 import com.blib.mod.common.property.BLibModPropertyAccess;
@@ -94,6 +101,239 @@ public final class PathDebugUtil {
         );
 
         BLib.MOD.networking().sendToAllClientsTrackingEntity(mob, payload);
+    }
+
+    private static final int NAV_WINDOW_RADIUS = 2;
+
+    /**
+     * Sends a rolling window of path nodes around the navigator's current position for the nav debug HUD.
+     */
+    public static void sendDebugNavState(Mob mob, PathNavigator navigator) {
+        if (!BLibModPropertyAccess.INSTANCE.get(BLibModProperties.Debug.Render.ENABLED)) {
+            return;
+        }
+
+        if (!BLibModPropertyAccess.INSTANCE.get(BLibModProperties.Debug.Render.PathSearch.ENABLED)) {
+            return;
+        }
+
+        var pathSnapshot = collectPathSnapshot(mob, navigator);
+        var climbing = collectClimbingSnapshot(mob);
+        var move = collectMoveSnapshot(mob, climbing.active());
+        var surfaceBitmap = computeSurfaceBitmap(mob);
+        var pathAge = navigator.getTickCount() - navigator.getLastPathComputeTick();
+        var ticksOnNode = navigator.getTickCount() - navigator.getLastProgressTick();
+        var delta = mob.getDeltaMovement();
+        var payload = buildPayload(mob, delta.x, delta.y, delta.z, pathSnapshot, climbing, move, surfaceBitmap, pathAge, ticksOnNode);
+
+        BLib.MOD.networking().sendToAllClientsTrackingEntity(mob, payload);
+    }
+
+    private static S2CPathfindingNavDebugPayload buildPayload(
+        Mob mob,
+        double deltaX,
+        double deltaY,
+        double deltaZ,
+        PathSnapshot path,
+        ClimbingSnapshot climbing,
+        MoveSnapshot move,
+        int surfaceBitmap,
+        int pathAgeTicks,
+        int ticksOnCurrentNode
+    ) {
+        return new S2CPathfindingNavDebugPayload(
+            mob.getId(),
+            mob.getName().getString(),
+            mob.getX(),
+            mob.getY(),
+            mob.getZ(),
+            deltaX,
+            deltaY,
+            deltaZ,
+            move.wantedX(),
+            move.wantedY(),
+            move.wantedZ(),
+            mob.onGround(),
+            mob.isInWater(),
+            path.currentIndex(),
+            path.totalNodes(),
+            path.reached(),
+            path.navigating(),
+            path.waitingForBlockBreak(),
+            path.windowNodes(),
+            path.windowStart(),
+            climbing.active(),
+            climbing.surfaceDirection(),
+            climbing.yaw(),
+            mob.getYRot(),
+            mob.getVisualRotationYInDegrees(),
+            climbing.waypointPacked(),
+            climbing.targetPacked(),
+            ticksOnCurrentNode,
+            pathAgeTicks,
+            path.distanceToCurrentNode(),
+            path.distanceToTarget(),
+            move.operation(),
+            move.resolvedSpeed(),
+            surfaceBitmap,
+            climbing.wasClimbing(),
+            climbing.nearEdgeTransition(),
+            climbing.ticksSinceSurfaceChange()
+        );
+    }
+
+    private static PathSnapshot collectPathSnapshot(Mob mob, PathNavigator navigator) {
+        var path = navigator.getCurrentPath();
+        var windowNodes = new ArrayList<DebugNodeEntry>();
+        var navigating = navigator.isNavigating();
+        var waitingForBlockBreak = navigator.isWaitingForBlockBreak();
+
+        if (path == null) {
+            return new PathSnapshot(windowNodes, 0, 0, 0, false, navigating, waitingForBlockBreak, 0.0f, 0.0f);
+        }
+
+        var currentIndex = path.getCurrentNodeIndex();
+        var totalNodes = path.getNodeCount();
+        var reached = path.isReached();
+        var windowStart = Math.max(0, currentIndex - NAV_WINDOW_RADIUS);
+        var windowEnd = Math.min(totalNodes, currentIndex + NAV_WINDOW_RADIUS + 1);
+
+        for (int i = windowStart; i < windowEnd; i++) {
+            windowNodes.add(toDebugEntry(path.getNode(i)));
+        }
+
+        var distToCurrent = currentIndex < totalNodes ? distanceTo(mob, path.getNode(currentIndex)) : 0.0f;
+        var distToTarget = totalNodes > 0 ? distanceTo(mob, path.getNode(totalNodes - 1)) : 0.0f;
+
+        return new PathSnapshot(
+            windowNodes,
+            windowStart,
+            currentIndex,
+            totalNodes,
+            reached,
+            navigating,
+            waitingForBlockBreak,
+            distToCurrent,
+            distToTarget
+        );
+    }
+
+    private static ClimbingSnapshot collectClimbingSnapshot(Mob mob) {
+        var active = mob instanceof ClimbingOrientationProvider;
+        var surfaceDirection = 0;
+        var yaw = 0.0f;
+        var waypoint = 0L;
+        var target = 0L;
+        var wasClimbing = false;
+        var nearEdge = false;
+        var ticksSinceChange = 0;
+
+        if (mob instanceof ClimbingOrientationProvider provider) {
+            surfaceDirection = provider.getClimbingSurfaceDirection();
+            yaw = provider.getClimbingYaw();
+            waypoint = provider.getDebugCurrentWaypoint();
+            target = provider.getDebugTargetPos();
+        }
+
+        if (mob.getMoveControl() instanceof ClimbingMoveControl climbControl) {
+            wasClimbing = climbControl.wasClimbing();
+            nearEdge = climbControl.isNearEdgeTransition();
+            ticksSinceChange = climbControl.getTicksSinceSurfaceChange();
+        }
+
+        return new ClimbingSnapshot(active, surfaceDirection, yaw, waypoint, target, wasClimbing, nearEdge, ticksSinceChange);
+    }
+
+    private static MoveSnapshot collectMoveSnapshot(Mob mob, boolean climbingActive) {
+        var moveControl = mob.getMoveControl();
+        var operation = "?";
+        var speedModifier = moveControl.getSpeedModifier();
+        var climbMultiplier = 1.0f;
+
+        if (moveControl instanceof ClimbingMoveControl climbControl) {
+            operation = climbControl.getOperationName();
+
+            if (climbingActive) {
+                climbMultiplier = climbControl.getClimbingSpeedMultiplier();
+            }
+        }
+
+        var baseSpeed = mob.getAttributeValue(Attributes.MOVEMENT_SPEED);
+        var resolvedSpeed = (float) (speedModifier * baseSpeed * climbMultiplier);
+
+        return new MoveSnapshot(
+            moveControl.getWantedX(),
+            moveControl.getWantedY(),
+            moveControl.getWantedZ(),
+            operation,
+            resolvedSpeed
+        );
+    }
+
+    private static int computeSurfaceBitmap(Mob mob) {
+        var entityPos = mob.blockPosition();
+        var bitmap = 0;
+        var directions = Direction.values();
+
+        for (int i = 0; i < directions.length; i++) {
+            if (mob.level().getBlockState(entityPos.relative(directions[i])).isSolid()) {
+                bitmap |= 1 << i;
+            }
+        }
+
+        return bitmap;
+    }
+
+    private static float distanceTo(Mob mob, PathNode node) {
+        var dx = node.getX() + 0.5 - mob.getX();
+        var dy = node.getY() - mob.getY();
+        var dz = node.getZ() + 0.5 - mob.getZ();
+
+        return (float) Math.sqrt(dx * dx + dy * dy + dz * dz);
+    }
+
+    private record PathSnapshot(
+        List<DebugNodeEntry> windowNodes,
+        int windowStart,
+        int currentIndex,
+        int totalNodes,
+        boolean reached,
+        boolean navigating,
+        boolean waitingForBlockBreak,
+        float distanceToCurrentNode,
+        float distanceToTarget
+    ) {}
+
+    private record ClimbingSnapshot(
+        boolean active,
+        int surfaceDirection,
+        float yaw,
+        long waypointPacked,
+        long targetPacked,
+        boolean wasClimbing,
+        boolean nearEdgeTransition,
+        int ticksSinceSurfaceChange
+    ) {}
+
+    private record MoveSnapshot(
+        double wantedX,
+        double wantedY,
+        double wantedZ,
+        String operation,
+        float resolvedSpeed
+    ) {}
+
+    private static DebugNodeEntry toDebugEntry(PathNode node) {
+        return new DebugNodeEntry(
+            node.getX(),
+            node.getY(),
+            node.getZ(),
+            node.getTerrainType().ordinal(),
+            node.getPostureIndex(),
+            node.getSurfaceDirection(),
+            node.getAvailableSurfaces(),
+            true
+        );
     }
 
     private PathDebugUtil() {

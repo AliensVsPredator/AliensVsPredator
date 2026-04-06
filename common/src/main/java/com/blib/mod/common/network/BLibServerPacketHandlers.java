@@ -7,6 +7,7 @@ import com.blib.mod.common.network.packet.S2CChunkClaimsSyncPayload;
 import com.blib.mod.common.network.packet.S2CEntityDataSyncPayload;
 import com.blib.mod.common.network.packet.S2CFactionMetadataSyncPayload;
 import com.blib.mod.common.network.packet.S2CGOAPDebugPayload;
+import com.blib.mod.common.network.packet.S2CPathfindingNavDebugPayload;
 import com.blib.mod.common.network.packet.S2CPathfindingSearchDebugPayload;
 
 public class BLibServerPacketHandlers {
@@ -55,6 +56,14 @@ public class BLibServerPacketHandlers {
                 S2CPathfindingSearchDebugPayload.TYPE,
                 S2CPathfindingSearchDebugPayload.CODEC,
                 BLibClientListener::handlePathfindingSearchDebug
+            )
+        );
+
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromServer<>(
+                S2CPathfindingNavDebugPayload.TYPE,
+                S2CPathfindingNavDebugPayload.CODEC,
+                BLibClientListener::handlePathfindingNavDebug
             )
         );
     }

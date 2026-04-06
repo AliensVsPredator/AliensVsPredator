@@ -6,12 +6,14 @@ import org.jetbrains.annotations.ApiStatus;
 import com.blib.api.common.data_sync.v1.model.DataUser;
 import com.blib.internal.client.faction.ClientFactionCache;
 import com.blib.internal.client.territory.ClientTerritoryCache;
+import com.blib.mod.client.render.debug.PathfindingNavDebugHUD;
 import com.blib.mod.client.render.debug.PathfindingSearchDebugRenderer;
 import com.blib.mod.client.render.goap.GOAPDebugHUD;
 import com.blib.mod.common.network.packet.S2CChunkClaimsSyncPayload;
 import com.blib.mod.common.network.packet.S2CEntityDataSyncPayload;
 import com.blib.mod.common.network.packet.S2CFactionMetadataSyncPayload;
 import com.blib.mod.common.network.packet.S2CGOAPDebugPayload;
+import com.blib.mod.common.network.packet.S2CPathfindingNavDebugPayload;
 import com.blib.mod.common.network.packet.S2CPathfindingSearchDebugPayload;
 
 @ApiStatus.Internal
@@ -45,6 +47,10 @@ public final class BLibClientListener {
 
     public static void handlePathfindingSearchDebug(S2CPathfindingSearchDebugPayload payload, Player player) {
         PathfindingSearchDebugRenderer.INSTANCE.update(payload);
+    }
+
+    public static void handlePathfindingNavDebug(S2CPathfindingNavDebugPayload payload, Player player) {
+        PathfindingNavDebugHUD.INSTANCE.update(payload);
     }
 
     private BLibClientListener() {
