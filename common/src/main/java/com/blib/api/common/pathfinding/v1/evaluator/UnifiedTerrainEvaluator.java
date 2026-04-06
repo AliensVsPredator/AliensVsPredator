@@ -74,6 +74,28 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             return nodePool.getOrCreate(entityPos.getX(), entityPos.getY(), entityPos.getZ(), classified, 0);
         }
 
+        // Entity might be on the edge/corner of an adjacent block (blockPosition floors to air).
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dz = -1; dz <= 1; dz++) {
+                if (dx == 0 && dz == 0) {
+                    continue;
+                }
+
+                var neighborPos = entityPos.offset(dx, 0, dz);
+                var neighborClassified = classifyTerrain(neighborPos);
+
+                if (neighborClassified != null && config.supportsTerrain(neighborClassified)) {
+                    return nodePool.getOrCreate(
+                        neighborPos.getX(),
+                        neighborPos.getY(),
+                        neighborPos.getZ(),
+                        neighborClassified,
+                        0
+                    );
+                }
+            }
+        }
+
         var climbableStart = tryCreateAnyClimbableNode(entityPos.getX(), entityPos.getY(), entityPos.getZ(), 0);
 
         if (climbableStart != null) {

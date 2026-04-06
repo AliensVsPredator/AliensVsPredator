@@ -183,7 +183,6 @@ public final class PathNavigator {
                 currentPath.getNodeCount()
             );
 
-            resetPosture();
             return;
         }
 
@@ -202,7 +201,6 @@ public final class PathNavigator {
         this.currentPath = null;
         this.targetPos = null;
         this.currentTerrain = null;
-        resetPosture();
         this.waitingForBlockBreak = false;
     }
 
@@ -353,9 +351,10 @@ public final class PathNavigator {
                 break;
             }
 
-            // For ground nodes, the entity must actually be on the ground before advancing.
-            // Prevents completing a path while still climbing the side of a bridge.
-            if (waypoint.getTerrainType() == TerrainType.GROUND && entitySurfaceDirection > 0 && !entityOnGround) {
+            // For ground nodes, the entity must have exited climbing mode before advancing.
+            // Prevents completing a path while still on the side of a bridge — MC's onGround()
+            // can't distinguish "climbing beside a block" from "standing on a block."
+            if (waypoint.getTerrainType() == TerrainType.GROUND && entitySurfaceDirection > 0) {
                 break;
             }
 

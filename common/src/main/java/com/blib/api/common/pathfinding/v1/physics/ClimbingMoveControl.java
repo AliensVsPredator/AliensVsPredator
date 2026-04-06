@@ -81,7 +81,7 @@ public class ClimbingMoveControl extends MoveControl {
         var navigator = resolveNavigator();
         var terrain = navigator != null ? navigator.getCurrentTerrain() : null;
         var isClimbingTerrain = terrain == TerrainType.CLIMBABLE;
-        var physicalSurface = wasClimbing ? findPhysicalSurface() : null;
+        var physicalSurface = !mob.onGround() ? findPhysicalSurface() : null;
         var onSurface = physicalSurface != null;
 
         updateClimbingSurface(navigator, isClimbingTerrain, physicalSurface);
@@ -105,6 +105,13 @@ public class ClimbingMoveControl extends MoveControl {
             }
 
             nearEdgeTransition = isNearEdgeTransition(navigator);
+
+            // When on a climbable path but no physical surface (gap between surfaces during
+            // transitions), keep climbing physics active to prevent vanilla gravity.
+            if (activeSurface == null && surfaceOrdinal > 0) {
+                activeSurface = Direction.values()[surfaceOrdinal];
+                nearEdgeTransition = true;
+            }
 
             if (tickCounter % LOG_INTERVAL_TICKS == 0) {
                 logClimbingState("CLIMBING", navigator, physicalSurface);
@@ -137,10 +144,11 @@ public class ClimbingMoveControl extends MoveControl {
                 String.format("%.2f", mob.getZ())
             );
 
-            resetClimbingPosture(navigator);
             tickGroundMovement();
         } else {
             if (wasClimbing) {
+                wasClimbing = false;
+
                 LOGGER.info(
                     "[CMC] {} FALLING entityPos=({}, {}, {}) onGround={} terrain={} physSurface={}",
                     mob.getName().getString(),
@@ -226,14 +234,54 @@ public class ClimbingMoveControl extends MoveControl {
 
         operation = Operation.WAIT;
 
+        var path = navigator.getCurrentPath();
+        var currentNode = navigator.getCurrentNode();
         var target = computeSurfaceTarget(navigator);
         var dx = target.x - mob.getX();
         var dy = target.y - mob.getY();
         var dz = target.z - mob.getZ();
         var distanceSquared = dx * dx + dy * dy + dz * dz;
+        var usedLookahead = false;
 
         if (distanceSquared < ARRIVAL_THRESHOLD * ARRIVAL_THRESHOLD) {
-            return;
+            if (path != null && path.getCurrentNodeIndex() + 1 < path.getNodeCount()) {
+                var nextNode = path.getNode(path.getCurrentNodeIndex() + 1);
+
+                dx = nextNode.getX() + 0.5 - mob.getX();
+                dy = nextNode.getY() - mob.getY();
+                dz = nextNode.getZ() + 0.5 - mob.getZ();
+                distanceSquared = dx * dx + dy * dy + dz * dz;
+                usedLookahead = true;
+
+                if (distanceSquared < ARRIVAL_THRESHOLD * ARRIVAL_THRESHOLD) {
+                    LOGGER.info(
+                        "[ClimbTick] {} ARRIVED at lookahead | entityPos=({},{},{}) nextNode=({},{},{} t={} s={})",
+                        mob.getName().getString(),
+                        String.format("%.2f", mob.getX()),
+                        String.format("%.2f", mob.getY()),
+                        String.format("%.2f", mob.getZ()),
+                        nextNode.getX(),
+                        nextNode.getY(),
+                        nextNode.getZ(),
+                        nextNode.getTerrainType(),
+                        nextNode.getSurfaceDirection()
+                    );
+
+                    return;
+                }
+            } else {
+                LOGGER.info(
+                    "[ClimbTick] {} ARRIVED no lookahead | entityPos=({},{},{}) nodeIdx={}/{}",
+                    mob.getName().getString(),
+                    String.format("%.2f", mob.getX()),
+                    String.format("%.2f", mob.getY()),
+                    String.format("%.2f", mob.getZ()),
+                    path != null ? path.getCurrentNodeIndex() : -1,
+                    path != null ? path.getNodeCount() : -1
+                );
+
+                return;
+            }
         }
 
         var distance = Math.sqrt(distanceSquared);
@@ -245,6 +293,35 @@ public class ClimbingMoveControl extends MoveControl {
             (dz / distance) * speed
         );
 
+        LOGGER.info(
+            "[ClimbTick] {} MOVE entityPos=({},{},{}) target=({},{},{}) dist={} speed={} lookahead={}"
+                + " delta=({},{},{}) activeSurface={} edgeTrans={} onGround={}"
+                + " node=({},{},{} t={} s={}) nodeIdx={}/{}",
+            mob.getName().getString(),
+            String.format("%.2f", mob.getX()),
+            String.format("%.2f", mob.getY()),
+            String.format("%.2f", mob.getZ()),
+            String.format("%.2f", mob.getX() + dx),
+            String.format("%.2f", mob.getY() + dy),
+            String.format("%.2f", mob.getZ() + dz),
+            String.format("%.3f", distance),
+            String.format("%.4f", speed),
+            usedLookahead,
+            String.format("%.4f", (dx / distance) * speed),
+            String.format("%.4f", (dy / distance) * speed),
+            String.format("%.4f", (dz / distance) * speed),
+            activeSurface,
+            nearEdgeTransition,
+            mob.onGround(),
+            currentNode != null ? currentNode.getX() : 0,
+            currentNode != null ? currentNode.getY() : 0,
+            currentNode != null ? currentNode.getZ() : 0,
+            currentNode != null ? currentNode.getTerrainType() : "null",
+            currentNode != null ? currentNode.getSurfaceDirection() : -1,
+            path != null ? path.getCurrentNodeIndex() : -1,
+            path != null ? path.getNodeCount() : -1
+        );
+
         if (dx * dx + dz * dz > YAW_THRESHOLD) {
             var worldYaw = (float) (Mth.atan2(dz, dx) * 180.0F / Math.PI) - 90.0F;
 
@@ -254,30 +331,6 @@ public class ClimbingMoveControl extends MoveControl {
         }
 
         updateClimbingYaw(navigator, dx, dy, dz);
-
-        if (tickCounter % LOG_INTERVAL_TICKS == 0) {
-            var path = navigator.getCurrentPath();
-
-            LOGGER.info(
-                "[ClimbTick] {} MOVING dist={} speed={} edgeTrans={} node={}/{} surface={}",
-                mob.getName().getString(),
-                String.format("%.3f", distance),
-                String.format("%.4f", speed),
-                nearEdgeTransition,
-                path != null ? path.getCurrentNodeIndex() : -1,
-                path != null ? path.getNodeCount() : -1,
-                navigator.getCurrentSurfaceDirection()
-            );
-            LOGGER.info(
-                "[ClimbTick]   entityPos=({}, {}, {}) target=({}, {}, {})",
-                String.format("%.2f", mob.getX()),
-                String.format("%.2f", mob.getY()),
-                String.format("%.2f", mob.getZ()),
-                String.format("%.2f", target.x),
-                String.format("%.2f", target.y),
-                String.format("%.2f", target.z)
-            );
-        }
     }
 
     // --- Surface and posture management ---
