@@ -3,8 +3,6 @@ package com.blib.api.common.pathfinding.v1.navigator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.blib.api.common.pathfinding.v1.cache.TerrainClassificationCache;
 import com.blib.api.common.pathfinding.v1.debug.PathSearchSnapshot;
@@ -26,8 +24,6 @@ import com.blib.api.common.pathfinding.v1.transition.TerrainTransition;
  * </p>
  */
 public final class PathNavigator {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(PathNavigator.class);
 
     private final PathNavigatorConfig config;
 
@@ -80,9 +76,7 @@ public final class PathNavigator {
         this.targetPos = target;
         this.lastComputedTargetPos = target;
 
-        var startTime = System.nanoTime();
         this.currentPath = pathFinder.findPath(level, entityPos, target);
-        var elapsedMicros = (System.nanoTime() - startTime) / 1000;
 
         this.lastPathComputeTick = tickCount;
         this.lastProgressTick = tickCount;
@@ -101,35 +95,6 @@ public final class PathNavigator {
                 config.fireSurfaceDirectionChange(currentSurfaceDirection, newSurface);
                 currentSurfaceDirection = newSurface;
             }
-
-            LOGGER.info(
-                "[Pathfinding] {}µs | {} nodes | reached={} | from={} to={}",
-                elapsedMicros,
-                currentPath.getNodeCount(),
-                currentPath.isReached(),
-                entityPos,
-                target
-            );
-
-            var nodeCount = currentPath.getNodeCount();
-            var dumpStart = Math.max(0, nodeCount - 6);
-
-            for (int i = dumpStart; i < nodeCount; i++) {
-                var node = currentPath.getNode(i);
-
-                LOGGER.info(
-                    "[Pathfinding]   node[{}] ({},{},{}) terrain={} posture={} surface={}",
-                    i,
-                    node.getX(),
-                    node.getY(),
-                    node.getZ(),
-                    node.getTerrainType(),
-                    node.getPostureIndex(),
-                    node.getSurfaceDirection()
-                );
-            }
-        } else {
-            LOGGER.info("[Pathfinding] {}µs | no path | from={} to={}", elapsedMicros, entityPos, target);
         }
 
         return currentPath != null;
@@ -172,17 +137,6 @@ public final class PathNavigator {
         var entityBlockPos = BlockPos.containing(entityX, entityY, entityZ);
 
         if (currentPath.isDone()) {
-            LOGGER.info(
-                "[PathNav] path completed | entityPos=({},{},{}) targetPos={} reached={} nodeIdx={}/{}",
-                String.format("%.2f", entityX),
-                String.format("%.2f", entityY),
-                String.format("%.2f", entityZ),
-                targetPos,
-                currentPath.isReached(),
-                currentPath.getCurrentNodeIndex(),
-                currentPath.getNodeCount()
-            );
-
             return;
         }
 
@@ -370,18 +324,6 @@ public final class PathNavigator {
                 var newPosture = nextNode.getPostureIndex();
 
                 if (newPosture != currentPostureIndex) {
-                    LOGGER.info(
-                        "[PathNav] posture {} -> {} at node ({},{},{}) entity=({},{},{})",
-                        currentPostureIndex,
-                        newPosture,
-                        nextNode.getX(),
-                        nextNode.getY(),
-                        nextNode.getZ(),
-                        String.format("%.2f", entityX),
-                        String.format("%.2f", entityY),
-                        String.format("%.2f", entityZ)
-                    );
-
                     currentPostureIndex = newPosture;
                     config.firePostureEnter(newPosture);
                 }
@@ -389,19 +331,6 @@ public final class PathNavigator {
                 var newSurface = nextNode.getSurfaceDirection();
 
                 if (newSurface != currentSurfaceDirection) {
-                    LOGGER.info(
-                        "[PathNav] surface {} -> {} at node ({},{},{}) terrain={} entity=({},{},{})",
-                        currentSurfaceDirection,
-                        newSurface,
-                        nextNode.getX(),
-                        nextNode.getY(),
-                        nextNode.getZ(),
-                        newTerrain,
-                        String.format("%.2f", entityX),
-                        String.format("%.2f", entityY),
-                        String.format("%.2f", entityZ)
-                    );
-
                     var previousSurface = currentSurfaceDirection;
 
                     config.fireSurfaceDirectionChange(currentSurfaceDirection, newSurface);
@@ -420,19 +349,6 @@ public final class PathNavigator {
                 }
 
                 if (newTerrain != previousTerrain) {
-                    LOGGER.info(
-                        "[PathNav] terrain {} -> {} at node ({},{},{}) surface={} entity=({},{},{})",
-                        previousTerrain,
-                        newTerrain,
-                        nextNode.getX(),
-                        nextNode.getY(),
-                        nextNode.getZ(),
-                        newSurface,
-                        String.format("%.2f", entityX),
-                        String.format("%.2f", entityY),
-                        String.format("%.2f", entityZ)
-                    );
-
                     fireTransitionHandlers(previousTerrain, newTerrain);
                     currentTerrain = newTerrain;
                     break;
@@ -457,28 +373,7 @@ public final class PathNavigator {
         var ticksSinceProgress = tickCount - lastProgressTick;
 
         if (ticksSinceProgress >= config.getStuckTimeoutInTicks()) {
-            var node = currentPath != null && !currentPath.isDone() ? currentPath.getCurrentNode() : null;
-
-            LOGGER.info(
-                "[Stuck] path abandoned after {} ticks | entityPos={} targetPos={} distSqr={} node={} terrain={} surface={}",
-                ticksSinceProgress,
-                entityPos,
-                targetPos,
-                String.format("%.2f", currentDistance),
-                node != null ? "(%d,%d,%d)".formatted(node.getX(), node.getY(), node.getZ()) : "none",
-                currentTerrain,
-                currentSurfaceDirection
-            );
-
             stop();
-        } else if (ticksSinceProgress > 0 && tickCount % 20 == 0) {
-            LOGGER.info(
-                "[StuckWatch] no progress for {} ticks (timeout={}) | entityPos={} distToTarget={}",
-                ticksSinceProgress,
-                config.getStuckTimeoutInTicks(),
-                entityPos,
-                String.format("%.2f", Math.sqrt(currentDistance))
-            );
         }
     }
 
@@ -497,14 +392,6 @@ public final class PathNavigator {
             || targetPos.distSqr(lastComputedTargetPos) >= MIN_TARGET_MOVE_DISTANCE_SQUARED;
 
         if (targetMoved) {
-            LOGGER.info(
-                "[PathNav] recalculating | entityPos={} targetPos={} lastComputedTarget={} ticksSinceCompute={}",
-                entityPos,
-                targetPos,
-                lastComputedTargetPos,
-                tickCount - lastPathComputeTick
-            );
-
             navigateTo(entityPos, targetPos);
         }
     }

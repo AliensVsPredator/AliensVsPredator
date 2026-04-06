@@ -4,8 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.LevelReader;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,8 +27,6 @@ import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
  * block-level A* restricted to that corridor.
  */
 public final class BLibPathFinder {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(BLibPathFinder.class);
 
     private static final int MAX_NEIGHBORS = 40;
 
@@ -302,14 +298,6 @@ public final class BLibPathFinder {
                 openSet.add(neighbor);
             }
         }
-
-        LOGGER.info(
-            "[A*] Visited {}/{} nodes | exhausted={} | corridor={}",
-            visitedCount,
-            config.maxSearchNodes(),
-            visitedCount >= config.maxSearchNodes(),
-            corridor != null ? corridor.size() + " sections" : "none"
-        );
 
         BLibPath path = null;
 
