@@ -9,7 +9,6 @@ import net.minecraft.world.phys.Vec3;
 import com.blib.api.common.pathfinding.v1.debug.PathDebugUtil;
 import com.blib.api.common.pathfinding.v1.navigator.PathNavigator;
 import com.blib.api.common.pathfinding.v1.navigator.PathNavigatorUser;
-import com.blib.api.common.pathfinding.v1.physics.ClimbingOrientationProvider;
 
 /**
  * GOAP action utility for pathfinding using BLib's {@link PathNavigator}. Requires the entity to implement
@@ -65,18 +64,12 @@ public final class NeoMoveToPosAction {
             navigator.updateTarget(targetBlockPos);
         }
 
-        var surfaceDirection = actor instanceof ClimbingOrientationProvider cop
-            ? cop.getClimbingSurfaceDirection()
-            : 0;
-
         navigator.tick(
             actor.getX(),
             actor.getY(),
             actor.getZ(),
             actor.getBbWidth(),
-            actor.getBbHeight(),
-            surfaceDirection,
-            actor.onGround()
+            actor.getBbHeight()
         );
 
         if (actor instanceof Mob mob) {

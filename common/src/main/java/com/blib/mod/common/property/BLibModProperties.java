@@ -123,16 +123,6 @@ public class BLibModProperties {
                 );
             }
 
-            public static class Climbing {
-
-                private static final BLibPropertyKey.Parent CLIMBING = RENDER.child("climbing");
-
-                public static final BLibModProperty<Boolean> ENABLED = new BLibModProperty<>(
-                    CLIMBING.leaf("enabled", BLibPropertySerializers.BOOLEAN),
-                    false
-                );
-            }
-
             public static class SolidFace {
 
                 private static final BLibPropertyKey.Parent SOLID_FACE = RENDER.child("solid_face");

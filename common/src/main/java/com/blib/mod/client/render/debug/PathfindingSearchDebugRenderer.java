@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.core.Direction;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,8 +29,6 @@ public final class PathfindingSearchDebugRenderer {
     private static final float PATH_NODE_SIZE = 0.35f;
 
     private static final float PATH_NODE_HALF = PATH_NODE_SIZE / 2.0f;
-
-    private static final float ARROW_LENGTH = 0.4f;
 
     private static final int SECTION_SIZE = 16;
 
@@ -94,10 +91,6 @@ public final class PathfindingSearchDebugRenderer {
                 renderPathNode(poseStack, bufferSource, cameraX, cameraY, cameraZ, node, alpha);
             } else {
                 renderExploredNode(poseStack, bufferSource, cameraX, cameraY, cameraZ, node, alpha);
-            }
-
-            if (node.terrainType() == TerrainType.CLIMBABLE.ordinal()) {
-                renderAvailableSurfaceArrows(poseStack, bufferSource, cameraX, cameraY, cameraZ, node, alpha);
             }
         }
     }
@@ -171,48 +164,6 @@ public final class PathfindingSearchDebugRenderer {
         poseStack.popPose();
     }
 
-    private void renderAvailableSurfaceArrows(
-        PoseStack poseStack,
-        MultiBufferSource.BufferSource bufferSource,
-        double cameraX,
-        double cameraY,
-        double cameraZ,
-        DebugNodeEntry node,
-        float alpha
-    ) {
-        var centerX = (float) (node.x() + 0.5 - cameraX);
-        var centerY = (float) (node.y() + 0.5 - cameraY);
-        var centerZ = (float) (node.z() + 0.5 - cameraZ);
-        var consumer = bufferSource.getBuffer(RenderType.lines());
-
-        poseStack.pushPose();
-        var pose = poseStack.last();
-        var matrix = pose.pose();
-
-        for (var direction : Direction.values()) {
-            if ((node.availableSurfaces() & (1 << direction.ordinal())) == 0) {
-                continue;
-            }
-
-            var endX = centerX + direction.getStepX() * ARROW_LENGTH;
-            var endY = centerY + direction.getStepY() * ARROW_LENGTH;
-            var endZ = centerZ + direction.getStepZ() * ARROW_LENGTH;
-            var normalX = (float) direction.getStepX();
-            var normalY = (float) direction.getStepY();
-            var normalZ = (float) direction.getStepZ();
-
-            consumer.addVertex(matrix, centerX, centerY, centerZ)
-                .setColor(1.0f, 1.0f, 0.0f, alpha)
-                .setNormal(pose, normalX, normalY, normalZ);
-
-            consumer.addVertex(matrix, endX, endY, endZ)
-                .setColor(1.0f, 1.0f, 0.0f, alpha)
-                .setNormal(pose, normalX, normalY, normalZ);
-        }
-
-        poseStack.popPose();
-    }
-
     private void renderCorridorSections(
         PoseStack poseStack,
         MultiBufferSource.BufferSource bufferSource,
@@ -264,7 +215,6 @@ public final class PathfindingSearchDebugRenderer {
             case GROUND -> new float[] { 0.0f, 1.0f, 0.0f };
             case WATER -> new float[] { 0.0f, 0.5f, 1.0f };
             case AIR -> new float[] { 0.8f, 0.8f, 1.0f };
-            case CLIMBABLE -> new float[] { 1.0f, 0.6f, 0.0f };
             case BREAKABLE -> new float[] { 1.0f, 0.0f, 0.0f };
             case BURROWABLE -> new float[] { 0.6f, 0.3f, 0.0f };
         };

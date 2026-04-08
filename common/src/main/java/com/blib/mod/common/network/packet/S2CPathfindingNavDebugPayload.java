@@ -39,23 +39,15 @@ public record S2CPathfindingNavDebugPayload(
     boolean waitingForBlockBreak,
     List<DebugNodeEntry> windowNodes,
     int windowStartIndex,
-    boolean climbingActive,
-    int climbingSurfaceDirection,
-    float climbingYaw,
     float entityYRot,
     float entityYBodyRot,
-    long climbingWaypointPacked,
-    long climbingTargetPacked,
     int ticksOnCurrentNode,
     int pathAgeTicks,
     float distanceToCurrentNode,
     float distanceToTarget,
     String moveOperation,
     float resolvedSpeed,
-    int surfaceSolidBitmap,
-    boolean climbingWasClimbing,
-    boolean climbingNearEdgeTransition,
-    int climbingTicksSinceSurfaceChange
+    int surfaceSolidBitmap
 ) implements CustomPacketPayload {
 
     public static final ResourceLocation PAYLOAD_ID = BLib.MOD.resources().createLocation("pathfinding_nav_debug");
@@ -93,22 +85,14 @@ public record S2CPathfindingNavDebugPayload(
                     StreamCodecs.BOOLEAN.decode(schema, buf),
                     NODE_LIST_CODEC.decode(schema, buf),
                     StreamCodecs.INT.decode(schema, buf),
-                    StreamCodecs.BOOLEAN.decode(schema, buf),
-                    StreamCodecs.INT.decode(schema, buf),
                     StreamCodecs.FLOAT.decode(schema, buf),
                     StreamCodecs.FLOAT.decode(schema, buf),
-                    StreamCodecs.FLOAT.decode(schema, buf),
-                    StreamCodecs.LONG.decode(schema, buf),
-                    StreamCodecs.LONG.decode(schema, buf),
                     StreamCodecs.INT.decode(schema, buf),
                     StreamCodecs.INT.decode(schema, buf),
                     StreamCodecs.FLOAT.decode(schema, buf),
                     StreamCodecs.FLOAT.decode(schema, buf),
                     StreamCodecs.STRING_UTF8.decode(schema, buf),
                     StreamCodecs.FLOAT.decode(schema, buf),
-                    StreamCodecs.INT.decode(schema, buf),
-                    StreamCodecs.BOOLEAN.decode(schema, buf),
-                    StreamCodecs.BOOLEAN.decode(schema, buf),
                     StreamCodecs.INT.decode(schema, buf)
                 );
             }
@@ -141,13 +125,8 @@ public record S2CPathfindingNavDebugPayload(
                 StreamCodecs.BOOLEAN.encode(schema, buf, value.waitingForBlockBreak);
                 NODE_LIST_CODEC.encode(schema, buf, value.windowNodes);
                 StreamCodecs.INT.encode(schema, buf, value.windowStartIndex);
-                StreamCodecs.BOOLEAN.encode(schema, buf, value.climbingActive);
-                StreamCodecs.INT.encode(schema, buf, value.climbingSurfaceDirection);
-                StreamCodecs.FLOAT.encode(schema, buf, value.climbingYaw);
                 StreamCodecs.FLOAT.encode(schema, buf, value.entityYRot);
                 StreamCodecs.FLOAT.encode(schema, buf, value.entityYBodyRot);
-                StreamCodecs.LONG.encode(schema, buf, value.climbingWaypointPacked);
-                StreamCodecs.LONG.encode(schema, buf, value.climbingTargetPacked);
                 StreamCodecs.INT.encode(schema, buf, value.ticksOnCurrentNode);
                 StreamCodecs.INT.encode(schema, buf, value.pathAgeTicks);
                 StreamCodecs.FLOAT.encode(schema, buf, value.distanceToCurrentNode);
@@ -155,9 +134,6 @@ public record S2CPathfindingNavDebugPayload(
                 StreamCodecs.STRING_UTF8.encode(schema, buf, value.moveOperation);
                 StreamCodecs.FLOAT.encode(schema, buf, value.resolvedSpeed);
                 StreamCodecs.INT.encode(schema, buf, value.surfaceSolidBitmap);
-                StreamCodecs.BOOLEAN.encode(schema, buf, value.climbingWasClimbing);
-                StreamCodecs.BOOLEAN.encode(schema, buf, value.climbingNearEdgeTransition);
-                StreamCodecs.INT.encode(schema, buf, value.climbingTicksSinceSurfaceChange);
             }
         }
     );

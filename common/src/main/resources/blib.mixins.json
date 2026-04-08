@@ -17,7 +17,6 @@
     "MixinHolder",
     "MixinLevelChunk_TerrainCacheInvalidation",
     "MixinLivingEntity_GOAPUser",
-    "MixinLivingEntity_Travel",
     "MixinPath_Debug",
     "MixinRegistry_ApplyDataFixes",
     "MixinShapedRecipeBuilder_Accessor",

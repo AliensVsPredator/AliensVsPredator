@@ -2,10 +2,7 @@ package com.blib.api.common.pathfinding.v1.evaluator;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -16,8 +13,7 @@ import com.blib.api.common.pathfinding.v1.terrain.TerrainClassifiers;
 import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
 
 /**
- * Describes an entity's pathfinding capabilities: supported terrain types with costs, postures with dimensions, and
- * physical constraints.
+ * Describes an entity's pathfinding capabilities: supported terrain types with costs and physical constraints.
  */
 public final class TerrainEvaluatorConfig {
 
@@ -27,15 +23,19 @@ public final class TerrainEvaluatorConfig {
 
     private static final int DEFAULT_MAX_STEP_HEIGHT = 1;
 
+    private static final int DEFAULT_ENTITY_WIDTH = 1;
+
+    private static final int DEFAULT_ENTITY_HEIGHT = 2;
+
     private final Map<TerrainType, Supplier<Float>> terrainCostSuppliers;
 
     private final TerrainClassifier terrainClassifier;
 
     private final @Nullable BlockBreakabilityEvaluator breakabilityEvaluator;
 
-    private final List<Posture> postures;
+    private final int entityWidth;
 
-    private final Map<Integer, Float> postureTransitionCosts;
+    private final int entityHeight;
 
     private final int maxFallDistance;
 
@@ -45,30 +45,26 @@ public final class TerrainEvaluatorConfig {
 
     private final boolean canWalkOverFences;
 
-    private final int climbingPostureIndex;
-
     private TerrainEvaluatorConfig(
         Map<TerrainType, Supplier<Float>> terrainCostSuppliers,
         TerrainClassifier terrainClassifier,
         @Nullable BlockBreakabilityEvaluator breakabilityEvaluator,
-        List<Posture> postures,
-        Map<Integer, Float> postureTransitionCosts,
+        int entityWidth,
+        int entityHeight,
         int maxFallDistance,
         int maxStepHeight,
         boolean canOpenDoors,
-        boolean canWalkOverFences,
-        int climbingPostureIndex
+        boolean canWalkOverFences
     ) {
         this.terrainCostSuppliers = Map.copyOf(terrainCostSuppliers);
         this.terrainClassifier = terrainClassifier;
         this.breakabilityEvaluator = breakabilityEvaluator;
-        this.postures = List.copyOf(postures);
-        this.postureTransitionCosts = Map.copyOf(postureTransitionCosts);
+        this.entityWidth = entityWidth;
+        this.entityHeight = entityHeight;
         this.maxFallDistance = maxFallDistance;
         this.maxStepHeight = maxStepHeight;
         this.canOpenDoors = canOpenDoors;
         this.canWalkOverFences = canWalkOverFences;
-        this.climbingPostureIndex = climbingPostureIndex;
     }
 
     public static Builder builder() {
@@ -101,28 +97,12 @@ public final class TerrainEvaluatorConfig {
         return terrainClassifier;
     }
 
-    public List<Posture> getPostures() {
-        return postures;
+    public int getEntityWidth() {
+        return entityWidth;
     }
 
-    public int getPostureCount() {
-        return postures.size();
-    }
-
-    public Posture getPosture(int index) {
-        return postures.get(index);
-    }
-
-    public int getEntityWidth(int postureIndex) {
-        return postures.get(postureIndex).width();
-    }
-
-    public int getEntityHeight(int postureIndex) {
-        return postures.get(postureIndex).height();
-    }
-
-    public float getPostureTransitionCost(int postureIndex) {
-        return postureTransitionCosts.getOrDefault(postureIndex, 0.0f);
+    public int getEntityHeight() {
+        return entityHeight;
     }
 
     public int getMaxFallDistance() {
@@ -141,22 +121,15 @@ public final class TerrainEvaluatorConfig {
         return canWalkOverFences;
     }
 
-    /**
-     * Returns the posture index required for CLIMBABLE terrain, or -1 if no specific posture is required.
-     */
-    public int getClimbingPostureIndex() {
-        return climbingPostureIndex;
-    }
-
     public static final class Builder {
 
         private final Map<TerrainType, Supplier<Float>> terrainCostSuppliers;
 
-        private final List<Posture> postures;
-
-        private final Map<Integer, Float> postureTransitionCosts;
-
         private TerrainClassifier terrainClassifier;
+
+        private int entityWidth;
+
+        private int entityHeight;
 
         private int maxFallDistance;
 
@@ -168,13 +141,11 @@ public final class TerrainEvaluatorConfig {
 
         private boolean canWalkOverFences;
 
-        private int climbingPostureIndex = -1;
-
         private Builder() {
             this.terrainCostSuppliers = new EnumMap<>(TerrainType.class);
-            this.postures = new ArrayList<>();
-            this.postureTransitionCosts = new HashMap<>();
             this.terrainClassifier = TerrainClassifiers.GROUND_ONLY;
+            this.entityWidth = DEFAULT_ENTITY_WIDTH;
+            this.entityHeight = DEFAULT_ENTITY_HEIGHT;
             this.maxFallDistance = DEFAULT_MAX_FALL_DISTANCE;
             this.maxStepHeight = DEFAULT_MAX_STEP_HEIGHT;
         }
@@ -203,23 +174,9 @@ public final class TerrainEvaluatorConfig {
             return this;
         }
 
-        /**
-         * Adds a posture with zero transition cost. The first posture added is the default (index 0).
-         */
-        public Builder addPosture(Posture posture) {
-            postures.add(posture);
-            return this;
-        }
-
-        /**
-         * Adds a posture with a transition cost. The cost is applied when switching TO this posture.
-         */
-        public Builder addPosture(Posture posture, float transitionCost) {
-            var index = postures.size();
-
-            postures.add(posture);
-            postureTransitionCosts.put(index, transitionCost);
-
+        public Builder withEntitySize(int width, int height) {
+            this.entityWidth = width;
+            this.entityHeight = height;
             return this;
         }
 
@@ -253,36 +210,21 @@ public final class TerrainEvaluatorConfig {
             return this;
         }
 
-        /**
-         * Sets the posture index that CLIMBABLE nodes must use. All climbable path nodes will be generated with this
-         * posture, ensuring the entity adopts the correct dimensions and animation while climbing. Defaults to -1 (no
-         * forced posture).
-         */
-        public Builder withClimbingPostureIndex(int postureIndex) {
-            this.climbingPostureIndex = postureIndex;
-            return this;
-        }
-
         public TerrainEvaluatorConfig build() {
             if (terrainCostSuppliers.isEmpty()) {
                 terrainCostSuppliers.put(TerrainType.GROUND, () -> DEFAULT_COST);
-            }
-
-            if (postures.isEmpty()) {
-                postures.add(Posture.DEFAULT);
             }
 
             return new TerrainEvaluatorConfig(
                 terrainCostSuppliers,
                 terrainClassifier,
                 breakabilityEvaluator,
-                postures,
-                postureTransitionCosts,
+                entityWidth,
+                entityHeight,
                 maxFallDistance,
                 maxStepHeight,
                 canOpenDoors,
-                canWalkOverFences,
-                climbingPostureIndex
+                canWalkOverFences
             );
         }
     }

@@ -17,12 +17,9 @@ import com.blib.api.client.render.v1.AzLayerRenderer;
 import com.blib.api.client.render.v1.AzModelRenderer;
 import com.blib.api.client.render.v1.AzRendererPipelineContext;
 import com.blib.api.client.render.v1.entity.pipeline.AzEntityRendererPipeline;
-import com.blib.api.common.pathfinding.v1.physics.ClimbingOrientationProvider;
 import com.blib.internal.client.render.util.RenderUtil;
 
 public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUID, T> {
-
-    private static final float FORWARD_BLEND_SPEED = 0.25f;
 
     protected final AzEntityRendererPipeline<T> entityRendererPipeline;
 
@@ -41,7 +38,7 @@ public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUI
         var poseStack = context.poseStack();
 
         poseStack.pushPose();
-        float lerpBodyRot = getClimbingAwareBodyRot(animatable, partialTick);
+        float lerpBodyRot = getLerpRot(animatable, partialTick);
 
         if (animatable.getPose() == Pose.SLEEPING && animatable instanceof LivingEntity livingEntity) {
             Direction bedDirection = livingEntity.getBedOrientation();
@@ -61,7 +58,6 @@ public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUI
         float ageInTicks = animatable.tickCount + partialTick;
 
         poseStack.scale(nativeScale, nativeScale, nativeScale);
-        applyClimbingOrientation(animatable, poseStack);
         applyRotations(animatable, poseStack, ageInTicks, lerpBodyRot, partialTick, nativeScale);
 
         if (!isReRender) {
@@ -218,135 +214,4 @@ public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUI
         }
     }
 
-    /**
-     * Applies climbing orientation by building the rotation directly from the surface normal and movement direction. No
-     * Euler angle decomposition — the rotation matrix is constructed from the two vectors that fully define the
-     * entity's orientation on the surface. The surface normal determines the surface tilt, and deltaMovement determines
-     * which direction the entity faces along the surface.
-     */
-    private void applyClimbingOrientation(T animatable, PoseStack poseStack) {
-        if (!(animatable instanceof ClimbingOrientationProvider provider)) {
-            return;
-        }
-
-        var surfaceOrdinal = provider.getClimbingSurfaceDirection();
-        var renderState = provider.getClimbingRenderState();
-
-        if (renderState == null) {
-            return;
-        }
-
-        if (surfaceOrdinal <= 0) {
-            renderState.clearDisplayedForward();
-            return;
-        }
-
-        var surface = Direction.values()[surfaceOrdinal];
-        var normal = surface.getOpposite().step();
-        float upX = normal.x;
-        float upY = normal.y;
-        float upZ = normal.z;
-
-        var delta = animatable.getDeltaMovement();
-        var hasForward = renderState.hasDisplayedForward();
-
-        float targetFwdX = (float) delta.x;
-        float targetFwdY = (float) delta.y;
-        float targetFwdZ = (float) delta.z;
-
-        // Project movement onto the surface plane (remove the normal component).
-        var dot = targetFwdX * upX + targetFwdY * upY + targetFwdZ * upZ;
-
-        targetFwdX -= upX * dot;
-        targetFwdY -= upY * dot;
-        targetFwdZ -= upZ * dot;
-
-        var targetLen = Mth.sqrt(targetFwdX * targetFwdX + targetFwdY * targetFwdY + targetFwdZ * targetFwdZ);
-        var minProjectedLength = hasForward ? 0.001f : 0.1f;
-
-        if (targetLen > minProjectedLength) {
-            targetFwdX /= targetLen;
-            targetFwdY /= targetLen;
-            targetFwdZ /= targetLen;
-
-            if (!hasForward) {
-                renderState.setDisplayedForward(targetFwdX, targetFwdY, targetFwdZ);
-            } else {
-                var stored = renderState.getDisplayedForward();
-
-                renderState.setDisplayedForward(
-                    Mth.lerp(FORWARD_BLEND_SPEED, stored[0], targetFwdX),
-                    Mth.lerp(FORWARD_BLEND_SPEED, stored[1], targetFwdY),
-                    Mth.lerp(FORWARD_BLEND_SPEED, stored[2], targetFwdZ)
-                );
-            }
-        }
-
-        if (!renderState.hasDisplayedForward()) {
-            return;
-        }
-
-        var stored = renderState.getDisplayedForward();
-        var fwdLen = Mth.sqrt(stored[0] * stored[0] + stored[1] * stored[1] + stored[2] * stored[2]);
-
-        if (fwdLen < 0.001f) {
-            return;
-        }
-
-        float fwdX = stored[0] / fwdLen;
-        float fwdY = stored[1] / fwdLen;
-        float fwdZ = stored[2] / fwdLen;
-
-        // Right = cross(forward, up)
-        float rightX = fwdY * upZ - fwdZ * upY;
-        float rightY = fwdZ * upX - fwdX * upZ;
-        float rightZ = fwdX * upY - fwdY * upX;
-
-        // Translation offset: pivot around center of mass.
-        var halfHeight = animatable.getBbHeight() / 2.0;
-
-        poseStack.translate(-upX * halfHeight, -upY * halfHeight, -upZ * halfHeight);
-
-        // Build rotation matrix (JOML column-major constructor).
-        // Column 0: model +X → right
-        // Column 1: model +Y (top/back) → surface normal (away from surface)
-        // Column 2: model -Z (head/face) → forward, so +Z → -forward
-        var matrix = new Matrix4f(
-            rightX,
-            rightY,
-            rightZ,
-            0,
-            upX,
-            upY,
-            upZ,
-            0,
-            -fwdX,
-            -fwdY,
-            -fwdZ,
-            0,
-            0,
-            0,
-            0,
-            1
-        );
-
-        poseStack.last().pose().mul(matrix);
-        poseStack.last().normal().mul(new org.joml.Matrix3f(matrix));
-    }
-
-    /**
-     * Returns the body rotation for rendering. Returns 180 when climbing to neutralize vanilla's
-     * {@code YP(180 - bodyRot)} rotation, since {@code applyClimbingOrientation} already handles the full orientation.
-     */
-    private float getClimbingAwareBodyRot(T animatable, float partialTick) {
-        if (animatable instanceof ClimbingOrientationProvider provider && provider.getClimbingSurfaceDirection() > 0) {
-            var renderState = provider.getClimbingRenderState();
-
-            if (renderState != null && renderState.hasDisplayedForward()) {
-                return 180.0f;
-            }
-        }
-
-        return getLerpRot(animatable, partialTick);
-    }
 }

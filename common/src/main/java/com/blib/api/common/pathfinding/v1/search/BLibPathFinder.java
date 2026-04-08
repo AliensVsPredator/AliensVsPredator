@@ -1,7 +1,6 @@
 package com.blib.api.common.pathfinding.v1.search;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.LevelReader;
 import org.jetbrains.annotations.Nullable;
 
@@ -64,7 +63,7 @@ public final class BLibPathFinder {
                 corridor = findSectionCorridor(level, startPos, targetPos);
             }
 
-            return searchBlocks(level, startPos, targetPos, corridor);
+            return searchBlocks(startPos, targetPos, corridor);
         } finally {
             evaluator.cleanup();
         }
@@ -149,9 +148,8 @@ public final class BLibPathFinder {
 
                         var sectionPassable = classificationCache.isSectionPassable(level, nx, ny, nz);
                         var supportsBreakable = evaluator.getTerrainCost(TerrainType.BREAKABLE) < Float.MAX_VALUE;
-                        var supportsClimbable = evaluator.getTerrainCost(TerrainType.CLIMBABLE) < Float.MAX_VALUE;
 
-                        if (!sectionPassable && !supportsBreakable && !supportsClimbable) {
+                        if (!sectionPassable && !supportsBreakable) {
                             continue;
                         }
 
@@ -174,14 +172,6 @@ public final class BLibPathFinder {
 
                             if (breakableCost < cheapestCost) {
                                 cheapestCost = breakableCost;
-                            }
-                        }
-
-                        if (supportsClimbable) {
-                            var climbableCost = evaluator.getTerrainCost(TerrainType.CLIMBABLE);
-
-                            if (climbableCost < cheapestCost) {
-                                cheapestCost = climbableCost;
                             }
                         }
 
@@ -234,7 +224,7 @@ public final class BLibPathFinder {
         return (float) Math.sqrt(dx * dx + dy * dy + dz * dz);
     }
 
-    private @Nullable BLibPath searchBlocks(LevelReader level, BlockPos startPos, BlockPos targetPos, @Nullable Set<Long> corridor) {
+    private @Nullable BLibPath searchBlocks(BlockPos startPos, BlockPos targetPos, @Nullable Set<Long> corridor) {
         var startNode = evaluator.getStartNode(startPos);
         var goalNode = evaluator.getGoalNode(targetPos);
 
@@ -261,7 +251,7 @@ public final class BLibPathFinder {
             visitedCount++;
 
             if (current.equals(goalNode)) {
-                var path = buildPath(level, current, true);
+                var path = buildPath(current, true);
 
                 lastSearchSnapshot = buildSnapshot(closedNodes, path, corridor, visitedCount);
 
@@ -302,7 +292,7 @@ public final class BLibPathFinder {
         BLibPath path = null;
 
         if (bestNode != startNode) {
-            path = buildPath(level, bestNode, false);
+            path = buildPath(bestNode, false);
         }
 
         lastSearchSnapshot = buildSnapshot(closedNodes, path, corridor, visitedCount);
@@ -334,15 +324,11 @@ public final class BLibPathFinder {
                     node.getY(),
                     node.getZ(),
                     node.getTerrainType().ordinal(),
-                    node.getPostureIndex(),
-                    node.getSurfaceDirection(),
-                    node.getAvailableSurfaces(),
                     pathNodeSet.contains(node)
                 )
             );
         }
 
-        // Add corner nodes inserted during post-processing (not explored by A*).
         if (path != null) {
             for (int i = 0; i < path.getNodeCount(); i++) {
                 var node = path.getNode(i);
@@ -354,9 +340,6 @@ public final class BLibPathFinder {
                             node.getY(),
                             node.getZ(),
                             node.getTerrainType().ordinal(),
-                            node.getPostureIndex(),
-                            node.getSurfaceDirection(),
-                            node.getAvailableSurfaces(),
                             true
                         )
                     );
@@ -388,11 +371,8 @@ public final class BLibPathFinder {
 
     // --- Path post-processing pipeline ---
 
-    private BLibPath buildPath(LevelReader level, PathNode endNode, boolean reached) {
+    private BLibPath buildPath(PathNode endNode, boolean reached) {
         var nodes = reconstructNodes(endNode);
-
-        assignSurfaceDirections(nodes);
-        insertCornerNodes(level, nodes);
 
         return new BLibPath(nodes, reached);
     }
@@ -409,118 +389,6 @@ public final class BLibPathFinder {
         Collections.reverse(nodes);
 
         return nodes;
-    }
-
-    // --- TPO: Surface direction assignment ---
-
-    private void assignSurfaceDirections(List<PathNode> nodes) {
-        var previousSurface = -1;
-
-        for (int i = 0; i < nodes.size(); i++) {
-            var node = nodes.get(i);
-
-            if (node.getTerrainType() != TerrainType.CLIMBABLE) {
-                node.setSurfaceDirection(0);
-                previousSurface = -1;
-                continue;
-            }
-
-            var available = node.getAvailableSurfaces();
-
-            if (previousSurface >= 0 && (available & (1 << previousSurface)) != 0) {
-                node.setSurfaceDirection(previousSurface);
-            } else {
-                node.setSurfaceDirection(pickBestSurface(nodes, i, available));
-            }
-
-            previousSurface = node.getSurfaceDirection();
-        }
-    }
-
-    private static int pickBestSurface(List<PathNode> nodes, int index, int availableMask) {
-        if (index > 0) {
-            var prev = nodes.get(index - 1);
-            var current = nodes.get(index);
-            var dx = current.getX() - prev.getX();
-            var dy = current.getY() - prev.getY();
-            var dz = current.getZ() - prev.getZ();
-
-            Direction.Axis movementAxis = null;
-
-            if (dx != 0 && dy == 0 && dz == 0) {
-                movementAxis = Direction.Axis.X;
-            } else if (dy != 0 && dx == 0 && dz == 0) {
-                movementAxis = Direction.Axis.Y;
-            } else if (dz != 0 && dx == 0 && dy == 0) {
-                movementAxis = Direction.Axis.Z;
-            }
-
-            if (movementAxis != null) {
-                for (var direction : Direction.values()) {
-                    if (direction.getAxis() != movementAxis && (availableMask & (1 << direction.ordinal())) != 0) {
-                        return direction.ordinal();
-                    }
-                }
-            }
-        }
-
-        return Integer.numberOfTrailingZeros(availableMask);
-    }
-
-    // --- Corner node injection for convex surface transitions ---
-
-    /**
-     * Inserts intermediate corner nodes where the path transitions between perpendicular climbing surfaces. At a convex
-     * corner, the entity cannot move in a straight line between surfaces because the pillar block is in the way. The
-     * corner node sits in the air at the outer corner, giving the entity a waypoint to swing around.
-     */
-    private static void insertCornerNodes(LevelReader level, List<PathNode> nodes) {
-        for (int i = 0; i < nodes.size() - 1; i++) {
-            var current = nodes.get(i);
-            var next = nodes.get(i + 1);
-
-            if (current.getTerrainType() != TerrainType.CLIMBABLE || next.getTerrainType() != TerrainType.CLIMBABLE) {
-                continue;
-            }
-
-            var currentSurface = current.getSurfaceDirection();
-            var nextSurface = next.getSurfaceDirection();
-
-            if (currentSurface <= 0 || nextSurface <= 0 || currentSurface == nextSurface) {
-                continue;
-            }
-
-            var currentDir = Direction.values()[currentSurface];
-            var nextDir = Direction.values()[nextSurface];
-
-            if (currentDir == nextDir.getOpposite()) {
-                continue;
-            }
-
-            // Wall-to-wall convex corner: swing outward around the pillar.
-            var opposite = nextDir.getOpposite();
-            var cornerPos = new BlockPos(
-                current.getX() + opposite.getStepX(),
-                current.getY() + opposite.getStepY(),
-                current.getZ() + opposite.getStepZ()
-            );
-
-            if (level.getBlockState(cornerPos).isSolid()) {
-                continue;
-            }
-
-            var cornerNode = new PathNode(
-                cornerPos.getX(),
-                cornerPos.getY(),
-                cornerPos.getZ(),
-                TerrainType.CLIMBABLE,
-                current.getPostureIndex()
-            );
-
-            cornerNode.setSurfaceDirection(currentSurface);
-            nodes.add(i + 1, cornerNode);
-            i++;
-        }
     }
 
     private static long packSectionKey(int sectionX, int sectionY, int sectionZ) {

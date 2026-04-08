@@ -15,8 +15,6 @@ import java.util.List;
 import com.blib.api.common.pathfinding.v1.navigator.PathNavigator;
 import com.blib.api.common.pathfinding.v1.node.PathNode;
 import com.blib.api.common.pathfinding.v1.path.BLibPath;
-import com.blib.api.common.pathfinding.v1.physics.ClimbingMoveControl;
-import com.blib.api.common.pathfinding.v1.physics.ClimbingOrientationProvider;
 import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.S2CPathfindingNavDebugPayload;
 import com.blib.mod.common.network.packet.S2CPathfindingSearchDebugPayload;
@@ -118,13 +116,12 @@ public final class PathDebugUtil {
         }
 
         var pathSnapshot = collectPathSnapshot(mob, navigator);
-        var climbing = collectClimbingSnapshot(mob);
-        var move = collectMoveSnapshot(mob, climbing.active());
+        var move = collectMoveSnapshot(mob);
         var surfaceBitmap = computeSurfaceBitmap(mob);
         var pathAge = navigator.getTickCount() - navigator.getLastPathComputeTick();
         var ticksOnNode = navigator.getTickCount() - navigator.getLastProgressTick();
         var delta = mob.getDeltaMovement();
-        var payload = buildPayload(mob, delta.x, delta.y, delta.z, pathSnapshot, climbing, move, surfaceBitmap, pathAge, ticksOnNode);
+        var payload = buildPayload(mob, delta.x, delta.y, delta.z, pathSnapshot, move, surfaceBitmap, pathAge, ticksOnNode);
 
         BLib.MOD.networking().sendToAllClientsTrackingEntity(mob, payload);
     }
@@ -135,7 +132,6 @@ public final class PathDebugUtil {
         double deltaY,
         double deltaZ,
         PathSnapshot path,
-        ClimbingSnapshot climbing,
         MoveSnapshot move,
         int surfaceBitmap,
         int pathAgeTicks,
@@ -162,23 +158,15 @@ public final class PathDebugUtil {
             path.waitingForBlockBreak(),
             path.windowNodes(),
             path.windowStart(),
-            climbing.active(),
-            climbing.surfaceDirection(),
-            climbing.yaw(),
             mob.getYRot(),
             mob.getVisualRotationYInDegrees(),
-            climbing.waypointPacked(),
-            climbing.targetPacked(),
             ticksOnCurrentNode,
             pathAgeTicks,
             path.distanceToCurrentNode(),
             path.distanceToTarget(),
             move.operation(),
             move.resolvedSpeed(),
-            surfaceBitmap,
-            climbing.wasClimbing(),
-            climbing.nearEdgeTransition(),
-            climbing.ticksSinceSurfaceChange()
+            surfaceBitmap
         );
     }
 
@@ -218,48 +206,12 @@ public final class PathDebugUtil {
         );
     }
 
-    private static ClimbingSnapshot collectClimbingSnapshot(Mob mob) {
-        var active = mob instanceof ClimbingOrientationProvider;
-        var surfaceDirection = 0;
-        var yaw = 0.0f;
-        var waypoint = 0L;
-        var target = 0L;
-        var wasClimbing = false;
-        var nearEdge = false;
-        var ticksSinceChange = 0;
-
-        if (mob instanceof ClimbingOrientationProvider provider) {
-            surfaceDirection = provider.getClimbingSurfaceDirection();
-            yaw = provider.getClimbingYaw();
-            waypoint = provider.getDebugCurrentWaypoint();
-            target = provider.getDebugTargetPos();
-        }
-
-        if (mob.getMoveControl() instanceof ClimbingMoveControl climbControl) {
-            wasClimbing = climbControl.wasClimbing();
-            nearEdge = climbControl.isNearEdgeTransition();
-            ticksSinceChange = climbControl.getTicksSinceSurfaceChange();
-        }
-
-        return new ClimbingSnapshot(active, surfaceDirection, yaw, waypoint, target, wasClimbing, nearEdge, ticksSinceChange);
-    }
-
-    private static MoveSnapshot collectMoveSnapshot(Mob mob, boolean climbingActive) {
+    private static MoveSnapshot collectMoveSnapshot(Mob mob) {
         var moveControl = mob.getMoveControl();
-        var operation = "?";
+        var operation = moveControl.getClass().getSimpleName();
         var speedModifier = moveControl.getSpeedModifier();
-        var climbMultiplier = 1.0f;
-
-        if (moveControl instanceof ClimbingMoveControl climbControl) {
-            operation = climbControl.getOperationName();
-
-            if (climbingActive) {
-                climbMultiplier = climbControl.getClimbingSpeedMultiplier();
-            }
-        }
-
         var baseSpeed = mob.getAttributeValue(Attributes.MOVEMENT_SPEED);
-        var resolvedSpeed = (float) (speedModifier * baseSpeed * climbMultiplier);
+        var resolvedSpeed = (float) (speedModifier * baseSpeed);
 
         return new MoveSnapshot(
             moveControl.getWantedX(),
@@ -304,17 +256,6 @@ public final class PathDebugUtil {
         float distanceToTarget
     ) {}
 
-    private record ClimbingSnapshot(
-        boolean active,
-        int surfaceDirection,
-        float yaw,
-        long waypointPacked,
-        long targetPacked,
-        boolean wasClimbing,
-        boolean nearEdgeTransition,
-        int ticksSinceSurfaceChange
-    ) {}
-
     private record MoveSnapshot(
         double wantedX,
         double wantedY,
@@ -329,9 +270,6 @@ public final class PathDebugUtil {
             node.getY(),
             node.getZ(),
             node.getTerrainType().ordinal(),
-            node.getPostureIndex(),
-            node.getSurfaceDirection(),
-            node.getAvailableSurfaces(),
             true
         );
     }

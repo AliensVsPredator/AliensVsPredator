@@ -3,7 +3,6 @@ package com.blib.mod.client.render.debug;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -36,19 +35,7 @@ public final class PathfindingNavDebugHUD {
 
     private static final int PHYSICS_COLOR = 0xFFFF88FF;
 
-    private static final int ARROW_SURFACE_COLOR = 0xFFFF00FF;
-
-    private static final int ARROW_CLIMB_YAW_COLOR = 0xFF00FFFF;
-
-    private static final int ARROW_YROT_COLOR = 0xFFFF0000;
-
-    private static final int ARROW_YBODY_COLOR = 0xFFFF9900;
-
     private static final int ARROW_VELOCITY_COLOR = 0xFF00FF00;
-
-    private static final int ARROW_WAYPOINT_COLOR = 0xFFFFFF00;
-
-    private static final int ARROW_TARGET_COLOR = 0xFFFFFFFF;
 
     private static final int STUCK_WARN_TICKS = 40;
 
@@ -68,19 +55,11 @@ public final class PathfindingNavDebugHUD {
 
     private static final String COL_POSITION_SAMPLE = "(-99999,-99999,-99999)  ";
 
-    private static final String COL_POSTURE_SAMPLE = "999  ";
-
-    private static final String COL_SURFACE_SAMPLE = "UP";
-
     private static int colLabelWidth = -1;
 
     private static int colTerrainWidth;
 
     private static int colPositionWidth;
-
-    private static int colPostureWidth;
-
-    private static int colSurfaceWidth;
 
     private @Nullable S2CPathfindingNavDebugPayload latestPayload;
 
@@ -140,12 +119,6 @@ public final class PathfindingNavDebugHUD {
         lines.add(singleSegment("", TEXT_COLOR));
 
         addPhysicsSection(lines, payload);
-
-        if (payload.climbingActive()) {
-            lines.add(singleSegment("", TEXT_COLOR));
-            addClimbingLines(lines, payload);
-        }
-
         addPathWindowSection(lines, font, payload);
 
         return lines;
@@ -215,8 +188,6 @@ public final class PathfindingNavDebugHUD {
         colLabelWidth = font.width(COL_LABEL_SAMPLE);
         colTerrainWidth = font.width(COL_TERRAIN_SAMPLE);
         colPositionWidth = font.width(COL_POSITION_SAMPLE);
-        colPostureWidth = font.width(COL_POSTURE_SAMPLE);
-        colSurfaceWidth = font.width(COL_SURFACE_SAMPLE);
     }
 
     private static HUDSegmentLine buildTableHeader() {
@@ -224,8 +195,6 @@ public final class PathfindingNavDebugHUD {
         segments.add(new TextSegment("", DIM_COLOR, colLabelWidth));
         segments.add(new TextSegment("Terrain", DIM_COLOR, colTerrainWidth));
         segments.add(new TextSegment("Position", DIM_COLOR, colPositionWidth));
-        segments.add(new TextSegment("Posture", DIM_COLOR, colPostureWidth));
-        segments.add(new TextSegment("Surface", DIM_COLOR, colSurfaceWidth));
 
         return new HUDSegmentLine(segments);
     }
@@ -242,16 +211,12 @@ public final class PathfindingNavDebugHUD {
         if (node == null) {
             segments.add(new TextSegment("---", DIM_COLOR, colTerrainWidth));
             segments.add(new TextSegment("---", DIM_COLOR, colPositionWidth));
-            segments.add(new TextSegment("---", DIM_COLOR, colPostureWidth));
-            segments.add(new TextSegment("---", DIM_COLOR, colSurfaceWidth));
             return new HUDSegmentLine(segments);
         }
 
         var color = isCurrent ? CURRENT_HIGHLIGHT_COLOR : terrainColor(node.terrainType());
         segments.add(new TextSegment(terrainName(node.terrainType()), color, colTerrainWidth));
         segments.add(new TextSegment(positionLabel(node), color, colPositionWidth));
-        segments.add(new TextSegment(postureLabel(node), color, colPostureWidth));
-        segments.add(new TextSegment(surfaceLabel(node), color, colSurfaceWidth));
 
         return new HUDSegmentLine(segments);
     }
@@ -287,22 +252,6 @@ public final class PathfindingNavDebugHUD {
         return "(%d,%d,%d)".formatted(node.x(), node.y(), node.z());
     }
 
-    private static String postureLabel(DebugNodeEntry node) {
-        return String.valueOf(node.postureIndex());
-    }
-
-    private static String surfaceLabel(DebugNodeEntry node) {
-        return switch (node.surfaceDirection()) {
-            case 0 -> "-";
-            case 1 -> "UP";
-            case 2 -> "N";
-            case 3 -> "S";
-            case 4 -> "W";
-            case 5 -> "E";
-            default -> "?";
-        };
-    }
-
     private static String terrainName(int terrainTypeOrdinal) {
         var values = TerrainType.values();
 
@@ -324,40 +273,9 @@ public final class PathfindingNavDebugHUD {
             case GROUND -> 0xFF00FF00;
             case WATER -> 0xFF0080FF;
             case AIR -> 0xFFCCCCFF;
-            case CLIMBABLE -> 0xFFFF9900;
             case BREAKABLE -> 0xFFFF0000;
             case BURROWABLE -> 0xFF994D00;
         };
-    }
-
-    private static void addClimbingLines(List<HUDSegmentLine> lines, S2CPathfindingNavDebugPayload payload) {
-        lines.add(singleSegment("-- Climbing --", DIM_COLOR));
-
-        addClimbingSurfaceAndYawLines(lines, payload);
-        addClimbingFlagsLines(lines, payload);
-        addPackedPosLine(lines, "Waypoint: ", payload.climbingWaypointPacked(), ARROW_WAYPOINT_COLOR);
-        addPackedPosLine(lines, "Target:   ", payload.climbingTargetPacked(), ARROW_TARGET_COLOR);
-    }
-
-    private static void addClimbingSurfaceAndYawLines(List<HUDSegmentLine> lines, S2CPathfindingNavDebugPayload payload) {
-        var surfaceOrdinal = payload.climbingSurfaceDirection();
-        var surfaceLabel = surfaceOrdinal > 0 && surfaceOrdinal < Direction.values().length
-            ? Direction.values()[surfaceOrdinal].name()
-            : "NONE";
-
-        lines.add(fmtLine(ARROW_SURFACE_COLOR, "Surface:  %s [ord=%d]", surfaceLabel, surfaceOrdinal));
-        lines.add(fmtLine(ARROW_CLIMB_YAW_COLOR, "ClimbYaw: %.2f\u00B0", payload.climbingYaw()));
-        lines.add(fmtLine(ARROW_YROT_COLOR, "yRot:     %.2f\u00B0", payload.entityYRot()));
-        lines.add(fmtLine(ARROW_YBODY_COLOR, "yBodyRot: %.2f\u00B0", payload.entityYBodyRot()));
-    }
-
-    private static void addClimbingFlagsLines(List<HUDSegmentLine> lines, S2CPathfindingNavDebugPayload payload) {
-        var flagsParts = new ArrayList<String>();
-        flagsParts.add(payload.climbingWasClimbing() ? "wasClimbing" : "notWasClimbing");
-        flagsParts.add(payload.climbingNearEdgeTransition() ? "edgeTransition" : "stable");
-
-        lines.add(singleSegment("Flags: " + String.join(" | ", flagsParts), DIM_COLOR));
-        lines.add(fmtLine(DIM_COLOR, "TicksSinceSurfChg: %d", payload.climbingTicksSinceSurfaceChange()));
     }
 
     private static int stuckColor(int ticksOnCurrentNode) {
@@ -388,17 +306,6 @@ public final class PathfindingNavDebugHUD {
         sb.append(']');
 
         return sb.toString();
-    }
-
-    private static void addPackedPosLine(List<HUDSegmentLine> lines, String label, long packed, int color) {
-        if (packed == 0L) {
-            lines.add(singleSegment(label + "-", color));
-            return;
-        }
-
-        var pos = BlockPos.of(packed);
-
-        lines.add(fmtLine(color, "%s(%d, %d, %d)", label, pos.getX(), pos.getY(), pos.getZ()));
     }
 
     private static final int LEGEND_ENTRIES_PER_LINE = 3;

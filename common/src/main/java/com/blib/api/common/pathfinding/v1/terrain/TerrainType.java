@@ -32,12 +32,6 @@ public enum TerrainType {
     BREAKABLE,
 
     /**
-     * A position on a vertical or inverted surface (wall, ceiling, ladder, vine). The entity traverses along the
-     * surface without falling. Only entities that opt in via config receive CLIMBABLE nodes.
-     */
-    CLIMBABLE,
-
-    /**
      * A position inside soft terrain (dirt, sand, gravel). The entity tunnels through, displacing or consuming blocks.
      */
     BURROWABLE

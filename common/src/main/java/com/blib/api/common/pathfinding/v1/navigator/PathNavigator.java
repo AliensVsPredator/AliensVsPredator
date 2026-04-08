@@ -17,10 +17,9 @@ import com.blib.api.common.pathfinding.v1.transition.TerrainTransition;
  * Standalone path navigator. Manages path planning, following, stuck detection, and terrain transition callbacks. Does
  * not extend any Minecraft class.
  * <p>
- * The consuming code calls {@link #tick(double, double, double, float, float, int, boolean)} each tick with the
- * entity's exact position, bounding box dimensions, and climbing surface. The navigator advances along the path and
- * provides the next waypoint via {@link #getCurrentTargetPos()}. The calling code is responsible for actually moving
- * the entity toward the waypoint.
+ * The consuming code calls {@link #tick(double, double, double, float, float)} each tick with the entity's exact
+ * position and bounding box dimensions. The navigator advances along the path and provides the next waypoint via
+ * {@link #getCurrentTargetPos()}. The calling code is responsible for actually moving the entity toward the waypoint.
  * </p>
  */
 public final class PathNavigator {
@@ -38,12 +37,6 @@ public final class PathNavigator {
     private @Nullable BlockPos lastComputedTargetPos;
 
     private @Nullable TerrainType currentTerrain;
-
-    private int currentPostureIndex;
-
-    private int pendingPostureIndex;
-
-    private int currentSurfaceDirection;
 
     private boolean waitingForBlockBreak;
 
@@ -67,10 +60,7 @@ public final class PathNavigator {
             config.getSearchConfig(),
             classificationCache
         );
-        this.pendingPostureIndex = NO_PENDING_POSTURE;
     }
-
-    private static final int NO_PENDING_POSTURE = -1;
 
     /**
      * Plans a path to the target position and begins following it.
@@ -86,21 +76,11 @@ public final class PathNavigator {
         this.lastPathComputeTick = tickCount;
         this.lastProgressTick = tickCount;
         this.lastDistanceToTarget = Double.MAX_VALUE;
-        this.pendingPostureIndex = NO_PENDING_POSTURE;
 
         if (currentPath != null) {
             var startNode = currentPath.getCurrentNode();
 
             this.currentTerrain = startNode.getTerrainType();
-            this.currentPostureIndex = startNode.getPostureIndex();
-            config.firePostureEnter(currentPostureIndex);
-
-            var newSurface = startNode.getSurfaceDirection();
-
-            if (newSurface != currentSurfaceDirection) {
-                config.fireSurfaceDirectionChange(currentSurfaceDirection, newSurface);
-                currentSurfaceDirection = newSurface;
-            }
         }
 
         return currentPath != null;
@@ -111,22 +91,18 @@ public final class PathNavigator {
      * waypoint proximity using per-axis distance and entity dimensions, advances the path, fires transition handlers,
      * and detects stuck conditions.
      *
-     * @param entityX                exact X position of the entity
-     * @param entityY                exact Y position of the entity (feet)
-     * @param entityZ                exact Z position of the entity
-     * @param entityWidth            bounding box width of the entity
-     * @param entityHeight           bounding box height of the entity
-     * @param entitySurfaceDirection the entity's current climbing surface ordinal (0 if not climbing)
-     * @param entityOnGround         whether the entity is currently on the ground
+     * @param entityX      exact X position of the entity
+     * @param entityY      exact Y position of the entity (feet)
+     * @param entityZ      exact Z position of the entity
+     * @param entityWidth  bounding box width of the entity
+     * @param entityHeight bounding box height of the entity
      */
     public void tick(
         double entityX,
         double entityY,
         double entityZ,
         float entityWidth,
-        float entityHeight,
-        int entitySurfaceDirection,
-        boolean entityOnGround
+        float entityHeight
     ) {
         tickCount++;
 
@@ -138,8 +114,7 @@ public final class PathNavigator {
             return;
         }
 
-        flushPendingPosture(entityOnGround);
-        advanceWaypoints(entityX, entityY, entityZ, entityWidth, entityHeight, entitySurfaceDirection, entityOnGround);
+        advanceWaypoints(entityX, entityY, entityZ, entityWidth, entityHeight);
 
         var entityBlockPos = BlockPos.containing(entityX, entityY, entityZ);
 
@@ -163,7 +138,6 @@ public final class PathNavigator {
         this.targetPos = null;
         this.currentTerrain = null;
         this.waitingForBlockBreak = false;
-        this.pendingPostureIndex = NO_PENDING_POSTURE;
     }
 
     public PathNavigatorConfig getConfig() {
@@ -196,15 +170,6 @@ public final class PathNavigator {
      */
     public @Nullable PathSearchSnapshot getLastSearchSnapshot() {
         return pathFinder.getLastSearchSnapshot();
-    }
-
-    /**
-     * Returns the surface direction ordinal of the current path node. Only meaningful when {@link #getCurrentTerrain()}
-     * is {@link TerrainType#CLIMBABLE}. Maps to {@link net.minecraft.core.Direction#ordinal()}: 0=DOWN, 1=UP, 2=NORTH,
-     * 3=SOUTH, 4=WEST, 5=EAST.
-     */
-    public int getCurrentSurfaceDirection() {
-        return currentSurfaceDirection;
     }
 
     /**
@@ -283,40 +248,8 @@ public final class PathNavigator {
      * Updates the destination without forcing an immediate path recomputation. The navigator will recompute the path on
      * its next recalculation cycle using this updated target.
      */
-    private void resetPosture() {
-        if (currentPostureIndex != 0) {
-            currentPostureIndex = 0;
-            config.firePostureEnter(0);
-        }
-
-        if (currentSurfaceDirection != 0) {
-            config.fireSurfaceDirectionChange(currentSurfaceDirection, 0);
-            currentSurfaceDirection = 0;
-        }
-    }
-
     public void updateTarget(BlockPos newTarget) {
         this.targetPos = newTarget;
-    }
-
-    /**
-     * Applies a deferred posture change if the entity has reached the ground. Posture transitions are gated by ground
-     * state so that an entity in the middle of climbing → walking transition stays in its climbing posture until it
-     * physically lands.
-     */
-    private void flushPendingPosture(boolean entityOnGround) {
-        if (pendingPostureIndex == NO_PENDING_POSTURE || !entityOnGround) {
-            return;
-        }
-
-        if (pendingPostureIndex == currentPostureIndex) {
-            pendingPostureIndex = NO_PENDING_POSTURE;
-            return;
-        }
-
-        currentPostureIndex = pendingPostureIndex;
-        pendingPostureIndex = NO_PENDING_POSTURE;
-        config.firePostureEnter(currentPostureIndex);
     }
 
     private void advanceWaypoints(
@@ -324,9 +257,7 @@ public final class PathNavigator {
         double entityY,
         double entityZ,
         float entityWidth,
-        float entityHeight,
-        int entitySurfaceDirection,
-        boolean entityOnGround
+        float entityHeight
     ) {
         var reachXZ = entityWidth > 0.75f ? entityWidth / 2.0 : 0.75 - entityWidth / 2.0;
         var reachY = Math.max(1.0, entityHeight > 0.75f ? entityHeight / 2.0 : 0.75 - entityHeight / 2.0);
@@ -343,24 +274,6 @@ public final class PathNavigator {
                 break;
             }
 
-            // For climbable nodes, the entity must be on the matching surface before advancing.
-            // Prevents skipping a side node while still on the ceiling (crawling-port approach).
-            if (
-                waypoint.getTerrainType() == TerrainType.CLIMBABLE
-                    && waypoint.getSurfaceDirection() > 0
-                    && entitySurfaceDirection > 0
-                    && entitySurfaceDirection != waypoint.getSurfaceDirection()
-            ) {
-                break;
-            }
-
-            // For ground nodes, the entity must have exited climbing mode before advancing.
-            // Prevents completing a path while still on the side of a bridge — MC's onGround()
-            // can't distinguish "climbing beside a block" from "standing on a block."
-            if (waypoint.getTerrainType() == TerrainType.GROUND && entitySurfaceDirection > 0) {
-                break;
-            }
-
             var previousTerrain = currentTerrain;
 
             currentPath.advance();
@@ -370,34 +283,6 @@ public final class PathNavigator {
             if (!currentPath.isDone()) {
                 var nextNode = currentPath.getCurrentNode();
                 var newTerrain = nextNode.getTerrainType();
-                var newPosture = nextNode.getPostureIndex();
-
-                if (newPosture != currentPostureIndex) {
-                    if (entityOnGround) {
-                        currentPostureIndex = newPosture;
-                        pendingPostureIndex = NO_PENDING_POSTURE;
-                        config.firePostureEnter(newPosture);
-                    } else {
-                        // Defer the posture change until the entity has actually landed.
-                        // The path index still advances so the move control sees the new
-                        // waypoint as its target, but the entity stays in its current posture
-                        // until it crawls onto the ground (see flushPendingPosture).
-                        pendingPostureIndex = newPosture;
-                    }
-                }
-
-                var newSurface = nextNode.getSurfaceDirection();
-
-                if (newSurface != currentSurfaceDirection) {
-                    var previousSurface = currentSurfaceDirection;
-
-                    config.fireSurfaceDirectionChange(currentSurfaceDirection, newSurface);
-                    currentSurfaceDirection = newSurface;
-
-                    if (newTerrain == TerrainType.CLIMBABLE && previousSurface > 0) {
-                        break;
-                    }
-                }
 
                 if (newTerrain == TerrainType.BREAKABLE) {
                     waitingForBlockBreak = true;
