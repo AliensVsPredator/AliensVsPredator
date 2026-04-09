@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -306,11 +307,11 @@ public final class BLibPathFinder {
         @Nullable Set<Long> corridor,
         int visitedCount
     ) {
-        var pathNodeSet = new HashSet<PathNode>();
+        var pathIndexByNode = new HashMap<PathNode, Integer>();
 
         if (path != null) {
             for (int i = 0; i < path.getNodeCount(); i++) {
-                pathNodeSet.add(path.getNode(i));
+                pathIndexByNode.put(path.getNode(i), i);
             }
         }
 
@@ -324,7 +325,7 @@ public final class BLibPathFinder {
                     node.getY(),
                     node.getZ(),
                     node.getTerrainType().ordinal(),
-                    pathNodeSet.contains(node)
+                    pathIndexByNode.getOrDefault(node, -1)
                 )
             );
         }
@@ -340,7 +341,7 @@ public final class BLibPathFinder {
                             node.getY(),
                             node.getZ(),
                             node.getTerrainType().ordinal(),
-                            true
+                            i
                         )
                     );
                 }

@@ -5,8 +5,8 @@ import java.util.Objects;
 import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
 
 /**
- * A single position in pathfinding space with terrain classification and A* costs. Position and terrain type are
- * fixed at creation. Costs and parent are mutable for A* use.
+ * A single position in pathfinding space with terrain classification and A* costs. Position and terrain type are fixed
+ * at creation. Costs and parent are mutable for A* use.
  */
 public final class PathNode {
 

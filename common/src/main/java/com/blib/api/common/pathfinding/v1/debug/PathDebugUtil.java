@@ -187,7 +187,7 @@ public final class PathDebugUtil {
         var windowEnd = Math.min(totalNodes, currentIndex + NAV_WINDOW_RADIUS + 1);
 
         for (int i = windowStart; i < windowEnd; i++) {
-            windowNodes.add(toDebugEntry(path.getNode(i)));
+            windowNodes.add(toDebugEntry(path.getNode(i), i));
         }
 
         var distToCurrent = currentIndex < totalNodes ? distanceTo(mob, path.getNode(currentIndex)) : 0.0f;
@@ -264,13 +264,13 @@ public final class PathDebugUtil {
         float resolvedSpeed
     ) {}
 
-    private static DebugNodeEntry toDebugEntry(PathNode node) {
+    private static DebugNodeEntry toDebugEntry(PathNode node, int pathIndex) {
         return new DebugNodeEntry(
             node.getX(),
             node.getY(),
             node.getZ(),
             node.getTerrainType().ordinal(),
-            true
+            pathIndex
         );
     }
 

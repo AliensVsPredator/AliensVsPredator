@@ -11,14 +11,14 @@ import com.just.codec.stream.impl.StreamCodecs;
  * @param y           block y position
  * @param z           block z position
  * @param terrainType ordinal of {@link com.blib.api.common.pathfinding.v1.terrain.TerrainType}
- * @param onPath      true if this node is part of the final reconstructed path
+ * @param pathIndex   0-based index of this node in the final reconstructed path, or {@code -1} if not on the path
  */
 public record DebugNodeEntry(
     int x,
     int y,
     int z,
     int terrainType,
-    boolean onPath
+    int pathIndex
 ) {
 
     public static final StreamCodec<DebugNodeEntry> CODEC = RecordStreamCodec.of(
@@ -30,8 +30,12 @@ public record DebugNodeEntry(
         DebugNodeEntry::z,
         StreamCodecs.INT,
         DebugNodeEntry::terrainType,
-        StreamCodecs.BOOLEAN,
-        DebugNodeEntry::onPath,
+        StreamCodecs.INT,
+        DebugNodeEntry::pathIndex,
         DebugNodeEntry::new
     );
+
+    public boolean onPath() {
+        return pathIndex >= 0;
+    }
 }

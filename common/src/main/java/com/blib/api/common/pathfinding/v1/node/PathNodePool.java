@@ -6,9 +6,9 @@ import java.util.Map;
 import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
 
 /**
- * Object pool for {@link PathNode} instances. Ensures that each (x, y, z, terrainType) combination maps to exactly
- * one node during a pathfinding search, avoiding duplicate allocations. Call {@link #reset()} between pathfinding
- * calls to clear the pool.
+ * Object pool for {@link PathNode} instances. Ensures that each (x, y, z, terrainType) combination maps to exactly one
+ * node during a pathfinding search, avoiding duplicate allocations. Call {@link #reset()} between pathfinding calls to
+ * clear the pool.
  */
 public final class PathNodePool {
 

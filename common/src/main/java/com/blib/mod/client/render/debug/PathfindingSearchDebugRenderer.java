@@ -32,6 +32,16 @@ public final class PathfindingSearchDebugRenderer {
 
     private static final int SECTION_SIZE = 16;
 
+    private static final float[] DEFAULT_PATH_COLOR = { 1.0f, 1.0f, 1.0f };
+
+    private static final float[] TARGET_NODE_COLOR = { 1.0f, 0.85f, 0.0f };
+
+    private static final float[] CURRENT_NODE_COLOR = { 0.0f, 1.0f, 1.0f };
+
+    private static final float[] NEXT_NODE_COLOR = { 1.0f, 0.3f, 1.0f };
+
+    private static final float[] PREVIOUS_NODE_COLOR = { 1.0f, 0.5f, 0.0f };
+
     private final Map<Integer, TimestampedSnapshot> snapshots = new ConcurrentHashMap<>();
 
     public void update(S2CPathfindingSearchDebugPayload payload) {
@@ -88,7 +98,7 @@ public final class PathfindingSearchDebugRenderer {
     ) {
         for (var node : payload.nodes()) {
             if (node.onPath()) {
-                renderPathNode(poseStack, bufferSource, cameraX, cameraY, cameraZ, node, alpha);
+                renderPathNode(poseStack, bufferSource, cameraX, cameraY, cameraZ, node, payload.entityId(), alpha);
             } else {
                 renderExploredNode(poseStack, bufferSource, cameraX, cameraY, cameraZ, node, alpha);
             }
@@ -137,8 +147,11 @@ public final class PathfindingSearchDebugRenderer {
         double cameraY,
         double cameraZ,
         DebugNodeEntry node,
+        int entityId,
         float alpha
     ) {
+        var pathColor = getPathNodeColor(node.pathIndex(), entityId);
+        var terrainColor = getTerrainColor(node.terrainType());
         var centerX = node.x() + 0.5 - cameraX;
         var centerY = node.y() + 0.5 - cameraY;
         var centerZ = node.z() + 0.5 - cameraZ;
@@ -146,22 +159,68 @@ public final class PathfindingSearchDebugRenderer {
         poseStack.pushPose();
         poseStack.translate(centerX, centerY, centerZ);
 
+        var buffer = bufferSource.getBuffer(RenderType.lines());
+
         LevelRenderer.renderLineBox(
             poseStack,
-            bufferSource.getBuffer(RenderType.lines()),
+            buffer,
             -PATH_NODE_HALF,
             -PATH_NODE_HALF,
             -PATH_NODE_HALF,
             PATH_NODE_HALF,
             PATH_NODE_HALF,
             PATH_NODE_HALF,
-            1.0f,
-            1.0f,
-            1.0f,
+            pathColor[0],
+            pathColor[1],
+            pathColor[2],
             alpha
         );
 
+        LevelRenderer.renderLineBox(
+            poseStack,
+            buffer,
+            -NODE_HALF,
+            -NODE_HALF,
+            -NODE_HALF,
+            NODE_HALF,
+            NODE_HALF,
+            NODE_HALF,
+            terrainColor[0],
+            terrainColor[1],
+            terrainColor[2],
+            alpha * 0.6f
+        );
+
         poseStack.popPose();
+    }
+
+    private static float[] getPathNodeColor(int pathIndex, int entityId) {
+        var navPayload = PathfindingNavDebugHUD.INSTANCE.getLatestPayload();
+
+        if (navPayload == null || navPayload.entityId() != entityId) {
+            return DEFAULT_PATH_COLOR;
+        }
+
+        var totalNodes = navPayload.totalNodes();
+        var currentIndex = navPayload.currentNodeIndex();
+
+        if (totalNodes > 0 && pathIndex == totalNodes - 1) {
+            return TARGET_NODE_COLOR;
+        }
+
+        if (pathIndex == currentIndex) {
+            return CURRENT_NODE_COLOR;
+        }
+
+        if (pathIndex == currentIndex + 1) {
+            return NEXT_NODE_COLOR;
+        }
+
+        if (pathIndex == currentIndex - 1) {
+            return PREVIOUS_NODE_COLOR;
+        }
+
+        return DEFAULT_PATH_COLOR;
     }
 
     private void renderCorridorSections(

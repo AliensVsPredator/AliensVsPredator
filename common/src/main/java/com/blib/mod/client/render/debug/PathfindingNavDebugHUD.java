@@ -73,6 +73,10 @@ public final class PathfindingNavDebugHUD {
         this.latestPayload = null;
     }
 
+    public @Nullable S2CPathfindingNavDebugPayload getLatestPayload() {
+        return latestPayload;
+    }
+
     public void render(GuiGraphics graphics, float partialTick) {
         if (latestPayload == null) {
             return;
