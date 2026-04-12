@@ -1,13 +1,8 @@
 package com.blib.api.common.pathfinding.v1.evaluator;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.LevelChunkSection;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumMap;
@@ -46,29 +41,11 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     private final @Nullable TerrainClassificationCache classificationCache;
 
+    private final BlockAccessor blockAccessor;
+
     private final BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
 
     private final BlockPos.MutableBlockPos clearancePos = new BlockPos.MutableBlockPos();
-
-    // --- Chunk cache (spatial locality, direct section access) ---
-    private final Long2ObjectOpenHashMap<ChunkAccess> chunkMap = new Long2ObjectOpenHashMap<>();
-
-    private LevelChunkSection @Nullable [] cachedSections;
-
-    private int cachedChunkX = Integer.MIN_VALUE;
-
-    private int cachedChunkZ = Integer.MIN_VALUE;
-
-    private int cachedMinSectionY;
-
-    // --- Block property cache (avoid virtual dispatch, Baritone-style PrecomputedData) ---
-    private boolean @Nullable [] solidCache;
-
-    private boolean @Nullable [] liquidCache;
-
-    private boolean @Nullable [] passableCache;
-
-    private boolean @Nullable [] propertyComputed;
 
     private LevelReader level;
 
@@ -81,11 +58,13 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         this.nodePool = new PathNodePool();
         this.snapshotCosts = new EnumMap<>(TerrainType.class);
         this.classificationCache = classificationCache;
+        this.blockAccessor = new BlockAccessor();
     }
 
     @Override
     public void prepare(LevelReader level) {
         this.level = level;
+        blockAccessor.prepare(level);
         prepareCommon();
     }
 
@@ -95,6 +74,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
      */
     public void prepareAsync() {
         this.level = null;
+        blockAccessor.prepareAsync();
         prepareCommon();
     }
 
@@ -112,7 +92,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
      * Pre-loads a chunk into the evaluator's chunk map for async search. Call from the main thread before dispatching.
      */
     public void preloadChunk(int chunkX, int chunkZ, ChunkAccess chunk) {
-        chunkMap.put(packChunkKey(chunkX, chunkZ), chunk);
+        blockAccessor.preloadChunk(chunkX, chunkZ, chunk);
     }
 
     private void prepareCommon() {
@@ -121,21 +101,6 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
         for (var terrainType : config.getSupportedTerrains()) {
             snapshotCosts.put(terrainType, config.getCost(terrainType));
-        }
-
-        // Reset chunk fast cache.
-        cachedSections = null;
-        cachedChunkX = Integer.MIN_VALUE;
-        cachedChunkZ = Integer.MIN_VALUE;
-        chunkMap.clear();
-
-        // Initialize property cache once (block state properties never change at runtime).
-        if (solidCache == null) {
-            var stateCount = Block.BLOCK_STATE_REGISTRY.size();
-            solidCache = new boolean[stateCount];
-            liquidCache = new boolean[stateCount];
-            passableCache = new boolean[stateCount];
-            propertyComputed = new boolean[stateCount];
         }
     }
 
@@ -227,6 +192,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     @Override
     public void cleanup() {
         this.level = null;
+        blockAccessor.cleanup();
     }
 
     // --- GROUND neighbor generation ---
@@ -343,7 +309,9 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
 
         var entityHeight = config.getEntityHeight();
-        var headroomClear = !isSolid(getBlockStateFast(from.getX(), from.getY() + entityHeight, from.getZ()));
+        var headroomClear = !blockAccessor.isSolid(
+            blockAccessor.getBlockState(from.getX(), from.getY() + entityHeight, from.getZ())
+        );
 
         if (headroomClear) {
             for (int stepUp = 1; stepUp <= config.getMaxStepHeight(); stepUp++) {
@@ -358,9 +326,9 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
         if (sameLevel == null) {
             for (int stepDown = 1; stepDown <= config.getMaxFallDistance(); stepDown++) {
-                var checkState = getBlockStateFast(baseX, baseY - stepDown, baseZ);
+                var checkState = blockAccessor.getBlockState(baseX, baseY - stepDown, baseZ);
 
-                if (isSolid(checkState)) {
+                if (blockAccessor.isSolid(checkState)) {
                     break;
                 }
 
@@ -512,9 +480,9 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                     var bx = pos.getX() + dx;
                     var by = pos.getY() + dy;
                     var bz = pos.getZ() + dz;
-                    var checkState = getBlockStateFast(bx, by, bz);
+                    var checkState = blockAccessor.getBlockState(bx, by, bz);
 
-                    if (!isSolid(checkState)) {
+                    if (!blockAccessor.isSolid(checkState)) {
                         continue;
                     }
 
@@ -549,13 +517,13 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         for (int dx = -halfWidth; dx <= halfWidth; dx++) {
             for (int dz = -halfWidth; dz <= halfWidth; dz++) {
                 for (int dy = 0; dy < height; dy++) {
-                    var state = getBlockStateFast(x + dx, y + dy, z + dz);
+                    var state = blockAccessor.getBlockState(x + dx, y + dy, z + dz);
 
-                    if (isSolid(state)) {
+                    if (blockAccessor.isSolid(state)) {
                         return false;
                     }
 
-                    if (terrainType == TerrainType.GROUND && isLiquid(state)) {
+                    if (terrainType == TerrainType.GROUND && blockAccessor.isLiquid(state)) {
                         return false;
                     }
                 }
@@ -563,81 +531,6 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
 
         return true;
-    }
-
-    // --- Fast block access ---
-
-    private static final BlockState AIR = Blocks.AIR.defaultBlockState();
-
-    private BlockState getBlockStateFast(int x, int y, int z) {
-        var cx = x >> 4;
-        var cz = z >> 4;
-
-        if (cx != cachedChunkX || cz != cachedChunkZ) {
-            var key = packChunkKey(cx, cz);
-            var chunk = chunkMap.get(key);
-
-            if (chunk == null) {
-                if (level != null) {
-                    chunk = level.getChunk(cx, cz);
-                    chunkMap.put(key, chunk);
-                } else {
-                    return AIR;
-                }
-            }
-
-            cachedSections = chunk.getSections();
-            cachedChunkX = cx;
-            cachedChunkZ = cz;
-            cachedMinSectionY = chunk.getMinSection();
-        }
-
-        var sectionIndex = (y >> 4) - cachedMinSectionY;
-
-        if (sectionIndex < 0 || sectionIndex >= cachedSections.length) {
-            return AIR;
-        }
-
-        var section = cachedSections[sectionIndex];
-
-        if (section == null || section.hasOnlyAir()) {
-            return AIR;
-        }
-
-        return section.getBlockState(x & 15, y & 15, z & 15);
-    }
-
-    private static long packChunkKey(int chunkX, int chunkZ) {
-        return ((long) chunkX & 0xFFFFFFFFL) << 32 | ((long) chunkZ & 0xFFFFFFFFL);
-    }
-
-    private void ensurePropertyCached(BlockState state, int id) {
-        if (!propertyComputed[id]) {
-            var solid = state.isSolid();
-            var liquid = state.liquid();
-            solidCache[id] = solid;
-            liquidCache[id] = liquid;
-            passableCache[id] = !solid && !liquid;
-            propertyComputed[id] = true;
-        }
-    }
-
-    private boolean isSolid(BlockState state) {
-        var id = Block.BLOCK_STATE_REGISTRY.getId(state);
-        ensurePropertyCached(state, id);
-        return solidCache[id];
-    }
-
-    private boolean isLiquid(BlockState state) {
-        var id = Block.BLOCK_STATE_REGISTRY.getId(state);
-        ensurePropertyCached(state, id);
-        return liquidCache[id];
-    }
-
-    private boolean isPassable(BlockState state) {
-        var id = Block.BLOCK_STATE_REGISTRY.getId(state);
-        ensurePropertyCached(state, id);
-        return passableCache[id];
     }
 
     // --- Position resolution ---
