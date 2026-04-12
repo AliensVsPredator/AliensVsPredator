@@ -31,7 +31,15 @@ public final class PathfindingNavDebugHUD {
 
     private static final int DIM_COLOR = 0xFF888888;
 
-    private static final int CURRENT_HIGHLIGHT_COLOR = 0xFFFFFF00;
+    private static final int TARGET_NODE_COLOR = 0xFFFFD900;
+
+    private static final int CURRENT_NODE_COLOR = 0xFF00FFFF;
+
+    private static final int NEXT_NODE_COLOR = 0xFFFF4DFF;
+
+    private static final int PREVIOUS_NODE_COLOR = 0xFFFF8000;
+
+    private static final int NO_HIGHLIGHT = -1;
 
     private static final int PHYSICS_COLOR = 0xFFFF88FF;
 
@@ -208,7 +216,8 @@ public final class PathfindingNavDebugHUD {
         var node = lookupSlotNode(payload, absoluteIndex);
         var isCurrent = offset == 0;
         var labelText = formatSlotLabel(offset, isCurrent);
-        var labelColor = isCurrent ? CURRENT_HIGHLIGHT_COLOR : DIM_COLOR;
+        var highlightColor = resolveSlotHighlight(payload, absoluteIndex, offset);
+        var labelColor = highlightColor != NO_HIGHLIGHT ? highlightColor : DIM_COLOR;
         var segments = new ArrayList<TextSegment>();
         segments.add(new TextSegment(labelText, labelColor, colLabelWidth));
 
@@ -218,11 +227,33 @@ public final class PathfindingNavDebugHUD {
             return new HUDSegmentLine(segments);
         }
 
-        var color = isCurrent ? CURRENT_HIGHLIGHT_COLOR : terrainColor(node.terrainType());
+        var color = highlightColor != NO_HIGHLIGHT ? highlightColor : terrainColor(node.terrainType());
         segments.add(new TextSegment(terrainName(node.terrainType()), color, colTerrainWidth));
         segments.add(new TextSegment(positionLabel(node), color, colPositionWidth));
 
         return new HUDSegmentLine(segments);
+    }
+
+    private static int resolveSlotHighlight(S2CPathfindingNavDebugPayload payload, int absoluteIndex, int offset) {
+        var totalNodes = payload.totalNodes();
+
+        if (totalNodes > 0 && absoluteIndex == totalNodes - 1) {
+            return TARGET_NODE_COLOR;
+        }
+
+        if (offset == 0) {
+            return CURRENT_NODE_COLOR;
+        }
+
+        if (offset == 1) {
+            return NEXT_NODE_COLOR;
+        }
+
+        if (offset == -1) {
+            return PREVIOUS_NODE_COLOR;
+        }
+
+        return NO_HIGHLIGHT;
     }
 
     private static @Nullable DebugNodeEntry lookupSlotNode(S2CPathfindingNavDebugPayload payload, int absoluteIndex) {
@@ -326,7 +357,10 @@ public final class PathfindingNavDebugHUD {
             entries.add(new LegendEntry(terrainTypes[i].name(), terrainColor(i)));
         }
 
-        entries.add(new LegendEntry("CURRENT", CURRENT_HIGHLIGHT_COLOR));
+        entries.add(new LegendEntry("TARGET", TARGET_NODE_COLOR));
+        entries.add(new LegendEntry("CURRENT", CURRENT_NODE_COLOR));
+        entries.add(new LegendEntry("NEXT", NEXT_NODE_COLOR));
+        entries.add(new LegendEntry("PREV", PREVIOUS_NODE_COLOR));
 
         for (int start = 0; start < entries.size(); start += LEGEND_ENTRIES_PER_LINE) {
             var segments = new ArrayList<TextSegment>();
