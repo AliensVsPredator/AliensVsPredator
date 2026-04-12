@@ -121,7 +121,19 @@ public final class PathDebugUtil {
         var pathAge = navigator.getTickCount() - navigator.getLastPathComputeTick();
         var ticksOnNode = navigator.getTickCount() - navigator.getLastProgressTick();
         var delta = mob.getDeltaMovement();
-        var payload = buildPayload(mob, delta.x, delta.y, delta.z, pathSnapshot, move, surfaceBitmap, pathAge, ticksOnNode);
+        var payload = buildPayload(
+            mob,
+            delta.x,
+            delta.y,
+            delta.z,
+            pathSnapshot,
+            move,
+            surfaceBitmap,
+            pathAge,
+            ticksOnNode,
+            navigator.getLastPathComputeNanos(),
+            navigator.getLastPathComputeTick()
+        );
 
         BLib.MOD.networking().sendToAllClientsTrackingEntity(mob, payload);
     }
@@ -135,7 +147,9 @@ public final class PathDebugUtil {
         MoveSnapshot move,
         int surfaceBitmap,
         int pathAgeTicks,
-        int ticksOnCurrentNode
+        int ticksOnCurrentNode,
+        long lastPathComputeNanos,
+        int lastPathComputeTick
     ) {
         return new S2CPathfindingNavDebugPayload(
             mob.getId(),
@@ -166,7 +180,9 @@ public final class PathDebugUtil {
             path.distanceToTarget(),
             move.operation(),
             move.resolvedSpeed(),
-            surfaceBitmap
+            surfaceBitmap,
+            lastPathComputeNanos,
+            lastPathComputeTick
         );
     }
 

@@ -47,7 +47,9 @@ public record S2CPathfindingNavDebugPayload(
     float distanceToTarget,
     String moveOperation,
     float resolvedSpeed,
-    int surfaceSolidBitmap
+    int surfaceSolidBitmap,
+    long lastPathComputeNanos,
+    int lastPathComputeTick
 ) implements CustomPacketPayload {
 
     public static final ResourceLocation PAYLOAD_ID = BLib.MOD.resources().createLocation("pathfinding_nav_debug");
@@ -93,6 +95,8 @@ public record S2CPathfindingNavDebugPayload(
                     StreamCodecs.FLOAT.decode(schema, buf),
                     StreamCodecs.STRING_UTF8.decode(schema, buf),
                     StreamCodecs.FLOAT.decode(schema, buf),
+                    StreamCodecs.INT.decode(schema, buf),
+                    StreamCodecs.LONG.decode(schema, buf),
                     StreamCodecs.INT.decode(schema, buf)
                 );
             }
@@ -134,6 +138,8 @@ public record S2CPathfindingNavDebugPayload(
                 StreamCodecs.STRING_UTF8.encode(schema, buf, value.moveOperation);
                 StreamCodecs.FLOAT.encode(schema, buf, value.resolvedSpeed);
                 StreamCodecs.INT.encode(schema, buf, value.surfaceSolidBitmap);
+                StreamCodecs.LONG.encode(schema, buf, value.lastPathComputeNanos);
+                StreamCodecs.INT.encode(schema, buf, value.lastPathComputeTick);
             }
         }
     );

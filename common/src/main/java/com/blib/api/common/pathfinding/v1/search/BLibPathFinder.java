@@ -3,6 +3,8 @@ package com.blib.api.common.pathfinding.v1.search;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,6 +22,8 @@ import com.blib.api.common.pathfinding.v1.evaluator.TerrainEvaluator;
 import com.blib.api.common.pathfinding.v1.node.PathNode;
 import com.blib.api.common.pathfinding.v1.path.BLibPath;
 import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
+import com.blib.mod.common.property.BLibModProperties;
+import com.blib.mod.common.property.BLibModPropertyAccess;
 
 /**
  * A* pathfinding with optional two-level hierarchical search. When a {@link TerrainClassificationCache} is provided,
@@ -28,9 +32,15 @@ import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
  */
 public final class BLibPathFinder {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(BLibPathFinder.class);
+
     private static final int MAX_NEIGHBORS = 40;
 
     private static final int MAX_SECTION_SEARCH_NODES = 128;
+
+    private static final int CORRIDOR_DISTANCE_THRESHOLD = 48;
+
+    private static final float MIN_IMPROVEMENT = 0.01f;
 
     private final TerrainEvaluator evaluator;
 
@@ -39,6 +49,15 @@ public final class BLibPathFinder {
     private final @Nullable TerrainClassificationCache classificationCache;
 
     private @Nullable PathSearchSnapshot lastSearchSnapshot;
+
+    // --- Pooled search data structures (#6) ---
+    private final PriorityQueue<PathNode> openSet = new PriorityQueue<>();
+
+    private final ArrayList<PathNode> closedNodes = new ArrayList<>();
+
+    private final PathNode[] neighborBuffer = new PathNode[MAX_NEIGHBORS];
+
+    private boolean debugEnabled;
 
     public BLibPathFinder(TerrainEvaluator evaluator, SearchConfig config) {
         this(evaluator, config, null);
@@ -55,16 +74,34 @@ public final class BLibPathFinder {
     }
 
     public @Nullable BLibPath findPath(LevelReader level, BlockPos startPos, BlockPos targetPos) {
+        var start = System.nanoTime();
+
+        debugEnabled = BLibModPropertyAccess.INSTANCE.get(BLibModProperties.Debug.Render.ENABLED)
+            && BLibModPropertyAccess.INSTANCE.get(BLibModProperties.Debug.Render.PathSearch.ENABLED);
+
         evaluator.prepare(level);
 
         try {
             Set<Long> corridor = null;
 
-            if (classificationCache != null) {
+            if (classificationCache != null && startPos.distManhattan(targetPos) > CORRIDOR_DISTANCE_THRESHOLD) {
                 corridor = findSectionCorridor(level, startPos, targetPos);
             }
 
-            return searchBlocks(startPos, targetPos, corridor);
+            var path = searchBlocks(startPos, targetPos, corridor);
+            var ms = (System.nanoTime() - start) / 1_000_000.0;
+
+            LOGGER.info(
+                "[Pathfinding] {}ms | {} -> {} dist={} result={} nodes={}",
+                "%.3f".formatted(ms),
+                startPos,
+                targetPos,
+                startPos.distManhattan(targetPos),
+                path != null ? (path.isReached() ? "REACHED" : "PARTIAL") : "NONE",
+                path != null ? path.getNodeCount() : 0
+            );
+
+            return path;
         } finally {
             evaluator.cleanup();
         }
@@ -232,11 +269,10 @@ public final class BLibPathFinder {
         startNode.setGCost(0);
         startNode.setHCost(heuristic(startNode, goalNode));
 
-        var openSet = new PriorityQueue<PathNode>(Comparator.comparingDouble(PathNode::totalCost));
+        openSet.clear();
+        closedNodes.clear();
         openSet.add(startNode);
 
-        var closedNodes = new ArrayList<PathNode>();
-        var neighbors = new PathNode[MAX_NEIGHBORS];
         var visitedCount = 0;
         PathNode bestNode = startNode;
 
@@ -248,13 +284,16 @@ public final class BLibPathFinder {
             }
 
             current.setClosed(true);
-            closedNodes.add(current);
+
+            if (debugEnabled) {
+                closedNodes.add(current);
+            }
+
             visitedCount++;
 
             if (current.equals(goalNode)) {
                 var path = buildPath(current, true);
-
-                lastSearchSnapshot = buildSnapshot(closedNodes, path, corridor, visitedCount);
+                lastSearchSnapshot = debugEnabled ? buildSnapshot(closedNodes, path, corridor, visitedCount) : null;
 
                 return path;
             }
@@ -263,10 +302,10 @@ public final class BLibPathFinder {
                 bestNode = current;
             }
 
-            var neighborCount = evaluator.getNeighbors(current, neighbors);
+            var neighborCount = evaluator.getNeighbors(current, neighborBuffer);
 
             for (int i = 0; i < neighborCount; i++) {
-                var neighbor = neighbors[i];
+                var neighbor = neighborBuffer[i];
 
                 if (neighbor.isClosed()) {
                     continue;
@@ -276,10 +315,11 @@ public final class BLibPathFinder {
                     continue;
                 }
 
-                var edgeCost = current.distanceTo(neighbor) * evaluator.getTerrainCost(neighbor.getTerrainType()) + neighbor.getCostMalus();
+                var edgeCost = current.distanceTo(neighbor) * evaluator.getTerrainCost(neighbor.getTerrainType())
+                    + neighbor.getCostMalus();
                 var tentativeG = current.getGCost() + edgeCost;
 
-                if (tentativeG >= neighbor.getGCost() && neighbor.getGCost() > 0) {
+                if (neighbor.getGCost() > 0 && tentativeG >= neighbor.getGCost() - MIN_IMPROVEMENT) {
                     continue;
                 }
 
@@ -296,7 +336,7 @@ public final class BLibPathFinder {
             path = buildPath(bestNode, false);
         }
 
-        lastSearchSnapshot = buildSnapshot(closedNodes, path, corridor, visitedCount);
+        lastSearchSnapshot = debugEnabled ? buildSnapshot(closedNodes, path, corridor, visitedCount) : null;
 
         return path;
     }

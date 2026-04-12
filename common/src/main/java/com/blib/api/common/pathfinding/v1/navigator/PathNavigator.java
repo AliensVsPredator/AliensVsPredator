@@ -44,6 +44,8 @@ public final class PathNavigator {
 
     private int lastProgressTick;
 
+    private long lastPathComputeNanos;
+
     private double lastDistanceToTarget;
 
     private int tickCount;
@@ -71,7 +73,9 @@ public final class PathNavigator {
         this.targetPos = target;
         this.lastComputedTargetPos = target;
 
+        var startNanos = System.nanoTime();
         this.currentPath = pathFinder.findPath(level, entityPos, target);
+        this.lastPathComputeNanos = System.nanoTime() - startNanos;
 
         this.lastPathComputeTick = tickCount;
         this.lastProgressTick = tickCount;
@@ -127,7 +131,7 @@ public final class PathNavigator {
         }
 
         detectStuck(entityBlockPos);
-        checkRecalculate(entityBlockPos);
+        checkRecalculate(entityBlockPos, entityX, entityY, entityZ, entityWidth, entityHeight);
     }
 
     /**
@@ -163,6 +167,13 @@ public final class PathNavigator {
      */
     public int getLastProgressTick() {
         return lastProgressTick;
+    }
+
+    /**
+     * Returns the wall-clock time in nanoseconds that the most recent path computation took.
+     */
+    public long getLastPathComputeNanos() {
+        return lastPathComputeNanos;
     }
 
     /**
@@ -266,11 +277,16 @@ public final class PathNavigator {
         while (!currentPath.isDone()) {
             var waypoint = currentPath.getCurrentNode();
 
-            var dx = Math.abs(waypoint.getX() + nodeCenterOffset - entityX);
-            var dy = Math.abs(waypoint.getY() - entityY);
-            var dz = Math.abs(waypoint.getZ() + nodeCenterOffset - entityZ);
+            var waypointCenterX = waypoint.getX() + nodeCenterOffset;
+            var waypointCenterZ = waypoint.getZ() + nodeCenterOffset;
 
-            if (dx > reachXZ || dy > reachY || dz > reachXZ) {
+            var dx = Math.abs(waypointCenterX - entityX);
+            var dy = Math.abs(waypoint.getY() - entityY);
+            var dz = Math.abs(waypointCenterZ - entityZ);
+
+            var withinReach = dx <= reachXZ && dy <= reachY && dz <= reachXZ;
+
+            if (!withinReach && !shouldSkipToNextNode(entityX, entityY, entityZ, nodeCenterOffset)) {
                 break;
             }
 
@@ -300,6 +316,61 @@ public final class PathNavigator {
         }
     }
 
+    /**
+     * Checks whether the entity has already passed the current node and should skip ahead to the next one. Uses the
+     * same approach as vanilla Minecraft's {@code shouldTargetNextNodeInDirection}: if the entity is closer to the next
+     * node than the current one and the dot product of the direction vectors is negative (meaning the current node is
+     * behind the entity), the current node is skipped.
+     */
+    private boolean shouldSkipToNextNode(
+        double entityX,
+        double entityY,
+        double entityZ,
+        double nodeCenterOffset
+    ) {
+        var nextIndex = currentPath.getCurrentNodeIndex() + 1;
+
+        if (nextIndex >= currentPath.getNodeCount()) {
+            return false;
+        }
+
+        var currentNode = currentPath.getCurrentNode();
+        var currentCenterX = currentNode.getX() + nodeCenterOffset;
+        var currentCenterY = (double) currentNode.getY();
+        var currentCenterZ = currentNode.getZ() + nodeCenterOffset;
+
+        var toCurrentX = currentCenterX - entityX;
+        var toCurrentY = currentCenterY - entityY;
+        var toCurrentZ = currentCenterZ - entityZ;
+        var distToCurrentSq = toCurrentX * toCurrentX + toCurrentY * toCurrentY + toCurrentZ * toCurrentZ;
+
+        if (distToCurrentSq > 4.0) {
+            return false;
+        }
+
+        var nextNode = currentPath.getNode(nextIndex);
+        var nextCenterX = nextNode.getX() + nodeCenterOffset;
+        var nextCenterY = (double) nextNode.getY();
+        var nextCenterZ = nextNode.getZ() + nodeCenterOffset;
+
+        var toNextX = nextCenterX - entityX;
+        var toNextY = nextCenterY - entityY;
+        var toNextZ = nextCenterZ - entityZ;
+        var distToNextSq = toNextX * toNextX + toNextY * toNextY + toNextZ * toNextZ;
+
+        var closerToNext = distToNextSq < distToCurrentSq;
+        var veryCloseToCurrent = distToCurrentSq < 0.5;
+
+        if (!closerToNext && !veryCloseToCurrent) {
+            return false;
+        }
+
+        // Negative dot product means the current node is behind the entity relative to the next node.
+        var dot = toNextX * toCurrentX + toNextY * toCurrentY + toNextZ * toCurrentZ;
+
+        return dot < 0.0;
+    }
+
     private void detectStuck(BlockPos entityPos) {
         if (targetPos == null) {
             return;
@@ -322,7 +393,14 @@ public final class PathNavigator {
 
     private static final double MIN_TARGET_MOVE_DISTANCE_SQUARED = 9.0;
 
-    private void checkRecalculate(BlockPos entityPos) {
+    private void checkRecalculate(
+        BlockPos entityPos,
+        double entityX,
+        double entityY,
+        double entityZ,
+        float entityWidth,
+        float entityHeight
+    ) {
         if (targetPos == null) {
             return;
         }
@@ -336,6 +414,12 @@ public final class PathNavigator {
 
         if (targetMoved) {
             navigateTo(entityPos, targetPos);
+
+            // Advance past any nodes the entity has already reached so the new
+            // path doesn't briefly target the start node behind the entity.
+            if (currentPath != null && !currentPath.isDone()) {
+                advanceWaypoints(entityX, entityY, entityZ, entityWidth, entityHeight);
+            }
         }
     }
 

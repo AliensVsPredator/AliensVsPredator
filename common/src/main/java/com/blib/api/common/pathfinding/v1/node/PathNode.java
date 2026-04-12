@@ -8,7 +8,7 @@ import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
  * A single position in pathfinding space with terrain classification and A* costs. Position and terrain type are fixed
  * at creation. Costs and parent are mutable for A* use.
  */
-public final class PathNode {
+public final class PathNode implements Comparable<PathNode> {
 
     private final int x;
 
@@ -109,6 +109,11 @@ public final class PathNode {
 
     public void setClosed(boolean closed) {
         this.closed = closed;
+    }
+
+    @Override
+    public int compareTo(PathNode other) {
+        return Float.compare(totalCost(), other.totalCost());
     }
 
     public void reset() {

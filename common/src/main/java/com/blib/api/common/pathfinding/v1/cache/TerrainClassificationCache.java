@@ -1,11 +1,10 @@
 package com.blib.api.common.pathfinding.v1.cache;
 
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import com.blib.api.common.pathfinding.v1.terrain.TerrainClassifier;
 import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
@@ -25,12 +24,12 @@ import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
  */
 public final class TerrainClassificationCache {
 
-    private final Map<Long, TerrainCacheSection> sections;
+    private final Long2ObjectMap<TerrainCacheSection> sections;
 
     private final TerrainClassifier classifier;
 
     public TerrainClassificationCache(TerrainClassifier classifier) {
-        this.sections = new ConcurrentHashMap<>();
+        this.sections = new Long2ObjectOpenHashMap<>();
         this.classifier = classifier;
     }
 
@@ -52,7 +51,7 @@ public final class TerrainClassificationCache {
 
     private TerrainCacheSection getOrPopulateSection(LevelReader level, int sectionX, int sectionY, int sectionZ) {
         var key = packSectionKey(sectionX, sectionY, sectionZ);
-        var section = sections.computeIfAbsent(key, $ -> new TerrainCacheSection());
+        var section = sections.computeIfAbsent(key, (long $) -> new TerrainCacheSection());
 
         if (!section.isPopulated()) {
             section.populate(level, sectionX, sectionY, sectionZ, classifier);

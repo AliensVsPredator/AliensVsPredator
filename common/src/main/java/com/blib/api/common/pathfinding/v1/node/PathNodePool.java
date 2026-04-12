@@ -1,7 +1,6 @@
 package com.blib.api.common.pathfinding.v1.node;
 
-import java.util.HashMap;
-import java.util.Map;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 
 import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
 
@@ -12,10 +11,10 @@ import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
  */
 public final class PathNodePool {
 
-    private final Map<Long, PathNode> nodes;
+    private final Long2ObjectOpenHashMap<PathNode> nodes;
 
     public PathNodePool() {
-        this.nodes = new HashMap<>();
+        this.nodes = new Long2ObjectOpenHashMap<>();
     }
 
     public PathNode getOrCreate(int x, int y, int z, TerrainType terrainType) {

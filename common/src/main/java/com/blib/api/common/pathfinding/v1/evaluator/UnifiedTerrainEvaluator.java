@@ -2,6 +2,11 @@ package com.blib.api.common.pathfinding.v1.evaluator;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.LevelChunkSection;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumMap;
@@ -39,6 +44,30 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     private final @Nullable TerrainClassificationCache classificationCache;
 
+    private final BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
+
+    private final BlockPos.MutableBlockPos clearancePos = new BlockPos.MutableBlockPos();
+
+    // --- Chunk cache (spatial locality, direct section access) ---
+    private @Nullable ChunkAccess cachedChunk;
+
+    private LevelChunkSection @Nullable [] cachedSections;
+
+    private int cachedChunkX = Integer.MIN_VALUE;
+
+    private int cachedChunkZ = Integer.MIN_VALUE;
+
+    private int cachedMinSectionY;
+
+    // --- Block property cache (avoid virtual dispatch, Baritone-style PrecomputedData) ---
+    private boolean @Nullable [] solidCache;
+
+    private boolean @Nullable [] liquidCache;
+
+    private boolean @Nullable [] passableCache;
+
+    private boolean @Nullable [] propertyComputed;
+
     private LevelReader level;
 
     public UnifiedTerrainEvaluator(TerrainEvaluatorConfig config) {
@@ -60,6 +89,21 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
         for (var terrainType : config.getSupportedTerrains()) {
             snapshotCosts.put(terrainType, config.getCost(terrainType));
+        }
+
+        // Reset chunk cache for new search.
+        cachedChunk = null;
+        cachedSections = null;
+        cachedChunkX = Integer.MIN_VALUE;
+        cachedChunkZ = Integer.MIN_VALUE;
+
+        // Initialize property cache once (block state properties never change at runtime).
+        if (solidCache == null) {
+            var stateCount = Block.BLOCK_STATE_REGISTRY.size();
+            solidCache = new boolean[stateCount];
+            liquidCache = new boolean[stateCount];
+            passableCache = new boolean[stateCount];
+            propertyComputed = new boolean[stateCount];
         }
     }
 
@@ -155,18 +199,32 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     // --- GROUND neighbor generation ---
 
+    // Reusable cardinal result cache for diagonal validation (#4).
+    // Index: 0=west(-1,0), 1=east(+1,0), 2=north(0,-1), 3=south(0,+1)
+    private final PathNode[] cardinalCache = new PathNode[4];
+
     private int getGroundNeighbors(PathNode node, PathNode[] neighbors) {
         var count = 0;
 
+        // Evaluate cardinals and cache results for diagonal reuse.
+        for (int i = 0; i < HORIZONTAL_OFFSETS.length; i++) {
+            cardinalCache[i] = tryCreateNode(
+                node.getX() + HORIZONTAL_OFFSETS[i][0],
+                node.getY(),
+                node.getZ() + HORIZONTAL_OFFSETS[i][1]
+            );
+        }
+
         count = addGroundCardinalNeighbors(node, neighbors, count);
-        count = addGroundDiagonalNeighbors(node, neighbors, count);
+        count = addGroundDiagonalNeighborsCached(node, neighbors, count);
         count = addVerticalBreakableNeighbors(node, neighbors, count);
 
         return count;
     }
 
     private int addVerticalBreakableNeighbors(PathNode node, PathNode[] neighbors, int count) {
-        var below = tryCreateBreakableNode(new BlockPos(node.getX(), node.getY() - 1, node.getZ()));
+        mutablePos.set(node.getX(), node.getY() - 1, node.getZ());
+        var below = tryCreateBreakableNode(mutablePos.immutable());
 
         if (below != null) {
             neighbors[count++] = below;
@@ -175,7 +233,8 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         var above = tryCreateNode(node.getX(), node.getY() + 1, node.getZ());
 
         if (above == null) {
-            above = tryCreateBreakableNode(new BlockPos(node.getX(), node.getY() + 1, node.getZ()));
+            mutablePos.set(node.getX(), node.getY() + 1, node.getZ());
+            above = tryCreateBreakableNode(mutablePos.immutable());
         }
 
         if (above != null) {
@@ -186,16 +245,36 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     }
 
     private int addGroundCardinalNeighbors(PathNode node, PathNode[] neighbors, int count) {
-        for (var offset : HORIZONTAL_OFFSETS) {
-            count = addGroundNeighborsForDirection(node, offset[0], offset[1], neighbors, count);
+        for (int i = 0; i < HORIZONTAL_OFFSETS.length; i++) {
+            count = addGroundNeighborsForDirection(
+                node,
+                HORIZONTAL_OFFSETS[i][0],
+                HORIZONTAL_OFFSETS[i][1],
+                cardinalCache[i],
+                neighbors,
+                count
+            );
         }
 
         return count;
     }
 
-    private int addGroundDiagonalNeighbors(PathNode node, PathNode[] neighbors, int count) {
+    private int addGroundDiagonalNeighborsCached(PathNode node, PathNode[] neighbors, int count) {
+        // DIAGONAL_OFFSETS: (-1,-1), (-1,+1), (+1,-1), (+1,+1)
+        // cardinalCache: 0=west(-1,0), 1=east(+1,0), 2=north(0,-1), 3=south(0,+1)
+        // For diagonal (dx,dz): need cardinal at (dx,0) and (0,dz).
+        // dx=-1 -> index 0 (west), dx=+1 -> index 1 (east)
+        // dz=-1 -> index 2 (north), dz=+1 -> index 3 (south)
         for (var offset : DIAGONAL_OFFSETS) {
-            if (!isDiagonalValid(node, offset[0], offset[1])) {
+            var xIdx = offset[0] == -1 ? 0 : 1;
+            var zIdx = offset[1] == -1 ? 2 : 3;
+            var adjX = cardinalCache[xIdx];
+            var adjZ = cardinalCache[zIdx];
+
+            if (
+                adjX == null || adjX.getTerrainType() == TerrainType.BREAKABLE
+                    || adjZ == null || adjZ.getTerrainType() == TerrainType.BREAKABLE
+            ) {
                 continue;
             }
 
@@ -209,12 +288,19 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         return count;
     }
 
-    private int addGroundNeighborsForDirection(PathNode from, int dx, int dz, PathNode[] neighbors, int count) {
+    private int addGroundNeighborsForDirection(
+        PathNode from,
+        int dx,
+        int dz,
+        @Nullable PathNode cachedSameLevel,
+        PathNode[] neighbors,
+        int count
+    ) {
         var baseX = from.getX() + dx;
         var baseY = from.getY();
         var baseZ = from.getZ() + dz;
 
-        var sameLevel = tryCreateNode(baseX, baseY, baseZ);
+        var sameLevel = cachedSameLevel;
 
         if (sameLevel != null) {
             neighbors[count++] = sameLevel;
@@ -225,8 +311,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
 
         var entityHeight = config.getEntityHeight();
-        var headroomPos = new BlockPos(from.getX(), from.getY() + entityHeight, from.getZ());
-        var headroomClear = !level.getBlockState(headroomPos).isSolid();
+        var headroomClear = !isSolid(getBlockStateFast(from.getX(), from.getY() + entityHeight, from.getZ()));
 
         if (headroomClear) {
             for (int stepUp = 1; stepUp <= config.getMaxStepHeight(); stepUp++) {
@@ -241,10 +326,9 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
         if (sameLevel == null) {
             for (int stepDown = 1; stepDown <= config.getMaxFallDistance(); stepDown++) {
-                var checkPos = new BlockPos(baseX, baseY - stepDown, baseZ);
-                var checkState = level.getBlockState(checkPos);
+                var checkState = getBlockStateFast(baseX, baseY - stepDown, baseZ);
 
-                if (checkState.isSolid()) {
+                if (isSolid(checkState)) {
                     break;
                 }
 
@@ -286,14 +370,6 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
 
         return count;
-    }
-
-    private boolean isDiagonalValid(PathNode from, int dx, int dz) {
-        var adjacentX = tryCreateNode(from.getX() + dx, from.getY(), from.getZ());
-        var adjacentZ = tryCreateNode(from.getX(), from.getY(), from.getZ() + dz);
-
-        return adjacentX != null && adjacentX.getTerrainType() != TerrainType.BREAKABLE
-            && adjacentZ != null && adjacentZ.getTerrainType() != TerrainType.BREAKABLE;
     }
 
     // --- WATER neighbor generation ---
@@ -371,8 +447,8 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     // --- Shared node creation ---
 
     private @Nullable PathNode tryCreateNode(int x, int y, int z) {
-        var pos = new BlockPos(x, y, z);
-        var terrainType = classifyTerrain(pos);
+        mutablePos.set(x, y, z);
+        var terrainType = classifyTerrain(mutablePos);
 
         if (terrainType != null && config.supportsTerrain(terrainType)) {
             if (!hasEntityClearance(x, y, z, terrainType)) {
@@ -382,7 +458,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             return nodePool.getOrCreate(x, y, z, terrainType);
         }
 
-        return tryCreateBreakableNode(pos);
+        return tryCreateBreakableNode(mutablePos.immutable());
     }
 
     private @Nullable PathNode tryCreateBreakableNode(BlockPos pos) {
@@ -401,14 +477,17 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         for (int dx = -halfWidth; dx <= halfWidth; dx++) {
             for (int dz = -halfWidth; dz <= halfWidth; dz++) {
                 for (int dy = 0; dy < height; dy++) {
-                    var checkPos = new BlockPos(pos.getX() + dx, pos.getY() + dy, pos.getZ() + dz);
-                    var checkState = level.getBlockState(checkPos);
+                    var bx = pos.getX() + dx;
+                    var by = pos.getY() + dy;
+                    var bz = pos.getZ() + dz;
+                    var checkState = getBlockStateFast(bx, by, bz);
 
-                    if (!checkState.isSolid()) {
+                    if (!isSolid(checkState)) {
                         continue;
                     }
 
-                    var result = breakabilityEvaluator.evaluate(level, checkPos, checkState);
+                    clearancePos.set(bx, by, bz);
+                    var result = breakabilityEvaluator.evaluate(level, clearancePos, checkState);
 
                     if (!result.canBreak()) {
                         return null;
@@ -438,14 +517,13 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         for (int dx = -halfWidth; dx <= halfWidth; dx++) {
             for (int dz = -halfWidth; dz <= halfWidth; dz++) {
                 for (int dy = 0; dy < height; dy++) {
-                    var checkPos = new BlockPos(x + dx, y + dy, z + dz);
-                    var state = level.getBlockState(checkPos);
+                    var state = getBlockStateFast(x + dx, y + dy, z + dz);
 
-                    if (state.isSolid()) {
+                    if (isSolid(state)) {
                         return false;
                     }
 
-                    if (terrainType == TerrainType.GROUND && state.liquid()) {
+                    if (terrainType == TerrainType.GROUND && isLiquid(state)) {
                         return false;
                     }
                 }
@@ -453,6 +531,64 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
 
         return true;
+    }
+
+    // --- Fast block access ---
+
+    private BlockState getBlockStateFast(int x, int y, int z) {
+        var cx = x >> 4;
+        var cz = z >> 4;
+
+        if (cx != cachedChunkX || cz != cachedChunkZ) {
+            cachedChunk = level.getChunk(cx, cz);
+            cachedSections = cachedChunk.getSections();
+            cachedChunkX = cx;
+            cachedChunkZ = cz;
+            cachedMinSectionY = cachedChunk.getMinSection();
+        }
+
+        var sectionIndex = (y >> 4) - cachedMinSectionY;
+
+        if (sectionIndex < 0 || sectionIndex >= cachedSections.length) {
+            return Blocks.AIR.defaultBlockState();
+        }
+
+        var section = cachedSections[sectionIndex];
+
+        if (section == null || section.hasOnlyAir()) {
+            return Blocks.AIR.defaultBlockState();
+        }
+
+        return section.getBlockState(x & 15, y & 15, z & 15);
+    }
+
+    private void ensurePropertyCached(BlockState state, int id) {
+        if (!propertyComputed[id]) {
+            var solid = state.isSolid();
+            var liquid = state.liquid();
+            solidCache[id] = solid;
+            liquidCache[id] = liquid;
+            passableCache[id] = !solid && !liquid;
+            propertyComputed[id] = true;
+        }
+    }
+
+    private boolean isSolid(BlockState state) {
+        var id = Block.BLOCK_STATE_REGISTRY.getId(state);
+        ensurePropertyCached(state, id);
+        return solidCache[id];
+    }
+
+    private boolean isLiquid(BlockState state) {
+        var id = Block.BLOCK_STATE_REGISTRY.getId(state);
+        ensurePropertyCached(state, id);
+        return liquidCache[id];
+    }
+
+    private boolean isPassable(BlockState state) {
+        var id = Block.BLOCK_STATE_REGISTRY.getId(state);
+        ensurePropertyCached(state, id);
+        return passableCache[id];
     }
 
     // --- Position resolution ---

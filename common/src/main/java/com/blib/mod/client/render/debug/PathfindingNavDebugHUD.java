@@ -55,6 +55,10 @@ public final class PathfindingNavDebugHUD {
 
     private static final int STUCK_BAD_COLOR = 0xFFFF4444;
 
+    private static final int TIMING_COLOR = 0xFF00FF88;
+
+    private static final int TIMING_HISTORY_SIZE = 5;
+
     private static final int PATH_WINDOW_RADIUS = 2;
 
     private static final String COL_LABEL_SAMPLE = "P-2  ";
@@ -71,14 +75,37 @@ public final class PathfindingNavDebugHUD {
 
     private @Nullable S2CPathfindingNavDebugPayload latestPayload;
 
+    private final long[] timingHistoryNanos = new long[TIMING_HISTORY_SIZE];
+
+    private int timingCount;
+
+    private int timingIndex;
+
+    private int lastSeenComputeTick = -1;
+
     private PathfindingNavDebugHUD() {}
 
     public void update(S2CPathfindingNavDebugPayload payload) {
         this.latestPayload = payload;
+
+        var computeTick = payload.lastPathComputeTick();
+
+        if (computeTick != lastSeenComputeTick && payload.lastPathComputeNanos() > 0) {
+            lastSeenComputeTick = computeTick;
+            timingHistoryNanos[timingIndex] = payload.lastPathComputeNanos();
+            timingIndex = (timingIndex + 1) % TIMING_HISTORY_SIZE;
+
+            if (timingCount < TIMING_HISTORY_SIZE) {
+                timingCount++;
+            }
+        }
     }
 
     public void clear() {
         this.latestPayload = null;
+        this.timingCount = 0;
+        this.timingIndex = 0;
+        this.lastSeenComputeTick = -1;
     }
 
     public @Nullable S2CPathfindingNavDebugPayload getLatestPayload() {
@@ -130,6 +157,10 @@ public final class PathfindingNavDebugHUD {
 
         lines.add(singleSegment("", TEXT_COLOR));
 
+        addTimingSection(lines);
+
+        lines.add(singleSegment("", TEXT_COLOR));
+
         addPhysicsSection(lines, payload);
         addPathWindowSection(lines, font, payload);
 
@@ -156,6 +187,29 @@ public final class PathfindingNavDebugHUD {
                 payload.pathAgeTicks()
             )
         );
+    }
+
+    private void addTimingSection(List<HUDSegmentLine> lines) {
+        if (timingCount == 0) {
+            lines.add(singleSegment("Pathfind Timing: no data", DIM_COLOR));
+            return;
+        }
+
+        lines.add(singleSegment("Pathfind Timing (last " + timingCount + "):", TIMING_COLOR));
+
+        long totalNanos = 0;
+        var oldest = (timingCount < TIMING_HISTORY_SIZE) ? 0 : timingIndex;
+
+        for (int i = 0; i < timingCount; i++) {
+            var idx = (oldest + i) % TIMING_HISTORY_SIZE;
+            var nanos = timingHistoryNanos[idx];
+            totalNanos += nanos;
+            var ms = nanos / 1_000_000.0;
+            lines.add(fmtLine(TEXT_COLOR, "  #%d: %.3f ms", i + 1, ms));
+        }
+
+        var avgMs = (totalNanos / (double) timingCount) / 1_000_000.0;
+        lines.add(fmtLine(TIMING_COLOR, "  Avg: %.3f ms", avgMs));
     }
 
     private static void addPhysicsSection(List<HUDSegmentLine> lines, S2CPathfindingNavDebugPayload payload) {
