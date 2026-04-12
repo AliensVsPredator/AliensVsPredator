@@ -128,6 +128,45 @@ public final class TerrainClassificationCache {
         sections.clear();
     }
 
+    /**
+     * Pre-populates all sections within the block-coordinate bounding box. Call from the main thread before dispatching
+     * an async search to ensure the worker thread only reads pre-populated data.
+     */
+    public void prePopulateArea(LevelReader level, int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
+        var minSX = minX >> 4;
+        var minSY = minY >> 4;
+        var minSZ = minZ >> 4;
+        var maxSX = maxX >> 4;
+        var maxSY = maxY >> 4;
+        var maxSZ = maxZ >> 4;
+
+        for (int sx = minSX; sx <= maxSX; sx++) {
+            for (int sy = minSY; sy <= maxSY; sy++) {
+                for (int sz = minSZ; sz <= maxSZ; sz++) {
+                    getOrPopulateSection(level, sx, sy, sz);
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns the cached terrain classification for the given position without populating. Returns null if the section
+     * is not populated or the position is impassable. Safe to call from any thread after pre-population.
+     */
+    public @Nullable TerrainType getClassificationIfCached(BlockPos pos) {
+        var sectionX = pos.getX() >> 4;
+        var sectionY = pos.getY() >> 4;
+        var sectionZ = pos.getZ() >> 4;
+        var key = packSectionKey(sectionX, sectionY, sectionZ);
+        var section = sections.get(key);
+
+        if (section == null || !section.isPopulated()) {
+            return null;
+        }
+
+        return section.get(pos.getX() & 15, pos.getY() & 15, pos.getZ() & 15);
+    }
+
     public int getSectionCount() {
         return sections.size();
     }

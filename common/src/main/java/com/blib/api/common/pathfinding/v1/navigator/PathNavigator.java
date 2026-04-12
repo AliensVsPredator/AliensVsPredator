@@ -4,6 +4,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.concurrent.CompletableFuture;
+
 import com.blib.api.common.pathfinding.v1.cache.TerrainClassificationCache;
 import com.blib.api.common.pathfinding.v1.debug.PathSearchSnapshot;
 import com.blib.api.common.pathfinding.v1.evaluator.UnifiedTerrainEvaluator;
@@ -50,6 +52,10 @@ public final class PathNavigator {
 
     private int tickCount;
 
+    private @Nullable CompletableFuture<@Nullable BLibPath> pendingPath;
+
+    private long asyncStartNanos;
+
     public PathNavigator(LevelReader level, PathNavigatorConfig config) {
         this(level, config, null);
     }
@@ -91,6 +97,47 @@ public final class PathNavigator {
     }
 
     /**
+     * Asynchronously plans a path to the target position. Chunk data is snapshotted and the terrain cache is
+     * pre-populated on the calling thread, then the A* search runs on a background thread. Call
+     * {@link #isPathPending()} to check if an async computation is in progress. The path is automatically applied on
+     * the next {@link #tick} call after the computation completes.
+     */
+    public void navigateToAsync(BlockPos entityPos, BlockPos target) {
+        this.targetPos = target;
+        this.lastComputedTargetPos = target;
+        this.asyncStartNanos = System.nanoTime();
+        this.pendingPath = pathFinder.findPathAsync(level, entityPos, target);
+    }
+
+    /**
+     * Returns true if an asynchronous path computation is in progress.
+     */
+    public boolean isPathPending() {
+        return pendingPath != null;
+    }
+
+    private void checkPendingPath() {
+        if (pendingPath == null || !pendingPath.isDone()) {
+            return;
+        }
+
+        var path = pendingPath.join();
+        pendingPath = null;
+
+        this.currentPath = path;
+        this.lastPathComputeNanos = System.nanoTime() - asyncStartNanos;
+        this.lastPathComputeTick = tickCount;
+        this.lastProgressTick = tickCount;
+        this.lastDistanceToTarget = Double.MAX_VALUE;
+
+        if (currentPath != null) {
+            var startNode = currentPath.getCurrentNode();
+
+            this.currentTerrain = startNode.getTerrainType();
+        }
+    }
+
+    /**
      * Advances the navigator one tick. Call this every tick with the entity's exact position. The navigator checks
      * waypoint proximity using per-axis distance and entity dimensions, advances the path, fires transition handlers,
      * and detects stuck conditions.
@@ -109,6 +156,7 @@ public final class PathNavigator {
         float entityHeight
     ) {
         tickCount++;
+        checkPendingPath();
 
         if (currentPath == null || currentPath.isDone()) {
             return;
@@ -138,6 +186,11 @@ public final class PathNavigator {
      * Stops navigation and clears the current path.
      */
     public void stop() {
+        if (pendingPath != null) {
+            pendingPath.cancel(false);
+            pendingPath = null;
+        }
+
         this.currentPath = null;
         this.targetPos = null;
         this.currentTerrain = null;

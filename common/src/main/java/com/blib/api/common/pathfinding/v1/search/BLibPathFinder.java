@@ -14,11 +14,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.blib.api.common.pathfinding.v1.cache.TerrainClassificationCache;
 import com.blib.api.common.pathfinding.v1.debug.DebugNodeEntry;
 import com.blib.api.common.pathfinding.v1.debug.PathSearchSnapshot;
 import com.blib.api.common.pathfinding.v1.evaluator.TerrainEvaluator;
+import com.blib.api.common.pathfinding.v1.evaluator.UnifiedTerrainEvaluator;
 import com.blib.api.common.pathfinding.v1.node.PathNode;
 import com.blib.api.common.pathfinding.v1.path.BLibPath;
 import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
@@ -41,6 +45,17 @@ public final class BLibPathFinder {
     private static final int CORRIDOR_DISTANCE_THRESHOLD = 48;
 
     private static final float MIN_IMPROVEMENT = 0.01f;
+
+    private static final int ASYNC_CHUNK_MARGIN = 2;
+
+    private static final ExecutorService PATHFINDING_EXECUTOR = Executors.newFixedThreadPool(
+        Math.max(1, Runtime.getRuntime().availableProcessors() / 2),
+        runnable -> {
+            var thread = new Thread(runnable, "BLib-Pathfinding");
+            thread.setDaemon(true);
+            return thread;
+        }
+    );
 
     private final TerrainEvaluator evaluator;
 
@@ -105,6 +120,67 @@ public final class BLibPathFinder {
         } finally {
             evaluator.cleanup();
         }
+    }
+
+    /**
+     * Asynchronous path finding. Snapshots chunk data and pre-populates the terrain cache on the calling thread, then
+     * dispatches the A* search to a background thread. The evaluator must be a {@link UnifiedTerrainEvaluator}.
+     *
+     * @return a future that completes with the path (or null if no path found)
+     */
+    public CompletableFuture<@Nullable BLibPath> findPathAsync(LevelReader level, BlockPos startPos, BlockPos targetPos) {
+        if (!(evaluator instanceof UnifiedTerrainEvaluator unifiedEvaluator)) {
+            return CompletableFuture.completedFuture(findPath(level, startPos, targetPos));
+        }
+
+        debugEnabled = BLibModPropertyAccess.INSTANCE.get(BLibModProperties.Debug.Render.ENABLED)
+            && BLibModPropertyAccess.INSTANCE.get(BLibModProperties.Debug.Render.PathSearch.ENABLED);
+
+        // --- Main thread: snapshot chunks and pre-populate terrain cache ---
+
+        var minCX = Math.min(startPos.getX(), targetPos.getX()) >> 4;
+        var minCZ = Math.min(startPos.getZ(), targetPos.getZ()) >> 4;
+        var maxCX = Math.max(startPos.getX(), targetPos.getX()) >> 4;
+        var maxCZ = Math.max(startPos.getZ(), targetPos.getZ()) >> 4;
+
+        unifiedEvaluator.prepareAsync();
+
+        for (int cx = minCX - ASYNC_CHUNK_MARGIN; cx <= maxCX + ASYNC_CHUNK_MARGIN; cx++) {
+            for (int cz = minCZ - ASYNC_CHUNK_MARGIN; cz <= maxCZ + ASYNC_CHUNK_MARGIN; cz++) {
+                unifiedEvaluator.preloadChunk(cx, cz, level.getChunk(cx, cz));
+            }
+        }
+
+        if (classificationCache != null) {
+            var margin = ASYNC_CHUNK_MARGIN * 16;
+            classificationCache.prePopulateArea(
+                level,
+                Math.min(startPos.getX(), targetPos.getX()) - margin,
+                Math.min(startPos.getY(), targetPos.getY()) - 16,
+                Math.min(startPos.getZ(), targetPos.getZ()) - margin,
+                Math.max(startPos.getX(), targetPos.getX()) + margin,
+                Math.max(startPos.getY(), targetPos.getY()) + 16,
+                Math.max(startPos.getZ(), targetPos.getZ()) + margin
+            );
+        }
+
+        // --- Background thread: run the search ---
+
+        Set<Long> corridor = null;
+
+        if (classificationCache != null && startPos.distManhattan(targetPos) > CORRIDOR_DISTANCE_THRESHOLD) {
+            corridor = findSectionCorridor(level, startPos, targetPos);
+        }
+
+        var capturedCorridor = corridor;
+
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return searchBlocks(startPos, targetPos, capturedCorridor);
+            } finally {
+                unifiedEvaluator.cleanup();
+            }
+        }, PATHFINDING_EXECUTOR);
     }
 
     // --- Section-level A* ---

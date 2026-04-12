@@ -1,5 +1,6 @@
 package com.blib.api.common.pathfinding.v1.evaluator;
 
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
@@ -49,7 +50,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     private final BlockPos.MutableBlockPos clearancePos = new BlockPos.MutableBlockPos();
 
     // --- Chunk cache (spatial locality, direct section access) ---
-    private @Nullable ChunkAccess cachedChunk;
+    private final Long2ObjectOpenHashMap<ChunkAccess> chunkMap = new Long2ObjectOpenHashMap<>();
 
     private LevelChunkSection @Nullable [] cachedSections;
 
@@ -84,6 +85,26 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     @Override
     public void prepare(LevelReader level) {
         this.level = level;
+        prepareCommon();
+    }
+
+    /**
+     * Prepares the evaluator for async (off-thread) pathfinding. The chunk map must be pre-populated via
+     * {@link #preloadChunk(int, int, ChunkAccess)} before the search starts. Block reads that miss the map return AIR.
+     */
+    public void prepareAsync() {
+        this.level = null;
+        prepareCommon();
+    }
+
+    /**
+     * Pre-loads a chunk into the evaluator's chunk map for async search. Call from the main thread before dispatching.
+     */
+    public void preloadChunk(int chunkX, int chunkZ, ChunkAccess chunk) {
+        chunkMap.put(packChunkKey(chunkX, chunkZ), chunk);
+    }
+
+    private void prepareCommon() {
         nodePool.reset();
         snapshotCosts.clear();
 
@@ -91,11 +112,11 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             snapshotCosts.put(terrainType, config.getCost(terrainType));
         }
 
-        // Reset chunk cache for new search.
-        cachedChunk = null;
+        // Reset chunk fast cache.
         cachedSections = null;
         cachedChunkX = Integer.MIN_VALUE;
         cachedChunkZ = Integer.MIN_VALUE;
+        chunkMap.clear();
 
         // Initialize property cache once (block state properties never change at runtime).
         if (solidCache == null) {
@@ -535,31 +556,48 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     // --- Fast block access ---
 
+    private static final BlockState AIR = Blocks.AIR.defaultBlockState();
+
     private BlockState getBlockStateFast(int x, int y, int z) {
         var cx = x >> 4;
         var cz = z >> 4;
 
         if (cx != cachedChunkX || cz != cachedChunkZ) {
-            cachedChunk = level.getChunk(cx, cz);
-            cachedSections = cachedChunk.getSections();
+            var key = packChunkKey(cx, cz);
+            var chunk = chunkMap.get(key);
+
+            if (chunk == null) {
+                if (level != null) {
+                    chunk = level.getChunk(cx, cz);
+                    chunkMap.put(key, chunk);
+                } else {
+                    return AIR;
+                }
+            }
+
+            cachedSections = chunk.getSections();
             cachedChunkX = cx;
             cachedChunkZ = cz;
-            cachedMinSectionY = cachedChunk.getMinSection();
+            cachedMinSectionY = chunk.getMinSection();
         }
 
         var sectionIndex = (y >> 4) - cachedMinSectionY;
 
         if (sectionIndex < 0 || sectionIndex >= cachedSections.length) {
-            return Blocks.AIR.defaultBlockState();
+            return AIR;
         }
 
         var section = cachedSections[sectionIndex];
 
         if (section == null || section.hasOnlyAir()) {
-            return Blocks.AIR.defaultBlockState();
+            return AIR;
         }
 
         return section.getBlockState(x & 15, y & 15, z & 15);
+    }
+
+    private static long packChunkKey(int chunkX, int chunkZ) {
+        return ((long) chunkX & 0xFFFFFFFFL) << 32 | ((long) chunkZ & 0xFFFFFFFFL);
     }
 
     private void ensurePropertyCached(BlockState state, int id) {
@@ -622,7 +660,16 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     private @Nullable TerrainType classifyTerrain(BlockPos pos) {
         if (classificationCache != null) {
+            // In async mode (level == null), only read pre-populated cache entries.
+            if (level == null) {
+                return classificationCache.getClassificationIfCached(pos);
+            }
+
             return classificationCache.getClassification(level, pos);
+        }
+
+        if (level == null) {
+            return null;
         }
 
         return config.getTerrainClassifier().classify(level, pos);
