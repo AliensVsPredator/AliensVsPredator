@@ -99,8 +99,20 @@ public final class BLibPathFinder {
         try {
             Set<Long> corridor = null;
 
-            if (classificationCache != null && startPos.distManhattan(targetPos) > CORRIDOR_DISTANCE_THRESHOLD) {
+            if (classificationCache != null) {
                 corridor = findSectionCorridor(level, startPos, targetPos);
+
+                // Section search couldn't reach the goal — target is unreachable.
+                if (corridor == null) {
+                    lastSearchSnapshot = null;
+                    return null;
+                }
+
+                // For short distances, skip the corridor constraint (let block search expand freely)
+                // but still benefit from the reachability check above.
+                if (startPos.distManhattan(targetPos) <= CORRIDOR_DISTANCE_THRESHOLD) {
+                    corridor = null;
+                }
             }
 
             var path = searchBlocks(startPos, targetPos, corridor);
@@ -164,13 +176,24 @@ public final class BLibPathFinder {
             );
         }
 
-        // --- Background thread: run the search ---
+        // --- Main thread: reachability check + corridor ---
 
         Set<Long> corridor = null;
 
-        if (classificationCache != null && startPos.distManhattan(targetPos) > CORRIDOR_DISTANCE_THRESHOLD) {
+        if (classificationCache != null) {
             corridor = findSectionCorridor(level, startPos, targetPos);
+
+            if (corridor == null) {
+                unifiedEvaluator.cleanup();
+                return CompletableFuture.completedFuture(null);
+            }
+
+            if (startPos.distManhattan(targetPos) <= CORRIDOR_DISTANCE_THRESHOLD) {
+                corridor = null;
+            }
         }
+
+        // --- Background thread: run the search ---
 
         var capturedCorridor = corridor;
 
@@ -300,6 +323,11 @@ public final class BLibPathFinder {
                     }
                 }
             }
+        }
+
+        // If the section search couldn't reach the goal section, the target is unreachable.
+        if (bestEntry == null || bestEntry.key() != goalKey) {
+            return null;
         }
 
         // Build corridor from path sections with a 1-section buffer.

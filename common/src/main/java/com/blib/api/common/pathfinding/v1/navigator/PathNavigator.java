@@ -56,6 +56,17 @@ public final class PathNavigator {
 
     private long asyncStartNanos;
 
+    // --- Failed path backoff ---
+    private int consecutiveFailures;
+
+    private int failureCooldownTicks;
+
+    private int lastFailureTick;
+
+    private static final int BASE_FAILURE_COOLDOWN = 10;
+
+    private static final int MAX_FAILURE_COOLDOWN = 200;
+
     public PathNavigator(LevelReader level, PathNavigatorConfig config) {
         this(level, config, null);
     }
@@ -76,6 +87,10 @@ public final class PathNavigator {
      * @return true if a path was found
      */
     public boolean navigateTo(BlockPos entityPos, BlockPos target) {
+        if (isInFailureCooldown(target)) {
+            return false;
+        }
+
         this.targetPos = target;
         this.lastComputedTargetPos = target;
 
@@ -87,10 +102,13 @@ public final class PathNavigator {
         this.lastProgressTick = tickCount;
         this.lastDistanceToTarget = Double.MAX_VALUE;
 
-        if (currentPath != null) {
+        if (currentPath != null && currentPath.isReached()) {
             var startNode = currentPath.getCurrentNode();
 
             this.currentTerrain = startNode.getTerrainType();
+            resetFailureCooldown();
+        } else {
+            recordFailure();
         }
 
         return currentPath != null;
@@ -103,6 +121,10 @@ public final class PathNavigator {
      * the next {@link #tick} call after the computation completes.
      */
     public void navigateToAsync(BlockPos entityPos, BlockPos target) {
+        if (isInFailureCooldown(target)) {
+            return;
+        }
+
         this.targetPos = target;
         this.lastComputedTargetPos = target;
         this.asyncStartNanos = System.nanoTime();
@@ -130,10 +152,13 @@ public final class PathNavigator {
         this.lastProgressTick = tickCount;
         this.lastDistanceToTarget = Double.MAX_VALUE;
 
-        if (currentPath != null) {
+        if (currentPath != null && currentPath.isReached()) {
             var startNode = currentPath.getCurrentNode();
 
             this.currentTerrain = startNode.getTerrainType();
+            resetFailureCooldown();
+        } else {
+            recordFailure();
         }
     }
 
@@ -314,6 +339,33 @@ public final class PathNavigator {
      */
     public void updateTarget(BlockPos newTarget) {
         this.targetPos = newTarget;
+    }
+
+    // --- Failure backoff ---
+
+    private boolean isInFailureCooldown(BlockPos target) {
+        if (consecutiveFailures == 0) {
+            return false;
+        }
+
+        // Reset cooldown if target changed significantly.
+        if (lastComputedTargetPos != null && target.distSqr(lastComputedTargetPos) >= MIN_TARGET_MOVE_DISTANCE_SQUARED) {
+            resetFailureCooldown();
+            return false;
+        }
+
+        return tickCount - lastFailureTick < failureCooldownTicks;
+    }
+
+    private void recordFailure() {
+        consecutiveFailures++;
+        lastFailureTick = tickCount;
+        failureCooldownTicks = Math.min(BASE_FAILURE_COOLDOWN * (1 << (consecutiveFailures - 1)), MAX_FAILURE_COOLDOWN);
+    }
+
+    private void resetFailureCooldown() {
+        consecutiveFailures = 0;
+        failureCooldownTicks = 0;
     }
 
     private void advanceWaypoints(
