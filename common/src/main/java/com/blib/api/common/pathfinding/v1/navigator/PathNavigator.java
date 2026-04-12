@@ -4,6 +4,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 import com.blib.api.common.pathfinding.v1.cache.TerrainClassificationCache;
@@ -67,6 +69,10 @@ public final class PathNavigator {
 
     private static final int MAX_FAILURE_COOLDOWN = 200;
 
+    private @Nullable Set<TerrainType> excludedTerrains;
+
+    private boolean needsRepath;
+
     public PathNavigator(LevelReader level, PathNavigatorConfig config) {
         this(level, config, null);
     }
@@ -93,6 +99,8 @@ public final class PathNavigator {
 
         this.targetPos = target;
         this.lastComputedTargetPos = target;
+
+        pathFinder.setExcludedTerrains(excludedTerrains);
 
         var startNanos = System.nanoTime();
         this.currentPath = pathFinder.findPath(level, entityPos, target);
@@ -127,6 +135,8 @@ public final class PathNavigator {
 
         this.targetPos = target;
         this.lastComputedTargetPos = target;
+        pathFinder.setExcludedTerrains(excludedTerrains);
+
         this.asyncStartNanos = System.nanoTime();
         this.pendingPath = pathFinder.findPathAsync(level, entityPos, target);
     }
@@ -183,6 +193,14 @@ public final class PathNavigator {
         tickCount++;
         checkPendingPath();
 
+        if (needsRepath) {
+            needsRepath = false;
+
+            if (targetPos != null) {
+                navigateTo(BlockPos.containing(entityX, entityY, entityZ), targetPos);
+            }
+        }
+
         if (currentPath == null || currentPath.isDone()) {
             return;
         }
@@ -220,6 +238,7 @@ public final class PathNavigator {
         this.targetPos = null;
         this.currentTerrain = null;
         this.waitingForBlockBreak = false;
+        this.needsRepath = false;
     }
 
     public PathNavigatorConfig getConfig() {
@@ -331,6 +350,27 @@ public final class PathNavigator {
 
     public @Nullable BlockPos getTargetPos() {
         return targetPos;
+    }
+
+    /**
+     * Sets terrain types to exclude from the next pathfinding search. Excluded terrains are treated as impassable.
+     * Useful for restricting behavior — e.g., wandering entities should not consider BREAKABLE paths.
+     * <p>
+     * Pass {@code null} to clear exclusions.
+     * </p>
+     */
+    public void setExcludedTerrains(@Nullable Set<TerrainType> excludedTerrains) {
+        if (!Objects.equals(this.excludedTerrains, excludedTerrains)) {
+            this.excludedTerrains = excludedTerrains;
+
+            if (isNavigating()) {
+                needsRepath = true;
+            }
+        }
+    }
+
+    public @Nullable Set<TerrainType> getExcludedTerrains() {
+        return excludedTerrains;
     }
 
     /**
@@ -492,6 +532,7 @@ public final class PathNavigator {
         var ticksSinceProgress = tickCount - lastProgressTick;
 
         if (ticksSinceProgress >= config.getStuckTimeoutInTicks()) {
+            recordFailure();
             stop();
         }
     }

@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.blib.api.common.pathfinding.v1.cache.TerrainClassificationCache;
 import com.blib.api.common.pathfinding.v1.node.PathNode;
@@ -98,6 +99,16 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     }
 
     /**
+     * Excludes terrain types from the current search. Excluded terrains are removed from the cost snapshot, making them
+     * impassable. Call after {@link #prepare(LevelReader)} or {@link #prepareAsync()}.
+     */
+    public void excludeTerrains(Set<TerrainType> terrains) {
+        for (var terrain : terrains) {
+            snapshotCosts.remove(terrain);
+        }
+    }
+
+    /**
      * Pre-loads a chunk into the evaluator's chunk map for async search. Call from the main thread before dispatching.
      */
     public void preloadChunk(int chunkX, int chunkZ, ChunkAccess chunk) {
@@ -132,7 +143,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     public PathNode getStartNode(BlockPos entityPos) {
         var classified = classifyTerrain(entityPos);
 
-        if (classified != null && config.supportsTerrain(classified)) {
+        if (classified != null && snapshotCosts.containsKey(classified)) {
             return nodePool.getOrCreate(entityPos.getX(), entityPos.getY(), entityPos.getZ(), classified);
         }
 
@@ -146,7 +157,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                 var neighborPos = entityPos.offset(dx, 0, dz);
                 var neighborClassified = classifyTerrain(neighborPos);
 
-                if (neighborClassified != null && config.supportsTerrain(neighborClassified)) {
+                if (neighborClassified != null && snapshotCosts.containsKey(neighborClassified)) {
                     return nodePool.getOrCreate(
                         neighborPos.getX(),
                         neighborPos.getY(),
@@ -167,7 +178,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     public PathNode getGoalNode(BlockPos targetPos) {
         var classified = classifyTerrain(targetPos);
 
-        if (classified != null && config.supportsTerrain(classified)) {
+        if (classified != null && snapshotCosts.containsKey(classified)) {
             return nodePool.getOrCreate(targetPos.getX(), targetPos.getY(), targetPos.getZ(), classified);
         }
 
@@ -181,7 +192,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                 var neighborPos = targetPos.offset(dx, 0, dz);
                 var neighborClassified = classifyTerrain(neighborPos);
 
-                if (neighborClassified != null && config.supportsTerrain(neighborClassified)) {
+                if (neighborClassified != null && snapshotCosts.containsKey(neighborClassified)) {
                     return nodePool.getOrCreate(
                         neighborPos.getX(),
                         neighborPos.getY(),
@@ -471,7 +482,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         mutablePos.set(x, y, z);
         var terrainType = classifyTerrain(mutablePos);
 
-        if (terrainType != null && config.supportsTerrain(terrainType)) {
+        if (terrainType != null && snapshotCosts.containsKey(terrainType)) {
             if (!hasEntityClearance(x, y, z, terrainType)) {
                 return null;
             }
@@ -485,7 +496,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     private @Nullable PathNode tryCreateBreakableNode(BlockPos pos) {
         var breakabilityEvaluator = config.getBreakabilityEvaluator();
 
-        if (breakabilityEvaluator == null || !config.supportsTerrain(TerrainType.BREAKABLE)) {
+        if (breakabilityEvaluator == null || !snapshotCosts.containsKey(TerrainType.BREAKABLE)) {
             return null;
         }
 
@@ -634,7 +645,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     private BlockPos findStandablePosition(BlockPos pos) {
         var classified = classifyTerrain(pos);
 
-        if (classified != null && config.supportsTerrain(classified)) {
+        if (classified != null && snapshotCosts.containsKey(classified)) {
             return pos;
         }
 
@@ -644,7 +655,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             mutablePos.setY(pos.getY() - dy);
             var classifiedBelow = classifyTerrain(mutablePos);
 
-            if (classifiedBelow != null && config.supportsTerrain(classifiedBelow)) {
+            if (classifiedBelow != null && snapshotCosts.containsKey(classifiedBelow)) {
                 return mutablePos.immutable();
             }
         }

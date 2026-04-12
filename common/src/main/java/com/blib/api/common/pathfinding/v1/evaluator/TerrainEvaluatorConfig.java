@@ -71,10 +71,6 @@ public final class TerrainEvaluatorConfig {
         return new Builder();
     }
 
-    public boolean supportsTerrain(TerrainType terrainType) {
-        return terrainCostSuppliers.containsKey(terrainType);
-    }
-
     public float getCost(TerrainType terrainType) {
         var supplier = terrainCostSuppliers.get(terrainType);
 

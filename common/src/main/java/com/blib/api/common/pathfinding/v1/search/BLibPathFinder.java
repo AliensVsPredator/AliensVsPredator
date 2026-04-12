@@ -74,6 +74,8 @@ public final class BLibPathFinder {
 
     private boolean debugEnabled;
 
+    private @Nullable Set<TerrainType> excludedTerrains;
+
     public BLibPathFinder(TerrainEvaluator evaluator, SearchConfig config) {
         this(evaluator, config, null);
     }
@@ -82,6 +84,10 @@ public final class BLibPathFinder {
         this.evaluator = evaluator;
         this.config = config;
         this.classificationCache = classificationCache;
+    }
+
+    public void setExcludedTerrains(@Nullable Set<TerrainType> excludedTerrains) {
+        this.excludedTerrains = excludedTerrains;
     }
 
     public @Nullable PathSearchSnapshot getLastSearchSnapshot() {
@@ -95,6 +101,7 @@ public final class BLibPathFinder {
             && BLibModPropertyAccess.INSTANCE.get(BLibModProperties.Debug.Render.PathSearch.ENABLED);
 
         evaluator.prepare(level);
+        applyExcludedTerrains();
 
         try {
             Set<Long> corridor = null;
@@ -156,6 +163,7 @@ public final class BLibPathFinder {
         var maxCZ = Math.max(startPos.getZ(), targetPos.getZ()) >> 4;
 
         unifiedEvaluator.prepareAsync();
+        applyExcludedTerrains();
 
         for (int cx = minCX - ASYNC_CHUNK_MARGIN; cx <= maxCX + ASYNC_CHUNK_MARGIN; cx++) {
             for (int cz = minCZ - ASYNC_CHUNK_MARGIN; cz <= maxCZ + ASYNC_CHUNK_MARGIN; cz++) {
@@ -364,6 +372,12 @@ public final class BLibPathFinder {
     private static float sectionDistance(int ax, int ay, int az, int bx, int by, int bz) {
         int dx = bx - ax, dy = by - ay, dz = bz - az;
         return (float) Math.sqrt(dx * dx + dy * dy + dz * dz);
+    }
+
+    private void applyExcludedTerrains() {
+        if (excludedTerrains != null && !excludedTerrains.isEmpty() && evaluator instanceof UnifiedTerrainEvaluator unified) {
+            unified.excludeTerrains(excludedTerrains);
+        }
     }
 
     private @Nullable BLibPath searchBlocks(BlockPos startPos, BlockPos targetPos, @Nullable Set<Long> corridor) {
