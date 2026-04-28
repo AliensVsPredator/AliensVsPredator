@@ -1,9 +1,11 @@
 package com.blib.mod.client.render.debug;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import org.joml.Matrix4f;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,13 +16,12 @@ import com.blib.mod.common.network.packet.S2CPathfindingSearchDebugPayload;
 
 /**
  * Client-side debug renderer that visualizes A* search exploration. Renders explored nodes with terrain-type coloring,
- * surface direction arrows, section corridor wireframes, and path highlighting. Entries fade over 10 seconds.
+ * path nodes connected by lines, and section corridor wireframes. Snapshots are replaced immediately on update — no
+ * fade.
  */
 public final class PathfindingSearchDebugRenderer {
 
     public static final PathfindingSearchDebugRenderer INSTANCE = new PathfindingSearchDebugRenderer();
-
-    private static final long FADE_DURATION_MS = 10_000L;
 
     private static final float NODE_SIZE = 0.2f;
 
@@ -42,10 +43,23 @@ public final class PathfindingSearchDebugRenderer {
 
     private static final float[] PREVIOUS_NODE_COLOR = { 1.0f, 0.5f, 0.0f };
 
-    private final Map<Integer, TimestampedSnapshot> snapshots = new ConcurrentHashMap<>();
+    private static final float[] PATH_LINE_COLOR = { 1.0f, 1.0f, 0.0f };
+
+    private final Map<Integer, S2CPathfindingSearchDebugPayload> snapshots = new ConcurrentHashMap<>();
 
     public void update(S2CPathfindingSearchDebugPayload payload) {
-        snapshots.put(payload.entityId(), new TimestampedSnapshot(payload, System.currentTimeMillis()));
+        if (payload.nodes().isEmpty() && payload.corridorKeys().isEmpty()) {
+            snapshots.remove(payload.entityId());
+        } else {
+            snapshots.put(payload.entityId(), payload);
+        }
+    }
+
+    /**
+     * Removes the debug snapshot for the given entity, clearing its rendering immediately.
+     */
+    public void clear(int entityId) {
+        snapshots.remove(entityId);
     }
 
     public void render(
@@ -55,22 +69,8 @@ public final class PathfindingSearchDebugRenderer {
         double cameraY,
         double cameraZ
     ) {
-        var now = System.currentTimeMillis();
-        var iterator = snapshots.entrySet().iterator();
-
-        while (iterator.hasNext()) {
-            var entry = iterator.next();
-            var snapshot = entry.getValue();
-            var age = now - snapshot.receivedTimeMillis;
-
-            if (age > FADE_DURATION_MS) {
-                iterator.remove();
-                continue;
-            }
-
-            var alpha = 1.0f - (float) age / FADE_DURATION_MS;
-
-            renderSnapshot(poseStack, bufferSource, cameraX, cameraY, cameraZ, snapshot.payload, alpha);
+        for (var entry : snapshots.entrySet()) {
+            renderSnapshot(poseStack, bufferSource, cameraX, cameraY, cameraZ, entry.getValue());
         }
     }
 
@@ -80,11 +80,11 @@ public final class PathfindingSearchDebugRenderer {
         double cameraX,
         double cameraY,
         double cameraZ,
-        S2CPathfindingSearchDebugPayload payload,
-        float alpha
+        S2CPathfindingSearchDebugPayload payload
     ) {
-        renderCorridorSections(poseStack, bufferSource, cameraX, cameraY, cameraZ, payload, alpha);
-        renderNodes(poseStack, bufferSource, cameraX, cameraY, cameraZ, payload, alpha);
+        renderCorridorSections(poseStack, bufferSource, cameraX, cameraY, cameraZ, payload);
+        renderNodes(poseStack, bufferSource, cameraX, cameraY, cameraZ, payload);
+        renderPathLines(poseStack, bufferSource, cameraX, cameraY, cameraZ, payload);
     }
 
     private void renderNodes(
@@ -93,15 +93,91 @@ public final class PathfindingSearchDebugRenderer {
         double cameraX,
         double cameraY,
         double cameraZ,
-        S2CPathfindingSearchDebugPayload payload,
-        float alpha
+        S2CPathfindingSearchDebugPayload payload
     ) {
         for (var node : payload.nodes()) {
             if (node.onPath()) {
-                renderPathNode(poseStack, bufferSource, cameraX, cameraY, cameraZ, node, payload.entityId(), alpha);
+                renderPathNode(poseStack, bufferSource, cameraX, cameraY, cameraZ, node, payload.entityId());
             } else {
-                renderExploredNode(poseStack, bufferSource, cameraX, cameraY, cameraZ, node, alpha);
+                renderExploredNode(poseStack, bufferSource, cameraX, cameraY, cameraZ, node);
             }
+        }
+    }
+
+    private void renderPathLines(
+        PoseStack poseStack,
+        MultiBufferSource.BufferSource bufferSource,
+        double cameraX,
+        double cameraY,
+        double cameraZ,
+        S2CPathfindingSearchDebugPayload payload
+    ) {
+        // Collect path nodes sorted by path index.
+        var nodes = payload.nodes();
+        var maxPathIndex = -1;
+
+        for (var node : nodes) {
+            if (node.onPath() && node.pathIndex() > maxPathIndex) {
+                maxPathIndex = node.pathIndex();
+            }
+        }
+
+        if (maxPathIndex < 1) {
+            return;
+        }
+
+        // Build ordered array of path nodes by index.
+        var pathNodes = new DebugNodeEntry[maxPathIndex + 1];
+
+        for (var node : nodes) {
+            if (node.onPath() && node.pathIndex() >= 0 && node.pathIndex() <= maxPathIndex) {
+                pathNodes[node.pathIndex()] = node;
+            }
+        }
+
+        // Draw lines between consecutive path nodes.
+        var buffer = bufferSource.getBuffer(RenderType.lines());
+
+        for (int i = 0; i < maxPathIndex; i++) {
+            var from = pathNodes[i];
+            var to = pathNodes[i + 1];
+
+            if (from == null || to == null) {
+                continue;
+            }
+
+            var fromX = (float) (from.x() + 0.5 - cameraX);
+            var fromY = (float) (from.y() + 0.5 - cameraY);
+            var fromZ = (float) (from.z() + 0.5 - cameraZ);
+            var toX = (float) (to.x() + 0.5 - cameraX);
+            var toY = (float) (to.y() + 0.5 - cameraY);
+            var toZ = (float) (to.z() + 0.5 - cameraZ);
+
+            var dx = toX - fromX;
+            var dy = toY - fromY;
+            var dz = toZ - fromZ;
+            var length = (float) Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+            if (length < 0.001f) {
+                continue;
+            }
+
+            // Normalized direction for the line's normal parameter.
+            var nx = dx / length;
+            var ny = dy / length;
+            var nz = dz / length;
+
+            var matrix = poseStack.last().pose();
+
+            buffer
+                .addVertex(matrix, fromX, fromY, fromZ)
+                .setColor(PATH_LINE_COLOR[0], PATH_LINE_COLOR[1], PATH_LINE_COLOR[2], 1.0f)
+                .setNormal(poseStack.last(), nx, ny, nz);
+
+            buffer
+                .addVertex(matrix, toX, toY, toZ)
+                .setColor(PATH_LINE_COLOR[0], PATH_LINE_COLOR[1], PATH_LINE_COLOR[2], 1.0f)
+                .setNormal(poseStack.last(), nx, ny, nz);
         }
     }
 
@@ -111,8 +187,7 @@ public final class PathfindingSearchDebugRenderer {
         double cameraX,
         double cameraY,
         double cameraZ,
-        DebugNodeEntry node,
-        float alpha
+        DebugNodeEntry node
     ) {
         var color = getTerrainColor(node.terrainType());
         var centerX = node.x() + 0.5 - cameraX;
@@ -134,7 +209,7 @@ public final class PathfindingSearchDebugRenderer {
             color[0],
             color[1],
             color[2],
-            alpha * 0.6f
+            0.6f
         );
 
         poseStack.popPose();
@@ -147,8 +222,7 @@ public final class PathfindingSearchDebugRenderer {
         double cameraY,
         double cameraZ,
         DebugNodeEntry node,
-        int entityId,
-        float alpha
+        int entityId
     ) {
         var pathColor = getPathNodeColor(node.pathIndex(), entityId);
         var terrainColor = getTerrainColor(node.terrainType());
@@ -173,7 +247,7 @@ public final class PathfindingSearchDebugRenderer {
             pathColor[0],
             pathColor[1],
             pathColor[2],
-            alpha
+            1.0f
         );
 
         LevelRenderer.renderLineBox(
@@ -188,7 +262,7 @@ public final class PathfindingSearchDebugRenderer {
             terrainColor[0],
             terrainColor[1],
             terrainColor[2],
-            alpha * 0.6f
+            0.6f
         );
 
         poseStack.popPose();
@@ -229,8 +303,7 @@ public final class PathfindingSearchDebugRenderer {
         double cameraX,
         double cameraY,
         double cameraZ,
-        S2CPathfindingSearchDebugPayload payload,
-        float alpha
+        S2CPathfindingSearchDebugPayload payload
     ) {
         for (var key : payload.corridorKeys()) {
             var sectionX = unpackSectionX(key);
@@ -256,7 +329,7 @@ public final class PathfindingSearchDebugRenderer {
                 0.5f,
                 0.5f,
                 1.0f,
-                alpha * 0.3f
+                0.3f
             );
 
             poseStack.popPose();
@@ -308,11 +381,6 @@ public final class PathfindingSearchDebugRenderer {
 
         return raw;
     }
-
-    private record TimestampedSnapshot(
-        S2CPathfindingSearchDebugPayload payload,
-        long receivedTimeMillis
-    ) {}
 
     private PathfindingSearchDebugRenderer() {}
 }

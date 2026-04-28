@@ -109,13 +109,15 @@ public final class BLibPathFinder {
             Set<Long> corridor = null;
 
             if (corridorFinder != null) {
-                corridor = corridorFinder.findCorridor(level, startPos, targetPos);
+                var result = corridorFinder.findCorridor(level, startPos, targetPos);
 
                 // Section search couldn't reach the goal — target is unreachable.
-                if (corridor == null) {
+                if (result == null) {
                     lastSearchSnapshot = null;
                     return null;
                 }
+
+                corridor = result.corridor();
 
                 // For short distances, skip the corridor constraint (let block search expand freely)
                 // but still benefit from the reachability check above.
@@ -191,12 +193,14 @@ public final class BLibPathFinder {
         Set<Long> corridor = null;
 
         if (corridorFinder != null) {
-            corridor = corridorFinder.findCorridor(level, startPos, targetPos);
+            var result = corridorFinder.findCorridor(level, startPos, targetPos);
 
-            if (corridor == null) {
+            if (result == null) {
                 unifiedEvaluator.cleanup();
                 return CompletableFuture.completedFuture(null);
             }
+
+            corridor = result.corridor();
 
             if (startPos.distManhattan(targetPos) <= CORRIDOR_DISTANCE_THRESHOLD) {
                 corridor = null;
@@ -214,6 +218,64 @@ public final class BLibPathFinder {
                 unifiedEvaluator.cleanup();
             }
         }, PATHFINDING_EXECUTOR);
+    }
+
+    /**
+     * Computes the section-level corridor without running a block-level search. Returns null if no corridor finder is
+     * configured or if the target is unreachable. The evaluator is prepared and cleaned up within this call so that
+     * terrain cost queries return correct values during the corridor search.
+     */
+    public @Nullable CorridorResult computeCorridor(LevelReader level, BlockPos startPos, BlockPos targetPos) {
+        if (corridorFinder == null) {
+            return null;
+        }
+
+        evaluator.prepare(level);
+        applyExcludedTerrains();
+
+        try {
+            return corridorFinder.findCorridor(level, startPos, targetPos);
+        } finally {
+            evaluator.cleanup();
+        }
+    }
+
+    /**
+     * Runs a block-level A* search using a pre-computed corridor constraint. Use this with corridors obtained from
+     * {@link #computeCorridor} for segmented long-distance pathfinding.
+     */
+    public @Nullable BLibPath findPathInCorridor(
+        LevelReader level,
+        BlockPos startPos,
+        BlockPos targetPos,
+        @Nullable Set<Long> corridor
+    ) {
+        var start = System.nanoTime();
+
+        debugEnabled = BLibModPropertyAccess.INSTANCE.get(BLibModProperties.Debug.Render.ENABLED)
+            && BLibModPropertyAccess.INSTANCE.get(BLibModProperties.Debug.Render.PathSearch.ENABLED);
+
+        evaluator.prepare(level);
+        applyExcludedTerrains();
+
+        try {
+            var path = searchBlocks(startPos, targetPos, corridor);
+            var ms = (System.nanoTime() - start) / 1_000_000.0;
+
+            LOGGER.info(
+                "[Pathfinding/Segment] {}ms | {} -> {} dist={} result={} nodes={}",
+                "%.3f".formatted(ms),
+                startPos,
+                targetPos,
+                startPos.distManhattan(targetPos),
+                path != null ? (path.isReached() ? "REACHED" : "PARTIAL") : "NONE",
+                path != null ? path.getNodeCount() : 0
+            );
+
+            return path;
+        } finally {
+            evaluator.cleanup();
+        }
     }
 
     private void applyExcludedTerrains() {

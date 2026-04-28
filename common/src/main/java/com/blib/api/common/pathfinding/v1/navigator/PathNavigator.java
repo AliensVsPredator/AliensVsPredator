@@ -3,6 +3,8 @@ package com.blib.api.common.pathfinding.v1.navigator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 import java.util.Set;
@@ -14,6 +16,7 @@ import com.blib.api.common.pathfinding.v1.evaluator.UnifiedTerrainEvaluator;
 import com.blib.api.common.pathfinding.v1.node.PathNode;
 import com.blib.api.common.pathfinding.v1.path.BLibPath;
 import com.blib.api.common.pathfinding.v1.search.BLibPathFinder;
+import com.blib.api.common.pathfinding.v1.search.SegmentedPathPlanner;
 import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
 import com.blib.api.common.pathfinding.v1.transition.TerrainTransition;
 
@@ -28,9 +31,13 @@ import com.blib.api.common.pathfinding.v1.transition.TerrainTransition;
  */
 public final class PathNavigator {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(PathNavigator.class);
+
     private final PathNavigatorConfig config;
 
     private final BLibPathFinder pathFinder;
+
+    private final @Nullable SegmentedPathPlanner planner;
 
     private final LevelReader level;
 
@@ -85,6 +92,9 @@ public final class PathNavigator {
             config.getSearchConfig(),
             classificationCache
         );
+        this.planner = classificationCache != null
+            ? new SegmentedPathPlanner(pathFinder)
+            : null;
     }
 
     /**
@@ -94,6 +104,8 @@ public final class PathNavigator {
      */
     public boolean navigateTo(BlockPos entityPos, BlockPos target) {
         if (isInFailureCooldown(target)) {
+            LOGGER.info("[Nav] navigateTo BLOCKED by failure cooldown (failures={}, cooldown={}t, ticksSinceFail={})",
+                consecutiveFailures, failureCooldownTicks, tickCount - lastFailureTick);
             return false;
         }
 
@@ -103,19 +115,35 @@ public final class PathNavigator {
         pathFinder.setExcludedTerrains(excludedTerrains);
 
         var startNanos = System.nanoTime();
-        this.currentPath = pathFinder.findPath(level, entityPos, target);
+
+        if (planner != null) {
+            LOGGER.info("[Nav] navigateTo via planner: {} -> {} (dist={})",
+                entityPos, target, entityPos.distManhattan(target));
+            this.currentPath = planner.findPath(level, entityPos, target);
+        } else {
+            LOGGER.info("[Nav] navigateTo via direct pathfinder: {} -> {}", entityPos, target);
+            this.currentPath = pathFinder.findPath(level, entityPos, target);
+        }
+
         this.lastPathComputeNanos = System.nanoTime() - startNanos;
+
+        LOGGER.info("[Nav] navigateTo result: path={}, reached={}, nodes={}, plannerActive={}",
+            currentPath != null ? "found" : "null",
+            currentPath != null ? currentPath.isReached() : "n/a",
+            currentPath != null ? currentPath.getNodeCount() : 0,
+            planner != null && planner.hasActiveRoute());
 
         this.lastPathComputeTick = tickCount;
         this.lastProgressTick = tickCount;
         this.lastDistanceToTarget = Double.MAX_VALUE;
 
-        if (currentPath != null && currentPath.isReached()) {
+        if (currentPath != null && (currentPath.isReached() || (planner != null && planner.hasActiveRoute()))) {
             var startNode = currentPath.getCurrentNode();
 
             this.currentTerrain = startNode.getTerrainType();
             resetFailureCooldown();
         } else {
+            LOGGER.info("[Nav] navigateTo recording failure (consecutiveFailures will be {})", consecutiveFailures + 1);
             recordFailure();
         }
 
@@ -201,6 +229,17 @@ public final class PathNavigator {
             }
         }
 
+        // Advance to next segment if current path is done but route hasn't reached the final target.
+        if (currentPath != null && currentPath.isDone() && planner != null && planner.hasActiveRoute()) {
+            if (currentPath.isReached()) {
+                LOGGER.info("[Nav] tick: segment reached goal, clearing planner route");
+                planner.clear();
+            } else {
+                LOGGER.info("[Nav] tick: segment done (partial), advancing to next segment");
+                advanceToNextSegment(entityX, entityY, entityZ);
+            }
+        }
+
         if (currentPath == null || currentPath.isDone()) {
             return;
         }
@@ -213,7 +252,16 @@ public final class PathNavigator {
 
         var entityBlockPos = BlockPos.containing(entityX, entityY, entityZ);
 
-        if (currentPath.isDone()) {
+        // After waypoint advancement, check again for segment transition.
+        if (currentPath != null && currentPath.isDone() && planner != null && planner.hasActiveRoute()) {
+            if (currentPath.isReached()) {
+                planner.clear();
+            } else {
+                advanceToNextSegment(entityX, entityY, entityZ);
+            }
+        }
+
+        if (currentPath == null || currentPath.isDone()) {
             return;
         }
 
@@ -239,6 +287,10 @@ public final class PathNavigator {
         this.currentTerrain = null;
         this.waitingForBlockBreak = false;
         this.needsRepath = false;
+
+        if (planner != null) {
+            planner.clear();
+        }
     }
 
     public PathNavigatorConfig getConfig() {
@@ -559,6 +611,10 @@ public final class PathNavigator {
             || targetPos.distSqr(lastComputedTargetPos) >= MIN_TARGET_MOVE_DISTANCE_SQUARED;
 
         if (targetMoved) {
+            if (planner != null) {
+                planner.clear();
+            }
+
             navigateTo(entityPos, targetPos);
 
             // Advance past any nodes the entity has already reached so the new
@@ -566,6 +622,28 @@ public final class PathNavigator {
             if (currentPath != null && !currentPath.isDone()) {
                 advanceWaypoints(entityX, entityY, entityZ, entityWidth, entityHeight);
             }
+        }
+    }
+
+    private void advanceToNextSegment(double entityX, double entityY, double entityZ) {
+        var entityPos = BlockPos.containing(entityX, entityY, entityZ);
+        var startNanos = System.nanoTime();
+
+        pathFinder.setExcludedTerrains(excludedTerrains);
+        this.currentPath = planner.computeNextSegment(level, entityPos);
+        this.lastPathComputeNanos = System.nanoTime() - startNanos;
+        this.lastPathComputeTick = tickCount;
+        this.lastProgressTick = tickCount;
+        this.lastDistanceToTarget = Double.MAX_VALUE;
+
+        LOGGER.info("[Nav] advanceToNextSegment from {}: path={}, reached={}, nodes={}",
+            entityPos,
+            currentPath != null ? "found" : "null",
+            currentPath != null ? currentPath.isReached() : "n/a",
+            currentPath != null ? currentPath.getNodeCount() : 0);
+
+        if (currentPath != null) {
+            this.currentTerrain = currentPath.getCurrentNode().getTerrainType();
         }
     }
 

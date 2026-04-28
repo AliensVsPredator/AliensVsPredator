@@ -167,6 +167,145 @@ public final class TerrainClassificationCache {
         return section.get(pos.getX() & 15, pos.getY() & 15, pos.getZ() & 15);
     }
 
+    /**
+     * Returns the region root for the given block position, or -1 if not passable. Populates the section lazily if
+     * needed.
+     */
+    public int getRegionRoot(LevelReader level, BlockPos pos) {
+        var section = getOrPopulateSection(level, pos.getX() >> 4, pos.getY() >> 4, pos.getZ() >> 4);
+
+        return section.getRegionRoot(pos.getX() & 15, pos.getY() & 15, pos.getZ() & 15);
+    }
+
+    /**
+     * Returns the number of distinct regions present on the given face of the specified section.
+     */
+    public int getFaceRegionCount(LevelReader level, int sectionX, int sectionY, int sectionZ, int face) {
+        var section = getOrPopulateSection(level, sectionX, sectionY, sectionZ);
+
+        return section.getFaceRegionCount(face);
+    }
+
+    /**
+     * Returns the region root of the i-th region on the given face.
+     */
+    public int getFaceRegionRoot(LevelReader level, int sectionX, int sectionY, int sectionZ, int face, int index) {
+        var section = getOrPopulateSection(level, sectionX, sectionY, sectionZ);
+
+        return section.getFaceRegionRoot(face, index);
+    }
+
+    /**
+     * Returns the Y-level bitmask of the i-th region on the given face.
+     */
+    public short getFaceRegionYLevels(LevelReader level, int sectionX, int sectionY, int sectionZ, int face, int index) {
+        var section = getOrPopulateSection(level, sectionX, sectionY, sectionZ);
+
+        return section.getFaceRegionYLevels(face, index);
+    }
+
+    /**
+     * Checks whether a specific region in one section connects to any region in an adjacent section through their
+     * shared face. For vertical faces (±X, ±Z), connectivity requires overlapping passable Y-levels (with ±1 step
+     * tolerance). For horizontal faces (±Y), presence on both faces is sufficient.
+     *
+     * @param fromRegionRoot the region root to check connectivity for (-1 to check any region)
+     */
+    public boolean isRegionConnected(
+        LevelReader level,
+        int fromSX,
+        int fromSY,
+        int fromSZ,
+        int fromRegionRoot,
+        int dx,
+        int dy,
+        int dz
+    ) {
+        var fromSection = getOrPopulateSection(level, fromSX, fromSY, fromSZ);
+
+        int fromFace;
+        int toFace;
+
+        if (dx == 1) {
+            fromFace = TerrainCacheSection.FACE_EAST;
+            toFace = TerrainCacheSection.FACE_WEST;
+        } else if (dx == -1) {
+            fromFace = TerrainCacheSection.FACE_WEST;
+            toFace = TerrainCacheSection.FACE_EAST;
+        } else if (dy == 1) {
+            fromFace = TerrainCacheSection.FACE_TOP;
+            toFace = TerrainCacheSection.FACE_BOTTOM;
+        } else if (dy == -1) {
+            fromFace = TerrainCacheSection.FACE_BOTTOM;
+            toFace = TerrainCacheSection.FACE_TOP;
+        } else if (dz == 1) {
+            fromFace = TerrainCacheSection.FACE_SOUTH;
+            toFace = TerrainCacheSection.FACE_NORTH;
+        } else {
+            fromFace = TerrainCacheSection.FACE_NORTH;
+            toFace = TerrainCacheSection.FACE_SOUTH;
+        }
+
+        // Find the Y-level bitmask for the specified region on the exit face.
+        short fromMask = 0;
+        var fromCount = fromSection.getFaceRegionCount(fromFace);
+
+        for (int i = 0; i < fromCount; i++) {
+            if (fromRegionRoot == -1 || fromSection.getFaceRegionRoot(fromFace, i) == fromRegionRoot) {
+                fromMask |= fromSection.getFaceRegionYLevels(fromFace, i);
+            }
+        }
+
+        if (fromMask == 0) {
+            return false;
+        }
+
+        var toSX = fromSX + dx;
+        var toSY = fromSY + dy;
+        var toSZ = fromSZ + dz;
+        var toSection = getOrPopulateSection(level, toSX, toSY, toSZ);
+        var toCount = toSection.getFaceRegionCount(toFace);
+
+        if (toCount == 0) {
+            return false;
+        }
+
+        // For horizontal faces (±Y), any presence on both faces is sufficient.
+        if (fromFace >= TerrainCacheSection.FACE_BOTTOM) {
+            return true;
+        }
+
+        // For vertical faces, check Y-level overlap with ±1 step tolerance.
+        var fromExpanded = (int) (fromMask & 0xFFFF);
+        fromExpanded = fromExpanded | (fromExpanded << 1) | (fromExpanded >>> 1);
+
+        for (int i = 0; i < toCount; i++) {
+            var toYLevels = (int) (toSection.getFaceRegionYLevels(toFace, i) & 0xFFFF);
+            var toExpanded = toYLevels | (toYLevels << 1) | (toYLevels >>> 1);
+
+            if ((fromExpanded & toExpanded) != 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks whether two adjacent sections are connected at their shared face (any region to any region).
+     */
+    public boolean areSectionsConnected(
+        LevelReader level,
+        int fromSX,
+        int fromSY,
+        int fromSZ,
+        int dx,
+        int dy,
+        int dz
+    ) {
+        return isRegionConnected(level, fromSX, fromSY, fromSZ, -1, dx, dy, dz);
+    }
+
     public int getSectionCount() {
         return sections.size();
     }
