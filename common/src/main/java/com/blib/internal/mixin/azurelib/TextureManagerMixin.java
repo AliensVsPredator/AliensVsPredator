@@ -21,10 +21,10 @@ import com.blib.api.client.texture.v1.AnimatableTexture;
 public abstract class TextureManagerMixin {
 
     @Unique
-    private final Map<ResourceLocation, Boolean> blit$animationCache = new HashMap<>();
+    private final Map<ResourceLocation, Boolean> blib$animationCache = new HashMap<>();
 
     @Unique
-    private final Map<ResourceLocation, AnimatableTexture> blit$textureCache = new HashMap<>();
+    private final Map<ResourceLocation, AnimatableTexture> blib$textureCache = new HashMap<>();
 
     @Shadow
     public abstract void register(ResourceLocation resourceLocation, AbstractTexture abstractTexture);
@@ -38,7 +38,7 @@ public abstract class TextureManagerMixin {
         cancellable = true,
         require = 0
     )
-    private void blit$replaceAnimatableTexture(
+    private void blib$replaceAnimatableTexture(
         ResourceLocation location,
         CallbackInfoReturnable<AbstractTexture> cir
     ) {
@@ -48,18 +48,18 @@ public abstract class TextureManagerMixin {
             return;
         }
 
-        if (blit$textureCache.containsKey(location)) {
-            cir.setReturnValue(blit$textureCache.get(location));
+        if (blib$textureCache.containsKey(location)) {
+            cir.setReturnValue(blib$textureCache.get(location));
             return;
         }
 
-        var cached = blit$animationCache.get(location);
+        var cached = blib$animationCache.get(location);
         if (cached != null && !cached) {
             return;
         }
 
-        if (!blit$hasAnimationMetadata(location)) {
-            blit$animationCache.put(location, false);
+        if (!blib$hasAnimationMetadata(location)) {
+            blib$animationCache.put(location, false);
             return;
         }
 
@@ -68,24 +68,24 @@ public abstract class TextureManagerMixin {
         try {
             loadTexture(location, animatableTexture);
         } catch (Exception e) {
-            blit$animationCache.put(location, false);
+            blib$animationCache.put(location, false);
             return;
         }
 
         if (!animatableTexture.isAnimated()) {
-            blit$animationCache.put(location, false);
+            blib$animationCache.put(location, false);
             return;
         }
 
-        blit$animationCache.put(location, true);
-        blit$textureCache.put(location, animatableTexture);
+        blib$animationCache.put(location, true);
+        blib$textureCache.put(location, animatableTexture);
 
         this.register(location, animatableTexture);
         cir.setReturnValue(animatableTexture);
     }
 
     @Unique
-    private boolean blit$hasAnimationMetadata(ResourceLocation texture) {
+    private boolean blib$hasAnimationMetadata(ResourceLocation texture) {
         var mcmeta = ResourceLocation.fromNamespaceAndPath(
             texture.getNamespace(),
             texture.getPath() + ".mcmeta"
