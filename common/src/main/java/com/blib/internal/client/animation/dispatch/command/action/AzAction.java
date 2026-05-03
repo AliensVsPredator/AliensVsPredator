@@ -2,7 +2,7 @@ package com.blib.internal.client.animation.dispatch.command.action;
 
 import com.blib.api.client.animation.v1.animator.AzAnimator;
 
-public interface AzAction {
+public interface AzAction<T> {
 
-    void handle(AzAnimator<?, ?> animator);
+    void handle(AzAnimator<?, T> animator);
 }

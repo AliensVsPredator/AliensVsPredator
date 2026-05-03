@@ -17,7 +17,7 @@ import com.blib.api.client.animation.v1.command.policy.AzDispatchMode;
 import com.blib.internal.client.animation.AzAnimatorAccessor;
 import com.blib.internal.client.animation.dispatch.command.action.AzAction;
 
-public record AzCommand(List<AzAction> actions) {
+public record AzCommand<T>(List<AzAction<T>> actions) {
 
     public AzCommand {
         // Defensive copy: ensures the published action list is immutable and decoupled from any
@@ -40,53 +40,48 @@ public record AzCommand(List<AzAction> actions) {
      * explicitly via {@link AzCommandBuilder#dispatchMode(AzDispatchMode)}. Adding a play action
      * to a builder with no mode set throws.
      */
-    public static AzCommandBuilder builder() {
-        return new AzCommandBuilder();
+    public static <T> AzCommandBuilder<T> builder() {
+        return new AzCommandBuilder<>();
     }
 
     /**
-     * Returns a command builder with {@link AzDispatchMode#REPLAY} pre-set. Subsequent
-     * {@code playSequence} / {@code play} calls produce actions that always restart the dispatched
-     * animation from frame 0.
+     * Returns a command builder with {@link AzDispatchMode#REPLAY} pre-set.
      */
-    public static AzCommandBuilder replay() {
-        return new AzCommandBuilder().dispatchMode(AzDispatchMode.REPLAY);
+    public static <T> AzCommandBuilder<T> replay() {
+        return new AzCommandBuilder<T>().dispatchMode(AzDispatchMode.REPLAY);
     }
 
     /**
-     * Returns a command builder with {@link AzDispatchMode#PLAY_IF_NOT_PLAYING} pre-set. Subsequent
-     * {@code playSequence} / {@code play} calls produce actions that no-op if the dispatched
-     * sequence is already the active one, and otherwise replay it.
+     * Returns a command builder with {@link AzDispatchMode#PLAY_IF_NOT_PLAYING} pre-set.
      */
-    public static AzCommandBuilder idempotent() {
-        return new AzCommandBuilder().dispatchMode(AzDispatchMode.PLAY_IF_NOT_PLAYING);
+    public static <T> AzCommandBuilder<T> idempotent() {
+        return new AzCommandBuilder<T>().dispatchMode(AzDispatchMode.PLAY_IF_NOT_PLAYING);
     }
 
     /**
-     * Returns a command builder with {@link AzDispatchMode#ENQUEUE} pre-set. Subsequent
-     * {@code playSequence} / {@code play} calls produce actions that append to the queue rather
-     * than interrupting the current animation.
+     * Returns a command builder with {@link AzDispatchMode#ENQUEUE} pre-set.
      */
-    public static AzCommandBuilder enqueueing() {
-        return new AzCommandBuilder().dispatchMode(AzDispatchMode.ENQUEUE);
+    public static <T> AzCommandBuilder<T> enqueueing() {
+        return new AzCommandBuilder<T>().dispatchMode(AzDispatchMode.ENQUEUE);
     }
 
-    public static AzCommand compose(Collection<AzCommand> commands) {
+    public static <T> AzCommand<T> compose(Collection<AzCommand<T>> commands) {
         if (commands.isEmpty()) {
             throw new IllegalArgumentException("Attempted to compose an empty collection of commands.");
         } else if (commands.size() == 1) {
             return commands.iterator().next();
         }
 
-        return new AzCommand(
+        return new AzCommand<>(
             commands.stream()
                 .flatMap(command -> command.actions().stream())
                 .toList()
         );
     }
 
-    public static AzCommand compose(AzCommand first, AzCommand second, AzCommand... others) {
-        var allCommands = new ArrayList<AzCommand>();
+    @SafeVarargs
+    public static <T> AzCommand<T> compose(AzCommand<T> first, AzCommand<T> second, AzCommand<T>... others) {
+        var allCommands = new ArrayList<AzCommand<T>>();
 
         allCommands.add(first);
         allCommands.add(second);
@@ -95,28 +90,34 @@ public record AzCommand(List<AzAction> actions) {
         return compose(allCommands);
     }
 
-    public void dispatchForEntity(Entity entity) {
-        validateClientSide(entity.level(), "Entity", entity);
+    public void dispatchForEntity(T entity) {
+        if (entity instanceof Entity mcEntity) {
+            validateClientSide(mcEntity.level(), "Entity", entity);
+        }
         dispatch(entity);
     }
 
-    public void dispatchForBlockEntity(BlockEntity blockEntity) {
-        var level = blockEntity.getLevel();
+    public void dispatchForBlockEntity(T blockEntity) {
+        if (blockEntity instanceof BlockEntity mcBlockEntity) {
+            var level = mcBlockEntity.getLevel();
 
-        if (level != null) {
-            validateClientSide(level, "BlockEntity", blockEntity);
+            if (level != null) {
+                validateClientSide(level, "BlockEntity", blockEntity);
+            }
         }
 
         dispatch(blockEntity);
     }
 
-    public void dispatchForItem(Entity entity, ItemStack itemStack) {
-        validateClientSide(entity.level(), "ItemStack", itemStack);
+    public void dispatchForItem(Entity entity, T itemStack) {
+        if (itemStack instanceof ItemStack stack) {
+            validateClientSide(entity.level(), "ItemStack", stack);
+        }
         dispatch(itemStack);
     }
 
-    private <T> void dispatch(T animatable) {
-        var animator = AzAnimatorAccessor.getOrNull(animatable);
+    private void dispatch(T animatable) {
+        var animator = AzAnimatorAccessor.<Object, T>getOrNull(animatable);
 
         if (animator != null) {
             actions.forEach(action -> action.handle(animator));

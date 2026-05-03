@@ -5,16 +5,12 @@ import com.blib.api.client.animation.v1.command.AzTarget;
 import com.blib.internal.client.animation.dispatch.command.action.AzAction;
 
 /**
- * Drops the current animation on each target track. The queue is preserved — on the next state
- * machine tick, the next queued animation begins playing. If the queue is empty, the state machine
- * transitions to STOP via the play state's standard end-of-animation flow.
- *
- * <p>For an immediate full stop (clear queue, no auto-resume), use {@link AzCancelAction}.</p>
+ * Drops the current animation. The queue is preserved.
  */
-public record AzSkipCurrentAction(AzTarget target) implements AzAction {
+public record AzSkipCurrentAction<T>(AzTarget target) implements AzAction<T> {
 
     @Override
-    public void handle(AzAnimator<?, ?> animator) {
+    public void handle(AzAnimator<?, T> animator) {
         target.forEach(
             animator.getAnimationTrackContainer(),
             track -> track.setCurrentAnimation(null)

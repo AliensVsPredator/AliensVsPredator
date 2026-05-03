@@ -10,17 +10,12 @@ import com.blib.api.client.animation.v1.track.AzAnimationTrack;
 import com.blib.internal.client.animation.dispatch.command.action.AzAction;
 import com.blib.internal.client.animation.track.state.AzTransitionResult;
 
-/**
- * Freezes the current animation on each target track. The state machine's legal-transition guard
- * means pause is only legal from PLAY (and a no-op from PAUSE). On STOP or TRANSITION the state
- * machine returns {@link AzTransitionResult.Rejected}; in dev this throws, in prod it logs.
- */
-public record AzPauseAction(AzTarget target) implements AzAction {
+public record AzPauseAction<T>(AzTarget target) implements AzAction<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AzPauseAction.class);
 
     @Override
-    public void handle(AzAnimator<?, ?> animator) {
+    public void handle(AzAnimator<?, T> animator) {
         target.forEach(animator.getAnimationTrackContainer(), track -> {
             var result = track.stateMachine().pause();
 

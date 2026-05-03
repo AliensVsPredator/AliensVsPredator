@@ -5,13 +5,13 @@ import com.blib.api.client.animation.v1.command.AzTarget;
 import com.blib.internal.client.animation.dispatch.command.action.AzAction;
 import com.blib.internal.client.animation.easing.AzEasingType;
 
-public record AzSetEasingTypeAction(
+public record AzSetEasingTypeAction<T>(
     AzTarget target,
     AzEasingType easingType
-) implements AzAction {
+) implements AzAction<T> {
 
     @Override
-    public void handle(AzAnimator<?, ?> animator) {
+    public void handle(AzAnimator<?, T> animator) {
         target.forEach(
             animator.getAnimationTrackContainer(),
             track -> track.setAnimationProperties(
