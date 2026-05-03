@@ -17,10 +17,34 @@ public class EntityTransitionUtil {
         return transitionInto(oldEntity, newEntityType, DEFAULT_NBT_KEY_BLACKLIST);
     }
 
+    /**
+     * Transitions an entity into another type. When forced, obstruction and liquid checks are skipped.
+     */
+    public static <T extends Entity> EntityTransitionResult transitionInto(
+        Entity oldEntity,
+        EntityType<T> newEntityType,
+        boolean force
+    ) {
+        return transitionInto(oldEntity, newEntityType, DEFAULT_NBT_KEY_BLACKLIST, force);
+    }
+
     public static <T extends Entity> EntityTransitionResult transitionInto(
         Entity oldEntity,
         EntityType<T> newEntityType,
         Set<String> blacklistedKeys
+    ) {
+        return transitionInto(oldEntity, newEntityType, blacklistedKeys, false);
+    }
+
+    /**
+     * Transitions an entity into another type while controlling which NBT keys are copied. When forced, obstruction and
+     * liquid checks are skipped.
+     */
+    public static <T extends Entity> EntityTransitionResult transitionInto(
+        Entity oldEntity,
+        EntityType<T> newEntityType,
+        Set<String> blacklistedKeys,
+        boolean force
     ) {
         var level = oldEntity.level();
 
@@ -38,14 +62,15 @@ public class EntityTransitionUtil {
         // It's important that we set the new entity's position here BEFORE checking obstructions and collisions.
         newEntity.setPos(oldEntity.position());
 
-        // Transitioned entity must not be colliding with blocks.
-        var canFitAtPosition = level.noBlockCollision(newEntity, newEntity.getBoundingBox())
-            // Transitioned entity cannot spawn in water.
-            && !level.containsAnyLiquid(newEntity.getBoundingBox());
+        if (!force) {
+            // Transitioned entity must not be colliding with blocks or spawn in liquid.
+            var canFitAtPosition = level.noBlockCollision(newEntity, newEntity.getBoundingBox())
+                && !level.containsAnyLiquid(newEntity.getBoundingBox());
 
-        if (!canFitAtPosition) {
-            // The new entity exists in a place where it can't be transitioned to.
-            return EntityTransitionResult.Obstructed.INSTANCE;
+            if (!canFitAtPosition) {
+                // The new entity exists in a place where it can't be transitioned to.
+                return EntityTransitionResult.Obstructed.INSTANCE;
+            }
         }
 
         // Migrate entity data from the old entity to the new entity.
