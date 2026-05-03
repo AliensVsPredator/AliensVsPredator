@@ -37,6 +37,15 @@ public class AzAnimationTrack<T> extends AzAbstractAnimationTrack {
         return new AzAnimationTrackBuilder<>(animator, name);
     }
 
+    /**
+     * Convenience: build a track using a typed {@link AzTrackHandle} as the source of the track's
+     * name. The handle's animatable type parameter must match the animator's, enforced by the type
+     * system.
+     */
+    public static <T> AzAnimationTrackBuilder<T> builder(AzAnimator<?, T> animator, AzTrackHandle<T> handle) {
+        return new AzAnimationTrackBuilder<>(animator, handle.name());
+    }
+
     private final AzAnimationTrackTimer<T> trackTimer;
 
     private final AzAnimationQueue animationQueue;

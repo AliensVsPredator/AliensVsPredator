@@ -1,10 +1,12 @@
 package com.blib.api.client.animation.v1.command;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
 import com.blib.api.client.animation.v1.track.AzAnimationTrack;
 import com.blib.api.client.animation.v1.track.AzAnimationTrackContainer;
+import com.blib.api.client.animation.v1.track.AzTrackHandle;
 
 /**
  * The set of tracks an action applies to.
@@ -31,8 +33,28 @@ public sealed interface AzTarget {
         return new Single(name);
     }
 
+    /**
+     * Typed track target. Prefer this overload over {@link #track(String)} when the track is owned
+     * by an animator that exposes its tracks as {@link AzTrackHandle} constants — the compiler
+     * catches typos and the handle's animatable type binds the call to its owning animator family.
+     */
+    static AzTarget track(AzTrackHandle<?> handle) {
+        return new Single(handle.name());
+    }
+
     static AzTarget tracks(String... names) {
         return new Multiple(List.of(names));
+    }
+
+    /**
+     * Typed multi-track target. Each handle's name is resolved at construction time.
+     */
+    static AzTarget tracks(AzTrackHandle<?>... handles) {
+        var names = new ArrayList<String>(handles.length);
+        for (var handle : handles) {
+            names.add(handle.name());
+        }
+        return new Multiple(List.copyOf(names));
     }
 
     static AzTarget allTracks() {
