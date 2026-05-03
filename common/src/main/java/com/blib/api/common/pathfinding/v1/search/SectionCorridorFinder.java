@@ -135,9 +135,18 @@ public final class SectionCorridorFinder {
                         var nz = current.z() + dz;
 
                         // Check if current region can exit through the shared face.
-                        if (!classificationCache.isRegionConnected(
-                            level, current.x(), current.y(), current.z(), current.regionRoot(), dx, dy, dz
-                        )) {
+                        if (
+                            !classificationCache.isRegionConnected(
+                                level,
+                                current.x(),
+                                current.y(),
+                                current.z(),
+                                current.regionRoot(),
+                                dx,
+                                dy,
+                                dz
+                            )
+                        ) {
                             // If breakable terrain is supported, the entity can break through even without a
                             // natural connection.
                             if (evaluator.getTerrainCost(TerrainType.BREAKABLE) >= Float.MAX_VALUE) {
@@ -184,7 +193,12 @@ public final class SectionCorridorFinder {
                         if (neighborRegionCount > 0) {
                             for (int i = 0; i < neighborRegionCount; i++) {
                                 var neighborRoot = classificationCache.getFaceRegionRoot(
-                                    level, nx, ny, nz, toFace, i
+                                    level,
+                                    nx,
+                                    ny,
+                                    nz,
+                                    toFace,
+                                    i
                                 );
                                 var nKey = packRegionNodeKey(nx, ny, nz, neighborRoot);
 
@@ -243,11 +257,16 @@ public final class SectionCorridorFinder {
      * Returns the face index of the entry face when moving in the given direction.
      */
     private static int getEntryFace(int dx, int dy, int dz) {
-        if (dx == 1) return FACE_WEST;
-        if (dx == -1) return FACE_EAST;
-        if (dy == 1) return FACE_BOTTOM;
-        if (dy == -1) return FACE_TOP;
-        if (dz == 1) return FACE_NORTH;
+        if (dx == 1)
+            return FACE_WEST;
+        if (dx == -1)
+            return FACE_EAST;
+        if (dy == 1)
+            return FACE_BOTTOM;
+        if (dy == -1)
+            return FACE_TOP;
+        if (dz == 1)
+            return FACE_NORTH;
         return FACE_SOUTH;
     }
 
@@ -268,10 +287,7 @@ public final class SectionCorridorFinder {
     }
 
     private static long packRegionNodeKey(int sectionX, int sectionY, int sectionZ, int regionRoot) {
-        return ((long) sectionX & 0x3FFFFFL) << 42
-            | ((long) sectionZ & 0x3FFFFFL) << 20
-            | ((long) (sectionY & 0xFF)) << 12
-            | ((long) regionRoot & 0xFFFL);
+        return ((long) sectionX & 0x3FFFFFL) << 42 | ((long) sectionZ & 0x3FFFFFL) << 20 | ((long) (sectionY & 0xFF)) << 12 | ((long) regionRoot & 0xFFFL);
     }
 
     private static float sectionDistance(int ax, int ay, int az, int bx, int by, int bz) {

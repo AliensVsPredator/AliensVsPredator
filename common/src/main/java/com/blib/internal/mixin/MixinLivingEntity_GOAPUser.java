@@ -1,6 +1,6 @@
 package com.blib.internal.mixin;
 
-import com.just.goap.graph.Graph;
+import com.just.ai.goap.graph.Graph;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;

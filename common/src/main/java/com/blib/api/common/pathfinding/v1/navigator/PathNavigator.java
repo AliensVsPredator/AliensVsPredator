@@ -104,8 +104,12 @@ public final class PathNavigator {
      */
     public boolean navigateTo(BlockPos entityPos, BlockPos target) {
         if (isInFailureCooldown(target)) {
-            LOGGER.info("[Nav] navigateTo BLOCKED by failure cooldown (failures={}, cooldown={}t, ticksSinceFail={})",
-                consecutiveFailures, failureCooldownTicks, tickCount - lastFailureTick);
+            LOGGER.info(
+                "[Nav] navigateTo BLOCKED by failure cooldown (failures={}, cooldown={}t, ticksSinceFail={})",
+                consecutiveFailures,
+                failureCooldownTicks,
+                tickCount - lastFailureTick
+            );
             return false;
         }
 
@@ -117,8 +121,12 @@ public final class PathNavigator {
         var startNanos = System.nanoTime();
 
         if (planner != null) {
-            LOGGER.info("[Nav] navigateTo via planner: {} -> {} (dist={})",
-                entityPos, target, entityPos.distManhattan(target));
+            LOGGER.info(
+                "[Nav] navigateTo via planner: {} -> {} (dist={})",
+                entityPos,
+                target,
+                entityPos.distManhattan(target)
+            );
             this.currentPath = planner.findPath(level, entityPos, target);
         } else {
             LOGGER.info("[Nav] navigateTo via direct pathfinder: {} -> {}", entityPos, target);
@@ -127,11 +135,13 @@ public final class PathNavigator {
 
         this.lastPathComputeNanos = System.nanoTime() - startNanos;
 
-        LOGGER.info("[Nav] navigateTo result: path={}, reached={}, nodes={}, plannerActive={}",
+        LOGGER.info(
+            "[Nav] navigateTo result: path={}, reached={}, nodes={}, plannerActive={}",
             currentPath != null ? "found" : "null",
             currentPath != null ? currentPath.isReached() : "n/a",
             currentPath != null ? currentPath.getNodeCount() : 0,
-            planner != null && planner.hasActiveRoute());
+            planner != null && planner.hasActiveRoute()
+        );
 
         this.lastPathComputeTick = tickCount;
         this.lastProgressTick = tickCount;
@@ -636,11 +646,13 @@ public final class PathNavigator {
         this.lastProgressTick = tickCount;
         this.lastDistanceToTarget = Double.MAX_VALUE;
 
-        LOGGER.info("[Nav] advanceToNextSegment from {}: path={}, reached={}, nodes={}",
+        LOGGER.info(
+            "[Nav] advanceToNextSegment from {}: path={}, reached={}, nodes={}",
             entityPos,
             currentPath != null ? "found" : "null",
             currentPath != null ? currentPath.isReached() : "n/a",
-            currentPath != null ? currentPath.getNodeCount() : 0);
+            currentPath != null ? currentPath.getNodeCount() : 0
+        );
 
         if (currentPath != null) {
             this.currentTerrain = currentPath.getCurrentNode().getTerrainType();

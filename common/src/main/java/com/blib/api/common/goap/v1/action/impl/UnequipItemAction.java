@@ -1,6 +1,6 @@
 package com.blib.api.common.goap.v1.action.impl;
 
-import com.just.goap.action.Action;
+import com.just.ai.goap.action.Action;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;

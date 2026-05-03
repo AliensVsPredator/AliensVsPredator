@@ -1,6 +1,6 @@
 package com.blib.api.common.goap.v1.action.impl;
 
-import com.just.goap.action.Action;
+import com.just.ai.goap.action.Action;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;

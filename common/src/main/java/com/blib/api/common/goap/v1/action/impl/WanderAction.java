@@ -1,8 +1,8 @@
 package com.blib.api.common.goap.v1.action.impl;
 
-import com.just.goap.StateKey;
-import com.just.goap.action.Action;
-import com.just.goap.state.Blackboard;
+import com.just.ai.goap.StateKey;
+import com.just.ai.goap.action.Action;
+import com.just.ai.goap.state.Blackboard;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.util.LandRandomPos;
 import net.minecraft.world.phys.Vec3;

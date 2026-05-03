@@ -75,8 +75,8 @@ public final class BlockAccessor {
     }
 
     /**
-     * Returns the block state at the given position. Uses cached chunk sections for fast spatial access. Returns AIR for
-     * out-of-bounds or missing chunks (in async mode).
+     * Returns the block state at the given position. Uses cached chunk sections for fast spatial access. Returns AIR
+     * for out-of-bounds or missing chunks (in async mode).
      */
     public BlockState getBlockState(int x, int y, int z) {
         var cx = x >> 4;

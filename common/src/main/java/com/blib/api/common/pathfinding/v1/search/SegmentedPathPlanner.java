@@ -35,8 +35,8 @@ public final class SegmentedPathPlanner {
     }
 
     /**
-     * Plans a route from start to target. Computes the corridor once, then runs block-level A* toward the actual
-     * target (not an intermediate waypoint). If no corridor finder is available, falls back to direct pathfinding.
+     * Plans a route from start to target. Computes the corridor once, then runs block-level A* toward the actual target
+     * (not an intermediate waypoint). If no corridor finder is available, falls back to direct pathfinding.
      *
      * @return a path (possibly partial if distance exceeds A* budget), or null if unreachable
      */
@@ -53,8 +53,11 @@ public final class SegmentedPathPlanner {
             return pathFinder.findPath(level, start, target);
         }
 
-        LOGGER.info("[Planner] corridor found: {} sections in corridor, {} waypoints",
-            result.corridor().size(), result.sectionWaypoints().size());
+        LOGGER.info(
+            "[Planner] corridor found: {} sections in corridor, {} waypoints",
+            result.corridor().size(),
+            result.sectionWaypoints().size()
+        );
 
         this.activeRoute = result;
 
@@ -78,8 +81,8 @@ public final class SegmentedPathPlanner {
     }
 
     /**
-     * Returns true if a corridor route is active. The navigator should check whether the current path reached the
-     * goal to decide if more segments are needed.
+     * Returns true if a corridor route is active. The navigator should check whether the current path reached the goal
+     * to decide if more segments are needed.
      */
     public boolean hasActiveRoute() {
         return activeRoute != null;
@@ -109,10 +112,12 @@ public final class SegmentedPathPlanner {
 
         var path = pathFinder.findPathInCorridor(level, from, finalTarget, corridor);
 
-        LOGGER.info("[Planner] computeSegment result: path={}, reached={}, nodes={}",
+        LOGGER.info(
+            "[Planner] computeSegment result: path={}, reached={}, nodes={}",
             path != null ? "found" : "null",
             path != null ? path.isReached() : "n/a",
-            path != null ? path.getNodeCount() : 0);
+            path != null ? path.getNodeCount() : 0
+        );
 
         return path;
     }

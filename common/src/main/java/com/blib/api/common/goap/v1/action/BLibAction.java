@@ -1,7 +1,7 @@
 package com.blib.api.common.goap.v1.action;
 
-import com.just.goap.action.Action;
-import com.just.goap.action.DelegatingAction;
+import com.just.ai.goap.action.Action;
+import com.just.ai.goap.action.DelegatingAction;
 
 import java.util.Collections;
 import java.util.HashSet;

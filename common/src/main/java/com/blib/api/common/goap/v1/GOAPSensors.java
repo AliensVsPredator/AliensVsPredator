@@ -1,11 +1,11 @@
 package com.blib.api.common.goap.v1;
 
+import com.just.ai.goap.StateKey;
+import com.just.ai.goap.sensor.Compose;
+import com.just.ai.goap.sensor.Map;
+import com.just.ai.goap.sensor.Sensor;
+import com.just.ai.goap.sensor.Sensors;
 import com.just.core.functional.option.Option;
-import com.just.goap.StateKey;
-import com.just.goap.sensor.Compose;
-import com.just.goap.sensor.Map;
-import com.just.goap.sensor.Sensor;
-import com.just.goap.sensor.Sensors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;

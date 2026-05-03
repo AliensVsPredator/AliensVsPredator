@@ -223,13 +223,39 @@ final class TerrainCacheSection {
                 int x, y, z;
 
                 switch (face) {
-                    case FACE_WEST -> { x = 0; y = a; z = b; }
-                    case FACE_EAST -> { x = SIZE - 1; y = a; z = b; }
-                    case FACE_NORTH -> { x = a; y = b; z = 0; }
-                    case FACE_SOUTH -> { x = a; y = b; z = SIZE - 1; }
-                    case FACE_BOTTOM -> { x = a; y = 0; z = b; }
-                    case FACE_TOP -> { x = a; y = SIZE - 1; z = b; }
-                    default -> { continue; }
+                    case FACE_WEST -> {
+                        x = 0;
+                        y = a;
+                        z = b;
+                    }
+                    case FACE_EAST -> {
+                        x = SIZE - 1;
+                        y = a;
+                        z = b;
+                    }
+                    case FACE_NORTH -> {
+                        x = a;
+                        y = b;
+                        z = 0;
+                    }
+                    case FACE_SOUTH -> {
+                        x = a;
+                        y = b;
+                        z = SIZE - 1;
+                    }
+                    case FACE_BOTTOM -> {
+                        x = a;
+                        y = 0;
+                        z = b;
+                    }
+                    case FACE_TOP -> {
+                        x = a;
+                        y = SIZE - 1;
+                        z = b;
+                    }
+                    default -> {
+                        continue;
+                    }
                 }
 
                 var index = packLocal(x, y, z);

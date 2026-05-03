@@ -30,8 +30,8 @@ import com.blib.mod.common.property.BLibModPropertyAccess;
 
 /**
  * A* pathfinding with optional two-level hierarchical search. When a {@link TerrainClassificationCache} is provided,
- * the pathfinder first runs a fast section-level A* via {@link SectionCorridorFinder} to identify a corridor of 16x16x16
- * sections, then runs the block-level A* restricted to that corridor.
+ * the pathfinder first runs a fast section-level A* via {@link SectionCorridorFinder} to identify a corridor of
+ * 16x16x16 sections, then runs the block-level A* restricted to that corridor.
  */
 public final class BLibPathFinder {
 
