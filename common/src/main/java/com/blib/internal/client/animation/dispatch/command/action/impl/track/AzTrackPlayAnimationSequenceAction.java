@@ -1,12 +1,14 @@
 package com.blib.internal.client.animation.dispatch.command.action.impl.track;
 
 import com.blib.api.client.animation.v1.animator.AzAnimator;
+import com.blib.api.client.animation.v1.command.policy.AzDispatchPolicy;
 import com.blib.api.client.animation.v1.command.sequence.AzAnimationSequence;
 import com.blib.internal.client.animation.dispatch.command.action.AzAction;
 
 public record AzTrackPlayAnimationSequenceAction(
     String trackName,
-    AzAnimationSequence sequence
+    AzAnimationSequence sequence,
+    AzDispatchPolicy policy
 ) implements AzAction {
 
     @Override
@@ -14,7 +16,7 @@ public record AzTrackPlayAnimationSequenceAction(
         var track = animator.getAnimationTrackContainer().getOrNull(trackName);
 
         if (track != null) {
-            track.run(sequence);
+            track.run(sequence, policy);
         }
     }
 }

@@ -2,6 +2,9 @@ package com.blib.api.client.animation.v1.command;
 
 import java.util.function.UnaryOperator;
 
+import com.blib.api.client.animation.v1.command.policy.AzDispatchMode;
+import com.blib.api.client.animation.v1.command.policy.OnBlockedByEndless;
+import com.blib.api.client.animation.v1.command.policy.OnPropertiesChanged;
 import com.blib.api.client.animation.v1.command.sequence.AzAnimationSequenceBuilder;
 import com.blib.internal.client.animation.dispatch.command.action.impl.root.AzRootCancelAllAction;
 import com.blib.internal.client.animation.dispatch.command.action.impl.root.AzRootPlayAnimationSequenceAction;
@@ -17,6 +20,21 @@ public class AzRootCommandBuilder extends AzCommandBuilder {
 
     public AzRootCommandBuilder append(AzCommand command) {
         actions.addAll(command.actions());
+        return this;
+    }
+
+    public AzRootCommandBuilder dispatchMode(AzDispatchMode mode) {
+        this.dispatchMode = mode;
+        return this;
+    }
+
+    public AzRootCommandBuilder onBlockedByEndless(OnBlockedByEndless policy) {
+        this.onBlockedByEndless = policy;
+        return this;
+    }
+
+    public AzRootCommandBuilder onPropertiesChanged(OnPropertiesChanged policy) {
+        this.onPropertiesChanged = policy;
         return this;
     }
 
@@ -59,7 +77,7 @@ public class AzRootCommandBuilder extends AzCommandBuilder {
         UnaryOperator<AzAnimationSequenceBuilder> builderUnaryOperator
     ) {
         var sequence = builderUnaryOperator.apply(new AzAnimationSequenceBuilder()).build();
-        actions.add(new AzRootPlayAnimationSequenceAction(sequence));
+        actions.add(new AzRootPlayAnimationSequenceAction(sequence, currentPolicy()));
         return this;
     }
 }

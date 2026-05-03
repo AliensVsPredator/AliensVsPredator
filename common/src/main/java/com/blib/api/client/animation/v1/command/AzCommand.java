@@ -13,8 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.blib.api.BLibAPI;
-import com.blib.api.client.animation.v1.command.play_behavior.AzPlayBehavior;
-import com.blib.api.client.animation.v1.command.play_behavior.AzPlayBehaviors;
+import com.blib.api.client.animation.v1.command.policy.AzDispatchMode;
 import com.blib.internal.client.animation.AzAnimatorAccessor;
 import com.blib.internal.client.animation.dispatch.command.action.AzAction;
 
@@ -35,6 +34,33 @@ public record AzCommand(List<AzAction> actions) {
 
     public static AzTrackCommandBuilder trackBuilder() {
         return new AzTrackCommandBuilder();
+    }
+
+    /**
+     * Returns a track command builder with {@link AzDispatchMode#REPLAY} pre-set. Subsequent
+     * {@code playSequence} / {@code play} calls produce actions that always restart the dispatched
+     * animation from frame 0.
+     */
+    public static AzTrackCommandBuilder replay() {
+        return trackBuilder().dispatchMode(AzDispatchMode.REPLAY);
+    }
+
+    /**
+     * Returns a track command builder with {@link AzDispatchMode#PLAY_IF_NOT_PLAYING} pre-set. Subsequent
+     * {@code playSequence} / {@code play} calls produce actions that no-op if the dispatched sequence is
+     * already the active one, and otherwise replay it.
+     */
+    public static AzTrackCommandBuilder idempotent() {
+        return trackBuilder().dispatchMode(AzDispatchMode.PLAY_IF_NOT_PLAYING);
+    }
+
+    /**
+     * Returns a track command builder with {@link AzDispatchMode#ENQUEUE} pre-set. Subsequent
+     * {@code playSequence} / {@code play} calls produce actions that append to the queue rather than
+     * interrupting the current animation.
+     */
+    public static AzTrackCommandBuilder enqueueing() {
+        return trackBuilder().dispatchMode(AzDispatchMode.ENQUEUE);
     }
 
     public static AzCommand compose(Collection<AzCommand> commands) {
@@ -59,65 +85,6 @@ public record AzCommand(List<AzAction> actions) {
         Collections.addAll(allCommands, others);
 
         return compose(allCommands);
-    }
-
-    public static AzCommand create(String trackName, String animationName) {
-        return create(trackName, animationName, AzPlayBehaviors.PLAY_ONCE, 0F, 1F, 0F, 0F, false);
-    }
-
-    public static AzCommand create(String trackName, String animationName, AzPlayBehavior playBehavior) {
-        return create(trackName, animationName, playBehavior, 0F, 1F, 0F, 0F, false);
-    }
-
-    // TODO: Fix transition length overriding transition length on the base create method
-    public static AzCommand create(
-        String trackName,
-        String animationName,
-        AzPlayBehavior playBehavior,
-        float startTickOffset,
-        float animationSpeed,
-        float transitionLength,
-        float freezeTickOffset,
-        boolean isReversing
-    ) {
-        return trackBuilder()
-            .playSequence(
-                trackName,
-                sequenceBuilder -> sequenceBuilder.queue(
-                    animationName,
-                    props -> props.withPlayBehavior(playBehavior)
-                )
-            )
-            .setFreezeTickOffset(trackName, freezeTickOffset)
-            .setStartTickOffset(trackName, startTickOffset)
-            .setSpeed(trackName, animationSpeed)
-            .setReverseAnimation(trackName, isReversing)
-            .build();
-    }
-
-    // TODO: Fix transition length overriding transition lenght on the base create method
-    public static AzCommand createRoot(
-        String animationName,
-        AzPlayBehavior playBehavior,
-        float startTickOffset,
-        float animationSpeed,
-        float transitionLength,
-        float freezeTickOffset,
-        boolean isReversing
-    ) {
-        return rootBuilder()
-            .playSequence(
-                sequenceBuilder -> sequenceBuilder.queue(
-                    animationName,
-                    props -> props.withPlayBehavior(playBehavior)
-                )
-            )
-            .setFreezeTickOffset(freezeTickOffset)
-            .setTransitionSpeed(transitionLength)
-            .setStartTickOffset(startTickOffset)
-            .setSpeed(animationSpeed)
-            .setReverseAnimation(isReversing)
-            .build();
     }
 
     public void dispatchForEntity(Entity entity) {

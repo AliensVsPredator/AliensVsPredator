@@ -2,6 +2,10 @@ package com.blib.api.client.animation.v1.command;
 
 import java.util.function.UnaryOperator;
 
+import com.blib.api.client.animation.v1.command.play_behavior.AzPlayBehavior;
+import com.blib.api.client.animation.v1.command.policy.AzDispatchMode;
+import com.blib.api.client.animation.v1.command.policy.OnBlockedByEndless;
+import com.blib.api.client.animation.v1.command.policy.OnPropertiesChanged;
 import com.blib.api.client.animation.v1.command.sequence.AzAnimationSequenceBuilder;
 import com.blib.internal.client.animation.dispatch.command.action.impl.track.AzTrackCancelAction;
 import com.blib.internal.client.animation.dispatch.command.action.impl.track.AzTrackPlayAnimationSequenceAction;
@@ -17,6 +21,21 @@ public class AzTrackCommandBuilder extends AzCommandBuilder {
 
     public AzTrackCommandBuilder append(AzCommand command) {
         actions.addAll(command.actions());
+        return this;
+    }
+
+    public AzTrackCommandBuilder dispatchMode(AzDispatchMode mode) {
+        this.dispatchMode = mode;
+        return this;
+    }
+
+    public AzTrackCommandBuilder onBlockedByEndless(OnBlockedByEndless policy) {
+        this.onBlockedByEndless = policy;
+        return this;
+    }
+
+    public AzTrackCommandBuilder onPropertiesChanged(OnPropertiesChanged policy) {
+        this.onPropertiesChanged = policy;
         return this;
     }
 
@@ -59,12 +78,19 @@ public class AzTrackCommandBuilder extends AzCommandBuilder {
         return playSequence(trackName, builder -> builder.queue(animationName, properties -> properties));
     }
 
+    public AzTrackCommandBuilder play(String trackName, String animationName, AzPlayBehavior playBehavior) {
+        return playSequence(
+            trackName,
+            builder -> builder.queue(animationName, properties -> properties.withPlayBehavior(playBehavior))
+        );
+    }
+
     public AzTrackCommandBuilder playSequence(
         String trackName,
         UnaryOperator<AzAnimationSequenceBuilder> builderUnaryOperator
     ) {
         var sequence = builderUnaryOperator.apply(new AzAnimationSequenceBuilder()).build();
-        actions.add(new AzTrackPlayAnimationSequenceAction(trackName, sequence));
+        actions.add(new AzTrackPlayAnimationSequenceAction(trackName, sequence, currentPolicy()));
         return this;
     }
 }

@@ -10,6 +10,9 @@ import java.util.List;
 
 import com.blib.api.client.animation.v1.animator.AzAnimator;
 import com.blib.api.client.animation.v1.command.play_behavior.AzPlayBehaviors;
+import com.blib.api.client.animation.v1.command.policy.AzDispatchPolicy;
+import com.blib.api.client.animation.v1.command.policy.OnBlockedByEndless;
+import com.blib.api.client.animation.v1.command.policy.OnPropertiesChanged;
 import com.blib.api.client.animation.v1.command.sequence.AzAnimationSequence;
 import com.blib.api.client.animation.v1.keyframe.AzKeyframeCallbacks;
 import com.blib.internal.client.animation.primitive.AzQueuedAnimation;
@@ -120,54 +123,105 @@ public class AzAnimationTrack<T> extends AzAbstractAnimationTrack {
         boneAnimationQueueCache.update(animationProperties.easingType());
     }
 
-    public void run(@NotNull AzAnimationSequence sequence) {
-        // Restart triggers, in order:
-        //   - sequenceChanged: a new sequence always restarts.
-        //   - wasStopped:      re-dispatching after the previous run finished replays it (e.g. an
-        //                      idle that just looped back, or a one-shot that already stopped).
-        //   - currentIsPlayOnce: re-dispatching the same sequence while a PLAY_ONCE is mid-flight
-        //                        is a re-trigger (e.g. back-to-back attacks of the same type whose
-        //                        previous animation hasn't finished client-side yet). Settled
-        //                        behaviors (LOOP, HOLD_ON_LAST_FRAME, FREEZE_ON_FRAME) deliberately
-        //                        do NOT restart on same-sequence re-dispatch — callers that fire
-        //                        them every frame (e.g. facehugger hug) rely on this.
-        var wasStopped = stateMachine.isStopped();
-
-        if (wasStopped) {
-            stateMachine.transition();
-        }
-
-        var currentIsPlayOnce = currentAnimation != null
-            && currentAnimation.playBehavior() == AzPlayBehaviors.PLAY_ONCE;
-        var sequenceChanged = !sequence.equals(currentSequence);
-        var shouldRestart = sequenceChanged || wasStopped || currentIsPlayOnce;
-
-        if (currentSequence == null || shouldRestart) {
-            this.currentAnimation = null;
-        }
-
-        var animatable = animator.context().animatable();
-
+    public void run(@NotNull AzAnimationSequence sequence, @NotNull AzDispatchPolicy policy) {
         if (sequence.stages().isEmpty()) {
             stateMachine.stop();
             return;
         }
 
-        if (shouldRestart) {
-            var animations = tryCreateAnimationQueue(animatable, sequence);
+        switch (policy.mode()) {
+            case REPLAY -> runReplay(sequence);
+            case PLAY_IF_NOT_PLAYING -> runIdempotent(sequence, policy.onPropertiesChanged());
+            case ENQUEUE -> runEnqueue(sequence, policy.onBlockedByEndless());
+        }
+    }
 
-            if (!animations.isEmpty()) {
-                animationQueue.clear();
-                animationQueue.addAll(animations);
-                this.currentSequence = sequence;
-                stateMachine.transition();
-                return;
-            }
+    private void runReplay(AzAnimationSequence sequence) {
+        var animatable = animator.context().animatable();
+        var animations = tryCreateAnimationQueue(animatable, sequence);
 
-            animationQueue.clear();
+        this.currentAnimation = null;
+        animationQueue.clear();
+
+        if (animations.isEmpty()) {
             this.currentSequence = null;
             stateMachine.transition();
+            return;
         }
+
+        animationQueue.addAll(animations);
+        this.currentSequence = sequence;
+        stateMachine.transition();
+    }
+
+    private void runIdempotent(AzAnimationSequence sequence, OnPropertiesChanged onPropertiesChanged) {
+        if (isAlreadyActive(sequence, onPropertiesChanged)) {
+            // X is already the active animation; drop any stale follow-ups so the track's intent
+            // matches "X is what should be playing."
+            animationQueue.clear();
+            return;
+        }
+
+        runReplay(sequence);
+    }
+
+    private void runEnqueue(AzAnimationSequence sequence, OnBlockedByEndless onBlockedByEndless) {
+        if (currentAnimation == null && stateMachine.isStopped()) {
+            // Nothing to wait for — start now.
+            runReplay(sequence);
+            return;
+        }
+
+        if (currentAnimation != null && currentAnimation.playBehavior() == AzPlayBehaviors.LOOP) {
+            switch (onBlockedByEndless) {
+                case REJECT -> {
+                    LOGGER.warn(
+                        "ENQUEUE rejected on track '{}': current animation is LOOP'd and will not finish.",
+                        name()
+                    );
+                    return;
+                }
+                case PROMOTE_TO_REPLAY -> {
+                    runReplay(sequence);
+                    return;
+                }
+                case APPEND_ANYWAY -> {
+                    // fall through to enqueue
+                }
+            }
+        }
+
+        var animatable = animator.context().animatable();
+        var animations = tryCreateAnimationQueue(animatable, sequence);
+        animationQueue.addAll(animations);
+    }
+
+    private boolean isAlreadyActive(AzAnimationSequence sequence, OnPropertiesChanged onPropertiesChanged) {
+        if (currentSequence == null || stateMachine.isStopped()) {
+            return false;
+        }
+
+        return switch (onPropertiesChanged) {
+            case RESTART -> sequence.equals(currentSequence);
+            case UPDATE_IN_PLACE -> sameAnimationNames(sequence, currentSequence);
+        };
+    }
+
+    private static boolean sameAnimationNames(AzAnimationSequence a, AzAnimationSequence b) {
+        var aStages = a.stages();
+        var bStages = b.stages();
+
+        if (aStages.size() != bStages.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < aStages.size(); i++) {
+            if (!aStages.get(i).name().equals(bStages.get(i).name())) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public AzAnimationProperties animationProperties() {
