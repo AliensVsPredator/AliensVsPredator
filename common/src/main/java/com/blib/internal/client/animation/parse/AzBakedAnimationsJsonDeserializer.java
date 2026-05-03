@@ -18,7 +18,6 @@ import com.blib.internal.client.animation.easing.AzEasingTypes;
 import com.blib.internal.client.animation.primitive.AzBakedAnimation;
 import com.blib.internal.client.animation.primitive.AzBakedAnimations;
 import com.blib.internal.client.animation.primitive.AzKeyframes;
-import com.blib.internal.client.animation.primitive.AzLoopType;
 import com.blib.internal.client.animation.track.keyframe.AzBoneAnimation;
 import com.blib.internal.client.animation.track.keyframe.AzKeyframe;
 import com.blib.internal.client.animation.track.keyframe.AzKeyframeStack;
@@ -192,7 +191,6 @@ public class AzBakedAnimationsJsonDeserializer implements JsonDeserializer<AzBak
         double length = animationObj.has("animation_length")
             ? GsonHelper.getAsDouble(animationObj, "animation_length") * 20d
             : -1;
-        AzLoopType loopType = AzLoopType.fromJson(animationObj.get("loop"));
         AzBoneAnimation[] boneAnimations = bakeBoneAnimations(
             GsonHelper.getAsJsonObject(animationObj, "bones", new JsonObject())
         );
@@ -201,7 +199,7 @@ public class AzBakedAnimationsJsonDeserializer implements JsonDeserializer<AzBak
         if (length == -1)
             length = calculateAnimationLength(boneAnimations);
 
-        return new AzBakedAnimation(name, length, loopType, boneAnimations, keyframes);
+        return new AzBakedAnimation(name, length, boneAnimations, keyframes);
     }
 
     private AzBoneAnimation[] bakeBoneAnimations(JsonObject bonesObj) throws MolangException {
