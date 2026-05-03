@@ -148,7 +148,7 @@ public class AzCommandBuilder {
     }
 
     public AzCommand build() {
-        return new AzCommand(actions);
+        return new AzCommand(List.copyOf(actions));
     }
 
     /**

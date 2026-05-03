@@ -19,6 +19,12 @@ import com.blib.internal.client.animation.dispatch.command.action.AzAction;
 
 public record AzCommand(List<AzAction> actions) {
 
+    public AzCommand {
+        // Defensive copy: ensures the published action list is immutable and decoupled from any
+        // mutable list the caller (typically AzCommandBuilder) may continue to hold.
+        actions = List.copyOf(actions);
+    }
+
     private static final Logger LOGGER = LoggerFactory.getLogger(AzCommand.class);
 
     private static final String SERVER_SIDE_DISPATCH_MESSAGE =
