@@ -1,8 +1,13 @@
 package com.blib.internal.client.animation.track.state.machine;
 
+import java.util.EnumSet;
+import java.util.Map;
+
 import com.blib.api.client.animation.v1.animator.AzAnimationContext;
 import com.blib.api.client.animation.v1.track.AzAnimationTrack;
 import com.blib.internal.client.animation.track.state.AzAnimationState;
+import com.blib.internal.client.animation.track.state.AzAnimationStateKind;
+import com.blib.internal.client.animation.track.state.AzTransitionResult;
 import com.blib.internal.client.animation.track.state.impl.AzAnimationPauseState;
 import com.blib.internal.client.animation.track.state.impl.AzAnimationPlayState;
 import com.blib.internal.client.animation.track.state.impl.AzAnimationStopState;
@@ -11,6 +16,32 @@ import com.blib.internal.common.model.state_machine.StateMachine;
 import com.blib.internal.common.model.state_machine.StateMachineContext;
 
 public class AzAnimationTrackStateMachine<T> extends StateMachine<AzAnimationTrackStateMachine.Context<T>, AzAnimationState<T>> {
+
+    /**
+     * Legal transitions out of each kind. Cross-kind transitions outside this graph are
+     * {@link AzTransitionResult.Rejected}; same-kind transitions outside this graph (e.g.
+     * STOP → STOP) are {@link AzTransitionResult.AlreadyInState}. The single legal self-transition
+     * is TRANSITION → TRANSITION, which re-enters the transition state to take a fresh bone snapshot
+     * when re-targeting mid-flight.
+     */
+    private static final Map<AzAnimationStateKind, EnumSet<AzAnimationStateKind>> LEGAL = Map.of(
+        AzAnimationStateKind.STOP, EnumSet.of(AzAnimationStateKind.TRANSITION),
+        AzAnimationStateKind.TRANSITION, EnumSet.of(
+            AzAnimationStateKind.PLAY,
+            AzAnimationStateKind.STOP,
+            AzAnimationStateKind.TRANSITION
+        ),
+        AzAnimationStateKind.PLAY, EnumSet.of(
+            AzAnimationStateKind.TRANSITION,
+            AzAnimationStateKind.PAUSE,
+            AzAnimationStateKind.STOP
+        ),
+        AzAnimationStateKind.PAUSE, EnumSet.of(
+            AzAnimationStateKind.PLAY,
+            AzAnimationStateKind.TRANSITION,
+            AzAnimationStateKind.STOP
+        )
+    );
 
     private final StateHolder<T> stateHolder;
 
@@ -35,20 +66,20 @@ public class AzAnimationTrackStateMachine<T> extends StateMachine<AzAnimationTra
         super.update(getContext());
     }
 
-    public void pause() {
-        setState(stateHolder.pauseState);
+    public AzTransitionResult pause() {
+        return tryTransition(stateHolder.pauseState);
     }
 
-    public void play() {
-        setState(stateHolder.playState);
+    public AzTransitionResult play() {
+        return tryTransition(stateHolder.playState);
     }
 
-    public void transition() {
-        setState(stateHolder.transitionState);
+    public AzTransitionResult transition() {
+        return tryTransition(stateHolder.transitionState);
     }
 
-    public void stop() {
-        setState(stateHolder.stopState);
+    public AzTransitionResult stop() {
+        return tryTransition(stateHolder.stopState);
     }
 
     public boolean isPlaying() {
@@ -65,6 +96,32 @@ public class AzAnimationTrackStateMachine<T> extends StateMachine<AzAnimationTra
 
     public boolean isTransitioning() {
         return getState() == stateHolder.transitionState;
+    }
+
+    /**
+     * Routes raw {@code setState} calls through the same legality check as the named transition
+     * methods. The result is discarded — direct callers who care about the outcome should use
+     * {@link #pause()}, {@link #play()}, {@link #transition()}, or {@link #stop()}.
+     */
+    @Override
+    public void setState(AzAnimationState<T> next) {
+        tryTransition(next);
+    }
+
+    private AzTransitionResult tryTransition(AzAnimationState<T> next) {
+        var fromKind = getState().kind();
+        var toKind = next.kind();
+
+        if (LEGAL.get(fromKind).contains(toKind)) {
+            super.setState(next);
+            return new AzTransitionResult.Applied(fromKind, toKind);
+        }
+
+        if (fromKind == toKind) {
+            return new AzTransitionResult.AlreadyInState(fromKind);
+        }
+
+        return new AzTransitionResult.Rejected(fromKind, toKind);
     }
 
     public record StateHolder<T>(

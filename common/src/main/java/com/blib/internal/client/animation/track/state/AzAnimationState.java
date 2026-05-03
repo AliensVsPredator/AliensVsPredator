@@ -11,6 +11,11 @@ public abstract class AzAnimationState<T> implements State<AzAnimationTrackState
         this.isActive = false;
     }
 
+    /**
+     * The canonical kind of this state. Used by the state machine for legal-transition checks.
+     */
+    public abstract AzAnimationStateKind kind();
+
     @Override
     public void onEnter(AzAnimationTrackStateMachine.Context<T> context) {
         this.isActive = true;

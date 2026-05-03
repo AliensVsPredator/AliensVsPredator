@@ -1,11 +1,17 @@
 package com.blib.internal.client.animation.track.state.impl;
 
 import com.blib.internal.client.animation.track.state.AzAnimationState;
+import com.blib.internal.client.animation.track.state.AzAnimationStateKind;
 import com.blib.internal.client.animation.track.state.machine.AzAnimationTrackStateMachine;
 
 public final class AzAnimationTransitionState<T> extends AzAnimationState<T> {
 
     public AzAnimationTransitionState() {}
+
+    @Override
+    public AzAnimationStateKind kind() {
+        return AzAnimationStateKind.TRANSITION;
+    }
 
     @Override
     public void onEnter(AzAnimationTrackStateMachine.Context<T> context) {
