@@ -12,13 +12,16 @@ import com.blib.api.client.animation.v1.command.policy.OnPropertiesChanged;
 import com.blib.api.client.animation.v1.command.sequence.AzAnimationSequenceBuilder;
 import com.blib.internal.client.animation.dispatch.command.action.AzAction;
 import com.blib.internal.client.animation.dispatch.command.action.impl.AzCancelAction;
+import com.blib.internal.client.animation.dispatch.command.action.impl.AzPauseAction;
 import com.blib.internal.client.animation.dispatch.command.action.impl.AzPlayAnimationSequenceAction;
+import com.blib.internal.client.animation.dispatch.command.action.impl.AzResumeAction;
 import com.blib.internal.client.animation.dispatch.command.action.impl.AzSetAnimationSpeedAction;
 import com.blib.internal.client.animation.dispatch.command.action.impl.AzSetEasingTypeAction;
 import com.blib.internal.client.animation.dispatch.command.action.impl.AzSetFreezeTickAction;
 import com.blib.internal.client.animation.dispatch.command.action.impl.AzSetReverseAction;
 import com.blib.internal.client.animation.dispatch.command.action.impl.AzSetStartTickOffsetAction;
 import com.blib.internal.client.animation.dispatch.command.action.impl.AzSetTransitionSpeedAction;
+import com.blib.internal.client.animation.dispatch.command.action.impl.AzSkipCurrentAction;
 import com.blib.internal.client.animation.easing.AzEasingType;
 
 public class AzCommandBuilder {
@@ -58,8 +61,39 @@ public class AzCommandBuilder {
         return this;
     }
 
+    /**
+     * Full cancel: clears the current animation, drains the queue, and transitions the state
+     * machine to STOP. The track ends up silent and stays silent until something dispatches a new
+     * play action.
+     */
     public AzCommandBuilder cancel(AzTarget target) {
         actions.add(new AzCancelAction(target));
+        return this;
+    }
+
+    /**
+     * Drops the current animation. The queue is preserved — on the next state machine tick, the
+     * next queued animation begins playing. If the queue is empty, the track auto-stops.
+     */
+    public AzCommandBuilder skipCurrent(AzTarget target) {
+        actions.add(new AzSkipCurrentAction(target));
+        return this;
+    }
+
+    /**
+     * Freezes the current animation at its current frame. No-op on tracks that are stopped or
+     * already paused.
+     */
+    public AzCommandBuilder pause(AzTarget target) {
+        actions.add(new AzPauseAction(target));
+        return this;
+    }
+
+    /**
+     * Unfreezes a paused animation. No-op on tracks that are not currently paused.
+     */
+    public AzCommandBuilder resume(AzTarget target) {
+        actions.add(new AzResumeAction(target));
         return this;
     }
 
