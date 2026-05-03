@@ -106,6 +106,51 @@ public class RenderUtil {
         translateAwayFromPivotPoint(poseStack, bone);
     }
 
+    public static void applyCubeInflation(PoseStack poseStack, GeoCube cube, float inflate) {
+        var size = cube.size();
+        var sizeX = (float) size.x() / 16f;
+        var sizeY = (float) size.y() / 16f;
+        var sizeZ = (float) size.z() / 16f;
+
+        if (sizeX <= 0 && sizeY <= 0 && sizeZ <= 0) {
+            return;
+        }
+
+        float minX = Float.MAX_VALUE, minY = Float.MAX_VALUE, minZ = Float.MAX_VALUE;
+        float maxX = -Float.MAX_VALUE, maxY = -Float.MAX_VALUE, maxZ = -Float.MAX_VALUE;
+
+        for (var quad : cube.quads()) {
+            if (quad == null)
+                continue;
+
+            for (var vertex : quad.vertices()) {
+                var pos = vertex.position();
+                minX = Math.min(minX, pos.x());
+                maxX = Math.max(maxX, pos.x());
+                minY = Math.min(minY, pos.y());
+                maxY = Math.max(maxY, pos.y());
+                minZ = Math.min(minZ, pos.z());
+                maxZ = Math.max(maxZ, pos.z());
+            }
+        }
+
+        var centerX = (minX + maxX) / 2f;
+        var centerY = (minY + maxY) / 2f;
+        var centerZ = (minZ + maxZ) / 2f;
+
+        var extentX = (maxX - minX) / 2f;
+        var extentY = (maxY - minY) / 2f;
+        var extentZ = (maxZ - minZ) / 2f;
+
+        var scaleX = extentX > 0 ? (extentX + inflate) / extentX : 1f;
+        var scaleY = extentY > 0 ? (extentY + inflate) / extentY : 1f;
+        var scaleZ = extentZ > 0 ? (extentZ + inflate) / extentZ : 1f;
+
+        poseStack.translate(centerX, centerY, centerZ);
+        poseStack.scale(scaleX, scaleY, scaleZ);
+        poseStack.translate(-centerX, -centerY, -centerZ);
+    }
+
     public static Matrix4f invertAndMultiplyMatrices(Matrix4f baseMatrix, Matrix4f inputMatrix) {
         inputMatrix = new Matrix4f(inputMatrix);
 

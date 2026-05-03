@@ -111,6 +111,12 @@ public class AzModelRenderer<K, T> {
         RenderUtil.rotateMatrixAroundCube(poseStack, cube);
         RenderUtil.translateAwayFromPivotPoint(poseStack, cube);
 
+        var cubeInflate = context.cubeInflate();
+
+        if (cubeInflate != 0) {
+            RenderUtil.applyCubeInflation(poseStack, cube, cubeInflate);
+        }
+
         var normalisedPoseState = poseStack.last().normal();
         var poseState = poseStateCache.set(poseStack.last().pose());
 
