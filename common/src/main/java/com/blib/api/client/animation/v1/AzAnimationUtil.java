@@ -3,7 +3,8 @@ package com.blib.api.client.animation.v1;
 import java.util.List;
 
 import com.blib.api.client.animation.v1.command.AzCommand;
-import com.blib.api.client.animation.v1.command.AzTrackCommandBuilder;
+import com.blib.api.client.animation.v1.command.AzCommandBuilder;
+import com.blib.api.client.animation.v1.command.AzTarget;
 import com.blib.api.client.animation.v1.command.play_behavior.AzPlayBehavior;
 import com.blib.api.client.animation.v1.command.policy.AzDispatchMode;
 
@@ -18,13 +19,13 @@ public class AzAnimationUtil {
         return AzCommand.compose(
             limbNames.stream()
                 .map(limbName -> builderFor(dispatchMode)
-                    .play(limbName, baseName + "." + limbName, playBehavior)
+                    .play(AzTarget.track(limbName), baseName + "." + limbName, playBehavior)
                     .build())
                 .toList()
         );
     }
 
-    private static AzTrackCommandBuilder builderFor(AzDispatchMode mode) {
+    private static AzCommandBuilder builderFor(AzDispatchMode mode) {
         return switch (mode) {
             case REPLAY -> AzCommand.replay();
             case PLAY_IF_NOT_PLAYING -> AzCommand.idempotent();

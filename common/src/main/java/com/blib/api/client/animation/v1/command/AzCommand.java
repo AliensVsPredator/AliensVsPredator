@@ -28,39 +28,41 @@ public record AzCommand(List<AzAction> actions) {
 
     private static final String SERVER_SIDE_DISPATCH_MESSAGE_LOG = SERVER_SIDE_DISPATCH_MESSAGE.replaceAll("%s", "{}");
 
-    public static AzRootCommandBuilder rootBuilder() {
-        return new AzRootCommandBuilder();
-    }
-
-    public static AzTrackCommandBuilder trackBuilder() {
-        return new AzTrackCommandBuilder();
+    /**
+     * Returns a fresh command builder with no dispatch mode set. Useful for set-only commands
+     * (e.g. {@code setSpeed} without any play action) or when the caller wants to set the mode
+     * explicitly via {@link AzCommandBuilder#dispatchMode(AzDispatchMode)}. Adding a play action
+     * to a builder with no mode set throws.
+     */
+    public static AzCommandBuilder builder() {
+        return new AzCommandBuilder();
     }
 
     /**
-     * Returns a track command builder with {@link AzDispatchMode#REPLAY} pre-set. Subsequent
+     * Returns a command builder with {@link AzDispatchMode#REPLAY} pre-set. Subsequent
      * {@code playSequence} / {@code play} calls produce actions that always restart the dispatched
      * animation from frame 0.
      */
-    public static AzTrackCommandBuilder replay() {
-        return trackBuilder().dispatchMode(AzDispatchMode.REPLAY);
+    public static AzCommandBuilder replay() {
+        return new AzCommandBuilder().dispatchMode(AzDispatchMode.REPLAY);
     }
 
     /**
-     * Returns a track command builder with {@link AzDispatchMode#PLAY_IF_NOT_PLAYING} pre-set. Subsequent
-     * {@code playSequence} / {@code play} calls produce actions that no-op if the dispatched sequence is
-     * already the active one, and otherwise replay it.
+     * Returns a command builder with {@link AzDispatchMode#PLAY_IF_NOT_PLAYING} pre-set. Subsequent
+     * {@code playSequence} / {@code play} calls produce actions that no-op if the dispatched
+     * sequence is already the active one, and otherwise replay it.
      */
-    public static AzTrackCommandBuilder idempotent() {
-        return trackBuilder().dispatchMode(AzDispatchMode.PLAY_IF_NOT_PLAYING);
+    public static AzCommandBuilder idempotent() {
+        return new AzCommandBuilder().dispatchMode(AzDispatchMode.PLAY_IF_NOT_PLAYING);
     }
 
     /**
-     * Returns a track command builder with {@link AzDispatchMode#ENQUEUE} pre-set. Subsequent
-     * {@code playSequence} / {@code play} calls produce actions that append to the queue rather than
-     * interrupting the current animation.
+     * Returns a command builder with {@link AzDispatchMode#ENQUEUE} pre-set. Subsequent
+     * {@code playSequence} / {@code play} calls produce actions that append to the queue rather
+     * than interrupting the current animation.
      */
-    public static AzTrackCommandBuilder enqueueing() {
-        return trackBuilder().dispatchMode(AzDispatchMode.ENQUEUE);
+    public static AzCommandBuilder enqueueing() {
+        return new AzCommandBuilder().dispatchMode(AzDispatchMode.ENQUEUE);
     }
 
     public static AzCommand compose(Collection<AzCommand> commands) {
