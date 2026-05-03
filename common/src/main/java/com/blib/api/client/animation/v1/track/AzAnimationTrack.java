@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.blib.api.client.animation.v1.animator.AzAnimator;
+import com.blib.api.client.animation.v1.command.play_behavior.AzPlayBehaviors;
 import com.blib.api.client.animation.v1.command.sequence.AzAnimationSequence;
 import com.blib.api.client.animation.v1.keyframe.AzKeyframeCallbacks;
 import com.blib.internal.client.animation.primitive.AzQueuedAnimation;
@@ -120,11 +121,28 @@ public class AzAnimationTrack<T> extends AzAbstractAnimationTrack {
     }
 
     public void run(@NotNull AzAnimationSequence sequence) {
-        if (stateMachine.isStopped()) {
+        // Restart triggers, in order:
+        //   - sequenceChanged: a new sequence always restarts.
+        //   - wasStopped:      re-dispatching after the previous run finished replays it (e.g. an
+        //                      idle that just looped back, or a one-shot that already stopped).
+        //   - currentIsPlayOnce: re-dispatching the same sequence while a PLAY_ONCE is mid-flight
+        //                        is a re-trigger (e.g. back-to-back attacks of the same type whose
+        //                        previous animation hasn't finished client-side yet). Settled
+        //                        behaviors (LOOP, HOLD_ON_LAST_FRAME, FREEZE_ON_FRAME) deliberately
+        //                        do NOT restart on same-sequence re-dispatch — callers that fire
+        //                        them every frame (e.g. facehugger hug) rely on this.
+        var wasStopped = stateMachine.isStopped();
+
+        if (wasStopped) {
             stateMachine.transition();
         }
 
-        if (currentSequence == null || !currentSequence.equals(sequence)) {
+        var currentIsPlayOnce = currentAnimation != null
+            && currentAnimation.playBehavior() == AzPlayBehaviors.PLAY_ONCE;
+        var sequenceChanged = !sequence.equals(currentSequence);
+        var shouldRestart = sequenceChanged || wasStopped || currentIsPlayOnce;
+
+        if (currentSequence == null || shouldRestart) {
             this.currentAnimation = null;
         }
 
@@ -135,7 +153,7 @@ public class AzAnimationTrack<T> extends AzAbstractAnimationTrack {
             return;
         }
 
-        if (!sequence.equals(currentSequence)) {
+        if (shouldRestart) {
             var animations = tryCreateAnimationQueue(animatable, sequence);
 
             if (!animations.isEmpty()) {
