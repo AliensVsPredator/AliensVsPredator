@@ -14,6 +14,8 @@ import com.blib.api.BLibAPI;
 import com.blib.api.common.block.v1.BlockBreakProgressManager;
 import com.blib.api.common.data_sync.v1.DataContainer;
 import com.blib.api.common.data_sync.v1.model.DataUser;
+import com.blib.api.common.dismemberment.v1.builtin.BuiltInLimbDefinitions;
+import com.blib.api.common.dismemberment.v1.builtin.BuiltInLimbDrops;
 import com.blib.api.common.faction.v1.FactionMember;
 import com.blib.api.common.mod.v1.BLibMod;
 import com.blib.api.common.reputation.v1.ReputationKey;
@@ -79,6 +81,10 @@ public class BLib {
         BLibPropertyContainerTypes.initialize();
         BLibReloadListeners.initialize();
         BLibServerPacketHandlers.initialize();
+
+        // Depends on entity types being registered.
+        BuiltInLimbDefinitions.register();
+        BuiltInLimbDrops.register();
 
         BLib.MOD.events().onPlayerStartTrackingEntity().register(BLib::syncDataForTrackedEntity);
         // TODO: There's a small bug here. This runs for both client and server levels!

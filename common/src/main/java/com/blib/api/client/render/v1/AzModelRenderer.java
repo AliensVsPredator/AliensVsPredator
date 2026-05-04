@@ -13,6 +13,7 @@ import org.joml.Vector4f;
 
 import com.blib.api.client.animation.v1.animator.AzAnimator;
 import com.blib.api.client.model.v1.AzBone;
+import com.blib.api.client.render.v1.dismemberment.DismembermentBoneVisibilityFilter;
 import com.blib.api.client.render.v1.item.pipeline.AzItemRendererPipelineContext;
 import com.blib.internal.client.model.GeoCube;
 import com.blib.internal.client.model.GeoQuad;
@@ -48,6 +49,13 @@ public class AzModelRenderer<K, T> {
     }
 
     protected void renderRecursively(AzRendererPipelineContext<K, T> context, AzBone bone, boolean isReRender) {
+        // Always-on dismemberment hide first so consumers don't need to remember to wire the filter onto every renderer
+        // — Dismemberable mobs auto-hide detached limb subtrees, non-Dismemberable animatables (items, block entities)
+        // early-return false inside the static check.
+        if (DismembermentBoneVisibilityFilter.isDetachedBone(bone, context.animatable())) {
+            return;
+        }
+
         var visibilityFilter = rendererPipeline.config().boneVisibilityFilter();
 
         if (visibilityFilter != null && visibilityFilter.shouldHideBone(bone, context.animatable())) {

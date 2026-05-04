@@ -39,8 +39,10 @@
     "MixinDebugRenderer",
     "MixinEntityRenderDispatcher_Accessor",
     "MixinHumanoidArmorLayer_Dismemberment",
+    "MixinItemInHandLayer_Dismemberment",
     "MixinLivingEntityRenderer_Accessor",
     "MixinLivingEntityRenderer_Dismemberment",
+    "MixinModelPart_Accessor",
     "MixinQuadrupedModel_Accessor"
   ],
   "server": [],

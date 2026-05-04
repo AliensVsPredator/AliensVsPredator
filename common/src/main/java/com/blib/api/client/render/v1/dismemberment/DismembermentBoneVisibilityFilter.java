@@ -4,9 +4,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.blib.api.client.model.v1.AzBone;
 import com.blib.api.client.render.v1.BoneVisibilityFilter;
@@ -16,24 +19,35 @@ import com.blib.api.common.dismemberment.v1.LimbDefinitionRegistry;
 /**
  * Default {@link BoneVisibilityFilter} for {@link Dismemberable} entities.
  * <p>
- * Hides any bone whose name matches the {@code rootBoneName} of a limb that has been detached. Children of the root are
- * skipped automatically because {@code AzModelRenderer.renderRecursively} early-exits on a filtered bone, so a single
- * filter check covers the whole subtree.
+ * Hides any bone whose name matches the {@code rootBoneName} (or a companion bone) of a limb that has been detached.
+ * Children of the root are skipped automatically because {@code AzModelRenderer.renderRecursively} early-exits on a
+ * filtered bone, so a single filter check covers the whole subtree.
  * <p>
- * Per-entity-type bone-name lookups are cached so the hot render path is a single {@code Set#contains} call against an
- * empty set when nothing is detached.
+ * <b>Auto-applied.</b> {@code AzModelRenderer.renderRecursively} consults {@link #isDetachedBone(AzBone, Object)}
+ * unconditionally on every render, so consumers no longer need to wire this filter onto each entity renderer's config
+ * to get dismemberment hiding — that was easy to forget when adding new mobs. {@link #setBoneVisibilityFilter} is still
+ * available on the renderer config for additional, per-renderer hide rules; those compose with this one.
  * <p>
- * The bound is {@link LivingEntity} rather than {@code LivingEntity & Dismemberable} because the {@code Dismemberable}
- * interface is added to every {@code LivingEntity} via mixin at runtime — not visible to the compiler. The instance
- * check inside {@code shouldHideBone} confirms it before reading the manager.
+ * The instance form is preserved for callers who want to plug dismemberment hiding into their own filter pipeline (or
+ * intentionally compose multiple filters); new code should usually rely on the auto-applied static check instead.
  */
 public final class DismembermentBoneVisibilityFilter<T extends LivingEntity> implements BoneVisibilityFilter<T> {
 
-    private final Map<EntityType<?>, Map<ResourceLocation, String>> rootBonesByEntityType = new HashMap<>();
+    private static final Map<EntityType<?>, Map<ResourceLocation, List<String>>> HIDE_BONES_BY_ENTITY_TYPE =
+        new ConcurrentHashMap<>();
 
     @Override
     public boolean shouldHideBone(AzBone bone, T animatable) {
-        if (!(animatable instanceof Dismemberable dismemberable)) {
+        return isDetachedBone(bone, animatable);
+    }
+
+    /**
+     * Static check used by {@code AzModelRenderer} to make dismemberment hiding always-on. Safe to call for any
+     * animatable type — non-{@link Dismemberable} animatables (items, block entities, mobs without limb defs)
+     * early-return {@code false}.
+     */
+    public static boolean isDetachedBone(AzBone bone, Object animatable) {
+        if (!(animatable instanceof Dismemberable dismemberable) || !(animatable instanceof LivingEntity living)) {
             return false;
         }
 
@@ -43,38 +57,47 @@ public final class DismembermentBoneVisibilityFilter<T extends LivingEntity> imp
             return false;
         }
 
-        var rootBones = getOrComputeRootBones(animatable.getType());
+        var hideBones = getOrComputeHideBones(living.getType());
 
-        if (rootBones.isEmpty()) {
+        if (hideBones.isEmpty()) {
             return false;
         }
 
-        return matchesAnyDetachedRoot(bone.getName(), detached, rootBones);
+        return matchesAnyDetached(bone.getName(), detached, hideBones);
     }
 
-    private Map<ResourceLocation, String> getOrComputeRootBones(EntityType<?> entityType) {
-        return rootBonesByEntityType.computeIfAbsent(entityType, type -> {
+    private static Map<ResourceLocation, List<String>> getOrComputeHideBones(EntityType<?> entityType) {
+        return HIDE_BONES_BY_ENTITY_TYPE.computeIfAbsent(entityType, type -> {
             var definitions = LimbDefinitionRegistry.getDefinitions(type);
-            var map = new HashMap<ResourceLocation, String>(definitions.size());
+            var map = new HashMap<ResourceLocation, List<String>>(definitions.size());
 
             for (var definition : definitions) {
-                map.put(definition.id(), definition.rootBoneName());
+                var bones = new ArrayList<String>(1 + definition.companionBoneNames().size());
+                bones.add(definition.rootBoneName());
+                bones.addAll(definition.companionBoneNames());
+                map.put(definition.id(), bones);
             }
 
             return map;
         });
     }
 
-    private static boolean matchesAnyDetachedRoot(
+    private static boolean matchesAnyDetached(
         String boneName,
         Set<ResourceLocation> detached,
-        Map<ResourceLocation, String> rootBonesByLimbId
+        Map<ResourceLocation, List<String>> hideBonesByLimbId
     ) {
         for (var limbId : detached) {
-            var rootBoneName = rootBonesByLimbId.get(limbId);
+            var hideBones = hideBonesByLimbId.get(limbId);
 
-            if (rootBoneName != null && rootBoneName.equals(boneName)) {
-                return true;
+            if (hideBones == null) {
+                continue;
+            }
+
+            for (var name : hideBones) {
+                if (name.equals(boneName)) {
+                    return true;
+                }
             }
         }
 

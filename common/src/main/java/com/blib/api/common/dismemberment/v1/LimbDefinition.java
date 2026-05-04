@@ -4,6 +4,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -13,6 +14,10 @@ import java.util.function.Function;
  * {@code rootBoneName} is the bone in the entity's geo model whose subtree disappears when the limb detaches. Children
  * of the root are hidden via the existing {@code AzBone#setChildrenHidden} cascade, so callers describe one root and
  * the renderer hides the whole branch.
+ * <p>
+ * {@code companionBoneNames} extends that hide/draw set with sibling bones that aren't reachable from the root subtree
+ * but conceptually belong with the limb (e.g. a chicken's beak/wattle, a villager's unified arms-vs-body split). They
+ * are hidden on the source body alongside the root and are drawn alongside the root subtree on the spawned limb.
  * <p>
  * {@code renderOffset} is added to the bone-pivot translation when the detached limb is rendered, letting authors
  * fine-tune how the geometry sits inside the limb entity's hitbox (since bone positions aren't accessible server-side,
@@ -24,20 +29,26 @@ import java.util.function.Function;
  * <p>
  * {@code spawnOffsetProvider} produces a world-axis offset added to the source entity's position when the limb spawns.
  * Use it to anchor heads at eye height, tails behind the body, etc.
+ * <p>
+ * {@code fatal} marks this limb as one whose detachment kills the source entity. Useful for heads on most mobs
+ * (decapitation = death) — set via {@link Builder#fatal()}.
  */
 public record LimbDefinition(
     ResourceLocation id,
     String rootBoneName,
     LimbCategory category,
+    List<String> companionBoneNames,
     Vec3 renderOffset,
     Vec3 renderRotation,
-    Function<LivingEntity, Vec3> spawnOffsetProvider
+    Function<LivingEntity, Vec3> spawnOffsetProvider,
+    boolean fatal
 ) {
 
     public LimbDefinition {
         Objects.requireNonNull(id, "LimbDefinition id must not be null");
         Objects.requireNonNull(rootBoneName, "LimbDefinition rootBoneName must not be null");
         Objects.requireNonNull(category, "LimbDefinition category must not be null");
+        Objects.requireNonNull(companionBoneNames, "LimbDefinition companionBoneNames must not be null");
         Objects.requireNonNull(renderOffset, "LimbDefinition renderOffset must not be null");
         Objects.requireNonNull(renderRotation, "LimbDefinition renderRotation must not be null");
         Objects.requireNonNull(spawnOffsetProvider, "LimbDefinition spawnOffsetProvider must not be null");
@@ -45,6 +56,8 @@ public record LimbDefinition(
         if (rootBoneName.isBlank()) {
             throw new IllegalArgumentException("LimbDefinition rootBoneName must not be blank");
         }
+
+        companionBoneNames = List.copyOf(companionBoneNames);
     }
 
     public static Builder builder(ResourceLocation id, String rootBoneName, LimbCategory category) {
@@ -62,11 +75,15 @@ public record LimbDefinition(
 
         private final LimbCategory category;
 
+        private List<String> companionBoneNames = List.of();
+
         private Vec3 renderOffset = Vec3.ZERO;
 
         private Vec3 renderRotation = Vec3.ZERO;
 
         private Function<LivingEntity, Vec3> spawnOffsetProvider = DEFAULT_SPAWN_OFFSET;
+
+        private boolean fatal = false;
 
         private Builder(ResourceLocation id, String rootBoneName, LimbCategory category) {
             this.id = id;
@@ -124,8 +141,41 @@ public record LimbDefinition(
             return this;
         }
 
+        /**
+         * Companion bones are sibling parts that aren't children of {@code rootBoneName} but belong with the limb
+         * conceptually — e.g. a chicken's {@code beak} / {@code red_thing} when detaching the {@code head}, or a
+         * villager's unified {@code arms} when detaching the {@code body}. They're hidden on the source body alongside
+         * the root and rendered alongside it on the spawned limb fragment, both for vanilla {@code ModelPart} and BLib
+         * geo-bone render paths.
+         */
+        public Builder companions(String... companionBoneNames) {
+            Objects.requireNonNull(companionBoneNames, "companionBoneNames");
+            this.companionBoneNames = List.of(companionBoneNames);
+            return this;
+        }
+
+        /**
+         * Marks this limb as fatal: detaching it kills the source entity. Triggered through
+         * {@link net.minecraft.world.entity.Entity#kill()}, so the entity dies the same way it would from any other
+         * lethal damage — death event fires, loot table runs, advancements trigger, etc. Typical use is heads on most
+         * mobs (decapitation = death).
+         */
+        public Builder fatal() {
+            this.fatal = true;
+            return this;
+        }
+
         public LimbDefinition build() {
-            return new LimbDefinition(id, rootBoneName, category, renderOffset, renderRotation, spawnOffsetProvider);
+            return new LimbDefinition(
+                id,
+                rootBoneName,
+                category,
+                companionBoneNames,
+                renderOffset,
+                renderRotation,
+                spawnOffsetProvider,
+                fatal
+            );
         }
     }
 }

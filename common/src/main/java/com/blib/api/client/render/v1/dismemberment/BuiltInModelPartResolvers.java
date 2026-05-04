@@ -1,9 +1,16 @@
 package com.blib.api.client.render.v1.dismemberment;
 
+import net.minecraft.client.model.AllayModel;
+import net.minecraft.client.model.ChickenModel;
+import net.minecraft.client.model.FoxModel;
 import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.model.HierarchicalModel;
+import net.minecraft.client.model.HorseModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.QuadrupedModel;
+import net.minecraft.client.model.RabbitModel;
+import net.minecraft.client.model.WardenModel;
+import net.minecraft.client.model.WolfModel;
 import net.minecraft.client.model.geom.ModelPart;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,6 +19,17 @@ import com.blib.internal.mixin.MixinQuadrupedModel_Accessor;
 /**
  * Registers {@link ModelPartResolver}s for the vanilla model base classes BLib supports out of the box. Called once at
  * client init.
+ * <p>
+ * The base-class resolvers handle whole model families ({@code HumanoidModel}, {@code QuadrupedModel}, etc.); a few
+ * specific subclasses have part hierarchies that need bespoke navigation:
+ * <ul>
+ * <li>{@code WardenModel} / {@code AllayModel} — head/body/limbs nested deeper than direct children of root.</li>
+ * <li>{@code WolfModel} / {@code HorseModel} / {@code FoxModel} / {@code ChickenModel} / {@code RabbitModel} — custom
+ * skeletons with named parts kept in private camelCase fields rather than reachable via {@code root().getChild(...)};
+ * resolved through {@link ReflectiveModelPartResolver}.</li>
+ * </ul>
+ * The resolver registry's class-hierarchy lookup means subclasses inherit registered resolvers — registering against
+ * {@code HorseModel} also covers {@code ChestedHorseModel} (donkey/mule) and {@code UndeadHorseModel}.
  */
 public final class BuiltInModelPartResolvers {
 
@@ -30,6 +48,17 @@ public final class BuiltInModelPartResolvers {
 
         // HeadedModel: fallback for any model exposing a head via the interface but not covered above.
         ModelPartResolverRegistry.register(HeadedModel.class, BuiltInModelPartResolvers::resolveHeaded);
+
+        // Specific subclasses with nested children that the HierarchicalModel resolver can't reach.
+        ModelPartResolverRegistry.register(WardenModel.class, BuiltInModelPartResolvers::resolveWarden);
+        ModelPartResolverRegistry.register(AllayModel.class, BuiltInModelPartResolvers::resolveAllay);
+
+        // Models whose named parts live in private camelCase fields.
+        ModelPartResolverRegistry.register(WolfModel.class, ReflectiveModelPartResolver.resolverFor(WolfModel.class));
+        ModelPartResolverRegistry.register(HorseModel.class, ReflectiveModelPartResolver.resolverFor(HorseModel.class));
+        ModelPartResolverRegistry.register(FoxModel.class, ReflectiveModelPartResolver.resolverFor(FoxModel.class));
+        ModelPartResolverRegistry.register(ChickenModel.class, ReflectiveModelPartResolver.resolverFor(ChickenModel.class));
+        ModelPartResolverRegistry.register(RabbitModel.class, ReflectiveModelPartResolver.resolverFor(RabbitModel.class));
     }
 
     private static @Nullable ModelPart resolveHumanoid(HumanoidModel<?> model, String partName) {
@@ -69,5 +98,35 @@ public final class BuiltInModelPartResolvers {
 
     private static @Nullable ModelPart resolveHeaded(HeadedModel model, String partName) {
         return "head".equals(partName) ? model.getHead() : null;
+    }
+
+    private static @Nullable ModelPart resolveWarden(WardenModel<?> model, String partName) {
+        // root → bone → body → head/right_arm/left_arm; bone → right_leg/left_leg.
+        var bone = model.root().getChild("bone");
+        var body = bone.getChild("body");
+
+        return switch (partName) {
+            case "head" -> body.getChild("head");
+            case "body" -> body;
+            case "right_arm" -> body.getChild("right_arm");
+            case "left_arm" -> body.getChild("left_arm");
+            case "right_leg" -> bone.getChild("right_leg");
+            case "left_leg" -> bone.getChild("left_leg");
+            default -> null;
+        };
+    }
+
+    private static @Nullable ModelPart resolveAllay(AllayModel model, String partName) {
+        // root → root → head/body; body → right_arm/left_arm.
+        var allayRoot = model.root().getChild("root");
+        var body = allayRoot.getChild("body");
+
+        return switch (partName) {
+            case "head" -> allayRoot.getChild("head");
+            case "body" -> body;
+            case "right_arm" -> body.getChild("right_arm");
+            case "left_arm" -> body.getChild("left_arm");
+            default -> null;
+        };
     }
 }

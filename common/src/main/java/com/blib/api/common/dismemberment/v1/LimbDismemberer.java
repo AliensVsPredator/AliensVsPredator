@@ -61,7 +61,9 @@ public final class LimbDismemberer {
             return Optional.empty();
         }
 
-        return Optional.ofNullable(spawnLimbEntity(entity, definition, limbConfigurer));
+        var spawned = Optional.ofNullable(spawnLimbEntity(entity, definition, limbConfigurer));
+        applyFatalSideEffect(entity, definition);
+        return spawned;
     }
 
     /**
@@ -93,10 +95,23 @@ public final class LimbDismemberer {
                 continue;
             }
 
-            return Optional.ofNullable(spawnLimbEntity(entity, definition, limbConfigurer));
+            var spawned = Optional.ofNullable(spawnLimbEntity(entity, definition, limbConfigurer));
+            applyFatalSideEffect(entity, definition);
+            return spawned;
         }
 
         return Optional.empty();
+    }
+
+    /**
+     * If the limb's definition is marked {@code fatal}, kill the source entity. Done after the limb spawns so the
+     * fragment is in the world before the body collapses, and skipped if the entity is already dead so we don't
+     * double-kill on a hit that simultaneously triggers detach + death from another source (e.g. ravager's last claw).
+     */
+    private static void applyFatalSideEffect(LivingEntity entity, LimbDefinition definition) {
+        if (definition.fatal() && entity.isAlive()) {
+            entity.kill();
+        }
     }
 
     public static List<LimbDefinition> getRemainingDefinitionsByCategory(LivingEntity entity, LimbCategory category) {

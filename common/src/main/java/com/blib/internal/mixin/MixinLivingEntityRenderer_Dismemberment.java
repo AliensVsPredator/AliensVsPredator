@@ -70,16 +70,25 @@ public abstract class MixinLivingEntityRenderer_Dismemberment {
                 continue;
             }
 
-            var part = VanillaLimbRenderer.findModelPart(model, definition.rootBoneName());
+            blib$hidePartIfPresent(definition.rootBoneName());
 
-            if (part == null) {
-                continue;
+            for (var companionBoneName : definition.companionBoneNames()) {
+                blib$hidePartIfPresent(companionBoneName);
             }
-
-            blib$hiddenParts.add(part);
-            blib$previousVisibility.add(part.visible);
-            part.visible = false;
         }
+    }
+
+    @Unique
+    private void blib$hidePartIfPresent(String partName) {
+        var part = VanillaLimbRenderer.findModelPart(model, partName);
+
+        if (part == null) {
+            return;
+        }
+
+        blib$hiddenParts.add(part);
+        blib$previousVisibility.add(part.visible);
+        part.visible = false;
     }
 
     @Inject(method = "render", at = @At("RETURN"))

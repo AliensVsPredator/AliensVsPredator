@@ -56,10 +56,17 @@ public class LimbEntityModelRenderer extends AzEntityModelRenderer<DismemberedLi
                         context.packedOverlay()
                     );
 
-                    // Re-run the source mob's armor layer at the limb's pose so equipped armor follows the limb (e.g.
-                    // helmet on a severed head). Bone-only path is preserved above; armor pass uses the buffer source.
+                    // Re-run the source mob's armor + held-item layers at the limb's pose so armor and any held item
+                    // follow the limb (e.g. helmet on a severed head, bow on a severed arm). Bone-only path is
+                    // preserved above; these passes use the buffer source.
                     if (context.multiBufferSource() != null) {
                         LimbArmorRenderer.render(
+                            animatable,
+                            context.poseStack(),
+                            context.multiBufferSource(),
+                            context.packedLight()
+                        );
+                        LimbHeldItemRenderer.render(
                             animatable,
                             context.poseStack(),
                             context.multiBufferSource(),
@@ -120,6 +127,21 @@ public class LimbEntityModelRenderer extends AzEntityModelRenderer<DismemberedLi
         if (context.vertexConsumer() != null) {
             entityRendererPipeline.updateAnimatedTextureFrame(animatable);
             renderRecursively(context, rootBone, isReRender);
+
+            // Companion bones live outside the root subtree but ride along with this limb (e.g. authored sibling
+            // bones the modeler kept independent of the head bone). Render each at the same pose stack as the root.
+            var definition = animatable.resolveLimbDefinition();
+
+            if (definition != null && !definition.companionBoneNames().isEmpty()) {
+                for (var companionBoneName : definition.companionBoneNames()) {
+                    var companionBone = bakedModel.getBoneOrNull(companionBoneName);
+
+                    if (companionBone != null) {
+                        renderRecursively(context, companionBone, isReRender);
+                    }
+                }
+            }
+
             entityRendererPipeline.config().renderEntry(context);
         }
 
