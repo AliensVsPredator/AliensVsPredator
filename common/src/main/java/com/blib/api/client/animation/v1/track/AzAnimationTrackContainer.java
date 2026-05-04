@@ -27,11 +27,10 @@ public class AzAnimationTrackContainer<T> {
     }
 
     /**
-     * Registers a track against a typed handle. Validates that the handle's name matches the track's
-     * name — a mismatch is a registration bug and throws immediately. Returns the container for
-     * chaining.
+     * Registers a track against a typed handle. Validates that the handle's name matches the track's name — a mismatch
+     * is a registration bug and throws immediately. Returns the container for chaining.
      */
-    public AzAnimationTrackContainer<T> register(AzTrackHandle<T> handle, AzAnimationTrack<T> track) {
+    public AzAnimationTrackContainer<T> register(AzTrackHandle<? super T> handle, AzAnimationTrack<T> track) {
         if (!handle.name().equals(track.name())) {
             throw new IllegalArgumentException(
                 "Track handle/track name mismatch: handle declares '%s' but track is named '%s'"

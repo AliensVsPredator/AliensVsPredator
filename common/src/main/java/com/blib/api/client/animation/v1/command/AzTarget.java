@@ -10,9 +10,10 @@ import com.blib.api.client.animation.v1.track.AzTrackHandle;
 
 /**
  * The set of tracks an action applies to.
- *
- * <p>Construct via the static factories: {@link #track(String)}, {@link #tracks(String...)}, or
- * {@link #allTracks()}. With a static import these read naturally:</p>
+ * <p>
+ * Construct via the static factories: {@link #track(String)}, {@link #tracks(String...)}, or {@link #allTracks()}. With
+ * a static import these read naturally:
+ * </p>
  *
  * <pre>{@code
  * import static com.blib.api.client.animation.v1.command.AzTarget.*;
@@ -23,9 +24,10 @@ import com.blib.api.client.animation.v1.track.AzTrackHandle;
  *     .cancel(tracks("head", "tail"))
  *     .build();
  * }</pre>
- *
- * <p>Targets that name nonexistent tracks silently skip those entries — resolution happens at
- * dispatch time against whatever tracks the animator actually has.</p>
+ * <p>
+ * Targets that name nonexistent tracks silently skip those entries — resolution happens at dispatch time against
+ * whatever tracks the animator actually has.
+ * </p>
  */
 public sealed interface AzTarget {
 
@@ -34,9 +36,9 @@ public sealed interface AzTarget {
     }
 
     /**
-     * Typed track target. Prefer this overload over {@link #track(String)} when the track is owned
-     * by an animator that exposes its tracks as {@link AzTrackHandle} constants — the compiler
-     * catches typos and the handle's animatable type binds the call to its owning animator family.
+     * Typed track target. Prefer this overload over {@link #track(String)} when the track is owned by an animator that
+     * exposes its tracks as {@link AzTrackHandle} constants — the compiler catches typos and the handle's animatable
+     * type binds the call to its owning animator family.
      */
     static AzTarget track(AzTrackHandle<?> handle) {
         return new Single(handle.name());
@@ -62,8 +64,8 @@ public sealed interface AzTarget {
     }
 
     /**
-     * Resolves this target against the given container and applies {@code action} to each
-     * matching track. Missing tracks (in {@link Single} or {@link Multiple}) are skipped.
+     * Resolves this target against the given container and applies {@code action} to each matching track. Missing
+     * tracks (in {@link Single} or {@link Multiple}) are skipped.
      */
     void forEach(AzAnimationTrackContainer<?> container, Consumer<AzAnimationTrack<?>> action);
 

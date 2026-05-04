@@ -5,8 +5,7 @@ import com.blib.api.client.animation.v1.command.AzTarget;
 import com.blib.internal.client.animation.dispatch.command.action.AzAction;
 
 /**
- * Full cancel: clears the current animation, drains the queue, and transitions the state machine to
- * STOP.
+ * Full cancel: clears the current animation, drains the queue, and transitions the state machine to STOP.
  */
 public record AzCancelAction<T>(AzTarget target) implements AzAction<T> {
 

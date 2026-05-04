@@ -35,10 +35,9 @@ public record AzCommand<T>(List<AzAction<T>> actions) {
     private static final String SERVER_SIDE_DISPATCH_MESSAGE_LOG = SERVER_SIDE_DISPATCH_MESSAGE.replaceAll("%s", "{}");
 
     /**
-     * Returns a fresh command builder with no dispatch mode set. Useful for set-only commands
-     * (e.g. {@code setSpeed} without any play action) or when the caller wants to set the mode
-     * explicitly via {@link AzCommandBuilder#dispatchMode(AzDispatchMode)}. Adding a play action
-     * to a builder with no mode set throws.
+     * Returns a fresh command builder with no dispatch mode set. Useful for set-only commands (e.g. {@code setSpeed}
+     * without any play action) or when the caller wants to set the mode explicitly via
+     * {@link AzCommandBuilder#dispatchMode(AzDispatchMode)}. Adding a play action to a builder with no mode set throws.
      */
     public static <T> AzCommandBuilder<T> builder() {
         return new AzCommandBuilder<>();

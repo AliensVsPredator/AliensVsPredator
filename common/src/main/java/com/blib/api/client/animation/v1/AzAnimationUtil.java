@@ -11,21 +11,22 @@ import com.blib.api.client.animation.v1.track.AzTrackHandle;
 public class AzAnimationUtil {
 
     /**
-     * Composes a single command that broadcasts an animation across multiple track handles, one
-     * action per handle. The {@code <T>} parameter is the animatable type — all handles must agree
-     * on it, enforced by the type system.
+     * Composes a single command that broadcasts an animation across multiple track handles, one action per handle. The
+     * {@code <T>} parameter is the animatable type — all handles must agree on it, enforced by the type system.
      */
     public static <T> AzCommand<T> compose(
-        List<AzTrackHandle<T>> handles,
+        List<? extends AzTrackHandle<? super T>> handles,
         String baseName,
         AzPlayBehavior playBehavior,
         AzDispatchMode dispatchMode
     ) {
         return AzCommand.compose(
             handles.stream()
-                .map(handle -> AzAnimationUtil.<T>builderFor(dispatchMode)
-                    .play(handle, baseName + "." + handle.name(), playBehavior)
-                    .build())
+                .map(
+                    handle -> AzAnimationUtil.<T>builderFor(dispatchMode)
+                        .play(handle, baseName + "." + handle.name(), playBehavior)
+                        .build()
+                )
                 .toList()
         );
     }

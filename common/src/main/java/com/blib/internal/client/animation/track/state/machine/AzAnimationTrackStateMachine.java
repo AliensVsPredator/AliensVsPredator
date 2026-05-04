@@ -19,24 +19,27 @@ public class AzAnimationTrackStateMachine<T> extends StateMachine<AzAnimationTra
 
     /**
      * Legal transitions out of each kind. Cross-kind transitions outside this graph are
-     * {@link AzTransitionResult.Rejected}; same-kind transitions outside this graph (e.g.
-     * STOP → STOP) are {@link AzTransitionResult.AlreadyInState}. The single legal self-transition
-     * is TRANSITION → TRANSITION, which re-enters the transition state to take a fresh bone snapshot
-     * when re-targeting mid-flight.
+     * {@link AzTransitionResult.Rejected}; same-kind transitions outside this graph (e.g. STOP → STOP) are
+     * {@link AzTransitionResult.AlreadyInState}. The single legal self-transition is TRANSITION → TRANSITION, which
+     * re-enters the transition state to take a fresh bone snapshot when re-targeting mid-flight.
      */
     private static final Map<AzAnimationStateKind, EnumSet<AzAnimationStateKind>> LEGAL = Map.of(
-        AzAnimationStateKind.STOP, EnumSet.of(AzAnimationStateKind.TRANSITION),
-        AzAnimationStateKind.TRANSITION, EnumSet.of(
+        AzAnimationStateKind.STOP,
+        EnumSet.of(AzAnimationStateKind.TRANSITION),
+        AzAnimationStateKind.TRANSITION,
+        EnumSet.of(
             AzAnimationStateKind.PLAY,
             AzAnimationStateKind.STOP,
             AzAnimationStateKind.TRANSITION
         ),
-        AzAnimationStateKind.PLAY, EnumSet.of(
+        AzAnimationStateKind.PLAY,
+        EnumSet.of(
             AzAnimationStateKind.TRANSITION,
             AzAnimationStateKind.PAUSE,
             AzAnimationStateKind.STOP
         ),
-        AzAnimationStateKind.PAUSE, EnumSet.of(
+        AzAnimationStateKind.PAUSE,
+        EnumSet.of(
             AzAnimationStateKind.PLAY,
             AzAnimationStateKind.TRANSITION,
             AzAnimationStateKind.STOP
@@ -99,9 +102,9 @@ public class AzAnimationTrackStateMachine<T> extends StateMachine<AzAnimationTra
     }
 
     /**
-     * Routes raw {@code setState} calls through the same legality check as the named transition
-     * methods. The result is discarded — direct callers who care about the outcome should use
-     * {@link #pause()}, {@link #play()}, {@link #transition()}, or {@link #stop()}.
+     * Routes raw {@code setState} calls through the same legality check as the named transition methods. The result is
+     * discarded — direct callers who care about the outcome should use {@link #pause()}, {@link #play()},
+     * {@link #transition()}, or {@link #stop()}.
      */
     @Override
     public void setState(AzAnimationState<T> next) {

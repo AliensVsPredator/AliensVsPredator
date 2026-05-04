@@ -70,7 +70,7 @@ public class AzCommandBuilder<T> {
         return this;
     }
 
-    public AzCommandBuilder<T> cancel(AzTrackHandle<T> handle) {
+    public AzCommandBuilder<T> cancel(AzTrackHandle<? super T> handle) {
         return cancel(AzTarget.track(handle));
     }
 
@@ -82,7 +82,7 @@ public class AzCommandBuilder<T> {
         return this;
     }
 
-    public AzCommandBuilder<T> skipCurrent(AzTrackHandle<T> handle) {
+    public AzCommandBuilder<T> skipCurrent(AzTrackHandle<? super T> handle) {
         return skipCurrent(AzTarget.track(handle));
     }
 
@@ -91,7 +91,7 @@ public class AzCommandBuilder<T> {
         return this;
     }
 
-    public AzCommandBuilder<T> pause(AzTrackHandle<T> handle) {
+    public AzCommandBuilder<T> pause(AzTrackHandle<? super T> handle) {
         return pause(AzTarget.track(handle));
     }
 
@@ -100,7 +100,7 @@ public class AzCommandBuilder<T> {
         return this;
     }
 
-    public AzCommandBuilder<T> resume(AzTrackHandle<T> handle) {
+    public AzCommandBuilder<T> resume(AzTrackHandle<? super T> handle) {
         return resume(AzTarget.track(handle));
     }
 
@@ -109,7 +109,7 @@ public class AzCommandBuilder<T> {
         return this;
     }
 
-    public AzCommandBuilder<T> setEasingType(AzTrackHandle<T> handle, AzEasingType easingType) {
+    public AzCommandBuilder<T> setEasingType(AzTrackHandle<? super T> handle, AzEasingType easingType) {
         return setEasingType(AzTarget.track(handle), easingType);
     }
 
@@ -118,7 +118,7 @@ public class AzCommandBuilder<T> {
         return this;
     }
 
-    public AzCommandBuilder<T> setSpeed(AzTrackHandle<T> handle, double speed) {
+    public AzCommandBuilder<T> setSpeed(AzTrackHandle<? super T> handle, double speed) {
         return setSpeed(AzTarget.track(handle), speed);
     }
 
@@ -127,7 +127,7 @@ public class AzCommandBuilder<T> {
         return this;
     }
 
-    public AzCommandBuilder<T> setTransitionSpeed(AzTrackHandle<T> handle, float transitionSpeed) {
+    public AzCommandBuilder<T> setTransitionSpeed(AzTrackHandle<? super T> handle, float transitionSpeed) {
         return setTransitionSpeed(AzTarget.track(handle), transitionSpeed);
     }
 
@@ -136,7 +136,7 @@ public class AzCommandBuilder<T> {
         return this;
     }
 
-    public AzCommandBuilder<T> setStartTickOffset(AzTrackHandle<T> handle, double tickOffset) {
+    public AzCommandBuilder<T> setStartTickOffset(AzTrackHandle<? super T> handle, double tickOffset) {
         return setStartTickOffset(AzTarget.track(handle), tickOffset);
     }
 
@@ -145,7 +145,7 @@ public class AzCommandBuilder<T> {
         return this;
     }
 
-    public AzCommandBuilder<T> setFreezeTickOffset(AzTrackHandle<T> handle, double freezeTickOffset) {
+    public AzCommandBuilder<T> setFreezeTickOffset(AzTrackHandle<? super T> handle, double freezeTickOffset) {
         return setFreezeTickOffset(AzTarget.track(handle), freezeTickOffset);
     }
 
@@ -154,7 +154,7 @@ public class AzCommandBuilder<T> {
         return this;
     }
 
-    public AzCommandBuilder<T> setReverseAnimation(AzTrackHandle<T> handle, boolean hasReverse) {
+    public AzCommandBuilder<T> setReverseAnimation(AzTrackHandle<? super T> handle, boolean hasReverse) {
         return setReverseAnimation(AzTarget.track(handle), hasReverse);
     }
 
@@ -162,7 +162,7 @@ public class AzCommandBuilder<T> {
         return playSequence(target, builder -> builder.queue(animationName, properties -> properties));
     }
 
-    public AzCommandBuilder<T> play(AzTrackHandle<T> handle, String animationName) {
+    public AzCommandBuilder<T> play(AzTrackHandle<? super T> handle, String animationName) {
         return play(AzTarget.track(handle), animationName);
     }
 
@@ -173,7 +173,7 @@ public class AzCommandBuilder<T> {
         );
     }
 
-    public AzCommandBuilder<T> play(AzTrackHandle<T> handle, String animationName, AzPlayBehavior playBehavior) {
+    public AzCommandBuilder<T> play(AzTrackHandle<? super T> handle, String animationName, AzPlayBehavior playBehavior) {
         return play(AzTarget.track(handle), animationName, playBehavior);
     }
 
@@ -187,7 +187,7 @@ public class AzCommandBuilder<T> {
     }
 
     public AzCommandBuilder<T> playSequence(
-        AzTrackHandle<T> handle,
+        AzTrackHandle<? super T> handle,
         UnaryOperator<AzAnimationSequenceBuilder> builderUnaryOperator
     ) {
         return playSequence(AzTarget.track(handle), builderUnaryOperator);
@@ -198,10 +198,10 @@ public class AzCommandBuilder<T> {
     }
 
     /**
-     * Materializes the {@link AzDispatchPolicy} for the play action being added. Throws if no
-     * dispatch mode has been set — every play action must declare its dispatch intent. Use
-     * {@link AzCommand#replay()}, {@link AzCommand#idempotent()}, {@link AzCommand#enqueueing()},
-     * or call {@link #dispatchMode(AzDispatchMode)} on the builder.
+     * Materializes the {@link AzDispatchPolicy} for the play action being added. Throws if no dispatch mode has been
+     * set — every play action must declare its dispatch intent. Use {@link AzCommand#replay()},
+     * {@link AzCommand#idempotent()}, {@link AzCommand#enqueueing()}, or call {@link #dispatchMode(AzDispatchMode)} on
+     * the builder.
      */
     private AzDispatchPolicy currentPolicy() {
         if (dispatchMode == null) {
