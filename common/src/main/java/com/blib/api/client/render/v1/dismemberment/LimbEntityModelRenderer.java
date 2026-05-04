@@ -1,14 +1,17 @@
 package com.blib.api.client.render.v1.dismemberment;
 
 import com.mojang.math.Axis;
+import net.minecraft.client.Minecraft;
 
 import java.util.UUID;
 
 import com.blib.api.client.render.v1.AzLayerRenderer;
 import com.blib.api.client.render.v1.AzRendererPipelineContext;
+import com.blib.api.client.render.v1.entity.AzEntityRenderer;
 import com.blib.api.client.render.v1.entity.model.AzEntityModelRenderer;
 import com.blib.api.client.render.v1.entity.pipeline.AzEntityRendererPipeline;
 import com.blib.api.common.dismemberment.v1.entity.DismemberedLimbEntity;
+import com.blib.internal.mixin.MixinEntityRenderDispatcher_Accessor;
 
 /**
  * Walks only the bone subtree rooted at the limb's bone instead of all top-level bones, so the limb entity renders just
@@ -26,10 +29,51 @@ public class LimbEntityModelRenderer extends AzEntityModelRenderer<DismemberedLi
     @Override
     public void render(AzRendererPipelineContext<UUID, DismemberedLimbEntity> context, boolean isReRender) {
         var animatable = context.animatable();
-        var bakedModel = context.bakedModel();
         var rootBoneName = animatable.getRootBoneName();
 
-        if (bakedModel == null || rootBoneName == null || rootBoneName.isEmpty()) {
+        if (rootBoneName == null || rootBoneName.isEmpty()) {
+            return;
+        }
+
+        // Pick the render path based on the source mob's renderer. AzEntityRenderer means BLib
+        // geo bones; anything else (LivingEntityRenderer subclasses, etc.) means vanilla
+        // ModelPart rendering. The ghost is always live as long as the limb is, so this lookup
+        // never falls back unless the source NBT hasn't synced yet.
+        var ghost = animatable.getOrCreateGhost();
+
+        if (ghost != null) {
+            var dispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
+            var sourceRenderer = ((MixinEntityRenderDispatcher_Accessor) dispatcher).blib$getRenderers()
+                .get(ghost.getType());
+
+            if (!(sourceRenderer instanceof AzEntityRenderer<?>)) {
+                if (!isReRender && context.vertexConsumer() != null) {
+                    VanillaLimbRenderer.render(
+                        animatable,
+                        context.poseStack(),
+                        context.vertexConsumer(),
+                        context.packedLight(),
+                        context.packedOverlay()
+                    );
+
+                    // Re-run the source mob's armor layer at the limb's pose so equipped armor follows the limb (e.g.
+                    // helmet on a severed head). Bone-only path is preserved above; armor pass uses the buffer source.
+                    if (context.multiBufferSource() != null) {
+                        LimbArmorRenderer.render(
+                            animatable,
+                            context.poseStack(),
+                            context.multiBufferSource(),
+                            context.packedLight()
+                        );
+                    }
+                }
+                return;
+            }
+        }
+
+        var bakedModel = context.bakedModel();
+
+        if (bakedModel == null) {
             return;
         }
 

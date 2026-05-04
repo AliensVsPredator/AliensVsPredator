@@ -9,26 +9,21 @@ import java.util.function.Function;
 
 /**
  * Server-authoritative description of one detachable limb on an entity.
- *
- * <p>{@code rootBoneName} is the bone in the entity's geo model whose subtree
- * disappears when the limb detaches. Children of the root are hidden via the
- * existing {@code AzBone#setChildrenHidden} cascade, so callers describe one
- * root and the renderer hides the whole branch.
- *
- * <p>{@code renderOffset} is added to the bone-pivot translation when the
- * detached limb is rendered, letting authors fine-tune how the geometry sits
- * inside the limb entity's hitbox (since bone positions aren't accessible
- * server-side, these offsets are the only way to nudge things).
- *
- * <p>{@code renderRotation} is an authored Euler rotation in degrees applied
- * around the limb's anchor (the bone's pivot, after it's been moved to the
- * entity origin) so a limb that hung downward in bind pose can lie flat once
- * detached. Components are X/Y/Z; the renderer applies them in Z-Y-X order to
- * match the geo bone convention.
- *
- * <p>{@code spawnOffsetProvider} produces a world-axis offset added to the
- * source entity's position when the limb spawns. Use it to anchor heads at
- * eye height, tails behind the body, etc.
+ * <p>
+ * {@code rootBoneName} is the bone in the entity's geo model whose subtree disappears when the limb detaches. Children
+ * of the root are hidden via the existing {@code AzBone#setChildrenHidden} cascade, so callers describe one root and
+ * the renderer hides the whole branch.
+ * <p>
+ * {@code renderOffset} is added to the bone-pivot translation when the detached limb is rendered, letting authors
+ * fine-tune how the geometry sits inside the limb entity's hitbox (since bone positions aren't accessible server-side,
+ * these offsets are the only way to nudge things).
+ * <p>
+ * {@code renderRotation} is an authored Euler rotation in degrees applied around the limb's anchor (the bone's pivot,
+ * after it's been moved to the entity origin) so a limb that hung downward in bind pose can lie flat once detached.
+ * Components are X/Y/Z; the renderer applies them in Z-Y-X order to match the geo bone convention.
+ * <p>
+ * {@code spawnOffsetProvider} produces a world-axis offset added to the source entity's position when the limb spawns.
+ * Use it to anchor heads at eye height, tails behind the body, etc.
  */
 public record LimbDefinition(
     ResourceLocation id,
@@ -80,8 +75,8 @@ public record LimbDefinition(
         }
 
         /**
-         * Translation applied (in blocks) on top of the bone-pivot compensation
-         * when the detached limb is rendered. Positive Y lifts the geometry.
+         * Translation applied (in blocks) on top of the bone-pivot compensation when the detached limb is rendered.
+         * Positive Y lifts the geometry.
          */
         public Builder renderOffset(double x, double y, double z) {
             return renderOffset(new Vec3(x, y, z));
@@ -93,10 +88,9 @@ public record LimbDefinition(
         }
 
         /**
-         * Authored Euler rotation in degrees, applied around the limb's anchor
-         * after the bone pivot has been moved to the entity origin. Use this to
-         * orient limbs that would otherwise lie in their bind pose (e.g. arms
-         * pointing down through the ground).
+         * Authored Euler rotation in degrees, applied around the limb's anchor after the bone pivot has been moved to
+         * the entity origin. Use this to orient limbs that would otherwise lie in their bind pose (e.g. arms pointing
+         * down through the ground).
          */
         public Builder renderRotation(double pitch, double yaw, double roll) {
             return renderRotation(new Vec3(pitch, yaw, roll));
@@ -108,8 +102,8 @@ public record LimbDefinition(
         }
 
         /**
-         * World-axis offset added to the source entity's position to determine
-         * where the limb entity spawns. Default is the entity's vertical centre.
+         * World-axis offset added to the source entity's position to determine where the limb entity spawns. Default is
+         * the entity's vertical centre.
          */
         public Builder spawnOffset(double x, double y, double z) {
             var fixed = new Vec3(x, y, z);

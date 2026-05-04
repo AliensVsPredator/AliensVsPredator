@@ -16,6 +16,7 @@
     "MixinEntityTypeBuilder_SilenceDataFixerError",
     "MixinHolder",
     "MixinLevelChunk_TerrainCacheInvalidation",
+    "MixinLivingEntity_Dismemberable",
     "MixinLivingEntity_GOAPUser",
     "MixinPath_Debug",
     "MixinRegistry_ApplyDataFixes",
@@ -35,7 +36,12 @@
     "azurelib.ItemStackMixin_AzItemAnimatorCache",
     "azurelib.MixinItemRenderer",
     "azurelib.TextureManagerMixin",
-    "MixinDebugRenderer"
+    "MixinDebugRenderer",
+    "MixinEntityRenderDispatcher_Accessor",
+    "MixinHumanoidArmorLayer_Dismemberment",
+    "MixinLivingEntityRenderer_Accessor",
+    "MixinLivingEntityRenderer_Dismemberment",
+    "MixinQuadrupedModel_Accessor"
   ],
   "server": [],
   "injectors": {

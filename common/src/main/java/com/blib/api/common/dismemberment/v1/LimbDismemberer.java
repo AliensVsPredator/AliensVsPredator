@@ -1,5 +1,6 @@
 package com.blib.api.common.dismemberment.v1;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
@@ -18,6 +19,10 @@ import com.blib.mod.common.registry.init.BLibEntityTypes;
  * This is a stateless utility: it inspects the registry, mutates the entity's manager, and spawns a
  * {@link DismemberedLimbEntity}. Callers can pass an optional {@code limbConfigurer} to customize the spawned entity
  * (velocity, lifetime, side-effects) without subclassing.
+ * <p>
+ * Texture and model are no longer passed in: at spawn time the source entity's NBT is captured and shipped on the limb.
+ * The client reconstructs a transient ghost copy and pulls texture/model directly from the source's renderer, so
+ * variant-specific or runtime-state-dependent visuals carry over without any consumer-side mapping.
  */
 public final class LimbDismemberer {
 
@@ -27,20 +32,13 @@ public final class LimbDismemberer {
      * Detaches the limb with the given id from {@code entity} if it has not already been detached. Returns the spawned
      * entity (if any).
      */
-    public static Optional<DismemberedLimbEntity> detach(
-        LivingEntity entity,
-        ResourceLocation limbId,
-        ResourceLocation modelLocation,
-        ResourceLocation textureLocation
-    ) {
-        return detach(entity, limbId, modelLocation, textureLocation, null);
+    public static Optional<DismemberedLimbEntity> detach(LivingEntity entity, ResourceLocation limbId) {
+        return detach(entity, limbId, null);
     }
 
     public static Optional<DismemberedLimbEntity> detach(
         LivingEntity entity,
         ResourceLocation limbId,
-        ResourceLocation modelLocation,
-        ResourceLocation textureLocation,
         @Nullable Consumer<DismemberedLimbEntity> limbConfigurer
     ) {
         if (entity.level().isClientSide) {
@@ -63,7 +61,7 @@ public final class LimbDismemberer {
             return Optional.empty();
         }
 
-        return Optional.ofNullable(spawnLimbEntity(entity, definition, modelLocation, textureLocation, limbConfigurer));
+        return Optional.ofNullable(spawnLimbEntity(entity, definition, limbConfigurer));
     }
 
     /**
@@ -73,8 +71,6 @@ public final class LimbDismemberer {
     public static Optional<DismemberedLimbEntity> detachFirstOfCategory(
         LivingEntity entity,
         LimbCategory category,
-        ResourceLocation modelLocation,
-        ResourceLocation textureLocation,
         @Nullable Consumer<DismemberedLimbEntity> limbConfigurer
     ) {
         if (entity.level().isClientSide) {
@@ -97,7 +93,7 @@ public final class LimbDismemberer {
                 continue;
             }
 
-            return Optional.ofNullable(spawnLimbEntity(entity, definition, modelLocation, textureLocation, limbConfigurer));
+            return Optional.ofNullable(spawnLimbEntity(entity, definition, limbConfigurer));
         }
 
         return Optional.empty();
@@ -119,8 +115,6 @@ public final class LimbDismemberer {
     private static @Nullable DismemberedLimbEntity spawnLimbEntity(
         LivingEntity entity,
         LimbDefinition definition,
-        ResourceLocation modelLocation,
-        ResourceLocation textureLocation,
         @Nullable Consumer<DismemberedLimbEntity> limbConfigurer
     ) {
         var level = entity.level();
@@ -131,10 +125,13 @@ public final class LimbDismemberer {
             return null;
         }
 
+        var sourceNbt = new CompoundTag();
+        entity.saveWithoutId(sourceNbt);
+
         limb.configure(
             entity.getType(),
-            modelLocation,
-            textureLocation,
+            sourceNbt,
+            definition.id(),
             definition.rootBoneName(),
             definition.renderOffset(),
             definition.renderRotation(),

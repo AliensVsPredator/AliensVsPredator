@@ -22,14 +22,22 @@ import com.blib.api.common.dismemberment.v1.LimbDefinitionRegistry;
  * <p>
  * Per-entity-type bone-name lookups are cached so the hot render path is a single {@code Set#contains} call against an
  * empty set when nothing is detached.
+ * <p>
+ * The bound is {@link LivingEntity} rather than {@code LivingEntity & Dismemberable} because the {@code Dismemberable}
+ * interface is added to every {@code LivingEntity} via mixin at runtime — not visible to the compiler. The instance
+ * check inside {@code shouldHideBone} confirms it before reading the manager.
  */
-public final class DismembermentBoneVisibilityFilter<T extends LivingEntity & Dismemberable> implements BoneVisibilityFilter<T> {
+public final class DismembermentBoneVisibilityFilter<T extends LivingEntity> implements BoneVisibilityFilter<T> {
 
     private final Map<EntityType<?>, Map<ResourceLocation, String>> rootBonesByEntityType = new HashMap<>();
 
     @Override
     public boolean shouldHideBone(AzBone bone, T animatable) {
-        var detached = animatable.getDismembermentManager().getDetachedLimbIds();
+        if (!(animatable instanceof Dismemberable dismemberable)) {
+            return false;
+        }
+
+        var detached = dismemberable.getDismembermentManager().getDetachedLimbIds();
 
         if (detached.isEmpty()) {
             return false;
