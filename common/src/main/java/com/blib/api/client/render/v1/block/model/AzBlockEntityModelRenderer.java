@@ -56,6 +56,12 @@ public class AzBlockEntityModelRenderer<T extends BlockEntity> extends AzModelRe
 
     @Override
     public void renderRecursively(AzRendererPipelineContext<Long, T> context, AzBone bone, boolean isReRender) {
+        var visibilityFilter = blockEntityRendererPipeline.config().boneVisibilityFilter();
+
+        if (visibilityFilter != null && visibilityFilter.shouldHideBone(bone, context.animatable())) {
+            return;
+        }
+
         var buffer = context.vertexConsumer();
         var bufferSource = context.multiBufferSource();
         var entity = context.animatable();

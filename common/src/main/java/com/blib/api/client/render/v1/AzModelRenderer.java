@@ -48,6 +48,12 @@ public class AzModelRenderer<K, T> {
     }
 
     protected void renderRecursively(AzRendererPipelineContext<K, T> context, AzBone bone, boolean isReRender) {
+        var visibilityFilter = rendererPipeline.config().boneVisibilityFilter();
+
+        if (visibilityFilter != null && visibilityFilter.shouldHideBone(bone, context.animatable())) {
+            return;
+        }
+
         var buffer = context.vertexConsumer();
         var bufferSource = context.multiBufferSource();
         var poseStack = context.poseStack();

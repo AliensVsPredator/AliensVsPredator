@@ -48,6 +48,8 @@ public class AzRendererConfig<K, T> {
 
     private final @Nullable Function<AzBone, RenderType> boneRenderTypeOverrideProvider;
 
+    private final @Nullable BoneVisibilityFilter<T> boneVisibilityFilter;
+
     public AzRendererConfig(
         Supplier<AzAnimator<K, T>> animatorProvider,
         BiFunction<@Nullable Entity, T, ResourceLocation> modelLocationProvider,
@@ -63,7 +65,8 @@ public class AzRendererConfig<K, T> {
         Function<T, Float> scaleHeight,
         Function<T, Float> scaleWidth,
         Function<AzBone, ResourceLocation> boneTextureOverrideProvider,
-        Function<AzBone, RenderType> boneRenderTypeOverrideProvider
+        Function<AzBone, RenderType> boneRenderTypeOverrideProvider,
+        @Nullable BoneVisibilityFilter<T> boneVisibilityFilter
     ) {
         this.animatorProvider = animatorProvider;
         this.modelLocationProvider = modelLocationProvider;
@@ -80,6 +83,7 @@ public class AzRendererConfig<K, T> {
         this.scaleWidth = scaleWidth;
         this.boneTextureOverrideProvider = boneTextureOverrideProvider;
         this.boneRenderTypeOverrideProvider = boneRenderTypeOverrideProvider;
+        this.boneVisibilityFilter = boneVisibilityFilter;
     }
 
     public @Nullable AzAnimator<K, T> createAnimator() {
@@ -157,6 +161,10 @@ public class AzRendererConfig<K, T> {
         return boneRenderTypeOverrideProvider.apply(bone);
     }
 
+    public @Nullable BoneVisibilityFilter<T> boneVisibilityFilter() {
+        return boneVisibilityFilter;
+    }
+
     public static class Builder<K, T> {
 
         protected final BiFunction<@Nullable Entity, T, ResourceLocation> modelLocationProvider;
@@ -189,6 +197,8 @@ public class AzRendererConfig<K, T> {
 
         private @Nullable Function<AzBone, RenderType> boneRenderTypeOverrideProvider;
 
+        private @Nullable BoneVisibilityFilter<T> boneVisibilityFilter;
+
         protected Builder(
             BiFunction<@Nullable Entity, T, ResourceLocation> modelLocationProvider,
             BiFunction<@Nullable Entity, T, ResourceLocation> textureLocationProvider
@@ -208,6 +218,7 @@ public class AzRendererConfig<K, T> {
             this.scaleWidth = $ -> 1.0F;
             this.boneTextureOverrideProvider = $ -> null;
             this.boneRenderTypeOverrideProvider = $ -> null;
+            this.boneVisibilityFilter = null;
         }
 
         public Builder<K, T> setBoneTextureOverrideProvider(
@@ -221,6 +232,11 @@ public class AzRendererConfig<K, T> {
             Function<AzBone, RenderType> boneRenderTypeOverrideProvider
         ) {
             this.boneRenderTypeOverrideProvider = boneRenderTypeOverrideProvider;
+            return this;
+        }
+
+        public Builder<K, T> setBoneVisibilityFilter(@Nullable BoneVisibilityFilter<T> boneVisibilityFilter) {
+            this.boneVisibilityFilter = boneVisibilityFilter;
             return this;
         }
 
@@ -317,7 +333,8 @@ public class AzRendererConfig<K, T> {
                 scaleHeight,
                 scaleWidth,
                 boneTextureOverrideProvider,
-                boneRenderTypeOverrideProvider
+                boneRenderTypeOverrideProvider,
+                boneVisibilityFilter
             );
         }
     }

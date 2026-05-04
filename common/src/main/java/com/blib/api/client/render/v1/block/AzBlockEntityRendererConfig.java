@@ -18,6 +18,7 @@ import com.blib.api.client.render.v1.AzModelRenderer;
 import com.blib.api.client.render.v1.AzRendererConfig;
 import com.blib.api.client.render.v1.AzRendererPipeline;
 import com.blib.api.client.render.v1.AzRendererPipelineContext;
+import com.blib.api.client.render.v1.BoneVisibilityFilter;
 import com.blib.api.client.render.v1.block.model.AzBlockEntityModelRenderer;
 import com.blib.api.client.render.v1.block.pipeline.AzBlockEntityRendererPipeline;
 import com.blib.api.client.render.v1.block.pipeline.AzBlockEntityRendererPipelineContext;
@@ -40,7 +41,8 @@ public class AzBlockEntityRendererConfig<T extends BlockEntity> extends AzRender
         BiFunction<AzRendererPipeline<Long, T>, AzLayerRenderer<Long, T>, AzModelRenderer<Long, T>> modelRendererProvider,
         Function<AzRendererPipeline<Long, T>, AzRendererPipelineContext<Long, T>> pipelineContextFunction,
         Function<AzBone, ResourceLocation> boneTextureOverrideProvider,
-        Function<AzBone, RenderType> boneRenderTypeOverrideProvider
+        Function<AzBone, RenderType> boneRenderTypeOverrideProvider,
+        BoneVisibilityFilter<T> boneVisibilityFilter
     ) {
         super(
             animatorProvider,
@@ -57,7 +59,8 @@ public class AzBlockEntityRendererConfig<T extends BlockEntity> extends AzRender
             scaleHeight,
             scaleWidth,
             boneTextureOverrideProvider,
-            boneRenderTypeOverrideProvider
+            boneRenderTypeOverrideProvider,
+            boneVisibilityFilter
         );
     }
 
@@ -213,7 +216,8 @@ public class AzBlockEntityRendererConfig<T extends BlockEntity> extends AzRender
                 baseConfig::modelRendererProvider,
                 baseConfig::pipelineContext,
                 baseConfig::boneTextureOverrideProvider,
-                baseConfig::boneRenderTypeOverrideProvider
+                baseConfig::boneRenderTypeOverrideProvider,
+                baseConfig.boneVisibilityFilter()
             );
         }
     }

@@ -37,6 +37,7 @@ import com.blib.mod.common.registry.init.BLibCommands;
 import com.blib.mod.common.registry.init.BLibDataComponents;
 import com.blib.mod.common.registry.init.BLibDataStoreTypes;
 import com.blib.mod.common.registry.init.BLibDataSyncKeys;
+import com.blib.mod.common.registry.init.BLibEntityTypes;
 import com.blib.mod.common.registry.init.BLibFactionDataTypes;
 import com.blib.mod.common.registry.init.BLibLootItemConditionTypes;
 import com.blib.mod.common.registry.init.BLibPropertyContainerTypes;
@@ -70,6 +71,7 @@ public class BLib {
         BLibDataComponents.initialize();
         BLibDataSyncKeys.initialize();
         BLibDataStoreTypes.initialize();
+        BLibEntityTypes.initialize();
         BLibFactionDataTypes.initialize();
         BLibLootItemConditionTypes.initialize();
         BLibTerritoryDataStoreTypes.initialize();

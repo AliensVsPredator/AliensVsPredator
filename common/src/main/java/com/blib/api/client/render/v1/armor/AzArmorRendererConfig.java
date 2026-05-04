@@ -19,6 +19,7 @@ import com.blib.api.client.render.v1.AzModelRenderer;
 import com.blib.api.client.render.v1.AzRendererConfig;
 import com.blib.api.client.render.v1.AzRendererPipeline;
 import com.blib.api.client.render.v1.AzRendererPipelineContext;
+import com.blib.api.client.render.v1.BoneVisibilityFilter;
 import com.blib.api.client.render.v1.armor.model.AzArmorModelRenderer;
 import com.blib.api.client.render.v1.armor.model.bone.AzArmorBoneProvider;
 import com.blib.api.client.render.v1.armor.model.bone.AzDefaultArmorBoneProvider;
@@ -46,7 +47,8 @@ public class AzArmorRendererConfig extends AzRendererConfig<UUID, ItemStack> {
         BiFunction<AzRendererPipeline<UUID, ItemStack>, AzLayerRenderer<UUID, ItemStack>, AzModelRenderer<UUID, ItemStack>> modelRendererProvider,
         Function<AzRendererPipeline<UUID, ItemStack>, AzRendererPipelineContext<UUID, ItemStack>> pipelineContextFunction,
         Function<AzBone, ResourceLocation> boneTextureOverrideProvider,
-        Function<AzBone, RenderType> boneRenderTypeOverrideProvider
+        Function<AzBone, RenderType> boneRenderTypeOverrideProvider,
+        BoneVisibilityFilter<ItemStack> boneVisibilityFilter
     ) {
         super(
             animatorProvider,
@@ -63,7 +65,8 @@ public class AzArmorRendererConfig extends AzRendererConfig<UUID, ItemStack> {
             scaleHeight,
             scaleWidth,
             boneTextureOverrideProvider,
-            boneRenderTypeOverrideProvider
+            boneRenderTypeOverrideProvider,
+            boneVisibilityFilter
         );
         this.boneProvider = boneProvider;
     }
@@ -227,7 +230,8 @@ public class AzArmorRendererConfig extends AzRendererConfig<UUID, ItemStack> {
                 baseConfig::modelRendererProvider,
                 baseConfig::pipelineContext,
                 baseConfig::boneTextureOverrideProvider,
-                baseConfig::boneRenderTypeOverrideProvider
+                baseConfig::boneRenderTypeOverrideProvider,
+                baseConfig.boneVisibilityFilter()
             );
         }
     }
