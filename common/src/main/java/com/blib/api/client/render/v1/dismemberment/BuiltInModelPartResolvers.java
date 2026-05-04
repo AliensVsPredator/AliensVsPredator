@@ -25,8 +25,8 @@ import com.blib.internal.mixin.MixinQuadrupedModel_Accessor;
  * <ul>
  * <li>{@code WardenModel} / {@code AllayModel} — head/body/limbs nested deeper than direct children of root.</li>
  * <li>{@code WolfModel} / {@code HorseModel} / {@code FoxModel} / {@code ChickenModel} / {@code RabbitModel} — custom
- * skeletons with named parts kept in private camelCase fields rather than reachable via {@code root().getChild(...)};
- * resolved through {@link ReflectiveModelPartResolver}.</li>
+ * skeletons with named parts kept in private fields. The fields are exposed through BLib's access widener / access
+ * transformer so the resolvers below read them directly.</li>
  * </ul>
  * The resolver registry's class-hierarchy lookup means subclasses inherit registered resolvers — registering against
  * {@code HorseModel} also covers {@code ChestedHorseModel} (donkey/mule) and {@code UndeadHorseModel}.
@@ -53,12 +53,12 @@ public final class BuiltInModelPartResolvers {
         ModelPartResolverRegistry.register(WardenModel.class, BuiltInModelPartResolvers::resolveWarden);
         ModelPartResolverRegistry.register(AllayModel.class, BuiltInModelPartResolvers::resolveAllay);
 
-        // Models whose named parts live in private camelCase fields.
-        ModelPartResolverRegistry.register(WolfModel.class, ReflectiveModelPartResolver.resolverFor(WolfModel.class));
-        ModelPartResolverRegistry.register(HorseModel.class, ReflectiveModelPartResolver.resolverFor(HorseModel.class));
-        ModelPartResolverRegistry.register(FoxModel.class, ReflectiveModelPartResolver.resolverFor(FoxModel.class));
-        ModelPartResolverRegistry.register(ChickenModel.class, ReflectiveModelPartResolver.resolverFor(ChickenModel.class));
-        ModelPartResolverRegistry.register(RabbitModel.class, ReflectiveModelPartResolver.resolverFor(RabbitModel.class));
+        // Models whose named parts live in private fields exposed by BLib's access widener / access transformer.
+        ModelPartResolverRegistry.register(WolfModel.class, BuiltInModelPartResolvers::resolveWolf);
+        ModelPartResolverRegistry.register(HorseModel.class, BuiltInModelPartResolvers::resolveHorse);
+        ModelPartResolverRegistry.register(FoxModel.class, BuiltInModelPartResolvers::resolveFox);
+        ModelPartResolverRegistry.register(ChickenModel.class, BuiltInModelPartResolvers::resolveChicken);
+        ModelPartResolverRegistry.register(RabbitModel.class, BuiltInModelPartResolvers::resolveRabbit);
     }
 
     private static @Nullable ModelPart resolveHumanoid(HumanoidModel<?> model, String partName) {
@@ -126,6 +126,77 @@ public final class BuiltInModelPartResolvers {
             case "body" -> body;
             case "right_arm" -> body.getChild("right_arm");
             case "left_arm" -> body.getChild("left_arm");
+            default -> null;
+        };
+    }
+
+    private static @Nullable ModelPart resolveWolf(WolfModel<?> model, String partName) {
+        return switch (partName) {
+            case "head" -> model.head;
+            case "body" -> model.body;
+            case "right_hind_leg" -> model.rightHindLeg;
+            case "left_hind_leg" -> model.leftHindLeg;
+            case "right_front_leg" -> model.rightFrontLeg;
+            case "left_front_leg" -> model.leftFrontLeg;
+            case "tail" -> model.tail;
+            default -> null;
+        };
+    }
+
+    private static @Nullable ModelPart resolveHorse(HorseModel<?> model, String partName) {
+        // The head bone is named `head_parts` in HorseModel's LayerDefinition; the corresponding field is `headParts`.
+        // Tail is technically a child of body but HorseModel keeps a top-level reference to it, which is what we use.
+        return switch (partName) {
+            case "head_parts" -> model.headParts;
+            case "body" -> model.body;
+            case "right_hind_leg" -> model.rightHindLeg;
+            case "left_hind_leg" -> model.leftHindLeg;
+            case "right_front_leg" -> model.rightFrontLeg;
+            case "left_front_leg" -> model.leftFrontLeg;
+            case "tail" -> model.tail;
+            default -> null;
+        };
+    }
+
+    private static @Nullable ModelPart resolveFox(FoxModel<?> model, String partName) {
+        return switch (partName) {
+            case "head" -> model.head;
+            case "body" -> model.body;
+            case "right_hind_leg" -> model.rightHindLeg;
+            case "left_hind_leg" -> model.leftHindLeg;
+            case "right_front_leg" -> model.rightFrontLeg;
+            case "left_front_leg" -> model.leftFrontLeg;
+            case "tail" -> model.tail;
+            default -> null;
+        };
+    }
+
+    private static @Nullable ModelPart resolveChicken(ChickenModel<?> model, String partName) {
+        return switch (partName) {
+            case "head" -> model.head;
+            case "body" -> model.body;
+            case "right_leg" -> model.rightLeg;
+            case "left_leg" -> model.leftLeg;
+            case "right_wing" -> model.rightWing;
+            case "left_wing" -> model.leftWing;
+            // Companions of the head limb (chicken keeps the beak/wattle as siblings of head).
+            case "beak" -> model.beak;
+            case "red_thing" -> model.redThing;
+            default -> null;
+        };
+    }
+
+    private static @Nullable ModelPart resolveRabbit(RabbitModel<?> model, String partName) {
+        // We register only the "haunches" as the back-leg detachables (see RabbitLimbs); hind feet ride on the body
+        // limb. If you ever want hind feet as their own limbs, add them to the access widener and switch entries here.
+        return switch (partName) {
+            case "head" -> model.head;
+            case "body" -> model.body;
+            case "right_haunch" -> model.rightHaunch;
+            case "left_haunch" -> model.leftHaunch;
+            case "right_front_leg" -> model.rightFrontLeg;
+            case "left_front_leg" -> model.leftFrontLeg;
+            case "tail" -> model.tail;
             default -> null;
         };
     }
