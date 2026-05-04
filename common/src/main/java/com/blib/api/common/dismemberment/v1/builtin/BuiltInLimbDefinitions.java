@@ -65,7 +65,7 @@ public final class BuiltInLimbDefinitions {
     private static void registerQuadrupeds() {
         QuadrupedLimbs.register(EntityType.COW, "cow");
         QuadrupedLimbs.register(EntityType.PIG, "pig");
-        QuadrupedLimbs.register(EntityType.CREEPER, "creeper");
+        QuadrupedLimbs.register(EntityType.CREEPER, "creeper", t -> t.head(h -> h.renderOffset(0, 0, 0)));
         QuadrupedLimbs.register(EntityType.SHEEP, "sheep");
         QuadrupedLimbs.register(EntityType.MOOSHROOM, "mooshroom");
         QuadrupedLimbs.register(EntityType.PANDA, "panda");
