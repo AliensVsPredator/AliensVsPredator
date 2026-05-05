@@ -22,6 +22,11 @@ import org.jetbrains.annotations.ApiStatus;
  * <li>{@code entityMaterialId} (JCL ipbr_id byte) as grayscale.</li>
  * </ol>
  * <p>
+ * For entities, the values displayed in modes 5/6/7 (block-light, sky-light, face-light) are sampled <em>per bone</em>
+ * by the {@link com.blib.internal.client.posteffect.BLibPerBoneLightContext}-driven mixin into
+ * {@code ModelPart.compile} — different cubes of a mob can read different values when the mob spans a lighting
+ * boundary.
+ * <p>
  * Volatile because the command can run on the integrated-server thread while the render thread reads it.
  */
 @ApiStatus.Internal

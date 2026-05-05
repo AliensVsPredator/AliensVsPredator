@@ -16,10 +16,11 @@
         { "name": "entityMaterialId" }
     ],
     "uniforms": [
-        { "name": "sunAngle",    "type": "float",     "count": 1,  "values": [0.0] },
-        { "name": "blindness",   "type": "float",     "count": 1,  "values": [0.0] },
-        { "name": "darkness",    "type": "float",     "count": 1,  "values": [0.0] },
-        { "name": "nightVision", "type": "float",     "count": 1,  "values": [0.0] },
-        { "name": "outSize",     "type": "float",     "count": 2,  "values": [1.0, 1.0] }
+        { "name": "sunAngle",                 "type": "float",     "count": 1,  "values": [0.0] },
+        { "name": "blindness",                "type": "float",     "count": 1,  "values": [0.0] },
+        { "name": "darkness",                 "type": "float",     "count": 1,  "values": [0.0] },
+        { "name": "nightVision",              "type": "float",     "count": 1,  "values": [0.0] },
+        { "name": "outSize",                  "type": "float",     "count": 2,  "values": [1.0, 1.0] },
+        { "name": "ultrawarmAmbient",         "type": "float",     "count": 1,  "values": [0.0] }
     ]
 }

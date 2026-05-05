@@ -82,6 +82,8 @@ public final class BLibEntityShaderPatcher {
 
     private static final Pattern VERSION_DIRECTIVE = Pattern.compile("(?m)^\\s*#version\\s+\\d+\\s*$");
 
+    private static final java.util.Set<String> LOGGED_NAMES = java.util.concurrent.ConcurrentHashMap.newKeySet();
+
     private BLibEntityShaderPatcher() {
         throw new UnsupportedOperationException();
     }
@@ -95,6 +97,10 @@ public final class BLibEntityShaderPatcher {
 
         if (category == null) {
             return source;
+        }
+
+        if (LOGGED_NAMES.add(shaderName + ":" + type.getName())) {
+            BLib.LOGGER.info("[BLib] Patching {} shader '{}' as {}", type.getName(), shaderName, category);
         }
 
         try {
@@ -183,15 +189,15 @@ public final class BLibEntityShaderPatcher {
             faceLightWrite = "    blib_faceLight = 1.0;\n";
         }
 
-        // Mark the category in the patched vertex stage so the fragment can stamp its mask byte without re-querying
-        // anything. (Currently unused on the vertex side because category drives a literal in the fragment, but kept
-        // explicit for the same reason: future per-category vertex behavior is one branch away.)
         var categoryComment = "    // BLib MRT category: " + category.name() + "\n";
 
-        var withDecls = insertBeforeMain(
-            source,
-            "out vec4 blib_lightmap;\nout vec3 blib_normal;\nout vec2 blib_lightCoord;\nout float blib_faceLight;\n"
-        );
+        var newDecls =
+            "out vec4 blib_lightmap;\n"
+                + "out vec3 blib_normal;\n"
+                + "out vec2 blib_lightCoord;\n"
+                + "out float blib_faceLight;\n";
+
+        var withDecls = insertBeforeMain(source, newDecls);
         return insertAtMainStart(
             withDecls,
             categoryComment + lightmapWrite + lightCoordWrite + normalWrite + faceLightWrite
@@ -205,30 +211,37 @@ public final class BLibEntityShaderPatcher {
             return source;
         }
 
+        // Single-channel attachments (mask R8 at loc 1, materialId R8 at loc 6) get declared as `out vec4` rather
+        // than `out float`. Reason: when alpha-blended render types like rendertype_entity_translucent (used by
+        // PlayerModel-derived mobs — piglins, zombie piglins, players) draw, the GL blend factor SRC_ALPHA is
+        // evaluated for every color attachment. For `out float` outputs the alpha component is implementation-
+        // defined per the GL spec — some drivers correctly return 1.0, others return 0, which silently zeros out
+        // the mask write and makes the entity invisible in thermal mode. Declaring as vec4 with explicit alpha=1.0
+        // in every write site (see writes block below) guarantees the source alpha is 1.0 across drivers; only the
+        // R component lands in the actual R8 storage.
         var replacement =
             "in vec4 blib_lightmap;\n"
                 + "in vec3 blib_normal;\n"
                 + "in vec2 blib_lightCoord;\n"
                 + "in float blib_faceLight;\n"
                 + "layout(location = 0) out vec4 fragColor;\n"
-                + "layout(location = 1) out float blib_entityMask;\n"
+                + "layout(location = 1) out vec4 blib_entityMask;\n"
                 + "layout(location = 2) out vec4 blib_entityLightmap;\n"
                 + "layout(location = 3) out vec4 blib_entityNormal;\n"
                 + "layout(location = 4) out vec4 blib_entityThermalData;\n"
                 + "layout(location = 5) out vec4 blib_entitySpecular;\n"
-                + "layout(location = 6) out float blib_entityMaterialId;\n";
+                + "layout(location = 6) out vec4 blib_entityMaterialId;\n";
 
         var withOuts = matcher.replaceFirst(Matcher.quoteReplacement(replacement));
 
-        // `layout(location = ...)` is not part of GLSL 150 (vanilla entity shaders' version), so enable the
-        // ARB extension that backports it. Insert immediately after the `#version` line.
+        // GLSL 150 doesn't include `layout(location = N)` on outs without an extension; backport via the ARB.
         var withExt = insertAfterVersion(withOuts, "#extension GL_ARB_explicit_attrib_location : require\n");
 
         // Capture both untinted detail AND a warm-color heuristic from raw Sampler0 RGB. `color` (the local in vanilla
         // entity shaders) has been multiplied by `lightMapColor` and `ColorModulator` by the bottom of main(), so it
         // is biome/dimension-tinted; Sampler0 is the raw texel and is biome-independent.
-        //   detail   → entityThermalData.r (used for texture-variation subtraction)
-        //   warmth   → entitySpecular.a (LabPBR emission slot — see specular write below)
+        // detail → entityThermalData.r (used for texture-variation subtraction)
+        // warmth → entitySpecular.a (LabPBR emission slot — see specular write below)
         // The warmth math is the inline form of the post-shader's old warmColorHeat() helper, biased so it returns
         // ~1.0 for dominant-red textures (lava, fire, magma, redstone, glowstone hot spots).
         var canSampleBaseColor = SAMPLER0_DECL.matcher(source).find()
@@ -259,9 +272,12 @@ public final class BLibEntityShaderPatcher {
         // their material IDs encoded at byte resolution into the entityMaterialId attachment automatically.
         var canSampleMaterialId = BLIB_MATERIAL_ID_DECL.matcher(source).find();
         var materialIdWrite = canSampleMaterialId
-            ? "    blib_entityMaterialId = float(BlibMaterialId & 0xFF) / 255.0;\n"
-            : "    blib_entityMaterialId = 0.0;\n";
+            ? "    blib_entityMaterialId = vec4(float(BlibMaterialId & 0xFF) / 255.0, 0.0, 0.0, 1.0);\n"
+            : "    blib_entityMaterialId = vec4(0.0, 0.0, 0.0, 1.0);\n";
 
+        // LPV voxelization is now in the vertex shader (see patchVertex above) — fragment-stage imageStore was
+        // silently dropped by the chunk-rendering path on the test driver while same-shader held-item fragments
+        // wrote successfully. Vertex-stage writes are JCL's approach and are far more driver-portable.
         var maskLiteral = String.format(java.util.Locale.ROOT, "%.4f", category.maskValue);
 
         // `length() > 0.0` guards against the rare case where the interpolated normal collapses to zero.
@@ -271,7 +287,7 @@ public final class BLibEntityShaderPatcher {
         // B = raw normalized sky-light coord (UV2.y / 240)
         // A = face-light from Normal vs Light0/Light1 (entities), synthetic key-light (terrain), or 1.0 (particles)
         var writes =
-            "    blib_entityMask = " + maskLiteral + ";\n"
+            "    blib_entityMask = vec4(" + maskLiteral + ", 0.0, 0.0, 1.0);\n"
                 + "    blib_entityLightmap = blib_lightmap;\n"
                 + "    vec3 blib_n = blib_normal;\n"
                 + "    blib_n = length(blib_n) > 0.0 ? normalize(blib_n) : vec3(0.0, 1.0, 0.0);\n"

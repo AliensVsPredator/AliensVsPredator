@@ -46,6 +46,12 @@ public final class BLibPostEffectStdUniforms {
         var level = mc.level;
         setFloat(shader, "sunAngle", level == null ? 0.0F : level.getSunAngle(partial));
 
+        // Dimension ambient block-light floor in [0, 1] — drives a thermal baseline so ultra-warm dimensions
+        // (Nether by default; mods can declare additional ultra-warm dims) read as green-ish ambient even where
+        // there's no actual block light. 7/15 ≈ 0.467 lands roughly on the green band of the gradient.
+        var ultraWarm = level != null && level.dimensionType().ultraWarm();
+        setFloat(shader, "ultrawarmAmbient", ultraWarm ? 7.0F / 15.0F : 0.0F);
+
         var player = mc.player;
         setFloat(shader, "nightVision", nightVisionScale(player, partial));
         setFloat(shader, "blindness", effectStrength(player, MobEffects.BLINDNESS));
@@ -55,6 +61,23 @@ public final class BLibPostEffectStdUniforms {
         if (proj != null) {
             var inv = new Matrix4f(proj).invert();
             setMatrix4(shader, "invProjMat", inv);
+        }
+
+        // Camera view matrix + its inverse, captured by MixinLevelRenderer_BLibState at the top of every level
+        // render. Post shaders reconstruct world-relative-to-camera position from depth via:
+        // ndc → invProjMat → view-space → gbufferModelViewInverse → world-relative-to-camera
+        if (BLibLevelRenderState.isCaptured()) {
+            setMatrix4(shader, "gbufferModelView", BLibLevelRenderState.viewMatrix());
+            setMatrix4(shader, "gbufferModelViewInverse", BLibLevelRenderState.viewMatrixInverse());
+        }
+        setInt(shader, "frameCounter", BLibLevelRenderState.frameCounter());
+    }
+
+    private static void setInt(ShaderInstance shader, String name, int value) {
+        var u = shader.getUniform(name);
+
+        if (u != null) {
+            u.set(value);
         }
     }
 
