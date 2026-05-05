@@ -1,0 +1,28 @@
+{
+    "blend": {
+        "func": "add",
+        "srcrgb": "one",
+        "dstrgb": "zero"
+    },
+    "vertex": "blib:blib_post/passthrough",
+    "fragment": "blib:blib_post/thermal",
+    "attributes": ["Position"],
+    "samplers": [
+        { "name": "DiffuseSampler" },
+        { "name": "depthtex0" },
+        { "name": "lightmap" },
+        { "name": "entityMask" },
+        { "name": "entityLightmap" }
+    ],
+    "uniforms": [
+        { "name": "time",        "type": "float",     "count": 1,  "values": [0.0] },
+        { "name": "partialTick", "type": "float",     "count": 1,  "values": [0.0] },
+        { "name": "outSize",     "type": "float",     "count": 2,  "values": [1.0, 1.0] },
+        { "name": "cameraPos",   "type": "float",     "count": 3,  "values": [0.0, 0.0, 0.0] },
+        { "name": "sunAngle",    "type": "float",     "count": 1,  "values": [0.0] },
+        { "name": "nightVision", "type": "float",     "count": 1,  "values": [0.0] },
+        { "name": "blindness",   "type": "float",     "count": 1,  "values": [0.0] },
+        { "name": "darkness",    "type": "float",     "count": 1,  "values": [0.0] },
+        { "name": "invProjMat",  "type": "matrix4x4", "count": 16, "values": [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0] }
+    ]
+}

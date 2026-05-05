@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import com.blib.api.client.event.v1.model.access.BLibClientEventAccess;
 import com.blib.api.client.registry.v1.model.access.BLibClientRegistryAccess;
+import com.blib.api.client.shader.v1.model.access.BLibClientPostEffectAccess;
 import com.blib.api.common.mod.v1.BLibMod;
 import com.blib.api.common.mod.v1.exception.BLibModInitializationException;
 import com.blib.api.common.mod.v1.model.BLibModState;
@@ -22,12 +23,15 @@ public class BLibClientMod implements BLibModStateAccess {
 
     private final BLibClientEventAccess clientEventAccess;
 
+    private final BLibClientPostEffectAccess clientPostEffectAccess;
+
     private volatile BLibModState state;
 
     private BLibClientMod(BLibMod mod) {
         this.mod = mod;
         this.clientRegistryAccess = new BLibClientRegistryAccess(this);
         this.clientEventAccess = new BLibClientEventAccess(this);
+        this.clientPostEffectAccess = new BLibClientPostEffectAccess(this);
         this.state = BLibModState.UNINITIALIZED;
     }
 
@@ -64,6 +68,10 @@ public class BLibClientMod implements BLibModStateAccess {
 
     public String id() {
         return mod.id();
+    }
+
+    public BLibClientPostEffectAccess postEffects() {
+        return clientPostEffectAccess;
     }
 
     public BLibClientRegistryAccess registries() {
