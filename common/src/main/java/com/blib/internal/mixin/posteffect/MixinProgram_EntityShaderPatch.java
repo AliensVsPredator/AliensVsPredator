@@ -12,14 +12,13 @@ import com.blib.internal.client.posteffect.BLibEntityShaderPatcher;
 
 /**
  * Intercepts the source passed to {@code glShaderSource} during shader compilation and runs it through
- * {@link BLibEntityShaderPatcher} when the shader name matches the entity family. The patcher injects MRT
- * auxiliary outputs so vanilla entity draws populate the entity-mask + entity-lightmap framebuffer attachments
- * automatically, with no re-render pass.
- *
- * <p>Targets the lone {@code GlStateManager.glShaderSource(int, List)} call inside
- * {@code Program.compileShaderInternal} — at that point the source has already been split by
- * {@code GlslPreprocessor.process} into one entry per logical chunk and the {@code #moj_import} expansions are
- * resolved, so we join, patch, and pass back as a single-entry list.
+ * {@link BLibEntityShaderPatcher} when the shader name matches the entity family. The patcher injects MRT auxiliary
+ * outputs so vanilla entity draws populate the entity-mask + entity-lightmap framebuffer attachments automatically,
+ * with no re-render pass.
+ * <p>
+ * Targets the lone {@code GlStateManager.glShaderSource(int, List)} call inside {@code Program.compileShaderInternal} —
+ * at that point the source has already been split by {@code GlslPreprocessor.process} into one entry per logical chunk
+ * and the {@code #moj_import} expansions are resolved, so we join, patch, and pass back as a single-entry list.
  */
 @Mixin(Program.class)
 public abstract class MixinProgram_EntityShaderPatch {

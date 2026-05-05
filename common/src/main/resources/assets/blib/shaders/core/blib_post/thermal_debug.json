@@ -1,0 +1,22 @@
+{
+    "blend": {
+        "func": "add",
+        "srcrgb": "one",
+        "dstrgb": "zero"
+    },
+    "vertex": "blib:blib_post/passthrough",
+    "fragment": "blib:blib_post/thermal_debug",
+    "attributes": ["Position"],
+    "samplers": [
+        { "name": "DiffuseSampler" },
+        { "name": "entityMask" },
+        { "name": "entityLightmap" },
+        { "name": "entityNormal" },
+        { "name": "entityThermalData" },
+        { "name": "entitySpecular" },
+        { "name": "entityMaterialId" }
+    ],
+    "uniforms": [
+        { "name": "debugMode", "type": "int", "count": 1, "values": [0] }
+    ]
+}

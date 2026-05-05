@@ -43,4 +43,25 @@ public abstract class MixinRenderTarget_MRT {
             BLibMainTargetMRT.destroy();
         }
     }
+
+    @Inject(
+        method = "clear",
+        at = @At(
+            value = "INVOKE",
+            target = "Lcom/mojang/blaze3d/platform/GlStateManager;_clear(IZ)V",
+            shift = At.Shift.AFTER
+        )
+    )
+    private void blib$clearAuxiliaryAttachments(boolean clearError, CallbackInfo ci) {
+        if (BLibIrisCompat.isShaderModActive()) {
+            return;
+        }
+
+        var self = (RenderTarget) (Object) this;
+
+        if (self instanceof MainTarget) {
+            BLibMainTargetMRT.restoreDrawBuffers();
+            BLibMainTargetMRT.clearAuxiliaryAttachments();
+        }
+    }
 }

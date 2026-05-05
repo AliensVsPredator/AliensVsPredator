@@ -147,6 +147,22 @@ public final class BLibPostEffectPipeline {
             shader.setSampler("entityLightmap", BLibMainTargetMRT.entityLightmapTextureId());
         }
 
+        if (inputs.contains(BLibPostEffectInput.ENTITY_NORMAL) && BLibMainTargetMRT.isAttached()) {
+            shader.setSampler("entityNormal", BLibMainTargetMRT.entityNormalTextureId());
+        }
+
+        if (inputs.contains(BLibPostEffectInput.ENTITY_THERMAL_DATA) && BLibMainTargetMRT.isAttached()) {
+            shader.setSampler("entityThermalData", BLibMainTargetMRT.entityThermalDataTextureId());
+        }
+
+        if (inputs.contains(BLibPostEffectInput.ENTITY_SPECULAR) && BLibMainTargetMRT.isAttached()) {
+            shader.setSampler("entitySpecular", BLibMainTargetMRT.entitySpecularTextureId());
+        }
+
+        if (inputs.contains(BLibPostEffectInput.ENTITY_MATERIAL_ID) && BLibMainTargetMRT.isAttached()) {
+            shader.setSampler("entityMaterialId", BLibMainTargetMRT.entityMaterialIdTextureId());
+        }
+
         BLibPostEffectStdUniforms.apply(shader, deltaTracker, dest.width, dest.height);
         applyEffectUniforms(shader, effect.spec().uniforms());
 
