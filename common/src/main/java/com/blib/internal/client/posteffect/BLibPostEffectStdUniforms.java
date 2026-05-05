@@ -44,7 +44,22 @@ public final class BLibPostEffectStdUniforms {
         }
 
         var level = mc.level;
-        setFloat(shader, "sunAngle", level == null ? 0.0F : level.getSunAngle(partial));
+        var sunAngle = level == null ? 0.0F : level.getSunAngle(partial);
+        setFloat(shader, "sunAngle", sunAngle);
+
+        // World-space sun/moon directions, derived from MC's renderSky transform stack:
+        //   poseStack.mulPose(YP.rotationDegrees(-90))
+        //   poseStack.mulPose(XP.rotationDegrees(timeOfDay * 360))
+        // Applied to a celestial-sphere apex of (0, +100, 0) (sun) or (0, -100, 0) (moon), the resulting world
+        // direction works out to:
+        //   sun  = (-sin(sunAngle),  cos(sunAngle), 0)
+        //   moon = ( sin(sunAngle), -cos(sunAngle), 0)  (i.e. -sun)
+        // Verifies: noon (sunAngle=0) → (0, 1, 0), zenith. Sunset (π/2) → (-1, 0, 0), -X = west. Sunrise (3π/2) →
+        // (1, 0, 0), +X = east. Both are unit-length so post shaders can dot against a normalized view ray.
+        var sunDirX = -(float) Math.sin(sunAngle);
+        var sunDirY = (float) Math.cos(sunAngle);
+        setFloat3(shader, "sunDir", sunDirX, sunDirY, 0.0F);
+        setFloat3(shader, "moonDir", -sunDirX, -sunDirY, 0.0F);
 
         // Dimension ambient block-light floor in [0, 1] — drives a thermal baseline so ultra-warm dimensions
         // (Nether by default; mods can declare additional ultra-warm dims) read as green-ish ambient even where
@@ -57,18 +72,21 @@ public final class BLibPostEffectStdUniforms {
         setFloat(shader, "blindness", effectStrength(player, MobEffects.BLINDNESS));
         setFloat(shader, "darkness", effectStrength(player, MobEffects.DARKNESS));
 
-        var proj = RenderSystem.getProjectionMatrix();
-        if (proj != null) {
-            var inv = new Matrix4f(proj).invert();
-            setMatrix4(shader, "invProjMat", inv);
-        }
-
-        // Camera view matrix + its inverse, captured by MixinLevelRenderer_BLibState at the top of every level
-        // render. Post shaders reconstruct world-relative-to-camera position from depth via:
-        // ndc → invProjMat → view-space → gbufferModelViewInverse → world-relative-to-camera
+        // Use the projection matrix captured at the top of the level pass, not RenderSystem.getProjectionMatrix(),
+        // which by the time the post pipeline runs has been replaced with the GUI/post-orthographic projection.
+        // Without the level-pass projection, NDC-to-view-space reconstruction (used by sky-ray reconstruction in
+        // the thermal post shader) computes ortho-frustum rays instead of perspective rays — the radial sun glow
+        // would render as a screen-space circle rather than a world-space halo around the actual sun direction.
         if (BLibLevelRenderState.isCaptured()) {
+            setMatrix4(shader, "invProjMat", BLibLevelRenderState.projectionMatrixInverse());
             setMatrix4(shader, "gbufferModelView", BLibLevelRenderState.viewMatrix());
             setMatrix4(shader, "gbufferModelViewInverse", BLibLevelRenderState.viewMatrixInverse());
+        } else {
+            var proj = RenderSystem.getProjectionMatrix();
+            if (proj != null) {
+                var inv = new Matrix4f(proj).invert();
+                setMatrix4(shader, "invProjMat", inv);
+            }
         }
         setInt(shader, "frameCounter", BLibLevelRenderState.frameCounter());
     }

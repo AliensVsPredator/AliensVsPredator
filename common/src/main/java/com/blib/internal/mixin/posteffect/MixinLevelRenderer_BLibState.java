@@ -32,6 +32,6 @@ public abstract class MixinLevelRenderer_BLibState {
         Matrix4f projectionMatrix,
         CallbackInfo ci
     ) {
-        BLibLevelRenderState.captureViewMatrix(frustumMatrix);
+        BLibLevelRenderState.capture(frustumMatrix, projectionMatrix);
     }
 }

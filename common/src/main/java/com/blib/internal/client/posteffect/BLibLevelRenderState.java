@@ -21,6 +21,10 @@ public final class BLibLevelRenderState {
 
     private static final Matrix4f viewMatrixInverse = new Matrix4f();
 
+    private static final Matrix4f projectionMatrix = new Matrix4f();
+
+    private static final Matrix4f projectionMatrixInverse = new Matrix4f();
+
     private static int frameCounter;
 
     private static boolean haveView;
@@ -29,9 +33,11 @@ public final class BLibLevelRenderState {
         throw new UnsupportedOperationException();
     }
 
-    public static void captureViewMatrix(Matrix4f frustumMatrix) {
+    public static void capture(Matrix4f frustumMatrix, Matrix4f levelProjectionMatrix) {
         viewMatrix.set(frustumMatrix);
         viewMatrixInverse.set(frustumMatrix).invert();
+        projectionMatrix.set(levelProjectionMatrix);
+        projectionMatrixInverse.set(levelProjectionMatrix).invert();
         haveView = true;
         frameCounter++;
     }
@@ -46,6 +52,14 @@ public final class BLibLevelRenderState {
 
     public static Matrix4f viewMatrixInverse() {
         return viewMatrixInverse;
+    }
+
+    public static Matrix4f projectionMatrix() {
+        return projectionMatrix;
+    }
+
+    public static Matrix4f projectionMatrixInverse() {
+        return projectionMatrixInverse;
     }
 
     public static int frameCounter() {

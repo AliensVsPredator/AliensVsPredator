@@ -194,6 +194,15 @@ public final class BLibMainTargetMRT {
 
         attached = true;
 
+        // Force the auxiliary color masks to "writes enabled" so BLibGbufferUniforms's per-shader cache (which
+        // assumes the initial state is enabled) starts from a known state. Without this, a previous run that
+        // left a buffer disabled and then went through a re-attach (window resize, Iris toggle) would carry the
+        // disabled state into the new framebuffer's draw-buffer indices and silently drop patched-shader writes.
+        for (int buf = 1; buf <= 6; buf++) {
+            GL30.glColorMaski(buf, true, true, true, true);
+        }
+        BLibGbufferUniforms.resetColorMaskCache();
+
         BLib.LOGGER.debug("[BLib] MRT auxiliary attachments allocated: {}x{}", viewWidth, viewHeight);
     }
 
