@@ -21,28 +21,9 @@ out vec4 fragColor;
 // dim correctly; can be replaced with a captured value if/when the broader render-pipeline data is wired in.
 const float BLIB_FOG_AMOUNT = 1.0;
 
-float luminance(vec3 c) {
-    return dot(c, vec3(0.299, 0.587, 0.114));
-}
-
-float warmColorHeat(vec3 c) {
-    float redDominance = max(c.r - max(c.g, c.b) * 0.6, 0.0);
-    float warmAxis = max(c.r * 0.7 + c.g * 0.3 - c.b, 0.0);
-    return clamp(redDominance * 1.6 + warmAxis * 0.6 + luminance(c) * 0.10 - 0.04, 0.0, 1.0);
-}
-
-// JCL's torch_color is the colored-lighting output, not the vanilla lightmap; without a port of that system the
-// closest BLib has is the same channel-weighted lightmap sample used as the previous heat proxy.
-vec3 torchColor(vec3 lightmapRGB) {
-    return lightmapRGB;
-}
-
-float torchHeat(vec3 torch) {
-    return min(1.0, torch.r * 0.2 + torch.g * 0.3 + torch.b * 0.5);
-}
-
 // Day = sunAngle in [0, 0.25] ∪ [0.75, 1.0]. Triangular ramp peaks at noon (sunAngle == 0) and at the wraparound
-// (sunAngle == 1.0). Returns ~1 at noon, 0 at sunset/sunrise, 0 through the night.
+// (sunAngle == 1.0). Returns ~1 at noon, 0 at sunset/sunrise, 0 through the night. The Nether/End report
+// constant non-day sunAngle, so this naturally returns 0 there — no false sun heat in dimensions without a sun.
 float dayFactor(float angle) {
     float dist = min(angle, 1.0 - angle);
     return clamp(1.0 - dist * 4.0, 0.0, 1.0);
@@ -60,8 +41,12 @@ float sunShadowApprox(float skyLight, float faceLight, float angle) {
     return day * skyMix * faceMix;
 }
 
+// Cold end is a very dark blue rather than pure black so unlit areas still read as "ambient cold" — pure black
+// looks like missing data / GUI clear and breaks immersion in fully-dark caves.
+const vec3 BLIB_THERMAL_COLD = vec3(0.0, 0.0, 0.06);
+
 vec3 thermalGradient(float t) {
-    return t < 0.25 ? mix(vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, 1.0), t * 4.0)
+    return t < 0.25 ? mix(BLIB_THERMAL_COLD, vec3(0.0, 0.0, 1.0), t * 4.0)
         : t < 0.50 ? mix(vec3(0.0, 0.0, 1.0), vec3(0.0, 1.0, 0.0), (t - 0.25) * 4.0)
         : t < 0.75 ? mix(vec3(0.0, 1.0, 0.0), vec3(1.0, 1.0, 0.0), (t - 0.50) * 4.0)
         : t < 1.00 ? mix(vec3(1.0, 1.0, 0.0), vec3(1.0, 0.0, 0.0), (t - 0.75) * 4.0)
@@ -69,87 +54,87 @@ vec3 thermalGradient(float t) {
 }
 
 void main() {
-    vec4 src = texture(DiffuseSampler, texCoord);
+    vec3 src = texture(DiffuseSampler, texCoord).rgb;
     float mask = texture(entityMask, texCoord).r;
-    vec3 entityLight = texture(entityLightmap, texCoord).rgb;
     vec4 entityThermal = texture(entityThermalData, texCoord);
     vec4 specular = texture(entitySpecular, texCoord);
-    // Material ID byte (0..255) packed into [0, 1]. Mirrors JCL's `ipbr_id` lookup. Until a downstream mod populates
-    // the BlibMaterialId uniform this is always zero, and `materialBoost` below collapses to 0.
     int materialId = int(round(texture(entityMaterialId, texCoord).r * 255.0));
 
     // Category breakdown of the mask byte. Values written by BLibEntityShaderPatcher.Category.
-    //   1.00 = entity         → full body-heat formula
-    //   0.50 = terrain        → captured-data world heat (per-face/per-light), no body heat
-    //   0.25 = particle       → captured lightmap heat (no face), no body heat
-    //   0.00 = unpatched/sky  → warm-color heuristic over src.rgb
+    //   1.00 = entity         → body heat + lighting
+    //   0.50 = terrain        → lighting only (no body heat)
+    //   0.25 = particle       → ambient block light only
+    //   0.00 = unpatched/sky  → cold (no thermal information)
     float catEntity   = step(0.75, mask);
     float catTerrain  = step(0.375, mask) - catEntity;
     float catParticle = step(0.125, mask) - step(0.375, mask);
-    float catWorld    = 1.0 - step(0.125, mask);
 
-    // Use captured per-pixel detail for any patched fragment; fall back to src.r for unpatched pixels.
-    float patchedDetail = entityThermal.r;
-    float drawDetail = mix(src.r, patchedDetail, 1.0 - catWorld);
+    // entityThermalData payload — all biome/dimension-independent:
+    //   R = untinted Sampler0.r (texture detail, no lightmap tint)
+    //   G = raw block-light coord
+    //   B = raw sky-light coord
+    //   A = face-light (Light0/Light1 dot for entities, synthetic key-light for terrain, 1.0 for particles)
+    float drawDetail = entityThermal.r;
     float blockLight = entityThermal.g;
     float skyLight = entityThermal.b;
     float faceLight = entityThermal.a;
 
-    vec3 torch = torchColor(entityLight);
-    float captureTorchHeat = torchHeat(torch);
-
-    float worldHeat = max(
-        torchHeat(src.rgb),
-        warmColorHeat(src.rgb)
-    );
-
     float sunFactor = sunShadowApprox(skyLight, faceLight, sunAngle);
 
-    // JCL non-PBR branch (entities):
-    //   heat = torch_color weighted + 0.5 (body heat) + day sky contribution - detail * 0.3.
-    float entityHeatNonPBR =
-        captureTorchHeat
-        + 0.5
-        + sunFactor * (0.5 + 0.3 * skyLight)
-        + 0.15 * blockLight;
+    // Emission term — biome-independent. specular.a holds either:
+    //   (a) A LabPBR emission sample if the entity shader declared an EntitySpecular sampler, or
+    //   (b) The warm-color heuristic (specular.a = warmColorHeat(Sampler0.rgb)) the patcher precomputed when no PBR
+    //       sampler was bound — captures dominantly-red textures like lava/fire/magma/redstone.
+    // The smoothstep gate by raw block light suppresses the heuristic on warm-colored *non-emissive* fragments.
+    // Lava emits block-light 15 (BL ≈ 1.0); torches emit 14 (BL ≈ 0.93); both are inside the [0.86, 1.0] window so
+    // they read emissive. Red wool away from a torch sits at low BL → emission collapses to 0.
+    float emission = specular.a * smoothstep(0.86, 1.0, blockLight);
 
-    // JCL PBR branch (NIGHT_VISION_MODE == 2 PBR):
-    //   heat = min(1, specular.a + torch_color.r*0.2 + torch_color.g*0.3 + torch_color.b*0.5)
-    //          * (1 + specular.g * (torch_color.r - 0.5));
-    //   heat += 0.5 - 0.5 * specular.g;
-    // When specular is all zero (the default for vanilla entity rendering) this collapses to:
-    //   heat = captureTorchHeat + 0.5 — i.e. the non-PBR base — so the PBR formula is safe to mix.
+    // JCL non-PBR branch (entities), driven by raw light coords only — no biome-tinted sampled lightmap RGB and no
+    // scene-color heuristics, so the result is identical between e.g. Nether Wastes and Soul Sand Valley for the
+    // same lighting/face/body conditions.
+    //   heat = body 0.5 + ambient block-light contribution + day sky contribution + emission boost
+    float entityHeatNonPBR =
+        0.5
+        + 0.40 * blockLight
+        + sunFactor * (0.5 + 0.3 * skyLight)
+        + 0.60 * emission;
+
+    // JCL PBR branch (NIGHT_VISION_MODE == 2 PBR). JCL's `torch_color.r` was a colored-lighting red value centered
+    // around ~0.5; with no colored-lighting port we substitute raw block-light coord (also centered around 0.5 at
+    // medium torchlight). The PBR formula already pulls emission from specular.a, so the gating done above into
+    // `emission` is also the right form for the multiplier here.
     float entityHeatPBR =
-        min(1.0, specular.a + captureTorchHeat) * (1.0 + specular.g * (torch.r - 0.5))
+        min(1.0, emission + blockLight) * (1.0 + specular.g * (blockLight - 0.5))
         + (0.5 - 0.5 * specular.g);
 
-    float pbrWeight = clamp(specular.a + specular.g, 0.0, 1.0);
+    // Only formulate as PBR when real LabPBR roughness is present. The fallback warm-heuristic populates specular.a
+    // alone, so weighting on specular.g keeps non-PBR draws on the simpler non-PBR formula.
+    float pbrWeight = clamp(specular.g, 0.0, 1.0);
     float entityHeat = mix(entityHeatNonPBR, entityHeatPBR, pbrWeight);
 
-    // Terrain: use the captured per-fragment lighting (block light, sun factor) without body heat. Includes
-    // warm-color emissive heuristic so lava/magma/fire still read warm via src.rgb even though terrain blocks
-    // don't write a non-zero body-heat baseline.
+    // Terrain: block light drives heat across the full gradient range (1.0 coefficient) so the smooth MC light
+    // falloff around a torch/lava/fire produces a smooth thermal falloff: BL≈1 at the source → red, BL≈0.86 at
+    // distance 2 → orange, BL≈0.5 mid-range → yellow-green, BL≈0.2 far → blue. Sky light contributes much less
+    // (sunlit fields aren't really "hot" in IR vision); emission saturates true heat sources to white.
     float terrainHeat =
-        captureTorchHeat
-        + 0.20 * blockLight
+        blockLight
         + 0.30 * sunFactor * skyLight
-        + warmColorHeat(src.rgb) * 0.6;
+        + 1.50 * emission;
 
-    // Particles: usually emissive smoke/spark/flame; surface them as warm using the captured lightmap luminance and
-    // the diffuse color heuristic — but no body-heat baseline so non-emissive particles don't create false reads.
-    float particleHeat =
-        captureTorchHeat
-        + warmColorHeat(src.rgb) * 0.7;
+    // Particles: same block-light driven curve so smoke/sparks lit by surrounding light fade gradually. Fire/spark
+    // particles also pick up the emission boost from their warm-color textures + max block light.
+    float particleHeat = blockLight + 0.80 * emission;
 
     // JCL-style per-material heat additions. Mirrors patterns like `abs(ipbr_id - 10032.) < .5` from JCL's PBR
-    // branch, but BLib uses single-byte IDs so the sentinel space is 0..255 instead of JCL's 5-digit IDs. The
-    // mappings below are intentional defaults a downstream mod can reinterpret by choosing matching IDs:
+    // branch, but BLib uses single-byte IDs so the sentinel space is 0..255 instead of JCL's 5-digit IDs. ID 0
+    // (the vanilla default) contributes 0; downstream mods can populate BlibMaterialId per-draw to surface
+    // dimension-independent thermal hot spots regardless of biome tint.
     //   1 = lava-like        (+0.45)
     //   2 = magma-like       (+0.30)
     //   3 = fire/torch-flame (+0.55)
     //   4 = redstone-active  (+0.20)
     //   5 = warm-blooded     (+0.25 on top of body heat)
-    // ID 0 (the vanilla default) contributes 0.
     float materialBoost =
         (materialId == 1 ? 0.45 : 0.0)
         + (materialId == 2 ? 0.30 : 0.0)
@@ -157,24 +142,38 @@ void main() {
         + (materialId == 4 ? 0.20 : 0.0)
         + (materialId == 5 ? 0.25 : 0.0);
 
+    // Uncaptured fragments (sky, GUI, anything outside the patched render-type families) read as cold — there's no
+    // per-fragment lighting data to derive heat from. Sky reads black through thermal, which is correct for an
+    // infrared-style view.
     float heat =
         catEntity   * entityHeat
         + catTerrain  * terrainHeat
         + catParticle * particleHeat
-        + catWorld    * worldHeat
         + materialBoost;
-    heat = max(heat - drawDetail * 0.3, 0.0);
+
+    // Detail subtraction adds texture-level variation but at full strength it cancels out the heat of bright
+    // emissive textures (lava's red is exactly what the warmth heuristic just used to call it hot — subtracting
+    // 0.3 * red there would push lava back toward blue). Fade detail subtraction out as emission rises.
+    float detailWeight = 0.30 * (1.0 - emission);
+    heat = max(heat - drawDetail * detailWeight, 0.0);
 
     vec3 heatVis = thermalGradient(heat);
 
-    // Coverage strength. JCL's NIGHT_VISION_MODE == 2 mixes thermal over the world via
-    //   mix(src, heat_vis, max(nightVision, nv_effect))
-    // where nv_effect is a radial center-vignette and nightVision is the potion strength. Without the potion that
-    // formula leaves the screen edges showing the unmodified world — surprising for a "thermal vision toggle on."
-    // BLib's thermal post-effect runs only when explicitly enabled, so the user always wants full-screen coverage;
-    // we therefore drop the radial vignette and force the mix to 1 (i.e. always show heat). The outSize and
-    // nightVision uniforms remain declared for forward-compat with downstream effects that want JCL's exact blend.
-    vec3 outColor = heatVis;
+    // Cold-area visibility underlay. At low heat the gradient color is a near-uniform dark blue, which obliterates
+    // structure (walls/floor/edges) and makes navigation hard. We brighten the cold-blue value based on the source
+    // scene's luminance so block edges and lit-side faces catch more brightness — but the contribution is tinted
+    // to pure blue (matching the gradient's heat=0.25 endpoint), so the cold area stays in the blue palette
+    // instead of greying out. Luminance (not RGB) is sampled to keep biome tint out. Fades to zero by heat=0.5
+    // so the warm half of the gradient stays pure.
+    float srcLuma = dot(src, vec3(0.299, 0.587, 0.114));
+    float liftedLuma = pow(clamp(srcLuma, 0.0, 1.0), 0.5);
+    float coldFade = 1.0 - smoothstep(0.0, 0.5, heat);
+    vec3 coldDetail = vec3(0.0, 0.0, 1.0) * liftedLuma * 0.5 * coldFade;
+
+    // BLib's thermal post-effect runs only when explicitly enabled, so the user always wants full-screen coverage.
+    // The radial nv_effect / nightVision blend from JCL's NIGHT_VISION_MODE == 2 is intentionally dropped here;
+    // outSize and nightVision remain declared for forward-compat with downstream effects that want that blend.
+    vec3 outColor = heatVis + coldDetail;
     outColor *= 1.0 - max(blindness, darkness) * BLIB_FOG_AMOUNT;
 
     fragColor = vec4(outColor, 1.0);

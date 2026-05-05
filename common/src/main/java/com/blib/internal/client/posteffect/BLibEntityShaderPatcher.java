@@ -76,6 +76,8 @@ public final class BLibEntityShaderPatcher {
 
     private static final Pattern TEXCOORD0_DECL = Pattern.compile("(?m)^\\s*in\\s+vec2\\s+texCoord0\\s*;\\s*$");
 
+    private static final Pattern SAMPLER0_DECL = Pattern.compile("(?m)^\\s*uniform\\s+sampler2D\\s+Sampler0\\s*;\\s*$");
+
     private static final Pattern MAIN_OPEN = Pattern.compile("void\\s+main\\s*\\(\\s*\\)\\s*\\{");
 
     private static final Pattern VERSION_DIRECTIVE = Pattern.compile("(?m)^\\s*#version\\s+\\d+\\s*$");
@@ -222,15 +224,34 @@ public final class BLibEntityShaderPatcher {
         // ARB extension that backports it. Insert immediately after the `#version` line.
         var withExt = insertAfterVersion(withOuts, "#extension GL_ARB_explicit_attrib_location : require\n");
 
-        // Optional PBR/specular sampling. Vanilla shaders do not declare an EntitySpecular sampler, so this resolves
-        // to a constant zero write — the thermal post shader's PBR branch then collapses to its non-PBR baseline. A
-        // downstream mod that adds `uniform sampler2D EntitySpecular;` (and a parallel sampler binding on the render-
-        // state side) will get the patcher to sample it through `texCoord0` automatically.
+        // Capture both untinted detail AND a warm-color heuristic from raw Sampler0 RGB. `color` (the local in vanilla
+        // entity shaders) has been multiplied by `lightMapColor` and `ColorModulator` by the bottom of main(), so it
+        // is biome/dimension-tinted; Sampler0 is the raw texel and is biome-independent.
+        //   detail   → entityThermalData.r (used for texture-variation subtraction)
+        //   warmth   → entitySpecular.a (LabPBR emission slot — see specular write below)
+        // The warmth math is the inline form of the post-shader's old warmColorHeat() helper, biased so it returns
+        // ~1.0 for dominant-red textures (lava, fire, magma, redstone, glowstone hot spots).
+        var canSampleBaseColor = SAMPLER0_DECL.matcher(source).find()
+            && TEXCOORD0_DECL.matcher(source).find();
+        var baseColorWrite = canSampleBaseColor
+            ? "    vec3 blib_baseRGB = texture(Sampler0, texCoord0).rgb;\n"
+                + "    float blib_detail = clamp(blib_baseRGB.r, 0.0, 1.0);\n"
+                + "    float blib_redDom = max(blib_baseRGB.r - max(blib_baseRGB.g, blib_baseRGB.b) * 0.6, 0.0);\n"
+                + "    float blib_warmAx = max(blib_baseRGB.r * 0.7 + blib_baseRGB.g * 0.3 - blib_baseRGB.b, 0.0);\n"
+                + "    float blib_warmHeur = clamp(blib_redDom * 1.6 + blib_warmAx * 0.6, 0.0, 1.0);\n"
+            : "    float blib_detail = clamp(color.r, 0.0, 1.0);\n"
+                + "    float blib_warmHeur = 0.0;\n";
+
+        // Optional PBR/specular sampling. Vanilla shaders do not declare an EntitySpecular sampler, so we fall back
+        // to packing the raw warm-heuristic into specular.a (the LabPBR emission slot — JCL's `specular_pixel.a`).
+        // The post shader gates this by very-high block light so non-emissive warm-colored textures (e.g. red wool
+        // away from a torch) don't read as heat sources. A downstream mod that adds `uniform sampler2D EntitySpecular`
+        // (with a parallel render-state binding) will get the real LabPBR data instead.
         var canSampleSpecular = ENTITY_SPECULAR_DECL.matcher(source).find()
             && TEXCOORD0_DECL.matcher(source).find();
         var specularWrite = canSampleSpecular
             ? "    blib_entitySpecular = texture(EntitySpecular, texCoord0);\n"
-            : "    blib_entitySpecular = vec4(0.0);\n";
+            : "    blib_entitySpecular = vec4(0.0, 0.0, 0.0, blib_warmHeur);\n";
 
         // Optional material-ID hook (JCL ipbr_id equivalent). Vanilla shaders do not declare a BlibMaterialId uniform,
         // so the write defaults to 0 and the post shader sees a flat zero ID buffer. A downstream mod that injects the
@@ -244,20 +265,18 @@ public final class BLibEntityShaderPatcher {
         var maskLiteral = String.format(java.util.Locale.ROOT, "%.4f", category.maskValue);
 
         // `length() > 0.0` guards against the rare case where the interpolated normal collapses to zero.
-        // entityThermalData channel layout:
-        // R = detail = clamp(color.r, 0, 1)
+        // entityThermalData channel layout (all biome/dimension-independent):
+        // R = detail = clamp(texture(Sampler0, texCoord0).r, 0, 1) — untinted texel red
         // G = raw normalized block-light coord (UV2.x / 240)
         // B = raw normalized sky-light coord (UV2.y / 240)
         // A = face-light from Normal vs Light0/Light1 (entities), synthetic key-light (terrain), or 1.0 (particles)
-        // The "torch_color"-shaped weighted lightmap heat used in earlier revisions is trivially re-derived in the
-        // post shader from `entityLightmap`, which is still a separate captured attachment.
         var writes =
             "    blib_entityMask = " + maskLiteral + ";\n"
                 + "    blib_entityLightmap = blib_lightmap;\n"
                 + "    vec3 blib_n = blib_normal;\n"
                 + "    blib_n = length(blib_n) > 0.0 ? normalize(blib_n) : vec3(0.0, 1.0, 0.0);\n"
                 + "    blib_entityNormal = vec4(blib_n * 0.5 + 0.5, 1.0);\n"
-                + "    float blib_detail = clamp(color.r, 0.0, 1.0);\n"
+                + baseColorWrite
                 + "    blib_entityThermalData = vec4(blib_detail, blib_lightCoord.x, blib_lightCoord.y, clamp(blib_faceLight, 0.0, 1.0));\n"
                 + specularWrite
                 + materialIdWrite;
