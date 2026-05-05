@@ -118,6 +118,21 @@ public final class BLibMainTargetMRT {
         BLib.LOGGER.debug("[BLib] MRT auxiliary attachments allocated: {}x{}", viewWidth, viewHeight);
     }
 
+    /**
+     * Restore the {@code glDrawBuffers} state for the currently-bound framebuffer to {@code [0, 1, 2]} so vanilla
+     * entity draws populate the auxiliary attachments. Anything that touches MainTarget's FBO state via
+     * {@code glDrawBuffers} (e.g., a fullscreen-quad blit that writes only to attachment 0) MUST call this
+     * afterwards to put MainTarget back into MRT mode — otherwise subsequent frames silently drop writes to
+     * attachments 1 and 2 and the entity mask "freezes" at whatever was there last.
+     */
+    public static void restoreDrawBuffers() {
+        if (!attached) {
+            return;
+        }
+
+        GL30.glDrawBuffers(new int[] { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 });
+    }
+
     /** Clear auxiliary attachments to 0. Caller must have the MainTarget FBO bound. */
     public static void clearAuxiliaryAttachments() {
         if (!attached) {

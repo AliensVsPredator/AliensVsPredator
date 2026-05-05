@@ -92,8 +92,12 @@ public final class BLibPostEffectPipeline {
         // Final stage: copy whatever ended up in `source` back to MainTarget color.
         blitColor(source, mainTarget);
 
-        // Restore main framebuffer binding for subsequent GUI render.
+        // Restore main framebuffer binding for subsequent GUI render. Critically, also restore MainTarget's
+        // glDrawBuffers state to [0, 1, 2] — `blitColor` left it as [0] only, which would silently drop writes
+        // to attachments 1 and 2 in subsequent frames and "freeze" the entity mask/lightmap at whatever was last
+        // populated.
         GlStateManager._glBindFramebuffer(GL30.GL_FRAMEBUFFER, mainTarget.frameBufferId);
+        BLibMainTargetMRT.restoreDrawBuffers();
         RenderSystem.viewport(0, 0, mainTarget.width, mainTarget.height);
 
         GlStateManager._depthMask(true);
