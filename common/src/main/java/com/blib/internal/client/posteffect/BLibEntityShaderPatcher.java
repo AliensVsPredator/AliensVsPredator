@@ -64,7 +64,7 @@ public final class BLibEntityShaderPatcher {
          * write deterministic zero to all auxiliary attachments. Without this, an unpatched shader's single
          * {@code out vec4 fragColor} leaves attachments 1-6 as spec-undefined writes; on some drivers that leaks
          * structured garbage (e.g. interpolated attribute values) into {@code entityMask} and
-         * {@code entityThermalData}, which the post shader then interprets as terrain heat — producing the
+         * {@code entityDrawData}, which the post shader then interprets as terrain heat — producing the
          * green/blue ring banding around the player and concentric rings around the sun/moon. Mask value
          * {@code 0.0} — same as the cleared default, so the post shader treats these pixels as ambient sky.
          */
@@ -304,11 +304,12 @@ public final class BLibEntityShaderPatcher {
                 + "in vec2 blib_lightCoord;\n"
                 + "in float blib_faceLight;\n"
                 + "uniform int BlibHeldItem;\n"
+                + "uniform int BlibBackgroundEntity;\n"
                 + "layout(location = 0) out vec4 fragColor;\n"
                 + "layout(location = 1) out vec4 blib_entityMask;\n"
                 + "layout(location = 2) out vec4 blib_entityLightmap;\n"
                 + "layout(location = 3) out vec4 blib_entityNormal;\n"
-                + "layout(location = 4) out vec4 blib_entityThermalData;\n"
+                + "layout(location = 4) out vec4 blib_entityDrawData;\n"
                 + "layout(location = 5) out vec4 blib_entitySpecular;\n"
                 + "layout(location = 6) out vec4 blib_entityMaterialId;\n";
 
@@ -320,7 +321,7 @@ public final class BLibEntityShaderPatcher {
         // Capture both untinted detail AND a warm-color heuristic from raw Sampler0 RGB. `color` (the local in vanilla
         // entity shaders) has been multiplied by `lightMapColor` and `ColorModulator` by the bottom of main(), so it
         // is biome/dimension-tinted; Sampler0 is the raw texel and is biome-independent.
-        // detail → entityThermalData.r (used for texture-variation subtraction)
+        // detail → entityDrawData.r (used for texture-variation subtraction)
         // warmth → entitySpecular.a (LabPBR emission slot — see specular write below)
         // The warmth math is the inline form of the post-shader's old warmColorHeat() helper, biased so it returns
         // ~1.0 for dominant-red textures (lava, fire, magma, redstone, glowstone hot spots).
@@ -361,7 +362,7 @@ public final class BLibEntityShaderPatcher {
         var maskLiteral = String.format(java.util.Locale.ROOT, "%.4f", category.maskValue);
 
         // `length() > 0.0` guards against the rare case where the interpolated normal collapses to zero.
-        // entityThermalData channel layout (all biome/dimension-independent):
+        // entityDrawData channel layout (all biome/dimension-independent):
         // R = detail = clamp(texture(Sampler0, texCoord0).r, 0, 1) — untinted texel red
         // G = raw normalized block-light coord (UV2.x / 240)
         // B = raw normalized sky-light coord (UV2.y / 240)
@@ -370,15 +371,20 @@ public final class BLibEntityShaderPatcher {
         // ShaderInstance.apply mixin) only while a first-person hand or third-person ItemInHandLayer draw is in
         // flight. The 0.875 mask value is decoded by the thermal post shader as "passthrough — output src.rgb,
         // skip thermal recoloring" so held items remain readable in IR mode.
+        // Background-entity override: BlibBackgroundEntity is set to 1 by the Java side around entity draws that
+        // should render as part of the world rather than as foreground entities. The flag is written into
+        // entityMask.g (R channel still holds the category byte unchanged); consumer post-effects sample .g to
+        // route those pixels through their world-coloring branch. Requires the entityMask attachment to be RG8.
         var writes =
             "    float blib_maskValue = (BlibHeldItem != 0) ? 0.875 : " + maskLiteral + ";\n"
-                + "    blib_entityMask = vec4(blib_maskValue, 0.0, 0.0, 1.0);\n"
+                + "    float blib_backgroundFlag = (BlibBackgroundEntity != 0) ? 1.0 : 0.0;\n"
+                + "    blib_entityMask = vec4(blib_maskValue, blib_backgroundFlag, 0.0, 1.0);\n"
                 + "    blib_entityLightmap = blib_lightmap;\n"
                 + "    vec3 blib_n = blib_normal;\n"
                 + "    blib_n = length(blib_n) > 0.0 ? normalize(blib_n) : vec3(0.0, 1.0, 0.0);\n"
                 + "    blib_entityNormal = vec4(blib_n * 0.5 + 0.5, 1.0);\n"
                 + baseColorWrite
-                + "    blib_entityThermalData = vec4(blib_detail, blib_lightCoord.x, blib_lightCoord.y, clamp(blib_faceLight, 0.0, 1.0));\n"
+                + "    blib_entityDrawData = vec4(blib_detail, blib_lightCoord.x, blib_lightCoord.y, clamp(blib_faceLight, 0.0, 1.0));\n"
                 + specularWrite
                 + materialIdWrite;
 
@@ -414,7 +420,7 @@ public final class BLibEntityShaderPatcher {
                 + "layout(location = 1) out vec4 blib_entityMask;\n"
                 + "layout(location = 2) out vec4 blib_entityLightmap;\n"
                 + "layout(location = 3) out vec4 blib_entityNormal;\n"
-                + "layout(location = 4) out vec4 blib_entityThermalData;\n"
+                + "layout(location = 4) out vec4 blib_entityDrawData;\n"
                 + "layout(location = 5) out vec4 blib_entitySpecular;\n"
                 + "layout(location = 6) out vec4 blib_entityMaterialId;\n";
 
@@ -423,7 +429,7 @@ public final class BLibEntityShaderPatcher {
 
         var maskLiteral = String.format(java.util.Locale.ROOT, "%.4f", category.maskValue);
 
-        // Celestial bodies (sun, moon) need to capture the raw texture luminance into entityThermalData.r so the
+        // Celestial bodies (sun, moon) need to capture the raw texture luminance into entityDrawData.r so the
         // post shader can drive the recolor from the actual texture brightness rather than the post-blend
         // framebuffer luminance. MC draws sun/moon with additive blending (SRC_ALPHA, ONE) — at sun-quad pixels
         // where the texture itself is black (the corners and outer regions of vanilla sun.png), the framebuffer
@@ -446,9 +452,9 @@ public final class BLibEntityShaderPatcher {
             thermalDataWrite =
                 "    vec3 blib_celestRGB = texture(Sampler0, texCoord0).rgb;\n"
                     + "    float blib_celestLuma = dot(blib_celestRGB, vec3(0.299, 0.587, 0.114));\n"
-                    + "    blib_entityThermalData = vec4(clamp(blib_celestLuma, 0.0, 1.0), 0.0, 0.0, 1.0);\n";
+                    + "    blib_entityDrawData = vec4(clamp(blib_celestLuma, 0.0, 1.0), 0.0, 0.0, 1.0);\n";
         } else {
-            thermalDataWrite = "    blib_entityThermalData = vec4(0.0, 0.0, 0.0, 1.0);\n";
+            thermalDataWrite = "    blib_entityDrawData = vec4(0.0, 0.0, 0.0, 1.0);\n";
         }
 
         var writes =

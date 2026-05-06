@@ -14,7 +14,6 @@ import com.blib.mod.common.command.BLibGOAPCommands;
 import com.blib.mod.common.command.BLibPropertyCommands;
 import com.blib.mod.common.command.BLibReputationCommands;
 import com.blib.mod.common.command.BLibTerritoryCommands;
-import com.blib.mod.common.command.BLibThermalCommand;
 
 @ApiStatus.Internal
 public class BLibCommands {
@@ -37,9 +36,9 @@ public class BLibCommands {
 
             // Engine mode is intrinsically client-side (camera detachment, gizmos, freecam HUD); only register on the
             // client distribution so referencing client classes from `BLibEngineCommand` can't link-fail on a
-            // dedicated dev server. Same gate covers the thermal post-process command.
+            // dedicated dev server.
             if (BLibAPI.getDistributionType() == DistributionEnvironmentType.CLIENT) {
-                root = root.then(BLibEngineCommand.build()).then(BLibThermalCommand.build());
+                root = root.then(BLibEngineCommand.build());
             }
         }
 

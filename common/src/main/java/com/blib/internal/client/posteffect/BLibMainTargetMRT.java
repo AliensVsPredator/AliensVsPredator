@@ -9,10 +9,10 @@ import org.lwjgl.opengl.GL30;
 import com.blib.mod.BLib;
 
 /**
- * State + helpers for the MainTarget MRT extension. Owns six auxiliary color attachment texture IDs (entity-mask R8 at
- * attachment 1, entity-lightmap RGBA8 at attachment 2, entity-normal RGBA8 at attachment 3, entity-thermal-data RGBA8
- * at attachment 4, entity-specular RGBA8 at attachment 5, entity-material-id R8 at attachment 6) and the
- * {@code glDrawBuffers} state needed to keep them attached.
+ * State + helpers for the MainTarget MRT extension. Owns six auxiliary color attachment texture IDs (entity-mask RG8
+ * at attachment 1 — R: category byte, G: background-entity flag — entity-lightmap RGBA8 at attachment 2, entity-normal
+ * RGBA8 at attachment 3, entity-draw-data RGBA8 at attachment 4, entity-specular RGBA8 at attachment 5,
+ * entity-material-id R8 at attachment 6) and the {@code glDrawBuffers} state needed to keep them attached.
  * <p>
  * The mixin on {@code MainTarget.createFrameBuffer} (and the resize path on {@code RenderTarget.createBuffers})
  * delegates to {@link #attach(int, int, int)} after vanilla finishes its own attachment, and to {@link #destroy()} from
@@ -40,6 +40,10 @@ public final class BLibMainTargetMRT {
 
     private static final int GL_RED = 6403;
 
+    private static final int GL_RG8 = 33323;
+
+    private static final int GL_RG = 33319;
+
     private static final int GL_RGBA8 = 32856;
 
     private static final int GL_RGBA = 6408;
@@ -54,7 +58,7 @@ public final class BLibMainTargetMRT {
 
     private static int entityNormalTextureId = -1;
 
-    private static int entityThermalDataTextureId = -1;
+    private static int entityDrawDataTextureId = -1;
 
     private static int entitySpecularTextureId = -1;
 
@@ -86,8 +90,8 @@ public final class BLibMainTargetMRT {
         return entityNormalTextureId;
     }
 
-    public static int entityThermalDataTextureId() {
-        return entityThermalDataTextureId;
+    public static int entityDrawDataTextureId() {
+        return entityDrawDataTextureId;
     }
 
     public static int entitySpecularTextureId() {
@@ -122,13 +126,17 @@ public final class BLibMainTargetMRT {
         width = viewWidth;
         height = viewHeight;
 
+        // entityMask uses RG8: R holds the category byte (entity / terrain / particle / sky / celestial / held-item),
+        // G holds an auxiliary background-entity flag (0 normal, 1 when the patcher's BlibBackgroundEntity uniform
+        // is set during the draw). Two-byte attachment costs negligible memory and keeps the category byte's
+        // semantics intact for existing consumers — they continue to read .r exactly as before.
         entityMaskTextureId = TextureUtil.generateTextureId();
         GlStateManager._bindTexture(entityMaskTextureId);
         GlStateManager._texParameter(GL_TEXTURE_2D, 10241, 9728);
         GlStateManager._texParameter(GL_TEXTURE_2D, 10240, 9728);
         GlStateManager._texParameter(GL_TEXTURE_2D, 10242, 33071);
         GlStateManager._texParameter(GL_TEXTURE_2D, 10243, 33071);
-        GlStateManager._texImage2D(GL_TEXTURE_2D, 0, GL_R8, viewWidth, viewHeight, 0, GL_RED, GL_UNSIGNED_BYTE, null);
+        GlStateManager._texImage2D(GL_TEXTURE_2D, 0, GL_RG8, viewWidth, viewHeight, 0, GL_RG, GL_UNSIGNED_BYTE, null);
 
         entityLightmapTextureId = TextureUtil.generateTextureId();
         GlStateManager._bindTexture(entityLightmapTextureId);
@@ -146,8 +154,8 @@ public final class BLibMainTargetMRT {
         GlStateManager._texParameter(GL_TEXTURE_2D, 10243, 33071);
         GlStateManager._texImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, viewWidth, viewHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, null);
 
-        entityThermalDataTextureId = TextureUtil.generateTextureId();
-        GlStateManager._bindTexture(entityThermalDataTextureId);
+        entityDrawDataTextureId = TextureUtil.generateTextureId();
+        GlStateManager._bindTexture(entityDrawDataTextureId);
         GlStateManager._texParameter(GL_TEXTURE_2D, 10241, 9728);
         GlStateManager._texParameter(GL_TEXTURE_2D, 10240, 9728);
         GlStateManager._texParameter(GL_TEXTURE_2D, 10242, 33071);
@@ -176,7 +184,7 @@ public final class BLibMainTargetMRT {
         GlStateManager._glFramebufferTexture2D(36160, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, entityMaskTextureId, 0);
         GlStateManager._glFramebufferTexture2D(36160, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, entityLightmapTextureId, 0);
         GlStateManager._glFramebufferTexture2D(36160, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, entityNormalTextureId, 0);
-        GlStateManager._glFramebufferTexture2D(36160, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, entityThermalDataTextureId, 0);
+        GlStateManager._glFramebufferTexture2D(36160, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, entityDrawDataTextureId, 0);
         GlStateManager._glFramebufferTexture2D(36160, GL_COLOR_ATTACHMENT5, GL_TEXTURE_2D, entitySpecularTextureId, 0);
         GlStateManager._glFramebufferTexture2D(36160, GL_COLOR_ATTACHMENT6, GL_TEXTURE_2D, entityMaterialIdTextureId, 0);
 
@@ -261,9 +269,9 @@ public final class BLibMainTargetMRT {
             entityNormalTextureId = -1;
         }
 
-        if (entityThermalDataTextureId != -1) {
-            TextureUtil.releaseTextureId(entityThermalDataTextureId);
-            entityThermalDataTextureId = -1;
+        if (entityDrawDataTextureId != -1) {
+            TextureUtil.releaseTextureId(entityDrawDataTextureId);
+            entityDrawDataTextureId = -1;
         }
 
         if (entitySpecularTextureId != -1) {

@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-import com.blib.internal.client.posteffect.BLibPerBoneLightContext;
+import com.blib.api.client.posteffect.v1.BLibPerBoneLightContext;
 
 /**
  * Replaces vanilla MC's per-entity {@code packedLight} with a per-bone value sampled at each cube's actual world
@@ -28,8 +28,8 @@ import com.blib.internal.client.posteffect.BLibPerBoneLightContext;
  *
  * <p>The new {@code packedLight} flows through the existing MRT pipeline naturally: vanilla bakes it into the vertex
  * {@code UV2} attribute via {@code VertexConsumer.uv2(packedLight)}, the patcher extracts {@code UV2.x/240} into
- * {@code blib_lightCoord.x}, and the fragment shader writes that into {@code entityThermalData.g}. The thermal post
- * shader reads {@code entityThermalData.g} for the heat formula — which now varies per bone.
+ * {@code blib_lightCoord.x}, and the fragment shader writes that into {@code entityDrawData.g}. The thermal post
+ * shader reads {@code entityDrawData.g} for the heat formula — which now varies per bone.
  *
  * <p>No-op outside thermal mode (gated by null context).
  */

@@ -151,8 +151,8 @@ public final class BLibPostEffectPipeline {
             shader.setSampler("entityNormal", BLibMainTargetMRT.entityNormalTextureId());
         }
 
-        if (inputs.contains(BLibPostEffectInput.ENTITY_THERMAL_DATA) && BLibMainTargetMRT.isAttached()) {
-            shader.setSampler("entityThermalData", BLibMainTargetMRT.entityThermalDataTextureId());
+        if (inputs.contains(BLibPostEffectInput.ENTITY_DRAW_DATA) && BLibMainTargetMRT.isAttached()) {
+            shader.setSampler("entityDrawData", BLibMainTargetMRT.entityDrawDataTextureId());
         }
 
         if (inputs.contains(BLibPostEffectInput.ENTITY_SPECULAR) && BLibMainTargetMRT.isAttached()) {

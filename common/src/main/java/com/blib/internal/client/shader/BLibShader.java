@@ -17,10 +17,6 @@ import java.util.function.Supplier;
  * {@link ShaderInstance} reference is populated by the loader code via {@link #setInstance(ShaderInstance)}; consumers
  * read it via {@link #instance()} (returning {@code null} until the first registration completes — guard your render
  * paths accordingly).
- *
- * @param id           the shader id, used by MC's shader system to find
- *                     {@code assets/<namespace>/shaders/core/<path>.{vsh,fsh,json}}
- * @param vertexFormat the vertex format the shader expects; must match the format of any draw using this shader
  */
 @ApiStatus.Internal
 public final class BLibShader {
@@ -31,6 +27,11 @@ public final class BLibShader {
 
     private @Nullable ShaderInstance instance;
 
+    /**
+     * @param id           the shader id, used by MC's shader system to find
+     *                     {@code assets/<namespace>/shaders/core/<path>.{vsh,fsh,json}}
+     * @param vertexFormat the vertex format the shader expects; must match the format of any draw using this shader
+     */
     public BLibShader(ResourceLocation id, VertexFormat vertexFormat) {
         this.id = id;
         this.vertexFormat = vertexFormat;

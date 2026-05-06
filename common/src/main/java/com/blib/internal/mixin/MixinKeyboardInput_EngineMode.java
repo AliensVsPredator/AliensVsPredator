@@ -10,8 +10,8 @@ import com.blib.internal.client.engine.EngineMode;
 
 /**
  * While engine mode is active, neutralize player movement input so the body stays put while the freecam wanders. We
- * read the same key state ourselves in {@link com.blib.internal.client.engine.EngineFreecam} (since the keys are
- * shared), but the player's {@link KeyboardInput} should report no impulse.
+ * read the same key state ourselves in {@link com.blib.internal.client.engine.EngineNavigation} (since the keys
+ * are shared), but the player's {@link KeyboardInput} should report no impulse.
  */
 @Mixin(KeyboardInput.class)
 public abstract class MixinKeyboardInput_EngineMode {

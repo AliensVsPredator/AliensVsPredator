@@ -22,8 +22,9 @@ public enum BLibPostEffectInput {
     LIGHTMAP_TEXTURE,
 
     /**
-     * {@code sampler2D entityMask} — R8, sampled with screen-space texCoord. Per-fragment category byte written by
-     * patched render-type shaders:
+     * {@code sampler2D entityMask} — RG8, sampled with screen-space texCoord.
+     * <p>
+     * <b>R channel:</b> per-fragment category byte written by patched render-type shaders:
      * <ul>
      * <li>{@code 1.00} — entity (incl. armor, eyes, held items rendered through entity render types)</li>
      * <li>{@code 0.50} — terrain (chunk meshes:
@@ -31,8 +32,14 @@ public enum BLibPostEffectInput {
      * <li>{@code 0.25} — particle</li>
      * <li>{@code 0.00} — unpatched fragment (sky, GUI, anything the framework didn't capture)</li>
      * </ul>
-     * Use threshold steps to recover categories — e.g. {@code step(0.75, mask)} for entity-only,
-     * {@code step(0.125, mask)} for "anything captured."
+     * Use threshold steps to recover categories — e.g. {@code step(0.75, mask.r)} for entity-only,
+     * {@code step(0.125, mask.r)} for "anything captured."
+     * <p>
+     * <b>G channel:</b> background-entity flag. {@code 1.0} on entity fragments drawn while a downstream mod
+     * pushed {@code BLibPostEffectFramework.pushBackgroundEntity()}; {@code 0.0} otherwise. Lets a vision-style
+     * post-effect render flagged entities through its world-coloring branch instead of its foreground-entity
+     * branch (so e.g. a mob outside the vision's visibility tag still draws but blends with the world). Unrelated
+     * to {@code MobEffects.INVISIBILITY} — that's still handled separately by vanilla.
      * <p>
      * Requires the framework's MainTarget-MRT mixin to be active (i.e., not running under Iris/Oculus).
      */
@@ -57,21 +64,21 @@ public enum BLibPostEffectInput {
     ENTITY_NORMAL,
 
     /**
-     * {@code sampler2D entityThermalData} — RGBA8, sampled with screen-space texCoord. Captures entity draw-time data
-     * that is otherwise lost before the post pass:
+     * {@code sampler2D entityDrawData} — RGBA8, sampled with screen-space texCoord. Captures per-fragment draw-time
+     * data that is otherwise lost before the post pass:
      * <ul>
-     * <li>R: source detail, matching the thermal shader's {@code detail = color.r} input.</li>
+     * <li>R: source-texture detail, the raw red channel of the texel ({@code Sampler0.r} pre-modulation).</li>
      * <li>G: raw normalized block-light coord, {@code UV2.x / 240}.</li>
-     * <li>B: raw normalized sky-light coord, {@code UV2.y / 240}, used by the JCL sun/sky heat branch.</li>
-     * <li>A: vanilla diffuse face-light term from {@code Normal}, {@code Light0_Direction}, and
-     * {@code Light1_Direction}.</li>
+     * <li>B: raw normalized sky-light coord, {@code UV2.y / 240}.</li>
+     * <li>A: vanilla diffuse face-light term derived from {@code Normal}, {@code Light0_Direction}, and
+     * {@code Light1_Direction} when those are available, with synthetic-key-light or flat fallbacks.</li>
      * </ul>
-     * The earlier "weighted lightmap heat" payload was dropped from this attachment and is now re-derived in the post
-     * shader from {@link #ENTITY_LIGHTMAP}, freeing the G channel for raw block light.
+     * Effects that need lightmap-derived light values can re-derive them from {@link #ENTITY_LIGHTMAP}; this attachment
+     * keeps the G/B channels as raw light coords so it stays useful for non-thermal post-effects too.
      * <p>
      * Same MRT requirement as {@link #ENTITY_MASK}.
      */
-    ENTITY_THERMAL_DATA,
+    ENTITY_DRAW_DATA,
 
     /**
      * {@code sampler2D entitySpecular} — RGBA8, sampled with screen-space texCoord. Optional per-fragment PBR/specular
