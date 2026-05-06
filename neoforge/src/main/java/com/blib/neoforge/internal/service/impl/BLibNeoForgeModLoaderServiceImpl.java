@@ -48,7 +48,17 @@ public class BLibNeoForgeModLoaderServiceImpl implements BLibModLoaderService {
 
     @Override
     public @Nullable Version getModVersion(String modId) {
-        return ModList.get()
+        // ModList.get() is null until NeoForge has populated the mod list, which happens after Minecraft.<init>
+        // begins. Anything queried during early boot (e.g. the MainTarget MRT mixin touching BLib.LOGGER, which
+        // triggers BLib.<clinit>) needs to fail soft here rather than NPE. Callers handle a null Version by
+        // treating it as "unknown" — see BLibMod#version which retries on subsequent calls.
+        var modList = ModList.get();
+
+        if (modList == null) {
+            return null;
+        }
+
+        return modList
             .getModContainerById(modId)
             .map(mod -> mod.getModInfo().getVersion().toString())
             .map(Version::parse)
