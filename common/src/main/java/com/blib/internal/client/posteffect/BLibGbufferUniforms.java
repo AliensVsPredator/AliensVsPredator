@@ -13,9 +13,11 @@ import java.util.concurrent.ConcurrentMap;
  *   <li>Sets the patcher-injected {@code BlibHeldItem} uniform to flag held-item draws (the patched fragment
  *       writes the {@code 0.875} held-item mask category when this is non-zero, which the thermal post detects
  *       and short-circuits to original color).</li>
- *   <li>Sets the patcher-injected {@code BlibBackgroundEntity} uniform to flag entity draws that should render as
- *       part of the world background (the patched fragment writes its 0/1 value into {@code entityMask.g} so
- *       consumer post-effects can route those pixels through their world-coloring branch).</li>
+ *   <li>Sets the patcher-injected {@code BlibBackgroundEntity} (lane A) and {@code BlibBackgroundEntity2} (lane B)
+ *       uniforms to flag entity draws that should render as part of the world background. The patched fragment packs
+ *       the two lanes into {@code entityMask.g} as {@code 0.25 * laneA + 0.5 * laneB}, so the four combinations land
+ *       at 0.0 / 0.25 / 0.5 / 0.75. Consumer post-effects sample {@code .g} and decode to per-lane flags (or just
+ *       check {@code .g > 0.5} for legacy "any background" behavior, since that matches lane B alone).</li>
  *   <li>Toggles {@code glColorMaski} for the auxiliary attachments (1-6) based on whether the bound shader is
  *       one we've categorized for the thermal pipeline. Patched shaders write valid auxiliary data and have full
  *       writes enabled. Unpatched shaders — entity shadows, the block-outline wireframe, glints, leashes,
@@ -37,6 +39,8 @@ public final class BLibGbufferUniforms {
 
     private static final ConcurrentMap<Integer, Integer> BACKGROUND_ENTITY_LOC_CACHE = new ConcurrentHashMap<>();
 
+    private static final ConcurrentMap<Integer, Integer> BACKGROUND_ENTITY2_LOC_CACHE = new ConcurrentHashMap<>();
+
     /**
      * Tracks the last colorMask state we applied so we don't issue six glColorMaski calls per shader-bind when
      * the state is unchanged. State transitions are clustered (e.g. all terrain draws are patched, then a run of
@@ -55,7 +59,8 @@ public final class BLibGbufferUniforms {
 
         toggleAuxColorMask(shaderName);
         applyHeldItemUniform(programId);
-        applyBackgroundEntityUniform(programId);
+        applyBackgroundEntityUniform(programId, shaderName);
+        applyBackgroundEntity2Uniform(programId, shaderName);
     }
 
     /**
@@ -102,7 +107,7 @@ public final class BLibGbufferUniforms {
         GL20.glUniform1i(loc, BLibHeldItemRenderState.isActive() ? 1 : 0);
     }
 
-    private static void applyBackgroundEntityUniform(int programId) {
+    private static void applyBackgroundEntityUniform(int programId, String shaderName) {
         var loc = BACKGROUND_ENTITY_LOC_CACHE.computeIfAbsent(
             programId,
             p -> GL20.glGetUniformLocation(p, "BlibBackgroundEntity")
@@ -112,6 +117,19 @@ public final class BLibGbufferUniforms {
             return;
         }
 
-        GL20.glUniform1i(loc, BLibBackgroundEntityRenderState.isActive() ? 1 : 0);
+        GL20.glUniform1i(loc, BLibBackgroundEntityRenderState.isActiveA() ? 1 : 0);
+    }
+
+    private static void applyBackgroundEntity2Uniform(int programId, String shaderName) {
+        var loc = BACKGROUND_ENTITY2_LOC_CACHE.computeIfAbsent(
+            programId,
+            p -> GL20.glGetUniformLocation(p, "BlibBackgroundEntity2")
+        );
+
+        if (loc == -1) {
+            return;
+        }
+
+        GL20.glUniform1i(loc, BLibBackgroundEntityRenderState.isActiveB() ? 1 : 0);
     }
 }

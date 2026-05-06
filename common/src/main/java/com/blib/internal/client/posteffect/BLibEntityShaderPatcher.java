@@ -167,9 +167,13 @@ public final class BLibEntityShaderPatcher {
             return Category.ENTITY;
         }
 
-        if (name.equals("rendertype_eyes")) {
-            return Category.ENTITY;
-        }
+        // rendertype_eyes draws the glowing-eye overlay AFTER the body via additive blending
+        // ({@code SRC_ALPHA, ONE}). The patcher's mask write forces source alpha to 1.0 to survive alpha-blended
+        // render types (entity_translucent etc.) — but on an additive type, that same forced 1.0 means every eye
+        // fragment ADDS its mask byte and lane-encoding into the body's already-written values, corrupting the
+        // mask byte and (for predator vision) packing both lanes into the result. Leave it unpatched: the
+        // body has already written valid mask data for those pixels, and {@link BLibGbufferUniforms#toggleAuxColorMask}
+        // will suppress eye writes to attachments 1-6 entirely while still letting the eye color land in attachment 0.
 
         // Terrain render types — every chunk-mesh family. Excludes specialized water_mask/beacon_beam (they have
         // unusual attribute layouts and are rare enough that a missing thermal contribution is a non-issue).
@@ -305,6 +309,7 @@ public final class BLibEntityShaderPatcher {
                 + "in float blib_faceLight;\n"
                 + "uniform int BlibHeldItem;\n"
                 + "uniform int BlibBackgroundEntity;\n"
+                + "uniform int BlibBackgroundEntity2;\n"
                 + "layout(location = 0) out vec4 fragColor;\n"
                 + "layout(location = 1) out vec4 blib_entityMask;\n"
                 + "layout(location = 2) out vec4 blib_entityLightmap;\n"
@@ -371,13 +376,17 @@ public final class BLibEntityShaderPatcher {
         // ShaderInstance.apply mixin) only while a first-person hand or third-person ItemInHandLayer draw is in
         // flight. The 0.875 mask value is decoded by the thermal post shader as "passthrough — output src.rgb,
         // skip thermal recoloring" so held items remain readable in IR mode.
-        // Background-entity override: BlibBackgroundEntity is set to 1 by the Java side around entity draws that
-        // should render as part of the world rather than as foreground entities. The flag is written into
-        // entityMask.g (R channel still holds the category byte unchanged); consumer post-effects sample .g to
-        // route those pixels through their world-coloring branch. Requires the entityMask attachment to be RG8.
+        // Background-entity override: two independent lanes (BlibBackgroundEntity = lane A, BlibBackgroundEntity2 =
+        // lane B) are set by the Java side around entity draws that should render as part of the world rather than
+        // as foreground entities. The two lane states are packed into entityMask.g as 0.25 * laneA + 0.5 * laneB,
+        // so the four combinations land at 0.0 / 0.25 / 0.5 / 0.75 — distinguishable under NEAREST sampling of the
+        // RG8 attachment. Consumers can either decode per-lane (see e.g. predator vision's wipe-aware shader) or,
+        // for legacy "any background" behavior, treat (mask.g > 0.125) as the single background flag.
         var writes =
             "    float blib_maskValue = (BlibHeldItem != 0) ? 0.875 : " + maskLiteral + ";\n"
-                + "    float blib_backgroundFlag = (BlibBackgroundEntity != 0) ? 1.0 : 0.0;\n"
+                + "    float blib_bgLaneA = (BlibBackgroundEntity != 0) ? 1.0 : 0.0;\n"
+                + "    float blib_bgLaneB = (BlibBackgroundEntity2 != 0) ? 1.0 : 0.0;\n"
+                + "    float blib_backgroundFlag = blib_bgLaneA * 0.25 + blib_bgLaneB * 0.5;\n"
                 + "    blib_entityMask = vec4(blib_maskValue, blib_backgroundFlag, 0.0, 1.0);\n"
                 + "    blib_entityLightmap = blib_lightmap;\n"
                 + "    vec3 blib_n = blib_normal;\n"
