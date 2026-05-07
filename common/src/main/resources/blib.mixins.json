@@ -19,6 +19,8 @@
     "MixinLevelChunk_TerrainCacheInvalidation",
     "MixinLivingEntity_Dismemberable",
     "MixinLivingEntity_GOAPUser",
+    "MixinMilkBucketItem_PreserveTaggedEffects",
+    "MixinMobEffectInstance_SuppressTaggedParticles",
     "MixinPath_Debug",
     "MixinRegistry_ApplyDataFixes",
     "MixinShapedRecipeBuilder_Accessor",
