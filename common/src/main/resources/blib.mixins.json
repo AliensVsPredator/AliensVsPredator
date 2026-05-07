@@ -17,6 +17,7 @@
     "MixinEntityTypeBuilder_SilenceDataFixerError",
     "MixinHolder",
     "MixinLevelChunk_TerrainCacheInvalidation",
+    "MixinLivingEntity_BypassesArmorOnly",
     "MixinLivingEntity_Dismemberable",
     "MixinLivingEntity_GOAPUser",
     "MixinMilkBucketItem_PreserveTaggedEffects",
