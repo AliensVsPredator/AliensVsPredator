@@ -3,6 +3,7 @@ package com.blib.api.client.render.v1.item;
 import com.blib.api.client.render.v1.BLibTransform;
 import net.minecraft.world.item.ItemDisplayContext;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -42,6 +43,10 @@ public class BLibItemTransforms {
     public static final class Builder {
 
         private final Map<ItemDisplayContext, BLibTransform> transforms = new EnumMap<>(ItemDisplayContext.class);
+
+        private boolean mirrorFirstPerson = false;
+
+        private boolean mirrorThirdPerson = false;
 
         private Builder() {}
 
@@ -92,8 +97,82 @@ public class BLibItemTransforms {
             return thirdPersonLeftHand(transform).thirdPersonRightHand(transform);
         }
 
+        /**
+         * On {@link #build()}, derive {@link ItemDisplayContext#FIRST_PERSON_LEFT_HAND} from
+         * {@link ItemDisplayContext#FIRST_PERSON_RIGHT_HAND} via a YZ-plane reflection — i.e. negate
+         * {@code translation.x}, {@code rotation.y}, {@code rotation.z}, and {@code pivot.x}; everything
+         * else stays the same. Skipped if the left-hand context was set explicitly, or if the right-hand
+         * context wasn't set. Resolution is deferred to build, so subsequent right-hand changes flow
+         * through to the mirror.
+         */
+        public Builder mirrorFirstPersonRightToLeft() {
+            this.mirrorFirstPerson = true;
+            return this;
+        }
+
+        /**
+         * Same as {@link #mirrorFirstPersonRightToLeft} but for third-person hands.
+         */
+        public Builder mirrorThirdPersonRightToLeft() {
+            this.mirrorThirdPerson = true;
+            return this;
+        }
+
+        /**
+         * Convenience shorthand for both {@link #mirrorFirstPersonRightToLeft} and
+         * {@link #mirrorThirdPersonRightToLeft}.
+         */
+        public Builder mirrorRightToLeftHands() {
+            return mirrorFirstPersonRightToLeft().mirrorThirdPersonRightToLeft();
+        }
+
         public BLibItemTransforms build() {
-            return new BLibItemTransforms(new EnumMap<>(transforms));
+            var resolved = new EnumMap<>(transforms);
+
+            if (mirrorFirstPerson) {
+                applyMirror(resolved, ItemDisplayContext.FIRST_PERSON_RIGHT_HAND, ItemDisplayContext.FIRST_PERSON_LEFT_HAND);
+            }
+
+            if (mirrorThirdPerson) {
+                applyMirror(resolved, ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, ItemDisplayContext.THIRD_PERSON_LEFT_HAND);
+            }
+
+            return new BLibItemTransforms(resolved);
+        }
+
+        private static void applyMirror(Map<ItemDisplayContext, BLibTransform> map, ItemDisplayContext from, ItemDisplayContext to) {
+            // Explicit set wins — `set(LEFT_HAND, ...)` after `mirrorRightToLeft()` keeps the explicit value.
+            if (map.containsKey(to)) {
+                return;
+            }
+
+            var source = map.get(from);
+
+            if (source == null) {
+                return;
+            }
+
+            map.put(to, mirrorAcrossYZ(source));
+        }
+
+        /**
+         * Reflect a transform across the YZ plane — the geometric mirror that turns a right-hand pose
+         * into a visually-symmetric left-hand pose. Negates the X component of translation and pivot
+         * (the side-of-body axis) and the Y/Z components of rotation (the in-plane angles); leaves
+         * X rotation, scale, and Y/Z translation/pivot alone.
+         * <p>
+         * Derivation: for the full transform {@code M = T(t)·T(p)·R·S·T(-p)}, conjugating by the YZ
+         * reflection {@code F = diag(-1,1,1)} gives {@code F·M·F = T(F·t)·T(F·p)·(F·R·F)·S·T(-F·p)}.
+         * For {@code R = Rx·Ry·Rz}, {@code F·R·F = Rx·Ry(-y)·Rz(-z)} (X rotation is invariant because
+         * its axis lies in the reflection plane; Y and Z negate because their axes flip).
+         */
+        private static BLibTransform mirrorAcrossYZ(BLibTransform t) {
+            return new BLibTransform(
+                new Vector3f(-t.translation().x, t.translation().y, t.translation().z),
+                new Vector3f(t.rotation().x, -t.rotation().y, -t.rotation().z),
+                new Vector3f(t.scale()),
+                new Vector3f(-t.pivot().x, t.pivot().y, t.pivot().z)
+            );
         }
     }
 }

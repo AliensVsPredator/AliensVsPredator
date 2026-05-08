@@ -62,7 +62,9 @@
     "posteffect.MixinRenderTarget_MRT",
     "posteffect.MixinShaderInstance_GbufferUniforms",
     "MixinModelPart_Accessor",
+    "MixinLivingEntity_ForceBlocking",
     "MixinMouseHandler_EngineMode",
+    "MixinMouseHandler_Gizmo",
     "MixinQuadrupedModel_Accessor"
   ],
   "server": [],

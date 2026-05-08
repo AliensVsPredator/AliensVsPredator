@@ -14,6 +14,7 @@ import com.blib.mod.common.command.BLibGOAPCommands;
 import com.blib.mod.common.command.BLibPropertyCommands;
 import com.blib.mod.common.command.BLibReputationCommands;
 import com.blib.mod.common.command.BLibTerritoryCommands;
+import com.blib.mod.common.command.BLibTransformTuneCommand;
 
 @ApiStatus.Internal
 public class BLibCommands {
@@ -39,6 +40,7 @@ public class BLibCommands {
             // dedicated dev server.
             if (BLibAPI.getDistributionType() == DistributionEnvironmentType.CLIENT) {
                 root = root.then(BLibEngineCommand.build());
+                root = root.then(BLibTransformTuneCommand.build());
             }
         }
 
