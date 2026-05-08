@@ -37,6 +37,23 @@ public final class BLibGizmoState {
     @Nullable
     private static volatile RenderSnapshot lastRender = null;
 
+    /**
+     * All snapshots captured in the most recent frame's gizmo renders. When multiple tunable items are
+     * rendered in the same frame (e.g., a row of placed queen-head blocks all in view), each render adds
+     * to this list. At click time the input handler picks whichever entry has its projected origin
+     * nearest the cursor — that's the gizmo the user is actually trying to click on. Entries older than
+     * {@link #SNAPSHOT_MAX_AGE_NANOS} are dropped on add, so the list naturally trims to "this frame's
+     * captures" without needing an explicit per-frame clear hook.
+     */
+    private static final java.util.List<TimedSnapshot> recentRenders = new java.util.concurrent.CopyOnWriteArrayList<>();
+
+    /**
+     * Snapshots older than this on add are dropped. Roughly two frames at 60fps — long enough to span a
+     * frame's worth of multi-item captures, short enough that clicks always pick from the most recent
+     * rendering, not stale data from when the camera was elsewhere.
+     */
+    private static final long SNAPSHOT_MAX_AGE_NANOS = 33_000_000L;
+
     /** Active drag state, or null when no axis is currently grabbed. */
     @Nullable
     private static volatile DragState drag = null;
@@ -66,7 +83,35 @@ public final class BLibGizmoState {
 
     public static void setLastRender(@Nullable RenderSnapshot snapshot) {
         lastRender = snapshot;
+
+        if (snapshot != null) {
+            // Trim stale entries (older than two frames at 60fps) and append the new one. Picker reads
+            // from this list rather than `lastRender` so multi-item frames pick the right gizmo.
+            long now = System.nanoTime();
+            recentRenders.removeIf(t -> now - t.timestamp() > SNAPSHOT_MAX_AGE_NANOS);
+            recentRenders.add(new TimedSnapshot(snapshot, now));
+        }
     }
+
+    /**
+     * All snapshots captured in the last ~two frames. Picker iterates these to find whichever gizmo the
+     * cursor is closest to — handles the case where multiple tunable items are visible at once and the
+     * "most-recently-rendered" one isn't the one the user is clicking on.
+     */
+    public static java.util.List<RenderSnapshot> recentRenders() {
+        long now = System.nanoTime();
+        var result = new java.util.ArrayList<RenderSnapshot>();
+
+        for (var t : recentRenders) {
+            if (now - t.timestamp() <= SNAPSHOT_MAX_AGE_NANOS) {
+                result.add(t.snapshot());
+            }
+        }
+
+        return result;
+    }
+
+    private record TimedSnapshot(RenderSnapshot snapshot, long timestamp) {}
 
     public static @Nullable DragState drag() {
         return drag;

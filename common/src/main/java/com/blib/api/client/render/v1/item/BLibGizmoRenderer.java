@@ -125,14 +125,19 @@ public final class BLibGizmoRenderer {
     }
 
     /**
-     * Project a unit direction in local space to a unit direction in view space. The pose-stack matrix's
-     * upper-left 3x3 is the local-to-view linear part (rotation/scale), so we transform the direction by
-     * dropping the translation column.
+     * Transform a local-space basis vector to view space, preserving the pose-stack matrix's scale. We
+     * deliberately do NOT normalize the result: the rendered handles use {@code pose.pose() × local} for
+     * their vertices (so the radius/length they show on screen reflects the pose's scale), and the picking
+     * code multiplies these basis vectors by the gizmo's scale to recover handle positions. If we
+     * normalized, picking would compute samples at a different radius from the visible ring/arrow and the
+     * cursor would have to land on invisible geometry to register as a hit — directly proportional to how
+     * far the pose scale departs from 1 (e.g., a third-person hand transform with {@code scale: 0.5f}
+     * would put picking samples at 2× the visible ring radius, so most clicks miss).
      */
     private static Vector3f transformDirection(Matrix4f m, float x, float y, float z) {
         var vec = new Vector4f(x, y, z, 0);
         m.transform(vec);
-        return new Vector3f(vec.x, vec.y, vec.z).normalize();
+        return new Vector3f(vec.x, vec.y, vec.z);
     }
 
     private static int activeDragAxis() {

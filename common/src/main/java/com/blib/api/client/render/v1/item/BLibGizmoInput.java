@@ -33,11 +33,25 @@ import org.slf4j.helpers.MessageFormatter;
  */
 public final class BLibGizmoInput {
 
-    /** Maximum cursor-to-handle distance, in window pixels, that counts as a hit. */
-    private static final float PICK_THRESHOLD_PX = 12f;
+    /** Maximum cursor-to-arrow-handle distance, in window pixels, that counts as a hit. */
+    private static final float TRANSLATE_PICK_THRESHOLD_PX = 16f;
 
-    /** Number of segments used to test cursor-to-ring distance. Higher = smoother but more work per click. */
-    private static final int RING_PICK_SEGMENTS = 32;
+    /**
+     * Maximum cursor-to-rotate-ring distance. Larger than the translate threshold because rings render as
+     * thin (1-pixel) line strips and are visually harder to land on than the translate arrows, which have
+     * the shaft + a "+" tip that gives a fatter target. Tune up if rings still feel finicky to click; tune
+     * down if accidental ring picks during translate-axis clicks become an issue (translate handle picks
+     * still take priority since they're tested first when in TRANSLATE mode).
+     */
+    private static final float ROTATE_PICK_THRESHOLD_PX = 24f;
+
+    /**
+     * Number of segments used to test cursor-to-ring distance. Higher = better picking accuracy at click
+     * time but more work per click. Bumped from 32 to 96 — rings projected to screen often render as
+     * tilted ellipses, where a sparse sampling can leave gaps between segments large enough that the
+     * cursor falls between samples and picking misses.
+     */
+    private static final int RING_PICK_SEGMENTS = 96;
 
     /**
      * Toggleable trace logging for diagnosing why a click isn't landing on a handle. Off by default — flip
@@ -72,13 +86,6 @@ public final class BLibGizmoInput {
             return false;
         }
 
-        var snapshot = BLibGizmoState.lastRender();
-
-        if (snapshot == null) {
-            trace("tryStartDrag: no render snapshot — item not rendered this frame, picking impossible");
-            return false;
-        }
-
         var window = Minecraft.getInstance().getWindow();
         // getScreenWidth/Height (NOT getWidth/Height) — cursor xpos()/ypos() come from GLFW in window
         // (screen) coordinates, which on HDPI displays differ from framebuffer pixels by a factor of 2+.
@@ -86,10 +93,33 @@ public final class BLibGizmoInput {
         int w = window.getScreenWidth();
         int h = window.getScreenHeight();
 
+        // Multi-item frames: when several tunable items render in the same frame (e.g., a row of placed
+        // queen-head blocks all in view), each render produces its own snapshot. The cursor is on at most
+        // one of them — pick whichever snapshot's projected origin is closest to the cursor. Without this,
+        // the picker uses the most-recently-rendered snapshot which might be off-screen / behind a wall /
+        // not the one the user is clicking on.
+        var snapshots = BLibGizmoState.recentRenders();
+
+        if (snapshots.isEmpty()) {
+            var legacy = BLibGizmoState.lastRender();
+            if (legacy == null) {
+                trace("tryStartDrag: no render snapshot — item not rendered this frame, picking impossible");
+                return false;
+            }
+            snapshots = java.util.List.of(legacy);
+        }
+
+        var snapshot = pickClosestSnapshot(snapshots, cursorX, cursorY, w, h);
+
+        if (snapshot == null) {
+            trace("tryStartDrag: cursor not near any of {} rendered gizmo origins", snapshots.size());
+            return false;
+        }
+
         int axis = pickHandle(snapshot, cursorX, cursorY, w, h);
 
-        trace("tryStartDrag: cursor=({},{}) screen={}x{} item={} ctx={} pickedAxis={}",
-            cursorX, cursorY, w, h, snapshot.itemId(), snapshot.displayContext(), axis);
+        trace("tryStartDrag: cursor=({},{}) screen={}x{} item={} ctx={} pickedAxis={} (chose from {} snapshots)",
+            cursorX, cursorY, w, h, snapshot.itemId(), snapshot.displayContext(), axis, snapshots.size());
 
         if (axis < 0) {
             return false;
@@ -150,6 +180,51 @@ public final class BLibGizmoInput {
         }
     }
 
+    /**
+     * Pick whichever snapshot in {@code snapshots} has its projected origin closest to the cursor in
+     * screen pixels, within a generous threshold. The threshold is wide enough that if a snapshot's
+     * gizmo is visible on screen, clicks anywhere near its rings will pick THAT snapshot (rather than
+     * picking a different snapshot whose origin happens to project somewhere else off-screen).
+     * <p>
+     * Returns null if no snapshot's projected origin is within reach of the cursor — typically means
+     * either no gizmo is on screen at the click point, or all rendered gizmos are far from where the
+     * cursor was when the click fired.
+     */
+    private static @org.jetbrains.annotations.Nullable BLibGizmoState.RenderSnapshot pickClosestSnapshot(
+        java.util.List<BLibGizmoState.RenderSnapshot> snapshots, double cursorX, double cursorY, int w, int h
+    ) {
+        // Scale picks the snapshot's threshold based on its gizmo's screen size — bigger gizmos can be
+        // matched from further away. A factor of 2x the gizmo's screen radius (rings are at radius =
+        // gizmo scale projected; cursor anywhere within 2x that radius from origin counts).
+        BLibGizmoState.RenderSnapshot best = null;
+        double bestDist = Double.POSITIVE_INFINITY;
+
+        for (var s : snapshots) {
+            var origin = projectToScreen(s.viewPivot(), s.projection(), w, h);
+            if (origin == null) continue;
+
+            double dx = cursorX - origin.x;
+            double dy = cursorY - origin.y;
+            double dist = Math.sqrt(dx * dx + dy * dy);
+
+            // Match radius: the gizmo's projected ring radius plus picking slack. Project (viewPivot +
+            // scale * +X) to get a known reference point, distance from origin estimates the ring's
+            // screen-pixel radius. Threshold is 2× that radius, so cursors near or just-outside any
+            // ring still associate with the right snapshot.
+            var tipView = new org.joml.Vector3f(s.viewPivot()).fma(s.scale(), s.viewX());
+            var tip = projectToScreen(tipView, s.projection(), w, h);
+            float radiusPx = tip != null ? (float) Math.hypot(tip.x - origin.x, tip.y - origin.y) : 64f;
+            float matchRadius = Math.max(64f, radiusPx * 2f);
+
+            if (dist < matchRadius && dist < bestDist) {
+                bestDist = dist;
+                best = s;
+            }
+        }
+
+        return best;
+    }
+
     private static int pickHandle(BLibGizmoState.RenderSnapshot s, double cursorX, double cursorY, int w, int h) {
         var origin = projectToScreen(s.viewPivot(), s.projection(), w, h);
 
@@ -162,12 +237,15 @@ public final class BLibGizmoInput {
             origin.x, origin.y, cursorX, cursorY,
             Math.hypot(cursorX - origin.x, cursorY - origin.y));
 
+        boolean isTranslate = BLibGizmoState.mode() == BLibGizmoMode.TRANSLATE;
+        float threshold = isTranslate ? TRANSLATE_PICK_THRESHOLD_PX : ROTATE_PICK_THRESHOLD_PX;
+
         int best = -1;
-        float bestDist = PICK_THRESHOLD_PX;
+        float bestDist = threshold;
         float[] perAxis = new float[3];
 
         for (int axis = 0; axis < 3; axis++) {
-            float dist = (BLibGizmoState.mode() == BLibGizmoMode.TRANSLATE)
+            float dist = isTranslate
                 ? distanceToTranslateHandle(s, axis, origin, cursorX, cursorY, w, h)
                 : distanceToRotateHandle(s, axis, cursorX, cursorY, w, h);
 
@@ -180,7 +258,7 @@ public final class BLibGizmoInput {
         }
 
         trace("pickHandle: per-axis distances X={}, Y={}, Z={} threshold={} -> best axis = {}",
-            perAxis[0], perAxis[1], perAxis[2], PICK_THRESHOLD_PX, best);
+            perAxis[0], perAxis[1], perAxis[2], threshold, best);
         return best;
     }
 
@@ -210,8 +288,13 @@ public final class BLibGizmoInput {
         var clip = new Vector4f(viewPos.x, viewPos.y, viewPos.z, 1f);
         projection.transform(clip);
 
-        // Behind camera or on the focal plane — no valid projection.
-        if (clip.w <= 0.001f) {
+        // Only reject when clip.w is too close to zero to divide. Don't sign-restrict — MC's
+        // perspective + modelview composition can put visible content at clip.w of either sign depending
+        // on convention quirks, and the picking samples and rendered handles go through the same matrices
+        // either way, so the perspective divide produces consistent screen coords for both regardless of
+        // the sign. (An earlier `clip.w <= 0.001` check was clipping out perfectly-visible gizmos in
+        // third-person hand renders where the gizmo origin's view.z came out positive.)
+        if (Math.abs(clip.w) < 1e-6f) {
             return null;
         }
 
