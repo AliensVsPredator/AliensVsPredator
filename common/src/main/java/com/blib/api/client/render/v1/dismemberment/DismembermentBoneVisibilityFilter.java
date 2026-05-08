@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.blib.api.client.model.v1.AzBone;
+import com.blib.api.client.render.v1.AzRendererConfig;
 import com.blib.api.client.render.v1.BoneVisibilityFilter;
 import com.blib.api.common.dismemberment.v1.Dismemberable;
 import com.blib.api.common.dismemberment.v1.LimbDefinitionRegistry;
@@ -25,8 +26,9 @@ import com.blib.api.common.dismemberment.v1.LimbDefinitionRegistry;
  * <p>
  * <b>Auto-applied.</b> {@code AzModelRenderer.renderRecursively} consults {@link #isDetachedBone(AzBone, Object)}
  * unconditionally on every render, so consumers no longer need to wire this filter onto each entity renderer's config
- * to get dismemberment hiding — that was easy to forget when adding new mobs. {@link #setBoneVisibilityFilter} is still
- * available on the renderer config for additional, per-renderer hide rules; those compose with this one.
+ * to get dismemberment hiding — that was easy to forget when adding new mobs.
+ * {@link AzRendererConfig.Builder#setBoneVisibilityFilter} is still available on the renderer config for additional,
+ * per-renderer hide rules; those compose with this one.
  * <p>
  * The instance form is preserved for callers who want to plug dismemberment hiding into their own filter pipeline (or
  * intentionally compose multiple filters); new code should usually rely on the auto-applied static check instead.

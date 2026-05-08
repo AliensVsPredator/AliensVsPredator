@@ -46,4 +46,5 @@ public final class BLibEntityTypeTagProvider extends FabricTagProvider.EntityTyp
                 EntityType.STRIDER
             );
     }
+
 }

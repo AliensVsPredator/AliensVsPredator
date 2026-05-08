@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.blib.internal.client.engine.EngineSelectionRenderer;
 import com.blib.mod.client.render.debug.PathfindingSearchDebugRenderer;
 import com.blib.mod.common.property.BLibModProperties;
 import com.blib.mod.common.property.BLibModPropertyAccess;
@@ -82,6 +83,10 @@ public class MixinDebugRenderer {
         double camZ,
         CallbackInfo ci
     ) {
+        // Engine-mode selection visual sits outside the debug-render master gate: engine mode itself is dev-only
+        // gated and the visual should always show when a selection exists, regardless of the user's debug toggle.
+        EngineSelectionRenderer.render(poseStack, bufferSource, camX, camY, camZ);
+
         var access = BLibModPropertyAccess.INSTANCE;
 
         if (!access.get(BLibModProperties.Debug.Render.ENABLED)) {

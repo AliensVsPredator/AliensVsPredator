@@ -13,6 +13,8 @@ public class BLibInternalClientServices {
 
     public static final BLibClientEventService CLIENT_EVENT = load(BLibClientEventService.class);
 
+    public static final BLibClientIrisCompatService IRIS_COMPAT = load(BLibClientIrisCompatService.class);
+
     public static final BLibClientModService CLIENT_MOD = load(BLibClientModService.class);
 
     public static final BLibClientNetworkingService CLIENT_NETWORKING = load(BLibClientNetworkingService.class);

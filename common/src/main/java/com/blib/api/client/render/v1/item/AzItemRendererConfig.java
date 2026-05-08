@@ -139,6 +139,11 @@ public class AzItemRendererConfig extends AzRendererConfig<UUID, ItemStack> {
         }
 
         @Override
+        public Builder setBoneVisibilityFilter(@Nullable BoneVisibilityFilter<ItemStack> boneVisibilityFilter) {
+            return (Builder) super.setBoneVisibilityFilter(boneVisibilityFilter);
+        }
+
+        @Override
         public Builder setModelRenderer(
             BiFunction<AzRendererPipeline<UUID, ItemStack>, AzLayerRenderer<UUID, ItemStack>, AzModelRenderer<UUID, ItemStack>> modelRendererProvider
         ) {
