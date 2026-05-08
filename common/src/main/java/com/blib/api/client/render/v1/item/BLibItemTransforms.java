@@ -18,8 +18,15 @@ public class BLibItemTransforms {
 
     private final Map<ItemDisplayContext, BLibTransform> transforms;
 
+    private final @Nullable BLibTransform fixedWall;
+
     protected BLibItemTransforms(Map<ItemDisplayContext, BLibTransform> transforms) {
+        this(transforms, null);
+    }
+
+    protected BLibItemTransforms(Map<ItemDisplayContext, BLibTransform> transforms, @Nullable BLibTransform fixedWall) {
         this.transforms = transforms;
+        this.fixedWall = fixedWall;
     }
 
     public BLibTransform get(ItemDisplayContext context) {
@@ -36,6 +43,21 @@ public class BLibItemTransforms {
         return transforms.get(context);
     }
 
+    /**
+     * The transform to use when this item is being rendered as a wall-mounted block (e.g., a queen head
+     * placed on a wall, as opposed to on the floor). Returns {@code null} if no wall-specific transform
+     * was set — callers should fall back to the regular {@link ItemDisplayContext#FIXED} transform in
+     * that case.
+     * <p>
+     * Wall placement and floor placement of the same head produce visually distinct poses (head sitting
+     * upright vs head hanging off the wall), and trying to derive one from the other via a single
+     * rotation always sweeps around the bone pivot rather than the wall surface. A separate slot lets
+     * each pose be tuned independently with its own translation/rotation/scale/pivot.
+     */
+    public @Nullable BLibTransform getFixedWallOrNull() {
+        return fixedWall;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -47,6 +69,8 @@ public class BLibItemTransforms {
         private boolean mirrorFirstPerson = false;
 
         private boolean mirrorThirdPerson = false;
+
+        private @Nullable BLibTransform fixedWall = null;
 
         private Builder() {}
 
@@ -65,6 +89,17 @@ public class BLibItemTransforms {
 
         public Builder fixed(BLibTransform transform) {
             return set(ItemDisplayContext.FIXED, transform);
+        }
+
+        /**
+         * Set a separate transform for wall-block placement of this item. Used by callers (e.g., the
+         * AVP-Alien queen-head block-entity renderer) that render the same item differently when it's a
+         * wall-mounted block vs a floor block. If unset, callers fall back to {@link #fixed}. Tuned
+         * independently of the floor pose since the two visual setups don't reduce to a single rotation.
+         */
+        public Builder fixedWall(BLibTransform transform) {
+            this.fixedWall = transform;
+            return this;
         }
 
         public Builder head(BLibTransform transform) {
@@ -137,7 +172,7 @@ public class BLibItemTransforms {
                 applyMirror(resolved, ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, ItemDisplayContext.THIRD_PERSON_LEFT_HAND);
             }
 
-            return new BLibItemTransforms(resolved);
+            return new BLibItemTransforms(resolved, fixedWall);
         }
 
         private static void applyMirror(Map<ItemDisplayContext, BLibTransform> map, ItemDisplayContext from, ItemDisplayContext to) {

@@ -10,6 +10,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Vector3f;
 
@@ -106,6 +107,21 @@ public class BLibGeoBoneItemRenderer extends AzItemRenderer {
             // user didn't explicitly set on the blocking transforms falls through to idle, instead of snapping
             // to IDENTITY (which would yank the item to model origin during a block, the previous behavior).
             transform = config.idleTransforms().get(displayContext);
+        }
+
+        // Wall-block override: callers (e.g., a block-entity renderer for a wall-mounted head) flip the
+        // RENDER_AS_WALL_BLOCK flag immediately before invoking the item-render pipeline, so the FIXED
+        // display context can resolve to a separately-tuned `fixedWall` transform. Floor placement and
+        // wall placement of the same item produce visually distinct poses, and trying to derive one from
+        // the other via a single rotation always sweeps around the bone pivot rather than the wall
+        // surface — so each gets its own slot. Falls through to the regular FIXED transform when the
+        // wall slot wasn't set.
+        if (displayContext == ItemDisplayContext.FIXED && BLibItemTransformOverrides.isRenderAsWallBlock()) {
+            var wallTransform = config.idleTransforms().getFixedWallOrNull();
+
+            if (wallTransform != null) {
+                transform = wallTransform;
+            }
         }
 
         var pivot = bonePivotInPoseFrame(context.bakedModel(), config.boneName());

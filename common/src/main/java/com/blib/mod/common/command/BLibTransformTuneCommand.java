@@ -215,13 +215,15 @@ public final class BLibTransformTuneCommand {
 
         var idleEffective = collectEffectiveTransforms(itemId, BLibItemTransformMode.IDLE);
         var blockingEffective = collectEffectiveTransforms(itemId, BLibItemTransformMode.BLOCKING);
+        var idleWallFixed = BLibItemTransformOverrides.getWallFixed(itemId, BLibItemTransformMode.IDLE);
+        var blockingWallFixed = BLibItemTransformOverrides.getWallFixed(itemId, BLibItemTransformMode.BLOCKING);
 
-        if (idleEffective.isEmpty() && blockingEffective.isEmpty()) {
+        if (idleEffective.isEmpty() && blockingEffective.isEmpty() && idleWallFixed == null && blockingWallFixed == null) {
             source.sendSuccess(() -> Component.literal("(no transforms registered or overridden for " + itemId + ")"), false);
             return Command.SINGLE_SUCCESS;
         }
 
-        var content = formatDumpFile(itemId, idleEffective, blockingEffective);
+        var content = formatDumpFile(itemId, idleEffective, blockingEffective, idleWallFixed, blockingWallFixed);
         var dumpPath = resolveDumpPath(itemId);
 
         try {
@@ -272,7 +274,9 @@ public final class BLibTransformTuneCommand {
     private static String formatDumpFile(
         ResourceLocation itemId,
         Map<ItemDisplayContext, BLibTransform> idle,
-        Map<ItemDisplayContext, BLibTransform> blocking
+        Map<ItemDisplayContext, BLibTransform> blocking,
+        @org.jetbrains.annotations.Nullable BLibTransform idleWallFixed,
+        @org.jetbrains.annotations.Nullable BLibTransform blockingWallFixed
     ) {
         var timestamp = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         var sb = new StringBuilder();
@@ -281,26 +285,73 @@ public final class BLibTransformTuneCommand {
         sb.append("// Timestamp: ").append(timestamp).append('\n');
         sb.append("// Paste each block over the corresponding constant in your renderer.\n\n");
 
-        if (!idle.isEmpty()) {
+        if (!idle.isEmpty() || idleWallFixed != null) {
             sb.append("// IDLE\n");
             sb.append("BLibItemTransforms.builder()\n");
             for (var entry : idle.entrySet()) {
                 sb.append("    ").append(formatJavaLine(entry.getKey(), entry.getValue())).append('\n');
             }
+            if (idleWallFixed != null) {
+                sb.append("    ").append(formatWallFixedJavaLine(idleWallFixed)).append('\n');
+            }
             sb.append("    .build();\n");
         }
 
-        if (!blocking.isEmpty()) {
-            if (!idle.isEmpty()) sb.append('\n');
+        if (!blocking.isEmpty() || blockingWallFixed != null) {
+            if (!idle.isEmpty() || idleWallFixed != null) sb.append('\n');
             sb.append("// BLOCKING\n");
             sb.append("BLibItemTransforms.builder()\n");
             for (var entry : blocking.entrySet()) {
                 sb.append("    ").append(formatJavaLine(entry.getKey(), entry.getValue())).append('\n');
             }
+            if (blockingWallFixed != null) {
+                sb.append("    ").append(formatWallFixedJavaLine(blockingWallFixed)).append('\n');
+            }
             sb.append("    .build();\n");
         }
 
         return sb.toString();
+    }
+
+    private static String formatWallFixedJavaLine(BLibTransform t) {
+        // Wall-fixed isn't context-keyed, so it gets its own builder method (`fixedWall`) rather than
+        // routing through `builderMethodFor(ItemDisplayContext)`. Otherwise the formatting is identical
+        // to the regular per-context line.
+        var scaleX = t.scale().x;
+        var scaleEqual = scaleX == t.scale().y && t.scale().y == t.scale().z;
+        var scaleStr = scaleEqual
+            ? formatFloat(scaleX) + "f"
+            : "/* non-uniform " + formatFloat(t.scale().x) + "/" + formatFloat(t.scale().y) + "/" + formatFloat(t.scale().z) + " */ " + formatFloat(scaleX) + "f";
+
+        var pivotX = t.pivot().x;
+        var pivotY = t.pivot().y;
+        var pivotZ = t.pivot().z;
+        var hasPivot = pivotX != 0 || pivotY != 0 || pivotZ != 0;
+
+        if (hasPivot) {
+            return ".fixedWall(BLibTransform.of(%sf, %sf, %sf, %sf, %sf, %sf, %s, %sf, %sf, %sf))".formatted(
+                formatFloat(t.translation().x),
+                formatFloat(t.translation().y),
+                formatFloat(t.translation().z),
+                formatFloat(t.rotation().x),
+                formatFloat(t.rotation().y),
+                formatFloat(t.rotation().z),
+                scaleStr,
+                formatFloat(pivotX),
+                formatFloat(pivotY),
+                formatFloat(pivotZ)
+            );
+        }
+
+        return ".fixedWall(BLibTransform.of(%sf, %sf, %sf, %sf, %sf, %sf, %s))".formatted(
+            formatFloat(t.translation().x),
+            formatFloat(t.translation().y),
+            formatFloat(t.translation().z),
+            formatFloat(t.rotation().x),
+            formatFloat(t.rotation().y),
+            formatFloat(t.rotation().z),
+            scaleStr
+        );
     }
 
     private static int executeReset(CommandContext<CommandSourceStack> ctx, BLibItemTransformMode mode) {

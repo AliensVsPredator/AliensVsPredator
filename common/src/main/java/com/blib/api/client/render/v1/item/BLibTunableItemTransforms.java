@@ -71,4 +71,15 @@ public class BLibTunableItemTransforms extends BLibItemTransforms {
 
         return base.getOrNull(context);
     }
+
+    @Override
+    public @Nullable BLibTransform getFixedWallOrNull() {
+        var override = BLibItemTransformOverrides.getWallFixed(itemId, mode);
+
+        if (override != null) {
+            return override;
+        }
+
+        return base.getFixedWallOrNull();
+    }
 }

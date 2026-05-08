@@ -25,6 +25,13 @@ public final class BLibItemTransformOverrides {
 
     private static final Map<ResourceLocation, EnumMap<BLibItemTransformMode, EnumMap<ItemDisplayContext, BLibTransform>>> OVERRIDES = new HashMap<>();
 
+    /**
+     * Parallel override map for the wall-fixed slot (the queen-head-on-a-wall pose, distinct from the
+     * floor pose stored under the regular {@link ItemDisplayContext#FIXED} key). Keyed by item+mode only
+     * since wall-fixed isn't context-keyed — there's only one wall pose per mode.
+     */
+    private static final Map<ResourceLocation, EnumMap<BLibItemTransformMode, BLibTransform>> WALL_FIXED_OVERRIDES = new HashMap<>();
+
     private static final Map<ResourceLocation, EnumMap<BLibItemTransformMode, BLibItemTransforms>> BASES = new HashMap<>();
 
     /**
@@ -44,6 +51,19 @@ public final class BLibItemTransformOverrides {
      */
     private static volatile boolean FORCE_BLOCKING_ENABLED = false;
 
+    /**
+     * Set by callers immediately before invoking the item-render pipeline when the item is being shown
+     * as a wall-mounted block (e.g., a placed queen head on a wall). The geo-bone item renderer reads
+     * this flag in its prerender hook and substitutes the {@code fixedWall} transform for the regular
+     * {@link ItemDisplayContext#FIXED} one. Caller is expected to clear the flag after the render call
+     * completes (try/finally).
+     * <p>
+     * Volatile rather than thread-local because Minecraft's render path runs on a single thread and the
+     * flag's lifetime is one render call — no contention. Volatile guarantees visibility for any
+     * cross-thread debug tooling that might inspect it.
+     */
+    private static volatile boolean RENDER_AS_WALL_BLOCK = false;
+
     private BLibItemTransformOverrides() {
         throw new UnsupportedOperationException();
     }
@@ -62,6 +82,14 @@ public final class BLibItemTransformOverrides {
 
     public static void setForceBlockingEnabled(boolean enabled) {
         FORCE_BLOCKING_ENABLED = enabled;
+    }
+
+    public static boolean isRenderAsWallBlock() {
+        return RENDER_AS_WALL_BLOCK;
+    }
+
+    public static void setRenderAsWallBlock(boolean enabled) {
+        RENDER_AS_WALL_BLOCK = enabled;
     }
 
     /**
@@ -159,6 +187,55 @@ public final class BLibItemTransformOverrides {
             .put(context, transform);
     }
 
+    /**
+     * Wall-fixed override for the given (item, mode), or {@code null} if no override has been set.
+     * Distinct from the regular {@link #get} path because wall-fixed isn't context-keyed — there's only
+     * one wall pose per mode, so it doesn't share the (item, mode, context) override map.
+     */
+    public static @Nullable BLibTransform getWallFixed(ResourceLocation itemId, BLibItemTransformMode mode) {
+        var modeMap = WALL_FIXED_OVERRIDES.get(itemId);
+
+        if (modeMap == null) {
+            return null;
+        }
+
+        return modeMap.get(mode);
+    }
+
+    public static void setWallFixed(ResourceLocation itemId, BLibItemTransformMode mode, BLibTransform transform) {
+        WALL_FIXED_OVERRIDES.computeIfAbsent(itemId, $ -> new EnumMap<>(BLibItemTransformMode.class))
+            .put(mode, transform);
+    }
+
+    /**
+     * Effective wall-fixed transform — override if set, then base from the wrapped tunable transforms,
+     * then {@link BLibTransform#IDENTITY} as a final fallback. Used by gizmo drag-start to read the
+     * "current" value before the user starts dragging.
+     */
+    public static BLibTransform getEffectiveWallFixed(ResourceLocation itemId, BLibItemTransformMode mode) {
+        var override = getWallFixed(itemId, mode);
+
+        if (override != null) {
+            return override;
+        }
+
+        var modeBases = BASES.get(itemId);
+
+        if (modeBases != null) {
+            var base = modeBases.get(mode);
+
+            if (base != null) {
+                var wallBase = base.getFixedWallOrNull();
+
+                if (wallBase != null) {
+                    return wallBase;
+                }
+            }
+        }
+
+        return BLibTransform.IDENTITY;
+    }
+
     /** Returns the live override map for the given (item, mode), or an empty map if none is set. Read-only view. */
     public static Map<ItemDisplayContext, BLibTransform> snapshot(ResourceLocation itemId, BLibItemTransformMode mode) {
         var modeMap = OVERRIDES.get(itemId);
@@ -183,10 +260,16 @@ public final class BLibItemTransformOverrides {
             modeMap.remove(mode);
         }
 
+        var wallFixedModeMap = WALL_FIXED_OVERRIDES.get(itemId);
+
+        if (wallFixedModeMap != null) {
+            wallFixedModeMap.remove(mode);
+        }
     }
 
     public static void clearAll(ResourceLocation itemId) {
         OVERRIDES.remove(itemId);
+        WALL_FIXED_OVERRIDES.remove(itemId);
     }
 
     /** Items with at least one override in any mode. Used by command autocomplete. */

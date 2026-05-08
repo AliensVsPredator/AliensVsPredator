@@ -103,6 +103,10 @@ public final class BLibGizmoState {
      *                         instead of read live so that input handlers running while a different
      *                         projection is bound (e.g., GUI projection while chat is open) project
      *                         against the matrix the handles were rendered through.
+     * @param wall             True when this snapshot was captured during a wall-block render (the
+     *                         {@code RENDER_AS_WALL_BLOCK} flag was on). Drag input writes to the
+     *                         wall-fixed override slot instead of the regular {@code FIXED} slot when
+     *                         this is true, so wall and floor poses tune independently.
      */
     public record RenderSnapshot(
         ResourceLocation itemId,
@@ -113,7 +117,8 @@ public final class BLibGizmoState {
         Vector3f viewY,
         Vector3f viewZ,
         float scale,
-        Matrix4f projection
+        Matrix4f projection,
+        boolean wall
     ) {}
 
     /**

@@ -108,7 +108,8 @@ public final class BLibGizmoRenderer {
             viewY,
             viewZ,
             scale,
-            new Matrix4f(RenderSystem.getProjectionMatrix())
+            new Matrix4f(RenderSystem.getProjectionMatrix()),
+            BLibItemTransformOverrides.isRenderAsWallBlock()
         ));
 
         poseStack.popPose();
@@ -144,7 +145,8 @@ public final class BLibGizmoRenderer {
             || context == ItemDisplayContext.THIRD_PERSON_LEFT_HAND
             || context == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND
             || context == ItemDisplayContext.FIRST_PERSON_LEFT_HAND
-            || context == ItemDisplayContext.HEAD;
+            || context == ItemDisplayContext.HEAD
+            || context == ItemDisplayContext.FIXED;
     }
 
     private static void drawTranslate(PoseStack poseStack, VertexConsumer buffer, float scale, int dragAxis) {

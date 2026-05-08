@@ -95,9 +95,12 @@ public final class BLibGizmoInput {
             return false;
         }
 
-        var current = BLibItemTransformOverrides.getEffective(
-            snapshot.itemId(), snapshot.mode(), snapshot.displayContext()
-        );
+        // Read the appropriate slot at drag-start: wall-fixed when the snapshot was captured during a
+        // wall-block render, regular per-context override otherwise. The drag math below mirrors this on
+        // the write side, so wall and floor poses stay in their own slots.
+        var current = snapshot.wall()
+            ? BLibItemTransformOverrides.getEffectiveWallFixed(snapshot.itemId(), snapshot.mode())
+            : BLibItemTransformOverrides.getEffective(snapshot.itemId(), snapshot.mode(), snapshot.displayContext());
 
         BLibGizmoState.setDrag(new BLibGizmoState.DragState(
             axis,
@@ -349,10 +352,7 @@ public final class BLibGizmoInput {
             default -> newTrans.z += worldDelta;
         }
 
-        BLibItemTransformOverrides.set(
-            drag.itemId(), drag.transformMode(), drag.displayContext(),
-            new BLibTransform(newTrans, drag.startTransform().rotation(), drag.startTransform().scale(), drag.startTransform().pivot())
-        );
+        writeOverride(drag, new BLibTransform(newTrans, drag.startTransform().rotation(), drag.startTransform().scale(), drag.startTransform().pivot()));
     }
 
     private static void applyRotate(BLibGizmoState.DragState drag, double cursorX, double cursorY, int w, int h) {
@@ -412,9 +412,19 @@ public final class BLibGizmoInput {
             default -> newRot.z += deltaDegrees;
         }
 
-        BLibItemTransformOverrides.set(
-            drag.itemId(), drag.transformMode(), drag.displayContext(),
-            new BLibTransform(drag.startTransform().translation(), newRot, drag.startTransform().scale(), drag.startTransform().pivot())
-        );
+        writeOverride(drag, new BLibTransform(drag.startTransform().translation(), newRot, drag.startTransform().scale(), drag.startTransform().pivot()));
+    }
+
+    /**
+     * Routes the drag's updated transform into the right override slot. Wall-block snapshots write to
+     * the wall-fixed slot (no display context — wall-fixed isn't context-keyed); everything else writes
+     * to the regular per-context override map.
+     */
+    private static void writeOverride(BLibGizmoState.DragState drag, BLibTransform updated) {
+        if (drag.startSnapshot().wall()) {
+            BLibItemTransformOverrides.setWallFixed(drag.itemId(), drag.transformMode(), updated);
+        } else {
+            BLibItemTransformOverrides.set(drag.itemId(), drag.transformMode(), drag.displayContext(), updated);
+        }
     }
 }
