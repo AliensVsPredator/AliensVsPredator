@@ -39,11 +39,11 @@ public enum BLibPostEffectInput {
      * {@code BLibPostEffectFramework.pushBackgroundEntity()}) contributes {@code 0.25}; lane B (from
      * {@code pushBackgroundEntityB()}) contributes {@code 0.5}. The four combinations land at exactly
      * {@code 0.0 / 0.25 / 0.5 / 0.75} on the RG8 attachment under NEAREST sampling. Lets a vision-style post-effect
-     * render flagged entities through its world-coloring branch instead of its foreground-entity branch (so e.g. a
-     * mob outside the vision's visibility tag still draws but blends with the world). Two lanes give consumers a
-     * way to encode two independent classifications per entity — e.g. "background under oldMode" vs. "background
-     * under newMode" during a vision-mode wipe. Single-lane consumers should treat any non-zero {@code .g} as the
-     * background flag. Unrelated to {@code MobEffects.INVISIBILITY} — that's still handled separately by vanilla.
+     * render flagged entities through its world-coloring branch instead of its foreground-entity branch (so e.g. a mob
+     * outside the vision's visibility tag still draws but blends with the world). Two lanes give consumers a way to
+     * encode two independent classifications per entity — e.g. "background under oldMode" vs. "background under
+     * newMode" during a vision-mode wipe. Single-lane consumers should treat any non-zero {@code .g} as the background
+     * flag. Unrelated to {@code MobEffects.INVISIBILITY} — that's still handled separately by vanilla.
      * <p>
      * Requires the framework's MainTarget-MRT mixin to be active (i.e., not running under Iris/Oculus).
      */

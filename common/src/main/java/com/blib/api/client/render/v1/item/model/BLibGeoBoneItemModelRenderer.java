@@ -1,27 +1,27 @@
 package com.blib.api.client.render.v1.item.model;
 
-import com.blib.api.client.render.v1.AzLayerRenderer;
-import com.blib.api.client.render.v1.AzRendererPipelineContext;
-import com.blib.api.client.render.v1.item.pipeline.AzItemRendererPipeline;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Matrix4f;
 
 import java.util.UUID;
 
+import com.blib.api.client.render.v1.AzLayerRenderer;
+import com.blib.api.client.render.v1.AzRendererPipelineContext;
+import com.blib.api.client.render.v1.item.pipeline.AzItemRendererPipeline;
+
 /**
- * Item-side model renderer that walks only one named bone subtree of the underlying geo, instead of the
- * standard top-level-bones-plus-recursion walk. Used by
- * {@link com.blib.api.client.render.v1.item.BLibGeoBoneItemRenderer} to render a mob's head (or arm, or
- * other subtree) as a held item.
+ * Item-side model renderer that walks only one named bone subtree of the underlying geo, instead of the standard
+ * top-level-bones-plus-recursion walk. Used by {@link com.blib.api.client.render.v1.item.BLibGeoBoneItemRenderer} to
+ * render a mob's head (or arm, or other subtree) as a held item.
  * <p>
- * Replacing the walk at the {@code render} level — rather than skipping ancestors via visibility flags during
- * a full walk — means the ancestor bones' bind-pose translations never compose into the matrix stack. The
- * net effect is that consumer-tuned item transforms become invariant to anything modelers do above the
- * target bone in the hierarchy (waist height, chest width, neck length, etc.). Only the target bone's own
- * bind pose still flows through, which is rare to be edited when adjusting body proportions.
+ * Replacing the walk at the {@code render} level — rather than skipping ancestors via visibility flags during a full
+ * walk — means the ancestor bones' bind-pose translations never compose into the matrix stack. The net effect is that
+ * consumer-tuned item transforms become invariant to anything modelers do above the target bone in the hierarchy (waist
+ * height, chest width, neck length, etc.). Only the target bone's own bind pose still flows through, which is rare to
+ * be edited when adjusting body proportions.
  * <p>
- * If the target bone name doesn't resolve in the baked model, nothing is rendered (silent no-op rather than
- * an error, since the model may legitimately not contain the bone in some rare baked-model edge cases).
+ * If the target bone name doesn't resolve in the baked model, nothing is rendered (silent no-op rather than an error,
+ * since the model may legitimately not contain the bone in some rare baked-model edge cases).
  */
 public class BLibGeoBoneItemModelRenderer extends AzItemModelRenderer {
 

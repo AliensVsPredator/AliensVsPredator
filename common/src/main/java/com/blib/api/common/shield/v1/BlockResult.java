@@ -1,20 +1,24 @@
 package com.blib.api.common.shield.v1;
 
 /**
- * Per-hit decision returned from {@link BLibShieldItem#onBlocked}. Encodes how much of the incoming damage to
- * absorb and whether the hit consumed the shield's ability to block (triggering an item cooldown).
+ * Per-hit decision returned from {@link BLibShieldItem#onBlocked}. Encodes how much of the incoming damage to absorb
+ * and whether the hit consumed the shield's ability to block (triggering an item cooldown).
  *
- * @param damageReduction      Fraction of the incoming damage to absorb, in {@code [0, 1]}. {@code 1} blocks
- *                             the hit entirely; {@code 0} lets the full damage through (useful when an
- *                             {@code onBlocked} implementation wants to ignore certain damage sources).
- * @param disable              Whether the shield should be disabled after this hit. When {@code true}, BLib
- *                             puts the item on cooldown via {@code Player.getCooldowns().addCooldown} for
- *                             {@link #disableDurationTicks} ticks, mirroring vanilla axe-disables-shield
- *                             behavior. Has no effect on non-player users.
+ * @param damageReduction      Fraction of the incoming damage to absorb, in {@code [0, 1]}. {@code 1} blocks the hit
+ *                             entirely; {@code 0} lets the full damage through (useful when an {@code onBlocked}
+ *                             implementation wants to ignore certain damage sources).
+ * @param disable              Whether the shield should be disabled after this hit. When {@code true}, BLib puts the
+ *                             item on cooldown via {@code Player.getCooldowns().addCooldown} for
+ *                             {@link #disableDurationTicks} ticks, mirroring vanilla axe-disables-shield behavior. Has
+ *                             no effect on non-player users.
  * @param disableDurationTicks Cooldown duration in ticks when {@link #disable} is {@code true}. Ignored when
  *                             {@link #disable} is {@code false}.
  */
-public record BlockResult(float damageReduction, boolean disable, int disableDurationTicks) {
+public record BlockResult(
+    float damageReduction,
+    boolean disable,
+    int disableDurationTicks
+) {
 
     public BlockResult {
         if (damageReduction < 0f || damageReduction > 1f) {

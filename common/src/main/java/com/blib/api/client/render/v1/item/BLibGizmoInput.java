@@ -1,6 +1,5 @@
 package com.blib.api.client.render.v1.item;
 
-import com.blib.api.client.render.v1.BLibTransform;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -11,24 +10,24 @@ import org.joml.Vector4f;
 import org.slf4j.Logger;
 import org.slf4j.helpers.MessageFormatter;
 
+import com.blib.api.client.render.v1.BLibTransform;
+
 /**
- * Picking and drag math for the interactive transform gizmo. Stateless — drag state lives on
- * {@link BLibGizmoState}, this class just walks it forward in response to mouse events.
+ * Picking and drag math for the interactive transform gizmo. Stateless — drag state lives on {@link BLibGizmoState},
+ * this class just walks it forward in response to mouse events.
  * <p>
- * All gizmo handles are tested in screen space against the cursor: handle world (view) positions are
- * projected through the snapshot's projection matrix, then compared to the cursor in window pixels. This
- * avoids the need for a 3D ray-vs-geometry test and works regardless of how the gizmo's axes are oriented
- * in view space.
+ * All gizmo handles are tested in screen space against the cursor: handle world (view) positions are projected through
+ * the snapshot's projection matrix, then compared to the cursor in window pixels. This avoids the need for a 3D
+ * ray-vs-geometry test and works regardless of how the gizmo's axes are oriented in view space.
  * <p>
  * Drag deltas:
  * <ul>
- *   <li>TRANSLATE: cursor's pixel motion is projected onto the screen-space direction of the dragged
- *       axis. The world-space delta is recovered from the ratio of "world-length the axis arrow
- *       represents" to "screen pixels the arrow projects to."</li>
- *   <li>ROTATE: cursor's screen-space angle around the gizmo origin is tracked from drag-start; the angle
- *       delta becomes the rotation around the chosen axis. Sign is flipped when the axis points toward
- *       the viewer so that a CW cursor sweep matches the conventional "positive rotation rotates +X
- *       toward +Y around +Z" right-hand rule.</li>
+ * <li>TRANSLATE: cursor's pixel motion is projected onto the screen-space direction of the dragged axis. The
+ * world-space delta is recovered from the ratio of "world-length the axis arrow represents" to "screen pixels the arrow
+ * projects to."</li>
+ * <li>ROTATE: cursor's screen-space angle around the gizmo origin is tracked from drag-start; the angle delta becomes
+ * the rotation around the chosen axis. Sign is flipped when the axis points toward the viewer so that a CW cursor sweep
+ * matches the conventional "positive rotation rotates +X toward +Y around +Z" right-hand rule.</li>
  * </ul>
  */
 public final class BLibGizmoInput {
@@ -37,26 +36,31 @@ public final class BLibGizmoInput {
     private static final float TRANSLATE_PICK_THRESHOLD_PX = 16f;
 
     /**
-     * Maximum cursor-to-rotate-ring distance. Larger than the translate threshold because rings render as
-     * thin (1-pixel) line strips and are visually harder to land on than the translate arrows, which have
-     * the shaft + a "+" tip that gives a fatter target. Tune up if rings still feel finicky to click; tune
-     * down if accidental ring picks during translate-axis clicks become an issue (translate handle picks
-     * still take priority since they're tested first when in TRANSLATE mode).
+     * Maximum cursor-to-rotate-ring distance. Larger than the translate threshold because rings render as thin
+     * (1-pixel) line strips and are visually harder to land on than the translate arrows, which have the shaft + a "+"
+     * tip that gives a fatter target. Tune up if rings still feel finicky to click; tune down if accidental ring picks
+     * during translate-axis clicks become an issue (translate handle picks still take priority since they're tested
+     * first when in TRANSLATE mode).
      */
     private static final float ROTATE_PICK_THRESHOLD_PX = 24f;
 
     /**
-     * Number of segments used to test cursor-to-ring distance. Higher = better picking accuracy at click
-     * time but more work per click. Bumped from 32 to 96 — rings projected to screen often render as
-     * tilted ellipses, where a sparse sampling can leave gaps between segments large enough that the
-     * cursor falls between samples and picking misses.
+     * Maximum cursor-to-scale-handle distance. Same as TRANSLATE because the scale handle is rendered as a shaft with a
+     * tip cube, giving a similarly fat target.
+     */
+    private static final float SCALE_PICK_THRESHOLD_PX = 16f;
+
+    /**
+     * Number of segments used to test cursor-to-ring distance. Higher = better picking accuracy at click time but more
+     * work per click. Bumped from 32 to 96 — rings projected to screen often render as tilted ellipses, where a sparse
+     * sampling can leave gaps between segments large enough that the cursor falls between samples and picking misses.
      */
     private static final int RING_PICK_SEGMENTS = 96;
 
     /**
-     * Toggleable trace logging for diagnosing why a click isn't landing on a handle. Off by default — flip
-     * via {@link #setTraceEnabled} from a debug command. Routes to slf4j so the chat doesn't get spammed,
-     * inspect via {@code logs/latest.log}.
+     * Toggleable trace logging for diagnosing why a click isn't landing on a handle. Off by default — flip via
+     * {@link #setTraceEnabled} from a debug command. Routes to slf4j so the chat doesn't get spammed, inspect via
+     * {@code logs/latest.log}.
      */
     private static final Logger LOGGER = LogUtils.getLogger();
 
@@ -75,10 +79,10 @@ public final class BLibGizmoInput {
     }
 
     /**
-     * Try to start a drag at the given cursor position. Returns true if a handle was hit and a drag has
-     * been started — the caller (typically a mouse-event mixin) should cancel the underlying event so it
-     * doesn't propagate to the chat screen or world. Returns false when no handle is under the cursor or
-     * the gizmo isn't currently captured for a target.
+     * Try to start a drag at the given cursor position. Returns true if a handle was hit and a drag has been started —
+     * the caller (typically a mouse-event mixin) should cancel the underlying event so it doesn't propagate to the chat
+     * screen or world. Returns false when no handle is under the cursor or the gizmo isn't currently captured for a
+     * target.
      */
     public static boolean tryStartDrag(double cursorX, double cursorY) {
         if (BLibGizmoState.mode() == BLibGizmoMode.OFF) {
@@ -118,8 +122,17 @@ public final class BLibGizmoInput {
 
         int axis = pickHandle(snapshot, cursorX, cursorY, w, h);
 
-        trace("tryStartDrag: cursor=({},{}) screen={}x{} item={} ctx={} pickedAxis={} (chose from {} snapshots)",
-            cursorX, cursorY, w, h, snapshot.itemId(), snapshot.displayContext(), axis, snapshots.size());
+        trace(
+            "tryStartDrag: cursor=({},{}) screen={}x{} item={} ctx={} pickedAxis={} (chose from {} snapshots)",
+            cursorX,
+            cursorY,
+            w,
+            h,
+            snapshot.itemId(),
+            snapshot.displayContext(),
+            axis,
+            snapshots.size()
+        );
 
         if (axis < 0) {
             return false;
@@ -132,16 +145,19 @@ public final class BLibGizmoInput {
             ? BLibItemTransformOverrides.getEffectiveWallFixed(snapshot.itemId(), snapshot.mode())
             : BLibItemTransformOverrides.getEffective(snapshot.itemId(), snapshot.mode(), snapshot.displayContext());
 
-        BLibGizmoState.setDrag(new BLibGizmoState.DragState(
-            axis,
-            BLibGizmoState.mode(),
-            snapshot.itemId(),
-            snapshot.mode(),
-            snapshot.displayContext(),
-            current,
-            cursorX, cursorY,
-            snapshot
-        ));
+        BLibGizmoState.setDrag(
+            new BLibGizmoState.DragState(
+                axis,
+                BLibGizmoState.mode(),
+                snapshot.itemId(),
+                snapshot.mode(),
+                snapshot.displayContext(),
+                current,
+                cursorX,
+                cursorY,
+                snapshot
+            )
+        );
 
         trace("tryStartDrag: drag started on axis {} mode {}", axis, BLibGizmoState.mode());
         return true;
@@ -174,6 +190,7 @@ public final class BLibGizmoInput {
         switch (drag.mode()) {
             case TRANSLATE -> applyTranslate(drag, cursorX, cursorY, w, h);
             case ROTATE -> applyRotate(drag, cursorX, cursorY, w, h);
+            case SCALE -> applyScale(drag, cursorX, cursorY, w, h);
             default -> {
                 /* OFF — no drag math to apply. */
             }
@@ -181,27 +198,38 @@ public final class BLibGizmoInput {
     }
 
     /**
-     * Pick whichever snapshot in {@code snapshots} has its projected origin closest to the cursor in
-     * screen pixels, within a generous threshold. The threshold is wide enough that if a snapshot's
-     * gizmo is visible on screen, clicks anywhere near its rings will pick THAT snapshot (rather than
-     * picking a different snapshot whose origin happens to project somewhere else off-screen).
+     * Pick whichever snapshot in {@code snapshots} has its projected origin closest to the cursor in screen pixels,
+     * within a generous threshold. The threshold is wide enough that if a snapshot's gizmo is visible on screen, clicks
+     * anywhere near its rings will pick THAT snapshot (rather than picking a different snapshot whose origin happens to
+     * project somewhere else off-screen).
      * <p>
-     * Returns null if no snapshot's projected origin is within reach of the cursor — typically means
-     * either no gizmo is on screen at the click point, or all rendered gizmos are far from where the
-     * cursor was when the click fired.
+     * Returns null if no snapshot's projected origin is within reach of the cursor — typically means either no gizmo is
+     * on screen at the click point, or all rendered gizmos are far from where the cursor was when the click fired.
      */
     private static @org.jetbrains.annotations.Nullable BLibGizmoState.RenderSnapshot pickClosestSnapshot(
-        java.util.List<BLibGizmoState.RenderSnapshot> snapshots, double cursorX, double cursorY, int w, int h
+        java.util.List<BLibGizmoState.RenderSnapshot> snapshots,
+        double cursorX,
+        double cursorY,
+        int w,
+        int h
     ) {
+        // Preview snapshots take priority over world snapshots when both match. The whole point of the
+        // preview is that the user is interacting with it instead of the (off-screen-edge) world gizmo;
+        // if any preview is in range, we MUST pick it, otherwise the click would resolve to the world
+        // gizmo behind the preview and the preview's oversized handles become decorative.
+        var previews = snapshots.stream().filter(BLibGizmoState.RenderSnapshot::preview).toList();
+        var pool = previews.isEmpty() ? snapshots : previews;
+
         // Scale picks the snapshot's threshold based on its gizmo's screen size — bigger gizmos can be
         // matched from further away. A factor of 2x the gizmo's screen radius (rings are at radius =
         // gizmo scale projected; cursor anywhere within 2x that radius from origin counts).
         BLibGizmoState.RenderSnapshot best = null;
         double bestDist = Double.POSITIVE_INFINITY;
 
-        for (var s : snapshots) {
+        for (var s : pool) {
             var origin = projectToScreen(s.viewPivot(), s.projection(), w, h);
-            if (origin == null) continue;
+            if (origin == null)
+                continue;
 
             double dx = cursorX - origin.x;
             double dy = cursorY - origin.y;
@@ -233,21 +261,43 @@ public final class BLibGizmoInput {
             return -1;
         }
 
-        trace("pickHandle: origin screen=({},{}) cursor=({},{}) -> distance to origin = {} px",
-            origin.x, origin.y, cursorX, cursorY,
-            Math.hypot(cursorX - origin.x, cursorY - origin.y));
+        trace(
+            "pickHandle: origin screen=({},{}) cursor=({},{}) -> distance to origin = {} px",
+            origin.x,
+            origin.y,
+            cursorX,
+            cursorY,
+            Math.hypot(cursorX - origin.x, cursorY - origin.y)
+        );
 
-        boolean isTranslate = BLibGizmoState.mode() == BLibGizmoMode.TRANSLATE;
-        float threshold = isTranslate ? TRANSLATE_PICK_THRESHOLD_PX : ROTATE_PICK_THRESHOLD_PX;
+        var mode = BLibGizmoState.mode();
+
+        // SCALE has only one handle (the +Y line/cube), so the loop-over-axes approach doesn't apply —
+        // handle it as a special case. Returning axis=0 is just a placeholder; the drag math reads the
+        // single Y-axis direction directly off the snapshot.
+        if (mode == BLibGizmoMode.SCALE) {
+            float dist = distanceToScaleHandle(s, origin, cursorX, cursorY, w, h);
+            int picked = dist < SCALE_PICK_THRESHOLD_PX ? 0 : -1;
+            trace("pickHandle: SCALE handle distance = {} px threshold={} -> picked = {}", dist, SCALE_PICK_THRESHOLD_PX, picked);
+            return picked;
+        }
+
+        float threshold = switch (mode) {
+            case TRANSLATE -> TRANSLATE_PICK_THRESHOLD_PX;
+            case ROTATE -> ROTATE_PICK_THRESHOLD_PX;
+            default -> 0f;
+        };
 
         int best = -1;
         float bestDist = threshold;
         float[] perAxis = new float[3];
 
         for (int axis = 0; axis < 3; axis++) {
-            float dist = isTranslate
-                ? distanceToTranslateHandle(s, axis, origin, cursorX, cursorY, w, h)
-                : distanceToRotateHandle(s, axis, cursorX, cursorY, w, h);
+            float dist = switch (mode) {
+                case TRANSLATE -> distanceToTranslateHandle(s, axis, origin, cursorX, cursorY, w, h);
+                case ROTATE -> distanceToRotateHandle(s, axis, cursorX, cursorY, w, h);
+                default -> Float.POSITIVE_INFINITY;
+            };
 
             perAxis[axis] = dist;
 
@@ -257,9 +307,35 @@ public final class BLibGizmoInput {
             }
         }
 
-        trace("pickHandle: per-axis distances X={}, Y={}, Z={} threshold={} -> best axis = {}",
-            perAxis[0], perAxis[1], perAxis[2], threshold, best);
+        trace(
+            "pickHandle: per-axis distances X={}, Y={}, Z={} threshold={} -> best axis = {}",
+            perAxis[0],
+            perAxis[1],
+            perAxis[2],
+            threshold,
+            best
+        );
+
         return best;
+    }
+
+    private static float distanceToScaleHandle(
+        BLibGizmoState.RenderSnapshot s,
+        Vector2f origin,
+        double cursorX,
+        double cursorY,
+        int w,
+        int h
+    ) {
+        // Single +Y line — same projection-to-segment test as TRANSLATE, but only against viewY.
+        var tipView = new Vector3f(s.viewPivot()).fma(s.scale(), s.viewY());
+        var tip = projectToScreen(tipView, s.projection(), w, h);
+
+        if (tip == null) {
+            return Float.POSITIVE_INFINITY;
+        }
+
+        return distancePointToSegment((float) cursorX, (float) cursorY, origin, tip);
     }
 
     private static void trace(String fmt, Object... args) {
@@ -313,8 +389,13 @@ public final class BLibGizmoInput {
     }
 
     private static float distanceToTranslateHandle(
-        BLibGizmoState.RenderSnapshot s, int axis, Vector2f origin,
-        double cursorX, double cursorY, int w, int h
+        BLibGizmoState.RenderSnapshot s,
+        int axis,
+        Vector2f origin,
+        double cursorX,
+        double cursorY,
+        int w,
+        int h
     ) {
         var tipView = new Vector3f(s.viewPivot()).fma(s.scale(), axisVec(s, axis));
         var tip = projectToScreen(tipView, s.projection(), w, h);
@@ -327,14 +408,17 @@ public final class BLibGizmoInput {
     }
 
     /**
-     * Test cursor distance to a ring by sampling N points around the ring, projecting each to screen, and
-     * walking the resulting polyline to find the nearest segment. Cheap enough — RING_PICK_SEGMENTS=32 is
-     * 32 projections + 32 point-to-segment distance tests, dominated by the matrix multiply, which runs
-     * once per click.
+     * Test cursor distance to a ring by sampling N points around the ring, projecting each to screen, and walking the
+     * resulting polyline to find the nearest segment. Cheap enough — RING_PICK_SEGMENTS=32 is 32 projections + 32
+     * point-to-segment distance tests, dominated by the matrix multiply, which runs once per click.
      */
     private static float distanceToRotateHandle(
-        BLibGizmoState.RenderSnapshot s, int axis,
-        double cursorX, double cursorY, int w, int h
+        BLibGizmoState.RenderSnapshot s,
+        int axis,
+        double cursorX,
+        double cursorY,
+        int w,
+        int h
     ) {
         float best = Float.POSITIVE_INFINITY;
         Vector2f prev = null;
@@ -355,7 +439,8 @@ public final class BLibGizmoInput {
 
             if (prev != null) {
                 float d = distancePointToSegment((float) cursorX, (float) cursorY, prev, screen);
-                if (d < best) best = d;
+                if (d < best)
+                    best = d;
             }
 
             prev = screen;
@@ -435,7 +520,10 @@ public final class BLibGizmoInput {
             default -> newTrans.z += worldDelta;
         }
 
-        writeOverride(drag, new BLibTransform(newTrans, drag.startTransform().rotation(), drag.startTransform().scale(), drag.startTransform().pivot()));
+        writeOverride(
+            drag,
+            new BLibTransform(newTrans, drag.startTransform().rotation(), drag.startTransform().scale(), drag.startTransform().pivot())
+        );
     }
 
     private static void applyRotate(BLibGizmoState.DragState drag, double cursorX, double cursorY, int w, int h) {
@@ -495,13 +583,65 @@ public final class BLibGizmoInput {
             default -> newRot.z += deltaDegrees;
         }
 
-        writeOverride(drag, new BLibTransform(drag.startTransform().translation(), newRot, drag.startTransform().scale(), drag.startTransform().pivot()));
+        writeOverride(
+            drag,
+            new BLibTransform(drag.startTransform().translation(), newRot, drag.startTransform().scale(), drag.startTransform().pivot())
+        );
     }
 
     /**
-     * Routes the drag's updated transform into the right override slot. Wall-block snapshots write to
-     * the wall-fixed slot (no display context — wall-fixed isn't context-keyed); everything else writes
-     * to the regular per-context override map.
+     * Single-handle uniform-scale drag. Same projection-onto-axis math as {@link #applyTranslate}, but the axis is
+     * hard-coded to viewY (matching {@link BLibGizmoRenderer#drawScale}'s +Y line) and the result is an additive
+     * uniform delta on all three scale components rather than a per-axis translation delta. Sensitivity: drag the full
+     * handle length along the line direction → +1.0 scale.
+     */
+    private static void applyScale(BLibGizmoState.DragState drag, double cursorX, double cursorY, int w, int h) {
+        var s = drag.startSnapshot();
+        var origin = projectToScreen(s.viewPivot(), s.projection(), w, h);
+
+        if (origin == null) {
+            return;
+        }
+
+        var tipView = new Vector3f(s.viewPivot()).fma(s.scale(), s.viewY());
+        var tip = projectToScreen(tipView, s.projection(), w, h);
+
+        if (tip == null) {
+            return;
+        }
+
+        float axisScreenX = tip.x - origin.x;
+        float axisScreenY = tip.y - origin.y;
+        float axisScreenLen2 = axisScreenX * axisScreenX + axisScreenY * axisScreenY;
+
+        if (axisScreenLen2 < 1f) {
+            return;
+        }
+
+        float axisScreenLen = (float) Math.sqrt(axisScreenLen2);
+        float dx = (float) (cursorX - drag.startCursorX());
+        float dy = (float) (cursorY - drag.startCursorY());
+        float pixelsAlongAxis = (dx * axisScreenX + dy * axisScreenY) / axisScreenLen;
+        float delta = pixelsAlongAxis / axisScreenLen;
+
+        var startScale = drag.startTransform().scale();
+        var newScale = new Vector3f(startScale.x + delta, startScale.y + delta, startScale.z + delta);
+
+        writeOverride(
+            drag,
+            new BLibTransform(
+                drag.startTransform().translation(),
+                drag.startTransform().rotation(),
+                newScale,
+                drag.startTransform().pivot()
+            )
+        );
+    }
+
+    /**
+     * Routes the drag's updated transform into the right override slot. Wall-block snapshots write to the wall-fixed
+     * slot (no display context — wall-fixed isn't context-keyed); everything else writes to the regular per-context
+     * override map.
      */
     private static void writeOverride(BLibGizmoState.DragState drag, BLibTransform updated) {
         if (drag.startSnapshot().wall()) {

@@ -1,7 +1,5 @@
 package com.blib.api.client.render.v1.item;
 
-import com.blib.api.client.render.v1.BLibTransform;
-import com.blib.api.client.render.v1.item.pipeline.AzItemRendererPipelineContext;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -12,15 +10,18 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
+import com.blib.api.client.render.v1.BLibTransform;
+import com.blib.api.client.render.v1.item.pipeline.AzItemRendererPipelineContext;
+
 /**
- * Draws the interactive translate/rotate gizmo handles in the world. Hooks into
- * {@link BLibGeoBoneItemRenderer}'s pre-render phase at the same anchor as the pivot debug, so the gizmo
- * follows the held item's bone pivot through the user's tuner-applied translation but stays in the
- * pre-rotation frame so axes don't sweep around as the user adds rotation.
+ * Draws the interactive translate/rotate gizmo handles in the world. Hooks into {@link BLibGeoBoneItemRenderer}'s
+ * pre-render phase at the same anchor as the pivot debug, so the gizmo follows the held item's bone pivot through the
+ * user's tuner-applied translation but stays in the pre-rotation frame so axes don't sweep around as the user adds
+ * rotation.
  * <p>
- * Render-time also captures a {@link BLibGizmoState.RenderSnapshot} that the mouse-input handler reads to
- * project handles to screen space for picking and to convert mouse drags into world-space deltas. The
- * snapshot is overwritten each frame the targeted item renders, so picking always uses the freshest pose.
+ * Render-time also captures a {@link BLibGizmoState.RenderSnapshot} that the mouse-input handler reads to project
+ * handles to screen space for picking and to convert mouse drags into world-space deltas. The snapshot is overwritten
+ * each frame the targeted item renders, so picking always uses the freshest pose.
  */
 public final class BLibGizmoRenderer {
 
@@ -32,13 +33,13 @@ public final class BLibGizmoRenderer {
     }
 
     /**
-     * Called from {@link BLibGeoBoneItemRenderer#applyTransforms} when the gizmo is enabled. Renders the
-     * handles for the active mode and captures the per-frame snapshot for input picking.
+     * Called from {@link BLibGeoBoneItemRenderer#applyTransforms} when the gizmo is enabled. Renders the handles for
+     * the active mode and captures the per-frame snapshot for input picking.
      * <p>
-     * The pose stack must be at the gizmo anchor frame: post-{@code transform.apply}'s translation and
-     * tuner pivot, but BEFORE the user's rotation/scale (so axes stay aligned to the model's pre-rotation
-     * frame). The caller handles push/pop around this; this method assumes it can freely concatenate
-     * transforms without leaving the stack in a different state.
+     * The pose stack must be at the gizmo anchor frame: post-{@code transform.apply}'s translation and tuner pivot, but
+     * BEFORE the user's rotation/scale (so axes stay aligned to the model's pre-rotation frame). The caller handles
+     * push/pop around this; this method assumes it can freely concatenate transforms without leaving the stack in a
+     * different state.
      */
     public static void renderAndCapture(
         AzItemRendererPipelineContext itemContext,
@@ -78,8 +79,21 @@ public final class BLibGizmoRenderer {
         var poseMat = poseStack.last().pose();
         var localToView = new Matrix4f(modelView).mul(poseMat);
         var viewPivot = new Vector3f(localToView.m30(), localToView.m31(), localToView.m32());
-        var depth = viewPivot.length();
-        var scale = Math.max(0.15f, depth * 0.15f);
+
+        // The depth-based formula assumes view-space coords (camera at origin) where viewPivot.length() ≈
+        // camera distance — that's true for world rendering. In HUD / preview render the pose stack
+        // operates in GUI-pixel coords, so viewPivot.length() ≈ on-screen position, not depth, and
+        // multiplying it by 0.15 produces wildly oversized handles that project off-screen. Fall back to
+        // a fixed pose-stack-local size for preview, leaving the on-screen size to be controlled by the
+        // preview's own pose-stack scale + the handle multiplier.
+        float scale;
+
+        if (BLibGizmoState.isPreviewRender()) {
+            scale = BLibGizmoState.handleScaleMultiplier();
+        } else {
+            var depth = viewPivot.length();
+            scale = Math.max(0.15f, depth * 0.15f) * BLibGizmoState.handleScaleMultiplier();
+        }
 
         var buffer = itemContext.multiBufferSource().getBuffer(RenderType.lines());
         var dragAxis = activeDragAxis();
@@ -87,6 +101,7 @@ public final class BLibGizmoRenderer {
         switch (gizmoMode) {
             case TRANSLATE -> drawTranslate(poseStack, buffer, scale, dragAxis);
             case ROTATE -> drawRotate(poseStack, buffer, scale, dragAxis);
+            case SCALE -> drawScale(poseStack, buffer, scale, dragAxis);
             default -> {
                 /* OFF — early-returned above. */
             }
@@ -99,40 +114,42 @@ public final class BLibGizmoRenderer {
         Vector3f viewY = transformDirection(localToView, 0, 1, 0);
         Vector3f viewZ = transformDirection(localToView, 0, 0, 1);
 
-        BLibGizmoState.setLastRender(new BLibGizmoState.RenderSnapshot(
-            itemId,
-            mode,
-            itemContext.getTransformType(),
-            viewPivot,
-            viewX,
-            viewY,
-            viewZ,
-            scale,
-            new Matrix4f(RenderSystem.getProjectionMatrix()),
-            BLibItemTransformOverrides.isRenderAsWallBlock()
-        ));
+        BLibGizmoState.setLastRender(
+            new BLibGizmoState.RenderSnapshot(
+                itemId,
+                mode,
+                itemContext.getTransformType(),
+                viewPivot,
+                viewX,
+                viewY,
+                viewZ,
+                scale,
+                new Matrix4f(RenderSystem.getProjectionMatrix()),
+                BLibItemTransformOverrides.isRenderAsWallBlock(),
+                BLibGizmoState.isPreviewRender()
+            )
+        );
 
         poseStack.popPose();
     }
 
     /**
-     * Clears the per-frame render snapshot. Called once per frame from a tick handler before any rendering
-     * runs, so a stale snapshot from a frame where the item wasn't rendered (item swapped out of hand,
-     * inventory closed, etc.) doesn't drive picking against a position that's no longer on screen.
+     * Clears the per-frame render snapshot. Called once per frame from a tick handler before any rendering runs, so a
+     * stale snapshot from a frame where the item wasn't rendered (item swapped out of hand, inventory closed, etc.)
+     * doesn't drive picking against a position that's no longer on screen.
      */
     public static void resetFrameSnapshot() {
         BLibGizmoState.setLastRender(null);
     }
 
     /**
-     * Transform a local-space basis vector to view space, preserving the pose-stack matrix's scale. We
-     * deliberately do NOT normalize the result: the rendered handles use {@code pose.pose() × local} for
-     * their vertices (so the radius/length they show on screen reflects the pose's scale), and the picking
-     * code multiplies these basis vectors by the gizmo's scale to recover handle positions. If we
-     * normalized, picking would compute samples at a different radius from the visible ring/arrow and the
-     * cursor would have to land on invisible geometry to register as a hit — directly proportional to how
-     * far the pose scale departs from 1 (e.g., a third-person hand transform with {@code scale: 0.5f}
-     * would put picking samples at 2× the visible ring radius, so most clicks miss).
+     * Transform a local-space basis vector to view space, preserving the pose-stack matrix's scale. We deliberately do
+     * NOT normalize the result: the rendered handles use {@code pose.pose() × local} for their vertices (so the
+     * radius/length they show on screen reflects the pose's scale), and the picking code multiplies these basis vectors
+     * by the gizmo's scale to recover handle positions. If we normalized, picking would compute samples at a different
+     * radius from the visible ring/arrow and the cursor would have to land on invisible geometry to register as a hit —
+     * directly proportional to how far the pose scale departs from 1 (e.g., a third-person hand transform with
+     * {@code scale: 0.5f} would put picking samples at 2× the visible ring radius, so most clicks miss).
      */
     private static Vector3f transformDirection(Matrix4f m, float x, float y, float z) {
         var vec = new Vector4f(x, y, z, 0);
@@ -228,11 +245,83 @@ public final class BLibGizmoRenderer {
         };
     }
 
+    /**
+     * Single white shaft going +Y with a wireframe cube at the tip. {@link com.blib.api.client.render.v1.BLibTransform}
+     * stores scale as a {@code Vector3f} but the API surface (commands, dump output) treats it as a uniform scalar —
+     * there's no per-axis scale workflow, so a per-axis gizmo would just be three indistinguishable handles all
+     * dragging the same value. One handle is the honest design.
+     * <p>
+     * +Y is chosen because "drag up to scale up" reads naturally; the user's pose-stack rotation may rotate the line on
+     * screen, but the screen-projected drag math handles whatever direction the line ends up pointing.
+     */
+    private static void drawScale(PoseStack poseStack, VertexConsumer buffer, float scale, int dragAxis) {
+        var pose = poseStack.last();
+        // Single handle is recorded as axis=0 in the drag state — there's nothing else to disambiguate.
+        float a = dragAxis == 0 ? 1f : 0.85f;
+
+        // Shaft.
+        buffer.addVertex(pose.pose(), 0, 0, 0).setColor(1f, 1f, 1f, a).setNormal(pose, 0, 1, 0);
+        buffer.addVertex(pose.pose(), 0, scale, 0).setColor(1f, 1f, 1f, a).setNormal(pose, 0, 1, 0);
+
+        // Tip cube — small wireframe handle so there's a "thing" the user can target with the cursor.
+        float box = scale * 0.12f;
+        drawWireBox(buffer, pose, 0, scale, 0, box, 1f, 1f, 1f, a, 0, 1, 0);
+    }
+
+    private static void drawWireBox(
+        VertexConsumer buffer,
+        PoseStack.Pose pose,
+        float cx,
+        float cy,
+        float cz,
+        float halfSize,
+        float r,
+        float g,
+        float b,
+        float a,
+        float nx,
+        float ny,
+        float nz
+    ) {
+        float x0 = cx - halfSize, x1 = cx + halfSize;
+        float y0 = cy - halfSize, y1 = cy + halfSize;
+        float z0 = cz - halfSize, z1 = cz + halfSize;
+
+        // 12 edges of the cube. Picking samples test cursor distance to these segments, so any visible
+        // edge is also a click target.
+        // Bottom face (y0).
+        drawLine(buffer, pose, x0, y0, z0, x1, y0, z0, r, g, b, a, nx, ny, nz);
+        drawLine(buffer, pose, x1, y0, z0, x1, y0, z1, r, g, b, a, nx, ny, nz);
+        drawLine(buffer, pose, x1, y0, z1, x0, y0, z1, r, g, b, a, nx, ny, nz);
+        drawLine(buffer, pose, x0, y0, z1, x0, y0, z0, r, g, b, a, nx, ny, nz);
+        // Top face (y1).
+        drawLine(buffer, pose, x0, y1, z0, x1, y1, z0, r, g, b, a, nx, ny, nz);
+        drawLine(buffer, pose, x1, y1, z0, x1, y1, z1, r, g, b, a, nx, ny, nz);
+        drawLine(buffer, pose, x1, y1, z1, x0, y1, z1, r, g, b, a, nx, ny, nz);
+        drawLine(buffer, pose, x0, y1, z1, x0, y1, z0, r, g, b, a, nx, ny, nz);
+        // Vertical edges.
+        drawLine(buffer, pose, x0, y0, z0, x0, y1, z0, r, g, b, a, nx, ny, nz);
+        drawLine(buffer, pose, x1, y0, z0, x1, y1, z0, r, g, b, a, nx, ny, nz);
+        drawLine(buffer, pose, x1, y0, z1, x1, y1, z1, r, g, b, a, nx, ny, nz);
+        drawLine(buffer, pose, x0, y0, z1, x0, y1, z1, r, g, b, a, nx, ny, nz);
+    }
+
     private static void drawLine(
-        VertexConsumer buffer, PoseStack.Pose pose,
-        float x1, float y1, float z1, float x2, float y2, float z2,
-        float r, float g, float b, float a,
-        float nx, float ny, float nz
+        VertexConsumer buffer,
+        PoseStack.Pose pose,
+        float x1,
+        float y1,
+        float z1,
+        float x2,
+        float y2,
+        float z2,
+        float r,
+        float g,
+        float b,
+        float a,
+        float nx,
+        float ny,
+        float nz
     ) {
         buffer.addVertex(pose.pose(), x1, y1, z1).setColor(r, g, b, a).setNormal(pose, nx, ny, nz);
         buffer.addVertex(pose.pose(), x2, y2, z2).setColor(r, g, b, a).setNormal(pose, nx, ny, nz);

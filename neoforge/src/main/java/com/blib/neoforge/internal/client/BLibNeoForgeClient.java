@@ -19,5 +19,6 @@ public class BLibNeoForgeClient {
         BLibNeoForgeGOAPDebugHUD.register();
         BLibNeoForgePathfindingNavDebugHUD.register();
         BLibNeoForgeEngineMode.register();
+        BLibNeoForgeGizmoPreview.register();
     }
 }

@@ -28,9 +28,9 @@ public final class BLibPostEffectFramework {
 
     /**
      * Marks the start of a "background entity" rendering scope on lane A. Patched entity fragment shaders pack the
-     * lane-A and lane-B states into {@code entityMask.g} (see {@link BLibBackgroundEntityRenderState} for the encoding);
-     * consumer post-effect shaders sample that channel to render those pixels with the world (terrain) coloring formula
-     * instead of the foreground-entity formula.
+     * lane-A and lane-B states into {@code entityMask.g} (see {@link BLibBackgroundEntityRenderState} for the
+     * encoding); consumer post-effect shaders sample that channel to render those pixels with the world (terrain)
+     * coloring formula instead of the foreground-entity formula.
      * <p>
      * Re-entrant via depth count. Pair every {@link #pushBackgroundEntity()} with exactly one
      * {@link #popBackgroundEntity()} on the render thread. Unrelated to {@code MobEffects.INVISIBILITY}.

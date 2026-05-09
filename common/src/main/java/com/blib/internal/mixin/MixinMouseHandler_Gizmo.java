@@ -1,8 +1,5 @@
 package com.blib.internal.mixin;
 
-import com.blib.api.client.render.v1.item.BLibGizmoInput;
-import com.blib.api.client.render.v1.item.BLibGizmoMode;
-import com.blib.api.client.render.v1.item.BLibGizmoState;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
@@ -14,16 +11,19 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.blib.api.client.render.v1.item.BLibGizmoInput;
+import com.blib.api.client.render.v1.item.BLibGizmoMode;
+import com.blib.api.client.render.v1.item.BLibGizmoState;
+
 /**
- * Routes raw mouse input to the transform-tuner gizmo while chat is open and gizmo mode is enabled. Gizmo
- * interaction is gated on the chat screen specifically because that's the only screen state where the held
- * item is still rendered in 3D — inventory and pause screens swap the view out, so a gizmo drag would have
- * nothing to act against.
+ * Routes raw mouse input to the transform-tuner gizmo while chat is open and gizmo mode is enabled. Gizmo interaction
+ * is gated on the chat screen specifically because that's the only screen state where the held item is still rendered
+ * in 3D — inventory and pause screens swap the view out, so a gizmo drag would have nothing to act against.
  * <ul>
- *   <li>{@code onPress}: LMB press → try to start a drag, cancelling the event if a handle was hit so the
- *       chat screen doesn't see the click. LMB release → end any active drag.</li>
- *   <li>{@code onMove}: when a drag is active, forward the new cursor position to the gizmo so it can
- *       update the override transform in real time.</li>
+ * <li>{@code onPress}: LMB press → try to start a drag, cancelling the event if a handle was hit so the chat screen
+ * doesn't see the click. LMB release → end any active drag.</li>
+ * <li>{@code onMove}: when a drag is active, forward the new cursor position to the gizmo so it can update the override
+ * transform in real time.</li>
  * </ul>
  */
 @Mixin(MouseHandler.class)
@@ -32,10 +32,10 @@ public abstract class MixinMouseHandler_Gizmo {
     private static final Logger BLIB$LOGGER = LogUtils.getLogger();
 
     /**
-     * One-time mixin-applied signal — fires the first time MouseHandler.setup runs (game startup, called
-     * once per JVM). If you don't see this line in logs/latest.log, the mixin isn't being applied at all,
-     * regardless of whether the gizmo command appears to work. (The gizmo command lives in a non-mixin
-     * class so it can succeed even when mixins are entirely broken.)
+     * One-time mixin-applied signal — fires the first time MouseHandler.setup runs (game startup, called once per JVM).
+     * If you don't see this line in logs/latest.log, the mixin isn't being applied at all, regardless of whether the
+     * gizmo command appears to work. (The gizmo command lives in a non-mixin class so it can succeed even when mixins
+     * are entirely broken.)
      */
     @Inject(method = "setup", at = @At("RETURN"))
     private void blib$logMixinAlive(long windowPointer, CallbackInfo ci) {
@@ -53,16 +53,22 @@ public abstract class MixinMouseHandler_Gizmo {
         // output goes only behind the trace toggle (`/blib transform-tune debug trace`) since chat
         // messages physically block the user from interacting with the gizmo.
         if (BLibGizmoState.mode() != BLibGizmoMode.OFF) {
-            BLIB$LOGGER.info("[BLibGizmo] mixin: onPress button=0 action={} mode={} chatOpen={}",
-                action, BLibGizmoState.mode(), isChatOpen());
+            BLIB$LOGGER.info(
+                "[BLibGizmo] mixin: onPress button=0 action={} mode={} chatOpen={}",
+                action,
+                BLibGizmoState.mode(),
+                isChatOpen()
+            );
 
             if (BLibGizmoInput.isTraceEnabled()) {
                 var mc = Minecraft.getInstance();
 
                 if (mc.player != null) {
-                    mc.player.sendSystemMessage(Component.literal(
-                        "[gizmo] LMB action=" + action + " mode=" + BLibGizmoState.mode() + " chatOpen=" + isChatOpen()
-                    ));
+                    mc.player.sendSystemMessage(
+                        Component.literal(
+                            "[gizmo] LMB action=" + action + " mode=" + BLibGizmoState.mode() + " chatOpen=" + isChatOpen()
+                        )
+                    );
                 }
             }
         }

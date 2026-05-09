@@ -16,9 +16,9 @@ import org.jetbrains.annotations.ApiStatus;
  * still resolves to {@code 0.0} (visible) or {@code 0.25} (background) which the consumer shader can decode as its
  * legacy {@code mask.g >= 0.5 ? 1 : 0} flag would have, OR via the proper per-lane decode.
  * <p>
- * Use case: a vision post-effect that wants entities not in its visibility tag to still render but blend with the
- * world (dark blue thermal world / dark green EM world / etc.) rather than be culled entirely. Single-threaded by
- * design (vanilla render thread). Does not relate to {@code MobEffects.INVISIBILITY} — vanilla still handles potion
+ * Use case: a vision post-effect that wants entities not in its visibility tag to still render but blend with the world
+ * (dark blue thermal world / dark green EM world / etc.) rather than be culled entirely. Single-threaded by design
+ * (vanilla render thread). Does not relate to {@code MobEffects.INVISIBILITY} — vanilla still handles potion
  * invisibility separately.
  */
 @ApiStatus.Internal

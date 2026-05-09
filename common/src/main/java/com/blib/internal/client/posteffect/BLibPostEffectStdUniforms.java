@@ -48,12 +48,12 @@ public final class BLibPostEffectStdUniforms {
         setFloat(shader, "sunAngle", sunAngle);
 
         // World-space sun/moon directions, derived from MC's renderSky transform stack:
-        //   poseStack.mulPose(YP.rotationDegrees(-90))
-        //   poseStack.mulPose(XP.rotationDegrees(timeOfDay * 360))
+        // poseStack.mulPose(YP.rotationDegrees(-90))
+        // poseStack.mulPose(XP.rotationDegrees(timeOfDay * 360))
         // Applied to a celestial-sphere apex of (0, +100, 0) (sun) or (0, -100, 0) (moon), the resulting world
         // direction works out to:
-        //   sun  = (-sin(sunAngle),  cos(sunAngle), 0)
-        //   moon = ( sin(sunAngle), -cos(sunAngle), 0)  (i.e. -sun)
+        // sun = (-sin(sunAngle), cos(sunAngle), 0)
+        // moon = ( sin(sunAngle), -cos(sunAngle), 0) (i.e. -sun)
         // Verifies: noon (sunAngle=0) → (0, 1, 0), zenith. Sunset (π/2) → (-1, 0, 0), -X = west. Sunrise (3π/2) →
         // (1, 0, 0), +X = east. Both are unit-length so post shaders can dot against a normalized view ray.
         var sunDirX = -(float) Math.sin(sunAngle);

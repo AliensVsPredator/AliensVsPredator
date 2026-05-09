@@ -51,11 +51,11 @@ public final class BLibEntityShaderPatcher {
          * Sun and moon texture (vanilla {@code position_tex} during the level pass). Mask value {@code 0.0625} — low
          * enough to fall under the post shader's "sky/passthrough" threshold but distinguishable from pure sky
          * ({@code 0.0}) so the thermal post can recolor the texture with the heat gradient (white-hot for the sun,
-         * yellow for the moon) while still letting the texture itself drive luminance detail. Sun/moon are drawn
-         * with alpha blending; the framebuffer's blend factor (SRC_ALPHA) applied to attachment 1 means the mask
-         * value at celestial-edge pixels naturally interpolates between {@code 0.0625} (fully texture) and
-         * {@code 0.0} (pure sky behind), giving the post shader a continuous "celestial alpha" signal it can use
-         * to fade the colored texture smoothly into the ambient sky color at the texture edges.
+         * yellow for the moon) while still letting the texture itself drive luminance detail. Sun/moon are drawn with
+         * alpha blending; the framebuffer's blend factor (SRC_ALPHA) applied to attachment 1 means the mask value at
+         * celestial-edge pixels naturally interpolates between {@code 0.0625} (fully texture) and {@code 0.0} (pure sky
+         * behind), giving the post shader a continuous "celestial alpha" signal it can use to fade the colored texture
+         * smoothly into the ambient sky color at the texture edges.
          */
         CELESTIAL(0.0625F),
 
@@ -63,10 +63,10 @@ public final class BLibEntityShaderPatcher {
          * Sky/cloud/lightning/end-portal shaders — draws to MainTarget but contributes no thermal data. Patched to
          * write deterministic zero to all auxiliary attachments. Without this, an unpatched shader's single
          * {@code out vec4 fragColor} leaves attachments 1-6 as spec-undefined writes; on some drivers that leaks
-         * structured garbage (e.g. interpolated attribute values) into {@code entityMask} and
-         * {@code entityDrawData}, which the post shader then interprets as terrain heat — producing the
-         * green/blue ring banding around the player and concentric rings around the sun/moon. Mask value
-         * {@code 0.0} — same as the cleared default, so the post shader treats these pixels as ambient sky.
+         * structured garbage (e.g. interpolated attribute values) into {@code entityMask} and {@code entityDrawData},
+         * which the post shader then interprets as terrain heat — producing the green/blue ring banding around the
+         * player and concentric rings around the sun/moon. Mask value {@code 0.0} — same as the cleared default, so the
+         * post shader treats these pixels as ambient sky.
          */
         PASSTHROUGH(0.0F);
 
@@ -151,9 +151,11 @@ public final class BLibEntityShaderPatcher {
             // corrupts the entity classification. Leave them unpatched here; BLibGbufferUniforms's per-shader
             // colorMask toggle suppresses their writes to the auxiliary attachments at draw time, so the
             // underlying entity's data is preserved exactly.
-            if (name.equals("rendertype_entity_shadow")
-                || name.equals("rendertype_entity_glint")
-                || name.equals("rendertype_entity_glint_direct")) {
+            if (
+                name.equals("rendertype_entity_shadow")
+                    || name.equals("rendertype_entity_glint")
+                    || name.equals("rendertype_entity_glint_direct")
+            ) {
                 return null;
             }
             return Category.ENTITY;
@@ -403,15 +405,15 @@ public final class BLibEntityShaderPatcher {
     /**
      * Minimal patch for sky/celestial/cloud/lightning shaders. Adds the six auxiliary outputs with explicit layout
      * locations and writes constant zero to each (except the mask byte, which carries the category) at the end of
-     * {@code main()}. No varyings are declared (vertex stage is untouched) and no per-fragment data is computed —
-     * the only goals are:
+     * {@code main()}. No varyings are declared (vertex stage is untouched) and no per-fragment data is computed — the
+     * only goals are:
      * <ul>
-     *   <li>Tag the fragment's category in the mask attachment so the post shader can route it correctly
-     *       ({@code 0.0} for ambient sky, {@code 0.0625} for sun/moon textures).</li>
-     *   <li>Guarantee deterministic zero in the rest of the auxiliaries instead of letting the GL spec's
-     *       "undefined" value for unwritten outputs leak structured garbage (interpolated attribute remnants from
-     *       the previous pipeline state) through the framebuffer — which is what shows up as green/blue ring
-     *       banding in the sky and around the moon in thermal mode without this patch.</li>
+     * <li>Tag the fragment's category in the mask attachment so the post shader can route it correctly ({@code 0.0} for
+     * ambient sky, {@code 0.0625} for sun/moon textures).</li>
+     * <li>Guarantee deterministic zero in the rest of the auxiliaries instead of letting the GL spec's "undefined"
+     * value for unwritten outputs leak structured garbage (interpolated attribute remnants from the previous pipeline
+     * state) through the framebuffer — which is what shows up as green/blue ring banding in the sky and around the moon
+     * in thermal mode without this patch.</li>
      * </ul>
      * <p>
      * {@code discard} short-circuits {@code main()} before our writes run, but discarded fragments don't update any

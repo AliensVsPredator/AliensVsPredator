@@ -16,22 +16,24 @@ import com.blib.api.client.posteffect.v1.BLibPerBoneLightContext;
 /**
  * Replaces vanilla MC's per-entity {@code packedLight} with a per-bone value sampled at each cube's actual world
  * position when thermal vision is active. Vanilla's entity {@link PoseStack} is freshly created per-frame in
- * {@code LevelRenderer.renderLevel} and is NOT pre-loaded with the camera-rotation matrix (that goes onto the
- * separate {@code RenderSystem.getModelViewStack()} which only the shader's {@code ModelViewMat} uniform sees). So
- * at {@code compile()} time the PoseStack accumulates only:
+ * {@code LevelRenderer.renderLevel} and is NOT pre-loaded with the camera-rotation matrix (that goes onto the separate
+ * {@code RenderSystem.getModelViewStack()} which only the shader's {@code ModelViewMat} uniform sees). So at
+ * {@code compile()} time the PoseStack accumulates only:
+ *
  * <pre>
  *   [translate(entity_pos − camera_pos)] [entity yaw] [entity rotation animations] [bone hierarchy]
  * </pre>
+ *
  * Transforming the local origin {@code (0, 0, 0)} by this matrix gives the bone's <em>world-relative-to-camera</em>
  * position directly — no view-rotation undo needed. Adding the captured camera position lands at absolute world
  * coordinates we can pass to {@code level.getBrightness()} for fresh per-bone block + sky light coords.
- *
- * <p>The new {@code packedLight} flows through the existing MRT pipeline naturally: vanilla bakes it into the vertex
+ * <p>
+ * The new {@code packedLight} flows through the existing MRT pipeline naturally: vanilla bakes it into the vertex
  * {@code UV2} attribute via {@code VertexConsumer.uv2(packedLight)}, the patcher extracts {@code UV2.x/240} into
- * {@code blib_lightCoord.x}, and the fragment shader writes that into {@code entityDrawData.g}. The thermal post
- * shader reads {@code entityDrawData.g} for the heat formula — which now varies per bone.
- *
- * <p>No-op outside thermal mode (gated by null context).
+ * {@code blib_lightCoord.x}, and the fragment shader writes that into {@code entityDrawData.g}. The thermal post shader
+ * reads {@code entityDrawData.g} for the heat formula — which now varies per bone.
+ * <p>
+ * No-op outside thermal mode (gated by null context).
  */
 @Mixin(ModelPart.class)
 public abstract class MixinModelPart_PerBoneLight {

@@ -9,8 +9,8 @@ import org.lwjgl.opengl.GL30;
 import com.blib.mod.BLib;
 
 /**
- * State + helpers for the MainTarget MRT extension. Owns six auxiliary color attachment texture IDs (entity-mask RG8
- * at attachment 1 — R: category byte, G: background-entity flag — entity-lightmap RGBA8 at attachment 2, entity-normal
+ * State + helpers for the MainTarget MRT extension. Owns six auxiliary color attachment texture IDs (entity-mask RG8 at
+ * attachment 1 — R: category byte, G: background-entity flag — entity-lightmap RGBA8 at attachment 2, entity-normal
  * RGBA8 at attachment 3, entity-draw-data RGBA8 at attachment 4, entity-specular RGBA8 at attachment 5,
  * entity-material-id R8 at attachment 6) and the {@code glDrawBuffers} state needed to keep them attached.
  * <p>

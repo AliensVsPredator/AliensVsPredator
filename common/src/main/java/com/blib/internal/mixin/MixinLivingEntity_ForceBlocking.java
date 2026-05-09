@@ -1,6 +1,5 @@
 package com.blib.internal.mixin;
 
-import com.blib.api.client.render.v1.item.BLibItemTransformOverrides;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -11,18 +10,18 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.blib.api.client.render.v1.item.BLibItemTransformOverrides;
+
 /**
- * Routes "is the local player using their main-hand item?" queries to the {@code force-blocking} debug
- * toggle. When the toggle is on, the local client's {@link LivingEntity#isUsingItem()},
- * {@link LivingEntity#getUseItem()}, {@link LivingEntity#getUsedItemHand()}, and
- * {@link LivingEntity#getUseItemRemainingTicks()} all report as if the player were actively raising the
- * item — so vanilla's {@code PlayerRenderer.getArmPose} sees {@code BLOCK} and the third-person arm goes
- * up, the held-item rendering switches to the blocking pose, etc.
+ * Routes "is the local player using their main-hand item?" queries to the {@code force-blocking} debug toggle. When the
+ * toggle is on, the local client's {@link LivingEntity#isUsingItem()}, {@link LivingEntity#getUseItem()},
+ * {@link LivingEntity#getUsedItemHand()}, and {@link LivingEntity#getUseItemRemainingTicks()} all report as if the
+ * player were actively raising the item — so vanilla's {@code PlayerRenderer.getArmPose} sees {@code BLOCK} and the
+ * third-person arm goes up, the held-item rendering switches to the blocking pose, etc.
  * <p>
- * Crucially this is restricted to the {@link Minecraft#player} instance — the server-side {@code ServerPlayer}
- * (which has a different identity even in single-player's integrated server) is not affected, so game
- * state stays consistent: the user can still walk and attack normally while their visual avatar appears
- * to be blocking.
+ * Crucially this is restricted to the {@link Minecraft#player} instance — the server-side {@code ServerPlayer} (which
+ * has a different identity even in single-player's integrated server) is not affected, so game state stays consistent:
+ * the user can still walk and attack normally while their visual avatar appears to be blocking.
  * <p>
  * Mixin lives in the client list of {@code blib.mixins.json} so it doesn't load on dedicated servers.
  */

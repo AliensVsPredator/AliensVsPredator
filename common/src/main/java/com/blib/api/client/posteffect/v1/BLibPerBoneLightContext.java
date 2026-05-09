@@ -19,7 +19,11 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class BLibPerBoneLightContext {
 
-    public record Frame(Level level, Vec3 cameraPos, int blockLightFloor) {}
+    public record Frame(
+        Level level,
+        Vec3 cameraPos,
+        int blockLightFloor
+    ) {}
 
     private static @Nullable Frame current;
 

@@ -10,25 +10,25 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * Per-shader hooks that run after every {@code ShaderInstance.apply()}:
  * <ol>
- *   <li>Sets the patcher-injected {@code BlibHeldItem} uniform to flag held-item draws (the patched fragment
- *       writes the {@code 0.875} held-item mask category when this is non-zero, which the thermal post detects
- *       and short-circuits to original color).</li>
- *   <li>Sets the patcher-injected {@code BlibBackgroundEntity} (lane A) and {@code BlibBackgroundEntity2} (lane B)
- *       uniforms to flag entity draws that should render as part of the world background. The patched fragment packs
- *       the two lanes into {@code entityMask.g} as {@code 0.25 * laneA + 0.5 * laneB}, so the four combinations land
- *       at 0.0 / 0.25 / 0.5 / 0.75. Consumer post-effects sample {@code .g} and decode to per-lane flags (or just
- *       check {@code .g > 0.5} for legacy "any background" behavior, since that matches lane B alone).</li>
- *   <li>Toggles {@code glColorMaski} for the auxiliary attachments (1-6) based on whether the bound shader is
- *       one we've categorized for the thermal pipeline. Patched shaders write valid auxiliary data and have full
- *       writes enabled. Unpatched shaders — entity shadows, the block-outline wireframe, glints, leashes,
- *       crumbling overlay, etc. — have writes to attachments 1-6 SUPPRESSED entirely. That's what stops them
- *       from blending zeros (or driver-undefined garbage) on top of the underlying terrain/entity's already-
- *       written mask byte and corrupting it. The auxiliary content the post shader reads at those pixels is
- *       whatever the underlying classified draw left there, which is exactly what we want.</li>
+ * <li>Sets the patcher-injected {@code BlibHeldItem} uniform to flag held-item draws (the patched fragment writes the
+ * {@code 0.875} held-item mask category when this is non-zero, which the thermal post detects and short-circuits to
+ * original color).</li>
+ * <li>Sets the patcher-injected {@code BlibBackgroundEntity} (lane A) and {@code BlibBackgroundEntity2} (lane B)
+ * uniforms to flag entity draws that should render as part of the world background. The patched fragment packs the two
+ * lanes into {@code entityMask.g} as {@code 0.25 * laneA + 0.5 * laneB}, so the four combinations land at 0.0 / 0.25 /
+ * 0.5 / 0.75. Consumer post-effects sample {@code .g} and decode to per-lane flags (or just check {@code .g > 0.5} for
+ * legacy "any background" behavior, since that matches lane B alone).</li>
+ * <li>Toggles {@code glColorMaski} for the auxiliary attachments (1-6) based on whether the bound shader is one we've
+ * categorized for the thermal pipeline. Patched shaders write valid auxiliary data and have full writes enabled.
+ * Unpatched shaders — entity shadows, the block-outline wireframe, glints, leashes, crumbling overlay, etc. — have
+ * writes to attachments 1-6 SUPPRESSED entirely. That's what stops them from blending zeros (or driver-undefined
+ * garbage) on top of the underlying terrain/entity's already- written mask byte and corrupting it. The auxiliary
+ * content the post shader reads at those pixels is whatever the underlying classified draw left there, which is exactly
+ * what we want.</li>
  * </ol>
- *
- * <p>Cache: vanilla calls {@code apply()} hundreds of times per frame, so the {@code glGetUniformLocation} lookup
- * is cached per program ID. Patched/unpatched lookup is name-based and cheap (a handful of string equals).
+ * <p>
+ * Cache: vanilla calls {@code apply()} hundreds of times per frame, so the {@code glGetUniformLocation} lookup is
+ * cached per program ID. Patched/unpatched lookup is name-based and cheap (a handful of string equals).
  */
 @ApiStatus.Internal
 public final class BLibGbufferUniforms {
@@ -42,9 +42,9 @@ public final class BLibGbufferUniforms {
     private static final ConcurrentMap<Integer, Integer> BACKGROUND_ENTITY2_LOC_CACHE = new ConcurrentHashMap<>();
 
     /**
-     * Tracks the last colorMask state we applied so we don't issue six glColorMaski calls per shader-bind when
-     * the state is unchanged. State transitions are clustered (e.g. all terrain draws are patched, then a run of
-     * unpatched line draws), so this collapses long runs into a single set.
+     * Tracks the last colorMask state we applied so we don't issue six glColorMaski calls per shader-bind when the
+     * state is unchanged. State transitions are clustered (e.g. all terrain draws are patched, then a run of unpatched
+     * line draws), so this collapses long runs into a single set.
      */
     private static boolean lastAuxWritesEnabled = true;
 
@@ -64,10 +64,10 @@ public final class BLibGbufferUniforms {
     }
 
     /**
-     * Resets the cached colorMask state. Call when the auxiliary attachments are (re)attached so the next
-     * shader bind unconditionally re-issues the colorMask state — otherwise a stale "we already enabled writes"
-     * record could skip the call after a framebuffer reattach left the GL state at the default (all enabled
-     * but for a different framebuffer's draw buffers).
+     * Resets the cached colorMask state. Call when the auxiliary attachments are (re)attached so the next shader bind
+     * unconditionally re-issues the colorMask state — otherwise a stale "we already enabled writes" record could skip
+     * the call after a framebuffer reattach left the GL state at the default (all enabled but for a different
+     * framebuffer's draw buffers).
      */
     public static void resetColorMaskCache() {
         lastAuxWritesEnabled = true;

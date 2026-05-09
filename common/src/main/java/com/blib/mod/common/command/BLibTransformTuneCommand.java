@@ -1,11 +1,5 @@
 package com.blib.mod.common.command;
 
-import com.blib.api.client.render.v1.BLibTransform;
-import com.blib.api.client.render.v1.item.BLibGizmoInput;
-import com.blib.api.client.render.v1.item.BLibGizmoMode;
-import com.blib.api.client.render.v1.item.BLibGizmoState;
-import com.blib.api.client.render.v1.item.BLibItemTransformMode;
-import com.blib.api.client.render.v1.item.BLibItemTransformOverrides;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -34,24 +28,30 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import com.blib.api.client.render.v1.BLibTransform;
+import com.blib.api.client.render.v1.item.BLibGizmoInput;
+import com.blib.api.client.render.v1.item.BLibGizmoMode;
+import com.blib.api.client.render.v1.item.BLibGizmoState;
+import com.blib.api.client.render.v1.item.BLibItemTransformMode;
+import com.blib.api.client.render.v1.item.BLibItemTransformOverrides;
+
 /**
- * Debug-only command that lets you live-tweak BLib item transforms in-game. Targets any item whose renderer
- * uses {@link com.blib.api.client.render.v1.item.BLibTunableItemTransforms} — overrides take effect on the
- * next render.
+ * Debug-only command that lets you live-tweak BLib item transforms in-game. Targets any item whose renderer uses
+ * {@link com.blib.api.client.render.v1.item.BLibTunableItemTransforms} — overrides take effect on the next render.
  * <p>
  * Subcommands (all under {@code /blib transform-tune}):
  * <ul>
- *   <li>{@code set <item> <mode> <context> <field> <value>} — set a single field to an absolute value.</li>
- *   <li>{@code nudge <item> <mode> <context> <field> <delta>} — add delta to the current effective value
- *       (override-or-base), useful for fine adjustments.</li>
- *   <li>{@code dump <item>} — print the current overrides as Java code, ready to paste back into your
- *       renderer's {@link com.blib.api.client.render.v1.item.BLibItemTransforms} constants.</li>
- *   <li>{@code reset <item>} — clear all overrides for an item.</li>
- *   <li>{@code reset <item> <mode>} — clear overrides for one mode of an item.</li>
+ * <li>{@code set <item> <mode> <context> <field> <value>} — set a single field to an absolute value.</li>
+ * <li>{@code nudge <item> <mode> <context> <field> <delta>} — add delta to the current effective value
+ * (override-or-base), useful for fine adjustments.</li>
+ * <li>{@code dump <item>} — print the current overrides as Java code, ready to paste back into your renderer's
+ * {@link com.blib.api.client.render.v1.item.BLibItemTransforms} constants.</li>
+ * <li>{@code reset <item>} — clear all overrides for an item.</li>
+ * <li>{@code reset <item> <mode>} — clear overrides for one mode of an item.</li>
  * </ul>
  * <p>
- * Field names: {@code tx ty tz rx ry rz scale}. Modes: {@code idle blocking}. Context names use the lower
- * snake_case form of {@link ItemDisplayContext} ({@code first_person_right_hand}, {@code gui}, etc.).
+ * Field names: {@code tx ty tz rx ry rz scale}. Modes: {@code idle blocking}. Context names use the lower snake_case
+ * form of {@link ItemDisplayContext} ({@code first_person_right_hand}, {@code gui}, etc.).
  */
 @ApiStatus.Internal
 public final class BLibTransformTuneCommand {
@@ -72,10 +72,13 @@ public final class BLibTransformTuneCommand {
     private static LiteralArgumentBuilder<CommandSourceStack> buildDebug() {
         return Commands.literal("debug")
             .then(Commands.literal("pivot").executes(BLibTransformTuneCommand::executeTogglePivotDebug))
-            .then(Commands.literal("gizmo")
-                .then(Commands.literal("translate").executes(ctx -> executeSetGizmoMode(ctx, BLibGizmoMode.TRANSLATE)))
-                .then(Commands.literal("rotate").executes(ctx -> executeSetGizmoMode(ctx, BLibGizmoMode.ROTATE)))
-                .then(Commands.literal("off").executes(ctx -> executeSetGizmoMode(ctx, BLibGizmoMode.OFF))))
+            .then(
+                Commands.literal("gizmo")
+                    .then(Commands.literal("translate").executes(ctx -> executeSetGizmoMode(ctx, BLibGizmoMode.TRANSLATE)))
+                    .then(Commands.literal("rotate").executes(ctx -> executeSetGizmoMode(ctx, BLibGizmoMode.ROTATE)))
+                    .then(Commands.literal("scale").executes(ctx -> executeSetGizmoMode(ctx, BLibGizmoMode.SCALE)))
+                    .then(Commands.literal("off").executes(ctx -> executeSetGizmoMode(ctx, BLibGizmoMode.OFF)))
+            )
             .then(Commands.literal("trace").executes(BLibTransformTuneCommand::executeToggleGizmoTrace))
             .then(Commands.literal("blocking").executes(BLibTransformTuneCommand::executeToggleForceBlocking));
     }
@@ -83,27 +86,39 @@ public final class BLibTransformTuneCommand {
     private static int executeToggleForceBlocking(CommandContext<CommandSourceStack> ctx) {
         var newState = !BLibItemTransformOverrides.isForceBlockingEnabled();
         BLibItemTransformOverrides.setForceBlockingEnabled(newState);
-        ctx.getSource().sendSuccess(() -> Component.literal(
-            "Force-blocking pose: " + (newState ? "ON (renderer treats item as in-use; tunes BLOCKING slot)" : "OFF")
-        ), false);
+        ctx.getSource()
+            .sendSuccess(
+                () -> Component.literal(
+                    "Force-blocking pose: " + (newState ? "ON (renderer treats item as in-use; tunes BLOCKING slot)" : "OFF")
+                ),
+                false
+            );
         return Command.SINGLE_SUCCESS;
     }
 
     private static int executeToggleGizmoTrace(CommandContext<CommandSourceStack> ctx) {
         var newState = !BLibGizmoInput.isTraceEnabled();
         BLibGizmoInput.setTraceEnabled(newState);
-        ctx.getSource().sendSuccess(() -> Component.literal(
-            "Gizmo trace logging: " + (newState ? "ON (check logs/latest.log)" : "OFF")
-        ), false);
+        ctx.getSource()
+            .sendSuccess(
+                () -> Component.literal(
+                    "Gizmo trace logging: " + (newState ? "ON (check logs/latest.log)" : "OFF")
+                ),
+                false
+            );
         return Command.SINGLE_SUCCESS;
     }
 
     private static int executeTogglePivotDebug(CommandContext<CommandSourceStack> ctx) {
         var newState = !BLibItemTransformOverrides.isPivotVisualizationEnabled();
         BLibItemTransformOverrides.setPivotVisualizationEnabled(newState);
-        ctx.getSource().sendSuccess(() -> Component.literal(
-            "Pivot visualization: " + (newState ? "ON" : "OFF")
-        ), false);
+        ctx.getSource()
+            .sendSuccess(
+                () -> Component.literal(
+                    "Pivot visualization: " + (newState ? "ON" : "OFF")
+                ),
+                false
+            );
         return Command.SINGLE_SUCCESS;
     }
 
@@ -114,6 +129,7 @@ public final class BLibTransformTuneCommand {
             case OFF -> "OFF";
             case TRANSLATE -> "TRANSLATE (drag arrows to move; chat must be open for cursor)";
             case ROTATE -> "ROTATE (drag rings to rotate; chat must be open for cursor)";
+            case SCALE -> "SCALE (drag the white handle: up = scale up, down = scale down; chat must be open for cursor)";
         };
 
         ctx.getSource().sendSuccess(() -> Component.literal("Gizmo: " + label), false);
@@ -130,22 +146,29 @@ public final class BLibTransformTuneCommand {
             var modeNode = Commands.literal(mode.name().toLowerCase(Locale.ROOT));
 
             for (var context : ItemDisplayContext.values()) {
-                if (context == ItemDisplayContext.NONE) continue;
+                if (context == ItemDisplayContext.NONE)
+                    continue;
                 final var capturedContext = context;
                 var contextNode = Commands.literal(context.name().toLowerCase(Locale.ROOT));
 
                 for (var field : Field.values()) {
                     final var capturedField = field;
-                    contextNode.then(Commands.literal(field.name().toLowerCase(Locale.ROOT))
-                        .then(Commands.argument(nudge ? "delta" : "value", FloatArgumentType.floatArg())
-                            .executes(ctx -> executeSetOrNudge(
-                                ctx,
-                                capturedMode,
-                                capturedContext,
-                                capturedField,
-                                FloatArgumentType.getFloat(ctx, nudge ? "delta" : "value"),
-                                nudge
-                            ))));
+                    contextNode.then(
+                        Commands.literal(field.name().toLowerCase(Locale.ROOT))
+                            .then(
+                                Commands.argument(nudge ? "delta" : "value", FloatArgumentType.floatArg())
+                                    .executes(
+                                        ctx -> executeSetOrNudge(
+                                            ctx,
+                                            capturedMode,
+                                            capturedContext,
+                                            capturedField,
+                                            FloatArgumentType.getFloat(ctx, nudge ? "delta" : "value"),
+                                            nudge
+                                        )
+                                    )
+                            )
+                    );
                 }
 
                 modeNode.then(contextNode);
@@ -166,8 +189,10 @@ public final class BLibTransformTuneCommand {
 
         for (var mode : BLibItemTransformMode.values()) {
             final var capturedMode = mode;
-            itemArg.then(Commands.literal(mode.name().toLowerCase(Locale.ROOT))
-                .executes(ctx -> executeReset(ctx, capturedMode)));
+            itemArg.then(
+                Commands.literal(mode.name().toLowerCase(Locale.ROOT))
+                    .executes(ctx -> executeReset(ctx, capturedMode))
+            );
         }
 
         itemArg.executes(ctx -> executeReset(ctx, null));
@@ -194,18 +219,22 @@ public final class BLibTransformTuneCommand {
 
         var label = nudge ? "Nudge" : "Set";
         var newValue = field.read(updated);
-        ctx.getSource().sendSuccess(() -> Component.literal(
-            "%s %s/%s/%s.%s %s%s -> %s".formatted(
-                label,
-                itemId,
-                mode.name().toLowerCase(Locale.ROOT),
-                context.name().toLowerCase(Locale.ROOT),
-                field.name().toLowerCase(Locale.ROOT),
-                nudge ? "by " : "= ",
-                formatFloat(value),
-                formatFloat(newValue)
-            )
-        ), false);
+        ctx.getSource()
+            .sendSuccess(
+                () -> Component.literal(
+                    "%s %s/%s/%s.%s %s%s -> %s".formatted(
+                        label,
+                        itemId,
+                        mode.name().toLowerCase(Locale.ROOT),
+                        context.name().toLowerCase(Locale.ROOT),
+                        field.name().toLowerCase(Locale.ROOT),
+                        nudge ? "by " : "= ",
+                        formatFloat(value),
+                        formatFloat(newValue)
+                    )
+                ),
+                false
+            );
         return Command.SINGLE_SUCCESS;
     }
 
@@ -247,10 +276,13 @@ public final class BLibTransformTuneCommand {
         // semantics on paste-back.
         var result = new LinkedHashMap<ItemDisplayContext, BLibTransform>();
         for (var context : ItemDisplayContext.values()) {
-            if (context == ItemDisplayContext.NONE) continue;
+            if (context == ItemDisplayContext.NONE)
+                continue;
             var modeValue = BLibItemTransformOverrides.getModeValueOrNull(itemId, mode, context);
-            if (modeValue == null) continue;
-            if (modeValue.equals(BLibTransform.IDENTITY)) continue;
+            if (modeValue == null)
+                continue;
+            if (modeValue.equals(BLibTransform.IDENTITY))
+                continue;
             result.put(context, modeValue);
         }
         return result;
@@ -258,7 +290,8 @@ public final class BLibTransformTuneCommand {
 
     private static Path resolveDumpPath(ResourceLocation itemId) {
         var safeName = (itemId.getNamespace() + "__" + itemId.getPath()).replaceAll("[^A-Za-z0-9_]", "_");
-        return Minecraft.getInstance().gameDirectory.toPath().toAbsolutePath()
+        return Minecraft.getInstance().gameDirectory.toPath()
+            .toAbsolutePath()
             .resolve("blib_transform_dumps")
             .resolve(safeName + ".java");
     }
@@ -298,7 +331,8 @@ public final class BLibTransformTuneCommand {
         }
 
         if (!blocking.isEmpty() || blockingWallFixed != null) {
-            if (!idle.isEmpty() || idleWallFixed != null) sb.append('\n');
+            if (!idle.isEmpty() || idleWallFixed != null)
+                sb.append('\n');
             sb.append("// BLOCKING\n");
             sb.append("BLibItemTransforms.builder()\n");
             for (var entry : blocking.entrySet()) {
@@ -321,7 +355,8 @@ public final class BLibTransformTuneCommand {
         var scaleEqual = scaleX == t.scale().y && t.scale().y == t.scale().z;
         var scaleStr = scaleEqual
             ? formatFloat(scaleX) + "f"
-            : "/* non-uniform " + formatFloat(t.scale().x) + "/" + formatFloat(t.scale().y) + "/" + formatFloat(t.scale().z) + " */ " + formatFloat(scaleX) + "f";
+            : "/* non-uniform " + formatFloat(t.scale().x) + "/" + formatFloat(t.scale().y) + "/" + formatFloat(t.scale().z) + " */ "
+                + formatFloat(scaleX) + "f";
 
         var pivotX = t.pivot().x;
         var pivotY = t.pivot().y;
@@ -361,9 +396,13 @@ public final class BLibTransformTuneCommand {
             ctx.getSource().sendSuccess(() -> Component.literal("Cleared all transform overrides for " + itemId), false);
         } else {
             BLibItemTransformOverrides.clear(itemId, mode);
-            ctx.getSource().sendSuccess(() -> Component.literal(
-                "Cleared %s overrides for %s".formatted(mode.name().toLowerCase(Locale.ROOT), itemId)
-            ), false);
+            ctx.getSource()
+                .sendSuccess(
+                    () -> Component.literal(
+                        "Cleared %s overrides for %s".formatted(mode.name().toLowerCase(Locale.ROOT), itemId)
+                    ),
+                    false
+                );
         }
         return Command.SINGLE_SUCCESS;
     }
@@ -376,7 +415,8 @@ public final class BLibTransformTuneCommand {
         var s = String.format(Locale.ROOT, "%.4f", v);
         if (s.contains(".")) {
             s = s.replaceAll("0+$", "");
-            if (s.endsWith(".")) s = s + "0";
+            if (s.endsWith("."))
+                s = s + "0";
         }
         return s;
     }
@@ -387,7 +427,8 @@ public final class BLibTransformTuneCommand {
         var scaleEqual = scaleX == t.scale().y && t.scale().y == t.scale().z;
         var scaleStr = scaleEqual
             ? formatFloat(scaleX) + "f"
-            : "/* non-uniform " + formatFloat(t.scale().x) + "/" + formatFloat(t.scale().y) + "/" + formatFloat(t.scale().z) + " */ " + formatFloat(scaleX) + "f";
+            : "/* non-uniform " + formatFloat(t.scale().x) + "/" + formatFloat(t.scale().y) + "/" + formatFloat(t.scale().z) + " */ "
+                + formatFloat(scaleX) + "f";
 
         var pivotX = t.pivot().x;
         var pivotY = t.pivot().y;
@@ -437,7 +478,17 @@ public final class BLibTransformTuneCommand {
     }
 
     enum Field {
-        TX, TY, TZ, RX, RY, RZ, SCALE, PX, PY, PZ;
+
+        TX,
+        TY,
+        TZ,
+        RX,
+        RY,
+        RZ,
+        SCALE,
+        PX,
+        PY,
+        PZ;
 
         BLibTransform apply(BLibTransform t, float v, boolean nudge) {
             float tx = t.translation().x, ty = t.translation().y, tz = t.translation().z;
