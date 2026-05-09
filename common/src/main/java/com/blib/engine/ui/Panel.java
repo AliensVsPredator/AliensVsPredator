@@ -48,6 +48,23 @@ public interface Panel {
         return false;
     }
 
+    /**
+     * Pre-structural-hit-test click hook. Runs before the workspace's divider / tab-strip / menu-bar checks so panels
+     * can claim clicks on small edge UI (scrollbar thumbs, close buttons, resize handles) that would otherwise be eaten
+     * by divider drag at panel boundaries.
+     * <p>
+     * Returning {@code true} also <strong>captures the mouse</strong>: the screen routes the next {@link #mouseDragged}
+     * / {@link #mouseReleased} to this panel regardless of cursor position, so a panel-driven drag (e.g. dragging the
+     * scroll thumb) keeps tracking even if the cursor leaves the panel rect.
+     * <p>
+     * Default returns {@code false} — most panels have no edge UI and don't need capture. Override only for clicks on
+     * specific small UI elements; general panel content should still fall through to {@link #mouseClicked}, which runs
+     * after divider hit-testing.
+     */
+    default boolean mouseClickedCapture(double mouseX, double mouseY, int button) {
+        return false;
+    }
+
     default boolean mouseReleased(double mouseX, double mouseY, int button) {
         return false;
     }

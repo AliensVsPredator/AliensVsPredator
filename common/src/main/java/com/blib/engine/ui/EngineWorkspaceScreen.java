@@ -8,6 +8,10 @@ import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import com.blib.engine.jigsaw.JigsawPieceLibrary;
+import com.blib.engine.jigsaw.JigsawPieceSelection;
+import com.blib.engine.jigsaw.JigsawPieceThumbnailCache;
+import com.blib.engine.jigsaw.JigsawPlacementCursor;
 import com.blib.engine.session.EngineMode;
 import com.blib.engine.session.NavigationMode;
 import com.blib.mod.BLib;
@@ -23,7 +27,7 @@ import com.blib.mod.common.network.packet.C2SRemoveEntityPayload;
  * Drawing is wrapped in a {@link #SCALE} pose scale so layout uses logical pixels (~2.67× the GUI-units screen at
  * 0.375). Mouse coordinates from event callbacks are scaled the same way before tree-walks.
  * <p>
- * Layout sketch:
+ * Layout sketch (Default — see {@link Layout} for variants):
  *
  * <pre>
  * +-------------------------------------------------------------+
@@ -42,6 +46,10 @@ import com.blib.mod.common.network.packet.C2SRemoveEntityPayload;
  *
  * Dividers between resizable regions can be dragged to repartition space; trim bars (menu / toolbar / status) are
  * pinned. Tabs can be clicked to switch, ×'d to close, and dragged across {@code TabbedPanel}s to rearrange.
+ * <p>
+ * Other layouts ({@code GOAP}, {@code JIGSAW}) keep the same skeleton but swap the right-side or bottom panel for a
+ * tool tuned to their workflow. Layouts are switched via the {@code Layout} menu chip and persist in-memory across
+ * {@code Esc} → {@code /blib engine} round-trips for the rest of the game session.
  */
 @ApiStatus.Internal
 public final class EngineWorkspaceScreen extends Screen {
@@ -107,6 +115,48 @@ public final class EngineWorkspaceScreen extends Screen {
 
     private @Nullable DropdownMenu openMenu;
 
+    /**
+     * Panel that captured the mouse via {@link Panel#mouseClickedCapture}. While non-null, {@link #mouseDragged} and
+     * {@link #mouseReleased} route to this panel before any other handling, so a panel-driven drag (scrollbar, etc.)
+     * tracks the cursor even when it leaves the panel rect. Cleared on {@code mouseReleased}.
+     */
+    private @Nullable Panel capturedPanel;
+
+    /**
+     * Per-layout dock tree cache, in-memory only. Populated when the workspace closes and when the user switches
+     * layouts; consulted on open / switch so the user's customizations (resizes, tab moves, active tabs, scroll
+     * positions) survive {@code Esc → /blib engine} round-trips within the same game session. Cleared on game exit
+     * because static field state doesn't persist across JVM restarts — that's the intended behavior per request.
+     */
+    private static final java.util.EnumMap<Layout, DockNode> savedLayouts = new java.util.EnumMap<>(Layout.class);
+
+    /** The layout the user is currently editing. Sticks across re-opens so reopening returns to the last layout. */
+    private static Layout activeLayout = Layout.DEFAULT;
+
+    /**
+     * Named workspace layout. Each layout shares the same outer chrome (menu bar, toolbar, status bar) and the same
+     * left-side outliner; only the right-side details panel and the bottom panel under the viewport differ. New layouts
+     * can be added by extending this enum and the {@link EngineWorkspaceScreen#buildLayout} switch.
+     */
+    public enum Layout {
+
+        DEFAULT("Default"),
+
+        GOAP("GOAP"),
+
+        JIGSAW("Jigsaw");
+
+        private final String displayName;
+
+        Layout(String displayName) {
+            this.displayName = displayName;
+        }
+
+        public String displayName() {
+            return displayName;
+        }
+    }
+
     public EngineWorkspaceScreen() {
         super(Component.literal("BLib Engine"));
 
@@ -123,36 +173,35 @@ public final class EngineWorkspaceScreen extends Screen {
             session.setMode(NavigationMode.ORBIT);
         }
 
-        this.root = buildDefaultLayout();
+        // Drop any cached template list from a previous workspace session — the user might have reloaded data, added
+        // a datapack, or switched worlds in between, so re-enumerate on entry.
+        JigsawPieceLibrary.invalidate();
+
+        // Restore the user's last-used layout (and any customizations they made to it) from the in-memory cache. If
+        // this is the first time they've opened the workspace this game session, build the default fresh.
+        var saved = savedLayouts.get(activeLayout);
+        this.root = saved != null ? saved : buildLayout(activeLayout);
     }
 
     /**
-     * Build the workspace's default dock tree from scratch with fresh panel + sizing instances. Called on screen
-     * construction and on Window → Reset Layout. Non-static so we can wire {@code this::onViewportRightClick} into each
-     * fresh {@link ViewportPanel}.
+     * Build a fresh dock tree for the given layout. Called on first-open of a layout (cache miss), Reset Layout, or any
+     * path that needs an unmodified factory tree. Non-static because it wires {@code this::onViewportRightClick} into
+     * each fresh {@link ViewportPanel}.
      */
-    private DockNode buildDefaultLayout() {
-        var viewportColumn = new DockNode.Split(
-            Orientation.VERTICAL,
-            new DockNode.Leaf(new TabbedPanel(new ViewportPanel("Viewport", this::onViewportRightClick))),
-            new DockNode.Leaf(new TabbedPanel(new ContentBrowserPanel())),
-            new Sizing.SecondFixed(CONTENT_BROWSER_HEIGHT_DEFAULT)
-        );
+    private DockNode buildLayout(Layout layout) {
+        return switch (layout) {
+            case DEFAULT -> buildOuterLayout(buildBody(buildViewportColumn(new ContentBrowserPanel()), new DetailsPanel()));
+            case GOAP -> buildOuterLayout(buildBody(buildViewportColumn(new ContentBrowserPanel()), new GOAPDetailsPanel()));
+            case JIGSAW -> buildOuterLayout(buildBody(buildViewportColumn(new PiecePalettePanel()), new DetailsPanel()));
+        };
+    }
 
-        var centerAndDetails = new DockNode.Split(
-            Orientation.HORIZONTAL,
-            viewportColumn,
-            new DockNode.Leaf(new TabbedPanel(new DetailsPanel())),
-            new Sizing.SecondFixed(DETAILS_WIDTH_DEFAULT)
-        );
-
-        var workspaceBody = new DockNode.Split(
-            Orientation.HORIZONTAL,
-            new DockNode.Leaf(new TabbedPanel(new OutlinerPanel())),
-            centerAndDetails,
-            new Sizing.FirstFixed(OUTLINER_WIDTH_DEFAULT)
-        );
-
+    /**
+     * Wraps {@code workspaceBody} (the central editable area) in the standard menu-bar / toolbar / status-bar trim
+     * shared by every layout. Splits are pinned to the trim panels' fixed heights so the body fills the remaining
+     * space.
+     */
+    private DockNode buildOuterLayout(DockNode workspaceBody) {
         var bodyAndStatus = new DockNode.Split(
             Orientation.VERTICAL,
             workspaceBody,
@@ -173,6 +222,55 @@ public final class EngineWorkspaceScreen extends Screen {
             toolbarAndBelow,
             new Sizing.FirstFixed(MenuBarPanel.HEIGHT)
         );
+    }
+
+    /**
+     * Three-column body: outliner on the left (fixed width), {@code viewportColumn} in the middle (flex), and
+     * {@code rightPanel} on the right (fixed width). Each layout supplies a different right panel — Default/Jigsaw use
+     * {@link DetailsPanel}, GOAP uses {@link GOAPDetailsPanel}.
+     */
+    private DockNode buildBody(DockNode viewportColumn, Panel rightPanel) {
+        var centerAndRight = new DockNode.Split(
+            Orientation.HORIZONTAL,
+            viewportColumn,
+            new DockNode.Leaf(new TabbedPanel(rightPanel)),
+            new Sizing.SecondFixed(DETAILS_WIDTH_DEFAULT)
+        );
+
+        return new DockNode.Split(
+            Orientation.HORIZONTAL,
+            new DockNode.Leaf(new TabbedPanel(new OutlinerPanel())),
+            centerAndRight,
+            new Sizing.FirstFixed(OUTLINER_WIDTH_DEFAULT)
+        );
+    }
+
+    /**
+     * Vertical split for the central column: viewport on top (flex), {@code bottomPanel} below (fixed height). The
+     * bottom panel is the layout-specific tool surface — Default/GOAP use {@link ContentBrowserPanel}, Jigsaw uses
+     * {@link PiecePalettePanel}.
+     */
+    private DockNode buildViewportColumn(Panel bottomPanel) {
+        return new DockNode.Split(
+            Orientation.VERTICAL,
+            new DockNode.Leaf(new TabbedPanel(new ViewportPanel("Viewport", this::onViewportRightClick))),
+            new DockNode.Leaf(new TabbedPanel(bottomPanel)),
+            new Sizing.SecondFixed(CONTENT_BROWSER_HEIGHT_DEFAULT)
+        );
+    }
+
+    /**
+     * Switch the active layout. Saves the current dock tree to the cache so the user's edits to the outgoing layout are
+     * preserved across switches; loads the incoming layout from cache, or builds it fresh if first-seen.
+     */
+    private void switchLayout(Layout newLayout) {
+        if (newLayout == activeLayout) {
+            return;
+        }
+        savedLayouts.put(activeLayout, this.root);
+        activeLayout = newLayout;
+        var saved = savedLayouts.get(newLayout);
+        this.root = saved != null ? saved : buildLayout(newLayout);
     }
 
     @Override
@@ -409,9 +507,15 @@ public final class EngineWorkspaceScreen extends Screen {
     @Override
     public void removed() {
         super.removed();
+        // Persist the active layout's customized state so the next /blib engine within this session reopens to the
+        // same arrangement of tabs, splits, and active panels.
+        savedLayouts.put(activeLayout, this.root);
         EngineWorkspaceCompositor.clear();
         EngineMode.get().exit();
         EngineTickControl.restore();
+        JigsawPieceSelection.clear();
+        JigsawPlacementCursor.clearViewportRect();
+        JigsawPieceThumbnailCache.clear();
     }
 
     @Override
@@ -612,7 +716,16 @@ public final class EngineWorkspaceScreen extends Screen {
                 return true;
             }
 
-            // 3) Divider drag start.
+            // 3) Panel-internal high-priority UI (scrollbar thumb, close buttons, etc.). Runs before divider so a
+            // scrollbar at the right edge of a panel adjacent to a vertical dock split isn't eaten by divider drag.
+            // A true return also captures subsequent drag / release for this panel — see #capturedPanel.
+            var preDivider = panelAt(root, 0, 0, logicalWidth(), logicalHeight(), logicalX, logicalY);
+            if (preDivider != null && preDivider.mouseClickedCapture(logicalX, logicalY, button)) {
+                this.capturedPanel = preDivider;
+                return true;
+            }
+
+            // 4) Divider drag start.
             var divider = findDivider(root, 0, 0, logicalWidth(), logicalHeight(), (int) logicalX, (int) logicalY);
             if (divider != null && isResizable(divider.split.sizing())) {
                 this.activeDrag = new ActiveDrag(divider);
@@ -620,7 +733,7 @@ public final class EngineWorkspaceScreen extends Screen {
             }
         }
 
-        // 4) Otherwise, delegate to the panel under the cursor for content-area handling.
+        // 5) Otherwise, delegate to the panel under the cursor for content-area handling.
         var leaf = panelAt(root, 0, 0, logicalWidth(), logicalHeight(), logicalX, logicalY);
         if (leaf != null && leaf.mouseClicked(logicalX, logicalY, button)) {
             return true;
@@ -632,6 +745,19 @@ public final class EngineWorkspaceScreen extends Screen {
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         var logicalX = mouseX / SCALE;
         var logicalY = mouseY / SCALE;
+
+        // Captured panel sees the release first regardless of cursor position, then the capture clears. Wrapped in
+        // try/finally so a misbehaving panel can't leave us in a stuck-captured state.
+        if (capturedPanel != null) {
+            var panel = capturedPanel;
+            this.capturedPanel = null;
+            try {
+                panel.mouseReleased(logicalX, logicalY, button);
+            } catch (Throwable t) {
+                // Swallow — release should never crash the workspace; the capture is already cleared.
+            }
+            return true;
+        }
 
         if (button == 0 && tabDrag != null) {
             if (tabDrag.active) {
@@ -663,6 +789,14 @@ public final class EngineWorkspaceScreen extends Screen {
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         var logicalX = mouseX / SCALE;
         var logicalY = mouseY / SCALE;
+
+        // Captured panel gets every drag event regardless of cursor position. Critical for panel-driven drags
+        // (scroll thumb etc.) — without capture, the screen routes by cursor position and the drag would die the
+        // moment the cursor left the panel rect.
+        if (capturedPanel != null) {
+            capturedPanel.mouseDragged(logicalX, logicalY, button, deltaX, deltaY);
+            return true;
+        }
 
         if (tabDrag != null) {
             if (!tabDrag.active) {
@@ -895,9 +1029,18 @@ public final class EngineWorkspaceScreen extends Screen {
                     ),
                     new DropdownMenu.Item("Reopen Details", () -> reopenPanel(DetailsPanel.class, DetailsPanel::new)),
                     new DropdownMenu.Item("Reopen Content Browser", () -> reopenPanel(ContentBrowserPanel.class, ContentBrowserPanel::new)),
+                    new DropdownMenu.Item("Reopen Piece Palette", () -> reopenPanel(PiecePalettePanel.class, PiecePalettePanel::new)),
                     new DropdownMenu.Item("Reopen GOAP Details", () -> reopenPanel(GOAPDetailsPanel.class, GOAPDetailsPanel::new)),
                     new DropdownMenu.Item("Reset Layout", this::resetLayout)
                 )
+            );
+            case MenuBarPanel.CHIP_LAYOUT -> new DropdownMenu(
+                anchorX,
+                anchorY,
+                java.util.stream.Stream
+                    .of(Layout.values())
+                    .map(layout -> new DropdownMenu.Item(layout.displayName(), () -> switchLayout(layout)))
+                    .toList()
             );
             default -> null;
         };
@@ -926,7 +1069,10 @@ public final class EngineWorkspaceScreen extends Screen {
     }
 
     private void resetLayout() {
-        this.root = buildDefaultLayout();
+        // Reset the *current* layout to its factory state, not back to Default — switching layouts is a separate
+        // action via the Layout menu. Drops any user resizes / tab moves on this layout's cached tree as a side
+        // effect, since the next removed() will overwrite the cache entry with the fresh tree.
+        this.root = buildLayout(activeLayout);
     }
 
     /**

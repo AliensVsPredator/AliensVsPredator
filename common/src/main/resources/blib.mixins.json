@@ -28,6 +28,7 @@
     "MixinRegistry_ApplyDataFixes",
     "MixinShapedRecipeBuilder_Accessor",
     "MixinShapelessRecipeBuilder_Accessor",
+    "MixinStructureTemplate_Accessor",
     "MixinStructureTemplatePool_Accessor",
     "server.MixinChunkMap_ChunkLoadEvent",
     "server.MixinExplosion_TerritoryProtection",

@@ -288,6 +288,18 @@ public final class TabbedPanel implements Panel {
     }
 
     @Override
+    public boolean mouseClickedCapture(double mouseX, double mouseY, int button) {
+        // Forward to the active tab so panel-internal capture-eligible UI (e.g. scrollbars) can claim clicks before
+        // the screen's divider hit-test runs. Tab-strip area is never a capture target — those clicks are handled
+        // by the screen's tab-drag state machine.
+        if (mouseY < rectY + TAB_BAR_HEIGHT) {
+            return false;
+        }
+        var active = activeTab();
+        return active != null && active.mouseClickedCapture(mouseX, mouseY, button);
+    }
+
+    @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         if (mouseY < rectY + TAB_BAR_HEIGHT) {
             return false;

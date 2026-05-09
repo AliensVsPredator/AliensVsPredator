@@ -27,7 +27,9 @@ public final class MenuBarPanel implements Panel {
 
     public static final String CHIP_WINDOW = "Window";
 
-    private static final String[] CHIPS = { CHIP_FILE, CHIP_EDIT, CHIP_VIEW, CHIP_WINDOW };
+    public static final String CHIP_LAYOUT = "Layout";
+
+    private static final String[] CHIPS = { CHIP_FILE, CHIP_EDIT, CHIP_VIEW, CHIP_WINDOW, CHIP_LAYOUT };
 
     private static final int BACKGROUND_COLOR = 0xFF202024;
 

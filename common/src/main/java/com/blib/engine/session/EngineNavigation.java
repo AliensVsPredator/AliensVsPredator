@@ -214,7 +214,7 @@ public final class EngineNavigation {
      * using the player's FOV and the full-window aspect — the world is rendered at full window then downsampled into
      * the viewport panel, so the relative cursor position maps directly to the same world ray.
      */
-    private static Vec3 cursorRayDirection(EngineSession session, double relX, double relY) {
+    public static Vec3 cursorRayDirection(EngineSession session, double relX, double relY) {
         var mc = Minecraft.getInstance();
         var window = mc.getWindow();
         var width = window.getScreenWidth();

@@ -5,9 +5,14 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
+import com.blib.engine.jigsaw.JigsawPieceSelection;
+import com.blib.engine.jigsaw.JigsawPlacementCursor;
 import com.blib.engine.session.EngineMode;
 import com.blib.engine.session.EngineNavigation;
+import com.blib.mod.BLib;
+import com.blib.mod.common.network.packet.C2SPlaceJigsawPiecePayload;
 
 /**
  * The viewport panel — the rect where the downsampled world+HUD blit lands. This panel doesn't draw anything itself; it
@@ -73,6 +78,20 @@ public final class ViewportPanel implements Panel {
         this.rectHeight = height;
         // No drawing: the compositor has already painted the downsampled world+HUD into this exact rect on the main
         // render target before the workspace's panels render. Anything drawn here would obscure the live game view.
+
+        // Publish the rect in raw window-pixel space so the world-render hook (running in a different render pass)
+        // can map cursor coords back into [0,1] viewport-relative coords for the placement preview's ray cast. The
+        // workspace pose stack scales by SCALE = 0.375 around the panel rect; we transform through it to get screen-
+        // logical, then multiply by guiScale to reach raw window pixels.
+        var matrix = graphics.pose().last().pose();
+        var topLeft = matrix.transformPosition((float) x, (float) y, 0f, new Vector3f());
+        var bottomRight = matrix.transformPosition((float) (x + width), (float) (y + height), 0f, new Vector3f());
+        var guiScale = Minecraft.getInstance().getWindow().getGuiScale();
+        var rawX = (int) Math.round(topLeft.x * guiScale);
+        var rawY = (int) Math.round(topLeft.y * guiScale);
+        var rawW = (int) Math.round((bottomRight.x - topLeft.x) * guiScale);
+        var rawH = (int) Math.round((bottomRight.y - topLeft.y) * guiScale);
+        JigsawPlacementCursor.updateViewportRect(rawX, rawY, rawW, rawH);
     }
 
     @Override
@@ -90,6 +109,26 @@ public final class ViewportPanel implements Panel {
         var relY = (mouseY - rectY) / (double) rectHeight;
 
         if (button == 0) {
+            // When a jigsaw piece is selected, LMB in the viewport means "place" — short-circuit selection and orbit
+            // so the user's click doesn't also drag the camera. Send a packet to the server with the same anchor the
+            // world preview is rendered at so what they see is what gets built.
+            var selectedPieceId = JigsawPieceSelection.selectedId();
+            if (selectedPieceId != null) {
+                var anchor = JigsawPlacementCursor.resolveAnchorBlock(session);
+                if (anchor != null) {
+                    BLib.MOD.networking()
+                        .sendToServer(
+                            new C2SPlaceJigsawPiecePayload(
+                                selectedPieceId,
+                                anchor,
+                                JigsawPieceSelection.rotation().ordinal(),
+                                JigsawPieceSelection.mirror().ordinal()
+                            )
+                        );
+                }
+                return true;
+            }
+
             EngineNavigation.performSelectionAt(session, relX, relY);
             EngineNavigation.beginOrbitDrag(session, relX, relY);
             return true;
