@@ -828,6 +828,13 @@ public final class EngineWorkspaceScreen extends Screen {
         var logicalX = mouseX / SCALE;
         var logicalY = mouseY / SCALE;
 
+        // End any text-input drag-select on LMB release. The input keeps its caret + selection; only the static
+        // drag pointer clears so future drags don't keep extending its selection.
+        if (button == 0 && TextInput.getDragSelecting() != null) {
+            TextInput.endDragSelection();
+            return true;
+        }
+
         // Captured panel sees the release first regardless of cursor position, then the capture clears. Wrapped in
         // try/finally so a misbehaving panel can't leave us in a stuck-captured state.
         if (capturedPanel != null) {
@@ -871,6 +878,15 @@ public final class EngineWorkspaceScreen extends Screen {
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         var logicalX = mouseX / SCALE;
         var logicalY = mouseY / SCALE;
+
+        // Text-input drag-select: the focused input owns LMB drag while in progress, regardless of where the
+        // cursor is now. Routed via the static dragSelecting pointer rather than per-panel forwarding so we don't
+        // need every host panel to plumb mouseDragged through to its TextInput.
+        var dragInput = TextInput.getDragSelecting();
+        if (dragInput != null && button == 0) {
+            dragInput.mouseDraggedExtend(logicalX);
+            return true;
+        }
 
         // Captured panel gets every drag event regardless of cursor position. Critical for panel-driven drags
         // (scroll thumb etc.) — without capture, the screen routes by cursor position and the drag would die the
