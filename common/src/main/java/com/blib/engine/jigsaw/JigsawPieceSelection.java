@@ -11,7 +11,8 @@ import org.jetbrains.annotations.Nullable;
  * renderer draws the piece at the targeted block position and a viewport LMB triggers placement instead of selection.
  * <p>
  * Cleared automatically on {@link com.blib.engine.session.EngineMode#exit()} so a stale selection doesn't bleed into a
- * later session. Rotation/mirror are placeholder fields for the next iteration; for the MVP they stay at {@code NONE}.
+ * later session. Rotation and mirror are user-driven via R/M hotkeys and scroll-while-placing; both reset to
+ * {@code NONE} when the user picks a different piece, so per-piece muscle memory doesn't leak across selections.
  */
 @ApiStatus.Internal
 public final class JigsawPieceSelection {
@@ -32,12 +33,24 @@ public final class JigsawPieceSelection {
         return selectedId != null;
     }
 
+    /**
+     * Set the active piece. Resets rotation / mirror to {@code NONE} if the id is different from the previous selection
+     * — matches the common authoring pattern where each piece starts at "default orientation" so the user doesn't carry
+     * over leftover transforms from the last piece. Re-selecting the same id is a no-op for the transform state, so
+     * accidentally clicking the same card twice doesn't reset their work.
+     */
     public static void select(ResourceLocation id) {
+        if (!id.equals(selectedId)) {
+            rotation = Rotation.NONE;
+            mirror = Mirror.NONE;
+        }
         selectedId = id;
     }
 
     public static void clear() {
         selectedId = null;
+        rotation = Rotation.NONE;
+        mirror = Mirror.NONE;
     }
 
     public static Rotation rotation() {
@@ -46,5 +59,25 @@ public final class JigsawPieceSelection {
 
     public static Mirror mirror() {
         return mirror;
+    }
+
+    /**
+     * Cycle rotation by {@code direction} steps (typically +1 or -1) through the four {@link Rotation} values. Positive
+     * direction maps to clockwise-when-viewed-from-above, matching the natural "scroll up = rotate right" convention
+     * used by most authoring tools.
+     */
+    public static void cycleRotation(int direction) {
+        var values = Rotation.values();
+        var len = values.length;
+        rotation = values[((rotation.ordinal() + direction) % len + len) % len];
+    }
+
+    /**
+     * Cycle mirror by one step through the {@link Mirror} values ({@code NONE} → {@code LEFT_RIGHT} →
+     * {@code FRONT_BACK}).
+     */
+    public static void cycleMirror() {
+        var values = Mirror.values();
+        mirror = values[(mirror.ordinal() + 1) % values.length];
     }
 }

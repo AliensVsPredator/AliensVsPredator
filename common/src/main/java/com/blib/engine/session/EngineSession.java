@@ -1,12 +1,8 @@
 package com.blib.engine.session;
 
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
-
-import java.lang.ref.WeakReference;
 
 /**
  * Mutable per-activation state for {@link EngineMode}. Holds the freecam transform (current and previous-tick for
@@ -46,12 +42,6 @@ public final class EngineSession {
     private boolean prevLeftDown;
 
     private boolean prevRightDown;
-
-    /**
-     * Selected entity, held weakly so a despawn / unload doesn't pin the entity in memory through us. Reads check
-     * {@code isAlive()} and clear stale refs.
-     */
-    private @Nullable WeakReference<LivingEntity> selectedEntity;
 
     /**
      * Total mouse-pixel distance accumulated since the current LMB press. Used to disambiguate click (under threshold)
@@ -205,25 +195,6 @@ public final class EngineSession {
 
     public void setPrevRightDown(boolean v) {
         this.prevRightDown = v;
-    }
-
-    public @Nullable LivingEntity selectedEntity() {
-        if (selectedEntity == null) {
-            return null;
-        }
-
-        var entity = selectedEntity.get();
-
-        if (entity == null || !entity.isAlive()) {
-            selectedEntity = null;
-            return null;
-        }
-
-        return entity;
-    }
-
-    public void setSelectedEntity(@Nullable LivingEntity entity) {
-        this.selectedEntity = entity == null ? null : new WeakReference<>(entity);
     }
 
     public double lmbDragDistance() {

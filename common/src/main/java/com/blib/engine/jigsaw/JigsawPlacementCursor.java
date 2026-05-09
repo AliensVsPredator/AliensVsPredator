@@ -3,6 +3,7 @@ package com.blib.engine.jigsaw;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -63,6 +64,22 @@ public final class JigsawPlacementCursor {
      * returned position is the anchor block — the empty cell the structure should occupy, on the hit face.
      */
     public static @Nullable BlockPos resolveAnchorBlock(EngineSession session) {
+        var hit = clipFromCursor(session);
+        if (hit == null) {
+            return null;
+        }
+        // Anchor on the surface the user pointed at: targeted block + the face direction (e.g. clicking the top
+        // face of a grass block anchors at y+1, matching how vanilla item placement chooses its target cell).
+        return hit.getBlockPos().relative(hit.getDirection());
+    }
+
+    /**
+     * Run a clip raycast from the engine camera through the cursor's viewport position. Returns the raw
+     * {@link BlockHitResult} so callers that care about the hit block itself (rather than the surface-adjacent
+     * placement cell) can inspect it. Returns {@code null} on the same conditions as {@link #resolveAnchorBlock} —
+     * cursor outside viewport, ray misses every block, etc.
+     */
+    public static @Nullable BlockHitResult clipFromCursor(EngineSession session) {
         if (!rectKnown) {
             return null;
         }
@@ -101,9 +118,6 @@ public final class JigsawPlacementCursor {
         if (hit.getType() == HitResult.Type.MISS) {
             return null;
         }
-
-        // Anchor on the surface the user pointed at: targeted block + the face direction (e.g. clicking the top
-        // face of a grass block anchors at y+1, matching how vanilla item placement chooses its target cell).
-        return hit.getBlockPos().relative(hit.getDirection());
+        return hit;
     }
 }

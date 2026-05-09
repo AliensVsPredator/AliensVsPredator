@@ -30,6 +30,7 @@ import com.blib.internal.common.reputation.BLibReputationManager;
 import com.blib.internal.common.storage.BLibDataStoreManager;
 import com.blib.internal.common.territory.BLibTerritoryManager;
 import com.blib.mod.common.gameplay.goap.GOAPDebugTracker;
+import com.blib.mod.common.gameplay.jigsaw.PlacementHistory;
 import com.blib.mod.common.network.BLibPacketDirections;
 import com.blib.mod.common.network.BLibServerPacketHandlers;
 import com.blib.mod.common.property.BLibModPropertyAccess;
@@ -105,6 +106,7 @@ public class BLib {
         BLib.MOD.events().onLevelSave().register(BLibDataStoreManager.INSTANCE::saveLevelData);
         BLib.MOD.events().onServerStopped().register(BLibDataStoreManager.INSTANCE::onServerStopped);
         BLib.MOD.events().onServerStopped().register(GOAPDebugTracker.INSTANCE::clear);
+        BLib.MOD.events().onServerStopped().register(server -> PlacementHistory.clear());
         BLib.MOD.events().onServerStopped().register(server -> ClientTerritoryCache.INSTANCE.clear());
         BLib.MOD.events().onServerStopped().register(server -> ClientFactionCache.INSTANCE.clear());
 

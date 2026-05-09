@@ -14,9 +14,11 @@ import java.util.List;
 
 import com.blib.api.common.goap.v1.GOAPUser;
 import com.blib.mod.common.gameplay.goap.GOAPDebugTracker;
+import com.blib.mod.common.gameplay.jigsaw.PlacementHistory;
 import com.blib.mod.common.network.packet.C2SGOAPTrackPayload;
 import com.blib.mod.common.network.packet.C2SPlaceJigsawPiecePayload;
 import com.blib.mod.common.network.packet.C2SRemoveEntityPayload;
+import com.blib.mod.common.network.packet.C2SUndoPlacementPayload;
 
 /**
  * Server-side handlers for client → server packets. Mirror of {@link BLibClientListener} for the C2S direction — each
@@ -94,7 +96,29 @@ public final class BLibServerListener {
             .setIgnoreEntities(false);
 
         var anchor = payload.anchor();
+        // Capture the AABB the placement will touch BEFORE writing — otherwise the snapshot would record the placed
+        // structure's blocks as the "original" state and undo would be a no-op. AABB derived from the same settings
+        // we're about to feed placeInWorld so it matches exactly.
+        var aabb = template.getBoundingBox(settings, anchor);
+        PlacementHistory.push(serverLevel, aabb, payload.templateId());
+
         template.placeInWorld(serverLevel, anchor, anchor, settings, serverLevel.getRandom(), Block.UPDATE_CLIENTS);
+    }
+
+    /**
+     * Pop the most recent placement off the {@link PlacementHistory} stack and restore the world. Op-gated like the
+     * place packet — destructive write to the world. Filters by the player's current dimension so a player who placed
+     * in the overworld and travelled to the nether before pressing undo doesn't accidentally restore overworld blocks
+     * at the same coordinates in the nether.
+     */
+    public static void handleUndoPlacement(C2SUndoPlacementPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        if (!serverPlayer.hasPermissions(2)) {
+            return;
+        }
+        PlacementHistory.undo(serverPlayer.serverLevel());
     }
 
     private static Rotation ordinalToRotation(int ordinal) {

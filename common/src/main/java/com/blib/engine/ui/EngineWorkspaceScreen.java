@@ -12,6 +12,11 @@ import com.blib.engine.jigsaw.JigsawPieceLibrary;
 import com.blib.engine.jigsaw.JigsawPieceSelection;
 import com.blib.engine.jigsaw.JigsawPieceThumbnailCache;
 import com.blib.engine.jigsaw.JigsawPlacementCursor;
+import com.blib.engine.jigsaw.JigsawPoolLibrary;
+import com.blib.engine.jigsaw.placement.JigsawPlacementFrameState;
+import com.blib.engine.jigsaw.placement.JigsawPlacementOptions;
+import com.blib.engine.jigsaw.placement.JigsawTemplateScanner;
+import com.blib.engine.selection.SelectionManager;
 import com.blib.engine.session.EngineMode;
 import com.blib.engine.session.NavigationMode;
 import com.blib.mod.BLib;
@@ -174,8 +179,11 @@ public final class EngineWorkspaceScreen extends Screen {
         }
 
         // Drop any cached template list from a previous workspace session — the user might have reloaded data, added
-        // a datapack, or switched worlds in between, so re-enumerate on entry.
+        // a datapack, or switched worlds in between, so re-enumerate on entry. Same for pool data: pools reference
+        // templates by id, so a datapack reload could invalidate the pool→templates map even if the template list
+        // looks the same.
         JigsawPieceLibrary.invalidate();
+        JigsawPoolLibrary.invalidate();
 
         // Restore the user's last-used layout (and any customizations they made to it) from the in-memory cache. If
         // this is the first time they've opened the workspace this game session, build the default fresh.
@@ -516,6 +524,10 @@ public final class EngineWorkspaceScreen extends Screen {
         JigsawPieceSelection.clear();
         JigsawPlacementCursor.clearViewportRect();
         JigsawPieceThumbnailCache.clear();
+        JigsawTemplateScanner.clear();
+        JigsawPlacementFrameState.clear();
+        JigsawPlacementOptions.reset();
+        SelectionManager.clear();
     }
 
     @Override
@@ -649,6 +661,26 @@ public final class EngineWorkspaceScreen extends Screen {
         if (focused != null && focused.keyPressed(keyCode, scanCode, modifiers)) {
             return true;
         }
+
+        // Placement-mode hotkeys: R cycles rotation forward (clockwise), M cycles mirror, T toggles between FREE
+        // and JIGSAW_SNAP placement modes. Gated by an active piece selection so these keys don't steal input from
+        // other potential editor tools later. Suppressed while a text input is focused (handled above), so typing
+        // them into the search box won't rotate the world preview / change modes.
+        if (JigsawPieceSelection.hasSelection()) {
+            if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_R) {
+                JigsawPieceSelection.cycleRotation(1);
+                return true;
+            }
+            if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_M) {
+                JigsawPieceSelection.cycleMirror();
+                return true;
+            }
+            if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_T) {
+                com.blib.engine.jigsaw.placement.JigsawTool.cycleNextImplementedMode();
+                return true;
+            }
+        }
+
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 

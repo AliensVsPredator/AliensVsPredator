@@ -6,6 +6,7 @@ import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.C2SGOAPTrackPayload;
 import com.blib.mod.common.network.packet.C2SPlaceJigsawPiecePayload;
 import com.blib.mod.common.network.packet.C2SRemoveEntityPayload;
+import com.blib.mod.common.network.packet.C2SUndoPlacementPayload;
 import com.blib.mod.common.network.packet.S2CChunkClaimsSyncPayload;
 import com.blib.mod.common.network.packet.S2CEntityDataSyncPayload;
 import com.blib.mod.common.network.packet.S2CFactionMetadataSyncPayload;
@@ -36,5 +37,6 @@ public class BLibPacketDirections {
         REGISTRY.registerPacketDirection(
             new PacketDirection.C2S<>(C2SPlaceJigsawPiecePayload.TYPE, C2SPlaceJigsawPiecePayload.CODEC)
         );
+        REGISTRY.registerPacketDirection(new PacketDirection.C2S<>(C2SUndoPlacementPayload.TYPE, C2SUndoPlacementPayload.CODEC));
     }
 }

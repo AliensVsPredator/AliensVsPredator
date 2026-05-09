@@ -6,6 +6,9 @@ import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.engine.gizmo.BLibGizmoState;
+import com.blib.engine.jigsaw.JigsawPieceSelection;
+import com.blib.engine.jigsaw.placement.JigsawPlacementFrameState;
+import com.blib.engine.jigsaw.placement.JigsawTool;
 import com.blib.engine.session.EngineMode;
 
 /**
@@ -64,8 +67,35 @@ public final class StatusBarPanel implements Panel {
         var gizmoX = x + EDGE_PADDING + font.width(engineLabel) + 12;
         graphics.drawString(font, Component.literal(gizmoLabel), gizmoX, textY, VALUE_COLOR, false);
 
-        var workspaceLabel = "Default Workspace";
-        var rightX = x + width - EDGE_PADDING - font.width(workspaceLabel);
-        graphics.drawString(font, Component.literal(workspaceLabel), rightX, textY, LABEL_COLOR, false);
+        // Placement state on the right side: mode + piece id + rotation + mirror + collision count, but only while
+        // a piece is selected. Gives the user feedback for the R / M / T / scroll hotkeys (otherwise rotating or
+        // mode-switching is invisible until the world preview updates next frame, and even then "is that a 90° or
+        // a 180° rotation?" isn't always obvious). Collision count comes from the renderer's per-frame scan via
+        // JigsawPlacementFrameState — only shown when the resolver returned a valid placement this frame, so the
+        // user doesn't see "coll:0" while the cursor's actually over open sky.
+        var selectedId = JigsawPieceSelection.selectedId();
+        if (selectedId != null) {
+            var rotation = JigsawPieceSelection.rotation();
+            var mirror = JigsawPieceSelection.mirror();
+            var mode = JigsawTool.activeMode();
+            var placement = JigsawPlacementFrameState.placement();
+            var placementLabel = "[" + mode.displayName() + "]  " + selectedId.getPath() + "  rot:" + rotationLabel(rotation) + "  mir:"
+                + mirror.name();
+            if (placement != null) {
+                placementLabel += "  coll:" + JigsawPlacementFrameState.collisionCount();
+            }
+            var truncated = font.plainSubstrByWidth(placementLabel, width / 2);
+            var rightX = x + width - EDGE_PADDING - font.width(truncated);
+            graphics.drawString(font, Component.literal(truncated), rightX, textY, ACCENT_COLOR, false);
+        }
+    }
+
+    private static String rotationLabel(net.minecraft.world.level.block.Rotation rotation) {
+        return switch (rotation) {
+            case NONE -> "0";
+            case CLOCKWISE_90 -> "90";
+            case CLOCKWISE_180 -> "180";
+            case COUNTERCLOCKWISE_90 -> "270";
+        };
     }
 }

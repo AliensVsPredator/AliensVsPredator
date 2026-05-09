@@ -7,12 +7,20 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
+import com.blib.engine.jigsaw.JigsawPieceLibrary;
 import com.blib.engine.jigsaw.JigsawPieceSelection;
 import com.blib.engine.jigsaw.JigsawPlacementCursor;
+import com.blib.engine.jigsaw.placement.CollisionScanner;
+import com.blib.engine.jigsaw.placement.JigsawPlacementOptions;
+import com.blib.engine.jigsaw.placement.JigsawTool;
+import com.blib.engine.jigsaw.placement.JigsawWorldRaycast;
+import com.blib.engine.jigsaw.placement.PlacementContext;
+import com.blib.engine.jigsaw.placement.PlacementMode;
 import com.blib.engine.session.EngineMode;
 import com.blib.engine.session.EngineNavigation;
 import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.C2SPlaceJigsawPiecePayload;
+import com.blib.mod.common.network.packet.C2SUndoPlacementPayload;
 
 /**
  * The viewport panel — the rect where the downsampled world+HUD blit lands. This panel doesn't draw anything itself; it
@@ -110,21 +118,48 @@ public final class ViewportPanel implements Panel {
 
         if (button == 0) {
             // When a jigsaw piece is selected, LMB in the viewport means "place" — short-circuit selection and orbit
-            // so the user's click doesn't also drag the camera. Send a packet to the server with the same anchor the
-            // world preview is rendered at so what they see is what gets built.
+            // so the user's click doesn't also drag the camera. The placement (anchor + rotation + mirror) comes
+            // from the active resolver, not from raw cursor + selection state — for FREE mode the two are identical,
+            // but later modes (jigsaw-snap) override rotation to align with a target jigsaw, and we want the click
+            // to send what the user is actually seeing in the world preview.
             var selectedPieceId = JigsawPieceSelection.selectedId();
             if (selectedPieceId != null) {
-                var anchor = JigsawPlacementCursor.resolveAnchorBlock(session);
-                if (anchor != null) {
-                    BLib.MOD.networking()
-                        .sendToServer(
-                            new C2SPlaceJigsawPiecePayload(
-                                selectedPieceId,
-                                anchor,
-                                JigsawPieceSelection.rotation().ordinal(),
-                                JigsawPieceSelection.mirror().ordinal()
-                            )
-                        );
+                var template = JigsawPieceLibrary.get(selectedPieceId);
+                if (template != null) {
+                    var ctx = new PlacementContext(
+                        session,
+                        template,
+                        JigsawPieceSelection.rotation(),
+                        JigsawPieceSelection.mirror()
+                    );
+                    var placement = JigsawTool.activeResolver().resolve(ctx);
+                    if (placement != null) {
+                        // Re-run the collision scan at click time rather than reading the renderer's frame state.
+                        // The two should agree (both run against the same level state, same resolver result), but
+                        // re-scanning gives us "the count as of this exact click" which is the right thing to gate
+                        // BLOCK policy on. Frame state is a render-side cache; trusting it across the click event
+                        // boundary would be one more invalidation rule to maintain.
+                        var mc = net.minecraft.client.Minecraft.getInstance();
+                        if (mc.level != null && JigsawPlacementOptions.collisionPolicy() == JigsawPlacementOptions.CollisionPolicy.BLOCK) {
+                            var snapAnchor = JigsawTool.activeMode() == PlacementMode.JIGSAW_SNAP
+                                ? JigsawWorldRaycast.raycastJigsaw(session)
+                                : null;
+                            var count = CollisionScanner.scan(mc.level, placement, template, snapAnchor);
+                            if (count > 0) {
+                                return true;
+                            }
+                        }
+
+                        BLib.MOD.networking()
+                            .sendToServer(
+                                new C2SPlaceJigsawPiecePayload(
+                                    selectedPieceId,
+                                    placement.anchor(),
+                                    placement.rotation().ordinal(),
+                                    placement.mirror().ordinal()
+                                )
+                            );
+                    }
                 }
                 return true;
             }
@@ -196,11 +231,28 @@ public final class ViewportPanel implements Panel {
             var clickY = rmbDrag.startY;
             this.rmbDrag = null;
 
-            if (wasClick && rightClickHandler != null) {
-                var relX = (clickX - rectX) / (double) rectWidth;
-                var relY = (clickY - rectY) / (double) rectHeight;
-                EngineNavigation.performSelectionAt(session, relX, relY);
-                rightClickHandler.onRightClick(session.selectedEntity(), clickX, clickY);
+            if (wasClick) {
+                // RMB-without-drag while a piece is selected = "undo last placement". This shadows the entity
+                // context menu the rightClickHandler would otherwise open; that menu's only useful action
+                // (delete entity) doesn't apply when the user is mid-placement, and they need a fast way to
+                // unwind a misplaced piece without leaving the viewport. RMB-drag for camera pan is unchanged
+                // (handled in mouseDragged via dragCommitted).
+                if (JigsawPieceSelection.hasSelection()) {
+                    BLib.MOD.networking().sendToServer(C2SUndoPlacementPayload.INSTANCE);
+                } else if (rightClickHandler != null) {
+                    var relX = (clickX - rectX) / (double) rectWidth;
+                    var relY = (clickY - rectY) / (double) rectHeight;
+                    EngineNavigation.performSelectionAt(session, relX, relY);
+                    // Pull the selected entity (if any) out of the new SelectionManager — performSelectionAt
+                    // routes through it now, and the right-click handler still wants the LivingEntity for its
+                    // entity-specific context menu (delete, GOAP details, etc.).
+                    var selection = com.blib.engine.selection.SelectionManager.current().single();
+                    LivingEntity selectedEntity = null;
+                    if (selection instanceof com.blib.engine.selection.EntitySelectable es) {
+                        selectedEntity = es.entity();
+                    }
+                    rightClickHandler.onRightClick(selectedEntity, clickX, clickY);
+                }
             }
             return true;
         }
@@ -217,6 +269,18 @@ public final class ViewportPanel implements Panel {
         var session = EngineMode.get().session();
         if (session == null) {
             return false;
+        }
+
+        // While a placement piece is selected, scroll cycles rotation instead of zooming. This is the dominant
+        // pattern in authoring tools (Blender, Unreal placement mode, etc.) and keeps the user's hand on the mouse
+        // for the full place-rotate-place loop. Camera zoom is still available via the standard MC scroll outside
+        // the workspace; users can also deselect the piece (no clear-selection key yet — TODO Phase 2+) to get
+        // zoom back inside the workspace.
+        if (JigsawPieceSelection.hasSelection()) {
+            // Positive scrollY = scroll up = rotate clockwise (matches the convention from the world preview's
+            // initial card rendering, where scroll-up is "rotate right").
+            JigsawPieceSelection.cycleRotation(scrollY > 0 ? 1 : -1);
+            return true;
         }
 
         EngineNavigation.applyZoomScroll(session, scrollY);

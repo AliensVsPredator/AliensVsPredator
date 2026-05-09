@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import org.jetbrains.annotations.ApiStatus;
 import org.joml.Matrix4f;
 
-import com.blib.engine.session.EngineMode;
+import com.blib.engine.selection.SelectionManager;
 import com.blib.internal.client.shader.BLibShaders;
 
 /**
@@ -42,46 +42,43 @@ public final class EngineSelectionRenderer {
         double cameraY,
         double cameraZ
     ) {
-        var session = EngineMode.get().session();
-
-        if (session == null) {
-            return;
-        }
-
-        var entity = session.selectedEntity();
-
-        if (entity == null) {
+        var selection = SelectionManager.current();
+        if (selection.isEmpty()) {
             return;
         }
 
         var shader = BLibShaders.ENGINE_SELECTION.instance();
-
         // Shader can be null briefly during initial resource load or after F3+T reload — bail rather than NPE.
         if (shader == null) {
             return;
         }
 
-        var aabb = entity.getBoundingBox().inflate(AABB_INFLATE);
         var matrix = poseStack.last().pose();
 
-        var minX = (float) (aabb.minX - cameraX);
-        var minY = (float) (aabb.minY - cameraY);
-        var minZ = (float) (aabb.minZ - cameraZ);
-        var maxX = (float) (aabb.maxX - cameraX);
-        var maxY = (float) (aabb.maxY - cameraY);
-        var maxZ = (float) (aabb.maxZ - cameraZ);
-
         // GL state: alpha-blended, depth-test off (visible through walls), default color modulator. Restore the
-        // bits we touched at the end so subsequent debug renderers see vanilla defaults.
+        // bits we touched at the end so subsequent debug renderers see vanilla defaults. Setup runs once and is
+        // shared across every selectable's box draw.
         RenderSystem.setShader(BLibShaders.ENGINE_SELECTION.supplier());
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.disableDepthTest();
 
-        var buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        addBoxQuads(buffer, matrix, minX, minY, minZ, maxX, maxY, maxZ, COLOR_R, COLOR_G, COLOR_B, COLOR_A);
-        BufferUploader.drawWithShader(buffer.buildOrThrow());
+        // One draw call per selectable. Multi-select (deferred from phase-7 MVP) will exercise this loop with more
+        // than one item; today it's effectively a single iteration.
+        for (var item : selection.items()) {
+            var aabb = item.worldBounds().inflate(AABB_INFLATE);
+            var minX = (float) (aabb.minX - cameraX);
+            var minY = (float) (aabb.minY - cameraY);
+            var minZ = (float) (aabb.minZ - cameraZ);
+            var maxX = (float) (aabb.maxX - cameraX);
+            var maxY = (float) (aabb.maxY - cameraY);
+            var maxZ = (float) (aabb.maxZ - cameraZ);
+
+            var buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+            addBoxQuads(buffer, matrix, minX, minY, minZ, maxX, maxY, maxZ, COLOR_R, COLOR_G, COLOR_B, COLOR_A);
+            BufferUploader.drawWithShader(buffer.buildOrThrow());
+        }
 
         RenderSystem.enableDepthTest();
         RenderSystem.disableBlend();

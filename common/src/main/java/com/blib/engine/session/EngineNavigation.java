@@ -9,6 +9,9 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 
+import com.blib.engine.selection.EntitySelectable;
+import com.blib.engine.selection.SelectionManager;
+
 /**
  * Camera-control math for engine mode. Driven directly from workspace mouse events: the {@code ViewportPanel} calls the
  * static helpers below in response to mouse drag / scroll / click. {@link #tick()} only handles previous-tick
@@ -178,9 +181,9 @@ public final class EngineNavigation {
         );
 
         if (hit != null && hit.getEntity() instanceof LivingEntity living) {
-            session.setSelectedEntity(living);
+            SelectionManager.selectSingle(new EntitySelectable(living));
         } else {
-            session.setSelectedEntity(null);
+            SelectionManager.clear();
         }
     }
 
