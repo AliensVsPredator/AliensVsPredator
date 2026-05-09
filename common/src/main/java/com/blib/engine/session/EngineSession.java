@@ -4,6 +4,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 
+import com.blib.engine.jigsaw.JigsawPieceSelection;
+
 /**
  * Mutable per-activation state for {@link EngineMode}. Holds the freecam transform (current and previous-tick for
  * partial-tick interpolation), navigation-mode state, and accumulated mouse input.
@@ -105,6 +107,16 @@ public final class EngineSession {
 
     public void setMode(NavigationMode mode) {
         this.mode = mode;
+    }
+
+    /**
+     * Derived high-level tool state — {@link ToolMode#PLACE} while the user has a jigsaw piece on the cursor, otherwise
+     * {@link ToolMode#SELECT}. Read-only for now (no setter); recomputed on every call so it always matches the live
+     * selection. Status bar and cursor swap query this rather than poking at {@link JigsawPieceSelection} directly so
+     * the future explicit tool system can take over with no caller changes.
+     */
+    public ToolMode toolMode() {
+        return ToolMode.from(JigsawPieceSelection.hasSelection());
     }
 
     public Vec3 pivot() {

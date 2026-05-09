@@ -28,6 +28,12 @@ public final class EngineNavigation {
     /** Fraction of pivot-distance to step per scroll click (positive scroll = closer to pivot). */
     private static final double ZOOM_FRACTION_PER_CLICK = 0.15;
 
+    /**
+     * Fraction of pivot-distance to step per pixel of Ctrl+MMB drag. Drag-up = zoom-in (positive {@code rawDy} =
+     * cursor-down = zoom out). Tuned so a 100-pixel drag is roughly equivalent to ~3 scroll-wheel clicks.
+     */
+    private static final double DOLLY_FRACTION_PER_PIXEL = 0.005;
+
     /** Hard floor on camera-pivot distance, so wheel-zoom can't pass through the pivot. */
     private static final double MIN_PIVOT_DISTANCE = 0.5;
 
@@ -118,6 +124,34 @@ public final class EngineNavigation {
 
         session.translate(deltaX, deltaY, deltaZ);
         session.setPivot(session.pivot().add(deltaX, deltaY, deltaZ));
+    }
+
+    /**
+     * Apply a per-pixel multiplicative dolly toward / away from the pivot, driven by Ctrl+MMB drag. Drag-up
+     * ({@code rawDy < 0}) zooms in; drag-down zooms out. Mirrors {@link #applyZoomScroll} but scales by mouse-pixel
+     * distance instead of scroll clicks.
+     */
+    public static void applyDollyDelta(EngineSession session, double rawDy) {
+        if (rawDy == 0) {
+            return;
+        }
+
+        var pivot = session.pivot();
+        var offset = session.cameraPosition().subtract(pivot);
+        var distance = offset.length();
+        if (distance < 1.0E-4) {
+            return;
+        }
+
+        var factor = Math.pow(1.0 - DOLLY_FRACTION_PER_PIXEL, -rawDy);
+        var newDistance = Math.max(MIN_PIVOT_DISTANCE, distance * factor);
+        var dir = offset.scale(1.0 / distance);
+
+        session.setPosition(
+            pivot.x + dir.x * newDistance,
+            pivot.y + dir.y * newDistance,
+            pivot.z + dir.z * newDistance
+        );
     }
 
     /**

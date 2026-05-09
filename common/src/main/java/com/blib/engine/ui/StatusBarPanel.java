@@ -10,6 +10,7 @@ import com.blib.engine.jigsaw.JigsawPieceSelection;
 import com.blib.engine.jigsaw.placement.JigsawPlacementFrameState;
 import com.blib.engine.jigsaw.placement.JigsawTool;
 import com.blib.engine.session.EngineMode;
+import com.blib.engine.session.ToolMode;
 
 /**
  * Bottom-of-screen status bar — full-bleed (no chrome). Shows engine + gizmo state on the left and the workspace name
@@ -66,6 +67,17 @@ public final class StatusBarPanel implements Panel {
 
         var gizmoX = x + EDGE_PADDING + font.width(engineLabel) + 12;
         graphics.drawString(font, Component.literal(gizmoLabel), gizmoX, textY, VALUE_COLOR, false);
+
+        // Tool-mode chip: SELECT (default arrow / context-menu / entity-pick) or PLACE (jigsaw piece on cursor).
+        // Currently derived from JigsawPieceSelection — a future explicit tool system will swap this for a stored
+        // mode on EngineSession with no caller change. PLACE pops in accent color so the user notices when their
+        // click semantics have shifted from "select" to "place".
+        var session = EngineMode.get().session();
+        var toolMode = session != null ? session.toolMode() : ToolMode.SELECT;
+        var modeLabel = "MODE: " + toolMode.name();
+        var modeX = gizmoX + font.width(gizmoLabel) + 12;
+        var modeColor = toolMode == ToolMode.PLACE ? ACCENT_COLOR : VALUE_COLOR;
+        graphics.drawString(font, Component.literal(modeLabel), modeX, textY, modeColor, false);
 
         // Placement state on the right side: mode + piece id + rotation + mirror + collision count, but only while
         // a piece is selected. Gives the user feedback for the R / M / T / scroll hotkeys (otherwise rotating or

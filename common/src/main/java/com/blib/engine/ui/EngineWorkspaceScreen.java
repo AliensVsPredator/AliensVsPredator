@@ -22,6 +22,7 @@ import com.blib.engine.session.NavigationMode;
 import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.C2SGOAPTrackPayload;
 import com.blib.mod.common.network.packet.C2SRemoveEntityPayload;
+import com.blib.mod.common.network.packet.C2SUndoPlacementPayload;
 
 /**
  * Top-level editor screen for the BLib Engine. The viewport is divided into a tree of docked regions by a
@@ -339,6 +340,23 @@ public final class EngineWorkspaceScreen extends Screen {
         renderHoverTooltip(graphics, logicalMouseX, logicalMouseY);
 
         pose.popPose();
+
+        // OS cursor swap: crosshair while a piece is held and the cursor is over the viewport, default elsewhere.
+        // Done after pose.popPose() because we're working in logical coords (which we already computed inside the
+        // scaled section) and don't need the matrix anymore — GLFW takes raw window-space cursor info from the OS.
+        if (viewportRect != null) {
+            EngineCursor.update(
+                logicalMouseX,
+                logicalMouseY,
+                viewportRect.x(),
+                viewportRect.y(),
+                viewportRect.width(),
+                viewportRect.height(),
+                JigsawPieceSelection.hasSelection()
+            );
+        } else {
+            EngineCursor.reset();
+        }
     }
 
     /**
@@ -528,6 +546,7 @@ public final class EngineWorkspaceScreen extends Screen {
         JigsawPlacementFrameState.clear();
         JigsawPlacementOptions.reset();
         SelectionManager.clear();
+        EngineCursor.reset();
     }
 
     @Override
@@ -662,6 +681,29 @@ public final class EngineWorkspaceScreen extends Screen {
             return true;
         }
 
+        // Esc cascades through transient state before closing the workspace: a held piece deselects first, then an
+        // entity selection clears, and only with no transient state does Esc fall through to super.keyPressed (which
+        // closes the screen). This gives users a single "get me out" key that doesn't immediately exit when they're
+        // mid-edit.
+        if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE) {
+            if (JigsawPieceSelection.hasSelection()) {
+                JigsawPieceSelection.clear();
+                return true;
+            }
+            if (!SelectionManager.current().isEmpty()) {
+                SelectionManager.clear();
+                return true;
+            }
+        }
+
+        // Ctrl+Z = universal undo. Works regardless of whether a piece is held — the placement history is server-
+        // side and decoupled from the held piece. Ctrl+Y / redo isn't wired yet (PlacementHistory is a one-way stack;
+        // see plan for follow-up scope).
+        if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_Z && Screen.hasControlDown() && !Screen.hasShiftDown()) {
+            BLib.MOD.networking().sendToServer(C2SUndoPlacementPayload.INSTANCE);
+            return true;
+        }
+
         // Placement-mode hotkeys: R cycles rotation forward (clockwise), M cycles mirror, T toggles between FREE
         // and JIGSAW_SNAP placement modes. Gated by an active piece selection so these keys don't steal input from
         // other potential editor tools later. Suppressed while a text input is focused (handled above), so typing
@@ -767,6 +809,14 @@ public final class EngineWorkspaceScreen extends Screen {
 
         // 5) Otherwise, delegate to the panel under the cursor for content-area handling.
         var leaf = panelAt(root, 0, 0, logicalWidth(), logicalHeight(), logicalX, logicalY);
+
+        // Allow non-LMB capture too: the viewport claims MMB so its camera drag stays routed even when the cursor
+        // leaves the viewport rect mid-stroke. LMB capture for scrollbars / edge UI is handled in step 3 above.
+        if (leaf != null && button != 0 && leaf.mouseClickedCapture(logicalX, logicalY, button)) {
+            this.capturedPanel = leaf;
+            return true;
+        }
+
         if (leaf != null && leaf.mouseClicked(logicalX, logicalY, button)) {
             return true;
         }

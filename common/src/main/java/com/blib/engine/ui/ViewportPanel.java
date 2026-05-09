@@ -2,6 +2,7 @@ package com.blib.engine.ui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -24,27 +25,25 @@ import com.blib.mod.common.network.packet.C2SUndoPlacementPayload;
 
 /**
  * The viewport panel — the rect where the downsampled world+HUD blit lands. This panel doesn't draw anything itself; it
- * just records its inner rect during {@link #render} and routes mouse events to engine-mode camera control:
+ * just records its inner rect during {@link #render} and routes mouse events to the engine session. Tool actions live
+ * on LMB / RMB; camera control lives on MMB so users can frame the shot regardless of what tool they're holding:
  * <ul>
- * <li>LMB click → entity selection (ray-cast through the cursor's relative position into the world).</li>
- * <li>LMB drag → orbit camera around the pivot computed at press time.</li>
- * <li>RMB click (no drag) → fire {@link RightClickHandler} with the ray-cast entity (if any) at cursor position.</li>
- * <li>RMB drag → screen-plane pan.</li>
- * <li>Scroll → multiplicative zoom toward / away from the pivot.</li>
+ * <li>LMB click → place piece (if a jigsaw piece is held) else select entity via ray-cast.</li>
+ * <li>RMB click → undo last placement (if a piece is held) else fire {@link RightClickHandler} (entity context menu).
+ * </li>
+ * <li>MMB drag → orbit around the pivot computed at press time.</li>
+ * <li>Shift+MMB drag → screen-plane pan.</li>
+ * <li>Ctrl+MMB drag → dolly zoom toward / away from the pivot.</li>
+ * <li>Scroll → rotate piece (if held) else multiplicative zoom toward / away from the pivot.</li>
  * </ul>
- * Mouse coords arrive in workspace logical pixels; deltas are converted to raw-pixel equivalent via the GUI scale so
- * the orbit / pan / zoom sensitivities feel the same regardless of MC's GUI scale setting.
+ * Modifier state for the MMB gesture is latched at press time, not live-sampled, so a Shift release mid-drag won't
+ * flip orbit→pan unexpectedly. Mouse coords arrive in workspace logical pixels; deltas are converted to raw-pixel
+ * equivalent via the GUI scale so orbit / pan / dolly sensitivities feel the same regardless of MC's GUI scale.
  */
 @ApiStatus.Internal
 public final class ViewportPanel implements Panel {
 
-    /**
-     * Squared cursor-motion threshold in workspace logical pixels. RMB drags shorter than this — measured at release —
-     * are treated as right-clicks (context menu); longer ones are pans.
-     */
-    private static final double RMB_CLICK_VS_DRAG_THRESHOLD_SQ = 16.0;
-
-    /** Notified when the user right-clicks (without dragging) inside the viewport. */
+    /** Notified when the user right-clicks (without a held piece) inside the viewport. */
     public interface RightClickHandler {
 
         void onRightClick(@Nullable LivingEntity entity, double cursorX, double cursorY);
@@ -62,7 +61,7 @@ public final class ViewportPanel implements Panel {
 
     private int rectHeight;
 
-    private @Nullable RmbDrag rmbDrag;
+    private @Nullable MmbDrag mmbDrag;
 
     public ViewportPanel(String title) {
         this(title, null);
@@ -102,6 +101,36 @@ public final class ViewportPanel implements Panel {
         JigsawPlacementCursor.updateViewportRect(rawX, rawY, rawW, rawH);
     }
 
+    /**
+     * Capture MMB presses ahead of normal click dispatch so the workspace routes the entire MMB drag — including
+     * frames where the cursor leaves the viewport rect — back to this panel. Without capture, fast pans that move
+     * the cursor off the rect would have their drags routed to whatever panel the cursor happens to land on, which
+     * either dies on the floor or yanks UI scrollbars unexpectedly. LMB / RMB stay on the standard click path.
+     */
+    @Override
+    public boolean mouseClickedCapture(double mouseX, double mouseY, int button) {
+        if (button != 2 || !inRect(mouseX, mouseY)) {
+            return false;
+        }
+
+        var session = EngineMode.get().session();
+        if (session == null) {
+            return false;
+        }
+
+        var relX = (mouseX - rectX) / (double) rectWidth;
+        var relY = (mouseY - rectY) / (double) rectHeight;
+
+        // Latch the press-time modifier state. Live-sampling during drag would let a stray Shift-release flip an
+        // active orbit into a pan mid-stroke, which is jarring; latching keeps the gesture mode stable end-to-end.
+        var latched = new MmbDrag(Screen.hasShiftDown(), Screen.hasControlDown());
+        this.mmbDrag = latched;
+        if (!latched.shift() && !latched.ctrl()) {
+            EngineNavigation.beginOrbitDrag(session, relX, relY);
+        }
+        return true;
+    }
+
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (!inRect(mouseX, mouseY)) {
@@ -117,11 +146,10 @@ public final class ViewportPanel implements Panel {
         var relY = (mouseY - rectY) / (double) rectHeight;
 
         if (button == 0) {
-            // When a jigsaw piece is selected, LMB in the viewport means "place" — short-circuit selection and orbit
-            // so the user's click doesn't also drag the camera. The placement (anchor + rotation + mirror) comes
-            // from the active resolver, not from raw cursor + selection state — for FREE mode the two are identical,
-            // but later modes (jigsaw-snap) override rotation to align with a target jigsaw, and we want the click
-            // to send what the user is actually seeing in the world preview.
+            // When a jigsaw piece is selected, LMB in the viewport means "place". The placement (anchor + rotation +
+            // mirror) comes from the active resolver, not from raw cursor + selection state — for FREE mode the two
+            // are identical, but later modes (jigsaw-snap) override rotation to align with a target jigsaw, and we
+            // want the click to send what the user is actually seeing in the world preview.
             var selectedPieceId = JigsawPieceSelection.selectedId();
             if (selectedPieceId != null) {
                 var template = JigsawPieceLibrary.get(selectedPieceId);
@@ -165,14 +193,27 @@ public final class ViewportPanel implements Panel {
             }
 
             EngineNavigation.performSelectionAt(session, relX, relY);
-            EngineNavigation.beginOrbitDrag(session, relX, relY);
             return true;
         }
 
         if (button == 1) {
-            // Arm a potential right-click. Resolves to either a context-menu trigger (release without drag) or a
-            // pan (release after dragging past threshold) in mouseDragged / mouseReleased.
-            this.rmbDrag = new RmbDrag(mouseX, mouseY, false);
+            // RMB while a piece is selected = "undo last placement". Faster than clearing the piece, finding the
+            // undo button, etc. — the user's right-hand stays on the mouse mid-iteration. Without a piece held, RMB
+            // opens the entity context menu (route the ray-pick first so the menu sees the entity under the cursor).
+            if (JigsawPieceSelection.hasSelection()) {
+                BLib.MOD.networking().sendToServer(C2SUndoPlacementPayload.INSTANCE);
+                return true;
+            }
+
+            if (rightClickHandler != null) {
+                EngineNavigation.performSelectionAt(session, relX, relY);
+                var selection = com.blib.engine.selection.SelectionManager.current().single();
+                LivingEntity selectedEntity = null;
+                if (selection instanceof com.blib.engine.selection.EntitySelectable es) {
+                    selectedEntity = es.entity();
+                }
+                rightClickHandler.onRightClick(selectedEntity, mouseX, mouseY);
+            }
             return true;
         }
 
@@ -186,31 +227,24 @@ public final class ViewportPanel implements Panel {
             return false;
         }
 
-        // Convert workspace-logical deltas to raw-pixel deltas so orbit / pan sensitivity is independent of GUI scale.
+        if (button != 2 || mmbDrag == null) {
+            return false;
+        }
+
+        // Convert workspace-logical deltas to raw-pixel deltas so orbit / pan / dolly sensitivity is independent of
+        // GUI scale.
         var guiScale = Minecraft.getInstance().getWindow().getGuiScale();
         var rawDx = deltaX * guiScale;
         var rawDy = deltaY * guiScale;
 
-        if (button == 0) {
+        if (mmbDrag.ctrl()) {
+            EngineNavigation.applyDollyDelta(session, rawDy);
+        } else if (mmbDrag.shift()) {
+            EngineNavigation.applyPanDelta(session, rawDx, rawDy);
+        } else {
             EngineNavigation.applyOrbitDelta(session, rawDx, rawDy);
-            return true;
         }
-
-        if (button == 1 && rmbDrag != null) {
-            if (!rmbDrag.dragCommitted) {
-                var dx = mouseX - rmbDrag.startX;
-                var dy = mouseY - rmbDrag.startY;
-                if (dx * dx + dy * dy > RMB_CLICK_VS_DRAG_THRESHOLD_SQ) {
-                    rmbDrag = new RmbDrag(rmbDrag.startX, rmbDrag.startY, true);
-                }
-            }
-            if (rmbDrag.dragCommitted) {
-                EngineNavigation.applyPanDelta(session, rawDx, rawDy);
-            }
-            return true;
-        }
-
-        return false;
+        return true;
     }
 
     @Override
@@ -220,40 +254,9 @@ public final class ViewportPanel implements Panel {
             return false;
         }
 
-        if (button == 0) {
+        if (button == 2) {
             EngineNavigation.endOrbitDrag(session);
-            return true;
-        }
-
-        if (button == 1 && rmbDrag != null) {
-            var wasClick = !rmbDrag.dragCommitted;
-            var clickX = rmbDrag.startX;
-            var clickY = rmbDrag.startY;
-            this.rmbDrag = null;
-
-            if (wasClick) {
-                // RMB-without-drag while a piece is selected = "undo last placement". This shadows the entity
-                // context menu the rightClickHandler would otherwise open; that menu's only useful action
-                // (delete entity) doesn't apply when the user is mid-placement, and they need a fast way to
-                // unwind a misplaced piece without leaving the viewport. RMB-drag for camera pan is unchanged
-                // (handled in mouseDragged via dragCommitted).
-                if (JigsawPieceSelection.hasSelection()) {
-                    BLib.MOD.networking().sendToServer(C2SUndoPlacementPayload.INSTANCE);
-                } else if (rightClickHandler != null) {
-                    var relX = (clickX - rectX) / (double) rectWidth;
-                    var relY = (clickY - rectY) / (double) rectHeight;
-                    EngineNavigation.performSelectionAt(session, relX, relY);
-                    // Pull the selected entity (if any) out of the new SelectionManager — performSelectionAt
-                    // routes through it now, and the right-click handler still wants the LivingEntity for its
-                    // entity-specific context menu (delete, GOAP details, etc.).
-                    var selection = com.blib.engine.selection.SelectionManager.current().single();
-                    LivingEntity selectedEntity = null;
-                    if (selection instanceof com.blib.engine.selection.EntitySelectable es) {
-                        selectedEntity = es.entity();
-                    }
-                    rightClickHandler.onRightClick(selectedEntity, clickX, clickY);
-                }
-            }
+            this.mmbDrag = null;
             return true;
         }
 
@@ -273,9 +276,8 @@ public final class ViewportPanel implements Panel {
 
         // While a placement piece is selected, scroll cycles rotation instead of zooming. This is the dominant
         // pattern in authoring tools (Blender, Unreal placement mode, etc.) and keeps the user's hand on the mouse
-        // for the full place-rotate-place loop. Camera zoom is still available via the standard MC scroll outside
-        // the workspace; users can also deselect the piece (no clear-selection key yet — TODO Phase 2+) to get
-        // zoom back inside the workspace.
+        // for the full place-rotate-place loop. Camera zoom is still available via Ctrl+MMB drag, so scroll-rotate
+        // doesn't trap the user out of zooming.
         if (JigsawPieceSelection.hasSelection()) {
             // Positive scrollY = scroll up = rotate clockwise (matches the convention from the world preview's
             // initial card rendering, where scroll-up is "rotate right").
@@ -292,14 +294,13 @@ public final class ViewportPanel implements Panel {
     }
 
     /**
-     * Tracks an in-flight right-mouse-button gesture started by {@link #mouseClicked(double, double, int)}. A press
-     * arms the gesture; subsequent {@link #mouseDragged} promotes it to a pan once the cursor passes the click-vs-drag
-     * threshold; {@link #mouseReleased} either fires the right-click handler (if not committed to drag) or just clears
-     * state.
+     * Latched modifier state for an in-flight MMB camera gesture. Captured once at press time by
+     * {@link #mouseClickedCapture} and consulted on every {@link #mouseDragged} call until {@link #mouseReleased}
+     * clears it. Latching (rather than live-sampling) means a stray Shift release mid-drag can't flip the gesture's
+     * mode unexpectedly.
      */
-    private record RmbDrag(
-        double startX,
-        double startY,
-        boolean dragCommitted
+    private record MmbDrag(
+        boolean shift,
+        boolean ctrl
     ) {}
 }
