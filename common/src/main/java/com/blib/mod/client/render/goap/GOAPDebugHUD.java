@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.blib.engine.ui.EngineWorkspaceScreen;
 import com.blib.mod.client.render.goap.panel.GOAPDebugAgentPanel;
 import com.blib.mod.client.render.goap.panel.GOAPDebugWorldStatePanel;
 import com.blib.mod.common.network.packet.S2CGOAPDebugPayload;
@@ -34,8 +35,29 @@ public final class GOAPDebugHUD {
         }
     }
 
+    /**
+     * Latest payload received from the server, or {@code null} if no agent has been tracked yet (or the user ran
+     * {@code /goap untrack}). Read by the engine workspace's GOAP details panel so it doesn't need its own packet
+     * subscription.
+     */
+    public @Nullable S2CGOAPDebugPayload latestPayload() {
+        return latestPayload;
+    }
+
+    public @Nullable GOAPDebugAgentDisplayState displayStateFor(int entityId) {
+        return agentStates.get(entityId);
+    }
+
     public void render(GuiGraphics graphics, float partialTick) {
         if (latestPayload == null || latestPayload.agents().isEmpty()) {
+            return;
+        }
+
+        // Suppress the HUD overlay while the engine workspace is open — the GOAP Details panel inside the workspace
+        // is the primary surface for this data, and double-rendering it (once as fixed-position HUD, once inside the
+        // panel) caused visual confusion (the HUD didn't follow the panel when the user moved it, and the rendering
+        // overlapped at the default tab position).
+        if (Minecraft.getInstance().screen instanceof EngineWorkspaceScreen) {
             return;
         }
 

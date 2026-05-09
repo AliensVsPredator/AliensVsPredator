@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.blib.internal.client.engine.EngineSelectionRenderer;
+import com.blib.engine.hud.EngineSelectionRenderer;
 import com.blib.mod.client.render.debug.PathfindingSearchDebugRenderer;
 import com.blib.mod.common.property.BLibModProperties;
 import com.blib.mod.common.property.BLibModPropertyAccess;

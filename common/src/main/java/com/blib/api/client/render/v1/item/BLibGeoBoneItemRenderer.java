@@ -16,6 +16,11 @@ import com.blib.api.client.render.v1.BLibTransform;
 import com.blib.api.client.render.v1.item.model.BLibGeoBoneItemModelRenderer;
 import com.blib.api.client.render.v1.item.pipeline.AzItemRendererPipeline;
 import com.blib.api.client.render.v1.item.pipeline.AzItemRendererPipelineContext;
+import com.blib.engine.gizmo.BLibGizmoMode;
+import com.blib.engine.gizmo.BLibGizmoRenderer;
+import com.blib.engine.gizmo.BLibGizmoState;
+import com.blib.engine.gizmo.BLibItemTransformOverrides;
+import com.blib.engine.gizmo.BLibTunableItemTransforms;
 
 /**
  * Renders a single named bone subtree of an existing geo model as an item — designed for cases where you want to reuse

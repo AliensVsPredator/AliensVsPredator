@@ -5,6 +5,8 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import org.jetbrains.annotations.ApiStatus;
 
+import com.blib.engine.neoforge.BLibNeoForgeEngineMode;
+import com.blib.engine.neoforge.BLibNeoForgeGizmoPreview;
 import com.blib.internal.client.BLibClient;
 import com.blib.mod.BLib;
 import com.blib.neoforge.internal.client.shader.BLibNeoForgeShaders;

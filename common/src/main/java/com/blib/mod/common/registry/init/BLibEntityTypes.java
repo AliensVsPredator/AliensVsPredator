@@ -9,6 +9,7 @@ import com.blib.api.common.entity.v1.SilencedEntityTypeBuilder;
 import com.blib.api.common.registry.v1.BLibHolder;
 import com.blib.api.common.registry.v1.BLibRegistry;
 import com.blib.mod.BLib;
+import com.blib.mod.common.entity.TestGOAPMob;
 
 public class BLibEntityTypes {
 
@@ -22,7 +23,17 @@ public class BLibEntityTypes {
             .blib$buildWithoutDataFixerCheck()
     );
 
+    public static final BLibHolder<EntityType<TestGOAPMob>> TEST_GOAP_MOB = REGISTRY.createHolder(
+        "test_goap_mob",
+        () -> ((SilencedEntityTypeBuilder) EntityType.Builder.<TestGOAPMob>of(TestGOAPMob::new, MobCategory.CREATURE)
+            .sized(0.9F, 1.4F)
+            .clientTrackingRange(10))
+            .blib$buildWithoutDataFixerCheck()
+    );
+
     public static void initialize() {
         REGISTRY.registerAll();
+
+        BLib.MOD.registries().createEntityAttributeRegistry().register(TEST_GOAP_MOB, TestGOAPMob::createAttributes);
     }
 }

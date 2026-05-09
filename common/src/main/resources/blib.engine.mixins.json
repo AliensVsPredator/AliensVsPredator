@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.blib.engine.mixin",
+  "refmap": "${mod_id}.refmap.json",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [],
+  "client": [
+    "MixinCamera_Engine",
+    "MixinItemInHandRenderer_Engine",
+    "MixinKeyboardInput_Engine",
+    "MixinMinecraft_Engine",
+    "MixinMouseHandler_Gizmo"
+  ],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
