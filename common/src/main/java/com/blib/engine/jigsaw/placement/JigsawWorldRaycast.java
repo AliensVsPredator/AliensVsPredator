@@ -1,9 +1,6 @@
 package com.blib.engine.jigsaw.placement;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.JigsawBlock;
-import net.minecraft.world.level.block.entity.JigsawBlockEntity;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,7 +11,8 @@ import com.blib.engine.session.EngineSession;
  * Helper that finds the jigsaw block under the cursor, if any, and snapshots it as a {@link JigsawBlockTarget}. Reuses
  * {@link JigsawPlacementCursor#clipFromCursor} so the raycast geometry is exactly the same one
  * {@code FreePlacementResolver} uses — no risk of "the FREE-mode preview hits block X but the SNAP-mode raycast hits
- * block Y" inconsistencies.
+ * block Y" inconsistencies. The actual block→target read is shared with the selection inspector via
+ * {@link JigsawBlockTarget#snapshot}.
  */
 @ApiStatus.Internal
 public final class JigsawWorldRaycast {
@@ -37,26 +35,6 @@ public final class JigsawWorldRaycast {
             return null;
         }
 
-        var pos = hit.getBlockPos();
-        var state = mc.level.getBlockState(pos);
-        if (!state.is(Blocks.JIGSAW)) {
-            return null;
-        }
-
-        // The block entity might be missing (chunk unload race, server desync). Without it we don't have the
-        // pool/target/name fields — bail rather than guessing.
-        if (!(mc.level.getBlockEntity(pos) instanceof JigsawBlockEntity jigsaw)) {
-            return null;
-        }
-
-        return new JigsawBlockTarget(
-            pos.immutable(),
-            JigsawBlock.getFrontFacing(state),
-            JigsawBlock.getTopFacing(state),
-            jigsaw.getName(),
-            jigsaw.getTarget(),
-            jigsaw.getPool(),
-            jigsaw.getJoint()
-        );
+        return JigsawBlockTarget.snapshot(mc.level, hit.getBlockPos());
     }
 }

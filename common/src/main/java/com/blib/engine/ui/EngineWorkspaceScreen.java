@@ -328,6 +328,11 @@ public final class EngineWorkspaceScreen extends Screen {
             panelMouseX = OFFSCREEN_MOUSE;
             panelMouseY = OFFSCREEN_MOUSE;
         }
+        var openPopup = SearchableSelect.getOpenPopup();
+        if (openPopup != null && openPopup.isInside(logicalMouseX, logicalMouseY)) {
+            panelMouseX = OFFSCREEN_MOUSE;
+            panelMouseY = OFFSCREEN_MOUSE;
+        }
 
         renderNode(graphics, root, 0, 0, logicalWidth, logicalHeight, panelMouseX, panelMouseY, partialTick);
         renderHoveredDivider(graphics, logicalMouseX, logicalMouseY);
@@ -335,6 +340,9 @@ public final class EngineWorkspaceScreen extends Screen {
 
         if (openMenu != null) {
             openMenu.render(graphics, logicalMouseX, logicalMouseY);
+        }
+        if (openPopup != null) {
+            openPopup.render(graphics, logicalMouseX, logicalMouseY, logicalWidth, logicalHeight);
         }
 
         renderHoverTooltip(graphics, logicalMouseX, logicalMouseY);
@@ -547,12 +555,19 @@ public final class EngineWorkspaceScreen extends Screen {
         JigsawPlacementOptions.reset();
         SelectionManager.clear();
         EngineCursor.reset();
+        SearchableSelect.closeOpenPopup();
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         var logicalX = mouseX / SCALE;
         var logicalY = mouseY / SCALE;
+        // SearchableSelect popup gets first claim on scroll wheel — its filtered list scrolls. Cursor outside the
+        // popup falls through, mirroring the menu pattern.
+        var openPopup = SearchableSelect.getOpenPopup();
+        if (openPopup != null && openPopup.mouseScrolled(logicalX, logicalY, scrollY)) {
+            return true;
+        }
         // Scroll-wheel events that land on an open menu shouldn't tunnel through to the scroll containers of panels
         // below — consume them.
         if (openMenu != null && openMenu.isInside(logicalX, logicalY)) {
@@ -676,6 +691,14 @@ public final class EngineWorkspaceScreen extends Screen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        // Esc closes an open SearchableSelect popup BEFORE TextInput dispatch — otherwise the popup's focused
+        // search input would consume Esc as "defocus" and leave the popup visible-but-unfocused, which is confusing.
+        if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE && SearchableSelect.getOpenPopup() != null) {
+            SearchableSelect.closeOpenPopup();
+            TextInput.clearFocus();
+            return true;
+        }
+
         var focused = TextInput.getFocused();
         if (focused != null && focused.keyPressed(keyCode, scanCode, modifiers)) {
             return true;
@@ -735,6 +758,18 @@ public final class EngineWorkspaceScreen extends Screen {
         // mouseClicked handlers if the click hit the input rect, otherwise focus stays cleared (click-outside
         // defocus).
         TextInput.clearFocus();
+
+        // 0a) An open SearchableSelect popup takes priority over everything else (search input, scrollbar, list
+        // rows). Click outside the popup closes it and falls through so a click on a menu chip / another widget
+        // still gets a chance to run in the same gesture.
+        var openPopup = SearchableSelect.getOpenPopup();
+        if (openPopup != null) {
+            if (openPopup.isInside(logicalX, logicalY)) {
+                openPopup.mouseClicked(logicalX, logicalY, button);
+                return true;
+            }
+            SearchableSelect.closeOpenPopup();
+        }
 
         // 0) An open dropdown takes priority: clicking an item fires it; clicking outside just closes the menu.
         if (openMenu != null) {
@@ -828,6 +863,12 @@ public final class EngineWorkspaceScreen extends Screen {
         var logicalX = mouseX / SCALE;
         var logicalY = mouseY / SCALE;
 
+        // SearchableSelect popup gets first crack at releases (so its scrollbar drag finishes cleanly).
+        var openPopup = SearchableSelect.getOpenPopup();
+        if (openPopup != null && openPopup.mouseReleased(logicalX, logicalY, button)) {
+            return true;
+        }
+
         // End any text-input drag-select on LMB release. The input keeps its caret + selection; only the static
         // drag pointer clears so future drags don't keep extending its selection.
         if (button == 0 && TextInput.getDragSelecting() != null) {
@@ -878,6 +919,12 @@ public final class EngineWorkspaceScreen extends Screen {
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         var logicalX = mouseX / SCALE;
         var logicalY = mouseY / SCALE;
+
+        // SearchableSelect popup scrollbar drag.
+        var openPopup = SearchableSelect.getOpenPopup();
+        if (openPopup != null && openPopup.mouseDragged(logicalX, logicalY, button, deltaX, deltaY)) {
+            return true;
+        }
 
         // Text-input drag-select: the focused input owns LMB drag while in progress, regardless of where the
         // cursor is now. Routed via the static dragSelecting pointer rather than per-panel forwarding so we don't

@@ -7,6 +7,7 @@ import com.blib.mod.common.network.packet.C2SGOAPTrackPayload;
 import com.blib.mod.common.network.packet.C2SPlaceJigsawPiecePayload;
 import com.blib.mod.common.network.packet.C2SRemoveEntityPayload;
 import com.blib.mod.common.network.packet.C2SUndoPlacementPayload;
+import com.blib.mod.common.network.packet.C2SUpdateJigsawBlockPayload;
 import com.blib.mod.common.network.packet.S2CChunkClaimsSyncPayload;
 import com.blib.mod.common.network.packet.S2CEntityDataSyncPayload;
 import com.blib.mod.common.network.packet.S2CFactionMetadataSyncPayload;
@@ -53,6 +54,14 @@ public class BLibServerPacketHandlers {
                 C2SUndoPlacementPayload.TYPE,
                 C2SUndoPlacementPayload.CODEC,
                 BLibServerListener::handleUndoPlacement
+            )
+        );
+
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromClient<>(
+                C2SUpdateJigsawBlockPayload.TYPE,
+                C2SUpdateJigsawBlockPayload.CODEC,
+                BLibServerListener::handleUpdateJigsawBlock
             )
         );
     }

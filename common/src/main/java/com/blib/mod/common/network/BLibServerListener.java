@@ -1,5 +1,7 @@
 package com.blib.mod.common.network;
 
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -7,6 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.entity.JigsawBlockEntity;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -19,6 +22,7 @@ import com.blib.mod.common.network.packet.C2SGOAPTrackPayload;
 import com.blib.mod.common.network.packet.C2SPlaceJigsawPiecePayload;
 import com.blib.mod.common.network.packet.C2SRemoveEntityPayload;
 import com.blib.mod.common.network.packet.C2SUndoPlacementPayload;
+import com.blib.mod.common.network.packet.C2SUpdateJigsawBlockPayload;
 
 /**
  * Server-side handlers for client → server packets. Mirror of {@link BLibClientListener} for the C2S direction — each
@@ -119,6 +123,47 @@ public final class BLibServerListener {
             return;
         }
         PlacementHistory.undo(serverPlayer.serverLevel());
+    }
+
+    /**
+     * Apply the editable NBT fields from the engine workspace's jigsaw-block inspector to the live
+     * {@link JigsawBlockEntity} at {@code payload.pos}. Op-gated like the other block-mutating handlers — same
+     * threshold as {@code /data merge block}. Joint ordinal is bounds-checked so a malformed packet can't crash the
+     * server with an {@link ArrayIndexOutOfBoundsException}.
+     * <p>
+     * After updating the block-entity fields we mark it changed (chunk save) and re-broadcast the block state to
+     * clients via {@link net.minecraft.world.level.Level#sendBlockUpdated} so any nearby observer sees the new NBT
+     * on their next BE sync — without this, the inspector that just sent the packet would see stale state until the
+     * chunk happened to re-sync for some other reason.
+     */
+    public static void handleUpdateJigsawBlock(C2SUpdateJigsawBlockPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        if (!serverPlayer.hasPermissions(2)) {
+            return;
+        }
+
+        var level = serverPlayer.serverLevel();
+        if (!(level.getBlockEntity(payload.pos()) instanceof JigsawBlockEntity jigsaw)) {
+            return;
+        }
+
+        var jointValues = JigsawBlockEntity.JointType.values();
+        var jointOrdinal = payload.jointOrdinal();
+        if (jointOrdinal < 0 || jointOrdinal >= jointValues.length) {
+            return;
+        }
+
+        jigsaw.setName(payload.name());
+        jigsaw.setTarget(payload.target());
+        jigsaw.setPool(ResourceKey.create(Registries.TEMPLATE_POOL, payload.pool()));
+        jigsaw.setJoint(jointValues[jointOrdinal]);
+        jigsaw.setFinalState(payload.finalState());
+
+        jigsaw.setChanged();
+        var state = level.getBlockState(payload.pos());
+        level.sendBlockUpdated(payload.pos(), state, state, Block.UPDATE_CLIENTS);
     }
 
     private static Rotation ordinalToRotation(int ordinal) {

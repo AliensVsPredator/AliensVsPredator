@@ -9,7 +9,9 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 
+import com.blib.engine.jigsaw.placement.JigsawWorldRaycast;
 import com.blib.engine.selection.EntitySelectable;
+import com.blib.engine.selection.JigsawBlockSelectable;
 import com.blib.engine.selection.SelectionManager;
 
 /**
@@ -182,10 +184,12 @@ public final class EngineNavigation {
     }
 
     /**
-     * Ray-pick a {@link LivingEntity} along the cursor-through-camera ray, where the cursor's position is given as
-     * {@code (relX, relY)} in {@code [0, 1]} relative to the rendered viewport (full-screen render — the viewport panel
-     * just downsamples this, so screen-relative and panel-relative cursor positions correspond 1:1 to the same world
-     * ray). On miss, clears any existing selection.
+     * Ray-pick the closest selectable along the cursor-through-camera ray. Tries both a {@link LivingEntity} hit and
+     * a jigsaw-block hit (via {@link JigsawWorldRaycast}); whichever is closer to the camera wins. On miss, clears
+     * any existing selection.
+     * <p>
+     * {@code (relX, relY)} are in {@code [0, 1]} relative to the rendered viewport (full-screen render — the viewport
+     * panel just downsamples this, so screen-relative and panel-relative cursor positions map to the same world ray).
      */
     public static void performSelectionAt(EngineSession session, double relX, double relY) {
         var mc = Minecraft.getInstance();
@@ -205,7 +209,7 @@ public final class EngineNavigation {
         // can be far from the player body, so anchoring at the player would search the wrong region of space.
         var aabb = new AABB(origin, end).inflate(1.0);
 
-        var hit = ProjectileUtil.getEntityHitResult(
+        var entityHit = ProjectileUtil.getEntityHitResult(
             mc.player,
             origin,
             end,
@@ -214,10 +218,25 @@ public final class EngineNavigation {
             SELECTION_RAYCAST_DISTANCE * SELECTION_RAYCAST_DISTANCE
         );
 
-        if (hit != null && hit.getEntity() instanceof LivingEntity living) {
-            SelectionManager.selectSingle(new EntitySelectable(living));
-        } else {
+        // Jigsaw-block raycast reuses the same camera-cursor ray geometry as the snap resolver, so the inspector's
+        // pick matches what the user sees as the placement preview's anchor candidate.
+        var jigsawTarget = JigsawWorldRaycast.raycastJigsaw(session);
+
+        var entityDistSq = (entityHit != null && entityHit.getEntity() instanceof LivingEntity)
+            ? entityHit.getLocation().distanceToSqr(origin)
+            : Double.POSITIVE_INFINITY;
+        // Block-distance reference is the cube center — close enough to the bbox-hit reference used for entities for
+        // the "which is closer" heuristic to feel right; both are within ~0.5 blocks of the actual surface hit.
+        var blockDistSq = jigsawTarget != null
+            ? Vec3.atCenterOf(jigsawTarget.worldPos()).distanceToSqr(origin)
+            : Double.POSITIVE_INFINITY;
+
+        if (entityDistSq == Double.POSITIVE_INFINITY && blockDistSq == Double.POSITIVE_INFINITY) {
             SelectionManager.clear();
+        } else if (entityDistSq <= blockDistSq) {
+            SelectionManager.selectSingle(new EntitySelectable((LivingEntity) entityHit.getEntity()));
+        } else {
+            SelectionManager.selectSingle(new JigsawBlockSelectable(jigsawTarget.worldPos()));
         }
     }
 
