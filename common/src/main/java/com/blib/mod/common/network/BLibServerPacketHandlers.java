@@ -6,8 +6,12 @@ import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.C2SGOAPTrackPayload;
 import com.blib.mod.common.network.packet.C2SPlaceJigsawPiecePayload;
 import com.blib.mod.common.network.packet.C2SRemoveEntityPayload;
+import com.blib.mod.common.network.packet.C2SAddPoolElementPayload;
+import com.blib.mod.common.network.packet.C2SRemovePoolElementPayload;
+import com.blib.mod.common.network.packet.C2SSavePoolPayload;
 import com.blib.mod.common.network.packet.C2SUndoPlacementPayload;
 import com.blib.mod.common.network.packet.C2SUpdateJigsawBlockPayload;
+import com.blib.mod.common.network.packet.C2SUpdatePoolElementPayload;
 import com.blib.mod.common.network.packet.S2CChunkClaimsSyncPayload;
 import com.blib.mod.common.network.packet.S2CEntityDataSyncPayload;
 import com.blib.mod.common.network.packet.S2CFactionMetadataSyncPayload;
@@ -62,6 +66,38 @@ public class BLibServerPacketHandlers {
                 C2SUpdateJigsawBlockPayload.TYPE,
                 C2SUpdateJigsawBlockPayload.CODEC,
                 BLibServerListener::handleUpdateJigsawBlock
+            )
+        );
+
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromClient<>(
+                C2SUpdatePoolElementPayload.TYPE,
+                C2SUpdatePoolElementPayload.CODEC,
+                BLibServerListener::handleUpdatePoolElement
+            )
+        );
+
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromClient<>(
+                C2SAddPoolElementPayload.TYPE,
+                C2SAddPoolElementPayload.CODEC,
+                BLibServerListener::handleAddPoolElement
+            )
+        );
+
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromClient<>(
+                C2SRemovePoolElementPayload.TYPE,
+                C2SRemovePoolElementPayload.CODEC,
+                BLibServerListener::handleRemovePoolElement
+            )
+        );
+
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromClient<>(
+                C2SSavePoolPayload.TYPE,
+                C2SSavePoolPayload.CODEC,
+                BLibServerListener::handleSavePool
             )
         );
     }

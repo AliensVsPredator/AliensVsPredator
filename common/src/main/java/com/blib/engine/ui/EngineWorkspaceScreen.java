@@ -201,7 +201,10 @@ public final class EngineWorkspaceScreen extends Screen {
         return switch (layout) {
             case DEFAULT -> buildOuterLayout(buildBody(buildViewportColumn(new ContentBrowserPanel()), new DetailsPanel()));
             case GOAP -> buildOuterLayout(buildBody(buildViewportColumn(new ContentBrowserPanel()), new GOAPDetailsPanel()));
-            case JIGSAW -> buildOuterLayout(buildBody(buildViewportColumn(new PiecePalettePanel()), new DetailsPanel()));
+            // JIGSAW: bottom slot tabs through Piece Palette (default — placement workflow) and the new Pool Editor
+            // (browse-what's-in-a-pool workflow). Both panels share the same dock slot since they're complementary
+            // surfaces for the same authoring task.
+            case JIGSAW -> buildOuterLayout(buildBody(buildViewportColumn(new PiecePalettePanel(), new PoolEditorPanel()), new DetailsPanel()));
         };
     }
 
@@ -255,15 +258,16 @@ public final class EngineWorkspaceScreen extends Screen {
     }
 
     /**
-     * Vertical split for the central column: viewport on top (flex), {@code bottomPanel} below (fixed height). The
-     * bottom panel is the layout-specific tool surface — Default/GOAP use {@link ContentBrowserPanel}, Jigsaw uses
-     * {@link PiecePalettePanel}.
+     * Vertical split for the central column: viewport on top (flex), {@code bottomPanels} below (fixed height) wrapped
+     * in a single {@link TabbedPanel} so multiple layout-specific surfaces can share the slot. Default/GOAP pass a
+     * single {@link ContentBrowserPanel}; Jigsaw passes both {@link PiecePalettePanel} (default tab) and
+     * {@link PoolEditorPanel}.
      */
-    private DockNode buildViewportColumn(Panel bottomPanel) {
+    private DockNode buildViewportColumn(Panel... bottomPanels) {
         return new DockNode.Split(
             Orientation.VERTICAL,
             new DockNode.Leaf(new TabbedPanel(new ViewportPanel("Viewport", this::onViewportRightClick))),
-            new DockNode.Leaf(new TabbedPanel(bottomPanel)),
+            new DockNode.Leaf(new TabbedPanel(bottomPanels)),
             new Sizing.SecondFixed(CONTENT_BROWSER_HEIGHT_DEFAULT)
         );
     }
@@ -1197,6 +1201,7 @@ public final class EngineWorkspaceScreen extends Screen {
                     new DropdownMenu.Item("Reopen Details", () -> reopenPanel(DetailsPanel.class, DetailsPanel::new)),
                     new DropdownMenu.Item("Reopen Content Browser", () -> reopenPanel(ContentBrowserPanel.class, ContentBrowserPanel::new)),
                     new DropdownMenu.Item("Reopen Piece Palette", () -> reopenPanel(PiecePalettePanel.class, PiecePalettePanel::new)),
+                    new DropdownMenu.Item("Reopen Pool Editor", () -> reopenPanel(PoolEditorPanel.class, PoolEditorPanel::new)),
                     new DropdownMenu.Item("Reopen GOAP Details", () -> reopenPanel(GOAPDetailsPanel.class, GOAPDetailsPanel::new)),
                     new DropdownMenu.Item("Reset Layout", this::resetLayout)
                 )

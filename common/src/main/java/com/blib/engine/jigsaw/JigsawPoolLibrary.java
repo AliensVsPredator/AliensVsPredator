@@ -20,6 +20,7 @@ import java.util.Set;
 import com.blib.api.common.worldgen.v1.StructureTemplatePoolAccessor;
 import com.blib.internal.mixin.MixinListPoolElement_Accessor;
 import com.blib.internal.mixin.MixinSinglePoolElement_Accessor;
+import com.blib.internal.mixin.MixinStructureTemplatePool_Accessor;
 
 /**
  * Reads the integrated server's {@link Registries#TEMPLATE_POOL} and exposes the pool ↔ template-id graph for the
@@ -72,6 +73,59 @@ public final class JigsawPoolLibrary {
         return poolToTemplatesMap().getOrDefault(poolId, Set.of());
     }
 
+    /**
+     * Snapshot of one pool element for the editor panel — the template id, the weight assigned by the parent pool,
+     * and the projection mode. Children of a {@link ListPoolElement} share the parent's weight slot in vanilla's
+     * roll, so this representation flattens nested lists with the same parent weight per leaf.
+     * <p>
+     * {@code rawIndex} is the position in the pool's {@code rawTemplates} list of the *top-level* element this row
+     * belongs to — used by edit packets so the server can locate the right entry to mutate. Set to {@code -1} for
+     * leaves nested inside a {@code ListPoolElement} (the editor displays these but won't allow direct edits;
+     * editing the parent list's weight via JSON is still required to change them).
+     * <p>
+     * Element types without a template id ({@code FeaturePoolElement}, {@code EmptyPoolElement}) are excluded — they
+     * have no piece to inspect; the editor's element list is "what could spawn here" not "every pool entry".
+     */
+    public record PoolElementInfo(
+        int rawIndex,
+        ResourceLocation templateId,
+        int weight,
+        StructureTemplatePool.Projection projection
+    ) {
+
+        public boolean editable() {
+            return rawIndex >= 0;
+        }
+    }
+
+    /**
+     * List every template-bearing element in {@code poolId} with its weight + projection. Walks the same element
+     * tree as {@link #templateIdsInPool} but preserves per-element metadata. Built fresh on each call (no caching) —
+     * pools are typically small (≤ ~50 elements) and the editor panel only calls this on pool selection change.
+     * Empty for unknown pools or when the integrated server isn't available.
+     */
+    public static List<PoolElementInfo> elementsInPool(ResourceLocation poolId) {
+        var server = Minecraft.getInstance().getSingleplayerServer();
+        if (server == null) {
+            return List.of();
+        }
+        var registry = server.registryAccess().registryOrThrow(Registries.TEMPLATE_POOL);
+        var pool = registry.get(poolId);
+        if (pool == null) {
+            return List.of();
+        }
+
+        // Defensive copy: the live list could be mutated by a server-side edit packet between us starting iteration
+        // and reading element data. Copy keeps our walk independent.
+        var rawTemplates = List.copyOf(((MixinStructureTemplatePool_Accessor) (Object) pool).getElementCounts());
+        var out = new ArrayList<PoolElementInfo>();
+        for (var i = 0; i < rawTemplates.size(); i++) {
+            var pair = rawTemplates.get(i);
+            extractInfoFromElement(pair.getFirst(), pair.getSecond(), i, out);
+        }
+        return List.copyOf(out);
+    }
+
     public static void invalidate() {
         cachedPoolIds = null;
         cachedPoolToTemplates = null;
@@ -118,5 +172,22 @@ public final class JigsawPoolLibrary {
             }
         }
         // FeaturePoolElement / EmptyPoolElement contribute no template ids — skip silently.
+    }
+
+    /**
+     * Sibling of {@link #extractFromElement} that emits {@link PoolElementInfo} per leaf, propagating the parent
+     * pool entry's {@code weight} into each. List children inherit the parent list's weight (matching vanilla's
+     * roll semantics: the whole list is one weighted slot in the parent pool); their rawIndex is set to {@code -1}
+     * so the editor knows they're not directly addressable for in-place edits.
+     */
+    private static void extractInfoFromElement(StructurePoolElement element, int weight, int rawIndex, List<PoolElementInfo> out) {
+        if (element instanceof SinglePoolElement single) {
+            ((MixinSinglePoolElement_Accessor) (Object) single).blib$getTemplate().ifLeft(id -> out.add(new PoolElementInfo(rawIndex, id, weight, single.getProjection())));
+        } else if (element instanceof ListPoolElement list) {
+            for (var nested : ((MixinListPoolElement_Accessor) (Object) list).blib$getElements()) {
+                // Nested children share the parent's weight but lose direct addressability — flagged with -1.
+                extractInfoFromElement(nested, weight, -1, out);
+            }
+        }
     }
 }
