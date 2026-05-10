@@ -59,6 +59,11 @@ public final class BlockSelectionWireframeRenderer {
         if (!EngineMode.get().isActive()) {
             return;
         }
+        // Entity selection takes over the gizmo surface — hide the volume wireframe so it doesn't visually compete with
+        // the entity's selection highlight.
+        if (com.blib.engine.selection.SelectionManager.current().single() instanceof com.blib.engine.selection.EntitySelectable) {
+            return;
+        }
         var a = BlockSelection.cornerA();
         var b = BlockSelection.cornerB();
         if (a == null && b == null) {

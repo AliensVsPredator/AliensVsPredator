@@ -55,6 +55,10 @@ public final class BlockSelectionScaleGizmoRenderer {
             BlockSelectionScaleGizmo.setHoveredFace(null);
             return;
         }
+        if (com.blib.engine.selection.SelectionManager.current().single() instanceof com.blib.engine.selection.EntitySelectable) {
+            BlockSelectionScaleGizmo.setHoveredFace(null);
+            return;
+        }
         var aabb = BlockSelection.aabb();
         if (aabb.isEmpty()) {
             BlockSelectionScaleGizmo.setHoveredFace(null);

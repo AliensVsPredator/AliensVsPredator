@@ -39,6 +39,10 @@ public final class MoveBlocksGizmoRenderer {
             MoveBlocksGizmo.setHoveredAxis(null);
             return;
         }
+        if (com.blib.engine.selection.SelectionManager.current().single() instanceof com.blib.engine.selection.EntitySelectable) {
+            MoveBlocksGizmo.setHoveredAxis(null);
+            return;
+        }
         var aabb = BlockSelection.aabb();
         if (aabb.isEmpty()) {
             MoveBlocksGizmo.setHoveredAxis(null);

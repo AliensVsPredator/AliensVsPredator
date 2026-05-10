@@ -19,10 +19,17 @@ import com.blib.engine.jigsaw.ProjectDraftCache;
 import com.blib.engine.jigsaw.placement.JigsawPlacementFrameState;
 import com.blib.engine.jigsaw.placement.JigsawPlacementOptions;
 import com.blib.engine.jigsaw.placement.JigsawTemplateScanner;
+import com.blib.engine.layout.ActiveLayoutState;
+import com.blib.engine.layout.LayoutCatalog;
+import com.blib.engine.layout.LayoutDoc;
+import com.blib.engine.layout.LayoutSnapshot;
+import com.blib.engine.layout.LayoutTemplate;
+import com.blib.engine.layout.PanelRegistry;
 import com.blib.engine.selection.SelectionManager;
 import com.blib.engine.session.EngineMode;
 import com.blib.engine.session.NavigationMode;
 import com.blib.engine.session.ProjectSession;
+import com.blib.engine.spawn.EntitySpawnSelection;
 import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.C2SDeleteProjectPayload;
 import com.blib.mod.common.network.packet.C2SGOAPTrackPayload;
@@ -39,7 +46,7 @@ import com.blib.mod.common.network.packet.C2SUndoPlacementPayload;
  * Drawing is wrapped in a {@link #SCALE} pose scale so layout uses logical pixels (~2.67× the GUI-units screen at
  * 0.375). Mouse coordinates from event callbacks are scaled the same way before tree-walks.
  * <p>
- * Layout sketch (Default — see {@link Layout} for variants):
+ * Layout sketch (Default template — see {@link LayoutTemplate} for the other built-in starting points):
  *
  * <pre>
  * +-------------------------------------------------------------+
@@ -60,8 +67,9 @@ import com.blib.mod.common.network.packet.C2SUndoPlacementPayload;
  * pinned. Tabs can be clicked to switch, ×'d to close, and dragged across {@code TabbedPanel}s to rearrange.
  * <p>
  * Other layouts ({@code GOAP}, {@code JIGSAW}) keep the same skeleton but swap the right-side or bottom panel for a
- * tool tuned to their workflow. Layouts are switched via the {@code Layout} menu chip and persist in-memory across
- * {@code Esc} → {@code /blib engine} round-trips for the rest of the game session.
+ * tool tuned to their workflow. Layouts are switched via the {@code Layout} menu chip and persisted to
+ * {@code <gameDir>/blib/engine/layouts/} so customizations survive game restarts. The active layout is per-project
+ * (with a global fallback) — see {@link com.blib.engine.layout.ActiveLayoutState}.
  */
 @ApiStatus.Internal
 public final class EngineWorkspaceScreen extends Screen {
@@ -72,12 +80,6 @@ public final class EngineWorkspaceScreen extends Screen {
      * size equals {@code logical × SCALE}.
      */
     private static final float SCALE = 0.375f;
-
-    private static final int OUTLINER_WIDTH_DEFAULT = 150;
-
-    private static final int DETAILS_WIDTH_DEFAULT = 190;
-
-    private static final int CONTENT_BROWSER_HEIGHT_DEFAULT = 140;
 
     /**
      * Mouse-pixel half-thickness of a divider's hit zone, in logical pixels. A click within {@code DIVIDER_HIT_PX} of
@@ -140,6 +142,17 @@ public final class EngineWorkspaceScreen extends Screen {
     private @Nullable CaptureDialog captureDialog;
 
     /**
+     * Modal text-input dialog for Save-As / Rename / Duplicate / New-from-Template flows. Shares the
+     * {@link #confirmDialog} / {@link #captureDialog} lifecycle pattern.
+     */
+    private @Nullable LayoutNameDialog layoutNameDialog;
+
+    /**
+     * Modal layout-management dialog (list view with per-row actions). Same lifecycle as the others.
+     */
+    private @Nullable ManageLayoutsDialog manageLayoutsDialog;
+
+    /**
      * Panel that captured the mouse via {@link Panel#mouseClickedCapture}. While non-null, {@link #mouseDragged} and
      * {@link #mouseReleased} route to this panel before any other handling, so a panel-driven drag (scrollbar, etc.)
      * tracks the cursor even when it leaves the panel rect. Cleared on {@code mouseReleased}.
@@ -147,39 +160,12 @@ public final class EngineWorkspaceScreen extends Screen {
     private @Nullable Panel capturedPanel;
 
     /**
-     * Per-layout dock tree cache, in-memory only. Populated when the workspace closes and when the user switches
-     * layouts; consulted on open / switch so the user's customizations (resizes, tab moves, active tabs, scroll
-     * positions) survive {@code Esc → /blib engine} round-trips within the same game session. Cleared on game exit
-     * because static field state doesn't persist across JVM restarts — that's the intended behavior per request.
+     * Id of the layout the user is currently editing. Sticks across screen re-opens within the same JVM session and is
+     * persisted to {@code <gameDir>/blib/engine/state.json} on close so subsequent game sessions reopen to the same
+     * layout. Resolution honors per-project overrides (see {@link ActiveLayoutState#resolve}); this field caches the
+     * resolved id for the active session.
      */
-    private static final java.util.EnumMap<Layout, DockNode> savedLayouts = new java.util.EnumMap<>(Layout.class);
-
-    /** The layout the user is currently editing. Sticks across re-opens so reopening returns to the last layout. */
-    private static Layout activeLayout = Layout.DEFAULT;
-
-    /**
-     * Named workspace layout. Each layout shares the same outer chrome (menu bar, toolbar, status bar) and the same
-     * left-side outliner; only the right-side details panel and the bottom panel under the viewport differ. New layouts
-     * can be added by extending this enum and the {@link EngineWorkspaceScreen#buildLayout} switch.
-     */
-    public enum Layout {
-
-        DEFAULT("Default"),
-
-        GOAP("GOAP"),
-
-        JIGSAW("Jigsaw");
-
-        private final String displayName;
-
-        Layout(String displayName) {
-            this.displayName = displayName;
-        }
-
-        public String displayName() {
-            return displayName;
-        }
-    }
+    private static String activeLayoutId = LayoutTemplate.DEFAULT.id();
 
     public EngineWorkspaceScreen() {
         super(Component.literal("BLib Engine"));
@@ -212,31 +198,35 @@ public final class EngineWorkspaceScreen extends Screen {
         JigsawPieceLibrary.invalidate();
         JigsawPoolLibrary.invalidate();
 
-        // Restore the user's last-used layout (and any customizations they made to it) from the in-memory cache. If
-        // this is the first time they've opened the workspace this game session, build the default fresh.
-        var saved = savedLayouts.get(activeLayout);
-        this.root = saved != null ? saved : buildLayout(activeLayout);
+        // Seed built-in templates on first run (idempotent — does nothing if files already exist), then resolve the
+        // active layout id from disk-backed state and load its body subtree. The outer trim is always rebuilt fresh.
+        LayoutCatalog.initialize();
+        var bodyRoot = loadActiveLayoutBody();
+        this.root = buildOuterLayout(bodyRoot);
     }
 
     /**
-     * Build a fresh dock tree for the given layout. Called on first-open of a layout (cache miss), Reset Layout, or any
-     * path that needs an unmodified factory tree. Non-static because it wires {@code this::onViewportRightClick} into
-     * each fresh {@link ViewportPanel}.
+     * Resolve the active layout id (per-project override → global → default fallback), load its {@link LayoutDoc}, and
+     * hydrate the body subtree. Falls back to {@link LayoutTemplate#DEFAULT}'s code-baked body if the resolved id has
+     * no readable file on disk — guarantees the workspace always opens to <em>something</em>.
      */
-    private DockNode buildLayout(Layout layout) {
-        return switch (layout) {
-            case DEFAULT -> buildOuterLayout(buildBody(buildViewportColumn(new ContentBrowserPanel()), new DetailsPanel()));
-            case GOAP -> buildOuterLayout(buildBody(buildViewportColumn(new ContentBrowserPanel()), new GOAPDetailsPanel()));
-            // JIGSAW: bottom slot tabs through Piece Palette (placement), Pool Editor (browse pool contents), and
-            // Capture (corner-pick + save volume of blocks as nbt or split jigsaw pieces). All three are
-            // complementary surfaces for the same authoring task.
-            case JIGSAW -> buildOuterLayout(
-                buildBody(
-                    buildViewportColumn(new PiecePalettePanel(), new PoolEditorPanel()),
-                    new DetailsPanel()
-                )
-            );
-        };
+    private DockNode loadActiveLayoutBody() {
+        var state = ActiveLayoutState.read();
+        var projectName = ProjectSession.activeProject() != null ? ProjectSession.activeProjectName() : null;
+        var resolvedId = ActiveLayoutState.resolve(projectName, state);
+        activeLayoutId = resolvedId;
+
+        var doc = LayoutCatalog.get(resolvedId);
+        if (doc == null) {
+            // Resolved id has no file (deleted externally, or seed failed). Fall back to a fresh default template.
+            activeLayoutId = LayoutTemplate.DEFAULT.id();
+            doc = LayoutTemplate.DEFAULT.toDoc();
+        }
+        return LayoutSnapshot.hydrate(doc.body(), panelCtx());
+    }
+
+    private PanelRegistry.Context panelCtx() {
+        return new PanelRegistry.Context(buildViewportRightClickHandler(), this::onViewportRightClick);
     }
 
     /**
@@ -268,53 +258,79 @@ public final class EngineWorkspaceScreen extends Screen {
     }
 
     /**
-     * Three-column body: outliner on the left (fixed width), {@code viewportColumn} in the middle (flex), and
-     * {@code rightPanel} on the right (fixed width). Each layout supplies a different right panel — Default/Jigsaw use
-     * {@link DetailsPanel}, GOAP uses {@link GOAPDetailsPanel}.
+     * Switch the active layout to {@code newLayoutId}. Persists the outgoing layout's body to disk before switching so
+     * any in-session customizations carry over to the next reopen, then loads the incoming layout (falling back to the
+     * default template if its file has been deleted in the meantime).
      */
-    private DockNode buildBody(DockNode viewportColumn, Panel rightPanel) {
-        var centerAndRight = new DockNode.Split(
-            Orientation.HORIZONTAL,
-            viewportColumn,
-            new DockNode.Leaf(new TabbedPanel(rightPanel)),
-            new Sizing.SecondFixed(DETAILS_WIDTH_DEFAULT)
-        );
-
-        return new DockNode.Split(
-            Orientation.HORIZONTAL,
-            new DockNode.Leaf(new TabbedPanel(new OutlinerPanel())),
-            centerAndRight,
-            new Sizing.FirstFixed(OUTLINER_WIDTH_DEFAULT)
-        );
-    }
-
-    /**
-     * Vertical split for the central column: viewport on top (flex), {@code bottomPanels} below (fixed height) wrapped
-     * in a single {@link TabbedPanel} so multiple layout-specific surfaces can share the slot. Default/GOAP pass a
-     * single {@link ContentBrowserPanel}; Jigsaw passes both {@link PiecePalettePanel} (default tab) and
-     * {@link PoolEditorPanel}.
-     */
-    private DockNode buildViewportColumn(Panel... bottomPanels) {
-        return new DockNode.Split(
-            Orientation.VERTICAL,
-            new DockNode.Leaf(new TabbedPanel(new ViewportPanel("Viewport", buildViewportRightClickHandler()))),
-            new DockNode.Leaf(new TabbedPanel(bottomPanels)),
-            new Sizing.SecondFixed(CONTENT_BROWSER_HEIGHT_DEFAULT)
-        );
-    }
-
-    /**
-     * Switch the active layout. Saves the current dock tree to the cache so the user's edits to the outgoing layout are
-     * preserved across switches; loads the incoming layout from cache, or builds it fresh if first-seen.
-     */
-    private void switchLayout(Layout newLayout) {
-        if (newLayout == activeLayout) {
+    private void switchLayout(String newLayoutId) {
+        if (newLayoutId.equals(activeLayoutId)) {
             return;
         }
-        savedLayouts.put(activeLayout, this.root);
-        activeLayout = newLayout;
-        var saved = savedLayouts.get(newLayout);
-        this.root = saved != null ? saved : buildLayout(newLayout);
+        persistOutgoingLayout();
+        activeLayoutId = newLayoutId;
+        var doc = LayoutCatalog.get(newLayoutId);
+        if (doc == null) {
+            activeLayoutId = LayoutTemplate.DEFAULT.id();
+            doc = LayoutTemplate.DEFAULT.toDoc();
+        }
+        var bodyRoot = LayoutSnapshot.hydrate(doc.body(), panelCtx());
+        this.root = buildOuterLayout(bodyRoot);
+        persistActiveSelection();
+        // Refresh the manage dialog if it's open so the active marker tracks the switch.
+        if (manageLayoutsDialog != null) {
+            manageLayoutsDialog.setActiveLayoutId(activeLayoutId);
+            manageLayoutsDialog.refresh();
+        }
+    }
+
+    /**
+     * Capture the current body subtree into the active layout's {@link LayoutDoc} and write it to disk. No-op if no
+     * file exists for the active id (e.g. the layout was deleted out from under us); the next persist after a fresh
+     * load will succeed.
+     */
+    private void persistOutgoingLayout() {
+        var existing = LayoutCatalog.get(activeLayoutId);
+        if (existing == null) {
+            return;
+        }
+        var capturedBody = LayoutSnapshot.capture(extractBodyRoot(this.root));
+        var updated = existing.withBody(capturedBody);
+        try {
+            LayoutCatalog.save(updated);
+        } catch (java.io.IOException e) {
+            org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class)
+                .warn("[BLib] persistOutgoingLayout: failed to save '{}'", activeLayoutId, e);
+        }
+    }
+
+    /**
+     * Update {@code state.json} with the active layout id, scoped to the active project if there is one. Called from
+     * {@code switchLayout} and {@code removed()} so per-project active-layout memory survives game restarts.
+     */
+    private void persistActiveSelection() {
+        var state = ActiveLayoutState.read();
+        var projectName = ProjectSession.activeProject() != null ? ProjectSession.activeProjectName() : null;
+        var newState = projectName != null && !projectName.isEmpty()
+            ? state.withProjectActive(projectName, activeLayoutId)
+            : state.withGlobalActive(activeLayoutId);
+        ActiveLayoutState.write(newState);
+    }
+
+    /**
+     * Walk past the trim wrappers built by {@link #buildOuterLayout} to reach the body subtree. The structure is always
+     * {@code Split(V, Leaf(MenuBar), Split(V, Leaf(Toolbar), Split(V, body, Leaf(StatusBar))))}; defensively falls back
+     * to {@code root} itself if anything doesn't match (shouldn't happen with our own builder, but keeps capture from
+     * blowing up on hand-corrupted in-memory state).
+     */
+    private static DockNode extractBodyRoot(DockNode root) {
+        if (
+            root instanceof DockNode.Split outer
+                && outer.second() instanceof DockNode.Split toolbarAndBelow
+                && toolbarAndBelow.second() instanceof DockNode.Split bodyAndStatus
+        ) {
+            return bodyAndStatus.first();
+        }
+        return root;
     }
 
     @Override
@@ -377,6 +393,10 @@ public final class EngineWorkspaceScreen extends Screen {
             panelMouseX = OFFSCREEN_MOUSE;
             panelMouseY = OFFSCREEN_MOUSE;
         }
+        if (layoutNameDialog != null || manageLayoutsDialog != null) {
+            panelMouseX = OFFSCREEN_MOUSE;
+            panelMouseY = OFFSCREEN_MOUSE;
+        }
 
         renderNode(graphics, root, 0, 0, logicalWidth, logicalHeight, panelMouseX, panelMouseY, partialTick);
         renderHoveredDivider(graphics, logicalMouseX, logicalMouseY);
@@ -390,6 +410,14 @@ public final class EngineWorkspaceScreen extends Screen {
         }
         if (captureDialog != null) {
             captureDialog.render(graphics, logicalWidth, logicalHeight, logicalMouseX, logicalMouseY);
+        }
+        if (manageLayoutsDialog != null) {
+            manageLayoutsDialog.render(graphics, logicalWidth, logicalHeight, logicalMouseX, logicalMouseY);
+        }
+        // LayoutNameDialog renders on top of ManageLayoutsDialog because Save-As / Rename / Duplicate / etc. opened
+        // from the manage modal stack a second sheet on top of it; rendering it last keeps it visible above the list.
+        if (layoutNameDialog != null) {
+            layoutNameDialog.render(graphics, logicalWidth, logicalHeight, logicalMouseX, logicalMouseY);
         }
         if (openPopup != null) {
             openPopup.render(graphics, logicalMouseX, logicalMouseY, logicalWidth, logicalHeight);
@@ -410,7 +438,7 @@ public final class EngineWorkspaceScreen extends Screen {
                 viewportRect.y(),
                 viewportRect.width(),
                 viewportRect.height(),
-                JigsawPieceSelection.hasSelection()
+                JigsawPieceSelection.hasSelection() || EntitySpawnSelection.hasSelection()
             );
         } else {
             EngineCursor.reset();
@@ -613,13 +641,16 @@ public final class EngineWorkspaceScreen extends Screen {
     @Override
     public void removed() {
         super.removed();
-        // Persist the active layout's customized state so the next /blib engine within this session reopens to the
-        // same arrangement of tabs, splits, and active panels.
-        savedLayouts.put(activeLayout, this.root);
+        // Persist the active layout's customized state to disk and update state.json so the next /blib engine — even
+        // across game restarts — reopens to the same arrangement of tabs, splits, and active panels. The active-id
+        // write also captures any per-project memory so switching projects later restores per-project preferences.
+        persistOutgoingLayout();
+        persistActiveSelection();
         EngineWorkspaceCompositor.clear();
         EngineMode.get().exit();
         EngineTickControl.restore();
         JigsawPieceSelection.clear();
+        EntitySpawnSelection.clear();
         JigsawPlacementCursor.clearViewportRect();
         JigsawPieceThumbnailCache.clear();
         JigsawTemplateScanner.clear();
@@ -638,6 +669,8 @@ public final class EngineWorkspaceScreen extends Screen {
         // continue against fresh state on the next engine open.
         com.blib.engine.blockselection.BlockSelectionScaleGizmo.clear();
         com.blib.engine.blockselection.BlockSelectionTranslateGizmo.clear();
+        com.blib.engine.entityselection.EntityTranslateGizmo.clear();
+        com.blib.engine.entityselection.EntityScaleGizmo.clear();
         // Drop the captured render-frame matrices — they referenced the engine's camera; the next engine open
         // will repopulate from the first render frame.
         com.blib.engine.session.EngineCameraFrame.clear();
@@ -646,7 +679,7 @@ public final class EngineWorkspaceScreen extends Screen {
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         // Modal dialog absorbs all scroll events so panels under the dim don't scroll while the user is deciding.
-        if (confirmDialog != null) {
+        if (confirmDialog != null || captureDialog != null || layoutNameDialog != null || manageLayoutsDialog != null) {
             return true;
         }
         var logicalX = mouseX / SCALE;
@@ -771,6 +804,14 @@ public final class EngineWorkspaceScreen extends Screen {
 
     @Override
     public boolean charTyped(char ch, int modifiers) {
+        // Layout-name dialog has its own TextInput and routes char input through it. Manage dialog has no text input
+        // so it just absorbs char events as a hard modal.
+        if (layoutNameDialog != null) {
+            return layoutNameDialog.charTyped(ch, modifiers);
+        }
+        if (manageLayoutsDialog != null) {
+            return true;
+        }
         var focused = TextInput.getFocused();
         if (focused != null && focused.charTyped(ch, modifiers)) {
             return true;
@@ -794,6 +835,13 @@ public final class EngineWorkspaceScreen extends Screen {
         if (captureDialog != null) {
             return captureDialog.keyPressed(keyCode, scanCode, modifiers);
         }
+        // LayoutNameDialog stacks over ManageLayoutsDialog (Save-As / Rename / Duplicate sheet), so route to it first.
+        if (layoutNameDialog != null) {
+            return layoutNameDialog.keyPressed(keyCode, scanCode, modifiers);
+        }
+        if (manageLayoutsDialog != null) {
+            return manageLayoutsDialog.keyPressed(keyCode, scanCode, modifiers);
+        }
         // Esc closes an open SearchableSelect popup BEFORE TextInput dispatch — otherwise the popup's focused
         // search input would consume Esc as "defocus" and leave the popup visible-but-unfocused, which is confusing.
         if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE && SearchableSelect.getOpenPopup() != null) {
@@ -814,6 +862,10 @@ public final class EngineWorkspaceScreen extends Screen {
         if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE) {
             if (JigsawPieceSelection.hasSelection()) {
                 JigsawPieceSelection.clear();
+                return true;
+            }
+            if (EntitySpawnSelection.hasSelection()) {
+                EntitySpawnSelection.clear();
                 return true;
             }
             if (!SelectionManager.current().isEmpty()) {
@@ -849,23 +901,38 @@ public final class EngineWorkspaceScreen extends Screen {
             }
         }
 
-        // BlockSelection tool hotkeys: T / S / M for Translate / Scale / Move-Blocks. Mirrors Blender's G/S/R
-        // muscle-memory pattern. Workspace-wide so users can switch tools regardless of which panel is focused.
-        // Falls behind the piece-selection block above so a held piece's R / M / T win out — these only fire when
-        // no piece is held. Text-input focus suppression already happened above (focused.keyPressed consumed) so
-        // typing 's' into a name field doesn't trigger SCALE_VOLUME here.
-        switch (keyCode) {
-            case org.lwjgl.glfw.GLFW.GLFW_KEY_T -> {
-                BlockSelection.setGizmoMode(BlockSelection.GizmoMode.TRANSLATE_VOLUME);
-                return true;
+        // Tool hotkeys: T / S / M for Translate / Scale / Move-Blocks. Mirrors Blender's G/S/R muscle memory.
+        // Auto-switches between block-volume and entity gizmo modes based on the active selection — same keys, the
+        // selection type decides which gizmo state changes. M is intentionally block-only since entities have no
+        // analog to MOVE_BLOCKS.
+        var tssel = SelectionManager.current().single();
+        if (tssel instanceof com.blib.engine.selection.EntitySelectable) {
+            switch (keyCode) {
+                case org.lwjgl.glfw.GLFW.GLFW_KEY_T -> {
+                    com.blib.engine.entityselection.EntityGizmoMode.set(com.blib.engine.entityselection.EntityGizmoMode.TRANSLATE);
+                    return true;
+                }
+                case org.lwjgl.glfw.GLFW.GLFW_KEY_S -> {
+                    com.blib.engine.entityselection.EntityGizmoMode.set(com.blib.engine.entityselection.EntityGizmoMode.SCALE);
+                    return true;
+                }
+                // M intentionally falls through — entity gizmo has no MOVE_BLOCKS analog. We don't redirect M to
+                // block gizmos either since the user's selection is an entity, not a block volume.
             }
-            case org.lwjgl.glfw.GLFW.GLFW_KEY_S -> {
-                BlockSelection.setGizmoMode(BlockSelection.GizmoMode.SCALE_VOLUME);
-                return true;
-            }
-            case org.lwjgl.glfw.GLFW.GLFW_KEY_M -> {
-                BlockSelection.setGizmoMode(BlockSelection.GizmoMode.MOVE_BLOCKS);
-                return true;
+        } else {
+            switch (keyCode) {
+                case org.lwjgl.glfw.GLFW.GLFW_KEY_T -> {
+                    BlockSelection.setGizmoMode(BlockSelection.GizmoMode.TRANSLATE_VOLUME);
+                    return true;
+                }
+                case org.lwjgl.glfw.GLFW.GLFW_KEY_S -> {
+                    BlockSelection.setGizmoMode(BlockSelection.GizmoMode.SCALE_VOLUME);
+                    return true;
+                }
+                case org.lwjgl.glfw.GLFW.GLFW_KEY_M -> {
+                    BlockSelection.setGizmoMode(BlockSelection.GizmoMode.MOVE_BLOCKS);
+                    return true;
+                }
             }
         }
 
@@ -910,6 +977,16 @@ public final class EngineWorkspaceScreen extends Screen {
         }
         if (captureDialog != null) {
             captureDialog.mouseClicked(logicalX, logicalY, button);
+            return true;
+        }
+        // LayoutNameDialog (when stacked, e.g. Save-As opened from Manage) gets first crack so its TextInput
+        // and confirm/cancel buttons see clicks before the ManageLayoutsDialog list does.
+        if (layoutNameDialog != null) {
+            layoutNameDialog.mouseClicked(logicalX, logicalY, button);
+            return true;
+        }
+        if (manageLayoutsDialog != null) {
+            manageLayoutsDialog.mouseClicked(logicalX, logicalY, button);
             return true;
         }
 
@@ -1020,7 +1097,7 @@ public final class EngineWorkspaceScreen extends Screen {
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         // Modal dialog absorbs releases so a drag started before it opened doesn't propagate to panels behind it.
-        if (confirmDialog != null) {
+        if (confirmDialog != null || captureDialog != null || layoutNameDialog != null || manageLayoutsDialog != null) {
             return true;
         }
         var logicalX = mouseX / SCALE;
@@ -1081,7 +1158,7 @@ public final class EngineWorkspaceScreen extends Screen {
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         // Modal dialog absorbs drags so divider / tab / panel drags can't continue under the dim.
-        if (confirmDialog != null) {
+        if (confirmDialog != null || captureDialog != null || layoutNameDialog != null || manageLayoutsDialog != null) {
             return true;
         }
         var logicalX = mouseX / SCALE;
@@ -1335,7 +1412,10 @@ public final class EngineWorkspaceScreen extends Screen {
                 anchorX,
                 anchorY,
                 java.util.List.of(
-                    new DropdownMenu.Item("Reopen Outliner", () -> reopenPanel(OutlinerPanel.class, OutlinerPanel::new)),
+                    new DropdownMenu.Item(
+                        "Reopen Outliner",
+                        () -> reopenPanel(OutlinerPanel.class, () -> new OutlinerPanel(this::onViewportRightClick))
+                    ),
                     new DropdownMenu.Item(
                         "Reopen Viewport",
                         () -> reopenPanel(ViewportPanel.class, () -> new ViewportPanel("Viewport", buildViewportRightClickHandler()))
@@ -1345,17 +1425,11 @@ public final class EngineWorkspaceScreen extends Screen {
                     new DropdownMenu.Item("Reopen Piece Palette", () -> reopenPanel(PiecePalettePanel.class, PiecePalettePanel::new)),
                     new DropdownMenu.Item("Reopen Pool Editor", () -> reopenPanel(PoolEditorPanel.class, PoolEditorPanel::new)),
                     new DropdownMenu.Item("Reopen GOAP Details", () -> reopenPanel(GOAPDetailsPanel.class, GOAPDetailsPanel::new)),
+                    new DropdownMenu.Item("Reopen Entity Palette", () -> reopenPanel(EntityPalettePanel.class, EntityPalettePanel::new)),
                     new DropdownMenu.Item("Reset Layout", this::resetLayout)
                 )
             );
-            case MenuBarPanel.CHIP_LAYOUT -> new DropdownMenu(
-                anchorX,
-                anchorY,
-                java.util.stream.Stream
-                    .of(Layout.values())
-                    .map(layout -> new DropdownMenu.Item(layout.displayName(), () -> switchLayout(layout)))
-                    .toList()
-            );
+            case MenuBarPanel.CHIP_LAYOUT -> buildLayoutMenu(anchorX, anchorY);
             default -> null;
         };
     }
@@ -1383,10 +1457,395 @@ public final class EngineWorkspaceScreen extends Screen {
     }
 
     private void resetLayout() {
-        // Reset the *current* layout to its factory state, not back to Default — switching layouts is a separate
-        // action via the Layout menu. Drops any user resizes / tab moves on this layout's cached tree as a side
-        // effect, since the next removed() will overwrite the cache entry with the fresh tree.
-        this.root = buildLayout(activeLayout);
+        // Reset semantics:
+        // - Built-in template id → rebuild from the canonical code-baked LayoutTemplate.toDoc().
+        // - User layout with a templateBase → rebuild from that template's body but keep the user's id/displayName.
+        // - User layout with no templateBase → reload from disk (discards in-memory edits since last save).
+        // The reset is then persisted so the user's choice is durable.
+        var current = LayoutCatalog.get(activeLayoutId);
+        BodyNodeAndDoc next = computeResetBody(current);
+        if (next == null) {
+            return;
+        }
+        var bodyRoot = LayoutSnapshot.hydrate(next.body, panelCtx());
+        this.root = buildOuterLayout(bodyRoot);
+        try {
+            LayoutCatalog.save(next.docToWrite);
+        } catch (java.io.IOException e) {
+            org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class)
+                .warn("[BLib] resetLayout: failed to persist reset", e);
+        }
+    }
+
+    private BodyNodeAndDoc computeResetBody(@Nullable LayoutDoc current) {
+        if (LayoutCatalog.isTemplateId(activeLayoutId)) {
+            var template = LayoutTemplate.byId(activeLayoutId);
+            // Defensive null check — isTemplateId is true iff byId is non-null.
+            assert template != null;
+            var templateDoc = template.toDoc();
+            return new BodyNodeAndDoc(templateDoc.body(), templateDoc);
+        }
+        if (current != null && current.templateBase() != null) {
+            var template = LayoutTemplate.byId(current.templateBase());
+            if (template != null) {
+                var templateBody = template.toDoc().body();
+                return new BodyNodeAndDoc(templateBody, current.withBody(templateBody));
+            }
+        }
+        // No template baseline: reload from disk to drop in-memory edits since last save. Returning null signals the
+        // caller to no-op when there's nothing on disk to reload from.
+        if (current == null) {
+            return null;
+        }
+        return new BodyNodeAndDoc(current.body(), current);
+    }
+
+    private record BodyNodeAndDoc(
+        com.blib.engine.layout.BodyNode body,
+        LayoutDoc docToWrite
+    ) {}
+
+    /**
+     * LAYOUT menu — full create/manage flow. Top section lists every layout (•-prefixed for active), separator, then
+     * Save-As / Rename / Duplicate / Delete / Reset, separator, "New from <Template>…" entries (one per template,
+     * inline since {@link DropdownMenu} doesn't support submenus), then Manage Layouts… and Show Layouts Folder.
+     */
+    private DropdownMenu buildLayoutMenu(int anchorX, int anchorY) {
+        var items = new java.util.ArrayList<DropdownMenu.Item>();
+        for (var doc : LayoutCatalog.listAll()) {
+            var prefix = doc.id().equals(activeLayoutId) ? "• " : "  ";
+            var suffix = LayoutCatalog.isTemplateId(doc.id()) ? "  (template)" : "";
+            items.add(new DropdownMenu.Item(prefix + doc.displayName() + suffix, () -> switchLayout(doc.id())));
+        }
+        items.add(new DropdownMenu.Item("────────────", () -> {}));
+        items.add(new DropdownMenu.Item("Save As New…", this::openSaveAsDialog));
+        items.add(new DropdownMenu.Item("Rename…", this::openRenameDialog));
+        items.add(new DropdownMenu.Item("Duplicate…", this::openDuplicateDialog));
+        items.add(new DropdownMenu.Item("Delete…", this::openDeleteConfirm));
+        var current = LayoutCatalog.get(activeLayoutId);
+        var canReset = LayoutCatalog.isTemplateId(activeLayoutId)
+            || (current != null && current.templateBase() != null);
+        if (canReset) {
+            items.add(new DropdownMenu.Item("Reset to Template", this::resetLayout));
+        }
+        items.add(new DropdownMenu.Item("────────────", () -> {}));
+        for (var t : LayoutTemplate.all()) {
+            items.add(new DropdownMenu.Item("New from " + t.displayName() + "…", () -> openNewFromTemplateDialog(t)));
+        }
+        items.add(new DropdownMenu.Item("────────────", () -> {}));
+        items.add(new DropdownMenu.Item("Manage Layouts…", this::openManageLayoutsDialog));
+        items.add(new DropdownMenu.Item("Show Layouts Folder", this::openLayoutsFolder));
+        return new DropdownMenu(anchorX, anchorY, items);
+    }
+
+    private void openSaveAsDialog() {
+        this.layoutNameDialog = new LayoutNameDialog(
+            LayoutNameDialog.Mode.SAVE_AS,
+            "",
+            LayoutCatalog::idAvailable,
+            displayName -> {
+                var newId = LayoutCatalog.suggestId(displayName);
+                var capturedBody = LayoutSnapshot.capture(extractBodyRoot(this.root));
+                var now = java.time.Instant.now().toString();
+                var templateBase = LayoutCatalog.isTemplateId(activeLayoutId) ? activeLayoutId : null;
+                var doc = new LayoutDoc(LayoutDoc.CURRENT_VERSION, newId, displayName, templateBase, now, now, capturedBody);
+                try {
+                    LayoutCatalog.save(doc);
+                    activeLayoutId = newId;
+                    persistActiveSelection();
+                } catch (java.io.IOException e) {
+                    org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Save As failed", e);
+                }
+                this.layoutNameDialog = null;
+            },
+            () -> this.layoutNameDialog = null
+        );
+    }
+
+    private void openRenameDialog() {
+        var current = LayoutCatalog.get(activeLayoutId);
+        if (current == null) {
+            return;
+        }
+        // Rename can collide on its own id (no-op rename → keep the existing); availability check excludes the
+        // current id so the user can confirm without an "already exists" complaint when they only edited casing.
+        var currentId = activeLayoutId;
+        this.layoutNameDialog = new LayoutNameDialog(
+            LayoutNameDialog.Mode.RENAME,
+            current.displayName(),
+            id -> id.equals(currentId) || LayoutCatalog.idAvailable(id),
+            displayName -> {
+                var newId = LayoutCatalog.suggestId(displayName);
+                var renamed = current.withDisplayName(displayName);
+                try {
+                    if (newId.equals(currentId)) {
+                        // Display-name-only change.
+                        LayoutCatalog.save(renamed);
+                    } else {
+                        // Id change → write under the new id, then delete the old file.
+                        LayoutCatalog.save(renamed.withId(newId));
+                        LayoutCatalog.delete(currentId);
+                        // Rewire active-state references from old id → new id.
+                        var state = ActiveLayoutState.read();
+                        ActiveLayoutState.write(state.withoutLayout(currentId));
+                        activeLayoutId = newId;
+                        persistActiveSelection();
+                    }
+                } catch (java.io.IOException e) {
+                    org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Rename failed", e);
+                }
+                if (manageLayoutsDialog != null) {
+                    manageLayoutsDialog.setActiveLayoutId(activeLayoutId);
+                    manageLayoutsDialog.refresh();
+                }
+                this.layoutNameDialog = null;
+            },
+            () -> this.layoutNameDialog = null
+        );
+    }
+
+    private void openDuplicateDialog() {
+        var current = LayoutCatalog.get(activeLayoutId);
+        if (current == null) {
+            return;
+        }
+        this.layoutNameDialog = new LayoutNameDialog(
+            LayoutNameDialog.Mode.DUPLICATE,
+            current.displayName() + " Copy",
+            LayoutCatalog::idAvailable,
+            displayName -> {
+                var newId = LayoutCatalog.suggestId(displayName);
+                var now = java.time.Instant.now().toString();
+                var capturedBody = LayoutSnapshot.capture(extractBodyRoot(this.root));
+                var copy = new LayoutDoc(
+                    LayoutDoc.CURRENT_VERSION,
+                    newId,
+                    displayName,
+                    current.templateBase(),
+                    now,
+                    now,
+                    capturedBody
+                );
+                try {
+                    LayoutCatalog.save(copy);
+                    activeLayoutId = newId;
+                    persistActiveSelection();
+                } catch (java.io.IOException e) {
+                    org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Duplicate failed", e);
+                }
+                if (manageLayoutsDialog != null) {
+                    manageLayoutsDialog.setActiveLayoutId(activeLayoutId);
+                    manageLayoutsDialog.refresh();
+                }
+                this.layoutNameDialog = null;
+            },
+            () -> this.layoutNameDialog = null
+        );
+    }
+
+    private void openDeleteConfirm() {
+        var current = LayoutCatalog.get(activeLayoutId);
+        if (current == null) {
+            return;
+        }
+        var isTemplate = LayoutCatalog.isTemplateId(activeLayoutId);
+        var message = isTemplate
+            ? "Delete '" + current.displayName()
+                + "'? This is a template — it will be re-seeded with default content next time the workspace opens."
+            : "Delete '" + current.displayName() + "'? This cannot be undone.";
+        var deletedId = activeLayoutId;
+        this.confirmDialog = new ConfirmDialog(
+            "Delete layout?",
+            message,
+            "Delete",
+            "Cancel",
+            true,
+            () -> {
+                try {
+                    LayoutCatalog.delete(deletedId);
+                } catch (java.io.IOException e) {
+                    org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Delete failed", e);
+                }
+                var state = ActiveLayoutState.read();
+                ActiveLayoutState.write(state.withoutLayout(deletedId));
+                // Switch off the deleted layout to whatever resolves now (default fallback if nothing else).
+                var newId = ActiveLayoutState.resolve(
+                    ProjectSession.activeProject() != null ? ProjectSession.activeProjectName() : null,
+                    ActiveLayoutState.read()
+                );
+                activeLayoutId = LayoutTemplate.DEFAULT.id(); // Force the equality check in switchLayout to fire.
+                switchLayout(newId);
+                if (manageLayoutsDialog != null) {
+                    manageLayoutsDialog.setActiveLayoutId(activeLayoutId);
+                    manageLayoutsDialog.refresh();
+                }
+            },
+            () -> {}
+        );
+    }
+
+    private void openNewFromTemplateDialog(LayoutTemplate template) {
+        this.layoutNameDialog = new LayoutNameDialog(
+            LayoutNameDialog.Mode.NEW_FROM_TEMPLATE,
+            template.displayName() + " (custom)",
+            LayoutCatalog::idAvailable,
+            displayName -> {
+                var newId = LayoutCatalog.suggestId(displayName);
+                var now = java.time.Instant.now().toString();
+                var doc = new LayoutDoc(
+                    LayoutDoc.CURRENT_VERSION,
+                    newId,
+                    displayName,
+                    template.id(),
+                    now,
+                    now,
+                    template.toDoc().body()
+                );
+                try {
+                    LayoutCatalog.save(doc);
+                    persistOutgoingLayout();
+                    activeLayoutId = newId;
+                    var loaded = LayoutCatalog.get(newId);
+                    var bodyRoot = LayoutSnapshot.hydrate(
+                        loaded != null ? loaded.body() : doc.body(),
+                        panelCtx()
+                    );
+                    this.root = buildOuterLayout(bodyRoot);
+                    persistActiveSelection();
+                } catch (java.io.IOException e) {
+                    org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] New from Template failed", e);
+                }
+                if (manageLayoutsDialog != null) {
+                    manageLayoutsDialog.setActiveLayoutId(activeLayoutId);
+                    manageLayoutsDialog.refresh();
+                }
+                this.layoutNameDialog = null;
+            },
+            () -> this.layoutNameDialog = null
+        );
+    }
+
+    private void openManageLayoutsDialog() {
+        this.manageLayoutsDialog = new ManageLayoutsDialog(
+            activeLayoutId,
+            () -> this.manageLayoutsDialog = null,
+            doc -> switchLayout(doc.id()),
+            this::renameFromManage,
+            this::duplicateFromManage,
+            this::deleteFromManage
+        );
+    }
+
+    private void openLayoutsFolder() {
+        try {
+            com.blib.engine.layout.LayoutStorage.ensureRootExists();
+        } catch (java.io.IOException ignored) {
+            // Best-effort — openUri below will fail loudly if the directory still isn't reachable.
+        }
+        net.minecraft.Util.getPlatform().openUri(com.blib.engine.layout.LayoutStorage.layoutsRoot().toUri());
+    }
+
+    private void renameFromManage(LayoutDoc doc) {
+        var existingId = doc.id();
+        this.layoutNameDialog = new LayoutNameDialog(
+            LayoutNameDialog.Mode.RENAME,
+            doc.displayName(),
+            id -> id.equals(existingId) || LayoutCatalog.idAvailable(id),
+            displayName -> {
+                var newId = LayoutCatalog.suggestId(displayName);
+                try {
+                    if (newId.equals(existingId)) {
+                        LayoutCatalog.save(doc.withDisplayName(displayName));
+                    } else {
+                        LayoutCatalog.save(doc.withDisplayName(displayName).withId(newId));
+                        LayoutCatalog.delete(existingId);
+                        var state = ActiveLayoutState.read();
+                        ActiveLayoutState.write(state.withoutLayout(existingId));
+                        if (existingId.equals(activeLayoutId)) {
+                            activeLayoutId = newId;
+                            persistActiveSelection();
+                        }
+                    }
+                } catch (java.io.IOException e) {
+                    org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Rename (manage) failed", e);
+                }
+                if (manageLayoutsDialog != null) {
+                    manageLayoutsDialog.setActiveLayoutId(activeLayoutId);
+                    manageLayoutsDialog.refresh();
+                }
+                this.layoutNameDialog = null;
+            },
+            () -> this.layoutNameDialog = null
+        );
+    }
+
+    private void duplicateFromManage(LayoutDoc doc) {
+        this.layoutNameDialog = new LayoutNameDialog(
+            LayoutNameDialog.Mode.DUPLICATE,
+            doc.displayName() + " Copy",
+            LayoutCatalog::idAvailable,
+            displayName -> {
+                var newId = LayoutCatalog.suggestId(displayName);
+                var now = java.time.Instant.now().toString();
+                var copy = new LayoutDoc(
+                    LayoutDoc.CURRENT_VERSION,
+                    newId,
+                    displayName,
+                    doc.templateBase(),
+                    now,
+                    now,
+                    doc.body()
+                );
+                try {
+                    LayoutCatalog.save(copy);
+                } catch (java.io.IOException e) {
+                    org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Duplicate (manage) failed", e);
+                }
+                if (manageLayoutsDialog != null) {
+                    manageLayoutsDialog.refresh();
+                }
+                this.layoutNameDialog = null;
+            },
+            () -> this.layoutNameDialog = null
+        );
+    }
+
+    private void deleteFromManage(LayoutDoc doc) {
+        var deletedId = doc.id();
+        var isTemplate = LayoutCatalog.isTemplateId(deletedId);
+        var message = isTemplate
+            ? "Delete '" + doc.displayName()
+                + "'? This is a template — it will be re-seeded with default content next time the workspace opens."
+            : "Delete '" + doc.displayName() + "'? This cannot be undone.";
+        this.confirmDialog = new ConfirmDialog(
+            "Delete layout?",
+            message,
+            "Delete",
+            "Cancel",
+            true,
+            () -> {
+                try {
+                    LayoutCatalog.delete(deletedId);
+                } catch (java.io.IOException e) {
+                    org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Delete (manage) failed", e);
+                }
+                var state = ActiveLayoutState.read();
+                ActiveLayoutState.write(state.withoutLayout(deletedId));
+                if (deletedId.equals(activeLayoutId)) {
+                    var newId = ActiveLayoutState.resolve(
+                        ProjectSession.activeProject() != null ? ProjectSession.activeProjectName() : null,
+                        ActiveLayoutState.read()
+                    );
+                    activeLayoutId = LayoutTemplate.DEFAULT.id();
+                    switchLayout(newId);
+                }
+                if (manageLayoutsDialog != null) {
+                    manageLayoutsDialog.setActiveLayoutId(activeLayoutId);
+                    manageLayoutsDialog.refresh();
+                }
+            },
+            () -> {}
+        );
     }
 
     /**

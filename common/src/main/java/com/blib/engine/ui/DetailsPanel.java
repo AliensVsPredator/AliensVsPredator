@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.TreeSet;
 
 import com.blib.engine.blockselection.BlockSelection;
+import com.blib.engine.entityselection.EntityGizmoMode;
 import com.blib.engine.gizmo.BLibGizmoState;
 import com.blib.engine.jigsaw.JigsawPieceLibrary;
 import com.blib.engine.jigsaw.JigsawPieceSelection;
@@ -36,6 +37,8 @@ import com.blib.engine.session.ProjectSession;
 import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.C2SDeleteCapturePayload;
 import com.blib.mod.common.network.packet.C2SListCapturesPayload;
+import com.blib.mod.common.network.packet.C2SSetEntityScalePayload;
+import com.blib.mod.common.network.packet.C2STranslateEntityPayload;
 import com.blib.mod.common.network.packet.C2SUpdateJigsawBlockPayload;
 
 /**
@@ -186,6 +189,33 @@ public final class DetailsPanel implements Panel {
     private final TextInput volumeSizeZ = new TextInput("Z", v -> commitVolumeSize(2, v));
 
     /**
+     * Tool toolbar for {@link EntitySelectable} — picks Translate or Scale gizmo. Mirrors the
+     * {@link #volumeToolControl} but with two entries since entities have no MOVE_BLOCKS analog.
+     */
+    private final SegmentedControl entityToolControl = new SegmentedControl(List.of("Translate", "Scale"), 0);
+
+    /**
+     * Position inputs for the entity's X/Y/Z position. Free continuous (doubles), commit via teleport packet on Enter.
+     */
+    private final TextInput entityPosX = new TextInput("X", v -> commitEntityPosition(0, v));
+
+    private final TextInput entityPosY = new TextInput("Y", v -> commitEntityPosition(1, v));
+
+    private final TextInput entityPosZ = new TextInput("Z", v -> commitEntityPosition(2, v));
+
+    /**
+     * Scale input for the entity's {@code Attributes.SCALE}. Single double; commit clamps to [0.1, 4.0] server-side.
+     */
+    private final TextInput entityScale = new TextInput("Scale", v -> commitEntityScale(v));
+
+    /**
+     * Most-recently-inspected entity id. Reset on selection swap so all entity input fields force-resync from the new
+     * entity even when their previous content happened to match — without this, switching between two entities with
+     * coincidentally-equal positions would leave focus + caret stuck on the previous entity's value.
+     */
+    private int lastInspectedEntityId = -1;
+
+    /**
      * Position of the block currently shown in the inspector. When this changes we reset all input contents to the new
      * block's BE state, so a selection swap doesn't leak the previous block's pending edits.
      */
@@ -287,7 +317,7 @@ public final class DetailsPanel implements Panel {
             switch (single.type()) {
                 case ENTITY -> {
                     currentBlock = null;
-                    renderEntityView(graphics, font, x, rowY, width, (EntitySelectable) single);
+                    renderEntityView(graphics, font, x, rowY, width, mouseX, mouseY, (EntitySelectable) single);
                 }
                 case BLOCK -> {
                     if (single instanceof JigsawBlockSelectable jigsawBlock) {
@@ -346,6 +376,17 @@ public final class DetailsPanel implements Panel {
             volumeSizeX.mouseClicked(mouseX, mouseY, button);
             volumeSizeY.mouseClicked(mouseX, mouseY, button);
             volumeSizeZ.mouseClicked(mouseX, mouseY, button);
+            return false;
+        }
+        if (single instanceof EntitySelectable) {
+            if (entityToolControl.mouseClicked(mouseX, mouseY, button)) {
+                EntityGizmoMode.set(EntityGizmoMode.values()[entityToolControl.selectedIndex()]);
+                return true;
+            }
+            entityPosX.mouseClicked(mouseX, mouseY, button);
+            entityPosY.mouseClicked(mouseX, mouseY, button);
+            entityPosZ.mouseClicked(mouseX, mouseY, button);
+            entityScale.mouseClicked(mouseX, mouseY, button);
             return false;
         }
         // Tool-state view — captures list delete buttons.
@@ -496,28 +537,143 @@ public final class DetailsPanel implements Panel {
     }
 
     /**
-     * Entity-specific view. Pulls the live entity off the {@link EntitySelectable} and surfaces a few useful fields
-     * (type, position, health for living entities). The selectable handles staleness — if the entity has unloaded since
-     * selection, {@code entity()} returns {@code null} and we degrade gracefully.
+     * Entity-specific view. Mirrors the {@link BlockVolumeSelectable} inspector's surface: a Tool toolbar that picks
+     * the gizmo mode, editable Position XYZ inputs that send a teleport packet on Enter, and a Scale input that drives
+     * the entity's {@code Attributes.SCALE}. A read-only Info section at the bottom keeps the type / UUID / health
+     * readout the previous static-only view exposed.
+     * <p>
+     * Inputs mirror entity state each frame (skip while focused) so live entity motion / external scale changes flow
+     * through to the displayed values without clobbering whatever the user is mid-typing.
      */
-    private static void renderEntityView(GuiGraphics graphics, Font font, int x, int y, int width, EntitySelectable selectable) {
+    private void renderEntityView(
+        GuiGraphics graphics,
+        Font font,
+        int x,
+        int y,
+        int width,
+        int mouseX,
+        int mouseY,
+        EntitySelectable selectable
+    ) {
         var rowY = y;
-        rowY = drawSectionHeader(graphics, font, x, rowY, width, "Entity");
-        rowY += CONTENT_PADDING / 2;
-
         var entity = selectable.entity();
         if (entity == null) {
-            rowY = drawNote(graphics, font, x, rowY, "(unloaded)");
+            rowY = drawSectionHeader(graphics, font, x, rowY, width, "Entity");
+            rowY += CONTENT_PADDING / 2;
+            drawNote(graphics, font, x, rowY, "(unloaded)");
             return;
         }
 
+        // Tool toolbar: Translate / Scale, drives EntityGizmoMode. Mirrors the volume inspector's tool switch.
+        rowY = drawSectionHeader(graphics, font, x, rowY, width, "Tool");
+        rowY += CONTENT_PADDING / 2;
+        var toolBarX = x + CONTENT_PADDING;
+        var toolBarW = Math.max(SegmentedControl.HEIGHT * 2, width - 2 * CONTENT_PADDING);
+        entityToolControl.setSelectedIndex(EntityGizmoMode.get().ordinal());
+        entityToolControl.render(graphics, toolBarX, rowY, toolBarW, mouseX, mouseY);
+        rowY += SegmentedControl.HEIGHT + CONTENT_PADDING;
+
+        // Sync inputs from the live entity each frame. Force-resync on selection swap so a new entity's values land
+        // unconditionally — the per-input "skip while focused" guard inside syncVolumeInput keeps the user's in-flight
+        // typing from being clobbered between frames.
+        var force = lastInspectedEntityId != entity.getId();
+        syncEntityInputsFromEntity(entity, force);
+        lastInspectedEntityId = entity.getId();
+
+        rowY = drawSectionHeader(graphics, font, x, rowY, width, "Position");
+        rowY += CONTENT_PADDING / 2;
+        rowY = renderVolumeXyzRow(graphics, font, x, rowY, width, entityPosX, entityPosY, entityPosZ, mouseX, mouseY);
+
+        rowY = drawSectionHeader(graphics, font, x, rowY, width, "Scale");
+        rowY += CONTENT_PADDING / 2;
+        rowY = drawInputRow(graphics, font, x, rowY, width, "Scale", null, entityScale, mouseX, mouseY);
+
+        // Read-only info — type, uuid, health.
+        rowY = drawSectionHeader(graphics, font, x, rowY, width, "Info");
+        rowY += CONTENT_PADDING / 2;
         rowY = drawRow(graphics, font, x, rowY, "Type", entity.getType().getDescriptionId());
         rowY = drawRow(graphics, font, x, rowY, "UUID", entity.getStringUUID().substring(0, 8));
-        var pos = entity.position();
-        rowY = drawRow(graphics, font, x, rowY, "X", String.format("%.2f", pos.x));
-        rowY = drawRow(graphics, font, x, rowY, "Y", String.format("%.2f", pos.y));
-        rowY = drawRow(graphics, font, x, rowY, "Z", String.format("%.2f", pos.z));
         rowY = drawRow(graphics, font, x, rowY, "Health", String.format("%.1f / %.1f", entity.getHealth(), entity.getMaxHealth()));
+    }
+
+    private void syncEntityInputsFromEntity(net.minecraft.world.entity.LivingEntity entity, boolean force) {
+        var pos = entity.position();
+        syncVolumeInput(entityPosX, String.format(java.util.Locale.ROOT, "%.2f", pos.x), force);
+        syncVolumeInput(entityPosY, String.format(java.util.Locale.ROOT, "%.2f", pos.y), force);
+        syncVolumeInput(entityPosZ, String.format(java.util.Locale.ROOT, "%.2f", pos.z), force);
+
+        var attr = entity.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.SCALE);
+        var scaleValue = attr == null ? 1.0 : attr.getValue();
+        syncVolumeInput(entityScale, String.format(java.util.Locale.ROOT, "%.2f", scaleValue), force);
+    }
+
+    private void commitEntityPosition(int axis, String text) {
+        var single = SelectionManager.current().single();
+        if (!(single instanceof EntitySelectable es)) {
+            return;
+        }
+        var entity = es.entity();
+        if (entity == null) {
+            return;
+        }
+        var parsed = parseDouble(text);
+        if (parsed == null) {
+            // Bad input — re-sync to the entity's current value so the user sees their commit was rejected.
+            syncEntityInputsFromEntity(entity, true);
+            return;
+        }
+        var pos = entity.position();
+        var newX = pos.x;
+        var newY = pos.y;
+        var newZ = pos.z;
+        switch (axis) {
+            case 0 -> newX = parsed;
+            case 1 -> newY = parsed;
+            case 2 -> newZ = parsed;
+            default -> {
+                return;
+            }
+        }
+        var mc = Minecraft.getInstance();
+        if (mc.player == null) {
+            return;
+        }
+        var dim = mc.player.level().dimension().location();
+        BLib.MOD.networking().sendToServer(new C2STranslateEntityPayload(entity.getId(), newX, newY, newZ, dim));
+    }
+
+    private void commitEntityScale(String text) {
+        var single = SelectionManager.current().single();
+        if (!(single instanceof EntitySelectable es)) {
+            return;
+        }
+        var entity = es.entity();
+        if (entity == null) {
+            return;
+        }
+        var parsed = parseDouble(text);
+        if (parsed == null) {
+            syncEntityInputsFromEntity(entity, true);
+            return;
+        }
+        var clamped = Math.max(0.1, Math.min(4.0, parsed));
+        var mc = Minecraft.getInstance();
+        if (mc.player == null) {
+            return;
+        }
+        var dim = mc.player.level().dimension().location();
+        BLib.MOD.networking().sendToServer(new C2SSetEntityScalePayload(entity.getId(), clamped, dim));
+    }
+
+    private static @Nullable Double parseDouble(String text) {
+        if (text == null || text.isBlank()) {
+            return null;
+        }
+        try {
+            return Double.parseDouble(text.trim());
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     /**

@@ -22,6 +22,9 @@ import com.blib.mod.common.network.packet.C2SRemoveEntityPayload;
 import com.blib.mod.common.network.packet.C2SRemovePoolElementPayload;
 import com.blib.mod.common.network.packet.C2SRequestPoolDraftPayload;
 import com.blib.mod.common.network.packet.C2SSavePoolPayload;
+import com.blib.mod.common.network.packet.C2SSetEntityScalePayload;
+import com.blib.mod.common.network.packet.C2SSpawnEntityPayload;
+import com.blib.mod.common.network.packet.C2STranslateEntityPayload;
 import com.blib.mod.common.network.packet.C2SUndoPlacementPayload;
 import com.blib.mod.common.network.packet.C2SUpdateJigsawBlockPayload;
 import com.blib.mod.common.network.packet.C2SUpdatePoolElementPayload;
@@ -61,6 +64,30 @@ public class BLibServerPacketHandlers {
                 C2SRemoveEntityPayload.TYPE,
                 C2SRemoveEntityPayload.CODEC,
                 BLibServerListener::handleRemoveEntity
+            )
+        );
+
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromClient<>(
+                C2SSpawnEntityPayload.TYPE,
+                C2SSpawnEntityPayload.CODEC,
+                BLibServerListener::handleSpawnEntity
+            )
+        );
+
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromClient<>(
+                C2STranslateEntityPayload.TYPE,
+                C2STranslateEntityPayload.CODEC,
+                BLibServerListener::handleTranslateEntity
+            )
+        );
+
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromClient<>(
+                C2SSetEntityScalePayload.TYPE,
+                C2SSetEntityScalePayload.CODEC,
+                BLibServerListener::handleSetEntityScale
             )
         );
 

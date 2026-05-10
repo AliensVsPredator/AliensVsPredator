@@ -19,6 +19,9 @@ import com.blib.engine.blockselection.BlockSelectionTranslateGizmoRenderer;
 import com.blib.engine.blockselection.BlockSelectionWireframeRenderer;
 import com.blib.engine.blockselection.MoveBlocksGhostRenderer;
 import com.blib.engine.blockselection.MoveBlocksGizmoRenderer;
+import com.blib.engine.entityselection.EntityGhostRenderer;
+import com.blib.engine.entityselection.EntityScaleGizmoRenderer;
+import com.blib.engine.entityselection.EntityTranslateGizmoRenderer;
 import com.blib.engine.hud.EngineSelectionRenderer;
 import com.blib.engine.jigsaw.JigsawPlacementWorldRenderer;
 import com.blib.engine.jigsaw.placement.JigsawAnchorRenderer;
@@ -102,6 +105,9 @@ public class MixinDebugRenderer {
         BlockSelectionTranslateGizmoRenderer.render(poseStack, camX, camY, camZ);
         MoveBlocksGhostRenderer.render(poseStack, camX, camY, camZ);
         MoveBlocksGizmoRenderer.render(poseStack, camX, camY, camZ);
+        EntityGhostRenderer.render(poseStack, camX, camY, camZ);
+        EntityTranslateGizmoRenderer.render(poseStack, camX, camY, camZ);
+        EntityScaleGizmoRenderer.render(poseStack, camX, camY, camZ);
 
         var access = BLibModPropertyAccess.INSTANCE;
 

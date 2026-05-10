@@ -1,10 +1,14 @@
 package com.blib.mod.common.network;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Mirror;
@@ -48,6 +52,9 @@ import com.blib.mod.common.network.packet.C2SRemoveEntityPayload;
 import com.blib.mod.common.network.packet.C2SRemovePoolElementPayload;
 import com.blib.mod.common.network.packet.C2SRequestPoolDraftPayload;
 import com.blib.mod.common.network.packet.C2SSavePoolPayload;
+import com.blib.mod.common.network.packet.C2SSetEntityScalePayload;
+import com.blib.mod.common.network.packet.C2SSpawnEntityPayload;
+import com.blib.mod.common.network.packet.C2STranslateEntityPayload;
 import com.blib.mod.common.network.packet.C2SUndoPlacementPayload;
 import com.blib.mod.common.network.packet.C2SUpdateJigsawBlockPayload;
 import com.blib.mod.common.network.packet.C2SUpdatePoolElementPayload;
@@ -103,6 +110,94 @@ public final class BLibServerListener {
         }
 
         entity.discard();
+    }
+
+    /**
+     * Spawn an entity at the requested anchor as a UI replacement for {@code /summon}. Op-gated like the other
+     * entity-mutating handlers — same threshold as the underlying command. Refuses spawns that the difficulty would
+     * make pointless ({@code peaceful} + {@link MobCategory#MONSTER}) so the user gets a clean rejection at the UI
+     * layer instead of a despawn-on-next-tick mystery; vanilla {@code /summon} permits these but they're confusing in
+     * an authoring-tool context. Also respects {@link net.minecraft.world.entity.EntityType#canSummon} so
+     * non-summonable types (lightning bolt, fishing bobber, etc.) silently no-op rather than crashing the spawn
+     * pipeline.
+     */
+    public static void handleSpawnEntity(C2SSpawnEntityPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        if (!serverPlayer.hasPermissions(2)) {
+            return;
+        }
+
+        var server = serverPlayer.server;
+        var dimKey = ResourceKey.create(Registries.DIMENSION, payload.dimensionId());
+        var level = server.getLevel(dimKey);
+        if (level == null) {
+            return;
+        }
+
+        var typeOpt = BuiltInRegistries.ENTITY_TYPE.getOptional(payload.entityTypeId());
+        if (typeOpt.isEmpty()) {
+            return;
+        }
+        var type = typeOpt.get();
+
+        if (!type.canSummon()) {
+            return;
+        }
+        if (level.getDifficulty() == Difficulty.PEACEFUL && type.getCategory() == MobCategory.MONSTER) {
+            return;
+        }
+
+        type.spawn(level, payload.anchor(), MobSpawnType.COMMAND);
+    }
+
+    /**
+     * Teleport the entity referenced by {@code payload} to the supplied world coordinates. Op-gated; refuses player
+     * targets and silently no-ops if the dimension or entity can't be resolved (the engine's translate gizmo only fires
+     * this packet on a real drag against a live entity, but the handler stays defensive).
+     */
+    public static void handleTranslateEntity(C2STranslateEntityPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer sp) || !sp.hasPermissions(2)) {
+            return;
+        }
+        var dimKey = ResourceKey.create(Registries.DIMENSION, payload.dimensionId());
+        var level = sp.server.getLevel(dimKey);
+        if (level == null) {
+            return;
+        }
+        var entity = level.getEntity(payload.entityId());
+        if (entity == null || entity instanceof Player) {
+            return;
+        }
+        entity.teleportTo(payload.x(), payload.y(), payload.z());
+    }
+
+    /**
+     * Set the entity's {@link net.minecraft.world.entity.ai.attributes.Attributes#SCALE} attribute. Op-gated; refuses
+     * player targets and silently no-ops on entities whose attribute map doesn't include SCALE (some mob types may not
+     * have it registered). Clamped to {@code [0.1, 4.0]} so a malformed packet can't push an entity to an unusable
+     * size.
+     */
+    public static void handleSetEntityScale(C2SSetEntityScalePayload payload, Player player) {
+        if (!(player instanceof ServerPlayer sp) || !sp.hasPermissions(2)) {
+            return;
+        }
+        var dimKey = ResourceKey.create(Registries.DIMENSION, payload.dimensionId());
+        var level = sp.server.getLevel(dimKey);
+        if (level == null) {
+            return;
+        }
+        var entity = level.getEntity(payload.entityId());
+        if (!(entity instanceof LivingEntity le) || le instanceof Player) {
+            return;
+        }
+        var attr = le.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.SCALE);
+        if (attr == null) {
+            return;
+        }
+        var clamped = Math.max(0.1, Math.min(4.0, payload.scale()));
+        attr.setBaseValue(clamped);
     }
 
     /**

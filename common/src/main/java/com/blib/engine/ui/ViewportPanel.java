@@ -28,9 +28,11 @@ import com.blib.engine.selection.JigsawBlockSelectable;
 import com.blib.engine.selection.SelectionManager;
 import com.blib.engine.session.EngineMode;
 import com.blib.engine.session.EngineNavigation;
+import com.blib.engine.spawn.EntitySpawnSelection;
 import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.C2SMoveSelectionPayload;
 import com.blib.mod.common.network.packet.C2SPlaceJigsawPiecePayload;
+import com.blib.mod.common.network.packet.C2SSpawnEntityPayload;
 import com.blib.mod.common.network.packet.C2SUndoPlacementPayload;
 
 /**
@@ -145,26 +147,47 @@ public final class ViewportPanel implements Panel {
         // at click time rather than reading any cached hover state so the grab matches the cursor's *current*
         // position, not the most recent render frame.
         if (button == 0 && BlockSelection.picking() == BlockSelection.PickingState.NONE) {
-            var gizmoMode = BlockSelection.gizmoMode();
-            if (gizmoMode == BlockSelection.GizmoMode.SCALE_VOLUME) {
-                var scaleHit = BlockSelectionScaleGizmo.pickUnderCursorWithDistance(session);
-                if (scaleHit != null) {
-                    BlockSelectionScaleGizmo.beginDrag(scaleHit.face(), session);
-                    return true;
+            // Entity gizmo arms first (and only) when an entity is the active selection — block gizmos are hidden
+            // by their renderers in this case so a click against an entity wouldn't reach a block-handle anyway, but
+            // routing entity-first here keeps the dispatch deterministic.
+            var entitySel = com.blib.engine.selection.SelectionManager.current().single();
+            if (entitySel instanceof com.blib.engine.selection.EntitySelectable es && es.entity() != null) {
+                var entity = es.entity();
+                if (com.blib.engine.entityselection.EntityGizmoMode.get() == com.blib.engine.entityselection.EntityGizmoMode.TRANSLATE) {
+                    var hit = com.blib.engine.entityselection.EntityTranslateGizmo.pickUnderCursorWithDistance(session, entity);
+                    if (hit != null) {
+                        com.blib.engine.entityselection.EntityTranslateGizmo.beginDrag(entity, hit.axis(), session);
+                        return true;
+                    }
+                } else {
+                    var hit = com.blib.engine.entityselection.EntityScaleGizmo.pickUnderCursorWithDistance(session, entity);
+                    if (hit != null) {
+                        com.blib.engine.entityselection.EntityScaleGizmo.beginDrag(entity, session);
+                        return true;
+                    }
                 }
-            } else if (gizmoMode == BlockSelection.GizmoMode.TRANSLATE_VOLUME) {
-                var translateHit = BlockSelectionTranslateGizmo.pickUnderCursorWithDistance(session);
-                if (translateHit != null) {
-                    BlockSelectionTranslateGizmo.beginDrag(translateHit.axis(), session);
-                    return true;
-                }
-            } else if (gizmoMode == BlockSelection.GizmoMode.MOVE_BLOCKS) {
-                var moveHit = MoveBlocksGizmo.pickUnderCursorWithDistance(session);
-                if (moveHit != null) {
-                    // Latch Alt at click time for copy-vs-cut. Live-sampling during drag would let a stray Alt
-                    // release flip the operation mid-drag, which is jarring; latching keeps it stable.
-                    MoveBlocksGizmo.beginDrag(moveHit.axis(), session, Screen.hasAltDown());
-                    return true;
+            } else {
+                var gizmoMode = BlockSelection.gizmoMode();
+                if (gizmoMode == BlockSelection.GizmoMode.SCALE_VOLUME) {
+                    var scaleHit = BlockSelectionScaleGizmo.pickUnderCursorWithDistance(session);
+                    if (scaleHit != null) {
+                        BlockSelectionScaleGizmo.beginDrag(scaleHit.face(), session);
+                        return true;
+                    }
+                } else if (gizmoMode == BlockSelection.GizmoMode.TRANSLATE_VOLUME) {
+                    var translateHit = BlockSelectionTranslateGizmo.pickUnderCursorWithDistance(session);
+                    if (translateHit != null) {
+                        BlockSelectionTranslateGizmo.beginDrag(translateHit.axis(), session);
+                        return true;
+                    }
+                } else if (gizmoMode == BlockSelection.GizmoMode.MOVE_BLOCKS) {
+                    var moveHit = MoveBlocksGizmo.pickUnderCursorWithDistance(session);
+                    if (moveHit != null) {
+                        // Latch Alt at click time for copy-vs-cut. Live-sampling during drag would let a stray Alt
+                        // release flip the operation mid-drag, which is jarring; latching keeps it stable.
+                        MoveBlocksGizmo.beginDrag(moveHit.axis(), session, Screen.hasAltDown());
+                        return true;
+                    }
                 }
             }
         }
@@ -267,6 +290,24 @@ public final class ViewportPanel implements Panel {
                 return true;
             }
 
+            // Entity-spawn dispatch — the UI replacement for /summon. Mutually exclusive with the jigsaw piece
+            // path above (selecting one clears the other) so we only reach here when no piece is held. Spawn
+            // position is the block adjacent to the clicked surface, matching item-placement intuition (the entity
+            // stands on the face the user clicked).
+            var spawnTypeId = EntitySpawnSelection.selectedTypeId();
+            if (spawnTypeId != null) {
+                var hit = JigsawPlacementCursor.clipFromCursor(session);
+                if (hit != null) {
+                    var anchor = hit.getBlockPos().relative(hit.getDirection());
+                    var mc = net.minecraft.client.Minecraft.getInstance();
+                    if (mc.player != null) {
+                        var dim = mc.player.level().dimension().location();
+                        BLib.MOD.networking().sendToServer(new C2SSpawnEntityPayload(spawnTypeId, anchor, dim));
+                    }
+                }
+                return true;
+            }
+
             // Try entity / jigsaw-block selection first (existing path). If neither hit, fall back to drag-to-pick:
             // start a fresh block-volume selection at the clicked block. Subsequent mouseDragged events extend
             // cornerB; mouseReleased finalizes the drag.
@@ -336,10 +377,13 @@ public final class ViewportPanel implements Panel {
         }
 
         // Gizmo drag claims LMB drags while any selection gizmo is grabbed. Other LMB drags are no-ops at this layer
-        // (mmbDrag handles MMB orbit/pan/dolly below).
+        // (mmbDrag handles MMB orbit/pan/dolly below). Block and entity gizmos are mutually exclusive at click time
+        // but the update path is unified so a single ray-fetch services whichever gizmo is live.
         if (
             button == 0
-                && (BlockSelectionScaleGizmo.isDragging() || BlockSelectionTranslateGizmo.isDragging() || MoveBlocksGizmo.isDragging())
+                && (BlockSelectionScaleGizmo.isDragging() || BlockSelectionTranslateGizmo.isDragging() || MoveBlocksGizmo.isDragging()
+                    || com.blib.engine.entityselection.EntityTranslateGizmo.isDragging()
+                    || com.blib.engine.entityselection.EntityScaleGizmo.isDragging())
         ) {
             var rayDir = JigsawPlacementCursor.cursorRayDirection(session);
             if (rayDir != null) {
@@ -351,6 +395,12 @@ public final class ViewportPanel implements Panel {
                 }
                 if (MoveBlocksGizmo.isDragging()) {
                     MoveBlocksGizmo.updateDrag(session, rayDir);
+                }
+                if (com.blib.engine.entityselection.EntityTranslateGizmo.isDragging()) {
+                    com.blib.engine.entityselection.EntityTranslateGizmo.updateDrag(session, rayDir);
+                }
+                if (com.blib.engine.entityselection.EntityScaleGizmo.isDragging()) {
+                    com.blib.engine.entityselection.EntityScaleGizmo.updateDrag(session, rayDir);
                 }
             }
             return true;
@@ -390,10 +440,43 @@ public final class ViewportPanel implements Panel {
 
         if (
             button == 0
-                && (BlockSelectionScaleGizmo.isDragging() || BlockSelectionTranslateGizmo.isDragging() || MoveBlocksGizmo.isDragging())
+                && (BlockSelectionScaleGizmo.isDragging() || BlockSelectionTranslateGizmo.isDragging() || MoveBlocksGizmo.isDragging()
+                    || com.blib.engine.entityselection.EntityTranslateGizmo.isDragging()
+                    || com.blib.engine.entityselection.EntityScaleGizmo.isDragging())
         ) {
             BlockSelectionScaleGizmo.endDrag();
             BlockSelectionTranslateGizmo.endDrag();
+            // Entity translate / scale commits via single packet on release. Both could theoretically be active
+            // simultaneously (they aren't, since LMB capture is exclusive), but defensively endDrag both so we don't
+            // leak ghost state if some future change introduces concurrent gestures.
+            var entityTranslateResult = com.blib.engine.entityselection.EntityTranslateGizmo.endDrag();
+            var entityScaleResult = com.blib.engine.entityselection.EntityScaleGizmo.endDrag();
+            var mcInst = net.minecraft.client.Minecraft.getInstance();
+            if (mcInst.player != null) {
+                var dim = mcInst.player.level().dimension().location();
+                if (entityTranslateResult != null) {
+                    BLib.MOD.networking()
+                        .sendToServer(
+                            new com.blib.mod.common.network.packet.C2STranslateEntityPayload(
+                                entityTranslateResult.entity().getId(),
+                                entityTranslateResult.finalX(),
+                                entityTranslateResult.finalY(),
+                                entityTranslateResult.finalZ(),
+                                dim
+                            )
+                        );
+                }
+                if (entityScaleResult != null) {
+                    BLib.MOD.networking()
+                        .sendToServer(
+                            new com.blib.mod.common.network.packet.C2SSetEntityScalePayload(
+                                entityScaleResult.entity().getId(),
+                                entityScaleResult.newScale(),
+                                dim
+                            )
+                        );
+                }
+            }
             // Move drag commits via packet on release if the user dragged a non-zero distance. The ghost stays
             // visible (moveOffset is preserved) until the server's reply lands, so the user has continuous feedback.
             var moveResult = MoveBlocksGizmo.endDrag();
