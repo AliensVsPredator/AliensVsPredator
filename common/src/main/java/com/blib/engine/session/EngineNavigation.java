@@ -184,9 +184,9 @@ public final class EngineNavigation {
     }
 
     /**
-     * Ray-pick the closest selectable along the cursor-through-camera ray. Tries both a {@link LivingEntity} hit and
-     * a jigsaw-block hit (via {@link JigsawWorldRaycast}); whichever is closer to the camera wins. On miss, clears
-     * any existing selection.
+     * Ray-pick the closest selectable along the cursor-through-camera ray. Tries both a {@link LivingEntity} hit and a
+     * jigsaw-block hit (via {@link JigsawWorldRaycast}); whichever is closer to the camera wins. On miss, clears any
+     * existing selection.
      * <p>
      * {@code (relX, relY)} are in {@code [0, 1]} relative to the rendered viewport (full-screen render — the viewport
      * panel just downsamples this, so screen-relative and panel-relative cursor positions map to the same world ray).

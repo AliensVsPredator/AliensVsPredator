@@ -1,10 +1,5 @@
 package com.blib.mod.common.network;
 
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.JsonOps;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
@@ -15,29 +10,54 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.JigsawBlockEntity;
-import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
-import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
-import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import org.jetbrains.annotations.ApiStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 
 import com.blib.api.common.goap.v1.GOAPUser;
-import com.blib.internal.mixin.MixinStructureTemplatePool_Accessor;
+import com.blib.internal.common.capture.BlockCaptureEngine;
+import com.blib.internal.common.capture.CaptureMode;
+import com.blib.internal.common.clipboard.BlockClipboardEngine;
+import com.blib.internal.common.clipboard.ServerBlockClipboard;
+import com.blib.internal.common.move.BlockMoveEngine;
+import com.blib.internal.common.storage.EngineProjectIO;
+import com.blib.internal.common.storage.ProjectDraftStore;
+import com.blib.mod.BLib;
 import com.blib.mod.common.gameplay.goap.GOAPDebugTracker;
 import com.blib.mod.common.gameplay.jigsaw.PlacementHistory;
-import com.blib.mod.common.network.packet.C2SGOAPTrackPayload;
-import com.blib.mod.common.network.packet.C2SPlaceJigsawPiecePayload;
-import com.blib.mod.common.network.packet.C2SRemoveEntityPayload;
-import com.blib.internal.common.storage.PoolEditorSaveIO;
 import com.blib.mod.common.network.packet.C2SAddPoolElementPayload;
+import com.blib.mod.common.network.packet.C2SCaptureBlocksPayload;
+import com.blib.mod.common.network.packet.C2SCopySelectionPayload;
+import com.blib.mod.common.network.packet.C2SCreateProjectPayload;
+import com.blib.mod.common.network.packet.C2SDeleteCapturePayload;
+import com.blib.mod.common.network.packet.C2SDeleteProjectPayload;
+import com.blib.mod.common.network.packet.C2SDeleteSelectionPayload;
+import com.blib.mod.common.network.packet.C2SGOAPTrackPayload;
+import com.blib.mod.common.network.packet.C2SListCapturesPayload;
+import com.blib.mod.common.network.packet.C2SListProjectsPayload;
+import com.blib.mod.common.network.packet.C2SMoveSelectionPayload;
+import com.blib.mod.common.network.packet.C2SOpenProjectPayload;
+import com.blib.mod.common.network.packet.C2SPasteFromClipboardPayload;
+import com.blib.mod.common.network.packet.C2SPlaceJigsawPiecePayload;
+import com.blib.mod.common.network.packet.C2SReloadProjectPayload;
+import com.blib.mod.common.network.packet.C2SRemoveEntityPayload;
 import com.blib.mod.common.network.packet.C2SRemovePoolElementPayload;
+import com.blib.mod.common.network.packet.C2SRequestPoolDraftPayload;
 import com.blib.mod.common.network.packet.C2SSavePoolPayload;
 import com.blib.mod.common.network.packet.C2SUndoPlacementPayload;
 import com.blib.mod.common.network.packet.C2SUpdateJigsawBlockPayload;
 import com.blib.mod.common.network.packet.C2SUpdatePoolElementPayload;
+import com.blib.mod.common.network.packet.ProjectOp;
+import com.blib.mod.common.network.packet.S2CCaptureListPayload;
+import com.blib.mod.common.network.packet.S2CClipboardStatusPayload;
+import com.blib.mod.common.network.packet.S2CMoveSelectionResultPayload;
+import com.blib.mod.common.network.packet.S2CPoolDraftPayload;
+import com.blib.mod.common.network.packet.S2CProjectListPayload;
+import com.blib.mod.common.network.packet.S2CProjectOpResultPayload;
 
 /**
  * Server-side handlers for client → server packets. Mirror of {@link BLibClientListener} for the C2S direction — each
@@ -149,9 +169,9 @@ public final class BLibServerListener {
      * server with an {@link ArrayIndexOutOfBoundsException}.
      * <p>
      * After updating the block-entity fields we mark it changed (chunk save) and re-broadcast the block state to
-     * clients via {@link net.minecraft.world.level.Level#sendBlockUpdated} so any nearby observer sees the new NBT
-     * on their next BE sync — without this, the inspector that just sent the packet would see stale state until the
-     * chunk happened to re-sync for some other reason.
+     * clients via {@link net.minecraft.world.level.Level#sendBlockUpdated} so any nearby observer sees the new NBT on
+     * their next BE sync — without this, the inspector that just sent the packet would see stale state until the chunk
+     * happened to re-sync for some other reason.
      */
     public static void handleUpdateJigsawBlock(C2SUpdateJigsawBlockPayload payload, Player player) {
         if (!(player instanceof ServerPlayer serverPlayer)) {
@@ -184,14 +204,13 @@ public final class BLibServerListener {
     }
 
     /**
-     * Apply a live mutation to a structure template pool — set the weight + projection of one top-level element.
-     * The pool is mutated in place via {@link MixinStructureTemplatePool_Accessor}; new generations from this point
-     * forward use the updated values. Edits do not persist to disk; the world's next reload reverts to JSON state.
-     * Op-gated like the other engine packets.
+     * Edit one element of a structure template pool — set its weight and projection. Disk-only: writes to the active
+     * project's pool JSON via {@link ProjectDraftStore}; the live {@code Registries#TEMPLATE_POOL} object is left
+     * untouched so existing structure generation keeps using the pre-reload state. The user runs Reload Project
+     * (separate packet) to bring the registry up to date.
      * <p>
-     * After updating {@code rawTemplates}, we rebuild the expanded {@code templates} list — vanilla constructs that
-     * once in {@code StructureTemplatePool}'s constructor as {@code element repeated weight times}; we redo the same
-     * expansion so subsequent {@code getRandomTemplate} calls reflect the new weights.
+     * Op-gated. Rejected while a reload is in flight — see {@link ProjectDraftStore#isReloading} for why. After the
+     * disk write, an {@link S2CPoolDraftPayload} echo gives the client the new authoritative element list.
      */
     public static void handleUpdatePoolElement(C2SUpdatePoolElementPayload payload, Player player) {
         if (!(player instanceof ServerPlayer serverPlayer)) {
@@ -200,41 +219,37 @@ public final class BLibServerListener {
         if (!serverPlayer.hasPermissions(2)) {
             return;
         }
+        if (ProjectDraftStore.INSTANCE.isReloading()) {
+            return;
+        }
 
-        var registry = serverPlayer.serverLevel().registryAccess().registryOrThrow(Registries.TEMPLATE_POOL);
-        var pool = registry.get(payload.poolId());
+        var projectName = payload.projectName();
+        var server = serverPlayer.serverLevel().getServer();
+        if (!validProjectFor(projectName)) {
+            return;
+        }
+
+        var pool = ProjectDraftStore.INSTANCE.getOrSeedPool(server, projectName, payload.poolId());
         if (pool == null) {
             return;
         }
-
-        var accessor = (MixinStructureTemplatePool_Accessor) (Object) pool;
-        var rawTemplates = new ArrayList<>(accessor.getElementCounts());
-        var idx = payload.rawIndex();
-        if (idx < 0 || idx >= rawTemplates.size()) {
+        if (!ProjectDraftStore.applyUpdate(pool, payload.rawIndex(), payload.newWeight(), payload.newProjectionOrdinal())) {
             return;
         }
-        var oldPair = rawTemplates.get(idx);
-        // Phase 2 only addresses top-level SinglePoolElements. ListPoolElement / EmptyPoolElement / etc. need
-        // separate handling and aren't reachable from the editor's UI (their rawIndex is -1 there).
-        if (!(oldPair.getFirst() instanceof SinglePoolElement element)) {
+        try {
+            ProjectDraftStore.INSTANCE.writeAndPersist(projectName, payload.poolId(), pool);
+        } catch (IOException e) {
+            LOGGER.error("[BLib] handleUpdatePoolElement: write failed for project {} pool {}", projectName, payload.poolId(), e);
             return;
         }
 
-        var newWeight = Math.max(1, payload.newWeight());
-        var projValues = StructureTemplatePool.Projection.values();
-        if (payload.newProjectionOrdinal() >= 0 && payload.newProjectionOrdinal() < projValues.length) {
-            element.setProjection(projValues[payload.newProjectionOrdinal()]);
-        }
-
-        rawTemplates.set(idx, Pair.of(element, newWeight));
-        accessor.setElementCounts(rawTemplates);
-        rebuildExpandedTemplates(accessor, rawTemplates);
+        var elements = ProjectDraftStore.extractDraftElements(pool);
+        BLib.MOD.networking().sendToClient(serverPlayer, new S2CPoolDraftPayload(projectName, payload.poolId(), elements));
     }
 
     /**
-     * Append a new {@link SinglePoolElement} (pointing at {@code templateId}) to the pool's {@code rawTemplates}.
-     * Used by the Pool Editor's footer "Add piece" picker. Weight is clamped to ≥1; projection ordinal is
-     * bounds-checked. Rebuilds the expanded templates list so generation reflects the addition.
+     * Append a new {@code single_pool_element} (pointing at {@code templateId}) to the project's pool JSON. Used by the
+     * Pool Editor's footer "Add piece" picker. Disk-only — see {@link #handleUpdatePoolElement} for the model.
      */
     public static void handleAddPoolElement(C2SAddPoolElementPayload payload, Player player) {
         if (!(player instanceof ServerPlayer serverPlayer)) {
@@ -243,34 +258,35 @@ public final class BLibServerListener {
         if (!serverPlayer.hasPermissions(2)) {
             return;
         }
+        if (ProjectDraftStore.INSTANCE.isReloading()) {
+            return;
+        }
 
-        var registry = serverPlayer.serverLevel().registryAccess().registryOrThrow(Registries.TEMPLATE_POOL);
-        var pool = registry.get(payload.poolId());
+        var projectName = payload.projectName();
+        var server = serverPlayer.serverLevel().getServer();
+        if (!validProjectFor(projectName)) {
+            return;
+        }
+
+        var pool = ProjectDraftStore.INSTANCE.getOrSeedPool(server, projectName, payload.poolId());
         if (pool == null) {
             return;
         }
-
-        var projValues = StructureTemplatePool.Projection.values();
-        if (payload.projectionOrdinal() < 0 || payload.projectionOrdinal() >= projValues.length) {
+        ProjectDraftStore.applyAdd(pool, payload.templateId(), payload.weight(), payload.projectionOrdinal());
+        try {
+            ProjectDraftStore.INSTANCE.writeAndPersist(projectName, payload.poolId(), pool);
+        } catch (IOException e) {
+            LOGGER.error("[BLib] handleAddPoolElement: write failed for project {} pool {}", projectName, payload.poolId(), e);
             return;
         }
 
-        var element = StructurePoolElement
-            .single(payload.templateId().toString())
-            .apply(projValues[payload.projectionOrdinal()]);
-
-        var accessor = (MixinStructureTemplatePool_Accessor) (Object) pool;
-        var rawTemplates = new ArrayList<>(accessor.getElementCounts());
-        rawTemplates.add(Pair.of(element, Math.max(1, payload.weight())));
-        accessor.setElementCounts(rawTemplates);
-        rebuildExpandedTemplates(accessor, rawTemplates);
+        var elements = ProjectDraftStore.extractDraftElements(pool);
+        BLib.MOD.networking().sendToClient(serverPlayer, new S2CPoolDraftPayload(projectName, payload.poolId(), elements));
     }
 
     /**
-     * Remove the entry at {@code rawIndex} from the pool's {@code rawTemplates}. Used by the Pool Editor's per-row
-     * "×" button. Out-of-range indices are silently ignored — likely a stale client-side reference (e.g. user
-     * clicked × on a row that was already removed by another packet). Rebuilds the expanded templates list so
-     * generation skips the removed element.
+     * Remove the entry at {@code rawIndex} from the project's pool JSON. Used by the Pool Editor's per-row × button.
+     * Out-of-range indices are silently ignored — likely a stale client-side reference. Disk-only.
      */
     public static void handleRemovePoolElement(C2SRemovePoolElementPayload payload, Player player) {
         if (!(player instanceof ServerPlayer serverPlayer)) {
@@ -279,114 +295,409 @@ public final class BLibServerListener {
         if (!serverPlayer.hasPermissions(2)) {
             return;
         }
+        if (ProjectDraftStore.INSTANCE.isReloading()) {
+            return;
+        }
 
-        var registry = serverPlayer.serverLevel().registryAccess().registryOrThrow(Registries.TEMPLATE_POOL);
-        var pool = registry.get(payload.poolId());
+        var projectName = payload.projectName();
+        var server = serverPlayer.serverLevel().getServer();
+        if (!validProjectFor(projectName)) {
+            return;
+        }
+
+        var pool = ProjectDraftStore.INSTANCE.getOrSeedPool(server, projectName, payload.poolId());
         if (pool == null) {
             return;
         }
-
-        var accessor = (MixinStructureTemplatePool_Accessor) (Object) pool;
-        var rawTemplates = new ArrayList<>(accessor.getElementCounts());
-        if (payload.rawIndex() < 0 || payload.rawIndex() >= rawTemplates.size()) {
+        if (!ProjectDraftStore.applyRemove(pool, payload.rawIndex())) {
             return;
         }
-        rawTemplates.remove(payload.rawIndex());
-        accessor.setElementCounts(rawTemplates);
-        rebuildExpandedTemplates(accessor, rawTemplates);
+        try {
+            ProjectDraftStore.INSTANCE.writeAndPersist(projectName, payload.poolId(), pool);
+        } catch (IOException e) {
+            LOGGER.error("[BLib] handleRemovePoolElement: write failed for project {} pool {}", projectName, payload.poolId(), e);
+            return;
+        }
+
+        var elements = ProjectDraftStore.extractDraftElements(pool);
+        BLib.MOD.networking().sendToClient(serverPlayer, new S2CPoolDraftPayload(projectName, payload.poolId(), elements));
     }
 
     /**
-     * Save the current in-memory state of the pool to disk under the auto-managed {@code blib_engine} datapack,
-     * then trigger a server-wide resource reload so the on-disk state replaces the live edits. Op-gated.
-     * <p>
-     * On first save the pack folder + {@code pack.mcmeta} are created and (if not already present) added to the
-     * world's selected pack ids. Subsequent saves just overwrite the JSON. The reload is async; the file is on disk
-     * by the time this method returns, but the registry refresh completes a few hundred ms later.
+     * Pool Editor "Save & Reload" button — every pool edit already writes to disk, so this is just a reload trigger
+     * dressed up as a header button. The {@code poolId} field is unused server-side; the client uses it only to track
+     * which editor invoked the reload.
      */
     public static void handleSavePool(C2SSavePoolPayload payload, Player player) {
         if (!(player instanceof ServerPlayer serverPlayer)) {
-            LOGGER.warn("[BLib] handleSavePool: not a ServerPlayer; bailing.");
             return;
         }
         if (!serverPlayer.hasPermissions(2)) {
-            LOGGER.warn("[BLib] handleSavePool: player {} lacks op-perm 2; bailing.", serverPlayer.getGameProfile().getName());
             return;
         }
-
-        var server = serverPlayer.serverLevel().getServer();
-        var registryAccess = server.registryAccess();
-        var registry = registryAccess.registryOrThrow(Registries.TEMPLATE_POOL);
-        var pool = registry.get(payload.poolId());
-        if (pool == null) {
-            LOGGER.warn("[BLib] handleSavePool: pool {} not in registry; bailing.", payload.poolId());
-            return;
-        }
-
-        com.google.gson.JsonElement json;
-        try {
-            // DIRECT_CODEC encodes the whole pool — but it has a Holder<StructureTemplatePool> fallback field, and
-            // Holder serialization needs registry context. RegistryOps wraps JsonOps with the registry lookup so
-            // the holder reference round-trips cleanly to its ResourceLocation. (Plain JsonOps.INSTANCE silently
-            // throws on the holder, which is what was happening before — pool was never written, no error
-            // surfaced because we caught Throwable and returned.)
-            var ops = registryAccess.createSerializationContext(JsonOps.INSTANCE);
-            json = StructureTemplatePool.DIRECT_CODEC
-                .encodeStart(ops, pool)
-                .getOrThrow();
-        } catch (Throwable t) {
-            LOGGER.error("[BLib] handleSavePool: codec encode failed for pool {}", payload.poolId(), t);
-            return;
-        }
-
-        try {
-            var written = PoolEditorSaveIO.writePool(server, payload.poolId(), json);
-            LOGGER.info("[BLib] handleSavePool: wrote pool {} to {}", payload.poolId(), written);
-        } catch (java.io.IOException e) {
-            LOGGER.error("[BLib] handleSavePool: disk write failed for pool {}", payload.poolId(), e);
-            return;
-        }
-
-        // Make sure the auto-managed pack is discovered + selected, then reload everything. reload() refreshes the
-        // pack list (picks up our just-created folder); reloadResources then re-imports all selected packs.
-        var packRepo = server.getPackRepository();
-        packRepo.reload();
-        // Pack id format depends on the source's PackSource — for world datapack folders, the id is normally
-        // prefixed with "file/", but check both forms defensively in case the prefix differs across loader / MC
-        // versions. Picking the first id ending in our pack name is robust to either.
-        String actualPackId = packRepo.getAvailableIds().stream()
-            .filter(id -> id.equals(PoolEditorSaveIO.PACK_NAME) || id.endsWith("/" + PoolEditorSaveIO.PACK_NAME))
-            .findFirst()
-            .orElse(null);
-        if (actualPackId == null) {
-            LOGGER.warn(
-                "[BLib] handleSavePool: pack '{}' not found in available ids after reload (available: {}); "
-                + "file is on disk but won't be loaded until enabled manually.",
-                PoolEditorSaveIO.PACK_NAME,
-                packRepo.getAvailableIds()
-            );
-            return;
-        }
-        var selected = new ArrayList<>(packRepo.getSelectedIds());
-        if (!selected.contains(actualPackId)) {
-            selected.add(actualPackId);
-        }
-        server.reloadResources(selected);
+        runReload(serverPlayer, payload.projectName());
     }
 
     /**
-     * Rebuild the weight-expanded {@code templates} list from {@code rawTemplates} — the same logic vanilla runs in
-     * {@code StructureTemplatePool}'s constructor (each element repeated {@code weight} times). Doesn't re-shuffle:
-     * we preserve the existing seed-driven pick order so generations stay reproducible across edits.
+     * Reply to {@link C2SListProjectsPayload} with the current set of BLib projects in the world. No op-gating on read
+     * — the picker should be usable by anyone, and listProjects only reveals folder names + descriptions, not any data
+     * the user couldn't see by opening the world's datapacks folder directly.
      */
-    private static void rebuildExpandedTemplates(MixinStructureTemplatePool_Accessor accessor, List<Pair<StructurePoolElement, Integer>> rawTemplates) {
-        ObjectArrayList<StructurePoolElement> expanded = accessor.getElements();
-        expanded.clear();
-        for (var pair : rawTemplates) {
-            for (var i = 0; i < pair.getSecond(); i++) {
-                expanded.add(pair.getFirst());
-            }
+    public static void handleListProjects(C2SListProjectsPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
         }
+        var projects = EngineProjectIO.listProjects();
+        BLib.MOD.networking().sendToClient(serverPlayer, new S2CProjectListPayload(projects));
+    }
+
+    /** Create a new project, then reply with op result + a refreshed list. Op-gated. */
+    public static void handleCreateProject(C2SCreateProjectPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        if (!serverPlayer.hasPermissions(2)) {
+            replyOpResult(serverPlayer, ProjectOp.CREATE, payload.name(), false, "Insufficient permissions");
+            return;
+        }
+        var server = serverPlayer.serverLevel().getServer();
+        try {
+            EngineProjectIO.createProject(payload.name(), payload.description());
+            // Force the active world's pack repo to re-scan now that a new project folder exists. Without this
+            // the new pack only becomes available on the next reload — the picker would let the user Open it but
+            // the runReload path would fail to find the pack id immediately afterward.
+            server.getPackRepository().reload();
+            replyOpResult(serverPlayer, ProjectOp.CREATE, payload.name(), true, "");
+            BLib.MOD.networking().sendToClient(serverPlayer, new S2CProjectListPayload(EngineProjectIO.listProjects()));
+        } catch (IllegalArgumentException | IOException e) {
+            replyOpResult(serverPlayer, ProjectOp.CREATE, payload.name(), false, e.getMessage());
+        }
+    }
+
+    /** Delete a project, then reply with op result + a refreshed list. Op-gated. */
+    public static void handleDeleteProject(C2SDeleteProjectPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        if (!serverPlayer.hasPermissions(2)) {
+            replyOpResult(serverPlayer, ProjectOp.DELETE, payload.name(), false, "Insufficient permissions");
+            return;
+        }
+        var server = serverPlayer.serverLevel().getServer();
+        try {
+            EngineProjectIO.deleteProject(server, payload.name());
+            ProjectDraftStore.INSTANCE.clearProject(payload.name());
+            replyOpResult(serverPlayer, ProjectOp.DELETE, payload.name(), true, "");
+            BLib.MOD.networking().sendToClient(serverPlayer, new S2CProjectListPayload(EngineProjectIO.listProjects()));
+        } catch (IllegalArgumentException | IOException e) {
+            replyOpResult(serverPlayer, ProjectOp.DELETE, payload.name(), false, e.getMessage());
+        }
+    }
+
+    /**
+     * "Open Project" handshake — the picker calls this to confirm the project still exists before transitioning to the
+     * workspace screen. Server-side state for the active project per player is currently unused (every edit packet
+     * carries its own projectName), but the handshake protects against picker-list / on-disk races and gives the client
+     * a clean "OPEN failed" path for missing projects.
+     */
+    public static void handleOpenProject(C2SOpenProjectPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        if (!serverPlayer.hasPermissions(2)) {
+            replyOpResult(serverPlayer, ProjectOp.OPEN, payload.name(), false, "Insufficient permissions");
+            return;
+        }
+        try {
+            EngineProjectIO.validateProjectName(payload.name());
+        } catch (IllegalArgumentException e) {
+            replyOpResult(serverPlayer, ProjectOp.OPEN, payload.name(), false, e.getMessage());
+            return;
+        }
+        if (!EngineProjectIO.isBLibProject(EngineProjectIO.projectRoot(payload.name()))) {
+            replyOpResult(serverPlayer, ProjectOp.OPEN, payload.name(), false, "Project '" + payload.name() + "' does not exist");
+            return;
+        }
+        replyOpResult(serverPlayer, ProjectOp.OPEN, payload.name(), true, "");
+    }
+
+    /** "Reload Project" — make on-disk edits live in the registry. Op-gated. */
+    public static void handleReloadProject(C2SReloadProjectPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        if (!serverPlayer.hasPermissions(2)) {
+            replyOpResult(serverPlayer, ProjectOp.RELOAD, payload.projectName(), false, "Insufficient permissions");
+            return;
+        }
+        runReload(serverPlayer, payload.projectName());
+    }
+
+    /**
+     * Send the active project's authoritative state for one pool back to the client. Lazy-seeds from the registry if
+     * the project has no override yet; either way the client's draft cache becomes the editor's display source.
+     */
+    public static void handleRequestPoolDraft(C2SRequestPoolDraftPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        if (!serverPlayer.hasPermissions(2)) {
+            return;
+        }
+        var server = serverPlayer.serverLevel().getServer();
+        if (!validProjectFor(payload.projectName())) {
+            return;
+        }
+        var pool = ProjectDraftStore.INSTANCE.getOrSeedPool(server, payload.projectName(), payload.poolId());
+        if (pool == null) {
+            return;
+        }
+        var elements = ProjectDraftStore.extractDraftElements(pool);
+        BLib.MOD.networking().sendToClient(serverPlayer, new S2CPoolDraftPayload(payload.projectName(), payload.poolId(), elements));
+    }
+
+    /**
+     * Capture a volume of blocks. Op-gated. The actual world walk runs on this thread (server thread); the volume cap
+     * in {@link BlockCaptureEngine#MAX_TOTAL_VOLUME} keeps the stall bounded. On {@code JIGSAW} success we kick off a
+     * project reload so the new structures + pool become live in the registry without a separate user click.
+     */
+    public static void handleCaptureBlocks(C2SCaptureBlocksPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        if (!serverPlayer.hasPermissions(2)) {
+            replyOpResult(serverPlayer, ProjectOp.CAPTURE, payload.projectName(), false, "Insufficient permissions");
+            return;
+        }
+        if (ProjectDraftStore.INSTANCE.isReloading()) {
+            replyOpResult(serverPlayer, ProjectOp.CAPTURE, payload.projectName(), false, "Project is reloading; try again in a moment");
+            return;
+        }
+
+        var dimensionKey = ResourceKey.create(Registries.DIMENSION, payload.dimensionId());
+        var mode = CaptureMode.fromOrdinal(payload.modeOrdinal());
+        var server = serverPlayer.serverLevel().getServer();
+        var request = new BlockCaptureEngine.CaptureRequest(
+            payload.projectName(),
+            payload.captureName(),
+            payload.cornerA(),
+            payload.cornerB(),
+            mode,
+            dimensionKey
+        );
+        var result = BlockCaptureEngine.run(server, request);
+        if (!result.success()) {
+            replyOpResult(serverPlayer, ProjectOp.CAPTURE, payload.projectName(), false, result.message());
+            return;
+        }
+
+        replyOpResult(serverPlayer, ProjectOp.CAPTURE, payload.projectName(), true, result.message());
+
+        if (mode == CaptureMode.JIGSAW) {
+            // Make the new structures + pool live in the registry. Without this the user would have to click
+            // Reload Project before the captured pieces could be `/place jigsaw`'d.
+            runReload(serverPlayer, payload.projectName());
+        } else {
+            // General captures live in <project>/captures/ and aren't part of the datapack tree, so no reload is
+            // needed — but the captures list on the panel still wants to refresh.
+            BLib.MOD.networking()
+                .sendToClient(
+                    serverPlayer,
+                    new S2CCaptureListPayload(payload.projectName(), EngineProjectIO.listCaptureNames(payload.projectName()))
+                );
+        }
+    }
+
+    /** List captures in the project's {@code captures/} folder. Read-only; no op-gating. */
+    public static void handleListCaptures(C2SListCapturesPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        var captures = EngineProjectIO.listCaptureNames(payload.projectName());
+        BLib.MOD.networking().sendToClient(serverPlayer, new S2CCaptureListPayload(payload.projectName(), captures));
+    }
+
+    /** Delete a capture file. Op-gated. Replies with success / failure and a fresh capture list. */
+    public static void handleDeleteCapture(C2SDeleteCapturePayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        if (!serverPlayer.hasPermissions(2)) {
+            replyOpResult(serverPlayer, ProjectOp.CAPTURE, payload.projectName(), false, "Insufficient permissions");
+            return;
+        }
+        try {
+            EngineProjectIO.deleteCapture(payload.projectName(), payload.captureName());
+            replyOpResult(serverPlayer, ProjectOp.CAPTURE, payload.projectName(), true, "Deleted '" + payload.captureName() + "'");
+        } catch (IllegalArgumentException | IOException e) {
+            replyOpResult(serverPlayer, ProjectOp.CAPTURE, payload.projectName(), false, e.getMessage());
+        }
+        // Always refresh the list so the panel mirrors disk state regardless of success.
+        BLib.MOD.networking()
+            .sendToClient(
+                serverPlayer,
+                new S2CCaptureListPayload(payload.projectName(), EngineProjectIO.listCaptureNames(payload.projectName()))
+            );
+    }
+
+    /**
+     * Move (or copy) a volume of blocks by an integer offset. Op-gated. Reads the source volume into a transient
+     * StructureTemplate snapshot, optionally clears the source to air, and replaces the snapshot at the offset
+     * destination — vanilla's template machinery handles block-entity NBT, light updates, and registry-aware state
+     * copying. Replies with {@link S2CMoveSelectionResultPayload}; the client uses the success flag to shift the AABB
+     * so the user's selection follows the moved blocks (Photoshop's marquee-follows-pixels pattern).
+     */
+    public static void handleMoveSelection(C2SMoveSelectionPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        if (!serverPlayer.hasPermissions(2)) {
+            BLib.MOD.networking().sendToClient(serverPlayer, new S2CMoveSelectionResultPayload(false, "Insufficient permissions", 0));
+            return;
+        }
+        var dimensionKey = ResourceKey.create(Registries.DIMENSION, payload.dimensionId());
+        var server = serverPlayer.serverLevel().getServer();
+        var request = new BlockMoveEngine.MoveRequest(
+            payload.cornerA(),
+            payload.cornerB(),
+            payload.dx(),
+            payload.dy(),
+            payload.dz(),
+            payload.copy(),
+            dimensionKey
+        );
+        var result = BlockMoveEngine.run(server, request);
+        BLib.MOD.networking()
+            .sendToClient(serverPlayer, new S2CMoveSelectionResultPayload(result.success(), result.message(), result.blockCount()));
+    }
+
+    /**
+     * Copy (or Cut, when {@code deleteSource=true}) the selection's blocks into {@link ServerBlockClipboard}. Op-gated.
+     * Replies via {@link S2CClipboardStatusPayload} so the client knows whether to enable Paste — block NBT stays
+     * server-side to avoid wire-cost on what may be a 256³ snapshot.
+     */
+    public static void handleCopySelection(C2SCopySelectionPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        if (!serverPlayer.hasPermissions(2)) {
+            BLib.MOD.networking().sendToClient(serverPlayer, new S2CClipboardStatusPayload(false, 0, 0, 0, 0L));
+            return;
+        }
+        var dimensionKey = ResourceKey.create(Registries.DIMENSION, payload.dimensionId());
+        var server = serverPlayer.serverLevel().getServer();
+        var result = BlockClipboardEngine.copy(server, payload.cornerA(), payload.cornerB(), payload.deleteSource(), dimensionKey);
+        if (result.success()) {
+            var size = ServerBlockClipboard.size();
+            if (size != null) {
+                BLib.MOD.networking()
+                    .sendToClient(
+                        serverPlayer,
+                        new S2CClipboardStatusPayload(true, size.getX(), size.getY(), size.getZ(), ServerBlockClipboard.filledAtMs())
+                    );
+            } else {
+                BLib.MOD.networking().sendToClient(serverPlayer, new S2CClipboardStatusPayload(false, 0, 0, 0, 0L));
+            }
+        } else {
+            // Failure leaves the clipboard's previous state intact server-side; tell the client that whatever it had
+            // is still valid by re-syncing the current state (or an empty status if there was no prior state).
+            var size = ServerBlockClipboard.size();
+            BLib.MOD.networking()
+                .sendToClient(
+                    serverPlayer,
+                    new S2CClipboardStatusPayload(
+                        ServerBlockClipboard.hasContents(),
+                        size == null ? 0 : size.getX(),
+                        size == null ? 0 : size.getY(),
+                        size == null ? 0 : size.getZ(),
+                        ServerBlockClipboard.filledAtMs()
+                    )
+                );
+        }
+    }
+
+    /**
+     * Paste from {@link ServerBlockClipboard} at {@code destination}. Op-gated. No reply on success — the world state
+     * speaks for itself. Failures (empty clipboard, dimension miss) are silent for v1; the client gates the Paste
+     * button on clipboard state, so the empty case shouldn't reach the server in normal flow.
+     */
+    public static void handlePasteFromClipboard(C2SPasteFromClipboardPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        if (!serverPlayer.hasPermissions(2)) {
+            return;
+        }
+        var dimensionKey = ResourceKey.create(Registries.DIMENSION, payload.dimensionId());
+        var server = serverPlayer.serverLevel().getServer();
+        BlockClipboardEngine.paste(server, payload.destination(), dimensionKey);
+    }
+
+    /**
+     * Clear the AABB to air without touching the clipboard. Distinct from Cut (which fills the clipboard before
+     * clearing). Op-gated; no reply for v1.
+     */
+    public static void handleDeleteSelection(C2SDeleteSelectionPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        if (!serverPlayer.hasPermissions(2)) {
+            return;
+        }
+        var dimensionKey = ResourceKey.create(Registries.DIMENSION, payload.dimensionId());
+        var server = serverPlayer.serverLevel().getServer();
+        BlockClipboardEngine.delete(server, payload.cornerA(), payload.cornerB(), dimensionKey);
+    }
+
+    /**
+     * Common reload path shared by {@link #handleSavePool} and {@link #handleReloadProject}. Sets the {@code reloading}
+     * guard, kicks off {@code reloadResources}, chains the success/failure reply onto its completion, and clears the
+     * project's draft cache so the next edit re-seeds from the freshly-imported registry.
+     */
+    private static void runReload(ServerPlayer serverPlayer, String projectName) {
+        var server = serverPlayer.serverLevel().getServer();
+        ProjectDraftStore.INSTANCE.setReloading(true);
+        try {
+            var future = EngineProjectIO.reloadProject(server, projectName);
+            future.whenComplete((v, t) -> {
+                try {
+                    ProjectDraftStore.INSTANCE.clearProject(projectName);
+                    if (t != null) {
+                        LOGGER.error("[BLib] reloadProject failed (async) for {}", projectName, t);
+                        replyOpResult(serverPlayer, ProjectOp.RELOAD, projectName, false, t.getMessage());
+                    } else {
+                        replyOpResult(serverPlayer, ProjectOp.RELOAD, projectName, true, "");
+                    }
+                } finally {
+                    ProjectDraftStore.INSTANCE.setReloading(false);
+                }
+            });
+        } catch (IllegalArgumentException | IOException e) {
+            ProjectDraftStore.INSTANCE.setReloading(false);
+            LOGGER.error("[BLib] reloadProject failed (sync) for {}", projectName, e);
+            replyOpResult(serverPlayer, ProjectOp.RELOAD, projectName, false, e.getMessage());
+        }
+    }
+
+    /**
+     * Guard for edit handlers: validates that {@code projectName} parses and that a BLib project actually exists at
+     * that path. Returns false (and silently no-ops on mismatch) so a stale client packet from before a delete doesn't
+     * crash anything; logged at debug only since drops here are expected during normal session shutdown.
+     */
+    private static boolean validProjectFor(String projectName) {
+        try {
+            EngineProjectIO.validateProjectName(projectName);
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+        return EngineProjectIO.isBLibProject(EngineProjectIO.projectRoot(projectName));
+    }
+
+    private static void replyOpResult(ServerPlayer serverPlayer, ProjectOp op, String projectName, boolean success, String message) {
+        var payload = success
+            ? S2CProjectOpResultPayload.success(op, projectName, message)
+            : S2CProjectOpResultPayload.failure(op, projectName, message);
+        BLib.MOD.networking().sendToClient(serverPlayer, payload);
     }
 
     private static Rotation ordinalToRotation(int ordinal) {

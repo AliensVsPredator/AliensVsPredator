@@ -11,13 +11,15 @@ import com.blib.api.common.codec.v1.BLibCodecs;
 import com.blib.mod.BLib;
 
 /**
- * Client → server: remove the entry at {@code rawIndex} from the pool's {@code rawTemplates} list. Used by the Pool
- * Editor's per-row "×" button. Server validates the index is in range; out-of-range or stale indices are silently
- * ignored (e.g. if the pool was concurrently mutated by another packet).
+ * Client → server: remove the entry at {@code rawIndex} from the project's pool JSON {@code elements} array. Used by
+ * the Pool Editor's per-row "×" button. Server validates the index is in range; out-of-range indices are silently
+ * ignored.
  * <p>
- * Like the other pool-mutation packets, edits are live in the registry but not persisted until the user clicks Save.
+ * Disk-only edit — live registry doesn't reflect the removal until Reload Project. Server echoes an
+ * {@link S2CPoolDraftPayload} after the JSON write so the editor's row list refreshes.
  */
 public record C2SRemovePoolElementPayload(
+    String projectName,
     ResourceLocation poolId,
     int rawIndex
 ) implements CustomPacketPayload {
@@ -27,6 +29,8 @@ public record C2SRemovePoolElementPayload(
     public static final Type<C2SRemovePoolElementPayload> TYPE = new Type<>(PAYLOAD_ID);
 
     public static final StreamCodec<C2SRemovePoolElementPayload> CODEC = RecordStreamCodec.of(
+        StreamCodecs.STRING_UTF8,
+        C2SRemovePoolElementPayload::projectName,
         BLibCodecs.Stream.RESOURCE_LOCATION,
         C2SRemovePoolElementPayload::poolId,
         StreamCodecs.INT,

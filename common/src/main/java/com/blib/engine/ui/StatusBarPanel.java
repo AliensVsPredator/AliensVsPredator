@@ -5,11 +5,13 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 
+import com.blib.engine.blockselection.BlockSelection;
 import com.blib.engine.gizmo.BLibGizmoState;
 import com.blib.engine.jigsaw.JigsawPieceSelection;
 import com.blib.engine.jigsaw.placement.JigsawPlacementFrameState;
 import com.blib.engine.jigsaw.placement.JigsawTool;
 import com.blib.engine.session.EngineMode;
+import com.blib.engine.session.ProjectSession;
 import com.blib.engine.session.ToolMode;
 
 /**
@@ -78,6 +80,19 @@ public final class StatusBarPanel implements Panel {
         var modeX = gizmoX + font.width(gizmoLabel) + 12;
         var modeColor = toolMode == ToolMode.PLACE ? ACCENT_COLOR : VALUE_COLOR;
         graphics.drawString(font, Component.literal(modeLabel), modeX, textY, modeColor, false);
+
+        var projectName = ProjectSession.activeProjectName();
+        var projectLabel = projectName.isEmpty() ? "PROJECT: (none)" : "PROJECT: " + projectName;
+        var projectX = modeX + font.width(modeLabel) + 12;
+        var projectColor = projectName.isEmpty() ? LABEL_COLOR : ACCENT_COLOR;
+        graphics.drawString(font, Component.literal(projectLabel), projectX, textY, projectColor, false);
+
+        var picking = BlockSelection.picking();
+        if (picking != BlockSelection.PickingState.NONE) {
+            var pickingLabel = "PICKING: " + picking.name();
+            var pickingX = projectX + font.width(projectLabel) + 12;
+            graphics.drawString(font, Component.literal(pickingLabel), pickingX, textY, ACCENT_COLOR, false);
+        }
 
         // Placement state on the right side: mode + piece id + rotation + mirror + collision count, but only while
         // a piece is selected. Gives the user feedback for the R / M / T / scroll hotkeys (otherwise rotating or

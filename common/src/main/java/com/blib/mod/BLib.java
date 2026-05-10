@@ -28,6 +28,7 @@ import com.blib.internal.common.faction.BLibFactionManager;
 import com.blib.internal.common.property.BLibPropertyContainerSaveHandler;
 import com.blib.internal.common.reputation.BLibReputationManager;
 import com.blib.internal.common.storage.BLibDataStoreManager;
+import com.blib.internal.common.storage.ProjectDraftStore;
 import com.blib.internal.common.territory.BLibTerritoryManager;
 import com.blib.mod.common.gameplay.goap.GOAPDebugTracker;
 import com.blib.mod.common.gameplay.jigsaw.PlacementHistory;
@@ -109,6 +110,7 @@ public class BLib {
         BLib.MOD.events().onServerStopped().register(server -> PlacementHistory.clear());
         BLib.MOD.events().onServerStopped().register(server -> ClientTerritoryCache.INSTANCE.clear());
         BLib.MOD.events().onServerStopped().register(server -> ClientFactionCache.INSTANCE.clear());
+        BLib.MOD.events().onServerStopped().register(ProjectDraftStore.INSTANCE::onServerStopped);
 
         BLib.MOD.events().onServerStarted().register(BLibFactionManager.INSTANCE::load);
         BLib.MOD.events().onServerSave().register(BLibFactionManager.INSTANCE::save);

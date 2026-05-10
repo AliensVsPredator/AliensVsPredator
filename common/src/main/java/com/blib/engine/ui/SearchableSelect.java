@@ -17,19 +17,22 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * Generic searchable select widget. The inline element is a button-like row showing the current selection's label
- * plus a {@code ▼} indicator; clicking it opens a {@link Popup} overlay with a search input + scrollable filtered
- * list. Generic over the value type so the same widget powers the block picker today and pool / loot-table pickers
- * in future engine work.
+ * Generic searchable select widget. The inline element is a button-like row showing the current selection's label plus
+ * a {@code ▼} indicator; clicking it opens a {@link Popup} overlay with a search input + scrollable filtered list.
+ * Generic over the value type so the same widget powers the block picker today and pool / loot-table pickers in future
+ * engine work.
  * <p>
  * Single popup at a time across the workspace — held in the static {@link #openPopup} slot, mirroring
- * {@link TextInput#focused}. The {@link EngineWorkspaceScreen} reads it each frame for render and event dispatch
- * (see screen integration); the popup nulls it when an item is picked.
+ * {@link TextInput#focused}. The {@link EngineWorkspaceScreen} reads it each frame for render and event dispatch (see
+ * screen integration); the popup nulls it when an item is picked.
  */
 @ApiStatus.Internal
 public final class SearchableSelect<T> {
 
-    public record Item<T>(T value, String label) {}
+    public record Item<T>(
+        T value,
+        String label
+    ) {}
 
     public static final int HEIGHT = 13;
 
@@ -73,11 +76,11 @@ public final class SearchableSelect<T> {
     private final @Nullable Function<T, ItemStack> iconProvider;
 
     /**
-     * Optional free-text parser. When non-null, pressing Enter in the popup's search input commits the typed text
-     * as the selected value (after parsing). Use this for "select known + type new" combo-box semantics — e.g. the
-     * jigsaw inspector's Target / Name fields, where you usually pick from existing matches but occasionally need
-     * to forward-reference a piece you haven't built yet. Returns {@code null} from the parser to reject the input
-     * (commit is silently dropped). Pure-select widgets (e.g. Pool picker) should pass {@code null}.
+     * Optional free-text parser. When non-null, pressing Enter in the popup's search input commits the typed text as
+     * the selected value (after parsing). Use this for "select known + type new" combo-box semantics — e.g. the jigsaw
+     * inspector's Target / Name fields, where you usually pick from existing matches but occasionally need to
+     * forward-reference a piece you haven't built yet. Returns {@code null} from the parser to reject the input (commit
+     * is silently dropped). Pure-select widgets (e.g. Pool picker) should pass {@code null}.
      */
     private final @Nullable Function<String, T> freeTextParser;
 
@@ -197,9 +200,9 @@ public final class SearchableSelect<T> {
     }
 
     /**
-     * Overlay popup spawned by a {@link SearchableSelect}. Holds the search input, scrollable filtered list, and
-     * layout state. Rendered on top of all panels by {@link EngineWorkspaceScreen}; click / scroll / key events are
-     * routed to it before normal panel dispatch when it's open.
+     * Overlay popup spawned by a {@link SearchableSelect}. Holds the search input, scrollable filtered list, and layout
+     * state. Rendered on top of all panels by {@link EngineWorkspaceScreen}; click / scroll / key events are routed to
+     * it before normal panel dispatch when it's open.
      */
     public static final class Popup<T> {
 
@@ -272,7 +275,13 @@ public final class SearchableSelect<T> {
 
         private int listAreaHeight;
 
-        Popup(SearchableSelect<T> owner, List<Item<T>> items, Function<T, String> displayLabel, @Nullable Function<T, ItemStack> iconProvider, @Nullable Function<String, T> freeTextParser) {
+        Popup(
+            SearchableSelect<T> owner,
+            List<Item<T>> items,
+            Function<T, String> displayLabel,
+            @Nullable Function<T, ItemStack> iconProvider,
+            @Nullable Function<String, T> freeTextParser
+        ) {
             this.owner = owner;
             this.allItems = items;
             this.displayLabel = displayLabel;
@@ -289,8 +298,8 @@ public final class SearchableSelect<T> {
 
         /**
          * Free-text commit path — invoked when the user presses Enter in the popup's search input. Parses the typed
-         * text via {@link #freeTextParser}; on success, selects it (closes the popup, fires onSelect). Parser
-         * returning {@code null} means "invalid input" — we silently no-op rather than committing garbage.
+         * text via {@link #freeTextParser}; on success, selects it (closes the popup, fires onSelect). Parser returning
+         * {@code null} means "invalid input" — we silently no-op rather than committing garbage.
          */
         private void commitFreeText(String text) {
             if (freeTextParser == null) {
@@ -394,7 +403,12 @@ public final class SearchableSelect<T> {
             graphics.flush();
             var matrix = graphics.pose().last().pose();
             var topLeft = matrix.transformPosition((float) listAreaX, (float) listAreaY, 0f, new Vector3f());
-            var bottomRight = matrix.transformPosition((float) (listAreaX + listAreaWidth), (float) (listAreaY + listAreaHeight), 0f, new Vector3f());
+            var bottomRight = matrix.transformPosition(
+                (float) (listAreaX + listAreaWidth),
+                (float) (listAreaY + listAreaHeight),
+                0f,
+                new Vector3f()
+            );
             var window = Minecraft.getInstance().getWindow();
             var winHeight = window.getHeight();
             var guiScale = window.getGuiScale();
@@ -437,7 +451,14 @@ public final class SearchableSelect<T> {
                         }
                     }
                     var truncated = font.plainSubstrByWidth(item.label(), rowTextMaxWidth);
-                    graphics.drawString(font, Component.literal(truncated), rowTextX, rowY + (ROW_HEIGHT - font.lineHeight + 2) / 2, ROW_TEXT_COLOR, false);
+                    graphics.drawString(
+                        font,
+                        Component.literal(truncated),
+                        rowTextX,
+                        rowY + (ROW_HEIGHT - font.lineHeight + 2) / 2,
+                        ROW_TEXT_COLOR,
+                        false
+                    );
                 }
             } finally {
                 RenderSystem.disableScissor();
@@ -457,11 +478,13 @@ public final class SearchableSelect<T> {
             }
             // List rows. Hit-test in the list area (excluding the scrollbar gutter), translate by scrollY to find
             // the actual item index.
-            if (button == 0
-                && mouseX >= listAreaX
-                && mouseX < listAreaX + listAreaWidth - SCROLLBAR_GUTTER
-                && mouseY >= listAreaY
-                && mouseY < listAreaY + listAreaHeight) {
+            if (
+                button == 0
+                    && mouseX >= listAreaX
+                    && mouseX < listAreaX + listAreaWidth - SCROLLBAR_GUTTER
+                    && mouseY >= listAreaY
+                    && mouseY < listAreaY + listAreaHeight
+            ) {
                 var localY = mouseY - listAreaY + scroll.scrollY();
                 var index = (int) (localY / ROW_HEIGHT);
                 if (index >= 0 && index < filteredItems.size()) {

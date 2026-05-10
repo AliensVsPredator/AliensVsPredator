@@ -9,11 +9,16 @@ import net.minecraft.commands.Commands;
 import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.engine.ui.EngineWorkspaceScreen;
+import com.blib.engine.ui.ProjectPickerScreen;
 
 /**
- * {@code /blib engine} — opens the BLib Engine workspace screen. The workspace owns the freecam (orbit nav), entity
- * selection, server pause / resume, and gizmo state; there are no separate "fly" / "orbit" / toggle subcommands —
- * everything is driven from the editor UI now.
+ * {@code /blib engine} — opens the BLib Engine project picker. The picker is the entry point: it shows the user's
+ * existing BLib projects (datapacks under {@code <world>/datapacks/} marked with {@code blib_project.json}) and gates
+ * entry into {@link EngineWorkspaceScreen} on a successful Open. The workspace owns the freecam (orbit nav), entity
+ * selection, server pause / resume, and gizmo state — but only after a project is selected.
+ * <p>
+ * Cancel from the picker drops the user back into the game without entering engine mode (the workspace's
+ * {@code EngineTickControl.captureAndPause()} only fires on Open).
  */
 @ApiStatus.Internal
 public final class BLibEngineCommand {
@@ -23,12 +28,18 @@ public final class BLibEngineCommand {
     }
 
     public static LiteralArgumentBuilder<CommandSourceStack> build() {
-        return Commands.literal("engine").executes(BLibEngineCommand::openWorkspace);
+        return Commands.literal("engine").executes(BLibEngineCommand::openPicker);
     }
 
-    private static int openWorkspace(CommandContext<CommandSourceStack> context) {
+    private static int openPicker(CommandContext<CommandSourceStack> context) {
         // setScreen must run on the client thread; the command dispatcher fires on the integrated server thread.
-        Minecraft.getInstance().execute(() -> Minecraft.getInstance().setScreen(new EngineWorkspaceScreen()));
+        // The picker's onConfirmedOpen swaps to the workspace screen on a successful project open.
+        Minecraft.getInstance()
+            .execute(() -> Minecraft.getInstance().setScreen(new ProjectPickerScreen(BLibEngineCommand::openWorkspace)));
         return Command.SINGLE_SUCCESS;
+    }
+
+    private static void openWorkspace() {
+        Minecraft.getInstance().setScreen(new EngineWorkspaceScreen());
     }
 }

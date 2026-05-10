@@ -14,6 +14,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.blib.engine.blockselection.BlockSelectionScaleGizmoRenderer;
+import com.blib.engine.blockselection.BlockSelectionTranslateGizmoRenderer;
+import com.blib.engine.blockselection.BlockSelectionWireframeRenderer;
+import com.blib.engine.blockselection.MoveBlocksGhostRenderer;
+import com.blib.engine.blockselection.MoveBlocksGizmoRenderer;
 import com.blib.engine.hud.EngineSelectionRenderer;
 import com.blib.engine.jigsaw.JigsawPlacementWorldRenderer;
 import com.blib.engine.jigsaw.placement.JigsawAnchorRenderer;
@@ -92,6 +97,11 @@ public class MixinDebugRenderer {
         // ghost's depth-tested geometry naturally occludes the parts of the highlight that are behind it.
         JigsawAnchorRenderer.render(poseStack, camX, camY, camZ);
         JigsawPlacementWorldRenderer.render(poseStack, bufferSource, camX, camY, camZ);
+        BlockSelectionWireframeRenderer.render(poseStack, camX, camY, camZ);
+        BlockSelectionScaleGizmoRenderer.render(poseStack, camX, camY, camZ);
+        BlockSelectionTranslateGizmoRenderer.render(poseStack, camX, camY, camZ);
+        MoveBlocksGhostRenderer.render(poseStack, camX, camY, camZ);
+        MoveBlocksGizmoRenderer.render(poseStack, camX, camY, camZ);
 
         var access = BLibModPropertyAccess.INSTANCE;
 

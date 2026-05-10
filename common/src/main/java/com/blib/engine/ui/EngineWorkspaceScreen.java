@@ -8,19 +8,25 @@ import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import com.blib.engine.blockselection.BlockSelection;
+import com.blib.engine.blockselection.BlockSelectionOps;
 import com.blib.engine.jigsaw.JigsawPieceLibrary;
 import com.blib.engine.jigsaw.JigsawPieceSelection;
 import com.blib.engine.jigsaw.JigsawPieceThumbnailCache;
 import com.blib.engine.jigsaw.JigsawPlacementCursor;
 import com.blib.engine.jigsaw.JigsawPoolLibrary;
+import com.blib.engine.jigsaw.ProjectDraftCache;
 import com.blib.engine.jigsaw.placement.JigsawPlacementFrameState;
 import com.blib.engine.jigsaw.placement.JigsawPlacementOptions;
 import com.blib.engine.jigsaw.placement.JigsawTemplateScanner;
 import com.blib.engine.selection.SelectionManager;
 import com.blib.engine.session.EngineMode;
 import com.blib.engine.session.NavigationMode;
+import com.blib.engine.session.ProjectSession;
 import com.blib.mod.BLib;
+import com.blib.mod.common.network.packet.C2SDeleteProjectPayload;
 import com.blib.mod.common.network.packet.C2SGOAPTrackPayload;
+import com.blib.mod.common.network.packet.C2SReloadProjectPayload;
 import com.blib.mod.common.network.packet.C2SRemoveEntityPayload;
 import com.blib.mod.common.network.packet.C2SUndoPlacementPayload;
 
@@ -122,6 +128,18 @@ public final class EngineWorkspaceScreen extends Screen {
     private @Nullable DropdownMenu openMenu;
 
     /**
+     * Modal yes/no confirmation overlay for destructive actions (FILE → Delete Project). When non-null, takes priority
+     * over every other input pathway and dims the underlying workspace.
+     */
+    private @Nullable ConfirmDialog confirmDialog;
+
+    /**
+     * Modal Capture dialog opened from the viewport's right-click context menu. Same modal lifecycle as
+     * {@link #confirmDialog} — render after panels, mouseClicked / keyPressed take priority, cleared on close.
+     */
+    private @Nullable CaptureDialog captureDialog;
+
+    /**
      * Panel that captured the mouse via {@link Panel#mouseClickedCapture}. While non-null, {@link #mouseDragged} and
      * {@link #mouseReleased} route to this panel before any other handling, so a panel-driven drag (scrollbar, etc.)
      * tracks the cursor even when it leaves the panel rect. Cleared on {@code mouseReleased}.
@@ -166,6 +184,14 @@ public final class EngineWorkspaceScreen extends Screen {
     public EngineWorkspaceScreen() {
         super(Component.literal("BLib Engine"));
 
+        // The workspace expects a project to be active before reaching here — the picker (ProjectPickerScreen) is
+        // the only entry point, and it sets ProjectSession.activeProject before transitioning. If somehow we're
+        // constructed without one (programming error or a future code path that bypasses the picker), don't
+        // pause / freeze the server: defer until a project is opened. Esc will still close the screen cleanly.
+        if (ProjectSession.activeProject() == null) {
+            return;
+        }
+
         // Freeze the integrated server immediately on open so the world is paused while the user works in the editor.
         // The previous freeze state is captured here and restored in removed() so we don't unfreeze a server that the
         // user had already frozen via /tick freeze before opening the workspace.
@@ -201,10 +227,15 @@ public final class EngineWorkspaceScreen extends Screen {
         return switch (layout) {
             case DEFAULT -> buildOuterLayout(buildBody(buildViewportColumn(new ContentBrowserPanel()), new DetailsPanel()));
             case GOAP -> buildOuterLayout(buildBody(buildViewportColumn(new ContentBrowserPanel()), new GOAPDetailsPanel()));
-            // JIGSAW: bottom slot tabs through Piece Palette (default — placement workflow) and the new Pool Editor
-            // (browse-what's-in-a-pool workflow). Both panels share the same dock slot since they're complementary
-            // surfaces for the same authoring task.
-            case JIGSAW -> buildOuterLayout(buildBody(buildViewportColumn(new PiecePalettePanel(), new PoolEditorPanel()), new DetailsPanel()));
+            // JIGSAW: bottom slot tabs through Piece Palette (placement), Pool Editor (browse pool contents), and
+            // Capture (corner-pick + save volume of blocks as nbt or split jigsaw pieces). All three are
+            // complementary surfaces for the same authoring task.
+            case JIGSAW -> buildOuterLayout(
+                buildBody(
+                    buildViewportColumn(new PiecePalettePanel(), new PoolEditorPanel()),
+                    new DetailsPanel()
+                )
+            );
         };
     }
 
@@ -266,7 +297,7 @@ public final class EngineWorkspaceScreen extends Screen {
     private DockNode buildViewportColumn(Panel... bottomPanels) {
         return new DockNode.Split(
             Orientation.VERTICAL,
-            new DockNode.Leaf(new TabbedPanel(new ViewportPanel("Viewport", this::onViewportRightClick))),
+            new DockNode.Leaf(new TabbedPanel(new ViewportPanel("Viewport", buildViewportRightClickHandler()))),
             new DockNode.Leaf(new TabbedPanel(bottomPanels)),
             new Sizing.SecondFixed(CONTENT_BROWSER_HEIGHT_DEFAULT)
         );
@@ -337,6 +368,15 @@ public final class EngineWorkspaceScreen extends Screen {
             panelMouseX = OFFSCREEN_MOUSE;
             panelMouseY = OFFSCREEN_MOUSE;
         }
+        // Confirm dialog is fully modal — every panel underneath must lose hover state.
+        if (confirmDialog != null) {
+            panelMouseX = OFFSCREEN_MOUSE;
+            panelMouseY = OFFSCREEN_MOUSE;
+        }
+        if (captureDialog != null) {
+            panelMouseX = OFFSCREEN_MOUSE;
+            panelMouseY = OFFSCREEN_MOUSE;
+        }
 
         renderNode(graphics, root, 0, 0, logicalWidth, logicalHeight, panelMouseX, panelMouseY, partialTick);
         renderHoveredDivider(graphics, logicalMouseX, logicalMouseY);
@@ -344,6 +384,12 @@ public final class EngineWorkspaceScreen extends Screen {
 
         if (openMenu != null) {
             openMenu.render(graphics, logicalMouseX, logicalMouseY);
+        }
+        if (confirmDialog != null) {
+            confirmDialog.render(graphics, logicalWidth, logicalHeight, logicalMouseX, logicalMouseY);
+        }
+        if (captureDialog != null) {
+            captureDialog.render(graphics, logicalWidth, logicalHeight, logicalMouseX, logicalMouseY);
         }
         if (openPopup != null) {
             openPopup.render(graphics, logicalMouseX, logicalMouseY, logicalWidth, logicalHeight);
@@ -392,17 +438,17 @@ public final class EngineWorkspaceScreen extends Screen {
     }
 
     /**
-     * Maximum tooltip body width before {@link Font#split} wraps. Picked so multi-sentence help text breaks across
-     * 3-4 lines at typical workspace logical-pixel sizes — wide enough to avoid awkward 1-2 word lines, narrow
-     * enough that the tooltip doesn't span half the screen.
+     * Maximum tooltip body width before {@link Font#split} wraps. Picked so multi-sentence help text breaks across 3-4
+     * lines at typical workspace logical-pixel sizes — wide enough to avoid awkward 1-2 word lines, narrow enough that
+     * the tooltip doesn't span half the screen.
      */
     private static final int TOOLTIP_MAX_WIDTH = 240;
 
     /**
-     * Draws a tooltip for {@code text} positioned next to the cursor, kept inside the workspace bounds. Wraps long
-     * text via {@link Font#split} so multi-sentence help text renders as multiple lines instead of overflowing
-     * past the right edge. Manual rendering (rather than {@code GuiGraphics.renderTooltip}) so the styling matches
-     * the workspace's flat dark theme and so we control sizing in workspace-logical pixels.
+     * Draws a tooltip for {@code text} positioned next to the cursor, kept inside the workspace bounds. Wraps long text
+     * via {@link Font#split} so multi-sentence help text renders as multiple lines instead of overflowing past the
+     * right edge. Manual rendering (rather than {@code GuiGraphics.renderTooltip}) so the styling matches the
+     * workspace's flat dark theme and so we control sizing in workspace-logical pixels.
      */
     private void drawTooltipBox(GuiGraphics graphics, Component text, int mouseX, int mouseY) {
         var font = Minecraft.getInstance().font;
@@ -582,10 +628,27 @@ public final class EngineWorkspaceScreen extends Screen {
         SelectionManager.clear();
         EngineCursor.reset();
         SearchableSelect.closeOpenPopup();
+        // Project state does not persist across engine sessions — closing the workspace returns the user to a
+        // "no project open" state so the next /blib engine starts at the picker again.
+        ProjectSession.clear();
+        ProjectDraftCache.clear();
+        // Capture selection is workspace-session-only too — corners and mode reset between engine opens.
+        BlockSelection.clear();
+        // Clear the AABB scale gizmo's hover/drag state so a stray drag-in-progress at close doesn't try to
+        // continue against fresh state on the next engine open.
+        com.blib.engine.blockselection.BlockSelectionScaleGizmo.clear();
+        com.blib.engine.blockselection.BlockSelectionTranslateGizmo.clear();
+        // Drop the captured render-frame matrices — they referenced the engine's camera; the next engine open
+        // will repopulate from the first render frame.
+        com.blib.engine.session.EngineCameraFrame.clear();
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        // Modal dialog absorbs all scroll events so panels under the dim don't scroll while the user is deciding.
+        if (confirmDialog != null) {
+            return true;
+        }
         var logicalX = mouseX / SCALE;
         var logicalY = mouseY / SCALE;
         // SearchableSelect popup gets first claim on scroll wheel — its filtered list scrolls. Cursor outside the
@@ -717,6 +780,20 @@ public final class EngineWorkspaceScreen extends Screen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        // Confirm dialog absorbs Esc (treats it as Cancel) before any other Esc handling so a stray tap doesn't
+        // cascade into clearing piece selection / closing the workspace.
+        if (confirmDialog != null && confirmDialog.keyPressed(keyCode)) {
+            confirmDialog = null;
+            return true;
+        }
+        if (confirmDialog != null) {
+            // While the dialog is open, swallow other key events too — typing into nothing while a confirm is
+            // pending would feel unresponsive.
+            return true;
+        }
+        if (captureDialog != null) {
+            return captureDialog.keyPressed(keyCode, scanCode, modifiers);
+        }
         // Esc closes an open SearchableSelect popup BEFORE TextInput dispatch — otherwise the popup's focused
         // search input would consume Esc as "defocus" and leave the popup visible-but-unfocused, which is confusing.
         if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE && SearchableSelect.getOpenPopup() != null) {
@@ -772,6 +849,48 @@ public final class EngineWorkspaceScreen extends Screen {
             }
         }
 
+        // BlockSelection tool hotkeys: T / S / M for Translate / Scale / Move-Blocks. Mirrors Blender's G/S/R
+        // muscle-memory pattern. Workspace-wide so users can switch tools regardless of which panel is focused.
+        // Falls behind the piece-selection block above so a held piece's R / M / T win out — these only fire when
+        // no piece is held. Text-input focus suppression already happened above (focused.keyPressed consumed) so
+        // typing 's' into a name field doesn't trigger SCALE_VOLUME here.
+        switch (keyCode) {
+            case org.lwjgl.glfw.GLFW.GLFW_KEY_T -> {
+                BlockSelection.setGizmoMode(BlockSelection.GizmoMode.TRANSLATE_VOLUME);
+                return true;
+            }
+            case org.lwjgl.glfw.GLFW.GLFW_KEY_S -> {
+                BlockSelection.setGizmoMode(BlockSelection.GizmoMode.SCALE_VOLUME);
+                return true;
+            }
+            case org.lwjgl.glfw.GLFW.GLFW_KEY_M -> {
+                BlockSelection.setGizmoMode(BlockSelection.GizmoMode.MOVE_BLOCKS);
+                return true;
+            }
+        }
+
+        // Clipboard hotkeys: Ctrl+C / Ctrl+X / Ctrl+V for copy / cut / paste, Delete for clear. Gated on no focused
+        // text input so the muscle-memory of Ctrl+C in a name field doesn't accidentally copy blocks instead of text.
+        // BlockSelectionOps self-gates on AABB presence + volume cap; clicks/keys without a valid AABB are no-ops.
+        if (TextInput.getFocused() == null && Screen.hasControlDown() && !Screen.hasShiftDown()) {
+            if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_C) {
+                BlockSelectionOps.copy(false);
+                return true;
+            }
+            if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_X) {
+                BlockSelectionOps.copy(true);
+                return true;
+            }
+            if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_V) {
+                BlockSelectionOps.paste();
+                return true;
+            }
+        }
+        if (TextInput.getFocused() == null && keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_DELETE) {
+            BlockSelectionOps.delete();
+            return true;
+        }
+
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
@@ -779,6 +898,20 @@ public final class EngineWorkspaceScreen extends Screen {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         var logicalX = mouseX / SCALE;
         var logicalY = mouseY / SCALE;
+
+        // Confirm dialog has top priority — modal until the user picks confirm or cancel. Outside-clicks consumed
+        // (no click-through to panels below) but ignored by the dialog itself; destructive actions require an
+        // explicit decision via the buttons or Esc.
+        if (confirmDialog != null) {
+            if (confirmDialog.mouseClicked(logicalX, logicalY, button)) {
+                confirmDialog = null;
+            }
+            return true;
+        }
+        if (captureDialog != null) {
+            captureDialog.mouseClicked(logicalX, logicalY, button);
+            return true;
+        }
 
         // Clear focus before dispatch — panels with text inputs will re-focus their own inputs in their
         // mouseClicked handlers if the click hit the input rect, otherwise focus stays cleared (click-outside
@@ -886,6 +1019,10 @@ public final class EngineWorkspaceScreen extends Screen {
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        // Modal dialog absorbs releases so a drag started before it opened doesn't propagate to panels behind it.
+        if (confirmDialog != null) {
+            return true;
+        }
         var logicalX = mouseX / SCALE;
         var logicalY = mouseY / SCALE;
 
@@ -943,6 +1080,10 @@ public final class EngineWorkspaceScreen extends Screen {
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        // Modal dialog absorbs drags so divider / tab / panel drags can't continue under the dim.
+        if (confirmDialog != null) {
+            return true;
+        }
         var logicalX = mouseX / SCALE;
         var logicalY = mouseY / SCALE;
 
@@ -1178,7 +1319,7 @@ public final class EngineWorkspaceScreen extends Screen {
 
     /**
      * Build the dropdown menu for the clicked menu-bar chip. Anchored just below the chip's screen rect. Returns
-     * {@code null} for chips that don't have menus implemented yet (so File / Edit / View are inert no-ops for now).
+     * {@code null} for chips that don't have menus implemented yet (so Edit / View are inert no-ops for now).
      */
     private @Nullable DropdownMenu buildMenuFor(String chipName, MenuBarPanel menuBar) {
         var chipRect = menuBar.chipRect(chipName);
@@ -1189,6 +1330,7 @@ public final class EngineWorkspaceScreen extends Screen {
         var anchorY = chipRect.y() + chipRect.height() + 1;
 
         return switch (chipName) {
+            case MenuBarPanel.CHIP_FILE -> buildFileMenu(anchorX, anchorY);
             case MenuBarPanel.CHIP_WINDOW -> new DropdownMenu(
                 anchorX,
                 anchorY,
@@ -1196,7 +1338,7 @@ public final class EngineWorkspaceScreen extends Screen {
                     new DropdownMenu.Item("Reopen Outliner", () -> reopenPanel(OutlinerPanel.class, OutlinerPanel::new)),
                     new DropdownMenu.Item(
                         "Reopen Viewport",
-                        () -> reopenPanel(ViewportPanel.class, () -> new ViewportPanel("Viewport", this::onViewportRightClick))
+                        () -> reopenPanel(ViewportPanel.class, () -> new ViewportPanel("Viewport", buildViewportRightClickHandler()))
                     ),
                     new DropdownMenu.Item("Reopen Details", () -> reopenPanel(DetailsPanel.class, DetailsPanel::new)),
                     new DropdownMenu.Item("Reopen Content Browser", () -> reopenPanel(ContentBrowserPanel.class, ContentBrowserPanel::new)),
@@ -1248,12 +1390,87 @@ public final class EngineWorkspaceScreen extends Screen {
     }
 
     /**
+     * FILE menu — project management entry points. "New Project" / "Open Project" close the workspace and open the
+     * picker (the workspace's removed() clears ProjectSession; the picker's onConfirmedOpen rebuilds the workspace
+     * after a successful Open). "Reload Project" / "Delete Project" act on the active project; both are inert when no
+     * project is active (which shouldn't happen post-picker-gating but is defensive).
+     */
+    private DropdownMenu buildFileMenu(int anchorX, int anchorY) {
+        var hasProject = ProjectSession.activeProject() != null;
+        var items = new java.util.ArrayList<DropdownMenu.Item>();
+        items.add(new DropdownMenu.Item("New Project…", () -> openPicker(true)));
+        items.add(new DropdownMenu.Item("Open Project…", () -> openPicker(false)));
+        items.add(
+            new DropdownMenu.Item(hasProject ? "Reload Project" : "Reload Project (no project)", () -> {
+                if (!hasProject) {
+                    return;
+                }
+                BLib.MOD.networking().sendToServer(new C2SReloadProjectPayload(ProjectSession.activeProjectName()));
+            })
+        );
+        items.add(
+            new DropdownMenu.Item(hasProject ? "Delete Project…" : "Delete Project… (no project)", () -> {
+                if (!hasProject) {
+                    return;
+                }
+                // Destructive — gate behind the modal confirm. On confirm we fire the delete and bounce back to
+                // the picker (the workspace is meaningless once its project disappears, and the picker will
+                // refresh its list when the S2CProjectListPayload arrives).
+                var name = ProjectSession.activeProjectName();
+                this.confirmDialog = new ConfirmDialog(
+                    "Delete project?",
+                    "Are you sure you want to delete '" + name + "'? This will remove the entire datapack folder "
+                        + "from the world's datapacks directory and cannot be undone.",
+                    "Delete",
+                    "Cancel",
+                    true,
+                    () -> {
+                        BLib.MOD.networking().sendToServer(new C2SDeleteProjectPayload(name));
+                        openPicker(false);
+                    },
+                    () -> {}
+                );
+            })
+        );
+        return new DropdownMenu(anchorX, anchorY, items);
+    }
+
+    private void openPicker(boolean createMode) {
+        Minecraft.getInstance().setScreen(new ProjectPickerScreen(EngineWorkspaceScreen::reopenWorkspace, createMode));
+    }
+
+    /** Used as the {@link ProjectPickerScreen} {@code onConfirmedOpen} callback so the picker can re-enter us. */
+    private static void reopenWorkspace() {
+        Minecraft.getInstance().setScreen(new EngineWorkspaceScreen());
+    }
+
+    /**
      * Right-click in the viewport — opens a context menu at the cursor anchored as a {@link DropdownMenu}. When the
      * cursor was over a living entity, items include "View GOAP Details" (dispatches a {@link C2SGOAPTrackPayload} and
      * opens the {@link GOAPDetailsPanel}) and "Delete Entity" (dispatches a {@link C2SRemoveEntityPayload}). The delete
      * option is hidden for players since deleting other players via this menu would be inappropriate; the server-side
      * handler also rejects player targets as a safety net. Empty-space right-clicks just close any existing menu.
      */
+    /**
+     * Builds the viewport's right-click handler. Anonymous class rather than method reference because
+     * {@link ViewportPanel.RightClickHandler} now has a second method ({@code onRightClickVolume}) the screen needs to
+     * override. Bound to {@code this} so both callbacks dispatch to the screen's instance methods.
+     */
+    private ViewportPanel.RightClickHandler buildViewportRightClickHandler() {
+        return new ViewportPanel.RightClickHandler() {
+
+            @Override
+            public void onRightClick(@Nullable LivingEntity entity, double cursorX, double cursorY) {
+                onViewportRightClick(entity, cursorX, cursorY);
+            }
+
+            @Override
+            public void onRightClickVolume(double cursorX, double cursorY) {
+                onViewportRightClickVolume(cursorX, cursorY);
+            }
+        };
+    }
+
     private void onViewportRightClick(@Nullable LivingEntity entity, double cursorX, double cursorY) {
         if (entity == null) {
             this.openMenu = null;
@@ -1276,6 +1493,26 @@ public final class EngineWorkspaceScreen extends Screen {
             );
         }
 
+        this.openMenu = new DropdownMenu((int) cursorX, (int) cursorY, items);
+    }
+
+    /**
+     * Right-click on the block-volume selection. Opens a context menu with the operations the old Selection panel
+     * surfaced inline: Capture (opens a dialog), Cut, Copy, Paste, Delete. Ops are non-destructive when their
+     * preconditions aren't met (BlockSelectionOps self-gates), so disabled-state rendering isn't strictly necessary for
+     * v1 — clicking a no-op item just does nothing.
+     */
+    private void onViewportRightClickVolume(double cursorX, double cursorY) {
+        var items = new java.util.ArrayList<DropdownMenu.Item>();
+        items.add(
+            new DropdownMenu.Item("Capture…", () -> {
+                this.captureDialog = new CaptureDialog(() -> this.captureDialog = null);
+            })
+        );
+        items.add(new DropdownMenu.Item("Cut", () -> com.blib.engine.blockselection.BlockSelectionOps.copy(true)));
+        items.add(new DropdownMenu.Item("Copy", () -> com.blib.engine.blockselection.BlockSelectionOps.copy(false)));
+        items.add(new DropdownMenu.Item("Paste", () -> com.blib.engine.blockselection.BlockSelectionOps.paste()));
+        items.add(new DropdownMenu.Item("Delete", () -> com.blib.engine.blockselection.BlockSelectionOps.delete()));
         this.openMenu = new DropdownMenu((int) cursorX, (int) cursorY, items);
     }
 

@@ -12,10 +12,11 @@ import com.blib.api.common.codec.v1.BLibCodecs;
 import com.blib.mod.BLib;
 
 /**
- * Client → server: rewrite the editable NBT fields of the jigsaw block at {@code pos} — name, target, pool, joint,
- * and the leave-behind block-state string. Triggered from the engine workspace's jigsaw-block inspector when the user
- * commits a field change. Server validates op permissions, looks up the {@link net.minecraft.world.level.block.entity.JigsawBlockEntity},
- * and applies all setters atomically before flagging the chunk dirty + sending a block-update sync.
+ * Client → server: rewrite the editable NBT fields of the jigsaw block at {@code pos} — name, target, pool, joint, and
+ * the leave-behind block-state string. Triggered from the engine workspace's jigsaw-block inspector when the user
+ * commits a field change. Server validates op permissions, looks up the
+ * {@link net.minecraft.world.level.block.entity.JigsawBlockEntity}, and applies all setters atomically before flagging
+ * the chunk dirty + sending a block-update sync.
  * <p>
  * Joint is sent as an enum ordinal ({@link net.minecraft.world.level.block.entity.JigsawBlockEntity.JointType#ordinal})
  * for compactness; the server defends against out-of-range values.

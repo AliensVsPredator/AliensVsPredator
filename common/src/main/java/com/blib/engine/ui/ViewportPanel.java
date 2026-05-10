@@ -3,11 +3,16 @@ package com.blib.engine.ui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
+import com.blib.engine.blockselection.BlockSelection;
+import com.blib.engine.blockselection.BlockSelectionScaleGizmo;
+import com.blib.engine.blockselection.BlockSelectionTranslateGizmo;
+import com.blib.engine.blockselection.MoveBlocksGizmo;
 import com.blib.engine.jigsaw.JigsawPieceLibrary;
 import com.blib.engine.jigsaw.JigsawPieceSelection;
 import com.blib.engine.jigsaw.JigsawPlacementCursor;
@@ -17,9 +22,14 @@ import com.blib.engine.jigsaw.placement.JigsawTool;
 import com.blib.engine.jigsaw.placement.JigsawWorldRaycast;
 import com.blib.engine.jigsaw.placement.PlacementContext;
 import com.blib.engine.jigsaw.placement.PlacementMode;
+import com.blib.engine.selection.BlockVolumeSelectable;
+import com.blib.engine.selection.EntitySelectable;
+import com.blib.engine.selection.JigsawBlockSelectable;
+import com.blib.engine.selection.SelectionManager;
 import com.blib.engine.session.EngineMode;
 import com.blib.engine.session.EngineNavigation;
 import com.blib.mod.BLib;
+import com.blib.mod.common.network.packet.C2SMoveSelectionPayload;
 import com.blib.mod.common.network.packet.C2SPlaceJigsawPiecePayload;
 import com.blib.mod.common.network.packet.C2SUndoPlacementPayload;
 
@@ -36,9 +46,9 @@ import com.blib.mod.common.network.packet.C2SUndoPlacementPayload;
  * <li>Ctrl+MMB drag → dolly zoom toward / away from the pivot.</li>
  * <li>Scroll → rotate piece (if held) else multiplicative zoom toward / away from the pivot.</li>
  * </ul>
- * Modifier state for the MMB gesture is latched at press time, not live-sampled, so a Shift release mid-drag won't
- * flip orbit→pan unexpectedly. Mouse coords arrive in workspace logical pixels; deltas are converted to raw-pixel
- * equivalent via the GUI scale so orbit / pan / dolly sensitivities feel the same regardless of MC's GUI scale.
+ * Modifier state for the MMB gesture is latched at press time, not live-sampled, so a Shift release mid-drag won't flip
+ * orbit→pan unexpectedly. Mouse coords arrive in workspace logical pixels; deltas are converted to raw-pixel equivalent
+ * via the GUI scale so orbit / pan / dolly sensitivities feel the same regardless of MC's GUI scale.
  */
 @ApiStatus.Internal
 public final class ViewportPanel implements Panel {
@@ -47,6 +57,13 @@ public final class ViewportPanel implements Panel {
     public interface RightClickHandler {
 
         void onRightClick(@Nullable LivingEntity entity, double cursorX, double cursorY);
+
+        /**
+         * RMB hit on the block-volume selection's AABB. Distinct from {@link #onRightClick} so the host can open a
+         * volume-specific context menu rather than the entity menu. Default is no-op so existing handlers don't have to
+         * change.
+         */
+        default void onRightClickVolume(double cursorX, double cursorY) {}
     }
 
     private final String title;
@@ -62,6 +79,12 @@ public final class ViewportPanel implements Panel {
     private int rectHeight;
 
     private @Nullable MmbDrag mmbDrag;
+
+    /**
+     * Active drag-to-pick anchor — the block clicked on LMB-press, used as cornerA throughout the drag while every
+     * mouseDragged updates cornerB. {@code null} when no drag-pick is in flight. Cleared on mouseReleased.
+     */
+    private @Nullable BlockPos dragPickAnchor;
 
     public ViewportPanel(String title) {
         this(title, null);
@@ -102,19 +125,51 @@ public final class ViewportPanel implements Panel {
     }
 
     /**
-     * Capture MMB presses ahead of normal click dispatch so the workspace routes the entire MMB drag — including
-     * frames where the cursor leaves the viewport rect — back to this panel. Without capture, fast pans that move
-     * the cursor off the rect would have their drags routed to whatever panel the cursor happens to land on, which
-     * either dies on the floor or yanks UI scrollbars unexpectedly. LMB / RMB stay on the standard click path.
+     * Capture MMB presses ahead of normal click dispatch so the workspace routes the entire MMB drag — including frames
+     * where the cursor leaves the viewport rect — back to this panel. Without capture, fast pans that move the cursor
+     * off the rect would have their drags routed to whatever panel the cursor happens to land on, which either dies on
+     * the floor or yanks UI scrollbars unexpectedly. LMB / RMB stay on the standard click path.
      */
     @Override
     public boolean mouseClickedCapture(double mouseX, double mouseY, int button) {
-        if (button != 2 || !inRect(mouseX, mouseY)) {
+        if (!inRect(mouseX, mouseY)) {
             return false;
         }
 
         var session = EngineMode.get().session();
         if (session == null) {
+            return false;
+        }
+
+        // LMB on a selection gizmo: only the active-mode gizmo is pickable since the others aren't rendered. Re-picks
+        // at click time rather than reading any cached hover state so the grab matches the cursor's *current*
+        // position, not the most recent render frame.
+        if (button == 0 && BlockSelection.picking() == BlockSelection.PickingState.NONE) {
+            var gizmoMode = BlockSelection.gizmoMode();
+            if (gizmoMode == BlockSelection.GizmoMode.SCALE_VOLUME) {
+                var scaleHit = BlockSelectionScaleGizmo.pickUnderCursorWithDistance(session);
+                if (scaleHit != null) {
+                    BlockSelectionScaleGizmo.beginDrag(scaleHit.face(), session);
+                    return true;
+                }
+            } else if (gizmoMode == BlockSelection.GizmoMode.TRANSLATE_VOLUME) {
+                var translateHit = BlockSelectionTranslateGizmo.pickUnderCursorWithDistance(session);
+                if (translateHit != null) {
+                    BlockSelectionTranslateGizmo.beginDrag(translateHit.axis(), session);
+                    return true;
+                }
+            } else if (gizmoMode == BlockSelection.GizmoMode.MOVE_BLOCKS) {
+                var moveHit = MoveBlocksGizmo.pickUnderCursorWithDistance(session);
+                if (moveHit != null) {
+                    // Latch Alt at click time for copy-vs-cut. Live-sampling during drag would let a stray Alt
+                    // release flip the operation mid-drag, which is jarring; latching keeps it stable.
+                    MoveBlocksGizmo.beginDrag(moveHit.axis(), session, Screen.hasAltDown());
+                    return true;
+                }
+            }
+        }
+
+        if (button != 2) {
             return false;
         }
 
@@ -146,6 +201,26 @@ public final class ViewportPanel implements Panel {
         var relY = (mouseY - rectY) / (double) rectHeight;
 
         if (button == 0) {
+            // Capture-corner pick has top priority: when the Capture Panel is in "picking A" or "picking B" state,
+            // the next LMB in the viewport sets that corner instead of placing or selecting. Default behavior is to
+            // include the *clicked* block in the volume (what users intuitively expect — "click the block I want
+            // to be a corner"). Holding Shift falls back to the surface-adjacent cell, mirroring vanilla item
+            // placement and the jigsaw tool — useful when the user wants the volume to start in the air gap above
+            // a surface (e.g. capturing only what they're about to build, not the floor under it).
+            if (BlockSelection.picking() != BlockSelection.PickingState.NONE) {
+                var hit = JigsawPlacementCursor.clipFromCursor(session);
+                if (hit != null) {
+                    var pos = net.minecraft.client.gui.screens.Screen.hasShiftDown()
+                        ? hit.getBlockPos().relative(hit.getDirection())
+                        : hit.getBlockPos();
+                    BlockSelection.onBlockClicked(pos);
+                }
+                return true;
+            }
+
+            // (Gizmo handle clicks are handled in mouseClickedCapture so the workspace captures the panel for the
+            // duration of the drag — we never reach this point when a gizmo handle was hit.)
+
             // When a jigsaw piece is selected, LMB in the viewport means "place". The placement (anchor + rotation +
             // mirror) comes from the active resolver, not from raw cursor + selection state — for FREE mode the two
             // are identical, but later modes (jigsaw-snap) override rotation to align with a target jigsaw, and we
@@ -192,7 +267,21 @@ public final class ViewportPanel implements Panel {
                 return true;
             }
 
+            // Try entity / jigsaw-block selection first (existing path). If neither hit, fall back to drag-to-pick:
+            // start a fresh block-volume selection at the clicked block. Subsequent mouseDragged events extend
+            // cornerB; mouseReleased finalizes the drag.
             EngineNavigation.performSelectionAt(session, relX, relY);
+            var selected = SelectionManager.current().single();
+            if (selected instanceof EntitySelectable || selected instanceof JigsawBlockSelectable) {
+                return true;
+            }
+            var blockHit = JigsawPlacementCursor.clipFromCursor(session);
+            if (blockHit != null) {
+                var clicked = blockHit.getBlockPos();
+                BlockSelection.setCornersDirect(clicked, clicked);
+                SelectionManager.selectSingle(new BlockVolumeSelectable());
+                dragPickAnchor = clicked;
+            }
             return true;
         }
 
@@ -206,10 +295,18 @@ public final class ViewportPanel implements Panel {
             }
 
             if (rightClickHandler != null) {
+                // AABB right-click takes priority over entity / jigsaw selection. Re-select the volume so the
+                // inspector mirrors what the user is operating on, then open the volume context menu.
+                var aabbOpt = BlockSelection.aabb();
+                if (aabbOpt.isPresent() && rmbHitsAabb(session, aabbOpt.get())) {
+                    SelectionManager.selectSingle(new BlockVolumeSelectable());
+                    rightClickHandler.onRightClickVolume(mouseX, mouseY);
+                    return true;
+                }
                 EngineNavigation.performSelectionAt(session, relX, relY);
-                var selection = com.blib.engine.selection.SelectionManager.current().single();
+                var selection = SelectionManager.current().single();
                 LivingEntity selectedEntity = null;
-                if (selection instanceof com.blib.engine.selection.EntitySelectable es) {
+                if (selection instanceof EntitySelectable es) {
                     selectedEntity = es.entity();
                 }
                 rightClickHandler.onRightClick(selectedEntity, mouseX, mouseY);
@@ -225,6 +322,38 @@ public final class ViewportPanel implements Panel {
         var session = EngineMode.get().session();
         if (session == null) {
             return false;
+        }
+
+        // Drag-to-pick claims LMB drags between mouseClicked (anchor set) and mouseReleased (anchor cleared). Live-
+        // updates cornerB to whatever block the cursor is over, so the wireframe grows as the user drags. Skipped
+        // when the cursor leaves the world (clipFromCursor returns null) — last valid cornerB stays put.
+        if (button == 0 && dragPickAnchor != null) {
+            var hit = JigsawPlacementCursor.clipFromCursor(session);
+            if (hit != null) {
+                BlockSelection.setCornersDirect(dragPickAnchor, hit.getBlockPos());
+            }
+            return true;
+        }
+
+        // Gizmo drag claims LMB drags while any selection gizmo is grabbed. Other LMB drags are no-ops at this layer
+        // (mmbDrag handles MMB orbit/pan/dolly below).
+        if (
+            button == 0
+                && (BlockSelectionScaleGizmo.isDragging() || BlockSelectionTranslateGizmo.isDragging() || MoveBlocksGizmo.isDragging())
+        ) {
+            var rayDir = JigsawPlacementCursor.cursorRayDirection(session);
+            if (rayDir != null) {
+                if (BlockSelectionScaleGizmo.isDragging()) {
+                    BlockSelectionScaleGizmo.updateDrag(session, rayDir);
+                }
+                if (BlockSelectionTranslateGizmo.isDragging()) {
+                    BlockSelectionTranslateGizmo.updateDrag(session, rayDir);
+                }
+                if (MoveBlocksGizmo.isDragging()) {
+                    MoveBlocksGizmo.updateDrag(session, rayDir);
+                }
+            }
+            return true;
         }
 
         if (button != 2 || mmbDrag == null) {
@@ -252,6 +381,43 @@ public final class ViewportPanel implements Panel {
         var session = EngineMode.get().session();
         if (session == null) {
             return false;
+        }
+
+        if (button == 0 && dragPickAnchor != null) {
+            dragPickAnchor = null;
+            return true;
+        }
+
+        if (
+            button == 0
+                && (BlockSelectionScaleGizmo.isDragging() || BlockSelectionTranslateGizmo.isDragging() || MoveBlocksGizmo.isDragging())
+        ) {
+            BlockSelectionScaleGizmo.endDrag();
+            BlockSelectionTranslateGizmo.endDrag();
+            // Move drag commits via packet on release if the user dragged a non-zero distance. The ghost stays
+            // visible (moveOffset is preserved) until the server's reply lands, so the user has continuous feedback.
+            var moveResult = MoveBlocksGizmo.endDrag();
+            if (moveResult != null) {
+                var a = BlockSelection.cornerA();
+                var b = BlockSelection.cornerB();
+                var mc = Minecraft.getInstance();
+                if (a != null && b != null && mc.player != null) {
+                    var dim = mc.player.level().dimension().location();
+                    BLib.MOD.networking()
+                        .sendToServer(
+                            new C2SMoveSelectionPayload(
+                                a,
+                                b,
+                                moveResult.offset().getX(),
+                                moveResult.offset().getY(),
+                                moveResult.offset().getZ(),
+                                moveResult.copy(),
+                                dim
+                            )
+                        );
+                }
+            }
+            return true;
         }
 
         if (button == 2) {
@@ -291,6 +457,59 @@ public final class ViewportPanel implements Panel {
 
     private boolean inRect(double x, double y) {
         return x >= rectX && x < rectX + rectWidth && y >= rectY && y < rectY + rectHeight;
+    }
+
+    /**
+     * Ray-vs-AABB hit test using the cursor ray and the captured camera origin. Returns true if the ray intersects the
+     * box at any positive parametric distance — including the case where the camera is inside the AABB, since the user
+     * might want to right-click "into" their selection from inside it.
+     */
+    private static boolean rmbHitsAabb(com.blib.engine.session.EngineSession session, net.minecraft.world.phys.AABB aabb) {
+        var rayDir = JigsawPlacementCursor.cursorRayDirection(session);
+        if (rayDir == null) {
+            return false;
+        }
+        var capturedCam = com.blib.engine.session.EngineCameraFrame.cameraPosition();
+        var origin = capturedCam != null ? capturedCam : session.cameraPosition();
+        return rayIntersectsAabb(origin.x, origin.y, origin.z, rayDir.x, rayDir.y, rayDir.z, aabb);
+    }
+
+    private static boolean rayIntersectsAabb(
+        double ox,
+        double oy,
+        double oz,
+        double dx,
+        double dy,
+        double dz,
+        net.minecraft.world.phys.AABB aabb
+    ) {
+        var tMin = Double.NEGATIVE_INFINITY;
+        var tMax = Double.POSITIVE_INFINITY;
+        for (var i = 0; i < 3; i++) {
+            var o = i == 0 ? ox : (i == 1 ? oy : oz);
+            var d = i == 0 ? dx : (i == 1 ? dy : dz);
+            var mn = i == 0 ? aabb.minX : (i == 1 ? aabb.minY : aabb.minZ);
+            var mx = i == 0 ? aabb.maxX : (i == 1 ? aabb.maxY : aabb.maxZ);
+            if (Math.abs(d) < 1.0e-9) {
+                if (o < mn || o > mx) {
+                    return false;
+                }
+                continue;
+            }
+            var t1 = (mn - o) / d;
+            var t2 = (mx - o) / d;
+            if (t1 > t2) {
+                var s = t1;
+                t1 = t2;
+                t2 = s;
+            }
+            tMin = Math.max(tMin, t1);
+            tMax = Math.min(tMax, t2);
+            if (tMin > tMax) {
+                return false;
+            }
+        }
+        return tMax >= 0;
     }
 
     /**

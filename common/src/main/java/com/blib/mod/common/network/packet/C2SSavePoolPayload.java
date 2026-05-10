@@ -2,6 +2,7 @@ package com.blib.mod.common.network.packet;
 
 import com.just.codec.stream.RecordStreamCodec;
 import com.just.codec.stream.StreamCodec;
+import com.just.codec.stream.impl.StreamCodecs;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -10,15 +11,16 @@ import com.blib.api.common.codec.v1.BLibCodecs;
 import com.blib.mod.BLib;
 
 /**
- * Client → server: persist the current in-memory state of the named pool to disk. Triggered from the Pool Editor's
- * "Save" header button. Server encodes the pool via vanilla's codec and writes it under an auto-managed
- * {@code blib_engine} datapack at {@code <world>/datapacks/blib_engine/}, then triggers a resource reload so the
- * on-disk state replaces the in-memory edits (which would otherwise be lost on world close).
+ * Client → server: trigger a "Save & Reload" on the named project for the named pool. Since pool edits already write to
+ * disk continuously, this packet is effectively just a reload trigger from the Pool Editor's header button — keeps the
+ * one-click "make my changes live" affordance without forcing users to dig into the FILE menu after every tweak.
  * <p>
- * Op-gated server-side. The auto-managed pack is created on first save and added to the world's selected pack ids
- * so subsequent reloads pick it up automatically.
+ * Server runs {@code EngineProjectIO.reloadProject} (ensure-selected + {@code reloadResources}) and replies via
+ * {@link S2CProjectOpResultPayload} (op {@code RELOAD}). The {@code poolId} field is preserved purely so the client can
+ * echo back which editor invoked the reload — server logic doesn't need it. Op-gated.
  */
 public record C2SSavePoolPayload(
+    String projectName,
     ResourceLocation poolId
 ) implements CustomPacketPayload {
 
@@ -27,6 +29,8 @@ public record C2SSavePoolPayload(
     public static final Type<C2SSavePoolPayload> TYPE = new Type<>(PAYLOAD_ID);
 
     public static final StreamCodec<C2SSavePoolPayload> CODEC = RecordStreamCodec.of(
+        StreamCodecs.STRING_UTF8,
+        C2SSavePoolPayload::projectName,
         BLibCodecs.Stream.RESOURCE_LOCATION,
         C2SSavePoolPayload::poolId,
         C2SSavePoolPayload::new

@@ -32,9 +32,9 @@ public record JigsawBlockTarget(
 
     /**
      * Read the live state of a jigsaw block at {@code pos} and snapshot it as a {@code JigsawBlockTarget}. Returns
-     * {@code null} if the block isn't a jigsaw or the block entity is missing (chunk unload race, server desync).
-     * Both the snap-resolver raycast and the selection inspector go through this helper so they always see the same
-     * field set with the same null-handling.
+     * {@code null} if the block isn't a jigsaw or the block entity is missing (chunk unload race, server desync). Both
+     * the snap-resolver raycast and the selection inspector go through this helper so they always see the same field
+     * set with the same null-handling.
      */
     public static @Nullable JigsawBlockTarget snapshot(BlockGetter level, BlockPos pos) {
         var state = level.getBlockState(pos);

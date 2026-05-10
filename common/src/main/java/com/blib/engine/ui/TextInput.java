@@ -23,11 +23,11 @@ import java.util.function.Consumer;
  * <li>Ctrl+A selects all.</li>
  * <li>Shift + arrow / Home / End extends the selection in the appropriate direction (anchored at the caret position
  * before extension started).</li>
- * <li>LMB-drag inside the input rect extends a selection from the original click position. The drag survives the
- * cursor leaving the input rect via a static {@link #getDragSelecting()} pointer routed by the workspace.</li>
+ * <li>LMB-drag inside the input rect extends a selection from the original click position. The drag survives the cursor
+ * leaving the input rect via a static {@link #getDragSelecting()} pointer routed by the workspace.</li>
  * <li>Backspace / Delete / character-typing replace the selection if any (otherwise act on the caret).</li>
- * <li>Ctrl+C / Ctrl+X copy / cut the selection to the OS clipboard. Ctrl+V pastes (newlines / tabs sanitized to
- * spaces since this is a single-line input). All three are no-ops when there's nothing useful to act on.</li>
+ * <li>Ctrl+C / Ctrl+X copy / cut the selection to the OS clipboard. Ctrl+V pastes (newlines / tabs sanitized to spaces
+ * since this is a single-line input). All three are no-ops when there's nothing useful to act on.</li>
  * <li>Any non-shift caret-movement key collapses the selection to the appropriate edge.</li>
  * </ul>
  */
@@ -87,6 +87,13 @@ public final class TextInput {
     }
 
     public static void endDragSelection() {
+        // If the click never actually dragged (anchor still equal to caret), clear the anchor so it doesn't
+        // linger as a phantom anchor for the next thing that moves the caret. Otherwise typing a character right
+        // after a click would create an off-by-one selection (anchor at click position, caret advanced by 1) that
+        // the next charTyped call would then treat as an active selection and replace.
+        if (dragSelecting != null && dragSelecting.selectionAnchor == dragSelecting.caret) {
+            dragSelecting.clearSelection();
+        }
         dragSelecting = null;
     }
 
@@ -126,8 +133,8 @@ public final class TextInput {
 
     /**
      * Whether the most recent render drew a left-edge ellipsis (because content extends to the left of the visible
-     * window). Cached so {@link #caretIndexAt} can offset the cursor-X reference by the ellipsis reservation —
-     * without it, clicks on a scrolled field would land one ellipsis-width too far right.
+     * window). Cached so {@link #caretIndexAt} can offset the cursor-X reference by the ellipsis reservation — without
+     * it, clicks on a scrolled field would land one ellipsis-width too far right.
      */
     private boolean leftEllipsisShown;
 
@@ -159,9 +166,9 @@ public final class TextInput {
     }
 
     /**
-     * Programmatically focus this input — equivalent to a click, but without requiring the cursor to be over the
-     * input rect. Used by overlay widgets (e.g. {@link SearchableSelect}) that auto-focus their search box on open.
-     * Stomps any other focused input the same way a click would.
+     * Programmatically focus this input — equivalent to a click, but without requiring the cursor to be over the input
+     * rect. Used by overlay widgets (e.g. {@link SearchableSelect}) that auto-focus their search box on open. Stomps
+     * any other focused input the same way a click would.
      */
     public void focus() {
         if (focused != null && focused != this) {
@@ -331,9 +338,9 @@ public final class TextInput {
     }
 
     /**
-     * Extend the selection during an LMB drag by moving the caret to {@code mouseX} while the anchor stays where
-     * the click landed. Called by {@link EngineWorkspaceScreen} via the static {@link #getDragSelecting()} pointer
-     * so drags survive the cursor leaving the input rect.
+     * Extend the selection during an LMB drag by moving the caret to {@code mouseX} while the anchor stays where the
+     * click landed. Called by {@link EngineWorkspaceScreen} via the static {@link #getDragSelecting()} pointer so drags
+     * survive the cursor leaving the input rect.
      */
     public void mouseDraggedExtend(double mouseX) {
         if (!focusedFlag) {
@@ -505,8 +512,8 @@ public final class TextInput {
      * whichever character boundary is closer to the cursor for natural click-to-position feel. Honors the current
      * {@link #viewStart} so a click in a horizontally-scrolled field lands on the visible character under the cursor
      * rather than the corresponding offset from the literal content origin, and offsets by the left-ellipsis
-     * reservation when one is shown so clicks just past the ellipsis still land on the first visible character.
-     * Linear scan — fine for short single-line content.
+     * reservation when one is shown so clicks just past the ellipsis still land on the first visible character. Linear
+     * scan — fine for short single-line content.
      */
     private int caretIndexAt(double mouseX) {
         var font = Minecraft.getInstance().font;
@@ -565,9 +572,9 @@ public final class TextInput {
     }
 
     /**
-     * Clear selection state if the caret has crossed back to meet the anchor. Without this, a Shift-arrow that
-     * lands on the anchor leaves a degenerate selection ({@code anchor == caret}) which {@link #hasSelection}
-     * already filters, but explicitly resetting the anchor lets the next non-shift caret-move start fresh.
+     * Clear selection state if the caret has crossed back to meet the anchor. Without this, a Shift-arrow that lands on
+     * the anchor leaves a degenerate selection ({@code anchor == caret}) which {@link #hasSelection} already filters,
+     * but explicitly resetting the anchor lets the next non-shift caret-move start fresh.
      */
     private void collapseSelectionIfDegenerate() {
         if (selectionAnchor == caret) {

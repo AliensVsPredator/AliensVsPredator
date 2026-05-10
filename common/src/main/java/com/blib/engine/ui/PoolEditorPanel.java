@@ -18,23 +18,30 @@ import java.util.Map;
 import com.blib.engine.jigsaw.JigsawPieceLibrary;
 import com.blib.engine.jigsaw.JigsawPieceThumbnailCache;
 import com.blib.engine.jigsaw.JigsawPoolLibrary;
+import com.blib.engine.jigsaw.ProjectDraftCache;
+import com.blib.engine.session.ProjectSession;
 import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.C2SAddPoolElementPayload;
 import com.blib.mod.common.network.packet.C2SRemovePoolElementPayload;
+import com.blib.mod.common.network.packet.C2SRequestPoolDraftPayload;
 import com.blib.mod.common.network.packet.C2SSavePoolPayload;
 import com.blib.mod.common.network.packet.C2SUpdatePoolElementPayload;
 
 /**
  * Browser + inline editor for the contents of a single template pool. Header has a {@link SearchableSelect} to pick
- * which pool to inspect; the body is a scrollable vertical list of element rows — thumbnail, template id, an
- * editable weight field, and an editable projection segmented control. Pool data comes from
- * {@link JigsawPoolLibrary#elementsInPool}; thumbnails are cached via the same {@link JigsawPieceThumbnailCache}
- * that {@link PiecePalettePanel} uses.
+ * which pool to inspect; the body is a scrollable vertical list of element rows — thumbnail, template id, an editable
+ * weight field, and an editable projection segmented control. Thumbnails come from the same
+ * {@link JigsawPieceThumbnailCache} that {@link PiecePalettePanel} uses.
  * <p>
- * S5 Phase 2: edits are sent via {@link C2SUpdatePoolElementPayload} which the server applies as a live mutation of
- * the registry's pool object — new generations from this point use the updated weights/projections immediately.
- * Edits are NOT persisted to disk; closing the world reverts to JSON state. Future phases add: add/remove pieces,
- * save-to-datapack with diff view, processor list editing, "+ New Pool".
+ * Element data is read from the active project's {@link ProjectDraftCache} — server-pushed authoritative state for the
+ * project's pool JSON. When the project hasn't yet authored an override for the selected pool, the panel falls back to
+ * {@link JigsawPoolLibrary#elementsInPool} so users see the in-game state as a starting point.
+ * <p>
+ * Edits ({@link C2SUpdatePoolElementPayload} / {@link C2SAddPoolElementPayload} / {@link C2SRemovePoolElementPayload})
+ * write straight to the active project's datapack JSON on disk — the live {@code Registries#TEMPLATE_POOL} object is
+ * left untouched. Live structure generation only reflects the edits after the user clicks the header "Reload" button
+ * (which fires {@link C2SSavePoolPayload} → server reload). All edit packets are no-ops without an active
+ * {@link ProjectSession}.
  * <p>
  * Nested children of a {@code ListPoolElement} display alongside top-level elements but render the weight and
  * projection as plain (non-editable) text — they don't have a stable {@code rawIndex} for the server to address.
@@ -136,17 +143,17 @@ public final class PoolEditorPanel implements Panel {
     private List<JigsawPoolLibrary.PoolElementInfo> cachedElements = List.of();
 
     /**
-     * Per-element-row widgets keyed by {@code rawIndex}. Lazily populated as rows are first rendered; cleared when
-     * the selected pool changes (since rawIndex space is per-pool). Non-editable rows ({@code rawIndex == -1}) skip
-     * widget creation entirely and render plain text instead.
+     * Per-element-row widgets keyed by {@code rawIndex}. Lazily populated as rows are first rendered; cleared when the
+     * selected pool changes (since rawIndex space is per-pool). Non-editable rows ({@code rawIndex == -1}) skip widget
+     * creation entirely and render plain text instead.
      */
     private final Map<Integer, TextInput> weightInputs = new HashMap<>();
 
     private final Map<Integer, SegmentedControl> projectionSelects = new HashMap<>();
 
     /**
-     * Footer "Add piece" picker — selecting a template fires {@link C2SAddPoolElementPayload} and resets the
-     * select's value to {@code null} so the placeholder shows again for the next add. Items come from
+     * Footer "Add piece" picker — selecting a template fires {@link C2SAddPoolElementPayload} and resets the select's
+     * value to {@code null} so the placeholder shows again for the next add. Items come from
      * {@link JigsawPieceLibrary#listIds()} (every loaded template).
      */
     private final SearchableSelect<ResourceLocation> addPieceSelect = new SearchableSelect<>(
@@ -223,7 +230,7 @@ public final class PoolEditorPanel implements Panel {
     }
 
     private void renderSaveButton(GuiGraphics graphics, int x, int y, int mouseX, int mouseY) {
-        var enabled = poolSelect.currentValue() != null;
+        var enabled = poolSelect.currentValue() != null && ProjectSession.activeProject() != null;
         var hovered = enabled
             && mouseX >= x
             && mouseX < x + SAVE_BUTTON_WIDTH
@@ -241,7 +248,8 @@ public final class PoolEditorPanel implements Panel {
 
         var font = Minecraft.getInstance().font;
         var label = saveButtonLabel();
-        var color = !enabled ? SAVE_BUTTON_DISABLED_TEXT
+        var color = !enabled
+            ? SAVE_BUTTON_DISABLED_TEXT
             : (label.startsWith("✓") ? SAVE_BUTTON_SAVED_TEXT : SAVE_BUTTON_TEXT);
         var labelWidth = font.width(label);
         var textX = x + (SAVE_BUTTON_WIDTH - labelWidth) / 2;
@@ -252,14 +260,14 @@ public final class PoolEditorPanel implements Panel {
 
     private String saveButtonLabel() {
         if (lastSaveAttemptMs <= 0) {
-            return "Save";
+            return "Reload";
         }
         var elapsed = System.currentTimeMillis() - lastSaveAttemptMs;
         if (elapsed < SAVING_FEEDBACK_MS) {
-            return "Saving…";
+            return "Reloading…";
         }
         if (elapsed < SAVED_FEEDBACK_MS) {
-            return "✓ Saved";
+            return "✓ Reloaded";
         }
         return "Save";
     }
@@ -284,6 +292,10 @@ public final class PoolEditorPanel implements Panel {
     }
 
     private void renderBody(GuiGraphics graphics, int x, int y, int width, int height, int mouseX, int mouseY) {
+        if (ProjectSession.activeProject() == null) {
+            drawCenteredNote(graphics, x, y, width, height, "(no project open — File → Open Project)");
+            return;
+        }
         var poolId = poolSelect.currentValue();
 
         if (poolId == null) {
@@ -291,21 +303,29 @@ public final class PoolEditorPanel implements Panel {
             return;
         }
 
-        // Re-fetch the element list every frame. Pools are tiny (typically <50 entries), and a fresh read costs a
-        // registry lookup + flat element walk — microseconds. This avoids a client-server race that used to drop
-        // updates: the previous "invalidate cache + re-fetch on next frame" pattern raced the ~50 ms server-tick
-        // delay between sending a mutation packet and the server actually applying it, so the very next render
-        // would re-fetch *before* the server had processed the change and re-cache the stale list.
-        cachedElements = JigsawPoolLibrary.elementsInPool(poolId);
-
-        // Widget cache + scroll position reset only when the user picks a different pool — rawIndex space is
-        // per-pool, so we'd otherwise leak inputs across pools. Same pool, even after add/remove, can keep
-        // existing widgets (commitRemove clears them explicitly because index renumbering invalidates the keys).
+        // Pool selection changed → reset per-pool widget state and request the project's draft for this pool from
+        // the server. Until the S2CPoolDraftPayload reply lands, the cache may be empty for this pool and we fall
+        // back to JigsawPoolLibrary's registry read for an immediate display.
         if (!poolId.equals(lastShownPool)) {
             lastShownPool = poolId;
             scroll.reset();
             weightInputs.clear();
             projectionSelects.clear();
+            BLib.MOD.networking().sendToServer(new C2SRequestPoolDraftPayload(ProjectSession.activeProjectName(), poolId));
+        }
+
+        // Prefer the project's authoritative state (fed by S2CPoolDraftPayload); fall back to the registry's view
+        // for pools the project hasn't yet touched. The registry's view is what's currently in-game; the draft
+        // cache reflects on-disk state, which may have unreloaded edits the registry doesn't see.
+        var draft = ProjectDraftCache.get(poolId);
+        if (draft != null) {
+            var converted = new java.util.ArrayList<JigsawPoolLibrary.PoolElementInfo>(draft.size());
+            for (var d : draft) {
+                converted.add(ProjectDraftCache.toPoolElementInfo(d));
+            }
+            cachedElements = converted;
+        } else {
+            cachedElements = JigsawPoolLibrary.elementsInPool(poolId);
         }
 
         if (cachedElements.isEmpty()) {
@@ -334,10 +354,15 @@ public final class PoolEditorPanel implements Panel {
     }
 
     /**
-     * Compute the x-coordinates of the right-side widget block for a row. Shared between render and click
-     * hit-testing so the × button rect matches what's drawn. {@code rowWidth} is the panel width.
+     * Compute the x-coordinates of the right-side widget block for a row. Shared between render and click hit-testing
+     * so the × button rect matches what's drawn. {@code rowWidth} is the panel width.
      */
-    private record RowLayout(int weightX, int projectionX, int removeX, int leftEdgeOfBlock) {}
+    private record RowLayout(
+        int weightX,
+        int projectionX,
+        int removeX,
+        int leftEdgeOfBlock
+    ) {}
 
     private static RowLayout rowLayout(int rowX, int rowWidth) {
         var rightEdge = rowX + rowWidth - SCROLLBAR_GUTTER - RIGHT_PAD;
@@ -347,7 +372,15 @@ public final class PoolEditorPanel implements Panel {
         return new RowLayout(weightX, projectionX, removeX, weightX);
     }
 
-    private void renderRow(GuiGraphics graphics, JigsawPoolLibrary.PoolElementInfo element, int x, int y, int width, int mouseX, int mouseY) {
+    private void renderRow(
+        GuiGraphics graphics,
+        JigsawPoolLibrary.PoolElementInfo element,
+        int x,
+        int y,
+        int width,
+        int mouseX,
+        int mouseY
+    ) {
         var hovered = mouseY >= y
             && mouseY < y + ROW_HEIGHT
             && mouseX >= x
@@ -360,19 +393,36 @@ public final class PoolEditorPanel implements Panel {
         // placeholder rect so the row layout stays stable.
         var template = JigsawPieceLibrary.get(element.templateId());
         if (template != null) {
-            JigsawPieceThumbnailCache.draw(graphics, element.templateId(), template, x + THUMB_PAD, y + (ROW_HEIGHT - THUMB_SIZE) / 2, THUMB_SIZE, THUMB_SIZE);
+            JigsawPieceThumbnailCache.draw(
+                graphics,
+                element.templateId(),
+                template,
+                x + THUMB_PAD,
+                y + (ROW_HEIGHT - THUMB_SIZE) / 2,
+                THUMB_SIZE,
+                THUMB_SIZE
+            );
         } else {
-            graphics.fill(x + THUMB_PAD, y + (ROW_HEIGHT - THUMB_SIZE) / 2, x + THUMB_PAD + THUMB_SIZE, y + (ROW_HEIGHT - THUMB_SIZE) / 2 + THUMB_SIZE, 0xFF1A1A22);
+            graphics.fill(
+                x + THUMB_PAD,
+                y + (ROW_HEIGHT - THUMB_SIZE) / 2,
+                x + THUMB_PAD + THUMB_SIZE,
+                y + (ROW_HEIGHT - THUMB_SIZE) / 2 + THUMB_SIZE,
+                0xFF1A1A22
+            );
         }
 
         var font = Minecraft.getInstance().font;
         var layout = rowLayout(x, width);
 
         if (element.editable()) {
-            var weightInput = weightInputs.computeIfAbsent(element.rawIndex(), idx -> new TextInput(
-                "",
-                value -> commitWeight(idx, value)
-            ));
+            var weightInput = weightInputs.computeIfAbsent(
+                element.rawIndex(),
+                idx -> new TextInput(
+                    "",
+                    value -> commitWeight(idx, value)
+                )
+            );
             // Sync weight from BE state when the user isn't actively typing — keeps display correct after server-
             // side roundtrips and external edits without clobbering in-flight typing.
             if (!weightInput.isFocused()) {
@@ -419,8 +469,8 @@ public final class PoolEditorPanel implements Panel {
     }
 
     /**
-     * Parse the typed text as a positive int and ship it to the server. Invalid input reverts the input's content
-     * to whatever the cached element list says (the server is authoritative; we don't trust whatever the user typed).
+     * Parse the typed text as a positive int and ship it to the server. Invalid input reverts the input's content to
+     * whatever the cached element list says (the server is authoritative; we don't trust whatever the user typed).
      * Empty / non-numeric input drops silently — same UX as the inspector's ResourceLocation-typed inputs.
      */
     private void commitWeight(int rawIndex, String text) {
@@ -444,35 +494,43 @@ public final class PoolEditorPanel implements Panel {
     }
 
     /**
-     * Send a projection update for a row. Called from {@link #mouseClicked} when a SegmentedControl click changes
-     * the selected index relative to the cached element state.
+     * Send a projection update for a row. Called from {@link #mouseClicked} when a SegmentedControl click changes the
+     * selected index relative to the cached element state.
      */
     private void commitProjection(int rawIndex, int newProjectionOrdinal) {
         sendUpdate(rawIndex, currentWeightFor(rawIndex), newProjectionOrdinal);
     }
 
     private void sendUpdate(int rawIndex, int newWeight, int newProjectionOrdinal) {
-        if (lastShownPool == null) {
+        if (lastShownPool == null || ProjectSession.activeProject() == null) {
             return;
         }
         BLib.MOD.networking()
-            .sendToServer(new C2SUpdatePoolElementPayload(lastShownPool, rawIndex, newWeight, newProjectionOrdinal));
-        // No cache invalidation needed — renderBody re-fetches every frame, so the next render automatically
-        // reflects the server-side mutation once the packet has been processed.
+            .sendToServer(
+                new C2SUpdatePoolElementPayload(
+                    ProjectSession.activeProjectName(),
+                    lastShownPool,
+                    rawIndex,
+                    newWeight,
+                    newProjectionOrdinal
+                )
+            );
     }
 
     /**
-     * Add commit — fires when the footer "Add piece" select picks a template. Sends the packet and resets the
-     * select so the placeholder shows again. The new row appears in the list automatically once the server has
-     * processed the packet (renderBody re-fetches every frame).
+     * Add commit — fires when the footer "Add piece" select picks a template. Sends the packet and resets the select so
+     * the placeholder shows again. The new row appears in the list automatically once the server has processed the
+     * packet (renderBody re-fetches every frame).
      */
     private void commitAdd(ResourceLocation templateId) {
         var poolId = poolSelect.currentValue();
-        if (poolId == null) {
+        if (poolId == null || ProjectSession.activeProject() == null) {
             return;
         }
         BLib.MOD.networking()
-            .sendToServer(new C2SAddPoolElementPayload(poolId, templateId, 1, 0 /* RIGID */));
+            .sendToServer(new C2SAddPoolElementPayload(ProjectSession.activeProjectName(), poolId, templateId, 1, 0 /*
+                                                                                                                     * RIGID
+                                                                                                                     */));
         addPieceSelect.setCurrentValue(null);
     }
 
@@ -483,11 +541,11 @@ public final class PoolEditorPanel implements Panel {
      */
     private void commitRemove(int rawIndex) {
         var poolId = poolSelect.currentValue();
-        if (poolId == null) {
+        if (poolId == null || ProjectSession.activeProject() == null) {
             return;
         }
         BLib.MOD.networking()
-            .sendToServer(new C2SRemovePoolElementPayload(poolId, rawIndex));
+            .sendToServer(new C2SRemovePoolElementPayload(ProjectSession.activeProjectName(), poolId, rawIndex));
         weightInputs.clear();
         projectionSelects.clear();
     }
@@ -563,8 +621,8 @@ public final class PoolEditorPanel implements Panel {
     }
 
     /**
-     * Hit-test the Save button rect (top-right of header). Returns true if the click consumed; fires the save
-     * packet + starts the feedback timer.
+     * Hit-test the Save button rect (top-right of header). Returns true if the click consumed; fires the save packet +
+     * starts the feedback timer.
      */
     private boolean handleSaveButtonClick(double mouseX, double mouseY, int button) {
         if (button != 0) {
@@ -582,7 +640,12 @@ public final class PoolEditorPanel implements Panel {
         if (mouseY < saveY || mouseY >= saveY + SAVE_BUTTON_HEIGHT) {
             return false;
         }
-        BLib.MOD.networking().sendToServer(new C2SSavePoolPayload(poolId));
+        if (ProjectSession.activeProject() == null) {
+            return false;
+        }
+        // The header button is now a one-click "make my edits live" — every pool change has already been written
+        // to disk by the per-edit packets, so this just kicks off the reload that imports them into the registry.
+        BLib.MOD.networking().sendToServer(new C2SSavePoolPayload(ProjectSession.activeProjectName(), poolId));
         lastSaveAttemptMs = System.currentTimeMillis();
         return true;
     }
@@ -639,19 +702,21 @@ public final class PoolEditorPanel implements Panel {
     }
 
     private static List<SearchableSelect.Item<ResourceLocation>> buildPoolItems() {
-        return JigsawPoolLibrary.listPoolIds().stream()
+        return JigsawPoolLibrary.listPoolIds()
+            .stream()
             .sorted(Comparator.comparing(ResourceLocation::getNamespace).thenComparing(ResourceLocation::getPath))
             .map(id -> new SearchableSelect.Item<>(id, id.toString()))
             .toList();
     }
 
     /**
-     * Items for the footer's "Add piece" picker — every loaded structure template, sorted by namespace+path. No
-     * icons (templates have no natural item icon; thumbnails would need a different rendering path than the
+     * Items for the footer's "Add piece" picker — every loaded structure template, sorted by namespace+path. No icons
+     * (templates have no natural item icon; thumbnails would need a different rendering path than the
      * SearchableSelect's ItemStack-typed iconProvider expects).
      */
     private static List<SearchableSelect.Item<ResourceLocation>> buildAddPieceItems() {
-        return JigsawPieceLibrary.listIds().stream()
+        return JigsawPieceLibrary.listIds()
+            .stream()
             .sorted(Comparator.comparing(ResourceLocation::getNamespace).thenComparing(ResourceLocation::getPath))
             .map(id -> new SearchableSelect.Item<>(id, id.toString()))
             .toList();

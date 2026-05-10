@@ -12,13 +12,14 @@ import com.blib.mod.BLib;
 
 /**
  * Client → server: append a new {@link net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement} pointing
- * at {@code templateId} to the pool's {@code rawTemplates} list, with the supplied weight + projection. Used by the
- * Pool Editor's footer "Add piece" picker.
+ * at {@code templateId} to the project's pool JSON, with the supplied weight + projection. Used by the Pool Editor's
+ * footer "Add piece" picker.
  * <p>
- * Like the other pool-mutation packets, edits are live in the registry but not persisted until the user clicks Save
- * (which fires a separate {@link C2SSavePoolPayload}). Op-gated server-side.
+ * Like the other pool-edit packets, the change goes to the active project's datapack file — the live registry is
+ * untouched until Reload Project. Server echoes an {@link S2CPoolDraftPayload} with the updated element list. Op-gated.
  */
 public record C2SAddPoolElementPayload(
+    String projectName,
     ResourceLocation poolId,
     ResourceLocation templateId,
     int weight,
@@ -30,6 +31,8 @@ public record C2SAddPoolElementPayload(
     public static final Type<C2SAddPoolElementPayload> TYPE = new Type<>(PAYLOAD_ID);
 
     public static final StreamCodec<C2SAddPoolElementPayload> CODEC = RecordStreamCodec.of(
+        StreamCodecs.STRING_UTF8,
+        C2SAddPoolElementPayload::projectName,
         BLibCodecs.Stream.RESOURCE_LOCATION,
         C2SAddPoolElementPayload::poolId,
         BLibCodecs.Stream.RESOURCE_LOCATION,

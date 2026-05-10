@@ -19,11 +19,19 @@ public final class EngineCursor {
     private EngineCursor() {}
 
     /**
-     * Set crosshair if {@code wantCrosshair} is true and the cursor is inside the viewport rect; otherwise restore
-     * the default. Idempotent — repeated calls in the same state are no-ops, so it's safe to call every frame from
+     * Set crosshair if {@code wantCrosshair} is true and the cursor is inside the viewport rect; otherwise restore the
+     * default. Idempotent — repeated calls in the same state are no-ops, so it's safe to call every frame from
      * {@code render}.
      */
-    public static void update(int logicalMouseX, int logicalMouseY, int viewX, int viewY, int viewWidth, int viewHeight, boolean wantCrosshair) {
+    public static void update(
+        int logicalMouseX,
+        int logicalMouseY,
+        int viewX,
+        int viewY,
+        int viewWidth,
+        int viewHeight,
+        boolean wantCrosshair
+    ) {
         boolean overViewport = logicalMouseX >= viewX
             && logicalMouseX < viewX + viewWidth
             && logicalMouseY >= viewY

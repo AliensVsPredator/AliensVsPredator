@@ -17,6 +17,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
 
+import com.blib.engine.blockselection.BlockSelection;
 import com.blib.engine.gizmo.BLibGizmoState;
 import com.blib.engine.jigsaw.JigsawPieceLibrary;
 import com.blib.engine.jigsaw.JigsawPieceSelection;
@@ -25,12 +26,16 @@ import com.blib.engine.jigsaw.placement.JigsawPlacementFrameState;
 import com.blib.engine.jigsaw.placement.JigsawPlacementOptions;
 import com.blib.engine.jigsaw.placement.JigsawTemplateScanner;
 import com.blib.engine.jigsaw.placement.JigsawTool;
+import com.blib.engine.selection.BlockVolumeSelectable;
 import com.blib.engine.selection.EntitySelectable;
 import com.blib.engine.selection.JigsawBlockSelectable;
 import com.blib.engine.selection.Selectable;
 import com.blib.engine.selection.SelectionManager;
 import com.blib.engine.session.EngineMode;
+import com.blib.engine.session.ProjectSession;
 import com.blib.mod.BLib;
+import com.blib.mod.common.network.packet.C2SDeleteCapturePayload;
+import com.blib.mod.common.network.packet.C2SListCapturesPayload;
 import com.blib.mod.common.network.packet.C2SUpdateJigsawBlockPayload;
 
 /**
@@ -38,8 +43,8 @@ import com.blib.mod.common.network.packet.C2SUpdateJigsawBlockPayload;
  * with nothing selected, falls back to a tool-state view that surfaces the gizmo target, the active jigsaw piece, and
  * the placement-mode + collision-policy controls.
  * <p>
- * Block-typed selections (jigsaw blocks today) drop into an editable inspector: name / target / pool / final-state
- * text inputs and an aligned/rollable joint selector. Inputs commit on Enter via the {@link TextInput} {@code onCommit}
+ * Block-typed selections (jigsaw blocks today) drop into an editable inspector: name / target / pool / final-state text
+ * inputs and an aligned/rollable joint selector. Inputs commit on Enter via the {@link TextInput} {@code onCommit}
  * callback; the segmented control commits on click. Each commit ships a {@link C2SUpdateJigsawBlockPayload} carrying
  * the changed field plus the unchanged BE values, so concurrent edits don't lose any fields the user wasn't actively
  * editing.
@@ -157,35 +162,59 @@ public final class DetailsPanel implements Panel {
     private final SegmentedControl jointSelector = new SegmentedControl(List.of("ALIGNED", "ROLLABLE"), 0);
 
     /**
-     * Position of the block currently shown in the inspector. When this changes we reset all input contents to the
-     * new block's BE state, so a selection swap doesn't leak the previous block's pending edits.
+     * Tool toolbar for {@link BlockVolumeSelectable} — picks the active manipulation gizmo. Mirrors the toolbar that
+     * used to live in {@code BlockSelectionPanel}'s header; lifted here so the panel can retire and the inspector
+     * becomes the single source of selection-shaped controls.
+     */
+    private final SegmentedControl volumeToolControl = new SegmentedControl(
+        List.of("Translate", "Scale", "Move"),
+        BlockSelection.GizmoMode.SCALE_VOLUME.ordinal()
+    );
+
+    /** Position inputs (min corner X, Y, Z) shown when a {@link BlockVolumeSelectable} is the inspected target. */
+    private final TextInput volumePosX = new TextInput("X", v -> commitVolumePosition(0, v));
+
+    private final TextInput volumePosY = new TextInput("Y", v -> commitVolumePosition(1, v));
+
+    private final TextInput volumePosZ = new TextInput("Z", v -> commitVolumePosition(2, v));
+
+    /** Size inputs (X, Y, Z dimensions of the AABB) shown when a {@link BlockVolumeSelectable} is inspected. */
+    private final TextInput volumeSizeX = new TextInput("X", v -> commitVolumeSize(0, v));
+
+    private final TextInput volumeSizeY = new TextInput("Y", v -> commitVolumeSize(1, v));
+
+    private final TextInput volumeSizeZ = new TextInput("Z", v -> commitVolumeSize(2, v));
+
+    /**
+     * Position of the block currently shown in the inspector. When this changes we reset all input contents to the new
+     * block's BE state, so a selection swap doesn't leak the previous block's pending edits.
      */
     private @Nullable BlockPos lastInspectedPos;
 
     /**
      * Last-rendered joint type. When the BE's joint differs from this between frames, an external change happened
-     * (server roundtrip from our own commit, or another player's edit) and we need to resync the segmented control
-     * — without clobbering whatever segment the user might have just clicked.
+     * (server roundtrip from our own commit, or another player's edit) and we need to resync the segmented control —
+     * without clobbering whatever segment the user might have just clicked.
      */
     private @Nullable JigsawBlockEntity.JointType lastBeJoint;
 
     /**
-     * Selectable captured during render so the per-field commit callbacks (which run from the keyboard event path,
-     * not the render path) know which block they're committing against.
+     * Selectable captured during render so the per-field commit callbacks (which run from the keyboard event path, not
+     * the render path) know which block they're committing against.
      */
     private @Nullable JigsawBlockSelectable currentBlock;
 
     /**
-     * Tooltip computed during render — set when the cursor hovers a help-icon "?" next to a label or section
-     * header. Read by {@link #tooltipText} after render via the workspace's tooltip pass. Reset to null at the top
-     * of every render so a stale hover from the previous frame doesn't ghost into this frame's tooltip.
+     * Tooltip computed during render — set when the cursor hovers a help-icon "?" next to a label or section header.
+     * Read by {@link #tooltipText} after render via the workspace's tooltip pass. Reset to null at the top of every
+     * render so a stale hover from the previous frame doesn't ghost into this frame's tooltip.
      */
     private @Nullable Component hoveredHelpTooltip;
 
     /**
-     * Cache key + result for the orphan check. {@code lastOrphanCheckPos} is part of the key because the scan
-     * excludes the inspected jigsaw itself ("does any *other* jigsaw Target this Name?") — switching to a different
-     * block with the same Name could legitimately flip the answer, so the cache must invalidate.
+     * Cache key + result for the orphan check. {@code lastOrphanCheckPos} is part of the key because the scan excludes
+     * the inspected jigsaw itself ("does any *other* jigsaw Target this Name?") — switching to a different block with
+     * the same Name could legitimately flip the answer, so the cache must invalidate.
      */
     private @Nullable ResourceLocation lastOrphanCheckName;
 
@@ -195,9 +224,30 @@ public final class DetailsPanel implements Panel {
 
     private long lastOrphanCheckMs;
 
+    /** Last project we requested a captures list for. Used to refetch when the active project changes. */
+    private @Nullable String lastRequestedProject;
+
+    /**
+     * Hit-test rects for the captures list's per-row delete buttons; populated each render, consumed in mouseClicked.
+     */
+    private final java.util.List<CaptureRect> captureDeleteRects = new java.util.ArrayList<>();
+
+    /**
+     * Capture names matching {@link #captureDeleteRects} by index — the row-i delete fires
+     * {@code captureRenderedNames[i]}.
+     */
+    private final java.util.List<String> captureRenderedNames = new java.util.ArrayList<>();
+
     @Override
     public String title() {
         return "Inspector";
+    }
+
+    @Override
+    public void onShown() {
+        // Refresh the captures list when the inspector opens — it's the home for the captures list now that the
+        // dedicated Selection panel is gone, and the user expects to see fresh disk state on each open.
+        requestCaptureList();
     }
 
     @Override
@@ -221,7 +271,18 @@ public final class DetailsPanel implements Panel {
 
         if (single == null) {
             currentBlock = null;
-            renderToolStateView(graphics, font, x, rowY, width);
+            // Drain capture-result so the list refreshes after a successful Capture op fires from the dialog.
+            var captureResult = BlockSelection.consumePendingCaptureResult();
+            if (captureResult != null) {
+                requestCaptureList();
+            }
+            // Re-fetch the captures list when the active project changes — the inspector is now the captures-list
+            // surface and it shouldn't display stale entries from the previous project.
+            var activeProject = ProjectSession.activeProjectName();
+            if (!activeProject.isEmpty() && !activeProject.equals(lastRequestedProject)) {
+                requestCaptureList();
+            }
+            renderToolStateView(graphics, font, x, rowY, width, mouseX, mouseY);
         } else {
             switch (single.type()) {
                 case ENTITY -> {
@@ -236,6 +297,10 @@ public final class DetailsPanel implements Panel {
                         renderGenericView(graphics, font, x, rowY, width, single);
                     }
                 }
+                case BLOCK_VOLUME -> {
+                    currentBlock = null;
+                    renderBlockVolumeView(graphics, font, x, rowY, width, mouseX, mouseY);
+                }
                 default -> {
                     currentBlock = null;
                     renderGenericView(graphics, font, x, rowY, width, single);
@@ -246,28 +311,51 @@ public final class DetailsPanel implements Panel {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        // Only forward to widgets when a jigsaw block is the active selection — text inputs and the joint selector
-        // live exclusively in the block view, so clicks outside that view shouldn't ever hit them.
-        if (!(SelectionManager.current().single() instanceof JigsawBlockSelectable)) {
+        var single = SelectionManager.current().single();
+        if (single instanceof JigsawBlockSelectable) {
+            if (nameSelect.mouseClicked(mouseX, mouseY, button)) {
+                return true;
+            }
+            if (targetSelect.mouseClicked(mouseX, mouseY, button)) {
+                return true;
+            }
+            if (poolSelect.mouseClicked(mouseX, mouseY, button)) {
+                return true;
+            }
+            if (finalStateSelect.mouseClicked(mouseX, mouseY, button)) {
+                return true;
+            }
+            if (jointSelector.mouseClicked(mouseX, mouseY, button)) {
+                // Joint commits on click rather than on Enter — the segmented control has no commit-keystroke
+                // equivalent. selectedIndex() now reflects the user's choice.
+                commitField(BlockField.JOINT, null);
+                return true;
+            }
             return false;
         }
-        if (nameSelect.mouseClicked(mouseX, mouseY, button)) {
-            return true;
+        if (single instanceof BlockVolumeSelectable) {
+            if (volumeToolControl.mouseClicked(mouseX, mouseY, button)) {
+                BlockSelection.setGizmoMode(BlockSelection.GizmoMode.values()[volumeToolControl.selectedIndex()]);
+                return true;
+            }
+            // TextInputs handle their own focus on click; calling them all is fine since each rejects clicks
+            // outside its own rect.
+            volumePosX.mouseClicked(mouseX, mouseY, button);
+            volumePosY.mouseClicked(mouseX, mouseY, button);
+            volumePosZ.mouseClicked(mouseX, mouseY, button);
+            volumeSizeX.mouseClicked(mouseX, mouseY, button);
+            volumeSizeY.mouseClicked(mouseX, mouseY, button);
+            volumeSizeZ.mouseClicked(mouseX, mouseY, button);
+            return false;
         }
-        if (targetSelect.mouseClicked(mouseX, mouseY, button)) {
-            return true;
-        }
-        if (poolSelect.mouseClicked(mouseX, mouseY, button)) {
-            return true;
-        }
-        if (finalStateSelect.mouseClicked(mouseX, mouseY, button)) {
-            return true;
-        }
-        if (jointSelector.mouseClicked(mouseX, mouseY, button)) {
-            // Joint commits on click rather than on Enter — the segmented control has no commit-keystroke
-            // equivalent. selectedIndex() now reflects the user's choice.
-            commitField(BlockField.JOINT, null);
-            return true;
+        // Tool-state view — captures list delete buttons.
+        if (single == null && button == 0) {
+            for (var i = 0; i < captureDeleteRects.size() && i < captureRenderedNames.size(); i++) {
+                if (captureDeleteRects.get(i).contains(mouseX, mouseY)) {
+                    requestDeleteCapture(captureRenderedNames.get(i));
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -299,7 +387,7 @@ public final class DetailsPanel implements Panel {
      * subsystems. Mirrors the spec's "show something useful when nothing is selected — global tool settings or a hint
      * message" requirement (§3.3).
      */
-    private static void renderToolStateView(GuiGraphics graphics, Font font, int x, int y, int width) {
+    private void renderToolStateView(GuiGraphics graphics, Font font, int x, int y, int width, int mouseX, int mouseY) {
         var rowY = y;
         rowY = drawSectionHeader(graphics, font, x, rowY, width, "Engine");
         rowY += CONTENT_PADDING / 2;
@@ -332,6 +420,79 @@ public final class DetailsPanel implements Panel {
                 rowY = drawRow(graphics, font, x, rowY, "Collisions", String.valueOf(JigsawPlacementFrameState.collisionCount()));
             }
         }
+
+        // Captures section — only when a project is open. The captures list used to live in the dedicated Selection
+        // panel; with that panel gone, the inspector's no-selection view is its new home (per UX choice 4d).
+        captureDeleteRects.clear();
+        captureRenderedNames.clear();
+        if (!ProjectSession.activeProjectName().isEmpty()) {
+            rowY = drawSectionHeader(graphics, font, x, rowY, width, "Captures");
+            rowY += CONTENT_PADDING / 2;
+            var captures = BlockSelection.captures();
+            if (captures.isEmpty()) {
+                drawNote(graphics, font, x, rowY, "(no captures yet)");
+            } else {
+                for (var name : captures) {
+                    var labelX = x + CONTENT_PADDING;
+                    var labelY = rowY;
+                    var deleteBtnSize = 8;
+                    var deleteBtnX = x + width - CONTENT_PADDING - deleteBtnSize;
+                    var truncated = font.plainSubstrByWidth(name, deleteBtnX - labelX - 4);
+                    graphics.drawString(font, Component.literal(truncated), labelX, labelY, VALUE_COLOR, false);
+
+                    // Small "×" delete button at row end.
+                    var deleteBtnY = labelY - 1;
+                    var deleteHovered = mouseX >= deleteBtnX && mouseX < deleteBtnX + deleteBtnSize
+                        && mouseY >= deleteBtnY && mouseY < deleteBtnY + deleteBtnSize + 2;
+                    graphics.drawString(
+                        font,
+                        Component.literal("×"),
+                        deleteBtnX,
+                        deleteBtnY,
+                        deleteHovered ? 0xFFFF8888 : 0xFFE06868,
+                        false
+                    );
+                    captureDeleteRects.add(new CaptureRect(deleteBtnX, deleteBtnY, deleteBtnSize, deleteBtnSize + 2));
+                    captureRenderedNames.add(name);
+                    rowY += LINE_HEIGHT;
+                }
+            }
+        }
+    }
+
+    private void requestCaptureList() {
+        var project = ProjectSession.activeProjectName();
+        if (project.isEmpty()) {
+            lastRequestedProject = null;
+            BlockSelection.setCaptures(java.util.List.of());
+            return;
+        }
+        lastRequestedProject = project;
+        BLib.MOD.networking().sendToServer(new C2SListCapturesPayload(project));
+    }
+
+    private void requestDeleteCapture(String captureName) {
+        var project = ProjectSession.activeProjectName();
+        if (project.isEmpty()) {
+            return;
+        }
+        BLib.MOD.networking().sendToServer(new C2SDeleteCapturePayload(project, captureName));
+    }
+
+    /**
+     * Hit-test rect for a captures-list delete button. Local to this panel; uses double-precision contains for
+     * click-coord precision.
+     */
+    private record CaptureRect(
+        int x,
+        int y,
+        int w,
+        int h
+    ) {
+
+        boolean contains(double mx, double my) {
+            return mx >= x && mx < x + w && my >= y && my < y + h;
+        }
     }
 
     /**
@@ -361,12 +522,21 @@ public final class DetailsPanel implements Panel {
 
     /**
      * Editable inspector for a placed jigsaw block. Every field reads from a fresh BE snapshot each frame and pushes
-     * the value into the corresponding widget — SearchableSelects overwrite their currentValue (no "focused" concept
-     * to preserve), the joint segmented control resyncs only on external change. Selection swaps re-key the orphan
-     * cache and reload all widgets to the new block's BE state. The Name row gets a special-case warning treatment
-     * when its Name isn't Targeted by any other jigsaw in templates or the loaded world.
+     * the value into the corresponding widget — SearchableSelects overwrite their currentValue (no "focused" concept to
+     * preserve), the joint segmented control resyncs only on external change. Selection swaps re-key the orphan cache
+     * and reload all widgets to the new block's BE state. The Name row gets a special-case warning treatment when its
+     * Name isn't Targeted by any other jigsaw in templates or the loaded world.
      */
-    private void renderBlockView(GuiGraphics graphics, Font font, int x, int y, int width, int mouseX, int mouseY, JigsawBlockSelectable selectable) {
+    private void renderBlockView(
+        GuiGraphics graphics,
+        Font font,
+        int x,
+        int y,
+        int width,
+        int mouseX,
+        int mouseY,
+        JigsawBlockSelectable selectable
+    ) {
         currentBlock = selectable;
         var snap = selectable.snapshot();
         if (snap == null) {
@@ -433,6 +603,178 @@ public final class DetailsPanel implements Panel {
         }
     }
 
+    /**
+     * Inspector view for a {@link BlockVolumeSelectable}. Three sections: tool toolbar (Translate / Scale / Move) for
+     * picking the active gizmo, position XYZ inputs for the AABB's min corner, and size XYZ inputs for the volume
+     * dimensions. The tool toolbar mirrors the same control that used to live in {@code BlockSelectionPanel}'s header.
+     */
+    private void renderBlockVolumeView(GuiGraphics graphics, Font font, int x, int y, int width, int mouseX, int mouseY) {
+        var rowY = y;
+
+        rowY = drawSectionHeader(graphics, font, x, rowY, width, "Tool");
+        rowY += CONTENT_PADDING / 2;
+        var toolBarX = x + CONTENT_PADDING;
+        var toolBarW = Math.max(SegmentedControl.HEIGHT * 3, width - 2 * CONTENT_PADDING);
+        volumeToolControl.setSelectedIndex(BlockSelection.gizmoMode().ordinal());
+        volumeToolControl.render(graphics, toolBarX, rowY, toolBarW, mouseX, mouseY);
+        rowY += SegmentedControl.HEIGHT + CONTENT_PADDING;
+
+        // Mirror the AABB into the inputs every frame so external changes (gizmo drag, drag-to-pick re-pick) flow
+        // through to the displayed values without clobbering whatever the user might be mid-typing.
+        syncVolumeInputsFromAabb(false);
+
+        rowY = drawSectionHeader(graphics, font, x, rowY, width, "Position");
+        rowY += CONTENT_PADDING / 2;
+        rowY = renderVolumeXyzRow(graphics, font, x, rowY, width, volumePosX, volumePosY, volumePosZ, mouseX, mouseY);
+
+        rowY = drawSectionHeader(graphics, font, x, rowY, width, "Size");
+        rowY += CONTENT_PADDING / 2;
+        rowY = renderVolumeXyzRow(graphics, font, x, rowY, width, volumeSizeX, volumeSizeY, volumeSizeZ, mouseX, mouseY);
+
+        // Volume readout — small note under Size so the user can see the block count without having to multiply.
+        var aabb = BlockSelection.aabb();
+        if (aabb.isPresent()) {
+            var box = aabb.get();
+            var sx = (long) (box.maxX - box.minX);
+            var sy = (long) (box.maxY - box.minY);
+            var sz = (long) (box.maxZ - box.minZ);
+            drawNote(graphics, font, x, rowY, "= " + (sx * sy * sz) + " blocks");
+        }
+    }
+
+    /** Render a row of three labeled int inputs (X / Y / Z) at the given y. Returns the next-row y. */
+    private static int renderVolumeXyzRow(
+        GuiGraphics graphics,
+        Font font,
+        int x,
+        int y,
+        int width,
+        TextInput xIn,
+        TextInput yIn,
+        TextInput zIn,
+        int mouseX,
+        int mouseY
+    ) {
+        var inputsStart = x + CONTENT_PADDING;
+        var available = Math.max(0, width - 2 * CONTENT_PADDING - 2 * 3); // 2 gaps × 3px
+        var perInput = Math.max(24, available / 3);
+        xIn.render(graphics, inputsStart, y, perInput, mouseX, mouseY);
+        yIn.render(graphics, inputsStart + perInput + 3, y, perInput, mouseX, mouseY);
+        zIn.render(graphics, inputsStart + 2 * (perInput + 3), y, perInput, mouseX, mouseY);
+        return y + TextInput.HEIGHT + CONTENT_PADDING;
+    }
+
+    private void commitVolumePosition(int axis, String text) {
+        var parsed = parseInt(text);
+        if (parsed == null) {
+            syncVolumeInputsFromAabb(true);
+            return;
+        }
+        var aabb = BlockSelection.aabb();
+        if (aabb.isEmpty()) {
+            return;
+        }
+        var box = aabb.get();
+        var minX = (int) Math.floor(box.minX);
+        var minY = (int) Math.floor(box.minY);
+        var minZ = (int) Math.floor(box.minZ);
+        var maxX = (int) Math.floor(box.maxX) - 1;
+        var maxY = (int) Math.floor(box.maxY) - 1;
+        var maxZ = (int) Math.floor(box.maxZ) - 1;
+        var sizeX = maxX - minX + 1;
+        var sizeY = maxY - minY + 1;
+        var sizeZ = maxZ - minZ + 1;
+        switch (axis) {
+            case 0 -> {
+                minX = parsed;
+                maxX = parsed + sizeX - 1;
+            }
+            case 1 -> {
+                minY = parsed;
+                maxY = parsed + sizeY - 1;
+            }
+            case 2 -> {
+                minZ = parsed;
+                maxZ = parsed + sizeZ - 1;
+            }
+            default -> {
+                return;
+            }
+        }
+        BlockSelection.setBounds(new BlockPos(minX, minY, minZ), new BlockPos(maxX, maxY, maxZ));
+    }
+
+    private void commitVolumeSize(int axis, String text) {
+        var parsed = parseInt(text);
+        if (parsed == null || parsed < 1) {
+            syncVolumeInputsFromAabb(true);
+            return;
+        }
+        var aabb = BlockSelection.aabb();
+        if (aabb.isEmpty()) {
+            return;
+        }
+        var box = aabb.get();
+        var minX = (int) Math.floor(box.minX);
+        var minY = (int) Math.floor(box.minY);
+        var minZ = (int) Math.floor(box.minZ);
+        var maxX = (int) Math.floor(box.maxX) - 1;
+        var maxY = (int) Math.floor(box.maxY) - 1;
+        var maxZ = (int) Math.floor(box.maxZ) - 1;
+        switch (axis) {
+            case 0 -> maxX = minX + parsed - 1;
+            case 1 -> maxY = minY + parsed - 1;
+            case 2 -> maxZ = minZ + parsed - 1;
+            default -> {
+                return;
+            }
+        }
+        BlockSelection.setBounds(new BlockPos(minX, minY, minZ), new BlockPos(maxX, maxY, maxZ));
+    }
+
+    private void syncVolumeInputsFromAabb(boolean force) {
+        var aabb = BlockSelection.aabb();
+        if (aabb.isEmpty()) {
+            syncVolumeInput(volumePosX, "", force);
+            syncVolumeInput(volumePosY, "", force);
+            syncVolumeInput(volumePosZ, "", force);
+            syncVolumeInput(volumeSizeX, "", force);
+            syncVolumeInput(volumeSizeY, "", force);
+            syncVolumeInput(volumeSizeZ, "", force);
+            return;
+        }
+        var box = aabb.get();
+        var minX = (int) Math.floor(box.minX);
+        var minY = (int) Math.floor(box.minY);
+        var minZ = (int) Math.floor(box.minZ);
+        var sizeX = (int) Math.floor(box.maxX) - minX;
+        var sizeY = (int) Math.floor(box.maxY) - minY;
+        var sizeZ = (int) Math.floor(box.maxZ) - minZ;
+        syncVolumeInput(volumePosX, String.valueOf(minX), force);
+        syncVolumeInput(volumePosY, String.valueOf(minY), force);
+        syncVolumeInput(volumePosZ, String.valueOf(minZ), force);
+        syncVolumeInput(volumeSizeX, String.valueOf(sizeX), force);
+        syncVolumeInput(volumeSizeY, String.valueOf(sizeY), force);
+        syncVolumeInput(volumeSizeZ, String.valueOf(sizeZ), force);
+    }
+
+    private static void syncVolumeInput(TextInput input, String value, boolean force) {
+        if (force || !input.isFocused()) {
+            input.setContent(value);
+        }
+    }
+
+    private static @Nullable Integer parseInt(String text) {
+        if (text == null || text.isBlank()) {
+            return null;
+        }
+        try {
+            return Integer.parseInt(text.trim());
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
     private static int drawSectionHeader(GuiGraphics graphics, Font font, int x, int y, int width, String label) {
         graphics.fill(x, y, x + width, y + SECTION_HEADER_HEIGHT, SECTION_HEADER_BG_COLOR);
         graphics.drawString(
@@ -448,11 +790,21 @@ public final class DetailsPanel implements Panel {
     }
 
     /**
-     * Section-header variant that renders a "?" help icon to the right of the label and surfaces {@code helpText}
-     * via {@link #tooltipText} when the cursor hovers it. Instance method (rather than static) so it can write the
-     * panel's hovered-tooltip field directly.
+     * Section-header variant that renders a "?" help icon to the right of the label and surfaces {@code helpText} via
+     * {@link #tooltipText} when the cursor hovers it. Instance method (rather than static) so it can write the panel's
+     * hovered-tooltip field directly.
      */
-    private int drawSectionHeaderWithHelp(GuiGraphics graphics, Font font, int x, int y, int width, String label, Component helpText, int mouseX, int mouseY) {
+    private int drawSectionHeaderWithHelp(
+        GuiGraphics graphics,
+        Font font,
+        int x,
+        int y,
+        int width,
+        String label,
+        Component helpText,
+        int mouseX,
+        int mouseY
+    ) {
         var nextY = drawSectionHeader(graphics, font, x, y, width, label);
         var iconX = x + CONTENT_PADDING + font.width(label) + HELP_ICON_GAP;
         var iconY = y + (SECTION_HEADER_HEIGHT - font.lineHeight + 2) / 2;
@@ -476,10 +828,21 @@ public final class DetailsPanel implements Panel {
     /**
      * Label + {@link TextInput} on one row. Label takes {@link #LABEL_COLUMN_WIDTH} on the left, input fills the rest
      * minus content padding on both sides. The label baseline is centered against the input's text baseline using the
-     * same +2 descender-padding compensation used elsewhere in the workspace. When {@code helpText} is non-null, a
-     * "?" icon is rendered immediately after the label and contributes to {@link #hoveredHelpTooltip} on hover.
+     * same +2 descender-padding compensation used elsewhere in the workspace. When {@code helpText} is non-null, a "?"
+     * icon is rendered immediately after the label and contributes to {@link #hoveredHelpTooltip} on hover.
      */
-    private int drawInputRow(GuiGraphics graphics, Font font, int x, int y, int width, String label, @Nullable Component helpText, TextInput input, int mouseX, int mouseY) {
+    private int drawInputRow(
+        GuiGraphics graphics,
+        Font font,
+        int x,
+        int y,
+        int width,
+        String label,
+        @Nullable Component helpText,
+        TextInput input,
+        int mouseX,
+        int mouseY
+    ) {
         var labelY = y + (TextInput.HEIGHT - font.lineHeight + 2) / 2;
         graphics.drawString(font, Component.literal(label), x + CONTENT_PADDING, labelY, LABEL_COLOR, false);
         if (helpText != null) {
@@ -495,8 +858,8 @@ public final class DetailsPanel implements Panel {
     }
 
     /**
-     * Render a small "?" glyph anchored at {@code (iconX, iconY)} with a hover hit-rect of {@link #HELP_ICON_SIZE}
-     * px on each side. Returns {@code true} when the cursor is over the icon — caller writes the tooltip field.
+     * Render a small "?" glyph anchored at {@code (iconX, iconY)} with a hover hit-rect of {@link #HELP_ICON_SIZE} px
+     * on each side. Returns {@code true} when the cursor is over the icon — caller writes the tooltip field.
      */
     private static boolean drawHelpIcon(GuiGraphics graphics, Font font, int iconX, int iconY, int mouseX, int mouseY) {
         return drawIconGlyph(graphics, font, iconX, iconY, "?", HELP_ICON_COLOR, HELP_ICON_HOVER_COLOR, mouseX, mouseY);
@@ -510,7 +873,17 @@ public final class DetailsPanel implements Panel {
         return drawIconGlyph(graphics, font, iconX, iconY, "!", WARN_ICON_COLOR, WARN_ICON_HOVER_COLOR, mouseX, mouseY);
     }
 
-    private static boolean drawIconGlyph(GuiGraphics graphics, Font font, int iconX, int iconY, String glyph, int color, int hoverColor, int mouseX, int mouseY) {
+    private static boolean drawIconGlyph(
+        GuiGraphics graphics,
+        Font font,
+        int iconX,
+        int iconY,
+        String glyph,
+        int color,
+        int hoverColor,
+        int mouseX,
+        int mouseY
+    ) {
         var hovered = mouseX >= iconX
             && mouseX < iconX + HELP_ICON_SIZE
             && mouseY >= iconY
@@ -521,9 +894,9 @@ public final class DetailsPanel implements Panel {
     }
 
     /**
-     * Specialized variant of {@link #drawSelectRow} for the Name field: applies orphan-warning styling (warning
-     * label color + "!" icon + orphan-explanation tooltip) when {@code orphaned} is true, otherwise renders
-     * identically to a help-icon row with {@link #HELP_NAME}.
+     * Specialized variant of {@link #drawSelectRow} for the Name field: applies orphan-warning styling (warning label
+     * color + "!" icon + orphan-explanation tooltip) when {@code orphaned} is true, otherwise renders identically to a
+     * help-icon row with {@link #HELP_NAME}.
      */
     private int drawNameRow(GuiGraphics graphics, Font font, int x, int y, int width, boolean orphaned, int mouseX, int mouseY) {
         var labelText = "Name";
@@ -550,15 +923,17 @@ public final class DetailsPanel implements Panel {
      * as its Target. Cached for {@link #ORPHAN_CHECK_INTERVAL_MS} so per-frame inspector renders don't re-scan
      * everything; the cache invalidates immediately if the inspected jigsaw's Name itself changes.
      * <p>
-     * The check excludes the inspected jigsaw at {@code thisPos} (so a self-loop where this jigsaw's Target equals
-     * its own Name doesn't mask the orphan state). Non-loaded chunks contribute nothing — that's an inherent
-     * limitation of a client-side check, but acceptable: an out-of-sight jigsaw can't be inspected anyway.
+     * The check excludes the inspected jigsaw at {@code thisPos} (so a self-loop where this jigsaw's Target equals its
+     * own Name doesn't mask the orphan state). Non-loaded chunks contribute nothing — that's an inherent limitation of
+     * a client-side check, but acceptable: an out-of-sight jigsaw can't be inspected anyway.
      */
     private boolean isNameOrphaned(ResourceLocation thisName, BlockPos thisPos) {
         var now = System.currentTimeMillis();
-        if (thisName.equals(lastOrphanCheckName)
-            && thisPos.equals(lastOrphanCheckPos)
-            && now - lastOrphanCheckMs < ORPHAN_CHECK_INTERVAL_MS) {
+        if (
+            thisName.equals(lastOrphanCheckName)
+                && thisPos.equals(lastOrphanCheckPos)
+                && now - lastOrphanCheckMs < ORPHAN_CHECK_INTERVAL_MS
+        ) {
             return lastOrphanResult;
         }
         var result = computeOrphanStatus(thisName, thisPos);
@@ -584,9 +959,11 @@ public final class DetailsPanel implements Panel {
             for (var dz = -renderDist; dz <= renderDist; dz++) {
                 var chunk = mc.level.getChunk(centerX + dx, centerZ + dz);
                 for (var be : chunk.getBlockEntities().values()) {
-                    if (be instanceof JigsawBlockEntity je
-                        && !be.getBlockPos().equals(thisPos)
-                        && je.getTarget().equals(thisName)) {
+                    if (
+                        be instanceof JigsawBlockEntity je
+                            && !be.getBlockPos().equals(thisPos)
+                            && je.getTarget().equals(thisName)
+                    ) {
                         return false;
                     }
                 }
@@ -626,7 +1003,18 @@ public final class DetailsPanel implements Panel {
      * consistent grid; only the right-hand widget differs. When {@code helpText} is non-null, a "?" icon is rendered
      * after the label and contributes to {@link #hoveredHelpTooltip} on hover.
      */
-    private int drawSelectRow(GuiGraphics graphics, Font font, int x, int y, int width, String label, @Nullable Component helpText, SearchableSelect<?> select, int mouseX, int mouseY) {
+    private int drawSelectRow(
+        GuiGraphics graphics,
+        Font font,
+        int x,
+        int y,
+        int width,
+        String label,
+        @Nullable Component helpText,
+        SearchableSelect<?> select,
+        int mouseX,
+        int mouseY
+    ) {
         var labelY = y + (SearchableSelect.HEIGHT - font.lineHeight + 2) / 2;
         graphics.drawString(font, Component.literal(label), x + CONTENT_PADDING, labelY, LABEL_COLOR, false);
         if (helpText != null) {
@@ -646,28 +1034,30 @@ public final class DetailsPanel implements Panel {
      * predictable order; recomputed lazily each time the popup opens (cheap — ~1000 entries, a few µs).
      */
     private static List<SearchableSelect.Item<ResourceLocation>> buildBlockItems() {
-        return BuiltInRegistries.BLOCK.keySet().stream()
+        return BuiltInRegistries.BLOCK.keySet()
+            .stream()
             .sorted(Comparator.comparing(ResourceLocation::getNamespace).thenComparing(ResourceLocation::getPath))
             .map(id -> new SearchableSelect.Item<>(id, id.toString()))
             .toList();
     }
 
     /**
-     * Build the template-pool list for the pool picker. Backed by {@link JigsawPoolLibrary#listPoolIds} which
-     * already enumerates from the integrated server's {@code TEMPLATE_POOL} registry (single-player only); empty
-     * outside that context. Items are pre-sorted by the library; we just wrap them.
+     * Build the template-pool list for the pool picker. Backed by {@link JigsawPoolLibrary#listPoolIds} which already
+     * enumerates from the integrated server's {@code TEMPLATE_POOL} registry (single-player only); empty outside that
+     * context. Items are pre-sorted by the library; we just wrap them.
      */
     private static List<SearchableSelect.Item<ResourceLocation>> buildPoolItems() {
-        return JigsawPoolLibrary.listPoolIds().stream()
+        return JigsawPoolLibrary.listPoolIds()
+            .stream()
             .map(id -> new SearchableSelect.Item<>(id, id.toString()))
             .toList();
     }
 
     /**
-     * Build the Name list — every distinct jigsaw {@code target} appearing across all loaded templates. These are
-     * the connection points "out there" that a jigsaw could set its Name to in order to be docked to. Unscoped (vs.
-     * Target which scopes to a Pool) because Name describes the incoming side: any other jigsaw anywhere could
-     * Target this Name, and the dropdown surfaces the universe of Targets that exist to inspire the user's choice.
+     * Build the Name list — every distinct jigsaw {@code target} appearing across all loaded templates. These are the
+     * connection points "out there" that a jigsaw could set its Name to in order to be docked to. Unscoped (vs. Target
+     * which scopes to a Pool) because Name describes the incoming side: any other jigsaw anywhere could Target this
+     * Name, and the dropdown surfaces the universe of Targets that exist to inspire the user's choice.
      * <p>
      * Recomputed every popup-open via the widget's {@code Supplier} so newly-loaded datapack content shows up.
      */
@@ -693,14 +1083,14 @@ public final class DetailsPanel implements Panel {
 
     /**
      * Build the Target list scoped to the jigsaw block's currently-set Pool: every distinct jigsaw {@code name}
-     * appearing inside templates referenced by that pool. Picking a Target only makes sense if at least one piece
-     * the Pool can spawn has a jigsaw with that Name — anything else is a connection that'll never fire.
+     * appearing inside templates referenced by that pool. Picking a Target only makes sense if at least one piece the
+     * Pool can spawn has a jigsaw with that Name — anything else is a connection that'll never fire.
      * <p>
-     * Returns empty when no Pool is set yet, or when the Pool / its templates are unloaded. The widget shows
-     * "(no matches)" in that case; the user can still set a Pool first to populate the dropdown.
+     * Returns empty when no Pool is set yet, or when the Pool / its templates are unloaded. The widget shows "(no
+     * matches)" in that case; the user can still set a Pool first to populate the dropdown.
      * <p>
-     * Recomputed every popup-open via the widget's {@code Supplier}, so changing Pool then opening Target
-     * naturally reflects the new scope.
+     * Recomputed every popup-open via the widget's {@code Supplier}, so changing Pool then opening Target naturally
+     * reflects the new scope.
      */
     private List<SearchableSelect.Item<ResourceLocation>> buildTargetItemsForCurrentPool() {
         var poolId = poolSelect.currentValue();
@@ -726,8 +1116,8 @@ public final class DetailsPanel implements Panel {
 
     /**
      * Resolve a block id to an {@link ItemStack} for the picker's row icon. Blocks without an item form (e.g.
-     * {@code minecraft:water_cauldron}) yield {@link ItemStack#EMPTY}, which the popup renderer skips silently —
-     * the row still shows the label and remains selectable.
+     * {@code minecraft:water_cauldron}) yield {@link ItemStack#EMPTY}, which the popup renderer skips silently — the
+     * row still shows the label and remains selectable.
      */
     private static ItemStack iconForBlock(ResourceLocation blockId) {
         var block = BuiltInRegistries.BLOCK.get(blockId);
@@ -737,8 +1127,8 @@ public final class DetailsPanel implements Panel {
 
     /**
      * Extract just the block id from a finalState string. Vanilla allows either {@code "minecraft:stone"} (default
-     * state) or {@code "minecraft:stone[half=top]"} (with properties); the picker only displays / selects the block,
-     * so anything inside square brackets is ignored. Returns {@code null} if the string is empty or unparseable.
+     * state) or {@code "minecraft:stone[half=top]"} (with properties); the picker only displays / selects the block, so
+     * anything inside square brackets is ignored. Returns {@code null} if the string is empty or unparseable.
      */
     private static @Nullable ResourceLocation extractBlockId(@Nullable String state) {
         if (state == null || state.isEmpty()) {
@@ -769,8 +1159,8 @@ public final class DetailsPanel implements Panel {
     /**
      * Build and dispatch an update packet for a single field. Other fields come from a fresh BE snapshot rather than
      * from the panel's text-input contents, so a pending edit in one input doesn't accidentally ride along when the
-     * user commits a different one (they didn't ask to commit it). Parse failures revert just the failing input to
-     * its BE-state value; no packet is sent in that case.
+     * user commits a different one (they didn't ask to commit it). Parse failures revert just the failing input to its
+     * BE-state value; no packet is sent in that case.
      */
     private void commitField(BlockField field, @Nullable String rawValue) {
         var block = currentBlock;

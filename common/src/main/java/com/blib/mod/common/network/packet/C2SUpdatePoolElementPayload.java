@@ -12,20 +12,20 @@ import com.blib.mod.BLib;
 
 /**
  * Client → server: edit one element of a structure template pool — set its weight and projection. Triggered from the
- * engine's Pool Editor panel when the user commits a weight input or clicks a projection segment. Server validates
- * op permissions, looks up the pool from the {@code TEMPLATE_POOL} registry, locates the element by {@code rawIndex},
- * and rewrites the {@code rawTemplates} entry + rebuilds the expanded {@code templates} list so subsequent structure
- * generations use the new values.
+ * engine's Pool Editor panel when the user commits a weight input or clicks a projection segment.
  * <p>
- * Edits are <em>live</em> mutations of the registry's pool object — they take effect immediately for new generations
- * but are not persisted to disk. Closing the world reverts to the on-disk JSON. Persistence is a separate Phase 3
- * "Save to Datapack" feature.
+ * The server applies the edit to the active project's pool JSON on disk via {@code EngineProjectIO.writePoolJson} — it
+ * does <em>not</em> mutate the live {@code Registries.TEMPLATE_POOL} object. Live structure generation only reflects
+ * the edit after the user runs Reload Project. After the disk write completes, the server echoes an
+ * {@link S2CPoolDraftPayload} with the new element list so the client editor can re-render without round-tripping back
+ * through the registry.
  * <p>
- * {@code rawIndex} addresses the top-level entry in the pool's {@code rawTemplates} list; nested children of a
- * {@code ListPoolElement} are not directly editable (their rawIndex is {@code -1} client-side, and the server
- * rejects out-of-range or non-{@code SinglePoolElement} indices defensively).
+ * {@code rawIndex} addresses the entry's position in the project's pool JSON {@code elements} array. Nested children of
+ * a {@code list_pool_element} aren't directly editable (their {@code rawIndex} is {@code -1} client-side and the server
+ * rejects out-of-range indices defensively).
  */
 public record C2SUpdatePoolElementPayload(
+    String projectName,
     ResourceLocation poolId,
     int rawIndex,
     int newWeight,
@@ -37,6 +37,8 @@ public record C2SUpdatePoolElementPayload(
     public static final Type<C2SUpdatePoolElementPayload> TYPE = new Type<>(PAYLOAD_ID);
 
     public static final StreamCodec<C2SUpdatePoolElementPayload> CODEC = RecordStreamCodec.of(
+        StreamCodecs.STRING_UTF8,
+        C2SUpdatePoolElementPayload::projectName,
         BLibCodecs.Stream.RESOURCE_LOCATION,
         C2SUpdatePoolElementPayload::poolId,
         StreamCodecs.INT,
