@@ -72,6 +72,15 @@ public final class SearchableSelect<T> {
      */
     private final @Nullable Function<T, ItemStack> iconProvider;
 
+    /**
+     * Optional free-text parser. When non-null, pressing Enter in the popup's search input commits the typed text
+     * as the selected value (after parsing). Use this for "select known + type new" combo-box semantics — e.g. the
+     * jigsaw inspector's Target / Name fields, where you usually pick from existing matches but occasionally need
+     * to forward-reference a piece you haven't built yet. Returns {@code null} from the parser to reject the input
+     * (commit is silently dropped). Pure-select widgets (e.g. Pool picker) should pass {@code null}.
+     */
+    private final @Nullable Function<String, T> freeTextParser;
+
     private final Consumer<T> onSelect;
 
     private @Nullable T currentValue;
@@ -88,7 +97,7 @@ public final class SearchableSelect<T> {
         @Nullable T initialValue,
         Consumer<T> onSelect
     ) {
-        this(itemsProvider, displayLabel, null, initialValue, onSelect);
+        this(itemsProvider, displayLabel, null, null, initialValue, onSelect);
     }
 
     public SearchableSelect(
@@ -98,9 +107,21 @@ public final class SearchableSelect<T> {
         @Nullable T initialValue,
         Consumer<T> onSelect
     ) {
+        this(itemsProvider, displayLabel, iconProvider, null, initialValue, onSelect);
+    }
+
+    public SearchableSelect(
+        Supplier<List<Item<T>>> itemsProvider,
+        Function<T, String> displayLabel,
+        @Nullable Function<T, ItemStack> iconProvider,
+        @Nullable Function<String, T> freeTextParser,
+        @Nullable T initialValue,
+        Consumer<T> onSelect
+    ) {
         this.itemsProvider = itemsProvider;
         this.displayLabel = displayLabel;
         this.iconProvider = iconProvider;
+        this.freeTextParser = freeTextParser;
         this.currentValue = initialValue;
         this.onSelect = onSelect;
     }
@@ -158,7 +179,7 @@ public final class SearchableSelect<T> {
             return true;
         }
 
-        var newPopup = new Popup<>(this, itemsProvider.get(), displayLabel, iconProvider);
+        var newPopup = new Popup<>(this, itemsProvider.get(), displayLabel, iconProvider, freeTextParser);
         newPopup.openAt(rectX, rectY, rectWidth, HEIGHT);
         openPopup = newPopup;
         // Auto-focus the search input so the user can start typing immediately without an extra click.
@@ -219,6 +240,8 @@ public final class SearchableSelect<T> {
 
         private final @Nullable Function<T, ItemStack> iconProvider;
 
+        private final @Nullable Function<String, T> freeTextParser;
+
         private final TextInput searchInput;
 
         private final ScrollContainer scroll;
@@ -249,15 +272,34 @@ public final class SearchableSelect<T> {
 
         private int listAreaHeight;
 
-        Popup(SearchableSelect<T> owner, List<Item<T>> items, Function<T, String> displayLabel, @Nullable Function<T, ItemStack> iconProvider) {
+        Popup(SearchableSelect<T> owner, List<Item<T>> items, Function<T, String> displayLabel, @Nullable Function<T, ItemStack> iconProvider, @Nullable Function<String, T> freeTextParser) {
             this.owner = owner;
             this.allItems = items;
             this.displayLabel = displayLabel;
             this.iconProvider = iconProvider;
-            this.searchInput = new TextInput("Search…");
+            this.freeTextParser = freeTextParser;
+            // Wire Enter on the search input to commit the typed text as a free-text value when a parser is set.
+            // Pure-select widgets pass null and Enter does nothing useful (TextInput just defocuses; the popup
+            // re-focuses next frame).
+            this.searchInput = new TextInput("Search…", freeTextParser != null ? this::commitFreeText : null);
             this.scroll = new ScrollContainer();
             this.filteredItems = items;
             this.lastSearchQuery = "";
+        }
+
+        /**
+         * Free-text commit path — invoked when the user presses Enter in the popup's search input. Parses the typed
+         * text via {@link #freeTextParser}; on success, selects it (closes the popup, fires onSelect). Parser
+         * returning {@code null} means "invalid input" — we silently no-op rather than committing garbage.
+         */
+        private void commitFreeText(String text) {
+            if (freeTextParser == null) {
+                return;
+            }
+            var parsed = freeTextParser.apply(text);
+            if (parsed != null) {
+                owner.selectItemFromPopup(parsed);
+            }
         }
 
         void openAt(int anchorX, int anchorY, int anchorWidth, int anchorHeight) {

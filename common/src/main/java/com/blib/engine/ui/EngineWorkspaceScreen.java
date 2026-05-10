@@ -388,19 +388,36 @@ public final class EngineWorkspaceScreen extends Screen {
     }
 
     /**
-     * Draws a single-line tooltip for {@code text} positioned next to the cursor, kept inside the workspace bounds.
-     * Manual rendering rather than {@code GuiGraphics.renderTooltip} so the styling matches the workspace's flat dark
-     * theme and so we control sizing in workspace-logical pixels (vanilla's tooltip is sized in raw GUI pixels and
-     * looks oversized inside our 0.375-scaled workspace).
+     * Maximum tooltip body width before {@link Font#split} wraps. Picked so multi-sentence help text breaks across
+     * 3-4 lines at typical workspace logical-pixel sizes — wide enough to avoid awkward 1-2 word lines, narrow
+     * enough that the tooltip doesn't span half the screen.
+     */
+    private static final int TOOLTIP_MAX_WIDTH = 240;
+
+    /**
+     * Draws a tooltip for {@code text} positioned next to the cursor, kept inside the workspace bounds. Wraps long
+     * text via {@link Font#split} so multi-sentence help text renders as multiple lines instead of overflowing
+     * past the right edge. Manual rendering (rather than {@code GuiGraphics.renderTooltip}) so the styling matches
+     * the workspace's flat dark theme and so we control sizing in workspace-logical pixels.
      */
     private void drawTooltipBox(GuiGraphics graphics, Component text, int mouseX, int mouseY) {
         var font = Minecraft.getInstance().font;
-        var textWidth = font.width(text);
-        var lineHeight = font.lineHeight;
         var paddingX = 3;
         var paddingY = 2;
+        var lineHeight = font.lineHeight;
+
+        var lines = font.split(text, TOOLTIP_MAX_WIDTH - 2 * paddingX);
+        if (lines.isEmpty()) {
+            return;
+        }
+        var textWidth = 0;
+        for (var line : lines) {
+            textWidth = Math.max(textWidth, font.width(line));
+        }
+
         var boxW = textWidth + paddingX * 2;
-        var boxH = lineHeight + paddingY * 2;
+        var boxH = lines.size() * lineHeight + paddingY * 2;
+
         // Default position: just to the right of and below the cursor, with a small offset.
         var tipX = mouseX + 8;
         var tipY = mouseY + 8;
@@ -417,10 +434,15 @@ public final class EngineWorkspaceScreen extends Screen {
         graphics.fill(tipX, tipY + boxH - 1, tipX + boxW, tipY + boxH, TOOLTIP_BORDER_COLOR);
         graphics.fill(tipX, tipY, tipX + 1, tipY + boxH, TOOLTIP_BORDER_COLOR);
         graphics.fill(tipX + boxW - 1, tipY, tipX + boxW, tipY + boxH, TOOLTIP_BORDER_COLOR);
-        // Center the visible glyph within the box (rather than just using paddingY for the top), with the +1 to
-        // compensate for MC font's descender padding — see MenuBarPanel.
-        var textY = tipY + (boxH - lineHeight + 1) / 2;
-        graphics.drawString(font, text, tipX + paddingX, textY, TOOLTIP_TEXT_COLOR, false);
+
+        // Top-anchored layout: first line at tipY + paddingY (+1 for descender padding so the glyph sits visually
+        // centered on its baseline, mirroring the single-line math from before), subsequent lines stacked by
+        // lineHeight.
+        var lineY = tipY + paddingY + 1;
+        for (var line : lines) {
+            graphics.drawString(font, line, tipX + paddingX, lineY, TOOLTIP_TEXT_COLOR, false);
+            lineY += lineHeight;
+        }
     }
 
     private void renderTabDragOverlay(GuiGraphics graphics, int mouseX, int mouseY) {
