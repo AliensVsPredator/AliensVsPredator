@@ -287,23 +287,32 @@ public final class TagBrowserPanel implements Panel {
                     continue;
                 }
                 var rows = entry.getValue();
-                // Compute the slice of rows that intersect the viewport, then render only those.
+                // Compute the slice of rows that intersect the viewport.
                 var sectionTop = cursorY;
                 var firstVisibleRow = Math.max(0, (visibleTop - sectionTop) / ROW_HEIGHT);
                 var lastVisibleRow = Math.min(rows.size() - 1, (visibleBottom - sectionTop) / ROW_HEIGHT);
-                // Skip past rows entirely above the viewport without rendering.
-                cursorY += firstVisibleRow * ROW_HEIGHT;
-                for (var i = firstVisibleRow; i <= lastVisibleRow; i++) {
-                    if (cursorY >= visibleBottom) {
-                        break outer;
+                if (firstVisibleRow > lastVisibleRow) {
+                    // Whole section is outside the viewport — advance by the actual section height. The bare
+                    // {@code firstVisibleRow * ROW_HEIGHT} advance is wrong here because (a) when the section is
+                    // above the viewport, firstVisibleRow can exceed rows.size(), over-advancing the cursor and
+                    // making later sections render at a constant Y regardless of scroll position; and (b) when
+                    // it's below, lastVisibleRow can be -1, causing the skipped-below adjustment to overshoot too.
+                    cursorY += rows.size() * ROW_HEIGHT;
+                } else {
+                    // Skip past rows entirely above the viewport without rendering.
+                    cursorY += firstVisibleRow * ROW_HEIGHT;
+                    for (var i = firstVisibleRow; i <= lastVisibleRow; i++) {
+                        if (cursorY >= visibleBottom) {
+                            break outer;
+                        }
+                        renderRow(graphics, listX, cursorY, listW, rows.get(i), selectedTag, mouseX, mouseY);
+                        cursorY += ROW_HEIGHT;
                     }
-                    renderRow(graphics, listX, cursorY, listW, rows.get(i), selectedTag, mouseX, mouseY);
-                    cursorY += ROW_HEIGHT;
-                }
-                // Advance past rows below the visible slice without rendering.
-                var skipped = rows.size() - 1 - lastVisibleRow;
-                if (skipped > 0) {
-                    cursorY += skipped * ROW_HEIGHT;
+                    // Advance past rows below the visible slice without rendering.
+                    var skipped = rows.size() - 1 - lastVisibleRow;
+                    if (skipped > 0) {
+                        cursorY += skipped * ROW_HEIGHT;
+                    }
                 }
             }
         } finally {
