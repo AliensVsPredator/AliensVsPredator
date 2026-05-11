@@ -78,8 +78,6 @@ public final class PoolEditorPanel implements Panel {
 
     private static final int RIGHT_PAD = 4;
 
-    private static final int SCROLLBAR_GUTTER = 10;
-
     /** Width of the inline weight TextInput per row — room for ~4-digit weights (vanilla rarely exceeds two). */
     private static final int WEIGHT_INPUT_WIDTH = 28;
 
@@ -374,7 +372,7 @@ public final class PoolEditorPanel implements Panel {
     ) {}
 
     private static RowLayout rowLayout(int rowX, int rowWidth) {
-        var rightEdge = rowX + rowWidth - SCROLLBAR_GUTTER - RIGHT_PAD;
+        var rightEdge = rowX + rowWidth - ScrollContainer.SCROLLBAR_GUTTER - RIGHT_PAD;
         var removeX = rightEdge - REMOVE_BUTTON_WIDTH;
         var projectionX = removeX - WIDGET_GAP - PROJECTION_WIDTH;
         var weightX = projectionX - WIDGET_GAP - WEIGHT_INPUT_WIDTH;
@@ -393,9 +391,9 @@ public final class PoolEditorPanel implements Panel {
         var hovered = mouseY >= y
             && mouseY < y + ROW_HEIGHT
             && mouseX >= x
-            && mouseX < x + width - SCROLLBAR_GUTTER;
+            && mouseX < x + width - ScrollContainer.SCROLLBAR_GUTTER;
         if (hovered) {
-            graphics.fill(x, y, x + width - SCROLLBAR_GUTTER, y + ROW_HEIGHT, ROW_HOVER_BG);
+            graphics.fill(x, y, x + width - ScrollContainer.SCROLLBAR_GUTTER, y + ROW_HEIGHT, ROW_HOVER_BG);
         }
 
         // Thumbnail. JigsawPieceLibrary.get returns null if the template hasn't loaded yet — fall back to a tiny
@@ -463,7 +461,7 @@ public final class PoolEditorPanel implements Panel {
             // remove button (these aren't directly addressable).
             var meta = String.valueOf(element.weight()) + "  " + element.projection().name();
             var metaWidth = font.width(meta);
-            var metaX = x + width - SCROLLBAR_GUTTER - RIGHT_PAD - metaWidth;
+            var metaX = x + width - ScrollContainer.SCROLLBAR_GUTTER - RIGHT_PAD - metaWidth;
             // +2 compensates for MC font's descender padding; matches the workspace's text-centering convention.
             var textY = y + (ROW_HEIGHT - font.lineHeight + 2) / 2;
             graphics.drawString(font, Component.literal(meta), metaX, textY, ROW_META_COLOR, false);

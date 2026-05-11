@@ -39,8 +39,6 @@ public final class GOAPDetailsPanel implements Panel {
      * Reserved width on the right side of a row for the scrollbar — so row text truncates before reaching the
      * scrollbar's hover region instead of being abruptly chopped by the scissor.
      */
-    private static final int SCROLLBAR_GUTTER = 10;
-
     private static final int LABEL_COLOR = 0xFF888892;
 
     private static final int VALUE_COLOR = 0xFFD0D0D0;
@@ -172,7 +170,7 @@ public final class GOAPDetailsPanel implements Panel {
         var rowY = scrollAreaY + CONTENT_PADDING - (int) scroll.scrollY();
         // Width available for row text. Subtract scrollbar gutter + a couple px right padding so truncation kicks in
         // before the scissor would chop letters mid-glyph.
-        var rightReserve = SCROLLBAR_GUTTER + 2;
+        var rightReserve = ScrollContainer.SCROLLBAR_GUTTER + 2;
         // Reset the hovered-row tooltip each frame; the loop below sets it if the cursor is over a truncated row.
         hoveredTooltip = null;
         // Whether the cursor is currently in the scroll area at all — gates tooltip detection so we don't pick up the

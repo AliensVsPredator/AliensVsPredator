@@ -12,7 +12,16 @@ import org.jetbrains.annotations.ApiStatus;
 @ApiStatus.Internal
 public final class ScrollContainer {
 
-    private static final int SCROLLBAR_WIDTH = 6;
+    /** Pixel thickness of the scrollbar track + thumb. Public so layout code can offset for it. */
+    public static final int SCROLLBAR_WIDTH = 6;
+
+    /**
+     * Reserved horizontal space for the scrollbar in row content, including a few pixels of breathing room beyond the
+     * bar itself so text doesn't crash into it. Single source of truth — every panel that hosts a scrollable list
+     * subtracts this from its row width when computing label-truncation extents and hover-background bounds. The
+     * horizontal scrollbar reuses the same value for vertical reservation.
+     */
+    public static final int SCROLLBAR_GUTTER = 10;
 
     private static final int SCROLLBAR_TRACK_COLOR = 0x40000000;
 

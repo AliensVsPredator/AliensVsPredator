@@ -2069,8 +2069,6 @@ public final class DetailsPanel implements Panel {
 
     private static final int TAG_RIGHT_PAD = 4;
 
-    private static final int TAG_SCROLLBAR_GUTTER = 10;
-
     private static final int TAG_FOOTER_HEIGHT = SearchableSelect.HEIGHT + 6;
 
     private static final int TAG_TOOLBAR_HEIGHT = SearchableSelect.HEIGHT + 6;
@@ -2197,12 +2195,12 @@ public final class DetailsPanel implements Panel {
         var hovered = mouseY >= y
             && mouseY < y + TAG_ROW_HEIGHT
             && mouseX >= x
-            && mouseX < x + width - TAG_SCROLLBAR_GUTTER;
+            && mouseX < x + width - ScrollContainer.SCROLLBAR_GUTTER;
         if (hovered) {
-            graphics.fill(x, y, x + width - TAG_SCROLLBAR_GUTTER, y + TAG_ROW_HEIGHT, TAG_ROW_HOVER_BG);
+            graphics.fill(x, y, x + width - ScrollContainer.SCROLLBAR_GUTTER, y + TAG_ROW_HEIGHT, TAG_ROW_HOVER_BG);
         }
 
-        var rightEdge = x + width - TAG_SCROLLBAR_GUTTER - TAG_RIGHT_PAD;
+        var rightEdge = x + width - ScrollContainer.SCROLLBAR_GUTTER - TAG_RIGHT_PAD;
         var removeX = rightEdge - TAG_REMOVE_BUTTON_WIDTH;
         var textY = y + (TAG_ROW_HEIGHT - font.lineHeight + 2) / 2;
 

@@ -233,8 +233,6 @@ public final class SearchableSelect<T> {
 
         private static final int SEARCH_BAR_HEIGHT = TextInput.HEIGHT;
 
-        private static final int SCROLLBAR_GUTTER = 10;
-
         private final SearchableSelect<T> owner;
 
         private final List<Item<T>> allItems;
@@ -426,7 +424,7 @@ public final class SearchableSelect<T> {
                 var hasIcons = iconProvider != null;
                 var iconX = listAreaX + PADDING_X;
                 var rowTextX = hasIcons ? iconX + ICON_SIZE + ICON_TEXT_GAP : listAreaX + PADDING_X;
-                var rowTextMaxWidth = listAreaWidth - (rowTextX - listAreaX) - PADDING_X - SCROLLBAR_GUTTER;
+                var rowTextMaxWidth = listAreaWidth - (rowTextX - listAreaX) - PADDING_X - ScrollContainer.SCROLLBAR_GUTTER;
                 for (var i = firstVisible; i < lastVisible; i++) {
                     var rowY = listAreaY + i * ROW_HEIGHT - (int) scroll.scrollY();
                     if (rowY + ROW_HEIGHT < listAreaY) {
@@ -436,11 +434,17 @@ public final class SearchableSelect<T> {
                         break;
                     }
                     var hovered = mouseX >= listAreaX
-                        && mouseX < listAreaX + listAreaWidth - SCROLLBAR_GUTTER
+                        && mouseX < listAreaX + listAreaWidth - ScrollContainer.SCROLLBAR_GUTTER
                         && mouseY >= rowY
                         && mouseY < rowY + ROW_HEIGHT;
                     if (hovered) {
-                        graphics.fill(listAreaX, rowY, listAreaX + listAreaWidth - SCROLLBAR_GUTTER + 2, rowY + ROW_HEIGHT, ROW_HOVER_BG);
+                        graphics.fill(
+                            listAreaX,
+                            rowY,
+                            listAreaX + listAreaWidth - ScrollContainer.SCROLLBAR_GUTTER + 2,
+                            rowY + ROW_HEIGHT,
+                            ROW_HOVER_BG
+                        );
                     }
                     var item = filteredItems.get(i);
                     if (hasIcons) {
@@ -481,7 +485,7 @@ public final class SearchableSelect<T> {
             if (
                 button == 0
                     && mouseX >= listAreaX
-                    && mouseX < listAreaX + listAreaWidth - SCROLLBAR_GUTTER
+                    && mouseX < listAreaX + listAreaWidth - ScrollContainer.SCROLLBAR_GUTTER
                     && mouseY >= listAreaY
                     && mouseY < listAreaY + listAreaHeight
             ) {
