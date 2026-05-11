@@ -3,8 +3,8 @@
     {
       "type": "ttf",
       "file": "blib:jetbrains_mono_regular.ttf",
-      "size": 11,
-      "oversample": 2.0,
+      "size": 9,
+      "oversample": 4.0,
       "shift": [0, 0]
     }
   ]
