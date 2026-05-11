@@ -29,6 +29,8 @@ import com.blib.engine.selection.JigsawBlockSelectable;
 import com.blib.engine.selection.SelectionManager;
 import com.blib.engine.session.EngineMode;
 import com.blib.engine.session.EngineNavigation;
+import com.blib.engine.session.SelectionTool;
+import com.blib.engine.session.SelectionToolState;
 import com.blib.engine.spawn.EntitySpawnSelection;
 import com.blib.engine.territory.ClaimPaintTool;
 import com.blib.mod.BLib;
@@ -90,6 +92,42 @@ public final class ViewportPanel implements Panel {
      * mouseDragged updates cornerB. {@code null} when no drag-pick is in flight. Cleared on mouseReleased.
      */
     private @Nullable BlockPos dragPickAnchor;
+
+    /**
+     * Squared click-vs-drag threshold in workspace-logical pixels. INSPECT mode treats LMB-press → release as a click
+     * (inspect a single object); only motion past this threshold during the drag promotes it to a block-volume marquee.
+     * 4 px matches Minecraft's own click-vs-drag feel.
+     */
+    private static final double DRAG_PROMOTE_THRESHOLD_PX = 4.0;
+
+    private static final double DRAG_PROMOTE_THRESHOLD_SQ = DRAG_PROMOTE_THRESHOLD_PX * DRAG_PROMOTE_THRESHOLD_PX;
+
+    /**
+     * Block under cursor at the most recent INSPECT-mode LMB-press, or {@code null} if the cursor was over the sky.
+     * Used as the marquee anchor when {@link #pendingClickActive} promotes to a volume drag.
+     */
+    private @Nullable BlockPos pendingClickBlock;
+
+    /**
+     * Cursor position at LMB-press in workspace-logical pixels. The {@link #DRAG_PROMOTE_THRESHOLD_PX} test compares
+     * against this snapshot.
+     */
+    private double pressMouseX;
+
+    private double pressMouseY;
+
+    /**
+     * Whether Shift was held at LMB-press. Latched (not live-sampled) so a Shift release mid-gesture can't flip the
+     * promotion decision, mirroring the {@link MmbDrag} latch pattern.
+     */
+    private boolean pressShiftDown;
+
+    /**
+     * True between an INSPECT-mode LMB-press and either (a) promotion to a volume marquee, (b) the user's release
+     * without promotion, or (c) a determination that the current candidate isn't promotable. While true, mouseDragged
+     * re-checks the threshold on every frame.
+     */
+    private boolean pendingClickActive;
 
     /**
      * Per-drag dedup set for claim-paint mode. While LMB/RMB is held the cursor sweeps multiple chunks; this set
@@ -434,21 +472,49 @@ public final class ViewportPanel implements Panel {
                 return true;
             }
 
-            // Try entity / jigsaw-block selection first (existing path). If neither hit, fall back to drag-to-pick:
-            // start a fresh block-volume selection at the clicked block. Subsequent mouseDragged events extend
-            // cornerB; mouseReleased finalizes the drag.
-            EngineNavigation.performSelectionAt(session, relX, relY);
-            var selected = SelectionManager.current().single();
-            if (selected instanceof EntitySelectable || selected instanceof JigsawBlockSelectable) {
+            // Selection-tool dispatch: MARQUEE always starts a block-volume drag on press (clicks act as corner-A
+            // anchor, drags extend cornerB). INSPECT picks the closest entity / jigsaw / generic block and defers
+            // the marquee-vs-inspect decision until mouseDragged sees motion past the click-vs-drag threshold
+            // (or until release, in which case the inspect candidate sticks).
+            if (SelectionToolState.current() == SelectionTool.MARQUEE) {
+                var marqueeHit = JigsawPlacementCursor.clipFromCursor(session);
+                if (marqueeHit != null) {
+                    var clicked = marqueeHit.getBlockPos();
+                    BlockSelection.setCornersDirect(clicked, clicked);
+                    SelectionManager.selectSingle(new BlockVolumeSelectable());
+                    dragPickAnchor = clicked;
+                }
                 return true;
             }
+
+            // INSPECT mode: pick the closest selectable along the cursor ray (entity / jigsaw / generic block);
+            // performSelectionAt clears the selection on a sky miss. Then stage the deferred-decision state so
+            // mouseDragged can promote to a volume marquee on enough motion (or immediately if Shift was held).
+            EngineNavigation.performSelectionAt(session, relX, relY);
+
             var blockHit = JigsawPlacementCursor.clipFromCursor(session);
-            if (blockHit != null) {
-                var clicked = blockHit.getBlockPos();
-                BlockSelection.setCornersDirect(clicked, clicked);
+            this.pendingClickBlock = blockHit != null ? blockHit.getBlockPos() : null;
+            this.pressMouseX = mouseX;
+            this.pressMouseY = mouseY;
+            this.pressShiftDown = Screen.hasShiftDown();
+
+            // Pending-click promotion is only valid when the candidate is a generic block (BlockSelectable) or an
+            // empty miss with a block under the cursor — entities and jigsaws aren't promotable on a drag-nudge.
+            // Preserves the feel of "I clicked an entity, then nudged the mouse a few pixels before releasing".
+            // Shift quick-override below bypasses this filter and promotes anyway.
+            var sel = SelectionManager.current().single();
+            this.pendingClickActive = !(sel instanceof EntitySelectable || sel instanceof JigsawBlockSelectable);
+
+            // Shift quick-override: a Shift-held LMB-press in INSPECT mode means "I want a volume marquee right now,
+            // regardless of what's under the cursor". Promote immediately so the inspector doesn't briefly flash a
+            // single-block view between press and the first drag event.
+            if (pressShiftDown && pendingClickBlock != null) {
+                BlockSelection.setCornersDirect(pendingClickBlock, pendingClickBlock);
                 SelectionManager.selectSingle(new BlockVolumeSelectable());
-                dragPickAnchor = clicked;
+                dragPickAnchor = pendingClickBlock;
+                this.pendingClickActive = false;
             }
+
             return true;
         }
 
@@ -490,6 +556,25 @@ public final class ViewportPanel implements Panel {
         // drag — switching buttons mid-stroke (impossible in practice but defensive here) doesn't change direction.
         if (claimPaintButton != null && button == claimPaintButton) {
             return dispatchClaimPaint(button);
+        }
+
+        // Promote a pending INSPECT-mode click to a volume marquee once cursor motion crosses the threshold. The
+        // candidate eligibility (entity / jigsaw filtered out; only generic blocks or empty miss promotable) was
+        // already checked at press time — pendingClickActive is only true when promotion is possible. Sky presses
+        // (pendingClickBlock == null) can't anchor a marquee — clear the pending state so we stop re-checking.
+        if (button == 0 && pendingClickActive) {
+            if (pendingClickBlock != null) {
+                var dx = mouseX - pressMouseX;
+                var dy = mouseY - pressMouseY;
+                if (dx * dx + dy * dy >= DRAG_PROMOTE_THRESHOLD_SQ) {
+                    BlockSelection.setCornersDirect(pendingClickBlock, pendingClickBlock);
+                    SelectionManager.selectSingle(new BlockVolumeSelectable());
+                    dragPickAnchor = pendingClickBlock;
+                    pendingClickActive = false;
+                }
+            } else {
+                pendingClickActive = false;
+            }
         }
 
         // Drag-to-pick claims LMB drags between mouseClicked (anchor set) and mouseReleased (anchor cleared). Live-
@@ -567,9 +652,15 @@ public final class ViewportPanel implements Panel {
             return true;
         }
 
-        if (button == 0 && dragPickAnchor != null) {
-            dragPickAnchor = null;
-            return true;
+        if (button == 0) {
+            // Clear deferred-decision state whether or not the press promoted to a marquee — a release without
+            // promotion is just a single-block inspect, and the pending fields aren't needed once the gesture ends.
+            pendingClickActive = false;
+            pendingClickBlock = null;
+            if (dragPickAnchor != null) {
+                dragPickAnchor = null;
+                return true;
+            }
         }
 
         if (

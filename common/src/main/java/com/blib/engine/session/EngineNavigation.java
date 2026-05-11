@@ -9,10 +9,12 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 
-import com.blib.engine.jigsaw.placement.JigsawWorldRaycast;
+import com.blib.engine.jigsaw.JigsawPlacementCursor;
+import com.blib.engine.selection.BlockSelectable;
 import com.blib.engine.selection.EntitySelectable;
 import com.blib.engine.selection.JigsawBlockSelectable;
 import com.blib.engine.selection.SelectionManager;
+import net.minecraft.world.level.block.Blocks;
 
 /**
  * Camera-control math for engine mode. Driven directly from workspace mouse events: the {@code ViewportPanel} calls the
@@ -179,8 +181,10 @@ public final class EngineNavigation {
 
     /**
      * Ray-pick the closest selectable along the cursor-through-camera ray. Tries both a {@link LivingEntity} hit and a
-     * jigsaw-block hit (via {@link JigsawWorldRaycast}); whichever is closer to the camera wins. On miss, clears any
-     * existing selection.
+     * generic block hit (via {@link JigsawPlacementCursor#clipFromCursor}); whichever is closer to the camera wins.
+     * Jigsaw blocks get the specialized {@link JigsawBlockSelectable} (its inspector exposes pool / target / joint);
+     * every other block becomes a generic {@link BlockSelectable} so the universal inspector can show block-state
+     * properties. On miss, clears any existing selection.
      * <p>
      * {@code (relX, relY)} are in {@code [0, 1]} relative to the rendered viewport (full-screen render — the viewport
      * panel just downsamples this, so screen-relative and panel-relative cursor positions map to the same world ray).
@@ -224,17 +228,18 @@ public final class EngineNavigation {
             EngineInteractionRange.MAX_SQR
         );
 
-        // Jigsaw-block raycast reuses the same camera-cursor ray geometry as the snap resolver, so the inspector's
-        // pick matches what the user sees as the placement preview's anchor candidate.
-        var jigsawTarget = JigsawWorldRaycast.raycastJigsaw(session);
+        // Generic block raycast — same camera-cursor ray geometry the FREE / SNAP resolvers use, so the inspector's
+        // pick matches the placement preview's anchor candidate. Returns the raw BlockHitResult (any block type), not
+        // just jigsaws — the post-check below dispatches jigsaw vs. generic.
+        var blockHit = JigsawPlacementCursor.clipFromCursor(session);
 
         var entityDistSq = (entityHit != null && entityHit.getEntity() instanceof LivingEntity)
             ? entityHit.getLocation().distanceToSqr(origin)
             : Double.POSITIVE_INFINITY;
         // Block-distance reference is the cube center — close enough to the bbox-hit reference used for entities for
         // the "which is closer" heuristic to feel right; both are within ~0.5 blocks of the actual surface hit.
-        var blockDistSq = jigsawTarget != null
-            ? Vec3.atCenterOf(jigsawTarget.worldPos()).distanceToSqr(origin)
+        var blockDistSq = blockHit != null
+            ? Vec3.atCenterOf(blockHit.getBlockPos()).distanceToSqr(origin)
             : Double.POSITIVE_INFINITY;
 
         if (entityDistSq == Double.POSITIVE_INFINITY && blockDistSq == Double.POSITIVE_INFINITY) {
@@ -242,7 +247,12 @@ public final class EngineNavigation {
         } else if (entityDistSq <= blockDistSq) {
             SelectionManager.selectSingle(new EntitySelectable((LivingEntity) entityHit.getEntity()));
         } else {
-            SelectionManager.selectSingle(new JigsawBlockSelectable(jigsawTarget.worldPos()));
+            var pos = blockHit.getBlockPos();
+            if (mc.level.getBlockState(pos).is(Blocks.JIGSAW)) {
+                SelectionManager.selectSingle(new JigsawBlockSelectable(pos));
+            } else {
+                SelectionManager.selectSingle(new BlockSelectable(pos));
+            }
         }
     }
 

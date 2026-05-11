@@ -61,9 +61,23 @@ public final class BlockSelectionWireframeRenderer {
         }
         // Entity selection takes over the gizmo surface — hide the volume wireframe so it doesn't visually compete with
         // the entity's selection highlight.
-        if (com.blib.engine.selection.SelectionManager.current().single() instanceof com.blib.engine.selection.EntitySelectable) {
+        var single = com.blib.engine.selection.SelectionManager.current().single();
+        if (single instanceof com.blib.engine.selection.EntitySelectable) {
             return;
         }
+
+        // Single-block selection (generic block or jigsaw): draw a 1×1×1 highlight at the block and skip the volume
+        // box. Conveys "this block is selected" with the same visual vocabulary as the corner markers on a multi-
+        // block volume — same color, same translucent shading — so users don't need to learn a second affordance.
+        if (single instanceof com.blib.engine.selection.BlockSelectable bs) {
+            renderSingleBlockHighlight(bs.pos(), poseStack, cameraX, cameraY, cameraZ);
+            return;
+        }
+        if (single instanceof com.blib.engine.selection.JigsawBlockSelectable js) {
+            renderSingleBlockHighlight(js.pos(), poseStack, cameraX, cameraY, cameraZ);
+            return;
+        }
+
         var a = BlockSelection.cornerA();
         var b = BlockSelection.cornerB();
         if (a == null && b == null) {
@@ -105,6 +119,41 @@ public final class BlockSelectionWireframeRenderer {
         if (b != null) {
             addBoxQuadsForBlock(buffer, matrix, b, cameraX, cameraY, cameraZ, color[0], color[1], color[2], CORNER_ALPHA);
         }
+        BufferUploader.drawWithShader(buffer.buildOrThrow());
+
+        RenderSystem.enableDepthTest();
+        RenderSystem.disableBlend();
+    }
+
+    /**
+     * Draw one translucent block-sized highlight at {@code pos}. Used for the single-block inspect affordance — the
+     * generic block / jigsaw inspector both surface this so the user sees what they've picked in the world even when
+     * the inspector panel is offscreen or scrolled away.
+     */
+    private static void renderSingleBlockHighlight(
+        net.minecraft.core.BlockPos pos,
+        PoseStack poseStack,
+        double cameraX,
+        double cameraY,
+        double cameraZ
+    ) {
+        var shader = BLibShaders.ENGINE_SELECTION.instance();
+        if (shader == null) {
+            return;
+        }
+
+        var matrix = poseStack.last().pose();
+        var color = colorFor(BlockSelection.mode());
+
+        RenderSystem.setShader(BLibShaders.ENGINE_SELECTION.supplier());
+        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        // Depth-test off to match the volume-wireframe convention — the highlight remains visible through occluders.
+        RenderSystem.disableDepthTest();
+
+        var buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        addBoxQuadsForBlock(buffer, matrix, pos, cameraX, cameraY, cameraZ, color[0], color[1], color[2], CORNER_ALPHA);
         BufferUploader.drawWithShader(buffer.buildOrThrow());
 
         RenderSystem.enableDepthTest();

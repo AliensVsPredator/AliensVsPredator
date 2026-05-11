@@ -41,6 +41,7 @@ import com.blib.mod.common.network.packet.C2SRequestPoolDraftPayload;
 import com.blib.mod.common.network.packet.C2SRequestRegistryEntriesPayload;
 import com.blib.mod.common.network.packet.C2SRequestTagCatalogPayload;
 import com.blib.mod.common.network.packet.C2SRequestTagDraftPayload;
+import com.blib.mod.common.network.packet.C2SSetBlockStatePropertyPayload;
 import com.blib.mod.common.network.packet.C2SSetEntityScalePayload;
 import com.blib.mod.common.network.packet.C2SSetFactionRelationshipPayload;
 import com.blib.mod.common.network.packet.C2SSetTagReplacePayload;
@@ -143,6 +144,14 @@ public class BLibServerPacketHandlers {
                 C2SUpdateJigsawBlockPayload.TYPE,
                 C2SUpdateJigsawBlockPayload.CODEC,
                 BLibServerListener::handleUpdateJigsawBlock
+            )
+        );
+
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromClient<>(
+                C2SSetBlockStatePropertyPayload.TYPE,
+                C2SSetBlockStatePropertyPayload.CODEC,
+                BLibServerListener::handleSetBlockStateProperty
             )
         );
 

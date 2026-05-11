@@ -17,6 +17,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.JigsawBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -82,6 +84,7 @@ import com.blib.mod.common.network.packet.C2SRequestPoolDraftPayload;
 import com.blib.mod.common.network.packet.C2SRequestRegistryEntriesPayload;
 import com.blib.mod.common.network.packet.C2SRequestTagCatalogPayload;
 import com.blib.mod.common.network.packet.C2SRequestTagDraftPayload;
+import com.blib.mod.common.network.packet.C2SSetBlockStatePropertyPayload;
 import com.blib.mod.common.network.packet.C2SSetEntityScalePayload;
 import com.blib.mod.common.network.packet.C2SSetFactionRelationshipPayload;
 import com.blib.mod.common.network.packet.C2SSetTagReplacePayload;
@@ -336,6 +339,62 @@ public final class BLibServerListener {
         jigsaw.setChanged();
         var state = level.getBlockState(payload.pos());
         level.sendBlockUpdated(payload.pos(), state, state, Block.UPDATE_CLIENTS);
+    }
+
+    /**
+     * Apply a single {@link Property} edit from the generic block inspector. The inspector only emits values it
+     * generated from {@code property.getPossibleValues()}, so a missing property or unparseable value here means the
+     * world diverged after the client snapshotted — silently drop rather than rolling the client back, since the
+     * inspector re-reads on the next frame anyway.
+     * <p>
+     * Op-gated like the other block-mutating handlers. {@link Block#UPDATE_ALL} flags cover neighbor updates, client
+     * sync, and lighting refresh — the inspector's "facing changed on a stair" case needs all three.
+     */
+    public static void handleSetBlockStateProperty(C2SSetBlockStatePropertyPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        if (!serverPlayer.hasPermissions(2)) {
+            return;
+        }
+
+        var level = serverPlayer.serverLevel();
+        var pos = payload.pos();
+        var state = level.getBlockState(pos);
+        if (state.isAir()) {
+            return;
+        }
+
+        Property<?> property = null;
+        for (var p : state.getProperties()) {
+            if (p.getName().equals(payload.propertyName())) {
+                property = p;
+                break;
+            }
+        }
+        if (property == null) {
+            return;
+        }
+
+        var newState = applyParsedProperty(state, property, payload.valueString());
+        if (newState == null || newState == state) {
+            return;
+        }
+        level.setBlock(pos, newState, Block.UPDATE_ALL);
+    }
+
+    /**
+     * Generic-typed bridge: parse {@code value} via the property's own string codec and apply it. Returns {@code null}
+     * when the value can't be parsed (caller treats this as "stale client snapshot" and drops the edit).
+     */
+    @SuppressWarnings("unchecked")
+    private static <T extends Comparable<T>> BlockState applyParsedProperty(BlockState state, Property<?> property, String value) {
+        var typed = (Property<T>) property;
+        var parsed = typed.getValue(value);
+        if (parsed.isEmpty()) {
+            return null;
+        }
+        return state.setValue(typed, parsed.get());
     }
 
     /**

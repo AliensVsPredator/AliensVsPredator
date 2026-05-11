@@ -993,6 +993,20 @@ public final class EngineWorkspaceScreen extends Screen {
             }
         }
 
+        // Selection-tool hotkeys: Q = Inspect, V = Marquee. Mirrors the toolbar's segmented control. Gated on no
+        // modifiers so Ctrl+V (paste) further down stays reachable, and a focused text input's Q / V keystrokes
+        // (handled by the focused-input dispatch above) aren't intercepted.
+        if (!Screen.hasControlDown() && !Screen.hasShiftDown() && !Screen.hasAltDown()) {
+            if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_Q) {
+                com.blib.engine.session.SelectionToolState.set(com.blib.engine.session.SelectionTool.INSPECT);
+                return true;
+            }
+            if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_V) {
+                com.blib.engine.session.SelectionToolState.set(com.blib.engine.session.SelectionTool.MARQUEE);
+                return true;
+            }
+        }
+
         // Tool hotkeys: T / S / M for Translate / Scale / Move-Blocks. Mirrors Blender's G/S/R muscle memory.
         // Auto-switches between block-volume and entity gizmo modes based on the active selection — same keys, the
         // selection type decides which gizmo state changes. M is intentionally block-only since entities have no

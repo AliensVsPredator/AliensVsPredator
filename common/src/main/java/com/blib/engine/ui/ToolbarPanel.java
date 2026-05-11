@@ -4,7 +4,11 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.List;
+
 import com.blib.engine.session.ProjectSession;
+import com.blib.engine.session.SelectionTool;
+import com.blib.engine.session.SelectionToolState;
 import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.C2SReloadProjectPayload;
 
@@ -54,6 +58,13 @@ public final class ToolbarPanel implements Panel {
 
     private static final int RELOAD_EDGE_PADDING = 6;
 
+    /** Per-segment width of the Inspect / Marquee tool control. Tuned to fit "Marquee" comfortably without crowding. */
+    private static final int TOOL_SEGMENT_WIDTH = 50;
+
+    private static final int TOOL_CONTROL_WIDTH = TOOL_SEGMENT_WIDTH * 2;
+
+    private static final int TOOL_EDGE_PADDING = 6;
+
     private static final int RELOAD_BG_COLOR = 0xFF1A1A1F;
 
     private static final int RELOAD_BG_HOVER_COLOR = 0xFF353540;
@@ -85,6 +96,16 @@ public final class ToolbarPanel implements Panel {
     /** When > 0, drives the Reload button's "Reloading…" → "✓ Reloaded" → idle state machine. Set on Reload click. */
     private long lastReloadAttemptMs;
 
+    /**
+     * Inspect / Marquee selection-tool toggle. Sits left-of-center on the toolbar, mirroring the right-aligned Reload
+     * button. Selection state is mirrored from {@link SelectionToolState} at the start of each frame and written back on
+     * click, so hotkeys (Q / V) and the toolbar always reflect the same active tool.
+     */
+    private final SegmentedControl selectionToolControl = new SegmentedControl(
+        List.of("Inspect", "Marquee"),
+        SelectionToolState.current().ordinal()
+    );
+
     @Override
     public String title() {
         return "Toolbar";
@@ -112,6 +133,12 @@ public final class ToolbarPanel implements Panel {
         this.playButtonX = x + (width - groupWidth) / 2;
         this.stepButtonX = playButtonX + BUTTON_WIDTH + INTRA_GROUP_GAP;
         this.buttonY = y + (height - BUTTON_HEIGHT) / 2;
+
+        // ---- Selection-tool toggle ----
+        // Sync from SelectionToolState first so a Q / V hotkey press flips the visible segment, then render. The
+        // segmented control's HEIGHT matches BUTTON_HEIGHT so we share buttonY for vertical centering.
+        selectionToolControl.setSelectedIndex(SelectionToolState.current().ordinal());
+        selectionToolControl.render(graphics, x + TOOL_EDGE_PADDING, buttonY, TOOL_CONTROL_WIDTH, mouseX, mouseY);
 
         // ---- Play / pause button ----
         var playHovered = mouseX >= playButtonX
@@ -203,6 +230,13 @@ public final class ToolbarPanel implements Panel {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button != 0) {
             return false;
+        }
+
+        // Selection-tool toggle takes first crack so its click rect (left edge of the toolbar) isn't shadowed by the
+        // play / step / reload hit tests if those ever grow to overlap.
+        if (selectionToolControl.mouseClicked(mouseX, mouseY, button)) {
+            SelectionToolState.set(SelectionTool.values()[selectionToolControl.selectedIndex()]);
+            return true;
         }
 
         if (mouseY >= buttonY && mouseY < buttonY + BUTTON_HEIGHT) {

@@ -11,6 +11,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.JigsawBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
@@ -27,6 +29,7 @@ import com.blib.engine.entityselection.EntityGizmoMode;
 import com.blib.engine.jigsaw.JigsawPieceLibrary;
 import com.blib.engine.jigsaw.JigsawPoolLibrary;
 import com.blib.engine.jigsaw.placement.JigsawTemplateScanner;
+import com.blib.engine.selection.BlockSelectable;
 import com.blib.engine.selection.BlockVolumeSelectable;
 import com.blib.engine.selection.EntitySelectable;
 import com.blib.engine.selection.FactionSelectable;
@@ -46,6 +49,7 @@ import com.blib.mod.common.network.packet.C2SRemoveTagEntryPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionInspectionPayload;
 import com.blib.mod.common.network.packet.C2SRequestRegistryEntriesPayload;
 import com.blib.mod.common.network.packet.C2SRequestTagDraftPayload;
+import com.blib.mod.common.network.packet.C2SSetBlockStatePropertyPayload;
 import com.blib.mod.common.network.packet.C2SSetEntityScalePayload;
 import com.blib.mod.common.network.packet.C2SSetTagReplacePayload;
 import com.blib.mod.common.network.packet.C2STranslateEntityPayload;
@@ -416,6 +420,29 @@ public final class DetailsPanel implements Panel {
     /** Per-row × button rects + the entries they remove; populated each tag-render frame, consumed in mouseClicked. */
     private final List<TagRemoveHit> tagRemoveHits = new ArrayList<>();
 
+    /**
+     * Cache of per-property {@link SegmentedControl} widgets for the generic block inspector. Keyed by property name.
+     * Rebuilt only when the inspected block's position or block type changes — keeping the widget instance stable across
+     * frames lets each control track its own rect / hover state for the click dispatch in {@link #mouseClicked}.
+     */
+    private final java.util.LinkedHashMap<String, SegmentedControl> genericBlockPropertyControls = new java.util.LinkedHashMap<>();
+
+    /**
+     * Canonical value-string list per property, parallel to {@link #genericBlockPropertyControls}. The server-bound
+     * packet sends the {@link Property#getName(Comparable)} form, so we cache it once here to avoid re-evaluating the
+     * generic-typed bridge each frame.
+     */
+    private final java.util.LinkedHashMap<String, List<String>> genericBlockPropertyValueStrings = new java.util.LinkedHashMap<>();
+
+    /** Cache key for {@link #genericBlockPropertyControls} — pos changes ⇒ rebuild. */
+    private @Nullable BlockPos genericBlockCachedPos;
+
+    /** Cache key for {@link #genericBlockPropertyControls} — block type changes (replace-in-place) ⇒ rebuild. */
+    private @Nullable net.minecraft.world.level.block.Block genericBlockCachedBlock;
+
+    /** Hard cap on possible-values count for segmented rendering. Above this, the property renders read-only. */
+    private static final int GENERIC_BLOCK_PROPERTY_MAX_SEGMENTS = 16;
+
     @Override
     public String title() {
         return "Inspector";
@@ -465,6 +492,9 @@ public final class DetailsPanel implements Panel {
                 case BLOCK -> {
                     if (single instanceof JigsawBlockSelectable jigsawBlock) {
                         renderBlockView(graphics, font, x, rowY, width, mouseX, mouseY, jigsawBlock);
+                    } else if (single instanceof BlockSelectable genericBlock) {
+                        currentBlock = null;
+                        renderGenericBlockView(graphics, font, x, rowY, width, mouseX, mouseY, genericBlock);
                     } else {
                         currentBlock = null;
                         renderGenericView(graphics, font, x, rowY, width, single);
@@ -511,6 +541,24 @@ public final class DetailsPanel implements Panel {
                 // equivalent. selectedIndex() now reflects the user's choice.
                 commitField(BlockField.JOINT, null);
                 return true;
+            }
+            return false;
+        }
+        if (single instanceof BlockSelectable bs) {
+            // Iterate the cached property controls; the first one that claims the click sends a state-property
+            // packet using the canonical value-string we cached at rebuild time. Returns true on a segment hit
+            // so other panels don't double-handle the click, false otherwise so click-through still works.
+            for (var entry : genericBlockPropertyControls.entrySet()) {
+                var control = entry.getValue();
+                if (control.mouseClicked(mouseX, mouseY, button)) {
+                    var values = genericBlockPropertyValueStrings.get(entry.getKey());
+                    var idx = control.selectedIndex();
+                    if (values != null && idx >= 0 && idx < values.size()) {
+                        BLib.MOD.networking()
+                            .sendToServer(new C2SSetBlockStatePropertyPayload(bs.pos(), entry.getKey(), values.get(idx)));
+                    }
+                    return true;
+                }
             }
             return false;
         }
@@ -1166,6 +1214,151 @@ public final class DetailsPanel implements Panel {
             rowY = drawRow(graphics, font, x, rowY, "Y", String.format("%.2f", pivot.y));
             rowY = drawRow(graphics, font, x, rowY, "Z", String.format("%.2f", pivot.z));
         }
+    }
+
+    /**
+     * Inspector view for a generic single-block {@link BlockSelectable}. Sections: read-only Position + Block id,
+     * editable Block-state Properties (one segmented control per property), and a Block-Entity type label when the
+     * target has an attached BE. Per-BE structured forms (chest items, sign text, banner patterns, …) are a Phase 2
+     * follow-up — for now the BE section only confirms a BE exists and identifies its type.
+     */
+    private void renderGenericBlockView(
+        GuiGraphics graphics,
+        Font font,
+        int x,
+        int y,
+        int width,
+        int mouseX,
+        int mouseY,
+        BlockSelectable bs
+    ) {
+        var state = bs.state();
+        if (state == null) {
+            // Chunk unloaded between selection and render — drop the cached widgets so a re-load reseeds them with
+            // a fresh property set, and surface a note rather than rendering an empty section.
+            genericBlockPropertyControls.clear();
+            genericBlockPropertyValueStrings.clear();
+            genericBlockCachedPos = null;
+            genericBlockCachedBlock = null;
+            drawNote(graphics, font, x, y, "Block is no longer loaded.");
+            return;
+        }
+
+        var pos = bs.pos();
+        var block = state.getBlock();
+        rebuildGenericBlockPropertyWidgets(state, pos, block);
+
+        var rowY = y;
+        rowY = drawSectionHeader(graphics, font, x, rowY, width, "Position");
+        rowY += CONTENT_PADDING / 2;
+        rowY = drawRow(graphics, font, x, rowY, "X", String.valueOf(pos.getX()));
+        rowY = drawRow(graphics, font, x, rowY, "Y", String.valueOf(pos.getY()));
+        rowY = drawRow(graphics, font, x, rowY, "Z", String.valueOf(pos.getZ()));
+        rowY += ROW_GAP;
+
+        rowY = drawSectionHeader(graphics, font, x, rowY, width, "Block");
+        rowY += CONTENT_PADDING / 2;
+        var blockId = BuiltInRegistries.BLOCK.getKey(block);
+        rowY = drawRow(graphics, font, x, rowY, "ID", blockId.toString());
+
+        if (!state.getProperties().isEmpty()) {
+            rowY += ROW_GAP;
+            rowY = drawSectionHeader(graphics, font, x, rowY, width, "Properties");
+            rowY += CONTENT_PADDING / 2;
+            for (var prop : state.getProperties()) {
+                rowY = renderGenericBlockPropertyRow(graphics, font, x, rowY, width, prop, state, mouseX, mouseY);
+            }
+        }
+
+        var mc = Minecraft.getInstance();
+        var be = mc.level != null ? mc.level.getBlockEntity(pos) : null;
+        if (be != null) {
+            rowY += ROW_GAP;
+            rowY = drawSectionHeader(graphics, font, x, rowY, width, "Block Entity");
+            rowY += CONTENT_PADDING / 2;
+            var beTypeId = BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(be.getType());
+            drawRow(graphics, font, x, rowY, "Type", beTypeId != null ? beTypeId.toString() : "?");
+        }
+    }
+
+    /**
+     * Render one editable block-state property row: label on the left, segmented control on the right. The control's
+     * selected segment is re-synced from the live state each frame so external edits (other players, gizmo work that
+     * touches the same block) flow through to the inspector without waiting on a click. Properties with more
+     * possible values than {@link #GENERIC_BLOCK_PROPERTY_MAX_SEGMENTS} fall back to a read-only label.
+     */
+    private int renderGenericBlockPropertyRow(
+        GuiGraphics graphics,
+        Font font,
+        int x,
+        int y,
+        int width,
+        Property<?> prop,
+        BlockState state,
+        int mouseX,
+        int mouseY
+    ) {
+        var control = genericBlockPropertyControls.get(prop.getName());
+        var currentValueString = propertyValueName(prop, state);
+        if (control == null) {
+            return drawRow(
+                graphics,
+                font,
+                x,
+                y,
+                prop.getName(),
+                currentValueString + " (" + prop.getPossibleValues().size() + " values)"
+            );
+        }
+
+        var values = genericBlockPropertyValueStrings.get(prop.getName());
+        if (values != null) {
+            var idx = values.indexOf(currentValueString);
+            if (idx >= 0) {
+                control.setSelectedIndex(idx);
+            }
+        }
+        return drawLabeledSegmentedRow(graphics, font, x, y, width, LABEL_COLUMN_WIDTH, prop.getName(), null, control, mouseX, mouseY);
+    }
+
+    /**
+     * Rebuild the per-property widget cache only when the inspected block changes — same pos and same block type
+     * means the property set is identical (BlockState is immutable; replacing-in-place creates a different Block
+     * instance only when the registry block changes). Keeping widget instances stable across frames lets each
+     * {@link SegmentedControl} track its own click rect for the click dispatcher.
+     */
+    private void rebuildGenericBlockPropertyWidgets(BlockState state, BlockPos pos, net.minecraft.world.level.block.Block block) {
+        if (pos.equals(genericBlockCachedPos) && block == genericBlockCachedBlock) {
+            return;
+        }
+        genericBlockPropertyControls.clear();
+        genericBlockPropertyValueStrings.clear();
+        for (var prop : state.getProperties()) {
+            var values = prop.getPossibleValues();
+            if (values.isEmpty() || values.size() > GENERIC_BLOCK_PROPERTY_MAX_SEGMENTS) {
+                continue;
+            }
+            var valStrings = new ArrayList<String>(values.size());
+            for (var v : values) {
+                valStrings.add(propertyValueName(prop, v));
+            }
+            genericBlockPropertyValueStrings.put(prop.getName(), valStrings);
+            genericBlockPropertyControls.put(prop.getName(), new SegmentedControl(valStrings, 0));
+        }
+        genericBlockCachedPos = pos.immutable();
+        genericBlockCachedBlock = block;
+    }
+
+    /** Raw-typed bridge: invoke {@link Property#getName(Comparable)} against a generic-wildcard property. */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private static String propertyValueName(Property property, Object value) {
+        return property.getName((Comparable) value);
+    }
+
+    /** Raw-typed bridge: read the current value of a wildcard property and stringify it. */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private static String propertyValueName(Property property, BlockState state) {
+        return property.getName((Comparable) state.getValue(property));
     }
 
     /**

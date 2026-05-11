@@ -41,6 +41,7 @@ import com.blib.mod.common.network.packet.C2SRequestPoolDraftPayload;
 import com.blib.mod.common.network.packet.C2SRequestRegistryEntriesPayload;
 import com.blib.mod.common.network.packet.C2SRequestTagCatalogPayload;
 import com.blib.mod.common.network.packet.C2SRequestTagDraftPayload;
+import com.blib.mod.common.network.packet.C2SSetBlockStatePropertyPayload;
 import com.blib.mod.common.network.packet.C2SSetEntityScalePayload;
 import com.blib.mod.common.network.packet.C2SSetFactionRelationshipPayload;
 import com.blib.mod.common.network.packet.C2SSetTagReplacePayload;
@@ -117,6 +118,9 @@ public class BLibPacketDirections {
         REGISTRY.registerPacketDirection(new PacketDirection.C2S<>(C2SUndoPlacementPayload.TYPE, C2SUndoPlacementPayload.CODEC));
         REGISTRY.registerPacketDirection(
             new PacketDirection.C2S<>(C2SUpdateJigsawBlockPayload.TYPE, C2SUpdateJigsawBlockPayload.CODEC)
+        );
+        REGISTRY.registerPacketDirection(
+            new PacketDirection.C2S<>(C2SSetBlockStatePropertyPayload.TYPE, C2SSetBlockStatePropertyPayload.CODEC)
         );
         REGISTRY.registerPacketDirection(
             new PacketDirection.C2S<>(C2SUpdatePoolElementPayload.TYPE, C2SUpdatePoolElementPayload.CODEC)
