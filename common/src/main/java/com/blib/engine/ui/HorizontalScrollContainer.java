@@ -12,7 +12,7 @@ import org.jetbrains.annotations.ApiStatus;
 @ApiStatus.Internal
 public final class HorizontalScrollContainer {
 
-    private static final int SCROLLBAR_HEIGHT = 3;
+    private static final int SCROLLBAR_HEIGHT = 6;
 
     private static final int SCROLLBAR_TRACK_COLOR = 0x40000000;
 

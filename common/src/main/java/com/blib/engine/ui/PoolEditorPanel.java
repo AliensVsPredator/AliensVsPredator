@@ -78,7 +78,7 @@ public final class PoolEditorPanel implements Panel {
 
     private static final int RIGHT_PAD = 4;
 
-    private static final int SCROLLBAR_GUTTER = 5;
+    private static final int SCROLLBAR_GUTTER = 10;
 
     /** Width of the inline weight TextInput per row — room for ~4-digit weights (vanilla rarely exceeds two). */
     private static final int WEIGHT_INPUT_WIDTH = 28;

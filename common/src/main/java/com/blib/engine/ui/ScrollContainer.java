@@ -12,7 +12,7 @@ import org.jetbrains.annotations.ApiStatus;
 @ApiStatus.Internal
 public final class ScrollContainer {
 
-    private static final int SCROLLBAR_WIDTH = 3;
+    private static final int SCROLLBAR_WIDTH = 6;
 
     private static final int SCROLLBAR_TRACK_COLOR = 0x40000000;
 

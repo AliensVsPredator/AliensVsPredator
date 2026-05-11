@@ -2069,7 +2069,7 @@ public final class DetailsPanel implements Panel {
 
     private static final int TAG_RIGHT_PAD = 4;
 
-    private static final int TAG_SCROLLBAR_GUTTER = 5;
+    private static final int TAG_SCROLLBAR_GUTTER = 10;
 
     private static final int TAG_FOOTER_HEIGHT = SearchableSelect.HEIGHT + 6;
 

@@ -39,7 +39,7 @@ public final class GOAPDetailsPanel implements Panel {
      * Reserved width on the right side of a row for the scrollbar — so row text truncates before reaching the
      * scrollbar's hover region instead of being abruptly chopped by the scissor.
      */
-    private static final int SCROLLBAR_GUTTER = 5;
+    private static final int SCROLLBAR_GUTTER = 10;
 
     private static final int LABEL_COLOR = 0xFF888892;
 

@@ -233,7 +233,7 @@ public final class SearchableSelect<T> {
 
         private static final int SEARCH_BAR_HEIGHT = TextInput.HEIGHT;
 
-        private static final int SCROLLBAR_GUTTER = 5;
+        private static final int SCROLLBAR_GUTTER = 10;
 
         private final SearchableSelect<T> owner;
 
