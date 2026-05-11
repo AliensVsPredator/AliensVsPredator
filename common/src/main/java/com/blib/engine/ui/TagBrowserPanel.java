@@ -20,6 +20,7 @@ import com.blib.engine.selection.TagSelectable;
 import com.blib.engine.session.ProjectSession;
 import com.blib.engine.tag.TagCatalogCache;
 import com.blib.mod.BLib;
+import com.blib.engine.tag.TagStagingCache;
 import com.blib.mod.common.network.packet.C2SCreateTagPayload;
 import com.blib.mod.common.network.packet.C2SRequestTagCatalogPayload;
 import com.blib.mod.common.network.packet.TagCatalogEntry;
@@ -61,6 +62,9 @@ public final class TagBrowserPanel implements Panel {
 
     /** Project-authored tag that doesn't exist in any upstream pack (vanilla / mods). Mirrors git "new file" green. */
     private static final int ROW_PROJECT_NEW_TINT = 0xFF80E080;
+
+    /** Staged-but-unreloaded tint — picks up after any edit until Reload Project clears the staging cache. */
+    private static final int ROW_PROJECT_STAGED_TINT = 0xFFE08080;
 
     /**
      * Project-authored tag that ALSO exists in an upstream pack — the project is overriding it. Mirrors git "modified"
@@ -389,11 +393,17 @@ public final class TagBrowserPanel implements Panel {
         var labelMaxWidth = Math.max(0, rowRight - x - 16);
         var truncated = font.plainSubstrByWidth(ce.tagId().toString(), labelMaxWidth);
         int labelColor;
-        if (ce.inProject() && ce.inUpstream()) {
+        if (TagStagingCache.isTagStaged(ce.registryKey(), ce.tagId())) {
+            // Any unreloaded edit (new tag, entry add/remove, replace toggle) lights the row red until reload, at
+            // which point the staging clears and the row falls through to the green/blue/neutral logic below.
+            labelColor = ROW_PROJECT_STAGED_TINT;
+        } else if (ce.inProject() && !ce.equivalentToUpstream() && ce.inUpstream()) {
             labelColor = ROW_PROJECT_MODIFIED_TINT;
-        } else if (ce.inProject()) {
+        } else if (ce.inProject() && !ce.equivalentToUpstream()) {
             labelColor = ROW_PROJECT_NEW_TINT;
         } else {
+            // equivalentToUpstream → project JSON exists but doesn't modify the merged tag. Treat as upstream-only
+            // visually: there's no reason for the project to claim this tag, so it shouldn't read as "yours".
             labelColor = hovered || selected ? ROW_TEXT_HOVER_COLOR : ROW_TEXT_COLOR;
         }
         graphics.drawString(font, Component.literal(truncated), x + 12, textY, labelColor, false);
@@ -474,6 +484,9 @@ public final class TagBrowserPanel implements Panel {
             return;
         }
         BLib.MOD.networking().sendToServer(new C2SCreateTagPayload(projectName, registryKey, parsed));
+        // Mark the new tag as staged so it paints red until Reload Project — it exists on disk but the runtime
+        // registry doesn't know about it yet.
+        TagStagingCache.markTagEdited(registryKey, parsed);
         // Drive selection to the new tag so the inspector lands on it immediately.
         SelectionManager.selectSingle(new TagSelectable(registryKey, parsed));
         createPopup = null;

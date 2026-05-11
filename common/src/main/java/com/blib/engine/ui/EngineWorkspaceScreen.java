@@ -1060,11 +1060,47 @@ public final class EngineWorkspaceScreen extends Screen {
             }
         }
         if (TextInput.getFocused() == null && keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_DELETE) {
+            var deleteSel = SelectionManager.current().single();
+            if (deleteSel instanceof com.blib.engine.selection.EntitySelectable es) {
+                // Mirrors the context-menu "Delete Entity" gate — players aren't deletable, the server would reject
+                // anyway but the no-op feels nicer with a client-side check.
+                var entity = es.entity();
+                if (entity != null && !(entity instanceof net.minecraft.world.entity.player.Player)) {
+                    BLib.MOD.networking()
+                        .sendToServer(new com.blib.mod.common.network.packet.C2SRemoveEntityPayload(entity.getId()));
+                }
+                return true;
+            }
+            if (deleteSel instanceof com.blib.engine.selection.BlockSelectable bs) {
+                deleteSingleBlock(bs.pos());
+                return true;
+            }
+            if (deleteSel instanceof com.blib.engine.selection.JigsawBlockSelectable jbs) {
+                deleteSingleBlock(jbs.pos());
+                return true;
+            }
             BlockSelectionOps.delete();
             return true;
         }
 
         return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    /**
+     * Delete a single inspected block by reusing the volume-delete packet with a degenerate one-block AABB. Avoids
+     * a parallel "delete one block" packet — the server's volume delete already special-cases tiny volumes, and
+     * routing through the same handler keeps op-gating + edit logging consistent. The {@link
+     * com.blib.engine.selection.BlockSelectable#isValid} check that prunes the now-air block from
+     * {@link SelectionManager} fires naturally on the next read, so no explicit clear is needed here.
+     */
+    private static void deleteSingleBlock(net.minecraft.core.BlockPos pos) {
+        var mc = net.minecraft.client.Minecraft.getInstance();
+        if (mc.player == null) {
+            return;
+        }
+        var dim = mc.player.level().dimension().location();
+        BLib.MOD.networking()
+            .sendToServer(new com.blib.mod.common.network.packet.C2SDeleteSelectionPayload(pos, pos, dim));
     }
 
     @Override

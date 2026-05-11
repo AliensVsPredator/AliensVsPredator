@@ -87,6 +87,10 @@ public final class EngineMode {
         // or via the screen's close lifecycle, but the selection tool persists statically and needs an explicit clear.
         SelectionToolState.reset();
 
+        // Pending tag-edits from the inspector are also static; clear so an uncommitted overlay doesn't shadow the
+        // runtime registry the next time the user enters the engine.
+        com.blib.engine.tag.TagStagingCache.clear();
+
         session = null;
     }
 

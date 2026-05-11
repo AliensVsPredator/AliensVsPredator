@@ -28,7 +28,8 @@ public record S2CTagDraftPayload(
     ResourceLocation tagId,
     boolean replace,
     List<TagEntryDraft> entries,
-    List<ResourceLocation> resolvedMembers
+    List<ResourceLocation> resolvedMembers,
+    boolean inProject
 ) implements CustomPacketPayload {
 
     public static final ResourceLocation PAYLOAD_ID = BLib.MOD.resources().createLocation("tag_draft");
@@ -48,6 +49,8 @@ public record S2CTagDraftPayload(
         S2CTagDraftPayload::entries,
         BLibCodecs.Stream.RESOURCE_LOCATION.asList(),
         S2CTagDraftPayload::resolvedMembers,
+        StreamCodecs.BOOLEAN,
+        S2CTagDraftPayload::inProject,
         S2CTagDraftPayload::new
     );
 

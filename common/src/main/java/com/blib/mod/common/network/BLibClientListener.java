@@ -134,10 +134,18 @@ public final class BLibClientListener {
      */
     public static void handleTagDraft(S2CTagDraftPayload payload, Player player) {
         TagDraftCache.update(payload.registryKey(), payload.tagId(), payload.replace(), payload.entries(), payload.resolvedMembers());
-        // The project necessarily owns the tag now — server only sends a draft after writeAndPersist created the
-        // project's JSON. Flip the catalog's inProject flag locally so the browser repaints the row immediately
-        // (blue if upstream contributed too, green otherwise) instead of waiting for a fresh full-catalog push.
-        TagCatalogCache.markEntryAsProject(payload.registryKey(), payload.tagId());
+        // Sync the catalog's inProject flag with the server's on-disk truth. Read-only draft fetches keep
+        // inProject=false (no file written); edit handlers may flip it true OR false (auto-cleanup deletes the
+        // file when an edit leaves the JSON equivalent to upstream). setInProject handles either direction.
+        TagCatalogCache.setInProject(payload.registryKey(), payload.tagId(), payload.inProject());
+        // Keep equivalentToUpstream in sync with what the fresh draft tells us. Cheap to compute client-side:
+        // replace=false AND every entry inUpstream ⇒ project's JSON is redundant. Lets the browser repaint the row
+        // gray the moment the user's edits cancel out their previous additions, without waiting for the full
+        // catalog re-push.
+        var equivalent = payload.inProject()
+            && !payload.replace()
+            && payload.entries().stream().allMatch(com.blib.mod.common.network.packet.TagEntryDraft::inUpstream);
+        TagCatalogCache.setEquivalentToUpstream(payload.registryKey(), payload.tagId(), equivalent);
     }
 
     /**

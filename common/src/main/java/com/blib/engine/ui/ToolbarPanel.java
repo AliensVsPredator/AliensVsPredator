@@ -9,6 +9,7 @@ import java.util.List;
 import com.blib.engine.session.ProjectSession;
 import com.blib.engine.session.SelectionTool;
 import com.blib.engine.session.SelectionToolState;
+import com.blib.engine.tag.TagStagingCache;
 import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.C2SReloadProjectPayload;
 
@@ -256,6 +257,11 @@ public final class ToolbarPanel implements Panel {
                     && ProjectSession.activeProject() != null
             ) {
                 BLib.MOD.networking().sendToServer(new C2SReloadProjectPayload(ProjectSession.activeProjectName()));
+                // After reload the runtime registry catches up to disk, so the tag-staging overlay is no longer
+                // needed — wipe it. The red staging tint now disappears from every tag row in the workspace,
+                // settling into green / blue based on the now-committed project-ownership state. If reload fails
+                // the loss is acceptable: staging would otherwise grow unbounded across sessions.
+                TagStagingCache.clear();
                 lastReloadAttemptMs = System.currentTimeMillis();
                 return true;
             }

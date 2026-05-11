@@ -7,8 +7,10 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.JigsawBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -40,18 +42,23 @@ import com.blib.engine.selection.SelectionManager;
 import com.blib.engine.selection.TagSelectable;
 import com.blib.engine.session.ProjectSession;
 import com.blib.engine.tag.RegistryEntriesCache;
+import com.blib.engine.tag.TagCatalogCache;
 import com.blib.engine.tag.TagDraftCache;
+import com.blib.engine.tag.TagStagingCache;
 import com.blib.engine.territory.ClaimPaintTool;
 import com.blib.internal.client.faction.ClientFactionInspectionCache;
 import com.blib.internal.client.territory.ClientTerritoryCache;
 import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.C2SAddTagEntryPayload;
+import com.blib.mod.common.network.packet.C2SRemoveBlockTagPayload;
 import com.blib.mod.common.network.packet.C2SRemoveTagEntryPayload;
+import com.blib.mod.common.network.packet.C2SRequestTagCatalogPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionInspectionPayload;
 import com.blib.mod.common.network.packet.C2SRequestRegistryEntriesPayload;
 import com.blib.mod.common.network.packet.C2SRequestTagDraftPayload;
 import com.blib.mod.common.network.packet.C2SSetBlockStatePropertyPayload;
 import com.blib.mod.common.network.packet.C2SSetEntityScalePayload;
+import com.blib.mod.common.network.packet.C2SSetTagEntryRequiredPayload;
 import com.blib.mod.common.network.packet.C2SSetTagReplacePayload;
 import com.blib.mod.common.network.packet.C2STranslateEntityPayload;
 import com.blib.mod.common.network.packet.C2SUpdateFactionFieldPayload;
@@ -421,6 +428,9 @@ public final class DetailsPanel implements Panel {
     /** Per-row × button rects + the entries they remove; populated each tag-render frame, consumed in mouseClicked. */
     private final List<TagRemoveHit> tagRemoveHits = new ArrayList<>();
 
+    /** Per-row req/opt badge rects + the entries they toggle; populated each tag-render frame, consumed in mouseClicked. */
+    private final List<TagRequiredToggleHit> tagRequiredToggleHits = new ArrayList<>();
+
     /**
      * Per-property {@link Checkbox} widgets for boolean block-state properties (waterlogged, snowy, …). Sister map to
      * {@link #genericBlockPropertySelects}: every property in the rebuilt set ends up in exactly one of the two,
@@ -443,6 +453,23 @@ public final class DetailsPanel implements Panel {
 
     /** Cache key for the per-property widget maps — block type changes (replace-in-place) ⇒ rebuild. */
     private @Nullable net.minecraft.world.level.block.Block genericBlockCachedBlock;
+
+    /**
+     * Tag-picker for the generic block inspector's Tags section. Recreated when the inspected block changes (its
+     * onSelect lambda captures the block id). itemsProvider closes over {@link TagCatalogCache} + the live tag set so
+     * filtering ("don't list tags the block is already in") stays fresh as the user edits.
+     */
+    private @Nullable SearchableSelect<ResourceLocation> blockTagPicker;
+
+    /** Per-row [×] hit rects from the most recent block-tag render; consumed by {@link #mouseClicked}. */
+    private final List<BlockTagRemoveHit> blockTagRowHits = new ArrayList<>();
+
+    /**
+     * Active project the catalog was most recently requested for. Lets the inspector fire one {@link
+     * C2SRequestTagCatalogPayload} per (engine-session, project) instead of every frame when the cache happens to be
+     * empty. Stays valid even after a non-empty response — re-firing the request would be redundant.
+     */
+    private @Nullable String blockTagCatalogRequestedForProject;
 
     @Override
     public String title() {
@@ -472,6 +499,7 @@ public final class DetailsPanel implements Panel {
         factionSwatchSize = 0;
         factionPaintToggleW = 0;
         tagRemoveHits.clear();
+        tagRequiredToggleHits.clear();
 
         var font = EngineFont.get();
         var rowY = y;
@@ -545,7 +573,7 @@ public final class DetailsPanel implements Panel {
             }
             return false;
         }
-        if (single instanceof BlockSelectable) {
+        if (single instanceof BlockSelectable bs) {
             // Forward to per-property widgets. Each widget's own onToggle / onSelect lambda handles the packet send,
             // so we just need to dispatch hit tests here. Selects open their popup on a button-row click; the popup
             // itself is screen-managed and consumes future clicks until dismissed.
@@ -558,6 +586,29 @@ public final class DetailsPanel implements Panel {
                 if (select.mouseClicked(mouseX, mouseY, button)) {
                     return true;
                 }
+            }
+            // Tag-row [×] hits: send a remove-by-id packet for the row's tag. Server scans the project draft for a
+            // direct entry matching this block; no-op if the block is in the tag only via tag-ref or upstream.
+            if (button == 0) {
+                for (var hit : blockTagRowHits) {
+                    if (mouseX >= hit.x() && mouseX < hit.x() + hit.w() && mouseY >= hit.y() && mouseY < hit.y() + hit.h()) {
+                        var projectName = ProjectSession.activeProjectName();
+                        if (projectName == null) {
+                            return true;
+                        }
+                        var blockId = BuiltInRegistries.BLOCK.getKey(bs.state() != null ? bs.state().getBlock() : null);
+                        if (blockId == null) {
+                            return true;
+                        }
+                        BLib.MOD.networking()
+                            .sendToServer(new C2SRemoveBlockTagPayload(projectName, hit.registryKey(), hit.tagId(), blockId));
+                        TagStagingCache.markEntryRemoved(hit.registryKey(), hit.tagId(), false, blockId);
+                        return true;
+                    }
+                }
+            }
+            if (blockTagPicker != null && blockTagPicker.mouseClicked(mouseX, mouseY, button)) {
+                return true;
             }
             return false;
         }
@@ -1237,6 +1288,8 @@ public final class DetailsPanel implements Panel {
             // a fresh property set, and surface a note rather than rendering an empty section.
             genericBlockPropertyCheckboxes.clear();
             genericBlockPropertySelects.clear();
+            blockTagPicker = null;
+            blockTagRowHits.clear();
             genericBlockCachedPos = null;
             genericBlockCachedBlock = null;
             drawNote(graphics, font, x, y, "Block is no longer loaded.");
@@ -1270,6 +1323,10 @@ public final class DetailsPanel implements Panel {
         }
 
         var mc = Minecraft.getInstance();
+
+        rowY += ROW_GAP;
+        rowY = renderBlockTagsSection(graphics, font, x, rowY, width, mouseX, mouseY, blockId);
+
         var be = mc.level != null ? mc.level.getBlockEntity(pos) : null;
         if (be != null) {
             rowY += ROW_GAP;
@@ -1278,6 +1335,226 @@ public final class DetailsPanel implements Panel {
             var beTypeId = BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(be.getType());
             drawRow(graphics, font, x, rowY, "Type", beTypeId != null ? beTypeId.toString() : "?");
         }
+    }
+
+    private static final int BLOCK_TAG_ROW_HEIGHT = 12;
+
+    private static final int BLOCK_TAG_REMOVE_BUTTON_WIDTH = 12;
+
+    private static final int BLOCK_TAG_LABEL_PROJECT_NEW = 0xFF80E080;
+
+    private static final int BLOCK_TAG_LABEL_PROJECT_MODIFIED = 0xFF7CB6E0;
+
+    /** Staged-but-unreloaded color — picks up after the user adds a tag, clears on Reload Project. */
+    private static final int BLOCK_TAG_LABEL_STAGED = 0xFFE08080;
+
+    private static final int BLOCK_TAG_LABEL_UPSTREAM = 0xFFD0D0D0;
+
+    private static final int BLOCK_TAG_REMOVE_ICON_COLOR = 0xFF7C8088;
+
+    private static final int BLOCK_TAG_REMOVE_ICON_HOVER_COLOR = 0xFFFF6868;
+
+    private static final int BLOCK_TAG_EMPTY_NOTE_COLOR = 0xFF606068;
+
+    /**
+     * Render the Tags section: a list of every block-registry tag {@code blockId} currently belongs to (read from
+     * {@link net.minecraft.world.level.block.Block#builtInRegistryHolder()}, so vanilla / mods / datapacks / project
+     * overrides all show up) plus a SearchableSelect picker for adding a new one. Project-owned tags are colored to
+     * match the Tag Browser palette and get an [×] remove button; upstream-only tags render in neutral gray with no
+     * button (vanilla JSON has no negation primitive, so the inspector can't remove them).
+     * <p>
+     * If the tag catalog cache is empty and a project is open, fires one {@link C2SRequestTagCatalogPayload} per
+     * project so the picker has data to filter against. The request flag is shared across all blocks in this engine
+     * session so we don't re-request every frame.
+     */
+    private int renderBlockTagsSection(
+        GuiGraphics graphics,
+        Font font,
+        int x,
+        int y,
+        int width,
+        int mouseX,
+        int mouseY,
+        ResourceLocation blockId
+    ) {
+        blockTagRowHits.clear();
+
+        var rowY = drawSectionHeader(graphics, font, x, y, width, "Tags");
+        rowY += CONTENT_PADDING / 2;
+
+        var projectName = ProjectSession.activeProjectName();
+        // Refresh the catalog on every project change (TagCatalogCache holds at most one project's data; if the user
+        // swapped projects while the inspector was up, the cache may be stale for the new project). One request per
+        // project transition — within a project, the cache is updated by other commits (setInProject) without
+        // needing a refetch.
+        if (projectName != null && !projectName.equals(blockTagCatalogRequestedForProject)) {
+            BLib.MOD.networking().sendToServer(new C2SRequestTagCatalogPayload(projectName));
+            blockTagCatalogRequestedForProject = projectName;
+        }
+
+        var effective = effectiveBlockTags(blockId);
+
+        if (effective.isEmpty()) {
+            graphics.drawString(font, Component.literal("(none)"), x + CONTENT_PADDING, rowY, BLOCK_TAG_EMPTY_NOTE_COLOR, false);
+            rowY += LINE_HEIGHT + ROW_GAP;
+        } else {
+            var blockRegistry = Registries.BLOCK.location();
+            for (var tagId : effective) {
+                var pendingAdd = TagStagingCache.isEntryStagedAdd(blockRegistry, tagId, false, blockId);
+                rowY = renderBlockTagRow(graphics, font, x, rowY, width, mouseX, mouseY, blockRegistry, tagId, pendingAdd);
+            }
+        }
+
+        // "+ Add tag" picker — only meaningful with an open project and a populated catalog. With no project, hide
+        // the picker entirely; with no catalog yet, hide and rely on the in-flight request to populate next frame.
+        if (projectName != null && blockTagPicker != null && !TagCatalogCache.all().isEmpty()) {
+            rowY = drawSelectRow(graphics, font, x, rowY, width, "+ Add tag", null, blockTagPicker, mouseX, mouseY);
+        }
+
+        return rowY;
+    }
+
+    /**
+     * One row of the block-tag list: tag id label colored by inProject status, optional [×] remove button on
+     * project-owned rows. The remove rect is recorded into {@link #blockTagRowHits} so {@link #mouseClicked} can
+     * dispatch without re-deriving geometry.
+     */
+    private int renderBlockTagRow(
+        GuiGraphics graphics,
+        Font font,
+        int x,
+        int y,
+        int width,
+        int mouseX,
+        int mouseY,
+        ResourceLocation blockRegistry,
+        ResourceLocation tagId,
+        boolean isPendingAdd
+    ) {
+        var inProject = isTagInProject(blockRegistry, tagId);
+        var inUpstream = isTagInUpstream(blockRegistry, tagId);
+        var equivalentToUpstream = isTagEquivalentToUpstream(blockRegistry, tagId);
+        int labelColor;
+        if (isPendingAdd) {
+            // This block's membership in this tag is staged unreloaded — paint red. After Reload Project the
+            // staging clears and the row falls through to the project-new (green) or project-modified (blue) branch
+            // below. Unrelated tag-level edits don't affect this row's color (the relationship "block X in tag Y"
+            // hasn't changed); the Tag Browser still flags the tag itself as staged.
+            labelColor = BLOCK_TAG_LABEL_STAGED;
+        } else if (inProject && !equivalentToUpstream && inUpstream) {
+            labelColor = BLOCK_TAG_LABEL_PROJECT_MODIFIED;
+        } else if (inProject && !equivalentToUpstream) {
+            labelColor = BLOCK_TAG_LABEL_PROJECT_NEW;
+        } else {
+            // equivalentToUpstream → project's JSON has no net effect, render as upstream (gray).
+            labelColor = BLOCK_TAG_LABEL_UPSTREAM;
+        }
+
+        // X is offered whenever we have a path to remove the entry: the project owns the tag, or the user just added
+        // it (we can fire a remove packet that the server can resolve by id). Upstream-only memberships stay
+        // read-only since vanilla JSON has no negation primitive. Tag-level staging alone doesn't enable removal —
+        // an unrelated edit elsewhere shouldn't unlock this row.
+        var removable = inProject || isPendingAdd;
+
+        var labelX = x + CONTENT_PADDING;
+        var labelY = y + (BLOCK_TAG_ROW_HEIGHT - font.lineHeight + 2) / 2;
+        var rightEdge = x + width - CONTENT_PADDING;
+        var removeX = rightEdge - BLOCK_TAG_REMOVE_BUTTON_WIDTH;
+        var labelMaxWidth = removable
+            ? Math.max(0, removeX - labelX - 2)
+            : Math.max(0, rightEdge - labelX);
+        var truncated = font.plainSubstrByWidth(tagId.toString(), labelMaxWidth);
+        graphics.drawString(font, Component.literal(truncated), labelX, labelY, labelColor, false);
+
+        if (removable) {
+            var hovered = mouseX >= removeX
+                && mouseX < removeX + BLOCK_TAG_REMOVE_BUTTON_WIDTH
+                && mouseY >= y
+                && mouseY < y + BLOCK_TAG_ROW_HEIGHT;
+            var color = hovered ? BLOCK_TAG_REMOVE_ICON_HOVER_COLOR : BLOCK_TAG_REMOVE_ICON_COLOR;
+            var glyphX = removeX + (BLOCK_TAG_REMOVE_BUTTON_WIDTH - font.width("×")) / 2;
+            graphics.drawString(font, Component.literal("×"), glyphX, labelY, color, false);
+            blockTagRowHits.add(new BlockTagRemoveHit(removeX, y, BLOCK_TAG_REMOVE_BUTTON_WIDTH, BLOCK_TAG_ROW_HEIGHT, blockRegistry, tagId));
+        }
+
+        return y + BLOCK_TAG_ROW_HEIGHT;
+    }
+
+    /**
+     * Effective tag set for a block as the inspector should display it: live runtime tags plus any pending adds
+     * minus any pending removes. Sorted by id for stable row order across frames.
+     */
+    private static List<ResourceLocation> effectiveBlockTags(ResourceLocation blockId) {
+        var blockRegistry = Registries.BLOCK.location();
+        var block = BuiltInRegistries.BLOCK.get(blockId);
+        var set = new java.util.TreeSet<ResourceLocation>(java.util.Comparator.comparing(ResourceLocation::toString));
+        block.builtInRegistryHolder().tags().map(TagKey::location).forEach(set::add);
+        set.addAll(TagStagingCache.stagedDirectAddsFor(blockRegistry, blockId));
+        TagStagingCache.stagedDirectRemovesFor(blockRegistry, blockId).forEach(set::remove);
+        return List.copyOf(set);
+    }
+
+    /**
+     * Find the catalog entry for {@code (registry, tagId)} and report whether the project has authored or overridden
+     * it. Catalog scan is O(n) per call but n is small (one entry per loaded tag); a map keyed by (registry, tag)
+     * would help only if a block has dozens of tags, which is rare.
+     */
+    private static boolean isTagInProject(ResourceLocation registryKey, ResourceLocation tagId) {
+        for (var entry : TagCatalogCache.all()) {
+            if (entry.registryKey().equals(registryKey) && entry.tagId().equals(tagId)) {
+                return entry.inProject();
+            }
+        }
+        return false;
+    }
+
+    private static boolean isTagInUpstream(ResourceLocation registryKey, ResourceLocation tagId) {
+        for (var entry : TagCatalogCache.all()) {
+            if (entry.registryKey().equals(registryKey) && entry.tagId().equals(tagId)) {
+                return entry.inUpstream();
+            }
+        }
+        // Not in catalog at all — must be a runtime-only tag (block.tags() reports it). Conservatively call it
+        // upstream so the inspector doesn't paint it as project-owned and offer a no-op remove.
+        return true;
+    }
+
+    /**
+     * Does the catalog say the project's JSON for this tag is byte-equivalent to upstream's contribution? True ⇒
+     * the project owns the tag on disk but the merged result is identical to what upstream produces — neutralize
+     * the "modified" coloring so the row doesn't masquerade as a real edit.
+     */
+    private static boolean isTagEquivalentToUpstream(ResourceLocation registryKey, ResourceLocation tagId) {
+        for (var entry : TagCatalogCache.all()) {
+            if (entry.registryKey().equals(registryKey) && entry.tagId().equals(tagId)) {
+                return entry.equivalentToUpstream();
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Build the items list for the "+ Add tag" picker: every block-registry catalog entry minus the tags the block is
+     * already in. Called by the SearchableSelect's itemsProvider on popup open so it stays in sync with the catalog
+     * cache and the live tag membership.
+     */
+    private List<SearchableSelect.Item<ResourceLocation>> availableBlockTagItems(ResourceLocation blockId) {
+        var blockRegistry = Registries.BLOCK.location();
+        // Exclude tags already in the effective set (runtime + pending adds − pending removes) so the picker doesn't
+        // offer a re-add of something the user just attached, and re-offers tags the user just removed pre-reload.
+        var already = new java.util.HashSet<>(effectiveBlockTags(blockId));
+        var out = new ArrayList<SearchableSelect.Item<ResourceLocation>>();
+        for (var entry : TagCatalogCache.all()) {
+            if (!entry.registryKey().equals(blockRegistry)) {
+                continue;
+            }
+            if (already.contains(entry.tagId())) {
+                continue;
+            }
+            out.add(new SearchableSelect.Item<>(entry.tagId(), entry.tagId().toString()));
+        }
+        out.sort(java.util.Comparator.comparing(item -> item.value().toString()));
+        return out;
     }
 
     /**
@@ -1349,6 +1626,30 @@ public final class DetailsPanel implements Panel {
         genericBlockPropertyCheckboxes.clear();
         genericBlockPropertySelects.clear();
         var immutablePos = pos.immutable();
+
+        // Rebuild the tag picker too — its onSelect lambda captures the block id, so a block swap needs a fresh
+        // widget. Project name + filtering against currentTags happens at popup-open / pick time rather than at
+        // construction, so switching projects mid-session doesn't strand a stale picker.
+        var blockId = BuiltInRegistries.BLOCK.getKey(block);
+        blockTagPicker = new SearchableSelect<>(
+            () -> availableBlockTagItems(blockId),
+            rl -> rl == null ? "(none)" : rl.toString(),
+            null,
+            picked -> {
+                if (picked == null) {
+                    return;
+                }
+                var projectName = ProjectSession.activeProjectName();
+                if (projectName == null) {
+                    return;
+                }
+                BLib.MOD.networking()
+                    .sendToServer(
+                        new C2SAddTagEntryPayload(projectName, Registries.BLOCK.location(), picked, false, blockId, true)
+                    );
+                TagStagingCache.markEntryAdded(Registries.BLOCK.location(), picked, false, blockId);
+            }
+        );
         for (var prop : state.getProperties()) {
             var name = prop.getName();
             if (prop instanceof BooleanProperty) {
@@ -2164,6 +2465,18 @@ public final class DetailsPanel implements Panel {
 
     private static final int TAG_REMOVE_BUTTON_WIDTH = 12;
 
+    private static final int TAG_REQUIRED_BADGE_WIDTH = 20;
+
+    /** Required state — default, dim text so it doesn't shout. */
+    private static final int TAG_REQUIRED_BADGE_REQ_COLOR = 0xFF606068;
+
+    private static final int TAG_REQUIRED_BADGE_REQ_HOVER = 0xFFB0B0B8;
+
+    /** Optional state — accent yellow so non-default rows stand out. */
+    private static final int TAG_REQUIRED_BADGE_OPT_COLOR = 0xFFE6C26B;
+
+    private static final int TAG_REQUIRED_BADGE_OPT_HOVER = 0xFFFFD685;
+
     private static final int TAG_RIGHT_PAD = 4;
 
     private static final int TAG_FOOTER_HEIGHT = SearchableSelect.HEIGHT + 6;
@@ -2186,9 +2499,9 @@ public final class DetailsPanel implements Panel {
 
     /**
      * Render the inspector view for a {@link TagSelectable}. Layout (top-down): a registry meta-line, a Merge/Replace
-     * toggle + Reload button row, a scrollable list of entry rows (each with a tag-ref/direct chip, the id, an
-     * {@code (opt)} suffix when not required, and a {@code ×} remove button), and a sticky footer with the Add-entry
-     * picker.
+     * toggle + Reload button row, a scrollable list of entry rows (each with a tag-ref/direct chip, the id, a
+     * clickable {@code req}/{@code opt} required-flag badge, and a {@code ×} remove button), and a sticky footer with
+     * the Add-entry picker.
      * <p>
      * Reads from {@link TagDraftCache} for the entry list (server-pushed authoritative state — the Tag Editor moved
      * into the inspector but its data flow is unchanged from the original separate-panel design). Sends
@@ -2339,8 +2652,26 @@ public final class DetailsPanel implements Panel {
             graphics.fill(x, y, x + width - ScrollContainer.SCROLLBAR_GUTTER, y + TAG_ROW_HEIGHT, TAG_ROW_HOVER_BG);
         }
 
+        // Operability gates: in replace mode the project is the sole contributor so every entry is operable; in
+        // merge mode an upstream-duplicate entry is a no-op to remove or toggle, so hide the controls. Pending-add
+        // entries keep the X even on upstream duplicates so the user can cancel the just-issued staging — undoing
+        // a pre-reload add is a real disk-write, not a vanilla-load-time no-op.
+        var draft = tagLastShownRegistry != null && tagLastShownTag != null
+            ? TagDraftCache.get(tagLastShownRegistry, tagLastShownTag)
+            : null;
+        var replaceMode = draft != null && draft.replace();
+        var isPendingAdd = tagLastShownRegistry != null
+            && tagLastShownTag != null
+            && TagStagingCache.isEntryStagedAdd(tagLastShownRegistry, tagLastShownTag, entry.isTagRef(), entry.id());
+        var removeOperable = replaceMode || !entry.inUpstream() || isPendingAdd;
+        var requiredOperable = replaceMode || !entry.inUpstream();
+
         var rightEdge = x + width - ScrollContainer.SCROLLBAR_GUTTER - TAG_RIGHT_PAD;
         var removeX = rightEdge - TAG_REMOVE_BUTTON_WIDTH;
+        // Reserve the badge column only when it'll actually render — otherwise the label gets the extra room.
+        var requiredBadgeX = requiredOperable ? (removeX - 2 - TAG_REQUIRED_BADGE_WIDTH) : removeX;
+        // If neither control is visible, the label uses the full right edge.
+        var labelRight = removeOperable ? requiredBadgeX : rightEdge;
         var textY = y + (TAG_ROW_HEIGHT - font.lineHeight + 2) / 2;
 
         // Chip — # for tag-ref, ▪ for direct.
@@ -2354,23 +2685,92 @@ public final class DetailsPanel implements Panel {
             false
         );
 
-        // Id label (with leading # for tag-refs so it reads like the JSON form, plus optional (opt) suffix).
-        var label = (entry.isTagRef() ? "#" : "") + entry.id() + (entry.required() ? "" : "  (opt)");
+        // Id label color picks up the unified staging scheme: red while the entry is staged unreloaded, otherwise it
+        // follows the parent tag's status (project-new → green, project-modified-upstream → blue). The current tag's
+        // (registry, id) is set in renderTagView's instance state, so we can look up its catalog entry here without
+        // changing the call signature. (opt) is no longer a suffix — it lives in its own clickable badge to the right
+        // of the label so the user can toggle the required flag directly.
+        var label = (entry.isTagRef() ? "#" : "") + entry.id();
         var labelX = x + 2 + TAG_CHIP_WIDTH;
-        var labelMax = Math.max(0, removeX - labelX - 4);
-        graphics.drawString(font, Component.literal(font.plainSubstrByWidth(label, labelMax)), labelX, textY, VALUE_COLOR, false);
+        var labelMax = Math.max(0, labelRight - labelX - 4);
+        var labelColor = entryLabelColor(entry);
+        graphics.drawString(font, Component.literal(font.plainSubstrByWidth(label, labelMax)), labelX, textY, labelColor, false);
 
-        // × remove button (whole rect is the hot zone; glyph centered).
-        var removeHovered = mouseX >= removeX
-            && mouseX < removeX + TAG_REMOVE_BUTTON_WIDTH
-            && mouseY >= y
-            && mouseY < y + TAG_ROW_HEIGHT;
-        var removeText = "×";
-        var removeColor = removeHovered ? TAG_REMOVE_ICON_HOVER_COLOR : TAG_REMOVE_ICON_COLOR;
-        var removeTextX = removeX + (TAG_REMOVE_BUTTON_WIDTH - font.width(removeText)) / 2;
-        graphics.drawString(font, Component.literal(removeText), removeTextX, textY, removeColor, false);
+        // req/opt badge — click toggles the required flag. Hidden for upstream-duplicate entries in merge mode
+        // (toggling there would be a vanilla-load-time no-op). Required state stays dim (default); optional state
+        // highlights with the accent color so the user spots non-default entries at a glance.
+        if (requiredOperable) {
+            var badgeText = entry.required() ? "req" : "opt";
+            var badgeHovered = mouseX >= requiredBadgeX
+                && mouseX < requiredBadgeX + TAG_REQUIRED_BADGE_WIDTH
+                && mouseY >= y
+                && mouseY < y + TAG_ROW_HEIGHT;
+            int badgeColor;
+            if (entry.required()) {
+                badgeColor = badgeHovered ? TAG_REQUIRED_BADGE_REQ_HOVER : TAG_REQUIRED_BADGE_REQ_COLOR;
+            } else {
+                badgeColor = badgeHovered ? TAG_REQUIRED_BADGE_OPT_HOVER : TAG_REQUIRED_BADGE_OPT_COLOR;
+            }
+            var badgeTextX = requiredBadgeX + (TAG_REQUIRED_BADGE_WIDTH - font.width(badgeText)) / 2;
+            graphics.drawString(font, Component.literal(badgeText), badgeTextX, textY, badgeColor, false);
+            tagRequiredToggleHits.add(
+                new TagRequiredToggleHit(requiredBadgeX, y, TAG_REQUIRED_BADGE_WIDTH, TAG_ROW_HEIGHT, entry.rawIndex(), entry.required())
+            );
+        }
 
-        tagRemoveHits.add(new TagRemoveHit(removeX, y, TAG_REMOVE_BUTTON_WIDTH, TAG_ROW_HEIGHT, entry.rawIndex()));
+        // × remove button (whole rect is the hot zone; glyph centered). Hidden for upstream-duplicate entries in
+        // merge mode unless the user just added this entry — pending adds keep the X so the user can cancel the
+        // not-yet-committed staging.
+        if (removeOperable) {
+            var removeHovered = mouseX >= removeX
+                && mouseX < removeX + TAG_REMOVE_BUTTON_WIDTH
+                && mouseY >= y
+                && mouseY < y + TAG_ROW_HEIGHT;
+            var removeText = "×";
+            var removeColor = removeHovered ? TAG_REMOVE_ICON_HOVER_COLOR : TAG_REMOVE_ICON_COLOR;
+            var removeTextX = removeX + (TAG_REMOVE_BUTTON_WIDTH - font.width(removeText)) / 2;
+            graphics.drawString(font, Component.literal(removeText), removeTextX, textY, removeColor, false);
+            tagRemoveHits.add(new TagRemoveHit(removeX, y, TAG_REMOVE_BUTTON_WIDTH, TAG_ROW_HEIGHT, entry.rawIndex()));
+        }
+    }
+
+    /**
+     * Color for a tag-entry row's id label. Matches the unified palette: staged adds + tag-level edits render red,
+     * project-new tags pull their entries to green, project-modified-upstream tags pull theirs to blue. Falls back
+     * to {@link #VALUE_COLOR} when there's no tag in scope (defensive — renderTagEntryRow is only reached from
+     * renderTagSourceList, which only runs when a TagSelectable is the current selection).
+     */
+    private int entryLabelColor(TagEntryDraft entry) {
+        var registryKey = tagLastShownRegistry;
+        var tagId = tagLastShownTag;
+        if (registryKey == null || tagId == null) {
+            return VALUE_COLOR;
+        }
+        // Only THIS entry's staging colors it red — a tag-level edit elsewhere (e.g. a different entry added) keeps
+        // already-committed entries in their committed color. The Tag Browser still flags the tag itself as staged.
+        if (TagStagingCache.isEntryStagedAdd(registryKey, tagId, entry.isTagRef(), entry.id())) {
+            return BLOCK_TAG_LABEL_STAGED;
+        }
+        // In merge mode, an upstream-duplicate entry is read-only context, not a project edit. Paint it the neutral
+        // upstream-gray to match the Tag Browser's "you didn't author this" tint. Replace mode skips this branch
+        // because the project is the sole contributor — the row is genuinely operable there.
+        var draft = TagDraftCache.get(registryKey, tagId);
+        var replaceMode = draft != null && draft.replace();
+        if (!replaceMode && entry.inUpstream()) {
+            return BLOCK_TAG_LABEL_UPSTREAM;
+        }
+        var inProject = isTagInProject(registryKey, tagId);
+        var inUpstream = isTagInUpstream(registryKey, tagId);
+        var equivalentToUpstream = isTagEquivalentToUpstream(registryKey, tagId);
+        // equivalentToUpstream → the project's JSON doesn't actually modify the merged tag, so entries shouldn't
+        // read as project-owned changes. Drop to the neutral value color for the entry label.
+        if (inProject && !equivalentToUpstream && inUpstream) {
+            return BLOCK_TAG_LABEL_PROJECT_MODIFIED;
+        }
+        if (inProject && !equivalentToUpstream) {
+            return BLOCK_TAG_LABEL_PROJECT_NEW;
+        }
+        return VALUE_COLOR;
     }
 
     private static void drawCenteredNote(GuiGraphics graphics, Font font, int x, int y, int width, int height, String text) {
@@ -2436,6 +2836,12 @@ public final class DetailsPanel implements Panel {
                     return true;
                 }
             }
+            for (var hit : tagRequiredToggleHits) {
+                if (mouseX >= hit.x() && mouseX < hit.x() + hit.w() && mouseY >= hit.y() && mouseY < hit.y() + hit.h()) {
+                    commitSetTagEntryRequired(tag, hit.rawIndex(), !hit.currentRequired());
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -2456,12 +2862,21 @@ public final class DetailsPanel implements Panel {
                     true
                 )
             );
+        TagStagingCache.markEntryAdded(tag.registryKey(), tag.tagId(), item.isTagRef(), item.id());
         tagAddEntrySelect.setCurrentValue(null);
     }
 
     private void commitRemoveTagEntry(TagSelectable tag, int rawIndex) {
         if (ProjectSession.activeProject() == null) {
             return;
+        }
+        // Look up the entry by rawIndex so we can stage the remove with its (isTagRef, id). The lookup is fine to do
+        // before the packet send — tagCachedEntries is a frame-stable snapshot of what the user is looking at.
+        for (var entry : tagCachedEntries) {
+            if (entry.rawIndex() == rawIndex) {
+                TagStagingCache.markEntryRemoved(tag.registryKey(), tag.tagId(), entry.isTagRef(), entry.id());
+                break;
+            }
         }
         BLib.MOD.networking()
             .sendToServer(new C2SRemoveTagEntryPayload(ProjectSession.activeProjectName(), tag.registryKey(), tag.tagId(), rawIndex));
@@ -2473,6 +2888,25 @@ public final class DetailsPanel implements Panel {
         }
         BLib.MOD.networking()
             .sendToServer(new C2SSetTagReplacePayload(ProjectSession.activeProjectName(), tag.registryKey(), tag.tagId(), replace));
+        TagStagingCache.markTagEdited(tag.registryKey(), tag.tagId());
+    }
+
+    private void commitSetTagEntryRequired(TagSelectable tag, int rawIndex, boolean required) {
+        if (ProjectSession.activeProject() == null) {
+            return;
+        }
+        // Stage the change so the entry repaints red until reload. Look up by rawIndex first so we can use the
+        // same (isTagRef, id) key the rest of the staging system uses; toggling required doesn't change either.
+        for (var entry : tagCachedEntries) {
+            if (entry.rawIndex() == rawIndex) {
+                TagStagingCache.markEntryAdded(tag.registryKey(), tag.tagId(), entry.isTagRef(), entry.id());
+                break;
+            }
+        }
+        BLib.MOD.networking()
+            .sendToServer(
+                new C2SSetTagEntryRequiredPayload(ProjectSession.activeProjectName(), tag.registryKey(), tag.tagId(), rawIndex, required)
+            );
     }
 
     /**
@@ -2549,6 +2983,26 @@ public final class DetailsPanel implements Panel {
         int w,
         int h,
         int rawIndex
+    ) {}
+
+    /** Per-row hit rect for the entry inspector's req/opt badge. {@code currentRequired} feeds the toggle action. */
+    private record TagRequiredToggleHit(
+        int x,
+        int y,
+        int w,
+        int h,
+        int rawIndex,
+        boolean currentRequired
+    ) {}
+
+    /** Per-row hit rect for the block-inspector Tags section's [×] buttons. */
+    private record BlockTagRemoveHit(
+        int x,
+        int y,
+        int w,
+        int h,
+        ResourceLocation registryKey,
+        ResourceLocation tagId
     ) {}
 
     /**

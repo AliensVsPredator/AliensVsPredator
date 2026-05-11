@@ -71,6 +71,7 @@ import com.blib.mod.common.network.packet.C2SOpenProjectPayload;
 import com.blib.mod.common.network.packet.C2SPasteFromClipboardPayload;
 import com.blib.mod.common.network.packet.C2SPlaceJigsawPiecePayload;
 import com.blib.mod.common.network.packet.C2SReloadProjectPayload;
+import com.blib.mod.common.network.packet.C2SRemoveBlockTagPayload;
 import com.blib.mod.common.network.packet.C2SRemoveChunkClaimPayload;
 import com.blib.mod.common.network.packet.C2SRemoveEntityPayload;
 import com.blib.mod.common.network.packet.C2SRemoveFactionMemberPayload;
@@ -86,6 +87,7 @@ import com.blib.mod.common.network.packet.C2SRequestTagCatalogPayload;
 import com.blib.mod.common.network.packet.C2SRequestTagDraftPayload;
 import com.blib.mod.common.network.packet.C2SSetBlockStatePropertyPayload;
 import com.blib.mod.common.network.packet.C2SSetEntityScalePayload;
+import com.blib.mod.common.network.packet.C2SSetTagEntryRequiredPayload;
 import com.blib.mod.common.network.packet.C2SSetFactionRelationshipPayload;
 import com.blib.mod.common.network.packet.C2SSetTagReplacePayload;
 import com.blib.mod.common.network.packet.C2SSpawnEntityPayload;
@@ -827,15 +829,21 @@ public final class BLibServerListener {
                 var hasUpstream = resourceManager.getResourceStack(resourcePath)
                     .stream()
                     .anyMatch(r -> !projectPackId.equals(r.sourcePackId()));
-                entries.add(new TagCatalogEntry(registryLoc, tk.location(), projectKeys.contains(key), hasUpstream));
+                var inProject = projectKeys.contains(key);
+                // Only compute equivalentToUpstream for project-owned tags — checking it for upstream-only rows is
+                // wasted I/O (the project doesn't have a JSON, so it can't be redundant).
+                var equivalentToUpstream = inProject
+                    && ProjectTagDraftStore.isEquivalentToUpstream(server, projectName, entry.key(), tk.location());
+                entries.add(new TagCatalogEntry(registryLoc, tk.location(), inProject, hasUpstream, equivalentToUpstream));
             });
         });
         // Append project-only tags (those whose registry has no live tag of that name yet — typically because the
-        // user just created the tag and hasn't reloaded). inUpstream=false since no other pack ships them either.
+        // user just created the tag and hasn't reloaded). inUpstream=false since no other pack ships them either;
+        // equivalentToUpstream=false because by definition there's no upstream to equate to.
         for (var pt : projectTags) {
             var key = new ProjectTagDraftStore.TagDraftKey(pt.registryKey(), pt.tagId());
             if (!emittedKeys.contains(key)) {
-                entries.add(new TagCatalogEntry(pt.registryKey(), pt.tagId(), true, false));
+                entries.add(new TagCatalogEntry(pt.registryKey(), pt.tagId(), true, false, false));
             }
         }
         entries.sort((a, b) -> {
@@ -923,18 +931,78 @@ public final class BLibServerListener {
         }
         ProjectTagDraftStore.applyAddEntry(tag, payload.isTagRef(), payload.entryId(), payload.required());
         try {
-            ProjectTagDraftStore.INSTANCE.writeAndPersist(payload.projectName(), registryKey, payload.tagId(), tag);
+            persistOrCleanupAndSend(serverPlayer, payload.projectName(), registryKey, payload.tagId(), tag);
         } catch (IOException e) {
             LOGGER.error(
-                "[BLib] handleAddTagEntry: write failed for project {} tag {}/{}",
+                "[BLib] handleAddTagEntry: persist failed for project {} tag {}/{}",
                 payload.projectName(),
                 payload.registryKey(),
                 payload.tagId(),
                 e
             );
+        }
+    }
+
+    /**
+     * Remove a registry-element entry from a tag's project override JSON by id (rather than by raw array index — the
+     * block inspector edits "from the block's POV" and doesn't carry the tag's on-disk layout). Scans the tag's draft
+     * for the first direct (non-tag-ref) entry whose id matches the payload's, and removes it. Entries that are only
+     * present via tag-refs or via upstream packs aren't touched (vanilla JSON has no negation primitive), so the
+     * remove silently no-ops in those cases. Disk-only; echoes a fresh draft either way.
+     */
+    public static void handleRemoveBlockTag(C2SRemoveBlockTagPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
             return;
         }
-        sendTagDraft(serverPlayer, payload.projectName(), payload.registryKey(), payload.tagId(), tag);
+        if (!serverPlayer.hasPermissions(2)) {
+            return;
+        }
+        if (ProjectDraftStore.INSTANCE.isReloading()) {
+            return;
+        }
+        if (!validProjectFor(payload.projectName())) {
+            return;
+        }
+        var registryKey = ResourceKey.<Registry<Object>>createRegistryKey(payload.registryKey());
+        var tag = ProjectTagDraftStore.INSTANCE.getOrSeedTag(
+            serverPlayer.serverLevel().getServer(),
+            payload.projectName(),
+            registryKey,
+            payload.tagId()
+        );
+        if (tag == null) {
+            return;
+        }
+
+        var entries = ProjectTagDraftStore.extractDraftEntries(tag);
+        var rawIndex = -1;
+        for (var entry : entries) {
+            if (!entry.isTagRef() && entry.id().equals(payload.entryId())) {
+                rawIndex = entry.rawIndex();
+                break;
+            }
+        }
+        if (rawIndex < 0) {
+            // No direct entry to remove — the block is in this tag only via a tag-ref or upstream pack. Echo the
+            // current draft so the client's source view stays consistent (it didn't change, but the round-trip
+            // re-syncs in case the client was stale).
+            sendTagDraft(serverPlayer, payload.projectName(), payload.registryKey(), payload.tagId(), tag);
+            return;
+        }
+        if (!ProjectTagDraftStore.applyRemoveEntry(tag, rawIndex)) {
+            return;
+        }
+        try {
+            persistOrCleanupAndSend(serverPlayer, payload.projectName(), registryKey, payload.tagId(), tag);
+        } catch (IOException e) {
+            LOGGER.error(
+                "[BLib] handleRemoveBlockTag: persist failed for project {} tag {}/{}",
+                payload.projectName(),
+                payload.registryKey(),
+                payload.tagId(),
+                e
+            );
+        }
     }
 
     /** Remove the entry at {@code rawIndex} from a tag's project override JSON. Disk-only; echoes a fresh draft. */
@@ -965,18 +1033,16 @@ public final class BLibServerListener {
             return;
         }
         try {
-            ProjectTagDraftStore.INSTANCE.writeAndPersist(payload.projectName(), registryKey, payload.tagId(), tag);
+            persistOrCleanupAndSend(serverPlayer, payload.projectName(), registryKey, payload.tagId(), tag);
         } catch (IOException e) {
             LOGGER.error(
-                "[BLib] handleRemoveTagEntry: write failed for project {} tag {}/{}",
+                "[BLib] handleRemoveTagEntry: persist failed for project {} tag {}/{}",
                 payload.projectName(),
                 payload.registryKey(),
                 payload.tagId(),
                 e
             );
-            return;
         }
-        sendTagDraft(serverPlayer, payload.projectName(), payload.registryKey(), payload.tagId(), tag);
     }
 
     /** Set a tag's {@code replace} flag. Disk-only; echoes a fresh draft. */
@@ -1005,18 +1071,60 @@ public final class BLibServerListener {
         }
         ProjectTagDraftStore.applySetReplace(tag, payload.replace());
         try {
-            ProjectTagDraftStore.INSTANCE.writeAndPersist(payload.projectName(), registryKey, payload.tagId(), tag);
+            persistOrCleanupAndSend(serverPlayer, payload.projectName(), registryKey, payload.tagId(), tag);
         } catch (IOException e) {
             LOGGER.error(
-                "[BLib] handleSetTagReplace: write failed for project {} tag {}/{}",
+                "[BLib] handleSetTagReplace: persist failed for project {} tag {}/{}",
                 payload.projectName(),
                 payload.registryKey(),
                 payload.tagId(),
                 e
             );
+        }
+    }
+
+    /**
+     * Toggle a tag entry's {@code required} flag in place. Equivalent to an in-place rewrite of one element of the
+     * tag's {@code values} array — bare-string form for required, object form with {@code required: false} for
+     * optional. Disk-only; echoes a fresh draft.
+     */
+    public static void handleSetTagEntryRequired(C2SSetTagEntryRequiredPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
             return;
         }
-        sendTagDraft(serverPlayer, payload.projectName(), payload.registryKey(), payload.tagId(), tag);
+        if (!serverPlayer.hasPermissions(2)) {
+            return;
+        }
+        if (ProjectDraftStore.INSTANCE.isReloading()) {
+            return;
+        }
+        if (!validProjectFor(payload.projectName())) {
+            return;
+        }
+        var registryKey = ResourceKey.<Registry<Object>>createRegistryKey(payload.registryKey());
+        var tag = ProjectTagDraftStore.INSTANCE.getOrSeedTag(
+            serverPlayer.serverLevel().getServer(),
+            payload.projectName(),
+            registryKey,
+            payload.tagId()
+        );
+        if (tag == null) {
+            return;
+        }
+        if (!ProjectTagDraftStore.applySetEntryRequired(tag, payload.rawIndex(), payload.required())) {
+            return;
+        }
+        try {
+            persistOrCleanupAndSend(serverPlayer, payload.projectName(), registryKey, payload.tagId(), tag);
+        } catch (IOException e) {
+            LOGGER.error(
+                "[BLib] handleSetTagEntryRequired: persist failed for project {} tag {}/{}",
+                payload.projectName(),
+                payload.registryKey(),
+                payload.tagId(),
+                e
+            );
+        }
     }
 
     /**
@@ -1069,17 +1177,67 @@ public final class BLibServerListener {
         ResourceLocation tagId,
         com.google.gson.JsonObject tag
     ) {
-        var entries = ProjectTagDraftStore.extractDraftEntries(tag);
+        var rawEntries = ProjectTagDraftStore.extractDraftEntries(tag);
         var replace = ProjectTagDraftStore.readReplace(tag);
         var registryRk = ResourceKey.<Registry<Object>>createRegistryKey(registryKey);
-        var resolved = ProjectTagDraftStore.extractResolvedMembers(serverPlayer.serverLevel().getServer(), registryRk, tagId);
+        var server = serverPlayer.serverLevel().getServer();
+        var resolved = ProjectTagDraftStore.extractResolvedMembers(server, registryRk, tagId);
+        // Tag the wire entries with inUpstream so the inspector can hide no-op controls in merge mode: vanilla's
+        // load-order merge means an upstream-duplicate entry sticks regardless of what the project's JSON says, so
+        // removing or toggling required on it has no effect. The seed-from-upstream pass is repeated here (it's
+        // also run inside getOrSeedTag) — the cost is per-edit-or-fetch, which is rare on the human timescale.
+        var upstreamKeys = ProjectTagDraftStore.extractUpstreamEntryKeys(server, projectName, registryRk, tagId);
+        var entries = rawEntries.stream()
+            .map(e -> new com.blib.mod.common.network.packet.TagEntryDraft(
+                e.rawIndex(),
+                e.isTagRef(),
+                e.id(),
+                e.required(),
+                upstreamKeys.contains(ProjectTagDraftStore.entryKey(e.isTagRef(), e.id()))
+            ))
+            .toList();
+        // inProject is sourced from disk, not from the in-memory draft cache: getOrSeedTag returns a synthesized
+        // upstream-merge seed when the project hasn't authored the tag yet, so it isn't a reliable signal of
+        // ownership. The disk-file existence check is. Read paths (handleRequestTagDraft) keep inProject=false
+        // when no JSON has been written; edit paths flow through writeAndPersist first, so the file will exist by
+        // the time we reach here.
+        var inProject = EngineProjectIO.hasProjectTagJson(projectName, registryRk, tagId);
         BLib.MOD.networking()
-            .sendToClient(serverPlayer, new S2CTagDraftPayload(projectName, registryKey, tagId, replace, entries, resolved));
+            .sendToClient(serverPlayer, new S2CTagDraftPayload(projectName, registryKey, tagId, replace, entries, resolved, inProject));
     }
 
     /** Helper: rebuild and push the tag catalog to the client (used after create/delete). */
     private static void pushCatalog(ServerPlayer serverPlayer, String projectName) {
         handleRequestTagCatalog(new C2SRequestTagCatalogPayload(projectName), serverPlayer);
+    }
+
+    /**
+     * Common end-of-edit pass for tag-mutating handlers: either persist the just-edited JSON or, when the edit
+     * leaves the project's JSON equivalent to upstream (no net effect on the merged tag), delete the file instead.
+     * Auto-cleanup keeps the datapack honest — a JSON that doesn't modify anything shouldn't claim to. Either way,
+     * fires a fresh {@link S2CTagDraftPayload} so the client's view matches disk; the delete path also pushes a
+     * full catalog refresh (the row may have become a project-only-no-upstream candidate for total removal, which
+     * the local optimistic update can't represent).
+     */
+    private static void persistOrCleanupAndSend(
+        ServerPlayer serverPlayer,
+        String projectName,
+        ResourceKey<? extends Registry<?>> registryKey,
+        ResourceLocation tagId,
+        com.google.gson.JsonObject tag
+    ) throws IOException {
+        var server = serverPlayer.serverLevel().getServer();
+        if (ProjectTagDraftStore.isEquivalentToUpstream(server, projectName, registryKey, tagId, tag)) {
+            ProjectTagDraftStore.INSTANCE.deleteProjectTag(projectName, registryKey, tagId);
+            var reseed = ProjectTagDraftStore.INSTANCE.getOrSeedTag(server, projectName, registryKey, tagId);
+            if (reseed != null) {
+                sendTagDraft(serverPlayer, projectName, registryKey.location(), tagId, reseed);
+            }
+            pushCatalog(serverPlayer, projectName);
+        } else {
+            ProjectTagDraftStore.INSTANCE.writeAndPersist(projectName, registryKey, tagId, tag);
+            sendTagDraft(serverPlayer, projectName, registryKey.location(), tagId, tag);
+        }
     }
 
     /**

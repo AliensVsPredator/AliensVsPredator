@@ -262,6 +262,41 @@ public final class ProjectTagDraftStore {
         }
     }
 
+    /**
+     * Toggle a tag entry's {@code required} flag in place. {@code true} writes the bare-string form (vanilla's
+     * implicit-required compact form); {@code false} writes the object form with {@code required: false}. No-ops
+     * (returns false) when the index is out of range or the existing entry has no parseable id field — those would
+     * have been silently dropped by vanilla anyway, so the inspector shouldn't pretend it edited them.
+     */
+    public static boolean applySetEntryRequired(JsonObject tag, int rawIndex, boolean required) {
+        var values = tag.has("values") && tag.get("values").isJsonArray() ? tag.getAsJsonArray("values") : null;
+        if (values == null || rawIndex < 0 || rawIndex >= values.size()) {
+            return false;
+        }
+        var existing = values.get(rawIndex);
+        String idStr;
+        if (existing.isJsonPrimitive() && existing.getAsJsonPrimitive().isString()) {
+            idStr = existing.getAsString();
+        } else if (existing.isJsonObject() && existing.getAsJsonObject().has("id")) {
+            var idElem = existing.getAsJsonObject().get("id");
+            if (!idElem.isJsonPrimitive() || !idElem.getAsJsonPrimitive().isString()) {
+                return false;
+            }
+            idStr = idElem.getAsString();
+        } else {
+            return false;
+        }
+        if (required) {
+            values.set(rawIndex, new com.google.gson.JsonPrimitive(idStr));
+        } else {
+            var entry = new JsonObject();
+            entry.addProperty("id", idStr);
+            entry.addProperty("required", false);
+            values.set(rawIndex, entry);
+        }
+        return true;
+    }
+
     /** Remove the entry at {@code rawIndex}. Returns true if a change was applied. */
     public static boolean applyRemoveEntry(JsonObject tag, int rawIndex) {
         var values = tag.has("values") && tag.get("values").isJsonArray() ? tag.getAsJsonArray("values") : null;
@@ -326,10 +361,108 @@ public final class ProjectTagDraftStore {
         var bare = isTagRef ? idStr.substring(1) : idStr;
         try {
             var id = ResourceLocation.parse(bare);
-            return new TagEntryDraft(rawIndex, isTagRef, id, required);
+            // inUpstream is left false at parse time; sendTagDraft post-processes the list with the upstream-keys
+            // set, so per-entry parsing stays oblivious to the seed lookup (it's only needed for the wire form).
+            return new TagEntryDraft(rawIndex, isTagRef, id, required, false);
         } catch (Exception e) {
             return null;
         }
+    }
+
+    /**
+     * Stringified {@code (isTagRef, id)} key, suitable for {@code Set} membership tests against the upstream entry
+     * list. Pairs with {@link #extractUpstreamEntryKeys}.
+     */
+    public static String entryKey(boolean isTagRef, ResourceLocation id) {
+        return (isTagRef ? "#" : "") + id;
+    }
+
+    /**
+     * Build the set of {@link #entryKey} strings contributed by every non-project pack for the given tag. Re-runs the
+     * seed-from-upstream pass internally, so it sees the same view that {@code sendTagDraft} would have if the
+     * project hadn't yet authored the tag. Used to flag draft entries that duplicate upstream — those are no-ops to
+     * remove or toggle in merge mode.
+     */
+    public static java.util.Set<String> extractUpstreamEntryKeys(
+        net.minecraft.server.MinecraftServer server,
+        String projectName,
+        ResourceKey<? extends Registry<?>> registryKey,
+        ResourceLocation tagId
+    ) {
+        var seed = seedFromUpstreamJsons(server, projectName, registryKey, tagId);
+        var entries = extractDraftEntries(seed);
+        var keys = new java.util.HashSet<String>(entries.size());
+        for (var entry : entries) {
+            keys.add(entryKey(entry.isTagRef(), entry.id()));
+        }
+        return keys;
+    }
+
+    /**
+     * Does the project's JSON for this tag have no net effect on the merged result? True when {@code replace=false}
+     * and every entry in the JSON's {@code values} array is also contributed by some non-project pack — i.e. the
+     * merged tag is byte-identical to what upstream would produce alone. {@code replace=true} can't be equivalent
+     * (it explicitly wipes upstream); an empty {@code values} array with {@code replace=false} is equivalent (the
+     * project contributes nothing, so upstream wins). Used by the Tag Browser to neutralize "looks modified but
+     * isn't" rows and signal that the project's JSON is a candidate for cleanup.
+     */
+    public static boolean isEquivalentToUpstream(
+        net.minecraft.server.MinecraftServer server,
+        String projectName,
+        ResourceKey<? extends Registry<?>> registryKey,
+        ResourceLocation tagId
+    ) {
+        var tag = INSTANCE.getOrSeedTag(server, projectName, registryKey, tagId);
+        if (tag == null) {
+            return false;
+        }
+        return isEquivalentToUpstream(server, projectName, registryKey, tagId, tag);
+    }
+
+    /**
+     * Variant that operates against a caller-supplied {@link JsonObject}. Lets edit handlers run the check against
+     * the just-mutated JSON in-hand, without re-reading the cache or disk — avoids any race between the cache state
+     * and what's about to be persisted.
+     */
+    public static boolean isEquivalentToUpstream(
+        net.minecraft.server.MinecraftServer server,
+        String projectName,
+        ResourceKey<? extends Registry<?>> registryKey,
+        ResourceLocation tagId,
+        JsonObject tag
+    ) {
+        if (readReplace(tag)) {
+            return false;
+        }
+        var entries = extractDraftEntries(tag);
+        if (entries.isEmpty()) {
+            return true;
+        }
+        var upstreamKeys = extractUpstreamEntryKeys(server, projectName, registryKey, tagId);
+        for (var entry : entries) {
+            if (!upstreamKeys.contains(entryKey(entry.isTagRef(), entry.id()))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Remove the project's authored JSON for one tag from both the in-memory cache and disk. Called by the auto-
+     * cleanup pass when an edit results in an equivalent-to-upstream JSON — the datapack shouldn't claim ownership
+     * of tags it isn't actually modifying. Subsequent reads re-seed from upstream packs as if the project had never
+     * authored the tag.
+     */
+    public synchronized void deleteProjectTag(
+        String projectName,
+        ResourceKey<? extends Registry<?>> registryKey,
+        ResourceLocation tagId
+    ) throws IOException {
+        var byKey = drafts.get(projectName);
+        if (byKey != null) {
+            byKey.remove(new TagDraftKey(registryKey.location(), tagId));
+        }
+        EngineProjectIO.deleteTagJson(projectName, registryKey, tagId);
     }
 
     private static JsonArray ensureValues(JsonObject tag) {

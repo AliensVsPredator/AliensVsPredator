@@ -28,6 +28,7 @@ import com.blib.mod.common.network.packet.C2SOpenProjectPayload;
 import com.blib.mod.common.network.packet.C2SPasteFromClipboardPayload;
 import com.blib.mod.common.network.packet.C2SPlaceJigsawPiecePayload;
 import com.blib.mod.common.network.packet.C2SReloadProjectPayload;
+import com.blib.mod.common.network.packet.C2SRemoveBlockTagPayload;
 import com.blib.mod.common.network.packet.C2SRemoveChunkClaimPayload;
 import com.blib.mod.common.network.packet.C2SRemoveEntityPayload;
 import com.blib.mod.common.network.packet.C2SRemoveFactionMemberPayload;
@@ -43,6 +44,7 @@ import com.blib.mod.common.network.packet.C2SRequestTagCatalogPayload;
 import com.blib.mod.common.network.packet.C2SRequestTagDraftPayload;
 import com.blib.mod.common.network.packet.C2SSetBlockStatePropertyPayload;
 import com.blib.mod.common.network.packet.C2SSetEntityScalePayload;
+import com.blib.mod.common.network.packet.C2SSetTagEntryRequiredPayload;
 import com.blib.mod.common.network.packet.C2SSetFactionRelationshipPayload;
 import com.blib.mod.common.network.packet.C2SSetTagReplacePayload;
 import com.blib.mod.common.network.packet.C2SSpawnEntityPayload;
@@ -439,9 +441,23 @@ public class BLibServerPacketHandlers {
         );
         REGISTRY.registerPacketHandler(
             new NetworkHandler.FromClient<>(
+                C2SRemoveBlockTagPayload.TYPE,
+                C2SRemoveBlockTagPayload.CODEC,
+                BLibServerListener::handleRemoveBlockTag
+            )
+        );
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromClient<>(
                 C2SSetTagReplacePayload.TYPE,
                 C2SSetTagReplacePayload.CODEC,
                 BLibServerListener::handleSetTagReplace
+            )
+        );
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromClient<>(
+                C2SSetTagEntryRequiredPayload.TYPE,
+                C2SSetTagEntryRequiredPayload.CODEC,
+                BLibServerListener::handleSetTagEntryRequired
             )
         );
         REGISTRY.registerPacketHandler(

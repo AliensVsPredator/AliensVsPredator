@@ -68,21 +68,54 @@ public final class TagCatalogCache {
     }
 
     /**
-     * Flip {@code inProject=true} on the catalog entry for {@code (registryKey, tagId)}, if present and not already
-     * flagged. {@code inUpstream} is preserved as-is. Called from the tag-draft S2C handler — once a tag draft arrives
-     * from the server, the project necessarily has authored that tag (writeAndPersist created the JSON), so the catalog
-     * can update locally without waiting for a fresh full-catalog push. Lets the browser repaint the row from default
-     * white to blue / green the moment the inspector commits an edit.
+     * Set the {@code inProject} flag on the catalog entry for {@code (registryKey, tagId)}, if present. {@code
+     * inUpstream} and {@code equivalentToUpstream} are preserved as-is. Called from the tag-draft S2C handler so the
+     * Tag Browser repaints the moment the project takes (or relinquishes) ownership, without waiting on a full
+     * catalog re-push. Auto-cleanup deletes can flip ownership back to false, so this setter has to handle either
+     * direction — earlier versions assumed transitions were one-way (false → true) and missed the delete case.
      */
-    public static void markEntryAsProject(ResourceLocation registryKey, ResourceLocation tagId) {
+    public static void setInProject(ResourceLocation registryKey, ResourceLocation tagId, boolean inProject) {
         if (all.isEmpty()) {
             return;
         }
         var changed = false;
         var updated = new ArrayList<TagCatalogEntry>(all.size());
         for (var entry : all) {
-            if (!entry.inProject() && entry.registryKey().equals(registryKey) && entry.tagId().equals(tagId)) {
-                updated.add(new TagCatalogEntry(entry.registryKey(), entry.tagId(), true, entry.inUpstream()));
+            if (
+                entry.registryKey().equals(registryKey)
+                    && entry.tagId().equals(tagId)
+                    && entry.inProject() != inProject
+            ) {
+                updated.add(new TagCatalogEntry(entry.registryKey(), entry.tagId(), inProject, entry.inUpstream(), entry.equivalentToUpstream()));
+                changed = true;
+            } else {
+                updated.add(entry);
+            }
+        }
+        if (changed) {
+            all = List.copyOf(updated);
+            grouped = null;
+        }
+    }
+
+    /**
+     * Set {@code equivalentToUpstream} on the catalog entry for {@code (registryKey, tagId)}, if present. Called
+     * from the tag-draft S2C handler whenever a fresh draft tells us whether the project's JSON now has any net
+     * effect — keeps the Tag Browser's coloring in sync with edits without waiting on a full-catalog re-push.
+     */
+    public static void setEquivalentToUpstream(ResourceLocation registryKey, ResourceLocation tagId, boolean equivalent) {
+        if (all.isEmpty()) {
+            return;
+        }
+        var changed = false;
+        var updated = new ArrayList<TagCatalogEntry>(all.size());
+        for (var entry : all) {
+            if (
+                entry.registryKey().equals(registryKey)
+                    && entry.tagId().equals(tagId)
+                    && entry.equivalentToUpstream() != equivalent
+            ) {
+                updated.add(new TagCatalogEntry(entry.registryKey(), entry.tagId(), entry.inProject(), entry.inUpstream(), equivalent));
                 changed = true;
             } else {
                 updated.add(entry);

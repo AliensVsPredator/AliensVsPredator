@@ -22,10 +22,12 @@ import com.blib.engine.jigsaw.placement.JigsawTool;
 import com.blib.engine.jigsaw.placement.JigsawWorldRaycast;
 import com.blib.engine.jigsaw.placement.PlacementContext;
 import com.blib.engine.jigsaw.placement.PlacementMode;
+import com.blib.engine.selection.BlockSelectable;
 import com.blib.engine.selection.BlockVolumeSelectable;
 import com.blib.engine.selection.EntitySelectable;
 import com.blib.engine.selection.FactionSelectable;
 import com.blib.engine.selection.JigsawBlockSelectable;
+import com.blib.engine.selection.Selectable;
 import com.blib.engine.selection.SelectionManager;
 import com.blib.engine.session.EngineMode;
 import com.blib.engine.session.EngineNavigation;
@@ -472,6 +474,13 @@ public final class ViewportPanel implements Panel {
                 return true;
             }
 
+            // Capture pre-handler state for Shift+LMB extension. performSelectionAt and BlockSelection.clearVolume
+            // (called inside it on hit) mutate both the current selection and the staged corners, so snapshotting
+            // here is required to remember the prior anchor for "select between two clicks".
+            var shiftHeld = Screen.hasShiftDown();
+            var previousSelection = SelectionManager.current().single();
+            var previousCornerA = BlockSelection.cornerA();
+
             // Selection-tool dispatch: MARQUEE always starts a block-volume drag on press (clicks act as corner-A
             // anchor, drags extend cornerB). INSPECT picks the closest entity / jigsaw / generic block and defers
             // the marquee-vs-inspect decision until mouseDragged sees motion past the click-vs-drag threshold
@@ -480,9 +489,10 @@ public final class ViewportPanel implements Panel {
                 var marqueeHit = JigsawPlacementCursor.clipFromCursor(session);
                 if (marqueeHit != null) {
                     var clicked = marqueeHit.getBlockPos();
-                    BlockSelection.setCornersDirect(clicked, clicked);
+                    var anchor = shiftHeld ? anchorForShiftExtend(previousSelection, previousCornerA, clicked) : clicked;
+                    BlockSelection.setCornersDirect(anchor, clicked);
                     SelectionManager.selectSingle(new BlockVolumeSelectable());
-                    dragPickAnchor = clicked;
+                    dragPickAnchor = anchor;
                 }
                 return true;
             }
@@ -496,22 +506,24 @@ public final class ViewportPanel implements Panel {
             this.pendingClickBlock = blockHit != null ? blockHit.getBlockPos() : null;
             this.pressMouseX = mouseX;
             this.pressMouseY = mouseY;
-            this.pressShiftDown = Screen.hasShiftDown();
+            this.pressShiftDown = shiftHeld;
 
             // Pending-click promotion is only valid when the candidate is a generic block (BlockSelectable) or an
             // empty miss with a block under the cursor — entities and jigsaws aren't promotable on a drag-nudge.
             // Preserves the feel of "I clicked an entity, then nudged the mouse a few pixels before releasing".
-            // Shift quick-override below bypasses this filter and promotes anyway.
+            // Shift extend-from-previous below bypasses this filter and promotes anyway.
             var sel = SelectionManager.current().single();
             this.pendingClickActive = !(sel instanceof EntitySelectable || sel instanceof JigsawBlockSelectable);
 
-            // Shift quick-override: a Shift-held LMB-press in INSPECT mode means "I want a volume marquee right now,
-            // regardless of what's under the cursor". Promote immediately so the inspector doesn't briefly flash a
-            // single-block view between press and the first drag event.
+            // Shift+LMB extends the marquee: cornerA = the previous single-block / volume anchor, cornerB = the
+            // just-clicked block. Lets the user "select between two clicks" without dragging. When there's no
+            // meaningful prior anchor (entity, faction, tag, nothing), it falls back to a fresh 1-block volume at
+            // the click point so the gesture still feels deterministic.
             if (pressShiftDown && pendingClickBlock != null) {
-                BlockSelection.setCornersDirect(pendingClickBlock, pendingClickBlock);
+                var anchor = anchorForShiftExtend(previousSelection, previousCornerA, pendingClickBlock);
+                BlockSelection.setCornersDirect(anchor, pendingClickBlock);
                 SelectionManager.selectSingle(new BlockVolumeSelectable());
-                dragPickAnchor = pendingClickBlock;
+                dragPickAnchor = anchor;
                 this.pendingClickActive = false;
             }
 
@@ -765,6 +777,26 @@ public final class ViewportPanel implements Panel {
 
     private boolean inRect(double x, double y) {
         return x >= rectX && x < rectX + rectWidth && y >= rectY && y < rectY + rectHeight;
+    }
+
+    /**
+     * Compute the marquee anchor for a Shift+LMB click. Extends from the previous single-block (BlockSelectable /
+     * JigsawBlockSelectable) or the prior volume's cornerA so the user can "select between two clicks": click block
+     * A → A inspected, Shift+click block B → volume from A to B. Subsequent Shift+clicks keep the anchor and
+     * replace the second corner. Returns {@code fallback} (typically the just-clicked block) when there's no
+     * meaningful previous anchor — gives a fresh 1-block marquee from which the user can drag.
+     */
+    private static BlockPos anchorForShiftExtend(@Nullable Selectable previous, @Nullable BlockPos previousCornerA, BlockPos fallback) {
+        if (previous instanceof BlockSelectable bs) {
+            return bs.pos();
+        }
+        if (previous instanceof JigsawBlockSelectable js) {
+            return js.pos();
+        }
+        if (previous instanceof BlockVolumeSelectable && previousCornerA != null) {
+            return previousCornerA;
+        }
+        return fallback;
     }
 
     /** True when the cursor sits within {@link EngineWorkspaceScreen#DIVIDER_HIT_PX} of any viewport edge. */

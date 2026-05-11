@@ -487,6 +487,33 @@ public final class EngineProjectIO {
         }
     }
 
+    /**
+     * Whether the project has authored on-disk JSON for one tag. Cheap stat — used as the source of truth for the
+     * S2C draft payload's {@code inProject} flag, since the in-memory tag draft store can return a seed snapshot
+     * (synthesized from upstream packs) without the project actually owning the tag yet.
+     */
+    public static boolean hasProjectTagJson(
+        String projectName,
+        ResourceKey<? extends Registry<?>> registryKey,
+        ResourceLocation tagId
+    ) {
+        return Files.isRegularFile(datapackRoot(projectName).resolve(tagJsonRelPath(registryKey, tagId)));
+    }
+
+    /**
+     * Delete the project's authored JSON for one tag, if present. Used by the auto-cleanup pass that fires when an
+     * edit makes the resulting JSON equivalent to upstream — a redundant on-disk file would be misleading (the
+     * datapack claims to own the tag without actually modifying it). Returns true if a file was removed.
+     */
+    public static boolean deleteTagJson(
+        String projectName,
+        ResourceKey<? extends Registry<?>> registryKey,
+        ResourceLocation tagId
+    ) throws IOException {
+        var path = datapackRoot(projectName).resolve(tagJsonRelPath(registryKey, tagId));
+        return Files.deleteIfExists(path);
+    }
+
     /** Write the project's authored JSON for one tag. Creates parent dirs as needed. */
     public static Path writeTagJson(
         String projectName,
@@ -553,7 +580,7 @@ public final class EngineProjectIO {
                                     // Placeholder flags — handleRequestTagCatalog rebuilds entries with correctly
                                     // computed inProject / inUpstream values; only the (registryKey, tagId) tuple
                                     // matters at this point.
-                                    out.add(new TagCatalogEntry(registryKey.location(), tagId, true, false));
+                                    out.add(new TagCatalogEntry(registryKey.location(), tagId, true, false, false));
                                 } catch (ResourceLocationException ignored) {
                                     // Path contains characters vanilla refuses (uppercase, etc.) — skip.
                                 }
