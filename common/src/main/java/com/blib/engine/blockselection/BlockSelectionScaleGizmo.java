@@ -60,14 +60,13 @@ public final class BlockSelectionScaleGizmo {
     /** Floor on the per-handle scale. {@code 1.0} means handles never shrink below the base size. */
     private static final double MIN_SCALE = 1.0;
 
-    /** Ceiling on the per-handle scale. Prevents absurd handle sizes when the camera is hundreds of blocks away. */
-    private static final double MAX_SCALE = 20.0;
-
     /**
      * Compute the scale factor for handle visuals + picking, given the camera position and the world point the handle
-     * is anchored to (typically the face center). Linear in distance with a floor (no shrinking below base size) and a
-     * ceiling (no runaway growth at extreme distances). Renderer and picker call this with the same anchor + camera so
-     * visuals and hit boxes always agree.
+     * is anchored to (typically the face center). Linear in distance with a floor (no shrinking below base size) — no
+     * ceiling, so handles keep growing in world space at extreme distances to maintain roughly constant screen size.
+     * Previously capped at 20× base, which made handles shrink visually past ~320 blocks and effectively imposed an
+     * arbitrary upper limit on how far a face could be dragged before the user could no longer grab it for the next
+     * drag. Renderer and picker call this with the same anchor + camera so visuals and hit boxes always agree.
      */
     public static double scaleForCamera(net.minecraft.world.phys.Vec3 cameraPos, net.minecraft.world.phys.Vec3 anchor) {
         var dx = anchor.x - cameraPos.x;
@@ -75,7 +74,7 @@ public final class BlockSelectionScaleGizmo {
         var dz = anchor.z - cameraPos.z;
         var distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
         var raw = distance / SCALE_REFERENCE_DISTANCE;
-        return Math.max(MIN_SCALE, Math.min(MAX_SCALE, raw));
+        return Math.max(MIN_SCALE, raw);
     }
 
     /**

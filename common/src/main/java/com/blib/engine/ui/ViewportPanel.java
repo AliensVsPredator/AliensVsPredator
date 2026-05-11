@@ -146,12 +146,7 @@ public final class ViewportPanel implements Panel {
         // mid-paint takes effect immediately.
         if (ClaimPaintTool.isActive()) {
             var session = EngineMode.get().session();
-            if (session != null) {
-                var hit = JigsawPlacementCursor.clipFromCursor(session);
-                ClaimPaintTool.setHoveredChunk(hit != null ? new net.minecraft.world.level.ChunkPos(hit.getBlockPos()) : null);
-            } else {
-                ClaimPaintTool.setHoveredChunk(null);
-            }
+            ClaimPaintTool.setHoveredChunk(session != null ? floorPlaneChunkUnderCursor(session) : null);
             var single = SelectionManager.current().single();
             ClaimPaintTool.setPaintTarget(single instanceof FactionSelectable fs ? fs.factionId() : null);
         } else if (ClaimPaintTool.hoveredChunk() != null) {
@@ -169,6 +164,42 @@ public final class ViewportPanel implements Panel {
         } else {
             com.blib.engine.selection.EngineHoverProbe.clear();
         }
+    }
+
+    /**
+     * Resolve the chunk under the cursor by intersecting the camera-cursor ray with the same horizontal floor plane
+     * that {@link com.blib.engine.territory.ChunkClaimOverlayRenderer} draws (world min build height + 1). Picking via
+     * the first block hit instead — what the previous version did — felt off in paint mode because the hovered chunk
+     * would follow whatever block the user happened to be looking at (e.g. a tree branch or a mountainside), not the
+     * chunk whose floor plane sat visually under the cursor. Returns {@code null} when the ray doesn't reach the floor
+     * (looking up at the sky, or grazingly horizontal).
+     */
+    private static @Nullable net.minecraft.world.level.ChunkPos floorPlaneChunkUnderCursor(com.blib.engine.session.EngineSession session) {
+        var mc = Minecraft.getInstance();
+        if (mc.level == null) {
+            return null;
+        }
+        var dir = JigsawPlacementCursor.cursorRayDirection(session);
+        if (dir == null) {
+            return null;
+        }
+        var origin = JigsawPlacementCursor.cursorRayOrigin(session);
+        // Floor plane Y matches ChunkClaimOverlayRenderer.FLOOR_Y_OFFSET so hover lands on the plane the user sees.
+        var floorY = mc.level.getMinBuildHeight() + 1.0;
+        // Need a strictly-downward component for the ray to reach the floor in front of the camera.
+        if (dir.y >= -1.0E-6) {
+            return null;
+        }
+        var t = (floorY - origin.y) / dir.y;
+        if (t <= 0) {
+            return null;
+        }
+        var hitX = origin.x + dir.x * t;
+        var hitZ = origin.z + dir.z * t;
+        return new net.minecraft.world.level.ChunkPos(
+            net.minecraft.core.SectionPos.blockToSectionCoord((int) Math.floor(hitX)),
+            net.minecraft.core.SectionPos.blockToSectionCoord((int) Math.floor(hitZ))
+        );
     }
 
     /**
@@ -190,11 +221,10 @@ public final class ViewportPanel implements Panel {
             // default selection / placement behavior (which would be surprising while a paint tool is "armed").
             return true;
         }
-        var hit = JigsawPlacementCursor.clipFromCursor(session);
-        if (hit == null) {
+        var chunk = floorPlaneChunkUnderCursor(session);
+        if (chunk == null) {
             return true;
         }
-        var chunk = new net.minecraft.world.level.ChunkPos(hit.getBlockPos());
         var key = chunk.toLong();
         if (!claimPaintedThisDrag.add(key)) {
             return true;

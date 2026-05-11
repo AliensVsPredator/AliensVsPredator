@@ -52,9 +52,6 @@ public final class ChunkClaimOverlayRenderer {
     /** Other factions' planes — visible but quiet so the inspected one dominates. */
     private static final float OTHER_ALPHA = 0.35f;
 
-    /** Contested-chunk plane alpha — sits between own + other so contested cells read as a distinct state. */
-    private static final float CONTESTED_ALPHA = 0.55f;
-
     /** Hover plane alpha (paint-mode cursor highlight). */
     private static final float HOVER_ALPHA = 0.75f;
 
@@ -63,6 +60,9 @@ public final class ChunkClaimOverlayRenderer {
     private static final float HOVER_G = 0.78f;
 
     private static final float HOVER_B = 0.30f;
+
+    // Animation timing + lerp math lives in ContestedClaimAnimation — both this renderer and the territory map call
+    // it so the two surfaces stay in lockstep. Tuning constants are public on that class.
 
     private ChunkClaimOverlayRenderer() {}
 
@@ -103,6 +103,8 @@ public final class ChunkClaimOverlayRenderer {
         RenderSystem.disableDepthTest();
 
         var buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        var chunkSource = mc.level.getChunkSource();
+        var nowMs = System.currentTimeMillis();
 
         for (var entry : claims.entrySet()) {
             var pos = entry.getKey();
@@ -113,14 +115,35 @@ public final class ChunkClaimOverlayRenderer {
             if (Math.abs(pos.x - playerChunkX) > renderDist || Math.abs(pos.z - playerChunkZ) > renderDist) {
                 continue;
             }
+            // Skip planes for chunks that aren't actually streamed in — without this, a faction with claims past the
+            // unloaded boundary would still show floor planes hovering in unloaded space, which reads as broken.
+            if (!chunkSource.hasChunk(pos.x, pos.z)) {
+                continue;
+            }
 
             var contested = ids.size() > 1;
             var isOwn = inspected != null && ids.contains(inspected);
-            // Pick the rendered color: prefer the inspected faction's color when it's one of the claimants (so the
-            // user sees their own claim color even on contested cells), else use the first claimant's color.
-            var colorSource = isOwn ? inspected : ids.get(0);
-            var color = colorFromFaction(colorSource);
-            var alpha = contested ? CONTESTED_ALPHA : (isOwn ? OWN_ALPHA : OTHER_ALPHA);
+
+            float[] color;
+            float alpha;
+            if (contested) {
+                // Per-segment color + alpha. The inspected faction's segment uses OWN_ALPHA so that part of the
+                // cycle reads as bright as a fully-owned chunk; other claimants get OTHER_ALPHA so they read at the
+                // same muted brightness they'd have if THEY were the owner. ContestedClaimAnimation lerps both
+                // smoothly through the transitions, so the cell visibly brightens when "your" color is showing.
+                var rgbs = new int[ids.size()];
+                var alphas = new double[ids.size()];
+                for (var i = 0; i < ids.size(); i++) {
+                    rgbs[i] = rgbForFaction(ids.get(i));
+                    alphas[i] = ids.get(i).equals(inspected) ? OWN_ALPHA : OTHER_ALPHA;
+                }
+                var sample = ContestedClaimAnimation.sampleAt(rgbs, alphas, nowMs);
+                color = unpackRgb(sample.rgb());
+                alpha = (float) sample.alpha();
+            } else {
+                color = colorFromFaction(isOwn ? inspected : ids.get(0));
+                alpha = isOwn ? OWN_ALPHA : OTHER_ALPHA;
+            }
 
             addChunkFloorPlane(buffer, matrix, pos, cameraX, cameraY, cameraZ, floorY, color, alpha);
         }
@@ -154,6 +177,21 @@ public final class ChunkClaimOverlayRenderer {
     private static @org.jetbrains.annotations.Nullable ResourceLocation inspectedFactionId() {
         var single = SelectionManager.current().single();
         return single instanceof FactionSelectable fs ? fs.factionId() : null;
+    }
+
+    /** RGB-only color (lower 24 bits) for a faction; falls back to grey when the directory cache hasn't synced. */
+    private static int rgbForFaction(ResourceLocation factionId) {
+        var entry = ClientFactionDirectoryCache.get(factionId);
+        return entry == null ? 0x888888 : (entry.color() & 0xFFFFFF);
+    }
+
+    /** Convert a packed RGB int (lower 24 bits) to a {@code float[3]} normalized for the shader. */
+    private static float[] unpackRgb(int rgb) {
+        return new float[] {
+            ((rgb >> 16) & 0xFF) / 255f,
+            ((rgb >> 8) & 0xFF) / 255f,
+            (rgb & 0xFF) / 255f
+        };
     }
 
     /** Convert an ARGB color (or 0 if the faction directory hasn't synced yet) to a {r,g,b} float triple. */

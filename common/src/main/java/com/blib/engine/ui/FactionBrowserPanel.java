@@ -23,13 +23,13 @@ import com.blib.mod.common.network.packet.S2CFactionDirectoryPayload;
 
 /**
  * Faction Browser — workspace-side list of every faction currently in {@link ClientFactionDirectoryCache}. Each row
- * shows a color swatch, the faction name, member count, and per-row Inspect / Delete buttons. The header has a search
- * filter + [New Faction] + [Refresh].
+ * shows a color swatch, the faction name, member count, and a per-row Delete button. The header has a search filter +
+ * [New Faction] + [Refresh].
  * <p>
- * Click a row (or its Inspect button) to set the active selection to a {@link FactionSelectable} for that faction; the
- * Inspector picks up the change and renders the editable view via its {@code case FACTION} branch. New Faction creates
- * a faction with an auto-generated id (next free {@code blib:new_faction_<n>}); the user renames it via the Inspector
- * after creation. Delete uses the screen's {@link ProjectContentActionHandler} for the confirm dialog.
+ * Click a row to set the active selection to a {@link FactionSelectable} for that faction; the Inspector picks up the
+ * change and renders the editable view via its {@code case FACTION} branch. New Faction creates a faction with an
+ * auto-generated id (next free {@code blib:new_faction_<n>}); the user renames it via the Inspector after creation.
+ * Delete uses the screen's {@link ProjectContentActionHandler} for the confirm dialog.
  */
 @ApiStatus.Internal
 public final class FactionBrowserPanel implements Panel {
@@ -69,8 +69,6 @@ public final class FactionBrowserPanel implements Panel {
     private static final int BUTTON_HEIGHT = 10;
 
     private static final int BUTTON_WIDTH = 42;
-
-    private static final int BUTTON_GAP = 3;
 
     private static final int HEADER_BUTTON_HEIGHT = TextInput.HEIGHT;
 
@@ -215,24 +213,23 @@ public final class FactionBrowserPanel implements Panel {
         var textY = y + (ROW_HEIGHT - font.lineHeight + 2) / 2;
         var buttonY = y + (ROW_HEIGHT - BUTTON_HEIGHT) / 2;
 
-        // Buttons: Inspect on the left of the per-row buttons, Delete to the right (rightmost).
+        // Delete button at the row's right edge. Inspect used to live to its left, but clicking the row already
+        // sets the selection to the row's faction (FactionSelectable) which the inspector picks up — the button
+        // was a redundant second affordance for the same action, so it's gone.
         var deleteX = x + width - 4 - BUTTON_WIDTH;
-        var inspectX = deleteX - BUTTON_GAP - BUTTON_WIDTH;
-        var inspectRect = new Rect(inspectX, buttonY, BUTTON_WIDTH, BUTTON_HEIGHT);
         var deleteRect = new Rect(deleteX, buttonY, BUTTON_WIDTH, BUTTON_HEIGHT);
-        renderButton(graphics, inspectRect, "Inspect", mouseX, mouseY, BUTTON_TEXT);
         renderButton(graphics, deleteRect, "Delete", mouseX, mouseY, BUTTON_DESTRUCTIVE_TEXT);
 
         var nameX = swatchX + SWATCH_SIZE + 6;
         var memberLabel = entry.memberCount() + " member" + (entry.memberCount() == 1 ? "" : "s");
         var memberWidth = font.width(memberLabel);
-        var nameMaxWidth = Math.max(0, inspectX - nameX - memberWidth - 12);
+        var nameMaxWidth = Math.max(0, deleteX - nameX - memberWidth - 12);
         var nameColor = hovered ? ROW_TEXT_HOVER_COLOR : ROW_TEXT_COLOR;
         var truncatedName = font.plainSubstrByWidth(entry.name(), nameMaxWidth);
         graphics.drawString(font, Component.literal(truncatedName), nameX, textY, nameColor, false);
-        graphics.drawString(font, Component.literal(memberLabel), inspectX - memberWidth - 6, textY, META_COLOR, false);
+        graphics.drawString(font, Component.literal(memberLabel), deleteX - memberWidth - 6, textY, META_COLOR, false);
 
-        rowHits.add(new RowHit(x, y, width, ROW_HEIGHT, entry.id(), inspectRect, deleteRect));
+        rowHits.add(new RowHit(x, y, width, ROW_HEIGHT, entry.id(), deleteRect));
     }
 
     private static void renderButton(GuiGraphics graphics, Rect rect, String label, int mouseX, int mouseY, int textColor) {
@@ -334,10 +331,6 @@ public final class FactionBrowserPanel implements Panel {
             return true;
         }
         for (var hit : rowHits) {
-            if (hit.inspectButton.contains(mouseX, mouseY)) {
-                SelectionManager.selectSingle(new FactionSelectable(hit.factionId));
-                return true;
-            }
             if (hit.deleteButton.contains(mouseX, mouseY)) {
                 var entry = ClientFactionDirectoryCache.get(hit.factionId);
                 requestDelete(hit.factionId, entry == null ? hit.factionId.toString() : entry.name());
@@ -408,7 +401,6 @@ public final class FactionBrowserPanel implements Panel {
         int w,
         int h,
         ResourceLocation factionId,
-        Rect inspectButton,
         Rect deleteButton
     ) {}
 }

@@ -24,8 +24,9 @@ import com.blib.mod.common.network.packet.C2SRemoveChunkClaimPayload;
 
 /**
  * Top-down 2D chunk-grid editor. Each cell represents one chunk; cell color follows the same rules as the world overlay
- * (inspected faction = solid + bright, other = dim, contested = striped). LMB on a cell claims for the inspected
- * faction; RMB unclaims. MMB or drag-on-empty pans the view; scroll zooms (adjusts {@code cellSize}).
+ * (inspected = solid + bright, other = dim, contested = animated hold-then-lerp through each claimant's color). LMB on
+ * a cell claims for the inspected faction; RMB unclaims. MMB or drag-on-empty pans the view; scroll zooms (adjusts
+ * {@code cellSize}).
  * <p>
  * The current player chunk gets a small "+" marker. Without an inspected faction selected, claim/unclaim clicks no-op
  * (the user gets a hint in the header instead of a silent failure).
@@ -52,6 +53,10 @@ public final class TerritoryMapPanel implements Panel {
     private static final int CELL_OWN_ALPHA = 0xC0; // out of 255
 
     private static final int CELL_OTHER_ALPHA = 0x60;
+
+    // Animation timing + lerp math lives in com.blib.engine.territory.ContestedClaimAnimation so this panel and the
+    // world overlay tick in lockstep. Tune timing constants there, not here. Per-segment alphas come from
+    // CELL_OWN_ALPHA / CELL_OTHER_ALPHA (matching how those factions render on chunks they fully own).
 
     private static final int BUTTON_BG = 0xFF14141A;
 
@@ -241,6 +246,7 @@ public final class TerritoryMapPanel implements Panel {
             // Iterate ONLY claimed chunks in the visible viewport — previously this loop walked every cell on the
             // grid (~900 at default zoom), each emitting 2-4 fills regardless of claim state. Now it touches at
             // most the claim count, and unclaimed cells inherit the panel background for free.
+            var nowMs = System.currentTimeMillis();
             for (var entry : ClientTerritoryCache.INSTANCE.factionsByChunk().entrySet()) {
                 var pos = entry.getKey();
                 if (pos.x < firstX || pos.x >= lastX || pos.z < firstZ || pos.z >= lastZ) {
@@ -254,16 +260,17 @@ public final class TerritoryMapPanel implements Panel {
                 var pxY = mapY + pixelOffsetY + (pos.z - firstZ) * cellSize;
                 var isOwn = inspected != null && ids.contains(inspected);
                 var contested = ids.size() > 1;
-                if (contested && !isOwn) {
-                    renderContestedCell(graphics, pxX, pxY, ids);
+                int argb;
+                if (contested) {
+                    // Per-segment color + alpha. Inspected faction's segment uses CELL_OWN_ALPHA (bright); other
+                    // claimants use CELL_OTHER_ALPHA (muted) — same brightness they'd have if they fully owned the
+                    // chunk. ContestedClaimAnimation lerps both smoothly through the transitions so the cell
+                    // visibly brightens when "your" color is showing.
+                    argb = contestedCycleArgb(ids, inspected, nowMs);
                 } else {
-                    var srcId = isOwn ? inspected : ids.get(0);
-                    var argb = colorForFaction(srcId, isOwn ? CELL_OWN_ALPHA : CELL_OTHER_ALPHA);
-                    graphics.fill(pxX, pxY, pxX + cellSize, pxY + cellSize, argb);
-                    if (contested) {
-                        renderContestedStripeOverlay(graphics, pxX, pxY, ids, inspected);
-                    }
+                    argb = colorForFaction(isOwn ? inspected : ids.get(0), isOwn ? CELL_OWN_ALPHA : CELL_OTHER_ALPHA);
                 }
+                graphics.fill(pxX, pxY, pxX + cellSize, pxY + cellSize, argb);
             }
 
             // Hover lookup — direct computation via chunkAt; no full-grid loop needed.
@@ -311,42 +318,22 @@ public final class TerritoryMapPanel implements Panel {
     }
 
     /**
-     * Single cell drawn as alternating chevron stripes between the first two claimants — only used when the inspected
-     * faction isn't a claimant.
+     * Pack the contested-cell ARGB at the current animation phase. RGB + alpha both lerp through the cycle via
+     * {@link com.blib.engine.territory.ContestedClaimAnimation} so the map and the world overlay stay in lockstep — the
+     * inspected faction's segment uses {@link #CELL_OWN_ALPHA} (bright) and other claimants use
+     * {@link #CELL_OTHER_ALPHA} (muted), matching how those factions would render on a chunk they fully owned.
      */
-    private void renderContestedCell(GuiGraphics graphics, int pxX, int pxY, java.util.List<ResourceLocation> ids) {
-        // Two half-cell fills instead of one per row — same visual, ~10× fewer fills per contested cell.
-        var colorA = colorForFaction(ids.get(0), CELL_OTHER_ALPHA);
-        var colorB = colorForFaction(ids.get(1), CELL_OTHER_ALPHA);
-        var halfY = pxY + cellSize / 2;
-        graphics.fill(pxX, pxY, pxX + cellSize, halfY, colorA);
-        graphics.fill(pxX, halfY, pxX + cellSize, pxY + cellSize, colorB);
-    }
-
-    /**
-     * Stripe overlay for contested cells where the inspected faction IS one of the claimants — keeps own-color visible.
-     */
-    private void renderContestedStripeOverlay(
-        GuiGraphics graphics,
-        int pxX,
-        int pxY,
-        java.util.List<ResourceLocation> ids,
-        @Nullable ResourceLocation inspected
-    ) {
-        // One bottom-half band in the other faction's color — the per-row stripe pattern the earlier version used
-        // dwarfed the inspected-faction fill at small cell sizes and cost cellSize/2 fills per contested cell.
-        ResourceLocation other = null;
-        for (var id : ids) {
-            if (!id.equals(inspected)) {
-                other = id;
-                break;
-            }
+    private static int contestedCycleArgb(java.util.List<ResourceLocation> ids, @Nullable ResourceLocation inspected, long nowMs) {
+        var rgbs = new int[ids.size()];
+        var alphas = new double[ids.size()];
+        for (var i = 0; i < ids.size(); i++) {
+            var entry = ClientFactionDirectoryCache.get(ids.get(i));
+            rgbs[i] = entry == null ? 0x888888 : (entry.color() & 0xFFFFFF);
+            alphas[i] = ids.get(i).equals(inspected) ? CELL_OWN_ALPHA : CELL_OTHER_ALPHA;
         }
-        if (other == null) {
-            return;
-        }
-        var otherColor = colorForFaction(other, 0x80);
-        graphics.fill(pxX, pxY + cellSize / 2, pxX + cellSize, pxY + cellSize, otherColor);
+        var sample = com.blib.engine.territory.ContestedClaimAnimation.sampleAt(rgbs, alphas, nowMs);
+        var alpha = Math.max(0, Math.min(255, (int) Math.round(sample.alpha())));
+        return (alpha << 24) | sample.rgb();
     }
 
     private void renderLegend(GuiGraphics graphics, net.minecraft.client.gui.Font font, int x, int y, int ownColor) {
