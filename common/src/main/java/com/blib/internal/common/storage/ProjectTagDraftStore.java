@@ -3,7 +3,9 @@ package com.blib.internal.common.storage;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -27,10 +29,13 @@ import com.blib.mod.common.network.packet.TagEntryDraft;
  * file is the source of truth — every write goes straight through to disk via {@link EngineProjectIO#writeTagJson} so a
  * crash mid-session never strands edits in memory only.
  * <p>
- * First-edit seed for a tag the project hasn't authored yet is an empty {@code {"replace": false, "values": []}} —
- * preserves the source-level intent so {@code #}-references the user adds aren't expanded into element lists at write
- * time. The inspector pairs this with a separately-fetched "resolved" member list (computed by
- * {@link #extractResolvedMembers}) so the user can toggle between the editable source view and a read-only registry
+ * First-read seed for a tag the project hasn't authored yet is the merge of every NON-project pack's TagFile JSON for
+ * the tag, applied in load order with vanilla's {@code replace} semantics — so the inspector's Source view shows the
+ * actual {@code #}-references and direct entries the way they appear in vanilla / mod / datapack source files. The seed
+ * lives in memory only; it doesn't get written to disk until the user actually edits the tag (at which point
+ * {@link #writeAndPersist} fires and the project's JSON gets created with the seeded contents + the edit). The
+ * inspector pairs the source seed with a separately-fetched "resolved" member list (computed by
+ * {@link #extractResolvedMembers}) so the user can toggle between the editable Source view and a read-only registry
  * preview.
  * <p>
  * Reuses {@link ProjectDraftStore#isReloading} as the single global reload gate — a project reload re-imports the whole
@@ -59,10 +64,12 @@ public final class ProjectTagDraftStore {
     private ProjectTagDraftStore() {}
 
     /**
-     * Read-or-seed the project's JSON for one tag. Order: cache → disk (project's datapack) → seed empty. Returns null
-     * only if the disk read produced something other than a JSON object (e.g. malformed file) — logged.
+     * Read-or-seed the project's JSON for one tag. Order: cache → disk (project's datapack) → seed from upstream pack
+     * source files (in-memory only). Returns null only if the disk read produced something other than a JSON object
+     * (e.g. malformed file) — logged.
      */
     public synchronized @Nullable JsonObject getOrSeedTag(
+        MinecraftServer server,
         String projectName,
         ResourceKey<? extends Registry<?>> registryKey,
         ResourceLocation tagId
@@ -87,10 +94,66 @@ public final class ProjectTagDraftStore {
             byKey.put(key, obj);
             return obj;
         }
+        var seeded = seedFromUpstreamJsons(server, projectName, registryKey, tagId);
+        byKey.put(key, seeded);
+        return seeded;
+    }
+
+    /**
+     * Build the source-level seed by walking every pack's contribution for the tag's data path (excluding the project's
+     * own pack), applying vanilla's load-order merge with {@code replace} semantics. Result is a fresh {@code TagFile}
+     * object with {@code replace: false} and a {@code values} array containing the merged source entries — preserves
+     * any {@code #}-references intact. Used when the project has no on-disk JSON for this tag yet, so the inspector
+     * Source view shows what's already in the tag instead of an empty list.
+     */
+    private static JsonObject seedFromUpstreamJsons(
+        MinecraftServer server,
+        String projectName,
+        ResourceKey<? extends Registry<?>> registryKey,
+        ResourceLocation tagId
+    ) {
         var seeded = new JsonObject();
         seeded.addProperty("replace", false);
-        seeded.add("values", new JsonArray());
-        byKey.put(key, seeded);
+        var values = new JsonArray();
+        seeded.add("values", values);
+
+        var resourcePath = ResourceLocation.fromNamespaceAndPath(
+            tagId.getNamespace(),
+            Registries.tagsDirPath(registryKey) + "/" + tagId.getPath() + ".json"
+        );
+        var projectPackId = EngineProjectIO.PACK_ID_PREFIX + projectName;
+
+        for (var resource : server.getResourceManager().getResourceStack(resourcePath)) {
+            if (projectPackId.equals(resource.sourcePackId())) {
+                // Skip our own pack — getOrSeedTag handles the project JSON via readTagJson; we don't want to
+                // double-include it here.
+                continue;
+            }
+            try (var reader = resource.openAsReader()) {
+                var json = JsonParser.parseReader(reader);
+                if (!json.isJsonObject()) {
+                    continue;
+                }
+                var obj = json.getAsJsonObject();
+                // replace: true wipes everything before this pack and starts fresh from this pack's values.
+                if (obj.has("replace") && obj.get("replace").isJsonPrimitive() && obj.get("replace").getAsBoolean()) {
+                    values = new JsonArray();
+                    seeded.add("values", values);
+                }
+                if (obj.has("values") && obj.get("values").isJsonArray()) {
+                    for (var entry : obj.get("values").getAsJsonArray()) {
+                        values.add(entry);
+                    }
+                }
+            } catch (IOException | RuntimeException e) {
+                LOGGER.warn(
+                    "[BLib] seedFromUpstreamJsons: failed to read tag {} from pack {}",
+                    tagId,
+                    resource.sourcePackId(),
+                    e
+                );
+            }
+        }
         return seeded;
     }
 
