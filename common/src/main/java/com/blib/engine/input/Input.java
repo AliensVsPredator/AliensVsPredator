@@ -64,7 +64,7 @@ public sealed interface Input {
         }
     }
 
-    /** Holding a modifier alone (no companion key/button) — e.g. holding Alt while dragging to bypass grid snap. */
+    /** Holding a modifier alone (no companion key/button) — e.g. holding Shift while dragging a gizmo to snap to integers. */
     record Modifier(int modifierMask) implements Input {
 
         @Override

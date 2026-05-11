@@ -41,8 +41,6 @@ public final class Keybindings {
 
     public static final Keybinding JIGSAW_CYCLE_MODE = key(GLFW.GLFW_KEY_T, "jigsaw.cycle_mode", "Cycle mode");
 
-    public static final Keybinding GRID_BYPASS = modifier(Input.MOD_ALT, "jigsaw.grid_bypass", "Bypass grid");
-
     // ----- Gizmos (active when an entity or block volume is selected) -----
 
     public static final Keybinding GIZMO_TRANSLATE = key(GLFW.GLFW_KEY_T, "gizmo.translate", "Translate");

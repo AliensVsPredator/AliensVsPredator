@@ -35,8 +35,7 @@ public final class JigsawPlacementOptions {
     /**
      * Block-grid quantization for {@link PlacementMode#GRID_SNAP}. Defaults to 16 = chunk-aligned, which is the common
      * authoring case ("place this on a chunk boundary"). Smaller values like 4 or 8 are useful for sub-chunk grids; 1
-     * effectively disables snapping. Held-{@code Alt} during cursor movement also bypasses the snap without changing
-     * the stored size.
+     * effectively disables snapping.
      */
     private static int gridSize = 16;
 

@@ -14,7 +14,6 @@ import com.blib.engine.input.Keybindings;
 import com.blib.engine.jigsaw.JigsawPieceSelection;
 import com.blib.engine.jigsaw.placement.JigsawPlacementFrameState;
 import com.blib.engine.jigsaw.placement.JigsawTool;
-import com.blib.engine.jigsaw.placement.PlacementMode;
 import com.blib.engine.layout.LayoutCatalog;
 import com.blib.engine.selection.BlockVolumeSelectable;
 import com.blib.engine.selection.EntitySelectable;
@@ -198,9 +197,6 @@ public final class StatusBarPanel implements Panel {
             hints.add(Keybindings.JIGSAW_MIRROR);
             var modeLabel = "Cycle mode (" + JigsawTool.activeMode().displayName() + ")";
             hints.add(Keybindings.JIGSAW_CYCLE_MODE.withLabel(modeLabel));
-            if (JigsawTool.activeMode() == PlacementMode.GRID_SNAP) {
-                hints.add(Keybindings.GRID_BYPASS);
-            }
             hints.add(Keybindings.UNDO);
             return hints;
         }

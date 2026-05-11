@@ -1,6 +1,5 @@
 package com.blib.engine.jigsaw.placement;
 
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import org.jetbrains.annotations.ApiStatus;
@@ -12,9 +11,6 @@ import com.blib.engine.jigsaw.JigsawPlacementCursor;
  * Grid-snap resolver: rounds the cursor anchor to the nearest multiple of {@link JigsawPlacementOptions#gridSize} on
  * each axis before applying the standard XZ-centering. Default grid size 16 = chunk-aligned, which is the common
  * authoring intent.
- * <p>
- * Holding {@code Alt} bypasses the snap for the duration of the modifier — both the world preview and the click commit
- * see the un-snapped position, so the user can fine-tune around the grid without changing the stored grid-size setting.
  */
 @ApiStatus.Internal
 public final class GridSnapResolver implements PlacementResolver {
@@ -30,13 +26,12 @@ public final class GridSnapResolver implements PlacementResolver {
             return null;
         }
 
-        var bypass = Screen.hasAltDown();
         var gridSize = JigsawPlacementOptions.gridSize();
 
         var anchorX = cursorAnchor.getX();
         var anchorY = cursorAnchor.getY();
         var anchorZ = cursorAnchor.getZ();
-        if (!bypass && gridSize > 1) {
+        if (gridSize > 1) {
             anchorX = roundToMultiple(anchorX, gridSize);
             anchorY = roundToMultiple(anchorY, gridSize);
             anchorZ = roundToMultiple(anchorZ, gridSize);
