@@ -10,6 +10,9 @@ import com.blib.engine.blockselection.BlockSelection;
 import com.blib.engine.blockselection.BlockSelectionClipboard;
 import com.blib.engine.jigsaw.ProjectDraftCache;
 import com.blib.engine.session.ProjectSession;
+import com.blib.engine.tag.RegistryEntriesCache;
+import com.blib.engine.tag.TagCatalogCache;
+import com.blib.engine.tag.TagDraftCache;
 import com.blib.internal.client.faction.ClientFactionCache;
 import com.blib.internal.client.territory.ClientTerritoryCache;
 import com.blib.mod.client.render.debug.PathfindingNavDebugHUD;
@@ -28,6 +31,9 @@ import com.blib.mod.common.network.packet.S2CPathfindingSearchDebugPayload;
 import com.blib.mod.common.network.packet.S2CPoolDraftPayload;
 import com.blib.mod.common.network.packet.S2CProjectListPayload;
 import com.blib.mod.common.network.packet.S2CProjectOpResultPayload;
+import com.blib.mod.common.network.packet.S2CRegistryEntriesPayload;
+import com.blib.mod.common.network.packet.S2CTagCatalogPayload;
+import com.blib.mod.common.network.packet.S2CTagDraftPayload;
 
 @ApiStatus.Internal
 public final class BLibClientListener {
@@ -89,6 +95,7 @@ public final class BLibClientListener {
         }
         if (op == ProjectOp.RELOAD && payload.success()) {
             ProjectDraftCache.clear();
+            TagDraftCache.clear();
         }
         // CAPTURE results go to BlockSelection so the Capture Panel can pick them up next render — the picker's
         // callback channel is for project create/delete/open/reload, and the panel is its own consumer.
@@ -106,6 +113,31 @@ public final class BLibClientListener {
      */
     public static void handlePoolDraft(S2CPoolDraftPayload payload, Player player) {
         ProjectDraftCache.update(payload.poolId(), payload.elements());
+    }
+
+    /**
+     * Server-pushed authoritative state for a tag in the active project. Stored in {@link TagDraftCache}; the Tag
+     * Editor reads from there instead of the live registry so user-typed edits are reflected pre-reload.
+     */
+    public static void handleTagDraft(S2CTagDraftPayload payload, Player player) {
+        TagDraftCache.update(payload.registryKey(), payload.tagId(), payload.replace(), payload.entries());
+    }
+
+    /**
+     * Server-pushed full tag catalog for the active project. Stored in {@link TagCatalogCache}; the Tag Browser reads
+     * from there to render its collapsible-by-registry sections. Sent in response to a request and after each
+     * Create/Delete tag operation.
+     */
+    public static void handleTagCatalog(S2CTagCatalogPayload payload, Player player) {
+        TagCatalogCache.update(payload.entries());
+    }
+
+    /**
+     * Server-pushed element + tag-name lists for one registry. Stored in {@link RegistryEntriesCache}; the Tag Editor's
+     * Add-entry picker reads from there to populate its searchable item list (direct entries + tag refs).
+     */
+    public static void handleRegistryEntries(S2CRegistryEntriesPayload payload, Player player) {
+        RegistryEntriesCache.update(payload.registryKey(), payload.entries(), payload.tagIds());
     }
 
     /**

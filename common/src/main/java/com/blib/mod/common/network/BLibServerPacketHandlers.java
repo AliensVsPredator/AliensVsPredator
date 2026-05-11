@@ -6,16 +6,19 @@ import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.C2SAddChunkClaimPayload;
 import com.blib.mod.common.network.packet.C2SAddFactionMemberPayload;
 import com.blib.mod.common.network.packet.C2SAddPoolElementPayload;
+import com.blib.mod.common.network.packet.C2SAddTagEntryPayload;
 import com.blib.mod.common.network.packet.C2SCaptureBlocksPayload;
 import com.blib.mod.common.network.packet.C2SCopySelectionPayload;
 import com.blib.mod.common.network.packet.C2SCreateFactionPayload;
 import com.blib.mod.common.network.packet.C2SCreateProjectPayload;
+import com.blib.mod.common.network.packet.C2SCreateTagPayload;
 import com.blib.mod.common.network.packet.C2SDeleteCapturePayload;
 import com.blib.mod.common.network.packet.C2SDeleteFactionPayload;
 import com.blib.mod.common.network.packet.C2SDeletePoolPayload;
 import com.blib.mod.common.network.packet.C2SDeleteProjectPayload;
 import com.blib.mod.common.network.packet.C2SDeleteSelectionPayload;
 import com.blib.mod.common.network.packet.C2SDeleteStructurePayload;
+import com.blib.mod.common.network.packet.C2SDeleteTagPayload;
 import com.blib.mod.common.network.packet.C2SGOAPTrackPayload;
 import com.blib.mod.common.network.packet.C2SListCapturesPayload;
 import com.blib.mod.common.network.packet.C2SListPoolsPayload;
@@ -30,14 +33,19 @@ import com.blib.mod.common.network.packet.C2SRemoveChunkClaimPayload;
 import com.blib.mod.common.network.packet.C2SRemoveEntityPayload;
 import com.blib.mod.common.network.packet.C2SRemoveFactionMemberPayload;
 import com.blib.mod.common.network.packet.C2SRemovePoolElementPayload;
+import com.blib.mod.common.network.packet.C2SRemoveTagEntryPayload;
 import com.blib.mod.common.network.packet.C2SRequestEntityFactionsPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionDirectoryPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionInspectionPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionMembersPayload;
 import com.blib.mod.common.network.packet.C2SRequestPoolDraftPayload;
+import com.blib.mod.common.network.packet.C2SRequestRegistryEntriesPayload;
+import com.blib.mod.common.network.packet.C2SRequestTagCatalogPayload;
+import com.blib.mod.common.network.packet.C2SRequestTagDraftPayload;
 import com.blib.mod.common.network.packet.C2SSavePoolPayload;
 import com.blib.mod.common.network.packet.C2SSetEntityScalePayload;
 import com.blib.mod.common.network.packet.C2SSetFactionRelationshipPayload;
+import com.blib.mod.common.network.packet.C2SSetTagReplacePayload;
 import com.blib.mod.common.network.packet.C2SSpawnEntityPayload;
 import com.blib.mod.common.network.packet.C2STranslateEntityPayload;
 import com.blib.mod.common.network.packet.C2SUndoPlacementPayload;
@@ -61,7 +69,10 @@ import com.blib.mod.common.network.packet.S2CPoolDraftPayload;
 import com.blib.mod.common.network.packet.S2CPoolListPayload;
 import com.blib.mod.common.network.packet.S2CProjectListPayload;
 import com.blib.mod.common.network.packet.S2CProjectOpResultPayload;
+import com.blib.mod.common.network.packet.S2CRegistryEntriesPayload;
 import com.blib.mod.common.network.packet.S2CStructureListPayload;
+import com.blib.mod.common.network.packet.S2CTagCatalogPayload;
+import com.blib.mod.common.network.packet.S2CTagDraftPayload;
 
 public class BLibServerPacketHandlers {
 
@@ -390,6 +401,64 @@ public class BLibServerPacketHandlers {
                 BLibServerListener::handleDeleteSelection
             )
         );
+
+        // Tag editor handlers — 3 read packets + 5 mutation packets.
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromClient<>(
+                C2SRequestTagCatalogPayload.TYPE,
+                C2SRequestTagCatalogPayload.CODEC,
+                BLibServerListener::handleRequestTagCatalog
+            )
+        );
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromClient<>(
+                C2SRequestRegistryEntriesPayload.TYPE,
+                C2SRequestRegistryEntriesPayload.CODEC,
+                BLibServerListener::handleRequestRegistryEntries
+            )
+        );
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromClient<>(
+                C2SRequestTagDraftPayload.TYPE,
+                C2SRequestTagDraftPayload.CODEC,
+                BLibServerListener::handleRequestTagDraft
+            )
+        );
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromClient<>(
+                C2SAddTagEntryPayload.TYPE,
+                C2SAddTagEntryPayload.CODEC,
+                BLibServerListener::handleAddTagEntry
+            )
+        );
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromClient<>(
+                C2SRemoveTagEntryPayload.TYPE,
+                C2SRemoveTagEntryPayload.CODEC,
+                BLibServerListener::handleRemoveTagEntry
+            )
+        );
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromClient<>(
+                C2SSetTagReplacePayload.TYPE,
+                C2SSetTagReplacePayload.CODEC,
+                BLibServerListener::handleSetTagReplace
+            )
+        );
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromClient<>(
+                C2SCreateTagPayload.TYPE,
+                C2SCreateTagPayload.CODEC,
+                BLibServerListener::handleCreateTag
+            )
+        );
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromClient<>(
+                C2SDeleteTagPayload.TYPE,
+                C2SDeleteTagPayload.CODEC,
+                BLibServerListener::handleDeleteTag
+            )
+        );
     }
 
     private static void registerClientBoundPacketHandlers() {
@@ -531,6 +600,29 @@ public class BLibServerPacketHandlers {
                 S2CClipboardStatusPayload.TYPE,
                 S2CClipboardStatusPayload.CODEC,
                 BLibClientListener::handleClipboardStatus
+            )
+        );
+
+        // Tag editor S2C handlers.
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromServer<>(
+                S2CTagDraftPayload.TYPE,
+                S2CTagDraftPayload.CODEC,
+                BLibClientListener::handleTagDraft
+            )
+        );
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromServer<>(
+                S2CTagCatalogPayload.TYPE,
+                S2CTagCatalogPayload.CODEC,
+                BLibClientListener::handleTagCatalog
+            )
+        );
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromServer<>(
+                S2CRegistryEntriesPayload.TYPE,
+                S2CRegistryEntriesPayload.CODEC,
+                BLibClientListener::handleRegistryEntries
             )
         );
     }

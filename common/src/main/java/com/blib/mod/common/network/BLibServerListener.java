@@ -1,8 +1,10 @@
 package com.blib.mod.common.network;
 
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.Entity;
@@ -37,6 +39,7 @@ import com.blib.internal.common.faction.BLibFactionManager;
 import com.blib.internal.common.move.BlockMoveEngine;
 import com.blib.internal.common.storage.EngineProjectIO;
 import com.blib.internal.common.storage.ProjectDraftStore;
+import com.blib.internal.common.storage.ProjectTagDraftStore;
 import com.blib.internal.common.territory.BLibTerritoryManager;
 import com.blib.mod.BLib;
 import com.blib.mod.common.gameplay.goap.GOAPDebugTracker;
@@ -44,16 +47,19 @@ import com.blib.mod.common.gameplay.jigsaw.PlacementHistory;
 import com.blib.mod.common.network.packet.C2SAddChunkClaimPayload;
 import com.blib.mod.common.network.packet.C2SAddFactionMemberPayload;
 import com.blib.mod.common.network.packet.C2SAddPoolElementPayload;
+import com.blib.mod.common.network.packet.C2SAddTagEntryPayload;
 import com.blib.mod.common.network.packet.C2SCaptureBlocksPayload;
 import com.blib.mod.common.network.packet.C2SCopySelectionPayload;
 import com.blib.mod.common.network.packet.C2SCreateFactionPayload;
 import com.blib.mod.common.network.packet.C2SCreateProjectPayload;
+import com.blib.mod.common.network.packet.C2SCreateTagPayload;
 import com.blib.mod.common.network.packet.C2SDeleteCapturePayload;
 import com.blib.mod.common.network.packet.C2SDeleteFactionPayload;
 import com.blib.mod.common.network.packet.C2SDeletePoolPayload;
 import com.blib.mod.common.network.packet.C2SDeleteProjectPayload;
 import com.blib.mod.common.network.packet.C2SDeleteSelectionPayload;
 import com.blib.mod.common.network.packet.C2SDeleteStructurePayload;
+import com.blib.mod.common.network.packet.C2SDeleteTagPayload;
 import com.blib.mod.common.network.packet.C2SGOAPTrackPayload;
 import com.blib.mod.common.network.packet.C2SListCapturesPayload;
 import com.blib.mod.common.network.packet.C2SListPoolsPayload;
@@ -68,14 +74,19 @@ import com.blib.mod.common.network.packet.C2SRemoveChunkClaimPayload;
 import com.blib.mod.common.network.packet.C2SRemoveEntityPayload;
 import com.blib.mod.common.network.packet.C2SRemoveFactionMemberPayload;
 import com.blib.mod.common.network.packet.C2SRemovePoolElementPayload;
+import com.blib.mod.common.network.packet.C2SRemoveTagEntryPayload;
 import com.blib.mod.common.network.packet.C2SRequestEntityFactionsPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionDirectoryPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionInspectionPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionMembersPayload;
 import com.blib.mod.common.network.packet.C2SRequestPoolDraftPayload;
+import com.blib.mod.common.network.packet.C2SRequestRegistryEntriesPayload;
+import com.blib.mod.common.network.packet.C2SRequestTagCatalogPayload;
+import com.blib.mod.common.network.packet.C2SRequestTagDraftPayload;
 import com.blib.mod.common.network.packet.C2SSavePoolPayload;
 import com.blib.mod.common.network.packet.C2SSetEntityScalePayload;
 import com.blib.mod.common.network.packet.C2SSetFactionRelationshipPayload;
+import com.blib.mod.common.network.packet.C2SSetTagReplacePayload;
 import com.blib.mod.common.network.packet.C2SSpawnEntityPayload;
 import com.blib.mod.common.network.packet.C2STranslateEntityPayload;
 import com.blib.mod.common.network.packet.C2SUndoPlacementPayload;
@@ -91,7 +102,11 @@ import com.blib.mod.common.network.packet.S2CPoolDraftPayload;
 import com.blib.mod.common.network.packet.S2CPoolListPayload;
 import com.blib.mod.common.network.packet.S2CProjectListPayload;
 import com.blib.mod.common.network.packet.S2CProjectOpResultPayload;
+import com.blib.mod.common.network.packet.S2CRegistryEntriesPayload;
 import com.blib.mod.common.network.packet.S2CStructureListPayload;
+import com.blib.mod.common.network.packet.S2CTagCatalogPayload;
+import com.blib.mod.common.network.packet.S2CTagDraftPayload;
+import com.blib.mod.common.network.packet.TagCatalogEntry;
 
 /**
  * Server-side handlers for client → server packets. Mirror of {@link BLibClientListener} for the C2S direction — each
@@ -732,6 +747,298 @@ public final class BLibServerListener {
     }
 
     /**
+     * Reply to {@link C2SRequestTagCatalogPayload} with every tag known across all live registries plus any
+     * project-only tags from the active project's datapack. Project tags get {@code inProject=true} (whether they exist
+     * in upstream packs or not); upstream-only tags get {@code inProject=false}. Sorted by registry id then tag id so
+     * the browser's section + row order is deterministic. Read-only; no op-gating.
+     */
+    public static void handleRequestTagCatalog(C2SRequestTagCatalogPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        var server = serverPlayer.serverLevel().getServer();
+        var projectName = payload.projectName();
+        var entries = new java.util.ArrayList<TagCatalogEntry>();
+
+        // Build a set of project-tag keys for fast inProject lookup.
+        var projectTags = validProjectFor(projectName) ? EngineProjectIO.listProjectTags(server, projectName) : List.<TagCatalogEntry>of();
+        var projectKeys = new java.util.HashSet<ProjectTagDraftStore.TagDraftKey>();
+        for (var pt : projectTags) {
+            projectKeys.add(new ProjectTagDraftStore.TagDraftKey(pt.registryKey(), pt.tagId()));
+        }
+        var emittedKeys = new java.util.HashSet<ProjectTagDraftStore.TagDraftKey>();
+
+        server.registryAccess().registries().forEach(entry -> {
+            var registryLoc = entry.key().location();
+            entry.value().getTagNames().forEach(tk -> {
+                var key = new ProjectTagDraftStore.TagDraftKey(registryLoc, tk.location());
+                emittedKeys.add(key);
+                entries.add(new TagCatalogEntry(registryLoc, tk.location(), projectKeys.contains(key)));
+            });
+        });
+        // Append project-only tags (those whose registry has no live tag of that name).
+        for (var pt : projectTags) {
+            var key = new ProjectTagDraftStore.TagDraftKey(pt.registryKey(), pt.tagId());
+            if (!emittedKeys.contains(key)) {
+                entries.add(pt);
+            }
+        }
+        entries.sort((a, b) -> {
+            var c = a.registryKey().toString().compareTo(b.registryKey().toString());
+            return c != 0 ? c : a.tagId().toString().compareTo(b.tagId().toString());
+        });
+        BLib.MOD.networking().sendToClient(serverPlayer, new S2CTagCatalogPayload(projectName, entries));
+    }
+
+    /**
+     * Reply to {@link C2SRequestRegistryEntriesPayload} with the registry's element ids + existing tag names so the Tag
+     * Editor's footer Add-entry picker can show every valid choice. Read-only; no op-gating. Returns silently if the
+     * registry id doesn't resolve (stale client).
+     */
+    public static void handleRequestRegistryEntries(C2SRequestRegistryEntriesPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        var server = serverPlayer.serverLevel().getServer();
+        ResourceKey<? extends Registry<Object>> registryKey = ResourceKey.createRegistryKey(payload.registryKey());
+        var registry = server.registryAccess().registry(registryKey).orElse(null);
+        if (registry == null) {
+            return;
+        }
+        var elements = new java.util.ArrayList<>(registry.keySet());
+        elements.sort(java.util.Comparator.comparing(ResourceLocation::toString));
+        var tagIds = registry.getTagNames()
+            .map(tk -> tk.location())
+            .sorted(java.util.Comparator.comparing(ResourceLocation::toString))
+            .toList();
+        BLib.MOD.networking().sendToClient(serverPlayer, new S2CRegistryEntriesPayload(payload.registryKey(), elements, tagIds));
+    }
+
+    /**
+     * Send the active project's authoritative state for one tag back to the client. Lazy-seeds an empty {@code values}
+     * array if the project has no override yet (vanilla / upstream entries are preserved by the additive merge at
+     * reload time).
+     */
+    public static void handleRequestTagDraft(C2SRequestTagDraftPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        if (!serverPlayer.hasPermissions(2)) {
+            return;
+        }
+        if (!validProjectFor(payload.projectName())) {
+            return;
+        }
+        var registryKey = ResourceKey.<Registry<Object>>createRegistryKey(payload.registryKey());
+        var tag = ProjectTagDraftStore.INSTANCE.getOrSeedTag(payload.projectName(), registryKey, payload.tagId());
+        if (tag == null) {
+            return;
+        }
+        sendTagDraft(serverPlayer, payload.projectName(), payload.registryKey(), payload.tagId(), tag);
+    }
+
+    /** Append a new entry (direct or tag-ref) to a tag's project override JSON. Disk-only; echoes a fresh draft. */
+    public static void handleAddTagEntry(C2SAddTagEntryPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        if (!serverPlayer.hasPermissions(2)) {
+            return;
+        }
+        if (ProjectDraftStore.INSTANCE.isReloading()) {
+            return;
+        }
+        if (!validProjectFor(payload.projectName())) {
+            return;
+        }
+        var registryKey = ResourceKey.<Registry<Object>>createRegistryKey(payload.registryKey());
+        var tag = ProjectTagDraftStore.INSTANCE.getOrSeedTag(payload.projectName(), registryKey, payload.tagId());
+        if (tag == null) {
+            return;
+        }
+        ProjectTagDraftStore.applyAddEntry(tag, payload.isTagRef(), payload.entryId(), payload.required());
+        try {
+            ProjectTagDraftStore.INSTANCE.writeAndPersist(payload.projectName(), registryKey, payload.tagId(), tag);
+        } catch (IOException e) {
+            LOGGER.error(
+                "[BLib] handleAddTagEntry: write failed for project {} tag {}/{}",
+                payload.projectName(),
+                payload.registryKey(),
+                payload.tagId(),
+                e
+            );
+            return;
+        }
+        sendTagDraft(serverPlayer, payload.projectName(), payload.registryKey(), payload.tagId(), tag);
+    }
+
+    /** Remove the entry at {@code rawIndex} from a tag's project override JSON. Disk-only; echoes a fresh draft. */
+    public static void handleRemoveTagEntry(C2SRemoveTagEntryPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        if (!serverPlayer.hasPermissions(2)) {
+            return;
+        }
+        if (ProjectDraftStore.INSTANCE.isReloading()) {
+            return;
+        }
+        if (!validProjectFor(payload.projectName())) {
+            return;
+        }
+        var registryKey = ResourceKey.<Registry<Object>>createRegistryKey(payload.registryKey());
+        var tag = ProjectTagDraftStore.INSTANCE.getOrSeedTag(payload.projectName(), registryKey, payload.tagId());
+        if (tag == null) {
+            return;
+        }
+        if (!ProjectTagDraftStore.applyRemoveEntry(tag, payload.rawIndex())) {
+            return;
+        }
+        try {
+            ProjectTagDraftStore.INSTANCE.writeAndPersist(payload.projectName(), registryKey, payload.tagId(), tag);
+        } catch (IOException e) {
+            LOGGER.error(
+                "[BLib] handleRemoveTagEntry: write failed for project {} tag {}/{}",
+                payload.projectName(),
+                payload.registryKey(),
+                payload.tagId(),
+                e
+            );
+            return;
+        }
+        sendTagDraft(serverPlayer, payload.projectName(), payload.registryKey(), payload.tagId(), tag);
+    }
+
+    /** Set a tag's {@code replace} flag. Disk-only; echoes a fresh draft. */
+    public static void handleSetTagReplace(C2SSetTagReplacePayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        if (!serverPlayer.hasPermissions(2)) {
+            return;
+        }
+        if (ProjectDraftStore.INSTANCE.isReloading()) {
+            return;
+        }
+        if (!validProjectFor(payload.projectName())) {
+            return;
+        }
+        var registryKey = ResourceKey.<Registry<Object>>createRegistryKey(payload.registryKey());
+        var tag = ProjectTagDraftStore.INSTANCE.getOrSeedTag(payload.projectName(), registryKey, payload.tagId());
+        if (tag == null) {
+            return;
+        }
+        ProjectTagDraftStore.applySetReplace(tag, payload.replace());
+        try {
+            ProjectTagDraftStore.INSTANCE.writeAndPersist(payload.projectName(), registryKey, payload.tagId(), tag);
+        } catch (IOException e) {
+            LOGGER.error(
+                "[BLib] handleSetTagReplace: write failed for project {} tag {}/{}",
+                payload.projectName(),
+                payload.registryKey(),
+                payload.tagId(),
+                e
+            );
+            return;
+        }
+        sendTagDraft(serverPlayer, payload.projectName(), payload.registryKey(), payload.tagId(), tag);
+    }
+
+    /**
+     * Create a brand-new empty tag JSON. Refuses if the file already exists for this project. On success, pushes both a
+     * refreshed {@link S2CTagCatalogPayload} (so the browser shows the new tag) and an {@link S2CTagDraftPayload} (so a
+     * client that just opened the editor finds it populated).
+     */
+    public static void handleCreateTag(C2SCreateTagPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        if (!serverPlayer.hasPermissions(2)) {
+            return;
+        }
+        if (ProjectDraftStore.INSTANCE.isReloading()) {
+            return;
+        }
+        if (!validProjectFor(payload.projectName())) {
+            return;
+        }
+        var registryKey = ResourceKey.<Registry<Object>>createRegistryKey(payload.registryKey());
+        // Refuse if a project file already exists for this tag.
+        if (EngineProjectIO.readTagJson(payload.projectName(), registryKey, payload.tagId()).isPresent()) {
+            return;
+        }
+        var tag = new com.google.gson.JsonObject();
+        tag.addProperty("replace", false);
+        tag.add("values", new com.google.gson.JsonArray());
+        try {
+            ProjectTagDraftStore.INSTANCE.writeAndPersist(payload.projectName(), registryKey, payload.tagId(), tag);
+        } catch (IOException e) {
+            LOGGER.error(
+                "[BLib] handleCreateTag: write failed for project {} tag {}/{}",
+                payload.projectName(),
+                payload.registryKey(),
+                payload.tagId(),
+                e
+            );
+            return;
+        }
+        sendTagDraft(serverPlayer, payload.projectName(), payload.registryKey(), payload.tagId(), tag);
+        pushCatalog(serverPlayer, payload.projectName());
+    }
+
+    /**
+     * Delete a tag's JSON file. The live registry still holds the tag (with the pre-delete merged contents) until the
+     * user runs Reload Project. Pushes a refreshed catalog so the browser drops the entry.
+     */
+    public static void handleDeleteTag(C2SDeleteTagPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        if (!serverPlayer.hasPermissions(2)) {
+            return;
+        }
+        if (ProjectDraftStore.INSTANCE.isReloading()) {
+            return;
+        }
+        if (!validProjectFor(payload.projectName())) {
+            return;
+        }
+        var registryKey = ResourceKey.<Registry<Object>>createRegistryKey(payload.registryKey());
+        try {
+            EngineProjectIO.deleteProjectTag(payload.projectName(), registryKey, payload.tagId());
+        } catch (IOException e) {
+            LOGGER.error(
+                "[BLib] handleDeleteTag: delete failed for project {} tag {}/{}",
+                payload.projectName(),
+                payload.registryKey(),
+                payload.tagId(),
+                e
+            );
+            return;
+        }
+        ProjectTagDraftStore.INSTANCE.invalidate(payload.projectName(), payload.registryKey(), payload.tagId());
+        pushCatalog(serverPlayer, payload.projectName());
+    }
+
+    /** Helper: encode a tag JSON to the wire form and push to the client. */
+    private static void sendTagDraft(
+        ServerPlayer serverPlayer,
+        String projectName,
+        ResourceLocation registryKey,
+        ResourceLocation tagId,
+        com.google.gson.JsonObject tag
+    ) {
+        var entries = ProjectTagDraftStore.extractDraftEntries(tag);
+        var replace = ProjectTagDraftStore.readReplace(tag);
+        BLib.MOD.networking().sendToClient(serverPlayer, new S2CTagDraftPayload(projectName, registryKey, tagId, replace, entries));
+    }
+
+    /** Helper: rebuild and push the tag catalog to the client (used after create/delete). */
+    private static void pushCatalog(ServerPlayer serverPlayer, String projectName) {
+        handleRequestTagCatalog(new C2SRequestTagCatalogPayload(projectName), serverPlayer);
+    }
+
+    /**
      * Move (or copy) a volume of blocks by an integer offset. Op-gated. Reads the source volume into a transient
      * StructureTemplate snapshot, optionally clears the source to air, and replaces the snapshot at the offset
      * destination — vanilla's template machinery handles block-entity NBT, light updates, and registry-aware state
@@ -853,6 +1160,7 @@ public final class BLibServerListener {
             future.whenComplete((v, t) -> {
                 try {
                     ProjectDraftStore.INSTANCE.clearProject(projectName);
+                    ProjectTagDraftStore.INSTANCE.clearProject(projectName);
                     if (t != null) {
                         LOGGER.error("[BLib] reloadProject failed (async) for {}", projectName, t);
                         replyOpResult(serverPlayer, ProjectOp.RELOAD, projectName, false, t.getMessage());

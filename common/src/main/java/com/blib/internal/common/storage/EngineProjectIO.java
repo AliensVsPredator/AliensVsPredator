@@ -6,9 +6,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.SharedConstants;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.PackType;
@@ -30,6 +33,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
 import com.blib.api.BLibAPI;
+import com.blib.mod.common.network.packet.TagCatalogEntry;
 
 /**
  * Filesystem helpers for the engine workspace's project system. Each project is a multi-asset directory under
@@ -448,6 +452,118 @@ public final class EngineProjectIO {
      */
     public static boolean deleteProjectStructure(String projectName, ResourceLocation structureId) throws IOException {
         return deleteProjectAsset(projectName, structureId, "structure", ".nbt");
+    }
+
+    /**
+     * Pack-relative path for a tag JSON:
+     * {@code data/<tagId.namespace>/<Registries.tagsDirPath(registryKey)>/<tagId.path>.json}. Vanilla's
+     * {@code Registries.tagsDirPath} returns {@code "tags/<registryKey.location().getPath()>"}, which gives us
+     * {@code tags/block}, {@code tags/worldgen/biome}, {@code tags/entity_type}, etc. — one helper covers every static
+     * and dynamic registry without a hardcoded map.
+     */
+    public static String tagJsonRelPath(ResourceKey<? extends Registry<?>> registryKey, ResourceLocation tagId) {
+        return "data/" + tagId.getNamespace() + "/" + Registries.tagsDirPath(registryKey) + "/" + tagId.getPath() + ".json";
+    }
+
+    /**
+     * Read the project's authored JSON for one tag, if present. Empty if the project has not yet authored an override
+     * for this tag id (in which case the editor seeds an empty {@code values} array — vanilla / upstream entries are
+     * preserved through the additive merge that vanilla performs at reload time).
+     */
+    public static Optional<JsonElement> readTagJson(
+        String projectName,
+        ResourceKey<? extends Registry<?>> registryKey,
+        ResourceLocation tagId
+    ) {
+        var path = datapackRoot(projectName).resolve(tagJsonRelPath(registryKey, tagId));
+        if (!Files.isRegularFile(path)) {
+            return Optional.empty();
+        }
+        try {
+            return Optional.of(JsonParser.parseString(Files.readString(path)));
+        } catch (IOException e) {
+            LOGGER.warn("[BLib] readTagJson: failed to read {}", path, e);
+            return Optional.empty();
+        }
+    }
+
+    /** Write the project's authored JSON for one tag. Creates parent dirs as needed. */
+    public static Path writeTagJson(
+        String projectName,
+        ResourceKey<? extends Registry<?>> registryKey,
+        ResourceLocation tagId,
+        JsonElement json
+    ) throws IOException {
+        return writeDataJson(projectName, tagJsonRelPath(registryKey, tagId), json);
+    }
+
+    /**
+     * Delete the JSON file backing the given tag id under the project's datapack. The live registry still holds the tag
+     * (with the pre-delete merged contents) until the user runs Reload Project — same caveat as
+     * {@link #deleteProjectPool}. Refuses ids whose resolved path escapes the datapack root.
+     */
+    public static boolean deleteProjectTag(
+        String projectName,
+        ResourceKey<? extends Registry<?>> registryKey,
+        ResourceLocation tagId
+    ) throws IOException {
+        var datapackRoot = projectRoot(projectName).resolve(DATAPACK_SUBDIR).normalize();
+        var target = datapackRoot.resolve(tagJsonRelPath(registryKey, tagId)).normalize();
+        if (!target.startsWith(datapackRoot)) {
+            throw new IOException("Refusing to delete '" + tagId + "': path escapes datapack root");
+        }
+        return Files.deleteIfExists(target);
+    }
+
+    /**
+     * Walk the project's datapack and emit one {@link TagCatalogEntry} per authored tag JSON, with
+     * {@code inProject=true}. Iterates the live {@link MinecraftServer#registryAccess()} rather than guessing
+     * subdirectories so we stay in lock-step with the runtime registry set (a tag JSON whose registry isn't loaded gets
+     * silently skipped — it couldn't be loaded by vanilla either).
+     */
+    public static List<TagCatalogEntry> listProjectTags(MinecraftServer server, String projectName) {
+        var datapackRoot = projectRoot(projectName).resolve(DATAPACK_SUBDIR);
+        if (!Files.isDirectory(datapackRoot.resolve("data"))) {
+            return List.of();
+        }
+        var out = new ArrayList<TagCatalogEntry>();
+        var dataRoot = datapackRoot.resolve("data");
+        server.registryAccess().registries().forEach(entry -> {
+            ResourceKey<? extends Registry<?>> registryKey = entry.key();
+            var tagsDir = Registries.tagsDirPath(registryKey);
+            try (DirectoryStream<Path> namespaces = Files.newDirectoryStream(dataRoot)) {
+                for (var nsDir : namespaces) {
+                    if (!Files.isDirectory(nsDir)) {
+                        continue;
+                    }
+                    var namespace = nsDir.getFileName().toString();
+                    var categoryRoot = nsDir.resolve(tagsDir);
+                    if (!Files.isDirectory(categoryRoot)) {
+                        continue;
+                    }
+                    try (var stream = Files.walk(categoryRoot)) {
+                        stream
+                            .filter(Files::isRegularFile)
+                            .filter(p -> p.getFileName().toString().endsWith(".json"))
+                            .forEach(p -> {
+                                var rel = categoryRoot.relativize(p).toString().replace('\\', '/');
+                                var path = rel.substring(0, rel.length() - ".json".length());
+                                try {
+                                    var tagId = ResourceLocation.fromNamespaceAndPath(namespace, path);
+                                    out.add(new TagCatalogEntry(registryKey.location(), tagId, true));
+                                } catch (ResourceLocationException ignored) {
+                                    // Path contains characters vanilla refuses (uppercase, etc.) — skip.
+                                }
+                            });
+                    } catch (IOException e) {
+                        LOGGER.warn("[BLib] listProjectTags: failed to walk {}", categoryRoot, e);
+                    }
+                }
+            } catch (IOException e) {
+                LOGGER.warn("[BLib] listProjectTags: failed to scan {}", dataRoot, e);
+            }
+        });
+        return out;
     }
 
     private static boolean deleteProjectAsset(
