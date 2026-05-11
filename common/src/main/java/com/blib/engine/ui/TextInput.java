@@ -195,7 +195,7 @@ public final class TextInput {
         graphics.fill(x, y, x + 1, y + HEIGHT, border);
         graphics.fill(x + width - 1, y, x + width, y + HEIGHT, border);
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         // +2 compensates for MC font's descender padding so the placeholder/value text visually centers; see
         // MenuBarPanel for details.
         var textY = y + (HEIGHT - font.lineHeight + 2) / 2;
@@ -516,7 +516,7 @@ public final class TextInput {
      * scan — fine for short single-line content.
      */
     private int caretIndexAt(double mouseX) {
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var leftReserve = leftEllipsisShown ? font.width(ELLIPSIS) : 0;
         var relX = mouseX - rectX - PADDING_X - leftReserve;
         if (relX <= 0) {

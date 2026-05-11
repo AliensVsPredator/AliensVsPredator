@@ -227,7 +227,7 @@ public final class OutlinerPanel implements Panel {
     }
 
     private void renderEmptyMessage(GuiGraphics graphics, int x, int y) {
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var msg = searchInput.content().isEmpty() ? "(no entities loaded)" : "(no matches)";
         graphics.drawString(font, Component.literal(msg), x, y, EMPTY_TEXT_COLOR, false);
     }
@@ -239,7 +239,7 @@ public final class OutlinerPanel implements Panel {
         // Left-edge accent stripe so the section's color is visible even when the header label is truncated.
         graphics.fill(x, y, x + 2, y + HEADER_HEIGHT, cat.accentColor);
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var caret = collapsed.contains(cat) ? "▸" : "▾";
         var textY = y + (HEADER_HEIGHT - font.lineHeight + 2) / 2;
         graphics.drawString(font, Component.literal(caret), x + 4, textY, HEADER_TEXT_COLOR, false);
@@ -270,7 +270,7 @@ public final class OutlinerPanel implements Panel {
             graphics.fill(x, y, x + width, y + ROW_HEIGHT, ROW_BG_HOVER_COLOR);
         }
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var textY = y + (ROW_HEIGHT - font.lineHeight + 2) / 2;
 
         // Distance label is right-aligned and drawn first so we know how much room is left for the name (long names

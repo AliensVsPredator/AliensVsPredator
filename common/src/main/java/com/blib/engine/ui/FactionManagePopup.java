@@ -1,6 +1,5 @@
 package com.blib.engine.ui;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
@@ -130,7 +129,7 @@ public final class FactionManagePopup {
         graphics.fill(popupX, popupY, popupX + BORDER_THICKNESS, popupY + height, BORDER_COLOR);
         graphics.fill(popupX + POPUP_WIDTH - BORDER_THICKNESS, popupY, popupX + POPUP_WIDTH, popupY + height, BORDER_COLOR);
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var headerY = popupY + BORDER_THICKNESS;
         graphics.fill(
             popupX + BORDER_THICKNESS,

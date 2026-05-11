@@ -93,3 +93,8 @@ accessible field net/minecraft/world/level/block/entity/AbstractFurnaceBlockEnti
 # Mutable Fields
 mutable field net/minecraft/client/renderer/LevelRenderer renderBuffers Lnet/minecraft/client/renderer/RenderBuffers;
 mutable field net/minecraft/data/models/BlockModelGenerators$BlockFamilyProvider mapping Lnet/minecraft/data/models/model/TextureMapping;
+
+# Engine UI font swap — EngineFont constructs a Font hardcoded to its own FontSet, which requires reaching past
+# vanilla's private FontManager accessor + FontSet lookup.
+accessible field net/minecraft/client/Minecraft fontManager Lnet/minecraft/client/gui/font/FontManager;
+accessible method net/minecraft/client/gui/font/FontManager getFontSetCached (Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/client/gui/font/FontSet;

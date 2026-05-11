@@ -145,7 +145,7 @@ public final class DiplomacyMatrixPanel implements Panel {
         var query = searchInput.content().toLowerCase(java.util.Locale.ROOT).trim();
         var entries = filter(query);
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         if (entries.isEmpty()) {
             var msg = ClientFactionDirectoryCache.entries().isEmpty() ? "(no factions)" : "(no matches)";
             graphics.drawString(font, Component.literal(msg), gridX, gridY, EMPTY_TEXT_COLOR, false);

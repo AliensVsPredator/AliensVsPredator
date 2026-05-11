@@ -147,7 +147,7 @@ public final class TerritoryMapPanel implements Panel {
 
         graphics.fill(x, y, x + width, y + height, BACKGROUND_COLOR);
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var inspected = inspectedFactionId();
         var inspectedEntry = inspected == null ? null : ClientFactionDirectoryCache.get(inspected);
         var chunkCount = inspected == null ? 0 : ClientTerritoryCache.INSTANCE.chunkCountForFaction(inspected);

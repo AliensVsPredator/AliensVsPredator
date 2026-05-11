@@ -1,6 +1,5 @@
 package com.blib.engine.ui;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
@@ -47,7 +46,7 @@ public final class DropdownMenu {
         this.anchorY = anchorY;
         this.items = List.copyOf(items);
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var maxLabelWidth = 0;
         for (var item : this.items) {
             maxLabelWidth = Math.max(maxLabelWidth, font.width(item.label()));
@@ -97,7 +96,7 @@ public final class DropdownMenu {
         graphics.fill(anchorX, anchorY, anchorX + BORDER_THICKNESS, anchorY + height, BORDER_COLOR);
         graphics.fill(anchorX + width - BORDER_THICKNESS, anchorY, anchorX + width, anchorY + height, BORDER_COLOR);
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         for (var i = 0; i < items.size(); i++) {
             var itemY = anchorY + BORDER_THICKNESS + i * ITEM_HEIGHT;
             var hovered = mouseX >= anchorX && mouseX < anchorX + width && mouseY >= itemY && mouseY < itemY + ITEM_HEIGHT;

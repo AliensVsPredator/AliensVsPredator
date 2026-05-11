@@ -165,7 +165,7 @@ public final class GOAPDetailsPanel implements Panel {
         // path computes the GL scissor coords ourselves and writes them directly, so the stale stack is irrelevant.
         applyRawScissor(graphics, scrollAreaX, scrollAreaY, scrollAreaWidth, scrollAreaHeight);
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         // Subtract the scroll offset from the starting Y so a positive scroll position pushes content upward; rows
         // above the scissor are clipped, rows below render normally. Cast to int because drawString takes int coords
         // and we don't want sub-pixel jitter as the user wheel-scrolls.

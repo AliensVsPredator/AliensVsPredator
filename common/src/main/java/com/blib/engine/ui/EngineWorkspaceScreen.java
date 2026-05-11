@@ -524,7 +524,7 @@ public final class EngineWorkspaceScreen extends Screen {
      * workspace's flat dark theme and so we control sizing in workspace-logical pixels.
      */
     private void drawTooltipBox(GuiGraphics graphics, Component text, int mouseX, int mouseY) {
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var paddingX = 3;
         var paddingY = 2;
         var lineHeight = font.lineHeight;
@@ -591,7 +591,7 @@ public final class EngineWorkspaceScreen extends Screen {
         }
 
         // Ghost: a translucent tab-shaped chip floating with the cursor.
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var label = tabDrag.tab.title();
         var labelWidth = font.width(label);
         var w = labelWidth + 12;

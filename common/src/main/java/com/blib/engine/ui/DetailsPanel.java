@@ -460,7 +460,7 @@ public final class DetailsPanel implements Panel {
         factionPaintToggleW = 0;
         tagRemoveHits.clear();
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var rowY = y;
 
         var selection = SelectionManager.current();

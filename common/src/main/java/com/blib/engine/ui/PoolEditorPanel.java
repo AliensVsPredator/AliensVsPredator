@@ -221,7 +221,7 @@ public final class PoolEditorPanel implements Panel {
     private void renderHeader(GuiGraphics graphics, int x, int y, int width, int mouseX, int mouseY) {
         graphics.fill(x, y, x + width, y + HEADER_BAR_HEIGHT, HEADER_BG_COLOR);
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var labelText = "Pool";
         var labelWidth = font.width(labelText);
         var selectY = y + (HEADER_BAR_HEIGHT - SearchableSelect.HEIGHT) / 2;
@@ -255,7 +255,7 @@ public final class PoolEditorPanel implements Panel {
         graphics.fill(x, y, x + 1, y + SAVE_BUTTON_HEIGHT, border);
         graphics.fill(x + SAVE_BUTTON_WIDTH - 1, y, x + SAVE_BUTTON_WIDTH, y + SAVE_BUTTON_HEIGHT, border);
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var label = saveButtonLabel();
         var color = !enabled
             ? SAVE_BUTTON_DISABLED_TEXT
@@ -287,7 +287,7 @@ public final class PoolEditorPanel implements Panel {
         var poolSelected = poolSelect.currentValue() != null;
         if (!poolSelected) {
             // No pool to add to — render a muted note where the select would go.
-            var font = Minecraft.getInstance().font;
+            var font = EngineFont.get();
             var note = "(pick a pool to enable adding)";
             var textY = y + (FOOTER_HEIGHT - font.lineHeight + 2) / 2;
             graphics.drawString(font, Component.literal(note), x + CONTENT_PADDING, textY, EMPTY_NOTE_COLOR, false);
@@ -421,7 +421,7 @@ public final class PoolEditorPanel implements Panel {
             );
         }
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var layout = rowLayout(x, width);
 
         if (element.editable()) {
@@ -580,7 +580,7 @@ public final class PoolEditorPanel implements Panel {
     }
 
     private static void drawCenteredNote(GuiGraphics graphics, int x, int y, int width, int height, String text) {
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var textWidth = font.width(text);
         var noteX = x + (width - textWidth) / 2;
         var noteY = y + (height - font.lineHeight + 2) / 2;

@@ -1,7 +1,6 @@
 package com.blib.engine.ui;
 
 import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
@@ -141,7 +140,7 @@ public final class ManageLayoutsDialog {
     public void render(GuiGraphics graphics, int screenWidth, int screenHeight, int mouseX, int mouseY) {
         graphics.fill(0, 0, screenWidth, screenHeight, DIM_COLOR);
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var boxX = (screenWidth - BOX_WIDTH) / 2;
         var boxY = (screenHeight - BOX_HEIGHT) / 2;
 
@@ -244,7 +243,7 @@ public final class ManageLayoutsDialog {
         graphics.fill(rect.x, rect.y, rect.x + 1, rect.y + rect.h, BUTTON_BORDER);
         graphics.fill(rect.x + rect.w - 1, rect.y, rect.x + rect.w, rect.y + rect.h, BUTTON_BORDER);
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var textX = rect.x + (rect.w - font.width(label)) / 2;
         var textY = rect.y + (rect.h - font.lineHeight + 2) / 2;
         graphics.drawString(font, Component.literal(label), textX, textY, textColor, false);

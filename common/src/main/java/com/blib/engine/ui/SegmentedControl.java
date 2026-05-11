@@ -1,6 +1,5 @@
 package com.blib.engine.ui;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
@@ -66,7 +65,7 @@ public final class SegmentedControl {
 
         graphics.fill(x, y, x + width, y + HEIGHT, BG_COLOR);
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         for (var i = 0; i < labels.size(); i++) {
             var sx = segmentLeft(i);
             var sxEnd = segmentLeft(i + 1);

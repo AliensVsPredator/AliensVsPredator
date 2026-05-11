@@ -1,6 +1,5 @@
 package com.blib.engine.ui;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
@@ -48,7 +47,7 @@ public final class PanelChrome {
         graphics.fill(x + width - BORDER_THICKNESS, y, x + width, y + height, BORDER_COLOR);
         graphics.fill(x, y + height - BORDER_THICKNESS, x + width, y + height, BORDER_COLOR);
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         graphics.drawString(
             font,
             Component.literal(title),

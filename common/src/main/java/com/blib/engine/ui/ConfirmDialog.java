@@ -1,6 +1,5 @@
 package com.blib.engine.ui;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
@@ -102,7 +101,7 @@ public final class ConfirmDialog {
     public void render(GuiGraphics graphics, int screenWidth, int screenHeight, int mouseX, int mouseY) {
         graphics.fill(0, 0, screenWidth, screenHeight, DIM_COLOR);
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var contentW = BOX_WIDTH - 2 * BOX_PAD_X;
         var lines = font.split(Component.literal(message), contentW);
         var messageH = Math.max(1, lines.size()) * font.lineHeight;
@@ -142,7 +141,7 @@ public final class ConfirmDialog {
         graphics.fill(rect.x, rect.y, rect.x + 1, rect.y + rect.h, BUTTON_BORDER);
         graphics.fill(rect.x + rect.w - 1, rect.y, rect.x + rect.w, rect.y + rect.h, BUTTON_BORDER);
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var textX = rect.x + (rect.w - font.width(label)) / 2;
         // +2 compensates for MC font's descender padding so labels visually center; same convention as MenuBarPanel.
         var textY = rect.y + (rect.h - font.lineHeight + 2) / 2;

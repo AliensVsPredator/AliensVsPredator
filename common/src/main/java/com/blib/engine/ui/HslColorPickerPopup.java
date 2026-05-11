@@ -284,7 +284,7 @@ public final class HslColorPickerPopup {
     }
 
     private void renderHexLabel(GuiGraphics graphics) {
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var argb = Color.HSLtoARGB(hue, saturation, lightness);
         var hex = String.format(java.util.Locale.ROOT, "#%06X", argb & 0xFFFFFF);
         var swatchX = popupX + PADDING;

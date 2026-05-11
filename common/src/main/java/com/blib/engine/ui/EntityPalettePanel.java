@@ -155,7 +155,7 @@ public final class EntityPalettePanel implements Panel {
 
         if (filtered.isEmpty()) {
             var msg = query.isEmpty() ? "(no summonable entities)" : "(no matches)";
-            var font = Minecraft.getInstance().font;
+            var font = EngineFont.get();
             graphics.drawString(font, Component.literal(msg), listX, listY, EMPTY_TEXT_COLOR, false);
             return;
         }
@@ -210,7 +210,7 @@ public final class EntityPalettePanel implements Panel {
         // Left-edge category accent stripe, mirrors the visual language of the outliner.
         graphics.fill(x, y, x + 2, y + ROW_HEIGHT, categoryColor(entry.category));
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var textY = y + (ROW_HEIGHT - font.lineHeight + 2) / 2;
 
         // Right-aligned category chip — drawn first so we know how much horizontal room is left for the name.

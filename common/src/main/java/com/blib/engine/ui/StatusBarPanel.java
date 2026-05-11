@@ -1,6 +1,5 @@
 package com.blib.engine.ui;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -81,7 +80,7 @@ public final class StatusBarPanel implements Panel {
         graphics.fill(x, y, x + width, y + height, BACKGROUND_COLOR);
         graphics.fill(x, y, x + width, y + 1, BORDER_COLOR);
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         // +2 compensates for MC font's descender padding so labels visually center; see MenuBarPanel.
         var textY = y + (height - font.lineHeight + 2) / 2;
 

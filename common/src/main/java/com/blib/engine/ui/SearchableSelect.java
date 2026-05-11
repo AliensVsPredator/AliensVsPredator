@@ -152,7 +152,7 @@ public final class SearchableSelect<T> {
         graphics.fill(x, y, x + 1, y + HEIGHT, border);
         graphics.fill(x + width - 1, y, x + width, y + HEIGHT, border);
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         // +2 compensates for MC font's descender padding so labels visually center; see MenuBarPanel.
         var textY = y + (HEIGHT - font.lineHeight + 2) / 2;
 
@@ -390,7 +390,7 @@ public final class SearchableSelect<T> {
 
             // 6) Render rows. Empty state shows a muted note when the filter has no matches.
             if (filteredItems.isEmpty()) {
-                var font = Minecraft.getInstance().font;
+                var font = EngineFont.get();
                 var noteY = listAreaY + (listAreaHeight - font.lineHeight + 2) / 2;
                 graphics.drawString(font, Component.literal("(no matches)"), listAreaX + PADDING_X, noteY, EMPTY_NOTE_COLOR, false);
                 scroll.renderScrollbar(graphics, listAreaX, listAreaY, listAreaWidth, listAreaHeight, mouseX, mouseY);
@@ -418,7 +418,7 @@ public final class SearchableSelect<T> {
             var heightRaw = Math.max(0, (int) ((double) (bottomRight.y - topLeft.y) * guiScale));
             RenderSystem.enableScissor(leftRaw, bottomRaw, widthRaw, heightRaw);
             try {
-                var font = Minecraft.getInstance().font;
+                var font = EngineFont.get();
                 var firstVisible = (int) (scroll.scrollY() / ROW_HEIGHT);
                 var lastVisible = Math.min(filteredItems.size(), firstVisible + MAX_VISIBLE_ROWS + 2);
                 // When an iconProvider is set, reserve ICON_SIZE + ICON_TEXT_GAP at the start of each row for the

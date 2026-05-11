@@ -183,7 +183,7 @@ public final class TagBrowserPanel implements Panel {
             lastFetchedProject = projectName;
         }
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var topRowY = y + CONTENT_PADDING;
 
         // Right-aligned: Refresh button. Left of it: project toggle. Then namespace input. Search input takes the rest.
@@ -342,7 +342,7 @@ public final class TagBrowserPanel implements Panel {
         graphics.fill(x, y, x + width, y + HEADER_HEIGHT, bg);
         graphics.fill(x, y, x + 2, y + HEADER_HEIGHT, accentColor(registryKey));
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var caret = collapsed.contains(registryKey) ? "▸" : "▾";
         var textY = y + (HEADER_HEIGHT - font.lineHeight + 2) / 2;
         graphics.drawString(font, Component.literal(caret), x + 4, textY, HEADER_TEXT_COLOR, false);
@@ -387,7 +387,7 @@ public final class TagBrowserPanel implements Panel {
             graphics.fill(x, y, x + width, y + ROW_HEIGHT, ROW_BG_HOVER_COLOR);
         }
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var textY = y + (ROW_HEIGHT - font.lineHeight + 2) / 2;
 
         var labelMaxWidth = Math.max(0, width - 16);
@@ -411,7 +411,7 @@ public final class TagBrowserPanel implements Panel {
         graphics.fill(popupX, popupY, popupX + 1, popupY + popupH, POPUP_BORDER_COLOR);
         graphics.fill(popupX + popupW - 1, popupY, popupX + popupW, popupY + popupH, POPUP_BORDER_COLOR);
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var title = "Create tag in " + createPopup.registryKey;
         graphics.drawString(font, Component.literal(title), popupX + 8, popupY + 6, POPUP_TITLE_COLOR, false);
 
@@ -445,7 +445,7 @@ public final class TagBrowserPanel implements Panel {
         graphics.fill(rect.x, rect.y, rect.x + 1, rect.y + rect.h, BUTTON_BORDER);
         graphics.fill(rect.x + rect.w - 1, rect.y, rect.x + rect.w, rect.y + rect.h, BUTTON_BORDER);
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var textX = rect.x + (rect.w - font.width(label)) / 2;
         var textY = rect.y + (rect.h - font.lineHeight + 2) / 2;
         graphics.drawString(font, Component.literal(label), textX, textY, textColor, false);

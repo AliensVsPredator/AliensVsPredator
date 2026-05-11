@@ -1,6 +1,5 @@
 package com.blib.engine.ui;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
@@ -67,7 +66,7 @@ public final class ToolbarPanel implements Panel {
         graphics.fill(x, y, x + width, y + height, BACKGROUND_COLOR);
         graphics.fill(x, y + height - 1, x + width, y + height, BORDER_COLOR);
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var paused = EngineTickControl.isPaused();
         var stateLabel = paused ? "Paused" : "Playing";
         var stateColor = paused ? ACCENT_COLOR : LABEL_COLOR;

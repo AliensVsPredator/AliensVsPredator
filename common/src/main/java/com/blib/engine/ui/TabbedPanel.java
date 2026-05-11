@@ -1,6 +1,5 @@
 package com.blib.engine.ui;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
@@ -169,7 +168,7 @@ public final class TabbedPanel implements Panel {
         graphics.fill(x, y, x + width, y + TAB_BAR_HEIGHT, STRIP_BG_COLOR);
         tabRects.clear();
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var cursorX = x;
 
         for (var i = 0; i < tabs.size(); i++) {

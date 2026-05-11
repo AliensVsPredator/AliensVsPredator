@@ -174,7 +174,7 @@ public final class ContentBrowserPanel implements Panel {
             lastFetchedProject = projectName;
         }
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
 
         // Top row: search input on the left, Refresh button on the right.
         var topRowY = y + CONTENT_PADDING;
@@ -277,7 +277,7 @@ public final class ContentBrowserPanel implements Panel {
         graphics.fill(x, y, x + width, y + HEADER_HEIGHT, bg);
         graphics.fill(x, y, x + 2, y + HEADER_HEIGHT, section.accentColor);
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var caret = collapsed.contains(section) ? "▸" : "▾";
         var textY = y + (HEADER_HEIGHT - font.lineHeight + 2) / 2;
         graphics.drawString(font, Component.literal(caret), x + 4, textY, HEADER_TEXT_COLOR, false);
@@ -292,7 +292,7 @@ public final class ContentBrowserPanel implements Panel {
     }
 
     private int renderEmptyRow(GuiGraphics graphics, int x, int y, int width) {
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         graphics.drawString(font, Component.literal("(none)"), x + 12, y + (ROW_HEIGHT - font.lineHeight + 2) / 2, EMPTY_TEXT_COLOR, false);
         return y + ROW_HEIGHT;
     }
@@ -377,7 +377,7 @@ public final class ContentBrowserPanel implements Panel {
             graphics.fill(x, y, x + width, y + ROW_HEIGHT, ROW_BG_HOVER_COLOR);
         }
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var textY = y + (ROW_HEIGHT - font.lineHeight + 2) / 2;
         var buttonY = y + (ROW_HEIGHT - BUTTON_HEIGHT) / 2;
 
@@ -418,7 +418,7 @@ public final class ContentBrowserPanel implements Panel {
         graphics.fill(rect.x, rect.y, rect.x + 1, rect.y + rect.h, BUTTON_BORDER);
         graphics.fill(rect.x + rect.w - 1, rect.y, rect.x + rect.w, rect.y + rect.h, BUTTON_BORDER);
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var textX = rect.x + (rect.w - font.width(label)) / 2;
         var textY = rect.y + (rect.h - font.lineHeight + 2) / 2;
         graphics.drawString(font, Component.literal(label), textX, textY, textColor, false);

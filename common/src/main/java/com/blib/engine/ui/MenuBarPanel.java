@@ -1,6 +1,5 @@
 package com.blib.engine.ui;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
@@ -73,7 +72,7 @@ public final class MenuBarPanel implements Panel {
         graphics.fill(x, y, x + width, y + height, BACKGROUND_COLOR);
         graphics.fill(x, y + height - 1, x + width, y + height, BORDER_COLOR);
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         // Center the *visible* glyph rather than the full 9-pixel line box. MC's font reserves the bottom 2 pixels
         // of each 9-pixel line for descenders (g, p, y, q, j); for ASCII labels without those — every label here —
         // those 2 pixels are empty space, so the math-centered line box visually floats above the rect's center.

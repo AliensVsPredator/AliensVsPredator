@@ -180,7 +180,7 @@ public final class ProjectPickerScreen extends Screen {
     }
 
     private void renderList(GuiGraphics graphics, int mouseX, int mouseY) {
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var contentX = CONTENT_PADDING;
         var contentY = CONTENT_PADDING;
         var contentW = this.width - 2 * CONTENT_PADDING;
@@ -243,7 +243,7 @@ public final class ProjectPickerScreen extends Screen {
         graphics.fill(x, y, x + 1, y + CARD_HEIGHT, PANEL_BORDER);
         graphics.fill(x + width - 1, y, x + width, y + CARD_HEIGHT, PANEL_BORDER);
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var openX = x + width - CARD_PADDING_X - OPEN_BUTTON_WIDTH;
         var deleteX = openX - BUTTON_GAP - DELETE_BUTTON_WIDTH;
         var buttonY = y + (CARD_HEIGHT - BUTTON_HEIGHT) / 2;
@@ -270,7 +270,7 @@ public final class ProjectPickerScreen extends Screen {
     }
 
     private void renderCreate(GuiGraphics graphics, int mouseX, int mouseY) {
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var formW = 280;
         var formH = 152;
         var formX = (this.width - formW) / 2;
@@ -328,7 +328,7 @@ public final class ProjectPickerScreen extends Screen {
         graphics.fill(rect.x, rect.y, rect.x + 1, rect.y + rect.h, BUTTON_BORDER);
         graphics.fill(rect.x + rect.w - 1, rect.y, rect.x + rect.w, rect.y + rect.h, BUTTON_BORDER);
 
-        var font = Minecraft.getInstance().font;
+        var font = EngineFont.get();
         var textX = rect.x + (rect.w - font.width(label)) / 2;
         var textY = rect.y + (rect.h - font.lineHeight + 2) / 2;
         graphics.drawString(font, Component.literal(label), textX, textY, textColor, false);
