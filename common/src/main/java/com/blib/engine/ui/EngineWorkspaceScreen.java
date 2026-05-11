@@ -86,7 +86,7 @@ public final class EngineWorkspaceScreen extends Screen {
      * Mouse-pixel half-thickness of a divider's hit zone, in logical pixels. A click within {@code DIVIDER_HIT_PX} of
      * the boundary line is treated as a divider drag-start.
      */
-    private static final int DIVIDER_HIT_PX = 4;
+    private static final int DIVIDER_HIT_PX = 8;
 
     /**
      * Floor on any panel size during a divider drag (logical pixels). Prevents the user from collapsing a panel to zero
@@ -834,9 +834,9 @@ public final class EngineWorkspaceScreen extends Screen {
         var bx = dragger.boundaryStartX();
         var by = dragger.boundaryStartY();
         if (dragger.split.orientation() == Orientation.HORIZONTAL) {
-            graphics.fill(bx - 1, by, bx + 1, by + dragger.parentHeight, DIVIDER_HIGHLIGHT_COLOR);
+            graphics.fill(bx - 2, by, bx + 2, by + dragger.parentHeight, DIVIDER_HIGHLIGHT_COLOR);
         } else {
-            graphics.fill(bx, by - 1, bx + dragger.parentWidth, by + 1, DIVIDER_HIGHLIGHT_COLOR);
+            graphics.fill(bx, by - 2, bx + dragger.parentWidth, by + 2, DIVIDER_HIGHLIGHT_COLOR);
         }
     }
 
