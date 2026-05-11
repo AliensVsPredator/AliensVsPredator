@@ -39,8 +39,9 @@ public final class JigsawPieceSelection {
      * over leftover transforms from the last piece. Re-selecting the same id is a no-op for the transform state, so
      * accidentally clicking the same card twice doesn't reset their work.
      * <p>
-     * Mutually exclusive with the entity-spawn selection: arming a piece clears any held entity type so the viewport's
-     * LMB-dispatch picks an unambiguous action.
+     * Mutually exclusive with the entity-spawn selection and any active block-volume selection: arming a piece clears
+     * both so the viewport's LMB-dispatch picks an unambiguous action and no leftover AABB wireframe coexists with the
+     * piece's placement preview.
      */
     public static void select(ResourceLocation id) {
         if (!id.equals(selectedId)) {
@@ -49,6 +50,7 @@ public final class JigsawPieceSelection {
         }
         selectedId = id;
         com.blib.engine.spawn.EntitySpawnSelection.clear();
+        com.blib.engine.blockselection.BlockSelection.clear();
     }
 
     public static void clear() {

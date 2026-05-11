@@ -54,6 +54,11 @@ public final class BlockSelectionOps {
         var dim = mc.player.level().dimension().location();
         BLib.MOD.networking()
             .sendToServer(new C2SCopySelectionPayload(new BlockPos(minX, minY, minZ), new BlockPos(maxX, maxY, maxZ), cut, dim));
+        if (cut) {
+            // Cut = copy + delete; clearing the AABB matches what delete() does and avoids leaving a wireframe over
+            // empty air. Plain copy intentionally keeps the AABB so the user can see what they captured.
+            BlockSelection.clear();
+        }
     }
 
     /**
@@ -100,6 +105,9 @@ public final class BlockSelectionOps {
         var dim = mc.player.level().dimension().location();
         BLib.MOD.networking()
             .sendToServer(new C2SDeleteSelectionPayload(new BlockPos(minX, minY, minZ), new BlockPos(maxX, maxY, maxZ), dim));
+        // The volume's blocks are about to be gone; leaving the AABB wireframe floating over empty space confuses
+        // users into thinking the operation didn't apply. Optimistic clear matches what paste() does for AABB shift.
+        BlockSelection.clear();
     }
 
     private static boolean inVolumeCap() {

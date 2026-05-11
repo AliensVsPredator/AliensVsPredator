@@ -36,6 +36,9 @@ public final class ClaimPaintTool {
     }
 
     public static void activate() {
+        // Paint mode is mutually exclusive with editing a block volume — leaving an AABB wireframe up while the user
+        // starts painting chunks would be a contradictory engine state.
+        com.blib.engine.blockselection.BlockSelection.clear();
         active = true;
     }
 
