@@ -42,7 +42,6 @@ import com.blib.internal.client.faction.ClientFactionInspectionCache;
 import com.blib.internal.client.territory.ClientTerritoryCache;
 import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.C2SAddTagEntryPayload;
-import com.blib.mod.common.network.packet.C2SReloadProjectPayload;
 import com.blib.mod.common.network.packet.C2SRemoveTagEntryPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionInspectionPayload;
 import com.blib.mod.common.network.packet.C2SRequestRegistryEntriesPayload;
@@ -404,9 +403,6 @@ public final class DetailsPanel implements Panel {
 
     /** Last registry we asked for entries — drift triggers a re-fetch (so the picker has fresh choices). */
     private @Nullable ResourceLocation tagLastFetchedRegistryEntries;
-
-    /** When > 0, drives the Reload button's "Reloading…" → "✓ Reloaded" → idle state machine. */
-    private long tagLastReloadAttemptMs;
 
     /** Cached panel rect from the most recent render — needed by the tag view's footer + per-row × hit testing. */
     private int rectX;
@@ -1928,10 +1924,6 @@ public final class DetailsPanel implements Panel {
 
     private static final int TAG_VIEW_TOGGLE_WIDTH = 96;
 
-    private static final int TAG_RELOAD_BUTTON_WIDTH = 56;
-
-    private static final int TAG_RELOAD_BUTTON_HEIGHT = SearchableSelect.HEIGHT;
-
     private static final int TAG_ROW_HEIGHT = 12;
 
     private static final int TAG_CHIP_WIDTH = 10;
@@ -1955,24 +1947,6 @@ public final class DetailsPanel implements Panel {
     private static final int TAG_REMOVE_ICON_HOVER_COLOR = 0xFFFF6868;
 
     private static final int TAG_ROW_HOVER_BG = 0xFF1F1F26;
-
-    private static final int TAG_RELOAD_BG = 0xFF14141A;
-
-    private static final int TAG_RELOAD_BG_HOVER = 0xFF1A1A22;
-
-    private static final int TAG_RELOAD_BORDER = 0xFF353540;
-
-    private static final int TAG_RELOAD_BORDER_HOVER = 0xFF4F8FFF;
-
-    private static final int TAG_RELOAD_TEXT = 0xFFD0D0D0;
-
-    private static final int TAG_RELOAD_DISABLED_TEXT = 0xFF606068;
-
-    private static final int TAG_RELOAD_RELOADED_TEXT = 0xFF80E080;
-
-    private static final long TAG_RELOADING_FEEDBACK_MS = 200L;
-
-    private static final long TAG_RELOADED_FEEDBACK_MS = 2200L;
 
     private static final int TAG_EMPTY_NOTE_COLOR = 0xFF606068;
 
@@ -2020,14 +1994,13 @@ public final class DetailsPanel implements Panel {
         graphics.drawString(font, Component.literal(registryKey.toString()), x + CONTENT_PADDING, rowY, TAG_REGISTRY_LABEL_COLOR, false);
         rowY += LINE_HEIGHT + ROW_GAP;
 
-        // Toolbar row: View toggle (left) + Replace toggle (middle) + Reload button (right).
+        // Toolbar row: View toggle (left) + Replace toggle (right of view). Reload Project moved to the global
+        // toolbar — applying source edits is a project-level action, not a per-tag one.
         var toolbarY = rowY;
         var viewX = x + CONTENT_PADDING;
         var replaceX = viewX + TAG_VIEW_TOGGLE_WIDTH + 4;
-        var reloadX = x + width - CONTENT_PADDING - TAG_RELOAD_BUTTON_WIDTH;
         tagViewToggle.render(graphics, viewX, toolbarY, TAG_VIEW_TOGGLE_WIDTH, mouseX, mouseY);
         tagReplaceToggle.render(graphics, replaceX, toolbarY, TAG_REPLACE_TOGGLE_WIDTH, mouseX, mouseY);
-        renderTagReloadButton(graphics, font, reloadX, toolbarY, mouseX, mouseY);
         rowY += TAG_TOOLBAR_HEIGHT;
 
         // Body region: scrollable list. The Source view leaves room for an Add-entry footer; the Resolved view is
@@ -2166,44 +2139,6 @@ public final class DetailsPanel implements Panel {
         tagRemoveHits.add(new TagRemoveHit(removeX, y, TAG_REMOVE_BUTTON_WIDTH, TAG_ROW_HEIGHT, entry.rawIndex()));
     }
 
-    private void renderTagReloadButton(GuiGraphics graphics, Font font, int x, int y, int mouseX, int mouseY) {
-        var enabled = ProjectSession.activeProject() != null;
-        var hovered = enabled
-            && mouseX >= x
-            && mouseX < x + TAG_RELOAD_BUTTON_WIDTH
-            && mouseY >= y
-            && mouseY < y + TAG_RELOAD_BUTTON_HEIGHT;
-        var bg = hovered ? TAG_RELOAD_BG_HOVER : TAG_RELOAD_BG;
-        var border = hovered ? TAG_RELOAD_BORDER_HOVER : TAG_RELOAD_BORDER;
-        graphics.fill(x, y, x + TAG_RELOAD_BUTTON_WIDTH, y + TAG_RELOAD_BUTTON_HEIGHT, bg);
-        graphics.fill(x, y, x + TAG_RELOAD_BUTTON_WIDTH, y + 1, border);
-        graphics.fill(x, y + TAG_RELOAD_BUTTON_HEIGHT - 1, x + TAG_RELOAD_BUTTON_WIDTH, y + TAG_RELOAD_BUTTON_HEIGHT, border);
-        graphics.fill(x, y, x + 1, y + TAG_RELOAD_BUTTON_HEIGHT, border);
-        graphics.fill(x + TAG_RELOAD_BUTTON_WIDTH - 1, y, x + TAG_RELOAD_BUTTON_WIDTH, y + TAG_RELOAD_BUTTON_HEIGHT, border);
-
-        var label = tagReloadLabel();
-        var color = !enabled
-            ? TAG_RELOAD_DISABLED_TEXT
-            : (label.startsWith("✓") ? TAG_RELOAD_RELOADED_TEXT : TAG_RELOAD_TEXT);
-        var textX = x + (TAG_RELOAD_BUTTON_WIDTH - font.width(label)) / 2;
-        var textY = y + (TAG_RELOAD_BUTTON_HEIGHT - font.lineHeight + 2) / 2;
-        graphics.drawString(font, Component.literal(label), textX, textY, color, false);
-    }
-
-    private String tagReloadLabel() {
-        if (tagLastReloadAttemptMs <= 0) {
-            return "Reload";
-        }
-        var elapsed = System.currentTimeMillis() - tagLastReloadAttemptMs;
-        if (elapsed < TAG_RELOADING_FEEDBACK_MS) {
-            return "Reloading…";
-        }
-        if (elapsed < TAG_RELOADED_FEEDBACK_MS) {
-            return "✓ Reloaded";
-        }
-        return "Reload";
-    }
-
     private static void drawCenteredNote(GuiGraphics graphics, Font font, int x, int y, int width, int height, String text) {
         var textWidth = font.width(text);
         var noteX = x + (width - textWidth) / 2;
@@ -2257,9 +2192,6 @@ public final class DetailsPanel implements Panel {
             }
             return true;
         }
-        if (handleTagReloadClick(mouseX, mouseY, button)) {
-            return true;
-        }
         if (tagScroll.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
@@ -2272,25 +2204,6 @@ public final class DetailsPanel implements Panel {
             }
         }
         return false;
-    }
-
-    private boolean handleTagReloadClick(double mouseX, double mouseY, int button) {
-        if (button != 0 || ProjectSession.activeProject() == null) {
-            return false;
-        }
-        // Reload button rect mirrors renderTagReloadButton's positioning.
-        var reloadX = rectX + rectWidth - CONTENT_PADDING - TAG_RELOAD_BUTTON_WIDTH;
-        // The toolbar row sits one LINE_HEIGHT + 2*ROW_GAP below the header bar — same offset renderTagView uses.
-        var toolbarY = rectY + HEADER_BAR_HEIGHT + ROW_GAP + LINE_HEIGHT + ROW_GAP;
-        if (mouseX < reloadX || mouseX >= reloadX + TAG_RELOAD_BUTTON_WIDTH) {
-            return false;
-        }
-        if (mouseY < toolbarY || mouseY >= toolbarY + TAG_RELOAD_BUTTON_HEIGHT) {
-            return false;
-        }
-        BLib.MOD.networking().sendToServer(new C2SReloadProjectPayload(ProjectSession.activeProjectName()));
-        tagLastReloadAttemptMs = System.currentTimeMillis();
-        return true;
     }
 
     private void commitAddTagEntry(TagPickerItem item) {

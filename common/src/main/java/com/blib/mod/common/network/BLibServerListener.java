@@ -82,7 +82,6 @@ import com.blib.mod.common.network.packet.C2SRequestPoolDraftPayload;
 import com.blib.mod.common.network.packet.C2SRequestRegistryEntriesPayload;
 import com.blib.mod.common.network.packet.C2SRequestTagCatalogPayload;
 import com.blib.mod.common.network.packet.C2SRequestTagDraftPayload;
-import com.blib.mod.common.network.packet.C2SSavePoolPayload;
 import com.blib.mod.common.network.packet.C2SSetEntityScalePayload;
 import com.blib.mod.common.network.packet.C2SSetFactionRelationshipPayload;
 import com.blib.mod.common.network.packet.C2SSetTagReplacePayload;
@@ -457,21 +456,6 @@ public final class BLibServerListener {
 
         var elements = ProjectDraftStore.extractDraftElements(pool);
         BLib.MOD.networking().sendToClient(serverPlayer, new S2CPoolDraftPayload(projectName, payload.poolId(), elements));
-    }
-
-    /**
-     * Pool Editor "Save &amp; Reload" button — every pool edit already writes to disk, so this is just a reload trigger
-     * dressed up as a header button. The {@code poolId} field is unused server-side; the client uses it only to track
-     * which editor invoked the reload.
-     */
-    public static void handleSavePool(C2SSavePoolPayload payload, Player player) {
-        if (!(player instanceof ServerPlayer serverPlayer)) {
-            return;
-        }
-        if (!serverPlayer.hasPermissions(2)) {
-            return;
-        }
-        runReload(serverPlayer, payload.projectName());
     }
 
     /**
@@ -1149,9 +1133,9 @@ public final class BLibServerListener {
     }
 
     /**
-     * Common reload path shared by {@link #handleSavePool} and {@link #handleReloadProject}. Sets the {@code reloading}
-     * guard, kicks off {@code reloadResources}, chains the success/failure reply onto its completion, and clears the
-     * project's draft cache so the next edit re-seeds from the freshly-imported registry.
+     * Common reload path used by {@link #handleReloadProject}. Sets the {@code reloading} guard, kicks off
+     * {@code reloadResources}, chains the success/failure reply onto its completion, and clears the project's draft
+     * cache so the next edit re-seeds from the freshly-imported registry.
      */
     private static void runReload(ServerPlayer serverPlayer, String projectName) {
         var server = serverPlayer.serverLevel().getServer();

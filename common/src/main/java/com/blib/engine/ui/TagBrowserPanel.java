@@ -70,14 +70,6 @@ public final class TagBrowserPanel implements Panel {
 
     private static final int EMPTY_TEXT_COLOR = 0xFF606068;
 
-    private static final int BUTTON_BG = 0xFF14141A;
-
-    private static final int BUTTON_BG_HOVER = 0xFF22222C;
-
-    private static final int BUTTON_BORDER = 0xFF353540;
-
-    private static final int BUTTON_TEXT = 0xFFD0D0D0;
-
     private static final int CREATE_BUTTON_COLOR = 0xFF80E080;
 
     private static final int POPUP_DIM_COLOR = 0xC0000000;
@@ -102,9 +94,7 @@ public final class TagBrowserPanel implements Panel {
 
     private static final int CREATE_BUTTON_WIDTH = 12;
 
-    private static final int REFRESH_BUTTON_WIDTH = 56;
-
-    private static final int REFRESH_BUTTON_HEIGHT = TextInput.HEIGHT;
+    private static final int TOP_ROW_HEIGHT = TextInput.HEIGHT;
 
     private static final int NAMESPACE_INPUT_WIDTH = 80;
 
@@ -140,8 +130,6 @@ public final class TagBrowserPanel implements Panel {
     private final List<HeaderHit> headerHits = new ArrayList<>();
 
     private final List<CreateHit> createHits = new ArrayList<>();
-
-    private @Nullable Rect refreshButtonRect;
 
     private int rectX;
 
@@ -180,7 +168,6 @@ public final class TagBrowserPanel implements Panel {
         rowHits.clear();
         headerHits.clear();
         createHits.clear();
-        refreshButtonRect = null;
 
         graphics.fill(x, y, x + width, y + height, BACKGROUND_COLOR);
 
@@ -193,22 +180,19 @@ public final class TagBrowserPanel implements Panel {
         var font = EngineFont.get();
         var topRowY = y + CONTENT_PADDING;
 
-        // Right-aligned: Refresh button. Left of it: project toggle. Then namespace input. Search input takes the rest.
-        var refreshX = x + width - CONTENT_PADDING - REFRESH_BUTTON_WIDTH;
-        var refreshRect = new Rect(refreshX, topRowY, REFRESH_BUTTON_WIDTH, REFRESH_BUTTON_HEIGHT);
-        this.refreshButtonRect = refreshRect;
-
-        var toggleX = refreshX - 4 - PROJECT_TOGGLE_WIDTH;
+        // Right-aligned: project toggle. Then namespace input. Search input takes the rest. The catalog re-fetches
+        // automatically on workspace open / project swap, and the inspector pushes a fresh draft after every edit
+        // (which flips the row's inProject flag locally) — no manual Refresh button needed.
+        var toggleX = x + width - CONTENT_PADDING - PROJECT_TOGGLE_WIDTH;
         var nsX = toggleX - 4 - NAMESPACE_INPUT_WIDTH;
         var searchW = Math.max(0, nsX - (x + CONTENT_PADDING) - 4);
 
         searchInput.render(graphics, x + CONTENT_PADDING, topRowY, searchW, mouseX, mouseY);
         namespaceInput.render(graphics, nsX, topRowY, NAMESPACE_INPUT_WIDTH, mouseX, mouseY);
         projectToggle.render(graphics, toggleX, topRowY, PROJECT_TOGGLE_WIDTH, mouseX, mouseY);
-        renderButton(graphics, refreshRect, "Refresh", mouseX, mouseY, BUTTON_TEXT);
 
         var listX = x + CONTENT_PADDING;
-        var listY = topRowY + REFRESH_BUTTON_HEIGHT + SEARCH_GAP_BELOW;
+        var listY = topRowY + TOP_ROW_HEIGHT + SEARCH_GAP_BELOW;
         var listW = width - 2 * CONTENT_PADDING;
         var listH = Math.max(0, height - (listY - y) - CONTENT_PADDING);
         if (listH <= 0) {
@@ -456,20 +440,6 @@ public final class TagBrowserPanel implements Panel {
         }
     }
 
-    private static void renderButton(GuiGraphics graphics, Rect rect, String label, int mouseX, int mouseY, int textColor) {
-        var hovered = rect.contains(mouseX, mouseY);
-        graphics.fill(rect.x, rect.y, rect.x + rect.w, rect.y + rect.h, hovered ? BUTTON_BG_HOVER : BUTTON_BG);
-        graphics.fill(rect.x, rect.y, rect.x + rect.w, rect.y + 1, BUTTON_BORDER);
-        graphics.fill(rect.x, rect.y + rect.h - 1, rect.x + rect.w, rect.y + rect.h, BUTTON_BORDER);
-        graphics.fill(rect.x, rect.y, rect.x + 1, rect.y + rect.h, BUTTON_BORDER);
-        graphics.fill(rect.x + rect.w - 1, rect.y, rect.x + rect.w, rect.y + rect.h, BUTTON_BORDER);
-
-        var font = EngineFont.get();
-        var textX = rect.x + (rect.w - font.width(label)) / 2;
-        var textY = rect.y + (rect.h - font.lineHeight + 2) / 2;
-        graphics.drawString(font, Component.literal(label), textX, textY, textColor, false);
-    }
-
     private static int accentColor(ResourceLocation registryKey) {
         var hash = Math.abs(registryKey.toString().hashCode());
         return ACCENT_PALETTE[hash % ACCENT_PALETTE.length];
@@ -535,13 +505,6 @@ public final class TagBrowserPanel implements Panel {
         }
         if (button != 0) {
             return false;
-        }
-        if (refreshButtonRect != null && refreshButtonRect.contains(mouseX, mouseY)) {
-            var projectName = ProjectSession.activeProjectName();
-            if (!projectName.isEmpty()) {
-                requestCatalog(projectName);
-            }
-            return true;
         }
         // Per-section + button takes priority over the section's collapse toggle.
         for (var ch : createHits) {

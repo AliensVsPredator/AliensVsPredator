@@ -24,7 +24,6 @@ import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.C2SAddPoolElementPayload;
 import com.blib.mod.common.network.packet.C2SRemovePoolElementPayload;
 import com.blib.mod.common.network.packet.C2SRequestPoolDraftPayload;
-import com.blib.mod.common.network.packet.C2SSavePoolPayload;
 import com.blib.mod.common.network.packet.C2SUpdatePoolElementPayload;
 
 /**
@@ -40,7 +39,7 @@ import com.blib.mod.common.network.packet.C2SUpdatePoolElementPayload;
  * Edits ({@link C2SUpdatePoolElementPayload} / {@link C2SAddPoolElementPayload} / {@link C2SRemovePoolElementPayload})
  * write straight to the active project's datapack JSON on disk — the live {@code Registries#TEMPLATE_POOL} object is
  * left untouched. Live structure generation only reflects the edits after the user clicks the header "Reload" button
- * (which fires {@link C2SSavePoolPayload} → server reload). All edit packets are no-ops without an active
+ * (the toolbar's Reload Project button kicks off the server reload). All edit packets are no-ops without an active
  * {@link ProjectSession}.
  * <p>
  * Nested children of a {@code ListPoolElement} display alongside top-level elements but render the weight and
@@ -99,31 +98,6 @@ public final class PoolEditorPanel implements Panel {
     /** Footer area below the scroll body, hosting the Add-piece select. Same height as the header for symmetry. */
     private static final int FOOTER_HEIGHT = SearchableSelect.HEIGHT + 4;
 
-    /** Width of the Save button in the header — fits "✓ Saved" comfortably. */
-    private static final int SAVE_BUTTON_WIDTH = 56;
-
-    private static final int SAVE_BUTTON_HEIGHT = SearchableSelect.HEIGHT;
-
-    private static final int SAVE_BUTTON_BG = 0xFF14141A;
-
-    private static final int SAVE_BUTTON_BG_HOVER = 0xFF1A1A22;
-
-    private static final int SAVE_BUTTON_BORDER = 0xFF353540;
-
-    private static final int SAVE_BUTTON_BORDER_HOVER = 0xFF4F8FFF;
-
-    private static final int SAVE_BUTTON_TEXT = 0xFFD0D0D0;
-
-    private static final int SAVE_BUTTON_DISABLED_TEXT = 0xFF606068;
-
-    private static final int SAVE_BUTTON_SAVED_TEXT = 0xFF80E080;
-
-    /** Brief "Saving…" feedback window after a save click before flipping to "Saved". */
-    private static final long SAVING_FEEDBACK_MS = 200L;
-
-    /** Total feedback window — after this elapses, button returns to idle "Save". */
-    private static final long SAVED_FEEDBACK_MS = 2200L;
-
     private final SearchableSelect<ResourceLocation> poolSelect = new SearchableSelect<>(
         PoolEditorPanel::buildPoolItems,
         rl -> rl == null ? "(pick a pool)" : rl.toString(),
@@ -173,9 +147,6 @@ public final class PoolEditorPanel implements Panel {
     private int rectWidth;
 
     private int rectHeight;
-
-    /** When {@code > 0}, drives the Save button's "Saving…" → "Saved" → idle state machine. Set on Save click. */
-    private long lastSaveAttemptMs;
 
     @Override
     public String title() {
@@ -227,56 +198,8 @@ public final class PoolEditorPanel implements Panel {
         graphics.drawString(font, Component.literal(labelText), x + CONTENT_PADDING, labelY, HEADER_LABEL_COLOR, false);
 
         var selectX = x + CONTENT_PADDING + labelWidth + 6;
-        // Reserve room on the right for the Save button + a small gap.
-        var selectW = Math.max(0, width - (selectX - x) - CONTENT_PADDING - SAVE_BUTTON_WIDTH - 6);
+        var selectW = Math.max(0, width - (selectX - x) - CONTENT_PADDING);
         poolSelect.render(graphics, selectX, selectY, selectW, mouseX, mouseY);
-
-        // Save button on the right edge.
-        var saveButtonX = x + width - CONTENT_PADDING - SAVE_BUTTON_WIDTH;
-        renderSaveButton(graphics, saveButtonX, selectY, mouseX, mouseY);
-    }
-
-    private void renderSaveButton(GuiGraphics graphics, int x, int y, int mouseX, int mouseY) {
-        var enabled = poolSelect.currentValue() != null && ProjectSession.activeProject() != null;
-        var hovered = enabled
-            && mouseX >= x
-            && mouseX < x + SAVE_BUTTON_WIDTH
-            && mouseY >= y
-            && mouseY < y + SAVE_BUTTON_HEIGHT;
-
-        var bg = hovered ? SAVE_BUTTON_BG_HOVER : SAVE_BUTTON_BG;
-        var border = hovered ? SAVE_BUTTON_BORDER_HOVER : SAVE_BUTTON_BORDER;
-
-        graphics.fill(x, y, x + SAVE_BUTTON_WIDTH, y + SAVE_BUTTON_HEIGHT, bg);
-        graphics.fill(x, y, x + SAVE_BUTTON_WIDTH, y + 1, border);
-        graphics.fill(x, y + SAVE_BUTTON_HEIGHT - 1, x + SAVE_BUTTON_WIDTH, y + SAVE_BUTTON_HEIGHT, border);
-        graphics.fill(x, y, x + 1, y + SAVE_BUTTON_HEIGHT, border);
-        graphics.fill(x + SAVE_BUTTON_WIDTH - 1, y, x + SAVE_BUTTON_WIDTH, y + SAVE_BUTTON_HEIGHT, border);
-
-        var font = EngineFont.get();
-        var label = saveButtonLabel();
-        var color = !enabled
-            ? SAVE_BUTTON_DISABLED_TEXT
-            : (label.startsWith("✓") ? SAVE_BUTTON_SAVED_TEXT : SAVE_BUTTON_TEXT);
-        var labelWidth = font.width(label);
-        var textX = x + (SAVE_BUTTON_WIDTH - labelWidth) / 2;
-        // +2 compensates for MC font's descender padding so the label visually centers; see MenuBarPanel.
-        var textY = y + (SAVE_BUTTON_HEIGHT - font.lineHeight + 2) / 2;
-        graphics.drawString(font, Component.literal(label), textX, textY, color, false);
-    }
-
-    private String saveButtonLabel() {
-        if (lastSaveAttemptMs <= 0) {
-            return "Reload";
-        }
-        var elapsed = System.currentTimeMillis() - lastSaveAttemptMs;
-        if (elapsed < SAVING_FEEDBACK_MS) {
-            return "Reloading…";
-        }
-        if (elapsed < SAVED_FEEDBACK_MS) {
-            return "✓ Reloaded";
-        }
-        return "Save";
     }
 
     private void renderFooter(GuiGraphics graphics, int x, int y, int width, int mouseX, int mouseY) {
@@ -593,9 +516,6 @@ public final class PoolEditorPanel implements Panel {
         if (addPieceSelect.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
-        if (handleSaveButtonClick(mouseX, mouseY, button)) {
-            return true;
-        }
         if (scroll.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
@@ -625,36 +545,6 @@ public final class PoolEditorPanel implements Panel {
             return true;
         }
         return false;
-    }
-
-    /**
-     * Hit-test the Save button rect (top-right of header). Returns true if the click consumed; fires the save packet +
-     * starts the feedback timer.
-     */
-    private boolean handleSaveButtonClick(double mouseX, double mouseY, int button) {
-        if (button != 0) {
-            return false;
-        }
-        var poolId = poolSelect.currentValue();
-        if (poolId == null) {
-            return false;
-        }
-        var saveX = rectX + rectWidth - CONTENT_PADDING - SAVE_BUTTON_WIDTH;
-        var saveY = rectY + (HEADER_BAR_HEIGHT - SAVE_BUTTON_HEIGHT) / 2;
-        if (mouseX < saveX || mouseX >= saveX + SAVE_BUTTON_WIDTH) {
-            return false;
-        }
-        if (mouseY < saveY || mouseY >= saveY + SAVE_BUTTON_HEIGHT) {
-            return false;
-        }
-        if (ProjectSession.activeProject() == null) {
-            return false;
-        }
-        // The header button is now a one-click "make my edits live" — every pool change has already been written
-        // to disk by the per-edit packets, so this just kicks off the reload that imports them into the registry.
-        BLib.MOD.networking().sendToServer(new C2SSavePoolPayload(ProjectSession.activeProjectName(), poolId));
-        lastSaveAttemptMs = System.currentTimeMillis();
-        return true;
     }
 
     /**

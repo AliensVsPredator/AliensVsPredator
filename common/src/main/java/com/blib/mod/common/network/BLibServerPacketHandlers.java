@@ -41,7 +41,6 @@ import com.blib.mod.common.network.packet.C2SRequestPoolDraftPayload;
 import com.blib.mod.common.network.packet.C2SRequestRegistryEntriesPayload;
 import com.blib.mod.common.network.packet.C2SRequestTagCatalogPayload;
 import com.blib.mod.common.network.packet.C2SRequestTagDraftPayload;
-import com.blib.mod.common.network.packet.C2SSavePoolPayload;
 import com.blib.mod.common.network.packet.C2SSetEntityScalePayload;
 import com.blib.mod.common.network.packet.C2SSetFactionRelationshipPayload;
 import com.blib.mod.common.network.packet.C2SSetTagReplacePayload;
@@ -168,14 +167,6 @@ public class BLibServerPacketHandlers {
                 C2SRemovePoolElementPayload.TYPE,
                 C2SRemovePoolElementPayload.CODEC,
                 BLibServerListener::handleRemovePoolElement
-            )
-        );
-
-        REGISTRY.registerPacketHandler(
-            new NetworkHandler.FromClient<>(
-                C2SSavePoolPayload.TYPE,
-                C2SSavePoolPayload.CODEC,
-                BLibServerListener::handleSavePool
             )
         );
 

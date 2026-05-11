@@ -4,10 +4,15 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 
+import com.blib.engine.session.ProjectSession;
+import com.blib.mod.BLib;
+import com.blib.mod.common.network.packet.C2SReloadProjectPayload;
+
 /**
  * Editor toolbar — sits below the menu bar, full-bleed. Houses the play / pause button and a step-forward button at the
- * horizontal center (Unity-style), with a state label to their right. Future builds will add tool-mode buttons (move /
- * rotate / scale) and view-mode controls along this bar.
+ * horizontal center (Unity-style), with a state label to their right, and a right-aligned Reload Project button that
+ * applies project-level edits (tags, pools, etc.) to the live registry. Future builds will add tool-mode buttons (move
+ * / rotate / scale) and view-mode controls along this bar.
  */
 @ApiStatus.Internal
 public final class ToolbarPanel implements Panel {
@@ -45,11 +50,40 @@ public final class ToolbarPanel implements Panel {
     /** Step button advances the integrated server by one game tick per click. */
     private static final int STEP_TICKS = 1;
 
+    private static final int RELOAD_BUTTON_WIDTH = 64;
+
+    private static final int RELOAD_EDGE_PADDING = 6;
+
+    private static final int RELOAD_BG_COLOR = 0xFF1A1A1F;
+
+    private static final int RELOAD_BG_HOVER_COLOR = 0xFF353540;
+
+    private static final int RELOAD_BORDER_COLOR = 0xFF353540;
+
+    private static final int RELOAD_BORDER_HOVER_COLOR = 0xFF4F8FFF;
+
+    private static final int RELOAD_TEXT_COLOR = 0xFFD0D0D0;
+
+    private static final int RELOAD_DISABLED_TEXT_COLOR = 0xFF606068;
+
+    private static final int RELOAD_RELOADED_TEXT_COLOR = 0xFF80E080;
+
+    /** Brief "Reloading…" feedback window after a Reload click before flipping to "✓ Reloaded". */
+    private static final long RELOADING_FEEDBACK_MS = 200L;
+
+    /** Total feedback window — after this elapses, the button returns to idle "Reload". */
+    private static final long RELOADED_FEEDBACK_MS = 2200L;
+
     private int playButtonX;
 
     private int stepButtonX;
 
     private int buttonY;
+
+    private int reloadButtonX;
+
+    /** When > 0, drives the Reload button's "Reloading…" → "✓ Reloaded" → idle state machine. Set on Reload click. */
+    private long lastReloadAttemptMs;
 
     @Override
     public String title() {
@@ -118,6 +152,51 @@ public final class ToolbarPanel implements Panel {
             stateColor,
             false
         );
+
+        // ---- Reload Project button ----
+        this.reloadButtonX = x + width - RELOAD_EDGE_PADDING - RELOAD_BUTTON_WIDTH;
+        renderReloadButton(graphics, font, reloadButtonX, buttonY, mouseX, mouseY);
+    }
+
+    private void renderReloadButton(GuiGraphics graphics, net.minecraft.client.gui.Font font, int x, int y, int mouseX, int mouseY) {
+        var enabled = ProjectSession.activeProject() != null;
+        var hovered = enabled
+            && mouseX >= x
+            && mouseX < x + RELOAD_BUTTON_WIDTH
+            && mouseY >= y
+            && mouseY < y + BUTTON_HEIGHT;
+
+        var bg = hovered ? RELOAD_BG_HOVER_COLOR : RELOAD_BG_COLOR;
+        var border = hovered ? RELOAD_BORDER_HOVER_COLOR : RELOAD_BORDER_COLOR;
+        graphics.fill(x, y, x + RELOAD_BUTTON_WIDTH, y + BUTTON_HEIGHT, bg);
+        graphics.fill(x, y, x + RELOAD_BUTTON_WIDTH, y + 1, border);
+        graphics.fill(x, y + BUTTON_HEIGHT - 1, x + RELOAD_BUTTON_WIDTH, y + BUTTON_HEIGHT, border);
+        graphics.fill(x, y, x + 1, y + BUTTON_HEIGHT, border);
+        graphics.fill(x + RELOAD_BUTTON_WIDTH - 1, y, x + RELOAD_BUTTON_WIDTH, y + BUTTON_HEIGHT, border);
+
+        var label = reloadButtonLabel();
+        var color = !enabled
+            ? RELOAD_DISABLED_TEXT_COLOR
+            : (label.startsWith("✓") ? RELOAD_RELOADED_TEXT_COLOR : RELOAD_TEXT_COLOR);
+        var labelWidth = font.width(label);
+        var textX = x + (RELOAD_BUTTON_WIDTH - labelWidth) / 2;
+        // +2 compensates for MC font's descender padding so the label visually centers; see MenuBarPanel.
+        var textY = y + (BUTTON_HEIGHT - font.lineHeight + 2) / 2;
+        graphics.drawString(font, Component.literal(label), textX, textY, color, false);
+    }
+
+    private String reloadButtonLabel() {
+        if (lastReloadAttemptMs <= 0) {
+            return "Reload";
+        }
+        var elapsed = System.currentTimeMillis() - lastReloadAttemptMs;
+        if (elapsed < RELOADING_FEEDBACK_MS) {
+            return "Reloading…";
+        }
+        if (elapsed < RELOADED_FEEDBACK_MS) {
+            return "✓ Reloaded";
+        }
+        return "Reload";
     }
 
     @Override
@@ -135,6 +214,15 @@ public final class ToolbarPanel implements Panel {
                 // Step is a no-op when not paused (server's stepGameIfPaused only does anything while frozen), so we
                 // can fire unconditionally and let the underlying API gate it.
                 EngineTickControl.step(STEP_TICKS);
+                return true;
+            }
+            if (
+                mouseX >= reloadButtonX
+                    && mouseX < reloadButtonX + RELOAD_BUTTON_WIDTH
+                    && ProjectSession.activeProject() != null
+            ) {
+                BLib.MOD.networking().sendToServer(new C2SReloadProjectPayload(ProjectSession.activeProjectName()));
+                lastReloadAttemptMs = System.currentTimeMillis();
                 return true;
             }
         }
