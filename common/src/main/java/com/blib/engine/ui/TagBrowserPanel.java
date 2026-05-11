@@ -15,25 +15,28 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import com.blib.engine.selection.SelectionManager;
+import com.blib.engine.selection.TagSelectable;
 import com.blib.engine.session.ProjectSession;
 import com.blib.engine.tag.TagCatalogCache;
-import com.blib.engine.tag.TagSelection;
 import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.C2SCreateTagPayload;
-import com.blib.mod.common.network.packet.C2SDeleteTagPayload;
 import com.blib.mod.common.network.packet.C2SRequestTagCatalogPayload;
 import com.blib.mod.common.network.packet.TagCatalogEntry;
 
 /**
  * Browser of every tag in the live registry plus any project-only tags. Rendered as collapsible sections, one per
  * registry, sorted by registry id. Top row has a substring filter, a namespace prefix filter, a Project / All toggle,
- * and a Refresh button. Per-row Open routes the selection to the Tag Editor via {@link TagSelection}; per-row Delete
- * confirms via {@link ProjectContentActionHandler} then sends {@link C2SDeleteTagPayload}. Per-section {@code +} opens
- * an inline Create popup that captures a tag id (default-prefixed with the project's namespace) and sends
- * {@link C2SCreateTagPayload}.
+ * and a Refresh button. Per-section {@code +} opens an inline Create popup that captures a new tag id (default-prefixed
+ * with the project's namespace) and sends {@link C2SCreateTagPayload}.
  * <p>
- * Modeled on {@link ContentBrowserPanel} — same chrome, scrolling, and event routing — but with the section list
- * generated dynamically from the catalog rather than hardcoded.
+ * Clicking anywhere on an entry row selects that tag via {@link SelectionManager#selectSingle} — the inspector's
+ * {@code case TAG} branch picks it up and renders the editable view (entries list, Replace toggle, Reload button,
+ * Add-entry picker).
+ * <p>
+ * The body is virtualized: only rows within the visible Y range are rendered + hit-tested. Without this, expanding all
+ * sections (≈700 tags total in vanilla 1.21.1) drops framerate noticeably because per-row string measurement dominates
+ * the per-frame work.
  */
 @ApiStatus.Internal
 public final class TagBrowserPanel implements Panel {
@@ -50,6 +53,8 @@ public final class TagBrowserPanel implements Panel {
 
     private static final int ROW_BG_HOVER_COLOR = 0xFF1F1F26;
 
+    private static final int ROW_BG_SELECTED_COLOR = 0xFF2C3F5C;
+
     private static final int ROW_TEXT_COLOR = 0xFFD0D0D0;
 
     private static final int ROW_TEXT_HOVER_COLOR = 0xFFFFFFFF;
@@ -65,8 +70,6 @@ public final class TagBrowserPanel implements Panel {
     private static final int BUTTON_BORDER = 0xFF353540;
 
     private static final int BUTTON_TEXT = 0xFFD0D0D0;
-
-    private static final int BUTTON_DESTRUCTIVE_TEXT = 0xFFE06868;
 
     private static final int CREATE_BUTTON_COLOR = 0xFF80E080;
 
@@ -86,15 +89,9 @@ public final class TagBrowserPanel implements Panel {
 
     private static final int HEADER_HEIGHT = 12;
 
-    private static final int ROW_HEIGHT = 13;
+    private static final int ROW_HEIGHT = 12;
 
     private static final int CARET_WIDTH = 6;
-
-    private static final int BUTTON_HEIGHT = 10;
-
-    private static final int BUTTON_WIDTH = 38;
-
-    private static final int BUTTON_GAP = 3;
 
     private static final int CREATE_BUTTON_WIDTH = 12;
 
@@ -128,11 +125,10 @@ public final class TagBrowserPanel implements Panel {
 
     private final ScrollContainer scroll = new ScrollContainer();
 
-    private final @Nullable ProjectContentActionHandler actionHandler;
-
     private final Set<ResourceLocation> collapsed = new HashSet<>();
 
-    private final List<RowButtonHit> rowButtonHits = new ArrayList<>();
+    /** Per-frame hit lists, populated by render and consumed by mouseClicked. Only visible items get entries. */
+    private final List<RowHit> rowHits = new ArrayList<>();
 
     private final List<HeaderHit> headerHits = new ArrayList<>();
 
@@ -152,14 +148,6 @@ public final class TagBrowserPanel implements Panel {
 
     /** When non-null, an inline Create-tag popup is being shown for the captured registry. Modal within the panel. */
     private @Nullable CreateTagPopup createPopup;
-
-    public TagBrowserPanel() {
-        this(null);
-    }
-
-    public TagBrowserPanel(@Nullable ProjectContentActionHandler actionHandler) {
-        this.actionHandler = actionHandler;
-    }
 
     @Override
     public String title() {
@@ -182,7 +170,7 @@ public final class TagBrowserPanel implements Panel {
         this.rectY = y;
         this.rectWidth = width;
         this.rectHeight = height;
-        rowButtonHits.clear();
+        rowHits.clear();
         headerHits.clear();
         createHits.clear();
         refreshButtonRect = null;
@@ -235,7 +223,8 @@ public final class TagBrowserPanel implements Panel {
         var nsQuery = namespaceInput.content().toLowerCase(Locale.ROOT).trim();
         var projectOnly = projectToggle.selectedIndex() == 1;
 
-        // Build filtered view: per-registry list of catalog entries that pass all filters.
+        // Filtered view: one entry per registry that has matching tags. We pre-filter into a flat list so the
+        // virtualization pass (below) is a simple linear walk with early-exit when we leave the viewport.
         var filtered = new java.util.LinkedHashMap<ResourceLocation, List<TagCatalogEntry>>();
         for (var entry : grouped.entrySet()) {
             var matched = new ArrayList<TagCatalogEntry>();
@@ -261,7 +250,7 @@ public final class TagBrowserPanel implements Panel {
             return;
         }
 
-        // Compute total content height for scrollbar.
+        // Total content height for scrollbar.
         var contentHeight = 0;
         for (var entry : filtered.entrySet()) {
             contentHeight += HEADER_HEIGHT;
@@ -272,18 +261,49 @@ public final class TagBrowserPanel implements Panel {
         }
         scroll.layout(listH, contentHeight);
 
+        var selectedTag = currentlySelectedTag();
+
         applyRawScissor(graphics, listX, listY, listW, listH);
         try {
             var scrollY = (int) scroll.scrollY();
+            var visibleTop = listY;
+            var visibleBottom = listY + listH;
             var cursorY = listY - scrollY;
+
+            outer:
             for (var entry : filtered.entrySet()) {
                 var registryKey = entry.getKey();
-                cursorY = renderSection(graphics, listX, cursorY, listW, registryKey, entry.getValue().size(), mouseX, mouseY);
+                // Section header — render only if visible; always advance cursor + record collapse-toggle hit (for
+                // the visible ones).
+                if (cursorY + HEADER_HEIGHT > visibleTop && cursorY < visibleBottom) {
+                    renderSection(graphics, listX, cursorY, listW, registryKey, entry.getValue().size(), mouseX, mouseY);
+                }
+                cursorY += HEADER_HEIGHT;
+                if (cursorY >= visibleBottom) {
+                    // Everything from here down is below the viewport — skip the remaining work entirely.
+                    break;
+                }
                 if (collapsed.contains(registryKey)) {
                     continue;
                 }
-                for (var ce : entry.getValue()) {
-                    cursorY = renderRow(graphics, listX, cursorY, listW, ce, projectName, mouseX, mouseY);
+                var rows = entry.getValue();
+                // Compute the slice of rows that intersect the viewport, then render only those.
+                var sectionTop = cursorY;
+                var firstVisibleRow = Math.max(0, (visibleTop - sectionTop) / ROW_HEIGHT);
+                var lastVisibleRow = Math.min(rows.size() - 1, (visibleBottom - sectionTop) / ROW_HEIGHT);
+                // Skip past rows entirely above the viewport without rendering.
+                cursorY += firstVisibleRow * ROW_HEIGHT;
+                for (var i = firstVisibleRow; i <= lastVisibleRow; i++) {
+                    if (cursorY >= visibleBottom) {
+                        break outer;
+                    }
+                    renderRow(graphics, listX, cursorY, listW, rows.get(i), selectedTag, mouseX, mouseY);
+                    cursorY += ROW_HEIGHT;
+                }
+                // Advance past rows below the visible slice without rendering.
+                var skipped = rows.size() - 1 - lastVisibleRow;
+                if (skipped > 0) {
+                    cursorY += skipped * ROW_HEIGHT;
                 }
             }
         } finally {
@@ -293,13 +313,12 @@ public final class TagBrowserPanel implements Panel {
 
         scroll.renderScrollbar(graphics, listX, listY, listW, listH, mouseX, mouseY);
 
-        // Inline Create popup (if active) renders on top of everything else.
         if (createPopup != null) {
             renderCreatePopup(graphics, x, y, width, height, mouseX, mouseY);
         }
     }
 
-    private int renderSection(
+    private void renderSection(
         GuiGraphics graphics,
         int x,
         int y,
@@ -336,56 +355,38 @@ public final class TagBrowserPanel implements Panel {
         var countX = createX - 6 - font.width(countLabel);
         graphics.drawString(font, Component.literal(countLabel), countX, textY, HEADER_COUNT_COLOR, false);
 
-        // Header click toggles collapse; the per-button hits below take priority for the create + click.
         headerHits.add(new HeaderHit(x, y, width, HEADER_HEIGHT, registryKey));
-        return y + HEADER_HEIGHT;
     }
 
-    private int renderRow(
+    private void renderRow(
         GuiGraphics graphics,
         int x,
         int y,
         int width,
         TagCatalogEntry ce,
-        String projectName,
+        @Nullable TagSelectable selectedTag,
         int mouseX,
         int mouseY
     ) {
+        var selected = selectedTag != null
+            && selectedTag.registryKey().equals(ce.registryKey())
+            && selectedTag.tagId().equals(ce.tagId());
         var hovered = mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + ROW_HEIGHT;
-        if (hovered) {
+        if (selected) {
+            graphics.fill(x, y, x + width, y + ROW_HEIGHT, ROW_BG_SELECTED_COLOR);
+        } else if (hovered) {
             graphics.fill(x, y, x + width, y + ROW_HEIGHT, ROW_BG_HOVER_COLOR);
         }
 
         var font = Minecraft.getInstance().font;
         var textY = y + (ROW_HEIGHT - font.lineHeight + 2) / 2;
-        var buttonY = y + (ROW_HEIGHT - BUTTON_HEIGHT) / 2;
 
-        var deleteX = x + width - 4 - BUTTON_WIDTH;
-        var openX = deleteX - BUTTON_GAP - BUTTON_WIDTH;
-        var deleteRect = new Rect(deleteX, buttonY, BUTTON_WIDTH, BUTTON_HEIGHT);
-        var openRect = new Rect(openX, buttonY, BUTTON_WIDTH, BUTTON_HEIGHT);
-        renderButton(graphics, deleteRect, "Delete", mouseX, mouseY, ce.inProject() ? BUTTON_DESTRUCTIVE_TEXT : BUTTON_TEXT_DISABLED());
-        renderButton(graphics, openRect, "Open", mouseX, mouseY, BUTTON_TEXT);
-
-        // Label, tinted green if the project has authored an override.
-        var labelMaxX = openX - 6;
-        var labelMaxWidth = Math.max(0, labelMaxX - (x + 12));
+        var labelMaxWidth = Math.max(0, width - 16);
         var truncated = font.plainSubstrByWidth(ce.tagId().toString(), labelMaxWidth);
-        var labelColor = ce.inProject() ? ROW_PROJECT_TINT : (hovered ? ROW_TEXT_HOVER_COLOR : ROW_TEXT_COLOR);
+        var labelColor = ce.inProject() ? ROW_PROJECT_TINT : (hovered || selected ? ROW_TEXT_HOVER_COLOR : ROW_TEXT_COLOR);
         graphics.drawString(font, Component.literal(truncated), x + 12, textY, labelColor, false);
 
-        rowButtonHits.add(new RowButtonHit(openRect, () -> TagSelection.request(ce.registryKey(), ce.tagId())));
-        // Delete only acts on project-authored tags — for non-project tags we render the button greyed and skip the
-        // hit so a stray click is a no-op.
-        if (ce.inProject()) {
-            rowButtonHits.add(new RowButtonHit(deleteRect, () -> requestDelete(projectName, ce)));
-        }
-        return y + ROW_HEIGHT;
-    }
-
-    /** Slightly muted button color used for non-actionable Delete (when the tag isn't project-owned). */
-    private static int BUTTON_TEXT_DISABLED() {
-        return 0xFF505058;
+        rowHits.add(new RowHit(x, y, width, ROW_HEIGHT, ce.registryKey(), ce.tagId()));
     }
 
     private void renderCreatePopup(GuiGraphics graphics, int x, int y, int width, int height, int mouseX, int mouseY) {
@@ -409,7 +410,6 @@ public final class TagBrowserPanel implements Panel {
         var inputW = popupW - 16;
         createPopup.input.render(graphics, popupX + 8, inputY, inputW, mouseX, mouseY);
 
-        // Live validation feedback line.
         var parsed = ResourceLocation.tryParse(createPopup.input.content().trim());
         var validationY = inputY + TextInput.HEIGHT + 4;
         if (createPopup.input.content().trim().isEmpty()) {
@@ -447,20 +447,13 @@ public final class TagBrowserPanel implements Panel {
         return ACCENT_PALETTE[hash % ACCENT_PALETTE.length];
     }
 
-    private static void requestCatalog(String projectName) {
-        BLib.MOD.networking().sendToServer(new C2SRequestTagCatalogPayload(projectName));
+    private static @Nullable TagSelectable currentlySelectedTag() {
+        var single = SelectionManager.current().single();
+        return single instanceof TagSelectable ts ? ts : null;
     }
 
-    private void requestDelete(String projectName, TagCatalogEntry ce) {
-        if (actionHandler == null) {
-            return;
-        }
-        actionHandler.confirmDelete(
-            "Delete tag?",
-            "Delete '" + ce.tagId() + "' (" + ce.registryKey() + ") from this project's datapack? "
-                + "The live registry will still hold the tag until you Reload Project.",
-            () -> BLib.MOD.networking().sendToServer(new C2SDeleteTagPayload(projectName, ce.registryKey(), ce.tagId()))
-        );
+    private static void requestCatalog(String projectName) {
+        BLib.MOD.networking().sendToServer(new C2SRequestTagCatalogPayload(projectName));
     }
 
     private void openCreatePopup(ResourceLocation registryKey) {
@@ -483,8 +476,8 @@ public final class TagBrowserPanel implements Panel {
             return;
         }
         BLib.MOD.networking().sendToServer(new C2SCreateTagPayload(projectName, registryKey, parsed));
-        // Also request the editor switch to it so the user lands in the new tag immediately.
-        TagSelection.request(registryKey, parsed);
+        // Drive selection to the new tag so the inspector lands on it immediately.
+        SelectionManager.selectSingle(new TagSelectable(registryKey, parsed));
         createPopup = null;
     }
 
@@ -522,19 +515,21 @@ public final class TagBrowserPanel implements Panel {
             }
             return true;
         }
-        // Per-button hits take precedence over header-area hits for collapse toggles.
+        // Per-section + button takes priority over the section's collapse toggle.
         for (var ch : createHits) {
             if (ch.rect.contains(mouseX, mouseY)) {
                 openCreatePopup(ch.registryKey);
                 return true;
             }
         }
-        for (var rh : rowButtonHits) {
-            if (rh.rect.contains(mouseX, mouseY)) {
-                rh.action.run();
+        // Row click → select (full-row click target; no per-row buttons).
+        for (var rh : rowHits) {
+            if (mouseX >= rh.x && mouseX < rh.x + rh.w && mouseY >= rh.y && mouseY < rh.y + rh.h) {
+                SelectionManager.selectSingle(new TagSelectable(rh.registryKey, rh.tagId));
                 return true;
             }
         }
+        // Section header click → toggle collapse. Falls through to here only when no row / + button consumed.
         for (var hh : headerHits) {
             if (mouseX >= hh.x && mouseX < hh.x + hh.w && mouseY >= hh.y && mouseY < hh.y + hh.h) {
                 if (collapsed.contains(hh.registryKey)) {
@@ -607,9 +602,13 @@ public final class TagBrowserPanel implements Panel {
         ResourceLocation registryKey
     ) {}
 
-    private record RowButtonHit(
-        Rect rect,
-        Runnable action
+    private record RowHit(
+        int x,
+        int y,
+        int w,
+        int h,
+        ResourceLocation registryKey,
+        ResourceLocation tagId
     ) {}
 
     private record CreateHit(

@@ -18,7 +18,6 @@ import com.blib.mod.common.network.packet.C2SDeletePoolPayload;
 import com.blib.mod.common.network.packet.C2SDeleteProjectPayload;
 import com.blib.mod.common.network.packet.C2SDeleteSelectionPayload;
 import com.blib.mod.common.network.packet.C2SDeleteStructurePayload;
-import com.blib.mod.common.network.packet.C2SDeleteTagPayload;
 import com.blib.mod.common.network.packet.C2SGOAPTrackPayload;
 import com.blib.mod.common.network.packet.C2SListCapturesPayload;
 import com.blib.mod.common.network.packet.C2SListPoolsPayload;
@@ -235,6 +234,5 @@ public class BLibPacketDirections {
         );
         REGISTRY.registerPacketDirection(new PacketDirection.C2S<>(C2SSetTagReplacePayload.TYPE, C2SSetTagReplacePayload.CODEC));
         REGISTRY.registerPacketDirection(new PacketDirection.C2S<>(C2SCreateTagPayload.TYPE, C2SCreateTagPayload.CODEC));
-        REGISTRY.registerPacketDirection(new PacketDirection.C2S<>(C2SDeleteTagPayload.TYPE, C2SDeleteTagPayload.CODEC));
     }
 }

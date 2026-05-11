@@ -22,7 +22,6 @@ import com.blib.engine.ui.PiecePalettePanel;
 import com.blib.engine.ui.PoolEditorPanel;
 import com.blib.engine.ui.ProjectContentActionHandler;
 import com.blib.engine.ui.TagBrowserPanel;
-import com.blib.engine.ui.TagEditorPanel;
 import com.blib.engine.ui.TerritoryMapPanel;
 import com.blib.engine.ui.ViewportPanel;
 
@@ -83,8 +82,6 @@ public final class PanelRegistry {
 
     public static final String TAG_BROWSER = "tag_browser";
 
-    public static final String TAG_EDITOR = "tag_editor";
-
     private static final Map<String, PanelFactory> FACTORIES = new LinkedHashMap<>();
 
     private static final Map<Class<? extends Panel>, String> IDS_BY_CLASS = new LinkedHashMap<>();
@@ -102,8 +99,7 @@ public final class PanelRegistry {
         register(DIPLOMACY_MATRIX, DiplomacyMatrixPanel.class, ctx -> new DiplomacyMatrixPanel());
         register(FACTION_MEMBERS, FactionMembersPanel.class, ctx -> new FactionMembersPanel(ctx.projectContentActionHandler()));
         register(TERRITORY_MAP, TerritoryMapPanel.class, ctx -> new TerritoryMapPanel());
-        register(TAG_BROWSER, TagBrowserPanel.class, ctx -> new TagBrowserPanel(ctx.projectContentActionHandler()));
-        register(TAG_EDITOR, TagEditorPanel.class, ctx -> new TagEditorPanel());
+        register(TAG_BROWSER, TagBrowserPanel.class, ctx -> new TagBrowserPanel());
     }
 
     private PanelRegistry() {}

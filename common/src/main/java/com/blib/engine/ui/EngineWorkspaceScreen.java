@@ -725,7 +725,6 @@ public final class EngineWorkspaceScreen extends Screen {
         com.blib.engine.tag.TagDraftCache.clear();
         com.blib.engine.tag.TagCatalogCache.clear();
         com.blib.engine.tag.RegistryEntriesCache.clear();
-        com.blib.engine.tag.TagSelection.clear();
         // Capture selection is workspace-session-only too — corners and mode reset between engine opens.
         BlockSelection.clear();
         // Clear the AABB scale gizmo's hover/drag state so a stray drag-in-progress at close doesn't try to

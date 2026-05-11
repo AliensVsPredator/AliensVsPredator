@@ -18,7 +18,6 @@ import com.blib.mod.common.network.packet.C2SDeletePoolPayload;
 import com.blib.mod.common.network.packet.C2SDeleteProjectPayload;
 import com.blib.mod.common.network.packet.C2SDeleteSelectionPayload;
 import com.blib.mod.common.network.packet.C2SDeleteStructurePayload;
-import com.blib.mod.common.network.packet.C2SDeleteTagPayload;
 import com.blib.mod.common.network.packet.C2SGOAPTrackPayload;
 import com.blib.mod.common.network.packet.C2SListCapturesPayload;
 import com.blib.mod.common.network.packet.C2SListPoolsPayload;
@@ -450,13 +449,6 @@ public class BLibServerPacketHandlers {
                 C2SCreateTagPayload.TYPE,
                 C2SCreateTagPayload.CODEC,
                 BLibServerListener::handleCreateTag
-            )
-        );
-        REGISTRY.registerPacketHandler(
-            new NetworkHandler.FromClient<>(
-                C2SDeleteTagPayload.TYPE,
-                C2SDeleteTagPayload.CODEC,
-                BLibServerListener::handleDeleteTag
             )
         );
     }

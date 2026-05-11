@@ -59,7 +59,6 @@ import com.blib.mod.common.network.packet.C2SDeletePoolPayload;
 import com.blib.mod.common.network.packet.C2SDeleteProjectPayload;
 import com.blib.mod.common.network.packet.C2SDeleteSelectionPayload;
 import com.blib.mod.common.network.packet.C2SDeleteStructurePayload;
-import com.blib.mod.common.network.packet.C2SDeleteTagPayload;
 import com.blib.mod.common.network.packet.C2SGOAPTrackPayload;
 import com.blib.mod.common.network.packet.C2SListCapturesPayload;
 import com.blib.mod.common.network.packet.C2SListPoolsPayload;
@@ -983,40 +982,6 @@ public final class BLibServerListener {
             return;
         }
         sendTagDraft(serverPlayer, payload.projectName(), payload.registryKey(), payload.tagId(), tag);
-        pushCatalog(serverPlayer, payload.projectName());
-    }
-
-    /**
-     * Delete a tag's JSON file. The live registry still holds the tag (with the pre-delete merged contents) until the
-     * user runs Reload Project. Pushes a refreshed catalog so the browser drops the entry.
-     */
-    public static void handleDeleteTag(C2SDeleteTagPayload payload, Player player) {
-        if (!(player instanceof ServerPlayer serverPlayer)) {
-            return;
-        }
-        if (!serverPlayer.hasPermissions(2)) {
-            return;
-        }
-        if (ProjectDraftStore.INSTANCE.isReloading()) {
-            return;
-        }
-        if (!validProjectFor(payload.projectName())) {
-            return;
-        }
-        var registryKey = ResourceKey.<Registry<Object>>createRegistryKey(payload.registryKey());
-        try {
-            EngineProjectIO.deleteProjectTag(payload.projectName(), registryKey, payload.tagId());
-        } catch (IOException e) {
-            LOGGER.error(
-                "[BLib] handleDeleteTag: delete failed for project {} tag {}/{}",
-                payload.projectName(),
-                payload.registryKey(),
-                payload.tagId(),
-                e
-            );
-            return;
-        }
-        ProjectTagDraftStore.INSTANCE.invalidate(payload.projectName(), payload.registryKey(), payload.tagId());
         pushCatalog(serverPlayer, payload.projectName());
     }
 

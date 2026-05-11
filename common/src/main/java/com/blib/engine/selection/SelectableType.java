@@ -17,5 +17,6 @@ public enum SelectableType {
     BLOCK,
     BLOCK_VOLUME,
     LIMB,
-    FACTION
+    FACTION,
+    TAG
 }

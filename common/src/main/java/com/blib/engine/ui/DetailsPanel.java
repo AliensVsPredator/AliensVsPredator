@@ -1,5 +1,6 @@
 package com.blib.engine.ui;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -12,7 +13,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.JigsawBlockEntity;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
@@ -35,19 +38,29 @@ import com.blib.engine.selection.FactionSelectable;
 import com.blib.engine.selection.JigsawBlockSelectable;
 import com.blib.engine.selection.Selectable;
 import com.blib.engine.selection.SelectionManager;
+import com.blib.engine.selection.TagSelectable;
 import com.blib.engine.session.EngineMode;
 import com.blib.engine.session.ProjectSession;
+import com.blib.engine.tag.RegistryEntriesCache;
+import com.blib.engine.tag.TagDraftCache;
 import com.blib.engine.territory.ClaimPaintTool;
 import com.blib.internal.client.faction.ClientFactionInspectionCache;
 import com.blib.internal.client.territory.ClientTerritoryCache;
 import com.blib.mod.BLib;
+import com.blib.mod.common.network.packet.C2SAddTagEntryPayload;
 import com.blib.mod.common.network.packet.C2SDeleteCapturePayload;
 import com.blib.mod.common.network.packet.C2SListCapturesPayload;
+import com.blib.mod.common.network.packet.C2SReloadProjectPayload;
+import com.blib.mod.common.network.packet.C2SRemoveTagEntryPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionInspectionPayload;
+import com.blib.mod.common.network.packet.C2SRequestRegistryEntriesPayload;
+import com.blib.mod.common.network.packet.C2SRequestTagDraftPayload;
 import com.blib.mod.common.network.packet.C2SSetEntityScalePayload;
+import com.blib.mod.common.network.packet.C2SSetTagReplacePayload;
 import com.blib.mod.common.network.packet.C2STranslateEntityPayload;
 import com.blib.mod.common.network.packet.C2SUpdateFactionFieldPayload;
 import com.blib.mod.common.network.packet.C2SUpdateJigsawBlockPayload;
+import com.blib.mod.common.network.packet.TagEntryDraft;
 
 /**
  * Right-side universal inspector. Reads {@link SelectionManager#current} each frame and dispatches to a per-type view;
@@ -369,6 +382,51 @@ public final class DetailsPanel implements Panel {
      */
     private final java.util.List<String> captureRenderedNames = new java.util.ArrayList<>();
 
+    // ── Tag inspector view (engaged when SelectionManager.current() is a TagSelectable) ──
+
+    /** Replace toggle: index 0 = Merge (replace=false), index 1 = Replace (replace=true). */
+    private final SegmentedControl tagReplaceToggle = new SegmentedControl(List.of("Merge", "Replace"), 0);
+
+    /** Footer add-entry picker. Items are computed from {@link RegistryEntriesCache} for the current registry. */
+    private final SearchableSelect<TagPickerItem> tagAddEntrySelect = new SearchableSelect<>(
+        this::buildTagAddEntryItems,
+        TagPickerItem::displayLabel,
+        null,
+        item -> {
+            if (item != null) {
+                commitAddTagEntry(item);
+            }
+        }
+    );
+
+    private final ScrollContainer tagScroll = new ScrollContainer();
+
+    /** Cached entries for the currently-rendered tag. Refreshed every frame from {@link TagDraftCache}. */
+    private List<TagEntryDraft> tagCachedEntries = List.of();
+
+    /** Last (registry, tag) we requested a draft for — drift triggers a re-fetch + scroll reset. */
+    private @Nullable ResourceLocation tagLastShownRegistry;
+
+    private @Nullable ResourceLocation tagLastShownTag;
+
+    /** Last registry we asked for entries — drift triggers a re-fetch (so the picker has fresh choices). */
+    private @Nullable ResourceLocation tagLastFetchedRegistryEntries;
+
+    /** When > 0, drives the Reload button's "Reloading…" → "✓ Reloaded" → idle state machine. */
+    private long tagLastReloadAttemptMs;
+
+    /** Cached panel rect from the most recent render — needed by the tag view's footer + per-row × hit testing. */
+    private int rectX;
+
+    private int rectY;
+
+    private int rectWidth;
+
+    private int rectHeight;
+
+    /** Per-row × button rects + the entries they remove; populated each tag-render frame, consumed in mouseClicked. */
+    private final List<TagRemoveHit> tagRemoveHits = new ArrayList<>();
+
     @Override
     public String title() {
         return "Inspector";
@@ -389,12 +447,18 @@ public final class DetailsPanel implements Panel {
     @Override
     public void render(GuiGraphics graphics, int x, int y, int width, int height, int mouseX, int mouseY, float partialTick) {
         graphics.fill(x, y, x + width, y + height, BACKGROUND_COLOR);
+        // Cache panel rect — the tag view needs height-aware layout for its scroll viewport + footer pinning.
+        this.rectX = x;
+        this.rectY = y;
+        this.rectWidth = width;
+        this.rectHeight = height;
         // Reset each frame; row helpers re-set this if any "?" icon is hovered.
         hoveredHelpTooltip = null;
         // Reset the faction swatch rect — only re-set when actually rendering a faction view this frame so clicks
         // on a stale rect don't fire after the selection changes to a non-faction.
         factionSwatchSize = 0;
         factionPaintToggleW = 0;
+        tagRemoveHits.clear();
 
         var font = Minecraft.getInstance().font;
         var rowY = y;
@@ -439,6 +503,10 @@ public final class DetailsPanel implements Panel {
                 case FACTION -> {
                     currentBlock = null;
                     renderFactionView(graphics, font, x, rowY, width, mouseX, mouseY, (FactionSelectable) single);
+                }
+                case TAG -> {
+                    currentBlock = null;
+                    renderTagView(graphics, font, x, rowY, width, mouseX, mouseY, (TagSelectable) single);
                 }
                 default -> {
                     currentBlock = null;
@@ -497,6 +565,9 @@ public final class DetailsPanel implements Panel {
             entityPosZ.mouseClicked(mouseX, mouseY, button);
             entityScale.mouseClicked(mouseX, mouseY, button);
             return false;
+        }
+        if (single instanceof TagSelectable) {
+            return handleTagMouseClicked(mouseX, mouseY, button);
         }
         if (single instanceof FactionSelectable factionSel) {
             // TextInputs handle their own focus; calling them all is fine since each rejects clicks outside its rect.
@@ -1980,5 +2051,421 @@ public final class DetailsPanel implements Panel {
         } catch (ResourceLocationException e) {
             return null;
         }
+    }
+
+    // ── Tag inspector view ──
+
+    private static final int TAG_REPLACE_TOGGLE_WIDTH = 78;
+
+    private static final int TAG_RELOAD_BUTTON_WIDTH = 56;
+
+    private static final int TAG_RELOAD_BUTTON_HEIGHT = SearchableSelect.HEIGHT;
+
+    private static final int TAG_ROW_HEIGHT = 12;
+
+    private static final int TAG_CHIP_WIDTH = 10;
+
+    private static final int TAG_REMOVE_BUTTON_WIDTH = 12;
+
+    private static final int TAG_RIGHT_PAD = 4;
+
+    private static final int TAG_SCROLLBAR_GUTTER = 5;
+
+    private static final int TAG_FOOTER_HEIGHT = SearchableSelect.HEIGHT + 6;
+
+    private static final int TAG_TOOLBAR_HEIGHT = SearchableSelect.HEIGHT + 6;
+
+    private static final int TAG_REGISTRY_LABEL_COLOR = 0xFF7C8088;
+
+    private static final int TAG_CHIP_TAGREF_COLOR = 0xFF7CB6E0;
+
+    private static final int TAG_CHIP_DIRECT_COLOR = 0xFFE6C26B;
+
+    private static final int TAG_REMOVE_ICON_COLOR = 0xFF7C8088;
+
+    private static final int TAG_REMOVE_ICON_HOVER_COLOR = 0xFFFF6868;
+
+    private static final int TAG_ROW_HOVER_BG = 0xFF1F1F26;
+
+    private static final int TAG_RELOAD_BG = 0xFF14141A;
+
+    private static final int TAG_RELOAD_BG_HOVER = 0xFF1A1A22;
+
+    private static final int TAG_RELOAD_BORDER = 0xFF353540;
+
+    private static final int TAG_RELOAD_BORDER_HOVER = 0xFF4F8FFF;
+
+    private static final int TAG_RELOAD_TEXT = 0xFFD0D0D0;
+
+    private static final int TAG_RELOAD_DISABLED_TEXT = 0xFF606068;
+
+    private static final int TAG_RELOAD_RELOADED_TEXT = 0xFF80E080;
+
+    private static final long TAG_RELOADING_FEEDBACK_MS = 200L;
+
+    private static final long TAG_RELOADED_FEEDBACK_MS = 2200L;
+
+    private static final int TAG_EMPTY_NOTE_COLOR = 0xFF606068;
+
+    /**
+     * Render the inspector view for a {@link TagSelectable}. Layout (top-down): a registry meta-line, a Merge/Replace
+     * toggle + Reload button row, a scrollable list of entry rows (each with a tag-ref/direct chip, the id, an
+     * {@code (opt)} suffix when not required, and a {@code ×} remove button), and a sticky footer with the Add-entry
+     * picker.
+     * <p>
+     * Reads from {@link TagDraftCache} for the entry list (server-pushed authoritative state — the Tag Editor moved
+     * into the inspector but its data flow is unchanged from the original separate-panel design). Sends
+     * {@link C2SRequestTagDraftPayload} on first selection / change to populate the cache, and
+     * {@link C2SRequestRegistryEntriesPayload} on first registry-change to populate the picker's choices.
+     */
+    private void renderTagView(GuiGraphics graphics, Font font, int x, int y, int width, int mouseX, int mouseY, TagSelectable tag) {
+        var registryKey = tag.registryKey();
+        var tagId = tag.tagId();
+
+        // Registry change → fetch its element catalog (one-shot per registry per session).
+        if (!registryKey.equals(tagLastFetchedRegistryEntries) && RegistryEntriesCache.get(registryKey) == null) {
+            BLib.MOD.networking().sendToServer(new C2SRequestRegistryEntriesPayload(ProjectSession.activeProjectName(), registryKey));
+            tagLastFetchedRegistryEntries = registryKey;
+        }
+
+        // Tag change → reset scroll + refetch the draft.
+        if (!registryKey.equals(tagLastShownRegistry) || !tagId.equals(tagLastShownTag)) {
+            tagLastShownRegistry = registryKey;
+            tagLastShownTag = tagId;
+            tagScroll.reset();
+            BLib.MOD.networking()
+                .sendToServer(new C2SRequestTagDraftPayload(ProjectSession.activeProjectName(), registryKey, tagId));
+        }
+
+        var draft = TagDraftCache.get(registryKey, tagId);
+        if (draft != null) {
+            tagCachedEntries = draft.entries();
+            tagReplaceToggle.setSelectedIndex(draft.replace() ? 1 : 0);
+        } else {
+            tagCachedEntries = List.of();
+        }
+
+        // Registry meta line.
+        var rowY = y + ROW_GAP;
+        graphics.drawString(font, Component.literal(registryKey.toString()), x + CONTENT_PADDING, rowY, TAG_REGISTRY_LABEL_COLOR, false);
+        rowY += LINE_HEIGHT + ROW_GAP;
+
+        // Toolbar row: Replace toggle (left) + Reload button (right).
+        var toolbarY = rowY;
+        var reloadX = x + width - CONTENT_PADDING - TAG_RELOAD_BUTTON_WIDTH;
+        tagReplaceToggle.render(graphics, x + CONTENT_PADDING, toolbarY, TAG_REPLACE_TOGGLE_WIDTH, mouseX, mouseY);
+        renderTagReloadButton(graphics, font, reloadX, toolbarY, mouseX, mouseY);
+        rowY += TAG_TOOLBAR_HEIGHT;
+
+        // Body region: scrollable entry list, leaving room for the sticky footer at panel bottom.
+        var bodyY = rowY;
+        var panelBottom = rectY + rectHeight;
+        var footerY = panelBottom - TAG_FOOTER_HEIGHT;
+        var bodyHeight = Math.max(0, footerY - bodyY);
+        var listX = x + CONTENT_PADDING;
+        var listW = width - 2 * CONTENT_PADDING;
+
+        if (tagCachedEntries.isEmpty()) {
+            drawCenteredNote(graphics, font, listX, bodyY, listW, bodyHeight, "(no entries)");
+        } else {
+            var contentHeight = tagCachedEntries.size() * TAG_ROW_HEIGHT;
+            tagScroll.layout(bodyHeight, contentHeight);
+
+            applyRawScissor(graphics, listX, bodyY, listW, bodyHeight);
+            try {
+                var scrollY = (int) tagScroll.scrollY();
+                var firstVisible = Math.max(0, scrollY / TAG_ROW_HEIGHT);
+                var lastVisible = Math.min(tagCachedEntries.size() - 1, (scrollY + bodyHeight) / TAG_ROW_HEIGHT);
+                for (var i = firstVisible; i <= lastVisible; i++) {
+                    var entry = tagCachedEntries.get(i);
+                    var entryY = bodyY + i * TAG_ROW_HEIGHT - scrollY;
+                    renderTagEntryRow(graphics, font, listX, entryY, listW, entry, mouseX, mouseY);
+                }
+            } finally {
+                graphics.flush();
+                RenderSystem.disableScissor();
+            }
+            tagScroll.renderScrollbar(graphics, listX, bodyY, listW, bodyHeight, mouseX, mouseY);
+        }
+
+        // Footer: Add-entry picker, full-width.
+        var footerSelectY = footerY + (TAG_FOOTER_HEIGHT - SearchableSelect.HEIGHT) / 2;
+        tagAddEntrySelect.render(graphics, listX, footerSelectY, listW, mouseX, mouseY);
+    }
+
+    private void renderTagEntryRow(GuiGraphics graphics, Font font, int x, int y, int width, TagEntryDraft entry, int mouseX, int mouseY) {
+        var hovered = mouseY >= y
+            && mouseY < y + TAG_ROW_HEIGHT
+            && mouseX >= x
+            && mouseX < x + width - TAG_SCROLLBAR_GUTTER;
+        if (hovered) {
+            graphics.fill(x, y, x + width - TAG_SCROLLBAR_GUTTER, y + TAG_ROW_HEIGHT, TAG_ROW_HOVER_BG);
+        }
+
+        var rightEdge = x + width - TAG_SCROLLBAR_GUTTER - TAG_RIGHT_PAD;
+        var removeX = rightEdge - TAG_REMOVE_BUTTON_WIDTH;
+        var textY = y + (TAG_ROW_HEIGHT - font.lineHeight + 2) / 2;
+
+        // Chip — # for tag-ref, ▪ for direct.
+        var chip = entry.isTagRef() ? "#" : "▪";
+        graphics.drawString(
+            font,
+            Component.literal(chip),
+            x + 2,
+            textY,
+            entry.isTagRef() ? TAG_CHIP_TAGREF_COLOR : TAG_CHIP_DIRECT_COLOR,
+            false
+        );
+
+        // Id label (with leading # for tag-refs so it reads like the JSON form, plus optional (opt) suffix).
+        var label = (entry.isTagRef() ? "#" : "") + entry.id() + (entry.required() ? "" : "  (opt)");
+        var labelX = x + 2 + TAG_CHIP_WIDTH;
+        var labelMax = Math.max(0, removeX - labelX - 4);
+        graphics.drawString(font, Component.literal(font.plainSubstrByWidth(label, labelMax)), labelX, textY, VALUE_COLOR, false);
+
+        // × remove button (whole rect is the hot zone; glyph centered).
+        var removeHovered = mouseX >= removeX
+            && mouseX < removeX + TAG_REMOVE_BUTTON_WIDTH
+            && mouseY >= y
+            && mouseY < y + TAG_ROW_HEIGHT;
+        var removeText = "×";
+        var removeColor = removeHovered ? TAG_REMOVE_ICON_HOVER_COLOR : TAG_REMOVE_ICON_COLOR;
+        var removeTextX = removeX + (TAG_REMOVE_BUTTON_WIDTH - font.width(removeText)) / 2;
+        graphics.drawString(font, Component.literal(removeText), removeTextX, textY, removeColor, false);
+
+        tagRemoveHits.add(new TagRemoveHit(removeX, y, TAG_REMOVE_BUTTON_WIDTH, TAG_ROW_HEIGHT, entry.rawIndex()));
+    }
+
+    private void renderTagReloadButton(GuiGraphics graphics, Font font, int x, int y, int mouseX, int mouseY) {
+        var enabled = ProjectSession.activeProject() != null;
+        var hovered = enabled
+            && mouseX >= x
+            && mouseX < x + TAG_RELOAD_BUTTON_WIDTH
+            && mouseY >= y
+            && mouseY < y + TAG_RELOAD_BUTTON_HEIGHT;
+        var bg = hovered ? TAG_RELOAD_BG_HOVER : TAG_RELOAD_BG;
+        var border = hovered ? TAG_RELOAD_BORDER_HOVER : TAG_RELOAD_BORDER;
+        graphics.fill(x, y, x + TAG_RELOAD_BUTTON_WIDTH, y + TAG_RELOAD_BUTTON_HEIGHT, bg);
+        graphics.fill(x, y, x + TAG_RELOAD_BUTTON_WIDTH, y + 1, border);
+        graphics.fill(x, y + TAG_RELOAD_BUTTON_HEIGHT - 1, x + TAG_RELOAD_BUTTON_WIDTH, y + TAG_RELOAD_BUTTON_HEIGHT, border);
+        graphics.fill(x, y, x + 1, y + TAG_RELOAD_BUTTON_HEIGHT, border);
+        graphics.fill(x + TAG_RELOAD_BUTTON_WIDTH - 1, y, x + TAG_RELOAD_BUTTON_WIDTH, y + TAG_RELOAD_BUTTON_HEIGHT, border);
+
+        var label = tagReloadLabel();
+        var color = !enabled
+            ? TAG_RELOAD_DISABLED_TEXT
+            : (label.startsWith("✓") ? TAG_RELOAD_RELOADED_TEXT : TAG_RELOAD_TEXT);
+        var textX = x + (TAG_RELOAD_BUTTON_WIDTH - font.width(label)) / 2;
+        var textY = y + (TAG_RELOAD_BUTTON_HEIGHT - font.lineHeight + 2) / 2;
+        graphics.drawString(font, Component.literal(label), textX, textY, color, false);
+    }
+
+    private String tagReloadLabel() {
+        if (tagLastReloadAttemptMs <= 0) {
+            return "Reload";
+        }
+        var elapsed = System.currentTimeMillis() - tagLastReloadAttemptMs;
+        if (elapsed < TAG_RELOADING_FEEDBACK_MS) {
+            return "Reloading…";
+        }
+        if (elapsed < TAG_RELOADED_FEEDBACK_MS) {
+            return "✓ Reloaded";
+        }
+        return "Reload";
+    }
+
+    private static void drawCenteredNote(GuiGraphics graphics, Font font, int x, int y, int width, int height, String text) {
+        var textWidth = font.width(text);
+        var noteX = x + (width - textWidth) / 2;
+        var noteY = y + (height - font.lineHeight + 2) / 2;
+        graphics.drawString(font, Component.literal(text), noteX, noteY, TAG_EMPTY_NOTE_COLOR, false);
+    }
+
+    private boolean handleTagMouseClicked(double mouseX, double mouseY, int button) {
+        var single = SelectionManager.current().single();
+        if (!(single instanceof TagSelectable tag)) {
+            return false;
+        }
+        if (tagAddEntrySelect.mouseClicked(mouseX, mouseY, button)) {
+            return true;
+        }
+        var indexBefore = tagReplaceToggle.selectedIndex();
+        if (tagReplaceToggle.mouseClicked(mouseX, mouseY, button)) {
+            if (tagReplaceToggle.selectedIndex() != indexBefore) {
+                commitSetTagReplace(tag, tagReplaceToggle.selectedIndex() == 1);
+            }
+            return true;
+        }
+        if (handleTagReloadClick(mouseX, mouseY, button)) {
+            return true;
+        }
+        if (tagScroll.mouseClicked(mouseX, mouseY, button)) {
+            return true;
+        }
+        if (button == 0) {
+            for (var hit : tagRemoveHits) {
+                if (mouseX >= hit.x() && mouseX < hit.x() + hit.w() && mouseY >= hit.y() && mouseY < hit.y() + hit.h()) {
+                    commitRemoveTagEntry(tag, hit.rawIndex());
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean handleTagReloadClick(double mouseX, double mouseY, int button) {
+        if (button != 0 || ProjectSession.activeProject() == null) {
+            return false;
+        }
+        // Reload button rect mirrors renderTagReloadButton's positioning.
+        var reloadX = rectX + rectWidth - CONTENT_PADDING - TAG_RELOAD_BUTTON_WIDTH;
+        // The toolbar row sits one LINE_HEIGHT + 2*ROW_GAP below the header bar — same offset renderTagView uses.
+        var toolbarY = rectY + HEADER_BAR_HEIGHT + ROW_GAP + LINE_HEIGHT + ROW_GAP;
+        if (mouseX < reloadX || mouseX >= reloadX + TAG_RELOAD_BUTTON_WIDTH) {
+            return false;
+        }
+        if (mouseY < toolbarY || mouseY >= toolbarY + TAG_RELOAD_BUTTON_HEIGHT) {
+            return false;
+        }
+        BLib.MOD.networking().sendToServer(new C2SReloadProjectPayload(ProjectSession.activeProjectName()));
+        tagLastReloadAttemptMs = System.currentTimeMillis();
+        return true;
+    }
+
+    private void commitAddTagEntry(TagPickerItem item) {
+        var single = SelectionManager.current().single();
+        if (!(single instanceof TagSelectable tag) || ProjectSession.activeProject() == null) {
+            return;
+        }
+        BLib.MOD.networking()
+            .sendToServer(
+                new C2SAddTagEntryPayload(
+                    ProjectSession.activeProjectName(),
+                    tag.registryKey(),
+                    tag.tagId(),
+                    item.isTagRef(),
+                    item.id(),
+                    true
+                )
+            );
+        tagAddEntrySelect.setCurrentValue(null);
+    }
+
+    private void commitRemoveTagEntry(TagSelectable tag, int rawIndex) {
+        if (ProjectSession.activeProject() == null) {
+            return;
+        }
+        BLib.MOD.networking()
+            .sendToServer(new C2SRemoveTagEntryPayload(ProjectSession.activeProjectName(), tag.registryKey(), tag.tagId(), rawIndex));
+    }
+
+    private void commitSetTagReplace(TagSelectable tag, boolean replace) {
+        if (ProjectSession.activeProject() == null) {
+            return;
+        }
+        BLib.MOD.networking()
+            .sendToServer(new C2SSetTagReplacePayload(ProjectSession.activeProjectName(), tag.registryKey(), tag.tagId(), replace));
+    }
+
+    /**
+     * Build the Add-entry picker items from {@link RegistryEntriesCache} for the current registry. Tag refs first
+     * (sorted, displayed with leading {@code #}), then direct entries (sorted). Empty list when the registry's catalog
+     * hasn't arrived yet — the popup just shows nothing until the server replies.
+     */
+    private List<SearchableSelect.Item<TagPickerItem>> buildTagAddEntryItems() {
+        var single = SelectionManager.current().single();
+        if (!(single instanceof TagSelectable tag)) {
+            return List.of();
+        }
+        var cache = RegistryEntriesCache.get(tag.registryKey());
+        if (cache == null) {
+            return List.of();
+        }
+        var out = new ArrayList<SearchableSelect.Item<TagPickerItem>>(cache.elements().size() + cache.tagIds().size());
+        var sortedTags = new ArrayList<>(cache.tagIds());
+        sortedTags.sort(Comparator.comparing(ResourceLocation::toString));
+        for (var rl : sortedTags) {
+            out.add(new SearchableSelect.Item<>(new TagPickerItem(true, rl), "#" + rl));
+        }
+        var sortedElements = new ArrayList<>(cache.elements());
+        sortedElements.sort(Comparator.comparing(ResourceLocation::toString));
+        for (var rl : sortedElements) {
+            out.add(new SearchableSelect.Item<>(new TagPickerItem(false, rl), rl.toString()));
+        }
+        return out;
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        // Only the tag scroll needs drag handling — other views have no scrolling.
+        if (SelectionManager.current().single() instanceof TagSelectable) {
+            return tagScroll.mouseDragged(mouseX, mouseY, button);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (SelectionManager.current().single() instanceof TagSelectable) {
+            return tagScroll.mouseReleased(mouseX, mouseY, button);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (SelectionManager.current().single() instanceof TagSelectable) {
+            if (mouseX < rectX || mouseX >= rectX + rectWidth || mouseY < rectY || mouseY >= rectY + rectHeight) {
+                return false;
+            }
+            return tagScroll.mouseScrolled(scrollY);
+        }
+        return false;
+    }
+
+    /** Item type for the Add-entry picker — distinguishes tag-refs from direct entries. */
+    public record TagPickerItem(
+        boolean isTagRef,
+        ResourceLocation id
+    ) {
+
+        public String displayLabel() {
+            return (isTagRef ? "#" : "") + id;
+        }
+    }
+
+    /** Hit-test rect + addressed entry for a per-row × button. */
+    private record TagRemoveHit(
+        int x,
+        int y,
+        int w,
+        int h,
+        int rawIndex
+    ) {}
+
+    /**
+     * Set the GL scissor to clip drawing to {@code (x, y, w, h)} in this panel's logical-pixel space. Mirrors the
+     * raw-scissor idiom from the other engine panels — bypasses the GuiGraphics scissor stack so stale upstream entries
+     * can't clip our row area to a smaller residual rect.
+     */
+    private static void applyRawScissor(GuiGraphics graphics, int x, int y, int w, int h) {
+        if (w <= 0 || h <= 0) {
+            RenderSystem.disableScissor();
+            return;
+        }
+        graphics.flush();
+
+        var matrix = graphics.pose().last().pose();
+        var topLeft = matrix.transformPosition((float) x, (float) y, 0f, new Vector3f());
+        var bottomRight = matrix.transformPosition((float) (x + w), (float) (y + h), 0f, new Vector3f());
+
+        var window = Minecraft.getInstance().getWindow();
+        var winHeight = window.getHeight();
+        var guiScale = window.getGuiScale();
+        var leftRaw = (int) ((double) topLeft.x * guiScale);
+        var bottomRaw = (int) ((double) winHeight - (double) bottomRight.y * guiScale);
+        var widthRaw = Math.max(0, (int) ((double) (bottomRight.x - topLeft.x) * guiScale));
+        var heightRaw = Math.max(0, (int) ((double) (bottomRight.y - topLeft.y) * guiScale));
+        RenderSystem.enableScissor(leftRaw, bottomRaw, widthRaw, heightRaw);
     }
 }
