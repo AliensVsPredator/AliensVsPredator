@@ -86,7 +86,8 @@ public final class EngineWorkspaceScreen extends Screen {
      * Mouse-pixel half-thickness of a divider's hit zone, in logical pixels. A click within {@code DIVIDER_HIT_PX} of
      * the boundary line is treated as a divider drag-start.
      */
-    private static final int DIVIDER_HIT_PX = 8;
+    /** Made public so panels with no edge UI (e.g. ViewportPanel) can yield clicks in the divider band. */
+    public static final int DIVIDER_HIT_PX = 8;
 
     /**
      * Floor on any panel size during a divider drag (logical pixels). Prevents the user from collapsing a panel to zero

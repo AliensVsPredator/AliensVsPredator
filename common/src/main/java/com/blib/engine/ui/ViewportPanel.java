@@ -249,6 +249,15 @@ public final class ViewportPanel implements Panel {
             return false;
         }
 
+        // The viewport has no edge UI (no scrollbars, no inline buttons in the outer band), so LMB clicks within
+        // {@link EngineWorkspaceScreen#DIVIDER_HIT_PX} of any edge are far more likely to be a divider-drag attempt
+        // than a gizmo pick — and a selected entity / block volume can project gizmo handles right at the edge,
+        // making divider clicks impossible without this yield. MMB stays captured so camera orbit / pan still latches
+        // when the cursor starts near the edge.
+        if (button == 0 && nearViewportEdge(mouseX, mouseY)) {
+            return false;
+        }
+
         var session = EngineMode.get().session();
         if (session == null) {
             return false;
@@ -665,6 +674,12 @@ public final class ViewportPanel implements Panel {
 
     private boolean inRect(double x, double y) {
         return x >= rectX && x < rectX + rectWidth && y >= rectY && y < rectY + rectHeight;
+    }
+
+    /** True when the cursor sits within {@link EngineWorkspaceScreen#DIVIDER_HIT_PX} of any viewport edge. */
+    private boolean nearViewportEdge(double x, double y) {
+        var hit = EngineWorkspaceScreen.DIVIDER_HIT_PX;
+        return x < rectX + hit || x >= rectX + rectWidth - hit || y < rectY + hit || y >= rectY + rectHeight - hit;
     }
 
     /**
