@@ -27,8 +27,17 @@ public final class TagDraftCache {
     private TagDraftCache() {}
 
     /** Replace the cached draft for {@code (registryKey, tagId)}. Called from the S2C handler. */
-    public static void update(ResourceLocation registryKey, ResourceLocation tagId, boolean replace, List<TagEntryDraft> entries) {
-        DRAFTS.put(new TagDraftKey(registryKey, tagId), new TagDraft(replace, List.copyOf(entries)));
+    public static void update(
+        ResourceLocation registryKey,
+        ResourceLocation tagId,
+        boolean replace,
+        List<TagEntryDraft> entries,
+        List<ResourceLocation> resolvedMembers
+    ) {
+        DRAFTS.put(
+            new TagDraftKey(registryKey, tagId),
+            new TagDraft(replace, List.copyOf(entries), List.copyOf(resolvedMembers))
+        );
     }
 
     /** Returns the cached draft, or {@code null} if none. */

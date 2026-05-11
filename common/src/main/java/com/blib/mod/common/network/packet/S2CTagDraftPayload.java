@@ -13,17 +13,22 @@ import com.blib.api.common.codec.v1.BLibCodecs;
 import com.blib.mod.BLib;
 
 /**
- * Server → client: the project's authoritative state for one tag, expressed as the {@code replace} flag plus the list
- * of {@link TagEntryDraft} rows. Sent in response to {@link C2SRequestTagDraftPayload} and after every successful tag
- * mutation. The client's tag draft cache stores this and the Tag Editor renders from the cache instead of the live
- * registry — registry no longer reflects edits until the user runs Reload Project.
+ * Server → client: the project's authoritative state for one tag, plus the live registry's expanded member set for the
+ * read-only "Resolved" view. {@code entries} is the source-level list straight out of the project's JSON
+ * ({@code #}-refs preserved); {@code resolvedMembers} is the post-merge member set the registry currently has, with all
+ * references already expanded. Sent in response to {@link C2SRequestTagDraftPayload} and after every successful tag
+ * mutation.
+ * <p>
+ * Resolved members reflect the LAST RELOADED state — pre-reload edits don't show up there until the user runs Reload
+ * Project. The Source view is always live (driven by the disk write that happens on every edit packet).
  */
 public record S2CTagDraftPayload(
     String projectName,
     ResourceLocation registryKey,
     ResourceLocation tagId,
     boolean replace,
-    List<TagEntryDraft> entries
+    List<TagEntryDraft> entries,
+    List<ResourceLocation> resolvedMembers
 ) implements CustomPacketPayload {
 
     public static final ResourceLocation PAYLOAD_ID = BLib.MOD.resources().createLocation("tag_draft");
@@ -41,6 +46,8 @@ public record S2CTagDraftPayload(
         S2CTagDraftPayload::replace,
         TagEntryDraft.CODEC.asList(),
         S2CTagDraftPayload::entries,
+        BLibCodecs.Stream.RESOURCE_LOCATION.asList(),
+        S2CTagDraftPayload::resolvedMembers,
         S2CTagDraftPayload::new
     );
 

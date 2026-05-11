@@ -828,9 +828,8 @@ public final class BLibServerListener {
         if (!validProjectFor(payload.projectName())) {
             return;
         }
-        var server = serverPlayer.serverLevel().getServer();
         var registryKey = ResourceKey.<Registry<Object>>createRegistryKey(payload.registryKey());
-        var tag = ProjectTagDraftStore.INSTANCE.getOrSeedTag(server, payload.projectName(), registryKey, payload.tagId());
+        var tag = ProjectTagDraftStore.INSTANCE.getOrSeedTag(payload.projectName(), registryKey, payload.tagId());
         if (tag == null) {
             return;
         }
@@ -851,9 +850,8 @@ public final class BLibServerListener {
         if (!validProjectFor(payload.projectName())) {
             return;
         }
-        var server = serverPlayer.serverLevel().getServer();
         var registryKey = ResourceKey.<Registry<Object>>createRegistryKey(payload.registryKey());
-        var tag = ProjectTagDraftStore.INSTANCE.getOrSeedTag(server, payload.projectName(), registryKey, payload.tagId());
+        var tag = ProjectTagDraftStore.INSTANCE.getOrSeedTag(payload.projectName(), registryKey, payload.tagId());
         if (tag == null) {
             return;
         }
@@ -887,9 +885,8 @@ public final class BLibServerListener {
         if (!validProjectFor(payload.projectName())) {
             return;
         }
-        var server = serverPlayer.serverLevel().getServer();
         var registryKey = ResourceKey.<Registry<Object>>createRegistryKey(payload.registryKey());
-        var tag = ProjectTagDraftStore.INSTANCE.getOrSeedTag(server, payload.projectName(), registryKey, payload.tagId());
+        var tag = ProjectTagDraftStore.INSTANCE.getOrSeedTag(payload.projectName(), registryKey, payload.tagId());
         if (tag == null) {
             return;
         }
@@ -925,9 +922,8 @@ public final class BLibServerListener {
         if (!validProjectFor(payload.projectName())) {
             return;
         }
-        var server = serverPlayer.serverLevel().getServer();
         var registryKey = ResourceKey.<Registry<Object>>createRegistryKey(payload.registryKey());
-        var tag = ProjectTagDraftStore.INSTANCE.getOrSeedTag(server, payload.projectName(), registryKey, payload.tagId());
+        var tag = ProjectTagDraftStore.INSTANCE.getOrSeedTag(payload.projectName(), registryKey, payload.tagId());
         if (tag == null) {
             return;
         }
@@ -989,7 +985,7 @@ public final class BLibServerListener {
         pushCatalog(serverPlayer, payload.projectName());
     }
 
-    /** Helper: encode a tag JSON to the wire form and push to the client. */
+    /** Helper: encode a tag JSON + the live registry's resolved member set to the wire form and push to the client. */
     private static void sendTagDraft(
         ServerPlayer serverPlayer,
         String projectName,
@@ -999,7 +995,10 @@ public final class BLibServerListener {
     ) {
         var entries = ProjectTagDraftStore.extractDraftEntries(tag);
         var replace = ProjectTagDraftStore.readReplace(tag);
-        BLib.MOD.networking().sendToClient(serverPlayer, new S2CTagDraftPayload(projectName, registryKey, tagId, replace, entries));
+        var registryRk = ResourceKey.<Registry<Object>>createRegistryKey(registryKey);
+        var resolved = ProjectTagDraftStore.extractResolvedMembers(serverPlayer.serverLevel().getServer(), registryRk, tagId);
+        BLib.MOD.networking()
+            .sendToClient(serverPlayer, new S2CTagDraftPayload(projectName, registryKey, tagId, replace, entries, resolved));
     }
 
     /** Helper: rebuild and push the tag catalog to the client (used after create/delete). */

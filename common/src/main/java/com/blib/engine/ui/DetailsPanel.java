@@ -365,6 +365,11 @@ public final class DetailsPanel implements Panel {
     /** Replace toggle: index 0 = Merge (replace=false), index 1 = Replace (replace=true). */
     private final SegmentedControl tagReplaceToggle = new SegmentedControl(List.of("Merge", "Replace"), 0);
 
+    /**
+     * View mode toggle: index 0 = Resolved (read-only registry preview), index 1 = Source (project's editable JSON).
+     */
+    private final SegmentedControl tagViewToggle = new SegmentedControl(List.of("Resolved", "Source"), 0);
+
     /** Footer add-entry picker. Items are computed from {@link RegistryEntriesCache} for the current registry. */
     private final SearchableSelect<TagPickerItem> tagAddEntrySelect = new SearchableSelect<>(
         this::buildTagAddEntryItems,
@@ -1911,6 +1916,8 @@ public final class DetailsPanel implements Panel {
 
     private static final int TAG_REPLACE_TOGGLE_WIDTH = 78;
 
+    private static final int TAG_VIEW_TOGGLE_WIDTH = 96;
+
     private static final int TAG_RELOAD_BUTTON_WIDTH = 56;
 
     private static final int TAG_RELOAD_BUTTON_HEIGHT = SearchableSelect.HEIGHT;
@@ -1990,6 +1997,7 @@ public final class DetailsPanel implements Panel {
         }
 
         var draft = TagDraftCache.get(registryKey, tagId);
+        var resolvedMembers = draft != null ? draft.resolvedMembers() : List.<ResourceLocation>of();
         if (draft != null) {
             tagCachedEntries = draft.entries();
             tagReplaceToggle.setSelectedIndex(draft.replace() ? 1 : 0);
@@ -2002,47 +2010,107 @@ public final class DetailsPanel implements Panel {
         graphics.drawString(font, Component.literal(registryKey.toString()), x + CONTENT_PADDING, rowY, TAG_REGISTRY_LABEL_COLOR, false);
         rowY += LINE_HEIGHT + ROW_GAP;
 
-        // Toolbar row: Replace toggle (left) + Reload button (right).
+        // Toolbar row: View toggle (left) + Replace toggle (middle) + Reload button (right).
         var toolbarY = rowY;
+        var viewX = x + CONTENT_PADDING;
+        var replaceX = viewX + TAG_VIEW_TOGGLE_WIDTH + 4;
         var reloadX = x + width - CONTENT_PADDING - TAG_RELOAD_BUTTON_WIDTH;
-        tagReplaceToggle.render(graphics, x + CONTENT_PADDING, toolbarY, TAG_REPLACE_TOGGLE_WIDTH, mouseX, mouseY);
+        tagViewToggle.render(graphics, viewX, toolbarY, TAG_VIEW_TOGGLE_WIDTH, mouseX, mouseY);
+        tagReplaceToggle.render(graphics, replaceX, toolbarY, TAG_REPLACE_TOGGLE_WIDTH, mouseX, mouseY);
         renderTagReloadButton(graphics, font, reloadX, toolbarY, mouseX, mouseY);
         rowY += TAG_TOOLBAR_HEIGHT;
 
-        // Body region: scrollable entry list, leaving room for the sticky footer at panel bottom.
+        // Body region: scrollable list. The Source view leaves room for an Add-entry footer; the Resolved view is
+        // read-only and reclaims the footer space for more rows.
+        var sourceMode = tagViewToggle.selectedIndex() == 1;
         var bodyY = rowY;
         var panelBottom = rectY + rectHeight;
-        var footerY = panelBottom - TAG_FOOTER_HEIGHT;
+        var footerY = sourceMode ? (panelBottom - TAG_FOOTER_HEIGHT) : panelBottom;
         var bodyHeight = Math.max(0, footerY - bodyY);
         var listX = x + CONTENT_PADDING;
         var listW = width - 2 * CONTENT_PADDING;
 
-        if (tagCachedEntries.isEmpty()) {
-            drawCenteredNote(graphics, font, listX, bodyY, listW, bodyHeight, "(no entries)");
+        if (sourceMode) {
+            renderTagSourceList(graphics, font, listX, bodyY, listW, bodyHeight, mouseX, mouseY);
+            // Footer: Add-entry picker, full-width — only meaningful in Source mode (Resolved is read-only).
+            var footerSelectY = footerY + (TAG_FOOTER_HEIGHT - SearchableSelect.HEIGHT) / 2;
+            tagAddEntrySelect.render(graphics, listX, footerSelectY, listW, mouseX, mouseY);
         } else {
-            var contentHeight = tagCachedEntries.size() * TAG_ROW_HEIGHT;
-            tagScroll.layout(bodyHeight, contentHeight);
-
-            applyRawScissor(graphics, listX, bodyY, listW, bodyHeight);
-            try {
-                var scrollY = (int) tagScroll.scrollY();
-                var firstVisible = Math.max(0, scrollY / TAG_ROW_HEIGHT);
-                var lastVisible = Math.min(tagCachedEntries.size() - 1, (scrollY + bodyHeight) / TAG_ROW_HEIGHT);
-                for (var i = firstVisible; i <= lastVisible; i++) {
-                    var entry = tagCachedEntries.get(i);
-                    var entryY = bodyY + i * TAG_ROW_HEIGHT - scrollY;
-                    renderTagEntryRow(graphics, font, listX, entryY, listW, entry, mouseX, mouseY);
-                }
-            } finally {
-                graphics.flush();
-                RenderSystem.disableScissor();
-            }
-            tagScroll.renderScrollbar(graphics, listX, bodyY, listW, bodyHeight, mouseX, mouseY);
+            renderTagResolvedList(graphics, font, listX, bodyY, listW, bodyHeight, resolvedMembers, mouseX, mouseY);
         }
+    }
 
-        // Footer: Add-entry picker, full-width.
-        var footerSelectY = footerY + (TAG_FOOTER_HEIGHT - SearchableSelect.HEIGHT) / 2;
-        tagAddEntrySelect.render(graphics, listX, footerSelectY, listW, mouseX, mouseY);
+    private void renderTagSourceList(
+        GuiGraphics graphics,
+        Font font,
+        int listX,
+        int bodyY,
+        int listW,
+        int bodyHeight,
+        int mouseX,
+        int mouseY
+    ) {
+        if (tagCachedEntries.isEmpty()) {
+            drawCenteredNote(graphics, font, listX, bodyY, listW, bodyHeight, "(no project entries — add one below)");
+            return;
+        }
+        var contentHeight = tagCachedEntries.size() * TAG_ROW_HEIGHT;
+        tagScroll.layout(bodyHeight, contentHeight);
+        applyRawScissor(graphics, listX, bodyY, listW, bodyHeight);
+        try {
+            var scrollY = (int) tagScroll.scrollY();
+            var firstVisible = Math.max(0, scrollY / TAG_ROW_HEIGHT);
+            var lastVisible = Math.min(tagCachedEntries.size() - 1, (scrollY + bodyHeight) / TAG_ROW_HEIGHT);
+            for (var i = firstVisible; i <= lastVisible; i++) {
+                var entry = tagCachedEntries.get(i);
+                var entryY = bodyY + i * TAG_ROW_HEIGHT - scrollY;
+                renderTagEntryRow(graphics, font, listX, entryY, listW, entry, mouseX, mouseY);
+            }
+        } finally {
+            graphics.flush();
+            RenderSystem.disableScissor();
+        }
+        tagScroll.renderScrollbar(graphics, listX, bodyY, listW, bodyHeight, mouseX, mouseY);
+    }
+
+    private void renderTagResolvedList(
+        GuiGraphics graphics,
+        Font font,
+        int listX,
+        int bodyY,
+        int listW,
+        int bodyHeight,
+        List<ResourceLocation> resolvedMembers,
+        int mouseX,
+        int mouseY
+    ) {
+        if (resolvedMembers.isEmpty()) {
+            drawCenteredNote(graphics, font, listX, bodyY, listW, bodyHeight, "(tag is empty in the live registry)");
+            return;
+        }
+        var contentHeight = resolvedMembers.size() * TAG_ROW_HEIGHT;
+        tagScroll.layout(bodyHeight, contentHeight);
+        applyRawScissor(graphics, listX, bodyY, listW, bodyHeight);
+        try {
+            var scrollY = (int) tagScroll.scrollY();
+            var firstVisible = Math.max(0, scrollY / TAG_ROW_HEIGHT);
+            var lastVisible = Math.min(resolvedMembers.size() - 1, (scrollY + bodyHeight) / TAG_ROW_HEIGHT);
+            var rightEdge = listX + listW - ScrollContainer.SCROLLBAR_GUTTER - TAG_RIGHT_PAD;
+            var labelMax = Math.max(0, rightEdge - listX - 2 - TAG_CHIP_WIDTH);
+            for (var i = firstVisible; i <= lastVisible; i++) {
+                var member = resolvedMembers.get(i);
+                var entryY = bodyY + i * TAG_ROW_HEIGHT - scrollY;
+                var textY = entryY + (TAG_ROW_HEIGHT - font.lineHeight + 2) / 2;
+                // Direct-entry chip — every resolved member is an element id (refs are already expanded).
+                graphics.drawString(font, Component.literal("▪"), listX + 2, textY, TAG_CHIP_DIRECT_COLOR, false);
+                var label = font.plainSubstrByWidth(member.toString(), labelMax);
+                graphics.drawString(font, Component.literal(label), listX + 2 + TAG_CHIP_WIDTH, textY, VALUE_COLOR, false);
+            }
+        } finally {
+            graphics.flush();
+            RenderSystem.disableScissor();
+        }
+        tagScroll.renderScrollbar(graphics, listX, bodyY, listW, bodyHeight, mouseX, mouseY);
     }
 
     private void renderTagEntryRow(GuiGraphics graphics, Font font, int x, int y, int width, TagEntryDraft entry, int mouseX, int mouseY) {
@@ -2138,6 +2206,17 @@ public final class DetailsPanel implements Panel {
         if (!(single instanceof TagSelectable tag)) {
             return false;
         }
+        // View toggle (Resolved/Source) — reset scroll on switch since the two lists have unrelated row counts.
+        var viewIndexBefore = tagViewToggle.selectedIndex();
+        if (tagViewToggle.mouseClicked(mouseX, mouseY, button)) {
+            if (tagViewToggle.selectedIndex() != viewIndexBefore) {
+                tagScroll.reset();
+            }
+            return true;
+        }
+        // Add-entry / × buttons / scroll only fire in Source mode (Resolved is read-only); the controls themselves
+        // aren't rendered in Resolved, so their mouseClicked handlers naturally no-op against off-screen rects, but
+        // we still call tagScroll.mouseClicked so dragging the scrollbar works in either mode.
         if (tagAddEntrySelect.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }

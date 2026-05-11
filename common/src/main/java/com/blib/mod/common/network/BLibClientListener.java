@@ -120,7 +120,7 @@ public final class BLibClientListener {
      * Editor reads from there instead of the live registry so user-typed edits are reflected pre-reload.
      */
     public static void handleTagDraft(S2CTagDraftPayload payload, Player player) {
-        TagDraftCache.update(payload.registryKey(), payload.tagId(), payload.replace(), payload.entries());
+        TagDraftCache.update(payload.registryKey(), payload.tagId(), payload.replace(), payload.entries(), payload.resolvedMembers());
     }
 
     /**
