@@ -24,14 +24,18 @@ import com.blib.engine.jigsaw.placement.PlacementContext;
 import com.blib.engine.jigsaw.placement.PlacementMode;
 import com.blib.engine.selection.BlockVolumeSelectable;
 import com.blib.engine.selection.EntitySelectable;
+import com.blib.engine.selection.FactionSelectable;
 import com.blib.engine.selection.JigsawBlockSelectable;
 import com.blib.engine.selection.SelectionManager;
 import com.blib.engine.session.EngineMode;
 import com.blib.engine.session.EngineNavigation;
 import com.blib.engine.spawn.EntitySpawnSelection;
+import com.blib.engine.territory.ClaimPaintTool;
 import com.blib.mod.BLib;
+import com.blib.mod.common.network.packet.C2SAddChunkClaimPayload;
 import com.blib.mod.common.network.packet.C2SMoveSelectionPayload;
 import com.blib.mod.common.network.packet.C2SPlaceJigsawPiecePayload;
+import com.blib.mod.common.network.packet.C2SRemoveChunkClaimPayload;
 import com.blib.mod.common.network.packet.C2SSpawnEntityPayload;
 import com.blib.mod.common.network.packet.C2SUndoPlacementPayload;
 
@@ -88,6 +92,18 @@ public final class ViewportPanel implements Panel {
      */
     private @Nullable BlockPos dragPickAnchor;
 
+    /**
+     * Per-drag dedup set for claim-paint mode. While LMB/RMB is held the cursor sweeps multiple chunks; this set
+     * remembers which ones we've already fired packets for so dragging back over them doesn't spam the network. Keyed
+     * by {@code ChunkPos.toLong}. Cleared on mouseReleased.
+     */
+    private final java.util.Set<Long> claimPaintedThisDrag = new java.util.HashSet<>();
+
+    /**
+     * Mouse button (0 = claim, 1 = unclaim) of the active claim-paint drag, or {@code null} when no drag is in flight.
+     */
+    private @Nullable Integer claimPaintButton;
+
     public ViewportPanel(String title) {
         this(title, null);
     }
@@ -124,6 +140,72 @@ public final class ViewportPanel implements Panel {
         var rawW = (int) Math.round((bottomRight.x - topLeft.x) * guiScale);
         var rawH = (int) Math.round((bottomRight.y - topLeft.y) * guiScale);
         JigsawPlacementCursor.updateViewportRect(rawX, rawY, rawW, rawH);
+
+        // Paint-mode hover + paint target tracking. The renderer reads these to highlight the chunk under the cursor.
+        // The paint target is resolved from the current selection each frame so switching factions in the inspector
+        // mid-paint takes effect immediately.
+        if (ClaimPaintTool.isActive()) {
+            var session = EngineMode.get().session();
+            if (session != null) {
+                var hit = JigsawPlacementCursor.clipFromCursor(session);
+                ClaimPaintTool.setHoveredChunk(hit != null ? new net.minecraft.world.level.ChunkPos(hit.getBlockPos()) : null);
+            } else {
+                ClaimPaintTool.setHoveredChunk(null);
+            }
+            var single = SelectionManager.current().single();
+            ClaimPaintTool.setPaintTarget(single instanceof FactionSelectable fs ? fs.factionId() : null);
+        } else if (ClaimPaintTool.hoveredChunk() != null) {
+            ClaimPaintTool.setHoveredChunk(null);
+        }
+
+        // Hover probe — runs every frame so the user sees a "what would I select" outline on the block/entity under
+        // the cursor. Suppressed when the cursor is outside the viewport rect (cursor over a side panel shouldn't
+        // light up a phantom block) or when the session isn't ready.
+        var session = EngineMode.get().session();
+        if (session != null && inRect(mouseX, mouseY)) {
+            var relX = (mouseX - rectX) / (double) rectWidth;
+            var relY = (mouseY - rectY) / (double) rectHeight;
+            com.blib.engine.selection.EngineHoverProbe.update(session, relX, relY);
+        } else {
+            com.blib.engine.selection.EngineHoverProbe.clear();
+        }
+    }
+
+    /**
+     * Paint-mode click/drag dispatch. Returns {@code true} when the event was consumed by paint mode so callers stop
+     * routing to the default tool paths. Resolves the chunk via the world raycast, dedups across the drag stroke so
+     * sweeping back over a chunk doesn't fire duplicate packets, and routes LMB→add / RMB→remove.
+     */
+    private boolean dispatchClaimPaint(int button) {
+        if (!ClaimPaintTool.isActive() || (button != 0 && button != 1)) {
+            return false;
+        }
+        var session = EngineMode.get().session();
+        if (session == null) {
+            return false;
+        }
+        var target = ClaimPaintTool.paintTarget();
+        if (target == null) {
+            // Tool active but no faction selected to paint for — swallow the click so it doesn't fall through into
+            // default selection / placement behavior (which would be surprising while a paint tool is "armed").
+            return true;
+        }
+        var hit = JigsawPlacementCursor.clipFromCursor(session);
+        if (hit == null) {
+            return true;
+        }
+        var chunk = new net.minecraft.world.level.ChunkPos(hit.getBlockPos());
+        var key = chunk.toLong();
+        if (!claimPaintedThisDrag.add(key)) {
+            return true;
+        }
+        if (button == 0) {
+            BLib.MOD.networking().sendToServer(new C2SAddChunkClaimPayload(target, chunk.x, chunk.z));
+        } else {
+            BLib.MOD.networking().sendToServer(new C2SRemoveChunkClaimPayload(target, chunk.x, chunk.z));
+        }
+        claimPaintButton = button;
+        return true;
     }
 
     /**
@@ -141,6 +223,12 @@ public final class ViewportPanel implements Panel {
         var session = EngineMode.get().session();
         if (session == null) {
             return false;
+        }
+
+        // Claim paint mode takes over LMB/RMB before any other tool. Capturing keeps the drag routed here even if the
+        // cursor leaves the viewport rect mid-stroke (matches gizmo / mmb behavior).
+        if (ClaimPaintTool.isActive() && (button == 0 || button == 1)) {
+            return dispatchClaimPaint(button);
         }
 
         // LMB on a selection gizmo: only the active-mode gizmo is pickable since the others aren't rendered. Re-picks
@@ -365,6 +453,12 @@ public final class ViewportPanel implements Panel {
             return false;
         }
 
+        // Continue an in-flight claim-paint stroke. The button captured at mouseClickedCapture wins for the whole
+        // drag — switching buttons mid-stroke (impossible in practice but defensive here) doesn't change direction.
+        if (claimPaintButton != null && button == claimPaintButton) {
+            return dispatchClaimPaint(button);
+        }
+
         // Drag-to-pick claims LMB drags between mouseClicked (anchor set) and mouseReleased (anchor cleared). Live-
         // updates cornerB to whatever block the cursor is over, so the wireframe grows as the user drags. Skipped
         // when the cursor leaves the world (clipFromCursor returns null) — last valid cornerB stays put.
@@ -431,6 +525,13 @@ public final class ViewportPanel implements Panel {
         var session = EngineMode.get().session();
         if (session == null) {
             return false;
+        }
+
+        // End an in-flight claim-paint stroke. Clearing the dedup set + button lets a fresh drag fire packets again.
+        if (claimPaintButton != null && button == claimPaintButton) {
+            claimPaintButton = null;
+            claimPaintedThisDrag.clear();
+            return true;
         }
 
         if (button == 0 && dragPickAnchor != null) {

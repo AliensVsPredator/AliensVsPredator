@@ -17,6 +17,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
 
+import com.blib.api.common.faction.v1.ClaimVisibility;
+import com.blib.api.common.faction.v1.ProtectionMode;
 import com.blib.engine.blockselection.BlockSelection;
 import com.blib.engine.entityselection.EntityGizmoMode;
 import com.blib.engine.gizmo.BLibGizmoState;
@@ -29,16 +31,22 @@ import com.blib.engine.jigsaw.placement.JigsawTemplateScanner;
 import com.blib.engine.jigsaw.placement.JigsawTool;
 import com.blib.engine.selection.BlockVolumeSelectable;
 import com.blib.engine.selection.EntitySelectable;
+import com.blib.engine.selection.FactionSelectable;
 import com.blib.engine.selection.JigsawBlockSelectable;
 import com.blib.engine.selection.Selectable;
 import com.blib.engine.selection.SelectionManager;
 import com.blib.engine.session.EngineMode;
 import com.blib.engine.session.ProjectSession;
+import com.blib.engine.territory.ClaimPaintTool;
+import com.blib.internal.client.faction.ClientFactionInspectionCache;
+import com.blib.internal.client.territory.ClientTerritoryCache;
 import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.C2SDeleteCapturePayload;
 import com.blib.mod.common.network.packet.C2SListCapturesPayload;
+import com.blib.mod.common.network.packet.C2SRequestFactionInspectionPayload;
 import com.blib.mod.common.network.packet.C2SSetEntityScalePayload;
 import com.blib.mod.common.network.packet.C2STranslateEntityPayload;
+import com.blib.mod.common.network.packet.C2SUpdateFactionFieldPayload;
 import com.blib.mod.common.network.packet.C2SUpdateJigsawBlockPayload;
 
 /**
@@ -124,6 +132,42 @@ public final class DetailsPanel implements Panel {
     /** Shown via the Name field's warning icon when no other jigsaw in templates or the loaded world Targets it. */
     private static final Component HELP_NAME_ORPHANED = Component.literal(
         "Orphaned: no other jigsaw in any loaded template or the loaded world has this Name as their Target. Nothing will dock to this jigsaw. Either change Name to one some Target uses, or add a piece whose Target points here."
+    );
+
+    private static final Component HELP_FACTION_VISIBILITY = Component.literal(
+        "Who can see this faction's claims on the map. Public: anyone. Allied: members and allied factions. Private: members only."
+    );
+
+    private static final Component HELP_FACTION_BLOCK_BREAK = Component.literal(
+        "Who can break blocks inside this faction's claims. Public: anyone. Allied: members and allied factions. Private: members only."
+    );
+
+    private static final Component HELP_FACTION_BLOCK_INTERACT = Component.literal(
+        "Who can right-click blocks (doors, chests, buttons, etc.) inside this faction's claims. Public: anyone. Allied: members and allied factions. Private: members only."
+    );
+
+    private static final Component HELP_FACTION_ENTITY_INTERACT = Component.literal(
+        "Who can interact with this faction's entities — trading with villagers, mounting horses, etc. Public: anyone. Allied: members and allied factions. Private: members only."
+    );
+
+    private static final Component HELP_FACTION_NON_LIVING_ATTACK = Component.literal(
+        "Who can attack non-living entities owned by this faction — item frames, armor stands, paintings, minecarts, and boats. Public: anyone. Allied: members and allied factions. Private: members only."
+    );
+
+    private static final Component HELP_FACTION_ALLOW_PVP = Component.literal(
+        "When On, faction members can damage each other. When Off, friendly-fire is blocked between members."
+    );
+
+    private static final Component HELP_FACTION_ALLOW_EXPLOSIONS = Component.literal(
+        "When On, explosions (TNT, creepers, etc.) can break blocks inside this faction's claims. When Off, claims are protected from blast damage."
+    );
+
+    private static final Component HELP_FACTION_ALLOW_MOB_GRIEFING = Component.literal(
+        "When On, mobs (creepers, endermen, zombies breaking doors, etc.) can modify blocks inside this faction's claims. When Off, claims are protected from mob block changes."
+    );
+
+    private static final Component HELP_FACTION_TERRITORY = Component.literal(
+        "Chunks this faction has claimed. Paint Claims enters a viewport mode where LMB-drag claims and RMB-drag unclaims chunks under the cursor. The Territory Map panel offers the same edits on a 2D grid."
     );
 
     /** Cache TTL for the orphan check; balances responsiveness against the cost of scanning loaded chunks. */
@@ -216,6 +260,63 @@ public final class DetailsPanel implements Panel {
     private int lastInspectedEntityId = -1;
 
     /**
+     * Faction inspector inputs. Name + color (hex) edit via {@link C2SUpdateFactionFieldPayload}. Five segmented
+     * controls handle claim visibility + four protection modes; three more handle the boolean allow flags. All commits
+     * round-trip through the server, then a server push refreshes the inspection cache.
+     */
+    private final TextInput factionName = new TextInput("Name", v -> commitFactionField(C2SUpdateFactionFieldPayload.Field.NAME, v));
+
+    private final TextInput factionColor = new TextInput("#RRGGBB", v -> commitFactionField(C2SUpdateFactionFieldPayload.Field.COLOR, v));
+
+    private final SegmentedControl factionVisibility = new SegmentedControl(List.of("Public", "Allied", "Private"), 0);
+
+    private final SegmentedControl factionBlockBreak = new SegmentedControl(List.of("Public", "Allied", "Private"), 0);
+
+    private final SegmentedControl factionBlockInteract = new SegmentedControl(List.of("Public", "Allied", "Private"), 0);
+
+    private final SegmentedControl factionEntityInteract = new SegmentedControl(List.of("Public", "Allied", "Private"), 0);
+
+    private final SegmentedControl factionNonLivingAttack = new SegmentedControl(List.of("Public", "Allied", "Private"), 0);
+
+    private final SegmentedControl factionAllowPvp = new SegmentedControl(List.of("Off", "On"), 0);
+
+    private final SegmentedControl factionAllowExplosions = new SegmentedControl(List.of("Off", "On"), 0);
+
+    private final SegmentedControl factionAllowMobGriefing = new SegmentedControl(List.of("Off", "On"), 0);
+
+    /**
+     * Most-recently-inspected faction id. On selection swap we force-resync inputs and dispatch
+     * {@link C2SRequestFactionInspectionPayload} so the cache populates with the new faction's full state.
+     */
+    private @Nullable ResourceLocation lastInspectedFactionId;
+
+    /**
+     * Hit-rect for the color swatch button in the faction Color row, captured each render so click handling can hit-
+     * test it and open {@link HslColorPickerPopup} without recomputing geometry. {@code factionSwatchSize == 0} means
+     * the inspector isn't showing a faction this frame.
+     */
+    private int factionSwatchX;
+
+    private int factionSwatchY;
+
+    private int factionSwatchSize;
+
+    /** Current faction color (ARGB) captured during render — feeds the picker popup's initial state on swatch click. */
+    private int factionSwatchArgb;
+
+    /**
+     * Hit-rect for the Paint Claims toggle in the faction Territory section. {@code factionPaintToggleSize == 0} means
+     * the inspector isn't showing a faction this frame (rect should be ignored by the click handler).
+     */
+    private int factionPaintToggleX;
+
+    private int factionPaintToggleY;
+
+    private int factionPaintToggleW;
+
+    private int factionPaintToggleH;
+
+    /**
      * Position of the block currently shown in the inspector. When this changes we reset all input contents to the new
      * block's BE state, so a selection swap doesn't leak the previous block's pending edits.
      */
@@ -290,6 +391,10 @@ public final class DetailsPanel implements Panel {
         graphics.fill(x, y, x + width, y + height, BACKGROUND_COLOR);
         // Reset each frame; row helpers re-set this if any "?" icon is hovered.
         hoveredHelpTooltip = null;
+        // Reset the faction swatch rect — only re-set when actually rendering a faction view this frame so clicks
+        // on a stale rect don't fire after the selection changes to a non-faction.
+        factionSwatchSize = 0;
+        factionPaintToggleW = 0;
 
         var font = Minecraft.getInstance().font;
         var rowY = y;
@@ -330,6 +435,10 @@ public final class DetailsPanel implements Panel {
                 case BLOCK_VOLUME -> {
                     currentBlock = null;
                     renderBlockVolumeView(graphics, font, x, rowY, width, mouseX, mouseY);
+                }
+                case FACTION -> {
+                    currentBlock = null;
+                    renderFactionView(graphics, font, x, rowY, width, mouseX, mouseY, (FactionSelectable) single);
                 }
                 default -> {
                     currentBlock = null;
@@ -387,6 +496,117 @@ public final class DetailsPanel implements Panel {
             entityPosY.mouseClicked(mouseX, mouseY, button);
             entityPosZ.mouseClicked(mouseX, mouseY, button);
             entityScale.mouseClicked(mouseX, mouseY, button);
+            return false;
+        }
+        if (single instanceof FactionSelectable factionSel) {
+            // TextInputs handle their own focus; calling them all is fine since each rejects clicks outside its rect.
+            factionName.mouseClicked(mouseX, mouseY, button);
+            factionColor.mouseClicked(mouseX, mouseY, button);
+
+            // Paint Claims toggle — flips ClaimPaintTool on/off and sets its target to the inspected faction. Tool
+            // resolves the target each frame from SelectionManager anyway, but setting it eagerly here means the
+            // first click after activation already paints the right faction even if the user moves the cursor into
+            // the viewport before the next render frame.
+            if (
+                button == 0
+                    && factionPaintToggleW > 0
+                    && mouseX >= factionPaintToggleX
+                    && mouseX < factionPaintToggleX + factionPaintToggleW
+                    && mouseY >= factionPaintToggleY
+                    && mouseY < factionPaintToggleY + factionPaintToggleH
+            ) {
+                if (ClaimPaintTool.isActive() && factionSel.factionId().equals(ClaimPaintTool.paintTarget())) {
+                    ClaimPaintTool.deactivate();
+                } else {
+                    ClaimPaintTool.setPaintTarget(factionSel.factionId());
+                    ClaimPaintTool.activate();
+                }
+                return true;
+            }
+
+            // Color swatch click — open the HSL picker anchored below the swatch. Commit pushes the new color
+            // through the same C2SUpdateFactionFieldPayload path as typing into the hex input, so the inspection
+            // cache and TextInput will resync on the server's next push.
+            if (
+                button == 0
+                    && factionSwatchSize > 0
+                    && mouseX >= factionSwatchX
+                    && mouseX < factionSwatchX + factionSwatchSize
+                    && mouseY >= factionSwatchY
+                    && mouseY < factionSwatchY + factionSwatchSize
+            ) {
+                var anchorCenterX = factionSwatchX + factionSwatchSize / 2;
+                var anchorBottomY = factionSwatchY + factionSwatchSize;
+                HslColorPickerPopup.openAt(
+                    anchorCenterX,
+                    anchorBottomY,
+                    factionSwatchArgb,
+                    argb -> commitFactionField(
+                        C2SUpdateFactionFieldPayload.Field.COLOR,
+                        String.format(java.util.Locale.ROOT, "#%06X", argb & 0xFFFFFF)
+                    )
+                );
+                return true;
+            }
+
+            // Each segmented control commits on click via the matching field discriminator. Map the segmented index
+            // back to its source enum's name so the server-side parser (string → enum) round-trips cleanly.
+            if (factionVisibility.mouseClicked(mouseX, mouseY, button)) {
+                commitFactionField(
+                    C2SUpdateFactionFieldPayload.Field.CLAIM_VISIBILITY,
+                    ClaimVisibility.values()[factionVisibility.selectedIndex()].name()
+                );
+                return true;
+            }
+            if (factionBlockBreak.mouseClicked(mouseX, mouseY, button)) {
+                commitFactionField(
+                    C2SUpdateFactionFieldPayload.Field.BLOCK_BREAK_PROTECTION,
+                    ProtectionMode.values()[factionBlockBreak.selectedIndex()].name()
+                );
+                return true;
+            }
+            if (factionBlockInteract.mouseClicked(mouseX, mouseY, button)) {
+                commitFactionField(
+                    C2SUpdateFactionFieldPayload.Field.BLOCK_INTERACT_PROTECTION,
+                    ProtectionMode.values()[factionBlockInteract.selectedIndex()].name()
+                );
+                return true;
+            }
+            if (factionEntityInteract.mouseClicked(mouseX, mouseY, button)) {
+                commitFactionField(
+                    C2SUpdateFactionFieldPayload.Field.ENTITY_INTERACT_PROTECTION,
+                    ProtectionMode.values()[factionEntityInteract.selectedIndex()].name()
+                );
+                return true;
+            }
+            if (factionNonLivingAttack.mouseClicked(mouseX, mouseY, button)) {
+                commitFactionField(
+                    C2SUpdateFactionFieldPayload.Field.NONLIVING_ENTITY_ATTACK_PROTECTION,
+                    ProtectionMode.values()[factionNonLivingAttack.selectedIndex()].name()
+                );
+                return true;
+            }
+            if (factionAllowPvp.mouseClicked(mouseX, mouseY, button)) {
+                commitFactionField(
+                    C2SUpdateFactionFieldPayload.Field.ALLOW_PVP,
+                    Boolean.toString(factionAllowPvp.selectedIndex() == 1)
+                );
+                return true;
+            }
+            if (factionAllowExplosions.mouseClicked(mouseX, mouseY, button)) {
+                commitFactionField(
+                    C2SUpdateFactionFieldPayload.Field.ALLOW_EXPLOSIONS,
+                    Boolean.toString(factionAllowExplosions.selectedIndex() == 1)
+                );
+                return true;
+            }
+            if (factionAllowMobGriefing.mouseClicked(mouseX, mouseY, button)) {
+                commitFactionField(
+                    C2SUpdateFactionFieldPayload.Field.ALLOW_MOB_GRIEFING,
+                    Boolean.toString(factionAllowMobGriefing.selectedIndex() == 1)
+                );
+                return true;
+            }
             return false;
         }
         // Tool-state view — captures list delete buttons.
@@ -674,6 +894,199 @@ public final class DetailsPanel implements Panel {
         } catch (NumberFormatException e) {
             return null;
         }
+    }
+
+    /**
+     * Editable inspector for a {@link FactionSelectable}. Reads from {@link ClientFactionInspectionCache} (populated by
+     * the server's inspection push); each input commits via {@link C2SUpdateFactionFieldPayload}. Selection-swap
+     * dispatches a fresh {@link C2SRequestFactionInspectionPayload} so the cache catches up to the new faction.
+     */
+    private void renderFactionView(
+        GuiGraphics graphics,
+        Font font,
+        int x,
+        int y,
+        int width,
+        int mouseX,
+        int mouseY,
+        FactionSelectable selectable
+    ) {
+        var rowY = y;
+        var factionId = selectable.factionId();
+
+        // On selection swap, force-resync inputs and request a fresh inspection snapshot from the server.
+        var force = lastInspectedFactionId == null || !lastInspectedFactionId.equals(factionId);
+        if (force) {
+            BLib.MOD.networking().sendToServer(new C2SRequestFactionInspectionPayload(factionId));
+            lastInspectedFactionId = factionId;
+        }
+
+        // The cache may not have caught up to the selection yet (or it's stale, mid-request) — show a placeholder.
+        var inspection = ClientFactionInspectionCache.current();
+        if (inspection == null || !inspection.id().equals(factionId)) {
+            rowY = drawSectionHeader(graphics, font, x, rowY, width, "Faction");
+            rowY += CONTENT_PADDING / 2;
+            drawNote(graphics, font, x, rowY, "(loading…)");
+            return;
+        }
+
+        syncFactionInputsFromInspection(inspection, force);
+
+        rowY = drawSectionHeader(graphics, font, x, rowY, width, "Identity");
+        rowY += CONTENT_PADDING / 2;
+        rowY = drawInputRow(graphics, font, x, rowY, width, "Name", null, factionName, mouseX, mouseY);
+        rowY = drawColorRow(graphics, font, x, rowY, width, inspection.color() | 0xFF000000, mouseX, mouseY);
+        rowY = drawRow(graphics, font, x, rowY, "ID", factionId.toString());
+        rowY = drawRow(graphics, font, x, rowY, "Type", inspection.typeId().toString());
+
+        rowY = drawSectionHeaderWithHelp(graphics, font, x, rowY, width, "Territory", HELP_FACTION_TERRITORY, mouseX, mouseY);
+        rowY += CONTENT_PADDING / 2;
+        var chunkCount = ClientTerritoryCache.INSTANCE.chunkCountForFaction(factionId);
+        rowY = drawRow(graphics, font, x, rowY, "Chunks", Integer.toString(chunkCount));
+        rowY = drawPaintToggleRow(graphics, font, x, rowY, width, factionId, mouseX, mouseY);
+
+        rowY = drawSectionHeader(graphics, font, x, rowY, width, "Protection");
+        rowY += CONTENT_PADDING / 2;
+        // Faction protection/flag labels are wordier than the jigsaw inspector's; widen the label column locally so
+        // "Non-Living Attack" and "Entity Interact" don't bleed into the segmented control.
+        var factionLabelW = 100;
+        rowY = drawLabeledSegmentedRow(
+            graphics,
+            font,
+            x,
+            rowY,
+            width,
+            factionLabelW,
+            "Visibility",
+            HELP_FACTION_VISIBILITY,
+            factionVisibility,
+            mouseX,
+            mouseY
+        );
+        rowY = drawLabeledSegmentedRow(
+            graphics,
+            font,
+            x,
+            rowY,
+            width,
+            factionLabelW,
+            "Block Break",
+            HELP_FACTION_BLOCK_BREAK,
+            factionBlockBreak,
+            mouseX,
+            mouseY
+        );
+        rowY = drawLabeledSegmentedRow(
+            graphics,
+            font,
+            x,
+            rowY,
+            width,
+            factionLabelW,
+            "Block Interact",
+            HELP_FACTION_BLOCK_INTERACT,
+            factionBlockInteract,
+            mouseX,
+            mouseY
+        );
+        rowY = drawLabeledSegmentedRow(
+            graphics,
+            font,
+            x,
+            rowY,
+            width,
+            factionLabelW,
+            "Entity Interact",
+            HELP_FACTION_ENTITY_INTERACT,
+            factionEntityInteract,
+            mouseX,
+            mouseY
+        );
+        rowY = drawLabeledSegmentedRow(
+            graphics,
+            font,
+            x,
+            rowY,
+            width,
+            factionLabelW,
+            "Non-Living Attack",
+            HELP_FACTION_NON_LIVING_ATTACK,
+            factionNonLivingAttack,
+            mouseX,
+            mouseY
+        );
+
+        rowY = drawSectionHeader(graphics, font, x, rowY, width, "Flags");
+        rowY += CONTENT_PADDING / 2;
+        rowY = drawLabeledSegmentedRow(
+            graphics,
+            font,
+            x,
+            rowY,
+            width,
+            factionLabelW,
+            "PvP",
+            HELP_FACTION_ALLOW_PVP,
+            factionAllowPvp,
+            mouseX,
+            mouseY
+        );
+        rowY = drawLabeledSegmentedRow(
+            graphics,
+            font,
+            x,
+            rowY,
+            width,
+            factionLabelW,
+            "Explosions",
+            HELP_FACTION_ALLOW_EXPLOSIONS,
+            factionAllowExplosions,
+            mouseX,
+            mouseY
+        );
+        rowY = drawLabeledSegmentedRow(
+            graphics,
+            font,
+            x,
+            rowY,
+            width,
+            factionLabelW,
+            "Mob Griefing",
+            HELP_FACTION_ALLOW_MOB_GRIEFING,
+            factionAllowMobGriefing,
+            mouseX,
+            mouseY
+        );
+    }
+
+    /**
+     * Mirror inspection-cache state into the inspector inputs. Skips text-input updates while focused (so the user's
+     * mid-typing doesn't get clobbered by a server push between frames). Segmented controls always re-set since they
+     * have no "focused" concept.
+     */
+    private void syncFactionInputsFromInspection(ClientFactionInspectionCache.ClientFactionInspection inspection, boolean force) {
+        if (force || !factionName.isFocused()) {
+            factionName.setContent(inspection.name());
+        }
+        if (force || !factionColor.isFocused()) {
+            factionColor.setContent(String.format(java.util.Locale.ROOT, "#%06X", inspection.color() & 0xFFFFFF));
+        }
+        factionVisibility.setSelectedIndex(inspection.claimVisibility().ordinal());
+        factionBlockBreak.setSelectedIndex(inspection.blockBreakProtection().ordinal());
+        factionBlockInteract.setSelectedIndex(inspection.blockInteractProtection().ordinal());
+        factionEntityInteract.setSelectedIndex(inspection.entityInteractProtection().ordinal());
+        factionNonLivingAttack.setSelectedIndex(inspection.nonLivingEntityAttackProtection().ordinal());
+        factionAllowPvp.setSelectedIndex(inspection.allowPvp() ? 1 : 0);
+        factionAllowExplosions.setSelectedIndex(inspection.allowExplosions() ? 1 : 0);
+        factionAllowMobGriefing.setSelectedIndex(inspection.allowMobGriefing() ? 1 : 0);
+    }
+
+    private void commitFactionField(C2SUpdateFactionFieldPayload.Field field, String value) {
+        var single = SelectionManager.current().single();
+        if (!(single instanceof FactionSelectable selectable)) {
+            return;
+        }
+        BLib.MOD.networking().sendToServer(C2SUpdateFactionFieldPayload.of(selectable.factionId(), field, value));
     }
 
     /**
@@ -1014,6 +1427,92 @@ public final class DetailsPanel implements Panel {
     }
 
     /**
+     * Faction Color row — label + hex {@link TextInput} + a clickable swatch on the right that opens
+     * {@link HslColorPickerPopup}. Swatch hit-rect is captured into {@code factionSwatch*} fields so the click handler
+     * in {@link #mouseClicked} can hit-test it without recomputing geometry.
+     */
+    private int drawColorRow(
+        GuiGraphics graphics,
+        Font font,
+        int x,
+        int y,
+        int width,
+        int currentArgb,
+        int mouseX,
+        int mouseY
+    ) {
+        var label = "Color";
+        var labelY = y + (TextInput.HEIGHT - font.lineHeight + 2) / 2;
+        graphics.drawString(font, Component.literal(label), x + CONTENT_PADDING, labelY, LABEL_COLOR, false);
+
+        // Swatch sits at the right end of the row; the hex input fills everything in between.
+        var swatchSize = TextInput.HEIGHT;
+        var swatchGap = 4;
+        var swatchX = x + width - CONTENT_PADDING - swatchSize;
+        var inputX = x + CONTENT_PADDING + LABEL_COLUMN_WIDTH;
+        var inputW = Math.max(0, swatchX - inputX - swatchGap);
+        factionColor.render(graphics, inputX, y, inputW, mouseX, mouseY);
+
+        var swatchHovered = mouseX >= swatchX && mouseX < swatchX + swatchSize && mouseY >= y && mouseY < y + swatchSize;
+        graphics.fill(swatchX, y, swatchX + swatchSize, y + swatchSize, currentArgb);
+        var borderColor = swatchHovered ? HELP_ICON_HOVER_COLOR : LABEL_COLOR;
+        graphics.fill(swatchX, y, swatchX + swatchSize, y + 1, borderColor);
+        graphics.fill(swatchX, y + swatchSize - 1, swatchX + swatchSize, y + swatchSize, borderColor);
+        graphics.fill(swatchX, y, swatchX + 1, y + swatchSize, borderColor);
+        graphics.fill(swatchX + swatchSize - 1, y, swatchX + swatchSize, y + swatchSize, borderColor);
+
+        this.factionSwatchX = swatchX;
+        this.factionSwatchY = y;
+        this.factionSwatchSize = swatchSize;
+        this.factionSwatchArgb = currentArgb;
+        return y + TextInput.HEIGHT + ROW_GAP;
+    }
+
+    /**
+     * Faction Territory section: a toggle button row that flips the viewport claim-paint tool on / off. Label reflects
+     * current state — "Paint Claims" when off, "Stop Painting" when on and pointing at the inspected faction. Hit-rect
+     * captured in {@code factionPaintToggle*} for click dispatch.
+     */
+    private int drawPaintToggleRow(
+        GuiGraphics graphics,
+        Font font,
+        int x,
+        int y,
+        int width,
+        net.minecraft.resources.ResourceLocation factionId,
+        int mouseX,
+        int mouseY
+    ) {
+        var paintingThis = ClaimPaintTool.isActive() && factionId.equals(ClaimPaintTool.paintTarget());
+        var label = paintingThis ? "Stop Painting" : "Paint Claims";
+        var btnW = font.width(label) + 12;
+        var btnH = TextInput.HEIGHT;
+        var btnX = x + CONTENT_PADDING;
+        var btnY = y;
+
+        var hovered = mouseX >= btnX && mouseX < btnX + btnW && mouseY >= btnY && mouseY < btnY + btnH;
+        // Bright-on-active so the user can see at a glance whether they're armed; subtle when off.
+        var bg = paintingThis ? 0xFF3C3C46 : (hovered ? 0xFF22222C : 0xFF14141A);
+        var borderColor = paintingThis ? 0xFFE6C26B : 0xFF353540;
+        graphics.fill(btnX, btnY, btnX + btnW, btnY + btnH, bg);
+        graphics.fill(btnX, btnY, btnX + btnW, btnY + 1, borderColor);
+        graphics.fill(btnX, btnY + btnH - 1, btnX + btnW, btnY + btnH, borderColor);
+        graphics.fill(btnX, btnY, btnX + 1, btnY + btnH, borderColor);
+        graphics.fill(btnX + btnW - 1, btnY, btnX + btnW, btnY + btnH, borderColor);
+
+        var textColor = paintingThis ? 0xFFE6C26B : (hovered ? 0xFFFFFFFF : 0xFFD0D0D0);
+        var textX = btnX + (btnW - font.width(label)) / 2;
+        var textY = btnY + (btnH - font.lineHeight + 2) / 2;
+        graphics.drawString(font, Component.literal(label), textX, textY, textColor, false);
+
+        factionPaintToggleX = btnX;
+        factionPaintToggleY = btnY;
+        factionPaintToggleW = btnW;
+        factionPaintToggleH = btnH;
+        return y + btnH + ROW_GAP;
+    }
+
+    /**
      * Render a small "?" glyph anchored at {@code (iconX, iconY)} with a hover hit-rect of {@link #HELP_ICON_SIZE} px
      * on each side. Returns {@code true} when the cursor is over the icon — caller writes the tooltip field.
      */
@@ -1151,6 +1650,39 @@ public final class DetailsPanel implements Panel {
     private static int drawSegmentedRow(GuiGraphics graphics, int x, int y, int width, SegmentedControl control, int mouseX, int mouseY) {
         var ctrlW = Math.max(0, width - 2 * CONTENT_PADDING);
         control.render(graphics, x + CONTENT_PADDING, y, ctrlW, mouseX, mouseY);
+        return y + SegmentedControl.HEIGHT + ROW_GAP;
+    }
+
+    /**
+     * Labeled {@link SegmentedControl} row — left-side label plus an optional "?" help icon that surfaces
+     * {@code helpText} on hover. {@code labelColumnWidth} sizes the left label column independently of
+     * {@link #LABEL_COLUMN_WIDTH} so callers with wordier labels (e.g. the faction inspector's protection toggles)
+     * don't get their text clipped into the control area.
+     */
+    private int drawLabeledSegmentedRow(
+        GuiGraphics graphics,
+        Font font,
+        int x,
+        int y,
+        int width,
+        int labelColumnWidth,
+        String label,
+        @Nullable Component helpText,
+        SegmentedControl control,
+        int mouseX,
+        int mouseY
+    ) {
+        var labelY = y + (SegmentedControl.HEIGHT - font.lineHeight + 2) / 2;
+        graphics.drawString(font, Component.literal(label), x + CONTENT_PADDING, labelY, LABEL_COLOR, false);
+        if (helpText != null) {
+            var iconX = x + CONTENT_PADDING + font.width(label) + HELP_ICON_GAP;
+            if (drawHelpIcon(graphics, font, iconX, labelY, mouseX, mouseY)) {
+                hoveredHelpTooltip = helpText;
+            }
+        }
+        var ctrlX = x + CONTENT_PADDING + labelColumnWidth;
+        var ctrlW = Math.max(0, width - labelColumnWidth - 2 * CONTENT_PADDING);
+        control.render(graphics, ctrlX, y, ctrlW, mouseX, mouseY);
         return y + SegmentedControl.HEIGHT + ROW_GAP;
     }
 

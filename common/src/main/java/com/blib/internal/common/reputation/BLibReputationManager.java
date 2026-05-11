@@ -7,10 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.blib.api.common.reputation.v1.ReputationData;
 import com.blib.api.common.reputation.v1.ReputationKey;
@@ -130,12 +128,10 @@ public class BLibReputationManager implements ReputationManager {
     }
 
     public void save(MinecraftServer server) {
-        if (data.isEmpty()) {
-            return;
-        }
-
+        // No empty short-circuit: a session that deleted every entry still needs to flush the deletion-dirty shards
+        // so their files get rewritten (or removed via ReputationIO's empty-tag → delete path). Otherwise the next
+        // load would resurrect everything from disk.
         Map<Integer, List<ReputationData>> shardToEntries = new HashMap<>();
-        Set<Integer> dirtyShards = new HashSet<>();
 
         for (var entry : data.entrySet()) {
             var reputationKey = entry.getKey();
@@ -145,18 +141,21 @@ public class BLibReputationManager implements ReputationManager {
             shardToEntries.computeIfAbsent(shardIndex, k -> new ArrayList<>()).add(reputationData);
 
             if (reputationData.isDirty()) {
-                dirtyShards.add(shardIndex);
+                shardManager.markDirty(reputationKey);
             }
         }
 
-        for (var shardIndex : dirtyShards) {
-            var entriesInShard = shardToEntries.get(shardIndex);
+        for (var shardIndex : shardManager.dirtyShards()) {
+            // Shards with no surviving entries still get written — saveShard produces an empty rootTag in that case
+            // and ReputationIO.writeCompressed deletes the file, ensuring deleted entries don't survive on disk.
+            var entriesInShard = shardToEntries.getOrDefault(shardIndex, List.of());
             ReputationDataIO.saveShard(server, entriesInShard, shardIndex);
         }
 
         for (var reputationData : data.values()) {
             reputationData.clearDirty();
         }
+        shardManager.clearDirty();
     }
 
     public void clear(MinecraftServer server) {

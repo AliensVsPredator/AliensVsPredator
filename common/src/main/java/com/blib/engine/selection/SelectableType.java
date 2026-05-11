@@ -16,5 +16,6 @@ public enum SelectableType {
     JIGSAW_PIECE,
     BLOCK,
     BLOCK_VOLUME,
-    LIMB
+    LIMB,
+    FACTION
 }

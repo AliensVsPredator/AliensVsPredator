@@ -117,6 +117,40 @@ public final class BLibClientListener {
         BlockSelection.setCaptures(payload.captureNames());
     }
 
+    /** Server-pushed list of project pools. Stored in {@link com.blib.engine.projectcontents.ProjectContents}. */
+    public static void handlePoolList(com.blib.mod.common.network.packet.S2CPoolListPayload payload, Player player) {
+        com.blib.engine.projectcontents.ProjectContents.setPools(payload.poolIds());
+    }
+
+    /** Server-pushed list of project structures. Stored in {@link com.blib.engine.projectcontents.ProjectContents}. */
+    public static void handleStructureList(com.blib.mod.common.network.packet.S2CStructureListPayload payload, Player player) {
+        com.blib.engine.projectcontents.ProjectContents.setStructures(payload.structureIds());
+    }
+
+    /** Server-pushed faction directory snapshot. Replaces the workspace's directory cache. */
+    public static void handleFactionDirectory(
+        com.blib.mod.common.network.packet.S2CFactionDirectoryPayload payload,
+        Player player
+    ) {
+        com.blib.internal.client.faction.ClientFactionDirectoryCache.apply(payload);
+    }
+
+    /** Server-pushed inspector snapshot for a single faction. */
+    public static void handleFactionInspection(
+        com.blib.mod.common.network.packet.S2CFactionInspectionPayload payload,
+        Player player
+    ) {
+        com.blib.internal.client.faction.ClientFactionInspectionCache.apply(payload);
+    }
+
+    /** Server-pushed member roster for a single faction. */
+    public static void handleFactionMembers(
+        com.blib.mod.common.network.packet.S2CFactionMembersPayload payload,
+        Player player
+    ) {
+        com.blib.internal.client.faction.ClientFactionMembersCache.apply(payload);
+    }
+
     /**
      * Server reply for a Move Blocks operation. On success and non-copy, shifts the AABB by the offset that was sent —
      * Photoshop's "marquee follows the dropped pixels" pattern, so the user's selection now wraps the moved blocks and

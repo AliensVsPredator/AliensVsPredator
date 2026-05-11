@@ -10,52 +10,75 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.JigsawBlockEntity;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
 
+import com.blib.api.common.faction.v1.ClaimVisibility;
+import com.blib.api.common.faction.v1.FactionMember;
+import com.blib.api.common.faction.v1.ProtectionMode;
+import com.blib.api.common.faction.v1.RelationshipState;
 import com.blib.api.common.goap.v1.GOAPUser;
 import com.blib.internal.common.capture.BlockCaptureEngine;
 import com.blib.internal.common.capture.CaptureMode;
 import com.blib.internal.common.clipboard.BlockClipboardEngine;
 import com.blib.internal.common.clipboard.ServerBlockClipboard;
+import com.blib.internal.common.faction.BLibFactionManager;
 import com.blib.internal.common.move.BlockMoveEngine;
 import com.blib.internal.common.storage.EngineProjectIO;
 import com.blib.internal.common.storage.ProjectDraftStore;
+import com.blib.internal.common.territory.BLibTerritoryManager;
 import com.blib.mod.BLib;
 import com.blib.mod.common.gameplay.goap.GOAPDebugTracker;
 import com.blib.mod.common.gameplay.jigsaw.PlacementHistory;
+import com.blib.mod.common.network.packet.C2SAddChunkClaimPayload;
+import com.blib.mod.common.network.packet.C2SAddFactionMemberPayload;
 import com.blib.mod.common.network.packet.C2SAddPoolElementPayload;
 import com.blib.mod.common.network.packet.C2SCaptureBlocksPayload;
 import com.blib.mod.common.network.packet.C2SCopySelectionPayload;
+import com.blib.mod.common.network.packet.C2SCreateFactionPayload;
 import com.blib.mod.common.network.packet.C2SCreateProjectPayload;
 import com.blib.mod.common.network.packet.C2SDeleteCapturePayload;
+import com.blib.mod.common.network.packet.C2SDeleteFactionPayload;
+import com.blib.mod.common.network.packet.C2SDeletePoolPayload;
 import com.blib.mod.common.network.packet.C2SDeleteProjectPayload;
 import com.blib.mod.common.network.packet.C2SDeleteSelectionPayload;
+import com.blib.mod.common.network.packet.C2SDeleteStructurePayload;
 import com.blib.mod.common.network.packet.C2SGOAPTrackPayload;
 import com.blib.mod.common.network.packet.C2SListCapturesPayload;
+import com.blib.mod.common.network.packet.C2SListPoolsPayload;
 import com.blib.mod.common.network.packet.C2SListProjectsPayload;
+import com.blib.mod.common.network.packet.C2SListStructuresPayload;
 import com.blib.mod.common.network.packet.C2SMoveSelectionPayload;
 import com.blib.mod.common.network.packet.C2SOpenProjectPayload;
 import com.blib.mod.common.network.packet.C2SPasteFromClipboardPayload;
 import com.blib.mod.common.network.packet.C2SPlaceJigsawPiecePayload;
 import com.blib.mod.common.network.packet.C2SReloadProjectPayload;
+import com.blib.mod.common.network.packet.C2SRemoveChunkClaimPayload;
 import com.blib.mod.common.network.packet.C2SRemoveEntityPayload;
+import com.blib.mod.common.network.packet.C2SRemoveFactionMemberPayload;
 import com.blib.mod.common.network.packet.C2SRemovePoolElementPayload;
+import com.blib.mod.common.network.packet.C2SRequestFactionDirectoryPayload;
+import com.blib.mod.common.network.packet.C2SRequestFactionInspectionPayload;
+import com.blib.mod.common.network.packet.C2SRequestFactionMembersPayload;
 import com.blib.mod.common.network.packet.C2SRequestPoolDraftPayload;
 import com.blib.mod.common.network.packet.C2SSavePoolPayload;
 import com.blib.mod.common.network.packet.C2SSetEntityScalePayload;
+import com.blib.mod.common.network.packet.C2SSetFactionRelationshipPayload;
 import com.blib.mod.common.network.packet.C2SSpawnEntityPayload;
 import com.blib.mod.common.network.packet.C2STranslateEntityPayload;
 import com.blib.mod.common.network.packet.C2SUndoPlacementPayload;
+import com.blib.mod.common.network.packet.C2SUpdateFactionFieldPayload;
 import com.blib.mod.common.network.packet.C2SUpdateJigsawBlockPayload;
 import com.blib.mod.common.network.packet.C2SUpdatePoolElementPayload;
 import com.blib.mod.common.network.packet.ProjectOp;
@@ -63,8 +86,10 @@ import com.blib.mod.common.network.packet.S2CCaptureListPayload;
 import com.blib.mod.common.network.packet.S2CClipboardStatusPayload;
 import com.blib.mod.common.network.packet.S2CMoveSelectionResultPayload;
 import com.blib.mod.common.network.packet.S2CPoolDraftPayload;
+import com.blib.mod.common.network.packet.S2CPoolListPayload;
 import com.blib.mod.common.network.packet.S2CProjectListPayload;
 import com.blib.mod.common.network.packet.S2CProjectOpResultPayload;
+import com.blib.mod.common.network.packet.S2CStructureListPayload;
 
 /**
  * Server-side handlers for client → server packets. Mirror of {@link BLibClientListener} for the C2S direction — each
@@ -635,6 +660,75 @@ public final class BLibServerListener {
             );
     }
 
+    /** List pools authored under the project's datapack. Read-only; no op-gating. */
+    public static void handleListPools(C2SListPoolsPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        var pools = EngineProjectIO.listProjectPools(payload.projectName());
+        BLib.MOD.networking().sendToClient(serverPlayer, new S2CPoolListPayload(payload.projectName(), pools));
+    }
+
+    /** List structures authored under the project's datapack. Read-only; no op-gating. */
+    public static void handleListStructures(C2SListStructuresPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        var structures = EngineProjectIO.listProjectStructures(payload.projectName());
+        BLib.MOD.networking().sendToClient(serverPlayer, new S2CStructureListPayload(payload.projectName(), structures));
+    }
+
+    /**
+     * Delete a pool's JSON file. Op-gated. Replies with op result + a fresh pool list. The live registry still holds
+     * the pool until the user runs Reload Project — same caveat as deleting a structure file.
+     */
+    public static void handleDeletePool(C2SDeletePoolPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        if (!serverPlayer.hasPermissions(2)) {
+            replyOpResult(serverPlayer, ProjectOp.RELOAD, payload.projectName(), false, "Insufficient permissions");
+            return;
+        }
+        try {
+            EngineProjectIO.deleteProjectPool(payload.projectName(), payload.poolId());
+            replyOpResult(serverPlayer, ProjectOp.RELOAD, payload.projectName(), true, "Deleted pool '" + payload.poolId() + "'");
+        } catch (IOException e) {
+            replyOpResult(serverPlayer, ProjectOp.RELOAD, payload.projectName(), false, e.getMessage());
+        }
+        BLib.MOD.networking()
+            .sendToClient(
+                serverPlayer,
+                new S2CPoolListPayload(payload.projectName(), EngineProjectIO.listProjectPools(payload.projectName()))
+            );
+    }
+
+    /**
+     * Delete a structure's NBT file. Op-gated. Replies with op result + a fresh structure list. Same registry caveat as
+     * {@link #handleDeletePool}: the loaded {@code StructureTemplate} stays in memory until the user runs Reload
+     * Project.
+     */
+    public static void handleDeleteStructure(C2SDeleteStructurePayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        if (!serverPlayer.hasPermissions(2)) {
+            replyOpResult(serverPlayer, ProjectOp.RELOAD, payload.projectName(), false, "Insufficient permissions");
+            return;
+        }
+        try {
+            EngineProjectIO.deleteProjectStructure(payload.projectName(), payload.structureId());
+            replyOpResult(serverPlayer, ProjectOp.RELOAD, payload.projectName(), true, "Deleted structure '" + payload.structureId() + "'");
+        } catch (IOException e) {
+            replyOpResult(serverPlayer, ProjectOp.RELOAD, payload.projectName(), false, e.getMessage());
+        }
+        BLib.MOD.networking()
+            .sendToClient(
+                serverPlayer,
+                new S2CStructureListPayload(payload.projectName(), EngineProjectIO.listProjectStructures(payload.projectName()))
+            );
+    }
+
     /**
      * Move (or copy) a volume of blocks by an integer offset. Op-gated. Reads the source volume into a transient
      * StructureTemplate snapshot, optionally clears the source to air, and replaces the snapshot at the offset
@@ -809,5 +903,253 @@ public final class BLibServerListener {
             return Mirror.NONE;
         }
         return values[ordinal];
+    }
+
+    // ---------------------------------------------------------------------------------------------
+    // Faction authoring layout — handlers
+    // ---------------------------------------------------------------------------------------------
+
+    /** Reply with the workspace directory snapshot. Op-gated; idempotent (safe to call repeatedly). */
+    public static void handleRequestFactionDirectory(C2SRequestFactionDirectoryPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer sp) || !sp.hasPermissions(2)) {
+            return;
+        }
+        BLib.MOD.networking().sendToClient(sp, BLibFactionManager.INSTANCE.buildDirectorySnapshot());
+    }
+
+    /** Reply with one faction's full editable state. Op-gated; null result silently no-ops on missing factions. */
+    public static void handleRequestFactionInspection(C2SRequestFactionInspectionPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer sp) || !sp.hasPermissions(2)) {
+            return;
+        }
+        var snapshot = BLibFactionManager.INSTANCE.buildInspectionSnapshot(payload.factionId());
+        if (snapshot != null) {
+            BLib.MOD.networking().sendToClient(sp, snapshot);
+        }
+    }
+
+    /** Reply with one faction's member roster. Op-gated. */
+    public static void handleRequestFactionMembers(C2SRequestFactionMembersPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer sp) || !sp.hasPermissions(2)) {
+            return;
+        }
+        var snapshot = BLibFactionManager.INSTANCE.buildMembersSnapshot(sp.server, payload.factionId());
+        if (snapshot != null) {
+            BLib.MOD.networking().sendToClient(sp, snapshot);
+        }
+    }
+
+    /**
+     * Create a faction with the given id + type id. Resolves the type via the registry-backed lookup and silently
+     * no-ops on unknown types; on success pushes the directory to all clients so the new faction appears in the Browser
+     * everywhere.
+     */
+    public static void handleCreateFaction(C2SCreateFactionPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer sp) || !sp.hasPermissions(2)) {
+            return;
+        }
+        var faction = BLibFactionManager.INSTANCE.getOrCreateByTypeId(payload.factionId(), payload.typeId());
+        if (faction == null) {
+            return;
+        }
+        BLibFactionManager.INSTANCE.pushDirectoryToAllClients(sp.server);
+    }
+
+    /** Delete a faction. Op-gated; pushes the directory after a successful delete so all clients refresh. */
+    public static void handleDeleteFaction(C2SDeleteFactionPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer sp) || !sp.hasPermissions(2)) {
+            return;
+        }
+        if (BLibFactionManager.INSTANCE.remove(payload.factionId())) {
+            BLibFactionManager.INSTANCE.pushDirectoryToAllClients(sp.server);
+        }
+    }
+
+    /**
+     * Update one editable scalar on a faction. The discriminator + value pair maps to one of the {@code Faction}
+     * setters; on success the inspection push fires (and the directory push too, when name/color changed). Bad inputs
+     * (unparseable color, unknown enum name) silently no-op rather than throwing — the inspector resyncs from the next
+     * directory/inspection push so users see whether their commit landed.
+     */
+    public static void handleUpdateFactionField(C2SUpdateFactionFieldPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer sp) || !sp.hasPermissions(2)) {
+            return;
+        }
+        var faction = BLibFactionManager.INSTANCE.get(payload.factionId());
+        if (faction == null) {
+            return;
+        }
+        var fields = C2SUpdateFactionFieldPayload.Field.values();
+        if (payload.fieldOrdinal() < 0 || payload.fieldOrdinal() >= fields.length) {
+            return;
+        }
+        var field = fields[payload.fieldOrdinal()];
+        var value = payload.value();
+        boolean directoryChanged = false;
+        switch (field) {
+            case NAME -> {
+                faction.setName(value);
+                directoryChanged = true;
+            }
+            case COLOR -> {
+                var parsed = parseColor(value);
+                if (parsed == null) {
+                    return;
+                }
+                faction.setColor(parsed);
+                directoryChanged = true;
+            }
+            case CLAIM_VISIBILITY -> {
+                var v = parseEnum(ClaimVisibility.class, value);
+                if (v == null) {
+                    return;
+                }
+                faction.setClaimVisibility(v);
+            }
+            case BLOCK_BREAK_PROTECTION -> {
+                var v = parseEnum(ProtectionMode.class, value);
+                if (v == null) {
+                    return;
+                }
+                faction.setBlockBreakProtection(v);
+            }
+            case BLOCK_INTERACT_PROTECTION -> {
+                var v = parseEnum(ProtectionMode.class, value);
+                if (v == null) {
+                    return;
+                }
+                faction.setBlockInteractProtection(v);
+            }
+            case ENTITY_INTERACT_PROTECTION -> {
+                var v = parseEnum(ProtectionMode.class, value);
+                if (v == null) {
+                    return;
+                }
+                faction.setEntityInteractProtection(v);
+            }
+            case NONLIVING_ENTITY_ATTACK_PROTECTION -> {
+                var v = parseEnum(ProtectionMode.class, value);
+                if (v == null) {
+                    return;
+                }
+                faction.setNonLivingEntityAttackProtection(v);
+            }
+            case ALLOW_PVP -> faction.setAllowPvp(Boolean.parseBoolean(value));
+            case ALLOW_EXPLOSIONS -> faction.setAllowExplosions(Boolean.parseBoolean(value));
+            case ALLOW_MOB_GRIEFING -> faction.setAllowMobGriefing(Boolean.parseBoolean(value));
+        }
+        if (directoryChanged) {
+            BLibFactionManager.INSTANCE.pushDirectoryToAllClients(sp.server);
+        }
+        BLibFactionManager.INSTANCE.pushInspectionToAllClients(sp.server, payload.factionId());
+    }
+
+    /** Set the pairwise relationship between two factions. Pushes the directory (which carries the table). */
+    public static void handleSetFactionRelationship(C2SSetFactionRelationshipPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer sp) || !sp.hasPermissions(2)) {
+            return;
+        }
+        var states = RelationshipState.values();
+        if (payload.stateOrdinal() < 0 || payload.stateOrdinal() >= states.length) {
+            return;
+        }
+        BLibFactionManager.INSTANCE.setRelationship(payload.factionA(), payload.factionB(), states[payload.stateOrdinal()]);
+        BLibFactionManager.INSTANCE.pushDirectoryToAllClients(sp.server);
+    }
+
+    /** Add a member to a faction. Pushes the directory (member count) + members roster. */
+    public static void handleAddFactionMember(C2SAddFactionMemberPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer sp) || !sp.hasPermissions(2)) {
+            return;
+        }
+        var faction = BLibFactionManager.INSTANCE.get(payload.factionId());
+        if (faction == null) {
+            return;
+        }
+        if (faction.membership().addMember(FactionMember.entity(payload.memberUuid()))) {
+            BLibFactionManager.INSTANCE.pushDirectoryToAllClients(sp.server);
+            BLibFactionManager.INSTANCE.pushMembersToAllClients(sp.server, payload.factionId());
+        }
+    }
+
+    /** Remove a member from a faction. Pushes the directory + members roster on success. */
+    public static void handleRemoveFactionMember(C2SRemoveFactionMemberPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer sp) || !sp.hasPermissions(2)) {
+            return;
+        }
+        var faction = BLibFactionManager.INSTANCE.get(payload.factionId());
+        if (faction == null) {
+            return;
+        }
+        if (faction.membership().removeMember(FactionMember.entity(payload.memberUuid()))) {
+            BLibFactionManager.INSTANCE.pushDirectoryToAllClients(sp.server);
+            BLibFactionManager.INSTANCE.pushMembersToAllClients(sp.server, payload.factionId());
+        }
+    }
+
+    /**
+     * Claim a chunk for a faction. Server uses the caller's current dimension. The territory manager fires the
+     * {@code CHUNK_CLAIM_ADDED} event on success, which an existing listener in {@code BLib.java} translates to a
+     * visibility-filtered sync push per online player — no explicit push needed here.
+     */
+    public static void handleAddChunkClaim(C2SAddChunkClaimPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer sp) || !sp.hasPermissions(2)) {
+            return;
+        }
+        if (BLibFactionManager.INSTANCE.get(payload.factionId()) == null) {
+            return;
+        }
+        BLibTerritoryManager.INSTANCE.addClaim(
+            sp.serverLevel(),
+            new ChunkPos(payload.chunkX(), payload.chunkZ()),
+            payload.factionId()
+        );
+    }
+
+    /** Unclaim a chunk for a faction. Same auto-sync path as {@link #handleAddChunkClaim}. */
+    public static void handleRemoveChunkClaim(C2SRemoveChunkClaimPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer sp) || !sp.hasPermissions(2)) {
+            return;
+        }
+        BLibTerritoryManager.INSTANCE.removeClaim(
+            sp.serverLevel(),
+            new ChunkPos(payload.chunkX(), payload.chunkZ()),
+            payload.factionId()
+        );
+    }
+
+    /**
+     * Parse a hex color string ("#RRGGBB", "RRGGBB", or "0xRRGGBB") into an int. Returns null on parse failure so the
+     * caller can no-op the commit.
+     */
+    private static @Nullable Integer parseColor(String value) {
+        if (value == null) {
+            return null;
+        }
+        var trimmed = value.trim();
+        if (trimmed.isEmpty()) {
+            return null;
+        }
+        if (trimmed.startsWith("#")) {
+            trimmed = trimmed.substring(1);
+        } else if (trimmed.startsWith("0x") || trimmed.startsWith("0X")) {
+            trimmed = trimmed.substring(2);
+        }
+        try {
+            return (int) Long.parseLong(trimmed, 16) & 0xFFFFFF;
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private static <E extends Enum<E>> @Nullable E parseEnum(Class<E> enumClass, String value) {
+        if (value == null) {
+            return null;
+        }
+        try {
+            return Enum.valueOf(enumClass, value.trim().toUpperCase(java.util.Locale.ROOT));
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 }

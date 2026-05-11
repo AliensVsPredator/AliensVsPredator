@@ -26,7 +26,8 @@ public enum LayoutTemplate {
 
     DEFAULT("default", "Default"),
     GOAP("goap", "GOAP"),
-    JIGSAW("jigsaw", "Jigsaw");
+    JIGSAW("jigsaw", "Jigsaw"),
+    FACTION("faction", "Faction");
 
     private final String id;
 
@@ -83,7 +84,36 @@ public enum LayoutTemplate {
                 List.of(PanelRegistry.PIECE_PALETTE, PanelRegistry.POOL_EDITOR),
                 PanelRegistry.DETAILS
             );
+            // Faction layout: replace the outliner with the Faction Browser (left rail = "what's authored"); bottom-tab
+            // slot pairs the Diplomacy Matrix with the Members panel; Inspector renders the FactionSelectable on the
+            // right.
+            case FACTION -> factionBody();
         };
+    }
+
+    /**
+     * Body shape for the FACTION template. Same proportions as {@link #threeColumnBody} but with the left slot bound to
+     * the Faction Browser instead of the Outliner.
+     */
+    private static BodyNode factionBody() {
+        var viewportColumn = new BodyNode.Split(
+            Orientation.VERTICAL.name(),
+            new BodyNode.Leaf(List.of(PanelRegistry.VIEWPORT), 0),
+            new BodyNode.Leaf(List.of(PanelRegistry.DIPLOMACY_MATRIX, PanelRegistry.FACTION_MEMBERS), 0),
+            new SizingDoc.SecondFixed(LayoutDefaults.CONTENT_BROWSER_HEIGHT)
+        );
+        var centerAndRight = new BodyNode.Split(
+            Orientation.HORIZONTAL.name(),
+            viewportColumn,
+            new BodyNode.Leaf(List.of(PanelRegistry.DETAILS), 0),
+            new SizingDoc.SecondFixed(LayoutDefaults.DETAILS_WIDTH)
+        );
+        return new BodyNode.Split(
+            Orientation.HORIZONTAL.name(),
+            new BodyNode.Leaf(List.of(PanelRegistry.FACTION_BROWSER), 0),
+            centerAndRight,
+            new SizingDoc.FirstFixed(LayoutDefaults.OUTLINER_WIDTH)
+        );
     }
 
     /**

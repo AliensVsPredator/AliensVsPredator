@@ -25,6 +25,8 @@ import com.blib.engine.entityselection.EntityTranslateGizmoRenderer;
 import com.blib.engine.hud.EngineSelectionRenderer;
 import com.blib.engine.jigsaw.JigsawPlacementWorldRenderer;
 import com.blib.engine.jigsaw.placement.JigsawAnchorRenderer;
+import com.blib.engine.selection.EngineHoverRenderer;
+import com.blib.engine.territory.ChunkClaimOverlayRenderer;
 import com.blib.mod.client.render.debug.PathfindingSearchDebugRenderer;
 import com.blib.mod.common.property.BLibModProperties;
 import com.blib.mod.common.property.BLibModPropertyAccess;
@@ -101,6 +103,10 @@ public class MixinDebugRenderer {
         JigsawAnchorRenderer.render(poseStack, camX, camY, camZ);
         JigsawPlacementWorldRenderer.render(poseStack, bufferSource, camX, camY, camZ);
         BlockSelectionWireframeRenderer.render(poseStack, camX, camY, camZ);
+        ChunkClaimOverlayRenderer.render(poseStack, camX, camY, camZ);
+        // Hover outline draws last so it lays on top of selection / claim overlays — the "what would I select if I
+        // clicked" cue should be visible even when a selection is already drawn nearby.
+        EngineHoverRenderer.render(poseStack, camX, camY, camZ);
         BlockSelectionScaleGizmoRenderer.render(poseStack, camX, camY, camZ);
         BlockSelectionTranslateGizmoRenderer.render(poseStack, camX, camY, camZ);
         MoveBlocksGhostRenderer.render(poseStack, camX, camY, camZ);

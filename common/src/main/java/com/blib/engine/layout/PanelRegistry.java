@@ -4,18 +4,24 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.blib.engine.ui.ContentBrowserPanel;
 import com.blib.engine.ui.DetailsPanel;
+import com.blib.engine.ui.DiplomacyMatrixPanel;
 import com.blib.engine.ui.EntityContextMenuHandler;
 import com.blib.engine.ui.EntityPalettePanel;
+import com.blib.engine.ui.FactionBrowserPanel;
+import com.blib.engine.ui.FactionMembersPanel;
 import com.blib.engine.ui.GOAPDetailsPanel;
 import com.blib.engine.ui.OutlinerPanel;
 import com.blib.engine.ui.Panel;
 import com.blib.engine.ui.PiecePalettePanel;
 import com.blib.engine.ui.PoolEditorPanel;
+import com.blib.engine.ui.ProjectContentActionHandler;
+import com.blib.engine.ui.TerritoryMapPanel;
 import com.blib.engine.ui.ViewportPanel;
 
 /**
@@ -39,7 +45,8 @@ public final class PanelRegistry {
      */
     public record Context(
         ViewportPanel.RightClickHandler viewportRightClickHandler,
-        EntityContextMenuHandler entityContextMenuHandler
+        EntityContextMenuHandler entityContextMenuHandler,
+        ProjectContentActionHandler projectContentActionHandler
     ) {}
 
     @FunctionalInterface
@@ -64,6 +71,14 @@ public final class PanelRegistry {
 
     public static final String ENTITY_PALETTE = "entity_palette";
 
+    public static final String FACTION_BROWSER = "faction_browser";
+
+    public static final String DIPLOMACY_MATRIX = "diplomacy_matrix";
+
+    public static final String FACTION_MEMBERS = "faction_members";
+
+    public static final String TERRITORY_MAP = "territory_map";
+
     private static final Map<String, PanelFactory> FACTORIES = new LinkedHashMap<>();
 
     private static final Map<Class<? extends Panel>, String> IDS_BY_CLASS = new LinkedHashMap<>();
@@ -72,11 +87,15 @@ public final class PanelRegistry {
         register(VIEWPORT, ViewportPanel.class, ctx -> new ViewportPanel("Viewport", ctx.viewportRightClickHandler()));
         register(OUTLINER, OutlinerPanel.class, ctx -> new OutlinerPanel(ctx.entityContextMenuHandler()));
         register(DETAILS, DetailsPanel.class, ctx -> new DetailsPanel());
-        register(CONTENT_BROWSER, ContentBrowserPanel.class, ctx -> new ContentBrowserPanel());
+        register(CONTENT_BROWSER, ContentBrowserPanel.class, ctx -> new ContentBrowserPanel(ctx.projectContentActionHandler()));
         register(PIECE_PALETTE, PiecePalettePanel.class, ctx -> new PiecePalettePanel());
         register(POOL_EDITOR, PoolEditorPanel.class, ctx -> new PoolEditorPanel());
         register(GOAP_DETAILS, GOAPDetailsPanel.class, ctx -> new GOAPDetailsPanel());
         register(ENTITY_PALETTE, EntityPalettePanel.class, ctx -> new EntityPalettePanel());
+        register(FACTION_BROWSER, FactionBrowserPanel.class, ctx -> new FactionBrowserPanel(ctx.projectContentActionHandler()));
+        register(DIPLOMACY_MATRIX, DiplomacyMatrixPanel.class, ctx -> new DiplomacyMatrixPanel());
+        register(FACTION_MEMBERS, FactionMembersPanel.class, ctx -> new FactionMembersPanel(ctx.projectContentActionHandler()));
+        register(TERRITORY_MAP, TerritoryMapPanel.class, ctx -> new TerritoryMapPanel());
     }
 
     private PanelRegistry() {}
@@ -107,5 +126,14 @@ public final class PanelRegistry {
 
     public static Set<String> knownIds() {
         return Set.copyOf(FACTORIES.keySet());
+    }
+
+    /**
+     * Registered ids in insertion order. Use this (rather than {@link #knownIds}) when stable iteration order matters —
+     * the Window menu builds its "Reopen X" entries by walking this list so the menu stays in lock-step with whatever
+     * panels are registered, in the order they were declared.
+     */
+    public static List<String> orderedIds() {
+        return List.copyOf(FACTORIES.keySet());
     }
 }

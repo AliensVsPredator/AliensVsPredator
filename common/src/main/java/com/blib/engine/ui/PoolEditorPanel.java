@@ -195,6 +195,15 @@ public final class PoolEditorPanel implements Panel {
 
         graphics.fill(x, y, x + width, y + height, BACKGROUND_COLOR);
 
+        // Consume any pending pool-open request from the content browser (or other cross-panel callers). One-shot:
+        // applying the value to the SearchableSelect drives the existing lastShownPool drift-check on the next render
+        // pass, so the body re-loads the pool's contents naturally without a parallel reload path.
+        var requestedPool = com.blib.engine.jigsaw.JigsawPoolSelection.requested();
+        if (requestedPool != null && !requestedPool.equals(poolSelect.currentValue())) {
+            poolSelect.setCurrentValue(requestedPool);
+            com.blib.engine.jigsaw.JigsawPoolSelection.clear();
+        }
+
         // Reset the per-frame thumbnail render budget once at the top of our render — same idiom PiecePalettePanel
         // uses, so we don't compete unfairly if both panels render in the same frame.
         JigsawPieceThumbnailCache.beginFrame();

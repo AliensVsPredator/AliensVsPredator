@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import net.minecraft.ResourceLocationException;
 import net.minecraft.SharedConstants;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
@@ -362,6 +363,112 @@ public final class EngineProjectIO {
         validateCaptureName(captureName);
         var path = projectRoot(projectName).resolve(CAPTURES_SUBDIR).resolve(captureName + ".nbt");
         return Files.deleteIfExists(path);
+    }
+
+    /**
+     * List the project's authored pools — every {@code data/<ns>/worldgen/template_pool/<path>.json} under the
+     * project's datapack tree. Walks each namespace's pool subtree recursively so nested paths (e.g.
+     * {@code village/plains/houses}) appear as their full id. Sorted by namespaced id. Empty if the datapack folder is
+     * missing or has no pools.
+     */
+    public static List<ResourceLocation> listProjectPools(String projectName) {
+        return listProjectAssets(projectName, "worldgen/template_pool", ".json");
+    }
+
+    /**
+     * List the project's authored structures — every {@code data/<ns>/structures/<path>.nbt} under the datapack tree.
+     * Same recursive-walk semantics as {@link #listProjectPools}. Note these are <em>datapack-loadable</em> structures
+     * (referenced by pools); the user-triggered NBT block snapshots in {@code captures/} are listed by
+     * {@link #listCaptureNames} separately.
+     */
+    public static List<ResourceLocation> listProjectStructures(String projectName) {
+        return listProjectAssets(projectName, "structures", ".nbt");
+    }
+
+    /**
+     * Generic datapack-asset enumerator. Walks {@code data/<ns>/<categoryPath>/<...>/<file>.<extension>} under the
+     * project's datapack root and returns each match as a {@code ResourceLocation(ns, relativePathWithoutExtension)}.
+     * The recursive descent is bounded to the {@code categoryPath} subtree per namespace; we don't traverse upward so a
+     * malformed datapack with weird symlinks can't escape the project root.
+     */
+    private static List<ResourceLocation> listProjectAssets(String projectName, String categoryPath, String extension) {
+        var dataRoot = projectRoot(projectName).resolve(DATAPACK_SUBDIR).resolve("data");
+        if (!Files.isDirectory(dataRoot)) {
+            return List.of();
+        }
+        var out = new ArrayList<ResourceLocation>();
+        try (DirectoryStream<Path> namespaces = Files.newDirectoryStream(dataRoot)) {
+            for (var nsDir : namespaces) {
+                if (!Files.isDirectory(nsDir)) {
+                    continue;
+                }
+                var namespace = nsDir.getFileName().toString();
+                var categoryRoot = nsDir.resolve(categoryPath);
+                if (!Files.isDirectory(categoryRoot)) {
+                    continue;
+                }
+                try (var stream = Files.walk(categoryRoot)) {
+                    stream
+                        .filter(Files::isRegularFile)
+                        .filter(p -> p.getFileName().toString().endsWith(extension))
+                        .forEach(p -> {
+                            var rel = categoryRoot.relativize(p).toString().replace('\\', '/');
+                            // Strip the extension. Length is bounded by isRegularFile + endsWith above.
+                            var path = rel.substring(0, rel.length() - extension.length());
+                            try {
+                                out.add(ResourceLocation.fromNamespaceAndPath(namespace, path));
+                            } catch (ResourceLocationException ignored) {
+                                // Path contains characters vanilla refuses (uppercase, etc.). Skip silently — the
+                                // datapack itself wouldn't be loadable, and listing it would just confuse the user.
+                            }
+                        });
+                } catch (IOException e) {
+                    LOGGER.warn("[BLib] listProjectAssets: failed to walk {}", categoryRoot, e);
+                }
+            }
+        } catch (IOException e) {
+            LOGGER.warn("[BLib] listProjectAssets: failed to scan {}", dataRoot, e);
+            return List.of();
+        }
+        out.sort(Comparator.comparing(ResourceLocation::toString));
+        return out;
+    }
+
+    /**
+     * Delete the JSON file backing the given pool id under the project's datapack. Returns true iff a file existed and
+     * was deleted. Refuses ids whose resolved path escapes the datapack root (defense against malformed packets).
+     */
+    public static boolean deleteProjectPool(String projectName, ResourceLocation poolId) throws IOException {
+        return deleteProjectAsset(projectName, poolId, "worldgen/template_pool", ".json");
+    }
+
+    /**
+     * Delete the NBT file backing the given structure id under the project's datapack. Same semantics as
+     * {@link #deleteProjectPool}.
+     */
+    public static boolean deleteProjectStructure(String projectName, ResourceLocation structureId) throws IOException {
+        return deleteProjectAsset(projectName, structureId, "structures", ".nbt");
+    }
+
+    private static boolean deleteProjectAsset(
+        String projectName,
+        ResourceLocation assetId,
+        String categoryPath,
+        String extension
+    ) throws IOException {
+        var datapackRoot = projectRoot(projectName).resolve(DATAPACK_SUBDIR).normalize();
+        var target = datapackRoot
+            .resolve("data")
+            .resolve(assetId.getNamespace())
+            .resolve(categoryPath)
+            .resolve(assetId.getPath() + extension)
+            .normalize();
+        // Defense in depth: a malformed packet could craft an id whose path contains "../"; refuse to delete anything
+        // outside the datapack tree even if vanilla's ResourceLocation parser somehow let it through.
+        if (!target.startsWith(datapackRoot)) {
+            throw new IOException("Refusing to delete '" + assetId + "': path escapes datapack root");
+        }
+        return Files.deleteIfExists(target);
     }
 
     /**

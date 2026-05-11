@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,6 +34,9 @@ import com.blib.internal.common.faction.io.FactionMembershipIO;
 import com.blib.internal.common.faction.serializer.FactionRelationshipTableSerializer;
 import com.blib.internal.common.util.ShardManager;
 import com.blib.mod.BLib;
+import com.blib.mod.common.network.packet.S2CFactionDirectoryPayload;
+import com.blib.mod.common.network.packet.S2CFactionInspectionPayload;
+import com.blib.mod.common.network.packet.S2CFactionMembersPayload;
 import com.blib.mod.common.network.packet.S2CFactionMetadataSyncPayload;
 
 @ApiStatus.Internal
@@ -161,6 +163,9 @@ public class BLibFactionManager implements FactionManager {
 
         memberIndex.removeFaction(id, faction.membership());
         relationshipTable.removeFaction(id);
+        // shardManager.remove auto-marks the shard dirty so the next save rewrites the shard file without the
+        // deleted entry. Otherwise the on-disk shard would keep the deleted faction's row and re-resurrect it on
+        // the next world load.
         shardManager.remove(id);
 
         for (var listener : BLibGlobalEvents.FACTION_REMOVE.listeners()) {
@@ -218,13 +223,12 @@ public class BLibFactionManager implements FactionManager {
     }
 
     public void save(MinecraftServer server) {
-        if (factions.isEmpty()) {
-            return;
-        }
-
+        // Don't short-circuit on empty factions — pending deletion-shards still need to be rewritten if the last
+        // faction was just removed. Save sub-methods no-op when there's nothing to do.
         saveMemberships(server);
         saveData(server);
         saveRelationshipTable(server);
+        shardManager.clearDirty();
     }
 
     public void clear(MinecraftServer minecraftServer) {
@@ -244,6 +248,105 @@ public class BLibFactionManager implements FactionManager {
     public void syncFactionMetadataToAllClients(MinecraftServer server, Faction<?> faction) {
         var payload = new S2CFactionMetadataSyncPayload(faction.id(), faction.name(), faction.color());
         BLib.MOD.networking().sendToAllClients(server, payload);
+    }
+
+    /**
+     * Build the workspace directory snapshot — every faction's id/name/color/memberCount/typeId plus the full pairwise
+     * relationship table. Consumed by {@code ClientFactionDirectoryCache} to drive the Faction Browser and Diplomacy
+     * Matrix.
+     */
+    public S2CFactionDirectoryPayload buildDirectorySnapshot() {
+        var entries = new ArrayList<S2CFactionDirectoryPayload.FactionEntry>(factions.size());
+        for (var faction : factions.values()) {
+            entries.add(
+                new S2CFactionDirectoryPayload.FactionEntry(
+                    faction.id(),
+                    faction.name(),
+                    faction.color(),
+                    faction.membership().getMembers().size(),
+                    faction.typeId()
+                )
+            );
+        }
+        var relEntries = new ArrayList<S2CFactionDirectoryPayload.RelationshipEntry>();
+        for (var entry : relationshipTable.getAllEdges().entrySet()) {
+            relEntries.add(
+                new S2CFactionDirectoryPayload.RelationshipEntry(
+                    entry.getKey().first(),
+                    entry.getKey().second(),
+                    entry.getValue().ordinal()
+                )
+            );
+        }
+        return new S2CFactionDirectoryPayload(entries, relEntries);
+    }
+
+    /**
+     * Build the inspector snapshot for one faction — every editable scalar. Returns {@code null} if the faction id
+     * doesn't resolve.
+     */
+    public @Nullable S2CFactionInspectionPayload buildInspectionSnapshot(ResourceLocation factionId) {
+        var faction = factions.get(factionId);
+        if (faction == null) {
+            return null;
+        }
+        return new S2CFactionInspectionPayload(
+            faction.id(),
+            faction.name(),
+            faction.color(),
+            faction.typeId(),
+            faction.claimVisibility(),
+            faction.blockBreakProtection(),
+            faction.blockInteractProtection(),
+            faction.entityInteractProtection(),
+            faction.nonLivingEntityAttackProtection(),
+            faction.allowPvp(),
+            faction.allowExplosions(),
+            faction.allowMobGriefing()
+        );
+    }
+
+    /**
+     * Build the member roster for one faction. Player display names are resolved from the live {@code PlayerList};
+     * non-player entities surface as empty-string display names (the client renders the UUID prefix instead). Returns
+     * {@code null} when the faction id doesn't resolve.
+     */
+    public @Nullable S2CFactionMembersPayload buildMembersSnapshot(MinecraftServer server, ResourceLocation factionId) {
+        var faction = factions.get(factionId);
+        if (faction == null) {
+            return null;
+        }
+        var entries = new ArrayList<S2CFactionMembersPayload.MemberEntry>();
+        for (var member : faction.membership().getMembers()) {
+            if (member instanceof FactionMember.Entity entityMember) {
+                var uuid = entityMember.uuid();
+                var displayName = "";
+                var player = server.getPlayerList().getPlayer(uuid);
+                if (player != null) {
+                    displayName = player.getName().getString();
+                }
+                entries.add(new S2CFactionMembersPayload.MemberEntry(uuid, displayName));
+            }
+        }
+        return new S2CFactionMembersPayload(factionId, entries);
+    }
+
+    public void pushDirectoryToAllClients(MinecraftServer server) {
+        BLib.MOD.networking().sendToAllClients(server, buildDirectorySnapshot());
+    }
+
+    public void pushInspectionToAllClients(MinecraftServer server, ResourceLocation factionId) {
+        var snapshot = buildInspectionSnapshot(factionId);
+        if (snapshot != null) {
+            BLib.MOD.networking().sendToAllClients(server, snapshot);
+        }
+    }
+
+    public void pushMembersToAllClients(MinecraftServer server, ResourceLocation factionId) {
+        var snapshot = buildMembersSnapshot(server, factionId);
+        if (snapshot != null) {
+            BLib.MOD.networking().sendToAllClients(server, snapshot);
+        }
     }
 
     public @Nullable FactionData getRawModData(ResourceLocation factionId) {
@@ -288,8 +391,8 @@ public class BLibFactionManager implements FactionManager {
 
     private void saveMemberships(MinecraftServer server) {
         Map<Integer, List<FactionMembership>> shardToEntries = new HashMap<>();
-        Set<Integer> dirtyShards = new HashSet<>();
 
+        // Propagate per-membership dirty into shard-level dirty; build the per-shard survivor list along the way.
         for (var faction : factions.values()) {
             var factionId = faction.id();
             var relationships = faction.membership();
@@ -298,12 +401,14 @@ public class BLibFactionManager implements FactionManager {
             shardToEntries.computeIfAbsent(shardIndex, k -> new ArrayList<>()).add(relationships);
 
             if (relationships.isDirty()) {
-                dirtyShards.add(shardIndex);
+                shardManager.markDirty(factionId);
             }
         }
 
-        for (var shardIndex : dirtyShards) {
-            var entriesInShard = shardToEntries.get(shardIndex);
+        for (var shardIndex : shardManager.dirtyShards()) {
+            // A shard with no surviving entries is still rewritten — the resulting empty file (or its deletion via
+            // FactionIO.writeCompressed's empty-tag branch) is the whole point of the dirty mark on deletion.
+            var entriesInShard = shardToEntries.getOrDefault(shardIndex, List.of());
             FactionMembershipIO.saveShard(server, entriesInShard, shardIndex);
         }
 
@@ -316,7 +421,6 @@ public class BLibFactionManager implements FactionManager {
         Map<Integer, List<ResourceLocation>> shardToFactionIds = new HashMap<>();
         Map<ResourceLocation, BLibFactionData> internalDataMap = new HashMap<>();
         Map<ResourceLocation, ResourceLocation> typeIdMap = new HashMap<>();
-        Set<Integer> dirtyShards = new HashSet<>();
 
         for (var faction : factions.values()) {
             var factionId = faction.id();
@@ -329,12 +433,16 @@ public class BLibFactionManager implements FactionManager {
             typeIdMap.put(factionId, faction.typeId());
 
             if (internalData.isDirty()) {
-                dirtyShards.add(shardIndex);
+                shardManager.markDirty(factionId);
             }
         }
 
-        for (var shardIndex : dirtyShards) {
-            var factionIdsInShard = shardToFactionIds.get(shardIndex);
+        for (var shardIndex : shardManager.dirtyShards()) {
+            // Shards with no surviving factions in any namespace are effectively skipped — FactionDataIO writes one
+            // file per (namespace, shard) and iterates only namespaces with content. The stale on-disk file remains
+            // for those, but the load filter (knownFactionIds from memberships) skips its entries, so they don't
+            // resurrect.
+            var factionIdsInShard = shardToFactionIds.getOrDefault(shardIndex, List.of());
             FactionDataIO.saveShard(server, factionIdsInShard, internalDataMap, typeIdMap, shardIndex);
         }
 

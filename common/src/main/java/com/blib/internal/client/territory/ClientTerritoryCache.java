@@ -49,6 +49,25 @@ public class ClientTerritoryCache {
         return factions != null && factions.size() > 1;
     }
 
+    /**
+     * Read-only view of the underlying chunk → claimants map. Renderers iterate this each frame to draw claim overlays
+     * / map cells. Mutations go through {@link #updateChunk}; the view doesn't support direct edits.
+     */
+    public Map<ChunkPos, List<ResourceLocation>> factionsByChunk() {
+        return java.util.Collections.unmodifiableMap(factionsByChunk);
+    }
+
+    /** Counts how many chunks in the cache list {@code factionId} as a claimant. Used by the inspector. */
+    public int chunkCountForFaction(ResourceLocation factionId) {
+        var count = 0;
+        for (var ids : factionsByChunk.values()) {
+            if (ids.contains(factionId)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     public void clear() {
         factionsByChunk.clear();
     }

@@ -42,8 +42,14 @@ public final class EngineNavigation {
     /** Fallback distance for orbit pivot when the screen-center raycast hits nothing. */
     private static final double DEFAULT_PIVOT_DISTANCE = 8.0;
 
-    /** Max raycast distance when computing the orbit pivot from the cursor ray. */
-    private static final double PIVOT_RAYCAST_DISTANCE = 64.0;
+    /**
+     * Max raycast distance when computing the orbit pivot from the cursor ray. Set high enough to reach the far edge of
+     * loaded chunks at any practical render distance — Minecraft's {@code clip} short-circuits at the first visible
+     * block hit, so a long max only costs the walk past unloaded chunks (which is fast). The 64-block cap users
+     * complained about was the source of "MMB-orbit feels broken when I click anything far away" — the raycast missed
+     * and the pivot snapped to {@link #DEFAULT_PIVOT_DISTANCE} blocks ahead of camera instead.
+     */
+    private static final double PIVOT_RAYCAST_DISTANCE = 8192.0;
 
     /** Max raycast distance for click-to-select against entities. */
     private static final double SELECTION_RAYCAST_DISTANCE = 96.0;
@@ -197,8 +203,20 @@ public final class EngineNavigation {
             return;
         }
 
-        var origin = session.cameraPosition();
-        var rayDir = cursorRayDirection(session, relX, relY);
+        // Prefer the camera position + ray direction that vanilla actually rendered with — analytical reconstruction
+        // accumulates a small angular error when FOV modifiers are active (sprint, item-use, zoom, fluid), which
+        // shows up as a constant pixel offset between the cursor and the selected entity's hitbox. Same pattern
+        // JigsawPlacementCursor uses for block picking. Falls back to analytical reconstruction when no frame has
+        // been captured yet (first render before the camera mixin runs).
+        var capturedOrigin = EngineCameraFrame.cameraPosition();
+        var origin = capturedOrigin != null ? capturedOrigin : session.cameraPosition();
+        Vec3 rayDir = null;
+        if (EngineCameraFrame.hasFrame()) {
+            rayDir = EngineCameraFrame.cursorRayDirection(relX, relY);
+        }
+        if (rayDir == null) {
+            rayDir = cursorRayDirection(session, relX, relY);
+        }
         var end = origin.add(
             rayDir.x * SELECTION_RAYCAST_DISTANCE,
             rayDir.y * SELECTION_RAYCAST_DISTANCE,

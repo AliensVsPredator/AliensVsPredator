@@ -226,7 +226,20 @@ public final class EngineWorkspaceScreen extends Screen {
     }
 
     private PanelRegistry.Context panelCtx() {
-        return new PanelRegistry.Context(buildViewportRightClickHandler(), this::onViewportRightClick);
+        return new PanelRegistry.Context(
+            buildViewportRightClickHandler(),
+            this::onViewportRightClick,
+            this::openContentDeleteConfirm
+        );
+    }
+
+    /**
+     * {@link ProjectContentActionHandler} adapter — the content browser asks the screen to spawn a destructive confirm
+     * dialog. Wired into both {@link #panelCtx} and the Window-menu's "Reopen Project Contents" so a panel created via
+     * either path gets the same modal behavior.
+     */
+    private void openContentDeleteConfirm(String title, String message, Runnable onConfirm) {
+        this.confirmDialog = new ConfirmDialog(title, message, "Delete", "Cancel", true, onConfirm, () -> {});
     }
 
     /**
@@ -384,6 +397,11 @@ public final class EngineWorkspaceScreen extends Screen {
             panelMouseX = OFFSCREEN_MOUSE;
             panelMouseY = OFFSCREEN_MOUSE;
         }
+        var openColorPopup = HslColorPickerPopup.getOpenPopup();
+        if (openColorPopup != null && openColorPopup.isInside(logicalMouseX, logicalMouseY)) {
+            panelMouseX = OFFSCREEN_MOUSE;
+            panelMouseY = OFFSCREEN_MOUSE;
+        }
         // Confirm dialog is fully modal — every panel underneath must lose hover state.
         if (confirmDialog != null) {
             panelMouseX = OFFSCREEN_MOUSE;
@@ -422,6 +440,9 @@ public final class EngineWorkspaceScreen extends Screen {
         if (openPopup != null) {
             openPopup.render(graphics, logicalMouseX, logicalMouseY, logicalWidth, logicalHeight);
         }
+        if (openColorPopup != null) {
+            openColorPopup.render(graphics, logicalMouseX, logicalMouseY, logicalWidth, logicalHeight);
+        }
 
         renderHoverTooltip(graphics, logicalMouseX, logicalMouseY);
 
@@ -452,6 +473,10 @@ public final class EngineWorkspaceScreen extends Screen {
      */
     private void renderHoverTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
         if (openMenu != null || activeDrag != null || (tabDrag != null && tabDrag.active)) {
+            return;
+        }
+        // Suppress tooltips while the color picker is open — they'd float behind the popup and read as junk.
+        if (HslColorPickerPopup.getOpenPopup() != null) {
             return;
         }
         var leaf = panelAt(root, 0, 0, logicalWidth(), logicalHeight(), mouseX, mouseY);
@@ -650,6 +675,11 @@ public final class EngineWorkspaceScreen extends Screen {
         EngineMode.get().exit();
         EngineTickControl.restore();
         JigsawPieceSelection.clear();
+        com.blib.engine.jigsaw.JigsawPoolSelection.clear();
+        com.blib.engine.projectcontents.ProjectContents.clear();
+        com.blib.internal.client.faction.ClientFactionDirectoryCache.clear();
+        com.blib.internal.client.faction.ClientFactionInspectionCache.clear();
+        com.blib.internal.client.faction.ClientFactionMembersCache.clear();
         EntitySpawnSelection.clear();
         JigsawPlacementCursor.clearViewportRect();
         JigsawPieceThumbnailCache.clear();
@@ -659,6 +689,9 @@ public final class EngineWorkspaceScreen extends Screen {
         SelectionManager.clear();
         EngineCursor.reset();
         SearchableSelect.closeOpenPopup();
+        HslColorPickerPopup.closeOpenPopup();
+        com.blib.engine.territory.ClaimPaintTool.deactivate();
+        com.blib.engine.selection.EngineHoverProbe.clear();
         // Project state does not persist across engine sessions — closing the workspace returns the user to a
         // "no project open" state so the next /blib engine starts at the picker again.
         ProjectSession.clear();
@@ -688,6 +721,12 @@ public final class EngineWorkspaceScreen extends Screen {
         // popup falls through, mirroring the menu pattern.
         var openPopup = SearchableSelect.getOpenPopup();
         if (openPopup != null && openPopup.mouseScrolled(logicalX, logicalY, scrollY)) {
+            return true;
+        }
+        // Color picker absorbs scroll events over its rect — no scrollable content, but we don't want underlying
+        // panels reacting to the wheel while the picker is open.
+        var openColorPopup = HslColorPickerPopup.getOpenPopup();
+        if (openColorPopup != null && openColorPopup.mouseScrolled(logicalX, logicalY, scrollY)) {
             return true;
         }
         // Scroll-wheel events that land on an open menu shouldn't tunnel through to the scroll containers of panels
@@ -849,17 +888,25 @@ public final class EngineWorkspaceScreen extends Screen {
             TextInput.clearFocus();
             return true;
         }
+        // Esc closes an open color-picker popup too.
+        if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE && HslColorPickerPopup.getOpenPopup() != null) {
+            HslColorPickerPopup.closeOpenPopup();
+            return true;
+        }
 
         var focused = TextInput.getFocused();
         if (focused != null && focused.keyPressed(keyCode, scanCode, modifiers)) {
             return true;
         }
 
-        // Esc cascades through transient state before closing the workspace: a held piece deselects first, then an
-        // entity selection clears, and only with no transient state does Esc fall through to super.keyPressed (which
-        // closes the screen). This gives users a single "get me out" key that doesn't immediately exit when they're
-        // mid-edit.
+        // Esc cascades through transient state before closing the workspace: claim paint mode → held piece → entity
+        // spawn selection → general selection → fall through to super.keyPressed (which closes the screen). This
+        // gives users a single "get me out" key that doesn't immediately exit when they're mid-edit.
         if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE) {
+            if (com.blib.engine.territory.ClaimPaintTool.isActive()) {
+                com.blib.engine.territory.ClaimPaintTool.deactivate();
+                return true;
+            }
             if (JigsawPieceSelection.hasSelection()) {
                 JigsawPieceSelection.clear();
                 return true;
@@ -1006,6 +1053,15 @@ public final class EngineWorkspaceScreen extends Screen {
             }
             SearchableSelect.closeOpenPopup();
         }
+        // 0b) Color picker popup — same outside-click-closes pattern.
+        var openColorPopup = HslColorPickerPopup.getOpenPopup();
+        if (openColorPopup != null) {
+            if (openColorPopup.isInside((int) logicalX, (int) logicalY)) {
+                openColorPopup.mouseClicked(logicalX, logicalY, button);
+                return true;
+            }
+            HslColorPickerPopup.closeOpenPopup();
+        }
 
         // 0) An open dropdown takes priority: clicking an item fires it; clicking outside just closes the menu.
         if (openMenu != null) {
@@ -1108,6 +1164,11 @@ public final class EngineWorkspaceScreen extends Screen {
         if (openPopup != null && openPopup.mouseReleased(logicalX, logicalY, button)) {
             return true;
         }
+        // Color picker — end hue/SL drag.
+        var openColorPopup = HslColorPickerPopup.getOpenPopup();
+        if (openColorPopup != null && openColorPopup.mouseReleased(logicalX, logicalY, button)) {
+            return true;
+        }
 
         // End any text-input drag-select on LMB release. The input keeps its caret + selection; only the static
         // drag pointer clears so future drags don't keep extending its selection.
@@ -1167,6 +1228,11 @@ public final class EngineWorkspaceScreen extends Screen {
         // SearchableSelect popup scrollbar drag.
         var openPopup = SearchableSelect.getOpenPopup();
         if (openPopup != null && openPopup.mouseDragged(logicalX, logicalY, button, deltaX, deltaY)) {
+            return true;
+        }
+        // Color picker — drag in hue ring or S/L square continues to update the color.
+        var openColorPopup = HslColorPickerPopup.getOpenPopup();
+        if (openColorPopup != null && openColorPopup.mouseDragged(logicalX, logicalY, button, deltaX, deltaY)) {
             return true;
         }
 
@@ -1408,30 +1474,58 @@ public final class EngineWorkspaceScreen extends Screen {
 
         return switch (chipName) {
             case MenuBarPanel.CHIP_FILE -> buildFileMenu(anchorX, anchorY);
-            case MenuBarPanel.CHIP_WINDOW -> new DropdownMenu(
-                anchorX,
-                anchorY,
-                java.util.List.of(
-                    new DropdownMenu.Item(
-                        "Reopen Outliner",
-                        () -> reopenPanel(OutlinerPanel.class, () -> new OutlinerPanel(this::onViewportRightClick))
-                    ),
-                    new DropdownMenu.Item(
-                        "Reopen Viewport",
-                        () -> reopenPanel(ViewportPanel.class, () -> new ViewportPanel("Viewport", buildViewportRightClickHandler()))
-                    ),
-                    new DropdownMenu.Item("Reopen Details", () -> reopenPanel(DetailsPanel.class, DetailsPanel::new)),
-                    new DropdownMenu.Item("Reopen Content Browser", () -> reopenPanel(ContentBrowserPanel.class, ContentBrowserPanel::new)),
-                    new DropdownMenu.Item("Reopen Piece Palette", () -> reopenPanel(PiecePalettePanel.class, PiecePalettePanel::new)),
-                    new DropdownMenu.Item("Reopen Pool Editor", () -> reopenPanel(PoolEditorPanel.class, PoolEditorPanel::new)),
-                    new DropdownMenu.Item("Reopen GOAP Details", () -> reopenPanel(GOAPDetailsPanel.class, GOAPDetailsPanel::new)),
-                    new DropdownMenu.Item("Reopen Entity Palette", () -> reopenPanel(EntityPalettePanel.class, EntityPalettePanel::new)),
-                    new DropdownMenu.Item("Reset Layout", this::resetLayout)
-                )
-            );
+            case MenuBarPanel.CHIP_VIEW -> buildViewMenu(anchorX, anchorY);
+            case MenuBarPanel.CHIP_WINDOW -> buildWindowMenu(anchorX, anchorY);
             case MenuBarPanel.CHIP_LAYOUT -> buildLayoutMenu(anchorX, anchorY);
             default -> null;
         };
+    }
+
+    /**
+     * View dropdown — toggles that affect what's drawn in the viewport without changing project state. Items use a
+     * leading "✓" prefix when on / blank prefix when off ({@link DropdownMenu} doesn't have a checkbox UI, so the
+     * label-prefix idiom is the cheapest way to convey toggle state).
+     */
+    private DropdownMenu buildViewMenu(int anchorX, int anchorY) {
+        var items = new java.util.ArrayList<DropdownMenu.Item>();
+        var territoryOn = com.blib.engine.territory.ClaimPaintTool.isOverlayVisible();
+        items.add(
+            new DropdownMenu.Item(
+                (territoryOn ? "✓ " : "   ") + "Show Territory Claims",
+                com.blib.engine.territory.ClaimPaintTool::toggleOverlayVisible
+            )
+        );
+        return new DropdownMenu(anchorX, anchorY, items);
+    }
+
+    /**
+     * Build the WINDOW dropdown by iterating {@link PanelRegistry} — every body-eligible panel gets a "Reopen <title>"
+     * entry where {@code <title>} comes from the panel's own {@link Panel#title()} method. This is the single
+     * source-of-truth fix for menu / tab label drift: adding a new panel to {@link PanelRegistry} automatically adds it
+     * here, and renaming a panel's title automatically updates the menu label since both paths read the same string.
+     * <p>
+     * Each menu item's reopen-factory routes through {@link PanelRegistry#create} so panels with constructor args
+     * (viewport's right-click handler, content-browser's confirm handler) get wired correctly without per-panel manual
+     * factory closures.
+     */
+    private DropdownMenu buildWindowMenu(int anchorX, int anchorY) {
+        var items = new java.util.ArrayList<DropdownMenu.Item>();
+        for (var id : PanelRegistry.orderedIds()) {
+            var sample = PanelRegistry.create(id, panelCtx());
+            if (sample == null) {
+                continue;
+            }
+            var displayName = sample.title();
+            var panelClass = sample.getClass();
+            items.add(
+                new DropdownMenu.Item(
+                    "Reopen " + displayName,
+                    () -> reopenPanel(panelClass, () -> PanelRegistry.create(id, panelCtx()))
+                )
+            );
+        }
+        items.add(new DropdownMenu.Item("Reset Layout", this::resetLayout));
+        return new DropdownMenu(anchorX, anchorY, items);
     }
 
     /**
