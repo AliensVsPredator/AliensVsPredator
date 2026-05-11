@@ -9,6 +9,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 
+import com.blib.engine.blockselection.BlockSelection;
 import com.blib.engine.jigsaw.JigsawPlacementCursor;
 import com.blib.engine.selection.BlockSelectable;
 import com.blib.engine.selection.EntitySelectable;
@@ -243,8 +244,19 @@ public final class EngineNavigation {
             : Double.POSITIVE_INFINITY;
 
         if (entityDistSq == Double.POSITIVE_INFINITY && blockDistSq == Double.POSITIVE_INFINITY) {
+            // Sky miss: drop the active selection but leave any staged volume corners in place — the user might want
+            // to defocus the inspector without abandoning the volume they marqueed earlier.
             SelectionManager.clear();
-        } else if (entityDistSq <= blockDistSq) {
+            return;
+        }
+
+        // Picking a single-thing target replaces any staged block volume — the volume's wireframe, gizmos, and RMB
+        // context menu must not coexist with a single-block / entity / jigsaw inspection (the two selection modes are
+        // mutually exclusive from the user's POV). User preferences (gizmo mode, capture mode) survive so a follow-up
+        // re-marquee picks up where they left off.
+        BlockSelection.clearVolume();
+
+        if (entityDistSq <= blockDistSq) {
             SelectionManager.selectSingle(new EntitySelectable((LivingEntity) entityHit.getEntity()));
         } else {
             var pos = blockHit.getBlockPos();

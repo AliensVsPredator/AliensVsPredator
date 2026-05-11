@@ -248,4 +248,21 @@ public final class BlockSelection {
         moveCopyMode = false;
         pendingMoveResult = null;
     }
+
+    /**
+     * Drop the spatial state that lets a volume render and own input — corners, the in-progress corner pick, and any
+     * live Move Blocks gesture. Used when a non-volume target (entity, jigsaw, generic block) becomes the active
+     * selection: keeping the corners around lets the wireframe, gizmos, and RMB-on-AABB context menu coexist with the
+     * single-thing inspector, which contradicts "one selection at a time". User-preference fields ({@link #mode},
+     * {@link #gizmoMode}) and project-level caches ({@link #captures}, {@link #pendingCaptureResult}) survive so a
+     * subsequent re-marquee picks up where the user left off.
+     */
+    public static void clearVolume() {
+        cornerA = null;
+        cornerB = null;
+        picking = PickingState.NONE;
+        moveOffset = null;
+        moveCopyMode = false;
+        pendingMoveResult = null;
+    }
 }
