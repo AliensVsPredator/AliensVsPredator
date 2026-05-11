@@ -30,6 +30,7 @@ import com.blib.mod.common.network.packet.C2SRemoveChunkClaimPayload;
 import com.blib.mod.common.network.packet.C2SRemoveEntityPayload;
 import com.blib.mod.common.network.packet.C2SRemoveFactionMemberPayload;
 import com.blib.mod.common.network.packet.C2SRemovePoolElementPayload;
+import com.blib.mod.common.network.packet.C2SRequestEntityFactionsPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionDirectoryPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionInspectionPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionMembersPayload;
@@ -47,6 +48,7 @@ import com.blib.mod.common.network.packet.S2CCaptureListPayload;
 import com.blib.mod.common.network.packet.S2CChunkClaimsSyncPayload;
 import com.blib.mod.common.network.packet.S2CClipboardStatusPayload;
 import com.blib.mod.common.network.packet.S2CEntityDataSyncPayload;
+import com.blib.mod.common.network.packet.S2CEntityFactionsPayload;
 import com.blib.mod.common.network.packet.S2CFactionDirectoryPayload;
 import com.blib.mod.common.network.packet.S2CFactionInspectionPayload;
 import com.blib.mod.common.network.packet.S2CFactionMembersPayload;
@@ -174,6 +176,10 @@ public class BLibPacketDirections {
         REGISTRY.registerPacketDirection(
             new PacketDirection.C2S<>(C2SRemoveFactionMemberPayload.TYPE, C2SRemoveFactionMemberPayload.CODEC)
         );
+        REGISTRY.registerPacketDirection(
+            new PacketDirection.C2S<>(C2SRequestEntityFactionsPayload.TYPE, C2SRequestEntityFactionsPayload.CODEC)
+        );
+        REGISTRY.registerPacketDirection(new PacketDirection.S2C<>(S2CEntityFactionsPayload.TYPE, S2CEntityFactionsPayload.CODEC));
         REGISTRY.registerPacketDirection(
             new PacketDirection.C2S<>(C2SAddChunkClaimPayload.TYPE, C2SAddChunkClaimPayload.CODEC)
         );

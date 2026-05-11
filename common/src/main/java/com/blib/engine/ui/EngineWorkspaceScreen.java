@@ -409,6 +409,11 @@ public final class EngineWorkspaceScreen extends Screen {
             panelMouseX = OFFSCREEN_MOUSE;
             panelMouseY = OFFSCREEN_MOUSE;
         }
+        var openFactionMgmtPopup = FactionManagePopup.getOpenPopup();
+        if (openFactionMgmtPopup != null && openFactionMgmtPopup.isInside(logicalMouseX, logicalMouseY)) {
+            panelMouseX = OFFSCREEN_MOUSE;
+            panelMouseY = OFFSCREEN_MOUSE;
+        }
         // Confirm dialog is fully modal — every panel underneath must lose hover state.
         if (confirmDialog != null) {
             panelMouseX = OFFSCREEN_MOUSE;
@@ -450,6 +455,10 @@ public final class EngineWorkspaceScreen extends Screen {
         if (openColorPopup != null) {
             openColorPopup.render(graphics, logicalMouseX, logicalMouseY, logicalWidth, logicalHeight);
         }
+        var openFactionPopup = FactionManagePopup.getOpenPopup();
+        if (openFactionPopup != null) {
+            openFactionPopup.render(graphics, logicalMouseX, logicalMouseY, logicalWidth, logicalHeight);
+        }
 
         renderHoverTooltip(graphics, logicalMouseX, logicalMouseY);
 
@@ -484,6 +493,10 @@ public final class EngineWorkspaceScreen extends Screen {
         }
         // Suppress tooltips while the color picker is open — they'd float behind the popup and read as junk.
         if (HslColorPickerPopup.getOpenPopup() != null) {
+            return;
+        }
+        // Same suppression for the faction-management popup.
+        if (FactionManagePopup.getOpenPopup() != null) {
             return;
         }
         var leaf = panelAt(root, 0, 0, logicalWidth(), logicalHeight(), mouseX, mouseY);
@@ -687,6 +700,7 @@ public final class EngineWorkspaceScreen extends Screen {
         com.blib.internal.client.faction.ClientFactionDirectoryCache.clear();
         com.blib.internal.client.faction.ClientFactionInspectionCache.clear();
         com.blib.internal.client.faction.ClientFactionMembersCache.clear();
+        com.blib.internal.client.faction.ClientEntityFactionsCache.clear();
         EntitySpawnSelection.clear();
         JigsawPlacementCursor.clearViewportRect();
         JigsawPieceThumbnailCache.clear();
@@ -701,6 +715,7 @@ public final class EngineWorkspaceScreen extends Screen {
         EngineCursor.reset();
         SearchableSelect.closeOpenPopup();
         HslColorPickerPopup.closeOpenPopup();
+        FactionManagePopup.closeOpenPopup();
         com.blib.engine.territory.ClaimPaintTool.deactivate();
         com.blib.engine.selection.EngineHoverProbe.clear();
         // Project state does not persist across engine sessions — closing the workspace returns the user to a
@@ -738,6 +753,11 @@ public final class EngineWorkspaceScreen extends Screen {
         // panels reacting to the wheel while the picker is open.
         var openColorPopup = HslColorPickerPopup.getOpenPopup();
         if (openColorPopup != null && openColorPopup.mouseScrolled(logicalX, logicalY, scrollY)) {
+            return true;
+        }
+        // Faction-management popup: its row list scrolls vertically when the faction directory overflows.
+        var openFactionPopup = FactionManagePopup.getOpenPopup();
+        if (openFactionPopup != null && openFactionPopup.mouseScrolled(logicalX, logicalY, scrollY)) {
             return true;
         }
         // Scroll-wheel events that land on an open menu shouldn't tunnel through to the scroll containers of panels
@@ -902,6 +922,11 @@ public final class EngineWorkspaceScreen extends Screen {
         // Esc closes an open color-picker popup too.
         if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE && HslColorPickerPopup.getOpenPopup() != null) {
             HslColorPickerPopup.closeOpenPopup();
+            return true;
+        }
+        // Same for the faction-management popup.
+        if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE && FactionManagePopup.getOpenPopup() != null) {
+            FactionManagePopup.closeOpenPopup();
             return true;
         }
 
@@ -1072,6 +1097,15 @@ public final class EngineWorkspaceScreen extends Screen {
                 return true;
             }
             HslColorPickerPopup.closeOpenPopup();
+        }
+        // 0c) Faction management popup — same outside-click-closes pattern.
+        var openFactionPopup = FactionManagePopup.getOpenPopup();
+        if (openFactionPopup != null) {
+            if (openFactionPopup.isInside(logicalX, logicalY)) {
+                openFactionPopup.mouseClicked(logicalX, logicalY, button);
+                return true;
+            }
+            FactionManagePopup.closeOpenPopup();
         }
 
         // 0) An open dropdown takes priority: clicking an item fires it; clicking outside just closes the menu.
@@ -2042,11 +2076,22 @@ public final class EngineWorkspaceScreen extends Screen {
         }
 
         var entityId = entity.getId();
+        var entityUuid = entity.getUUID();
+        var entityDisplayName = entity.getName().getString();
+        var menuX = (int) cursorX;
+        var menuY = (int) cursorY;
         var items = new java.util.ArrayList<DropdownMenu.Item>();
         items.add(
             new DropdownMenu.Item("View GOAP Details", () -> {
                 BLib.MOD.networking().sendToServer(new C2SGOAPTrackPayload(entityId));
                 reopenPanel(GOAPDetailsPanel.class, GOAPDetailsPanel::new);
+            })
+        );
+        items.add(
+            new DropdownMenu.Item("Manage Factions", () -> {
+                // Anchor the popup at the original right-click point — by the time the menu item fires, the menu
+                // itself has been dismissed, but the user expects the popup to land where their click was.
+                FactionManagePopup.openAt(menuX, menuY, entityUuid, entityDisplayName);
             })
         );
         if (!(entity instanceof net.minecraft.world.entity.player.Player)) {
@@ -2057,7 +2102,7 @@ public final class EngineWorkspaceScreen extends Screen {
             );
         }
 
-        this.openMenu = new DropdownMenu((int) cursorX, (int) cursorY, items);
+        this.openMenu = new DropdownMenu(menuX, menuY, items);
     }
 
     /**

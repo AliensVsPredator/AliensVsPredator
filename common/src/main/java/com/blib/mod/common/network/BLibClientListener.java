@@ -151,6 +151,14 @@ public final class BLibClientListener {
         com.blib.internal.client.faction.ClientFactionMembersCache.apply(payload);
     }
 
+    /** Server-pushed reverse lookup: every faction this entity (UUID) currently belongs to. */
+    public static void handleEntityFactions(
+        com.blib.mod.common.network.packet.S2CEntityFactionsPayload payload,
+        Player player
+    ) {
+        com.blib.internal.client.faction.ClientEntityFactionsCache.apply(payload);
+    }
+
     /**
      * Server reply for a Move Blocks operation. On success and non-copy, shifts the AABB by the offset that was sent —
      * Photoshop's "marquee follows the dropped pixels" pattern, so the user's selection now wraps the moved blocks and

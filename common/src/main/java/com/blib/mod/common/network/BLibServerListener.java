@@ -68,6 +68,7 @@ import com.blib.mod.common.network.packet.C2SRemoveChunkClaimPayload;
 import com.blib.mod.common.network.packet.C2SRemoveEntityPayload;
 import com.blib.mod.common.network.packet.C2SRemoveFactionMemberPayload;
 import com.blib.mod.common.network.packet.C2SRemovePoolElementPayload;
+import com.blib.mod.common.network.packet.C2SRequestEntityFactionsPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionDirectoryPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionInspectionPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionMembersPayload;
@@ -84,6 +85,7 @@ import com.blib.mod.common.network.packet.C2SUpdatePoolElementPayload;
 import com.blib.mod.common.network.packet.ProjectOp;
 import com.blib.mod.common.network.packet.S2CCaptureListPayload;
 import com.blib.mod.common.network.packet.S2CClipboardStatusPayload;
+import com.blib.mod.common.network.packet.S2CEntityFactionsPayload;
 import com.blib.mod.common.network.packet.S2CMoveSelectionResultPayload;
 import com.blib.mod.common.network.packet.S2CPoolDraftPayload;
 import com.blib.mod.common.network.packet.S2CPoolListPayload;
@@ -1057,7 +1059,7 @@ public final class BLibServerListener {
         BLibFactionManager.INSTANCE.pushDirectoryToAllClients(sp.server);
     }
 
-    /** Add a member to a faction. Pushes the directory (member count) + members roster. */
+    /** Add a member to a faction. Pushes the directory (member count) + members roster + entity reverse-lookup. */
     public static void handleAddFactionMember(C2SAddFactionMemberPayload payload, Player player) {
         if (!(player instanceof ServerPlayer sp) || !sp.hasPermissions(2)) {
             return;
@@ -1069,10 +1071,11 @@ public final class BLibServerListener {
         if (faction.membership().addMember(FactionMember.entity(payload.memberUuid()))) {
             BLibFactionManager.INSTANCE.pushDirectoryToAllClients(sp.server);
             BLibFactionManager.INSTANCE.pushMembersToAllClients(sp.server, payload.factionId());
+            pushEntityFactionsTo(sp, payload.memberUuid());
         }
     }
 
-    /** Remove a member from a faction. Pushes the directory + members roster on success. */
+    /** Remove a member from a faction. Pushes the directory + members roster + entity reverse-lookup on success. */
     public static void handleRemoveFactionMember(C2SRemoveFactionMemberPayload payload, Player player) {
         if (!(player instanceof ServerPlayer sp) || !sp.hasPermissions(2)) {
             return;
@@ -1084,7 +1087,28 @@ public final class BLibServerListener {
         if (faction.membership().removeMember(FactionMember.entity(payload.memberUuid()))) {
             BLibFactionManager.INSTANCE.pushDirectoryToAllClients(sp.server);
             BLibFactionManager.INSTANCE.pushMembersToAllClients(sp.server, payload.factionId());
+            pushEntityFactionsTo(sp, payload.memberUuid());
         }
+    }
+
+    /**
+     * Reverse lookup: list every faction whose membership contains the given UUID, send the result back. Reads only —
+     * the workspace's op gate upstream is already what determines who can ask. Powers the engine Inspector "Factions"
+     * section and the right-click "Manage Factions" popup.
+     */
+    public static void handleRequestEntityFactions(C2SRequestEntityFactionsPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer sp)) {
+            return;
+        }
+        pushEntityFactionsTo(sp, payload.memberUuid());
+    }
+
+    /** Helper: query the manager's reverse index for {@code uuid} and ship the result to this one player. */
+    private static void pushEntityFactionsTo(ServerPlayer sp, java.util.UUID uuid) {
+        var factionIds = BLibFactionManager.INSTANCE.getFactionIds(uuid);
+        BLib.MOD
+            .networking()
+            .sendToClient(sp, new S2CEntityFactionsPayload(uuid, java.util.List.copyOf(factionIds)));
     }
 
     /**

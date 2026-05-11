@@ -814,6 +814,66 @@ public final class DetailsPanel implements Panel {
         rowY = drawRow(graphics, font, x, rowY, "Type", entity.getType().getDescriptionId());
         rowY = drawRow(graphics, font, x, rowY, "UUID", entity.getStringUUID().substring(0, 8));
         rowY = drawRow(graphics, font, x, rowY, "Health", String.format("%.1f / %.1f", entity.getHealth(), entity.getMaxHealth()));
+
+        rowY = renderEntityFactionsSection(graphics, font, x, rowY, width, entity.getUUID());
+    }
+
+    /**
+     * Renders a read-only Factions section listing every faction the inspected entity belongs to. The reverse lookup
+     * data comes from {@link com.blib.internal.client.faction.ClientEntityFactionsCache}; we kick off the request on
+     * first render for this UUID and show a "(loading…)" placeholder until the reply lands. Mutations happen via the
+     * right-click "Manage Factions" popup, not here — the inspector is read-only by design so the user has one
+     * canonical place to think about membership rather than two overlapping surfaces.
+     */
+    private int renderEntityFactionsSection(GuiGraphics graphics, Font font, int x, int rowY, int width, java.util.UUID uuid) {
+        com.blib.internal.client.faction.ClientEntityFactionsCache.ensureRequested(uuid);
+        rowY = drawSectionHeader(graphics, font, x, rowY, width, "Factions");
+        rowY += CONTENT_PADDING / 2;
+
+        var factionIds = com.blib.internal.client.faction.ClientEntityFactionsCache.get(uuid);
+        if (factionIds == null) {
+            rowY = drawRow(graphics, font, x, rowY, "", "(loading…)");
+            return rowY;
+        }
+        if (factionIds.isEmpty()) {
+            rowY = drawRow(graphics, font, x, rowY, "", "(no factions)");
+            return rowY;
+        }
+
+        // Cap inline rows so a heavily-factioned entity doesn't push the inspector off the panel. The right-click
+        // popup is the surface for browsing the full list.
+        var displayCap = 5;
+        var shown = Math.min(displayCap, factionIds.size());
+        for (var i = 0; i < shown; i++) {
+            var factionId = factionIds.get(i);
+            var entry = com.blib.internal.client.faction.ClientFactionDirectoryCache.get(factionId);
+            var label = entry != null ? entry.name() : factionId.toString();
+            rowY = drawFactionRow(graphics, font, x, rowY, label, entry != null ? entry.color() : 0xFF808088);
+        }
+        if (factionIds.size() > displayCap) {
+            rowY = drawRow(graphics, font, x, rowY, "", "… and " + (factionIds.size() - displayCap) + " more");
+        }
+        return rowY;
+    }
+
+    /**
+     * Inline single-line row: small color swatch + faction name. Mirrors the indent of {@link #drawRow} so columns line
+     * up between adjacent Info / Factions sections.
+     */
+    private static int drawFactionRow(GuiGraphics graphics, Font font, int x, int rowY, String name, int argb) {
+        var swatchX = x + CONTENT_PADDING;
+        var swatchSize = 6;
+        var swatchY = rowY + (font.lineHeight - swatchSize) / 2 + 1;
+        graphics.fill(swatchX, swatchY, swatchX + swatchSize, swatchY + swatchSize, argb | 0xFF000000);
+        graphics.drawString(
+            font,
+            net.minecraft.network.chat.Component.literal(name),
+            swatchX + swatchSize + 4,
+            rowY + 1,
+            0xFFD0D0D0,
+            false
+        );
+        return rowY + font.lineHeight + 1;
     }
 
     private void syncEntityInputsFromEntity(net.minecraft.world.entity.LivingEntity entity, boolean force) {

@@ -30,6 +30,7 @@ import com.blib.mod.common.network.packet.C2SRemoveChunkClaimPayload;
 import com.blib.mod.common.network.packet.C2SRemoveEntityPayload;
 import com.blib.mod.common.network.packet.C2SRemoveFactionMemberPayload;
 import com.blib.mod.common.network.packet.C2SRemovePoolElementPayload;
+import com.blib.mod.common.network.packet.C2SRequestEntityFactionsPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionDirectoryPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionInspectionPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionMembersPayload;
@@ -47,6 +48,7 @@ import com.blib.mod.common.network.packet.S2CCaptureListPayload;
 import com.blib.mod.common.network.packet.S2CChunkClaimsSyncPayload;
 import com.blib.mod.common.network.packet.S2CClipboardStatusPayload;
 import com.blib.mod.common.network.packet.S2CEntityDataSyncPayload;
+import com.blib.mod.common.network.packet.S2CEntityFactionsPayload;
 import com.blib.mod.common.network.packet.S2CFactionDirectoryPayload;
 import com.blib.mod.common.network.packet.S2CFactionInspectionPayload;
 import com.blib.mod.common.network.packet.S2CFactionMembersPayload;
@@ -337,6 +339,13 @@ public class BLibServerPacketHandlers {
         );
         REGISTRY.registerPacketHandler(
             new NetworkHandler.FromClient<>(
+                C2SRequestEntityFactionsPayload.TYPE,
+                C2SRequestEntityFactionsPayload.CODEC,
+                BLibServerListener::handleRequestEntityFactions
+            )
+        );
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromClient<>(
                 C2SAddChunkClaimPayload.TYPE,
                 C2SAddChunkClaimPayload.CODEC,
                 BLibServerListener::handleAddChunkClaim
@@ -499,6 +508,13 @@ public class BLibServerPacketHandlers {
                 S2CFactionMembersPayload.TYPE,
                 S2CFactionMembersPayload.CODEC,
                 BLibClientListener::handleFactionMembers
+            )
+        );
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromServer<>(
+                S2CEntityFactionsPayload.TYPE,
+                S2CEntityFactionsPayload.CODEC,
+                BLibClientListener::handleEntityFactions
             )
         );
 
