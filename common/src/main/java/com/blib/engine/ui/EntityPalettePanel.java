@@ -197,14 +197,16 @@ public final class EntityPalettePanel implements Panel {
         int mouseX,
         int mouseY
     ) {
-        var hovered = mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + ROW_HEIGHT;
+        // Reserve the scrollbar gutter so the row hover background and right-aligned chip don't slide under the bar.
+        var rowRight = x + width - ScrollContainer.SCROLLBAR_GUTTER;
+        var hovered = mouseX >= x && mouseX < rowRight && mouseY >= y && mouseY < y + ROW_HEIGHT;
         var selected = entry.id.equals(selectedId);
         var blocked = peaceful && entry.category == MobCategory.MONSTER;
 
         if (selected) {
-            graphics.fill(x, y, x + width, y + ROW_HEIGHT, ROW_BG_SELECTED_COLOR);
+            graphics.fill(x, y, rowRight, y + ROW_HEIGHT, ROW_BG_SELECTED_COLOR);
         } else if (hovered && !blocked) {
-            graphics.fill(x, y, x + width, y + ROW_HEIGHT, ROW_BG_HOVER_COLOR);
+            graphics.fill(x, y, rowRight, y + ROW_HEIGHT, ROW_BG_HOVER_COLOR);
         }
 
         // Left-edge category accent stripe, mirrors the visual language of the outliner.
@@ -218,7 +220,7 @@ public final class EntityPalettePanel implements Panel {
         var chipPaddingX = 3;
         var chipWidth = font.width(chipText) + chipPaddingX * 2;
         var chipHeight = font.lineHeight + 2;
-        var chipX = x + width - chipWidth - 6;
+        var chipX = rowRight - chipWidth - 6;
         var chipY = y + (ROW_HEIGHT - chipHeight) / 2;
         graphics.fill(chipX, chipY, chipX + chipWidth, chipY + chipHeight, categoryColor(entry.category));
         graphics.drawString(font, Component.literal(chipText), chipX + chipPaddingX, chipY + 1, CATEGORY_CHIP_TEXT_COLOR, false);

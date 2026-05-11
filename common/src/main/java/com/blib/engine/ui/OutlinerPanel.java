@@ -233,9 +233,11 @@ public final class OutlinerPanel implements Panel {
     }
 
     private void renderHeader(GuiGraphics graphics, int x, int y, int width, Category cat, int count, int mouseX, int mouseY) {
-        var hovered = mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + HEADER_HEIGHT;
+        // Reserve the scrollbar gutter so the header background and right-aligned count don't slide under the bar.
+        var rowRight = x + width - ScrollContainer.SCROLLBAR_GUTTER;
+        var hovered = mouseX >= x && mouseX < rowRight && mouseY >= y && mouseY < y + HEADER_HEIGHT;
         var bg = hovered ? HEADER_BG_HOVER_COLOR : HEADER_BG_COLOR;
-        graphics.fill(x, y, x + width, y + HEADER_HEIGHT, bg);
+        graphics.fill(x, y, rowRight, y + HEADER_HEIGHT, bg);
         // Left-edge accent stripe so the section's color is visible even when the header label is truncated.
         graphics.fill(x, y, x + 2, y + HEADER_HEIGHT, cat.accentColor);
 
@@ -246,10 +248,10 @@ public final class OutlinerPanel implements Panel {
         graphics.drawString(font, Component.literal(cat.displayName), x + 4 + CARET_WIDTH + 2, textY, HEADER_TEXT_COLOR, false);
 
         var countLabel = "(" + count + ")";
-        var countX = x + width - 4 - font.width(countLabel);
+        var countX = rowRight - 4 - font.width(countLabel);
         graphics.drawString(font, Component.literal(countLabel), countX, textY, HEADER_COUNT_COLOR, false);
 
-        headerHits.add(new HeaderHit(x, y, width, HEADER_HEIGHT, cat));
+        headerHits.add(new HeaderHit(x, y, rowRight - x, HEADER_HEIGHT, cat));
     }
 
     private void renderRow(
@@ -262,12 +264,14 @@ public final class OutlinerPanel implements Panel {
         int mouseX,
         int mouseY
     ) {
-        var hovered = mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + ROW_HEIGHT;
+        // Reserve the scrollbar gutter so the row hover background and right-aligned distance label stay clear of it.
+        var rowRight = x + width - ScrollContainer.SCROLLBAR_GUTTER;
+        var hovered = mouseX >= x && mouseX < rowRight && mouseY >= y && mouseY < y + ROW_HEIGHT;
         var selected = selectedEntity != null && selectedEntity == entry.entity;
         if (selected) {
-            graphics.fill(x, y, x + width, y + ROW_HEIGHT, ROW_BG_SELECTED_COLOR);
+            graphics.fill(x, y, rowRight, y + ROW_HEIGHT, ROW_BG_SELECTED_COLOR);
         } else if (hovered) {
-            graphics.fill(x, y, x + width, y + ROW_HEIGHT, ROW_BG_HOVER_COLOR);
+            graphics.fill(x, y, rowRight, y + ROW_HEIGHT, ROW_BG_HOVER_COLOR);
         }
 
         var font = EngineFont.get();
@@ -277,7 +281,7 @@ public final class OutlinerPanel implements Panel {
         // would otherwise crowd the right edge and overlap the distance).
         var distLabel = formatDistance(entry.distance);
         var distWidth = font.width(distLabel);
-        var distX = x + width - distWidth - 4;
+        var distX = rowRight - distWidth - 4;
         graphics.drawString(font, Component.literal(distLabel), distX, textY, DISTANCE_TEXT_COLOR, false);
 
         var nameX = x + ROW_INDENT_X;
@@ -286,7 +290,7 @@ public final class OutlinerPanel implements Panel {
         var truncated = font.plainSubstrByWidth(entry.name, nameMaxWidth);
         graphics.drawString(font, Component.literal(truncated), nameX, textY, nameColor, false);
 
-        rowHits.add(new RowHit(x, y, width, ROW_HEIGHT, entry.entity, entry.selectable));
+        rowHits.add(new RowHit(x, y, rowRight - x, ROW_HEIGHT, entry.entity, entry.selectable));
 
         if (hovered) {
             // Use a Component (vs raw String) so the workspace's tooltip box renders multi-line via Font.split.

@@ -272,9 +272,11 @@ public final class ContentBrowserPanel implements Panel {
     }
 
     private int renderSection(GuiGraphics graphics, int x, int y, int width, Section section, int count, int mouseX, int mouseY) {
-        var hovered = mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + HEADER_HEIGHT;
+        // Reserve the scrollbar gutter so the header background and right-aligned count don't slide under the bar.
+        var rowRight = x + width - ScrollContainer.SCROLLBAR_GUTTER;
+        var hovered = mouseX >= x && mouseX < rowRight && mouseY >= y && mouseY < y + HEADER_HEIGHT;
         var bg = hovered ? HEADER_BG_HOVER_COLOR : HEADER_BG_COLOR;
-        graphics.fill(x, y, x + width, y + HEADER_HEIGHT, bg);
+        graphics.fill(x, y, rowRight, y + HEADER_HEIGHT, bg);
         graphics.fill(x, y, x + 2, y + HEADER_HEIGHT, section.accentColor);
 
         var font = EngineFont.get();
@@ -284,10 +286,10 @@ public final class ContentBrowserPanel implements Panel {
         graphics.drawString(font, Component.literal(section.displayName), x + 4 + CARET_WIDTH + 2, textY, HEADER_TEXT_COLOR, false);
 
         var countLabel = "(" + count + ")";
-        var countX = x + width - 4 - font.width(countLabel);
+        var countX = rowRight - 4 - font.width(countLabel);
         graphics.drawString(font, Component.literal(countLabel), countX, textY, HEADER_COUNT_COLOR, false);
 
-        headerHits.add(new HeaderHit(x, y, width, HEADER_HEIGHT, section));
+        headerHits.add(new HeaderHit(x, y, rowRight - x, HEADER_HEIGHT, section));
         return y + HEADER_HEIGHT;
     }
 
@@ -372,9 +374,11 @@ public final class ContentBrowserPanel implements Panel {
         Runnable onOpen,
         Runnable onDelete
     ) {
-        var hovered = mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + ROW_HEIGHT;
+        // Reserve the scrollbar gutter so the row hover background and right-aligned buttons don't sit under the bar.
+        var rowRight = x + width - ScrollContainer.SCROLLBAR_GUTTER;
+        var hovered = mouseX >= x && mouseX < rowRight && mouseY >= y && mouseY < y + ROW_HEIGHT;
         if (hovered) {
-            graphics.fill(x, y, x + width, y + ROW_HEIGHT, ROW_BG_HOVER_COLOR);
+            graphics.fill(x, y, rowRight, y + ROW_HEIGHT, ROW_BG_HOVER_COLOR);
         }
 
         var font = EngineFont.get();
@@ -382,7 +386,7 @@ public final class ContentBrowserPanel implements Panel {
         var buttonY = y + (ROW_HEIGHT - BUTTON_HEIGHT) / 2;
 
         // Right-aligned buttons: Delete (always), Open (only when hasOpen).
-        var deleteX = x + width - 4 - BUTTON_WIDTH;
+        var deleteX = rowRight - 4 - BUTTON_WIDTH;
         var openX = deleteX - BUTTON_GAP - BUTTON_WIDTH;
         var deleteRect = new Rect(deleteX, buttonY, BUTTON_WIDTH, BUTTON_HEIGHT);
         var openRect = hasOpen ? new Rect(openX, buttonY, BUTTON_WIDTH, BUTTON_HEIGHT) : null;

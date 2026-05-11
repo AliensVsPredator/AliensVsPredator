@@ -195,12 +195,14 @@ public final class FactionBrowserPanel implements Panel {
         int mouseX,
         int mouseY
     ) {
-        var hovered = mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + ROW_HEIGHT;
+        // Reserve the scrollbar gutter so the row hover background and right-aligned Delete button stay clear of it.
+        var rowRight = x + width - ScrollContainer.SCROLLBAR_GUTTER;
+        var hovered = mouseX >= x && mouseX < rowRight && mouseY >= y && mouseY < y + ROW_HEIGHT;
         var isSelected = selectedId != null && selectedId.equals(entry.id());
         if (isSelected) {
-            graphics.fill(x, y, x + width, y + ROW_HEIGHT, ROW_BG_SELECTED_COLOR);
+            graphics.fill(x, y, rowRight, y + ROW_HEIGHT, ROW_BG_SELECTED_COLOR);
         } else if (hovered) {
-            graphics.fill(x, y, x + width, y + ROW_HEIGHT, ROW_BG_HOVER_COLOR);
+            graphics.fill(x, y, rowRight, y + ROW_HEIGHT, ROW_BG_HOVER_COLOR);
         }
 
         var swatchX = x + 4;
@@ -216,7 +218,7 @@ public final class FactionBrowserPanel implements Panel {
         // Delete button at the row's right edge. Inspect used to live to its left, but clicking the row already
         // sets the selection to the row's faction (FactionSelectable) which the inspector picks up — the button
         // was a redundant second affordance for the same action, so it's gone.
-        var deleteX = x + width - 4 - BUTTON_WIDTH;
+        var deleteX = rowRight - 4 - BUTTON_WIDTH;
         var deleteRect = new Rect(deleteX, buttonY, BUTTON_WIDTH, BUTTON_HEIGHT);
         renderButton(graphics, deleteRect, "Delete", mouseX, mouseY, BUTTON_DESTRUCTIVE_TEXT);
 

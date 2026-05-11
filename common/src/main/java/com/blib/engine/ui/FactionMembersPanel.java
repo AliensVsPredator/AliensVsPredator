@@ -217,16 +217,18 @@ public final class FactionMembersPanel implements Panel {
         int mouseX,
         int mouseY
     ) {
-        var hovered = mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + ROW_HEIGHT;
+        // Reserve the scrollbar gutter so the row hover background and right-aligned Remove button stay clear of it.
+        var rowRight = x + width - ScrollContainer.SCROLLBAR_GUTTER;
+        var hovered = mouseX >= x && mouseX < rowRight && mouseY >= y && mouseY < y + ROW_HEIGHT;
         if (hovered) {
-            graphics.fill(x, y, x + width, y + ROW_HEIGHT, ROW_BG_HOVER_COLOR);
+            graphics.fill(x, y, rowRight, y + ROW_HEIGHT, ROW_BG_HOVER_COLOR);
         }
 
         var font = EngineFont.get();
         var textY = y + (ROW_HEIGHT - font.lineHeight + 2) / 2;
         var buttonY = y + (ROW_HEIGHT - BUTTON_HEIGHT) / 2;
 
-        var removeX = x + width - 4 - BUTTON_WIDTH;
+        var removeX = rowRight - 4 - BUTTON_WIDTH;
         var removeRect = new Rect(removeX, buttonY, BUTTON_WIDTH, BUTTON_HEIGHT);
         renderButton(graphics, removeRect, "Remove", mouseX, mouseY, BUTTON_DESTRUCTIVE_TEXT);
 

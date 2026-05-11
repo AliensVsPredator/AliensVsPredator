@@ -337,9 +337,11 @@ public final class TagBrowserPanel implements Panel {
         int mouseX,
         int mouseY
     ) {
-        var hovered = mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + HEADER_HEIGHT;
+        // Reserve the scrollbar gutter so the header background and right-aligned + button stay clear of it.
+        var rowRight = x + width - ScrollContainer.SCROLLBAR_GUTTER;
+        var hovered = mouseX >= x && mouseX < rowRight && mouseY >= y && mouseY < y + HEADER_HEIGHT;
         var bg = hovered ? HEADER_BG_HOVER_COLOR : HEADER_BG_COLOR;
-        graphics.fill(x, y, x + width, y + HEADER_HEIGHT, bg);
+        graphics.fill(x, y, rowRight, y + HEADER_HEIGHT, bg);
         graphics.fill(x, y, x + 2, y + HEADER_HEIGHT, accentColor(registryKey));
 
         var font = EngineFont.get();
@@ -349,7 +351,7 @@ public final class TagBrowserPanel implements Panel {
         graphics.drawString(font, Component.literal(registryKey.toString()), x + 4 + CARET_WIDTH + 2, textY, HEADER_TEXT_COLOR, false);
 
         // Right side: count + create (+) button.
-        var createX = x + width - 4 - CREATE_BUTTON_WIDTH;
+        var createX = rowRight - 4 - CREATE_BUTTON_WIDTH;
         graphics.drawString(
             font,
             Component.literal("+"),
@@ -364,7 +366,7 @@ public final class TagBrowserPanel implements Panel {
         var countX = createX - 6 - font.width(countLabel);
         graphics.drawString(font, Component.literal(countLabel), countX, textY, HEADER_COUNT_COLOR, false);
 
-        headerHits.add(new HeaderHit(x, y, width, HEADER_HEIGHT, registryKey));
+        headerHits.add(new HeaderHit(x, y, rowRight - x, HEADER_HEIGHT, registryKey));
     }
 
     private void renderRow(
@@ -377,25 +379,28 @@ public final class TagBrowserPanel implements Panel {
         int mouseX,
         int mouseY
     ) {
+        // Reserve the scrollbar gutter so the row hover background, label truncation, and click hit-test all stop
+        // before the bar.
+        var rowRight = x + width - ScrollContainer.SCROLLBAR_GUTTER;
         var selected = selectedTag != null
             && selectedTag.registryKey().equals(ce.registryKey())
             && selectedTag.tagId().equals(ce.tagId());
-        var hovered = mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + ROW_HEIGHT;
+        var hovered = mouseX >= x && mouseX < rowRight && mouseY >= y && mouseY < y + ROW_HEIGHT;
         if (selected) {
-            graphics.fill(x, y, x + width, y + ROW_HEIGHT, ROW_BG_SELECTED_COLOR);
+            graphics.fill(x, y, rowRight, y + ROW_HEIGHT, ROW_BG_SELECTED_COLOR);
         } else if (hovered) {
-            graphics.fill(x, y, x + width, y + ROW_HEIGHT, ROW_BG_HOVER_COLOR);
+            graphics.fill(x, y, rowRight, y + ROW_HEIGHT, ROW_BG_HOVER_COLOR);
         }
 
         var font = EngineFont.get();
         var textY = y + (ROW_HEIGHT - font.lineHeight + 2) / 2;
 
-        var labelMaxWidth = Math.max(0, width - 16);
+        var labelMaxWidth = Math.max(0, rowRight - x - 16);
         var truncated = font.plainSubstrByWidth(ce.tagId().toString(), labelMaxWidth);
         var labelColor = ce.inProject() ? ROW_PROJECT_TINT : (hovered || selected ? ROW_TEXT_HOVER_COLOR : ROW_TEXT_COLOR);
         graphics.drawString(font, Component.literal(truncated), x + 12, textY, labelColor, false);
 
-        rowHits.add(new RowHit(x, y, width, ROW_HEIGHT, ce.registryKey(), ce.tagId()));
+        rowHits.add(new RowHit(x, y, rowRight - x, ROW_HEIGHT, ce.registryKey(), ce.tagId()));
     }
 
     private void renderCreatePopup(GuiGraphics graphics, int x, int y, int width, int height, int mouseX, int mouseY) {
