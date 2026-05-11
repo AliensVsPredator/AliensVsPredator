@@ -66,4 +66,31 @@ public final class TagCatalogCache {
         all = List.of();
         grouped = null;
     }
+
+    /**
+     * Flip {@code inProject=true} on the catalog entry for {@code (registryKey, tagId)}, if present and not already
+     * flagged. {@code inUpstream} is preserved as-is. Called from the tag-draft S2C handler — once a tag draft arrives
+     * from the server, the project necessarily has authored that tag (writeAndPersist created the JSON), so the catalog
+     * can update locally without waiting for a fresh full-catalog push. Lets the browser repaint the row from default
+     * white to blue / green the moment the inspector commits an edit.
+     */
+    public static void markEntryAsProject(ResourceLocation registryKey, ResourceLocation tagId) {
+        if (all.isEmpty()) {
+            return;
+        }
+        var changed = false;
+        var updated = new ArrayList<TagCatalogEntry>(all.size());
+        for (var entry : all) {
+            if (!entry.inProject() && entry.registryKey().equals(registryKey) && entry.tagId().equals(tagId)) {
+                updated.add(new TagCatalogEntry(entry.registryKey(), entry.tagId(), true, entry.inUpstream()));
+                changed = true;
+            } else {
+                updated.add(entry);
+            }
+        }
+        if (changed) {
+            all = List.copyOf(updated);
+            grouped = null;
+        }
+    }
 }

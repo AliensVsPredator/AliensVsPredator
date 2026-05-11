@@ -134,6 +134,10 @@ public final class BLibClientListener {
      */
     public static void handleTagDraft(S2CTagDraftPayload payload, Player player) {
         TagDraftCache.update(payload.registryKey(), payload.tagId(), payload.replace(), payload.entries(), payload.resolvedMembers());
+        // The project necessarily owns the tag now — server only sends a draft after writeAndPersist created the
+        // project's JSON. Flip the catalog's inProject flag locally so the browser repaints the row immediately
+        // (blue if upstream contributed too, green otherwise) instead of waiting for a fresh full-catalog push.
+        TagCatalogCache.markEntryAsProject(payload.registryKey(), payload.tagId());
     }
 
     /**
