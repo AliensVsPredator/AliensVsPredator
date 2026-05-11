@@ -14,6 +14,7 @@ import com.blib.mod.common.network.packet.C2SCreateProjectPayload;
 import com.blib.mod.common.network.packet.C2SCreateTagPayload;
 import com.blib.mod.common.network.packet.C2SDeleteCapturePayload;
 import com.blib.mod.common.network.packet.C2SDeleteFactionPayload;
+import com.blib.mod.common.network.packet.C2SDeletePlacedPiecePayload;
 import com.blib.mod.common.network.packet.C2SDeletePoolPayload;
 import com.blib.mod.common.network.packet.C2SDeleteProjectPayload;
 import com.blib.mod.common.network.packet.C2SDeleteSelectionPayload;
@@ -23,6 +24,7 @@ import com.blib.mod.common.network.packet.C2SListCapturesPayload;
 import com.blib.mod.common.network.packet.C2SListPoolsPayload;
 import com.blib.mod.common.network.packet.C2SListProjectsPayload;
 import com.blib.mod.common.network.packet.C2SListStructuresPayload;
+import com.blib.mod.common.network.packet.C2SMovePlacedPiecePayload;
 import com.blib.mod.common.network.packet.C2SMoveSelectionPayload;
 import com.blib.mod.common.network.packet.C2SOpenProjectPayload;
 import com.blib.mod.common.network.packet.C2SPasteFromClipboardPayload;
@@ -38,6 +40,7 @@ import com.blib.mod.common.network.packet.C2SRequestEntityFactionsPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionDirectoryPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionInspectionPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionMembersPayload;
+import com.blib.mod.common.network.packet.C2SRequestPlacedPiecesPayload;
 import com.blib.mod.common.network.packet.C2SRequestPoolDraftPayload;
 import com.blib.mod.common.network.packet.C2SRequestRegistryEntriesPayload;
 import com.blib.mod.common.network.packet.C2SRequestTagCatalogPayload;
@@ -60,6 +63,7 @@ import com.blib.mod.common.network.packet.S2CEntityDataSyncPayload;
 import com.blib.mod.common.network.packet.S2CEntityFactionsPayload;
 import com.blib.mod.common.network.packet.S2CFactionDirectoryPayload;
 import com.blib.mod.common.network.packet.S2CFactionInspectionPayload;
+import com.blib.mod.common.network.packet.S2CAddPlacedPiecePayload;
 import com.blib.mod.common.network.packet.S2CFactionMembersPayload;
 import com.blib.mod.common.network.packet.S2CFactionMetadataSyncPayload;
 import com.blib.mod.common.network.packet.S2CGOAPDebugPayload;
@@ -71,6 +75,8 @@ import com.blib.mod.common.network.packet.S2CPoolListPayload;
 import com.blib.mod.common.network.packet.S2CProjectListPayload;
 import com.blib.mod.common.network.packet.S2CProjectOpResultPayload;
 import com.blib.mod.common.network.packet.S2CRegistryEntriesPayload;
+import com.blib.mod.common.network.packet.S2CRemovePlacedPiecePayload;
+import com.blib.mod.common.network.packet.S2CSyncPlacedPiecesPayload;
 import com.blib.mod.common.network.packet.S2CStructureListPayload;
 import com.blib.mod.common.network.packet.S2CTagCatalogPayload;
 import com.blib.mod.common.network.packet.S2CTagDraftPayload;
@@ -244,5 +250,25 @@ public class BLibPacketDirections {
             new PacketDirection.C2S<>(C2SSetTagEntryRequiredPayload.TYPE, C2SSetTagEntryRequiredPayload.CODEC)
         );
         REGISTRY.registerPacketDirection(new PacketDirection.C2S<>(C2SCreateTagPayload.TYPE, C2SCreateTagPayload.CODEC));
+
+        // Placed-piece identity layer (engine-mode inspector / context menu).
+        REGISTRY.registerPacketDirection(
+            new PacketDirection.C2S<>(C2SRequestPlacedPiecesPayload.TYPE, C2SRequestPlacedPiecesPayload.CODEC)
+        );
+        REGISTRY.registerPacketDirection(
+            new PacketDirection.C2S<>(C2SDeletePlacedPiecePayload.TYPE, C2SDeletePlacedPiecePayload.CODEC)
+        );
+        REGISTRY.registerPacketDirection(
+            new PacketDirection.C2S<>(C2SMovePlacedPiecePayload.TYPE, C2SMovePlacedPiecePayload.CODEC)
+        );
+        REGISTRY.registerPacketDirection(
+            new PacketDirection.S2C<>(S2CAddPlacedPiecePayload.TYPE, S2CAddPlacedPiecePayload.CODEC)
+        );
+        REGISTRY.registerPacketDirection(
+            new PacketDirection.S2C<>(S2CRemovePlacedPiecePayload.TYPE, S2CRemovePlacedPiecePayload.CODEC)
+        );
+        REGISTRY.registerPacketDirection(
+            new PacketDirection.S2C<>(S2CSyncPlacedPiecesPayload.TYPE, S2CSyncPlacedPiecesPayload.CODEC)
+        );
     }
 }

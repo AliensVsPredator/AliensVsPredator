@@ -87,7 +87,11 @@ public final class PanelRegistry {
     private static final Map<Class<? extends Panel>, String> IDS_BY_CLASS = new LinkedHashMap<>();
 
     static {
-        register(VIEWPORT, ViewportPanel.class, ctx -> new ViewportPanel("Viewport", ctx.viewportRightClickHandler()));
+        register(
+            VIEWPORT,
+            ViewportPanel.class,
+            ctx -> new ViewportPanel("Viewport", ctx.viewportRightClickHandler(), ctx.projectContentActionHandler())
+        );
         register(OUTLINER, OutlinerPanel.class, ctx -> new OutlinerPanel(ctx.entityContextMenuHandler()));
         register(DETAILS, DetailsPanel.class, ctx -> new DetailsPanel(ctx.projectContentActionHandler()));
         register(CONTENT_BROWSER, ContentBrowserPanel.class, ctx -> new ContentBrowserPanel(ctx.projectContentActionHandler()));

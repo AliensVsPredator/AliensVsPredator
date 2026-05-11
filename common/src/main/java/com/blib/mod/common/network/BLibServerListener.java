@@ -57,6 +57,7 @@ import com.blib.mod.common.network.packet.C2SCreateProjectPayload;
 import com.blib.mod.common.network.packet.C2SCreateTagPayload;
 import com.blib.mod.common.network.packet.C2SDeleteCapturePayload;
 import com.blib.mod.common.network.packet.C2SDeleteFactionPayload;
+import com.blib.mod.common.network.packet.C2SDeletePlacedPiecePayload;
 import com.blib.mod.common.network.packet.C2SDeletePoolPayload;
 import com.blib.mod.common.network.packet.C2SDeleteProjectPayload;
 import com.blib.mod.common.network.packet.C2SDeleteSelectionPayload;
@@ -66,6 +67,7 @@ import com.blib.mod.common.network.packet.C2SListCapturesPayload;
 import com.blib.mod.common.network.packet.C2SListPoolsPayload;
 import com.blib.mod.common.network.packet.C2SListProjectsPayload;
 import com.blib.mod.common.network.packet.C2SListStructuresPayload;
+import com.blib.mod.common.network.packet.C2SMovePlacedPiecePayload;
 import com.blib.mod.common.network.packet.C2SMoveSelectionPayload;
 import com.blib.mod.common.network.packet.C2SOpenProjectPayload;
 import com.blib.mod.common.network.packet.C2SPasteFromClipboardPayload;
@@ -81,6 +83,7 @@ import com.blib.mod.common.network.packet.C2SRequestEntityFactionsPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionDirectoryPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionInspectionPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionMembersPayload;
+import com.blib.mod.common.network.packet.C2SRequestPlacedPiecesPayload;
 import com.blib.mod.common.network.packet.C2SRequestPoolDraftPayload;
 import com.blib.mod.common.network.packet.C2SRequestRegistryEntriesPayload;
 import com.blib.mod.common.network.packet.C2SRequestTagCatalogPayload;
@@ -252,6 +255,10 @@ public final class BLibServerListener {
      * the id doesn't resolve (the client and server might be out of sync if the user reloaded resources mid-session).
      * The {@code Block.UPDATE_CLIENTS} flag (2) ensures placed blocks sync back to the client without triggering
      * neighbor updates that would corrupt placed structures (e.g. lit redstone repeaters firing on placement).
+     * <p>
+     * After a successful placement we register a {@link com.blib.mod.common.gameplay.jigsaw.PlacedPiece} so engine-mode
+     * users can hover, select, and right-click the piece as a single thing. The piece UUID rides on the
+     * {@link PlacementHistory} entry so an undo also removes the piece from the registry.
      */
     public static void handlePlaceJigsawPiece(C2SPlaceJigsawPiecePayload payload, Player player) {
         if (!(player instanceof ServerPlayer serverPlayer)) {
@@ -281,9 +288,26 @@ public final class BLibServerListener {
         // structure's blocks as the "original" state and undo would be a no-op. AABB derived from the same settings
         // we're about to feed placeInWorld so it matches exactly.
         var aabb = template.getBoundingBox(settings, anchor);
-        PlacementHistory.push(serverLevel, aabb, payload.templateId());
+        var pieceId = java.util.UUID.randomUUID();
+        var piece = new com.blib.mod.common.gameplay.jigsaw.PlacedPiece(
+            pieceId,
+            payload.templateId(),
+            serverLevel.dimension(),
+            aabb,
+            anchor,
+            rotation,
+            mirror,
+            serverLevel.getGameTime()
+        );
+        PlacementHistory.push(serverLevel, aabb, payload.templateId(), pieceId);
 
         template.placeInWorld(serverLevel, anchor, anchor, settings, serverLevel.getRandom(), Block.UPDATE_CLIENTS);
+
+        com.blib.internal.common.storage.BLibDataStoreManager.INSTANCE
+            .getLevel(serverLevel, com.blib.mod.common.registry.init.BLibJigsawDataStoreTypes.PLACED_PIECES)
+            .add(piece);
+
+        com.blib.mod.common.gameplay.jigsaw.PlacedPieceSync.onPieceAdded(serverLevel, piece);
     }
 
     /**
@@ -291,6 +315,9 @@ public final class BLibServerListener {
      * place packet — destructive write to the world. Filters by the player's current dimension so a player who placed
      * in the overworld and travelled to the nether before pressing undo doesn't accidentally restore overworld blocks
      * at the same coordinates in the nether.
+     * <p>
+     * If the popped snapshot carried a piece UUID, we also remove the piece from the registry and broadcast the
+     * removal so engine-mode clients drop it from their hover / selection set.
      */
     public static void handleUndoPlacement(C2SUndoPlacementPayload payload, Player player) {
         if (!(player instanceof ServerPlayer serverPlayer)) {
@@ -299,7 +326,183 @@ public final class BLibServerListener {
         if (!serverPlayer.hasPermissions(2)) {
             return;
         }
-        PlacementHistory.undo(serverPlayer.serverLevel());
+        var serverLevel = serverPlayer.serverLevel();
+        var snapshot = PlacementHistory.undo(serverLevel);
+        if (snapshot == null || snapshot.pieceId() == null) {
+            return;
+        }
+        var removed = com.blib.internal.common.storage.BLibDataStoreManager.INSTANCE
+            .getLevel(serverLevel, com.blib.mod.common.registry.init.BLibJigsawDataStoreTypes.PLACED_PIECES)
+            .remove(snapshot.pieceId());
+        if (removed != null) {
+            com.blib.mod.common.gameplay.jigsaw.PlacedPieceSync.onPieceRemoved(serverLevel, removed.id());
+        }
+    }
+
+    /**
+     * Engine-mode entry handshake — the client requests the full set of placed pieces for its current dimension so it
+     * can populate its mirror without waiting for incremental adds. We don't gate on the {@code clientDimensionHint};
+     * the server's authoritative dimension is the player's actual {@code serverLevel}. Op-gated because the response
+     * leaks placement metadata (template ids, bounding boxes) that's an authoring concern, not a vanilla-player
+     * affordance.
+     */
+    public static void handleRequestPlacedPieces(C2SRequestPlacedPiecesPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        if (!serverPlayer.hasPermissions(2)) {
+            return;
+        }
+        com.blib.mod.common.gameplay.jigsaw.PlacedPieceSync.sendFullSyncTo(serverPlayer);
+    }
+
+    /**
+     * Delete a previously-placed piece. Clears every block in the piece's AABB to air and removes the piece from the
+     * level's store. Pushes a {@link PlacementHistory} snapshot of the pre-delete state so the deletion is itself
+     * undoable — the snapshot carries no piece UUID, so undoing it just restores blocks (the piece is not re-registered;
+     * v1 doesn't try to resurrect the original placement record). Op-gated.
+     */
+    public static void handleDeletePlacedPiece(C2SDeletePlacedPiecePayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        if (!serverPlayer.hasPermissions(2)) {
+            return;
+        }
+        var serverLevel = serverPlayer.serverLevel();
+        var store = com.blib.internal.common.storage.BLibDataStoreManager.INSTANCE
+            .getLevel(serverLevel, com.blib.mod.common.registry.init.BLibJigsawDataStoreTypes.PLACED_PIECES);
+        var piece = store.get(payload.id());
+        if (piece == null || !piece.dimension().equals(serverLevel.dimension())) {
+            return;
+        }
+        // Snapshot pre-delete state first so the operation is undoable.
+        PlacementHistory.push(serverLevel, piece.aabb(), piece.templateId(), null);
+
+        var air = net.minecraft.world.level.block.Blocks.AIR.defaultBlockState();
+        var aabb = piece.aabb();
+        for (var pos : net.minecraft.core.BlockPos.betweenClosed(
+            aabb.minX(),
+            aabb.minY(),
+            aabb.minZ(),
+            aabb.maxX(),
+            aabb.maxY(),
+            aabb.maxZ()
+        )) {
+            serverLevel.setBlock(pos.immutable(), air, Block.UPDATE_CLIENTS);
+        }
+
+        store.remove(payload.id());
+        com.blib.mod.common.gameplay.jigsaw.PlacedPieceSync.onPieceRemoved(serverLevel, payload.id());
+    }
+
+    /**
+     * Identity-preserving translation of a placed piece. Picks up every block (with block-entity NBT) inside the
+     * piece's current AABB, clears the source cells, and stamps them at {@code newMin}-relative positions. The piece
+     * record's AABB and anchor are updated and re-broadcast as an Add — clients keyed by UUID overwrite their entry,
+     * so hover / selection / inspector stay coherent across the move.
+     * <p>
+     * Block-entity NBT is preserved end-to-end so chests keep their contents, signs keep their text, etc. No
+     * {@link PlacementHistory} snapshot is pushed for v1 — moves aren't undoable. If users want that, layer it in as a
+     * follow-up by snapshotting both AABBs (origin pre-move + destination pre-move) under a single composite entry.
+     */
+    public static void handleMovePlacedPiece(C2SMovePlacedPiecePayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        if (!serverPlayer.hasPermissions(2)) {
+            return;
+        }
+        var serverLevel = serverPlayer.serverLevel();
+        var store = com.blib.internal.common.storage.BLibDataStoreManager.INSTANCE
+            .getLevel(serverLevel, com.blib.mod.common.registry.init.BLibJigsawDataStoreTypes.PLACED_PIECES);
+        var piece = store.get(payload.id());
+        if (piece == null || !piece.dimension().equals(serverLevel.dimension())) {
+            return;
+        }
+
+        var oldAabb = piece.aabb();
+        var newMin = payload.newMin();
+        var dx = newMin.getX() - oldAabb.minX();
+        var dy = newMin.getY() - oldAabb.minY();
+        var dz = newMin.getZ() - oldAabb.minZ();
+        if (dx == 0 && dy == 0 && dz == 0) {
+            return;
+        }
+
+        var savedStates = new java.util.HashMap<net.minecraft.core.BlockPos, net.minecraft.world.level.block.state.BlockState>();
+        var savedBeNbt = new java.util.HashMap<net.minecraft.core.BlockPos, net.minecraft.nbt.CompoundTag>();
+        var oldMin = new net.minecraft.core.BlockPos(oldAabb.minX(), oldAabb.minY(), oldAabb.minZ());
+        for (var pos : net.minecraft.core.BlockPos.betweenClosed(
+            oldAabb.minX(),
+            oldAabb.minY(),
+            oldAabb.minZ(),
+            oldAabb.maxX(),
+            oldAabb.maxY(),
+            oldAabb.maxZ()
+        )) {
+            // Capture state by offset-from-origin-min so we can stamp it relative to newMin without aliasing issues
+            // when source and destination AABBs overlap. Two-phase: snapshot, then clear, then place.
+            var rel = pos.subtract(oldMin).immutable();
+            savedStates.put(rel, serverLevel.getBlockState(pos));
+            var be = serverLevel.getBlockEntity(pos);
+            if (be != null) {
+                savedBeNbt.put(rel, be.saveWithFullMetadata(serverLevel.registryAccess()));
+            }
+        }
+
+        var air = net.minecraft.world.level.block.Blocks.AIR.defaultBlockState();
+        for (var pos : net.minecraft.core.BlockPos.betweenClosed(
+            oldAabb.minX(),
+            oldAabb.minY(),
+            oldAabb.minZ(),
+            oldAabb.maxX(),
+            oldAabb.maxY(),
+            oldAabb.maxZ()
+        )) {
+            serverLevel.setBlock(pos.immutable(), air, Block.UPDATE_CLIENTS);
+        }
+
+        for (var entry : savedStates.entrySet()) {
+            var dest = newMin.offset(entry.getKey().getX(), entry.getKey().getY(), entry.getKey().getZ());
+            serverLevel.setBlock(dest, entry.getValue(), Block.UPDATE_CLIENTS);
+        }
+        for (var entry : savedBeNbt.entrySet()) {
+            var dest = newMin.offset(entry.getKey().getX(), entry.getKey().getY(), entry.getKey().getZ());
+            if (serverLevel.getBlockState(dest).is(net.minecraft.world.level.block.Blocks.AIR)) {
+                continue;
+            }
+            var be = serverLevel.getBlockEntity(dest);
+            if (be != null) {
+                be.loadWithComponents(entry.getValue(), serverLevel.registryAccess());
+                be.setChanged();
+            }
+        }
+
+        var sizeX = oldAabb.maxX() - oldAabb.minX();
+        var sizeY = oldAabb.maxY() - oldAabb.minY();
+        var sizeZ = oldAabb.maxZ() - oldAabb.minZ();
+        var newAabb = new net.minecraft.world.level.levelgen.structure.BoundingBox(
+            newMin.getX(),
+            newMin.getY(),
+            newMin.getZ(),
+            newMin.getX() + sizeX,
+            newMin.getY() + sizeY,
+            newMin.getZ() + sizeZ
+        );
+        var updated = new com.blib.mod.common.gameplay.jigsaw.PlacedPiece(
+            piece.id(),
+            piece.templateId(),
+            piece.dimension(),
+            newAabb,
+            piece.anchor().offset(dx, dy, dz),
+            piece.rotation(),
+            piece.mirror(),
+            piece.placedAtTick()
+        );
+        store.remove(piece.id());
+        store.add(updated);
+        com.blib.mod.common.gameplay.jigsaw.PlacedPieceSync.onPieceAdded(serverLevel, updated);
     }
 
     /**

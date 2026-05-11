@@ -63,6 +63,14 @@ public final class EngineMode {
 
         var eye = player.getEyePosition(1.0F);
         session = new EngineSession(eye.x, eye.y, eye.z, player.getYRot(), player.getXRot());
+
+        // Request the server's PlacedPiece set for the current dimension so the client's hover / selection mirror is
+        // populated for the very first frame of engine mode. The reply broadcasts to all engine-mode players, but in
+        // practice this is singleplayer + dev so we don't care about ordering with other clients.
+        com.blib.mod.BLib.MOD.networking()
+            .sendToServer(
+                new com.blib.mod.common.network.packet.C2SRequestPlacedPiecesPayload(player.level().dimension().location())
+            );
     }
 
     /**
@@ -90,6 +98,10 @@ public final class EngineMode {
         // Pending tag-edits from the inspector are also static; clear so an uncommitted overlay doesn't shadow the
         // runtime registry the next time the user enters the engine.
         com.blib.engine.tag.TagStagingCache.clear();
+
+        // Drop the placed-piece mirror so a stale set from this dimension doesn't ghost into the next engine entry
+        // (e.g. after the player travels and re-enters elsewhere). On next entry we re-request.
+        com.blib.engine.jigsaw.ClientPlacedPieceRegistry.clear();
 
         session = null;
     }

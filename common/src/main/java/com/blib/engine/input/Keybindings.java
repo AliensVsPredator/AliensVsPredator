@@ -35,11 +35,11 @@ public final class Keybindings {
 
     public static final Keybinding JIGSAW_ROTATE = key(GLFW.GLFW_KEY_R, "jigsaw.rotate", "Rotate");
 
+    // (Scroll-wheel rotation was removed — scroll trapped the user out of zooming. The R key is the rotation binding.)
+
     public static final Keybinding JIGSAW_MIRROR = key(GLFW.GLFW_KEY_M, "jigsaw.mirror", "Mirror");
 
     public static final Keybinding JIGSAW_CYCLE_MODE = key(GLFW.GLFW_KEY_T, "jigsaw.cycle_mode", "Cycle mode");
-
-    public static final Keybinding JIGSAW_ROTATE_SCROLL = scroll("jigsaw.rotate_scroll", "Rotate");
 
     public static final Keybinding GRID_BYPASS = modifier(Input.MOD_ALT, "jigsaw.grid_bypass", "Bypass grid");
 
@@ -53,7 +53,8 @@ public final class Keybindings {
 
     public static final Keybinding GIZMO_SNAP_INT = modifier(Input.MOD_SHIFT, "gizmo.snap_integer", "Snap integer");
 
-    public static final Keybinding MOVE_BLOCKS_COPY = modifier(Input.MOD_ALT, "gizmo.move_copy", "Copy instead of cut");
+    // (MOVE_BLOCKS_COPY removed — Alt conflicts with the Linux window-manager's alt+drag-to-move. Underlying
+    // BlockSelection.setMoveCopyMode is intact for a future re-bind.)
 
     // ----- Viewport navigation (no piece held, no special mode) -----
 

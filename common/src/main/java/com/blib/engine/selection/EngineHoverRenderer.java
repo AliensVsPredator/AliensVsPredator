@@ -86,10 +86,11 @@ public final class EngineHoverRenderer {
         }
         return switch (target) {
             case EngineHoverProbe.Target.Entity et -> single instanceof EntitySelectable es && es.entity() == et.entity();
-            case EngineHoverProbe.Target.Block bt -> (single instanceof JigsawBlockSelectable js && js.pos().equals(bt.pos()))
+            case EngineHoverProbe.Target.Block bt -> (single instanceof BlockSelectable bs && bs.pos().equals(bt.pos()))
                 || (single instanceof BlockVolumeSelectable && com.blib.engine.blockselection.BlockSelection.cornerA() != null
                     && bt.pos().equals(com.blib.engine.blockselection.BlockSelection.cornerA())
                     && bt.pos().equals(com.blib.engine.blockselection.BlockSelection.cornerB()));
+            case EngineHoverProbe.Target.Piece pt -> single instanceof PlacedJigsawPieceSelectable ps && ps.id().equals(pt.id());
         };
     }
 
@@ -97,6 +98,10 @@ public final class EngineHoverRenderer {
         return switch (target) {
             case EngineHoverProbe.Target.Entity et -> et.entity().getBoundingBox();
             case EngineHoverProbe.Target.Block bt -> new AABB(bt.pos());
+            case EngineHoverProbe.Target.Piece pt -> {
+                var piece = com.blib.engine.jigsaw.ClientPlacedPieceRegistry.get(pt.id());
+                yield piece == null ? null : piece.worldAabb();
+            }
         };
     }
 

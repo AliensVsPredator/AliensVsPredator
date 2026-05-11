@@ -73,10 +73,6 @@ public final class BlockSelectionWireframeRenderer {
             renderSingleBlockHighlight(bs.pos(), poseStack, cameraX, cameraY, cameraZ);
             return;
         }
-        if (single instanceof com.blib.engine.selection.JigsawBlockSelectable js) {
-            renderSingleBlockHighlight(js.pos(), poseStack, cameraX, cameraY, cameraZ);
-            return;
-        }
 
         var a = BlockSelection.cornerA();
         var b = BlockSelection.cornerB();

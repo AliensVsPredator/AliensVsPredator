@@ -1075,10 +1075,6 @@ public final class EngineWorkspaceScreen extends Screen {
                 deleteSingleBlock(bs.pos());
                 return true;
             }
-            if (deleteSel instanceof com.blib.engine.selection.JigsawBlockSelectable jbs) {
-                deleteSingleBlock(jbs.pos());
-                return true;
-            }
             BlockSelectionOps.delete();
             return true;
         }
@@ -2125,6 +2121,11 @@ public final class EngineWorkspaceScreen extends Screen {
             public void onRightClickVolume(double cursorX, double cursorY) {
                 onViewportRightClickVolume(cursorX, cursorY);
             }
+
+            @Override
+            public void onRightClickPiece(java.util.UUID pieceId, double cursorX, double cursorY) {
+                onViewportRightClickPiece(pieceId, cursorX, cursorY);
+            }
         };
     }
 
@@ -2181,6 +2182,58 @@ public final class EngineWorkspaceScreen extends Screen {
         items.add(new DropdownMenu.Item("Copy", () -> com.blib.engine.blockselection.BlockSelectionOps.copy(false)));
         items.add(new DropdownMenu.Item("Paste", () -> com.blib.engine.blockselection.BlockSelectionOps.paste()));
         items.add(new DropdownMenu.Item("Delete", () -> com.blib.engine.blockselection.BlockSelectionOps.delete()));
+        this.openMenu = new DropdownMenu((int) cursorX, (int) cursorY, items);
+    }
+
+    /**
+     * Right-click on a placed jigsaw piece. Mirrors the block-volume context menu so users get the same affordances
+     * (Capture / Cut / Copy / Delete) plus an Open Inspector entry. Capture / Cut / Copy work by promoting the piece
+     * to a block-volume selection covering its AABB and then dispatching the existing
+     * {@link com.blib.engine.blockselection.BlockSelectionOps}; Delete keeps the identity-aware
+     * {@link com.blib.mod.common.network.packet.C2SDeletePlacedPiecePayload} path so the registry entry is removed,
+     * not just the blocks.
+     * <p>
+     * Cut on a piece is implemented as Copy-then-DeletePiece — the existing volume Cut would clear the blocks but leave
+     * the piece record orphaned (a ghost piece outline over empty air); the explicit delete-piece call avoids that.
+     */
+    private void onViewportRightClickPiece(java.util.UUID pieceId, double cursorX, double cursorY) {
+        var items = new java.util.ArrayList<DropdownMenu.Item>();
+        items.add(
+            new DropdownMenu.Item("Open Inspector", () -> {
+                // Mutual exclusion: the volume wireframe must not coexist with a piece selection — the inspector
+                // shows the piece, so the volume outline would be visual noise representing nothing inspectable.
+                // performSelectionAt clears the volume on every single-thing LMB pick; the context-menu path needs
+                // the same call.
+                BlockSelection.clearVolume();
+                SelectionManager.selectSingle(new com.blib.engine.selection.PlacedJigsawPieceSelectable(pieceId));
+            })
+        );
+        items.add(
+            new DropdownMenu.Item("Capture…", () -> {
+                com.blib.engine.selection.PlacedJigsawPieceSelectable.promoteToVolume(pieceId, null);
+                this.captureDialog = new CaptureDialog(() -> this.captureDialog = null);
+            })
+        );
+        items.add(
+            new DropdownMenu.Item("Cut", () -> {
+                com.blib.engine.selection.PlacedJigsawPieceSelectable.promoteToVolume(pieceId, null);
+                com.blib.engine.blockselection.BlockSelectionOps.copy(false);
+                BLib.MOD.networking()
+                    .sendToServer(new com.blib.mod.common.network.packet.C2SDeletePlacedPiecePayload(pieceId));
+            })
+        );
+        items.add(
+            new DropdownMenu.Item("Copy", () -> {
+                com.blib.engine.selection.PlacedJigsawPieceSelectable.promoteToVolume(pieceId, null);
+                com.blib.engine.blockselection.BlockSelectionOps.copy(false);
+            })
+        );
+        items.add(
+            new DropdownMenu.Item("Delete", () -> {
+                BLib.MOD.networking()
+                    .sendToServer(new com.blib.mod.common.network.packet.C2SDeletePlacedPiecePayload(pieceId));
+            })
+        );
         this.openMenu = new DropdownMenu((int) cursorX, (int) cursorY, items);
     }
 

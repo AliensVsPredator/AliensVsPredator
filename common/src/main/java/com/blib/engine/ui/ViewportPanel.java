@@ -26,7 +26,6 @@ import com.blib.engine.selection.BlockSelectable;
 import com.blib.engine.selection.BlockVolumeSelectable;
 import com.blib.engine.selection.EntitySelectable;
 import com.blib.engine.selection.FactionSelectable;
-import com.blib.engine.selection.JigsawBlockSelectable;
 import com.blib.engine.selection.Selectable;
 import com.blib.engine.selection.SelectionManager;
 import com.blib.engine.session.EngineMode;
@@ -73,11 +72,24 @@ public final class ViewportPanel implements Panel {
          * change.
          */
         default void onRightClickVolume(double cursorX, double cursorY) {}
+
+        /**
+         * RMB hover-hit on a placed jigsaw piece. Receives the piece UUID so the menu can wire actions (open inspector,
+         * delete, etc.). Default no-op so existing handlers don't break.
+         */
+        default void onRightClickPiece(java.util.UUID pieceId, double cursorX, double cursorY) {}
     }
 
     private final String title;
 
     private final @Nullable RightClickHandler rightClickHandler;
+
+    /**
+     * Adapter for spawning modal confirms — used by the WARN-policy placement path to ask the user before stamping a
+     * piece onto colliding blocks. Reuses {@link ProjectContentActionHandler} (workspace screen forwards to its
+     * shared {@code ConfirmDialog}) rather than introducing a viewport-specific handler.
+     */
+    private final @Nullable ProjectContentActionHandler confirmHandler;
 
     private int rectX;
 
@@ -144,12 +156,21 @@ public final class ViewportPanel implements Panel {
     private @Nullable Integer claimPaintButton;
 
     public ViewportPanel(String title) {
-        this(title, null);
+        this(title, null, null);
     }
 
     public ViewportPanel(String title, @Nullable RightClickHandler rightClickHandler) {
+        this(title, rightClickHandler, null);
+    }
+
+    public ViewportPanel(
+        String title,
+        @Nullable RightClickHandler rightClickHandler,
+        @Nullable ProjectContentActionHandler confirmHandler
+    ) {
         this.title = title;
         this.rightClickHandler = rightClickHandler;
+        this.confirmHandler = confirmHandler;
     }
 
     @Override
@@ -349,9 +370,10 @@ public final class ViewportPanel implements Panel {
                 } else if (gizmoMode == BlockSelection.GizmoMode.MOVE_BLOCKS) {
                     var moveHit = MoveBlocksGizmo.pickUnderCursorWithDistance(session);
                     if (moveHit != null) {
-                        // Latch Alt at click time for copy-vs-cut. Live-sampling during drag would let a stray Alt
-                        // release flip the operation mid-drag, which is jarring; latching keeps it stable.
-                        MoveBlocksGizmo.beginDrag(moveHit.axis(), session, Screen.hasAltDown());
+                        // Copy-vs-cut used to latch off Alt, but Alt was retired (Linux window-manager conflict).
+                        // Always cuts for now; restoring copy-mode means picking a non-conflicting modifier and
+                        // re-introducing the keybinding.
+                        MoveBlocksGizmo.beginDrag(moveHit.axis(), session, false);
                         return true;
                     }
                 }
@@ -429,28 +451,46 @@ public final class ViewportPanel implements Panel {
                         // Re-run the collision scan at click time rather than reading the renderer's frame state.
                         // The two should agree (both run against the same level state, same resolver result), but
                         // re-scanning gives us "the count as of this exact click" which is the right thing to gate
-                        // BLOCK policy on. Frame state is a render-side cache; trusting it across the click event
+                        // policy decisions on. Frame state is a render-side cache; trusting it across the click event
                         // boundary would be one more invalidation rule to maintain.
                         var mc = net.minecraft.client.Minecraft.getInstance();
-                        if (mc.level != null && JigsawPlacementOptions.collisionPolicy() == JigsawPlacementOptions.CollisionPolicy.BLOCK) {
+                        var policy = JigsawPlacementOptions.collisionPolicy();
+                        var collisionCount = 0;
+                        if (mc.level != null
+                            && (policy == JigsawPlacementOptions.CollisionPolicy.BLOCK
+                                || policy == JigsawPlacementOptions.CollisionPolicy.WARN)) {
                             var snapAnchor = JigsawTool.activeMode() == PlacementMode.JIGSAW_SNAP
                                 ? JigsawWorldRaycast.raycastJigsaw(session)
                                 : null;
-                            var count = CollisionScanner.scan(mc.level, placement, template, snapAnchor);
-                            if (count > 0) {
-                                return true;
-                            }
+                            collisionCount = CollisionScanner.scan(mc.level, placement, template, snapAnchor);
+                        }
+                        if (policy == JigsawPlacementOptions.CollisionPolicy.BLOCK && collisionCount > 0) {
+                            return true;
                         }
 
-                        BLib.MOD.networking()
-                            .sendToServer(
-                                new C2SPlaceJigsawPiecePayload(
-                                    selectedPieceId,
-                                    placement.anchor(),
-                                    placement.rotation().ordinal(),
-                                    placement.mirror().ordinal()
-                                )
-                            );
+                        // Snapshot the placement so the confirm-dialog runnable doesn't read stale fields. The dialog
+                        // is modal — by the time the user confirms, the cursor may have moved and `placement` would
+                        // resolve to a different anchor; we want the click-time decision to stick.
+                        var pieceId = selectedPieceId;
+                        var anchor = placement.anchor();
+                        var rotation = placement.rotation();
+                        var mirror = placement.mirror();
+                        Runnable sendPlace = () -> BLib.MOD.networking()
+                            .sendToServer(new C2SPlaceJigsawPiecePayload(pieceId, anchor, rotation.ordinal(), mirror.ordinal()));
+
+                        if (policy == JigsawPlacementOptions.CollisionPolicy.WARN
+                            && collisionCount > 0
+                            && confirmHandler != null) {
+                            var msg = "Placing this piece will overwrite "
+                                + collisionCount
+                                + " existing block"
+                                + (collisionCount == 1 ? "" : "s")
+                                + ". Continue?";
+                            confirmHandler.confirm("Overwrite Blocks", msg, "Place", true, sendPlace);
+                            return true;
+                        }
+
+                        sendPlace.run();
                     }
                 }
                 return true;
@@ -508,12 +548,11 @@ public final class ViewportPanel implements Panel {
             this.pressMouseY = mouseY;
             this.pressShiftDown = shiftHeld;
 
-            // Pending-click promotion is only valid when the candidate is a generic block (BlockSelectable) or an
-            // empty miss with a block under the cursor — entities and jigsaws aren't promotable on a drag-nudge.
-            // Preserves the feel of "I clicked an entity, then nudged the mouse a few pixels before releasing".
-            // Shift extend-from-previous below bypasses this filter and promotes anyway.
+            // Pending-click promotion is only valid when the candidate is a block — entities aren't promotable on a
+            // drag-nudge. Preserves the feel of "I clicked an entity, then nudged the mouse a few pixels before
+            // releasing". Shift extend-from-previous below bypasses this filter and promotes anyway.
             var sel = SelectionManager.current().single();
-            this.pendingClickActive = !(sel instanceof EntitySelectable || sel instanceof JigsawBlockSelectable);
+            this.pendingClickActive = !(sel instanceof EntitySelectable);
 
             // Shift+LMB extends the marquee: cornerA = the previous single-block / volume anchor, cornerB = the
             // just-clicked block. Lets the user "select between two clicks" without dragging. When there's no
@@ -531,25 +570,36 @@ public final class ViewportPanel implements Panel {
         }
 
         if (button == 1) {
-            // RMB opens a context menu — AABB volume takes priority, then entity selection (ray-pick first so the
-            // menu sees the entity under the cursor). Undo lives on Ctrl+Z; routing it through RMB was removed because
-            // it conflicted with the context-menu affordance whenever a piece happened to be held.
+            // Place mode is a non-selection workflow — the user is actively placing pieces, so RMB must not open a
+            // context menu (which would select a block / piece / entity, defeating the placement focus). Consume the
+            // click so it doesn't fall through to anything else.
+            if (JigsawPieceSelection.selectedId() != null) {
+                return true;
+            }
+            // RMB opens a context menu — never mutates the selection. The hover probe (refreshed every render) tells
+            // us what's under the cursor, so we can dispatch to the right menu without a fresh raycast or a selectSingle
+            // call. The previous design's volume-re-select / performSelectionAt-on-RMB pattern was confusing — RMB on
+            // a generic block silently swapped the inspector to that block, even though no context menu opened.
             if (rightClickHandler != null) {
-                // AABB right-click takes priority over entity / jigsaw selection. Re-select the volume so the
-                // inspector mirrors what the user is operating on, then open the volume context menu.
+                // AABB volume takes priority — RMB anywhere inside the current selection's AABB opens its menu,
+                // independent of the hover probe (the volume might extend behind another hit).
                 var aabbOpt = BlockSelection.aabb();
                 if (aabbOpt.isPresent() && rmbHitsAabb(session, aabbOpt.get())) {
-                    SelectionManager.selectSingle(new BlockVolumeSelectable());
                     rightClickHandler.onRightClickVolume(mouseX, mouseY);
                     return true;
                 }
-                EngineNavigation.performSelectionAt(session, relX, relY);
-                var selection = SelectionManager.current().single();
-                LivingEntity selectedEntity = null;
-                if (selection instanceof EntitySelectable es) {
-                    selectedEntity = es.entity();
+                var hover = com.blib.engine.selection.EngineHoverProbe.current();
+                if (hover instanceof com.blib.engine.selection.EngineHoverProbe.Target.Piece pt) {
+                    rightClickHandler.onRightClickPiece(pt.id(), mouseX, mouseY);
+                    return true;
                 }
-                rightClickHandler.onRightClick(selectedEntity, mouseX, mouseY);
+                if (hover instanceof com.blib.engine.selection.EngineHoverProbe.Target.Entity et) {
+                    rightClickHandler.onRightClick(et.entity(), mouseX, mouseY);
+                    return true;
+                }
+                // Block or no hit — no block context menu today, so this dismisses any open menu (the handler treats
+                // a null entity as "close").
+                rightClickHandler.onRightClick(null, mouseX, mouseY);
             }
             return true;
         }
@@ -760,17 +810,9 @@ public final class ViewportPanel implements Panel {
             return false;
         }
 
-        // While a placement piece is selected, scroll cycles rotation instead of zooming. This is the dominant
-        // pattern in authoring tools (Blender, Unreal placement mode, etc.) and keeps the user's hand on the mouse
-        // for the full place-rotate-place loop. Camera zoom is still available via Ctrl+MMB drag, so scroll-rotate
-        // doesn't trap the user out of zooming.
-        if (JigsawPieceSelection.hasSelection()) {
-            // Positive scrollY = scroll up = rotate clockwise (matches the convention from the world preview's
-            // initial card rendering, where scroll-up is "rotate right").
-            JigsawPieceSelection.cycleRotation(scrollY > 0 ? 1 : -1);
-            return true;
-        }
-
+        // Scroll always zooms — the previous scroll-cycles-rotation behavior conflicted with the dominant user need
+        // (zooming) and trapped the user out of camera adjustment while a piece was held. Rotation is on the R key
+        // (Keybindings.JIGSAW_ROTATE) for users who need it.
         EngineNavigation.applyZoomScroll(session, scrollY);
         return true;
     }
@@ -780,18 +822,15 @@ public final class ViewportPanel implements Panel {
     }
 
     /**
-     * Compute the marquee anchor for a Shift+LMB click. Extends from the previous single-block (BlockSelectable /
-     * JigsawBlockSelectable) or the prior volume's cornerA so the user can "select between two clicks": click block
-     * A → A inspected, Shift+click block B → volume from A to B. Subsequent Shift+clicks keep the anchor and
-     * replace the second corner. Returns {@code fallback} (typically the just-clicked block) when there's no
-     * meaningful previous anchor — gives a fresh 1-block marquee from which the user can drag.
+     * Compute the marquee anchor for a Shift+LMB click. Extends from the previous single block or the prior volume's
+     * cornerA so the user can "select between two clicks": click block A → A inspected, Shift+click block B → volume
+     * from A to B. Subsequent Shift+clicks keep the anchor and replace the second corner. Returns {@code fallback}
+     * (typically the just-clicked block) when there's no meaningful previous anchor — gives a fresh 1-block marquee
+     * from which the user can drag.
      */
     private static BlockPos anchorForShiftExtend(@Nullable Selectable previous, @Nullable BlockPos previousCornerA, BlockPos fallback) {
         if (previous instanceof BlockSelectable bs) {
             return bs.pos();
-        }
-        if (previous instanceof JigsawBlockSelectable js) {
-            return js.pos();
         }
         if (previous instanceof BlockVolumeSelectable && previousCornerA != null) {
             return previousCornerA;

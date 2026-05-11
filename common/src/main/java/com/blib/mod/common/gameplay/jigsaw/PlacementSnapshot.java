@@ -8,8 +8,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Captured pre-placement state of every cell in a placement's AABB. Holds enough information to fully restore the
@@ -19,6 +21,11 @@ import java.util.Map;
  * {@code dimension} is captured because the global history queue spans dimensions; on undo we filter for matches before
  * popping. {@code timestamp} is for inspector display ("placed 12s ago"); not load-bearing for the restore logic
  * itself.
+ * <p>
+ * {@code pieceId} links this snapshot back to a {@link PlacedPiece} record in the level's {@link PlacedPieceStore}.
+ * Set for snapshots generated from a jigsaw piece placement; on undo, the caller removes the piece from the store and
+ * broadcasts the removal to clients. {@code null} when the snapshot came from a non-piece source (raw block restore,
+ * capture system, etc.) — in which case the piece registry is left untouched.
  */
 @ApiStatus.Internal
 public record PlacementSnapshot(
@@ -27,5 +34,6 @@ public record PlacementSnapshot(
     Map<BlockPos, BlockState> states,
     Map<BlockPos, CompoundTag> blockEntityNbt,
     ResourceLocation templateId,
-    long timestamp
+    long timestamp,
+    @Nullable UUID pieceId
 ) {}

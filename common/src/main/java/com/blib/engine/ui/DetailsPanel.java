@@ -36,7 +36,6 @@ import com.blib.engine.selection.BlockSelectable;
 import com.blib.engine.selection.BlockVolumeSelectable;
 import com.blib.engine.selection.EntitySelectable;
 import com.blib.engine.selection.FactionSelectable;
-import com.blib.engine.selection.JigsawBlockSelectable;
 import com.blib.engine.selection.Selectable;
 import com.blib.engine.selection.SelectionManager;
 import com.blib.engine.selection.TagSelectable;
@@ -342,6 +341,24 @@ public final class DetailsPanel implements Panel {
 
     private int factionPaintToggleH;
 
+    /** Hit-rect for the "Delete" button in the placed-jigsaw-piece view. {@code 0} width => no button this frame. */
+    private int pieceDeleteBtnX;
+
+    private int pieceDeleteBtnY;
+
+    private int pieceDeleteBtnW;
+
+    private int pieceDeleteBtnH;
+
+    /** Hit-rect for the "Switch to Volume Edit" button in the placed-jigsaw-piece view. */
+    private int pieceSwitchBtnX;
+
+    private int pieceSwitchBtnY;
+
+    private int pieceSwitchBtnW;
+
+    private int pieceSwitchBtnH;
+
     /**
      * Position of the block currently shown in the inspector. When this changes we reset all input contents to the new
      * block's BE state, so a selection swap doesn't leak the previous block's pending edits.
@@ -357,9 +374,10 @@ public final class DetailsPanel implements Panel {
 
     /**
      * Selectable captured during render so the per-field commit callbacks (which run from the keyboard event path, not
-     * the render path) know which block they're committing against.
+     * the render path) know which block they're committing against. Holds any {@link BlockSelectable} — the jigsaw
+     * widgets are only built / committed when the block at {@code currentBlock.pos()} is actually a jigsaw.
      */
-    private @Nullable JigsawBlockSelectable currentBlock;
+    private @Nullable BlockSelectable currentBlock;
 
     /**
      * Tooltip computed during render — set when the cursor hovers a help-icon "?" next to a label or section header.
@@ -498,6 +516,8 @@ public final class DetailsPanel implements Panel {
         // on a stale rect don't fire after the selection changes to a non-faction.
         factionSwatchSize = 0;
         factionPaintToggleW = 0;
+        pieceDeleteBtnW = 0;
+        pieceSwitchBtnW = 0;
         tagRemoveHits.clear();
         tagRequiredToggleHits.clear();
 
@@ -519,11 +539,8 @@ public final class DetailsPanel implements Panel {
                     renderEntityView(graphics, font, x, rowY, width, mouseX, mouseY, (EntitySelectable) single);
                 }
                 case BLOCK -> {
-                    if (single instanceof JigsawBlockSelectable jigsawBlock) {
-                        renderBlockView(graphics, font, x, rowY, width, mouseX, mouseY, jigsawBlock);
-                    } else if (single instanceof BlockSelectable genericBlock) {
-                        currentBlock = null;
-                        renderGenericBlockView(graphics, font, x, rowY, width, mouseX, mouseY, genericBlock);
+                    if (single instanceof BlockSelectable bs) {
+                        renderGenericBlockView(graphics, font, x, rowY, width, mouseX, mouseY, bs);
                     } else {
                         currentBlock = null;
                         renderGenericView(graphics, font, x, rowY, width, single);
@@ -532,6 +549,14 @@ public final class DetailsPanel implements Panel {
                 case BLOCK_VOLUME -> {
                     currentBlock = null;
                     renderBlockVolumeView(graphics, font, x, rowY, width, mouseX, mouseY);
+                }
+                case JIGSAW_PIECE -> {
+                    currentBlock = null;
+                    if (single instanceof com.blib.engine.selection.PlacedJigsawPieceSelectable pjs) {
+                        renderPlacedJigsawPieceView(graphics, font, x, rowY, width, mouseX, mouseY, pjs);
+                    } else {
+                        renderGenericView(graphics, font, x, rowY, width, single);
+                    }
                 }
                 case FACTION -> {
                     currentBlock = null;
@@ -552,28 +577,31 @@ public final class DetailsPanel implements Panel {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         var single = SelectionManager.current().single();
-        if (single instanceof JigsawBlockSelectable) {
-            if (nameSelect.mouseClicked(mouseX, mouseY, button)) {
-                return true;
-            }
-            if (targetSelect.mouseClicked(mouseX, mouseY, button)) {
-                return true;
-            }
-            if (poolSelect.mouseClicked(mouseX, mouseY, button)) {
-                return true;
-            }
-            if (finalStateSelect.mouseClicked(mouseX, mouseY, button)) {
-                return true;
-            }
-            if (jointSelector.mouseClicked(mouseX, mouseY, button)) {
-                // Joint commits on click rather than on Enter — the segmented control has no commit-keystroke
-                // equivalent. selectedIndex() now reflects the user's choice.
-                commitField(BlockField.JOINT, null);
-                return true;
-            }
-            return false;
-        }
         if (single instanceof BlockSelectable bs) {
+            // Jigsaw widgets are only live when the block at this position is actually a jigsaw — they're rendered as
+            // an extra section at the top of the unified block inspector, so they hit-test before the generic
+            // property/tag widgets.
+            var state = bs.state();
+            if (state != null && state.is(net.minecraft.world.level.block.Blocks.JIGSAW)) {
+                if (nameSelect.mouseClicked(mouseX, mouseY, button)) {
+                    return true;
+                }
+                if (targetSelect.mouseClicked(mouseX, mouseY, button)) {
+                    return true;
+                }
+                if (poolSelect.mouseClicked(mouseX, mouseY, button)) {
+                    return true;
+                }
+                if (finalStateSelect.mouseClicked(mouseX, mouseY, button)) {
+                    return true;
+                }
+                if (jointSelector.mouseClicked(mouseX, mouseY, button)) {
+                    // Joint commits on click rather than on Enter — the segmented control has no commit-keystroke
+                    // equivalent. selectedIndex() now reflects the user's choice.
+                    commitField(BlockField.JOINT, null);
+                    return true;
+                }
+            }
             // Forward to per-property widgets. Each widget's own onToggle / onSelect lambda handles the packet send,
             // so we just need to dispatch hit tests here. Selects open their popup on a button-row click; the popup
             // itself is screen-managed and consumes future clicks until dismissed.
@@ -625,6 +653,62 @@ public final class DetailsPanel implements Panel {
             volumeSizeX.mouseClicked(mouseX, mouseY, button);
             volumeSizeY.mouseClicked(mouseX, mouseY, button);
             volumeSizeZ.mouseClicked(mouseX, mouseY, button);
+            return false;
+        }
+        if (single instanceof com.blib.engine.selection.PlacedJigsawPieceSelectable pjs) {
+            // Delete button — same C2SDeletePlacedPiece path as the in-world context menu.
+            if (
+                button == 0
+                    && pieceDeleteBtnW > 0
+                    && mouseX >= pieceDeleteBtnX
+                    && mouseX < pieceDeleteBtnX + pieceDeleteBtnW
+                    && mouseY >= pieceDeleteBtnY
+                    && mouseY < pieceDeleteBtnY + pieceDeleteBtnH
+            ) {
+                BLib.MOD.networking()
+                    .sendToServer(new com.blib.mod.common.network.packet.C2SDeletePlacedPiecePayload(pjs.id()));
+                return true;
+            }
+            // Explicit "Switch to Volume Edit" — promote without seeding a gizmo so the volume editor opens with
+            // whatever mode the user last used there.
+            if (
+                button == 0
+                    && pieceSwitchBtnW > 0
+                    && mouseX >= pieceSwitchBtnX
+                    && mouseX < pieceSwitchBtnX + pieceSwitchBtnW
+                    && mouseY >= pieceSwitchBtnY
+                    && mouseY < pieceSwitchBtnY + pieceSwitchBtnH
+            ) {
+                com.blib.engine.selection.PlacedJigsawPieceSelectable.promoteToVolume(pjs.id(), null);
+                return true;
+            }
+            // Tool segmented control — clicking any button auto-promotes to volume and seeds the chosen gizmo. Move
+            // wouldn't strictly need a promote (move via the gizmo could be made identity-preserving), but v1 polish
+            // routes all gizmo-driven flows through the volume editor; identity-preserving moves go through the
+            // Position inputs instead.
+            if (volumeToolControl.mouseClicked(mouseX, mouseY, button)) {
+                var seed = com.blib.engine.blockselection.BlockSelection.GizmoMode
+                    .values()[volumeToolControl.selectedIndex()];
+                com.blib.engine.selection.PlacedJigsawPieceSelectable.promoteToVolume(pjs.id(), seed);
+                return true;
+            }
+            // Size inputs — by user preference, touching any size input auto-switches to volume mode. We forward the
+            // click after promoting so the input still takes focus (the rect is identical between piece and volume
+            // views), letting the user type immediately without a second click.
+            if (volumeSizeX.mouseClicked(mouseX, mouseY, button)
+                || volumeSizeY.mouseClicked(mouseX, mouseY, button)
+                || volumeSizeZ.mouseClicked(mouseX, mouseY, button)) {
+                com.blib.engine.selection.PlacedJigsawPieceSelectable.promoteToVolume(
+                    pjs.id(),
+                    com.blib.engine.blockselection.BlockSelection.GizmoMode.SCALE_VOLUME
+                );
+                return true;
+            }
+            // Position inputs — stay in piece mode; commits go through commitVolumePosition which detects the piece
+            // selection and dispatches a C2SMovePlacedPiece instead of the volume's setBounds.
+            volumePosX.mouseClicked(mouseX, mouseY, button);
+            volumePosY.mouseClicked(mouseX, mouseY, button);
+            volumePosZ.mouseClicked(mouseX, mouseY, button);
             return false;
         }
         if (single instanceof EntitySelectable) {
@@ -1190,7 +1274,16 @@ public final class DetailsPanel implements Panel {
      * and reload all widgets to the new block's BE state. The Name row gets a special-case warning treatment when its
      * Name isn't Targeted by any other jigsaw in templates or the loaded world.
      */
-    private void renderBlockView(
+    /**
+     * Render the jigsaw-specific inspector sections (Identity / Joint / Final State) for the given block. Returns the
+     * next-row {@code y}. Called from {@link #renderGenericBlockView} only when the block at {@code selectable.pos()}
+     * is actually a jigsaw — the jigsaw widgets share state across the inspector lifetime, so an inspector that
+     * switched off-jigsaw and back keeps coherent values.
+     * <p>
+     * No-ops (returns {@code y}) when the live block-entity snapshot can't be read (chunk unloaded). Callers should
+     * still render the rest of the generic block view in that case.
+     */
+    private int renderJigsawSections(
         GuiGraphics graphics,
         Font font,
         int x,
@@ -1198,15 +1291,15 @@ public final class DetailsPanel implements Panel {
         int width,
         int mouseX,
         int mouseY,
-        JigsawBlockSelectable selectable
+        BlockSelectable selectable
     ) {
-        currentBlock = selectable;
-        var snap = selectable.snapshot();
+        var mc = Minecraft.getInstance();
+        if (mc.level == null) {
+            return y;
+        }
+        var snap = com.blib.engine.jigsaw.placement.JigsawBlockTarget.snapshot(mc.level, selectable.pos());
         if (snap == null) {
-            var rowY = drawSectionHeader(graphics, font, x, y, width, "Jigsaw Block");
-            rowY += CONTENT_PADDING / 2;
-            drawNote(graphics, font, x, rowY, "(unloaded)");
-            return;
+            return y;
         }
 
         var pos = selectable.pos();
@@ -1248,6 +1341,8 @@ public final class DetailsPanel implements Panel {
         rowY = drawSectionHeaderWithHelp(graphics, font, x, rowY, width, "Final State", HELP_FINAL_STATE, mouseX, mouseY);
         rowY += CONTENT_PADDING / 2;
         rowY = drawSelectRow(graphics, font, x, rowY, width, "Block", null, finalStateSelect, mouseX, mouseY);
+        rowY += ROW_GAP;
+        return rowY;
     }
 
     /**
@@ -1267,10 +1362,10 @@ public final class DetailsPanel implements Panel {
     }
 
     /**
-     * Inspector view for a generic single-block {@link BlockSelectable}. Sections: read-only Position + Block id,
-     * editable Block-state Properties (one segmented control per property), and a Block-Entity type label when the
-     * target has an attached BE. Per-BE structured forms (chest items, sign text, banner patterns, …) are a Phase 2
-     * follow-up — for now the BE section only confirms a BE exists and identifies its type.
+     * Unified single-block inspector. Always renders the generic sections (Position, Block id, Properties, Tags,
+     * Block Entity); when the block at {@code bs.pos()} is a jigsaw, an additional jigsaw section (Identity / Joint /
+     * Final State) is rendered at the top — jigsaw blocks are just blocks with extra editable NBT, so they get every
+     * widget a regular block does plus their own.
      */
     private void renderGenericBlockView(
         GuiGraphics graphics,
@@ -1282,6 +1377,7 @@ public final class DetailsPanel implements Panel {
         int mouseY,
         BlockSelectable bs
     ) {
+        currentBlock = bs;
         var state = bs.state();
         if (state == null) {
             // Chunk unloaded between selection and render — drop the cached widgets so a re-load reseeds them with
@@ -1301,6 +1397,12 @@ public final class DetailsPanel implements Panel {
         rebuildGenericBlockPropertyWidgets(state, pos, block);
 
         var rowY = y;
+        // Jigsaw sections at the top — these are the most-edited fields for a jigsaw block (Pool / Target / Joint),
+        // so they sit above the universal block sections. For non-jigsaw blocks the helper is a no-op.
+        if (state.is(net.minecraft.world.level.block.Blocks.JIGSAW)) {
+            rowY = renderJigsawSections(graphics, font, x, rowY, width, mouseX, mouseY, bs);
+        }
+
         rowY = drawSectionHeader(graphics, font, x, rowY, width, "Position");
         rowY += CONTENT_PADDING / 2;
         rowY = drawRow(graphics, font, x, rowY, "X", String.valueOf(pos.getX()));
@@ -1708,6 +1810,159 @@ public final class DetailsPanel implements Panel {
      * picking the active gizmo, position XYZ inputs for the AABB's min corner, and size XYZ inputs for the volume
      * dimensions. The tool toolbar mirrors the same control that used to live in {@code BlockSelectionPanel}'s header.
      */
+    /**
+     * Inspector view for a {@link com.blib.engine.selection.PlacedJigsawPieceSelectable}. Mirrors the block-volume
+     * inspector (tool segmented control, position inputs, size inputs) so users get the familiar shape, plus a Piece
+     * metadata section (template id, rotation/mirror, placed-time) and explicit Switch to Volume Edit / Delete buttons.
+     * <p>
+     * Editability rules — by user preference, only operations that <em>preserve</em> the piece's identity stay in
+     * piece mode:
+     * <ul>
+     * <li><b>Move tool / Position inputs</b>: legal piece edits. Move commits via {@code C2SMovePlacedPiecePayload}
+     * (server picks up the blocks, places them at the new min, updates the registry). Position-input commits go
+     * through the same payload.</li>
+     * <li><b>Translate / Scale tool buttons, Size inputs</b>: not valid for a piece (translating the AABB without
+     * moving blocks, or scaling the region, breaks the piece's identity). Clicking any of these auto-promotes to a
+     * block-volume selection over the piece's AABB and seeds the volume's gizmo mode accordingly — the user lands
+     * directly in the volume editor with their intended tool already armed.</li>
+     * <li><b>Switch to Volume Edit</b>: explicit promote button at the bottom. Same as a tool-button auto-switch but
+     * without seeding a gizmo (uses the volume's last-chosen mode).</li>
+     * </ul>
+     * The widgets reused are the volume ones ({@code volumeToolControl}, {@code volumePos*}, {@code volumeSize*})
+     * because we want byte-identical visual layout — separate widget instances would risk drift across the two views.
+     * Click and commit handlers in {@link #mouseClicked} dispatch by current selection type, so the same widget
+     * behaves differently in volume vs piece mode.
+     */
+    private void renderPlacedJigsawPieceView(
+        GuiGraphics graphics,
+        Font font,
+        int x,
+        int y,
+        int width,
+        int mouseX,
+        int mouseY,
+        com.blib.engine.selection.PlacedJigsawPieceSelectable selectable
+    ) {
+        var piece = com.blib.engine.jigsaw.ClientPlacedPieceRegistry.get(selectable.id());
+        if (piece == null) {
+            drawNote(graphics, font, x, y, "Piece is no longer present.");
+            return;
+        }
+
+        var rowY = y;
+
+        // Tool — same segmented control as the volume view. In piece mode the selected index isn't tied to
+        // BlockSelection.gizmoMode (the piece doesn't have a gizmo mode); default the visible state to Move so the
+        // user can see at a glance which op is identity-preserving for a piece.
+        rowY = drawSectionHeader(graphics, font, x, rowY, width, "Tool");
+        rowY += CONTENT_PADDING / 2;
+        var toolBarX = x + CONTENT_PADDING;
+        var toolBarW = Math.max(SegmentedControl.HEIGHT * 3, width - 2 * CONTENT_PADDING);
+        volumeToolControl.setSelectedIndex(com.blib.engine.blockselection.BlockSelection.GizmoMode.MOVE_BLOCKS.ordinal());
+        volumeToolControl.render(graphics, toolBarX, rowY, toolBarW, mouseX, mouseY);
+        rowY += SegmentedControl.HEIGHT + CONTENT_PADDING;
+
+        // Sync the input fields from the piece's AABB so external changes (move commit, etc.) reflect immediately.
+        syncVolumeInputsFromPiece(piece, false);
+
+        rowY = drawSectionHeader(graphics, font, x, rowY, width, "Position");
+        rowY += CONTENT_PADDING / 2;
+        rowY = renderVolumeXyzRow(graphics, font, x, rowY, width, volumePosX, volumePosY, volumePosZ, mouseX, mouseY);
+
+        rowY = drawSectionHeader(graphics, font, x, rowY, width, "Size");
+        rowY += CONTENT_PADDING / 2;
+        rowY = renderVolumeXyzRow(graphics, font, x, rowY, width, volumeSizeX, volumeSizeY, volumeSizeZ, mouseX, mouseY);
+
+        var aabb = piece.aabb();
+        var sx = aabb.maxX() - aabb.minX() + 1;
+        var sy = aabb.maxY() - aabb.minY() + 1;
+        var sz = aabb.maxZ() - aabb.minZ() + 1;
+        rowY = drawNote(graphics, font, x, rowY, "= " + ((long) sx * sy * sz) + " blocks");
+        rowY += CONTENT_PADDING / 2;
+
+        // Piece metadata — non-AABB fields (template id, rotation, mirror, placed-time) live below the AABB controls
+        // so the editing-relevant inputs stay near the top of the panel.
+        rowY = drawSectionHeader(graphics, font, x, rowY, width, "Piece");
+        rowY += CONTENT_PADDING / 2;
+        rowY = drawRow(graphics, font, x, rowY, "Template", piece.templateId().toString());
+        rowY = drawRow(graphics, font, x, rowY, "Rotation", piece.rotation().name());
+        rowY = drawRow(graphics, font, x, rowY, "Mirror", piece.mirror().name());
+        var mc = net.minecraft.client.Minecraft.getInstance();
+        var nowTick = mc.level == null ? piece.placedAtTick() : mc.level.getGameTime();
+        var ticksAgo = Math.max(0, nowTick - piece.placedAtTick());
+        rowY = drawRow(graphics, font, x, rowY, "Placed", (ticksAgo / 20) + "s ago");
+
+        rowY += CONTENT_PADDING / 2;
+        rowY = drawSectionHeader(graphics, font, x, rowY, width, "Actions");
+        rowY += CONTENT_PADDING / 2;
+
+        // Two-button row: Switch to Volume Edit + Delete. Switch is the neutral promote (no gizmo seeded); Delete keeps
+        // the danger styling. Both rects are stored so mouseClicked can hit-test without recomputing layout.
+        var switchLabel = "Switch to Volume Edit";
+        var switchW = font.width(switchLabel) + 12;
+        var btnH = TextInput.HEIGHT;
+        var switchX = x + CONTENT_PADDING;
+        var switchHovered = mouseX >= switchX && mouseX < switchX + switchW && mouseY >= rowY && mouseY < rowY + btnH;
+        var switchBg = switchHovered ? 0xFF22222C : 0xFF14141A;
+        graphics.fill(switchX, rowY, switchX + switchW, rowY + btnH, switchBg);
+        graphics.fill(switchX, rowY, switchX + switchW, rowY + 1, 0xFF353540);
+        graphics.fill(switchX, rowY + btnH - 1, switchX + switchW, rowY + btnH, 0xFF353540);
+        graphics.fill(switchX, rowY, switchX + 1, rowY + btnH, 0xFF353540);
+        graphics.fill(switchX + switchW - 1, rowY, switchX + switchW, rowY + btnH, 0xFF353540);
+        graphics.drawString(
+            font,
+            Component.literal(switchLabel),
+            switchX + (switchW - font.width(switchLabel)) / 2,
+            rowY + (btnH - font.lineHeight + 2) / 2,
+            switchHovered ? 0xFFFFFFFF : 0xFFD0D0D0,
+            false
+        );
+        pieceSwitchBtnX = switchX;
+        pieceSwitchBtnY = rowY;
+        pieceSwitchBtnW = switchW;
+        pieceSwitchBtnH = btnH;
+
+        var deleteLabel = "Delete";
+        var deleteW = font.width(deleteLabel) + 12;
+        var deleteX = switchX + switchW + 6;
+        var deleteHovered = mouseX >= deleteX && mouseX < deleteX + deleteW && mouseY >= rowY && mouseY < rowY + btnH;
+        var deleteBg = deleteHovered ? 0xFF3A1F1F : 0xFF14141A;
+        graphics.fill(deleteX, rowY, deleteX + deleteW, rowY + btnH, deleteBg);
+        graphics.fill(deleteX, rowY, deleteX + deleteW, rowY + 1, 0xFF6E2A2A);
+        graphics.fill(deleteX, rowY + btnH - 1, deleteX + deleteW, rowY + btnH, 0xFF6E2A2A);
+        graphics.fill(deleteX, rowY, deleteX + 1, rowY + btnH, 0xFF6E2A2A);
+        graphics.fill(deleteX + deleteW - 1, rowY, deleteX + deleteW, rowY + btnH, 0xFF6E2A2A);
+        graphics.drawString(
+            font,
+            Component.literal(deleteLabel),
+            deleteX + (deleteW - font.width(deleteLabel)) / 2,
+            rowY + (btnH - font.lineHeight + 2) / 2,
+            deleteHovered ? 0xFFFFB0B0 : 0xFFE6A0A0,
+            false
+        );
+        pieceDeleteBtnX = deleteX;
+        pieceDeleteBtnY = rowY;
+        pieceDeleteBtnW = deleteW;
+        pieceDeleteBtnH = btnH;
+    }
+
+    /** Sync the volume widgets' content from a placed piece's AABB. Mirror of {@link #syncVolumeInputsFromAabb}. */
+    private void syncVolumeInputsFromPiece(com.blib.mod.common.gameplay.jigsaw.PlacedPiece piece, boolean force) {
+        var aabb = piece.aabb();
+        var minX = aabb.minX();
+        var minY = aabb.minY();
+        var minZ = aabb.minZ();
+        var sizeX = aabb.maxX() - aabb.minX() + 1;
+        var sizeY = aabb.maxY() - aabb.minY() + 1;
+        var sizeZ = aabb.maxZ() - aabb.minZ() + 1;
+        syncVolumeInput(volumePosX, String.valueOf(minX), force);
+        syncVolumeInput(volumePosY, String.valueOf(minY), force);
+        syncVolumeInput(volumePosZ, String.valueOf(minZ), force);
+        syncVolumeInput(volumeSizeX, String.valueOf(sizeX), force);
+        syncVolumeInput(volumeSizeY, String.valueOf(sizeY), force);
+        syncVolumeInput(volumeSizeZ, String.valueOf(sizeZ), force);
+    }
+
     private void renderBlockVolumeView(GuiGraphics graphics, Font font, int x, int y, int width, int mouseX, int mouseY) {
         var rowY = y;
 
@@ -1765,9 +2020,38 @@ public final class DetailsPanel implements Panel {
     }
 
     private void commitVolumePosition(int axis, String text) {
+        // Dispatch by selection type: piece commits go through the identity-preserving move handler; volume commits
+        // go through the original setBounds path. The widgets are shared between views, so the commit callback has to
+        // resolve which mode is active right now.
+        var single = SelectionManager.current().single();
         var parsed = parseInt(text);
         if (parsed == null) {
-            syncVolumeInputsFromAabb(true);
+            if (single instanceof com.blib.engine.selection.PlacedJigsawPieceSelectable pjs) {
+                var piece = com.blib.engine.jigsaw.ClientPlacedPieceRegistry.get(pjs.id());
+                if (piece != null) {
+                    syncVolumeInputsFromPiece(piece, true);
+                }
+            } else {
+                syncVolumeInputsFromAabb(true);
+            }
+            return;
+        }
+        if (single instanceof com.blib.engine.selection.PlacedJigsawPieceSelectable pjs) {
+            var piece = com.blib.engine.jigsaw.ClientPlacedPieceRegistry.get(pjs.id());
+            if (piece == null) {
+                return;
+            }
+            var aabb = piece.aabb();
+            var newMinX = axis == 0 ? parsed : aabb.minX();
+            var newMinY = axis == 1 ? parsed : aabb.minY();
+            var newMinZ = axis == 2 ? parsed : aabb.minZ();
+            BLib.MOD.networking()
+                .sendToServer(
+                    new com.blib.mod.common.network.packet.C2SMovePlacedPiecePayload(
+                        pjs.id(),
+                        new BlockPos(newMinX, newMinY, newMinZ)
+                    )
+                );
             return;
         }
         var aabb = BlockSelection.aabb();
@@ -2386,7 +2670,11 @@ public final class DetailsPanel implements Panel {
         if (block == null) {
             return;
         }
-        var snap = block.snapshot();
+        var mc = Minecraft.getInstance();
+        if (mc.level == null) {
+            return;
+        }
+        var snap = com.blib.engine.jigsaw.placement.JigsawBlockTarget.snapshot(mc.level, block.pos());
         if (snap == null) {
             return;
         }

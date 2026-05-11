@@ -7,11 +7,13 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.UUID;
 
 /**
  * Bounded server-side undo stack for jigsaw placements. Captures pre-placement world state in
@@ -38,8 +40,16 @@ public final class PlacementHistory {
     /**
      * Capture the pre-placement state of every cell in {@code aabb} and push it onto the stack. Run this BEFORE the
      * actual {@code placeInWorld} call so the snapshot reflects the original world state, not the post-placement one.
+     * <p>
+     * Pass a non-null {@code pieceId} when the placement also created a {@link PlacedPiece} record — on undo, the
+     * caller removes the piece from the registry so its identity disappears alongside its blocks.
      */
-    public static synchronized void push(ServerLevel level, BoundingBox aabb, ResourceLocation templateId) {
+    public static synchronized void push(
+        ServerLevel level,
+        BoundingBox aabb,
+        ResourceLocation templateId,
+        @Nullable UUID pieceId
+    ) {
         var states = new HashMap<BlockPos, net.minecraft.world.level.block.state.BlockState>();
         var blockEntityNbt = new HashMap<BlockPos, net.minecraft.nbt.CompoundTag>();
 
@@ -52,7 +62,15 @@ public final class PlacementHistory {
             }
         }
 
-        var snapshot = new PlacementSnapshot(level.dimension(), aabb, states, blockEntityNbt, templateId, System.currentTimeMillis());
+        var snapshot = new PlacementSnapshot(
+            level.dimension(),
+            aabb,
+            states,
+            blockEntityNbt,
+            templateId,
+            System.currentTimeMillis(),
+            pieceId
+        );
         stack.addFirst(snapshot);
         while (stack.size() > MAX_ENTRIES) {
             stack.removeLast();
@@ -60,20 +78,21 @@ public final class PlacementHistory {
     }
 
     /**
-     * Pop and restore the most recent snapshot whose {@code dimension} matches {@code level}. Returns {@code true} if a
-     * snapshot was found and applied, {@code false} otherwise (empty stack, or no entries matching this dimension).
+     * Pop and restore the most recent snapshot whose {@code dimension} matches {@code level}. Returns the popped
+     * snapshot so callers can inspect side-effect metadata (e.g. {@link PlacementSnapshot#pieceId}); {@code null} when
+     * the stack had no entries for this dimension.
      */
-    public static synchronized boolean undo(ServerLevel level) {
+    public static synchronized @Nullable PlacementSnapshot undo(ServerLevel level) {
         Iterator<PlacementSnapshot> iter = stack.iterator();
         while (iter.hasNext()) {
             var snapshot = iter.next();
             if (snapshot.dimension().equals(level.dimension())) {
                 iter.remove();
                 restore(level, snapshot);
-                return true;
+                return snapshot;
             }
         }
-        return false;
+        return null;
     }
 
     /** Clear the stack — invoked when the integrated server stops so a fresh session starts clean. */

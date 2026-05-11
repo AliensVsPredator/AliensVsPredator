@@ -194,7 +194,6 @@ public final class StatusBarPanel implements Panel {
 
         if (JigsawPieceSelection.hasSelection()) {
             hints.add(Keybindings.JIGSAW_PLACE);
-            hints.add(Keybindings.JIGSAW_ROTATE_SCROLL);
             hints.add(Keybindings.JIGSAW_ROTATE);
             hints.add(Keybindings.JIGSAW_MIRROR);
             var modeLabel = "Cycle mode (" + JigsawTool.activeMode().displayName() + ")";
@@ -219,7 +218,6 @@ public final class StatusBarPanel implements Panel {
             hints.add(Keybindings.GIZMO_TRANSLATE);
             hints.add(Keybindings.GIZMO_SCALE);
             hints.add(Keybindings.GIZMO_MOVE_BLOCKS);
-            hints.add(Keybindings.MOVE_BLOCKS_COPY);
             hints.add(Keybindings.COPY);
             hints.add(Keybindings.CUT);
             hints.add(Keybindings.PASTE);

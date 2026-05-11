@@ -76,6 +76,13 @@ public final class CaptureDialog {
 
     private final TextInput nameInput;
 
+    /**
+     * Capture mode the user had set <em>before</em> opening this dialog. Restored on Cancel / Esc so a tentative
+     * mode-toggle inside the dialog doesn't leak out and recolor every future block-volume wireframe. Successful
+     * Capture intentionally keeps the new mode — the user committed, so their new preference sticks.
+     */
+    private final CaptureMode initialMode;
+
     private @Nullable String statusText;
 
     private boolean statusSuccess;
@@ -88,6 +95,7 @@ public final class CaptureDialog {
 
     public CaptureDialog(Runnable onClose) {
         this.onClose = onClose;
+        this.initialMode = BlockSelection.mode();
         this.modeControl = new SegmentedControl(List.of("General", "Jigsaw"), BlockSelection.mode().ordinal());
         this.nameInput = new TextInput("capture name (lowercase, '_' or '-')");
     }
@@ -207,7 +215,7 @@ public final class CaptureDialog {
             return true;
         }
         if (cancelRect != null && cancelRect.contains(mouseX, mouseY)) {
-            onClose.run();
+            cancel();
             return true;
         }
         // Outside-clicks are consumed but no-op so accidental misses don't dismiss the dialog.
@@ -216,7 +224,7 @@ public final class CaptureDialog {
 
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-            onClose.run();
+            cancel();
             return true;
         }
         var focused = TextInput.getFocused();
@@ -224,6 +232,16 @@ public final class CaptureDialog {
             return focused.keyPressed(keyCode, scanCode, modifiers);
         }
         return false;
+    }
+
+    /**
+     * Dismiss without committing — restore any tentative mode-toggle done inside the dialog so global capture mode
+     * (read by {@link com.blib.engine.blockselection.BlockSelectionWireframeRenderer}) reflects the user's actual
+     * preference, not a discarded experiment.
+     */
+    private void cancel() {
+        BlockSelection.setMode(initialMode);
+        onClose.run();
     }
 
     private boolean canCapture() {

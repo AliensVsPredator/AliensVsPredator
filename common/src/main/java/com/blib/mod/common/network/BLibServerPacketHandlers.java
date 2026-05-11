@@ -14,6 +14,7 @@ import com.blib.mod.common.network.packet.C2SCreateProjectPayload;
 import com.blib.mod.common.network.packet.C2SCreateTagPayload;
 import com.blib.mod.common.network.packet.C2SDeleteCapturePayload;
 import com.blib.mod.common.network.packet.C2SDeleteFactionPayload;
+import com.blib.mod.common.network.packet.C2SDeletePlacedPiecePayload;
 import com.blib.mod.common.network.packet.C2SDeletePoolPayload;
 import com.blib.mod.common.network.packet.C2SDeleteProjectPayload;
 import com.blib.mod.common.network.packet.C2SDeleteSelectionPayload;
@@ -23,6 +24,7 @@ import com.blib.mod.common.network.packet.C2SListCapturesPayload;
 import com.blib.mod.common.network.packet.C2SListPoolsPayload;
 import com.blib.mod.common.network.packet.C2SListProjectsPayload;
 import com.blib.mod.common.network.packet.C2SListStructuresPayload;
+import com.blib.mod.common.network.packet.C2SMovePlacedPiecePayload;
 import com.blib.mod.common.network.packet.C2SMoveSelectionPayload;
 import com.blib.mod.common.network.packet.C2SOpenProjectPayload;
 import com.blib.mod.common.network.packet.C2SPasteFromClipboardPayload;
@@ -38,6 +40,7 @@ import com.blib.mod.common.network.packet.C2SRequestEntityFactionsPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionDirectoryPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionInspectionPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionMembersPayload;
+import com.blib.mod.common.network.packet.C2SRequestPlacedPiecesPayload;
 import com.blib.mod.common.network.packet.C2SRequestPoolDraftPayload;
 import com.blib.mod.common.network.packet.C2SRequestRegistryEntriesPayload;
 import com.blib.mod.common.network.packet.C2SRequestTagCatalogPayload;
@@ -66,12 +69,15 @@ import com.blib.mod.common.network.packet.S2CGOAPDebugPayload;
 import com.blib.mod.common.network.packet.S2CMoveSelectionResultPayload;
 import com.blib.mod.common.network.packet.S2CPathfindingNavDebugPayload;
 import com.blib.mod.common.network.packet.S2CPathfindingSearchDebugPayload;
+import com.blib.mod.common.network.packet.S2CAddPlacedPiecePayload;
 import com.blib.mod.common.network.packet.S2CPoolDraftPayload;
 import com.blib.mod.common.network.packet.S2CPoolListPayload;
 import com.blib.mod.common.network.packet.S2CProjectListPayload;
 import com.blib.mod.common.network.packet.S2CProjectOpResultPayload;
 import com.blib.mod.common.network.packet.S2CRegistryEntriesPayload;
+import com.blib.mod.common.network.packet.S2CRemovePlacedPiecePayload;
 import com.blib.mod.common.network.packet.S2CStructureListPayload;
+import com.blib.mod.common.network.packet.S2CSyncPlacedPiecesPayload;
 import com.blib.mod.common.network.packet.S2CTagCatalogPayload;
 import com.blib.mod.common.network.packet.S2CTagDraftPayload;
 
@@ -467,6 +473,27 @@ public class BLibServerPacketHandlers {
                 BLibServerListener::handleCreateTag
             )
         );
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromClient<>(
+                C2SRequestPlacedPiecesPayload.TYPE,
+                C2SRequestPlacedPiecesPayload.CODEC,
+                BLibServerListener::handleRequestPlacedPieces
+            )
+        );
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromClient<>(
+                C2SDeletePlacedPiecePayload.TYPE,
+                C2SDeletePlacedPiecePayload.CODEC,
+                BLibServerListener::handleDeletePlacedPiece
+            )
+        );
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromClient<>(
+                C2SMovePlacedPiecePayload.TYPE,
+                C2SMovePlacedPiecePayload.CODEC,
+                BLibServerListener::handleMovePlacedPiece
+            )
+        );
     }
 
     private static void registerClientBoundPacketHandlers() {
@@ -631,6 +658,27 @@ public class BLibServerPacketHandlers {
                 S2CRegistryEntriesPayload.TYPE,
                 S2CRegistryEntriesPayload.CODEC,
                 BLibClientListener::handleRegistryEntries
+            )
+        );
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromServer<>(
+                S2CAddPlacedPiecePayload.TYPE,
+                S2CAddPlacedPiecePayload.CODEC,
+                BLibClientListener::handleAddPlacedPiece
+            )
+        );
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromServer<>(
+                S2CRemovePlacedPiecePayload.TYPE,
+                S2CRemovePlacedPiecePayload.CODEC,
+                BLibClientListener::handleRemovePlacedPiece
+            )
+        );
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromServer<>(
+                S2CSyncPlacedPiecesPayload.TYPE,
+                S2CSyncPlacedPiecesPayload.CODEC,
+                BLibClientListener::handleSyncPlacedPieces
             )
         );
     }

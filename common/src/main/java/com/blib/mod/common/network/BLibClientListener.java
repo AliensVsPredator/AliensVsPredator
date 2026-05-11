@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.blib.api.common.data_sync.v1.model.DataUser;
 import com.blib.engine.blockselection.BlockSelection;
 import com.blib.engine.blockselection.BlockSelectionClipboard;
+import com.blib.engine.jigsaw.ClientPlacedPieceRegistry;
 import com.blib.engine.jigsaw.ProjectDraftCache;
 import com.blib.engine.selection.SelectionManager;
 import com.blib.engine.selection.TagSelectable;
@@ -29,6 +30,7 @@ import com.blib.mod.common.network.packet.S2CClipboardStatusPayload;
 import com.blib.mod.common.network.packet.S2CEntityDataSyncPayload;
 import com.blib.mod.common.network.packet.S2CFactionMetadataSyncPayload;
 import com.blib.mod.common.network.packet.S2CGOAPDebugPayload;
+import com.blib.mod.common.network.packet.S2CAddPlacedPiecePayload;
 import com.blib.mod.common.network.packet.S2CMoveSelectionResultPayload;
 import com.blib.mod.common.network.packet.S2CPathfindingNavDebugPayload;
 import com.blib.mod.common.network.packet.S2CPathfindingSearchDebugPayload;
@@ -36,6 +38,8 @@ import com.blib.mod.common.network.packet.S2CPoolDraftPayload;
 import com.blib.mod.common.network.packet.S2CProjectListPayload;
 import com.blib.mod.common.network.packet.S2CProjectOpResultPayload;
 import com.blib.mod.common.network.packet.S2CRegistryEntriesPayload;
+import com.blib.mod.common.network.packet.S2CRemovePlacedPiecePayload;
+import com.blib.mod.common.network.packet.S2CSyncPlacedPiecesPayload;
 import com.blib.mod.common.network.packet.S2CTagCatalogPayload;
 import com.blib.mod.common.network.packet.S2CTagDraftPayload;
 
@@ -76,6 +80,23 @@ public final class BLibClientListener {
 
     public static void handlePathfindingNavDebug(S2CPathfindingNavDebugPayload payload, Player player) {
         PathfindingNavDebugHUD.INSTANCE.update(payload);
+    }
+
+    /**
+     * Full snapshot of placed pieces for the current dimension — replaces, not merges. Sent in response to a client's
+     * engine-mode-entry request. Pieces for a different dimension shouldn't appear in {@code payload.pieces()} because
+     * the server filters, but we don't double-check here; the hover raycast filters by dimension on every frame anyway.
+     */
+    public static void handleSyncPlacedPieces(S2CSyncPlacedPiecesPayload payload, Player player) {
+        ClientPlacedPieceRegistry.replaceAll(payload.pieces());
+    }
+
+    public static void handleAddPlacedPiece(S2CAddPlacedPiecePayload payload, Player player) {
+        ClientPlacedPieceRegistry.add(payload.piece());
+    }
+
+    public static void handleRemovePlacedPiece(S2CRemovePlacedPiecePayload payload, Player player) {
+        ClientPlacedPieceRegistry.remove(payload.id());
     }
 
     /**

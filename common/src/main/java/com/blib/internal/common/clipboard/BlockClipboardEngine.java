@@ -87,7 +87,7 @@ public final class BlockClipboardEngine {
             for (var x = 0; x < sx; x++) {
                 for (var y = 0; y < sy; y++) {
                     for (var z = 0; z < sz; z++) {
-                        dim.setBlock(new BlockPos(minX + x, minY + y, minZ + z), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+                        clearBlockAt(dim, new BlockPos(minX + x, minY + y, minZ + z));
                     }
                 }
             }
@@ -149,11 +149,30 @@ public final class BlockClipboardEngine {
         for (var x = 0; x < sx; x++) {
             for (var y = 0; y < sy; y++) {
                 for (var z = 0; z < sz; z++) {
-                    dim.setBlock(new BlockPos(minX + x, minY + y, minZ + z), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+                    clearBlockAt(dim, new BlockPos(minX + x, minY + y, minZ + z));
                 }
             }
         }
 
         return OpResult.success((int) Math.min(volume, Integer.MAX_VALUE));
+    }
+
+    /**
+     * Delete the block at {@code pos} without dropping its block-entity contents. Container blocks (chest, hopper,
+     * dispenser, brewing stand, furnace, barrel, shulker, decorated pot, …) override {@code onRemove} to call
+     * {@link net.minecraft.world.Containers#dropContents(Level, BlockPos, net.minecraft.world.Container)
+     * Containers.dropContents}, which spills the inventory. Engine-level deletes are an authoring action, not a
+     * gameplay one — the user wants the volume gone, not turned into a pile of items.
+     * <p>
+     * Removing the block entity first sidesteps the drop: the chest's {@code onRemove} runs against an already-empty
+     * slot ({@code level.getBlockEntity(pos)} returns null), the {@code instanceof Container} check fails, and the
+     * drop path is skipped entirely. Also handles {@code RandomizableContainerBlockEntity} (e.g. unopened dungeon
+     * chests) correctly — with no BE, there's nothing to unpack the loot table.
+     */
+    private static void clearBlockAt(Level level, BlockPos pos) {
+        if (level.getBlockEntity(pos) != null) {
+            level.removeBlockEntity(pos);
+        }
+        level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
     }
 }

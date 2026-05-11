@@ -10,12 +10,13 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.engine.blockselection.BlockSelection;
+import com.blib.engine.jigsaw.ClientPlacedPieceRegistry;
 import com.blib.engine.jigsaw.JigsawPlacementCursor;
 import com.blib.engine.selection.BlockSelectable;
 import com.blib.engine.selection.EntitySelectable;
-import com.blib.engine.selection.JigsawBlockSelectable;
+import com.blib.engine.selection.PlacedJigsawPieceSelectable;
 import com.blib.engine.selection.SelectionManager;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.client.gui.screens.Screen;
 
 /**
  * Camera-control math for engine mode. Driven directly from workspace mouse events: the {@code ViewportPanel} calls the
@@ -183,9 +184,8 @@ public final class EngineNavigation {
     /**
      * Ray-pick the closest selectable along the cursor-through-camera ray. Tries both a {@link LivingEntity} hit and a
      * generic block hit (via {@link JigsawPlacementCursor#clipFromCursor}); whichever is closer to the camera wins.
-     * Jigsaw blocks get the specialized {@link JigsawBlockSelectable} (its inspector exposes pool / target / joint);
-     * every other block becomes a generic {@link BlockSelectable} so the universal inspector can show block-state
-     * properties. On miss, clears any existing selection.
+     * Every block — jigsaw or otherwise — becomes a {@link BlockSelectable}; the inspector decides whether to render
+     * jigsaw-specific extras based on the live {@code BlockState}. On miss, clears any existing selection.
      * <p>
      * {@code (relX, relY)} are in {@code [0, 1]} relative to the rendered viewport (full-screen render — the viewport
      * panel just downsamples this, so screen-relative and panel-relative cursor positions map to the same world ray).
@@ -234,6 +234,11 @@ public final class EngineNavigation {
         // just jigsaws — the post-check below dispatches jigsaw vs. generic.
         var blockHit = JigsawPlacementCursor.clipFromCursor(session);
 
+        // Placed-piece raycast — gated on the Ctrl modifier so the user can drill through a piece to pick the block
+        // inside it. Mirrors EngineHoverProbe; Ctrl (not Alt) because the Linux window manager already owns Alt+drag.
+        var ctrlHeld = Screen.hasControlDown();
+        var pieceHit = ctrlHeld ? null : ClientPlacedPieceRegistry.raycast(origin, rayDir, EngineInteractionRange.MAX);
+
         var entityDistSq = (entityHit != null && entityHit.getEntity() instanceof LivingEntity)
             ? entityHit.getLocation().distanceToSqr(origin)
             : Double.POSITIVE_INFINITY;
@@ -243,7 +248,7 @@ public final class EngineNavigation {
             ? Vec3.atCenterOf(blockHit.getBlockPos()).distanceToSqr(origin)
             : Double.POSITIVE_INFINITY;
 
-        if (entityDistSq == Double.POSITIVE_INFINITY && blockDistSq == Double.POSITIVE_INFINITY) {
+        if (entityDistSq == Double.POSITIVE_INFINITY && blockDistSq == Double.POSITIVE_INFINITY && pieceHit == null) {
             // Sky miss: drop the active selection but leave any staged volume corners in place — the user might want
             // to defocus the inspector without abandoning the volume they marqueed earlier.
             SelectionManager.clear();
@@ -251,20 +256,21 @@ public final class EngineNavigation {
         }
 
         // Picking a single-thing target replaces any staged block volume — the volume's wireframe, gizmos, and RMB
-        // context menu must not coexist with a single-block / entity / jigsaw inspection (the two selection modes are
-        // mutually exclusive from the user's POV). User preferences (gizmo mode, capture mode) survive so a follow-up
-        // re-marquee picks up where they left off.
+        // context menu must not coexist with a single-block / entity / jigsaw / piece inspection (the selection modes
+        // are mutually exclusive from the user's POV). User preferences (gizmo mode, capture mode) survive so a
+        // follow-up re-marquee picks up where they left off.
         BlockSelection.clearVolume();
 
         if (entityDistSq <= blockDistSq) {
             SelectionManager.selectSingle(new EntitySelectable((LivingEntity) entityHit.getEntity()));
+        } else if (pieceHit != null) {
+            // Piece beats any block (jigsaw or generic) when the user is hovering inside the piece's AABB. Alt was
+            // the fallthrough that skipped the piece raycast above; here we know pieceHit is real and the click
+            // wasn't an Alt-drill. Jigsaw blocks aren't given priority over pieces — they're just blocks with a
+            // richer inspector view.
+            SelectionManager.selectSingle(new PlacedJigsawPieceSelectable(pieceHit.pieceId()));
         } else {
-            var pos = blockHit.getBlockPos();
-            if (mc.level.getBlockState(pos).is(Blocks.JIGSAW)) {
-                SelectionManager.selectSingle(new JigsawBlockSelectable(pos));
-            } else {
-                SelectionManager.selectSingle(new BlockSelectable(pos));
-            }
+            SelectionManager.selectSingle(new BlockSelectable(blockHit.getBlockPos()));
         }
     }
 
