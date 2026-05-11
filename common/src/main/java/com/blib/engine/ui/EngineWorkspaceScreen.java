@@ -242,7 +242,7 @@ public final class EngineWorkspaceScreen extends Screen {
         return new PanelRegistry.Context(
             buildViewportRightClickHandler(),
             this::onViewportRightClick,
-            this::openContentDeleteConfirm
+            this::openContentConfirm
         );
     }
 
@@ -251,8 +251,8 @@ public final class EngineWorkspaceScreen extends Screen {
      * dialog. Wired into both {@link #panelCtx} and the Window-menu's "Reopen Project Contents" so a panel created via
      * either path gets the same modal behavior.
      */
-    private void openContentDeleteConfirm(String title, String message, Runnable onConfirm) {
-        this.confirmDialog = new ConfirmDialog(title, message, "Delete", "Cancel", true, onConfirm, () -> {});
+    private void openContentConfirm(String title, String message, String confirmLabel, boolean destructive, Runnable onConfirm) {
+        this.confirmDialog = new ConfirmDialog(title, message, confirmLabel, "Cancel", destructive, onConfirm, () -> {});
     }
 
     /**

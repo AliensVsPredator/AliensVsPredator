@@ -11,8 +11,16 @@ import org.jetbrains.annotations.ApiStatus;
  * delete packet.
  */
 @ApiStatus.Internal
-@FunctionalInterface
 public interface ProjectContentActionHandler {
 
-    void confirmDelete(String title, String message, Runnable onConfirm);
+    /**
+     * General confirm dialog. {@code confirmLabel} is shown on the confirm button; {@code destructive} flips the
+     * confirm-button text to the red-error palette for irreversible actions.
+     */
+    void confirm(String title, String message, String confirmLabel, boolean destructive, Runnable onConfirm);
+
+    /** Convenience for the common destructive-delete case — confirm button labeled "Delete", red text. */
+    default void confirmDelete(String title, String message, Runnable onConfirm) {
+        confirm(title, message, "Delete", true, onConfirm);
+    }
 }

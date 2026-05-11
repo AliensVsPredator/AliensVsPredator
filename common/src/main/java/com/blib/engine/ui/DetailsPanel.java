@@ -2239,11 +2239,13 @@ public final class DetailsPanel implements Panel {
                     // tag and uses ONLY the project's values. Roll the toggle back visually until the dialog confirms,
                     // so a stray click doesn't quietly nuke upstream entries.
                     tagReplaceToggle.setSelectedIndex(indexBefore);
-                    actionHandler.confirmDelete(
+                    actionHandler.confirm(
                         "Switch to Replace mode?",
                         "Replace mode wipes vanilla and other packs' contributions to this tag — only entries in your "
                             + "project's JSON will end up in the merged tag. Vanilla entries you didn't explicitly add "
                             + "will disappear from this tag after Reload Project.",
+                        "Switch to Replace",
+                        true,
                         () -> {
                             tagReplaceToggle.setSelectedIndex(1);
                             commitSetTagReplace(tag, true);
