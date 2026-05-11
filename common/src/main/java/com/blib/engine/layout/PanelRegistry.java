@@ -89,7 +89,7 @@ public final class PanelRegistry {
     static {
         register(VIEWPORT, ViewportPanel.class, ctx -> new ViewportPanel("Viewport", ctx.viewportRightClickHandler()));
         register(OUTLINER, OutlinerPanel.class, ctx -> new OutlinerPanel(ctx.entityContextMenuHandler()));
-        register(DETAILS, DetailsPanel.class, ctx -> new DetailsPanel());
+        register(DETAILS, DetailsPanel.class, ctx -> new DetailsPanel(ctx.projectContentActionHandler()));
         register(CONTENT_BROWSER, ContentBrowserPanel.class, ctx -> new ContentBrowserPanel(ctx.projectContentActionHandler()));
         register(PIECE_PALETTE, PiecePalettePanel.class, ctx -> new PiecePalettePanel());
         register(POOL_EDITOR, PoolEditorPanel.class, ctx -> new PoolEditorPanel());

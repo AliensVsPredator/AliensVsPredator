@@ -68,6 +68,16 @@ import com.blib.mod.common.network.packet.TagEntryDraft;
 @ApiStatus.Internal
 public final class DetailsPanel implements Panel {
 
+    private final @Nullable ProjectContentActionHandler actionHandler;
+
+    public DetailsPanel() {
+        this(null);
+    }
+
+    public DetailsPanel(@Nullable ProjectContentActionHandler actionHandler) {
+        this.actionHandler = actionHandler;
+    }
+
     private static final int BACKGROUND_COLOR = 0xFF18181C;
 
     private static final int SECTION_HEADER_BG_COLOR = 0xFF26262C;
@@ -2223,7 +2233,25 @@ public final class DetailsPanel implements Panel {
         var indexBefore = tagReplaceToggle.selectedIndex();
         if (tagReplaceToggle.mouseClicked(mouseX, mouseY, button)) {
             if (tagReplaceToggle.selectedIndex() != indexBefore) {
-                commitSetTagReplace(tag, tagReplaceToggle.selectedIndex() == 1);
+                var nextIsReplace = tagReplaceToggle.selectedIndex() == 1;
+                if (nextIsReplace && actionHandler != null) {
+                    // Switching to Replace is destructive — wipes vanilla / mod / other-pack contributions to this
+                    // tag and uses ONLY the project's values. Roll the toggle back visually until the dialog confirms,
+                    // so a stray click doesn't quietly nuke upstream entries.
+                    tagReplaceToggle.setSelectedIndex(indexBefore);
+                    actionHandler.confirmDelete(
+                        "Switch to Replace mode?",
+                        "Replace mode wipes vanilla and other packs' contributions to this tag — only entries in your "
+                            + "project's JSON will end up in the merged tag. Vanilla entries you didn't explicitly add "
+                            + "will disappear from this tag after Reload Project.",
+                        () -> {
+                            tagReplaceToggle.setSelectedIndex(1);
+                            commitSetTagReplace(tag, true);
+                        }
+                    );
+                } else {
+                    commitSetTagReplace(tag, nextIsReplace);
+                }
             }
             return true;
         }

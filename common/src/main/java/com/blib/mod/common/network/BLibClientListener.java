@@ -9,15 +9,19 @@ import com.blib.api.common.data_sync.v1.model.DataUser;
 import com.blib.engine.blockselection.BlockSelection;
 import com.blib.engine.blockselection.BlockSelectionClipboard;
 import com.blib.engine.jigsaw.ProjectDraftCache;
+import com.blib.engine.selection.SelectionManager;
+import com.blib.engine.selection.TagSelectable;
 import com.blib.engine.session.ProjectSession;
 import com.blib.engine.tag.RegistryEntriesCache;
 import com.blib.engine.tag.TagCatalogCache;
 import com.blib.engine.tag.TagDraftCache;
 import com.blib.internal.client.faction.ClientFactionCache;
 import com.blib.internal.client.territory.ClientTerritoryCache;
+import com.blib.mod.BLib;
 import com.blib.mod.client.render.debug.PathfindingNavDebugHUD;
 import com.blib.mod.client.render.debug.PathfindingSearchDebugRenderer;
 import com.blib.mod.client.render.goap.GOAPDebugHUD;
+import com.blib.mod.common.network.packet.C2SRequestTagDraftPayload;
 import com.blib.mod.common.network.packet.ProjectOp;
 import com.blib.mod.common.network.packet.S2CCaptureListPayload;
 import com.blib.mod.common.network.packet.S2CChunkClaimsSyncPayload;
@@ -96,6 +100,15 @@ public final class BLibClientListener {
         if (op == ProjectOp.RELOAD && payload.success()) {
             ProjectDraftCache.clear();
             TagDraftCache.clear();
+            // The inspector's tag-view drift-detect only re-fetches on (registryKey, tagId) changes, not on cache
+            // invalidation — so without an explicit refetch here, the inspector renders blank for the currently-
+            // selected tag until the user clicks a different tag and back. Kick a fresh request immediately so the
+            // post-reload state lands in the cache before the inspector's next render.
+            var single = SelectionManager.current().single();
+            if (single instanceof TagSelectable ts) {
+                BLib.MOD.networking()
+                    .sendToServer(new C2SRequestTagDraftPayload(ProjectSession.activeProjectName(), ts.registryKey(), ts.tagId()));
+            }
         }
         // CAPTURE results go to BlockSelection so the Capture Panel can pick them up next render — the picker's
         // callback channel is for project create/delete/open/reload, and the panel is its own consumer.
