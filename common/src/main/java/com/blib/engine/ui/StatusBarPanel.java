@@ -9,13 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.blib.engine.blockselection.BlockSelection;
-import com.blib.engine.gizmo.BLibGizmoState;
 import com.blib.engine.input.Keybinding;
 import com.blib.engine.input.Keybindings;
 import com.blib.engine.jigsaw.JigsawPieceSelection;
 import com.blib.engine.jigsaw.placement.JigsawPlacementFrameState;
 import com.blib.engine.jigsaw.placement.JigsawTool;
 import com.blib.engine.jigsaw.placement.PlacementMode;
+import com.blib.engine.layout.LayoutCatalog;
 import com.blib.engine.selection.BlockVolumeSelectable;
 import com.blib.engine.selection.EntitySelectable;
 import com.blib.engine.selection.FactionSelectable;
@@ -31,9 +31,9 @@ import com.blib.engine.territory.ClaimPaintTool;
  * <li><b>Left:</b> context-sensitive control hints, pulled from {@link Keybindings}. Cascade: paint mode active →
  * jigsaw piece held → selection-based → default viewport navigation. Truncates with "…" if the workspace is too narrow
  * to fit every hint before the state region.</li>
- * <li><b>Right:</b> state indicators — ENGINE on/off, GIZMO mode, tool MODE, PROJECT name, conditional PICKING state,
- * conditional placement-detail readout (piece id + rotation + mirror + collision count when a piece is held). Packed
- * left-to-right, right-aligned as a group.</li>
+ * <li><b>Right:</b> state indicators — PROJECT name, LAYOUT name, tool MODE, conditional PICKING state, conditional
+ * placement-detail readout (piece id + rotation + mirror + collision count when a piece is held). Packed left-to-right,
+ * right-aligned as a group.</li>
  * </ul>
  */
 @ApiStatus.Internal
@@ -105,10 +105,14 @@ public final class StatusBarPanel implements Panel {
     private List<StateSegment> collectStateSegments(Font font, int width) {
         var segments = new ArrayList<StateSegment>();
 
-        var engineActive = EngineMode.get().isActive();
-        segments.add(new StateSegment(engineActive ? "ENGINE: ON" : "ENGINE: OFF", engineActive ? ACCENT_COLOR : LABEL_COLOR));
+        var projectName = ProjectSession.activeProjectName();
+        var projectLabel = projectName.isEmpty() ? "PROJECT: (none)" : "PROJECT: " + projectName;
+        segments.add(new StateSegment(projectLabel, projectName.isEmpty() ? LABEL_COLOR : ACCENT_COLOR));
 
-        segments.add(new StateSegment("GIZMO: " + BLibGizmoState.mode().name(), VALUE_COLOR));
+        var layoutId = EngineWorkspaceScreen.activeLayoutId();
+        var layoutDoc = LayoutCatalog.get(layoutId);
+        var layoutLabel = "LAYOUT: " + (layoutDoc != null ? layoutDoc.displayName() : layoutId);
+        segments.add(new StateSegment(layoutLabel, VALUE_COLOR));
 
         // Tool-mode chip: SELECT (default arrow / context-menu / entity-pick) or PLACE (jigsaw piece on cursor).
         // Currently derived from JigsawPieceSelection — a future explicit tool system will swap this for a stored
@@ -117,10 +121,6 @@ public final class StatusBarPanel implements Panel {
         var session = EngineMode.get().session();
         var toolMode = session != null ? session.toolMode() : ToolMode.SELECT;
         segments.add(new StateSegment("MODE: " + toolMode.name(), toolMode == ToolMode.PLACE ? ACCENT_COLOR : VALUE_COLOR));
-
-        var projectName = ProjectSession.activeProjectName();
-        var projectLabel = projectName.isEmpty() ? "PROJECT: (none)" : "PROJECT: " + projectName;
-        segments.add(new StateSegment(projectLabel, projectName.isEmpty() ? LABEL_COLOR : ACCENT_COLOR));
 
         var picking = BlockSelection.picking();
         if (picking != BlockSelection.PickingState.NONE) {

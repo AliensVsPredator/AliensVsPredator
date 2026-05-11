@@ -168,6 +168,11 @@ public final class EngineWorkspaceScreen extends Screen {
      */
     private static String activeLayoutId = LayoutTemplate.DEFAULT.id();
 
+    /** Resolved id of the layout currently shown in the workspace. Read by status-bar / picker UI for display. */
+    public static String activeLayoutId() {
+        return activeLayoutId;
+    }
+
     public EngineWorkspaceScreen() {
         super(Component.literal("BLib Engine"));
 

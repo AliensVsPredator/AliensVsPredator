@@ -24,14 +24,9 @@ import com.blib.api.common.faction.v1.ClaimVisibility;
 import com.blib.api.common.faction.v1.ProtectionMode;
 import com.blib.engine.blockselection.BlockSelection;
 import com.blib.engine.entityselection.EntityGizmoMode;
-import com.blib.engine.gizmo.BLibGizmoState;
 import com.blib.engine.jigsaw.JigsawPieceLibrary;
-import com.blib.engine.jigsaw.JigsawPieceSelection;
 import com.blib.engine.jigsaw.JigsawPoolLibrary;
-import com.blib.engine.jigsaw.placement.JigsawPlacementFrameState;
-import com.blib.engine.jigsaw.placement.JigsawPlacementOptions;
 import com.blib.engine.jigsaw.placement.JigsawTemplateScanner;
-import com.blib.engine.jigsaw.placement.JigsawTool;
 import com.blib.engine.selection.BlockVolumeSelectable;
 import com.blib.engine.selection.EntitySelectable;
 import com.blib.engine.selection.FactionSelectable;
@@ -39,7 +34,6 @@ import com.blib.engine.selection.JigsawBlockSelectable;
 import com.blib.engine.selection.Selectable;
 import com.blib.engine.selection.SelectionManager;
 import com.blib.engine.selection.TagSelectable;
-import com.blib.engine.session.EngineMode;
 import com.blib.engine.session.ProjectSession;
 import com.blib.engine.tag.RegistryEntriesCache;
 import com.blib.engine.tag.TagDraftCache;
@@ -48,8 +42,6 @@ import com.blib.internal.client.faction.ClientFactionInspectionCache;
 import com.blib.internal.client.territory.ClientTerritoryCache;
 import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.C2SAddTagEntryPayload;
-import com.blib.mod.common.network.packet.C2SDeleteCapturePayload;
-import com.blib.mod.common.network.packet.C2SListCapturesPayload;
 import com.blib.mod.common.network.packet.C2SReloadProjectPayload;
 import com.blib.mod.common.network.packet.C2SRemoveTagEntryPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionInspectionPayload;
@@ -368,20 +360,6 @@ public final class DetailsPanel implements Panel {
 
     private long lastOrphanCheckMs;
 
-    /** Last project we requested a captures list for. Used to refetch when the active project changes. */
-    private @Nullable String lastRequestedProject;
-
-    /**
-     * Hit-test rects for the captures list's per-row delete buttons; populated each render, consumed in mouseClicked.
-     */
-    private final java.util.List<CaptureRect> captureDeleteRects = new java.util.ArrayList<>();
-
-    /**
-     * Capture names matching {@link #captureDeleteRects} by index — the row-i delete fires
-     * {@code captureRenderedNames[i]}.
-     */
-    private final java.util.List<String> captureRenderedNames = new java.util.ArrayList<>();
-
     // ── Tag inspector view (engaged when SelectionManager.current() is a TagSelectable) ──
 
     /** Replace toggle: index 0 = Merge (replace=false), index 1 = Replace (replace=true). */
@@ -433,11 +411,7 @@ public final class DetailsPanel implements Panel {
     }
 
     @Override
-    public void onShown() {
-        // Refresh the captures list when the inspector opens — it's the home for the captures list now that the
-        // dedicated Selection panel is gone, and the user expects to see fresh disk state on each open.
-        requestCaptureList();
-    }
+    public void onShown() {}
 
     @Override
     public @Nullable Component tooltipText() {
@@ -470,17 +444,6 @@ public final class DetailsPanel implements Panel {
 
         if (single == null) {
             currentBlock = null;
-            // Drain capture-result so the list refreshes after a successful Capture op fires from the dialog.
-            var captureResult = BlockSelection.consumePendingCaptureResult();
-            if (captureResult != null) {
-                requestCaptureList();
-            }
-            // Re-fetch the captures list when the active project changes — the inspector is now the captures-list
-            // surface and it shouldn't display stale entries from the previous project.
-            var activeProject = ProjectSession.activeProjectName();
-            if (!activeProject.isEmpty() && !activeProject.equals(lastRequestedProject)) {
-                requestCaptureList();
-            }
             renderToolStateView(graphics, font, x, rowY, width, mouseX, mouseY);
         } else {
             switch (single.type()) {
@@ -680,15 +643,6 @@ public final class DetailsPanel implements Panel {
             }
             return false;
         }
-        // Tool-state view — captures list delete buttons.
-        if (single == null && button == 0) {
-            for (var i = 0; i < captureDeleteRects.size() && i < captureRenderedNames.size(); i++) {
-                if (captureDeleteRects.get(i).contains(mouseX, mouseY)) {
-                    requestDeleteCapture(captureRenderedNames.get(i));
-                    return true;
-                }
-            }
-        }
         return false;
     }
 
@@ -715,116 +669,16 @@ public final class DetailsPanel implements Panel {
     }
 
     /**
-     * Default view when nothing is selected: shows the tool's current state across engine + gizmo + jigsaw placement
-     * subsystems. Mirrors the spec's "show something useful when nothing is selected — global tool settings or a hint
-     * message" requirement (§3.3).
+     * Default view when nothing is selected. The previous version dumped engine / gizmo / placement / captures status
+     * sections; that became noise once those subsystems grew their own dedicated panels and live status-bar readouts.
+     * Now it just centers a hint pointing the user at how to populate the inspector.
      */
     private void renderToolStateView(GuiGraphics graphics, Font font, int x, int y, int width, int mouseX, int mouseY) {
-        var rowY = y;
-        rowY = drawSectionHeader(graphics, font, x, rowY, width, "Engine");
-        rowY += CONTENT_PADDING / 2;
-        rowY = drawRow(graphics, font, x, rowY, "Mode", EngineMode.get().isActive() ? "ON" : "OFF");
-
-        var gizmoSnapshot = BLibGizmoState.lastRender();
-        rowY = drawSectionHeader(graphics, font, x, rowY, width, "Gizmo");
-        rowY += CONTENT_PADDING / 2;
-        if (gizmoSnapshot == null) {
-            rowY = drawNote(graphics, font, x, rowY, "(no tunable target)");
-        } else {
-            rowY = drawRow(graphics, font, x, rowY, "Item", gizmoSnapshot.itemId().toString());
-            rowY = drawRow(graphics, font, x, rowY, "Mode", gizmoSnapshot.mode().name());
-            rowY = drawRow(graphics, font, x, rowY, "Context", gizmoSnapshot.displayContext().name());
-        }
-
-        rowY = drawSectionHeader(graphics, font, x, rowY, width, "Placement");
-        rowY += CONTENT_PADDING / 2;
-        var pieceId = JigsawPieceSelection.selectedId();
-        if (pieceId == null) {
-            rowY = drawNote(graphics, font, x, rowY, "(no piece selected)");
-        } else {
-            rowY = drawRow(graphics, font, x, rowY, "Piece", pieceId.getPath());
-            rowY = drawRow(graphics, font, x, rowY, "Mode", JigsawTool.activeMode().displayName());
-            rowY = drawRow(graphics, font, x, rowY, "Rotation", JigsawPieceSelection.rotation().name());
-            rowY = drawRow(graphics, font, x, rowY, "Mirror", JigsawPieceSelection.mirror().name());
-            rowY = drawRow(graphics, font, x, rowY, "Policy", JigsawPlacementOptions.collisionPolicy().name());
-            rowY = drawRow(graphics, font, x, rowY, "Grid", String.valueOf(JigsawPlacementOptions.gridSize()));
-            if (JigsawPlacementFrameState.placement() != null) {
-                rowY = drawRow(graphics, font, x, rowY, "Collisions", String.valueOf(JigsawPlacementFrameState.collisionCount()));
-            }
-        }
-
-        // Captures section — only when a project is open. The captures list used to live in the dedicated Selection
-        // panel; with that panel gone, the inspector's no-selection view is its new home (per UX choice 4d).
-        captureDeleteRects.clear();
-        captureRenderedNames.clear();
-        if (!ProjectSession.activeProjectName().isEmpty()) {
-            rowY = drawSectionHeader(graphics, font, x, rowY, width, "Captures");
-            rowY += CONTENT_PADDING / 2;
-            var captures = BlockSelection.captures();
-            if (captures.isEmpty()) {
-                drawNote(graphics, font, x, rowY, "(no captures yet)");
-            } else {
-                for (var name : captures) {
-                    var labelX = x + CONTENT_PADDING;
-                    var labelY = rowY;
-                    var deleteBtnSize = 8;
-                    var deleteBtnX = x + width - CONTENT_PADDING - deleteBtnSize;
-                    var truncated = font.plainSubstrByWidth(name, deleteBtnX - labelX - 4);
-                    graphics.drawString(font, Component.literal(truncated), labelX, labelY, VALUE_COLOR, false);
-
-                    // Small "×" delete button at row end.
-                    var deleteBtnY = labelY - 1;
-                    var deleteHovered = mouseX >= deleteBtnX && mouseX < deleteBtnX + deleteBtnSize
-                        && mouseY >= deleteBtnY && mouseY < deleteBtnY + deleteBtnSize + 2;
-                    graphics.drawString(
-                        font,
-                        Component.literal("×"),
-                        deleteBtnX,
-                        deleteBtnY,
-                        deleteHovered ? 0xFFFF8888 : 0xFFE06868,
-                        false
-                    );
-                    captureDeleteRects.add(new CaptureRect(deleteBtnX, deleteBtnY, deleteBtnSize, deleteBtnSize + 2));
-                    captureRenderedNames.add(name);
-                    rowY += LINE_HEIGHT;
-                }
-            }
-        }
-    }
-
-    private void requestCaptureList() {
-        var project = ProjectSession.activeProjectName();
-        if (project.isEmpty()) {
-            lastRequestedProject = null;
-            BlockSelection.setCaptures(java.util.List.of());
-            return;
-        }
-        lastRequestedProject = project;
-        BLib.MOD.networking().sendToServer(new C2SListCapturesPayload(project));
-    }
-
-    private void requestDeleteCapture(String captureName) {
-        var project = ProjectSession.activeProjectName();
-        if (project.isEmpty()) {
-            return;
-        }
-        BLib.MOD.networking().sendToServer(new C2SDeleteCapturePayload(project, captureName));
-    }
-
-    /**
-     * Hit-test rect for a captures-list delete button. Local to this panel; uses double-precision contains for
-     * click-coord precision.
-     */
-    private record CaptureRect(
-        int x,
-        int y,
-        int w,
-        int h
-    ) {
-
-        boolean contains(double mx, double my) {
-            return mx >= x && mx < x + w && my >= y && my < y + h;
-        }
+        var hint = "Pick an entity, block, faction, or tag to inspect its details.";
+        var hintWidth = font.width(hint);
+        var hintX = x + Math.max(CONTENT_PADDING, (width - hintWidth) / 2);
+        var hintY = y + LINE_HEIGHT;
+        graphics.drawString(font, Component.literal(hint), hintX, hintY, LABEL_COLOR, false);
     }
 
     /**
