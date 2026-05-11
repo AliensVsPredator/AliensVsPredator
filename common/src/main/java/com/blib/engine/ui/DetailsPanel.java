@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.JigsawBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -421,27 +422,27 @@ public final class DetailsPanel implements Panel {
     private final List<TagRemoveHit> tagRemoveHits = new ArrayList<>();
 
     /**
-     * Cache of per-property {@link SegmentedControl} widgets for the generic block inspector. Keyed by property name.
-     * Rebuilt only when the inspected block's position or block type changes — keeping the widget instance stable across
-     * frames lets each control track its own rect / hover state for the click dispatch in {@link #mouseClicked}.
+     * Per-property {@link Checkbox} widgets for boolean block-state properties (waterlogged, snowy, …). Sister map to
+     * {@link #genericBlockPropertySelects}: every property in the rebuilt set ends up in exactly one of the two,
+     * dispatched by {@code Property} subtype. Keyed by property name. Rebuilt only when the inspected block's pos or
+     * block type changes — keeping the widget instance stable across frames lets each track its own rect for click
+     * dispatch in {@link #mouseClicked}.
      */
-    private final java.util.LinkedHashMap<String, SegmentedControl> genericBlockPropertyControls = new java.util.LinkedHashMap<>();
+    private final java.util.LinkedHashMap<String, Checkbox> genericBlockPropertyCheckboxes = new java.util.LinkedHashMap<>();
 
     /**
-     * Canonical value-string list per property, parallel to {@link #genericBlockPropertyControls}. The server-bound
-     * packet sends the {@link Property#getName(Comparable)} form, so we cache it once here to avoid re-evaluating the
-     * generic-typed bridge each frame.
+     * Per-property {@link SearchableSelect} widgets for non-boolean block-state properties (enums like facing/shape,
+     * integer properties like power). T is the canonical value string ({@link Property#getName(Comparable)}) so the
+     * onSelect lambda can ship it straight into a {@link C2SSetBlockStatePropertyPayload} without re-deriving the
+     * stringification.
      */
-    private final java.util.LinkedHashMap<String, List<String>> genericBlockPropertyValueStrings = new java.util.LinkedHashMap<>();
+    private final java.util.LinkedHashMap<String, SearchableSelect<String>> genericBlockPropertySelects = new java.util.LinkedHashMap<>();
 
-    /** Cache key for {@link #genericBlockPropertyControls} — pos changes ⇒ rebuild. */
+    /** Cache key for the per-property widget maps — pos changes ⇒ rebuild. */
     private @Nullable BlockPos genericBlockCachedPos;
 
-    /** Cache key for {@link #genericBlockPropertyControls} — block type changes (replace-in-place) ⇒ rebuild. */
+    /** Cache key for the per-property widget maps — block type changes (replace-in-place) ⇒ rebuild. */
     private @Nullable net.minecraft.world.level.block.Block genericBlockCachedBlock;
-
-    /** Hard cap on possible-values count for segmented rendering. Above this, the property renders read-only. */
-    private static final int GENERIC_BLOCK_PROPERTY_MAX_SEGMENTS = 16;
 
     @Override
     public String title() {
@@ -544,19 +545,17 @@ public final class DetailsPanel implements Panel {
             }
             return false;
         }
-        if (single instanceof BlockSelectable bs) {
-            // Iterate the cached property controls; the first one that claims the click sends a state-property
-            // packet using the canonical value-string we cached at rebuild time. Returns true on a segment hit
-            // so other panels don't double-handle the click, false otherwise so click-through still works.
-            for (var entry : genericBlockPropertyControls.entrySet()) {
-                var control = entry.getValue();
-                if (control.mouseClicked(mouseX, mouseY, button)) {
-                    var values = genericBlockPropertyValueStrings.get(entry.getKey());
-                    var idx = control.selectedIndex();
-                    if (values != null && idx >= 0 && idx < values.size()) {
-                        BLib.MOD.networking()
-                            .sendToServer(new C2SSetBlockStatePropertyPayload(bs.pos(), entry.getKey(), values.get(idx)));
-                    }
+        if (single instanceof BlockSelectable) {
+            // Forward to per-property widgets. Each widget's own onToggle / onSelect lambda handles the packet send,
+            // so we just need to dispatch hit tests here. Selects open their popup on a button-row click; the popup
+            // itself is screen-managed and consumes future clicks until dismissed.
+            for (var checkbox : genericBlockPropertyCheckboxes.values()) {
+                if (checkbox.mouseClicked(mouseX, mouseY, button)) {
+                    return true;
+                }
+            }
+            for (var select : genericBlockPropertySelects.values()) {
+                if (select.mouseClicked(mouseX, mouseY, button)) {
                     return true;
                 }
             }
@@ -1236,8 +1235,8 @@ public final class DetailsPanel implements Panel {
         if (state == null) {
             // Chunk unloaded between selection and render — drop the cached widgets so a re-load reseeds them with
             // a fresh property set, and surface a note rather than rendering an empty section.
-            genericBlockPropertyControls.clear();
-            genericBlockPropertyValueStrings.clear();
+            genericBlockPropertyCheckboxes.clear();
+            genericBlockPropertySelects.clear();
             genericBlockCachedPos = null;
             genericBlockCachedBlock = null;
             drawNote(graphics, font, x, y, "Block is no longer loaded.");
@@ -1282,10 +1281,11 @@ public final class DetailsPanel implements Panel {
     }
 
     /**
-     * Render one editable block-state property row: label on the left, segmented control on the right. The control's
-     * selected segment is re-synced from the live state each frame so external edits (other players, gizmo work that
-     * touches the same block) flow through to the inspector without waiting on a click. Properties with more
-     * possible values than {@link #GENERIC_BLOCK_PROPERTY_MAX_SEGMENTS} fall back to a read-only label.
+     * Render one editable block-state property row, dispatching by property kind: BooleanProperty rows render with a
+     * {@link Checkbox} (lighter affordance for two-state values like waterlogged); everything else renders with a
+     * {@link SearchableSelect} so users can pick from a dropdown that also handles longer value lists gracefully
+     * (search filter helps for properties like {@code power}'s 0–15 range). The visual state is re-synced from the
+     * live {@link BlockState} each frame so external edits flow through without waiting on a click.
      */
     private int renderGenericBlockPropertyRow(
         GuiGraphics graphics,
@@ -1298,54 +1298,95 @@ public final class DetailsPanel implements Panel {
         int mouseX,
         int mouseY
     ) {
-        var control = genericBlockPropertyControls.get(prop.getName());
-        var currentValueString = propertyValueName(prop, state);
-        if (control == null) {
-            return drawRow(
-                graphics,
-                font,
-                x,
-                y,
-                prop.getName(),
-                currentValueString + " (" + prop.getPossibleValues().size() + " values)"
-            );
+        var checkbox = genericBlockPropertyCheckboxes.get(prop.getName());
+        if (checkbox != null) {
+            var current = state.getValue((BooleanProperty) prop);
+            checkbox.setChecked(current);
+            return drawLabeledCheckboxRow(graphics, font, x, y, prop.getName(), checkbox, mouseX, mouseY);
         }
 
-        var values = genericBlockPropertyValueStrings.get(prop.getName());
-        if (values != null) {
-            var idx = values.indexOf(currentValueString);
-            if (idx >= 0) {
-                control.setSelectedIndex(idx);
-            }
+        var select = genericBlockPropertySelects.get(prop.getName());
+        if (select != null) {
+            select.setCurrentValue(propertyValueName(prop, state));
+            return drawSelectRow(graphics, font, x, y, width, prop.getName(), null, select, mouseX, mouseY);
         }
-        return drawLabeledSegmentedRow(graphics, font, x, y, width, LABEL_COLUMN_WIDTH, prop.getName(), null, control, mouseX, mouseY);
+
+        // Fallback: property had an empty value set (shouldn't happen for well-formed properties) — read-only label.
+        return drawRow(graphics, font, x, y, prop.getName(), propertyValueName(prop, state));
+    }
+
+    /**
+     * Label + {@link Checkbox} on one row. Same geometry as {@link #drawInputRow}: label takes the left
+     * {@link #LABEL_COLUMN_WIDTH} pixels, the checkbox sits at the start of the value column. Baseline-centered against
+     * the checkbox's vertical midpoint with the standard +2 descender-padding compensation.
+     */
+    private int drawLabeledCheckboxRow(
+        GuiGraphics graphics,
+        Font font,
+        int x,
+        int y,
+        String label,
+        Checkbox checkbox,
+        int mouseX,
+        int mouseY
+    ) {
+        var labelY = y + (Checkbox.SIZE - font.lineHeight + 2) / 2;
+        graphics.drawString(font, Component.literal(label), x + CONTENT_PADDING, labelY, LABEL_COLOR, false);
+        checkbox.render(graphics, x + CONTENT_PADDING + LABEL_COLUMN_WIDTH, y, mouseX, mouseY);
+        return y + Checkbox.SIZE + ROW_GAP;
     }
 
     /**
      * Rebuild the per-property widget cache only when the inspected block changes — same pos and same block type
      * means the property set is identical (BlockState is immutable; replacing-in-place creates a different Block
      * instance only when the registry block changes). Keeping widget instances stable across frames lets each
-     * {@link SegmentedControl} track its own click rect for the click dispatcher.
+     * widget track its own click rect / popup state for the click dispatcher.
      */
     private void rebuildGenericBlockPropertyWidgets(BlockState state, BlockPos pos, net.minecraft.world.level.block.Block block) {
         if (pos.equals(genericBlockCachedPos) && block == genericBlockCachedBlock) {
             return;
         }
-        genericBlockPropertyControls.clear();
-        genericBlockPropertyValueStrings.clear();
+        genericBlockPropertyCheckboxes.clear();
+        genericBlockPropertySelects.clear();
+        var immutablePos = pos.immutable();
         for (var prop : state.getProperties()) {
+            var name = prop.getName();
+            if (prop instanceof BooleanProperty) {
+                var current = state.getValue((BooleanProperty) prop);
+                genericBlockPropertyCheckboxes.put(name, new Checkbox(current, value -> {
+                    BLib.MOD.networking()
+                        .sendToServer(new C2SSetBlockStatePropertyPayload(immutablePos, name, Boolean.toString(value)));
+                }));
+                continue;
+            }
             var values = prop.getPossibleValues();
-            if (values.isEmpty() || values.size() > GENERIC_BLOCK_PROPERTY_MAX_SEGMENTS) {
+            if (values.isEmpty()) {
                 continue;
             }
             var valStrings = new ArrayList<String>(values.size());
             for (var v : values) {
                 valStrings.add(propertyValueName(prop, v));
             }
-            genericBlockPropertyValueStrings.put(prop.getName(), valStrings);
-            genericBlockPropertyControls.put(prop.getName(), new SegmentedControl(valStrings, 0));
+            var current = propertyValueName(prop, state);
+            var items = new ArrayList<SearchableSelect.Item<String>>(valStrings.size());
+            for (var s : valStrings) {
+                items.add(new SearchableSelect.Item<>(s, s));
+            }
+            var select = new SearchableSelect<String>(
+                () -> items,
+                s -> s == null ? "(none)" : s,
+                current,
+                picked -> {
+                    if (picked == null) {
+                        return;
+                    }
+                    BLib.MOD.networking()
+                        .sendToServer(new C2SSetBlockStatePropertyPayload(immutablePos, name, picked));
+                }
+            );
+            genericBlockPropertySelects.put(name, select);
         }
-        genericBlockCachedPos = pos.immutable();
+        genericBlockCachedPos = immutablePos;
         genericBlockCachedBlock = block;
     }
 
