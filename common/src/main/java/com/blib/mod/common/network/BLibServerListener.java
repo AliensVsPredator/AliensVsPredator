@@ -766,20 +766,33 @@ public final class BLibServerListener {
             projectKeys.add(new ProjectTagDraftStore.TagDraftKey(pt.registryKey(), pt.tagId()));
         }
         var emittedKeys = new java.util.HashSet<ProjectTagDraftStore.TagDraftKey>();
+        var projectPackId = EngineProjectIO.PACK_ID_PREFIX + projectName;
+        var resourceManager = server.getResourceManager();
 
         server.registryAccess().registries().forEach(entry -> {
             var registryLoc = entry.key().location();
+            var tagsDir = net.minecraft.core.registries.Registries.tagsDirPath(entry.key());
             entry.value().getTagNames().forEach(tk -> {
                 var key = new ProjectTagDraftStore.TagDraftKey(registryLoc, tk.location());
                 emittedKeys.add(key);
-                entries.add(new TagCatalogEntry(registryLoc, tk.location(), projectKeys.contains(key)));
+                // inUpstream = at least one non-project pack ships a JSON file at this tag's data path. Drives the
+                // browser's "modified" (project + upstream) vs "new" (project-only) color distinction.
+                var resourcePath = net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(
+                    tk.location().getNamespace(),
+                    tagsDir + "/" + tk.location().getPath() + ".json"
+                );
+                var hasUpstream = resourceManager.getResourceStack(resourcePath)
+                    .stream()
+                    .anyMatch(r -> !projectPackId.equals(r.sourcePackId()));
+                entries.add(new TagCatalogEntry(registryLoc, tk.location(), projectKeys.contains(key), hasUpstream));
             });
         });
-        // Append project-only tags (those whose registry has no live tag of that name).
+        // Append project-only tags (those whose registry has no live tag of that name yet — typically because the
+        // user just created the tag and hasn't reloaded). inUpstream=false since no other pack ships them either.
         for (var pt : projectTags) {
             var key = new ProjectTagDraftStore.TagDraftKey(pt.registryKey(), pt.tagId());
             if (!emittedKeys.contains(key)) {
-                entries.add(pt);
+                entries.add(new TagCatalogEntry(pt.registryKey(), pt.tagId(), true, false));
             }
         }
         entries.sort((a, b) -> {

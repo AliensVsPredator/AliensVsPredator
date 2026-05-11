@@ -59,7 +59,14 @@ public final class TagBrowserPanel implements Panel {
 
     private static final int ROW_TEXT_HOVER_COLOR = 0xFFFFFFFF;
 
-    private static final int ROW_PROJECT_TINT = 0xFF80E080;
+    /** Project-authored tag that doesn't exist in any upstream pack (vanilla / mods). Mirrors git "new file" green. */
+    private static final int ROW_PROJECT_NEW_TINT = 0xFF80E080;
+
+    /**
+     * Project-authored tag that ALSO exists in an upstream pack — the project is overriding it. Mirrors git "modified"
+     * blue.
+     */
+    private static final int ROW_PROJECT_MODIFIED_TINT = 0xFF7CB6E0;
 
     private static final int EMPTY_TEXT_COLOR = 0xFF606068;
 
@@ -397,7 +404,14 @@ public final class TagBrowserPanel implements Panel {
 
         var labelMaxWidth = Math.max(0, rowRight - x - 16);
         var truncated = font.plainSubstrByWidth(ce.tagId().toString(), labelMaxWidth);
-        var labelColor = ce.inProject() ? ROW_PROJECT_TINT : (hovered || selected ? ROW_TEXT_HOVER_COLOR : ROW_TEXT_COLOR);
+        int labelColor;
+        if (ce.inProject() && ce.inUpstream()) {
+            labelColor = ROW_PROJECT_MODIFIED_TINT;
+        } else if (ce.inProject()) {
+            labelColor = ROW_PROJECT_NEW_TINT;
+        } else {
+            labelColor = hovered || selected ? ROW_TEXT_HOVER_COLOR : ROW_TEXT_COLOR;
+        }
         graphics.drawString(font, Component.literal(truncated), x + 12, textY, labelColor, false);
 
         rowHits.add(new RowHit(x, y, rowRight - x, ROW_HEIGHT, ce.registryKey(), ce.tagId()));

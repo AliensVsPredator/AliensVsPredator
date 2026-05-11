@@ -550,7 +550,10 @@ public final class EngineProjectIO {
                                 var path = rel.substring(0, rel.length() - ".json".length());
                                 try {
                                     var tagId = ResourceLocation.fromNamespaceAndPath(namespace, path);
-                                    out.add(new TagCatalogEntry(registryKey.location(), tagId, true));
+                                    // Placeholder flags — handleRequestTagCatalog rebuilds entries with correctly
+                                    // computed inProject / inUpstream values; only the (registryKey, tagId) tuple
+                                    // matters at this point.
+                                    out.add(new TagCatalogEntry(registryKey.location(), tagId, true, false));
                                 } catch (ResourceLocationException ignored) {
                                     // Path contains characters vanilla refuses (uppercase, etc.) — skip.
                                 }
