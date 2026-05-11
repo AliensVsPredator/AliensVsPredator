@@ -30,16 +30,19 @@ public class BLibCommands {
             .then(BLibPropertyCommands.build())
             .then(BLibTerritoryCommands.build());
 
+        // Engine mode is intrinsically client-side (camera detachment, gizmos, freecam HUD); only register on the
+        // client distribution so referencing client classes from `BLibEngineCommand` can't link-fail on a dedicated
+        // server. Available in production — op-level-2 gating from the parent keeps survival players out.
+        if (BLibAPI.getDistributionType() == DistributionEnvironmentType.CLIENT) {
+            root = root.then(BLibEngineCommand.build());
+        }
+
         // Debug-only: only register dev subcommands in development environments so they never ship with a production
         // build. Op-level-2 gating from the parent already blocks survival players from typing it.
         if (BLibAPI.isDevelopmentEnvironment()) {
             root = root.then(BLibDismembermentCommands.build());
 
-            // Engine mode is intrinsically client-side (camera detachment, gizmos, freecam HUD); only register on the
-            // client distribution so referencing client classes from `BLibEngineCommand` can't link-fail on a
-            // dedicated dev server.
             if (BLibAPI.getDistributionType() == DistributionEnvironmentType.CLIENT) {
-                root = root.then(BLibEngineCommand.build());
                 root = root.then(BLibTransformTuneCommand.build());
             }
         }

@@ -19,7 +19,7 @@ import com.blib.api.common.worldgen.v1.StructureTemplateAccessor;
  * lookup re-reads the palette but the parsed result is memoized in a {@link WeakHashMap} keyed by the template instance
  * — re-scans only happen when a template is actually re-loaded, not when the user moves the cursor.
  * <p>
- * Vanilla's NBT layout for a jigsaw block (mirroring {@link JigsawBlockEntity#load}):
+ * Vanilla's NBT layout for a jigsaw block (mirroring {@code JigsawBlockEntity#load}):
  * <ul>
  * <li>{@code name} — the jigsaw's own identity for incoming-connection matching</li>
  * <li>{@code target} — the name this jigsaw expects to mate with</li>

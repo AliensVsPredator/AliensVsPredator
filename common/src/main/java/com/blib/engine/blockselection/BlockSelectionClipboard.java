@@ -4,8 +4,8 @@ import org.jetbrains.annotations.ApiStatus;
 
 /**
  * Client-side mirror of the server's clipboard state. Updated by {@code S2CClipboardStatusPayload} after each Cut /
- * Copy operation; the panel reads {@link #hasContents} to enable/disable the Paste button and {@link #size} for future
- * paste-preview rendering.
+ * Copy operation; the panel reads {@link #hasContents()} to enable/disable the Paste button and {@link #sizeX()} /
+ * {@link #sizeY()} / {@link #sizeZ()} for future paste-preview rendering.
  * <p>
  * Carries no actual block NBT — the heavy data lives server-side in {@code ServerBlockClipboard}, keyed implicitly by
  * the single-player session. Keeping NBT off the wire avoids per-paste packet roundtrips for what may be a sizable

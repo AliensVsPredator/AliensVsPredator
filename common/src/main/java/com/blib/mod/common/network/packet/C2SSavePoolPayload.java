@@ -11,9 +11,10 @@ import com.blib.api.common.codec.v1.BLibCodecs;
 import com.blib.mod.BLib;
 
 /**
- * Client → server: trigger a "Save & Reload" on the named project for the named pool. Since pool edits already write to
- * disk continuously, this packet is effectively just a reload trigger from the Pool Editor's header button — keeps the
- * one-click "make my changes live" affordance without forcing users to dig into the FILE menu after every tweak.
+ * Client → server: trigger a "Save &amp; Reload" on the named project for the named pool. Since pool edits already
+ * write to disk continuously, this packet is effectively just a reload trigger from the Pool Editor's header button —
+ * keeps the one-click "make my changes live" affordance without forcing users to dig into the FILE menu after every
+ * tweak.
  * <p>
  * Server runs {@code EngineProjectIO.reloadProject} (ensure-selected + {@code reloadResources}) and replies via
  * {@link S2CProjectOpResultPayload} (op {@code RELOAD}). The {@code poolId} field is preserved purely so the client can

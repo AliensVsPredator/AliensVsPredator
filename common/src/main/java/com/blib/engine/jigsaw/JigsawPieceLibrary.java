@@ -78,6 +78,12 @@ public final class JigsawPieceLibrary {
     public static void invalidate() {
         cachedIds = null;
         templateCache.clear();
+        // Downstream caches reference templates by identity — the next StructureTemplateManager fetch may return new
+        // instances after a datapack reload, but old instances might still live in these caches with stale GPU
+        // resources. Drop everything in lockstep.
+        com.blib.engine.jigsaw.placement.TransformedTemplateCache.invalidate();
+        com.blib.engine.jigsaw.placement.CollisionScanner.invalidate();
+        JigsawPreviewMeshCache.invalidate();
     }
 
     private static @Nullable StructureTemplateManager manager() {

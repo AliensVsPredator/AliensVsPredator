@@ -35,6 +35,7 @@ import com.blib.mod.common.network.packet.C2SDeleteProjectPayload;
 import com.blib.mod.common.network.packet.C2SGOAPTrackPayload;
 import com.blib.mod.common.network.packet.C2SReloadProjectPayload;
 import com.blib.mod.common.network.packet.C2SRemoveEntityPayload;
+import com.blib.mod.common.network.packet.C2SRequestFactionDirectoryPayload;
 import com.blib.mod.common.network.packet.C2SUndoPlacementPayload;
 
 /**
@@ -197,6 +198,12 @@ public final class EngineWorkspaceScreen extends Screen {
         // looks the same.
         JigsawPieceLibrary.invalidate();
         JigsawPoolLibrary.invalidate();
+
+        // Request the faction directory eagerly: the chunk claim overlay reads faction colors from
+        // ClientFactionDirectoryCache and falls back to grey when the cache is empty. The Faction Browser panel
+        // also requests this on show, but it isn't part of every layout (default doesn't include it), so without
+        // this kick the overlay stays grey until the user opens that panel. The cache is cleared in removed().
+        BLib.MOD.networking().sendToServer(C2SRequestFactionDirectoryPayload.INSTANCE);
 
         // Seed built-in templates on first run (idempotent — does nothing if files already exist), then resolve the
         // active layout id from disk-backed state and load its body subtree. The outer trim is always rebuilt fresh.
@@ -685,6 +692,10 @@ public final class EngineWorkspaceScreen extends Screen {
         JigsawPieceThumbnailCache.clear();
         JigsawTemplateScanner.clear();
         JigsawPlacementFrameState.clear();
+        // Cascades through TransformedTemplateCache, CollisionScanner, and JigsawPreviewMeshCache so the per-piece
+        // GPU vertex buffers are closed before the workspace exits — otherwise they'd linger until the next workspace
+        // open re-invalidated them from the constructor.
+        JigsawPieceLibrary.invalidate();
         JigsawPlacementOptions.reset();
         SelectionManager.clear();
         EngineCursor.reset();

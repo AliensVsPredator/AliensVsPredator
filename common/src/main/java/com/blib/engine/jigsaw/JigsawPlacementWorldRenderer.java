@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import org.jetbrains.annotations.ApiStatus;
+import org.joml.Matrix4f;
 
 import com.blib.engine.jigsaw.placement.CollisionScanner;
 import com.blib.engine.jigsaw.placement.JigsawBlockTarget;
@@ -20,6 +21,10 @@ import com.blib.engine.session.EngineMode;
  * active {@link com.blib.engine.jigsaw.placement.PlacementResolver}. Plugged into the existing debug-render injection
  * so the geometry is camera-relative and lit consistently with the rest of the world. No-ops fast when engine mode is
  * off, no piece is selected, or the resolver returns {@code null} ("no valid placement at this cursor position").
+ * <p>
+ * Mesh data is bake-once / draw-many via {@link JigsawPreviewMeshCache}: the per-block model walk only runs the first
+ * time the user holds a particular (template, rotation, mirror) tuple; subsequent frames bind the cached
+ * {@link com.mojang.blaze3d.vertex.VertexBuffer}s and submit one draw per RenderType regardless of piece size.
  */
 @ApiStatus.Internal
 public final class JigsawPlacementWorldRenderer {
@@ -37,6 +42,12 @@ public final class JigsawPlacementWorldRenderer {
 
     private JigsawPlacementWorldRenderer() {}
 
+    /**
+     * Render the ghost preview. The {@code poseStack} and {@code bufferSource} parameters are kept for the existing
+     * mixin call shape but are unused now — the cached path manages its own model-view matrix via
+     * {@link RenderSystem#getModelViewMatrix()} and submits draws directly to the bound
+     * {@link com.mojang.blaze3d.vertex.VertexBuffer}, bypassing the shared chunk buffer source.
+     */
     public static void render(
         PoseStack poseStack,
         MultiBufferSource.BufferSource bufferSource,
@@ -82,26 +93,43 @@ public final class JigsawPlacementWorldRenderer {
         var collisionCount = mc.level == null ? 0 : CollisionScanner.scan(mc.level, placement, template, snapAnchor);
         JigsawPlacementFrameState.update(placement, snapAnchor, collisionCount);
 
-        // Translucent-ish ghost: enable blend so the existing world bleeds through, but don't disable depth-test —
-        // the preview should occlude correctly against terrain in front of the anchor block.
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
+        var baked = JigsawPreviewMeshCache.getOrBuild(template, placement.rotation(), placement.mirror());
+        if (baked.isEmpty()) {
+            return;
+        }
+
+        // Build the per-frame model-view: camera rotation (already on RenderSystem during debug-render injection) ×
+        // translation from camera to placement anchor. The cached vertices are in template-local coords, so this
+        // matrix is what positions them at the right spot in view space.
+        var anchor = placement.anchor();
+        var modelView = new Matrix4f(RenderSystem.getModelViewMatrix());
+        modelView.translate(
+            (float) (anchor.getX() - cameraX),
+            (float) (anchor.getY() - cameraY),
+            (float) (anchor.getZ() - cameraZ)
+        );
+        var projection = RenderSystem.getProjectionMatrix();
+
         if (collisionCount > 0) {
             RenderSystem.setShaderColor(COLLISION_TINT_R, COLLISION_TINT_G, COLLISION_TINT_B, 1.0f);
         }
 
-        var anchor = placement.anchor();
-        poseStack.pushPose();
-        poseStack.translate(anchor.getX() - cameraX, anchor.getY() - cameraY, anchor.getZ() - cameraZ);
         try {
-            JigsawPiecePreview.renderInWorld(template, poseStack, bufferSource, placement.rotation(), placement.mirror());
+            baked.render(modelView, projection);
+
+            // Block-entity pass: chests, signs, banners, skulls, beds — vanilla doesn't bake their visible geometry
+            // into the chunk mesh (their RenderShape is ENTITYBLOCK_ANIMATED), so they need a separate BE-renderer
+            // dispatch on top of the cached mesh draw. Goes through the shared bufferSource because BE renderers
+            // submit their vertices that way; the endBatch flushes them as a single draw per render type.
+            poseStack.pushPose();
+            poseStack.translate(anchor.getX() - cameraX, anchor.getY() - cameraY, anchor.getZ() - cameraZ);
+            baked.renderBlockEntities(poseStack, bufferSource, 0.0f);
+            poseStack.popPose();
             bufferSource.endBatch();
         } finally {
-            poseStack.popPose();
             // Reset shader color regardless of which branch we took, so other renderers (selection box, debug
             // overlays) downstream see vanilla white.
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-            RenderSystem.disableBlend();
         }
     }
 }

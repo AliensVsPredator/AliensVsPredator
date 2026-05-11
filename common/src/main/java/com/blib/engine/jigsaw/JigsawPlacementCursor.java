@@ -10,6 +10,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import com.blib.engine.session.EngineCameraFrame;
+import com.blib.engine.session.EngineInteractionRange;
 import com.blib.engine.session.EngineNavigation;
 import com.blib.engine.session.EngineSession;
 
@@ -25,8 +26,6 @@ import com.blib.engine.session.EngineSession;
  */
 @ApiStatus.Internal
 public final class JigsawPlacementCursor {
-
-    private static final double PLACEMENT_RAYCAST_DISTANCE = 96.0;
 
     /**
      * Last-known viewport rect in raw window pixels (i.e. screen pixels, not workspace-logical pixels). Set by the
@@ -127,9 +126,9 @@ public final class JigsawPlacementCursor {
         }
         var origin = cursorRayOrigin(session);
         var end = origin.add(
-            dir.x * PLACEMENT_RAYCAST_DISTANCE,
-            dir.y * PLACEMENT_RAYCAST_DISTANCE,
-            dir.z * PLACEMENT_RAYCAST_DISTANCE
+            dir.x * EngineInteractionRange.MAX,
+            dir.y * EngineInteractionRange.MAX,
+            dir.z * EngineInteractionRange.MAX
         );
 
         var hit = mc.level.clip(new ClipContext(origin, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, mc.player));

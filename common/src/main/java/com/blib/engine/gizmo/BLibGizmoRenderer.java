@@ -15,10 +15,10 @@ import com.blib.api.client.render.v1.item.BLibItemTransformMode;
 import com.blib.api.client.render.v1.item.pipeline.AzItemRendererPipelineContext;
 
 /**
- * Draws the interactive translate/rotate gizmo handles in the world. Hooks into {@link BLibGeoBoneItemRenderer}'s
- * pre-render phase at the same anchor as the pivot debug, so the gizmo follows the held item's bone pivot through the
- * user's tuner-applied translation but stays in the pre-rotation frame so axes don't sweep around as the user adds
- * rotation.
+ * Draws the interactive translate/rotate gizmo handles in the world. Hooks into
+ * {@link com.blib.api.client.render.v1.item.BLibGeoBoneItemRenderer}'s pre-render phase at the same anchor as the pivot
+ * debug, so the gizmo follows the held item's bone pivot through the user's tuner-applied translation but stays in the
+ * pre-rotation frame so axes don't sweep around as the user adds rotation.
  * <p>
  * Render-time also captures a {@link BLibGizmoState.RenderSnapshot} that the mouse-input handler reads to project
  * handles to screen space for picking and to convert mouse drags into world-space deltas. The snapshot is overwritten
@@ -34,7 +34,7 @@ public final class BLibGizmoRenderer {
     }
 
     /**
-     * Called from {@link BLibGeoBoneItemRenderer#applyTransforms} when the gizmo is enabled. Renders the handles for
+     * Called from {@code BLibGeoBoneItemRenderer#applyTransforms} when the gizmo is enabled. Renders the handles for
      * the active mode and captures the per-frame snapshot for input picking.
      * <p>
      * The pose stack must be at the gizmo anchor frame: post-{@code transform.apply}'s translation and tuner pivot, but

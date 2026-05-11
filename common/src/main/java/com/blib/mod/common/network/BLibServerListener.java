@@ -444,7 +444,7 @@ public final class BLibServerListener {
     }
 
     /**
-     * Pool Editor "Save & Reload" button — every pool edit already writes to disk, so this is just a reload trigger
+     * Pool Editor "Save &amp; Reload" button — every pool edit already writes to disk, so this is just a reload trigger
      * dressed up as a header button. The {@code poolId} field is unused server-side; the client uses it only to track
      * which editor invoked the reload.
      */

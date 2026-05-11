@@ -278,7 +278,7 @@ public final class EngineProjectIO {
     /**
      * NBT counterpart to {@link #writeDataJson} — writes a {@link CompoundTag} into the project's datapack tree at
      * {@code <project>/datapack/<relPath>}. Used by the block-capture tool for jigsaw sub-pieces (saved at
-     * {@code data/<ns>/structures/<name>.nbt}) so vanilla's structure manager can load them directly.
+     * {@code data/<ns>/structure/<name>.nbt}) so vanilla's structure manager can load them directly.
      */
     public static Path writeDataNbt(String projectName, String relPath, CompoundTag tag) throws IOException {
         var projectRoot = projectRoot(projectName);
@@ -291,9 +291,9 @@ public final class EngineProjectIO {
         return filePath;
     }
 
-    /** Pack-relative path for a structure NBT: {@code data/<namespace>/structures/<structurePath>.nbt}. */
+    /** Pack-relative path for a structure NBT: {@code data/<namespace>/structure/<structurePath>.nbt}. */
     public static String structureRelPath(String namespace, String structurePath) {
-        return "data/" + namespace + "/structures/" + structurePath + ".nbt";
+        return "data/" + namespace + "/structure/" + structurePath + ".nbt";
     }
 
     /**
@@ -376,13 +376,13 @@ public final class EngineProjectIO {
     }
 
     /**
-     * List the project's authored structures — every {@code data/<ns>/structures/<path>.nbt} under the datapack tree.
+     * List the project's authored structures — every {@code data/<ns>/structure/<path>.nbt} under the datapack tree.
      * Same recursive-walk semantics as {@link #listProjectPools}. Note these are <em>datapack-loadable</em> structures
      * (referenced by pools); the user-triggered NBT block snapshots in {@code captures/} are listed by
      * {@link #listCaptureNames} separately.
      */
     public static List<ResourceLocation> listProjectStructures(String projectName) {
-        return listProjectAssets(projectName, "structures", ".nbt");
+        return listProjectAssets(projectName, "structure", ".nbt");
     }
 
     /**
@@ -447,7 +447,7 @@ public final class EngineProjectIO {
      * {@link #deleteProjectPool}.
      */
     public static boolean deleteProjectStructure(String projectName, ResourceLocation structureId) throws IOException {
-        return deleteProjectAsset(projectName, structureId, "structures", ".nbt");
+        return deleteProjectAsset(projectName, structureId, "structure", ".nbt");
     }
 
     private static boolean deleteProjectAsset(

@@ -12,8 +12,8 @@ import com.blib.mod.BLib;
 /**
  * Client → server: reload the named project's datapack so the live registry catches up to the on-disk JSON. Server
  * ensures the project pack is in {@code packRepo.getSelectedIds()}, then runs {@code packRepo.reload()} +
- * {@code server.reloadResources(...)}. The Pool Editor's "Save & Reload" button and the FILE menu's "Reload Project"
- * both fire this. Op-gated.
+ * {@code server.reloadResources(...)}. The Pool Editor's "Save &amp; Reload" button and the FILE menu's "Reload
+ * Project" both fire this. Op-gated.
  */
 public record C2SReloadProjectPayload(String projectName) implements CustomPacketPayload {
 

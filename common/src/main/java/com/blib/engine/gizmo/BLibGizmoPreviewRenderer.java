@@ -27,11 +27,12 @@ import org.jetbrains.annotations.ApiStatus;
  * </ul>
  * <p>
  * Translation behavior: while the preview is rendering, {@link BLibGizmoState#isPreviewRender()} is true, which causes
- * {@link BLibGeoBoneItemRenderer} to strip the user's translation. The preview therefore stays anchored to its corner
- * regardless of how much the user has translated the actual world item — the whole point: a translation drag would
- * otherwise pull the preview off-screen, defeating the feature. The actual translation field IS still updated on drag
- * (writes go through {@link com.blib.engine.gizmo.BLibGizmoInput#updateDrag} → override map → world render picks it up
- * next frame), so the user sees their world-space item move while the preview stays put.
+ * {@link com.blib.api.client.render.v1.item.BLibGeoBoneItemRenderer} to strip the user's translation. The preview
+ * therefore stays anchored to its corner regardless of how much the user has translated the actual world item — the
+ * whole point: a translation drag would otherwise pull the preview off-screen, defeating the feature. The actual
+ * translation field IS still updated on drag (writes go through {@link com.blib.engine.gizmo.BLibGizmoInput#updateDrag}
+ * → override map → world render picks it up next frame), so the user sees their world-space item move while the preview
+ * stays put.
  * <p>
  * Rotation/scale changes show in the preview faithfully — the preview re-renders each frame against the current
  * override values.

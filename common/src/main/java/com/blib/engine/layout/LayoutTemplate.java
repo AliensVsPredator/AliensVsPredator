@@ -84,28 +84,35 @@ public enum LayoutTemplate {
                 List.of(PanelRegistry.PIECE_PALETTE, PanelRegistry.POOL_EDITOR),
                 PanelRegistry.DETAILS
             );
-            // Faction layout: replace the outliner with the Faction Browser (left rail = "what's authored"); bottom-tab
-            // slot pairs the Diplomacy Matrix with the Members panel; Inspector renders the FactionSelectable on the
-            // right.
+            // Faction layout: left rail is the Faction Browser ("what's authored"); the viewport leaf tabs the 3D
+            // Viewport with the Territory Map (two ways to look at the same world data); bottom slot holds the
+            // Diplomacy Matrix; the right column stacks the Inspector (FactionSelectable) over the Members panel.
             case FACTION -> factionBody();
         };
     }
 
     /**
-     * Body shape for the FACTION template. Same proportions as {@link #threeColumnBody} but with the left slot bound to
-     * the Faction Browser instead of the Outliner.
+     * Body shape for the FACTION template. Diverges from {@link #threeColumnBody}: the viewport leaf carries a second
+     * tab (Territory Map), and the right column is itself a vertical split (Inspector over Members) rather than a
+     * single leaf.
      */
     private static BodyNode factionBody() {
         var viewportColumn = new BodyNode.Split(
             Orientation.VERTICAL.name(),
-            new BodyNode.Leaf(List.of(PanelRegistry.VIEWPORT), 0),
-            new BodyNode.Leaf(List.of(PanelRegistry.DIPLOMACY_MATRIX, PanelRegistry.FACTION_MEMBERS), 0),
+            new BodyNode.Leaf(List.of(PanelRegistry.VIEWPORT, PanelRegistry.TERRITORY_MAP), 0),
+            new BodyNode.Leaf(List.of(PanelRegistry.DIPLOMACY_MATRIX), 0),
+            new SizingDoc.SecondFixed(LayoutDefaults.CONTENT_BROWSER_HEIGHT)
+        );
+        var rightColumn = new BodyNode.Split(
+            Orientation.VERTICAL.name(),
+            new BodyNode.Leaf(List.of(PanelRegistry.DETAILS), 0),
+            new BodyNode.Leaf(List.of(PanelRegistry.FACTION_MEMBERS), 0),
             new SizingDoc.SecondFixed(LayoutDefaults.CONTENT_BROWSER_HEIGHT)
         );
         var centerAndRight = new BodyNode.Split(
             Orientation.HORIZONTAL.name(),
             viewportColumn,
-            new BodyNode.Leaf(List.of(PanelRegistry.DETAILS), 0),
+            rightColumn,
             new SizingDoc.SecondFixed(LayoutDefaults.DETAILS_WIDTH)
         );
         return new BodyNode.Split(

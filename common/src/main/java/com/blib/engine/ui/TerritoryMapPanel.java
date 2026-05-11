@@ -15,7 +15,6 @@ import java.util.Set;
 
 import com.blib.engine.selection.FactionSelectable;
 import com.blib.engine.selection.SelectionManager;
-import com.blib.engine.territory.ClaimPaintTool;
 import com.blib.internal.client.faction.ClientFactionDirectoryCache;
 import com.blib.internal.client.territory.ClientTerritoryCache;
 import com.blib.mod.BLib;
@@ -106,8 +105,6 @@ public final class TerritoryMapPanel implements Panel {
 
     private int mapH;
 
-    private @Nullable Rect paintButtonRect;
-
     private @Nullable Rect centerButtonRect;
 
     /** Pan-drag state: middle-mouse drag (or LMB-drag when no faction is inspected) pans the view. */
@@ -177,15 +174,6 @@ public final class TerritoryMapPanel implements Panel {
         var centerBtnY = y + 1;
         centerButtonRect = new Rect(centerBtnX, centerBtnY, centerW, HEADER_HEIGHT - 2);
         drawButton(graphics, font, centerButtonRect, centerLabel, mouseX, mouseY, false);
-
-        var paintLabel = (ClaimPaintTool.isActive() && inspected != null && inspected.equals(ClaimPaintTool.paintTarget()))
-            ? "Stop Paint"
-            : "Paint Viewport";
-        var paintW = font.width(paintLabel) + 8;
-        var paintBtnX = centerBtnX - CONTENT_PADDING - paintW;
-        paintButtonRect = new Rect(paintBtnX, centerBtnY, paintW, HEADER_HEIGHT - 2);
-        var paintActive = ClaimPaintTool.isActive() && inspected != null && inspected.equals(ClaimPaintTool.paintTarget());
-        drawButton(graphics, font, paintButtonRect, paintLabel, mouseX, mouseY, paintActive);
 
         // --- Map area ---
         mapX = x;
@@ -439,19 +427,6 @@ public final class TerritoryMapPanel implements Panel {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         // Header buttons first.
-        if (paintButtonRect != null && paintButtonRect.contains(mouseX, mouseY) && button == 0) {
-            var inspected = inspectedFactionId();
-            if (inspected == null) {
-                return true;
-            }
-            if (ClaimPaintTool.isActive() && inspected.equals(ClaimPaintTool.paintTarget())) {
-                ClaimPaintTool.deactivate();
-            } else {
-                ClaimPaintTool.setPaintTarget(inspected);
-                ClaimPaintTool.activate();
-            }
-            return true;
-        }
         if (centerButtonRect != null && centerButtonRect.contains(mouseX, mouseY) && button == 0) {
             centerOnPlayer();
             return true;

@@ -1,9 +1,9 @@
 package com.blib.engine.gizmo;
 
 /**
- * Which on-screen gizmo (if any) the {@link BLibGeoBoneItemRenderer} should draw and capture clicks for. Toggled via
- * {@code /blib transform-tune debug gizmo translate|rotate|scale|off}; only one type is shown at a time to keep the
- * visual uncluttered.
+ * Which on-screen gizmo (if any) the {@link com.blib.api.client.render.v1.item.BLibGeoBoneItemRenderer} should draw and
+ * capture clicks for. Toggled via {@code /blib transform-tune debug gizmo translate|rotate|scale|off}; only one type is
+ * shown at a time to keep the visual uncluttered.
  */
 public enum BLibGizmoMode {
 

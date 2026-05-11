@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import com.blib.engine.jigsaw.JigsawPlacementCursor;
 import com.blib.engine.jigsaw.placement.JigsawWorldRaycast;
 import com.blib.engine.session.EngineCameraFrame;
+import com.blib.engine.session.EngineInteractionRange;
 import com.blib.engine.session.EngineNavigation;
 import com.blib.engine.session.EngineSession;
 
@@ -26,9 +27,6 @@ import com.blib.engine.session.EngineSession;
  */
 @ApiStatus.Internal
 public final class EngineHoverProbe {
-
-    /** Max raycast distance for hover detection — matches the click-selection cap. */
-    private static final double HOVER_RAYCAST_DISTANCE = 96.0;
 
     public sealed interface Target {
 
@@ -50,8 +48,9 @@ public final class EngineHoverProbe {
     }
 
     /**
-     * Re-run raycasts and update the cached hover target. Called every frame from {@link ViewportPanel#render} when the
-     * cursor is inside the viewport rect. {@code (relX, relY)} are in {@code [0, 1]} viewport-relative coords.
+     * Re-run raycasts and update the cached hover target. Called every frame from
+     * {@link com.blib.engine.ui.ViewportPanel#render} when the cursor is inside the viewport rect. {@code (relX, relY)}
+     * are in {@code [0, 1]} viewport-relative coords.
      */
     public static void update(EngineSession session, double relX, double relY) {
         var mc = Minecraft.getInstance();
@@ -72,9 +71,9 @@ public final class EngineHoverProbe {
             rayDir = EngineNavigation.cursorRayDirection(session, relX, relY);
         }
         var end = origin.add(
-            rayDir.x * HOVER_RAYCAST_DISTANCE,
-            rayDir.y * HOVER_RAYCAST_DISTANCE,
-            rayDir.z * HOVER_RAYCAST_DISTANCE
+            rayDir.x * EngineInteractionRange.MAX,
+            rayDir.y * EngineInteractionRange.MAX,
+            rayDir.z * EngineInteractionRange.MAX
         );
 
         var aabb = new AABB(origin, end).inflate(1.0);
@@ -84,7 +83,7 @@ public final class EngineHoverProbe {
             end,
             aabb,
             entity -> !entity.isSpectator() && entity != mc.player && entity instanceof LivingEntity,
-            HOVER_RAYCAST_DISTANCE * HOVER_RAYCAST_DISTANCE
+            EngineInteractionRange.MAX_SQR
         );
         var jigsawTarget = JigsawWorldRaycast.raycastJigsaw(session);
         var blockHit = JigsawPlacementCursor.clipFromCursor(session);

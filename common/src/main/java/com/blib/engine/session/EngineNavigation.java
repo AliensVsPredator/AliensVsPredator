@@ -42,18 +42,6 @@ public final class EngineNavigation {
     /** Fallback distance for orbit pivot when the screen-center raycast hits nothing. */
     private static final double DEFAULT_PIVOT_DISTANCE = 8.0;
 
-    /**
-     * Max raycast distance when computing the orbit pivot from the cursor ray. Set high enough to reach the far edge of
-     * loaded chunks at any practical render distance — Minecraft's {@code clip} short-circuits at the first visible
-     * block hit, so a long max only costs the walk past unloaded chunks (which is fast). The 64-block cap users
-     * complained about was the source of "MMB-orbit feels broken when I click anything far away" — the raycast missed
-     * and the pivot snapped to {@link #DEFAULT_PIVOT_DISTANCE} blocks ahead of camera instead.
-     */
-    private static final double PIVOT_RAYCAST_DISTANCE = 8192.0;
-
-    /** Max raycast distance for click-to-select against entities. */
-    private static final double SELECTION_RAYCAST_DISTANCE = 96.0;
-
     private EngineNavigation() {}
 
     /**
@@ -218,9 +206,9 @@ public final class EngineNavigation {
             rayDir = cursorRayDirection(session, relX, relY);
         }
         var end = origin.add(
-            rayDir.x * SELECTION_RAYCAST_DISTANCE,
-            rayDir.y * SELECTION_RAYCAST_DISTANCE,
-            rayDir.z * SELECTION_RAYCAST_DISTANCE
+            rayDir.x * EngineInteractionRange.MAX,
+            rayDir.y * EngineInteractionRange.MAX,
+            rayDir.z * EngineInteractionRange.MAX
         );
 
         // The search AABB has to span the full ray path from camera origin to endpoint. The detached engine camera
@@ -233,7 +221,7 @@ public final class EngineNavigation {
             end,
             aabb,
             entity -> !entity.isSpectator() && entity != mc.player && entity instanceof LivingEntity,
-            SELECTION_RAYCAST_DISTANCE * SELECTION_RAYCAST_DISTANCE
+            EngineInteractionRange.MAX_SQR
         );
 
         // Jigsaw-block raycast reuses the same camera-cursor ray geometry as the snap resolver, so the inspector's
@@ -267,9 +255,9 @@ public final class EngineNavigation {
         var origin = session.cameraPosition();
         var rayDir = cursorRayDirection(session, relX, relY);
         var end = origin.add(
-            rayDir.x * PIVOT_RAYCAST_DISTANCE,
-            rayDir.y * PIVOT_RAYCAST_DISTANCE,
-            rayDir.z * PIVOT_RAYCAST_DISTANCE
+            rayDir.x * EngineInteractionRange.MAX,
+            rayDir.y * EngineInteractionRange.MAX,
+            rayDir.z * EngineInteractionRange.MAX
         );
 
         if (mc.level == null) {

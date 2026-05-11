@@ -37,7 +37,6 @@ import com.blib.mod.common.network.packet.C2SMoveSelectionPayload;
 import com.blib.mod.common.network.packet.C2SPlaceJigsawPiecePayload;
 import com.blib.mod.common.network.packet.C2SRemoveChunkClaimPayload;
 import com.blib.mod.common.network.packet.C2SSpawnEntityPayload;
-import com.blib.mod.common.network.packet.C2SUndoPlacementPayload;
 
 /**
  * The viewport panel — the rect where the downsampled world+HUD blit lands. This panel doesn't draw anything itself; it
@@ -445,14 +444,9 @@ public final class ViewportPanel implements Panel {
         }
 
         if (button == 1) {
-            // RMB while a piece is selected = "undo last placement". Faster than clearing the piece, finding the
-            // undo button, etc. — the user's right-hand stays on the mouse mid-iteration. Without a piece held, RMB
-            // opens the entity context menu (route the ray-pick first so the menu sees the entity under the cursor).
-            if (JigsawPieceSelection.hasSelection()) {
-                BLib.MOD.networking().sendToServer(C2SUndoPlacementPayload.INSTANCE);
-                return true;
-            }
-
+            // RMB opens a context menu — AABB volume takes priority, then entity selection (ray-pick first so the
+            // menu sees the entity under the cursor). Undo lives on Ctrl+Z; routing it through RMB was removed because
+            // it conflicted with the context-menu affordance whenever a piece happened to be held.
             if (rightClickHandler != null) {
                 // AABB right-click takes priority over entity / jigsaw selection. Re-select the volume so the
                 // inspector mirrors what the user is operating on, then open the volume context menu.
