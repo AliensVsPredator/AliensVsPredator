@@ -6,6 +6,8 @@ import com.google.gson.JsonObject;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.tags.TagKey;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -25,9 +27,12 @@ import com.blib.mod.common.network.packet.TagEntryDraft;
  * file is the source of truth — every write goes straight through to disk via {@link EngineProjectIO#writeTagJson} so a
  * crash mid-session never strands edits in memory only.
  * <p>
- * First-edit seed for a tag the project hasn't authored yet is an empty {@code {"replace": false, "values": []}}
- * object. We don't seed from the registry's current contents — vanilla's additive merge means upstream entries are
- * preserved at reload time, so seeding from the registry would cause wholesale duplication after the user's first add.
+ * First-edit seed for a tag the project hasn't authored yet is the live registry's current member set, written as
+ * {@code {"replace": false, "values": [...]}} — same shape the pool store uses, and what the user expects to see when
+ * they open a populated tag in the inspector. The {@code replace: false} flag means vanilla's contribution is unioned
+ * back in at reload time, but Minecraft's HolderSet dedupes element-level duplicates so the seeded list re-merging with
+ * itself is a no-op. Tag-reference structure ({@code #other_tag}) is lost on the seed (the registry stores the expanded
+ * member set, not the source-level references) — acceptable since the inspector's job is to show what's IN the tag.
  * <p>
  * Reuses {@link ProjectDraftStore#isReloading} as the single global reload gate — a project reload re-imports the whole
  * pack, so one flag covers both pool edits and tag edits.
@@ -55,10 +60,12 @@ public final class ProjectTagDraftStore {
     private ProjectTagDraftStore() {}
 
     /**
-     * Read-or-seed the project's JSON for one tag. Order: cache → disk (project's datapack) → seed empty. Returns null
-     * only if the disk read produced something other than a JSON object (e.g. malformed file) — logged.
+     * Read-or-seed the project's JSON for one tag. Order: cache → disk (project's datapack) → seed from the live
+     * registry's current member set. Returns null only if the disk read produced something other than a JSON object
+     * (e.g. malformed file) — logged.
      */
     public synchronized @Nullable JsonObject getOrSeedTag(
+        MinecraftServer server,
         String projectName,
         ResourceKey<? extends Registry<?>> registryKey,
         ResourceLocation tagId
@@ -83,11 +90,53 @@ public final class ProjectTagDraftStore {
             byKey.put(key, obj);
             return obj;
         }
-        var seeded = new JsonObject();
-        seeded.addProperty("replace", false);
-        seeded.add("values", new JsonArray());
+        var seeded = seedFromRegistry(server, registryKey, tagId);
         byKey.put(key, seeded);
         return seeded;
+    }
+
+    /**
+     * Encode the live registry's tag member set as the {@code values} array of a fresh {@code TagFile} object. Each
+     * element id is written as a bare string ({@code required: true} by default per vanilla's TagEntry codec). When the
+     * registry doesn't contain the tag (e.g. a project-only tag the user is about to create), returns an empty
+     * {@code values} array — still a valid TagFile, just with nothing in it.
+     */
+    private static JsonObject seedFromRegistry(
+        MinecraftServer server,
+        ResourceKey<? extends Registry<?>> registryKey,
+        ResourceLocation tagId
+    ) {
+        var seeded = new JsonObject();
+        seeded.addProperty("replace", false);
+        var values = new JsonArray();
+        seeded.add("values", values);
+        // Delegate to a typed helper so the Registry<T> + TagKey<T> generics line up — without the indirection,
+        // the wildcard {@code Registry<?>} at this call site erases HolderSet.Named<?>'s Iterable<Holder<?>> bound
+        // and the enhanced-for loop doesn't typecheck.
+        seedTypedFromRegistry(server, registryKey, tagId, values);
+        return seeded;
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private static <T> void seedTypedFromRegistry(
+        MinecraftServer server,
+        ResourceKey<? extends Registry<?>> registryKey,
+        ResourceLocation tagId,
+        JsonArray values
+    ) {
+        var rawRegistry = server.registryAccess().registry((ResourceKey) registryKey).orElse(null);
+        if (rawRegistry == null) {
+            return;
+        }
+        Registry<T> registry = (Registry<T>) rawRegistry;
+        TagKey<T> tagKey = TagKey.create((ResourceKey<? extends Registry<T>>) registryKey, tagId);
+        var holderSet = registry.getTag(tagKey).orElse(null);
+        if (holderSet == null) {
+            return;
+        }
+        for (var holder : holderSet) {
+            holder.unwrapKey().ifPresent(elementKey -> values.add(elementKey.location().toString()));
+        }
     }
 
     /**

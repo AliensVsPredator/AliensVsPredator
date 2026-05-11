@@ -828,8 +828,9 @@ public final class BLibServerListener {
         if (!validProjectFor(payload.projectName())) {
             return;
         }
+        var server = serverPlayer.serverLevel().getServer();
         var registryKey = ResourceKey.<Registry<Object>>createRegistryKey(payload.registryKey());
-        var tag = ProjectTagDraftStore.INSTANCE.getOrSeedTag(payload.projectName(), registryKey, payload.tagId());
+        var tag = ProjectTagDraftStore.INSTANCE.getOrSeedTag(server, payload.projectName(), registryKey, payload.tagId());
         if (tag == null) {
             return;
         }
@@ -850,8 +851,9 @@ public final class BLibServerListener {
         if (!validProjectFor(payload.projectName())) {
             return;
         }
+        var server = serverPlayer.serverLevel().getServer();
         var registryKey = ResourceKey.<Registry<Object>>createRegistryKey(payload.registryKey());
-        var tag = ProjectTagDraftStore.INSTANCE.getOrSeedTag(payload.projectName(), registryKey, payload.tagId());
+        var tag = ProjectTagDraftStore.INSTANCE.getOrSeedTag(server, payload.projectName(), registryKey, payload.tagId());
         if (tag == null) {
             return;
         }
@@ -885,8 +887,9 @@ public final class BLibServerListener {
         if (!validProjectFor(payload.projectName())) {
             return;
         }
+        var server = serverPlayer.serverLevel().getServer();
         var registryKey = ResourceKey.<Registry<Object>>createRegistryKey(payload.registryKey());
-        var tag = ProjectTagDraftStore.INSTANCE.getOrSeedTag(payload.projectName(), registryKey, payload.tagId());
+        var tag = ProjectTagDraftStore.INSTANCE.getOrSeedTag(server, payload.projectName(), registryKey, payload.tagId());
         if (tag == null) {
             return;
         }
@@ -922,8 +925,9 @@ public final class BLibServerListener {
         if (!validProjectFor(payload.projectName())) {
             return;
         }
+        var server = serverPlayer.serverLevel().getServer();
         var registryKey = ResourceKey.<Registry<Object>>createRegistryKey(payload.registryKey());
-        var tag = ProjectTagDraftStore.INSTANCE.getOrSeedTag(payload.projectName(), registryKey, payload.tagId());
+        var tag = ProjectTagDraftStore.INSTANCE.getOrSeedTag(server, payload.projectName(), registryKey, payload.tagId());
         if (tag == null) {
             return;
         }
