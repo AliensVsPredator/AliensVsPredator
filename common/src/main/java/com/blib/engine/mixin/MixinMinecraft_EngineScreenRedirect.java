@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.blib.engine.ui.EngineWorkspaceScreen;
+import com.blib.engine.ui.ProjectPickerScreen;
 
 /**
  * While the engine workspace is open in menu-overlay mode, intercept {@link Minecraft#setScreen(Screen)} and redirect
@@ -29,13 +30,20 @@ public abstract class MixinMinecraft_EngineScreenRedirect {
         if (!(mc.screen instanceof EngineWorkspaceScreen engine)) {
             return;
         }
-        if (!engine.isWrappingMenus()) {
+        if (!engine.isWrappingScreen()) {
             return;
         }
         if (EngineWorkspaceScreen.isPreparingToClose()) {
             return;
         }
         if (guiScreen == engine) {
+            return;
+        }
+        // Never wrap a top-level engine screen — the picker and other engine workspace instances are meant to
+        // replace the current engine outright, not nest inside its viewport. Wrapping either leads to the user
+        // interacting with engine UI through a downsampled blit, and an OBS-style recursive loop when the nested
+        // screen tries to close (setScreen(null) → setWrappedScreen(null) → composit reads the engine's own frame).
+        if (guiScreen instanceof ProjectPickerScreen || guiScreen instanceof EngineWorkspaceScreen) {
             return;
         }
         engine.setWrappedScreen(guiScreen);

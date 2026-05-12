@@ -146,6 +146,10 @@ public final class ProjectPickerScreen extends Screen {
         super.init();
         // Refresh on every open — the world's datapack folder may have been edited by the user externally between
         // sessions. Empty list isn't fatal; the picker's "(no projects)" state guides the user to "+ New Project".
+        // Read directly from disk first so the picker works when there's no server (main-menu open flow). When
+        // there IS a server, the C2S send below kicks off an authoritative refresh that overwrites with the same
+        // data (server-side handler also reads from EngineProjectIO).
+        ProjectSession.setAvailableProjects(EngineProjectIO.listProjects());
         BLib.MOD.networking().sendToServer(C2SListProjectsPayload.INSTANCE);
         ProjectSession.setOpResultCallback(this::onOpResult);
     }
@@ -505,7 +509,18 @@ public final class ProjectPickerScreen extends Screen {
         pendingOp = ProjectOp.OPEN;
         pendingProjectName = name;
         validationMessage = null;
-        BLib.MOD.networking().sendToServer(new C2SOpenProjectPayload(name));
+        var result = BLib.MOD.networking().sendToServer(new C2SOpenProjectPayload(name));
+        if (result.isErr()) {
+            // No server — Open is purely client-side state (set ProjectSession.activeProject + fire callback).
+            // Simulate the server's success response locally so menu-overlay open works the same as in-world.
+            var matched = findProject(name);
+            if (matched != null) {
+                ProjectSession.setActiveProject(matched);
+            }
+            pendingOp = null;
+            pendingProjectName = null;
+            onConfirmedOpen.run();
+        }
     }
 
     private void sendDelete(String name) {

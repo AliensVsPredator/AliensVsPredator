@@ -6,7 +6,6 @@ import org.jetbrains.annotations.ApiStatus;
 import com.blib.api.BLibAPI;
 import com.blib.api.common.mod.v1.model.DistributionEnvironmentType;
 import com.blib.api.common.registry.v1.impl.BLibCommandRegistry;
-import com.blib.engine.command.BLibEngineCommand;
 import com.blib.engine.command.BLibTransformTuneCommand;
 import com.blib.mod.BLib;
 import com.blib.mod.common.command.BLibPropertyCommands;
@@ -22,13 +21,6 @@ public class BLibCommands {
             .requires(source -> source.hasPermission(2))
             .then(BLibReputationCommands.build())
             .then(BLibPropertyCommands.build());
-
-        // Engine mode is intrinsically client-side (camera detachment, gizmos, freecam HUD); only register on the
-        // client distribution so referencing client classes from `BLibEngineCommand` can't link-fail on a dedicated
-        // server. Available in production — op-level-2 gating from the parent keeps survival players out.
-        if (BLibAPI.getDistributionType() == DistributionEnvironmentType.CLIENT) {
-            root = root.then(BLibEngineCommand.build());
-        }
 
         // Debug-only: only register dev subcommands in development environments so they never ship with a production
         // build. Op-level-2 gating from the parent already blocks survival players from typing it.

@@ -12,6 +12,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.joml.Matrix4f;
 
 import com.blib.engine.selection.SelectionManager;
+import com.blib.engine.session.EngineMode;
 import com.blib.internal.client.shader.BLibShaders;
 
 /**
@@ -42,6 +43,12 @@ public final class EngineSelectionRenderer {
         double cameraY,
         double cameraZ
     ) {
+        // Engine-mode gate matches the other engine renderers — outside the workspace the selection state may linger
+        // (the workspace's removed() clears it in IN_GAME, but the user has B-toggled away by then and shouldn't see
+        // engine UI bleeding into the live game).
+        if (!EngineMode.get().isActive()) {
+            return;
+        }
         var selection = SelectionManager.current();
         if (selection.isEmpty()) {
             return;

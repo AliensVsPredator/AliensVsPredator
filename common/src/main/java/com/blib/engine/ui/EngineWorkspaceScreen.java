@@ -346,6 +346,18 @@ public final class EngineWorkspaceScreen extends Screen {
     private EngineWorkspaceScreen(Mode mode, @Nullable Screen initialWrapped) {
         super(Component.literal("BLib Engine"));
         this.mode = mode;
+        // Sanitize initialWrapped: never wrap a top-level engine screen (the picker, or another engine workspace).
+        // Either would render BLib UI inside the viewport, and Cancel on a nested picker would set wrappedScreen=null,
+        // leaving the viewport composit reading the engine's own previous frame (OBS-style recursion).
+        if (initialWrapped instanceof ProjectPickerScreen || initialWrapped instanceof EngineWorkspaceScreen) {
+            initialWrapped = null;
+        }
+        // MENU_OVERLAY without a wrapped screen and without a world has nothing for the viewport to composit (no world
+        // on the main RT, no wrapped-screen RT). Fall back to a fresh TitleScreen so the user sees the main menu inside
+        // the viewport rather than the recursive engine-in-engine artifact.
+        if (mode == Mode.MENU_OVERLAY && initialWrapped == null && Minecraft.getInstance().level == null) {
+            initialWrapped = new net.minecraft.client.gui.screens.TitleScreen();
+        }
         this.wrappedScreen = initialWrapped;
 
         // Layout + keybinding catalogs are needed by both modes (the keybinding rebind UI lives in the workspace; the
@@ -552,11 +564,15 @@ public final class EngineWorkspaceScreen extends Screen {
     }
 
     /**
-     * True while the workspace is acting as a persistent overlay on top of vanilla menus. The setScreen redirect mixin
-     * uses this to decide whether to capture {@link Minecraft#setScreen} calls or let them pass through.
+     * True while the workspace is currently wrapping another screen (showing it inside the viewport rect). Includes
+     * both the menu-overlay mode (engine opened from the title screen, wrapping menu navigation) and the in-world
+     * "pause inside engine" case (ESC opens PauseScreen as the wrapped screen). The setScreen redirect mixin uses this
+     * to decide whether to capture {@link Minecraft#setScreen} calls or let them pass through — when a wrap is active,
+     * any setScreen call from the wrapped screen (e.g. PauseScreen → Back to Game → setScreen(null)) becomes a wrap
+     * swap instead of an engine close.
      */
-    public boolean isWrappingMenus() {
-        return mode == Mode.MENU_OVERLAY;
+    public boolean isWrappingScreen() {
+        return wrappedScreen != null;
     }
 
     /** Used by the setScreen redirect mixin to recognise the explicit close path and stand down. */
@@ -573,6 +589,17 @@ public final class EngineWorkspaceScreen extends Screen {
      * integrations, etc.) never finish initializing and render broken.
      */
     public void setWrappedScreen(@Nullable Screen next) {
+        // Same sanitization as the constructor: top-level engine screens (picker, another workspace) must never be
+        // wrapped — they're meant to replace the engine, not nest inside its viewport.
+        if (next instanceof ProjectPickerScreen || next instanceof EngineWorkspaceScreen) {
+            next = null;
+        }
+        // MENU_OVERLAY without a world needs *some* wrapped screen to give the viewport something to composit. Without
+        // one, the world-path composit reads the engine's own previous frame and recurses infinitely (OBS effect).
+        // Common trigger: a wrapped screen (PauseScreen, picker) closes via setScreen(null) → redirect mixin → here.
+        if (next == null && mode == Mode.MENU_OVERLAY && Minecraft.getInstance().level == null) {
+            next = new net.minecraft.client.gui.screens.TitleScreen();
+        }
         var prev = this.wrappedScreen;
         this.wrappedScreen = next;
         this.wrappedScreenAdded = false;
@@ -644,25 +671,10 @@ public final class EngineWorkspaceScreen extends Screen {
 
     @Override
     public boolean shouldCloseOnEsc() {
-        // IN_GAME: keep vanilla behavior — Esc closes the editor (matches the existing /blib engine UX).
-        // MENU_OVERLAY: Esc closes only when there's no wrapped screen to delegate to AND a world is loaded. With a
-        // wrapped screen, Esc navigates menus (the wrapped screen handles it via the forwarder in keyPressed). With no
-        // world, there's nowhere meaningful to drop back to, so we keep the engine open. The Project menu's
-        // "Close Engine" item remains as an explicit exit regardless of state.
-        if (mode == Mode.IN_GAME) {
-            return true;
-        }
-        return wrappedScreen == null && Minecraft.getInstance().level != null;
-    }
-
-    /**
-     * Route Esc-triggered close through {@link #closeEngine} so the setScreen redirect mixin lets the call pass through
-     * to vanilla. Without this override the default {@code Screen.onClose} would call {@code setScreen(null)} directly
-     * and the mixin would interpret it as "drop the wrap, stay open."
-     */
-    @Override
-    public void onClose() {
-        closeEngine();
+        // Esc never closes the engine anymore — that's the B keybinding's job. Esc instead opens PauseScreen as a
+        // wrapped screen when a world is loaded (see keyPressed). Returning false here prevents vanilla's keyPressed
+        // from calling onClose, which would otherwise short-circuit the wrap-pause flow.
+        return false;
     }
 
     @Override
@@ -681,8 +693,13 @@ public final class EngineWorkspaceScreen extends Screen {
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         // Menu-overlay mode: lazy entry into engine mode once a world finally loads. EngineMode.enter() guards on
-        // mc.player == null and is idempotent, so polling here each frame until the player exists is cheap.
+        // mc.player == null and is idempotent, so polling here each frame until the player exists is cheap. Also
+        // freeze the integrated server here — the IN_GAME path captures on construction, but MENU_OVERLAY doesn't
+        // have a world at construction time; we have to wait until the world is up. Gating on session==null keeps
+        // this one-shot (subsequent renders see a non-null session and skip the block, so savedFrozenState isn't
+        // overwritten on re-entry).
         if (mode == Mode.MENU_OVERLAY && Minecraft.getInstance().player != null && EngineMode.get().session() == null) {
+            EngineTickControl.captureAndPause();
             EngineMode.get().enter();
             var lazySession = EngineMode.get().session();
             if (lazySession != null) {
@@ -1118,9 +1135,10 @@ public final class EngineWorkspaceScreen extends Screen {
     public void removed() {
         super.removed();
 
-        // Menu-overlay mode: most of the cleanup below is irrelevant — no project was ever opened, no server tick was
-        // ever paused, no caches were ever populated. Touching them risks clobbering the user's preferred in-game
-        // layout via persistOutgoingLayout / persistActiveSelection, and triggers a flurry of no-op clears.
+        // Menu-overlay mode: lighter cleanup than IN_GAME — skipping persistOutgoingLayout / persistActiveSelection
+        // avoids clobbering the user's preferred in-game layout, and skipping the cache invalidation cascade is fine
+        // because MENU_OVERLAY workflows don't usually populate the project-scoped caches. Selection / freeze state
+        // is still cleared so the live game doesn't keep rendering engine UI after B-toggle.
         if (mode == Mode.MENU_OVERLAY) {
             EngineWorkspaceCompositor.clear();
             if (wrappedScreen != null) {
@@ -1128,6 +1146,20 @@ public final class EngineWorkspaceScreen extends Screen {
                 wrappedScreen = null;
             }
             EngineMode.get().exit();
+            // Restore the integrated server's previous freeze state — the lazy-enter path in render() called
+            // captureAndPause once the world loaded, so we have to pair it with a restore on close. No-op when
+            // captureAndPause never ran (engine closed before any world was loaded).
+            EngineTickControl.restore();
+            // Block-volume selection lives on a static singleton and isn't cleared by EngineMode.exit() — without
+            // this, the wireframe AABB and any other engine selection visuals would linger in the world after B-toggle
+            // because they read from BlockSelection / SelectionManager regardless of the renderer's isActive gate.
+            // (Renderers also self-gate on isActive, but state cleanup keeps the system internally consistent.)
+            BlockSelection.clear();
+            SelectionManager.clear();
+            JigsawPieceSelection.clear();
+            EntitySpawnSelection.clear();
+            com.blib.engine.selection.EngineHoverProbe.clear();
+            com.blib.engine.territory.ClaimPaintTool.deactivate();
             SearchableSelect.closeOpenPopup();
             HslColorPickerPopup.closeOpenPopup();
             FactionManagePopup.closeOpenPopup();
@@ -1167,9 +1199,9 @@ public final class EngineWorkspaceScreen extends Screen {
         FactionManagePopup.closeOpenPopup();
         com.blib.engine.territory.ClaimPaintTool.deactivate();
         com.blib.engine.selection.EngineHoverProbe.clear();
-        // Project state does not persist across engine sessions — closing the workspace returns the user to a
-        // "no project open" state so the next /blib engine starts at the picker again.
-        ProjectSession.clear();
+        // Project state persists across engine sessions so B-toggle reopens the same project without going through
+        // the picker again. Switching projects is an explicit File→Open action inside the workspace. Transient picker
+        // bits (callback, available-list) get refreshed by the picker itself on next open, so no clearing here.
         ProjectDraftCache.clear();
         com.blib.engine.tag.TagDraftCache.clear();
         com.blib.engine.tag.TagCatalogCache.clear();
@@ -1457,9 +1489,9 @@ public final class EngineWorkspaceScreen extends Screen {
             return true;
         }
 
-        // Esc cascades through transient state before closing the workspace: claim paint mode → held piece → entity
-        // spawn selection → general selection → fall through to super.keyPressed (which closes the screen). This
-        // gives users a single "get me out" key that doesn't immediately exit when they're mid-edit.
+        // Esc cascades through transient state before reaching the "open pause menu" fallback: claim paint mode → held
+        // piece → entity spawn selection → general selection → wrap PauseScreen (in-world only). This gives users a
+        // single "get me out" key that doesn't immediately surface the pause menu when they're mid-edit.
         if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE) {
             if (com.blib.engine.territory.ClaimPaintTool.isActive()) {
                 com.blib.engine.territory.ClaimPaintTool.deactivate();
@@ -1475,6 +1507,14 @@ public final class EngineWorkspaceScreen extends Screen {
             }
             if (!SelectionManager.current().isEmpty()) {
                 SelectionManager.clear();
+                return true;
+            }
+            // In-world with no wrapped screen → open the vanilla PauseScreen inside the engine. The setScreen
+            // redirect mixin keeps it wrapped (engine stays on top); PauseScreen's "Back to Game" → setScreen(null)
+            // will drop the wrap, returning the viewport to the world. Pressing B is still the way to close the
+            // engine itself.
+            if (wrappedScreen == null && Minecraft.getInstance().level != null) {
+                setWrappedScreen(new net.minecraft.client.gui.screens.PauseScreen(true));
                 return true;
             }
         }
