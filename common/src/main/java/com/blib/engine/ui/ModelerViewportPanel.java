@@ -6,10 +6,14 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 import com.blib.engine.modeler.ModelerPicker;
 import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.Selection;
+import com.blib.engine.modeler.gizmo.ModelerGizmoInput;
+import com.blib.engine.modeler.gizmo.ModelerGizmoMode;
+import com.blib.engine.modeler.gizmo.ModelerGizmoState;
 import com.blib.engine.modeler.render.ModelerRenderer;
 
 /**
@@ -23,9 +27,8 @@ import com.blib.engine.modeler.render.ModelerRenderer;
  * <li>MMB + Ctrl drag → dolly (scale distance from the focus point).</li>
  * <li>Scroll wheel → zoom (same as dolly).</li>
  * </ul>
- * LMB is intentionally not bound for camera; it stays free for cube selection (later). Modifier state is latched at MMB
- * press time so a stray Shift / Ctrl release mid-drag can't flip the gesture mode end-to-end — same latch pattern the
- * world {@code ViewportPanel} uses.
+ * LMB is dispatched in priority order: toolbar buttons (mode switch), gizmo handle drag, then plain cube selection.
+ * Hotkeys T / R / S set the active gizmo mode; Esc clears it.
  */
 @ApiStatus.Internal
 public final class ModelerViewportPanel implements Panel {
@@ -43,6 +46,9 @@ public final class ModelerViewportPanel implements Panel {
     /** Modifier state latched at MMB press time. Non-null while a middle-button drag is active. */
     private @Nullable MmbDrag mmbDrag;
 
+    /** True while the LMB is held over a gizmo handle and we own the drag. */
+    private boolean gizmoDragActive;
+
     /** Panel rect captured at render time so click handlers can convert workspace coords → viewport-relative. */
     private int panelX, panelY, panelWidth, panelHeight;
 
@@ -58,6 +64,7 @@ public final class ModelerViewportPanel implements Panel {
         panelWidth = width;
         panelHeight = height;
         renderer.render(graphics, x, y, width, height);
+        ModelerViewportToolbar.render(graphics, x, y);
     }
 
     @Override
@@ -97,11 +104,36 @@ public final class ModelerViewportPanel implements Panel {
             mmbDrag = new MmbDrag(Screen.hasShiftDown(), Screen.hasControlDown());
             return true;
         }
+
+        if (button == 0) {
+            // Toolbar takes priority — if the cursor is over a button, switch modes and consume the click so it
+            // doesn't fall through to selection / gizmo picking.
+            var toolbarHit = ModelerViewportToolbar.hitTest(mouseX, mouseY, panelX, panelY);
+            if (toolbarHit != null) {
+                ModelerGizmoState.setMode(toolbarHit);
+                return true;
+            }
+
+            // Gizmo handle drag — pickHandle in panel-relative coords and threshold against the captured snapshot.
+            var panelRelX = mouseX - panelX;
+            var panelRelY = mouseY - panelY;
+            if (panelWidth > 0 && panelHeight > 0 && ModelerGizmoInput.tryStartDrag(panelRelX, panelRelY, panelWidth, panelHeight)) {
+                gizmoDragActive = true;
+                return true;
+            }
+        }
         return false;
     }
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        if (button == 0 && gizmoDragActive) {
+            var panelRelX = mouseX - panelX;
+            var panelRelY = mouseY - panelY;
+            ModelerGizmoInput.updateDrag(panelRelX, panelRelY, panelWidth, panelHeight);
+            return true;
+        }
+
         if (button != 2 || mmbDrag == null) {
             return false;
         }
@@ -135,6 +167,11 @@ public final class ModelerViewportPanel implements Panel {
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (button == 0 && gizmoDragActive) {
+            ModelerGizmoInput.endDrag();
+            gizmoDragActive = false;
+            return true;
+        }
         if (button == 2) {
             mmbDrag = null;
             return true;
@@ -149,6 +186,36 @@ public final class ModelerViewportPanel implements Panel {
         camera.distance *= factor;
         camera.clampDistance();
         return true;
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        // T / R / S switch gizmo modes; Esc clears. Matches the toolbar buttons and is industry-standard for modeling
+        // tools (Blockbench / Maya / Blender use similar bindings, though their letter choices differ).
+        switch (keyCode) {
+            case GLFW.GLFW_KEY_T -> {
+                ModelerGizmoState.setMode(ModelerGizmoMode.TRANSLATE);
+                return true;
+            }
+            case GLFW.GLFW_KEY_R -> {
+                ModelerGizmoState.setMode(ModelerGizmoMode.ROTATE);
+                return true;
+            }
+            case GLFW.GLFW_KEY_S -> {
+                ModelerGizmoState.setMode(ModelerGizmoMode.RESIZE);
+                return true;
+            }
+            case GLFW.GLFW_KEY_ESCAPE -> {
+                if (ModelerGizmoState.mode() != ModelerGizmoMode.OFF) {
+                    ModelerGizmoState.setMode(ModelerGizmoMode.OFF);
+                    return true;
+                }
+            }
+            default -> {
+                /* fall through */
+            }
+        }
+        return false;
     }
 
     private static void applyPan(com.blib.engine.modeler.ModelerCamera camera, double rawDx, double rawDy) {

@@ -6,7 +6,6 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Axis;
 import net.minecraft.client.renderer.GameRenderer;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -14,6 +13,7 @@ import org.joml.Matrix4f;
 
 import com.blib.engine.modeler.ModelerBone;
 import com.blib.engine.modeler.ModelerCube;
+import com.blib.engine.modeler.ModelerTransforms;
 import com.blib.engine.modeler.Selection;
 
 /**
@@ -53,7 +53,7 @@ public final class ModelerCubeRenderer {
 
     private static void renderBoneFilled(PoseStack pose, ModelerBone bone) {
         pose.pushPose();
-        applyBoneTransform(pose, bone);
+        ModelerTransforms.applyBone(pose, bone);
 
         if (!bone.cubes.isEmpty()) {
             RenderSystem.setShader(GameRenderer::getPositionColorShader);
@@ -74,29 +74,9 @@ public final class ModelerCubeRenderer {
         pose.popPose();
     }
 
-    private static void applyBoneTransform(PoseStack pose, ModelerBone bone) {
-        // Mirror RenderUtil.prepMatrixForBone (position → pivot → rotate → scale → un-pivot). Bedrock model space uses
-        // pixel units; the viewport renders in those same units so we don't divide by 16 here.
-        pose.translate(bone.position.x, bone.position.y, bone.position.z);
-        pose.translate(bone.pivot.x, bone.pivot.y, bone.pivot.z);
-        pose.mulPose(Axis.ZP.rotationDegrees((float) bone.rotation.z));
-        pose.mulPose(Axis.YP.rotationDegrees((float) bone.rotation.y));
-        pose.mulPose(Axis.XP.rotationDegrees((float) bone.rotation.x));
-        pose.scale((float) bone.scale.x, (float) bone.scale.y, (float) bone.scale.z);
-        pose.translate(-bone.pivot.x, -bone.pivot.y, -bone.pivot.z);
-    }
-
-    private static void applyCubeTransform(PoseStack pose, ModelerCube cube) {
-        pose.translate(cube.pivot.x, cube.pivot.y, cube.pivot.z);
-        pose.mulPose(Axis.ZP.rotationDegrees((float) cube.rotation.z));
-        pose.mulPose(Axis.YP.rotationDegrees((float) cube.rotation.y));
-        pose.mulPose(Axis.XP.rotationDegrees((float) cube.rotation.x));
-        pose.translate(-cube.pivot.x, -cube.pivot.y, -cube.pivot.z);
-    }
-
     private static void emitCubeFaces(com.mojang.blaze3d.vertex.BufferBuilder buffer, PoseStack pose, ModelerCube cube) {
         pose.pushPose();
-        applyCubeTransform(pose, cube);
+        ModelerTransforms.applyCube(pose, cube);
         var matrix = pose.last().pose();
 
         var inflate = (float) cube.inflate;
@@ -158,7 +138,7 @@ public final class ModelerCubeRenderer {
 
     private static boolean renderOutlineRecursive(PoseStack pose, ModelerBone bone, ModelerCube target) {
         pose.pushPose();
-        applyBoneTransform(pose, bone);
+        ModelerTransforms.applyBone(pose, bone);
 
         var found = false;
         for (var cube : bone.cubes) {
@@ -184,7 +164,7 @@ public final class ModelerCubeRenderer {
 
     private static void emitCubeEdges(PoseStack pose, ModelerCube cube) {
         pose.pushPose();
-        applyCubeTransform(pose, cube);
+        ModelerTransforms.applyCube(pose, cube);
         var matrix = pose.last().pose();
 
         var inflate = (float) cube.inflate + 0.01f; // tiny outset so lines don't z-fight with the filled cube

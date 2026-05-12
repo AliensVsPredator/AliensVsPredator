@@ -38,11 +38,11 @@ public final class ModelerPicker {
 
     private static void walk(ModelerBone bone, Matrix4f parentToWorld, State state) {
         var boneToWorld = new Matrix4f(parentToWorld);
-        applyBoneTransform(boneToWorld, bone);
+        ModelerTransforms.applyBone(boneToWorld, bone);
 
         for (var cube : bone.cubes) {
             var cubeToWorld = new Matrix4f(boneToWorld);
-            applyCubeTransform(cubeToWorld, cube);
+            ModelerTransforms.applyCube(cubeToWorld, cube);
             var worldToCube = new Matrix4f(cubeToWorld).invert();
 
             // Transform the ray into cube-local space. The ray parameter t is preserved across linear transforms
@@ -62,24 +62,6 @@ public final class ModelerPicker {
         for (var child : bone.children) {
             walk(child, boneToWorld, state);
         }
-    }
-
-    private static void applyBoneTransform(Matrix4f m, ModelerBone bone) {
-        m.translate((float) bone.position.x, (float) bone.position.y, (float) bone.position.z);
-        m.translate((float) bone.pivot.x, (float) bone.pivot.y, (float) bone.pivot.z);
-        m.rotateZ((float) Math.toRadians(bone.rotation.z));
-        m.rotateY((float) Math.toRadians(bone.rotation.y));
-        m.rotateX((float) Math.toRadians(bone.rotation.x));
-        m.scale((float) bone.scale.x, (float) bone.scale.y, (float) bone.scale.z);
-        m.translate((float) -bone.pivot.x, (float) -bone.pivot.y, (float) -bone.pivot.z);
-    }
-
-    private static void applyCubeTransform(Matrix4f m, ModelerCube cube) {
-        m.translate((float) cube.pivot.x, (float) cube.pivot.y, (float) cube.pivot.z);
-        m.rotateZ((float) Math.toRadians(cube.rotation.z));
-        m.rotateY((float) Math.toRadians(cube.rotation.y));
-        m.rotateX((float) Math.toRadians(cube.rotation.x));
-        m.translate((float) -cube.pivot.x, (float) -cube.pivot.y, (float) -cube.pivot.z);
     }
 
     /** Slab-method ray-AABB intersect. Returns the entry t (or exit t if the ray origin is inside), or -1 on miss. */

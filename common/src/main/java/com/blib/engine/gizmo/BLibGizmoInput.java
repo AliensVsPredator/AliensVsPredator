@@ -3,10 +3,7 @@ package com.blib.engine.gizmo;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
 import org.joml.Vector3f;
-import org.joml.Vector4f;
 import org.slf4j.Logger;
 import org.slf4j.helpers.MessageFormatter;
 
@@ -14,21 +11,12 @@ import com.blib.api.client.render.v1.BLibTransform;
 
 /**
  * Picking and drag math for the interactive transform gizmo. Stateless — drag state lives on {@link BLibGizmoState},
- * this class just walks it forward in response to mouse events.
+ * this class just walks it forward in response to mouse events. All math (projection, distance, deltas) lives in
+ * {@link GizmoMath} so the modeler / future gizmo systems share the same routines.
  * <p>
  * All gizmo handles are tested in screen space against the cursor: handle world (view) positions are projected through
  * the snapshot's projection matrix, then compared to the cursor in window pixels. This avoids the need for a 3D
  * ray-vs-geometry test and works regardless of how the gizmo's axes are oriented in view space.
- * <p>
- * Drag deltas:
- * <ul>
- * <li>TRANSLATE: cursor's pixel motion is projected onto the screen-space direction of the dragged axis. The
- * world-space delta is recovered from the ratio of "world-length the axis arrow represents" to "screen pixels the arrow
- * projects to."</li>
- * <li>ROTATE: cursor's screen-space angle around the gizmo origin is tracked from drag-start; the angle delta becomes
- * the rotation around the chosen axis. Sign is flipped when the axis points toward the viewer so that a CW cursor sweep
- * matches the conventional "positive rotation rotates +X toward +Y around +Z" right-hand rule.</li>
- * </ul>
  */
 public final class BLibGizmoInput {
 
@@ -181,9 +169,6 @@ public final class BLibGizmoInput {
         }
 
         var window = Minecraft.getInstance().getWindow();
-        // getScreenWidth/Height (NOT getWidth/Height) — cursor xpos()/ypos() come from GLFW in window
-        // (screen) coordinates, which on HDPI displays differ from framebuffer pixels by a factor of 2+.
-        // Use the same coord space throughout so picking math compares apples to apples.
         int w = window.getScreenWidth();
         int h = window.getScreenHeight();
 
@@ -227,7 +212,7 @@ public final class BLibGizmoInput {
         double bestDist = Double.POSITIVE_INFINITY;
 
         for (var s : pool) {
-            var origin = projectToScreen(s.viewPivot(), s.projection(), w, h);
+            var origin = GizmoMath.projectToScreen(s.viewPivot(), s.projection(), w, h);
             if (origin == null)
                 continue;
 
@@ -239,8 +224,8 @@ public final class BLibGizmoInput {
             // scale * +X) to get a known reference point, distance from origin estimates the ring's
             // screen-pixel radius. Threshold is 2× that radius, so cursors near or just-outside any
             // ring still associate with the right snapshot.
-            var tipView = new org.joml.Vector3f(s.viewPivot()).fma(s.scale(), s.viewX());
-            var tip = projectToScreen(tipView, s.projection(), w, h);
+            var tipView = new Vector3f(s.viewPivot()).fma(s.scale(), s.viewX());
+            var tip = GizmoMath.projectToScreen(tipView, s.projection(), w, h);
             float radiusPx = tip != null ? (float) Math.hypot(tip.x - origin.x, tip.y - origin.y) : 64f;
             float matchRadius = Math.max(64f, radiusPx * 2f);
 
@@ -254,7 +239,7 @@ public final class BLibGizmoInput {
     }
 
     private static int pickHandle(BLibGizmoState.RenderSnapshot s, double cursorX, double cursorY, int w, int h) {
-        var origin = projectToScreen(s.viewPivot(), s.projection(), w, h);
+        var origin = GizmoMath.projectToScreen(s.viewPivot(), s.projection(), w, h);
 
         if (origin == null) {
             trace("pickHandle: gizmo origin behind camera or w<=0 — viewPivot={}", s.viewPivot());
@@ -276,7 +261,7 @@ public final class BLibGizmoInput {
         // handle it as a special case. Returning axis=0 is just a placeholder; the drag math reads the
         // single Y-axis direction directly off the snapshot.
         if (mode == BLibGizmoMode.SCALE) {
-            float dist = distanceToScaleHandle(s, origin, cursorX, cursorY, w, h);
+            float dist = GizmoMath.distanceToAxisHandle(s.geometry(), 1, 1, cursorX, cursorY, w, h);
             int picked = dist < SCALE_PICK_THRESHOLD_PX ? 0 : -1;
             trace("pickHandle: SCALE handle distance = {} px threshold={} -> picked = {}", dist, SCALE_PICK_THRESHOLD_PX, picked);
             return picked;
@@ -294,8 +279,8 @@ public final class BLibGizmoInput {
 
         for (int axis = 0; axis < 3; axis++) {
             float dist = switch (mode) {
-                case TRANSLATE -> distanceToTranslateHandle(s, axis, origin, cursorX, cursorY, w, h);
-                case ROTATE -> distanceToRotateHandle(s, axis, cursorX, cursorY, w, h);
+                case TRANSLATE -> GizmoMath.distanceToAxisHandle(s.geometry(), axis, 1, cursorX, cursorY, w, h);
+                case ROTATE -> GizmoMath.distanceToRotateHandle(s.geometry(), axis, cursorX, cursorY, w, h, RING_PICK_SEGMENTS);
                 default -> Float.POSITIVE_INFINITY;
             };
 
@@ -317,25 +302,6 @@ public final class BLibGizmoInput {
         );
 
         return best;
-    }
-
-    private static float distanceToScaleHandle(
-        BLibGizmoState.RenderSnapshot s,
-        Vector2f origin,
-        double cursorX,
-        double cursorY,
-        int w,
-        int h
-    ) {
-        // Single +Y line — same projection-to-segment test as TRANSLATE, but only against viewY.
-        var tipView = new Vector3f(s.viewPivot()).fma(s.scale(), s.viewY());
-        var tip = projectToScreen(tipView, s.projection(), w, h);
-
-        if (tip == null) {
-            return Float.POSITIVE_INFINITY;
-        }
-
-        return distancePointToSegment((float) cursorX, (float) cursorY, origin, tip);
     }
 
     private static void trace(String fmt, Object... args) {
@@ -360,156 +326,23 @@ public final class BLibGizmoInput {
         }
     }
 
-    private static Vector2f projectToScreen(Vector3f viewPos, Matrix4f projection, int w, int h) {
-        var clip = new Vector4f(viewPos.x, viewPos.y, viewPos.z, 1f);
-        projection.transform(clip);
-
-        // Only reject when clip.w is too close to zero to divide. Don't sign-restrict — MC's
-        // perspective + modelview composition can put visible content at clip.w of either sign depending
-        // on convention quirks, and the picking samples and rendered handles go through the same matrices
-        // either way, so the perspective divide produces consistent screen coords for both regardless of
-        // the sign. (An earlier `clip.w <= 0.001` check was clipping out perfectly-visible gizmos in
-        // third-person hand renders where the gizmo origin's view.z came out positive.)
-        if (Math.abs(clip.w) < 1e-6f) {
-            return null;
-        }
-
-        return new Vector2f(
-            (clip.x / clip.w + 1f) * 0.5f * w,
-            (1f - clip.y / clip.w) * 0.5f * h
-        );
-    }
-
-    private static Vector3f axisVec(BLibGizmoState.RenderSnapshot s, int axis) {
-        return switch (axis) {
-            case 0 -> s.viewX();
-            case 1 -> s.viewY();
-            default -> s.viewZ();
-        };
-    }
-
-    private static float distanceToTranslateHandle(
-        BLibGizmoState.RenderSnapshot s,
-        int axis,
-        Vector2f origin,
-        double cursorX,
-        double cursorY,
-        int w,
-        int h
-    ) {
-        var tipView = new Vector3f(s.viewPivot()).fma(s.scale(), axisVec(s, axis));
-        var tip = projectToScreen(tipView, s.projection(), w, h);
-
-        if (tip == null) {
-            return Float.POSITIVE_INFINITY;
-        }
-
-        return distancePointToSegment((float) cursorX, (float) cursorY, origin, tip);
-    }
-
-    /**
-     * Test cursor distance to a ring by sampling N points around the ring, projecting each to screen, and walking the
-     * resulting polyline to find the nearest segment. Cheap enough — RING_PICK_SEGMENTS=32 is 32 projections + 32
-     * point-to-segment distance tests, dominated by the matrix multiply, which runs once per click.
-     */
-    private static float distanceToRotateHandle(
-        BLibGizmoState.RenderSnapshot s,
-        int axis,
-        double cursorX,
-        double cursorY,
-        int w,
-        int h
-    ) {
-        float best = Float.POSITIVE_INFINITY;
-        Vector2f prev = null;
-
-        for (int i = 0; i <= RING_PICK_SEGMENTS; i++) {
-            float t = (float) i / RING_PICK_SEGMENTS * (float) (Math.PI * 2);
-            var local = ringLocal(axis, s.scale(), t);
-            var viewPt = new Vector3f(s.viewPivot())
-                .fma(local.x, s.viewX())
-                .fma(local.y, s.viewY())
-                .fma(local.z, s.viewZ());
-            var screen = projectToScreen(viewPt, s.projection(), w, h);
-
-            if (screen == null) {
-                prev = null;
-                continue;
-            }
-
-            if (prev != null) {
-                float d = distancePointToSegment((float) cursorX, (float) cursorY, prev, screen);
-                if (d < best)
-                    best = d;
-            }
-
-            prev = screen;
-        }
-
-        return best;
-    }
-
-    private static Vector3f ringLocal(int axis, float radius, float t) {
-        var c = (float) Math.cos(t) * radius;
-        var s = (float) Math.sin(t) * radius;
-        return switch (axis) {
-            case 0 -> new Vector3f(0, c, s);
-            case 1 -> new Vector3f(c, 0, s);
-            default -> new Vector3f(c, s, 0);
-        };
-    }
-
-    private static float distancePointToSegment(float px, float py, Vector2f a, Vector2f b) {
-        float abx = b.x - a.x;
-        float aby = b.y - a.y;
-        float apx = px - a.x;
-        float apy = py - a.y;
-        float ab2 = abx * abx + aby * aby;
-
-        if (ab2 < 1e-6f) {
-            return (float) Math.hypot(apx, apy);
-        }
-
-        float t = Math.clamp((apx * abx + apy * aby) / ab2, 0f, 1f);
-        float cx = a.x + t * abx;
-        float cy = a.y + t * aby;
-        return (float) Math.hypot(px - cx, py - cy);
-    }
-
     private static void applyTranslate(BLibGizmoState.DragState drag, double cursorX, double cursorY, int w, int h) {
         var s = drag.startSnapshot();
-        var origin = projectToScreen(s.viewPivot(), s.projection(), w, h);
+        float worldDelta = GizmoMath.axisDelta(
+            s.geometry(),
+            drag.axis(),
+            1,
+            drag.startCursorX(),
+            drag.startCursorY(),
+            cursorX,
+            cursorY,
+            w,
+            h
+        );
 
-        if (origin == null) {
+        if (worldDelta == 0f) {
             return;
         }
-
-        var axisView = axisVec(s, drag.axis());
-        var tipView = new Vector3f(s.viewPivot()).fma(s.scale(), axisView);
-        var tip = projectToScreen(tipView, s.projection(), w, h);
-
-        if (tip == null) {
-            return;
-        }
-
-        // The screen-projected axis: vector from origin to tip in screen pixels. Drag motion projected onto
-        // this gives signed pixel distance along the axis. The arrow is `s.scale()` world units long and
-        // takes |axisScreen| pixels on screen, so world-units-per-pixel along the axis = scale / |axisScreen|.
-        float axisScreenX = tip.x - origin.x;
-        float axisScreenY = tip.y - origin.y;
-        float axisScreenLen2 = axisScreenX * axisScreenX + axisScreenY * axisScreenY;
-
-        if (axisScreenLen2 < 1f) {
-            // Arrow projects to less than 1 pixel — axis is nearly parallel to view direction. Drag would
-            // need ~infinite-pixel sensitivity to read; bail rather than divide by tiny.
-            return;
-        }
-
-        float axisScreenLen = (float) Math.sqrt(axisScreenLen2);
-        float dx = (float) (cursorX - drag.startCursorX());
-        float dy = (float) (cursorY - drag.startCursorY());
-        float pixelsAlongAxis = (dx * axisScreenX + dy * axisScreenY) / axisScreenLen;
-        float worldDelta = pixelsAlongAxis * s.scale() / axisScreenLen;
 
         var startTrans = drag.startTransform().translation();
         var newTrans = new Vector3f(startTrans);
@@ -528,51 +361,20 @@ public final class BLibGizmoInput {
 
     private static void applyRotate(BLibGizmoState.DragState drag, double cursorX, double cursorY, int w, int h) {
         var s = drag.startSnapshot();
-        var origin = projectToScreen(s.viewPivot(), s.projection(), w, h);
+        float deltaDegrees = GizmoMath.rotateDegreesDelta(
+            s.geometry(),
+            drag.axis(),
+            drag.startCursorX(),
+            drag.startCursorY(),
+            cursorX,
+            cursorY,
+            w,
+            h
+        );
 
-        if (origin == null) {
+        if (deltaDegrees == 0f) {
             return;
         }
-
-        // Tangent-projection drag math. The naive `atan2(now) - atan2(start)` approach feels jerky because
-        // a fixed pixel motion produces wildly different angular changes depending on which side of the
-        // gizmo the cursor is on (radial motion contributes 0; tangential motion contributes proportional
-        // to 1/radius). Instead we lock the tangent direction at drag-start and project all subsequent
-        // cursor motion onto that one direction — so 1 pixel of cursor motion along the tangent ALWAYS
-        // produces the same angular change, regardless of where on the ring the click landed.
-        double startDx = drag.startCursorX() - origin.x;
-        double startDy = drag.startCursorY() - origin.y;
-        double startRadius = Math.hypot(startDx, startDy);
-
-        if (startRadius < 1) {
-            // Click was effectively at the gizmo center — there's no well-defined tangent direction. Skip
-            // this drag step rather than producing junk values.
-            return;
-        }
-
-        // Tangent at drag-start, normalized: 90° CCW rotation of the radial direction.
-        double tangentX = -startDy / startRadius;
-        double tangentY = startDx / startRadius;
-
-        // Drag delta in pixels from drag-start cursor to current cursor.
-        double dx = cursorX - drag.startCursorX();
-        double dy = cursorY - drag.startCursorY();
-
-        // Pixel motion along tangent direction (signed). Equivalent to arc length on the start-radius ring.
-        double arcPx = dx * tangentX + dy * tangentY;
-
-        // arc / radius = angle in radians. This is the small-angle approximation; for typical tuner drags
-        // (a few dozen pixels) the error is negligible. For full-circle sweeps the user would need to
-        // release and re-click, which matches Blender's rotation gizmo feel.
-        double deltaRad = arcPx / startRadius;
-
-        // Right-hand rule sign: when the rotation axis points toward the viewer (axisView.z > 0 in OpenGL
-        // right-handed view space), positive axis rotation maps to visual CCW, which our screen-CCW-positive
-        // tangent computes as positive. Flip when the axis points away so a CW cursor sweep still reads as
-        // positive rotation around an axis pointing into the screen.
-        var axisView = axisVec(s, drag.axis());
-        float sign = axisView.z > 0 ? -1f : 1f;
-        float deltaDegrees = (float) Math.toDegrees(deltaRad) * sign;
 
         var startRot = drag.startTransform().rotation();
         var newRot = new Vector3f(startRot);
@@ -591,38 +393,17 @@ public final class BLibGizmoInput {
 
     /**
      * Single-handle uniform-scale drag. Same projection-onto-axis math as {@link #applyTranslate}, but the axis is
-     * hard-coded to viewY (matching {@link BLibGizmoRenderer#drawScale}'s +Y line) and the result is an additive
-     * uniform delta on all three scale components rather than a per-axis translation delta. Sensitivity: drag the full
-     * handle length along the line direction → +1.0 scale.
+     * hard-coded to viewY (matching {@link BLibGizmoRenderer}'s +Y line) and the result is an additive uniform delta on
+     * all three scale components rather than a per-axis translation delta. Sensitivity: drag the full handle length
+     * along the line direction → +1.0 scale.
      */
     private static void applyScale(BLibGizmoState.DragState drag, double cursorX, double cursorY, int w, int h) {
         var s = drag.startSnapshot();
-        var origin = projectToScreen(s.viewPivot(), s.projection(), w, h);
+        float delta = GizmoMath.scaleUniformDelta(s.geometry(), 1, drag.startCursorX(), drag.startCursorY(), cursorX, cursorY, w, h);
 
-        if (origin == null) {
+        if (delta == 0f) {
             return;
         }
-
-        var tipView = new Vector3f(s.viewPivot()).fma(s.scale(), s.viewY());
-        var tip = projectToScreen(tipView, s.projection(), w, h);
-
-        if (tip == null) {
-            return;
-        }
-
-        float axisScreenX = tip.x - origin.x;
-        float axisScreenY = tip.y - origin.y;
-        float axisScreenLen2 = axisScreenX * axisScreenX + axisScreenY * axisScreenY;
-
-        if (axisScreenLen2 < 1f) {
-            return;
-        }
-
-        float axisScreenLen = (float) Math.sqrt(axisScreenLen2);
-        float dx = (float) (cursorX - drag.startCursorX());
-        float dy = (float) (cursorY - drag.startCursorY());
-        float pixelsAlongAxis = (dx * axisScreenX + dy * axisScreenY) / axisScreenLen;
-        float delta = pixelsAlongAxis / axisScreenLen;
 
         var startScale = drag.startTransform().scale();
         var newScale = new Vector3f(startScale.x + delta, startScale.y + delta, startScale.z + delta);

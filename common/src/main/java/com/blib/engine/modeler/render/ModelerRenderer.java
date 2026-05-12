@@ -15,6 +15,7 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL30;
 
 import com.blib.engine.modeler.ModelerScene;
+import com.blib.engine.modeler.gizmo.ModelerGizmoRenderer;
 
 /**
  * Owns the offscreen framebuffer the modeler viewport renders into. Render-to-texture pattern (cf.
@@ -145,6 +146,10 @@ public final class ModelerRenderer {
             var pose = new Matrix4f();
             ModelerGridRenderer.render(pose);
             ModelerCubeRenderer.render(pose, scene.root, scene.selection);
+            // Gizmo rendered last so its line strips overlay the cube faces / selection outline; the projection
+            // matrix is the one we just set (modeler camera) — pass it explicitly so the capture sees it even after
+            // the FBO pass restores the saved projection on the way out.
+            ModelerGizmoRenderer.render(pose, scene, projection);
         } finally {
             GL11.glDisable(GL11.GL_LINE_SMOOTH);
 

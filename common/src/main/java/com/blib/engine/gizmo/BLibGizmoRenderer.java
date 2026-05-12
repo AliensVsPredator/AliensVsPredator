@@ -1,14 +1,10 @@
 package com.blib.engine.gizmo;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
 
 import com.blib.api.client.render.v1.BLibTransform;
 import com.blib.api.client.render.v1.item.BLibItemTransformMode;
@@ -22,12 +18,10 @@ import com.blib.api.client.render.v1.item.pipeline.AzItemRendererPipelineContext
  * <p>
  * Render-time also captures a {@link BLibGizmoState.RenderSnapshot} that the mouse-input handler reads to project
  * handles to screen space for picking and to convert mouse drags into world-space deltas. The snapshot is overwritten
- * each frame the targeted item renders, so picking always uses the freshest pose.
+ * each frame the targeted item renders, so picking always uses the freshest pose. Shared visual primitives live on
+ * {@link GizmoPrimitives}; the geometric snapshot is built via {@link GizmoGeometry#capture}.
  */
 public final class BLibGizmoRenderer {
-
-    /** Number of segments used to draw each rotate ring as a line strip. */
-    private static final int RING_SEGMENTS = 48;
 
     private BLibGizmoRenderer() {
         throw new UnsupportedOperationException();
@@ -72,15 +66,6 @@ public final class BLibGizmoRenderer {
         poseStack.translate(transform.translation().x, transform.translation().y, transform.translation().z);
         poseStack.translate(transform.pivot().x, transform.pivot().y, transform.pivot().z);
 
-        // In MC 1.21, the camera rotation is on RenderSystem's model-view stack, NOT the rendering
-        // PoseStack. The PoseStack here holds local→camera-relative-world (translations only) and the
-        // model-view matrix supplies the camera rotation that takes us into view space. To project handle
-        // positions to screen we need the full local→view = modelview × pose, so capture both and multiply.
-        var modelView = RenderSystem.getModelViewMatrix();
-        var poseMat = poseStack.last().pose();
-        var localToView = new Matrix4f(modelView).mul(poseMat);
-        var viewPivot = new Vector3f(localToView.m30(), localToView.m31(), localToView.m32());
-
         // The depth-based formula assumes view-space coords (camera at origin) where viewPivot.length() ≈
         // camera distance — that's true for world rendering. In HUD / preview render the pose stack
         // operates in GUI-pixel coords, so viewPivot.length() ≈ on-screen position, not depth, and
@@ -92,9 +77,15 @@ public final class BLibGizmoRenderer {
         if (BLibGizmoState.isPreviewRender()) {
             scale = BLibGizmoState.handleScaleMultiplier();
         } else {
-            var depth = viewPivot.length();
+            // We need the view-space depth here to size the gizmo. Capture geometry briefly with a scale of 1 just
+            // to read viewPivot length, then re-capture with the chosen scale baked in. Two captures is cheap (a
+            // matrix multiply + a couple of vector transforms each) and keeps the math centralized.
+            var probe = GizmoGeometry.capture(poseStack, 1f);
+            var depth = probe.viewPivot().length();
             scale = Math.max(0.15f, depth * 0.15f) * BLibGizmoState.handleScaleMultiplier();
         }
+
+        var geometry = GizmoGeometry.capture(poseStack, scale);
 
         var buffer = itemContext.multiBufferSource().getBuffer(RenderType.lines());
         var dragAxis = activeDragAxis();
@@ -108,24 +99,12 @@ public final class BLibGizmoRenderer {
             }
         }
 
-        // Use the same combined local-to-view matrix to compute axis directions, so the picker's projected
-        // handle endpoints land where the user actually sees them. Direction vectors (w=0) drop the
-        // translation column so only the rotation/scale part of the matrix applies.
-        Vector3f viewX = transformDirection(localToView, 1, 0, 0);
-        Vector3f viewY = transformDirection(localToView, 0, 1, 0);
-        Vector3f viewZ = transformDirection(localToView, 0, 0, 1);
-
         BLibGizmoState.setLastRender(
             new BLibGizmoState.RenderSnapshot(
                 itemId,
                 mode,
                 itemContext.getTransformType(),
-                viewPivot,
-                viewX,
-                viewY,
-                viewZ,
-                scale,
-                new Matrix4f(RenderSystem.getProjectionMatrix()),
+                geometry,
                 BLibItemTransformOverrides.isRenderAsWallBlock(),
                 BLibGizmoState.isPreviewRender()
             )
@@ -141,21 +120,6 @@ public final class BLibGizmoRenderer {
      */
     public static void resetFrameSnapshot() {
         BLibGizmoState.setLastRender(null);
-    }
-
-    /**
-     * Transform a local-space basis vector to view space, preserving the pose-stack matrix's scale. We deliberately do
-     * NOT normalize the result: the rendered handles use {@code pose.pose() × local} for their vertices (so the
-     * radius/length they show on screen reflects the pose's scale), and the picking code multiplies these basis vectors
-     * by the gizmo's scale to recover handle positions. If we normalized, picking would compute samples at a different
-     * radius from the visible ring/arrow and the cursor would have to land on invisible geometry to register as a hit —
-     * directly proportional to how far the pose scale departs from 1 (e.g., a third-person hand transform with
-     * {@code scale: 0.5f} would put picking samples at 2× the visible ring radius, so most clicks miss).
-     */
-    private static Vector3f transformDirection(Matrix4f m, float x, float y, float z) {
-        var vec = new Vector4f(x, y, z, 0);
-        m.transform(vec);
-        return new Vector3f(vec.x, vec.y, vec.z);
     }
 
     private static int activeDragAxis() {
@@ -175,75 +139,21 @@ public final class BLibGizmoRenderer {
     private static void drawTranslate(PoseStack poseStack, VertexConsumer buffer, float scale, int dragAxis) {
         // X axis (red), Y axis (green), Z axis (blue). Brighten alpha when this axis is currently being
         // dragged so the user can see which handle their drag has latched onto.
-        drawArrow(poseStack, buffer, scale, 0, 1f, 0.2f, 0.2f, dragAxis == 0 ? 1f : 0.85f);
-        drawArrow(poseStack, buffer, scale, 1, 0.2f, 1f, 0.2f, dragAxis == 1 ? 1f : 0.85f);
-        drawArrow(poseStack, buffer, scale, 2, 0.2f, 0.4f, 1f, dragAxis == 2 ? 1f : 0.85f);
-    }
-
-    private static void drawArrow(PoseStack poseStack, VertexConsumer buffer, float scale, int axis, float r, float g, float b, float a) {
-        float ex = axis == 0 ? scale : 0;
-        float ey = axis == 1 ? scale : 0;
-        float ez = axis == 2 ? scale : 0;
-
-        var pose = poseStack.last();
-        var nx = axis == 0 ? 1f : 0f;
-        var ny = axis == 1 ? 1f : 0f;
-        var nz = axis == 2 ? 1f : 0f;
-
-        // Shaft from origin to tip.
-        buffer.addVertex(pose.pose(), 0, 0, 0).setColor(r, g, b, a).setNormal(pose, nx, ny, nz);
-        buffer.addVertex(pose.pose(), ex, ey, ez).setColor(r, g, b, a).setNormal(pose, nx, ny, nz);
-
-        // Tip cross — a small "+" perpendicular to the axis at the tip, so the user has a target to click.
-        var tip = scale;
-        var spike = scale * 0.08f;
-        if (axis == 0) {
-            drawLine(buffer, pose, tip, -spike, 0, tip, spike, 0, r, g, b, a, nx, ny, nz);
-            drawLine(buffer, pose, tip, 0, -spike, tip, 0, spike, r, g, b, a, nx, ny, nz);
-        } else if (axis == 1) {
-            drawLine(buffer, pose, -spike, tip, 0, spike, tip, 0, r, g, b, a, nx, ny, nz);
-            drawLine(buffer, pose, 0, tip, -spike, 0, tip, spike, r, g, b, a, nx, ny, nz);
-        } else {
-            drawLine(buffer, pose, -spike, 0, tip, spike, 0, tip, r, g, b, a, nx, ny, nz);
-            drawLine(buffer, pose, 0, -spike, tip, 0, spike, tip, r, g, b, a, nx, ny, nz);
+        for (int axis = 0; axis < 3; axis++) {
+            var color = GizmoPrimitives.axisColor(axis);
+            float a = dragAxis == axis ? 1f : 0.85f;
+            GizmoPrimitives.drawArrow(poseStack, buffer, scale, axis, color[0], color[1], color[2], a);
         }
     }
 
     private static void drawRotate(PoseStack poseStack, VertexConsumer buffer, float scale, int dragAxis) {
         // Rings drawn around each axis. Color matches the axis being rotated AROUND so the user thinks
         // "click the red ring → rotate around X" — same convention as Blender's rotate gizmo.
-        drawRing(poseStack, buffer, scale, 0, 1f, 0.2f, 0.2f, dragAxis == 0 ? 1f : 0.75f);
-        drawRing(poseStack, buffer, scale, 1, 0.2f, 1f, 0.2f, dragAxis == 1 ? 1f : 0.75f);
-        drawRing(poseStack, buffer, scale, 2, 0.2f, 0.4f, 1f, dragAxis == 2 ? 1f : 0.75f);
-    }
-
-    private static void drawRing(PoseStack poseStack, VertexConsumer buffer, float radius, int axis, float r, float g, float b, float a) {
-        var pose = poseStack.last();
-        var nx = axis == 0 ? 1f : 0f;
-        var ny = axis == 1 ? 1f : 0f;
-        var nz = axis == 2 ? 1f : 0f;
-
-        // Build vertices once, draw connecting line segments.
-        Vector3f prev = ringPoint(axis, radius, 0);
-        for (int i = 1; i <= RING_SEGMENTS; i++) {
-            var t = (float) i / RING_SEGMENTS * (float) (Math.PI * 2);
-            var curr = ringPoint(axis, radius, t);
-            buffer.addVertex(pose.pose(), prev.x, prev.y, prev.z).setColor(r, g, b, a).setNormal(pose, nx, ny, nz);
-            buffer.addVertex(pose.pose(), curr.x, curr.y, curr.z).setColor(r, g, b, a).setNormal(pose, nx, ny, nz);
-            prev = curr;
+        for (int axis = 0; axis < 3; axis++) {
+            var color = GizmoPrimitives.axisColor(axis);
+            float a = dragAxis == axis ? 1f : 0.75f;
+            GizmoPrimitives.drawRing(poseStack, buffer, scale, axis, color[0], color[1], color[2], a);
         }
-    }
-
-    private static Vector3f ringPoint(int axis, float radius, float t) {
-        var c = (float) Math.cos(t) * radius;
-        var s = (float) Math.sin(t) * radius;
-        return switch (axis) {
-            // Ring lies in the plane perpendicular to its axis. For X ring: YZ plane. For Y ring: XZ plane.
-            // For Z ring: XY plane.
-            case 0 -> new Vector3f(0, c, s);
-            case 1 -> new Vector3f(c, 0, s);
-            default -> new Vector3f(c, s, 0);
-        };
     }
 
     /**
@@ -257,74 +167,13 @@ public final class BLibGizmoRenderer {
      */
     private static void drawScale(PoseStack poseStack, VertexConsumer buffer, float scale, int dragAxis) {
         var pose = poseStack.last();
-        // Single handle is recorded as axis=0 in the drag state — there's nothing else to disambiguate.
         float a = dragAxis == 0 ? 1f : 0.85f;
 
         // Shaft.
-        buffer.addVertex(pose.pose(), 0, 0, 0).setColor(1f, 1f, 1f, a).setNormal(pose, 0, 1, 0);
-        buffer.addVertex(pose.pose(), 0, scale, 0).setColor(1f, 1f, 1f, a).setNormal(pose, 0, 1, 0);
+        GizmoPrimitives.drawLine(buffer, pose, 0, 0, 0, 0, scale, 0, 1f, 1f, 1f, a, 0, 1, 0);
 
         // Tip cube — small wireframe handle so there's a "thing" the user can target with the cursor.
         float box = scale * 0.12f;
-        drawWireBox(buffer, pose, 0, scale, 0, box, 1f, 1f, 1f, a, 0, 1, 0);
-    }
-
-    private static void drawWireBox(
-        VertexConsumer buffer,
-        PoseStack.Pose pose,
-        float cx,
-        float cy,
-        float cz,
-        float halfSize,
-        float r,
-        float g,
-        float b,
-        float a,
-        float nx,
-        float ny,
-        float nz
-    ) {
-        float x0 = cx - halfSize, x1 = cx + halfSize;
-        float y0 = cy - halfSize, y1 = cy + halfSize;
-        float z0 = cz - halfSize, z1 = cz + halfSize;
-
-        // 12 edges of the cube. Picking samples test cursor distance to these segments, so any visible
-        // edge is also a click target.
-        // Bottom face (y0).
-        drawLine(buffer, pose, x0, y0, z0, x1, y0, z0, r, g, b, a, nx, ny, nz);
-        drawLine(buffer, pose, x1, y0, z0, x1, y0, z1, r, g, b, a, nx, ny, nz);
-        drawLine(buffer, pose, x1, y0, z1, x0, y0, z1, r, g, b, a, nx, ny, nz);
-        drawLine(buffer, pose, x0, y0, z1, x0, y0, z0, r, g, b, a, nx, ny, nz);
-        // Top face (y1).
-        drawLine(buffer, pose, x0, y1, z0, x1, y1, z0, r, g, b, a, nx, ny, nz);
-        drawLine(buffer, pose, x1, y1, z0, x1, y1, z1, r, g, b, a, nx, ny, nz);
-        drawLine(buffer, pose, x1, y1, z1, x0, y1, z1, r, g, b, a, nx, ny, nz);
-        drawLine(buffer, pose, x0, y1, z1, x0, y1, z0, r, g, b, a, nx, ny, nz);
-        // Vertical edges.
-        drawLine(buffer, pose, x0, y0, z0, x0, y1, z0, r, g, b, a, nx, ny, nz);
-        drawLine(buffer, pose, x1, y0, z0, x1, y1, z0, r, g, b, a, nx, ny, nz);
-        drawLine(buffer, pose, x1, y0, z1, x1, y1, z1, r, g, b, a, nx, ny, nz);
-        drawLine(buffer, pose, x0, y0, z1, x0, y1, z1, r, g, b, a, nx, ny, nz);
-    }
-
-    private static void drawLine(
-        VertexConsumer buffer,
-        PoseStack.Pose pose,
-        float x1,
-        float y1,
-        float z1,
-        float x2,
-        float y2,
-        float z2,
-        float r,
-        float g,
-        float b,
-        float a,
-        float nx,
-        float ny,
-        float nz
-    ) {
-        buffer.addVertex(pose.pose(), x1, y1, z1).setColor(r, g, b, a).setNormal(pose, nx, ny, nz);
-        buffer.addVertex(pose.pose(), x2, y2, z2).setColor(r, g, b, a).setNormal(pose, nx, ny, nz);
+        GizmoPrimitives.drawWireBox(buffer, pose, 0, scale, 0, box, 1f, 1f, 1f, a, 0, 1, 0);
     }
 }

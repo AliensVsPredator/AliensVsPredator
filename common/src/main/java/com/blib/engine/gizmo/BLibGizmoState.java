@@ -162,26 +162,14 @@ public final class BLibGizmoState {
     }
 
     /**
-     * Per-frame snapshot of where the gizmo was drawn. Vectors are in view space (camera transform already applied —
-     * Minecraft puts the camera onto the pose stack at the start of the frame, so when our renderer reads pose-stack
-     * matrix it's already a local-to-view transform). View space is enough for picking: project view positions to clip
-     * via the captured projection matrix, then to screen for cursor-distance comparisons.
+     * Per-frame snapshot of where the gizmo was drawn. Composes a shared {@link GizmoGeometry} (view-space pivot + axis
+     * directions + scale + projection) with item-specific context (id, transform mode, display context, wall/preview
+     * flags). Delegate accessors keep call sites that read {@code viewPivot()} / {@code projection()} unchanged.
      *
      * @param itemId         Item being tuned (the held tunable item that was rendered this frame).
      * @param mode           Tuner mode — {@code BLOCKING} if the player was using-item this frame, else {@code IDLE}.
      * @param displayContext The display context this render used (e.g., {@code THIRD_PERSON_RIGHT_HAND}).
-     * @param viewPivot      View-space coordinate of the gizmo origin (= where the bone pivot lands, in pre-rotation
-     *                       pose frame, plus the user's tuner pivot offset).
-     * @param viewX          View-space direction of the +X axis at the gizmo origin (unit vector).
-     * @param viewY          View-space direction of the +Y axis at the gizmo origin (unit vector).
-     * @param viewZ          View-space direction of the +Z axis at the gizmo origin (unit vector).
-     * @param scale          World-space length to draw each axis arrow / ring radius. Picked so the gizmo looks roughly
-     *                       the same on-screen size regardless of how far the item is from the camera (using camera
-     *                       distance as a hint).
-     * @param projection     The projection matrix in effect when the gizmo was drawn — captured here instead of read
-     *                       live so that input handlers running while a different projection is bound (e.g., GUI
-     *                       projection while chat is open) project against the matrix the handles were rendered
-     *                       through.
+     * @param geometry       Shared geometric snapshot — viewPivot, axis directions, scale, projection.
      * @param wall           True when this snapshot was captured during a wall-block render (the
      *                       {@code RENDER_AS_WALL_BLOCK} flag was on). Drag input writes to the wall-fixed override
      *                       slot instead of the regular {@code FIXED} slot when this is true, so wall and floor poses
@@ -194,15 +182,35 @@ public final class BLibGizmoState {
         ResourceLocation itemId,
         BLibItemTransformMode mode,
         ItemDisplayContext displayContext,
-        Vector3f viewPivot,
-        Vector3f viewX,
-        Vector3f viewY,
-        Vector3f viewZ,
-        float scale,
-        Matrix4f projection,
+        GizmoGeometry geometry,
         boolean wall,
         boolean preview
-    ) {}
+    ) {
+
+        public Vector3f viewPivot() {
+            return geometry.viewPivot();
+        }
+
+        public Vector3f viewX() {
+            return geometry.viewX();
+        }
+
+        public Vector3f viewY() {
+            return geometry.viewY();
+        }
+
+        public Vector3f viewZ() {
+            return geometry.viewZ();
+        }
+
+        public float scale() {
+            return geometry.scale();
+        }
+
+        public Matrix4f projection() {
+            return geometry.projection();
+        }
+    }
 
     /**
      * Active drag — populated on LMB press over a handle, cleared on LMB release. Holds enough to compute the per-frame

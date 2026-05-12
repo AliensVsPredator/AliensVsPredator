@@ -46,6 +46,23 @@ public final class ModelerScene {
     public @Nullable Selection selection;
 
     /**
+     * Pair of {@code (owner-bone, selected-cube)} when a cube is selected. Used by the gizmo system to rebuild the bone
+     * transform chain that places the cube in scene space.
+     */
+    public record CubeWithOwner(
+        ModelerBone owner,
+        ModelerCube cube
+    ) {}
+
+    /** Returns the selected cube + its owning bone, or null when the selection isn't a cube. */
+    public @Nullable CubeWithOwner selectedCubeWithOwner() {
+        if (selection instanceof Selection.CubeSelection cs) {
+            return new CubeWithOwner(cs.owner(), cs.cube());
+        }
+        return null;
+    }
+
+    /**
      * Add a default cube to the bone currently containing the selection (or the root if nothing is selected), select
      * it, and return it. Names are auto-generated to avoid collisions ({@code cube_1}, {@code cube_2}, …).
      */
