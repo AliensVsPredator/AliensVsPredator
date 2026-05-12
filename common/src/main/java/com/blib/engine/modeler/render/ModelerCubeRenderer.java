@@ -44,8 +44,24 @@ public final class ModelerCubeRenderer {
         // Two passes so all filled quads emit first (one draw call) and the selection outline draws on top.
         renderBoneFilled(pose, root);
 
+        // Collect outline targets up front: a CubeSelection outlines just that cube; a BoneSelection cascades to
+        // every cube in the bone's subtree so the user sees the whole group as one selection in the viewport.
+        var targets = new java.util.HashSet<ModelerCube>();
         if (selection instanceof Selection.CubeSelection cs) {
-            renderSelectionOutline(pose, root, cs.cube());
+            targets.add(cs.cube());
+        } else if (selection instanceof Selection.BoneSelection bs) {
+            collectCubesInSubtree(bs.bone(), targets);
+        }
+        if (!targets.isEmpty()) {
+            renderSelectionOutlines(pose, root, targets);
+        }
+    }
+
+    /** Recursively collects every cube reachable from {@code bone} into {@code out}. */
+    private static void collectCubesInSubtree(ModelerBone bone, java.util.Set<ModelerCube> out) {
+        out.addAll(bone.cubes);
+        for (var child : bone.children) {
+            collectCubesInSubtree(child, out);
         }
     }
 
@@ -131,35 +147,24 @@ public final class ModelerCubeRenderer {
 
     // === Selection outline pass ===
 
-    private static void renderSelectionOutline(PoseStack pose, ModelerBone root, ModelerCube target) {
-        // Walk the tree looking for the cube; render its 12 edges in the selection colour at the matching pose.
-        renderOutlineRecursive(pose, root, target);
-    }
-
-    private static boolean renderOutlineRecursive(PoseStack pose, ModelerBone bone, ModelerCube target) {
+    /**
+     * Walks the full bone tree, emitting outline edges for any cube that's in {@code targets}. Set-based so a bone
+     * selection (many cubes) and a cube selection (one cube) share the same render path.
+     */
+    private static void renderSelectionOutlines(PoseStack pose, ModelerBone bone, java.util.Set<ModelerCube> targets) {
         pose.pushPose();
         ModelerTransforms.applyBone(pose, bone);
 
-        var found = false;
         for (var cube : bone.cubes) {
-            if (cube == target) {
+            if (targets.contains(cube)) {
                 emitCubeEdges(pose, cube);
-                found = true;
-                break;
             }
         }
-
-        if (!found) {
-            for (var child : bone.children) {
-                if (renderOutlineRecursive(pose, child, target)) {
-                    found = true;
-                    break;
-                }
-            }
+        for (var child : bone.children) {
+            renderSelectionOutlines(pose, child, targets);
         }
 
         pose.popPose();
-        return found;
     }
 
     private static void emitCubeEdges(PoseStack pose, ModelerCube cube) {
