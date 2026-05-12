@@ -419,6 +419,30 @@ public final class BLibServerListener {
     }
 
     /**
+     * Authoring-write counterpart of {@link #captureRegion}: write {@code newState} to {@code pos} while suppressing
+     * the two collateral-drop pathways. Pre-clears any pre-existing block entity so container blocks don't spill their
+     * inventory through {@code onRemove → Containers.dropContents}, and uses {@link Block#UPDATE_KNOWN_SHAPE} so the
+     * {@code updateNeighbourShapes} cascade doesn't fire — adjacent support-dependent blocks (snow on grass, lanterns
+     * on walls, ladders, redstone wire, signs, banners) don't detect their support is gone and don't drop themselves as
+     * items.
+     * <p>
+     * Used by jigsaw delete and move handlers; the BlockRegionEdit revert/redo path has its own equivalent helper. The
+     * trade-off is stale rendering at the AABB boundary for connection-aware blocks (fences, walls, glass panes) —
+     * those need a neighbouring edit to refresh.
+     */
+    private static void clearCellForRestore(
+        net.minecraft.server.level.ServerLevel level,
+        net.minecraft.core.BlockPos pos,
+        BlockState newState
+    ) {
+        var oldState = level.getBlockState(pos);
+        if (oldState.hasBlockEntity() && !oldState.is(newState.getBlock())) {
+            level.removeBlockEntity(pos);
+        }
+        level.setBlock(pos, newState, Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
+    }
+
+    /**
      * Pop the most recent action from the unified {@link ActionHistory} and revert it. Op-gated. Filters by the
      * player's current dimension for world actions so cross-dimension undos don't write blocks back at the same coords
      * in the wrong level.
@@ -524,7 +548,7 @@ public final class BLibServerListener {
                 aabb.maxZ()
             )
         ) {
-            serverLevel.setBlock(pos.immutable(), air, Block.UPDATE_CLIENTS);
+            clearCellForRestore(serverLevel, pos.immutable(), air);
         }
 
         store.remove(payload.id());
@@ -635,12 +659,12 @@ public final class BLibServerListener {
                 oldAabb.maxZ()
             )
         ) {
-            serverLevel.setBlock(pos.immutable(), air, Block.UPDATE_CLIENTS);
+            clearCellForRestore(serverLevel, pos.immutable(), air);
         }
 
         for (var entry : savedStates.entrySet()) {
             var dest = newMin.offset(entry.getKey().getX(), entry.getKey().getY(), entry.getKey().getZ());
-            serverLevel.setBlock(dest, entry.getValue(), Block.UPDATE_CLIENTS);
+            clearCellForRestore(serverLevel, dest, entry.getValue());
         }
         for (var entry : savedBeNbt.entrySet()) {
             var dest = newMin.offset(entry.getKey().getX(), entry.getKey().getY(), entry.getKey().getZ());

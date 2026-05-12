@@ -107,8 +107,36 @@ public record BlockRegionEdit(
 
     private static void applyStates(ServerLevel level, Map<BlockPos, BlockState> states) {
         for (var entry : states.entrySet()) {
-            level.setBlock(entry.getKey(), entry.getValue(), Block.UPDATE_CLIENTS);
+            setBlockNoCascadeNoDrop(level, entry.getKey(), entry.getValue());
         }
+    }
+
+    /**
+     * The "authoring write" used everywhere blocks are written as part of a snapshot apply (revert or redo of a block-
+     * region edit, jigsaw deletes, jigsaw moves). Distinct from a vanilla {@code setBlock} in two ways:
+     * <ol>
+     * <li>Pre-clears the old block entity when the block kind is changing. {@link Level#setBlock} invokes
+     * {@code oldState.onRemove} unconditionally, and container blocks (chest, hopper, dispenser, barrel, shulker,
+     * decorated pot, …) override {@code onRemove} to call {@link net.minecraft.world.Containers#dropContents
+     * Containers.dropContents}, spilling the inventory into the world. By removing the block entity first the
+     * {@code instanceof Container} check inside {@code onRemove} fails and the drop path is skipped.</li>
+     * <li>Adds {@link Block#UPDATE_KNOWN_SHAPE} (16). With that flag set, the {@code setBlock} pipeline skips the
+     * {@code updateNeighbourShapes} cascade — neighbors don't get their {@code updateShape} called. Support-dependent
+     * neighbors (snow on grass, torches/lanterns on walls, ladders, redstone wire, signs, banners) therefore don't
+     * detect their support is gone and don't drop themselves as items. The trade-off is stale rendering at the AABB
+     * boundary for connection-aware blocks (fences, walls, glass panes, redstone wire visuals) — those need to be
+     * re-touched by a neighbouring edit before they refresh.</li>
+     * </ol>
+     * Block kind unchanged (chest → chest with different NBT, etc.) is left alone: vanilla {@code setBlock} preserves
+     * the existing block entity in that case, so the captured NBT can later be loaded into it by
+     * {@link #applyBlockEntityNbt}.
+     */
+    private static void setBlockNoCascadeNoDrop(ServerLevel level, BlockPos pos, BlockState newState) {
+        var oldState = level.getBlockState(pos);
+        if (oldState.hasBlockEntity() && !oldState.is(newState.getBlock())) {
+            level.removeBlockEntity(pos);
+        }
+        level.setBlock(pos, newState, Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
     }
 
     private static void applyBlockEntityNbt(ServerLevel level, Map<BlockPos, CompoundTag> nbtByPos) {
