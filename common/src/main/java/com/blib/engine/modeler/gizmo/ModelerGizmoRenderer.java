@@ -8,6 +8,7 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.GameRenderer;
 import org.jetbrains.annotations.ApiStatus;
+import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 import com.blib.engine.gizmo.GizmoGeometry;
@@ -75,12 +76,34 @@ public final class ModelerGizmoRenderer {
             return;
         }
 
+        // Capture the cumulative bone-chain rotation BEFORE applyCube. The 3x3 upper-left of the pose at this point
+        // is the product of every parent bone's rotation (Z-Y-X each), unaffected by the translations also in the
+        // chain. GLOBAL-frame drag math uses this to inverse-transform a world-space delta back to cube-local coords.
+        var boneChainRotation = pose.last().pose().get3x3(new Matrix3f());
+
         // Apply the cube's transform (pivot → rotate → unpivot) so the gizmo's axes follow the cube's authored
         // rotation. After this the pose-stack basis is the cube's post-rotation frame; translating by an anchor in
         // cube-local pre-rotation coords lands the origin at that anchor after rotation around the pivot.
         ModelerTransforms.applyCube(pose, selection.cube());
         var anchor = anchorForMode(selection.cube(), mode);
         pose.translate((float) anchor[0], (float) anchor[1], (float) anchor[2]);
+
+        // GLOBAL frame: strip the rotation from the pose so the gizmo's axes align with world X/Y/Z. The translation
+        // column already contains the world position of the anchor (since bone + cube transforms have been applied to
+        // get there), and the upper-left 3x3 currently contains the rotation we want to discard. Resetting to
+        // identity-then-restoring-translation gives a pose that places the gizmo at the right world point with
+        // world-aligned arrows. Restricted to TRANSLATE / PIVOT — ROTATE rings and RESIZE face handles have axis
+        // semantics tied to the cube's frame, so a "global rotate" or "global resize" wouldn't be meaningful.
+        var frame = ModelerGizmoState.frame();
+        boolean global = frame == ModelerGizmoFrame.GLOBAL
+            && (mode == ModelerGizmoMode.TRANSLATE || mode == ModelerGizmoMode.PIVOT);
+        if (global) {
+            var poseMat = pose.last().pose();
+            var tx = poseMat.m30();
+            var ty = poseMat.m31();
+            var tz = poseMat.m32();
+            poseMat.identity().setTranslation(tx, ty, tz);
+        }
 
         // Depth-based scale: same formula as BLibGizmoRenderer so the gizmo looks roughly the same on-screen size
         // regardless of camera distance.
@@ -137,7 +160,10 @@ public final class ModelerGizmoRenderer {
             RenderSystem.disableBlend();
         }
 
-        ModelerGizmoState.setLastRender(new ModelerGizmoState.RenderSnapshot(geometry, selection.owner(), selection.cube()));
+        ModelerGizmoState
+            .setLastRender(
+                new ModelerGizmoState.RenderSnapshot(geometry, selection.owner(), selection.cube(), boneChainRotation, frame)
+            );
     }
 
     /** Recursively walks the bone tree, applying transforms onto {@code pose}, until {@code target} is reached. */

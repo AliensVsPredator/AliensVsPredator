@@ -5,16 +5,21 @@ import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import com.blib.engine.modeler.gizmo.ModelerGizmoFrame;
 import com.blib.engine.modeler.gizmo.ModelerGizmoMode;
 import com.blib.engine.modeler.gizmo.ModelerGizmoState;
 
 /**
  * Tiny mode-switch overlay drawn on top of the modeler viewport (no FBO involvement — straight {@link GuiGraphics}
- * fills + glyphs). Four buttons select the active {@link ModelerGizmoMode}: OFF (select only), TRANSLATE, ROTATE,
- * RESIZE. The active mode renders with a brighter fill so the user knows what gizmo will appear on the selected cube.
+ * fills + glyphs). Five buttons select the active {@link ModelerGizmoMode}: OFF (select only), TRANSLATE, ROTATE,
+ * RESIZE, PIVOT. The active mode renders with a brighter fill so the user knows what gizmo will appear on the selected
+ * cube. After the mode buttons sits a wider frame-cycle button: click cycles {@link ModelerGizmoFrame} (LOCAL → GLOBAL
+ * → …). The frame applies only to TRANSLATE / PIVOT — for the other modes the setting persists but has no visible
+ * effect.
  * <p>
  * Buttons live at the top-left of the panel's content rect, inside a small inset. Click routing is handled by
- * {@link #hitTest}: returns the mode the click would activate, or {@code null} when the cursor is outside any button.
+ * {@link #hitTestMode} / {@link #hitTestFrame}: each returns whether the click landed on the corresponding control, or
+ * {@code null} / {@code false} when the cursor is outside.
  */
 @ApiStatus.Internal
 public final class ModelerViewportToolbar {
@@ -22,6 +27,12 @@ public final class ModelerViewportToolbar {
     private static final int BUTTON_SIZE = 16;
 
     private static final int BUTTON_GAP = 2;
+
+    /** Extra gap between the last mode button and the frame button — visually separates the two control groups. */
+    private static final int GROUP_GAP = 6;
+
+    /** Wider than the mode buttons so "Local" / "Global" labels fit; matches the toolbar height to read as a row. */
+    private static final int FRAME_BUTTON_WIDTH = 38;
 
     private static final int INSET = 4;
 
@@ -67,13 +78,29 @@ public final class ModelerViewportToolbar {
             int labelY = by + (BUTTON_SIZE - labelH) / 2;
             graphics.drawString(font, label, labelX, labelY, isActive ? LABEL_ACTIVE_COLOR : LABEL_COLOR, false);
         }
+
+        // Frame cycle button after the mode group. Rendered with the same chrome style; the label is the current
+        // frame's display name. Click handling in hitTestFrame.
+        var frameRect = frameButtonRect(panelX, panelY);
+        var frame = ModelerGizmoState.frame();
+        graphics.fill(frameRect.x, frameRect.y, frameRect.x + frameRect.w, frameRect.y + frameRect.h, BG_COLOR);
+        graphics.fill(frameRect.x, frameRect.y, frameRect.x + frameRect.w, frameRect.y + 1, BORDER_COLOR);
+        graphics.fill(frameRect.x, frameRect.y + frameRect.h - 1, frameRect.x + frameRect.w, frameRect.y + frameRect.h, BORDER_COLOR);
+        graphics.fill(frameRect.x, frameRect.y, frameRect.x + 1, frameRect.y + frameRect.h, BORDER_COLOR);
+        graphics.fill(frameRect.x + frameRect.w - 1, frameRect.y, frameRect.x + frameRect.w, frameRect.y + frameRect.h, BORDER_COLOR);
+        var frameLabel = Component.literal(frame.label());
+        int frameLabelW = font.width(frameLabel);
+        int frameLabelH = font.lineHeight;
+        int frameLabelX = frameRect.x + (frameRect.w - frameLabelW) / 2;
+        int frameLabelY = frameRect.y + (frameRect.h - frameLabelH) / 2;
+        graphics.drawString(font, frameLabel, frameLabelX, frameLabelY, LABEL_COLOR, false);
     }
 
     /**
      * Returns the mode whose button covers {@code (mouseX, mouseY)} relative to the panel rect, or null when the cursor
-     * is outside any button.
+     * is outside any mode button. Frame button hits go through {@link #hitTestFrame} instead.
      */
-    public static @Nullable ModelerGizmoMode hitTest(double mouseX, double mouseY, int panelX, int panelY) {
+    public static @Nullable ModelerGizmoMode hitTestMode(double mouseX, double mouseY, int panelX, int panelY) {
         for (int i = 0; i < MODES.length; i++) {
             int bx = panelX + INSET + i * (BUTTON_SIZE + BUTTON_GAP);
             int by = panelY + INSET;
@@ -82,6 +109,24 @@ public final class ModelerViewportToolbar {
             }
         }
         return null;
+    }
+
+    /** Legacy alias retained for any external callers — forwards to {@link #hitTestMode}. */
+    public static @Nullable ModelerGizmoMode hitTest(double mouseX, double mouseY, int panelX, int panelY) {
+        return hitTestMode(mouseX, mouseY, panelX, panelY);
+    }
+
+    /** True when {@code (mouseX, mouseY)} sits inside the frame-cycle button. */
+    public static boolean hitTestFrame(double mouseX, double mouseY, int panelX, int panelY) {
+        var rect = frameButtonRect(panelX, panelY);
+        return mouseX >= rect.x && mouseX < rect.x + rect.w && mouseY >= rect.y && mouseY < rect.y + rect.h;
+    }
+
+    private static Rect frameButtonRect(int panelX, int panelY) {
+        int afterModes = panelX + INSET + MODES.length * (BUTTON_SIZE + BUTTON_GAP);
+        int x = afterModes + GROUP_GAP;
+        int y = panelY + INSET;
+        return new Rect(x, y, FRAME_BUTTON_WIDTH, BUTTON_SIZE);
     }
 
     private static Component label(ModelerGizmoMode mode) {
@@ -93,4 +138,11 @@ public final class ModelerViewportToolbar {
             case PIVOT -> Component.literal("P");
         };
     }
+
+    private record Rect(
+        int x,
+        int y,
+        int w,
+        int h
+    ) {}
 }

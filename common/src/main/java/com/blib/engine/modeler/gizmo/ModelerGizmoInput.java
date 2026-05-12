@@ -3,6 +3,7 @@ package com.blib.engine.modeler.gizmo;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 import org.joml.Matrix3f;
+import org.joml.Vector3f;
 
 import com.blib.engine.gizmo.GizmoMath;
 import com.blib.engine.modeler.ModelerCube;
@@ -241,20 +242,63 @@ public final class ModelerGizmoInput {
             return;
         }
 
+        // LOCAL frame: delta is already along the cube's post-rotation X/Y/Z; adding it to origin.<axis> shifts the
+        // cube body in cube-local pre-rotation, and the cube's own rotation matrix carries the body through into
+        // the world-space motion the user expects. No inverse-transform needed.
+        // GLOBAL frame: delta is along world X/Y/Z. The cube body's world position is bone_chain * R_cube * v, so to
+        // produce a world-space shift along the world axis we have to inverse-transform: Δv_local = R_cube^T *
+        // bone_chain^T * delta_world.
         var startOrigin = drag.startCube().origin();
-        Vec3 newOrigin = switch (drag.axis()) {
-            case 0 -> new Vec3(startOrigin.x + delta, startOrigin.y, startOrigin.z);
-            case 1 -> new Vec3(startOrigin.x, startOrigin.y + delta, startOrigin.z);
-            default -> new Vec3(startOrigin.x, startOrigin.y, startOrigin.z + delta);
-        };
+        var deltaLocal = computeLocalDelta(drag, s, delta);
+        var newOrigin = new Vec3(
+            startOrigin.x + deltaLocal.x,
+            startOrigin.y + deltaLocal.y,
+            startOrigin.z + deltaLocal.z
+        );
         s.cube().origin = newOrigin;
     }
 
     /**
-     * Pivot translation drag. Mirrors {@link #applyTranslate}'s axis-aligned delta but writes to {@code cube.pivot}
-     * instead of {@code cube.origin}. The gizmo anchor is the pivot, so the gizmo itself follows along — visually the
-     * user grabs an arrow and "drags the pivot" while the cube's geometry stays in place (unless rotation is non-zero,
-     * in which case the cube swings around the new pivot, which is the desired effect of "move the rotation center").
+     * Compute the cube-local delta vector for a translate-style drag, branching on the snapshot's frame. Shared helper
+     * between {@link #applyTranslate} and {@link #applyPivotTranslate}'s body-compensation path.
+     */
+    private static Vector3f computeLocalDelta(ModelerGizmoState.DragState drag, ModelerGizmoState.RenderSnapshot s, float delta) {
+        if (s.frame() == ModelerGizmoFrame.LOCAL) {
+            // Axis-aligned in cube-local pre-rotation. The cube's rotation chain does the rest at render time.
+            var v = new Vector3f(0, 0, 0);
+            v.setComponent(drag.axis(), delta);
+            return v;
+        }
+        // GLOBAL: delta is along world axis. Inverse cumulative rotation = R_cube^T * bone_chain^T.
+        var startRot = drag.startCube().rotation();
+        var rcube = new Matrix3f()
+            .rotateZ((float) Math.toRadians(startRot.z))
+            .rotateY((float) Math.toRadians(startRot.y))
+            .rotateX((float) Math.toRadians(startRot.x));
+        var inverseCumulative = new Matrix3f(s.boneChainRotation()).mul(rcube).transpose();
+        var worldDelta = new Vector3f(0, 0, 0);
+        worldDelta.setComponent(drag.axis(), delta);
+        inverseCumulative.transform(worldDelta);
+        return worldDelta;
+    }
+
+    /**
+     * Pivot translation drag — moves the cube's rotation center along the gizmo's visible axis while keeping the
+     * rendered cube body in place. Two subtleties on top of the {@link #applyTranslate} pattern:
+     * <ol>
+     * <li><b>Pivot shift in the visible direction.</b> The gizmo is rendered in the cube's post-rotation frame, so the
+     * red/green/blue arrows point along {@code R * (1,0,0)} / {@code (0,1,0)} / {@code (0,0,1)} in world space (where
+     * {@code R} is the cube's rotation matrix). The pivot is stored in cube-local pre-rotation coords; to move the
+     * world-space pivot by {@code delta * visibleAxis}, the pre-rotation shift is {@code R * (delta along axis)} (the
+     * pivot itself isn't transformed by R — it sits outside the rotation). The previous version added {@code delta}
+     * directly to {@code pivot.x/y/z}, which only matched the visible direction when R was identity.</li>
+     * <li><b>Origin compensation.</b> A naked pivot shift drags the rendered cube along because the body transform is
+     * {@code T(pivot) * R * T(-pivot) * v} — changing pivot by {@code Δp} moves the rendered body by
+     * {@code (I - R) * Δp}. To cancel that body motion, shift {@code cube.origin} by {@code Δo = (I - R^T) * Δp}; with
+     * {@code Δp = R * δ_local}, that simplifies to {@code Δo = Δp - δ_local} (the difference between rotated and
+     * pre-rotation axis units, scaled by the drag delta). When R is identity the difference vanishes and the cube
+     * doesn't move, matching the simple case.</li>
+     * </ol>
      */
     private static void applyPivotTranslate(ModelerGizmoState.DragState drag, double cx, double cy, int w, int h) {
         var s = drag.startSnapshot();
@@ -263,13 +307,57 @@ public final class ModelerGizmoInput {
             return;
         }
 
+        // Build the cube's start rotation matrix in Z-Y-X intrinsic Euler order (matches ModelerTransforms.applyCube
+        // and applyRotate elsewhere in this file). Use the drag-start rotation, not live state — applyPivotTranslate
+        // re-runs each frame with absolute deltas from drag-start, so the baseline must be drag-start to stay stable.
+        var startRot = drag.startCube().rotation();
+        var rcube = new Matrix3f()
+            .rotateZ((float) Math.toRadians(startRot.z))
+            .rotateY((float) Math.toRadians(startRot.y))
+            .rotateX((float) Math.toRadians(startRot.x));
+
+        // Δp_local — the change to cube.pivot — depends on frame.
+        // LOCAL : user drags along visible (cube-post-rotation) axis. Pivot is OUTSIDE the cube rotation, so to
+        // move the world pivot along the visible axis we shift by R_cube * (delta along local axis).
+        // GLOBAL: user drags along world axis. Pivot's local-to-world transform is just bone_chain (no R_cube,
+        // since the pivot is the rotation center, not inside the rotation). Δp_local = bone_chain^T * delta_world.
+        var dpLocal = new Vector3f(0, 0, 0);
+        if (s.frame() == ModelerGizmoFrame.LOCAL) {
+            var deltaCubeLocal = new Vector3f(0, 0, 0);
+            deltaCubeLocal.setComponent(drag.axis(), delta);
+            dpLocal.set(deltaCubeLocal);
+            rcube.transform(dpLocal);
+        } else {
+            // GLOBAL: inverse-transform world delta through bone_chain.
+            var deltaWorld = new Vector3f(0, 0, 0);
+            deltaWorld.setComponent(drag.axis(), delta);
+            var boneInv = new Matrix3f(s.boneChainRotation()).transpose();
+            boneInv.transform(deltaWorld);
+            dpLocal.set(deltaWorld);
+        }
+
+        // Origin compensation so the cube body stays put under the pivot change. Derivation (see earlier comment in
+        // the LOCAL-only version): Δo = (I - R_cube^T) * Δp_local. This is independent of bone_chain — the bone
+        // chain transforms the entire (pivot + body) outcome uniformly, so it cancels in the "keep body in place"
+        // equation.
+        var rcubeT = new Matrix3f(rcube).transpose();
+        var rcubeTimesDp = new Vector3f(dpLocal);
+        rcubeT.transform(rcubeTimesDp);
+        var dOrigin = new Vector3f(dpLocal).sub(rcubeTimesDp);
+
         var startPivot = drag.startCube().pivot();
-        Vec3 newPivot = switch (drag.axis()) {
-            case 0 -> new Vec3(startPivot.x + delta, startPivot.y, startPivot.z);
-            case 1 -> new Vec3(startPivot.x, startPivot.y + delta, startPivot.z);
-            default -> new Vec3(startPivot.x, startPivot.y, startPivot.z + delta);
-        };
-        s.cube().pivot = newPivot;
+        var startOrigin = drag.startCube().origin();
+
+        s.cube().pivot = new Vec3(
+            startPivot.x + dpLocal.x,
+            startPivot.y + dpLocal.y,
+            startPivot.z + dpLocal.z
+        );
+        s.cube().origin = new Vec3(
+            startOrigin.x + dOrigin.x,
+            startOrigin.y + dOrigin.y,
+            startOrigin.z + dOrigin.z
+        );
     }
 
     /**

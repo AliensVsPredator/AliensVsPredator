@@ -145,9 +145,15 @@ public final class ModelerViewportPanel implements Panel {
         if (button == 0) {
             // Toolbar takes priority — if the cursor is over a button, switch modes and consume the click so it
             // doesn't fall through to selection / gizmo picking.
-            var toolbarHit = ModelerViewportToolbar.hitTest(mouseX, mouseY, panelX, panelY);
-            if (toolbarHit != null) {
-                ModelerGizmoState.setMode(toolbarHit);
+            var modeHit = ModelerViewportToolbar.hitTestMode(mouseX, mouseY, panelX, panelY);
+            if (modeHit != null) {
+                ModelerGizmoState.setMode(modeHit);
+                return true;
+            }
+            // Frame cycle button — click rotates LOCAL → GLOBAL → … so multi-frame support extends without a UI
+            // redesign.
+            if (ModelerViewportToolbar.hitTestFrame(mouseX, mouseY, panelX, panelY)) {
+                ModelerGizmoState.setFrame(ModelerGizmoState.frame().next());
                 return true;
             }
 

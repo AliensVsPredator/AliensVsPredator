@@ -3,6 +3,7 @@ package com.blib.engine.modeler.gizmo;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3f;
 
 import com.blib.engine.gizmo.GizmoGeometry;
 import com.blib.engine.modeler.ModelerBone;
@@ -20,6 +21,8 @@ import com.blib.engine.modeler.ModelerCube;
 public final class ModelerGizmoState {
 
     private static volatile ModelerGizmoMode mode = ModelerGizmoMode.OFF;
+
+    private static volatile ModelerGizmoFrame frame = ModelerGizmoFrame.LOCAL;
 
     private static volatile @Nullable RenderSnapshot lastRender = null;
 
@@ -42,6 +45,21 @@ public final class ModelerGizmoState {
             drag = null;
             hover = null;
         }
+    }
+
+    public static ModelerGizmoFrame frame() {
+        return frame;
+    }
+
+    /**
+     * Switch the gizmo's reference frame (LOCAL vs GLOBAL). Cancels any in-flight drag for the same reason
+     * {@link #setMode} does — the drag math branches on frame, so changing mid-drag would reinterpret the same cursor
+     * motion against a different axis basis.
+     */
+    public static void setFrame(ModelerGizmoFrame newFrame) {
+        frame = newFrame;
+        drag = null;
+        hover = null;
     }
 
     public static @Nullable RenderSnapshot lastRender() {
@@ -77,15 +95,24 @@ public final class ModelerGizmoState {
      * cube is identified by reference; if it's deleted between render and click, the input handler bails before
      * mutating.
      *
-     * @param geometry View-space pivot, axes, scale, projection (captured at the cube's pivot in cube-local frame).
-     * @param owner    Bone that owns the selected cube — needed to rebuild the bone transform chain when applying drag
-     *                 deltas in cube-local space.
-     * @param cube     The selected cube — drag math reads/writes its origin/rotation/size.
+     * @param geometry          View-space pivot, axes, scale, projection. The axes match whatever frame the gizmo was
+     *                          rendered in (cube-local in LOCAL mode, world-axis-aligned in GLOBAL mode).
+     * @param owner             Bone that owns the selected cube — needed to rebuild the bone transform chain when
+     *                          applying drag deltas in cube-local space.
+     * @param cube              The selected cube — drag math reads/writes its origin/rotation/size.
+     * @param boneChainRotation 3x3 rotation matrix accumulated by walking from {@code scene.root} to {@code owner},
+     *                          BEFORE applying the cube's own rotation. Used by GLOBAL-frame drag math to inverse-
+     *                          transform a world-space delta back to cube-local pre-rotation coords.
+     * @param frame             Reference frame at render time. Drag math reads this to pick the LOCAL vs GLOBAL path so
+     *                          a drag-in-flight stays consistent even if the user toggles frame mid-drag (the toggle
+     *                          itself cancels the drag, but reading from the snapshot is the safer source).
      */
     public record RenderSnapshot(
         GizmoGeometry geometry,
         ModelerBone owner,
-        ModelerCube cube
+        ModelerCube cube,
+        Matrix3f boneChainRotation,
+        ModelerGizmoFrame frame
     ) {}
 
     /**
