@@ -71,28 +71,47 @@ public final class ModelerGizmoRenderer {
 
         var geometry = GizmoGeometry.capture(pose, scale, projectionForCapture);
 
+        // Pass 1 — lines: arrow shafts (translate / resize) and rotation rings. Depth-test off so manipulators behind
+        // the cube remain visible / clickable; picking is screen-space so it doesn't depend on depth.
         RenderSystem.setShader(GameRenderer::getRendertypeLinesShader);
         RenderSystem.lineWidth(4.0f);
-        var buffer = Tesselator.getInstance().begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR_NORMAL);
+        var linesBuffer = Tesselator.getInstance().begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR_NORMAL);
 
         switch (mode) {
-            case TRANSLATE -> drawTranslate(pose, buffer, scale);
-            case ROTATE -> drawRotate(pose, buffer, scale);
-            case RESIZE -> drawResize(pose, buffer, scale, selection.cube());
+            case TRANSLATE -> drawTranslateShafts(pose, linesBuffer, scale);
+            case ROTATE -> drawRotate(pose, linesBuffer, scale);
+            case RESIZE -> drawResizeShafts(pose, linesBuffer, scale, selection.cube());
             default -> {
                 /* OFF — early-returned above. */
             }
         }
 
-        var built = buffer.build();
-        if (built != null) {
-            // Draw the gizmo with depth test off so it always overlays the cubes — manipulators behind the cube
-            // would otherwise be invisible and only half-clickable. Picking is already independent of depth
-            // (screen-space distance against projected handle endpoints), so disabling depth here only affects
-            // the visual. Restored after the draw so the next render pass (next frame) starts from a clean state.
+        var linesBuilt = linesBuffer.build();
+        if (linesBuilt != null) {
             RenderSystem.disableDepthTest();
-            BufferUploader.drawWithShader(built);
+            BufferUploader.drawWithShader(linesBuilt);
             RenderSystem.enableDepthTest();
+        }
+
+        // Pass 2 — quads: filled tips. Translate uses pyramids (arrow direction); resize uses cubes (grab handle).
+        // Rotate has no tips. Uses position_color shader since the tip geometry has no per-vertex normals.
+        if (mode == ModelerGizmoMode.TRANSLATE || mode == ModelerGizmoMode.RESIZE) {
+            RenderSystem.setShader(GameRenderer::getPositionColorShader);
+            RenderSystem.enableBlend();
+            RenderSystem.defaultBlendFunc();
+            var quadsBuffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+            switch (mode) {
+                case TRANSLATE -> drawTranslateTips(pose, quadsBuffer, scale);
+                case RESIZE -> drawResizeTips(pose, quadsBuffer, scale, selection.cube());
+                default -> {}
+            }
+            var quadsBuilt = quadsBuffer.build();
+            if (quadsBuilt != null) {
+                RenderSystem.disableDepthTest();
+                BufferUploader.drawWithShader(quadsBuilt);
+                RenderSystem.enableDepthTest();
+            }
+            RenderSystem.disableBlend();
         }
 
         ModelerGizmoState.setLastRender(new ModelerGizmoState.RenderSnapshot(geometry, selection.owner(), selection.cube()));
@@ -128,20 +147,42 @@ public final class ModelerGizmoRenderer {
         return drag == null ? 1 : drag.sign();
     }
 
-    private static void drawTranslate(PoseStack pose, com.mojang.blaze3d.vertex.VertexConsumer buffer, float scale) {
+    private static int activeHoverAxis() {
+        var hover = ModelerGizmoState.hover();
+        return hover == null ? -1 : hover.axis();
+    }
+
+    private static int activeHoverSign() {
+        var hover = ModelerGizmoState.hover();
+        return hover == null ? 1 : hover.sign();
+    }
+
+    private static void drawTranslateShafts(PoseStack pose, com.mojang.blaze3d.vertex.VertexConsumer buffer, float scale) {
         int dragAxis = activeDragAxis();
+        int hoverAxis = activeHoverAxis();
         for (int axis = 0; axis < 3; axis++) {
             var color = GizmoPrimitives.axisColor(axis);
-            float a = dragAxis == axis ? 1f : 0.85f;
-            GizmoPrimitives.drawArrow(pose, buffer, scale, axis, color[0], color[1], color[2], a);
+            float a = (dragAxis == axis || hoverAxis == axis) ? 1f : 0.85f;
+            GizmoPrimitives.drawArrowShaft(pose, buffer, scale, axis, color[0], color[1], color[2], a);
+        }
+    }
+
+    private static void drawTranslateTips(PoseStack pose, com.mojang.blaze3d.vertex.VertexConsumer buffer, float scale) {
+        int dragAxis = activeDragAxis();
+        int hoverAxis = activeHoverAxis();
+        for (int axis = 0; axis < 3; axis++) {
+            var color = GizmoPrimitives.axisColor(axis);
+            float a = (dragAxis == axis || hoverAxis == axis) ? 1f : 0.85f;
+            GizmoPrimitives.drawArrowTipFilled(pose, buffer, scale, axis, color[0], color[1], color[2], a);
         }
     }
 
     private static void drawRotate(PoseStack pose, com.mojang.blaze3d.vertex.VertexConsumer buffer, float scale) {
         int dragAxis = activeDragAxis();
+        int hoverAxis = activeHoverAxis();
         for (int axis = 0; axis < 3; axis++) {
             var color = GizmoPrimitives.axisColor(axis);
-            float a = dragAxis == axis ? 1f : 0.75f;
+            float a = (dragAxis == axis || hoverAxis == axis) ? 1f : 0.75f;
             GizmoPrimitives.drawRing(pose, buffer, scale, axis, color[0], color[1], color[2], a);
         }
     }
@@ -149,14 +190,14 @@ public final class ModelerGizmoRenderer {
     /**
      * Six face arrows, one per ±X/±Y/±Z, anchored at the corresponding cube face center in cube-local pixels. The pose
      * stack at entry sits at the cube's pivot post-rotation; we push to each face center before drawing each arrow so
-     * the gizmo origin stays at the pivot but each handle's BASE sits on its face.
+     * the gizmo origin stays at the pivot but each handle's BASE sits on its face. Shaft (lines) pass — pair with
+     * {@link #drawResizeTips} for the filled tips.
      */
-    private static void drawResize(PoseStack pose, com.mojang.blaze3d.vertex.VertexConsumer buffer, float scale, ModelerCube cube) {
+    private static void drawResizeShafts(PoseStack pose, com.mojang.blaze3d.vertex.VertexConsumer buffer, float scale, ModelerCube cube) {
         int dragAxis = activeDragAxis();
         int dragSign = activeDragSign();
-
-        // Use a shorter arrow length than translate's so the face arrows visually read as different — they sit on
-        // the cube surface alongside the user's authored geometry and benefit from being unobtrusive.
+        int hoverAxis = activeHoverAxis();
+        int hoverSign = activeHoverSign();
         float resizeScale = scale * 0.6f;
 
         for (int axis = 0; axis < 3; axis++) {
@@ -164,11 +205,40 @@ public final class ModelerGizmoRenderer {
                 var faceCenter = faceCenterLocal(cube, axis, sign);
                 var color = GizmoPrimitives.axisColor(axis);
                 boolean dragged = dragAxis == axis && dragSign == sign;
-                float a = dragged ? 1f : 0.85f;
+                boolean hovered = hoverAxis == axis && hoverSign == sign;
+                float a = (dragged || hovered) ? 1f : 0.85f;
 
                 pose.pushPose();
                 pose.translate((float) faceCenter[0], (float) faceCenter[1], (float) faceCenter[2]);
-                GizmoPrimitives.drawArrow(pose, buffer, resizeScale, axis, sign, color[0], color[1], color[2], a);
+                GizmoPrimitives.drawArrowShaft(pose, buffer, resizeScale, axis, sign, color[0], color[1], color[2], a);
+                pose.popPose();
+            }
+        }
+    }
+
+    /**
+     * Quads pass for the resize gizmo — filled cube tips on the shafts emitted by {@link #drawResizeShafts}. Cubes (not
+     * pyramids) because resize is a "grab this handle and pull" gesture, not a "drag this direction" gesture; the cube
+     * reads as a grabbable knob and matches the block-volume scale gizmo's style.
+     */
+    private static void drawResizeTips(PoseStack pose, com.mojang.blaze3d.vertex.VertexConsumer buffer, float scale, ModelerCube cube) {
+        int dragAxis = activeDragAxis();
+        int dragSign = activeDragSign();
+        int hoverAxis = activeHoverAxis();
+        int hoverSign = activeHoverSign();
+        float resizeScale = scale * 0.6f;
+
+        for (int axis = 0; axis < 3; axis++) {
+            for (int sign : new int[] { -1, 1 }) {
+                var faceCenter = faceCenterLocal(cube, axis, sign);
+                var color = GizmoPrimitives.axisColor(axis);
+                boolean dragged = dragAxis == axis && dragSign == sign;
+                boolean hovered = hoverAxis == axis && hoverSign == sign;
+                float a = (dragged || hovered) ? 1f : 0.85f;
+
+                pose.pushPose();
+                pose.translate((float) faceCenter[0], (float) faceCenter[1], (float) faceCenter[2]);
+                GizmoPrimitives.drawArrowTipCubeFilled(pose, buffer, resizeScale, axis, sign, color[0], color[1], color[2], a);
                 pose.popPose();
             }
         }

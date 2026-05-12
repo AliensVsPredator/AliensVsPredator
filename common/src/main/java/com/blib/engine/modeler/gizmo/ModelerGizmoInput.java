@@ -97,6 +97,27 @@ public final class ModelerGizmoInput {
         ModelerGizmoState.setDrag(null);
     }
 
+    /**
+     * Pick the handle under the cursor and write the result to {@link ModelerGizmoState#setHover}. Bails (clears hover)
+     * when there's no gizmo to hit (mode OFF, no snapshot) or a drag is already in flight (the drag visual supersedes
+     * hover feedback). Called once per frame from the viewport panel's render hook so the renderer can brighten the
+     * hovered handle's alpha.
+     */
+    public static void updateHover(double panelCursorX, double panelCursorY, int panelW, int panelH) {
+        var mode = ModelerGizmoState.mode();
+        if (mode == ModelerGizmoMode.OFF || ModelerGizmoState.isDragging()) {
+            ModelerGizmoState.setHover(null);
+            return;
+        }
+        var snapshot = ModelerGizmoState.lastRender();
+        if (snapshot == null) {
+            ModelerGizmoState.setHover(null);
+            return;
+        }
+        var pick = pickHandle(snapshot, mode, panelCursorX, panelCursorY, panelW, panelH);
+        ModelerGizmoState.setHover(pick == null ? null : new ModelerGizmoState.HoverState(pick.axis(), pick.sign()));
+    }
+
     /** Result of a handle hit-test — the axis index (0/1/2) and the sign (+1 for positive-axis / MAX, -1 for MIN). */
     private record HandleHit(
         int axis,

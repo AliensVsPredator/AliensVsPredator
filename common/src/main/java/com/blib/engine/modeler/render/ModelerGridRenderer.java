@@ -17,7 +17,14 @@ import org.joml.Matrix4f;
 @ApiStatus.Internal
 public final class ModelerGridRenderer {
 
-    private static final int GRID_HALF_EXTENT = 16; // ±16 units → 32×32 cell grid
+    private static final int CELL_SIZE = 16;
+
+    /**
+     * Half-extent in world units. Total grid width is {@code 2 * GRID_HALF_EXTENT}. Currently {@code ±24} →
+     * {@code 48 × 48} units total, which renders as a 3 × 3 grid of {@link #CELL_SIZE}-wide cells with cell boundaries
+     * highlighted by {@link #GRID_COLOR_MAJOR}.
+     */
+    private static final int GRID_HALF_EXTENT = 24;
 
     private static final int GRID_COLOR_MINOR = 0xFF2A2A30;
 
@@ -40,9 +47,11 @@ public final class ModelerGridRenderer {
         var tesselator = Tesselator.getInstance();
         var buffer = tesselator.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR_NORMAL);
 
-        // Major axes: through origin, in slightly brighter colour so they read as world axes.
+        // Major lines fall on CELL_SIZE boundaries (the outer rim and the two internal cell dividers per axis) so the
+        // 3 × 3 cell structure reads at a glance; everything else is rendered as a faint sub-cell minor line.
         for (var i = -GRID_HALF_EXTENT; i <= GRID_HALF_EXTENT; i++) {
-            var color = (i == 0) ? GRID_COLOR_MAJOR : GRID_COLOR_MINOR;
+            var onCellBoundary = (i + GRID_HALF_EXTENT) % CELL_SIZE == 0;
+            var color = onCellBoundary ? GRID_COLOR_MAJOR : GRID_COLOR_MINOR;
             // Lines parallel to X axis (varying Z)
             addLine(buffer, pose, -GRID_HALF_EXTENT, 0, i, GRID_HALF_EXTENT, 0, i, color);
             // Lines parallel to Z axis (varying X)

@@ -29,7 +29,7 @@ public final class ViewportTransportToolbar {
 
     private static final int ICON_DISABLED_COLOR = 0xFF606068;
 
-    /** Step button advances the integrated server by one tick per click. Matches the old ToolbarPanel constant. */
+    /** Step button advances the integrated server by one tick per click. */
     public static final int STEP_TICKS = 1;
 
     /** Result of a click against the toolbar. */

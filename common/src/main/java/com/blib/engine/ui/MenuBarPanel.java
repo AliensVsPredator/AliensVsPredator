@@ -20,6 +20,8 @@ public final class MenuBarPanel implements Panel {
 
     public static final String CHIP_FILE = "File";
 
+    public static final String CHIP_PROJECT = "Project";
+
     public static final String CHIP_EDIT = "Edit";
 
     public static final String CHIP_VIEW = "View";
@@ -28,7 +30,7 @@ public final class MenuBarPanel implements Panel {
 
     public static final String CHIP_LAYOUT = "Layout";
 
-    private static final String[] CHIPS = { CHIP_FILE, CHIP_EDIT, CHIP_VIEW, CHIP_WINDOW, CHIP_LAYOUT };
+    private static final String[] CHIPS = { CHIP_PROJECT, CHIP_FILE, CHIP_EDIT, CHIP_VIEW, CHIP_WINDOW, CHIP_LAYOUT };
 
     private static final int BACKGROUND_COLOR = 0xFF202024;
 

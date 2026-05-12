@@ -25,6 +25,8 @@ public final class ModelerGizmoState {
 
     private static volatile @Nullable DragState drag = null;
 
+    private static volatile @Nullable HoverState hover = null;
+
     private ModelerGizmoState() {}
 
     public static ModelerGizmoMode mode() {
@@ -35,9 +37,10 @@ public final class ModelerGizmoState {
         mode = newMode;
         // Cancel any in-flight drag when the user toggles modes — the drag state is mode-specific (axis
         // direction / face handle interpretation differs), and continuing it across a mode change would apply
-        // the wrong delta.
+        // the wrong delta. Hover is cleared too so a stale highlight from the previous mode doesn't ghost.
         if (newMode == ModelerGizmoMode.OFF) {
             drag = null;
+            hover = null;
         }
     }
 
@@ -59,6 +62,14 @@ public final class ModelerGizmoState {
 
     public static boolean isDragging() {
         return drag != null;
+    }
+
+    public static @Nullable HoverState hover() {
+        return hover;
+    }
+
+    public static void setHover(@Nullable HoverState newHover) {
+        hover = newHover;
     }
 
     /**
@@ -114,6 +125,17 @@ public final class ModelerGizmoState {
         RenderSnapshot startSnapshot,
         double previousCursorAngleRad,
         float accumulatedRotationDegrees
+    ) {}
+
+    /**
+     * Hovered gizmo handle. Refreshed each frame by {@code ModelerGizmoInput.updateHover} from the viewport panel's
+     * render hook, then read by the renderer to brighten the matching handle's alpha. {@code axis} is 0/1/2; {@code
+     * sign} is +1 / -1 (only meaningful for RESIZE — TRANSLATE / ROTATE always set +1, matching DragState's
+     * convention).
+     */
+    public record HoverState(
+        int axis,
+        int sign
     ) {}
 
     /** Snapshot of a cube's mutable fields at drag-start. */

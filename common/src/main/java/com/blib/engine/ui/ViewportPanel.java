@@ -33,8 +33,6 @@ import com.blib.engine.selection.Selectable;
 import com.blib.engine.selection.SelectionManager;
 import com.blib.engine.session.EngineMode;
 import com.blib.engine.session.EngineNavigation;
-import com.blib.engine.session.SelectionTool;
-import com.blib.engine.session.SelectionToolState;
 import com.blib.engine.spawn.EntitySpawnSelection;
 import com.blib.engine.territory.ClaimPaintTool;
 import com.blib.mod.BLib;
@@ -106,8 +104,8 @@ public final class ViewportPanel implements Panel {
 
     /**
      * Captured at the end of {@link #render} when the cursor hovers a transport-toolbar button — the workspace reads
-     * this back via {@link #tooltipText()} and renders the tooltip near the cursor. Null when nothing tooltip-worthy
-     * is hovered this frame.
+     * this back via {@link #tooltipText()} and renders the tooltip near the cursor. Null when nothing tooltip-worthy is
+     * hovered this frame.
      */
     private @Nullable Component hoveredTooltip;
 
@@ -564,23 +562,7 @@ public final class ViewportPanel implements Panel {
             var previousSelection = SelectionManager.current().single();
             var previousCornerA = BlockSelection.cornerA();
 
-            // Selection-tool dispatch: MARQUEE always starts a block-volume drag on press (clicks act as corner-A
-            // anchor, drags extend cornerB). INSPECT picks the closest entity / jigsaw / generic block and defers
-            // the marquee-vs-inspect decision until mouseDragged sees motion past the click-vs-drag threshold
-            // (or until release, in which case the inspect candidate sticks).
-            if (SelectionToolState.current() == SelectionTool.MARQUEE) {
-                var marqueeHit = JigsawPlacementCursor.clipFromCursor(session);
-                if (marqueeHit != null) {
-                    var clicked = marqueeHit.getBlockPos();
-                    var anchor = shiftHeld ? anchorForShiftExtend(previousSelection, previousCornerA, clicked) : clicked;
-                    BlockSelection.setCornersDirect(anchor, clicked);
-                    SelectionManager.selectSingle(new BlockVolumeSelectable());
-                    dragPickAnchor = anchor;
-                }
-                return true;
-            }
-
-            // INSPECT mode: pick the closest selectable along the cursor ray (entity / jigsaw / generic block);
+            // LMB picks the closest selectable along the cursor ray (entity / jigsaw / generic block);
             // performSelectionAt clears the selection on a sky miss. Then stage the deferred-decision state so
             // mouseDragged can promote to a volume marquee on enough motion (or immediately if Shift was held).
             EngineNavigation.performSelectionAt(session, relX, relY);

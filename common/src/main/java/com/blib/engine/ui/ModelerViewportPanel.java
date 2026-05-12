@@ -65,13 +65,16 @@ public final class ModelerViewportPanel implements Panel {
         panelHeight = height;
 
         // Hover state — refresh before each scene render so the cube renderer can outline whichever cube is under
-        // the cursor. Suppressed while a gizmo drag is in flight so the hover outline doesn't fight the drag-visual.
+        // the cursor, and the gizmo renderer can brighten whichever handle is under the cursor. Suppressed while a
+        // gizmo drag is in flight so the hover outline doesn't fight the drag-visual.
         var scene = ModelerScene.get();
         if (cursorInsidePanel(mouseX, mouseY) && !gizmoDragActive) {
             var hit = pickCubeAt(mouseX, mouseY);
             scene.hoveredCube = hit != null ? hit.cube() : null;
+            ModelerGizmoInput.updateHover(mouseX - panelX, mouseY - panelY, panelWidth, panelHeight);
         } else {
             scene.hoveredCube = null;
+            ModelerGizmoState.setHover(null);
         }
 
         renderer.render(graphics, x, y, width, height);

@@ -95,9 +95,9 @@ public final class EngineWorkspaceScreen extends Screen {
 
     /**
      * Mouse-pixel half-thickness of a divider's hit zone, in logical pixels. A click within {@code DIVIDER_HIT_PX} of
-     * the boundary line is treated as a divider drag-start. Tuned to {@code 2} so the 5-pixel hit zone exactly
-     * brackets the 4-pixel visible highlight stripe ({@code boundary ± 2}) plus 1 slop pixel — clicks anywhere on
-     * the highlight reliably start a drag, and the slop swallows sub-pixel cursor jitter at the boundary.
+     * the boundary line is treated as a divider drag-start. Tuned to {@code 2} so the 5-pixel hit zone exactly brackets
+     * the 4-pixel visible highlight stripe ({@code boundary ± 2}) plus 1 slop pixel — clicks anywhere on the highlight
+     * reliably start a drag, and the slop swallows sub-pixel cursor jitter at the boundary.
      * <p>
      * Made public so panels with no edge UI (e.g. {@link ViewportPanel}) can yield clicks in the divider band.
      */
@@ -374,17 +374,10 @@ public final class EngineWorkspaceScreen extends Screen {
             new Sizing.SecondFixed(StatusBarPanel.HEIGHT)
         );
 
-        var toolbarAndBelow = new DockNode.Split(
-            Orientation.VERTICAL,
-            new DockNode.Leaf(new ToolbarPanel()),
-            bodyAndStatus,
-            new Sizing.FirstFixed(ToolbarPanel.HEIGHT)
-        );
-
         return new DockNode.Split(
             Orientation.VERTICAL,
             new DockNode.Leaf(new MenuBarPanel()),
-            toolbarAndBelow,
+            bodyAndStatus,
             new Sizing.FirstFixed(MenuBarPanel.HEIGHT)
         );
     }
@@ -449,20 +442,33 @@ public final class EngineWorkspaceScreen extends Screen {
     }
 
     /**
-     * Walk past the trim wrappers built by {@link #buildOuterLayout} to reach the body subtree. The structure is always
-     * {@code Split(V, Leaf(MenuBar), Split(V, Leaf(Toolbar), Split(V, body, Leaf(StatusBar))))}; defensively falls back
-     * to {@code root} itself if anything doesn't match (shouldn't happen with our own builder, but keeps capture from
-     * blowing up on hand-corrupted in-memory state).
+     * Walk past the trim wrappers built by {@link #buildOuterLayout} to reach the body subtree. The expected shape is
+     * {@code Split(V, Leaf(MenuBar), Split(V, body, Leaf(StatusBar)))} with the trim splits pinned to
+     * {@link MenuBarPanel#HEIGHT} / {@link StatusBarPanel#HEIGHT}.
+     * <p>
+     * The peel runs in a loop so layout files that were previously double-wrapped — by an older build whose
+     * {@code extractBodyRoot} didn't recognize the trim shape and serialized the full tree as the "body" — heal
+     * themselves on the next save (each surviving wrapper layer gets stripped). Without the loop, double-wrapped files
+     * would keep accreting a layer per layout switch.
      */
     private static DockNode extractBodyRoot(DockNode root) {
-        if (
-            root instanceof DockNode.Split outer
-                && outer.second() instanceof DockNode.Split toolbarAndBelow
-                && toolbarAndBelow.second() instanceof DockNode.Split bodyAndStatus
+        // Match by SIZING rather than leaf-panel type: a freshly built tree has a real MenuBarPanel / StatusBarPanel
+        // leaf, but after a save / load round-trip those trim leaves become empty TabbedPanels (LayoutSnapshot has no
+        // id for non-tabbed panels). The sizing pins are stable across both forms.
+        var current = root;
+        while (
+            current instanceof DockNode.Split outer
+                && outer.first() instanceof DockNode.Leaf
+                && outer.sizing() instanceof Sizing.FirstFixed menuSizing
+                && menuSizing.pixels == MenuBarPanel.HEIGHT
+                && outer.second() instanceof DockNode.Split bodyAndStatus
+                && bodyAndStatus.second() instanceof DockNode.Leaf
+                && bodyAndStatus.sizing() instanceof Sizing.SecondFixed statusSizing
+                && statusSizing.pixels == StatusBarPanel.HEIGHT
         ) {
-            return bodyAndStatus.first();
+            current = bodyAndStatus.first();
         }
-        return root;
+        return current;
     }
 
     @Override
@@ -1153,6 +1159,23 @@ public final class EngineWorkspaceScreen extends Screen {
             return true;
         }
 
+        // F5 = Reload Project. Mirrors the File menu entry. Wipes the tag-staging overlay since reload catches the
+        // runtime registry up to disk — the red staging tint is no longer meaningful, so rows settle into green / blue.
+        if (ActiveKeybindings.matchesKey(Keybindings.RELOAD_PROJECT, keyCode, modifiers)) {
+            if (ProjectSession.activeProject() != null) {
+                BLib.MOD.networking().sendToServer(new C2SReloadProjectPayload(ProjectSession.activeProjectName()));
+                com.blib.engine.tag.TagStagingCache.clear();
+            }
+            return true;
+        }
+
+        // Space = play / pause toggle. Mirrors the play / pause button on ViewportTransportToolbar. Text-input focus
+        // is already gated above, so typing a space into a search box doesn't freeze the world.
+        if (ActiveKeybindings.matchesKey(Keybindings.VIEWPORT_PLAY_PAUSE, keyCode, modifiers)) {
+            EngineTickControl.toggle();
+            return true;
+        }
+
         // Placement-mode hotkeys: R cycles rotation forward (clockwise), M cycles mirror, T toggles between FREE
         // and JIGSAW_SNAP placement modes. Gated by an active piece selection so these keys don't steal input from
         // other potential editor tools later. Suppressed while a text input is focused (handled above), so typing
@@ -1170,18 +1193,6 @@ public final class EngineWorkspaceScreen extends Screen {
                 com.blib.engine.jigsaw.placement.JigsawTool.cycleNextImplementedMode();
                 return true;
             }
-        }
-
-        // Selection-tool hotkeys: Q = Inspect, V = Marquee. Mirrors the toolbar's segmented control. The bindings
-        // resolve via the active profile so users can rebind them; matchesKey's mod-mask compare keeps Ctrl+V (paste)
-        // below distinct from the bare V here.
-        if (ActiveKeybindings.matchesKey(Keybindings.SELECT_INSPECT, keyCode, modifiers)) {
-            com.blib.engine.session.SelectionToolState.set(com.blib.engine.session.SelectionTool.INSPECT);
-            return true;
-        }
-        if (ActiveKeybindings.matchesKey(Keybindings.SELECT_MARQUEE, keyCode, modifiers)) {
-            com.blib.engine.session.SelectionToolState.set(com.blib.engine.session.SelectionTool.MARQUEE);
-            return true;
         }
 
         // Tool hotkeys: T / S / M for Translate / Scale / Move-Blocks. Mirrors Blender's G/S/R muscle memory.
@@ -1719,8 +1730,13 @@ public final class EngineWorkspaceScreen extends Screen {
         }
     }
 
+    /**
+     * Only {@link Sizing.Ratio} splits are user-resizable. {@link Sizing.FirstFixed} / {@link Sizing.SecondFixed}
+     * anchor one side at a pixel count (menu bars, status bars, toolbars), so dragging their boundary would just snap
+     * back — we hide the divider entirely rather than expose a no-op handle.
+     */
     private static boolean isResizable(Sizing sizing) {
-        return true;
+        return sizing instanceof Sizing.Ratio;
     }
 
     private static @Nullable DividerHit findDivider(DockNode node, int x, int y, int width, int height, int mouseX, int mouseY) {
@@ -1728,10 +1744,14 @@ public final class EngineWorkspaceScreen extends Screen {
             return null;
         }
 
+        // Fixed splits aren't draggable, so don't claim their boundary on hover — fall through and let the recursion
+        // find a real (Ratio) divider further down the tree, if any.
+        var resizable = isResizable(split.sizing());
+
         if (split.orientation() == Orientation.HORIZONTAL) {
             var firstWidth = DockNode.boundary(split.sizing(), width);
             var boundaryX = x + firstWidth;
-            if (Math.abs(mouseX - boundaryX) <= DIVIDER_HIT_PX && mouseY >= y && mouseY < y + height) {
+            if (resizable && Math.abs(mouseX - boundaryX) <= DIVIDER_HIT_PX && mouseY >= y && mouseY < y + height) {
                 return new DividerHit(split, x, y, width, height);
             }
             var inFirst = findDivider(split.first(), x, y, firstWidth, height, mouseX, mouseY);
@@ -1742,7 +1762,7 @@ public final class EngineWorkspaceScreen extends Screen {
         } else {
             var firstHeight = DockNode.boundary(split.sizing(), height);
             var boundaryY = y + firstHeight;
-            if (Math.abs(mouseY - boundaryY) <= DIVIDER_HIT_PX && mouseX >= x && mouseX < x + width) {
+            if (resizable && Math.abs(mouseY - boundaryY) <= DIVIDER_HIT_PX && mouseX >= x && mouseX < x + width) {
                 return new DividerHit(split, x, y, width, height);
             }
             var inFirst = findDivider(split.first(), x, y, width, firstHeight, mouseX, mouseY);
@@ -1798,6 +1818,7 @@ public final class EngineWorkspaceScreen extends Screen {
 
         return switch (chipName) {
             case MenuBarPanel.CHIP_FILE -> buildFileMenu(anchorX, anchorY);
+            case MenuBarPanel.CHIP_PROJECT -> buildProjectMenu(anchorX, anchorY);
             case MenuBarPanel.CHIP_EDIT -> buildEditMenu(anchorX, anchorY);
             case MenuBarPanel.CHIP_VIEW -> buildViewMenu(anchorX, anchorY);
             case MenuBarPanel.CHIP_WINDOW -> buildWindowMenu(anchorX, anchorY);
@@ -2393,27 +2414,40 @@ public final class EngineWorkspaceScreen extends Screen {
     }
 
     /**
-     * FILE menu — project management entry points. "New Project" / "Open Project" close the workspace and open the
-     * picker (the workspace's removed() clears ProjectSession; the picker's onConfirmedOpen rebuilds the workspace
-     * after a successful Open). "Reload Project" / "Delete Project" act on the active project; both are inert when no
-     * project is active (which shouldn't happen post-picker-gating but is defensive).
+     * FILE menu — disk-level open actions that aren't scoped to a project. Currently just the modeler import; grows
+     * here if more general-purpose file ops appear later. Project lifecycle (New / Open / Reload / Delete) lives on its
+     * own top-level {@link MenuBarPanel#CHIP_PROJECT} menu — see {@link #buildProjectMenu}.
      */
     private DropdownMenu buildFileMenu(int anchorX, int anchorY) {
+        var items = new java.util.ArrayList<DropdownMenu.Item>();
+        items.add(new DropdownMenu.Item("Open Model from File…", EngineWorkspaceScreen::openGeoModelFromFile));
+        return new DropdownMenu(anchorX, anchorY, items);
+    }
+
+    /**
+     * PROJECT menu — project lifecycle CRUD. Create / Open close the workspace and open the picker (workspace's
+     * removed() clears ProjectSession; the picker's onConfirmedOpen rebuilds the workspace after a successful Open).
+     * Reload / Delete act on the active project; both are inert when no project is active (which shouldn't happen
+     * post-picker-gating but is defensive).
+     */
+    private DropdownMenu buildProjectMenu(int anchorX, int anchorY) {
         var hasProject = ProjectSession.activeProject() != null;
         var items = new java.util.ArrayList<DropdownMenu.Item>();
-        items.add(new DropdownMenu.Item("New Project…", () -> openPicker(true)));
-        items.add(new DropdownMenu.Item("Open Project…", () -> openPicker(false)));
-        items.add(new DropdownMenu.Item("Open Model from File…", EngineWorkspaceScreen::openGeoModelFromFile));
+        items.add(new DropdownMenu.Item("Create…", () -> openPicker(true)));
+        items.add(new DropdownMenu.Item("Open…", () -> openPicker(false)));
         items.add(
-            new DropdownMenu.Item(hasProject ? "Reload Project" : "Reload Project (no project)", () -> {
+            new DropdownMenu.Item(hasProject ? "Reload" : "Reload (no project)", () -> {
                 if (!hasProject) {
                     return;
                 }
                 BLib.MOD.networking().sendToServer(new C2SReloadProjectPayload(ProjectSession.activeProjectName()));
+                // Wipe the tag-staging overlay — reload makes the runtime registry catch up to disk, so the red
+                // staging tint is no longer meaningful (rows settle into green / blue based on committed state).
+                com.blib.engine.tag.TagStagingCache.clear();
             })
         );
         items.add(
-            new DropdownMenu.Item(hasProject ? "Delete Project…" : "Delete Project… (no project)", () -> {
+            new DropdownMenu.Item(hasProject ? "Delete…" : "Delete… (no project)", () -> {
                 if (!hasProject) {
                     return;
                 }

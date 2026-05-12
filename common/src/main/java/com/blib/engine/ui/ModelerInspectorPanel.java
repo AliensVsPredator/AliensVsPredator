@@ -38,8 +38,8 @@ public final class ModelerInspectorPanel implements Panel {
     private static final int SECTION_HEADER_TEXT_COLOR = 0xFFB8C0D0;
 
     /**
-     * Axis tint colors painted as a small triangle in each input's top-right corner. Match the gizmo's
-     * red / green / blue X/Y/Z palette so the inspector and viewport read the same axis affordance.
+     * Axis tint colors painted as a small triangle in each input's top-right corner. Match the gizmo's red / green /
+     * blue X/Y/Z palette so the inspector and viewport read the same axis affordance.
      */
     private static final int AXIS_RED = 0xFFFF3333;
 
@@ -311,7 +311,9 @@ public final class ModelerInspectorPanel implements Panel {
         syncInput(zIn, formatDouble(v.z));
     }
 
-    /** Like {@link #syncVec} but formats values as plain integers — used for {@code size}, which is whole-number only. */
+    /**
+     * Like {@link #syncVec} but formats values as plain integers — used for {@code size}, which is whole-number only.
+     */
     private static void syncVecInt(TextInput xIn, TextInput yIn, TextInput zIn, Vec3 v) {
         syncInput(xIn, formatInt(v.x));
         syncInput(yIn, formatInt(v.y));

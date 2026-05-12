@@ -17,6 +17,10 @@ import java.util.List;
 @ApiStatus.Internal
 public final class Keybindings {
 
+    // ----- File -----
+
+    public static final Keybinding RELOAD_PROJECT = key(GLFW.GLFW_KEY_F5, "file.reload_project", "Reload Project");
+
     // ----- Edit -----
 
     public static final Keybinding UNDO = ctrlKey(GLFW.GLFW_KEY_Z, "edit.undo", "Undo");
@@ -74,6 +78,10 @@ public final class Keybindings {
 
     public static final Keybinding VIEWPORT_ZOOM = scroll("viewport.zoom", "Zoom");
 
+    // ----- Viewport transport -----
+
+    public static final Keybinding VIEWPORT_PLAY_PAUSE = key(GLFW.GLFW_KEY_SPACE, "viewport.play_pause", "Play/Pause");
+
     // ----- Territory Map panel -----
 
     public static final Keybinding TMAP_CLAIM = mouseButton(0, "tmap.claim", "Claim");
@@ -94,13 +102,8 @@ public final class Keybindings {
 
     public static final Keybinding PAINT_UNCLAIM = mouseDrag(1, "paint.unclaim", "Unclaim chunk");
 
-    // ----- Selection tools (mirror the toolbar's segmented control) -----
-
-    public static final Keybinding SELECT_INSPECT = key(GLFW.GLFW_KEY_Q, "select.inspect", "Inspect tool");
-
-    public static final Keybinding SELECT_MARQUEE = key(GLFW.GLFW_KEY_V, "select.marquee", "Marquee tool");
-
     private static final List<Keybinding> ALL_DEFAULTS = List.of(
+        RELOAD_PROJECT,
         UNDO,
         REDO,
         COPY,
@@ -123,6 +126,7 @@ public final class Keybindings {
         VIEWPORT_PAN,
         VIEWPORT_DOLLY,
         VIEWPORT_ZOOM,
+        VIEWPORT_PLAY_PAUSE,
         TMAP_CLAIM,
         TMAP_UNCLAIM,
         TMAP_PAINT_CLAIM,
@@ -130,9 +134,7 @@ public final class Keybindings {
         TMAP_PAN,
         TMAP_ZOOM,
         PAINT_CLAIM,
-        PAINT_UNCLAIM,
-        SELECT_INSPECT,
-        SELECT_MARQUEE
+        PAINT_UNCLAIM
     );
 
     private Keybindings() {}
@@ -151,13 +153,13 @@ public final class Keybindings {
     /** Human-readable label for a category key. Used for the category rail in the preferences dialog. */
     public static String categoryLabel(String categoryKey) {
         return switch (categoryKey) {
+            case "file" -> "File";
             case "edit" -> "Edit";
             case "jigsaw" -> "Jigsaw";
             case "gizmo" -> "Gizmo";
             case "viewport" -> "Viewport";
             case "tmap" -> "Territory Map";
             case "paint" -> "Paint";
-            case "select" -> "Selection";
             default -> categoryKey;
         };
     }
