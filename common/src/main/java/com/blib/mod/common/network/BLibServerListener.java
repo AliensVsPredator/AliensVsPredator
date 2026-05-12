@@ -29,6 +29,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 
+import com.blib.api.common.dismemberment.v1.LimbDefinitionRegistry;
+import com.blib.api.common.dismemberment.v1.LimbDismemberer;
 import com.blib.api.common.faction.v1.ClaimVisibility;
 import com.blib.api.common.faction.v1.FactionMember;
 import com.blib.api.common.faction.v1.ProtectionMode;
@@ -63,6 +65,8 @@ import com.blib.mod.common.network.packet.C2SDeletePoolPayload;
 import com.blib.mod.common.network.packet.C2SDeleteProjectPayload;
 import com.blib.mod.common.network.packet.C2SDeleteSelectionPayload;
 import com.blib.mod.common.network.packet.C2SDeleteStructurePayload;
+import com.blib.mod.common.network.packet.C2SDismemberAllLimbsPayload;
+import com.blib.mod.common.network.packet.C2SDismemberLimbPayload;
 import com.blib.mod.common.network.packet.C2SGOAPTrackPayload;
 import com.blib.mod.common.network.packet.C2SListCapturesPayload;
 import com.blib.mod.common.network.packet.C2SListPoolsPayload;
@@ -180,6 +184,52 @@ public final class BLibServerListener {
             System.currentTimeMillis()
         );
         ActionHistory.push(action);
+    }
+
+    /**
+     * Detach the specific limb {@code payload.limbId()} from the entity referenced by {@code payload.entityId()}. Sent
+     * by the engine workspace's right-click → Dismember… submenu. Same op-level-2 gating as {@link #handleRemoveEntity}
+     * and the same player-target rejection as a defense-in-depth — players aren't dismemberable in practice (no
+     * registered limb definitions) but the explicit check keeps the protocol surface symmetric with the entity-delete
+     * handler. Unknown or already-detached limb ids are clean no-ops inside {@link LimbDismemberer#detach}, so no extra
+     * validation is needed here.
+     */
+    public static void handleDismemberLimb(C2SDismemberLimbPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        if (!serverPlayer.hasPermissions(2)) {
+            return;
+        }
+
+        Entity entity = serverPlayer.serverLevel().getEntity(payload.entityId());
+        if (!(entity instanceof LivingEntity living) || living instanceof Player) {
+            return;
+        }
+
+        LimbDismemberer.detach(living, payload.limbId(), null);
+    }
+
+    /**
+     * Detach every still-attached limb from the entity referenced by {@code payload.entityId()}. Mirrors the retired
+     * {@code /blib dismember all} command's iteration loop. Same gating as {@link #handleDismemberLimb}.
+     */
+    public static void handleDismemberAllLimbs(C2SDismemberAllLimbsPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        if (!serverPlayer.hasPermissions(2)) {
+            return;
+        }
+
+        Entity entity = serverPlayer.serverLevel().getEntity(payload.entityId());
+        if (!(entity instanceof LivingEntity living) || living instanceof Player) {
+            return;
+        }
+
+        for (var def : LimbDefinitionRegistry.getDefinitions(living.getType())) {
+            LimbDismemberer.detach(living, def.id(), null);
+        }
     }
 
     /**

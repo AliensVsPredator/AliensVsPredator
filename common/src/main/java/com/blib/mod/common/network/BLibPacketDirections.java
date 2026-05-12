@@ -19,6 +19,8 @@ import com.blib.mod.common.network.packet.C2SDeletePoolPayload;
 import com.blib.mod.common.network.packet.C2SDeleteProjectPayload;
 import com.blib.mod.common.network.packet.C2SDeleteSelectionPayload;
 import com.blib.mod.common.network.packet.C2SDeleteStructurePayload;
+import com.blib.mod.common.network.packet.C2SDismemberAllLimbsPayload;
+import com.blib.mod.common.network.packet.C2SDismemberLimbPayload;
 import com.blib.mod.common.network.packet.C2SGOAPTrackPayload;
 import com.blib.mod.common.network.packet.C2SListCapturesPayload;
 import com.blib.mod.common.network.packet.C2SListPoolsPayload;
@@ -115,6 +117,12 @@ public class BLibPacketDirections {
 
         REGISTRY.registerPacketDirection(new PacketDirection.C2S<>(C2SGOAPTrackPayload.TYPE, C2SGOAPTrackPayload.CODEC));
         REGISTRY.registerPacketDirection(new PacketDirection.C2S<>(C2SRemoveEntityPayload.TYPE, C2SRemoveEntityPayload.CODEC));
+        REGISTRY.registerPacketDirection(
+            new PacketDirection.C2S<>(C2SDismemberLimbPayload.TYPE, C2SDismemberLimbPayload.CODEC)
+        );
+        REGISTRY.registerPacketDirection(
+            new PacketDirection.C2S<>(C2SDismemberAllLimbsPayload.TYPE, C2SDismemberAllLimbsPayload.CODEC)
+        );
         REGISTRY.registerPacketDirection(new PacketDirection.C2S<>(C2SSpawnEntityPayload.TYPE, C2SSpawnEntityPayload.CODEC));
         REGISTRY.registerPacketDirection(
             new PacketDirection.C2S<>(C2STranslateEntityPayload.TYPE, C2STranslateEntityPayload.CODEC)

@@ -8,6 +8,8 @@ import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import com.blib.api.common.dismemberment.v1.Dismemberable;
+import com.blib.api.common.dismemberment.v1.LimbDismemberer;
 import com.blib.engine.blockselection.BlockSelection;
 import com.blib.engine.blockselection.BlockSelectionOps;
 import com.blib.engine.input.ActiveKeybindings;
@@ -36,6 +38,8 @@ import com.blib.engine.session.ProjectSession;
 import com.blib.engine.spawn.EntitySpawnSelection;
 import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.C2SDeleteProjectPayload;
+import com.blib.mod.common.network.packet.C2SDismemberAllLimbsPayload;
+import com.blib.mod.common.network.packet.C2SDismemberLimbPayload;
 import com.blib.mod.common.network.packet.C2SGOAPTrackPayload;
 import com.blib.mod.common.network.packet.C2SRedoActionPayload;
 import com.blib.mod.common.network.packet.C2SReloadProjectPayload;
@@ -135,6 +139,13 @@ public final class EngineWorkspaceScreen extends Screen {
     private @Nullable TabDrag tabDrag;
 
     private @Nullable DropdownMenu openMenu;
+
+    /**
+     * One-level cascading submenu of {@link #openMenu} (e.g. the Dismember… → limb list on entity right-click). Only
+     * non-null while {@link #openMenu} is also non-null, and always cleared in lock-step with it so a stale child can't
+     * outlive its parent. We only support a single level of nesting — nothing in the workspace UI needs deeper.
+     */
+    private @Nullable DropdownMenu openSubmenu;
 
     /**
      * Modal yes/no confirmation overlay for destructive actions (FILE → Delete Project). When non-null, takes priority
@@ -495,6 +506,10 @@ public final class EngineWorkspaceScreen extends Screen {
             panelMouseX = OFFSCREEN_MOUSE;
             panelMouseY = OFFSCREEN_MOUSE;
         }
+        if (openSubmenu != null && openSubmenu.isInside(logicalMouseX, logicalMouseY)) {
+            panelMouseX = OFFSCREEN_MOUSE;
+            panelMouseY = OFFSCREEN_MOUSE;
+        }
         var openPopup = SearchableSelect.getOpenPopup();
         if (openPopup != null && openPopup.isInside(logicalMouseX, logicalMouseY)) {
             panelMouseX = OFFSCREEN_MOUSE;
@@ -523,6 +538,9 @@ public final class EngineWorkspaceScreen extends Screen {
 
         if (openMenu != null) {
             openMenu.render(graphics, logicalMouseX, logicalMouseY);
+        }
+        if (openSubmenu != null) {
+            openSubmenu.render(graphics, logicalMouseX, logicalMouseY);
         }
         // Render modals in open-order so a child dialog (e.g. a Delete-Profile confirm spawned from PreferencesDialog)
         // sits on top of its parent. The order is reconciled with field state by syncModalOrder so individual open /
@@ -880,6 +898,9 @@ public final class EngineWorkspaceScreen extends Screen {
         // Scroll-wheel events that land on an open menu shouldn't tunnel through to the scroll containers of panels
         // below — consume them.
         if (openMenu != null && openMenu.isInside(logicalX, logicalY)) {
+            return true;
+        }
+        if (openSubmenu != null && openSubmenu.isInside(logicalX, logicalY)) {
             return true;
         }
         var leaf = panelAt(root, 0, 0, logicalWidth(), logicalHeight(), logicalX, logicalY);
@@ -1319,17 +1340,44 @@ public final class EngineWorkspaceScreen extends Screen {
         }
 
         // 0) An open dropdown takes priority: clicking an item fires it; clicking outside just closes the menu.
+        // Submenu is checked first (innermost wins); clicks inside the parent menu re-spawn the submenu when they
+        // land on a submenu-parent row, or close everything and run the action when they land on a leaf row.
+        if (openSubmenu != null && button == 0 && openSubmenu.isInside(logicalX, logicalY)) {
+            var subIdx = openSubmenu.hitItemAt(logicalX, logicalY);
+            if (subIdx >= 0) {
+                var subItem = openSubmenu.itemAt(subIdx);
+                openMenu = null;
+                openSubmenu = null;
+                subItem.action().run();
+                return true;
+            }
+            // Inside submenu but on a border / dead row: consume and keep both menus open.
+            return true;
+        }
         if (openMenu != null) {
             if (button == 0) {
                 var idx = openMenu.hitItemAt(logicalX, logicalY);
                 if (idx >= 0) {
                     var item = openMenu.itemAt(idx);
+                    if (item.hasSubmenu()) {
+                        // (Re-)spawn the cascading submenu. The parent menu stays open.
+                        openSubmenu = DropdownMenu.spawnSubmenu(
+                            openMenu,
+                            idx,
+                            item.children(),
+                            logicalWidth(),
+                            logicalHeight()
+                        );
+                        return true;
+                    }
                     openMenu = null;
+                    openSubmenu = null;
                     item.action().run();
                     return true;
                 }
             }
             openMenu = null;
+            openSubmenu = null;
             // Only fall through to chip-click handling below if the cursor landed on another menu chip — that lets
             // the user close-and-reopen by clicking a different chip in one motion. Anything else (clicks on
             // dividers, tab strips, panel content) is consumed so dropdown clicks never accidentally start a
@@ -1349,6 +1397,7 @@ public final class EngineWorkspaceScreen extends Screen {
                     var menu = buildMenuFor(chip, menuBar);
                     if (menu != null) {
                         openMenu = menu;
+                        openSubmenu = null;
                     }
                     return true;
                 }
@@ -1463,6 +1512,9 @@ public final class EngineWorkspaceScreen extends Screen {
         if (openMenu != null && openMenu.isInside(logicalX, logicalY)) {
             return true;
         }
+        if (openSubmenu != null && openSubmenu.isInside(logicalX, logicalY)) {
+            return true;
+        }
 
         var leaf = panelAt(root, 0, 0, logicalWidth(), logicalHeight(), logicalX, logicalY);
         if (leaf != null && leaf.mouseReleased(logicalX, logicalY, button)) {
@@ -1530,6 +1582,9 @@ public final class EngineWorkspaceScreen extends Screen {
 
         // Drags over an open menu shouldn't hit panels below it.
         if (openMenu != null && openMenu.isInside(logicalX, logicalY)) {
+            return true;
+        }
+        if (openSubmenu != null && openSubmenu.isInside(logicalX, logicalY)) {
             return true;
         }
 
@@ -2417,6 +2472,7 @@ public final class EngineWorkspaceScreen extends Screen {
     private void onViewportRightClick(@Nullable LivingEntity entity, double cursorX, double cursorY) {
         if (entity == null) {
             this.openMenu = null;
+            this.openSubmenu = null;
             return;
         }
 
@@ -2440,6 +2496,27 @@ public final class EngineWorkspaceScreen extends Screen {
             })
         );
         if (!(entity instanceof net.minecraft.world.entity.player.Player)) {
+            if (entity instanceof Dismemberable) {
+                var remaining = LimbDismemberer.getRemainingDefinitions(entity);
+                if (!remaining.isEmpty()) {
+                    var limbItems = new java.util.ArrayList<DropdownMenu.Item>();
+                    limbItems.add(
+                        new DropdownMenu.Item("All", () -> {
+                            BLib.MOD.networking().sendToServer(new C2SDismemberAllLimbsPayload(entityId));
+                        })
+                    );
+                    for (var def : remaining) {
+                        var label = prettifyLimbName(def.id().getPath());
+                        var limbId = def.id();
+                        limbItems.add(
+                            new DropdownMenu.Item(label, () -> {
+                                BLib.MOD.networking().sendToServer(new C2SDismemberLimbPayload(entityId, limbId));
+                            })
+                        );
+                    }
+                    items.add(new DropdownMenu.Item("Dismember…", () -> {}, limbItems));
+                }
+            }
             items.add(
                 new DropdownMenu.Item("Delete Entity", () -> {
                     BLib.MOD.networking().sendToServer(new C2SRemoveEntityPayload(entityId));
@@ -2448,6 +2525,31 @@ public final class EngineWorkspaceScreen extends Screen {
         }
 
         this.openMenu = new DropdownMenu(menuX, menuY, items);
+        this.openSubmenu = null;
+    }
+
+    /**
+     * Turn a limb id's path component ("left_arm", "head") into a display label ("Left Arm", "Head") for the Dismember
+     * submenu. Splits on underscores and title-cases each segment; preserves any other characters in case authors used
+     * mixed-case ids.
+     */
+    private static String prettifyLimbName(String path) {
+        var parts = path.split("_");
+        var sb = new StringBuilder();
+        for (var i = 0; i < parts.length; i++) {
+            if (i > 0) {
+                sb.append(' ');
+            }
+            var part = parts[i];
+            if (part.isEmpty()) {
+                continue;
+            }
+            sb.append(Character.toUpperCase(part.charAt(0)));
+            if (part.length() > 1) {
+                sb.append(part.substring(1));
+            }
+        }
+        return sb.toString();
     }
 
     /**
@@ -2468,6 +2570,7 @@ public final class EngineWorkspaceScreen extends Screen {
         items.add(new DropdownMenu.Item("Paste", () -> com.blib.engine.blockselection.BlockSelectionOps.paste()));
         items.add(new DropdownMenu.Item("Delete", () -> com.blib.engine.blockselection.BlockSelectionOps.delete()));
         this.openMenu = new DropdownMenu((int) cursorX, (int) cursorY, items);
+        this.openSubmenu = null;
     }
 
     /**
@@ -2520,6 +2623,7 @@ public final class EngineWorkspaceScreen extends Screen {
             })
         );
         this.openMenu = new DropdownMenu((int) cursorX, (int) cursorY, items);
+        this.openSubmenu = null;
     }
 
     private static @Nullable TabbedPanel findFirstTabbedPanel(DockNode node) {

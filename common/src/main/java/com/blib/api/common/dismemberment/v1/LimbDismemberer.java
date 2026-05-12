@@ -127,6 +127,25 @@ public final class LimbDismemberer {
             .toList();
     }
 
+    /**
+     * Returns every limb registered for {@code entity}'s type that hasn't been detached yet — uncategorized. Used by UI
+     * surfaces (engine workspace's right-click "Dismember…" submenu) that present individual limbs to the user
+     * regardless of category. Safe to call from either side: the underlying {@link DismembermentManager} state is
+     * NBT-synced.
+     */
+    public static List<LimbDefinition> getRemainingDefinitions(LivingEntity entity) {
+        if (!(entity instanceof Dismemberable dismemberable)) {
+            return List.of();
+        }
+
+        var manager = dismemberable.getDismembermentManager();
+
+        return LimbDefinitionRegistry.getDefinitions(entity.getType())
+            .stream()
+            .filter(definition -> !manager.isDetached(definition))
+            .toList();
+    }
+
     private static @Nullable DismemberedLimbEntity spawnLimbEntity(
         LivingEntity entity,
         LimbDefinition definition,

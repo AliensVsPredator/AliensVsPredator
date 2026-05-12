@@ -19,8 +19,7 @@ import com.blib.mod.common.gameplay.jigsaw.PlacedPiece;
  * places and deletes pieces.
  * <p>
  * Only pieces for the currently-loaded dimension are kept — dimension changes / re-syncs replace the whole map. Lookups
- * are O(1) by UUID; the hover raycast iterates every piece (cheap for the < ~hundreds we expect in an authoring
- * session).
+ * are O(1) by UUID; the hover raycast iterates every piece (cheap for the ~hundreds we expect in an authoring session).
  */
 @ApiStatus.Internal
 public final class ClientPlacedPieceRegistry {

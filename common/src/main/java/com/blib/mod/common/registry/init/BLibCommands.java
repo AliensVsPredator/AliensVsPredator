@@ -9,7 +9,6 @@ import com.blib.api.common.registry.v1.impl.BLibCommandRegistry;
 import com.blib.engine.command.BLibEngineCommand;
 import com.blib.engine.command.BLibTransformTuneCommand;
 import com.blib.mod.BLib;
-import com.blib.mod.common.command.BLibDismembermentCommands;
 import com.blib.mod.common.command.BLibFactionCommands;
 import com.blib.mod.common.command.BLibGOAPCommands;
 import com.blib.mod.common.command.BLibPropertyCommands;
@@ -40,8 +39,6 @@ public class BLibCommands {
         // Debug-only: only register dev subcommands in development environments so they never ship with a production
         // build. Op-level-2 gating from the parent already blocks survival players from typing it.
         if (BLibAPI.isDevelopmentEnvironment()) {
-            root = root.then(BLibDismembermentCommands.build());
-
             if (BLibAPI.getDistributionType() == DistributionEnvironmentType.CLIENT) {
                 root = root.then(BLibTransformTuneCommand.build());
             }

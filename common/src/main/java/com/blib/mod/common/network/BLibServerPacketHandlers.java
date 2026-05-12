@@ -19,6 +19,8 @@ import com.blib.mod.common.network.packet.C2SDeletePoolPayload;
 import com.blib.mod.common.network.packet.C2SDeleteProjectPayload;
 import com.blib.mod.common.network.packet.C2SDeleteSelectionPayload;
 import com.blib.mod.common.network.packet.C2SDeleteStructurePayload;
+import com.blib.mod.common.network.packet.C2SDismemberAllLimbsPayload;
+import com.blib.mod.common.network.packet.C2SDismemberLimbPayload;
 import com.blib.mod.common.network.packet.C2SGOAPTrackPayload;
 import com.blib.mod.common.network.packet.C2SListCapturesPayload;
 import com.blib.mod.common.network.packet.C2SListPoolsPayload;
@@ -106,6 +108,22 @@ public class BLibServerPacketHandlers {
                 C2SRemoveEntityPayload.TYPE,
                 C2SRemoveEntityPayload.CODEC,
                 BLibServerListener::handleRemoveEntity
+            )
+        );
+
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromClient<>(
+                C2SDismemberLimbPayload.TYPE,
+                C2SDismemberLimbPayload.CODEC,
+                BLibServerListener::handleDismemberLimb
+            )
+        );
+
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromClient<>(
+                C2SDismemberAllLimbsPayload.TYPE,
+                C2SDismemberAllLimbsPayload.CODEC,
+                BLibServerListener::handleDismemberAllLimbs
             )
         );
 
