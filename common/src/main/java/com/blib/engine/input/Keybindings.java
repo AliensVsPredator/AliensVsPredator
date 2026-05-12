@@ -55,6 +55,19 @@ public final class Keybindings {
 
     public static final Keybinding GIZMO_SCALE = key(GLFW.GLFW_KEY_S, "gizmo.scale", "Scale");
 
+    /**
+     * Modeler-only — the world-engine gizmo has no rotate mode (block volumes don't rotate). Defined alongside the
+     * other gizmo bindings so the preferences dialog groups them together. Defaults to R, matching Blender / Blockbench
+     * muscle memory.
+     */
+    public static final Keybinding GIZMO_ROTATE = key(GLFW.GLFW_KEY_R, "gizmo.rotate", "Rotate");
+
+    /**
+     * Modeler-only — drag the selected cube's pivot point along an axis. Defaults to P (mnemonic for "Pivot"); matches
+     * the existing modeler convention of single-key mode toggles.
+     */
+    public static final Keybinding GIZMO_PIVOT = key(GLFW.GLFW_KEY_P, "gizmo.pivot", "Pivot");
+
     public static final Keybinding GIZMO_MOVE_BLOCKS = key(GLFW.GLFW_KEY_M, "gizmo.move_blocks", "Move blocks");
 
     public static final Keybinding GIZMO_SNAP_INT = modifier(Input.MOD_SHIFT, "gizmo.snap_integer", "Snap integer");
@@ -117,6 +130,8 @@ public final class Keybindings {
         JIGSAW_CYCLE_MODE,
         GIZMO_TRANSLATE,
         GIZMO_SCALE,
+        GIZMO_ROTATE,
+        GIZMO_PIVOT,
         GIZMO_MOVE_BLOCKS,
         GIZMO_SNAP_INT,
         VIEWPORT_SELECT,

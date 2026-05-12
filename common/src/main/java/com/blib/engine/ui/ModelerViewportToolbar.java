@@ -39,7 +39,8 @@ public final class ModelerViewportToolbar {
         ModelerGizmoMode.OFF,
         ModelerGizmoMode.TRANSLATE,
         ModelerGizmoMode.ROTATE,
-        ModelerGizmoMode.RESIZE };
+        ModelerGizmoMode.RESIZE,
+        ModelerGizmoMode.PIVOT };
 
     private ModelerViewportToolbar() {}
 
@@ -89,6 +90,7 @@ public final class ModelerViewportToolbar {
             case TRANSLATE -> Component.literal("T");
             case ROTATE -> Component.literal("R");
             case RESIZE -> Component.literal("S");
+            case PIVOT -> Component.literal("P");
         };
     }
 }

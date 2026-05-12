@@ -100,6 +100,10 @@ public final class ModelerGizmoRenderer {
             case TRANSLATE -> drawTranslateShafts(pose, linesBuffer, scale);
             case ROTATE -> drawRotate(pose, linesBuffer, scale);
             case RESIZE -> drawResizeShafts(pose, linesBuffer, scale, selection.cube());
+            // PIVOT reuses the translate-arrow visual since it's a positive-axis directional drag — the only
+            // difference is that the drag math writes cube.pivot instead of cube.origin. The active toolbar button
+            // tells the user which mode they're in.
+            case PIVOT -> drawTranslateShafts(pose, linesBuffer, scale);
             default -> {
                 /* OFF — early-returned above. */
             }
@@ -112,15 +116,15 @@ public final class ModelerGizmoRenderer {
             RenderSystem.enableDepthTest();
         }
 
-        // Pass 2 — quads: filled tips. Translate uses pyramids (arrow direction); resize uses cubes (grab handle).
-        // Rotate has no tips. Uses position_color shader since the tip geometry has no per-vertex normals.
-        if (mode == ModelerGizmoMode.TRANSLATE || mode == ModelerGizmoMode.RESIZE) {
+        // Pass 2 — quads: filled tips. Translate / Pivot use pyramids (arrow direction); resize uses cubes (grab
+        // handle). Rotate has no tips. Uses position_color shader since the tip geometry has no per-vertex normals.
+        if (mode == ModelerGizmoMode.TRANSLATE || mode == ModelerGizmoMode.RESIZE || mode == ModelerGizmoMode.PIVOT) {
             RenderSystem.setShader(GameRenderer::getPositionColorShader);
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
             var quadsBuffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
             switch (mode) {
-                case TRANSLATE -> drawTranslateTips(pose, quadsBuffer, scale);
+                case TRANSLATE, PIVOT -> drawTranslateTips(pose, quadsBuffer, scale);
                 case RESIZE -> drawResizeTips(pose, quadsBuffer, scale, selection.cube());
                 default -> {}
             }
@@ -280,7 +284,9 @@ public final class ModelerGizmoRenderer {
                 cube.origin.y + cube.size.y * 0.5,
                 cube.origin.z + cube.size.z * 0.5
             };
-            case ROTATE, RESIZE -> new double[] { cube.pivot.x, cube.pivot.y, cube.pivot.z };
+            // ROTATE/RESIZE/PIVOT all anchor at the pivot — they're authored relative to it. PIVOT in particular
+            // wants the gizmo to track the pivot as the user drags it so the arrow handles stay grabbable.
+            case ROTATE, RESIZE, PIVOT -> new double[] { cube.pivot.x, cube.pivot.y, cube.pivot.z };
             default -> new double[] { cube.pivot.x, cube.pivot.y, cube.pivot.z };
         };
     }

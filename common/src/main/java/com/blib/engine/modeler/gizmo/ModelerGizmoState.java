@@ -138,15 +138,18 @@ public final class ModelerGizmoState {
         int sign
     ) {}
 
-    /** Snapshot of a cube's mutable fields at drag-start. */
+    /**
+     * Snapshot of a cube's mutable fields at drag-start. Pivot's included so PIVOT-mode drags read a stable baseline.
+     */
     public record CubeBaseline(
         Vec3 origin,
         Vec3 size,
-        Vec3 rotation
+        Vec3 rotation,
+        Vec3 pivot
     ) {
 
         public static CubeBaseline of(ModelerCube cube) {
-            return new CubeBaseline(cube.origin, cube.size, cube.rotation);
+            return new CubeBaseline(cube.origin, cube.size, cube.rotation, cube.pivot);
         }
     }
 }

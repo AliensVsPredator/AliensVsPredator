@@ -233,12 +233,14 @@ public final class ModelerViewportPanel implements Panel {
                         case TRANSLATE -> "cube_translate";
                         case ROTATE -> "cube_rotate";
                         case RESIZE -> "cube_resize";
+                        case PIVOT -> "cube_pivot";
                         default -> "cube_edit";
                     };
                     var description = switch (mode) {
                         case TRANSLATE -> "Translate cube " + target.name;
                         case ROTATE -> "Rotate cube " + target.name;
                         case RESIZE -> "Resize cube " + target.name;
+                        case PIVOT -> "Move pivot of cube " + target.name;
                         default -> "Edit cube " + target.name;
                     };
                     ModelerActionHistory.push(

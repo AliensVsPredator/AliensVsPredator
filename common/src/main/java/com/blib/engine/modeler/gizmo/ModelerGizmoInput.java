@@ -87,6 +87,7 @@ public final class ModelerGizmoInput {
             case TRANSLATE -> applyTranslate(drag, panelCursorX, panelCursorY, panelW, panelH);
             case ROTATE -> applyRotate(drag, panelCursorX, panelCursorY, panelW, panelH);
             case RESIZE -> applyResize(drag, panelCursorX, panelCursorY, panelW, panelH);
+            case PIVOT -> applyPivotTranslate(drag, panelCursorX, panelCursorY, panelW, panelH);
             default -> {
                 /* OFF — no drag math to apply. */
             }
@@ -133,7 +134,8 @@ public final class ModelerGizmoInput {
         int h
     ) {
         return switch (mode) {
-            case TRANSLATE -> pickAxisHandle(snapshot, cx, cy, w, h, TRANSLATE_PICK_THRESHOLD_PX);
+            // PIVOT reuses the same axis-arrow handles as TRANSLATE; only the drag math differs.
+            case TRANSLATE, PIVOT -> pickAxisHandle(snapshot, cx, cy, w, h, TRANSLATE_PICK_THRESHOLD_PX);
             case ROTATE -> pickRingHandle(snapshot, cx, cy, w, h);
             case RESIZE -> pickFaceHandle(snapshot, cx, cy, w, h);
             default -> null;
@@ -246,6 +248,28 @@ public final class ModelerGizmoInput {
             default -> new Vec3(startOrigin.x, startOrigin.y, startOrigin.z + delta);
         };
         s.cube().origin = newOrigin;
+    }
+
+    /**
+     * Pivot translation drag. Mirrors {@link #applyTranslate}'s axis-aligned delta but writes to {@code cube.pivot}
+     * instead of {@code cube.origin}. The gizmo anchor is the pivot, so the gizmo itself follows along — visually the
+     * user grabs an arrow and "drags the pivot" while the cube's geometry stays in place (unless rotation is non-zero,
+     * in which case the cube swings around the new pivot, which is the desired effect of "move the rotation center").
+     */
+    private static void applyPivotTranslate(ModelerGizmoState.DragState drag, double cx, double cy, int w, int h) {
+        var s = drag.startSnapshot();
+        float delta = GizmoMath.axisDelta(s.geometry(), drag.axis(), drag.sign(), drag.startCursorX(), drag.startCursorY(), cx, cy, w, h);
+        if (delta == 0f) {
+            return;
+        }
+
+        var startPivot = drag.startCube().pivot();
+        Vec3 newPivot = switch (drag.axis()) {
+            case 0 -> new Vec3(startPivot.x + delta, startPivot.y, startPivot.z);
+            case 1 -> new Vec3(startPivot.x, startPivot.y + delta, startPivot.z);
+            default -> new Vec3(startPivot.x, startPivot.y, startPivot.z + delta);
+        };
+        s.cube().pivot = newPivot;
     }
 
     /**

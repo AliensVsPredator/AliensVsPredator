@@ -1577,6 +1577,33 @@ public final class EngineWorkspaceScreen extends Screen {
             }
         }
 
+        // Modeler-layout tool hotkeys take priority — T translate, R rotate, S resize, P pivot on the selected cube's
+        // gizmo. Gated on layout so the same keys still drive world-engine gizmos in other layouts. Setting the mode
+        // without a cube selection is fine — ModelerGizmoState just remembers the mode for the next cube the user
+        // picks.
+        if (layoutHasModelerPanel()) {
+            if (ActiveKeybindings.matchesKey(Keybindings.GIZMO_TRANSLATE, keyCode, modifiers)) {
+                com.blib.engine.modeler.gizmo.ModelerGizmoState
+                    .setMode(com.blib.engine.modeler.gizmo.ModelerGizmoMode.TRANSLATE);
+                return true;
+            }
+            if (ActiveKeybindings.matchesKey(Keybindings.GIZMO_ROTATE, keyCode, modifiers)) {
+                com.blib.engine.modeler.gizmo.ModelerGizmoState
+                    .setMode(com.blib.engine.modeler.gizmo.ModelerGizmoMode.ROTATE);
+                return true;
+            }
+            if (ActiveKeybindings.matchesKey(Keybindings.GIZMO_SCALE, keyCode, modifiers)) {
+                com.blib.engine.modeler.gizmo.ModelerGizmoState
+                    .setMode(com.blib.engine.modeler.gizmo.ModelerGizmoMode.RESIZE);
+                return true;
+            }
+            if (ActiveKeybindings.matchesKey(Keybindings.GIZMO_PIVOT, keyCode, modifiers)) {
+                com.blib.engine.modeler.gizmo.ModelerGizmoState
+                    .setMode(com.blib.engine.modeler.gizmo.ModelerGizmoMode.PIVOT);
+                return true;
+            }
+        }
+
         // Tool hotkeys: T / S / M for Translate / Scale / Move-Blocks. Mirrors Blender's G/S/R muscle memory.
         // Auto-switches between block-volume and entity gizmo modes based on the active selection — same keys, the
         // selection type decides which gizmo state changes. M is intentionally block-only since entities have no
