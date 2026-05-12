@@ -46,6 +46,14 @@ public final class ModelerScene {
     public @Nullable Selection selection;
 
     /**
+     * Cube currently under the mouse cursor in the viewport, refreshed each frame by
+     * {@code ModelerViewportPanel.render}. Drives the hover outline the cube renderer draws so users can see what
+     * they'd select before clicking. Null whenever the cursor isn't over a cube, isn't over the panel, or a gizmo drag
+     * is in flight (hover is noise during manipulation).
+     */
+    public @Nullable ModelerCube hoveredCube;
+
+    /**
      * Pair of {@code (owner-bone, selected-cube)} when a cube is selected. Used by the gizmo system to rebuild the bone
      * transform chain that places the cube in scene space.
      */

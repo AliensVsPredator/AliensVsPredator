@@ -96,35 +96,39 @@ public final class StatusBarPanel implements Panel {
 
     // ============================== State region ==============================
 
-    /** A single right-side segment: pre-rendered text + its color. */
+    /**
+     * One right-side segment, split into a label (always rendered in {@link #ACCENT_COLOR}, including its trailing
+     * {@code ": "}) and a value (rendered in {@link #valueColor}). Splitting at the colon keeps the visual pattern
+     * consistent across the whole status bar — the user can scan labels at a glance because they're all the same color.
+     * {@code label} may be empty for segments that are pure value with no prefix (e.g. the placement readout).
+     */
     private record StateSegment(
-        String text,
-        int color
+        String label,
+        String value,
+        int valueColor
     ) {}
 
     private List<StateSegment> collectStateSegments(Font font, int width) {
         var segments = new ArrayList<StateSegment>();
 
         var projectName = ProjectSession.activeProjectName();
-        var projectLabel = projectName.isEmpty() ? "PROJECT: (none)" : "PROJECT: " + projectName;
-        segments.add(new StateSegment(projectLabel, projectName.isEmpty() ? LABEL_COLOR : ACCENT_COLOR));
+        var projectValue = projectName.isEmpty() ? "(none)" : projectName;
+        // Subdued color when no project is loaded so the "(none)" placeholder is visually quieter than a real name.
+        var projectValueColor = projectName.isEmpty() ? LABEL_COLOR : VALUE_COLOR;
+        segments.add(new StateSegment("PROJECT: ", projectValue, projectValueColor));
 
         var layoutId = EngineWorkspaceScreen.activeLayoutId();
         var layoutDoc = LayoutCatalog.get(layoutId);
-        var layoutLabel = "LAYOUT: " + (layoutDoc != null ? layoutDoc.displayName() : layoutId);
-        segments.add(new StateSegment(layoutLabel, VALUE_COLOR));
+        var layoutValue = layoutDoc != null ? layoutDoc.displayName() : layoutId;
+        segments.add(new StateSegment("LAYOUT: ", layoutValue, VALUE_COLOR));
 
-        // Tool-mode chip: SELECT (default arrow / context-menu / entity-pick) or PLACE (jigsaw piece on cursor).
-        // Currently derived from JigsawPieceSelection — a future explicit tool system will swap this for a stored
-        // mode on EngineSession with no caller change. PLACE pops in accent color so the user notices when their
-        // click semantics have shifted from "select" to "place".
         var session = EngineMode.get().session();
         var toolMode = session != null ? session.toolMode() : ToolMode.SELECT;
-        segments.add(new StateSegment("MODE: " + toolMode.name(), toolMode == ToolMode.PLACE ? ACCENT_COLOR : VALUE_COLOR));
+        segments.add(new StateSegment("MODE: ", toolMode.name(), VALUE_COLOR));
 
         var picking = BlockSelection.picking();
         if (picking != BlockSelection.PickingState.NONE) {
-            segments.add(new StateSegment("PICKING: " + picking.name(), ACCENT_COLOR));
+            segments.add(new StateSegment("PICKING: ", picking.name(), VALUE_COLOR));
         }
 
         // Placement state on the right: mode + piece id + rotation + mirror + collision count, but only while a piece
@@ -132,19 +136,20 @@ public final class StatusBarPanel implements Panel {
         // is invisible until the world preview updates next frame, and even then "is that a 90° or a 180° rotation?"
         // isn't always obvious). Collision count comes from JigsawPlacementFrameState — only shown when the resolver
         // returned a valid placement this frame, so the user doesn't see "coll:0" while the cursor's over open sky.
+        // Rendered as a pure value (no "FOO: " label) because the composite has its own internal labels.
         var selectedId = JigsawPieceSelection.selectedId();
         if (selectedId != null) {
             var rotation = JigsawPieceSelection.rotation();
             var mirror = JigsawPieceSelection.mirror();
             var mode = JigsawTool.activeMode();
             var placement = JigsawPlacementFrameState.placement();
-            var placementLabel = "[" + mode.displayName() + "]  " + selectedId.getPath() + "  rot:" + rotationLabel(rotation)
+            var placementValue = "[" + mode.displayName() + "]  " + selectedId.getPath() + "  rot:" + rotationLabel(rotation)
                 + "  mir:" + mirror.name();
             if (placement != null) {
-                placementLabel += "  coll:" + JigsawPlacementFrameState.collisionCount();
+                placementValue += "  coll:" + JigsawPlacementFrameState.collisionCount();
             }
-            var truncated = font.plainSubstrByWidth(placementLabel, width / 2);
-            segments.add(new StateSegment(truncated, ACCENT_COLOR));
+            var truncated = font.plainSubstrByWidth(placementValue, width / 2);
+            segments.add(new StateSegment("", truncated, VALUE_COLOR));
         }
 
         return segments;
@@ -159,7 +164,8 @@ public final class StatusBarPanel implements Panel {
             if (i > 0) {
                 total += STATE_SEGMENT_GAP;
             }
-            total += font.width(segments.get(i).text());
+            var seg = segments.get(i);
+            total += font.width(seg.label()) + font.width(seg.value());
         }
         return total;
     }
@@ -171,8 +177,12 @@ public final class StatusBarPanel implements Panel {
                 x += STATE_SEGMENT_GAP;
             }
             var seg = segments.get(i);
-            graphics.drawString(font, Component.literal(seg.text()), x, textY, seg.color(), false);
-            x += font.width(seg.text());
+            if (!seg.label().isEmpty()) {
+                graphics.drawString(font, Component.literal(seg.label()), x, textY, ACCENT_COLOR, false);
+                x += font.width(seg.label());
+            }
+            graphics.drawString(font, Component.literal(seg.value()), x, textY, seg.valueColor(), false);
+            x += font.width(seg.value());
         }
     }
 

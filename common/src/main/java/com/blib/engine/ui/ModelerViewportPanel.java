@@ -63,6 +63,17 @@ public final class ModelerViewportPanel implements Panel {
         panelY = y;
         panelWidth = width;
         panelHeight = height;
+
+        // Hover state — refresh before each scene render so the cube renderer can outline whichever cube is under
+        // the cursor. Suppressed while a gizmo drag is in flight so the hover outline doesn't fight the drag-visual.
+        var scene = ModelerScene.get();
+        if (cursorInsidePanel(mouseX, mouseY) && !gizmoDragActive) {
+            var hit = pickCubeAt(mouseX, mouseY);
+            scene.hoveredCube = hit != null ? hit.cube() : null;
+        } else {
+            scene.hoveredCube = null;
+        }
+
         renderer.render(graphics, x, y, width, height);
         ModelerViewportToolbar.render(graphics, x, y);
     }
@@ -72,15 +83,31 @@ public final class ModelerViewportPanel implements Panel {
         if (button != 0) {
             return false;
         }
-        if (panelWidth <= 0 || panelHeight <= 0) {
-            return false;
-        }
-        if (mouseX < panelX || mouseX >= panelX + panelWidth || mouseY < panelY || mouseY >= panelY + panelHeight) {
+        if (!cursorInsidePanel(mouseX, mouseY)) {
             return false;
         }
 
         // Build a world-space ray from the camera through the cursor, hand it to ModelerPicker, and update the
         // selection. A miss clears the selection (Blockbench convention — click empty space to deselect).
+        var hit = pickCubeAt(mouseX, mouseY);
+        var scene = ModelerScene.get();
+        scene.selection = hit != null ? new Selection.CubeSelection(hit.owner(), hit.cube()) : null;
+        return true;
+    }
+
+    /** Cursor rect check shared by hover + click handling. */
+    private boolean cursorInsidePanel(double mouseX, double mouseY) {
+        if (panelWidth <= 0 || panelHeight <= 0) {
+            return false;
+        }
+        return mouseX >= panelX && mouseX < panelX + panelWidth && mouseY >= panelY && mouseY < panelY + panelHeight;
+    }
+
+    /**
+     * Ray-pick the cube under the cursor. Returns the {@link ModelerPicker.Hit} or null on a miss. Used by both the
+     * hover refresh and the click handler so the two stay aligned with the renderer's transform stack.
+     */
+    private @org.jetbrains.annotations.Nullable ModelerPicker.Hit pickCubeAt(double mouseX, double mouseY) {
         var relX = (float) ((mouseX - panelX) / (double) panelWidth);
         var relY = (float) ((mouseY - panelY) / (double) panelHeight);
         var aspect = (float) panelWidth / (float) panelHeight;
@@ -90,10 +117,7 @@ public final class ModelerViewportPanel implements Panel {
         var rayDir = camera.unprojectCursor(relX, relY, aspect);
         var camPos = camera.position();
         var rayOrigin = new Vec3(camPos.x, camPos.y, camPos.z);
-
-        var hit = ModelerPicker.pick(scene, rayOrigin, rayDir);
-        scene.selection = hit != null ? new Selection.CubeSelection(hit.owner(), hit.cube()) : null;
-        return true;
+        return ModelerPicker.pick(scene, rayOrigin, rayDir);
     }
 
     @Override

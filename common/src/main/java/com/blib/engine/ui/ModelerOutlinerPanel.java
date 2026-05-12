@@ -124,13 +124,17 @@ public final class ModelerOutlinerPanel implements Panel {
         rows.clear();
         buildRows(scene.root, 0);
 
-        // Compute rows region — fills the full panel content area. Reserve the scrollbar gutter from content width
-        // so the rightmost labels / hover bg don't slide under the bar.
+        // Compute rows region — inset by PADDING_X on each side so the scrollbar sits inside the panel padding
+        // instead of flush against the right edge (matches OutlinerPanel / ContentBrowserPanel). The scrollbar
+        // gutter is then subtracted from the inner width so row labels and hover backgrounds stop just before the
+        // bar.
         var rowsTop = y + PADDING_Y;
         var rowsHeight = Math.max(0, (y + height) - rowsTop);
-        var contentWidth = Math.max(0, width - ScrollContainer.SCROLLBAR_GUTTER);
+        var innerLeft = x + PADDING_X;
+        var innerWidth = Math.max(0, width - 2 * PADDING_X);
+        var contentWidth = Math.max(0, innerWidth - ScrollContainer.SCROLLBAR_GUTTER);
         rowsTopY = rowsTop;
-        rowsLeftX = x;
+        rowsLeftX = innerLeft;
         rowsViewportHeight = rowsHeight;
         rowsContentWidth = contentWidth;
 
@@ -173,17 +177,17 @@ public final class ModelerOutlinerPanel implements Panel {
                 }
 
                 var selected = isHighlighted(row, scene.selection, selectedSubtree);
-                var hovered = mouseX >= x
-                    && mouseX < x + contentWidth
+                var hovered = mouseX >= innerLeft
+                    && mouseX < innerLeft + contentWidth
                     && mouseY >= rowTop
                     && mouseY < rowBottom;
                 if (selected) {
-                    graphics.fill(x, rowTop, x + contentWidth, rowBottom, ROW_SELECTED_COLOR);
+                    graphics.fill(innerLeft, rowTop, innerLeft + contentWidth, rowBottom, ROW_SELECTED_COLOR);
                 } else if (hovered) {
-                    graphics.fill(x, rowTop, x + contentWidth, rowBottom, ROW_HOVER_COLOR);
+                    graphics.fill(innerLeft, rowTop, innerLeft + contentWidth, rowBottom, ROW_HOVER_COLOR);
                 }
 
-                var indentX = x + PADDING_X + row.depth * INDENT_PX;
+                var indentX = innerLeft + row.depth * INDENT_PX;
                 var labelY = rowTop + (ROW_HEIGHT - font.lineHeight + 2) / 2;
                 if (row.cube == null && isCollapsible(row.owner)) {
                     var caret = collapsed.contains(row.owner) ? "▸" : "▾";
@@ -204,7 +208,7 @@ public final class ModelerOutlinerPanel implements Panel {
             RenderSystem.disableScissor();
         }
 
-        scroll.renderScrollbar(graphics, x, rowsTop, width, rowsHeight, mouseX, mouseY);
+        scroll.renderScrollbar(graphics, innerLeft, rowsTop, innerWidth, rowsHeight, mouseX, mouseY);
     }
 
     /**
@@ -267,7 +271,7 @@ public final class ModelerOutlinerPanel implements Panel {
         // Caret-region click on a collapsible bone toggles collapse without altering the selection. Otherwise the
         // whole row selects the bone / cube.
         if (row.cube == null && isCollapsible(row.owner)) {
-            var caretX = rowsLeftX + PADDING_X + row.depth * INDENT_PX;
+            var caretX = rowsLeftX + row.depth * INDENT_PX;
             if (mouseX >= caretX && mouseX < caretX + CARET_WIDTH) {
                 if (!collapsed.remove(row.owner)) {
                     collapsed.add(row.owner);
