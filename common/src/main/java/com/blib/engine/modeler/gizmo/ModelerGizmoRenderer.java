@@ -30,7 +30,26 @@ import com.blib.engine.modeler.ModelerTransforms;
 @ApiStatus.Internal
 public final class ModelerGizmoRenderer {
 
+    /**
+     * Lerp factor pulling an axis color toward white on hover. Same value as
+     * {@link com.blib.engine.blockselection.BlockSelectionTranslateGizmoRenderer#HOVER_BRIGHTEN} so the modeler and
+     * world-engine gizmos read with the same "this is the handle under my cursor" intensity. A pure alpha bump (the
+     * previous behavior) wasn't perceptible on the saturated axis colors.
+     */
+    private static final float HOVER_BRIGHTEN = 0.55f;
+
     private ModelerGizmoRenderer() {}
+
+    /**
+     * Component-wise lerp toward 1.0 by {@link #HOVER_BRIGHTEN}; produces the hovered tint from the axis base color.
+     */
+    private static float[] hoverTint(float[] base) {
+        return new float[] {
+            base[0] + (1f - base[0]) * HOVER_BRIGHTEN,
+            base[1] + (1f - base[1]) * HOVER_BRIGHTEN,
+            base[2] + (1f - base[2]) * HOVER_BRIGHTEN
+        };
+    }
 
     public static void render(Matrix4f scenePose, ModelerScene scene, Matrix4f projectionForCapture) {
         var mode = ModelerGizmoState.mode();
@@ -161,8 +180,9 @@ public final class ModelerGizmoRenderer {
         int dragAxis = activeDragAxis();
         int hoverAxis = activeHoverAxis();
         for (int axis = 0; axis < 3; axis++) {
-            var color = GizmoPrimitives.axisColor(axis);
-            float a = (dragAxis == axis || hoverAxis == axis) ? 1f : 0.85f;
+            boolean lit = dragAxis == axis || hoverAxis == axis;
+            var color = lit ? hoverTint(GizmoPrimitives.axisColor(axis)) : GizmoPrimitives.axisColor(axis);
+            float a = lit ? 1f : 0.85f;
             GizmoPrimitives.drawArrowShaft(pose, buffer, scale, axis, color[0], color[1], color[2], a);
         }
     }
@@ -171,8 +191,9 @@ public final class ModelerGizmoRenderer {
         int dragAxis = activeDragAxis();
         int hoverAxis = activeHoverAxis();
         for (int axis = 0; axis < 3; axis++) {
-            var color = GizmoPrimitives.axisColor(axis);
-            float a = (dragAxis == axis || hoverAxis == axis) ? 1f : 0.85f;
+            boolean lit = dragAxis == axis || hoverAxis == axis;
+            var color = lit ? hoverTint(GizmoPrimitives.axisColor(axis)) : GizmoPrimitives.axisColor(axis);
+            float a = lit ? 1f : 0.85f;
             GizmoPrimitives.drawArrowTipFilled(pose, buffer, scale, axis, color[0], color[1], color[2], a);
         }
     }
@@ -181,8 +202,9 @@ public final class ModelerGizmoRenderer {
         int dragAxis = activeDragAxis();
         int hoverAxis = activeHoverAxis();
         for (int axis = 0; axis < 3; axis++) {
-            var color = GizmoPrimitives.axisColor(axis);
-            float a = (dragAxis == axis || hoverAxis == axis) ? 1f : 0.75f;
+            boolean lit = dragAxis == axis || hoverAxis == axis;
+            var color = lit ? hoverTint(GizmoPrimitives.axisColor(axis)) : GizmoPrimitives.axisColor(axis);
+            float a = lit ? 1f : 0.75f;
             GizmoPrimitives.drawRing(pose, buffer, scale, axis, color[0], color[1], color[2], a);
         }
     }
@@ -203,10 +225,11 @@ public final class ModelerGizmoRenderer {
         for (int axis = 0; axis < 3; axis++) {
             for (int sign : new int[] { -1, 1 }) {
                 var faceCenter = faceCenterLocal(cube, axis, sign);
-                var color = GizmoPrimitives.axisColor(axis);
                 boolean dragged = dragAxis == axis && dragSign == sign;
                 boolean hovered = hoverAxis == axis && hoverSign == sign;
-                float a = (dragged || hovered) ? 1f : 0.85f;
+                boolean lit = dragged || hovered;
+                var color = lit ? hoverTint(GizmoPrimitives.axisColor(axis)) : GizmoPrimitives.axisColor(axis);
+                float a = lit ? 1f : 0.85f;
 
                 pose.pushPose();
                 pose.translate((float) faceCenter[0], (float) faceCenter[1], (float) faceCenter[2]);
@@ -231,10 +254,11 @@ public final class ModelerGizmoRenderer {
         for (int axis = 0; axis < 3; axis++) {
             for (int sign : new int[] { -1, 1 }) {
                 var faceCenter = faceCenterLocal(cube, axis, sign);
-                var color = GizmoPrimitives.axisColor(axis);
                 boolean dragged = dragAxis == axis && dragSign == sign;
                 boolean hovered = hoverAxis == axis && hoverSign == sign;
-                float a = (dragged || hovered) ? 1f : 0.85f;
+                boolean lit = dragged || hovered;
+                var color = lit ? hoverTint(GizmoPrimitives.axisColor(axis)) : GizmoPrimitives.axisColor(axis);
+                float a = lit ? 1f : 0.85f;
 
                 pose.pushPose();
                 pose.translate((float) faceCenter[0], (float) faceCenter[1], (float) faceCenter[2]);

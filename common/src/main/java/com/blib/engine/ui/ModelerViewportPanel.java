@@ -8,12 +8,15 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
+import com.blib.engine.modeler.ModelerCube;
 import com.blib.engine.modeler.ModelerPicker;
 import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.Selection;
 import com.blib.engine.modeler.gizmo.ModelerGizmoInput;
 import com.blib.engine.modeler.gizmo.ModelerGizmoMode;
 import com.blib.engine.modeler.gizmo.ModelerGizmoState;
+import com.blib.engine.modeler.history.ModelerAction;
+import com.blib.engine.modeler.history.ModelerActionHistory;
 import com.blib.engine.modeler.render.ModelerRenderer;
 
 /**
@@ -48,6 +51,13 @@ public final class ModelerViewportPanel implements Panel {
 
     /** True while the LMB is held over a gizmo handle and we own the drag. */
     private boolean gizmoDragActive;
+
+    /** Cube state captured at gizmo drag-start; on release we diff against the live cube to push a memento action. */
+    private @Nullable ModelerCube gizmoDragTarget;
+
+    private @Nullable ModelerAction.CubeMemento gizmoDragBefore;
+
+    private @Nullable ModelerGizmoMode gizmoDragMode;
 
     /** Panel rect captured at render time so click handlers can convert workspace coords → viewport-relative. */
     private int panelX, panelY, panelWidth, panelHeight;
@@ -146,6 +156,16 @@ public final class ModelerViewportPanel implements Panel {
             var panelRelY = mouseY - panelY;
             if (panelWidth > 0 && panelHeight > 0 && ModelerGizmoInput.tryStartDrag(panelRelX, panelRelY, panelWidth, panelHeight)) {
                 gizmoDragActive = true;
+                // Snapshot the cube's full mutable state at drag-start so on release we can push a memento action that
+                // restores it on undo. The drag mutates origin/size/rotation in place; capturing all fields keeps the
+                // memento type uniform with inspector edits (which also touch pivot/inflate).
+                var drag = ModelerGizmoState.drag();
+                if (drag != null) {
+                    var startCube = drag.startSnapshot().cube();
+                    gizmoDragTarget = startCube;
+                    gizmoDragBefore = ModelerAction.CubeMemento.of(startCube);
+                    gizmoDragMode = drag.mode();
+                }
                 return true;
             }
         }
@@ -197,6 +217,35 @@ public final class ModelerViewportPanel implements Panel {
         if (button == 0 && gizmoDragActive) {
             ModelerGizmoInput.endDrag();
             gizmoDragActive = false;
+            // Diff before-snapshot against the post-drag cube. If anything changed, the gesture's a real edit and
+            // belongs on the undo stack; a click that didn't move the cursor far enough to register a delta is a
+            // no-op and we skip the push to keep the action stack clean.
+            var before = gizmoDragBefore;
+            var target = gizmoDragTarget;
+            var mode = gizmoDragMode;
+            gizmoDragBefore = null;
+            gizmoDragTarget = null;
+            gizmoDragMode = null;
+            if (before != null && target != null && mode != null) {
+                var after = ModelerAction.CubeMemento.of(target);
+                if (after.differsFrom(before)) {
+                    var typeId = switch (mode) {
+                        case TRANSLATE -> "cube_translate";
+                        case ROTATE -> "cube_rotate";
+                        case RESIZE -> "cube_resize";
+                        default -> "cube_edit";
+                    };
+                    var description = switch (mode) {
+                        case TRANSLATE -> "Translate cube " + target.name;
+                        case ROTATE -> "Rotate cube " + target.name;
+                        case RESIZE -> "Resize cube " + target.name;
+                        default -> "Edit cube " + target.name;
+                    };
+                    ModelerActionHistory.push(
+                        new ModelerAction.CubeMementoAction(typeId, description, System.currentTimeMillis(), target, before, after)
+                    );
+                }
+            }
             return true;
         }
         if (button == 2) {

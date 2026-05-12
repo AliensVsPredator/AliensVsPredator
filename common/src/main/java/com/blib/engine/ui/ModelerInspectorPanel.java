@@ -14,6 +14,8 @@ import com.blib.engine.modeler.ModelerBone;
 import com.blib.engine.modeler.ModelerCube;
 import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.Selection;
+import com.blib.engine.modeler.history.ModelerAction;
+import com.blib.engine.modeler.history.ModelerActionHistory;
 
 /**
  * Property editor for the currently-selected modeler bone or cube. Mirrors the block-volume inspector's surface in
@@ -354,6 +356,7 @@ public final class ModelerInspectorPanel implements Panel {
         var sel = ModelerScene.get().selection;
         if (sel instanceof Selection.CubeSelection cs) {
             var cube = cs.cube();
+            var before = ModelerAction.CubeMemento.of(cube);
             switch (field) {
                 case ORIGIN -> cube.origin = withAxis(cube.origin, axis, parsed);
                 case SIZE -> {
@@ -368,8 +371,10 @@ public final class ModelerInspectorPanel implements Panel {
                     /* not applicable to cube */
                 }
             }
+            pushCubeMemento(cube, before, cubeMementoDescription(field, cube.name));
         } else if (sel instanceof Selection.BoneSelection bs) {
             var bone = bs.bone();
+            var before = ModelerAction.BoneMemento.of(bone);
             switch (field) {
                 case POSITION -> bone.position = withAxis(bone.position, axis, parsed);
                 case ROTATION -> bone.rotation = withAxis(bone.rotation, axis, parsed);
@@ -379,6 +384,7 @@ public final class ModelerInspectorPanel implements Panel {
                     /* not applicable to bone */
                 }
             }
+            pushBoneMemento(bone, before, boneMementoDescription(field, bone.name));
         }
     }
 
@@ -388,8 +394,58 @@ public final class ModelerInspectorPanel implements Panel {
             return;
         }
         if (ModelerScene.get().selection instanceof Selection.CubeSelection cs) {
-            cs.cube().inflate = parsed;
+            var cube = cs.cube();
+            var before = ModelerAction.CubeMemento.of(cube);
+            cube.inflate = parsed;
+            pushCubeMemento(cube, before, "Edit cube " + cube.name + " (inflate)");
         }
+    }
+
+    /**
+     * Push a memento action if the cube field changed. Inspector commits fire on Enter / focus-loss even when the typed
+     * value matches what's already there (e.g. user clicks into the field, doesn't change anything, clicks out) —
+     * skipping the no-op push keeps the action stack from filling with empty edits.
+     */
+    private static void pushCubeMemento(ModelerCube cube, ModelerAction.CubeMemento before, String description) {
+        var after = ModelerAction.CubeMemento.of(cube);
+        if (!after.differsFrom(before)) {
+            return;
+        }
+        ModelerActionHistory.push(
+            new ModelerAction.CubeMementoAction("cube_edit", description, System.currentTimeMillis(), cube, before, after)
+        );
+    }
+
+    private static void pushBoneMemento(ModelerBone bone, ModelerAction.BoneMemento before, String description) {
+        var after = ModelerAction.BoneMemento.of(bone);
+        if (!after.differsFrom(before)) {
+            return;
+        }
+        ModelerActionHistory.push(
+            new ModelerAction.BoneMementoAction("bone_edit", description, System.currentTimeMillis(), bone, before, after)
+        );
+    }
+
+    private static String cubeMementoDescription(VecField field, String cubeName) {
+        var axisLabel = switch (field) {
+            case ORIGIN -> "origin";
+            case SIZE -> "size";
+            case ROTATION -> "rotation";
+            case PIVOT -> "pivot";
+            default -> field.name().toLowerCase(java.util.Locale.ROOT);
+        };
+        return "Edit cube " + cubeName + " (" + axisLabel + ")";
+    }
+
+    private static String boneMementoDescription(VecField field, String boneName) {
+        var axisLabel = switch (field) {
+            case POSITION -> "position";
+            case ROTATION -> "rotation";
+            case SCALE -> "scale";
+            case PIVOT -> "pivot";
+            default -> field.name().toLowerCase(java.util.Locale.ROOT);
+        };
+        return "Edit bone " + boneName + " (" + axisLabel + ")";
     }
 
     private static Vec3 withAxis(Vec3 v, int axis, double newValue) {

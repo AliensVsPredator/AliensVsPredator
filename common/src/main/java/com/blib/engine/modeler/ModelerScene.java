@@ -4,6 +4,9 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import com.blib.engine.modeler.history.ModelerAction;
+import com.blib.engine.modeler.history.ModelerActionHistory;
+
 /**
  * Singleton state for the in-engine modeler. Heap-only (no codecs, no S2C sync, no project files for v1) — closing the
  * engine drops all changes. Panels read/write this directly to keep the v1 plumbing minimal.
@@ -72,14 +75,19 @@ public final class ModelerScene {
 
     /**
      * Add a default cube to the bone currently containing the selection (or the root if nothing is selected), select
-     * it, and return it. Names are auto-generated to avoid collisions ({@code cube_1}, {@code cube_2}, …).
+     * it, and return it. Names are auto-generated to avoid collisions ({@code cube_1}, {@code cube_2}, …). Pushes a
+     * {@link ModelerAction.CubeInsertAction} so the add round-trips through undo/redo.
      */
     public ModelerCube addDefaultCube() {
         var target = targetBoneForNewCube();
         var name = "cube_" + (target.cubes.size() + 1);
         var cube = ModelerCube.defaultCube(name);
+        var index = target.cubes.size();
         target.cubes.add(cube);
         selection = new Selection.CubeSelection(target, cube);
+        ModelerActionHistory.push(
+            new ModelerAction.CubeInsertAction("cube_insert", "Add cube " + name, System.currentTimeMillis(), target, cube, index)
+        );
         return cube;
     }
 
@@ -88,11 +96,55 @@ public final class ModelerScene {
         if (!(selection instanceof Selection.CubeSelection cs)) {
             return false;
         }
-        var removed = cs.owner().cubes.remove(cs.cube());
-        if (removed) {
-            selection = null;
+        var owner = cs.owner();
+        var cube = cs.cube();
+        var index = owner.cubes.indexOf(cube);
+        if (index < 0) {
+            return false;
         }
-        return removed;
+        owner.cubes.remove(index);
+        selection = null;
+        ModelerActionHistory.push(
+            new ModelerAction.CubeRemoveAction("cube_remove", "Delete cube " + cube.name, System.currentTimeMillis(), owner, cube, index)
+        );
+        return true;
+    }
+
+    /**
+     * Delete the currently-selected cube or bone. Bone deletion removes the entire subtree (child bones + cubes) from
+     * its parent — no children-reparenting since the modeler treats bones as atomic transform units, so promoting
+     * orphans up a level would change their world placement. Refuses to delete the implicit root bone (whole-model
+     * delete is a separate workflow). Returns true when something was removed.
+     */
+    public boolean deleteSelection() {
+        if (selection instanceof Selection.CubeSelection) {
+            return deleteSelectedCube();
+        }
+        if (selection instanceof Selection.BoneSelection bs) {
+            var bone = bs.bone();
+            var parent = bone.parent;
+            if (parent == null) {
+                return false;
+            }
+            var index = parent.children.indexOf(bone);
+            if (index < 0) {
+                return false;
+            }
+            parent.children.remove(index);
+            selection = null;
+            ModelerActionHistory.push(
+                new ModelerAction.BoneRemoveAction(
+                    "bone_remove",
+                    "Delete bone " + bone.name,
+                    System.currentTimeMillis(),
+                    parent,
+                    bone,
+                    index
+                )
+            );
+            return true;
+        }
+        return false;
     }
 
     private ModelerBone targetBoneForNewCube() {

@@ -32,6 +32,7 @@ import com.blib.engine.layout.LayoutSnapshot;
 import com.blib.engine.layout.LayoutTemplate;
 import com.blib.engine.layout.PanelRegistry;
 import com.blib.engine.modeler.ModelerFilePicker;
+import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.ModelerSceneLoader;
 import com.blib.engine.selection.SelectionManager;
 import com.blib.engine.session.EngineMode;
@@ -1519,16 +1520,24 @@ public final class EngineWorkspaceScreen extends Screen {
             }
         }
 
-        // Ctrl+Z = universal undo. Server-side ActionHistory holds all reversible gestures (blocks, entities, chunk
-        // claims, project metadata). Works regardless of whether a piece is held — the action stack is server-side and
-        // decoupled from any client-side selection.
+        // Ctrl+Z = universal undo. Modeler layout routes to the client-side modeler history (scene is heap-only,
+        // no server roundtrip needed); everywhere else routes to the server-side ActionHistory (blocks, entities,
+        // chunk claims, project metadata). The split mirrors Delete's layout-aware routing — same context check.
         if (ActiveKeybindings.matchesKey(Keybindings.UNDO, keyCode, modifiers)) {
-            BLib.MOD.networking().sendToServer(C2SUndoActionPayload.INSTANCE);
+            if (layoutHasModelerPanel()) {
+                com.blib.engine.modeler.history.ModelerActionHistory.undo();
+            } else {
+                BLib.MOD.networking().sendToServer(C2SUndoActionPayload.INSTANCE);
+            }
             return true;
         }
 
         if (ActiveKeybindings.matchesKey(Keybindings.REDO, keyCode, modifiers)) {
-            BLib.MOD.networking().sendToServer(C2SRedoActionPayload.INSTANCE);
+            if (layoutHasModelerPanel()) {
+                com.blib.engine.modeler.history.ModelerActionHistory.redo();
+            } else {
+                BLib.MOD.networking().sendToServer(C2SRedoActionPayload.INSTANCE);
+            }
             return true;
         }
 
@@ -1616,6 +1625,14 @@ public final class EngineWorkspaceScreen extends Screen {
             }
         }
         if (TextInput.getFocused() == null && ActiveKeybindings.matchesKey(Keybindings.DELETE, keyCode, modifiers)) {
+            // Modeler-layout delete takes priority and always consumes the key. The modeler scene's selection state is
+            // separate from the world {@link SelectionManager}, so when the user is looking at modeler UI we route
+            // Delete there exclusively — falling through to world-delete on a "nothing to delete" or root-bone case
+            // would surprise the user by killing a stale world entity that isn't visible in the modeler layout.
+            if (layoutHasModelerPanel()) {
+                ModelerScene.get().deleteSelection();
+                return true;
+            }
             var deleteSel = SelectionManager.current().single();
             if (deleteSel instanceof com.blib.engine.selection.EntitySelectable es) {
                 // Mirrors the context-menu "Delete Entity" gate — players aren't deletable, the server would reject
@@ -2174,6 +2191,55 @@ public final class EngineWorkspaceScreen extends Screen {
         }
     }
 
+    /**
+     * True when the active layout contains at least one modeler panel (viewport / outliner / inspector). Used by the
+     * Delete handler to gate modeler-scene delete behavior — the modeler scene state is global, but Delete should only
+     * dispatch to it when the user's actually looking at modeler UI, not when they happen to have a stale modeler
+     * selection in some unrelated layout.
+     */
+    public boolean layoutHasModelerPanel() {
+        return panelTreeContainsModeler(root);
+    }
+
+    /**
+     * Convenience for callers that don't already hold a workspace reference (e.g. the action-stack panel, which is
+     * agnostic to its host screen). Returns true when the currently-active screen is a workspace whose layout has a
+     * modeler panel. False on any other screen state.
+     */
+    public static boolean activeLayoutHasModelerPanel() {
+        var mc = Minecraft.getInstance();
+        return mc.screen instanceof EngineWorkspaceScreen ws && ws.layoutHasModelerPanel();
+    }
+
+    private static boolean panelTreeContainsModeler(DockNode node) {
+        return switch (node) {
+            case DockNode.Leaf leaf -> panelOrTabsContainsModeler(leaf.panel());
+            case DockNode.Split split -> panelTreeContainsModeler(split.first()) || panelTreeContainsModeler(split.second());
+        };
+    }
+
+    private static boolean panelOrTabsContainsModeler(Panel panel) {
+        if (isModelerPanel(panel)) {
+            return true;
+        }
+        // TabbedPanel hosts a list of swappable child panels. Walk them so a layout with a modeler tab next to other
+        // tabs in the same panel still counts as "has modeler" — the user can switch tabs without changing layouts.
+        if (panel instanceof TabbedPanel tp) {
+            for (var tab : tp.tabs()) {
+                if (isModelerPanel(tab)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean isModelerPanel(Panel panel) {
+        return panel instanceof ModelerOutlinerPanel
+            || panel instanceof ModelerViewportPanel
+            || panel instanceof ModelerInspectorPanel;
+    }
+
     private static @Nullable Panel panelAt(DockNode node, int x, int y, int width, int height, double mouseX, double mouseY) {
         return switch (node) {
             case DockNode.Leaf leaf -> {
@@ -2229,16 +2295,32 @@ public final class EngineWorkspaceScreen extends Screen {
     }
 
     /**
-     * Edit dropdown. Undo and Redo send the same payloads the keybindings do — the menu is just a discoverable
-     * alternative to Ctrl+Z / Ctrl+Y. We don't grey them out by stack size because the dropdown is built once on open;
-     * the server silently no-ops if the relevant stack is empty.
+     * Edit dropdown. Undo and Redo do the same thing as Ctrl+Z / Ctrl+Y — route to the modeler history in the modeler
+     * layout, server-side history elsewhere. We don't grey them out by stack size because the dropdown is built once on
+     * open; both backends silently no-op if the relevant stack is empty.
      */
     private DropdownMenu buildEditMenu(int anchorX, int anchorY) {
         var items = new java.util.ArrayList<DropdownMenu.Item>();
-        items.add(new DropdownMenu.Item("Undo", () -> BLib.MOD.networking().sendToServer(C2SUndoActionPayload.INSTANCE)));
-        items.add(new DropdownMenu.Item("Redo", () -> BLib.MOD.networking().sendToServer(C2SRedoActionPayload.INSTANCE)));
+        items.add(new DropdownMenu.Item("Undo", this::dispatchUndo));
+        items.add(new DropdownMenu.Item("Redo", this::dispatchRedo));
         items.add(new DropdownMenu.Item("Preferences…", this::openPreferencesDialog));
         return new DropdownMenu(anchorX, anchorY, items);
+    }
+
+    private void dispatchUndo() {
+        if (layoutHasModelerPanel()) {
+            com.blib.engine.modeler.history.ModelerActionHistory.undo();
+        } else {
+            BLib.MOD.networking().sendToServer(C2SUndoActionPayload.INSTANCE);
+        }
+    }
+
+    private void dispatchRedo() {
+        if (layoutHasModelerPanel()) {
+            com.blib.engine.modeler.history.ModelerActionHistory.redo();
+        } else {
+            BLib.MOD.networking().sendToServer(C2SRedoActionPayload.INSTANCE);
+        }
     }
 
     private void openPreferencesDialog() {

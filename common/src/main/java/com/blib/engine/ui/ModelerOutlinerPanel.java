@@ -308,14 +308,16 @@ public final class ModelerOutlinerPanel implements Panel {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        // 'A' adds a default cube under the selected bone (or root); Delete removes the selected cube. Both only fire
-        // when the outliner is the focused panel — the screen routes keyPressed only to the active tab.
+        // 'A' adds a default cube under the selected bone (or root); Delete removes the current selection (cube or
+        // bone, whole subtree on bone). The workspace doesn't currently route keyPressed to panels, so the layout-
+        // level Delete handler in EngineWorkspaceScreen.keyPressed is what fires in practice — keeping this method
+        // makes it work the moment per-panel key dispatch is wired up.
         if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_A) {
             ModelerScene.get().addDefaultCube();
             return true;
         }
         if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_DELETE || keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_BACKSPACE) {
-            return ModelerScene.get().deleteSelectedCube();
+            return ModelerScene.get().deleteSelection();
         }
         return false;
     }

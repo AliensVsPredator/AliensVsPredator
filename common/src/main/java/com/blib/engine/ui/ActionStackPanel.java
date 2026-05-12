@@ -8,6 +8,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.joml.Vector3f;
 
 import com.blib.engine.history.ClientActionHistory;
+import com.blib.engine.modeler.history.ModelerActionHistory;
 
 /**
  * Display-only view of the server-side action history. Each row corresponds to one {@code EditorAction} pushed since
@@ -59,15 +60,18 @@ public final class ActionStackPanel implements Panel {
     public void render(GuiGraphics graphics, int x, int y, int width, int height, int mouseX, int mouseY, float partialTick) {
         graphics.fill(x, y, x + width, y + height, BACKGROUND_COLOR);
 
-        // Action history is server-pushed (entries arrive via S2C sync). Without a world there's no server, no
-        // entries, and rendering the empty list would be misleading.
-        if (Minecraft.getInstance().level == null) {
+        // Modeler layout has a parallel client-side history (the modeler scene is heap-only — no server roundtrip).
+        // Picking the right source by layout-context lets the same panel cover both worlds.
+        var modelerMode = EngineWorkspaceScreen.activeLayoutHasModelerPanel();
+        // Server-history needs a world; modeler-history is purely client-side and works at the title screen too. Only
+        // gate on the "needs world" placeholder when we're showing the server history.
+        if (!modelerMode && Minecraft.getInstance().level == null) {
             PanelPlaceholder.drawCentered(graphics, x, y, width, height, PanelPlaceholder.NEEDS_WORLD);
             return;
         }
 
-        var entries = ClientActionHistory.INSTANCE.entries();
-        var cursor = ClientActionHistory.INSTANCE.undoCursor();
+        var entries = modelerMode ? ModelerActionHistory.descriptors() : ClientActionHistory.INSTANCE.entries();
+        var cursor = modelerMode ? ModelerActionHistory.undoCursor() : ClientActionHistory.INSTANCE.undoCursor();
 
         if (entries.isEmpty()) {
             renderEmpty(graphics, x + CONTENT_PADDING, y + CONTENT_PADDING);

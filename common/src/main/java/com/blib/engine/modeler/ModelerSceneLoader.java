@@ -129,6 +129,10 @@ public final class ModelerSceneLoader {
         var scene = ModelerScene.get();
         scene.root = root;
         scene.selection = null;
+        // Existing undo entries reference bone/cube instances from the previous scene tree — those instances aren't
+        // reachable any more, so applying their undo() would mutate detached objects. Wipe history on load so the
+        // first action in the new scene starts a fresh stack.
+        com.blib.engine.modeler.history.ModelerActionHistory.clear();
         return true;
     }
 
