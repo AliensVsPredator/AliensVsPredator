@@ -66,6 +66,7 @@ import com.blib.api.common.registry.v1.BLibHolder;
 import com.blib.fabric.internal.event.impl.BLibFabricLevelTickEvents;
 import com.blib.fabric.internal.event.impl.BLibFabricPlayerBlockBreakEvents;
 import com.blib.fabric.internal.event.impl.BLibFabricPlayerTrackingEntityEvents;
+import com.blib.fabric.internal.event.impl.BLibFabricScreenInitEvents;
 import com.blib.fabric.internal.event.impl.BLibFabricServerLifecycleEvents;
 import com.blib.fabric.internal.event.impl.BLibFabricTagsUpdatedEvents;
 import com.blib.internal.common.event.BLibGlobalEvents;
@@ -124,6 +125,8 @@ public class BLibFabricModContainer {
 
     private final BLibEventHandle<BLibLevelTickEvent> postLevelTick;
 
+    private final BLibEventHandle<com.blib.api.client.event.v1.BLibScreenInitEvent> postScreenInit;
+
     private final BLibEventHandle<BLibBlockBreakEvent> preBlockBreak;
 
     private final BLibEventHandle<BLibLevelTickEvent> preLevelTick;
@@ -162,6 +165,7 @@ public class BLibFabricModContainer {
         this.onServerSave = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.SERVER_SAVE);
         this.onTagsUpdated = BLibFabricTagsUpdatedEvents.FACTORY.apply(mod);
         this.postLevelTick = BLibFabricLevelTickEvents.POST_FACTORY.apply(mod);
+        this.postScreenInit = BLibFabricScreenInitEvents.POST_FACTORY.apply(mod);
         this.preBlockBreak = BLibFabricPlayerBlockBreakEvents.FACTORY.apply(mod);
         this.preLevelTick = BLibFabricLevelTickEvents.PRE_FACTORY.apply(mod);
         this.serverStarted = BLibFabricServerLifecycleEvents.STARTED_FACTORY.apply(mod);
@@ -228,6 +232,10 @@ public class BLibFabricModContainer {
 
     public BLibEventHandle<BLibLevelTickEvent> postLevelTick() {
         return postLevelTick;
+    }
+
+    public BLibEventHandle<com.blib.api.client.event.v1.BLibScreenInitEvent> postScreenInit() {
+        return postScreenInit;
     }
 
     public BLibEventHandle<BLibBlockBreakEvent> preBlockBreak() {

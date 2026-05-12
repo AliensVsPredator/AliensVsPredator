@@ -89,6 +89,15 @@ public class BLibEventAccess {
         return BLibInternalServices.EVENT.postLevelTick(mod);
     }
 
+    /**
+     * Fires after a {@link net.minecraft.client.gui.screens.Screen}'s {@code init()} completes — useful for injecting
+     * widgets into vanilla screens (e.g. an "Open BLib" button on the TitleScreen). Cross-loader wrapper around
+     * Fabric's {@code ScreenEvents.AFTER_INIT} and NeoForge's {@code ScreenEvent.Init.Post}.
+     */
+    public BLibEventHandle<com.blib.api.client.event.v1.BLibScreenInitEvent> postScreenInit() {
+        return BLibInternalServices.EVENT.postScreenInit(mod);
+    }
+
     public BLibEventHandle<BLibBlockBreakEvent> preBlockBreak() {
         return BLibInternalServices.EVENT.preBlockBreak(mod);
     }

@@ -56,6 +56,8 @@ public interface BLibEventService {
 
     BLibEventHandle<BLibLevelTickEvent> postLevelTick(BLibMod mod);
 
+    BLibEventHandle<com.blib.api.client.event.v1.BLibScreenInitEvent> postScreenInit(BLibMod mod);
+
     BLibEventHandle<BLibBlockBreakEvent> preBlockBreak(BLibMod mod);
 
     BLibEventHandle<BLibLevelTickEvent> preLevelTick(BLibMod mod);

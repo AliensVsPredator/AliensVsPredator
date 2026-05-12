@@ -61,6 +61,7 @@ import com.blib.neoforge.event.BLibNeoForgeEventHandle;
 import com.blib.neoforge.internal.event.impl.BLibNeoForgeLevelTickEvents;
 import com.blib.neoforge.internal.event.impl.BLibNeoForgePlayerBlockBreakEvents;
 import com.blib.neoforge.internal.event.impl.BLibNeoForgePlayerTrackingEntityEvents;
+import com.blib.neoforge.internal.event.impl.BLibNeoForgeScreenInitEvents;
 import com.blib.neoforge.internal.event.impl.BLibNeoForgeServerLifecycleEvents;
 import com.blib.neoforge.internal.event.impl.BLibNeoForgeTagsUpdatedEvents;
 
@@ -121,6 +122,8 @@ public class BLibNeoForgeModContainer {
 
     private final BLibNeoForgeEventHandle<BLibLevelTickEvent> postLevelTick;
 
+    private final BLibNeoForgeEventHandle<com.blib.api.client.event.v1.BLibScreenInitEvent> postScreenInit;
+
     private final BLibNeoForgeEventHandle<BLibBlockBreakEvent> preBlockBreak;
 
     private final BLibNeoForgeEventHandle<BLibLevelTickEvent> preLevelTick;
@@ -164,6 +167,7 @@ public class BLibNeoForgeModContainer {
         this.onServerSave = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.SERVER_SAVE);
         this.onTagsUpdated = BLibNeoForgeTagsUpdatedEvents.FACTORY.apply(mod);
         this.postLevelTick = BLibNeoForgeLevelTickEvents.POST_FACTORY.apply(mod);
+        this.postScreenInit = BLibNeoForgeScreenInitEvents.POST_FACTORY.apply(mod);
         this.preBlockBreak = BLibNeoForgePlayerBlockBreakEvents.FACTORY.apply(mod);
         this.preLevelTick = BLibNeoForgeLevelTickEvents.PRE_FACTORY.apply(mod);
         this.serverStarted = BLibNeoForgeServerLifecycleEvents.STARTED_FACTORY.apply(mod);
@@ -240,6 +244,10 @@ public class BLibNeoForgeModContainer {
 
     public BLibNeoForgeEventHandle<BLibLevelTickEvent> postLevelTick() {
         return postLevelTick;
+    }
+
+    public BLibNeoForgeEventHandle<com.blib.api.client.event.v1.BLibScreenInitEvent> postScreenInit() {
+        return postScreenInit;
     }
 
     public BLibNeoForgeEventHandle<BLibBlockBreakEvent> preBlockBreak() {

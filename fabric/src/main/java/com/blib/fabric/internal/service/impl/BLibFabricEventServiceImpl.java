@@ -112,6 +112,12 @@ public class BLibFabricEventServiceImpl implements BLibEventService {
     }
 
     @Override
+    public BLibEventHandle<com.blib.api.client.event.v1.BLibScreenInitEvent> postScreenInit(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .postScreenInit();
+    }
+
+    @Override
     public BLibEventHandle<BLibBlockBreakEvent> preBlockBreak(BLibMod mod) {
         return BLibFabricModContainerLookup.INSTANCE.get(mod)
             .preBlockBreak();

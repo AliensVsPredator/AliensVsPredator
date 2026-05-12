@@ -112,6 +112,12 @@ public class BLibNeoForgeEventServiceImpl implements BLibEventService {
     }
 
     @Override
+    public BLibEventHandle<com.blib.api.client.event.v1.BLibScreenInitEvent> postScreenInit(BLibMod mod) {
+        return BLibNeoForgeModContainerLookup.INSTANCE.get(mod)
+            .postScreenInit();
+    }
+
+    @Override
     public BLibEventHandle<BLibBlockBreakEvent> preBlockBreak(BLibMod mod) {
         return BLibNeoForgeModContainerLookup.INSTANCE.get(mod)
             .preBlockBreak();

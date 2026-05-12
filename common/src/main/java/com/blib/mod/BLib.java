@@ -94,6 +94,10 @@ public class BLib {
         BuiltInLimbDrops.register();
 
         BLib.MOD.events().onPlayerStartTrackingEntity().register(BLib::syncDataForTrackedEntity);
+        // Engine workspace's "Open BLib" button on the vanilla TitleScreen. The screen-init event handle is
+        // dist-gated in its bridge factories, so server builds no-op the underlying registration and the listener
+        // body (which references client classes like TitleScreen) never runs server-side.
+        com.blib.engine.ui.BLibTitleScreenIntegration.register();
         // TODO: There's a small bug here. This runs for both client and server levels!
         BLib.MOD.events().postLevelTick().register(ServerScheduler::tick);
         // TODO: There's a small bug here. This runs for both client and server levels!

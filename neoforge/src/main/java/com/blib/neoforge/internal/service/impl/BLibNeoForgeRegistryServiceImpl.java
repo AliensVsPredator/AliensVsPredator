@@ -247,6 +247,7 @@ public class BLibNeoForgeRegistryServiceImpl implements BLibRegistryService {
         modContainer.preBlockBreak().initialize();
 
         modContainer.postLevelTick().initialize();
+        modContainer.postScreenInit().initialize();
 
         modContainer.onPlayerStartTrackingEntity().initialize();
         modContainer.onTagsUpdated().initialize();
