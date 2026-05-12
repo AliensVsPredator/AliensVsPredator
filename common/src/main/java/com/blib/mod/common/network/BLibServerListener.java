@@ -90,8 +90,8 @@ import com.blib.mod.common.network.packet.C2SRequestTagCatalogPayload;
 import com.blib.mod.common.network.packet.C2SRequestTagDraftPayload;
 import com.blib.mod.common.network.packet.C2SSetBlockStatePropertyPayload;
 import com.blib.mod.common.network.packet.C2SSetEntityScalePayload;
-import com.blib.mod.common.network.packet.C2SSetTagEntryRequiredPayload;
 import com.blib.mod.common.network.packet.C2SSetFactionRelationshipPayload;
+import com.blib.mod.common.network.packet.C2SSetTagEntryRequiredPayload;
 import com.blib.mod.common.network.packet.C2SSetTagReplacePayload;
 import com.blib.mod.common.network.packet.C2SSpawnEntityPayload;
 import com.blib.mod.common.network.packet.C2STranslateEntityPayload;
@@ -316,8 +316,8 @@ public final class BLibServerListener {
      * in the overworld and travelled to the nether before pressing undo doesn't accidentally restore overworld blocks
      * at the same coordinates in the nether.
      * <p>
-     * If the popped snapshot carried a piece UUID, we also remove the piece from the registry and broadcast the
-     * removal so engine-mode clients drop it from their hover / selection set.
+     * If the popped snapshot carried a piece UUID, we also remove the piece from the registry and broadcast the removal
+     * so engine-mode clients drop it from their hover / selection set.
      */
     public static void handleUndoPlacement(C2SUndoPlacementPayload payload, Player player) {
         if (!(player instanceof ServerPlayer serverPlayer)) {
@@ -359,8 +359,8 @@ public final class BLibServerListener {
     /**
      * Delete a previously-placed piece. Clears every block in the piece's AABB to air and removes the piece from the
      * level's store. Pushes a {@link PlacementHistory} snapshot of the pre-delete state so the deletion is itself
-     * undoable — the snapshot carries no piece UUID, so undoing it just restores blocks (the piece is not re-registered;
-     * v1 doesn't try to resurrect the original placement record). Op-gated.
+     * undoable — the snapshot carries no piece UUID, so undoing it just restores blocks (the piece is not
+     * re-registered; v1 doesn't try to resurrect the original placement record). Op-gated.
      */
     public static void handleDeletePlacedPiece(C2SDeletePlacedPiecePayload payload, Player player) {
         if (!(player instanceof ServerPlayer serverPlayer)) {
@@ -381,14 +381,16 @@ public final class BLibServerListener {
 
         var air = net.minecraft.world.level.block.Blocks.AIR.defaultBlockState();
         var aabb = piece.aabb();
-        for (var pos : net.minecraft.core.BlockPos.betweenClosed(
-            aabb.minX(),
-            aabb.minY(),
-            aabb.minZ(),
-            aabb.maxX(),
-            aabb.maxY(),
-            aabb.maxZ()
-        )) {
+        for (
+            var pos : net.minecraft.core.BlockPos.betweenClosed(
+                aabb.minX(),
+                aabb.minY(),
+                aabb.minZ(),
+                aabb.maxX(),
+                aabb.maxY(),
+                aabb.maxZ()
+            )
+        ) {
             serverLevel.setBlock(pos.immutable(), air, Block.UPDATE_CLIENTS);
         }
 
@@ -399,8 +401,8 @@ public final class BLibServerListener {
     /**
      * Identity-preserving translation of a placed piece. Picks up every block (with block-entity NBT) inside the
      * piece's current AABB, clears the source cells, and stamps them at {@code newMin}-relative positions. The piece
-     * record's AABB and anchor are updated and re-broadcast as an Add — clients keyed by UUID overwrite their entry,
-     * so hover / selection / inspector stay coherent across the move.
+     * record's AABB and anchor are updated and re-broadcast as an Add — clients keyed by UUID overwrite their entry, so
+     * hover / selection / inspector stay coherent across the move.
      * <p>
      * Block-entity NBT is preserved end-to-end so chests keep their contents, signs keep their text, etc. No
      * {@link PlacementHistory} snapshot is pushed for v1 — moves aren't undoable. If users want that, layer it in as a
@@ -433,14 +435,16 @@ public final class BLibServerListener {
         var savedStates = new java.util.HashMap<net.minecraft.core.BlockPos, net.minecraft.world.level.block.state.BlockState>();
         var savedBeNbt = new java.util.HashMap<net.minecraft.core.BlockPos, net.minecraft.nbt.CompoundTag>();
         var oldMin = new net.minecraft.core.BlockPos(oldAabb.minX(), oldAabb.minY(), oldAabb.minZ());
-        for (var pos : net.minecraft.core.BlockPos.betweenClosed(
-            oldAabb.minX(),
-            oldAabb.minY(),
-            oldAabb.minZ(),
-            oldAabb.maxX(),
-            oldAabb.maxY(),
-            oldAabb.maxZ()
-        )) {
+        for (
+            var pos : net.minecraft.core.BlockPos.betweenClosed(
+                oldAabb.minX(),
+                oldAabb.minY(),
+                oldAabb.minZ(),
+                oldAabb.maxX(),
+                oldAabb.maxY(),
+                oldAabb.maxZ()
+            )
+        ) {
             // Capture state by offset-from-origin-min so we can stamp it relative to newMin without aliasing issues
             // when source and destination AABBs overlap. Two-phase: snapshot, then clear, then place.
             var rel = pos.subtract(oldMin).immutable();
@@ -452,14 +456,16 @@ public final class BLibServerListener {
         }
 
         var air = net.minecraft.world.level.block.Blocks.AIR.defaultBlockState();
-        for (var pos : net.minecraft.core.BlockPos.betweenClosed(
-            oldAabb.minX(),
-            oldAabb.minY(),
-            oldAabb.minZ(),
-            oldAabb.maxX(),
-            oldAabb.maxY(),
-            oldAabb.maxZ()
-        )) {
+        for (
+            var pos : net.minecraft.core.BlockPos.betweenClosed(
+                oldAabb.minX(),
+                oldAabb.minY(),
+                oldAabb.minZ(),
+                oldAabb.maxX(),
+                oldAabb.maxY(),
+                oldAabb.maxZ()
+            )
+        ) {
             serverLevel.setBlock(pos.immutable(), air, Block.UPDATE_CLIENTS);
         }
 
@@ -1150,8 +1156,8 @@ public final class BLibServerListener {
      * Remove a registry-element entry from a tag's project override JSON by id (rather than by raw array index — the
      * block inspector edits "from the block's POV" and doesn't carry the tag's on-disk layout). Scans the tag's draft
      * for the first direct (non-tag-ref) entry whose id matches the payload's, and removes it. Entries that are only
-     * present via tag-refs or via upstream packs aren't touched (vanilla JSON has no negation primitive), so the
-     * remove silently no-ops in those cases. Disk-only; echoes a fresh draft either way.
+     * present via tag-refs or via upstream packs aren't touched (vanilla JSON has no negation primitive), so the remove
+     * silently no-ops in those cases. Disk-only; echoes a fresh draft either way.
      */
     public static void handleRemoveBlockTag(C2SRemoveBlockTagPayload payload, Player player) {
         if (!(player instanceof ServerPlayer serverPlayer)) {
@@ -1391,13 +1397,15 @@ public final class BLibServerListener {
         // also run inside getOrSeedTag) — the cost is per-edit-or-fetch, which is rare on the human timescale.
         var upstreamKeys = ProjectTagDraftStore.extractUpstreamEntryKeys(server, projectName, registryRk, tagId);
         var entries = rawEntries.stream()
-            .map(e -> new com.blib.mod.common.network.packet.TagEntryDraft(
-                e.rawIndex(),
-                e.isTagRef(),
-                e.id(),
-                e.required(),
-                upstreamKeys.contains(ProjectTagDraftStore.entryKey(e.isTagRef(), e.id()))
-            ))
+            .map(
+                e -> new com.blib.mod.common.network.packet.TagEntryDraft(
+                    e.rawIndex(),
+                    e.isTagRef(),
+                    e.id(),
+                    e.required(),
+                    upstreamKeys.contains(ProjectTagDraftStore.entryKey(e.isTagRef(), e.id()))
+                )
+            )
             .toList();
         // inProject is sourced from disk, not from the in-memory draft cache: getOrSeedTag returns a synthesized
         // upstream-merge seed when the project hasn't authored the tag yet, so it isn't a reliable signal of
@@ -1415,12 +1423,12 @@ public final class BLibServerListener {
     }
 
     /**
-     * Common end-of-edit pass for tag-mutating handlers: either persist the just-edited JSON or, when the edit
-     * leaves the project's JSON equivalent to upstream (no net effect on the merged tag), delete the file instead.
+     * Common end-of-edit pass for tag-mutating handlers: either persist the just-edited JSON or, when the edit leaves
+     * the project's JSON equivalent to upstream (no net effect on the merged tag), delete the file instead.
      * Auto-cleanup keeps the datapack honest — a JSON that doesn't modify anything shouldn't claim to. Either way,
-     * fires a fresh {@link S2CTagDraftPayload} so the client's view matches disk; the delete path also pushes a
-     * full catalog refresh (the row may have become a project-only-no-upstream candidate for total removal, which
-     * the local optimistic update can't represent).
+     * fires a fresh {@link S2CTagDraftPayload} so the client's view matches disk; the delete path also pushes a full
+     * catalog refresh (the row may have become a project-only-no-upstream candidate for total removal, which the local
+     * optimistic update can't represent).
      */
     private static void persistOrCleanupAndSend(
         ServerPlayer serverPlayer,

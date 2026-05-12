@@ -51,9 +51,9 @@ import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.C2SAddTagEntryPayload;
 import com.blib.mod.common.network.packet.C2SRemoveBlockTagPayload;
 import com.blib.mod.common.network.packet.C2SRemoveTagEntryPayload;
-import com.blib.mod.common.network.packet.C2SRequestTagCatalogPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionInspectionPayload;
 import com.blib.mod.common.network.packet.C2SRequestRegistryEntriesPayload;
+import com.blib.mod.common.network.packet.C2SRequestTagCatalogPayload;
 import com.blib.mod.common.network.packet.C2SRequestTagDraftPayload;
 import com.blib.mod.common.network.packet.C2SSetBlockStatePropertyPayload;
 import com.blib.mod.common.network.packet.C2SSetEntityScalePayload;
@@ -446,7 +446,9 @@ public final class DetailsPanel implements Panel {
     /** Per-row × button rects + the entries they remove; populated each tag-render frame, consumed in mouseClicked. */
     private final List<TagRemoveHit> tagRemoveHits = new ArrayList<>();
 
-    /** Per-row req/opt badge rects + the entries they toggle; populated each tag-render frame, consumed in mouseClicked. */
+    /**
+     * Per-row req/opt badge rects + the entries they toggle; populated each tag-render frame, consumed in mouseClicked.
+     */
     private final List<TagRequiredToggleHit> tagRequiredToggleHits = new ArrayList<>();
 
     /**
@@ -483,9 +485,9 @@ public final class DetailsPanel implements Panel {
     private final List<BlockTagRemoveHit> blockTagRowHits = new ArrayList<>();
 
     /**
-     * Active project the catalog was most recently requested for. Lets the inspector fire one {@link
-     * C2SRequestTagCatalogPayload} per (engine-session, project) instead of every frame when the cache happens to be
-     * empty. Stays valid even after a non-empty response — re-firing the request would be redundant.
+     * Active project the catalog was most recently requested for. Lets the inspector fire one
+     * {@link C2SRequestTagCatalogPayload} per (engine-session, project) instead of every frame when the cache happens
+     * to be empty. Stays valid even after a non-empty response — re-firing the request would be redundant.
      */
     private @Nullable String blockTagCatalogRequestedForProject;
 
@@ -695,9 +697,11 @@ public final class DetailsPanel implements Panel {
             // Size inputs — by user preference, touching any size input auto-switches to volume mode. We forward the
             // click after promoting so the input still takes focus (the rect is identical between piece and volume
             // views), letting the user type immediately without a second click.
-            if (volumeSizeX.mouseClicked(mouseX, mouseY, button)
-                || volumeSizeY.mouseClicked(mouseX, mouseY, button)
-                || volumeSizeZ.mouseClicked(mouseX, mouseY, button)) {
+            if (
+                volumeSizeX.mouseClicked(mouseX, mouseY, button)
+                    || volumeSizeY.mouseClicked(mouseX, mouseY, button)
+                    || volumeSizeZ.mouseClicked(mouseX, mouseY, button)
+            ) {
                 com.blib.engine.selection.PlacedJigsawPieceSelectable.promoteToVolume(
                     pjs.id(),
                     com.blib.engine.blockselection.BlockSelection.GizmoMode.SCALE_VOLUME
@@ -1362,10 +1366,10 @@ public final class DetailsPanel implements Panel {
     }
 
     /**
-     * Unified single-block inspector. Always renders the generic sections (Position, Block id, Properties, Tags,
-     * Block Entity); when the block at {@code bs.pos()} is a jigsaw, an additional jigsaw section (Identity / Joint /
-     * Final State) is rendered at the top — jigsaw blocks are just blocks with extra editable NBT, so they get every
-     * widget a regular block does plus their own.
+     * Unified single-block inspector. Always renders the generic sections (Position, Block id, Properties, Tags, Block
+     * Entity); when the block at {@code bs.pos()} is a jigsaw, an additional jigsaw section (Identity / Joint / Final
+     * State) is rendered at the top — jigsaw blocks are just blocks with extra editable NBT, so they get every widget a
+     * regular block does plus their own.
      */
     private void renderGenericBlockView(
         GuiGraphics graphics,
@@ -1576,15 +1580,17 @@ public final class DetailsPanel implements Panel {
             var color = hovered ? BLOCK_TAG_REMOVE_ICON_HOVER_COLOR : BLOCK_TAG_REMOVE_ICON_COLOR;
             var glyphX = removeX + (BLOCK_TAG_REMOVE_BUTTON_WIDTH - font.width("×")) / 2;
             graphics.drawString(font, Component.literal("×"), glyphX, labelY, color, false);
-            blockTagRowHits.add(new BlockTagRemoveHit(removeX, y, BLOCK_TAG_REMOVE_BUTTON_WIDTH, BLOCK_TAG_ROW_HEIGHT, blockRegistry, tagId));
+            blockTagRowHits.add(
+                new BlockTagRemoveHit(removeX, y, BLOCK_TAG_REMOVE_BUTTON_WIDTH, BLOCK_TAG_ROW_HEIGHT, blockRegistry, tagId)
+            );
         }
 
         return y + BLOCK_TAG_ROW_HEIGHT;
     }
 
     /**
-     * Effective tag set for a block as the inspector should display it: live runtime tags plus any pending adds
-     * minus any pending removes. Sorted by id for stable row order across frames.
+     * Effective tag set for a block as the inspector should display it: live runtime tags plus any pending adds minus
+     * any pending removes. Sorted by id for stable row order across frames.
      */
     private static List<ResourceLocation> effectiveBlockTags(ResourceLocation blockId) {
         var blockRegistry = Registries.BLOCK.location();
@@ -1598,8 +1604,8 @@ public final class DetailsPanel implements Panel {
 
     /**
      * Find the catalog entry for {@code (registry, tagId)} and report whether the project has authored or overridden
-     * it. Catalog scan is O(n) per call but n is small (one entry per loaded tag); a map keyed by (registry, tag)
-     * would help only if a block has dozens of tags, which is rare.
+     * it. Catalog scan is O(n) per call but n is small (one entry per loaded tag); a map keyed by (registry, tag) would
+     * help only if a block has dozens of tags, which is rare.
      */
     private static boolean isTagInProject(ResourceLocation registryKey, ResourceLocation tagId) {
         for (var entry : TagCatalogCache.all()) {
@@ -1622,9 +1628,9 @@ public final class DetailsPanel implements Panel {
     }
 
     /**
-     * Does the catalog say the project's JSON for this tag is byte-equivalent to upstream's contribution? True ⇒
-     * the project owns the tag on disk but the merged result is identical to what upstream produces — neutralize
-     * the "modified" coloring so the row doesn't masquerade as a real edit.
+     * Does the catalog say the project's JSON for this tag is byte-equivalent to upstream's contribution? True ⇒ the
+     * project owns the tag on disk but the merged result is identical to what upstream produces — neutralize the
+     * "modified" coloring so the row doesn't masquerade as a real edit.
      */
     private static boolean isTagEquivalentToUpstream(ResourceLocation registryKey, ResourceLocation tagId) {
         for (var entry : TagCatalogCache.all()) {
@@ -1663,8 +1669,8 @@ public final class DetailsPanel implements Panel {
      * Render one editable block-state property row, dispatching by property kind: BooleanProperty rows render with a
      * {@link Checkbox} (lighter affordance for two-state values like waterlogged); everything else renders with a
      * {@link SearchableSelect} so users can pick from a dropdown that also handles longer value lists gracefully
-     * (search filter helps for properties like {@code power}'s 0–15 range). The visual state is re-synced from the
-     * live {@link BlockState} each frame so external edits flow through without waiting on a click.
+     * (search filter helps for properties like {@code power}'s 0–15 range). The visual state is re-synced from the live
+     * {@link BlockState} each frame so external edits flow through without waiting on a click.
      */
     private int renderGenericBlockPropertyRow(
         GuiGraphics graphics,
@@ -1716,10 +1722,10 @@ public final class DetailsPanel implements Panel {
     }
 
     /**
-     * Rebuild the per-property widget cache only when the inspected block changes — same pos and same block type
-     * means the property set is identical (BlockState is immutable; replacing-in-place creates a different Block
-     * instance only when the registry block changes). Keeping widget instances stable across frames lets each
-     * widget track its own click rect / popup state for the click dispatcher.
+     * Rebuild the per-property widget cache only when the inspected block changes — same pos and same block type means
+     * the property set is identical (BlockState is immutable; replacing-in-place creates a different Block instance
+     * only when the registry block changes). Keeping widget instances stable across frames lets each widget track its
+     * own click rect / popup state for the click dispatcher.
      */
     private void rebuildGenericBlockPropertyWidgets(BlockState state, BlockPos pos, net.minecraft.world.level.block.Block block) {
         if (pos.equals(genericBlockCachedPos) && block == genericBlockCachedBlock) {
@@ -1815,12 +1821,12 @@ public final class DetailsPanel implements Panel {
      * inspector (tool segmented control, position inputs, size inputs) so users get the familiar shape, plus a Piece
      * metadata section (template id, rotation/mirror, placed-time) and explicit Switch to Volume Edit / Delete buttons.
      * <p>
-     * Editability rules — by user preference, only operations that <em>preserve</em> the piece's identity stay in
-     * piece mode:
+     * Editability rules — by user preference, only operations that <em>preserve</em> the piece's identity stay in piece
+     * mode:
      * <ul>
      * <li><b>Move tool / Position inputs</b>: legal piece edits. Move commits via {@code C2SMovePlacedPiecePayload}
-     * (server picks up the blocks, places them at the new min, updates the registry). Position-input commits go
-     * through the same payload.</li>
+     * (server picks up the blocks, places them at the new min, updates the registry). Position-input commits go through
+     * the same payload.</li>
      * <li><b>Translate / Scale tool buttons, Size inputs</b>: not valid for a piece (translating the AABB without
      * moving blocks, or scaling the region, breaks the piece's identity). Clicking any of these auto-promotes to a
      * block-volume selection over the piece's AABB and seeds the volume's gizmo mode accordingly — the user lands
@@ -1830,8 +1836,8 @@ public final class DetailsPanel implements Panel {
      * </ul>
      * The widgets reused are the volume ones ({@code volumeToolControl}, {@code volumePos*}, {@code volumeSize*})
      * because we want byte-identical visual layout — separate widget instances would risk drift across the two views.
-     * Click and commit handlers in {@link #mouseClicked} dispatch by current selection type, so the same widget
-     * behaves differently in volume vs piece mode.
+     * Click and commit handlers in {@link #mouseClicked} dispatch by current selection type, so the same widget behaves
+     * differently in volume vs piece mode.
      */
     private void renderPlacedJigsawPieceView(
         GuiGraphics graphics,
@@ -2787,9 +2793,9 @@ public final class DetailsPanel implements Panel {
 
     /**
      * Render the inspector view for a {@link TagSelectable}. Layout (top-down): a registry meta-line, a Merge/Replace
-     * toggle + Reload button row, a scrollable list of entry rows (each with a tag-ref/direct chip, the id, a
-     * clickable {@code req}/{@code opt} required-flag badge, and a {@code ×} remove button), and a sticky footer with
-     * the Add-entry picker.
+     * toggle + Reload button row, a scrollable list of entry rows (each with a tag-ref/direct chip, the id, a clickable
+     * {@code req}/{@code opt} required-flag badge, and a {@code ×} remove button), and a sticky footer with the
+     * Add-entry picker.
      * <p>
      * Reads from {@link TagDraftCache} for the entry list (server-pushed authoritative state — the Tag Editor moved
      * into the inspector but its data flow is unchanged from the original separate-panel design). Sends
@@ -3024,8 +3030,8 @@ public final class DetailsPanel implements Panel {
 
     /**
      * Color for a tag-entry row's id label. Matches the unified palette: staged adds + tag-level edits render red,
-     * project-new tags pull their entries to green, project-modified-upstream tags pull theirs to blue. Falls back
-     * to {@link #VALUE_COLOR} when there's no tag in scope (defensive — renderTagEntryRow is only reached from
+     * project-new tags pull their entries to green, project-modified-upstream tags pull theirs to blue. Falls back to
+     * {@link #VALUE_COLOR} when there's no tag in scope (defensive — renderTagEntryRow is only reached from
      * renderTagSourceList, which only runs when a TagSelectable is the current selection).
      */
     private int entryLabelColor(TagEntryDraft entry) {

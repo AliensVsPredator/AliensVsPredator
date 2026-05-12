@@ -1,6 +1,7 @@
 package com.blib.engine.session;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.ClipContext;
@@ -16,7 +17,6 @@ import com.blib.engine.selection.BlockSelectable;
 import com.blib.engine.selection.EntitySelectable;
 import com.blib.engine.selection.PlacedJigsawPieceSelectable;
 import com.blib.engine.selection.SelectionManager;
-import net.minecraft.client.gui.screens.Screen;
 
 /**
  * Camera-control math for engine mode. Driven directly from workspace mouse events: the {@code ViewportPanel} calls the

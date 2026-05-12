@@ -22,8 +22,8 @@ import java.util.UUID;
  * popping. {@code timestamp} is for inspector display ("placed 12s ago"); not load-bearing for the restore logic
  * itself.
  * <p>
- * {@code pieceId} links this snapshot back to a {@link PlacedPiece} record in the level's {@link PlacedPieceStore}.
- * Set for snapshots generated from a jigsaw piece placement; on undo, the caller removes the piece from the store and
+ * {@code pieceId} links this snapshot back to a {@link PlacedPiece} record in the level's {@link PlacedPieceStore}. Set
+ * for snapshots generated from a jigsaw piece placement; on undo, the caller removes the piece from the store and
  * broadcasts the removal to clients. {@code null} when the snapshot came from a non-piece source (raw block restore,
  * capture system, etc.) — in which case the piece registry is left untouched.
  */

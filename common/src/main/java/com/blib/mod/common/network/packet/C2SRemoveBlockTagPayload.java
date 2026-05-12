@@ -11,10 +11,10 @@ import com.blib.api.common.codec.v1.BLibCodecs;
 import com.blib.mod.BLib;
 
 /**
- * Client → server: remove a registry-element entry from a tag's project override JSON by its {@code entryId}, looking up
- * the on-disk {@code rawIndex} server-side. Sister packet to {@link C2SRemoveTagEntryPayload} — index-by-id rather than
- * index-by-position. Used by the block inspector's Tags section, where the user thinks in "remove this block from that
- * tag" semantics and the inspector doesn't carry the tag's source-array layout.
+ * Client → server: remove a registry-element entry from a tag's project override JSON by its {@code entryId}, looking
+ * up the on-disk {@code rawIndex} server-side. Sister packet to {@link C2SRemoveTagEntryPayload} — index-by-id rather
+ * than index-by-position. Used by the block inspector's Tags section, where the user thinks in "remove this block from
+ * that tag" semantics and the inspector doesn't carry the tag's source-array layout.
  * <p>
  * Server scans the tag's draft entries, finds the first direct (non-tag-ref) entry whose id equals {@code entryId}, and
  * removes it. If no matching direct entry exists (block is in the tag only via a tag-ref or via upstream packs), the
@@ -22,8 +22,12 @@ import com.blib.mod.BLib;
  * inspector can't represent the negation. Echoes a fresh {@link S2CTagDraftPayload} either way so the source view
  * doesn't fall out of sync.
  */
-public record C2SRemoveBlockTagPayload(String projectName, ResourceLocation registryKey, ResourceLocation tagId, ResourceLocation entryId)
-    implements CustomPacketPayload {
+public record C2SRemoveBlockTagPayload(
+    String projectName,
+    ResourceLocation registryKey,
+    ResourceLocation tagId,
+    ResourceLocation entryId
+) implements CustomPacketPayload {
 
     public static final ResourceLocation PAYLOAD_ID = BLib.MOD.resources().createLocation("remove_block_tag");
 

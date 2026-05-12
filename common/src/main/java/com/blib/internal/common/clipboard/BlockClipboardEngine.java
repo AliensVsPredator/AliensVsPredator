@@ -165,9 +165,9 @@ public final class BlockClipboardEngine {
      * gameplay one — the user wants the volume gone, not turned into a pile of items.
      * <p>
      * Removing the block entity first sidesteps the drop: the chest's {@code onRemove} runs against an already-empty
-     * slot ({@code level.getBlockEntity(pos)} returns null), the {@code instanceof Container} check fails, and the
-     * drop path is skipped entirely. Also handles {@code RandomizableContainerBlockEntity} (e.g. unopened dungeon
-     * chests) correctly — with no BE, there's nothing to unpack the loot table.
+     * slot ({@code level.getBlockEntity(pos)} returns null), the {@code instanceof Container} check fails, and the drop
+     * path is skipped entirely. Also handles {@code RandomizableContainerBlockEntity} (e.g. unopened dungeon chests)
+     * correctly — with no BE, there's nothing to unpack the loot table.
      */
     private static void clearBlockAt(Level level, BlockPos pos) {
         if (level.getBlockEntity(pos) != null) {

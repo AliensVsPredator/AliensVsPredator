@@ -18,7 +18,10 @@ import com.blib.mod.BLib;
  * Identity-preserving move — the piece's blocks are picked up and placed at the new location, the registry record's
  * AABB and anchor update accordingly, and clients receive an updated piece broadcast.
  */
-public record C2SMovePlacedPiecePayload(UUID id, BlockPos newMin) implements CustomPacketPayload {
+public record C2SMovePlacedPiecePayload(
+    UUID id,
+    BlockPos newMin
+) implements CustomPacketPayload {
 
     public static final ResourceLocation PAYLOAD_ID = BLib.MOD.resources().createLocation("move_placed_piece");
 

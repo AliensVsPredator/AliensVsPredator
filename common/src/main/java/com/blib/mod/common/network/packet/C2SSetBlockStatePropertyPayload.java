@@ -23,8 +23,11 @@ import com.blib.mod.BLib;
  * means the world state diverged after the inspector last snapshotted it — the server silently drops the packet rather
  * than rolling the client back, since the inspector re-reads on the next frame.
  */
-public record C2SSetBlockStatePropertyPayload(BlockPos pos, String propertyName, String valueString)
-    implements CustomPacketPayload {
+public record C2SSetBlockStatePropertyPayload(
+    BlockPos pos,
+    String propertyName,
+    String valueString
+) implements CustomPacketPayload {
 
     public static final ResourceLocation PAYLOAD_ID = BLib.MOD.resources().createLocation("set_block_state_property");
 

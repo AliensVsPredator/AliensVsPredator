@@ -3,14 +3,16 @@ package com.blib.engine.input;
 import org.jetbrains.annotations.ApiStatus;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.List;
+
 /**
  * Static catalog of every named input binding in the engine workspace. Display surfaces (the status bar's hint region;
  * future cheat-sheet overlay and toolbar hotkey labels) read entries here for their canonical display strings, so
  * renaming or rebinding stays single-source.
  * <p>
- * Handler sites still use literal {@code GLFW_KEY_*} constants — they'll migrate to {@link Keybinding#matchesKey} et
- * al. in a follow-up. For now, the catalog and the handlers are kept in sync by convention; any drift surfaces in the
- * status bar before it surfaces in behavior.
+ * Handlers route through {@link ActiveKeybindings} so the active {@link KeybindingProfile}'s overrides take effect at
+ * the resolution site. Esc-as-popup-dismissal in {@code EngineWorkspaceScreen} (and similar focus-gate checks) stays
+ * literal on purpose — those are system controls, not user-rebindable.
  */
 @ApiStatus.Internal
 public final class Keybindings {
@@ -90,7 +92,72 @@ public final class Keybindings {
 
     public static final Keybinding PAINT_UNCLAIM = mouseDrag(1, "paint.unclaim", "Unclaim chunk");
 
+    // ----- Selection tools (mirror the toolbar's segmented control) -----
+
+    public static final Keybinding SELECT_INSPECT = key(GLFW.GLFW_KEY_Q, "select.inspect", "Inspect tool");
+
+    public static final Keybinding SELECT_MARQUEE = key(GLFW.GLFW_KEY_V, "select.marquee", "Marquee tool");
+
+    private static final List<Keybinding> ALL_DEFAULTS = List.of(
+        UNDO,
+        COPY,
+        CUT,
+        PASTE,
+        DELETE,
+        CANCEL,
+        JIGSAW_PLACE,
+        JIGSAW_ROTATE,
+        JIGSAW_MIRROR,
+        JIGSAW_CYCLE_MODE,
+        GIZMO_TRANSLATE,
+        GIZMO_SCALE,
+        GIZMO_MOVE_BLOCKS,
+        GIZMO_SNAP_INT,
+        VIEWPORT_SELECT,
+        VIEWPORT_CONTEXT,
+        VIEWPORT_BOX_SELECT,
+        VIEWPORT_ORBIT,
+        VIEWPORT_PAN,
+        VIEWPORT_DOLLY,
+        VIEWPORT_ZOOM,
+        TMAP_CLAIM,
+        TMAP_UNCLAIM,
+        TMAP_PAINT_CLAIM,
+        TMAP_PAINT_UNCLAIM,
+        TMAP_PAN,
+        TMAP_ZOOM,
+        PAINT_CLAIM,
+        PAINT_UNCLAIM,
+        SELECT_INSPECT,
+        SELECT_MARQUEE
+    );
+
     private Keybindings() {}
+
+    /** Every default binding in declaration order. Used by the preferences UI to enumerate rows and reset overrides. */
+    public static List<Keybinding> defaults() {
+        return ALL_DEFAULTS;
+    }
+
+    /** Returns the category key (text before the first {@code .}), or {@code "other"} for unrecognised ids. */
+    public static String categoryOf(String id) {
+        var dot = id.indexOf('.');
+        return dot < 0 ? "other" : id.substring(0, dot);
+    }
+
+    /** Human-readable label for a category key. Used for the category rail in the preferences dialog. */
+    public static String categoryLabel(String categoryKey) {
+        return switch (categoryKey) {
+            case "edit" -> "Edit";
+            case "jigsaw" -> "Jigsaw";
+            case "gizmo" -> "Gizmo";
+            case "viewport" -> "Viewport";
+            case "tmap" -> "Territory Map";
+            case "paint" -> "Paint";
+            case "select" -> "Selection";
+            default -> categoryKey;
+        };
+    }
 
     private static Keybinding key(int keyCode, String id, String label) {
         return new Keybinding(id, label, new Input.Key(keyCode, 0));

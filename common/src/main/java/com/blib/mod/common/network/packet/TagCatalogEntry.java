@@ -15,8 +15,8 @@ import com.blib.api.common.codec.v1.BLibCodecs;
  * <li>{@code inUpstream} — at least one non-project pack (vanilla, mods, other datapacks) ships a JSON file for this
  * tag at the same path.</li>
  * <li>{@code equivalentToUpstream} — the project's JSON is {@code replace=false} with every entry also contributed by
- * upstream packs, so the merged tag is identical to what upstream produces alone. Set true ⇒ the project's JSON has
- * no net effect; the browser paints the row neutral so it doesn't read as "modified".</li>
+ * upstream packs, so the merged tag is identical to what upstream produces alone. Set true ⇒ the project's JSON has no
+ * net effect; the browser paints the row neutral so it doesn't read as "modified".</li>
  * </ul>
  * Together: inProject + inUpstream + !equivalentToUpstream → project has actually modified an existing upstream tag;
  * only inProject → project has authored a brand new tag; only inUpstream → vanilla / mods own it; inProject +

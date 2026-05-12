@@ -10,6 +10,10 @@ import org.jetbrains.annotations.Nullable;
 
 import com.blib.engine.blockselection.BlockSelection;
 import com.blib.engine.blockselection.BlockSelectionOps;
+import com.blib.engine.input.ActiveKeybindings;
+import com.blib.engine.input.KeybindingProfile;
+import com.blib.engine.input.KeybindingProfileCatalog;
+import com.blib.engine.input.Keybindings;
 import com.blib.engine.jigsaw.JigsawPieceLibrary;
 import com.blib.engine.jigsaw.JigsawPieceSelection;
 import com.blib.engine.jigsaw.JigsawPieceThumbnailCache;
@@ -155,6 +159,12 @@ public final class EngineWorkspaceScreen extends Screen {
     private @Nullable ManageLayoutsDialog manageLayoutsDialog;
 
     /**
+     * Modal preferences dialog (keybinding editor). Same lifecycle as the others. {@link LayoutNameDialog} can stack on
+     * top when the user creates / renames / duplicates a profile.
+     */
+    private @Nullable PreferencesDialog preferencesDialog;
+
+    /**
      * Panel that captured the mouse via {@link Panel#mouseClickedCapture}. While non-null, {@link #mouseDragged} and
      * {@link #mouseReleased} route to this panel before any other handling, so a panel-driven drag (scrollbar, etc.)
      * tracks the cursor even when it leaves the panel rect. Cleared on {@code mouseReleased}.
@@ -214,6 +224,7 @@ public final class EngineWorkspaceScreen extends Screen {
         // Seed built-in templates on first run (idempotent — does nothing if files already exist), then resolve the
         // active layout id from disk-backed state and load its body subtree. The outer trim is always rebuilt fresh.
         LayoutCatalog.initialize();
+        KeybindingProfileCatalog.initialize();
         var bodyRoot = loadActiveLayoutBody();
         this.root = buildOuterLayout(bodyRoot);
     }
@@ -429,7 +440,7 @@ public final class EngineWorkspaceScreen extends Screen {
             panelMouseX = OFFSCREEN_MOUSE;
             panelMouseY = OFFSCREEN_MOUSE;
         }
-        if (layoutNameDialog != null || manageLayoutsDialog != null) {
+        if (layoutNameDialog != null || manageLayoutsDialog != null || preferencesDialog != null) {
             panelMouseX = OFFSCREEN_MOUSE;
             panelMouseY = OFFSCREEN_MOUSE;
         }
@@ -450,8 +461,12 @@ public final class EngineWorkspaceScreen extends Screen {
         if (manageLayoutsDialog != null) {
             manageLayoutsDialog.render(graphics, logicalWidth, logicalHeight, logicalMouseX, logicalMouseY);
         }
-        // LayoutNameDialog renders on top of ManageLayoutsDialog because Save-As / Rename / Duplicate / etc. opened
-        // from the manage modal stack a second sheet on top of it; rendering it last keeps it visible above the list.
+        if (preferencesDialog != null) {
+            preferencesDialog.render(graphics, logicalWidth, logicalHeight, logicalMouseX, logicalMouseY);
+        }
+        // LayoutNameDialog renders on top of ManageLayoutsDialog / PreferencesDialog because Save-As / Rename /
+        // Duplicate / etc. opened from the parent modal stack a second sheet on top of it; rendering it last keeps it
+        // visible above the list.
         if (layoutNameDialog != null) {
             layoutNameDialog.render(graphics, logicalWidth, logicalHeight, logicalMouseX, logicalMouseY);
         }
@@ -750,6 +765,11 @@ public final class EngineWorkspaceScreen extends Screen {
         if (confirmDialog != null || captureDialog != null || layoutNameDialog != null || manageLayoutsDialog != null) {
             return true;
         }
+        if (preferencesDialog != null) {
+            var lx = mouseX / SCALE;
+            var ly = mouseY / SCALE;
+            return preferencesDialog.mouseScrolled(lx, ly, scrollX, scrollY);
+        }
         var logicalX = mouseX / SCALE;
         var logicalY = mouseY / SCALE;
         // SearchableSelect popup gets first claim on scroll wheel — its filtered list scrolls. Cursor outside the
@@ -891,6 +911,9 @@ public final class EngineWorkspaceScreen extends Screen {
         if (manageLayoutsDialog != null) {
             return true;
         }
+        if (preferencesDialog != null) {
+            return preferencesDialog.charTyped(ch, modifiers);
+        }
         var focused = TextInput.getFocused();
         if (focused != null && focused.charTyped(ch, modifiers)) {
             return true;
@@ -914,12 +937,16 @@ public final class EngineWorkspaceScreen extends Screen {
         if (captureDialog != null) {
             return captureDialog.keyPressed(keyCode, scanCode, modifiers);
         }
-        // LayoutNameDialog stacks over ManageLayoutsDialog (Save-As / Rename / Duplicate sheet), so route to it first.
+        // LayoutNameDialog stacks over ManageLayoutsDialog / PreferencesDialog (Save-As / Rename / Duplicate / New
+        // Profile sheet), so route to it first.
         if (layoutNameDialog != null) {
             return layoutNameDialog.keyPressed(keyCode, scanCode, modifiers);
         }
         if (manageLayoutsDialog != null) {
             return manageLayoutsDialog.keyPressed(keyCode, scanCode, modifiers);
+        }
+        if (preferencesDialog != null) {
+            return preferencesDialog.keyPressed(keyCode, scanCode, modifiers);
         }
         // Esc closes an open SearchableSelect popup BEFORE TextInput dispatch — otherwise the popup's focused
         // search input would consume Esc as "defocus" and leave the popup visible-but-unfocused, which is confusing.
@@ -969,7 +996,7 @@ public final class EngineWorkspaceScreen extends Screen {
         // Ctrl+Z = universal undo. Works regardless of whether a piece is held — the placement history is server-
         // side and decoupled from the held piece. Ctrl+Y / redo isn't wired yet (PlacementHistory is a one-way stack;
         // see plan for follow-up scope).
-        if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_Z && Screen.hasControlDown() && !Screen.hasShiftDown()) {
+        if (ActiveKeybindings.matchesKey(Keybindings.UNDO, keyCode, modifiers)) {
             BLib.MOD.networking().sendToServer(C2SUndoPlacementPayload.INSTANCE);
             return true;
         }
@@ -979,32 +1006,30 @@ public final class EngineWorkspaceScreen extends Screen {
         // other potential editor tools later. Suppressed while a text input is focused (handled above), so typing
         // them into the search box won't rotate the world preview / change modes.
         if (JigsawPieceSelection.hasSelection()) {
-            if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_R) {
+            if (ActiveKeybindings.matchesKey(Keybindings.JIGSAW_ROTATE, keyCode, modifiers)) {
                 JigsawPieceSelection.cycleRotation(1);
                 return true;
             }
-            if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_M) {
+            if (ActiveKeybindings.matchesKey(Keybindings.JIGSAW_MIRROR, keyCode, modifiers)) {
                 JigsawPieceSelection.cycleMirror();
                 return true;
             }
-            if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_T) {
+            if (ActiveKeybindings.matchesKey(Keybindings.JIGSAW_CYCLE_MODE, keyCode, modifiers)) {
                 com.blib.engine.jigsaw.placement.JigsawTool.cycleNextImplementedMode();
                 return true;
             }
         }
 
-        // Selection-tool hotkeys: Q = Inspect, V = Marquee. Mirrors the toolbar's segmented control. Gated on no
-        // modifiers so Ctrl+V (paste) further down stays reachable, and a focused text input's Q / V keystrokes
-        // (handled by the focused-input dispatch above) aren't intercepted.
-        if (!Screen.hasControlDown() && !Screen.hasShiftDown() && !Screen.hasAltDown()) {
-            if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_Q) {
-                com.blib.engine.session.SelectionToolState.set(com.blib.engine.session.SelectionTool.INSPECT);
-                return true;
-            }
-            if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_V) {
-                com.blib.engine.session.SelectionToolState.set(com.blib.engine.session.SelectionTool.MARQUEE);
-                return true;
-            }
+        // Selection-tool hotkeys: Q = Inspect, V = Marquee. Mirrors the toolbar's segmented control. The bindings
+        // resolve via the active profile so users can rebind them; matchesKey's mod-mask compare keeps Ctrl+V (paste)
+        // below distinct from the bare V here.
+        if (ActiveKeybindings.matchesKey(Keybindings.SELECT_INSPECT, keyCode, modifiers)) {
+            com.blib.engine.session.SelectionToolState.set(com.blib.engine.session.SelectionTool.INSPECT);
+            return true;
+        }
+        if (ActiveKeybindings.matchesKey(Keybindings.SELECT_MARQUEE, keyCode, modifiers)) {
+            com.blib.engine.session.SelectionToolState.set(com.blib.engine.session.SelectionTool.MARQUEE);
+            return true;
         }
 
         // Tool hotkeys: T / S / M for Translate / Scale / Move-Blocks. Mirrors Blender's G/S/R muscle memory.
@@ -1013,53 +1038,48 @@ public final class EngineWorkspaceScreen extends Screen {
         // analog to MOVE_BLOCKS.
         var tssel = SelectionManager.current().single();
         if (tssel instanceof com.blib.engine.selection.EntitySelectable) {
-            switch (keyCode) {
-                case org.lwjgl.glfw.GLFW.GLFW_KEY_T -> {
-                    com.blib.engine.entityselection.EntityGizmoMode.set(com.blib.engine.entityselection.EntityGizmoMode.TRANSLATE);
-                    return true;
-                }
-                case org.lwjgl.glfw.GLFW.GLFW_KEY_S -> {
-                    com.blib.engine.entityselection.EntityGizmoMode.set(com.blib.engine.entityselection.EntityGizmoMode.SCALE);
-                    return true;
-                }
-                // M intentionally falls through — entity gizmo has no MOVE_BLOCKS analog. We don't redirect M to
-                // block gizmos either since the user's selection is an entity, not a block volume.
+            if (ActiveKeybindings.matchesKey(Keybindings.GIZMO_TRANSLATE, keyCode, modifiers)) {
+                com.blib.engine.entityselection.EntityGizmoMode.set(com.blib.engine.entityselection.EntityGizmoMode.TRANSLATE);
+                return true;
             }
+            if (ActiveKeybindings.matchesKey(Keybindings.GIZMO_SCALE, keyCode, modifiers)) {
+                com.blib.engine.entityselection.EntityGizmoMode.set(com.blib.engine.entityselection.EntityGizmoMode.SCALE);
+                return true;
+            }
+            // GIZMO_MOVE_BLOCKS intentionally not handled here — entity gizmo has no MOVE_BLOCKS analog.
         } else {
-            switch (keyCode) {
-                case org.lwjgl.glfw.GLFW.GLFW_KEY_T -> {
-                    BlockSelection.setGizmoMode(BlockSelection.GizmoMode.TRANSLATE_VOLUME);
-                    return true;
-                }
-                case org.lwjgl.glfw.GLFW.GLFW_KEY_S -> {
-                    BlockSelection.setGizmoMode(BlockSelection.GizmoMode.SCALE_VOLUME);
-                    return true;
-                }
-                case org.lwjgl.glfw.GLFW.GLFW_KEY_M -> {
-                    BlockSelection.setGizmoMode(BlockSelection.GizmoMode.MOVE_BLOCKS);
-                    return true;
-                }
+            if (ActiveKeybindings.matchesKey(Keybindings.GIZMO_TRANSLATE, keyCode, modifiers)) {
+                BlockSelection.setGizmoMode(BlockSelection.GizmoMode.TRANSLATE_VOLUME);
+                return true;
+            }
+            if (ActiveKeybindings.matchesKey(Keybindings.GIZMO_SCALE, keyCode, modifiers)) {
+                BlockSelection.setGizmoMode(BlockSelection.GizmoMode.SCALE_VOLUME);
+                return true;
+            }
+            if (ActiveKeybindings.matchesKey(Keybindings.GIZMO_MOVE_BLOCKS, keyCode, modifiers)) {
+                BlockSelection.setGizmoMode(BlockSelection.GizmoMode.MOVE_BLOCKS);
+                return true;
             }
         }
 
         // Clipboard hotkeys: Ctrl+C / Ctrl+X / Ctrl+V for copy / cut / paste, Delete for clear. Gated on no focused
         // text input so the muscle-memory of Ctrl+C in a name field doesn't accidentally copy blocks instead of text.
         // BlockSelectionOps self-gates on AABB presence + volume cap; clicks/keys without a valid AABB are no-ops.
-        if (TextInput.getFocused() == null && Screen.hasControlDown() && !Screen.hasShiftDown()) {
-            if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_C) {
+        if (TextInput.getFocused() == null) {
+            if (ActiveKeybindings.matchesKey(Keybindings.COPY, keyCode, modifiers)) {
                 BlockSelectionOps.copy(false);
                 return true;
             }
-            if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_X) {
+            if (ActiveKeybindings.matchesKey(Keybindings.CUT, keyCode, modifiers)) {
                 BlockSelectionOps.copy(true);
                 return true;
             }
-            if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_V) {
+            if (ActiveKeybindings.matchesKey(Keybindings.PASTE, keyCode, modifiers)) {
                 BlockSelectionOps.paste();
                 return true;
             }
         }
-        if (TextInput.getFocused() == null && keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_DELETE) {
+        if (TextInput.getFocused() == null && ActiveKeybindings.matchesKey(Keybindings.DELETE, keyCode, modifiers)) {
             var deleteSel = SelectionManager.current().single();
             if (deleteSel instanceof com.blib.engine.selection.EntitySelectable es) {
                 // Mirrors the context-menu "Delete Entity" gate — players aren't deletable, the server would reject
@@ -1083,10 +1103,10 @@ public final class EngineWorkspaceScreen extends Screen {
     }
 
     /**
-     * Delete a single inspected block by reusing the volume-delete packet with a degenerate one-block AABB. Avoids
-     * a parallel "delete one block" packet — the server's volume delete already special-cases tiny volumes, and
-     * routing through the same handler keeps op-gating + edit logging consistent. The {@link
-     * com.blib.engine.selection.BlockSelectable#isValid} check that prunes the now-air block from
+     * Delete a single inspected block by reusing the volume-delete packet with a degenerate one-block AABB. Avoids a
+     * parallel "delete one block" packet — the server's volume delete already special-cases tiny volumes, and routing
+     * through the same handler keeps op-gating + edit logging consistent. The
+     * {@link com.blib.engine.selection.BlockSelectable#isValid} check that prunes the now-air block from
      * {@link SelectionManager} fires naturally on the next read, so no explicit clear is needed here.
      */
     private static void deleteSingleBlock(net.minecraft.core.BlockPos pos) {
@@ -1125,6 +1145,10 @@ public final class EngineWorkspaceScreen extends Screen {
         }
         if (manageLayoutsDialog != null) {
             manageLayoutsDialog.mouseClicked(logicalX, logicalY, button);
+            return true;
+        }
+        if (preferencesDialog != null) {
+            preferencesDialog.mouseClicked(logicalX, logicalY, button);
             return true;
         }
 
@@ -1253,7 +1277,13 @@ public final class EngineWorkspaceScreen extends Screen {
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         // Modal dialog absorbs releases so a drag started before it opened doesn't propagate to panels behind it.
-        if (confirmDialog != null || captureDialog != null || layoutNameDialog != null || manageLayoutsDialog != null) {
+        if (
+            confirmDialog != null
+                || captureDialog != null
+                || layoutNameDialog != null
+                || manageLayoutsDialog != null
+                || preferencesDialog != null
+        ) {
             return true;
         }
         var logicalX = mouseX / SCALE;
@@ -1321,6 +1351,11 @@ public final class EngineWorkspaceScreen extends Screen {
         // Modal dialog absorbs drags so divider / tab / panel drags can't continue under the dim.
         if (confirmDialog != null || captureDialog != null || layoutNameDialog != null || manageLayoutsDialog != null) {
             return true;
+        }
+        if (preferencesDialog != null) {
+            var lx = mouseX / SCALE;
+            var ly = mouseY / SCALE;
+            return preferencesDialog.mouseDragged(lx, ly, button, deltaX, deltaY);
         }
         var logicalX = mouseX / SCALE;
         var logicalY = mouseY / SCALE;
@@ -1574,11 +1609,131 @@ public final class EngineWorkspaceScreen extends Screen {
 
         return switch (chipName) {
             case MenuBarPanel.CHIP_FILE -> buildFileMenu(anchorX, anchorY);
+            case MenuBarPanel.CHIP_EDIT -> buildEditMenu(anchorX, anchorY);
             case MenuBarPanel.CHIP_VIEW -> buildViewMenu(anchorX, anchorY);
             case MenuBarPanel.CHIP_WINDOW -> buildWindowMenu(anchorX, anchorY);
             case MenuBarPanel.CHIP_LAYOUT -> buildLayoutMenu(anchorX, anchorY);
             default -> null;
         };
+    }
+
+    /** Edit dropdown — currently just "Preferences…" but a natural home for Undo / Copy / Paste later. */
+    private DropdownMenu buildEditMenu(int anchorX, int anchorY) {
+        var items = new java.util.ArrayList<DropdownMenu.Item>();
+        items.add(new DropdownMenu.Item("Preferences…", this::openPreferencesDialog));
+        return new DropdownMenu(anchorX, anchorY, items);
+    }
+
+    private void openPreferencesDialog() {
+        this.preferencesDialog = new PreferencesDialog(
+            () -> this.preferencesDialog = null,
+            this::openPreferencesNewProfile,
+            this::openPreferencesRenameProfile,
+            this::openPreferencesDuplicateProfile,
+            this::openPreferencesDeleteProfile
+        );
+    }
+
+    private void openPreferencesNewProfile() {
+        this.layoutNameDialog = new LayoutNameDialog(
+            LayoutNameDialog.Mode.PROFILE_NEW,
+            "",
+            id -> KeybindingProfileCatalog.idAvailable(id),
+            this::confirmCreateProfile,
+            () -> this.layoutNameDialog = null
+        );
+    }
+
+    private void confirmCreateProfile(String displayName) {
+        this.layoutNameDialog = null;
+        try {
+            var id = KeybindingProfileCatalog.suggestId(displayName);
+            var profile = KeybindingProfile.empty(id, displayName);
+            KeybindingProfileCatalog.save(profile);
+            KeybindingProfileCatalog.setActive(id);
+            if (preferencesDialog != null) {
+                preferencesDialog.refreshProfiles();
+                preferencesDialog.loadProfile(id);
+            }
+        } catch (java.io.IOException e) {
+            org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] confirmCreateProfile: write failed", e);
+        }
+    }
+
+    private void openPreferencesRenameProfile(KeybindingProfile profile) {
+        this.layoutNameDialog = new LayoutNameDialog(
+            LayoutNameDialog.Mode.PROFILE_RENAME,
+            profile.displayName(),
+            id -> KeybindingProfileCatalog.idAvailable(id) || id.equals(profile.id()),
+            newName -> confirmRenameProfile(profile, newName),
+            () -> this.layoutNameDialog = null
+        );
+    }
+
+    private void confirmRenameProfile(KeybindingProfile profile, String newDisplayName) {
+        this.layoutNameDialog = null;
+        try {
+            var renamed = profile.withDisplayName(newDisplayName);
+            KeybindingProfileCatalog.save(renamed);
+            if (preferencesDialog != null) {
+                preferencesDialog.refreshProfiles();
+                preferencesDialog.loadProfile(profile.id());
+            }
+        } catch (java.io.IOException e) {
+            org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] confirmRenameProfile: write failed", e);
+        }
+    }
+
+    private void openPreferencesDuplicateProfile(KeybindingProfile profile) {
+        var initial = profile.displayName() + " (copy)";
+        this.layoutNameDialog = new LayoutNameDialog(
+            LayoutNameDialog.Mode.PROFILE_DUPLICATE,
+            initial,
+            KeybindingProfileCatalog::idAvailable,
+            newName -> confirmDuplicateProfile(profile, newName),
+            () -> this.layoutNameDialog = null
+        );
+    }
+
+    private void confirmDuplicateProfile(KeybindingProfile source, String newDisplayName) {
+        this.layoutNameDialog = null;
+        try {
+            var newId = KeybindingProfileCatalog.suggestId(newDisplayName);
+            var copy = new KeybindingProfile(KeybindingProfile.CURRENT_VERSION, newId, newDisplayName, source.overrides());
+            KeybindingProfileCatalog.save(copy);
+            KeybindingProfileCatalog.setActive(newId);
+            if (preferencesDialog != null) {
+                preferencesDialog.refreshProfiles();
+                preferencesDialog.loadProfile(newId);
+            }
+        } catch (java.io.IOException e) {
+            org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] confirmDuplicateProfile: write failed", e);
+        }
+    }
+
+    private void openPreferencesDeleteProfile(KeybindingProfile profile) {
+        this.confirmDialog = new ConfirmDialog(
+            "Delete Profile",
+            "Delete profile '" + profile.displayName() + "'? This cannot be undone.",
+            "Delete",
+            "Cancel",
+            true,
+            () -> confirmDeleteProfile(profile),
+            () -> this.confirmDialog = null
+        );
+    }
+
+    private void confirmDeleteProfile(KeybindingProfile profile) {
+        this.confirmDialog = null;
+        try {
+            KeybindingProfileCatalog.delete(profile.id());
+            if (preferencesDialog != null) {
+                preferencesDialog.refreshProfiles();
+                preferencesDialog.loadProfile(KeybindingProfileCatalog.getActive().id());
+            }
+        } catch (java.io.IOException e) {
+            org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] confirmDeleteProfile: delete failed", e);
+        }
     }
 
     /**
@@ -2187,11 +2342,11 @@ public final class EngineWorkspaceScreen extends Screen {
 
     /**
      * Right-click on a placed jigsaw piece. Mirrors the block-volume context menu so users get the same affordances
-     * (Capture / Cut / Copy / Delete) plus an Open Inspector entry. Capture / Cut / Copy work by promoting the piece
-     * to a block-volume selection covering its AABB and then dispatching the existing
+     * (Capture / Cut / Copy / Delete) plus an Open Inspector entry. Capture / Cut / Copy work by promoting the piece to
+     * a block-volume selection covering its AABB and then dispatching the existing
      * {@link com.blib.engine.blockselection.BlockSelectionOps}; Delete keeps the identity-aware
-     * {@link com.blib.mod.common.network.packet.C2SDeletePlacedPiecePayload} path so the registry entry is removed,
-     * not just the blocks.
+     * {@link com.blib.mod.common.network.packet.C2SDeletePlacedPiecePayload} path so the registry entry is removed, not
+     * just the blocks.
      * <p>
      * Cut on a piece is implemented as Copy-then-DeletePiece — the existing volume Cut would clear the blocks but leave
      * the piece record orphaned (a ghost piece outline over empty air); the explicit delete-piece call avoids that.

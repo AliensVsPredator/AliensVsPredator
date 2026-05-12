@@ -17,7 +17,10 @@ import com.blib.mod.BLib;
  * their hover mirror; if it was selected, the selection prunes itself on next read because {@code isValid()} returns
  * false. {@code dimension} is included so a client in a different dimension can quietly ignore the message.
  */
-public record S2CRemovePlacedPiecePayload(UUID id, ResourceLocation dimension) implements CustomPacketPayload {
+public record S2CRemovePlacedPiecePayload(
+    UUID id,
+    ResourceLocation dimension
+) implements CustomPacketPayload {
 
     public static final ResourceLocation PAYLOAD_ID = BLib.MOD.resources().createLocation("remove_placed_piece");
 

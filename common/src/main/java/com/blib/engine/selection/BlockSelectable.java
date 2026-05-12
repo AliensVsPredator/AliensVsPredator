@@ -13,8 +13,8 @@ import org.jetbrains.annotations.Nullable;
  * {@link Selectable} wrapping any single block in the world for the engine inspector. Holds only the {@link BlockPos} —
  * the live {@link BlockState} (and optional {@link net.minecraft.world.level.block.entity.BlockEntity}) is re-read on
  * demand so the inspector always renders authoritative current state, including changes applied by other players or by
- * our own edit-packet roundtrips. Jigsaw blocks use this same selectable; the inspector's jigsaw-specific section
- * (pool / target / joint) is rendered conditionally based on the live {@link BlockState}.
+ * our own edit-packet roundtrips. Jigsaw blocks use this same selectable; the inspector's jigsaw-specific section (pool
+ * / target / joint) is rendered conditionally based on the live {@link BlockState}.
  * <p>
  * Validity collapses to "the chunk is loaded and the block isn't air"; if the user breaks the block or the chunk
  * unloads, {@link SelectionManager} prunes the selection automatically on the next read.

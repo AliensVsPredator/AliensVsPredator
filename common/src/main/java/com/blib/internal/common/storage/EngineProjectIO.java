@@ -488,8 +488,8 @@ public final class EngineProjectIO {
     }
 
     /**
-     * Whether the project has authored on-disk JSON for one tag. Cheap stat — used as the source of truth for the
-     * S2C draft payload's {@code inProject} flag, since the in-memory tag draft store can return a seed snapshot
+     * Whether the project has authored on-disk JSON for one tag. Cheap stat — used as the source of truth for the S2C
+     * draft payload's {@code inProject} flag, since the in-memory tag draft store can return a seed snapshot
      * (synthesized from upstream packs) without the project actually owning the tag yet.
      */
     public static boolean hasProjectTagJson(
@@ -501,9 +501,9 @@ public final class EngineProjectIO {
     }
 
     /**
-     * Delete the project's authored JSON for one tag, if present. Used by the auto-cleanup pass that fires when an
-     * edit makes the resulting JSON equivalent to upstream — a redundant on-disk file would be misleading (the
-     * datapack claims to own the tag without actually modifying it). Returns true if a file was removed.
+     * Delete the project's authored JSON for one tag, if present. Used by the auto-cleanup pass that fires when an edit
+     * makes the resulting JSON equivalent to upstream — a redundant on-disk file would be misleading (the datapack
+     * claims to own the tag without actually modifying it). Returns true if a file was removed.
      */
     public static boolean deleteTagJson(
         String projectName,

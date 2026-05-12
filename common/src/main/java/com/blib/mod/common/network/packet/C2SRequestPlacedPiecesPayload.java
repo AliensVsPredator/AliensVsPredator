@@ -12,8 +12,8 @@ import com.blib.mod.BLib;
 /**
  * Client → server: send me every {@link com.blib.mod.common.gameplay.jigsaw.PlacedPiece} you have for my current
  * dimension. Sent on engine-mode entry so the client can populate its hover / selection mirror without waiting for
- * incremental add packets. The {@code clientDimensionHint} is informational only — the server picks pieces based on
- * the requesting player's actual server-side level.
+ * incremental add packets. The {@code clientDimensionHint} is informational only — the server picks pieces based on the
+ * requesting player's actual server-side level.
  */
 public record C2SRequestPlacedPiecesPayload(ResourceLocation clientDimensionHint) implements CustomPacketPayload {
 

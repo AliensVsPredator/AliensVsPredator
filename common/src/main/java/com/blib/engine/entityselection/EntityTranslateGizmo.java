@@ -1,6 +1,5 @@
 package com.blib.engine.entityselection;
 
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
@@ -8,6 +7,8 @@ import org.jetbrains.annotations.Nullable;
 
 import com.blib.engine.blockselection.BlockSelectionScaleGizmo;
 import com.blib.engine.blockselection.BlockSelectionTranslateGizmo;
+import com.blib.engine.input.ActiveKeybindings;
+import com.blib.engine.input.Keybindings;
 import com.blib.engine.session.EngineCameraFrame;
 import com.blib.engine.session.EngineSession;
 
@@ -132,7 +133,7 @@ public final class EntityTranslateGizmo {
         }
         var hit = camPos.add(cursorRayDir.scale(t));
         var rawDelta = hit.subtract(d.planePoint).dot(d.axisDir) - d.initialAxisOffset;
-        var snapped = Screen.hasShiftDown() ? (double) Math.round(rawDelta) : rawDelta;
+        var snapped = ActiveKeybindings.isModifierHeld(Keybindings.GIZMO_SNAP_INT) ? (double) Math.round(rawDelta) : rawDelta;
 
         d.ghostOffset = new Vec3(d.axisDir.x * snapped, d.axisDir.y * snapped, d.axisDir.z * snapped);
     }

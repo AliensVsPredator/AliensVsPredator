@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.blib.engine.blockselection.BlockSelection;
+import com.blib.engine.input.ActiveKeybindings;
 import com.blib.engine.input.Keybinding;
 import com.blib.engine.input.Keybindings;
 import com.blib.engine.jigsaw.JigsawPieceSelection;
@@ -185,39 +186,39 @@ public final class StatusBarPanel implements Panel {
         var hints = new ArrayList<Keybinding>();
 
         if (ClaimPaintTool.isActive()) {
-            hints.add(Keybindings.PAINT_CLAIM);
-            hints.add(Keybindings.PAINT_UNCLAIM);
-            hints.add(Keybindings.CANCEL.withLabel("Exit paint"));
+            hints.add(ActiveKeybindings.resolve(Keybindings.PAINT_CLAIM));
+            hints.add(ActiveKeybindings.resolve(Keybindings.PAINT_UNCLAIM));
+            hints.add(ActiveKeybindings.resolve(Keybindings.CANCEL.withLabel("Exit paint")));
             return hints;
         }
 
         if (JigsawPieceSelection.hasSelection()) {
-            hints.add(Keybindings.JIGSAW_PLACE);
-            hints.add(Keybindings.JIGSAW_ROTATE);
-            hints.add(Keybindings.JIGSAW_MIRROR);
+            hints.add(ActiveKeybindings.resolve(Keybindings.JIGSAW_PLACE));
+            hints.add(ActiveKeybindings.resolve(Keybindings.JIGSAW_ROTATE));
+            hints.add(ActiveKeybindings.resolve(Keybindings.JIGSAW_MIRROR));
             var modeLabel = "Cycle mode (" + JigsawTool.activeMode().displayName() + ")";
-            hints.add(Keybindings.JIGSAW_CYCLE_MODE.withLabel(modeLabel));
-            hints.add(Keybindings.UNDO);
+            hints.add(ActiveKeybindings.resolve(Keybindings.JIGSAW_CYCLE_MODE.withLabel(modeLabel)));
+            hints.add(ActiveKeybindings.resolve(Keybindings.UNDO));
             return hints;
         }
 
         var single = SelectionManager.current().single();
         if (single instanceof EntitySelectable) {
-            hints.add(Keybindings.GIZMO_TRANSLATE);
-            hints.add(Keybindings.GIZMO_SCALE);
-            hints.add(Keybindings.GIZMO_SNAP_INT);
-            hints.add(Keybindings.COPY);
-            hints.add(Keybindings.DELETE);
+            hints.add(ActiveKeybindings.resolve(Keybindings.GIZMO_TRANSLATE));
+            hints.add(ActiveKeybindings.resolve(Keybindings.GIZMO_SCALE));
+            hints.add(ActiveKeybindings.resolve(Keybindings.GIZMO_SNAP_INT));
+            hints.add(ActiveKeybindings.resolve(Keybindings.COPY));
+            hints.add(ActiveKeybindings.resolve(Keybindings.DELETE));
             return hints;
         }
         if (single instanceof BlockVolumeSelectable) {
-            hints.add(Keybindings.GIZMO_TRANSLATE);
-            hints.add(Keybindings.GIZMO_SCALE);
-            hints.add(Keybindings.GIZMO_MOVE_BLOCKS);
-            hints.add(Keybindings.COPY);
-            hints.add(Keybindings.CUT);
-            hints.add(Keybindings.PASTE);
-            hints.add(Keybindings.CANCEL.withLabel("Clear"));
+            hints.add(ActiveKeybindings.resolve(Keybindings.GIZMO_TRANSLATE));
+            hints.add(ActiveKeybindings.resolve(Keybindings.GIZMO_SCALE));
+            hints.add(ActiveKeybindings.resolve(Keybindings.GIZMO_MOVE_BLOCKS));
+            hints.add(ActiveKeybindings.resolve(Keybindings.COPY));
+            hints.add(ActiveKeybindings.resolve(Keybindings.CUT));
+            hints.add(ActiveKeybindings.resolve(Keybindings.PASTE));
+            hints.add(ActiveKeybindings.resolve(Keybindings.CANCEL.withLabel("Clear")));
             return hints;
         }
         if (single instanceof FactionSelectable) {
@@ -230,11 +231,11 @@ public final class StatusBarPanel implements Panel {
     }
 
     private List<Keybinding> defaultViewportHints(ArrayList<Keybinding> hints) {
-        hints.add(Keybindings.VIEWPORT_SELECT);
-        hints.add(Keybindings.VIEWPORT_CONTEXT);
-        hints.add(Keybindings.VIEWPORT_ORBIT);
-        hints.add(Keybindings.VIEWPORT_PAN);
-        hints.add(Keybindings.VIEWPORT_ZOOM);
+        hints.add(ActiveKeybindings.resolve(Keybindings.VIEWPORT_SELECT));
+        hints.add(ActiveKeybindings.resolve(Keybindings.VIEWPORT_CONTEXT));
+        hints.add(ActiveKeybindings.resolve(Keybindings.VIEWPORT_ORBIT));
+        hints.add(ActiveKeybindings.resolve(Keybindings.VIEWPORT_PAN));
+        hints.add(ActiveKeybindings.resolve(Keybindings.VIEWPORT_ZOOM));
         return hints;
     }
 

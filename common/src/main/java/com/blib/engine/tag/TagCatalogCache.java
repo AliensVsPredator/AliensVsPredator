@@ -70,9 +70,9 @@ public final class TagCatalogCache {
     /**
      * Set the {@code inProject} flag on the catalog entry for {@code (registryKey, tagId)}, if present. {@code
      * inUpstream} and {@code equivalentToUpstream} are preserved as-is. Called from the tag-draft S2C handler so the
-     * Tag Browser repaints the moment the project takes (or relinquishes) ownership, without waiting on a full
-     * catalog re-push. Auto-cleanup deletes can flip ownership back to false, so this setter has to handle either
-     * direction — earlier versions assumed transitions were one-way (false → true) and missed the delete case.
+     * Tag Browser repaints the moment the project takes (or relinquishes) ownership, without waiting on a full catalog
+     * re-push. Auto-cleanup deletes can flip ownership back to false, so this setter has to handle either direction —
+     * earlier versions assumed transitions were one-way (false → true) and missed the delete case.
      */
     public static void setInProject(ResourceLocation registryKey, ResourceLocation tagId, boolean inProject) {
         if (all.isEmpty()) {
@@ -86,7 +86,9 @@ public final class TagCatalogCache {
                     && entry.tagId().equals(tagId)
                     && entry.inProject() != inProject
             ) {
-                updated.add(new TagCatalogEntry(entry.registryKey(), entry.tagId(), inProject, entry.inUpstream(), entry.equivalentToUpstream()));
+                updated.add(
+                    new TagCatalogEntry(entry.registryKey(), entry.tagId(), inProject, entry.inUpstream(), entry.equivalentToUpstream())
+                );
                 changed = true;
             } else {
                 updated.add(entry);
@@ -99,9 +101,9 @@ public final class TagCatalogCache {
     }
 
     /**
-     * Set {@code equivalentToUpstream} on the catalog entry for {@code (registryKey, tagId)}, if present. Called
-     * from the tag-draft S2C handler whenever a fresh draft tells us whether the project's JSON now has any net
-     * effect — keeps the Tag Browser's coloring in sync with edits without waiting on a full-catalog re-push.
+     * Set {@code equivalentToUpstream} on the catalog entry for {@code (registryKey, tagId)}, if present. Called from
+     * the tag-draft S2C handler whenever a fresh draft tells us whether the project's JSON now has any net effect —
+     * keeps the Tag Browser's coloring in sync with edits without waiting on a full-catalog re-push.
      */
     public static void setEquivalentToUpstream(ResourceLocation registryKey, ResourceLocation tagId, boolean equivalent) {
         if (all.isEmpty()) {

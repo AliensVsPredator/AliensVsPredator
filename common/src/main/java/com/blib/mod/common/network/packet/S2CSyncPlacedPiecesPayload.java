@@ -17,7 +17,10 @@ import com.blib.mod.common.gameplay.jigsaw.PlacedPiece;
  * {@link C2SRequestPlacedPiecesPayload} on engine-mode entry. Replaces (not merges) the client's mirror — any pieces
  * the client had cached but the server doesn't will be dropped, which is the desired behavior for re-syncs.
  */
-public record S2CSyncPlacedPiecesPayload(ResourceLocation dimension, List<PlacedPiece> pieces) implements CustomPacketPayload {
+public record S2CSyncPlacedPiecesPayload(
+    ResourceLocation dimension,
+    List<PlacedPiece> pieces
+) implements CustomPacketPayload {
 
     public static final ResourceLocation PAYLOAD_ID = BLib.MOD.resources().createLocation("sync_placed_pieces");
 

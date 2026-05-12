@@ -10,23 +10,31 @@ import java.util.stream.Collectors;
 /**
  * Unified client-side overlay of tag edits the user has made this session but hasn't reloaded yet. Three layers:
  * <ul>
- * <li>{@link #stagedTags} — tags whose JSON has been touched (new tags, entry add/remove, replace-flag toggle).
- *     Drives the "this tag has unreloaded changes" red color in the Tag Browser and the block inspector.</li>
- * <li>{@link #stagedAdds} — entries (direct or tag-ref) the user has added to a tag. Drives the red color on entry
- *     rows in the tag editor, and the block inspector's "this tag is pending for this block" optimistic list.</li>
- * <li>{@link #stagedRemoves} — entries the user has removed from a tag's draft. Block inspector consumes this to
- *     hide tags it's been removed from before the runtime catches up.</li>
+ * <li>{@link #stagedTags} — tags whose JSON has been touched (new tags, entry add/remove, replace-flag toggle). Drives
+ * the "this tag has unreloaded changes" red color in the Tag Browser and the block inspector.</li>
+ * <li>{@link #stagedAdds} — entries (direct or tag-ref) the user has added to a tag. Drives the red color on entry rows
+ * in the tag editor, and the block inspector's "this tag is pending for this block" optimistic list.</li>
+ * <li>{@link #stagedRemoves} — entries the user has removed from a tag's draft. Block inspector consumes this to hide
+ * tags it's been removed from before the runtime catches up.</li>
  * </ul>
- * All state is in-memory and cleared on Reload Project (toolbar) and engine exit ({@link
- * com.blib.engine.session.EngineMode#exit}). The user's mental model is "color tells me what's NEW (green), what's
- * MODIFIED (blue), and what's staged (red); reload commits red into green/blue."
+ * All state is in-memory and cleared on Reload Project (toolbar) and engine exit
+ * ({@link com.blib.engine.session.EngineMode#exit}). The user's mental model is "color tells me what's NEW (green),
+ * what's MODIFIED (blue), and what's staged (red); reload commits red into green/blue."
  */
 @ApiStatus.Internal
 public final class TagStagingCache {
 
-    public record TagKey(ResourceLocation registryKey, ResourceLocation tagId) {}
+    public record TagKey(
+        ResourceLocation registryKey,
+        ResourceLocation tagId
+    ) {}
 
-    public record EntryKey(ResourceLocation registryKey, ResourceLocation tagId, boolean isTagRef, ResourceLocation id) {
+    public record EntryKey(
+        ResourceLocation registryKey,
+        ResourceLocation tagId,
+        boolean isTagRef,
+        ResourceLocation id
+    ) {
 
         public TagKey tagKey() {
             return new TagKey(registryKey, tagId);
@@ -58,10 +66,10 @@ public final class TagStagingCache {
     }
 
     /**
-     * Record an entry removal. If the entry was a staged add (user is undoing pre-reload), cancel that add — net
-     * effect matches what reload would produce. Otherwise stage the remove (so consumers like the block inspector
-     * can hide the tag from a from-the-block list before the runtime catches up). Either way the parent tag is
-     * marked staged because the JSON was touched.
+     * Record an entry removal. If the entry was a staged add (user is undoing pre-reload), cancel that add — net effect
+     * matches what reload would produce. Otherwise stage the remove (so consumers like the block inspector can hide the
+     * tag from a from-the-block list before the runtime catches up). Either way the parent tag is marked staged because
+     * the JSON was touched.
      */
     public static void markEntryRemoved(ResourceLocation registryKey, ResourceLocation tagId, boolean isTagRef, ResourceLocation id) {
         var key = new EntryKey(registryKey, tagId, isTagRef, id);
@@ -81,8 +89,8 @@ public final class TagStagingCache {
 
     /**
      * For a direct (non-tag-ref) entry of {@code registryKey} with id {@code entryId}, return the set of tag IDs the
-     * user has staged it for inclusion in. Used by the block inspector to compose its effective tag list (live
-     * runtime tags ∪ this set).
+     * user has staged it for inclusion in. Used by the block inspector to compose its effective tag list (live runtime
+     * tags ∪ this set).
      */
     public static Set<ResourceLocation> stagedDirectAddsFor(ResourceLocation registryKey, ResourceLocation entryId) {
         return stagedAdds.stream()

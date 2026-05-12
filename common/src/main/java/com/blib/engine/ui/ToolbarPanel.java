@@ -99,8 +99,8 @@ public final class ToolbarPanel implements Panel {
 
     /**
      * Inspect / Marquee selection-tool toggle. Sits left-of-center on the toolbar, mirroring the right-aligned Reload
-     * button. Selection state is mirrored from {@link SelectionToolState} at the start of each frame and written back on
-     * click, so hotkeys (Q / V) and the toolbar always reflect the same active tool.
+     * button. Selection state is mirrored from {@link SelectionToolState} at the start of each frame and written back
+     * on click, so hotkeys (Q / V) and the toolbar always reflect the same active tool.
      */
     private final SegmentedControl selectionToolControl = new SegmentedControl(
         List.of("Inspect", "Marquee"),

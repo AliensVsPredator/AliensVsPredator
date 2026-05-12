@@ -9,6 +9,8 @@ import org.lwjgl.glfw.GLFW;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import com.blib.engine.input.KeybindingProfile;
+import com.blib.engine.input.KeybindingProfileCatalog;
 import com.blib.engine.layout.LayoutCatalog;
 import com.blib.engine.layout.LayoutDoc;
 
@@ -29,18 +31,24 @@ public final class LayoutNameDialog {
 
     public enum Mode {
 
-        SAVE_AS("Save Layout As", "New layout name"),
-        RENAME("Rename Layout", "New layout name"),
-        DUPLICATE("Duplicate Layout", "Copy name"),
-        NEW_FROM_TEMPLATE("New Layout from Template", "New layout name");
+        SAVE_AS("Save Layout As", "New layout name", Domain.LAYOUT),
+        RENAME("Rename Layout", "New layout name", Domain.LAYOUT),
+        DUPLICATE("Duplicate Layout", "Copy name", Domain.LAYOUT),
+        NEW_FROM_TEMPLATE("New Layout from Template", "New layout name", Domain.LAYOUT),
+        PROFILE_NEW("New Keybinding Profile", "Profile name", Domain.PROFILE),
+        PROFILE_RENAME("Rename Profile", "New profile name", Domain.PROFILE),
+        PROFILE_DUPLICATE("Duplicate Profile", "Copy name", Domain.PROFILE);
 
         private final String title;
 
         private final String placeholder;
 
-        Mode(String title, String placeholder) {
+        private final Domain domain;
+
+        Mode(String title, String placeholder, Domain domain) {
             this.title = title;
             this.placeholder = placeholder;
+            this.domain = domain;
         }
 
         public String title() {
@@ -50,6 +58,16 @@ public final class LayoutNameDialog {
         public String placeholder() {
             return placeholder;
         }
+
+        Domain domain() {
+            return domain;
+        }
+    }
+
+    /** Which validator + id-suggester the dialog should route through. */
+    enum Domain {
+        LAYOUT,
+        PROFILE
     }
 
     private static final int DIM_COLOR = 0x80000000;
@@ -188,9 +206,9 @@ public final class LayoutNameDialog {
 
     private String confirmLabel() {
         return switch (mode) {
-            case SAVE_AS, NEW_FROM_TEMPLATE -> "Create";
-            case RENAME -> "Rename";
-            case DUPLICATE -> "Duplicate";
+            case SAVE_AS, NEW_FROM_TEMPLATE, PROFILE_NEW -> "Create";
+            case RENAME, PROFILE_RENAME -> "Rename";
+            case DUPLICATE, PROFILE_DUPLICATE -> "Duplicate";
         };
     }
 
@@ -202,16 +220,23 @@ public final class LayoutNameDialog {
             return;
         }
         try {
-            LayoutDoc.validateDisplayName(name);
+            if (mode.domain() == Domain.PROFILE) {
+                KeybindingProfile.validateDisplayName(name);
+            } else {
+                LayoutDoc.validateDisplayName(name);
+            }
         } catch (IllegalArgumentException e) {
             lastDerivedId = "";
             validationError = e.getMessage();
             return;
         }
-        var id = LayoutCatalog.suggestId(name);
+        var id = mode.domain() == Domain.PROFILE
+            ? KeybindingProfileCatalog.suggestId(name)
+            : LayoutCatalog.suggestId(name);
         lastDerivedId = id;
         if (!idAvailability.test(id)) {
-            validationError = "An existing layout already uses this id (" + id + ").";
+            var entity = mode.domain() == Domain.PROFILE ? "profile" : "layout";
+            validationError = "An existing " + entity + " already uses this id (" + id + ").";
         } else {
             validationError = null;
         }

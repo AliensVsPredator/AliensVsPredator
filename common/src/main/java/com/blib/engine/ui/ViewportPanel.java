@@ -13,6 +13,8 @@ import com.blib.engine.blockselection.BlockSelection;
 import com.blib.engine.blockselection.BlockSelectionScaleGizmo;
 import com.blib.engine.blockselection.BlockSelectionTranslateGizmo;
 import com.blib.engine.blockselection.MoveBlocksGizmo;
+import com.blib.engine.input.ActiveKeybindings;
+import com.blib.engine.input.Keybindings;
 import com.blib.engine.jigsaw.JigsawPieceLibrary;
 import com.blib.engine.jigsaw.JigsawPieceSelection;
 import com.blib.engine.jigsaw.JigsawPlacementCursor;
@@ -86,8 +88,8 @@ public final class ViewportPanel implements Panel {
 
     /**
      * Adapter for spawning modal confirms — used by the WARN-policy placement path to ask the user before stamping a
-     * piece onto colliding blocks. Reuses {@link ProjectContentActionHandler} (workspace screen forwards to its
-     * shared {@code ConfirmDialog}) rather than introducing a viewport-specific handler.
+     * piece onto colliding blocks. Reuses {@link ProjectContentActionHandler} (workspace screen forwards to its shared
+     * {@code ConfirmDialog}) rather than introducing a viewport-specific handler.
      */
     private final @Nullable ProjectContentActionHandler confirmHandler;
 
@@ -456,9 +458,11 @@ public final class ViewportPanel implements Panel {
                         var mc = net.minecraft.client.Minecraft.getInstance();
                         var policy = JigsawPlacementOptions.collisionPolicy();
                         var collisionCount = 0;
-                        if (mc.level != null
-                            && (policy == JigsawPlacementOptions.CollisionPolicy.BLOCK
-                                || policy == JigsawPlacementOptions.CollisionPolicy.WARN)) {
+                        if (
+                            mc.level != null
+                                && (policy == JigsawPlacementOptions.CollisionPolicy.BLOCK
+                                    || policy == JigsawPlacementOptions.CollisionPolicy.WARN)
+                        ) {
                             var snapAnchor = JigsawTool.activeMode() == PlacementMode.JIGSAW_SNAP
                                 ? JigsawWorldRaycast.raycastJigsaw(session)
                                 : null;
@@ -478,9 +482,11 @@ public final class ViewportPanel implements Panel {
                         Runnable sendPlace = () -> BLib.MOD.networking()
                             .sendToServer(new C2SPlaceJigsawPiecePayload(pieceId, anchor, rotation.ordinal(), mirror.ordinal()));
 
-                        if (policy == JigsawPlacementOptions.CollisionPolicy.WARN
-                            && collisionCount > 0
-                            && confirmHandler != null) {
+                        if (
+                            policy == JigsawPlacementOptions.CollisionPolicy.WARN
+                                && collisionCount > 0
+                                && confirmHandler != null
+                        ) {
                             var msg = "Placing this piece will overwrite "
                                 + collisionCount
                                 + " existing block"
@@ -577,7 +583,8 @@ public final class ViewportPanel implements Panel {
                 return true;
             }
             // RMB opens a context menu — never mutates the selection. The hover probe (refreshed every render) tells
-            // us what's under the cursor, so we can dispatch to the right menu without a fresh raycast or a selectSingle
+            // us what's under the cursor, so we can dispatch to the right menu without a fresh raycast or a
+            // selectSingle
             // call. The previous design's volume-re-select / performSelectionAt-on-RMB pattern was confusing — RMB on
             // a generic block silently swapped the inspector to that block, even though no context menu opened.
             if (rightClickHandler != null) {
@@ -813,6 +820,9 @@ public final class ViewportPanel implements Panel {
         // Scroll always zooms — the previous scroll-cycles-rotation behavior conflicted with the dominant user need
         // (zooming) and trapped the user out of camera adjustment while a piece was held. Rotation is on the R key
         // (Keybindings.JIGSAW_ROTATE) for users who need it.
+        if (!ActiveKeybindings.matchesScroll(Keybindings.VIEWPORT_ZOOM)) {
+            return false;
+        }
         EngineNavigation.applyZoomScroll(session, scrollY);
         return true;
     }

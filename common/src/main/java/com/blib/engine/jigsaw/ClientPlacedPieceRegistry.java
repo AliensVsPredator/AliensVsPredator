@@ -1,7 +1,6 @@
 package com.blib.engine.jigsaw;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -19,9 +18,9 @@ import com.blib.mod.common.gameplay.jigsaw.PlacedPiece;
  * {@code S2CSyncPlacedPiecesPayload} on engine-mode entry and kept in sync by add / remove broadcasts as the user
  * places and deletes pieces.
  * <p>
- * Only pieces for the currently-loaded dimension are kept — dimension changes / re-syncs replace the whole map.
- * Lookups are O(1) by UUID; the hover raycast iterates every piece (cheap for the < ~hundreds we expect in an
- * authoring session).
+ * Only pieces for the currently-loaded dimension are kept — dimension changes / re-syncs replace the whole map. Lookups
+ * are O(1) by UUID; the hover raycast iterates every piece (cheap for the < ~hundreds we expect in an authoring
+ * session).
  */
 @ApiStatus.Internal
 public final class ClientPlacedPieceRegistry {
@@ -95,5 +94,9 @@ public final class ClientPlacedPieceRegistry {
         return new HoverHit(bestId, bestHit, bestDistSq);
     }
 
-    public record HoverHit(UUID pieceId, Vec3 hitVec, double distanceSq) {}
+    public record HoverHit(
+        UUID pieceId,
+        Vec3 hitVec,
+        double distanceSq
+    ) {}
 }
