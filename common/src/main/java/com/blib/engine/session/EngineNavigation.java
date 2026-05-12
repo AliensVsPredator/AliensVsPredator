@@ -338,25 +338,17 @@ public final class EngineNavigation {
 
     /** Forward unit vector for MC yaw/pitch, mirroring {@code Entity.calculateViewVector}. */
     private static Vec3 forwardVector(float yaw, float pitch) {
-        var yawRad = Math.toRadians(yaw);
-        var pitchRad = Math.toRadians(pitch);
-        var cosPitch = Math.cos(pitchRad);
-        return new Vec3(-Math.sin(yawRad) * cosPitch, -Math.sin(pitchRad), Math.cos(yawRad) * cosPitch);
+        return EngineCameraBasis.forward(yaw, pitch);
     }
 
     /** Screen-right unit vector — perpendicular to forward, in the world-horizontal plane. */
     private static Vec3 screenRight(float yaw) {
-        var yawRad = Math.toRadians(yaw);
-        return new Vec3(Math.cos(yawRad), 0, Math.sin(yawRad));
+        return EngineCameraBasis.screenRight(yaw);
     }
 
-    /** Screen-up unit vector — camera's local up axis (forward × screenRight). */
+    /** Screen-up unit vector — camera's local up axis. */
     private static Vec3 screenUp(float yaw, float pitch) {
-        var yawRad = Math.toRadians(yaw);
-        var pitchRad = Math.toRadians(pitch);
-        var sinPitch = Math.sin(pitchRad);
-        var cosPitch = Math.cos(pitchRad);
-        return new Vec3(-Math.sin(yawRad) * sinPitch, cosPitch, Math.cos(yawRad) * sinPitch);
+        return EngineCameraBasis.screenUp(yaw, pitch);
     }
 
     private static float clampPitch(float pitch) {

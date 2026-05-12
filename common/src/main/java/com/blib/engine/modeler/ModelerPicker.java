@@ -1,0 +1,177 @@
+package com.blib.engine.modeler;
+
+import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+
+/**
+ * Ray-vs-cube picker for the modeler viewport. Walks the bone tree, builds each cube's world-space transform, inverts
+ * it to bring the world-space cursor ray into cube-local coordinates, and runs a standard slab-method AABB intersect
+ * against the cube's inflated bounds. Closest hit wins.
+ * <p>
+ * The transform stack mirrors {@code ModelerCubeRenderer} exactly so picking lines up with what's drawn.
+ */
+@ApiStatus.Internal
+public final class ModelerPicker {
+
+    /** A single hit candidate. {@code t} is the world-space ray parameter (distance along the unit-direction ray). */
+    public record Hit(
+        ModelerBone owner,
+        ModelerCube cube,
+        double t
+    ) {}
+
+    private static final float EPSILON = 1e-8f;
+
+    private ModelerPicker() {}
+
+    public static @Nullable Hit pick(ModelerScene scene, Vec3 rayOrigin, Vec3 rayDir) {
+        var state = new State(
+            new Vector3f((float) rayOrigin.x, (float) rayOrigin.y, (float) rayOrigin.z),
+            new Vector3f((float) rayDir.x, (float) rayDir.y, (float) rayDir.z)
+        );
+        walk(scene.root, new Matrix4f(), state);
+        return state.toHit();
+    }
+
+    private static void walk(ModelerBone bone, Matrix4f parentToWorld, State state) {
+        var boneToWorld = new Matrix4f(parentToWorld);
+        applyBoneTransform(boneToWorld, bone);
+
+        for (var cube : bone.cubes) {
+            var cubeToWorld = new Matrix4f(boneToWorld);
+            applyCubeTransform(cubeToWorld, cube);
+            var worldToCube = new Matrix4f(cubeToWorld).invert();
+
+            // Transform the ray into cube-local space. The ray parameter t is preserved across linear transforms
+            // (localPoint = worldToCube * worldPoint, both using the same t), so we can compare t values across
+            // cubes directly without rescaling.
+            var localOrigin = worldToCube.transformPosition(new Vector3f(state.worldOrigin));
+            var localDir = worldToCube.transformDirection(new Vector3f(state.worldDir));
+
+            var t = intersectAabb(localOrigin, localDir, cube);
+            if (t > 0 && t < state.bestT) {
+                state.bestT = t;
+                state.bestBone = bone;
+                state.bestCube = cube;
+            }
+        }
+
+        for (var child : bone.children) {
+            walk(child, boneToWorld, state);
+        }
+    }
+
+    private static void applyBoneTransform(Matrix4f m, ModelerBone bone) {
+        m.translate((float) bone.position.x, (float) bone.position.y, (float) bone.position.z);
+        m.translate((float) bone.pivot.x, (float) bone.pivot.y, (float) bone.pivot.z);
+        m.rotateZ((float) Math.toRadians(bone.rotation.z));
+        m.rotateY((float) Math.toRadians(bone.rotation.y));
+        m.rotateX((float) Math.toRadians(bone.rotation.x));
+        m.scale((float) bone.scale.x, (float) bone.scale.y, (float) bone.scale.z);
+        m.translate((float) -bone.pivot.x, (float) -bone.pivot.y, (float) -bone.pivot.z);
+    }
+
+    private static void applyCubeTransform(Matrix4f m, ModelerCube cube) {
+        m.translate((float) cube.pivot.x, (float) cube.pivot.y, (float) cube.pivot.z);
+        m.rotateZ((float) Math.toRadians(cube.rotation.z));
+        m.rotateY((float) Math.toRadians(cube.rotation.y));
+        m.rotateX((float) Math.toRadians(cube.rotation.x));
+        m.translate((float) -cube.pivot.x, (float) -cube.pivot.y, (float) -cube.pivot.z);
+    }
+
+    /** Slab-method ray-AABB intersect. Returns the entry t (or exit t if the ray origin is inside), or -1 on miss. */
+    private static double intersectAabb(Vector3f origin, Vector3f dir, ModelerCube cube) {
+        var inflate = (float) cube.inflate;
+        var minX = (float) cube.origin.x - inflate;
+        var minY = (float) cube.origin.y - inflate;
+        var minZ = (float) cube.origin.z - inflate;
+        var maxX = minX + (float) cube.size.x + 2 * inflate;
+        var maxY = minY + (float) cube.size.y + 2 * inflate;
+        var maxZ = minZ + (float) cube.size.z + 2 * inflate;
+
+        double tMin = Double.NEGATIVE_INFINITY;
+        double tMax = Double.POSITIVE_INFINITY;
+
+        // X slab.
+        if (Math.abs(dir.x) < EPSILON) {
+            if (origin.x < minX || origin.x > maxX)
+                return -1;
+        } else {
+            var t1 = (minX - origin.x) / dir.x;
+            var t2 = (maxX - origin.x) / dir.x;
+            if (t1 > t2) {
+                var tmp = t1;
+                t1 = t2;
+                t2 = tmp;
+            }
+            tMin = Math.max(tMin, t1);
+            tMax = Math.min(tMax, t2);
+            if (tMin > tMax)
+                return -1;
+        }
+        // Y slab.
+        if (Math.abs(dir.y) < EPSILON) {
+            if (origin.y < minY || origin.y > maxY)
+                return -1;
+        } else {
+            var t1 = (minY - origin.y) / dir.y;
+            var t2 = (maxY - origin.y) / dir.y;
+            if (t1 > t2) {
+                var tmp = t1;
+                t1 = t2;
+                t2 = tmp;
+            }
+            tMin = Math.max(tMin, t1);
+            tMax = Math.min(tMax, t2);
+            if (tMin > tMax)
+                return -1;
+        }
+        // Z slab.
+        if (Math.abs(dir.z) < EPSILON) {
+            if (origin.z < minZ || origin.z > maxZ)
+                return -1;
+        } else {
+            var t1 = (minZ - origin.z) / dir.z;
+            var t2 = (maxZ - origin.z) / dir.z;
+            if (t1 > t2) {
+                var tmp = t1;
+                t1 = t2;
+                t2 = tmp;
+            }
+            tMin = Math.max(tMin, t1);
+            tMax = Math.min(tMax, t2);
+            if (tMin > tMax)
+                return -1;
+        }
+
+        if (tMax < 0)
+            return -1;
+        return tMin > 0 ? tMin : tMax;
+    }
+
+    private static final class State {
+
+        final Vector3f worldOrigin;
+
+        final Vector3f worldDir;
+
+        double bestT = Double.POSITIVE_INFINITY;
+
+        ModelerBone bestBone;
+
+        ModelerCube bestCube;
+
+        State(Vector3f origin, Vector3f dir) {
+            this.worldOrigin = origin;
+            this.worldDir = dir;
+        }
+
+        @Nullable
+        Hit toHit() {
+            return bestCube == null ? null : new Hit(bestBone, bestCube, bestT);
+        }
+    }
+}

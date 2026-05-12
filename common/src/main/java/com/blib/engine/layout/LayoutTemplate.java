@@ -27,7 +27,8 @@ public enum LayoutTemplate {
     DEFAULT("default", "Default"),
     GOAP("goap", "GOAP"),
     JIGSAW("jigsaw", "Jigsaw"),
-    FACTION("faction", "Faction");
+    FACTION("faction", "Faction"),
+    MODELER("modeler", "Modeler");
 
     private final String id;
 
@@ -88,7 +89,29 @@ public enum LayoutTemplate {
             // Viewport with the Territory Map (two ways to look at the same world data); bottom slot holds the
             // Diplomacy Matrix; the right column stacks the Inspector (FactionSelectable) over the Members panel.
             case FACTION -> factionBody();
+            // Modeler layout: Blockbench-style three-column — outliner (left) | custom 3D viewport (center) | inspector
+            // (right). No bottom tab strip — modeler authoring is purely in the viewport.
+            case MODELER -> modelerBody();
         };
+    }
+
+    /**
+     * Body shape for the MODELER template. Three columns side-by-side: outliner | viewport | inspector. The outliner
+     * and inspector are fixed-width rails like other layouts; the viewport flexes.
+     */
+    private static BodyNode modelerBody() {
+        var centerAndRight = new BodyNode.Split(
+            Orientation.HORIZONTAL.name(),
+            new BodyNode.Leaf(List.of(PanelRegistry.MODELER_VIEWPORT), 0),
+            new BodyNode.Leaf(List.of(PanelRegistry.MODELER_INSPECTOR), 0),
+            new SizingDoc.SecondFixed(LayoutDefaults.DETAILS_WIDTH)
+        );
+        return new BodyNode.Split(
+            Orientation.HORIZONTAL.name(),
+            new BodyNode.Leaf(List.of(PanelRegistry.MODELER_OUTLINER), 0),
+            centerAndRight,
+            new SizingDoc.FirstFixed(LayoutDefaults.OUTLINER_WIDTH)
+        );
     }
 
     /**

@@ -17,6 +17,9 @@ import com.blib.engine.ui.EntityPalettePanel;
 import com.blib.engine.ui.FactionBrowserPanel;
 import com.blib.engine.ui.FactionMembersPanel;
 import com.blib.engine.ui.GOAPDetailsPanel;
+import com.blib.engine.ui.ModelerInspectorPanel;
+import com.blib.engine.ui.ModelerOutlinerPanel;
+import com.blib.engine.ui.ModelerViewportPanel;
 import com.blib.engine.ui.OutlinerPanel;
 import com.blib.engine.ui.Panel;
 import com.blib.engine.ui.PiecePalettePanel;
@@ -85,6 +88,12 @@ public final class PanelRegistry {
 
     public static final String ACTION_STACK = "action_stack";
 
+    public static final String MODELER_VIEWPORT = "modeler_viewport";
+
+    public static final String MODELER_OUTLINER = "modeler_outliner";
+
+    public static final String MODELER_INSPECTOR = "modeler_inspector";
+
     private static final Map<String, PanelFactory> FACTORIES = new LinkedHashMap<>();
 
     private static final Map<Class<? extends Panel>, String> IDS_BY_CLASS = new LinkedHashMap<>();
@@ -108,6 +117,9 @@ public final class PanelRegistry {
         register(TERRITORY_MAP, TerritoryMapPanel.class, ctx -> new TerritoryMapPanel());
         register(TAG_BROWSER, TagBrowserPanel.class, ctx -> new TagBrowserPanel());
         register(ACTION_STACK, ActionStackPanel.class, ctx -> new ActionStackPanel());
+        register(MODELER_VIEWPORT, ModelerViewportPanel.class, ctx -> new ModelerViewportPanel());
+        register(MODELER_OUTLINER, ModelerOutlinerPanel.class, ctx -> new ModelerOutlinerPanel());
+        register(MODELER_INSPECTOR, ModelerInspectorPanel.class, ctx -> new ModelerInspectorPanel());
     }
 
     private PanelRegistry() {}
