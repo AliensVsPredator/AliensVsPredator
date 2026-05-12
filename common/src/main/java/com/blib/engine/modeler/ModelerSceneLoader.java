@@ -1,5 +1,7 @@
 package com.blib.engine.modeler;
 
+import com.google.gson.JsonSyntaxException;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
@@ -7,16 +9,33 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blib.api.client.model.v1.AzBakedModel;
-import com.blib.api.client.model.v1.AzBone;
-import com.blib.internal.client.model.AzBakedModelCache;
-import com.blib.internal.client.model.GeoCube;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import com.blib.internal.client.model.BoneStructure;
+import com.blib.internal.client.model.Cube;
+import com.blib.internal.client.model.GeometryTree;
+import com.blib.internal.client.model.Model;
+import com.blib.internal.common.io.ResourceFileLoader;
+import com.blib.internal.common.io.util.JsonUtil;
 
 /**
- * Converts a baked {@link AzBakedModel} into a fresh {@link ModelerScene} state — the render-correctness test. The
- * source model is looked up by {@link ResourceLocation} via {@link AzBakedModelCache}, which the existing resource-pack
- * reload listener keeps in sync. The conversion preserves the full bone hierarchy and per-cube transform fields so the
- * modeler renders an exact visual match for the in-world entity.
+ * Loads a Bedrock geo model into the active {@link ModelerScene}. Sources two ways:
+ * <ul>
+ * <li>{@link #load(ResourceLocation)} / {@link #loadByString(String)} — read from the active resource manager (any pack
+ * registered under {@code assets/&lt;namespace&gt;/}).</li>
+ * <li>{@link #loadFromFile(Path)} — read from an arbitrary filesystem path the user picked via the OS file
+ * browser.</li>
+ * </ul>
+ * <p>
+ * Both paths parse the JSON to the raw {@link Model} DTO (via {@link JsonUtil#GEO_GSON}), resolve the bone hierarchy
+ * via {@link GeometryTree#fromModel}, and convert directly into {@link ModelerBone} / {@link ModelerCube}. We
+ * deliberately bypass {@code AzBakedModelCache} / {@code AzBakedModelFactory} — the bake step's coordinate
+ * transformations (X-flip, divide-by-16 into block-space, radians, sign negation on X/Y rotation) are tailored to
+ * Minecraft's entity render system, not to the Bedrock pixel-space convention the modeler edits in. Going through the
+ * bake and then undoing it is lossy and error-prone; reading the JSON DTO straight through preserves the authored
+ * origin / size / pivot / rotation / inflate verbatim.
  */
 @ApiStatus.Internal
 public final class ModelerSceneLoader {
@@ -26,102 +45,177 @@ public final class ModelerSceneLoader {
     private ModelerSceneLoader() {}
 
     /**
-     * Attempt to load {@code resourceLocation}'s baked model and write it into the active {@link ModelerScene}. Returns
-     * {@code true} on success; {@code false} if the cache has no entry for the id (typically a typo or a model that
-     * doesn't ship in the current resource packs).
+     * Load the geo model at {@code resourceLocation} from the active resource manager (any namespace / pack that
+     * contains the file at {@code assets/<namespace>/<path>}). Returns {@code true} on success, {@code false} if the
+     * file is missing, malformed, or empty.
      */
     public static boolean load(ResourceLocation resourceLocation) {
-        var baked = AzBakedModelCache.getInstance().getOrNull(resourceLocation);
-        if (baked == null) {
-            LOGGER.warn("ModelerSceneLoader: no baked model for {}", resourceLocation);
+        var manager = Minecraft.getInstance().getResourceManager();
+        var loadResult = ResourceFileLoader.loadObjectFromFile(JsonUtil.GEO_GSON, Model.class, resourceLocation, manager);
+        if (loadResult.isErr()) {
+            LOGGER.warn("ModelerSceneLoader: failed to load {}: {}", resourceLocation, loadResult.unwrapErr());
             return false;
         }
 
-        var scene = ModelerScene.get();
-        scene.root = convertModel(baked, resourceLocation);
-        scene.selection = null;
-        return true;
-    }
-
-    private static ModelerBone convertModel(AzBakedModel baked, ResourceLocation rl) {
-        // AzBakedModel.getTopLevelBones() returns a list (an entity model usually has just one — "bb_main" — but
-        // multiple is legal). Wrap them under an implicit "root" bone with identity transforms so the scene retains
-        // a single-root invariant; visual output is unchanged because the wrapper applies no transform.
-        var root = new ModelerBone("root[" + rl + "]");
-        for (var topBone : baked.getTopLevelBones()) {
-            root.addChild(convertBone(topBone));
+        var model = loadResult.unwrap();
+        if (model == null) {
+            LOGGER.warn("ModelerSceneLoader: parsed null model for {}", resourceLocation);
+            return false;
         }
-        return root;
-    }
 
-    private static ModelerBone convertBone(AzBone source) {
-        var bone = new ModelerBone(
-            source.getName(),
-            new Vec3(source.getPosX(), source.getPosY(), source.getPosZ()),
-            new Vec3(source.getRotX(), source.getRotY(), source.getRotZ()),
-            new Vec3(source.getScaleX(), source.getScaleY(), source.getScaleZ()),
-            new Vec3(source.getPivotX(), source.getPivotY(), source.getPivotZ())
-        );
-        var cubeIndex = 0;
-        for (var geoCube : source.getCubes()) {
-            bone.cubes.add(convertCube(geoCube, source.getName() + "_cube" + cubeIndex++));
-        }
-        for (var child : source.getChildBones()) {
-            bone.addChild(convertBone(child));
-        }
-        return bone;
-    }
-
-    private static ModelerCube convertCube(GeoCube source, String name) {
-        // GeoCube doesn't store origin directly — the quad vertices already encode the cube's local-space AABB
-        // (post-inflate, pre-rotation, in cube-local pivot-relative coords). Recover the min corner by scanning all
-        // 24 vertices.
-        var origin = minVertex(source);
-        return new ModelerCube(
-            name,
-            origin,
-            new Vec3(source.size().x, source.size().y, source.size().z),
-            new Vec3(source.rotation().x, source.rotation().y, source.rotation().z),
-            new Vec3(source.pivot().x, source.pivot().y, source.pivot().z),
-            source.inflate()
-        );
-    }
-
-    private static Vec3 minVertex(GeoCube cube) {
-        Vec3 min = null;
-        for (var quad : cube.quads()) {
-            if (quad == null)
-                continue;
-            for (var v : quad.vertices()) {
-                if (v == null)
-                    continue;
-                var pos = v.position();
-                if (min == null) {
-                    min = new Vec3(pos.x, pos.y, pos.z);
-                } else {
-                    min = new Vec3(
-                        Math.min(min.x, pos.x),
-                        Math.min(min.y, pos.y),
-                        Math.min(min.z, pos.z)
-                    );
-                }
-            }
-        }
-        return min != null ? min : Vec3.ZERO;
+        return applyModel(model, "root[" + resourceLocation + "]");
     }
 
     /**
-     * Convenience for callers that have a string id rather than a {@link ResourceLocation}. Returns {@code null} on a
-     * malformed id and logs.
+     * Parse and load a geo model from an arbitrary filesystem path — the entry point for the "Open Model from File…"
+     * menu action. Bypasses the resource manager entirely.
+     */
+    public static boolean loadFromFile(Path path) {
+        String json;
+        try {
+            json = Files.readString(path);
+        } catch (IOException e) {
+            LOGGER.warn("ModelerSceneLoader: failed to read {}: {}", path, e.getMessage());
+            return false;
+        }
+
+        Model model;
+        try {
+            model = JsonUtil.GEO_GSON.fromJson(json, Model.class);
+        } catch (JsonSyntaxException e) {
+            LOGGER.warn("ModelerSceneLoader: malformed JSON in {}: {}", path, e.getMessage());
+            return false;
+        }
+        if (model == null) {
+            LOGGER.warn("ModelerSceneLoader: parsed null model from {}", path);
+            return false;
+        }
+
+        return applyModel(model, "root[" + path.getFileName() + "]");
+    }
+
+    /**
+     * Convenience for callers that have a string id rather than a {@link ResourceLocation}. Returns {@code false} on a
+     * malformed id (and logs) or any error inside {@link #load}.
      */
     public static boolean loadByString(@Nullable String id) {
-        if (id == null || id.isBlank())
+        if (id == null || id.isBlank()) {
             return false;
+        }
         var rl = ResourceLocation.tryParse(id);
         if (rl == null) {
             LOGGER.warn("ModelerSceneLoader: malformed resource id {}", id);
             return false;
         }
         return load(rl);
+    }
+
+    /**
+     * Shared tail of both loader paths — convert the parsed {@link Model} into a fresh {@link ModelerBone} tree and
+     * replace the active scene's root. Selection is cleared so any in-flight gizmo state resets cleanly.
+     */
+    private static boolean applyModel(Model model, String rootLabel) {
+        if (model.minecraftGeometry() == null || model.minecraftGeometry().length == 0) {
+            LOGGER.warn("ModelerSceneLoader: model has no minecraft:geometry entries");
+            return false;
+        }
+
+        var tree = GeometryTree.fromModel(model);
+        var root = new ModelerBone(rootLabel);
+        for (var topLevel : tree.topLevelBones().values()) {
+            root.addChild(convertBone(topLevel, null));
+        }
+
+        var scene = ModelerScene.get();
+        scene.root = root;
+        scene.selection = null;
+        return true;
+    }
+
+    /**
+     * Recursive JSON-DTO walk that builds a {@link ModelerBone} from a {@link BoneStructure}, applying the same X flip
+     * + X/Y rotation negation that {@code AzBuiltinBakedModelFactory} uses to map Bedrock JSON conventions onto MC's
+     * entity-render space. We stay in pixel units and degrees (no {@code /16}, no radians), so the modeler displays
+     * values that match Blockbench's flipped-layout view of the same Bedrock model — which is the view a Java-mod
+     * author authoring a model edits against.
+     * <p>
+     * {@code inheritedInflate} carries the nearest ancestor's bone-level {@code inflate} so per-cube defaults fall back
+     * to it when a cube omits its own. Bedrock allows {@code inflate} on either bones (applies to all child cubes) or
+     * per-cube (overrides bone-level); we resolve it here so {@link ModelerCube}'s inflate field is the effective
+     * value.
+     */
+    private static ModelerBone convertBone(BoneStructure structure, @Nullable Double inheritedInflate) {
+        var source = structure.self();
+        var name = source.name() != null ? source.name() : "bone";
+
+        var rawPivot = toVec3(source.pivot());
+        var rawRotation = toVec3(source.rotation());
+        // Bedrock bones have no "position" field — only pivot + rotation. Position stays at origin.
+        var modelerBone = new ModelerBone(
+            name,
+            Vec3.ZERO,
+            new Vec3(-rawRotation.x, -rawRotation.y, rawRotation.z),
+            new Vec3(1, 1, 1),
+            new Vec3(-rawPivot.x, rawPivot.y, rawPivot.z)
+        );
+
+        var effectiveInflate = source.inflate() != null ? source.inflate() : inheritedInflate;
+
+        if (source.cubes() != null) {
+            int cubeIndex = 0;
+            for (var cube : source.cubes()) {
+                modelerBone.cubes.add(convertCube(cube, name + "_cube" + cubeIndex++, effectiveInflate));
+            }
+        }
+
+        for (var child : structure.children().values()) {
+            modelerBone.addChild(convertBone(child, effectiveInflate));
+        }
+
+        return modelerBone;
+    }
+
+    /**
+     * Cube DTO → {@link ModelerCube}. Mirrors the bake's X-flip + X/Y rotation negation so values display the way
+     * Blockbench shows the model in flipped layout and the way the entity actually renders in-game. Specifically:
+     * <ul>
+     * <li>{@code origin.x} becomes {@code -(jsonOrigin.x + jsonSize.x)} — the cube spans the same range mirrored around
+     * X=0, so a JSON "right_foot" with negative origin ends up on the +X side of the modeler (entity right) matching
+     * its in-game position.</li>
+     * <li>{@code pivot.x} is negated.</li>
+     * <li>{@code rotation.x} and {@code rotation.y} are negated; {@code rotation.z} stays.</li>
+     * <li>{@code size} and {@code inflate} carry through unchanged.</li>
+     * </ul>
+     * Inflate falls back to the inherited bone-level value when the cube doesn't specify its own; zero if neither is
+     * set.
+     */
+    private static ModelerCube convertCube(Cube source, String name, @Nullable Double inheritedInflate) {
+        double inflate = source.inflate() != null
+            ? source.inflate()
+            : (inheritedInflate != null ? inheritedInflate : 0.0);
+
+        var origin = toVec3(source.origin());
+        var size = toVec3(source.size());
+        var rotation = toVec3(source.rotation());
+        var pivot = toVec3(source.pivot());
+
+        return new ModelerCube(
+            name,
+            new Vec3(-(origin.x + size.x), origin.y, origin.z),
+            size,
+            new Vec3(-rotation.x, -rotation.y, rotation.z),
+            new Vec3(-pivot.x, pivot.y, pivot.z),
+            inflate
+        );
+    }
+
+    /**
+     * Defensive {@code double[3]} → {@link Vec3} converter — falls back to {@link Vec3#ZERO} for null / short arrays.
+     */
+    private static Vec3 toVec3(@Nullable double[] arr) {
+        if (arr == null || arr.length < 3) {
+            return Vec3.ZERO;
+        }
+        return new Vec3(arr[0], arr[1], arr[2]);
     }
 }

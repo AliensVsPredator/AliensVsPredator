@@ -31,6 +31,8 @@ import com.blib.engine.layout.LayoutDoc;
 import com.blib.engine.layout.LayoutSnapshot;
 import com.blib.engine.layout.LayoutTemplate;
 import com.blib.engine.layout.PanelRegistry;
+import com.blib.engine.modeler.ModelerFilePicker;
+import com.blib.engine.modeler.ModelerSceneLoader;
 import com.blib.engine.selection.SelectionManager;
 import com.blib.engine.session.EngineMode;
 import com.blib.engine.session.NavigationMode;
@@ -2393,6 +2395,7 @@ public final class EngineWorkspaceScreen extends Screen {
         var items = new java.util.ArrayList<DropdownMenu.Item>();
         items.add(new DropdownMenu.Item("New Project…", () -> openPicker(true)));
         items.add(new DropdownMenu.Item("Open Project…", () -> openPicker(false)));
+        items.add(new DropdownMenu.Item("Open Model from File…", EngineWorkspaceScreen::openGeoModelFromFile));
         items.add(
             new DropdownMenu.Item(hasProject ? "Reload Project" : "Reload Project (no project)", () -> {
                 if (!hasProject) {
@@ -2435,6 +2438,19 @@ public final class EngineWorkspaceScreen extends Screen {
     /** Used as the {@link ProjectPickerScreen} {@code onConfirmedOpen} callback so the picker can re-enter us. */
     private static void reopenWorkspace() {
         Minecraft.getInstance().setScreen(new EngineWorkspaceScreen());
+    }
+
+    /**
+     * Handler for "FILE → Open Model from File…". Opens the OS-native open-file dialog via
+     * {@link ModelerFilePicker#pickGeoModel} and, on a successful pick, hands the path to
+     * {@link ModelerSceneLoader#loadFromFile} which replaces the modeler's active scene. No-op on cancel; errors are
+     * logged inside the loader.
+     */
+    private static void openGeoModelFromFile() {
+        var picked = ModelerFilePicker.pickGeoModel();
+        if (picked != null) {
+            ModelerSceneLoader.loadFromFile(picked);
+        }
     }
 
     /**

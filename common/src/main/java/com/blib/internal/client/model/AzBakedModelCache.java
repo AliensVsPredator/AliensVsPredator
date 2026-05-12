@@ -65,6 +65,17 @@ public class AzBakedModelCache extends AzResourceCache {
         return bakedModels.get(resourceLocation);
     }
 
+    /**
+     * Snapshot of every resource id currently baked into the cache. Returned as a sorted list so picker UIs display
+     * entries deterministically across runs. The cache is populated at resource-reload time, so the list reflects the
+     * models available to the current resource packs.
+     */
+    public java.util.List<ResourceLocation> allModelIds() {
+        var ids = new java.util.ArrayList<>(bakedModels.keySet());
+        ids.sort(java.util.Comparator.comparing(ResourceLocation::toString));
+        return ids;
+    }
+
     private void tryInsertBakedModelResult(
         ResourceLocation resourceLocation,
         Result<AzBakedModel, ResourceFileLoader.ObjectLoadError> result
