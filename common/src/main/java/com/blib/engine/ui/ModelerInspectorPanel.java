@@ -163,10 +163,10 @@ public final class ModelerInspectorPanel implements Panel {
         syncScalar(inflateInput, cube.inflate);
 
         var rowY = y + HEADER_TOP_PADDING + font.lineHeight + HEADER_TO_SECTION_GAP;
-        rowY = renderVecSection(graphics, font, x, rowY, width, "Origin", originX, originY, originZ, mouseX, mouseY);
+        rowY = renderVecSection(graphics, font, x, rowY, width, "Position", originX, originY, originZ, mouseX, mouseY);
         rowY = renderVecSection(graphics, font, x, rowY, width, "Size", sizeX, sizeY, sizeZ, mouseX, mouseY);
+        rowY = renderVecSection(graphics, font, x, rowY, width, "Pivot Point", pivotX, pivotY, pivotZ, mouseX, mouseY);
         rowY = renderVecSection(graphics, font, x, rowY, width, "Rotation", rotationX, rotationY, rotationZ, mouseX, mouseY);
-        rowY = renderVecSection(graphics, font, x, rowY, width, "Pivot", pivotX, pivotY, pivotZ, mouseX, mouseY);
         renderScalarSection(graphics, font, x, rowY, width, "Inflate", inflateInput, mouseX, mouseY);
     }
 
@@ -174,16 +174,14 @@ public final class ModelerInspectorPanel implements Panel {
         var font = EngineFont.get();
         drawHeader(graphics, x, y, "Bone: " + bone.name);
 
-        syncVec(positionX, positionY, positionZ, bone.position);
+        // Bones only expose pivot + rotation in the inspector; position and size (scale) edits aren't meaningful for
+        // a bone group and were dropped for the same reason Blockbench keeps the bone properties minimal.
         syncVec(rotationX, rotationY, rotationZ, bone.rotation);
-        syncVec(scaleX, scaleY, scaleZ, bone.scale);
         syncVec(pivotX, pivotY, pivotZ, bone.pivot);
 
         var rowY = y + HEADER_TOP_PADDING + font.lineHeight + HEADER_TO_SECTION_GAP;
-        rowY = renderVecSection(graphics, font, x, rowY, width, "Position", positionX, positionY, positionZ, mouseX, mouseY);
+        rowY = renderVecSection(graphics, font, x, rowY, width, "Pivot Point", pivotX, pivotY, pivotZ, mouseX, mouseY);
         rowY = renderVecSection(graphics, font, x, rowY, width, "Rotation", rotationX, rotationY, rotationZ, mouseX, mouseY);
-        rowY = renderVecSection(graphics, font, x, rowY, width, "Scale", scaleX, scaleY, scaleZ, mouseX, mouseY);
-        rowY = renderVecSection(graphics, font, x, rowY, width, "Pivot", pivotX, pivotY, pivotZ, mouseX, mouseY);
         drawCountRow(graphics, font, x, rowY + CONTENT_PADDING, "Children", bone.children.size(), "Cubes", bone.cubes.size());
     }
 
