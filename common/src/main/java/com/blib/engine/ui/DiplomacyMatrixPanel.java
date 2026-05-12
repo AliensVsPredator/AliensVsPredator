@@ -131,6 +131,12 @@ public final class DiplomacyMatrixPanel implements Panel {
 
         graphics.fill(x, y, x + width, y + height, BACKGROUND_COLOR);
 
+        // Diplomacy matrix reads server-pushed faction relationships. No world ⇒ no data.
+        if (Minecraft.getInstance().level == null) {
+            PanelPlaceholder.drawCentered(graphics, x, y, width, height, PanelPlaceholder.NEEDS_WORLD);
+            return;
+        }
+
         var topRowY = y + CONTENT_PADDING;
         searchInput.render(graphics, x + CONTENT_PADDING, topRowY, width - 2 * CONTENT_PADDING, mouseX, mouseY);
 

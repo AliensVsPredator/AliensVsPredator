@@ -507,6 +507,14 @@ public final class DetailsPanel implements Panel {
     @Override
     public void render(GuiGraphics graphics, int x, int y, int width, int height, int mouseX, int mouseY, float partialTick) {
         graphics.fill(x, y, x + width, y + height, BACKGROUND_COLOR);
+
+        // Inspector depends on a selection in the world (block, entity, faction, etc.) — no world ⇒ no selection
+        // logic worth running.
+        if (Minecraft.getInstance().level == null) {
+            PanelPlaceholder.drawCentered(graphics, x, y, width, height, PanelPlaceholder.NEEDS_WORLD);
+            return;
+        }
+
         // Cache panel rect — the tag view needs height-aware layout for its scroll viewport + footer pinning.
         this.rectX = x;
         this.rectY = y;

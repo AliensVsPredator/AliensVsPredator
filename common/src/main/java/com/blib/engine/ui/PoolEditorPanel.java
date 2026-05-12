@@ -164,6 +164,16 @@ public final class PoolEditorPanel implements Panel {
 
         graphics.fill(x, y, x + width, y + height, BACKGROUND_COLOR);
 
+        // Pool editor needs a server (for save / fetch) and an active project (pools are project-scoped).
+        if (Minecraft.getInstance().level == null) {
+            PanelPlaceholder.drawCentered(graphics, x, y, width, height, PanelPlaceholder.NEEDS_WORLD);
+            return;
+        }
+        if (ProjectSession.activeProject() == null) {
+            PanelPlaceholder.drawCentered(graphics, x, y, width, height, PanelPlaceholder.NEEDS_PROJECT);
+            return;
+        }
+
         // Consume any pending pool-open request from the content browser (or other cross-panel callers). One-shot:
         // applying the value to the SearchableSelect drives the existing lastShownPool drift-check on the next render
         // pass, so the body re-loads the pool's contents naturally without a parallel reload path.

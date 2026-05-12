@@ -59,6 +59,13 @@ public final class ActionStackPanel implements Panel {
     public void render(GuiGraphics graphics, int x, int y, int width, int height, int mouseX, int mouseY, float partialTick) {
         graphics.fill(x, y, x + width, y + height, BACKGROUND_COLOR);
 
+        // Action history is server-pushed (entries arrive via S2C sync). Without a world there's no server, no
+        // entries, and rendering the empty list would be misleading.
+        if (Minecraft.getInstance().level == null) {
+            PanelPlaceholder.drawCentered(graphics, x, y, width, height, PanelPlaceholder.NEEDS_WORLD);
+            return;
+        }
+
         var entries = ClientActionHistory.INSTANCE.entries();
         var cursor = ClientActionHistory.INSTANCE.undoCursor();
 

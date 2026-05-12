@@ -127,6 +127,12 @@ public final class FactionMembersPanel implements Panel {
 
         graphics.fill(x, y, x + width, y + height, BACKGROUND_COLOR);
 
+        // Faction membership is server-pushed. No world ⇒ no faction directory, no member lists.
+        if (Minecraft.getInstance().level == null) {
+            PanelPlaceholder.drawCentered(graphics, x, y, width, height, PanelPlaceholder.NEEDS_WORLD);
+            return;
+        }
+
         var font = EngineFont.get();
         var active = activeFactionId();
 

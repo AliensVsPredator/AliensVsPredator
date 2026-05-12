@@ -32,6 +32,15 @@ public final class EngineWorkspaceCompositor {
 
     private static @Nullable TextureTarget intermediate;
 
+    /**
+     * Offscreen target the engine renders a wrapped menu screen (TitleScreen, SelectWorldScreen, etc.) into when in
+     * menu-overlay mode. Sized to the main RT so widgets lay out at their authored resolution; the result is blitted
+     * (downsampled through {@link #intermediate}) into the viewport rect. Isolating the render in its own framebuffer
+     * keeps wrapped-screen draws from leaking onto the main RT outside the viewport — important because some MC font
+     * batches don't fully respect intermediate flushes, so isolation via FB binding is the only reliable barrier.
+     */
+    private static @Nullable TextureTarget wrappedScreenRT;
+
     private EngineWorkspaceCompositor() {}
 
     /**
@@ -96,10 +105,87 @@ public final class EngineWorkspaceCompositor {
         mainRT.bindWrite(true);
     }
 
+    /**
+     * Allocate (or resize) {@link #wrappedScreenRT} to match the main RT's pixel size, clear it, and bind it as the
+     * active draw target. Caller renders the wrapped screen into the now-bound RT, then calls
+     * {@link #blitWrappedToViewport}. The clear-then-bind order matters: {@link TextureTarget#clear} ends with
+     * {@code unbindWrite()}, so rebinding after the clear is required for subsequent draws to land in this RT.
+     */
+    public static void bindWrappedScreenTarget() {
+        var mc = Minecraft.getInstance();
+        var mainRT = mc.getMainRenderTarget();
+        var fbWidth = Math.max(1, mainRT.viewWidth);
+        var fbHeight = Math.max(1, mainRT.viewHeight);
+        if (wrappedScreenRT == null) {
+            wrappedScreenRT = new TextureTarget(fbWidth, fbHeight, true, Minecraft.ON_OSX);
+            wrappedScreenRT.setClearColor(0f, 0f, 0f, 0f);
+        } else if (wrappedScreenRT.viewWidth != fbWidth || wrappedScreenRT.viewHeight != fbHeight) {
+            wrappedScreenRT.resize(fbWidth, fbHeight, Minecraft.ON_OSX);
+        }
+        wrappedScreenRT.clear(Minecraft.ON_OSX);
+        wrappedScreenRT.bindWrite(true);
+    }
+
+    /**
+     * Downsample-blit {@link #wrappedScreenRT} into the viewport rect on the main RT. Mirrors {@link #composit}'s
+     * two-step path (full RT → intermediate viewport-size RT, intermediate → main RT viewport rect) so bilinear
+     * filtering and pixel alignment match the in-world flow.
+     */
+    public static void blitWrappedToViewport(int viewportX, int viewportY, int viewportWidth, int viewportHeight) {
+        if (viewportWidth <= 0 || viewportHeight <= 0 || wrappedScreenRT == null) {
+            return;
+        }
+        var mc = Minecraft.getInstance();
+        var mainRT = mc.getMainRenderTarget();
+
+        if (intermediate == null) {
+            intermediate = new TextureTarget(viewportWidth, viewportHeight, false, Minecraft.ON_OSX);
+            intermediate.setClearColor(0f, 0f, 0f, 0f);
+        } else if (intermediate.viewWidth != viewportWidth || intermediate.viewHeight != viewportHeight) {
+            intermediate.resize(viewportWidth, viewportHeight, Minecraft.ON_OSX);
+        }
+
+        GlStateManager._glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, wrappedScreenRT.frameBufferId);
+        GlStateManager._glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, intermediate.frameBufferId);
+        GlStateManager._glBlitFrameBuffer(
+            0,
+            0,
+            wrappedScreenRT.viewWidth,
+            wrappedScreenRT.viewHeight,
+            0,
+            0,
+            viewportWidth,
+            viewportHeight,
+            GL30.GL_COLOR_BUFFER_BIT,
+            GL30.GL_LINEAR
+        );
+
+        GlStateManager._glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, intermediate.frameBufferId);
+        GlStateManager._glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, mainRT.frameBufferId);
+        GlStateManager._glBlitFrameBuffer(
+            0,
+            0,
+            viewportWidth,
+            viewportHeight,
+            viewportX,
+            viewportY,
+            viewportX + viewportWidth,
+            viewportY + viewportHeight,
+            GL30.GL_COLOR_BUFFER_BIT,
+            GL30.GL_NEAREST
+        );
+
+        mainRT.bindWrite(true);
+    }
+
     public static void clear() {
         if (intermediate != null) {
             intermediate.destroyBuffers();
             intermediate = null;
+        }
+        if (wrappedScreenRT != null) {
+            wrappedScreenRT.destroyBuffers();
+            wrappedScreenRT = null;
         }
     }
 }

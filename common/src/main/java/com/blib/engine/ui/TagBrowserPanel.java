@@ -175,6 +175,13 @@ public final class TagBrowserPanel implements Panel {
 
         graphics.fill(x, y, x + width, y + height, BACKGROUND_COLOR);
 
+        // Tag browser reads the server-side tag catalog (works even without a project — the "All" filter mode shows
+        // every tag) but needs the integrated server to be running.
+        if (Minecraft.getInstance().level == null) {
+            PanelPlaceholder.drawCentered(graphics, x, y, width, height, PanelPlaceholder.NEEDS_WORLD);
+            return;
+        }
+
         var projectName = ProjectSession.activeProjectName();
         if (!projectName.isEmpty() && !projectName.equals(lastFetchedProject)) {
             requestCatalog(projectName);

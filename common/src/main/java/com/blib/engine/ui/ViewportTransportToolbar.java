@@ -42,6 +42,11 @@ public final class ViewportTransportToolbar {
     private ViewportTransportToolbar() {}
 
     public static void render(GuiGraphics graphics, int panelX, int panelY) {
+        // Play / pause / step act on the integrated server. With no world (menu-overlay mode pre-world-load) every
+        // button is a no-op, so hide the toolbar entirely rather than show non-functional chrome.
+        if (net.minecraft.client.Minecraft.getInstance().getSingleplayerServer() == null) {
+            return;
+        }
         var playX = panelX + INSET;
         var stepX = playX + BUTTON_SIZE + BUTTON_GAP;
         var btnY = panelY + INSET;

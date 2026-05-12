@@ -114,6 +114,13 @@ public final class GOAPDetailsPanel implements Panel {
     public void render(GuiGraphics graphics, int x, int y, int width, int height, int mouseX, int mouseY, float partialTick) {
         graphics.fill(x, y, x + width, y + height, BACKGROUND_COLOR);
 
+        // GOAP debug payload is pushed by the server when an entity is tracked. With no world there's no server, no
+        // tracked entity, no data — skip the whole render path.
+        if (Minecraft.getInstance().level == null) {
+            PanelPlaceholder.drawCentered(graphics, x, y, width, height, PanelPlaceholder.NEEDS_WORLD);
+            return;
+        }
+
         var cursorY = y + 1;
         modeSwitcher.render(graphics, x + 1, cursorY, width - 2, mouseX, mouseY);
         cursorY += SegmentedControl.HEIGHT + 1;

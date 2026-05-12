@@ -7,6 +7,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.engine.neoforge.BLibNeoForgeEngineMode;
 import com.blib.engine.neoforge.BLibNeoForgeGizmoPreview;
+import com.blib.engine.neoforge.BLibNeoForgeTitleScreenIntegration;
 import com.blib.internal.client.BLibClient;
 import com.blib.mod.BLib;
 import com.blib.neoforge.internal.client.shader.BLibNeoForgeShaders;
@@ -22,5 +23,6 @@ public class BLibNeoForgeClient {
         BLibNeoForgePathfindingNavDebugHUD.register();
         BLibNeoForgeEngineMode.register();
         BLibNeoForgeGizmoPreview.register();
+        BLibNeoForgeTitleScreenIntegration.register();
     }
 }

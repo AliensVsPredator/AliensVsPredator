@@ -10,7 +10,9 @@
     "MixinItemInHandRenderer_Engine",
     "MixinKeyboardInput_Engine",
     "MixinMinecraft_Engine",
-    "MixinMouseHandler_Gizmo"
+    "MixinMinecraft_EngineScreenRedirect",
+    "MixinMouseHandler_Gizmo",
+    "MixinScreen_EngineSkipBlur"
   ],
   "server": [],
   "injectors": {

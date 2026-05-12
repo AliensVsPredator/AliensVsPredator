@@ -5,6 +5,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.engine.fabric.BLibFabricEngineMode;
 import com.blib.engine.fabric.BLibFabricGizmoPreview;
+import com.blib.engine.fabric.BLibFabricTitleScreenIntegration;
 import com.blib.fabric.internal.client.shader.BLibFabricShaders;
 import com.blib.internal.client.BLibClient;
 
@@ -19,5 +20,6 @@ public class BLibFabricClient implements ClientModInitializer {
         BLibFabricPathfindingNavDebugHUD.register();
         BLibFabricEngineMode.register();
         BLibFabricGizmoPreview.register();
+        BLibFabricTitleScreenIntegration.register();
     }
 }

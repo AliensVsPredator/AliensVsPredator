@@ -166,6 +166,17 @@ public final class ContentBrowserPanel implements Panel {
 
         graphics.fill(x, y, x + width, y + height, BACKGROUND_COLOR);
 
+        // Content browser is project-scoped — and projects require the integrated server to enumerate. Surface both
+        // conditions as placeholders so the user knows what's needed.
+        if (Minecraft.getInstance().level == null) {
+            PanelPlaceholder.drawCentered(graphics, x, y, width, height, PanelPlaceholder.NEEDS_WORLD);
+            return;
+        }
+        if (ProjectSession.activeProject() == null) {
+            PanelPlaceholder.drawCentered(graphics, x, y, width, height, PanelPlaceholder.NEEDS_PROJECT);
+            return;
+        }
+
         // Auto-fetch on first render if we missed onShown (e.g. panel was constructed via reopenPanel after a project
         // was already active). Also re-fetch on project swap so a switch from project A → B drops A's content.
         var projectName = ProjectSession.activeProjectName();

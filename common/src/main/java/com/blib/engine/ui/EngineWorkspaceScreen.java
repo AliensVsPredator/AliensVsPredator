@@ -137,6 +137,55 @@ public final class EngineWorkspaceScreen extends Screen {
      */
     private static final int OFFSCREEN_MOUSE = Integer.MIN_VALUE / 2;
 
+    /**
+     * Workspace execution mode. {@link Mode#IN_GAME} is the legacy {@code /blib engine} flow, opened inside a world via
+     * the project picker. {@link Mode#MENU_OVERLAY} is the TitleScreen-launched flow — no world / project / server is
+     * required, and the workspace persists on top of menus, rendering whichever screen the user is "on" inside its
+     * viewport panel via {@link #wrappedScreen}.
+     */
+    public enum Mode {
+        IN_GAME,
+        MENU_OVERLAY
+    }
+
+    private final Mode mode;
+
+    /**
+     * Menu-overlay mode only. The {@link Screen} being shown inside the viewport panel — initially the TitleScreen
+     * passed at construction, then swapped each time the wrapped screen calls {@code Minecraft.setScreen} (intercepted
+     * by {@code MixinMinecraft_EngineScreenRedirect}). Null in {@link Mode#IN_GAME} mode and once a world has loaded.
+     */
+    private @Nullable Screen wrappedScreen;
+
+    /**
+     * Set true around the explicit close path ({@link #closeEngine}) so the setScreen redirect mixin lets the call pass
+     * through to vanilla rather than re-wrapping the new screen.
+     */
+    private static volatile boolean preparingToClose;
+
+    /**
+     * Tracks whether {@link #wrappedScreen}'s {@code added()} / {@code init()} lifecycle has fired since it became the
+     * wrapped screen. Engine's {@code init()} is re-invoked by vanilla on every window resize (via
+     * {@code Screen.rebuildWidgets}), so without a guard we'd fire {@code added()} every resize — some screens treat
+     * that as a fresh activation and reload async state, etc. {@link #setWrappedScreen} resets this on swap, and the
+     * resize path forwards to the wrapped screen directly without going back through {@code added()}.
+     */
+    private boolean wrappedScreenAdded;
+
+    /**
+     * Set true around the wrapped screen's render pass so {@code MixinScreen_EngineSkipBlur} can detect it and skip
+     * {@link net.minecraft.client.gui.screens.Screen#renderBlurredBackground} — that vanilla method ends with
+     * {@code mainRT.bindWrite(false)}, which silently swaps our offscreen RT out from under the wrapped screen mid
+     * render and sends every widget / text draw to the main RT instead. Skipping is fine because the blur targets the
+     * main RT, which we don't composit; the panorama backdrop already serves as the menu-mode visual.
+     */
+    private static volatile boolean inWrappedScreenRender;
+
+    /** Read by {@code MixinScreen_EngineSkipBlur}. True while {@link #render} is mid-wrappedScreen-pass. */
+    public static boolean isInWrappedScreenRender() {
+        return inWrappedScreenRender;
+    }
+
     private DockNode root;
 
     private @Nullable ActiveDrag activeDrag;
@@ -279,11 +328,42 @@ public final class EngineWorkspaceScreen extends Screen {
         return activeLayoutId;
     }
 
+    /** Legacy entry: {@code /blib engine} from in-world. Project picker must have set an active project. */
     public EngineWorkspaceScreen() {
-        super(Component.literal("BLib Engine"));
+        this(Mode.IN_GAME, null);
+    }
 
-        // The workspace expects a project to be active before reaching here — the picker (ProjectPickerScreen) is
-        // the only entry point, and it sets ProjectSession.activeProject before transitioning. If somehow we're
+    /**
+     * Menu-overlay entry: open the workspace from {@link net.minecraft.client.gui.screens.TitleScreen} with no world or
+     * project loaded. The passed-in screen becomes the initial wrapped screen rendered inside the viewport; the
+     * setScreen redirect mixin then keeps the engine wrapping whatever screen the user navigates to until a world
+     * finishes loading.
+     */
+    public EngineWorkspaceScreen(@Nullable Screen initialWrapped) {
+        this(Mode.MENU_OVERLAY, initialWrapped);
+    }
+
+    private EngineWorkspaceScreen(Mode mode, @Nullable Screen initialWrapped) {
+        super(Component.literal("BLib Engine"));
+        this.mode = mode;
+        this.wrappedScreen = initialWrapped;
+
+        // Layout + keybinding catalogs are needed by both modes (the keybinding rebind UI lives in the workspace; the
+        // layout catalog provides the modeler template menu mode renders).
+        LayoutCatalog.initialize();
+        KeybindingProfileCatalog.initialize();
+
+        if (mode == Mode.MENU_OVERLAY) {
+            // Load whichever layout the user last had active (same path as the in-game flow). Menu mode never writes
+            // back to state.json on close (see removed()), so reading here is purely a load — the user's preferred
+            // layout choice persists untouched across game state transitions.
+            var bodyRoot = loadActiveLayoutBody();
+            this.root = buildOuterLayout(bodyRoot);
+            return;
+        }
+
+        // The IN_GAME workspace expects a project to be active before reaching here — the picker (ProjectPickerScreen)
+        // is the only entry point, and it sets ProjectSession.activeProject before transitioning. If somehow we're
         // constructed without one (programming error or a future code path that bypasses the picker), don't
         // pause / freeze the server: defer until a project is opened. Esc will still close the screen cleanly.
         if (ProjectSession.activeProject() == null) {
@@ -316,10 +396,6 @@ public final class EngineWorkspaceScreen extends Screen {
         // this kick the overlay stays grey until the user opens that panel. The cache is cleared in removed().
         BLib.MOD.networking().sendToServer(C2SRequestFactionDirectoryPayload.INSTANCE);
 
-        // Seed built-in templates on first run (idempotent — does nothing if files already exist), then resolve the
-        // active layout id from disk-backed state and load its body subtree. The outer trim is always rebuilt fresh.
-        LayoutCatalog.initialize();
-        KeybindingProfileCatalog.initialize();
         var bodyRoot = loadActiveLayoutBody();
         this.root = buildOuterLayout(bodyRoot);
     }
@@ -471,6 +547,124 @@ public final class EngineWorkspaceScreen extends Screen {
         return current;
     }
 
+    public Mode workspaceMode() {
+        return mode;
+    }
+
+    /**
+     * True while the workspace is acting as a persistent overlay on top of vanilla menus. The setScreen redirect mixin
+     * uses this to decide whether to capture {@link Minecraft#setScreen} calls or let them pass through.
+     */
+    public boolean isWrappingMenus() {
+        return mode == Mode.MENU_OVERLAY;
+    }
+
+    /** Used by the setScreen redirect mixin to recognise the explicit close path and stand down. */
+    public static boolean isPreparingToClose() {
+        return preparingToClose;
+    }
+
+    /**
+     * Swap the wrapped screen — called by the setScreen redirect mixin when the currently-wrapped screen tries to
+     * navigate away (e.g. TitleScreen → SelectWorldScreen). Replicates the lifecycle calls vanilla
+     * {@link Minecraft#setScreen} makes (removed → added → BufferUploader.reset → init) so the wrapped screen sees the
+     * same hooks fire as it would if it had become the active screen. Without {@code added()}, screens like
+     * {@code SelectWorldScreen} that schedule work via {@link Screen#added} (Realms notifications widget pool, social
+     * integrations, etc.) never finish initializing and render broken.
+     */
+    public void setWrappedScreen(@Nullable Screen next) {
+        var prev = this.wrappedScreen;
+        this.wrappedScreen = next;
+        this.wrappedScreenAdded = false;
+        if (prev != null && prev != next) {
+            prev.removed();
+        }
+        if (next != null && next != prev && minecraft != null) {
+            next.added();
+            com.mojang.blaze3d.vertex.BufferUploader.reset();
+            next.init(minecraft, width, height);
+            this.wrappedScreenAdded = true;
+        }
+        // Offscreen RT may need to resize if the new screen has different intrinsic dimensions — let the next render
+        // tick re-allocate.
+        EngineWorkspaceCompositor.clear();
+    }
+
+    public @Nullable Screen wrappedScreen() {
+        return wrappedScreen;
+    }
+
+    /**
+     * Explicit close entrypoint — bypasses the setScreen redirect mixin so the engine actually disappears rather than
+     * just dropping its wrapped screen. In-world {@code setScreen(null)} returns to game; with no world vanilla
+     * substitutes a fresh TitleScreen. Wired to the Project menu's "Close Engine" item.
+     */
+    public static void closeEngine() {
+        preparingToClose = true;
+        try {
+            Minecraft.getInstance().setScreen(null);
+        } finally {
+            preparingToClose = false;
+        }
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        // First call (initial open from constructor) fires the full vanilla lifecycle on the wrapped screen so it
+        // sees the same hooks it would as the active screen. Subsequent calls (from resize via rebuildWidgets) skip
+        // the lifecycle — they're a no-op for the wrapped screen; resize() handles layout updates directly below.
+        if (wrappedScreen != null && !wrappedScreenAdded) {
+            wrappedScreen.added();
+            com.mojang.blaze3d.vertex.BufferUploader.reset();
+            wrappedScreen.init(minecraft, width, height);
+            wrappedScreenAdded = true;
+        }
+    }
+
+    @Override
+    public void resize(Minecraft mc, int width, int height) {
+        super.resize(mc, width, height);
+        if (wrappedScreen != null) {
+            wrappedScreen.resize(mc, width, height);
+        }
+        // Offscreen RT is sized to the main RT; reallocate lazily next frame.
+        EngineWorkspaceCompositor.clear();
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        // Forward to the wrapped screen so animated screens (LevelLoadingScreen progress bar, ReceivingLevelScreen)
+        // keep advancing while the engine is on top of them.
+        if (wrappedScreen != null) {
+            wrappedScreen.tick();
+        }
+    }
+
+    @Override
+    public boolean shouldCloseOnEsc() {
+        // IN_GAME: keep vanilla behavior — Esc closes the editor (matches the existing /blib engine UX).
+        // MENU_OVERLAY: Esc closes only when there's no wrapped screen to delegate to AND a world is loaded. With a
+        // wrapped screen, Esc navigates menus (the wrapped screen handles it via the forwarder in keyPressed). With no
+        // world, there's nowhere meaningful to drop back to, so we keep the engine open. The Project menu's
+        // "Close Engine" item remains as an explicit exit regardless of state.
+        if (mode == Mode.IN_GAME) {
+            return true;
+        }
+        return wrappedScreen == null && Minecraft.getInstance().level != null;
+    }
+
+    /**
+     * Route Esc-triggered close through {@link #closeEngine} so the setScreen redirect mixin lets the call pass through
+     * to vanilla. Without this override the default {@code Screen.onClose} would call {@code setScreen(null)} directly
+     * and the mixin would interpret it as "drop the wrap, stay open."
+     */
+    @Override
+    public void onClose() {
+        closeEngine();
+    }
+
     @Override
     public boolean isPauseScreen() {
         return false;
@@ -486,14 +680,50 @@ public final class EngineWorkspaceScreen extends Screen {
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        // Menu-overlay mode: lazy entry into engine mode once a world finally loads. EngineMode.enter() guards on
+        // mc.player == null and is idempotent, so polling here each frame until the player exists is cheap.
+        if (mode == Mode.MENU_OVERLAY && Minecraft.getInstance().player != null && EngineMode.get().session() == null) {
+            EngineMode.get().enter();
+            var lazySession = EngineMode.get().session();
+            if (lazySession != null) {
+                lazySession.setMode(NavigationMode.ORBIT);
+            }
+        }
+
+        // Menu-overlay mode: render the wrapped screen into a dedicated offscreen RT, then blit only that into the
+        // viewport rect. Isolating the render in its own framebuffer keeps the wrapped screen's font batching from
+        // leaking onto the main RT outside the viewport (intermediate graphics.flush()es turn out NOT to be enough —
+        // some MC text RenderTypes survive across them and re-render at the next flush, ending up on top of the
+        // engine's panel chrome). Cursor coords are remapped to the wrapped screen's own coord space so hover lights
+        // up the widget the user is visually pointing at inside the downsampled viewport rect.
+        if (wrappedScreen != null) {
+            var wrappedCoords = mapToWrappedCoords(mouseX, mouseY);
+            int wrappedMouseX = wrappedCoords != null ? (int) wrappedCoords[0] : -1;
+            int wrappedMouseY = wrappedCoords != null ? (int) wrappedCoords[1] : -1;
+            var mc = Minecraft.getInstance();
+            var mainRT = mc.getMainRenderTarget();
+            EngineWorkspaceCompositor.bindWrappedScreenTarget();
+            inWrappedScreenRender = true;
+            try {
+                wrappedScreen.renderWithTooltip(graphics, wrappedMouseX, wrappedMouseY, partialTick);
+                graphics.flush();
+            } finally {
+                inWrappedScreenRender = false;
+                mainRT.bindWrite(true);
+            }
+        }
+
         super.render(graphics, mouseX, mouseY, partialTick);
 
-        // The world + HUD have already been rendered to the main RT at full window resolution by the time screen
-        // render runs. Downsample-blit them into the viewport panel rect so the user sees the player-eye view shrunk
-        // to fit the viewport, with all proportions / FOV / HUD layout intact.
+        // In-world path reads the main RT (which holds vanilla's world + HUD render). Menu-overlay path reads the
+        // dedicated wrappedScreenRT instead. Both feed the same downsample → viewport-rect blit pattern.
         var viewportRect = findViewportRect(root, 0, 0, logicalWidth(), logicalHeight());
         if (viewportRect != null) {
-            compositWorldIntoViewport(viewportRect);
+            if (wrappedScreen != null) {
+                compositWrappedIntoViewport(viewportRect);
+            } else {
+                compositWorldIntoViewport(viewportRect);
+            }
         }
 
         var pose = graphics.pose();
@@ -801,9 +1031,24 @@ public final class EngineWorkspaceScreen extends Screen {
 
     /**
      * Convert the viewport panel's logical rect (top-left origin, in workspace logical pixels) to GL framebuffer coords
-     * (bottom-left origin, in raw window pixels) and ask the compositor to downsample-blit world+HUD into it.
+     * (bottom-left origin, in raw window pixels) and ask the compositor to downsample-blit the main RT into it.
      */
     private void compositWorldIntoViewport(LogicalRect rect) {
+        var raw = logicalRectToRawFramebuffer(rect);
+        EngineWorkspaceCompositor.composit(raw[0], raw[1], raw[2], raw[3]);
+    }
+
+    /**
+     * Same framebuffer-coord transform, but sourcing pixels from the wrapped-screen offscreen RT rather than the main
+     * RT.
+     */
+    private void compositWrappedIntoViewport(LogicalRect rect) {
+        var raw = logicalRectToRawFramebuffer(rect);
+        EngineWorkspaceCompositor.blitWrappedToViewport(raw[0], raw[1], raw[2], raw[3]);
+    }
+
+    /** Returns {@code {x, y, w, h}} in raw bottom-origin framebuffer pixels for the given workspace-logical rect. */
+    private int[] logicalRectToRawFramebuffer(LogicalRect rect) {
         var window = Minecraft.getInstance().getWindow();
         var guiScale = window.getGuiScale();
         var rawWindowHeight = window.getHeight();
@@ -817,13 +1062,79 @@ public final class EngineWorkspaceScreen extends Screen {
         var rawY = (int) Math.round(rawWindowHeight - (screenY + screenH) * guiScale);
         var rawW = (int) Math.round(screenW * guiScale);
         var rawH = (int) Math.round(screenH * guiScale);
+        return new int[] { rawX, rawY, rawW, rawH };
+    }
 
-        EngineWorkspaceCompositor.composit(rawX, rawY, rawW, rawH);
+    /**
+     * Remap an engine-screen mouse coord (raw GUI-scaled pixels, top-origin) into the wrapped screen's coordinate space
+     * (where the wrapped screen was {@code init}'d with engine.width × engine.height). Result is the same coordinate
+     * space the wrapped screen uses internally for its widgets. Returns null if cursor is outside the viewport rect —
+     * caller should not forward in that case.
+     */
+    private @Nullable double[] mapToWrappedCoords(double mouseX, double mouseY) {
+        if (wrappedScreen == null) {
+            return null;
+        }
+        var viewportRect = findViewportRect(root, 0, 0, logicalWidth(), logicalHeight());
+        if (viewportRect == null) {
+            return null;
+        }
+        double logicalX = mouseX / SCALE;
+        double logicalY = mouseY / SCALE;
+        if (
+            logicalX < viewportRect.x()
+                || logicalX >= viewportRect.x() + viewportRect.width()
+                || logicalY < viewportRect.y()
+                || logicalY >= viewportRect.y() + viewportRect.height()
+        ) {
+            return null;
+        }
+        // Viewport rect in screen-space (GUI-scaled) pixels.
+        double vx = viewportRect.x() * SCALE;
+        double vy = viewportRect.y() * SCALE;
+        double vw = viewportRect.width() * SCALE;
+        double vh = viewportRect.height() * SCALE;
+        double wx = (mouseX - vx) * ((double) width / vw);
+        double wy = (mouseY - vy) * ((double) height / vh);
+        return new double[] { wx, wy };
+    }
+
+    /**
+     * Is anything modal absorbing this frame's events? Used by the wrapped-screen forwarding helpers to know whether
+     * they should defer or claim — modals / open menus / popups must keep their click-to-close + key behavior even when
+     * the cursor is over the viewport rect.
+     */
+    private boolean engineModalAbsorbing() {
+        return topModalTag() != null
+            || openMenu != null
+            || openSubmenu != null
+            || SearchableSelect.getOpenPopup() != null
+            || HslColorPickerPopup.getOpenPopup() != null
+            || FactionManagePopup.getOpenPopup() != null
+            || TextInput.getFocused() != null;
     }
 
     @Override
     public void removed() {
         super.removed();
+
+        // Menu-overlay mode: most of the cleanup below is irrelevant — no project was ever opened, no server tick was
+        // ever paused, no caches were ever populated. Touching them risks clobbering the user's preferred in-game
+        // layout via persistOutgoingLayout / persistActiveSelection, and triggers a flurry of no-op clears.
+        if (mode == Mode.MENU_OVERLAY) {
+            EngineWorkspaceCompositor.clear();
+            if (wrappedScreen != null) {
+                wrappedScreen.removed();
+                wrappedScreen = null;
+            }
+            EngineMode.get().exit();
+            SearchableSelect.closeOpenPopup();
+            HslColorPickerPopup.closeOpenPopup();
+            FactionManagePopup.closeOpenPopup();
+            EngineCursor.reset();
+            return;
+        }
+
         // Persist the active layout's customized state to disk and update state.json so the next /blib engine — even
         // across game restarts — reopens to the same arrangement of tabs, splits, and active panels. The active-id
         // write also captures any per-project memory so switching projects later restores per-project preferences.
@@ -905,6 +1216,15 @@ public final class EngineWorkspaceScreen extends Screen {
         var openFactionPopup = FactionManagePopup.getOpenPopup();
         if (openFactionPopup != null && openFactionPopup.mouseScrolled(logicalX, logicalY, scrollY)) {
             return true;
+        }
+        // Wrapped-screen forward — scrolls over the viewport rect reach the wrapped screen (e.g. world list scroll in
+        // SelectWorldScreen). Done before the openMenu / openSubmenu absorbers so the wrapped screen's scroll wins on
+        // hover regardless of an unrelated dropdown elsewhere on the engine bar.
+        if (wrappedScreen != null && !engineModalAbsorbing()) {
+            var wrappedCoords = mapToWrappedCoords(mouseX, mouseY);
+            if (wrappedCoords != null && wrappedScreen.mouseScrolled(wrappedCoords[0], wrappedCoords[1], scrollX, scrollY)) {
+                return true;
+            }
         }
         // Scroll-wheel events that land on an open menu shouldn't tunnel through to the scroll containers of panels
         // below — consume them.
@@ -1054,6 +1374,11 @@ public final class EngineWorkspaceScreen extends Screen {
         if (focused != null && focused.charTyped(ch, modifiers)) {
             return true;
         }
+        // Wrapped-screen forward — char input reaches the wrapped screen's text fields (e.g. world-name field in
+        // CreateWorldScreen) when no engine widget claims the character.
+        if (wrappedScreen != null && wrappedScreen.charTyped(ch, modifiers)) {
+            return true;
+        }
         return super.charTyped(ch, modifiers);
     }
 
@@ -1121,6 +1446,14 @@ public final class EngineWorkspaceScreen extends Screen {
 
         var focused = TextInput.getFocused();
         if (focused != null && focused.keyPressed(keyCode, scanCode, modifiers)) {
+            return true;
+        }
+
+        // Wrapped-screen forward — in menu-overlay mode the wrapped screen owns Esc (TitleScreen ignores it,
+        // PauseScreen closes itself, dialogs cancel, etc.). Also forwards non-Esc keys (Enter, Tab) so wrapped
+        // widgets see them. Done after the focused-TextInput check so engine text editing keeps the keystrokes when
+        // an engine input is focused.
+        if (wrappedScreen != null && wrappedScreen.keyPressed(keyCode, scanCode, modifiers)) {
             return true;
         }
 
@@ -1358,6 +1691,16 @@ public final class EngineWorkspaceScreen extends Screen {
             FactionManagePopup.closeOpenPopup();
         }
 
+        // 0d) Wrapped-screen (menu-overlay mode): clicks inside the viewport rect forward to the wrapped screen so
+        // the user can navigate menus through the viewport. Engine modals / popups above consumed first; engine
+        // dropdowns below come after so chip-menu clicks still work over the viewport rect.
+        if (wrappedScreen != null && !engineModalAbsorbing()) {
+            var wrappedCoords = mapToWrappedCoords(mouseX, mouseY);
+            if (wrappedCoords != null && wrappedScreen.mouseClicked(wrappedCoords[0], wrappedCoords[1], button)) {
+                return true;
+            }
+        }
+
         // 0) An open dropdown takes priority: clicking an item fires it; clicking outside just closes the menu.
         // Submenu is checked first (innermost wins); clicks inside the parent menu re-spawn the submenu when they
         // land on a submenu-parent row, or close everything and run the action when they land on a leaf row.
@@ -1502,6 +1845,15 @@ public final class EngineWorkspaceScreen extends Screen {
             return true;
         }
 
+        // Wrapped-screen forward — releases over the viewport rect end any in-progress wrapped-screen interaction
+        // (button release, slider end). Captured-panel below claims releases for engine drags-in-progress.
+        if (wrappedScreen != null && !engineModalAbsorbing() && capturedPanel == null) {
+            var wrappedCoords = mapToWrappedCoords(mouseX, mouseY);
+            if (wrappedCoords != null && wrappedScreen.mouseReleased(wrappedCoords[0], wrappedCoords[1], button)) {
+                return true;
+            }
+        }
+
         // Captured panel sees the release first regardless of cursor position, then the capture clears. Wrapped in
         // try/finally so a misbehaving panel can't leave us in a stuck-captured state.
         if (capturedPanel != null) {
@@ -1575,6 +1927,15 @@ public final class EngineWorkspaceScreen extends Screen {
         if (dragInput != null && button == 0) {
             dragInput.mouseDraggedExtend(logicalX);
             return true;
+        }
+
+        // Wrapped-screen forward — drags over the viewport rect (e.g. slider drags in Options) reach the wrapped
+        // screen. Captured-panel + activeDrag checks below cover engine-internal drags.
+        if (wrappedScreen != null && !engineModalAbsorbing() && capturedPanel == null && activeDrag == null) {
+            var wrappedCoords = mapToWrappedCoords(mouseX, mouseY);
+            if (wrappedCoords != null && wrappedScreen.mouseDragged(wrappedCoords[0], wrappedCoords[1], button, deltaX, deltaY)) {
+                return true;
+            }
         }
 
         // Captured panel gets every drag event regardless of cursor position. Critical for panel-driven drags
@@ -2432,12 +2793,27 @@ public final class EngineWorkspaceScreen extends Screen {
      */
     private DropdownMenu buildProjectMenu(int anchorX, int anchorY) {
         var hasProject = ProjectSession.activeProject() != null;
+        var hasWorld = Minecraft.getInstance().level != null;
         var items = new java.util.ArrayList<DropdownMenu.Item>();
-        items.add(new DropdownMenu.Item("Create…", () -> openPicker(true)));
-        items.add(new DropdownMenu.Item("Open…", () -> openPicker(false)));
+
+        // Project CRUD requires the integrated server (server-side handlers for the picker / reload / delete payloads).
+        // With no world, all four items are inert — surface that in the label.
+        var noWorldSuffix = hasWorld ? "" : " (no world)";
+        items.add(new DropdownMenu.Item("Create…" + noWorldSuffix, () -> {
+            if (!hasWorld) {
+                return;
+            }
+            openPicker(true);
+        }));
+        items.add(new DropdownMenu.Item("Open…" + noWorldSuffix, () -> {
+            if (!hasWorld) {
+                return;
+            }
+            openPicker(false);
+        }));
         items.add(
-            new DropdownMenu.Item(hasProject ? "Reload" : "Reload (no project)", () -> {
-                if (!hasProject) {
+            new DropdownMenu.Item(hasProject ? "Reload" : "Reload" + (hasWorld ? " (no project)" : noWorldSuffix), () -> {
+                if (!hasWorld || !hasProject) {
                     return;
                 }
                 BLib.MOD.networking().sendToServer(new C2SReloadProjectPayload(ProjectSession.activeProjectName()));
@@ -2447,8 +2823,8 @@ public final class EngineWorkspaceScreen extends Screen {
             })
         );
         items.add(
-            new DropdownMenu.Item(hasProject ? "Delete…" : "Delete… (no project)", () -> {
-                if (!hasProject) {
+            new DropdownMenu.Item(hasProject ? "Delete…" : "Delete…" + (hasWorld ? " (no project)" : noWorldSuffix), () -> {
+                if (!hasWorld || !hasProject) {
                     return;
                 }
                 // Destructive — gate behind the modal confirm. On confirm we fire the delete and bounce back to
@@ -2470,6 +2846,9 @@ public final class EngineWorkspaceScreen extends Screen {
                 );
             })
         );
+        // Always-available exit: bypasses the setScreen redirect via the preparingToClose flag so the engine actually
+        // unwinds instead of trapping the user in overlay mode.
+        items.add(new DropdownMenu.Item("Close Engine", EngineWorkspaceScreen::closeEngine));
         return new DropdownMenu(anchorX, anchorY, items);
     }
 

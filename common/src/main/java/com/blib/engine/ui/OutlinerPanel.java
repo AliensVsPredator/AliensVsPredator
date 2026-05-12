@@ -160,6 +160,13 @@ public final class OutlinerPanel implements Panel {
 
         graphics.fill(x, y, x + width, y + height, BACKGROUND_COLOR);
 
+        // No world ⇒ no entities ⇒ no point rendering the search bar or list. Stop before touching mc.level anywhere
+        // downstream.
+        if (Minecraft.getInstance().level == null) {
+            PanelPlaceholder.drawCentered(graphics, x, y, width, height, PanelPlaceholder.NEEDS_WORLD);
+            return;
+        }
+
         // Search bar at the top — same logical-pixel width as the panel content area.
         var searchY = y + CONTENT_PADDING;
         searchInput.render(graphics, x + CONTENT_PADDING, searchY, width - 2 * CONTENT_PADDING, mouseX, mouseY);
@@ -228,7 +235,14 @@ public final class OutlinerPanel implements Panel {
 
     private void renderEmptyMessage(GuiGraphics graphics, int x, int y) {
         var font = EngineFont.get();
-        var msg = searchInput.content().isEmpty() ? "(no entities loaded)" : "(no matches)";
+        String msg;
+        if (Minecraft.getInstance().level == null) {
+            msg = "Load a world to view entities";
+        } else if (searchInput.content().isEmpty()) {
+            msg = "(no entities loaded)";
+        } else {
+            msg = "(no matches)";
+        }
         graphics.drawString(font, Component.literal(msg), x, y, EMPTY_TEXT_COLOR, false);
     }
 

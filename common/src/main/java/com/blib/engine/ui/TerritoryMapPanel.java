@@ -140,12 +140,19 @@ public final class TerritoryMapPanel implements Panel {
         this.rectWidth = width;
         this.rectHeight = height;
 
+        graphics.fill(x, y, x + width, y + height, BACKGROUND_COLOR);
+
+        // Territory map reads chunk claims + player position. Both require a world. Skip the centerOnPlayer init too
+        // — it'd NPE on mc.player.
+        if (Minecraft.getInstance().level == null) {
+            PanelPlaceholder.drawCentered(graphics, x, y, width, height, PanelPlaceholder.NEEDS_WORLD);
+            return;
+        }
+
         if (!viewInitialized) {
             centerOnPlayer();
             viewInitialized = true;
         }
-
-        graphics.fill(x, y, x + width, y + height, BACKGROUND_COLOR);
 
         var font = EngineFont.get();
         var inspected = inspectedFactionId();

@@ -128,6 +128,12 @@ public final class FactionBrowserPanel implements Panel {
 
         graphics.fill(x, y, x + width, y + height, BACKGROUND_COLOR);
 
+        // Faction directory is fetched from the server. No world ⇒ no server ⇒ no directory.
+        if (Minecraft.getInstance().level == null) {
+            PanelPlaceholder.drawCentered(graphics, x, y, width, height, PanelPlaceholder.NEEDS_WORLD);
+            return;
+        }
+
         // First render with an empty cache → request the directory once. Subsequent renders rely on server pushes
         // and the explicit Refresh button.
         if (!requestedAtLeastOnce && ClientFactionDirectoryCache.entries().isEmpty()) {
