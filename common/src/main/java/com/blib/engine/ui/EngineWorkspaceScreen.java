@@ -95,10 +95,13 @@ public final class EngineWorkspaceScreen extends Screen {
 
     /**
      * Mouse-pixel half-thickness of a divider's hit zone, in logical pixels. A click within {@code DIVIDER_HIT_PX} of
-     * the boundary line is treated as a divider drag-start.
+     * the boundary line is treated as a divider drag-start. Tuned to {@code 2} so the 5-pixel hit zone exactly
+     * brackets the 4-pixel visible highlight stripe ({@code boundary ± 2}) plus 1 slop pixel — clicks anywhere on
+     * the highlight reliably start a drag, and the slop swallows sub-pixel cursor jitter at the boundary.
+     * <p>
+     * Made public so panels with no edge UI (e.g. {@link ViewportPanel}) can yield clicks in the divider band.
      */
-    /** Made public so panels with no edge UI (e.g. ViewportPanel) can yield clicks in the divider band. */
-    public static final int DIVIDER_HIT_PX = 8;
+    public static final int DIVIDER_HIT_PX = 2;
 
     /**
      * Floor on any panel size during a divider drag (logical pixels). Prevents the user from collapsing a panel to zero
@@ -970,6 +973,9 @@ public final class EngineWorkspaceScreen extends Screen {
 
         var bx = dragger.boundaryStartX();
         var by = dragger.boundaryStartY();
+        // Highlight stripe is intentionally a fixed 4-pixel band straddling the boundary line, regardless of the
+        // hit-zone width. {@link #DIVIDER_HIT_PX} controls click accuracy; this constant controls how visible the
+        // divider is on hover. The hit zone always covers ≥ the highlight (DIVIDER_HIT_PX ≥ 2 by design).
         if (dragger.split.orientation() == Orientation.HORIZONTAL) {
             graphics.fill(bx - 2, by, bx + 2, by + dragger.parentHeight, DIVIDER_HIGHLIGHT_COLOR);
         } else {
@@ -1405,7 +1411,25 @@ public final class EngineWorkspaceScreen extends Screen {
                 }
             }
 
-            // 2) Tab strip click: switch active, close, or arm a tab drag.
+            // 2) Panel-internal high-priority UI (scrollbar thumb, close buttons, etc.). Runs before the divider so a
+            // scrollbar at the right edge of a panel adjacent to a vertical dock split isn't eaten by divider drag.
+            // A true return also captures subsequent drag / release for this panel — see #capturedPanel.
+            var preDivider = panelAt(root, 0, 0, logicalWidth(), logicalHeight(), logicalX, logicalY);
+            if (preDivider != null && preDivider.mouseClickedCapture(logicalX, logicalY, button)) {
+                this.capturedPanel = preDivider;
+                return true;
+            }
+
+            // 3) Divider drag start — must run before the tab-strip check so the bottom rows of the visible divider
+            // highlight (which fall inside the adjacent panel's title bar / tab strip) can still start a drag instead
+            // of leaking into a tab-strip click. Scrollbar / edge UI is already protected by step 2's panel capture.
+            var divider = findDivider(root, 0, 0, logicalWidth(), logicalHeight(), (int) logicalX, (int) logicalY);
+            if (divider != null && isResizable(divider.split.sizing())) {
+                this.activeDrag = new ActiveDrag(divider);
+                return true;
+            }
+
+            // 4) Tab strip click: switch active, close, or arm a tab drag.
             var tabbed = findTabbedPanelAt((int) logicalX, (int) logicalY);
             if (tabbed != null && tabbed.isInTabStrip(logicalX, logicalY)) {
                 var tabIdx = tabbed.hitTabAt(logicalX, logicalY);
@@ -1420,22 +1444,6 @@ public final class EngineWorkspaceScreen extends Screen {
                     return true;
                 }
                 // Click on empty tab-strip space — no-op but consume so it doesn't fall through to content.
-                return true;
-            }
-
-            // 3) Panel-internal high-priority UI (scrollbar thumb, close buttons, etc.). Runs before divider so a
-            // scrollbar at the right edge of a panel adjacent to a vertical dock split isn't eaten by divider drag.
-            // A true return also captures subsequent drag / release for this panel — see #capturedPanel.
-            var preDivider = panelAt(root, 0, 0, logicalWidth(), logicalHeight(), logicalX, logicalY);
-            if (preDivider != null && preDivider.mouseClickedCapture(logicalX, logicalY, button)) {
-                this.capturedPanel = preDivider;
-                return true;
-            }
-
-            // 4) Divider drag start.
-            var divider = findDivider(root, 0, 0, logicalWidth(), logicalHeight(), (int) logicalX, (int) logicalY);
-            if (divider != null && isResizable(divider.split.sizing())) {
-                this.activeDrag = new ActiveDrag(divider);
                 return true;
             }
         }

@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -104,6 +105,13 @@ public final class ViewportPanel implements Panel {
     private @Nullable MmbDrag mmbDrag;
 
     /**
+     * Captured at the end of {@link #render} when the cursor hovers a transport-toolbar button — the workspace reads
+     * this back via {@link #tooltipText()} and renders the tooltip near the cursor. Null when nothing tooltip-worthy
+     * is hovered this frame.
+     */
+    private @Nullable Component hoveredTooltip;
+
+    /**
      * Active drag-to-pick anchor — the block clicked on LMB-press, used as cornerA throughout the drag while every
      * mouseDragged updates cornerB. {@code null} when no drag-pick is in flight. Cleared on mouseReleased.
      */
@@ -181,13 +189,28 @@ public final class ViewportPanel implements Panel {
     }
 
     @Override
+    public @Nullable Component tooltipText() {
+        return hoveredTooltip;
+    }
+
+    @Override
     public void render(GuiGraphics graphics, int x, int y, int width, int height, int mouseX, int mouseY, float partialTick) {
         this.rectX = x;
         this.rectY = y;
         this.rectWidth = width;
         this.rectHeight = height;
-        // No drawing: the compositor has already painted the downsampled world+HUD into this exact rect on the main
-        // render target before the workspace's panels render. Anything drawn here would obscure the live game view.
+        // No game-view drawing: the compositor has already painted the downsampled world+HUD into this exact rect on
+        // the main render target before the workspace's panels render. Anything drawn here would obscure the live game
+        // view — except the transport-control overlay, which is *meant* to sit on top of the corner.
+        ViewportTransportToolbar.render(graphics, x, y);
+
+        // Refresh the hover tooltip for the transport buttons each frame so the cursor reads the current world state
+        // (paused vs running) without having to look at the icon.
+        hoveredTooltip = null;
+        var transportHover = ViewportTransportToolbar.hitTest(mouseX, mouseY, x, y);
+        if (transportHover == ViewportTransportToolbar.Hit.PLAY) {
+            hoveredTooltip = Component.literal(EngineTickControl.isPaused() ? "Game paused" : "Game running");
+        }
 
         // Publish the rect in raw window-pixel space so the world-render hook (running in a different render pass)
         // can map cursor coords back into [0,1] viewport-relative coords for the placement preview's ray cast. The
@@ -310,6 +333,20 @@ public final class ViewportPanel implements Panel {
     public boolean mouseClickedCapture(double mouseX, double mouseY, int button) {
         if (!inRect(mouseX, mouseY)) {
             return false;
+        }
+
+        // Transport toolbar (play/pause + step) lives in the top-left corner of the viewport — hit-test it first so a
+        // click on the button doesn't fall through to a gizmo pick or selection action behind it. Only LMB triggers.
+        if (button == 0) {
+            var transportHit = ViewportTransportToolbar.hitTest(mouseX, mouseY, rectX, rectY);
+            if (transportHit == ViewportTransportToolbar.Hit.PLAY) {
+                EngineTickControl.toggle();
+                return true;
+            }
+            if (transportHit == ViewportTransportToolbar.Hit.STEP) {
+                EngineTickControl.step(ViewportTransportToolbar.STEP_TICKS);
+                return true;
+            }
         }
 
         // The viewport has no edge UI (no scrollbars, no inline buttons in the outer band), so LMB clicks within
