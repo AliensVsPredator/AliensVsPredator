@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.blib.engine.ui.ActionStackPanel;
 import com.blib.engine.ui.ContentBrowserPanel;
 import com.blib.engine.ui.DetailsPanel;
 import com.blib.engine.ui.DiplomacyMatrixPanel;
@@ -82,6 +83,8 @@ public final class PanelRegistry {
 
     public static final String TAG_BROWSER = "tag_browser";
 
+    public static final String ACTION_STACK = "action_stack";
+
     private static final Map<String, PanelFactory> FACTORIES = new LinkedHashMap<>();
 
     private static final Map<Class<? extends Panel>, String> IDS_BY_CLASS = new LinkedHashMap<>();
@@ -104,6 +107,7 @@ public final class PanelRegistry {
         register(FACTION_MEMBERS, FactionMembersPanel.class, ctx -> new FactionMembersPanel(ctx.projectContentActionHandler()));
         register(TERRITORY_MAP, TerritoryMapPanel.class, ctx -> new TerritoryMapPanel());
         register(TAG_BROWSER, TagBrowserPanel.class, ctx -> new TagBrowserPanel());
+        register(ACTION_STACK, ActionStackPanel.class, ctx -> new ActionStackPanel());
     }
 
     private PanelRegistry() {}

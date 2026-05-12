@@ -29,6 +29,7 @@ import com.blib.mod.common.network.packet.C2SMoveSelectionPayload;
 import com.blib.mod.common.network.packet.C2SOpenProjectPayload;
 import com.blib.mod.common.network.packet.C2SPasteFromClipboardPayload;
 import com.blib.mod.common.network.packet.C2SPlaceJigsawPiecePayload;
+import com.blib.mod.common.network.packet.C2SRedoActionPayload;
 import com.blib.mod.common.network.packet.C2SReloadProjectPayload;
 import com.blib.mod.common.network.packet.C2SRemoveBlockTagPayload;
 import com.blib.mod.common.network.packet.C2SRemoveChunkClaimPayload;
@@ -52,10 +53,11 @@ import com.blib.mod.common.network.packet.C2SSetTagEntryRequiredPayload;
 import com.blib.mod.common.network.packet.C2SSetTagReplacePayload;
 import com.blib.mod.common.network.packet.C2SSpawnEntityPayload;
 import com.blib.mod.common.network.packet.C2STranslateEntityPayload;
-import com.blib.mod.common.network.packet.C2SUndoPlacementPayload;
+import com.blib.mod.common.network.packet.C2SUndoActionPayload;
 import com.blib.mod.common.network.packet.C2SUpdateFactionFieldPayload;
 import com.blib.mod.common.network.packet.C2SUpdateJigsawBlockPayload;
 import com.blib.mod.common.network.packet.C2SUpdatePoolElementPayload;
+import com.blib.mod.common.network.packet.S2CActionHistorySyncPayload;
 import com.blib.mod.common.network.packet.S2CAddPlacedPiecePayload;
 import com.blib.mod.common.network.packet.S2CCaptureListPayload;
 import com.blib.mod.common.network.packet.S2CChunkClaimsSyncPayload;
@@ -141,9 +143,17 @@ public class BLibServerPacketHandlers {
 
         REGISTRY.registerPacketHandler(
             new NetworkHandler.FromClient<>(
-                C2SUndoPlacementPayload.TYPE,
-                C2SUndoPlacementPayload.CODEC,
-                BLibServerListener::handleUndoPlacement
+                C2SUndoActionPayload.TYPE,
+                C2SUndoActionPayload.CODEC,
+                BLibServerListener::handleUndoAction
+            )
+        );
+
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromClient<>(
+                C2SRedoActionPayload.TYPE,
+                C2SRedoActionPayload.CODEC,
+                BLibServerListener::handleRedoAction
             )
         );
 
@@ -502,6 +512,14 @@ public class BLibServerPacketHandlers {
                 S2CChunkClaimsSyncPayload.TYPE,
                 S2CChunkClaimsSyncPayload.CODEC,
                 BLibClientListener::handleChunkClaimsSync
+            )
+        );
+
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromServer<>(
+                S2CActionHistorySyncPayload.TYPE,
+                S2CActionHistorySyncPayload.CODEC,
+                BLibClientListener::handleActionHistorySync
             )
         );
 

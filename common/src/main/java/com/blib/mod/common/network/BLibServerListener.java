@@ -5,6 +5,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.Entity;
@@ -45,7 +46,7 @@ import com.blib.internal.common.storage.ProjectTagDraftStore;
 import com.blib.internal.common.territory.BLibTerritoryManager;
 import com.blib.mod.BLib;
 import com.blib.mod.common.gameplay.goap.GOAPDebugTracker;
-import com.blib.mod.common.gameplay.jigsaw.PlacementHistory;
+import com.blib.mod.common.gameplay.history.ActionHistory;
 import com.blib.mod.common.network.packet.C2SAddChunkClaimPayload;
 import com.blib.mod.common.network.packet.C2SAddFactionMemberPayload;
 import com.blib.mod.common.network.packet.C2SAddPoolElementPayload;
@@ -72,6 +73,7 @@ import com.blib.mod.common.network.packet.C2SMoveSelectionPayload;
 import com.blib.mod.common.network.packet.C2SOpenProjectPayload;
 import com.blib.mod.common.network.packet.C2SPasteFromClipboardPayload;
 import com.blib.mod.common.network.packet.C2SPlaceJigsawPiecePayload;
+import com.blib.mod.common.network.packet.C2SRedoActionPayload;
 import com.blib.mod.common.network.packet.C2SReloadProjectPayload;
 import com.blib.mod.common.network.packet.C2SRemoveBlockTagPayload;
 import com.blib.mod.common.network.packet.C2SRemoveChunkClaimPayload;
@@ -95,11 +97,12 @@ import com.blib.mod.common.network.packet.C2SSetTagEntryRequiredPayload;
 import com.blib.mod.common.network.packet.C2SSetTagReplacePayload;
 import com.blib.mod.common.network.packet.C2SSpawnEntityPayload;
 import com.blib.mod.common.network.packet.C2STranslateEntityPayload;
-import com.blib.mod.common.network.packet.C2SUndoPlacementPayload;
+import com.blib.mod.common.network.packet.C2SUndoActionPayload;
 import com.blib.mod.common.network.packet.C2SUpdateFactionFieldPayload;
 import com.blib.mod.common.network.packet.C2SUpdateJigsawBlockPayload;
 import com.blib.mod.common.network.packet.C2SUpdatePoolElementPayload;
 import com.blib.mod.common.network.packet.ProjectOp;
+import com.blib.mod.common.network.packet.S2CActionHistorySyncPayload;
 import com.blib.mod.common.network.packet.S2CCaptureListPayload;
 import com.blib.mod.common.network.packet.S2CClipboardStatusPayload;
 import com.blib.mod.common.network.packet.S2CEntityFactionsPayload;
@@ -152,12 +155,31 @@ public final class BLibServerListener {
             return;
         }
 
-        Entity entity = serverPlayer.serverLevel().getEntity(payload.entityId());
+        var serverLevel = serverPlayer.serverLevel();
+        Entity entity = serverLevel.getEntity(payload.entityId());
         if (entity == null || entity instanceof Player) {
             return;
         }
 
+        var typeId = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
+        var nbt = new net.minecraft.nbt.CompoundTag();
+        entity.saveWithoutId(nbt);
+        var pos = entity.blockPosition();
+        var entityUuid = entity.getUUID();
+        var description = "Remove " + entity.getName().getString();
+
         entity.discard();
+
+        var action = new com.blib.mod.common.gameplay.history.EntityRemoveAction(
+            serverLevel.dimension(),
+            typeId,
+            entityUuid,
+            nbt,
+            pos,
+            description,
+            System.currentTimeMillis()
+        );
+        ActionHistory.push(action);
     }
 
     /**
@@ -197,7 +219,22 @@ public final class BLibServerListener {
             return;
         }
 
-        type.spawn(level, payload.anchor(), MobSpawnType.COMMAND);
+        var spawned = type.spawn(level, payload.anchor(), MobSpawnType.COMMAND);
+        if (spawned == null) {
+            return;
+        }
+        var nbt = new net.minecraft.nbt.CompoundTag();
+        spawned.saveWithoutId(nbt);
+        var action = new com.blib.mod.common.gameplay.history.EntitySpawnAction(
+            level.dimension(),
+            payload.entityTypeId(),
+            spawned.getUUID(),
+            nbt,
+            payload.anchor(),
+            "Spawn " + spawned.getName().getString(),
+            System.currentTimeMillis()
+        );
+        ActionHistory.push(action);
     }
 
     /**
@@ -218,7 +255,23 @@ public final class BLibServerListener {
         if (entity == null || entity instanceof Player) {
             return;
         }
+        var beforeX = entity.getX();
+        var beforeY = entity.getY();
+        var beforeZ = entity.getZ();
         entity.teleportTo(payload.x(), payload.y(), payload.z());
+        var action = new com.blib.mod.common.gameplay.history.EntityTranslateAction(
+            dimKey,
+            entity.getUUID(),
+            beforeX,
+            beforeY,
+            beforeZ,
+            payload.x(),
+            payload.y(),
+            payload.z(),
+            "Translate " + entity.getName().getString(),
+            System.currentTimeMillis()
+        );
+        ActionHistory.push(action);
     }
 
     /**
@@ -244,8 +297,19 @@ public final class BLibServerListener {
         if (attr == null) {
             return;
         }
+        var beforeScale = attr.getBaseValue();
         var clamped = Math.max(0.1, Math.min(4.0, payload.scale()));
         attr.setBaseValue(clamped);
+
+        var action = new com.blib.mod.common.gameplay.history.EntityScaleAction(
+            dimKey,
+            le.getUUID(),
+            beforeScale,
+            clamped,
+            "Scale " + le.getName().getString(),
+            System.currentTimeMillis()
+        );
+        ActionHistory.push(action);
     }
 
     /**
@@ -257,8 +321,8 @@ public final class BLibServerListener {
      * neighbor updates that would corrupt placed structures (e.g. lit redstone repeaters firing on placement).
      * <p>
      * After a successful placement we register a {@link com.blib.mod.common.gameplay.jigsaw.PlacedPiece} so engine-mode
-     * users can hover, select, and right-click the piece as a single thing. The piece UUID rides on the
-     * {@link PlacementHistory} entry so an undo also removes the piece from the registry.
+     * users can hover, select, and right-click the piece as a single thing. The whole gesture (blocks + piece
+     * registration) is pushed to {@link ActionHistory} as one {@code BlockRegionEdit} so undo reverses both.
      */
     public static void handlePlaceJigsawPiece(C2SPlaceJigsawPiecePayload payload, Player player) {
         if (!(player instanceof ServerPlayer serverPlayer)) {
@@ -284,9 +348,7 @@ public final class BLibServerListener {
             .setIgnoreEntities(false);
 
         var anchor = payload.anchor();
-        // Capture the AABB the placement will touch BEFORE writing — otherwise the snapshot would record the placed
-        // structure's blocks as the "original" state and undo would be a no-op. AABB derived from the same settings
-        // we're about to feed placeInWorld so it matches exactly.
+        // AABB derived from the same settings we're about to feed placeInWorld so it matches exactly.
         var aabb = template.getBoundingBox(settings, anchor);
         var pieceId = java.util.UUID.randomUUID();
         var piece = new com.blib.mod.common.gameplay.jigsaw.PlacedPiece(
@@ -299,44 +361,108 @@ public final class BLibServerListener {
             mirror,
             serverLevel.getGameTime()
         );
-        PlacementHistory.push(serverLevel, aabb, payload.templateId(), pieceId);
+
+        // Capture pre-state for undo, then place, then capture post-state for redo.
+        var beforeStates = new java.util.HashMap<net.minecraft.core.BlockPos, BlockState>();
+        var beforeBE = new java.util.HashMap<net.minecraft.core.BlockPos, net.minecraft.nbt.CompoundTag>();
+        captureRegion(serverLevel, aabb, beforeStates, beforeBE);
 
         template.placeInWorld(serverLevel, anchor, anchor, settings, serverLevel.getRandom(), Block.UPDATE_CLIENTS);
+
+        var afterStates = new java.util.HashMap<net.minecraft.core.BlockPos, BlockState>();
+        var afterBE = new java.util.HashMap<net.minecraft.core.BlockPos, net.minecraft.nbt.CompoundTag>();
+        captureRegion(serverLevel, aabb, afterStates, afterBE);
 
         com.blib.internal.common.storage.BLibDataStoreManager.INSTANCE
             .getLevel(serverLevel, com.blib.mod.common.registry.init.BLibJigsawDataStoreTypes.PLACED_PIECES)
             .add(piece);
-
         com.blib.mod.common.gameplay.jigsaw.PlacedPieceSync.onPieceAdded(serverLevel, piece);
+
+        var region = new com.blib.mod.common.gameplay.history.RegionSnapshot(aabb, beforeStates, beforeBE, afterStates, afterBE);
+        var action = new com.blib.mod.common.gameplay.history.BlockRegionEdit(
+            serverLevel.dimension(),
+            java.util.List.of(region),
+            "Place piece " + payload.templateId(),
+            System.currentTimeMillis(),
+            com.blib.mod.common.gameplay.history.PieceLink.placement(piece)
+        );
+        ActionHistory.push(action);
     }
 
     /**
-     * Pop the most recent placement off the {@link PlacementHistory} stack and restore the world. Op-gated like the
-     * place packet — destructive write to the world. Filters by the player's current dimension so a player who placed
-     * in the overworld and travelled to the nether before pressing undo doesn't accidentally restore overworld blocks
-     * at the same coordinates in the nether.
-     * <p>
-     * If the popped snapshot carried a piece UUID, we also remove the piece from the registry and broadcast the removal
-     * so engine-mode clients drop it from their hover / selection set.
+     * Capture the current block states + block-entity NBT for every cell in {@code aabb}, populating the supplied maps.
+     * Shared helper used by every block-region action push site so the snapshot capture stays consistent.
      */
-    public static void handleUndoPlacement(C2SUndoPlacementPayload payload, Player player) {
+    private static void captureRegion(
+        net.minecraft.server.level.ServerLevel level,
+        net.minecraft.world.level.levelgen.structure.BoundingBox aabb,
+        java.util.Map<net.minecraft.core.BlockPos, BlockState> states,
+        java.util.Map<net.minecraft.core.BlockPos, net.minecraft.nbt.CompoundTag> beNbt
+    ) {
+        for (
+            var pos : net.minecraft.core.BlockPos.betweenClosed(
+                aabb.minX(),
+                aabb.minY(),
+                aabb.minZ(),
+                aabb.maxX(),
+                aabb.maxY(),
+                aabb.maxZ()
+            )
+        ) {
+            var p = pos.immutable();
+            states.put(p, level.getBlockState(p));
+            var be = level.getBlockEntity(p);
+            if (be != null) {
+                beNbt.put(p, be.saveWithFullMetadata(level.registryAccess()));
+            }
+        }
+    }
+
+    /**
+     * Pop the most recent action from the unified {@link ActionHistory} and revert it. Op-gated. Filters by the
+     * player's current dimension for world actions so cross-dimension undos don't write blocks back at the same coords
+     * in the wrong level.
+     */
+    public static void handleUndoAction(C2SUndoActionPayload payload, Player player) {
         if (!(player instanceof ServerPlayer serverPlayer)) {
             return;
         }
         if (!serverPlayer.hasPermissions(2)) {
             return;
         }
-        var serverLevel = serverPlayer.serverLevel();
-        var snapshot = PlacementHistory.undo(serverLevel);
-        if (snapshot == null || snapshot.pieceId() == null) {
+        ActionHistory.undo(serverPlayer.server, serverPlayer.serverLevel());
+    }
+
+    /** Mirror of {@link #handleUndoAction} for the redo direction. */
+    public static void handleRedoAction(C2SRedoActionPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
             return;
         }
-        var removed = com.blib.internal.common.storage.BLibDataStoreManager.INSTANCE
-            .getLevel(serverLevel, com.blib.mod.common.registry.init.BLibJigsawDataStoreTypes.PLACED_PIECES)
-            .remove(snapshot.pieceId());
-        if (removed != null) {
-            com.blib.mod.common.gameplay.jigsaw.PlacedPieceSync.onPieceRemoved(serverLevel, removed.id());
+        if (!serverPlayer.hasPermissions(2)) {
+            return;
         }
+        ActionHistory.redo(serverPlayer.server, serverPlayer.serverLevel());
+    }
+
+    /**
+     * Broadcast a fresh {@link S2CActionHistorySyncPayload} mirroring the current undo+redo stacks. Wired into
+     * {@link ActionHistory#setChangeListener} on server start so the panel updates on every push / undo / redo / clear.
+     */
+    public static void broadcastActionHistorySync(MinecraftServer server) {
+        if (server == null) {
+            return;
+        }
+        var undo = ActionHistory.undoSnapshot();
+        var redo = ActionHistory.redoSnapshot();
+        var entries = new java.util.ArrayList<com.blib.mod.common.network.packet.ActionDescriptor>(undo.size() + redo.size());
+        for (var action : undo) {
+            entries.add(action.toDescriptor());
+        }
+        for (var action : redo) {
+            entries.add(action.toDescriptor());
+        }
+        var payload = new S2CActionHistorySyncPayload(entries, undo.size());
+        BLib.MOD.networking().sendToAllClients(server, payload);
     }
 
     /**
@@ -358,9 +484,8 @@ public final class BLibServerListener {
 
     /**
      * Delete a previously-placed piece. Clears every block in the piece's AABB to air and removes the piece from the
-     * level's store. Pushes a {@link PlacementHistory} snapshot of the pre-delete state so the deletion is itself
-     * undoable — the snapshot carries no piece UUID, so undoing it just restores blocks (the piece is not
-     * re-registered; v1 doesn't try to resurrect the original placement record). Op-gated.
+     * level's store. Pushes a {@code BlockRegionEdit} with a deletion {@code PieceLink} so undo restores blocks AND
+     * re-registers the piece (snapshot included). Op-gated.
      */
     public static void handleDeletePlacedPiece(C2SDeletePlacedPiecePayload payload, Player player) {
         if (!(player instanceof ServerPlayer serverPlayer)) {
@@ -376,11 +501,19 @@ public final class BLibServerListener {
         if (piece == null || !piece.dimension().equals(serverLevel.dimension())) {
             return;
         }
-        // Snapshot pre-delete state first so the operation is undoable.
-        PlacementHistory.push(serverLevel, piece.aabb(), piece.templateId(), null);
+        var aabb = piece.aabb();
+
+        // Capture pre-delete state; after-state is air everywhere so we can short-circuit it.
+        var beforeStates = new java.util.HashMap<net.minecraft.core.BlockPos, BlockState>();
+        var beforeBE = new java.util.HashMap<net.minecraft.core.BlockPos, net.minecraft.nbt.CompoundTag>();
+        captureRegion(serverLevel, aabb, beforeStates, beforeBE);
 
         var air = net.minecraft.world.level.block.Blocks.AIR.defaultBlockState();
-        var aabb = piece.aabb();
+        var afterStates = new java.util.HashMap<net.minecraft.core.BlockPos, BlockState>();
+        for (var entry : beforeStates.entrySet()) {
+            afterStates.put(entry.getKey(), air);
+        }
+
         for (
             var pos : net.minecraft.core.BlockPos.betweenClosed(
                 aabb.minX(),
@@ -396,6 +529,22 @@ public final class BLibServerListener {
 
         store.remove(payload.id());
         com.blib.mod.common.gameplay.jigsaw.PlacedPieceSync.onPieceRemoved(serverLevel, payload.id());
+
+        var region = new com.blib.mod.common.gameplay.history.RegionSnapshot(
+            aabb,
+            beforeStates,
+            beforeBE,
+            afterStates,
+            java.util.Map.of()
+        );
+        var action = new com.blib.mod.common.gameplay.history.BlockRegionEdit(
+            serverLevel.dimension(),
+            java.util.List.of(region),
+            "Delete piece " + piece.templateId(),
+            System.currentTimeMillis(),
+            com.blib.mod.common.gameplay.history.PieceLink.deletion(piece)
+        );
+        ActionHistory.push(action);
     }
 
     /**
@@ -404,9 +553,8 @@ public final class BLibServerListener {
      * record's AABB and anchor are updated and re-broadcast as an Add — clients keyed by UUID overwrite their entry, so
      * hover / selection / inspector stay coherent across the move.
      * <p>
-     * Block-entity NBT is preserved end-to-end so chests keep their contents, signs keep their text, etc. No
-     * {@link PlacementHistory} snapshot is pushed for v1 — moves aren't undoable. If users want that, layer it in as a
-     * follow-up by snapshotting both AABBs (origin pre-move + destination pre-move) under a single composite entry.
+     * Block-entity NBT is preserved end-to-end so chests keep their contents, signs keep their text, etc. Undo support
+     * is wired in step 5 via a composite {@code BlockRegionEdit} covering both AABBs.
      */
     public static void handleMovePlacedPiece(C2SMovePlacedPiecePayload payload, Player player) {
         if (!(player instanceof ServerPlayer serverPlayer)) {
@@ -432,7 +580,30 @@ public final class BLibServerListener {
             return;
         }
 
-        var savedStates = new java.util.HashMap<net.minecraft.core.BlockPos, net.minecraft.world.level.block.state.BlockState>();
+        var sizeX = oldAabb.maxX() - oldAabb.minX();
+        var sizeY = oldAabb.maxY() - oldAabb.minY();
+        var sizeZ = oldAabb.maxZ() - oldAabb.minZ();
+        var newAabb = new net.minecraft.world.level.levelgen.structure.BoundingBox(
+            newMin.getX(),
+            newMin.getY(),
+            newMin.getZ(),
+            newMin.getX() + sizeX,
+            newMin.getY() + sizeY,
+            newMin.getZ() + sizeZ
+        );
+
+        // Capture pre-move state of both AABBs so undo can restore them. AABBs may overlap (small shift); the two
+        // captures still work because both record absolute world positions — the maps just have shared keys with
+        // identical pre-state values.
+        var sourceBeforeStates = new java.util.HashMap<net.minecraft.core.BlockPos, BlockState>();
+        var sourceBeforeBE = new java.util.HashMap<net.minecraft.core.BlockPos, net.minecraft.nbt.CompoundTag>();
+        captureRegion(serverLevel, oldAabb, sourceBeforeStates, sourceBeforeBE);
+        var destBeforeStates = new java.util.HashMap<net.minecraft.core.BlockPos, BlockState>();
+        var destBeforeBE = new java.util.HashMap<net.minecraft.core.BlockPos, net.minecraft.nbt.CompoundTag>();
+        captureRegion(serverLevel, newAabb, destBeforeStates, destBeforeBE);
+
+        // Original move logic, unchanged: capture relative offsets, clear source, stamp at dest.
+        var savedStates = new java.util.HashMap<net.minecraft.core.BlockPos, BlockState>();
         var savedBeNbt = new java.util.HashMap<net.minecraft.core.BlockPos, net.minecraft.nbt.CompoundTag>();
         var oldMin = new net.minecraft.core.BlockPos(oldAabb.minX(), oldAabb.minY(), oldAabb.minZ());
         for (
@@ -445,8 +616,6 @@ public final class BLibServerListener {
                 oldAabb.maxZ()
             )
         ) {
-            // Capture state by offset-from-origin-min so we can stamp it relative to newMin without aliasing issues
-            // when source and destination AABBs overlap. Two-phase: snapshot, then clear, then place.
             var rel = pos.subtract(oldMin).immutable();
             savedStates.put(rel, serverLevel.getBlockState(pos));
             var be = serverLevel.getBlockEntity(pos);
@@ -485,17 +654,6 @@ public final class BLibServerListener {
             }
         }
 
-        var sizeX = oldAabb.maxX() - oldAabb.minX();
-        var sizeY = oldAabb.maxY() - oldAabb.minY();
-        var sizeZ = oldAabb.maxZ() - oldAabb.minZ();
-        var newAabb = new net.minecraft.world.level.levelgen.structure.BoundingBox(
-            newMin.getX(),
-            newMin.getY(),
-            newMin.getZ(),
-            newMin.getX() + sizeX,
-            newMin.getY() + sizeY,
-            newMin.getZ() + sizeZ
-        );
         var updated = new com.blib.mod.common.gameplay.jigsaw.PlacedPiece(
             piece.id(),
             piece.templateId(),
@@ -509,6 +667,37 @@ public final class BLibServerListener {
         store.remove(piece.id());
         store.add(updated);
         com.blib.mod.common.gameplay.jigsaw.PlacedPieceSync.onPieceAdded(serverLevel, updated);
+
+        // Capture post-move state for redo. Same dual-region pattern.
+        var sourceAfterStates = new java.util.HashMap<net.minecraft.core.BlockPos, BlockState>();
+        var sourceAfterBE = new java.util.HashMap<net.minecraft.core.BlockPos, net.minecraft.nbt.CompoundTag>();
+        captureRegion(serverLevel, oldAabb, sourceAfterStates, sourceAfterBE);
+        var destAfterStates = new java.util.HashMap<net.minecraft.core.BlockPos, BlockState>();
+        var destAfterBE = new java.util.HashMap<net.minecraft.core.BlockPos, net.minecraft.nbt.CompoundTag>();
+        captureRegion(serverLevel, newAabb, destAfterStates, destAfterBE);
+
+        var sourceRegion = new com.blib.mod.common.gameplay.history.RegionSnapshot(
+            oldAabb,
+            sourceBeforeStates,
+            sourceBeforeBE,
+            sourceAfterStates,
+            sourceAfterBE
+        );
+        var destRegion = new com.blib.mod.common.gameplay.history.RegionSnapshot(
+            newAabb,
+            destBeforeStates,
+            destBeforeBE,
+            destAfterStates,
+            destAfterBE
+        );
+        var action = new com.blib.mod.common.gameplay.history.BlockRegionEdit(
+            serverLevel.dimension(),
+            java.util.List.of(sourceRegion, destRegion),
+            "Move piece " + piece.templateId(),
+            System.currentTimeMillis(),
+            com.blib.mod.common.gameplay.history.PieceLink.move(piece, updated)
+        );
+        ActionHistory.push(action);
     }
 
     /**
@@ -531,7 +720,8 @@ public final class BLibServerListener {
         }
 
         var level = serverPlayer.serverLevel();
-        if (!(level.getBlockEntity(payload.pos()) instanceof JigsawBlockEntity jigsaw)) {
+        var pos = payload.pos();
+        if (!(level.getBlockEntity(pos) instanceof JigsawBlockEntity jigsaw)) {
             return;
         }
 
@@ -541,6 +731,18 @@ public final class BLibServerListener {
             return;
         }
 
+        var aabb = new net.minecraft.world.level.levelgen.structure.BoundingBox(
+            pos.getX(),
+            pos.getY(),
+            pos.getZ(),
+            pos.getX(),
+            pos.getY(),
+            pos.getZ()
+        );
+        var beforeStates = new java.util.HashMap<net.minecraft.core.BlockPos, BlockState>();
+        var beforeBE = new java.util.HashMap<net.minecraft.core.BlockPos, net.minecraft.nbt.CompoundTag>();
+        captureRegion(level, aabb, beforeStates, beforeBE);
+
         jigsaw.setName(payload.name());
         jigsaw.setTarget(payload.target());
         jigsaw.setPool(ResourceKey.create(Registries.TEMPLATE_POOL, payload.pool()));
@@ -548,8 +750,22 @@ public final class BLibServerListener {
         jigsaw.setFinalState(payload.finalState());
 
         jigsaw.setChanged();
-        var state = level.getBlockState(payload.pos());
-        level.sendBlockUpdated(payload.pos(), state, state, Block.UPDATE_CLIENTS);
+        var state = level.getBlockState(pos);
+        level.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);
+
+        var afterStates = new java.util.HashMap<net.minecraft.core.BlockPos, BlockState>();
+        var afterBE = new java.util.HashMap<net.minecraft.core.BlockPos, net.minecraft.nbt.CompoundTag>();
+        captureRegion(level, aabb, afterStates, afterBE);
+
+        var region = new com.blib.mod.common.gameplay.history.RegionSnapshot(aabb, beforeStates, beforeBE, afterStates, afterBE);
+        var action = new com.blib.mod.common.gameplay.history.BlockRegionEdit(
+            level.dimension(),
+            java.util.List.of(region),
+            "Edit jigsaw block",
+            System.currentTimeMillis(),
+            null
+        );
+        ActionHistory.push(action);
     }
 
     /**
@@ -591,7 +807,34 @@ public final class BLibServerListener {
         if (newState == null || newState == state) {
             return;
         }
+
+        var aabb = new net.minecraft.world.level.levelgen.structure.BoundingBox(
+            pos.getX(),
+            pos.getY(),
+            pos.getZ(),
+            pos.getX(),
+            pos.getY(),
+            pos.getZ()
+        );
+        var beforeStates = new java.util.HashMap<net.minecraft.core.BlockPos, BlockState>();
+        var beforeBE = new java.util.HashMap<net.minecraft.core.BlockPos, net.minecraft.nbt.CompoundTag>();
+        captureRegion(level, aabb, beforeStates, beforeBE);
+
         level.setBlock(pos, newState, Block.UPDATE_ALL);
+
+        var afterStates = new java.util.HashMap<net.minecraft.core.BlockPos, BlockState>();
+        var afterBE = new java.util.HashMap<net.minecraft.core.BlockPos, net.minecraft.nbt.CompoundTag>();
+        captureRegion(level, aabb, afterStates, afterBE);
+
+        var region = new com.blib.mod.common.gameplay.history.RegionSnapshot(aabb, beforeStates, beforeBE, afterStates, afterBE);
+        var action = new com.blib.mod.common.gameplay.history.BlockRegionEdit(
+            level.dimension(),
+            java.util.List.of(region),
+            "Edit block property " + property.getName(),
+            System.currentTimeMillis(),
+            null
+        );
+        ActionHistory.push(action);
     }
 
     /**
@@ -638,18 +881,26 @@ public final class BLibServerListener {
         if (pool == null) {
             return;
         }
+        var beforeJson = pool.deepCopy();
         if (!ProjectDraftStore.applyUpdate(pool, payload.rawIndex(), payload.newWeight(), payload.newProjectionOrdinal())) {
             return;
         }
-        try {
-            ProjectDraftStore.INSTANCE.writeAndPersist(projectName, payload.poolId(), pool);
-        } catch (IOException e) {
-            LOGGER.error("[BLib] handleUpdatePoolElement: write failed for project {} pool {}", projectName, payload.poolId(), e);
-            return;
-        }
+        var afterJson = pool.deepCopy();
+        com.blib.mod.common.gameplay.history.exec.ProjectActionExec.applyPoolDraft(server, projectName, payload.poolId(), pool);
 
-        var elements = ProjectDraftStore.extractDraftElements(pool);
-        BLib.MOD.networking().sendToClient(serverPlayer, new S2CPoolDraftPayload(projectName, payload.poolId(), elements));
+        ActionHistory.push(
+            new com.blib.mod.common.gameplay.history.ProjectJsonEdit(
+                projectName,
+                com.blib.mod.common.gameplay.history.ProjectJsonEdit.Kind.POOL,
+                payload.poolId(),
+                null,
+                null,
+                beforeJson,
+                afterJson,
+                "Update pool element",
+                System.currentTimeMillis()
+            )
+        );
     }
 
     /**
@@ -677,16 +928,24 @@ public final class BLibServerListener {
         if (pool == null) {
             return;
         }
+        var beforeJson = pool.deepCopy();
         ProjectDraftStore.applyAdd(pool, payload.templateId(), payload.weight(), payload.projectionOrdinal());
-        try {
-            ProjectDraftStore.INSTANCE.writeAndPersist(projectName, payload.poolId(), pool);
-        } catch (IOException e) {
-            LOGGER.error("[BLib] handleAddPoolElement: write failed for project {} pool {}", projectName, payload.poolId(), e);
-            return;
-        }
+        var afterJson = pool.deepCopy();
+        com.blib.mod.common.gameplay.history.exec.ProjectActionExec.applyPoolDraft(server, projectName, payload.poolId(), pool);
 
-        var elements = ProjectDraftStore.extractDraftElements(pool);
-        BLib.MOD.networking().sendToClient(serverPlayer, new S2CPoolDraftPayload(projectName, payload.poolId(), elements));
+        ActionHistory.push(
+            new com.blib.mod.common.gameplay.history.ProjectJsonEdit(
+                projectName,
+                com.blib.mod.common.gameplay.history.ProjectJsonEdit.Kind.POOL,
+                payload.poolId(),
+                null,
+                null,
+                beforeJson,
+                afterJson,
+                "Add pool element " + payload.templateId(),
+                System.currentTimeMillis()
+            )
+        );
     }
 
     /**
@@ -714,18 +973,26 @@ public final class BLibServerListener {
         if (pool == null) {
             return;
         }
+        var beforeJson = pool.deepCopy();
         if (!ProjectDraftStore.applyRemove(pool, payload.rawIndex())) {
             return;
         }
-        try {
-            ProjectDraftStore.INSTANCE.writeAndPersist(projectName, payload.poolId(), pool);
-        } catch (IOException e) {
-            LOGGER.error("[BLib] handleRemovePoolElement: write failed for project {} pool {}", projectName, payload.poolId(), e);
-            return;
-        }
+        var afterJson = pool.deepCopy();
+        com.blib.mod.common.gameplay.history.exec.ProjectActionExec.applyPoolDraft(server, projectName, payload.poolId(), pool);
 
-        var elements = ProjectDraftStore.extractDraftElements(pool);
-        BLib.MOD.networking().sendToClient(serverPlayer, new S2CPoolDraftPayload(projectName, payload.poolId(), elements));
+        ActionHistory.push(
+            new com.blib.mod.common.gameplay.history.ProjectJsonEdit(
+                projectName,
+                com.blib.mod.common.gameplay.history.ProjectJsonEdit.Kind.POOL,
+                payload.poolId(),
+                null,
+                null,
+                beforeJson,
+                afterJson,
+                "Remove pool element",
+                System.currentTimeMillis()
+            )
+        );
     }
 
     /**
@@ -1138,18 +1405,17 @@ public final class BLibServerListener {
         if (tag == null) {
             return;
         }
+        var beforeJson = readDiskTagJson(payload.projectName(), registryKey, payload.tagId());
         ProjectTagDraftStore.applyAddEntry(tag, payload.isTagRef(), payload.entryId(), payload.required());
-        try {
-            persistOrCleanupAndSend(serverPlayer, payload.projectName(), registryKey, payload.tagId(), tag);
-        } catch (IOException e) {
-            LOGGER.error(
-                "[BLib] handleAddTagEntry: persist failed for project {} tag {}/{}",
-                payload.projectName(),
-                payload.registryKey(),
-                payload.tagId(),
-                e
-            );
-        }
+        persistTagAndRecord(
+            serverPlayer,
+            payload.projectName(),
+            registryKey,
+            payload.tagId(),
+            beforeJson,
+            tag,
+            "Add tag entry " + payload.entryId()
+        );
     }
 
     /**
@@ -1198,20 +1464,19 @@ public final class BLibServerListener {
             sendTagDraft(serverPlayer, payload.projectName(), payload.registryKey(), payload.tagId(), tag);
             return;
         }
+        var beforeJson = readDiskTagJson(payload.projectName(), registryKey, payload.tagId());
         if (!ProjectTagDraftStore.applyRemoveEntry(tag, rawIndex)) {
             return;
         }
-        try {
-            persistOrCleanupAndSend(serverPlayer, payload.projectName(), registryKey, payload.tagId(), tag);
-        } catch (IOException e) {
-            LOGGER.error(
-                "[BLib] handleRemoveBlockTag: persist failed for project {} tag {}/{}",
-                payload.projectName(),
-                payload.registryKey(),
-                payload.tagId(),
-                e
-            );
-        }
+        persistTagAndRecord(
+            serverPlayer,
+            payload.projectName(),
+            registryKey,
+            payload.tagId(),
+            beforeJson,
+            tag,
+            "Remove tag entry " + payload.entryId()
+        );
     }
 
     /** Remove the entry at {@code rawIndex} from a tag's project override JSON. Disk-only; echoes a fresh draft. */
@@ -1238,20 +1503,19 @@ public final class BLibServerListener {
         if (tag == null) {
             return;
         }
+        var beforeJson = readDiskTagJson(payload.projectName(), registryKey, payload.tagId());
         if (!ProjectTagDraftStore.applyRemoveEntry(tag, payload.rawIndex())) {
             return;
         }
-        try {
-            persistOrCleanupAndSend(serverPlayer, payload.projectName(), registryKey, payload.tagId(), tag);
-        } catch (IOException e) {
-            LOGGER.error(
-                "[BLib] handleRemoveTagEntry: persist failed for project {} tag {}/{}",
-                payload.projectName(),
-                payload.registryKey(),
-                payload.tagId(),
-                e
-            );
-        }
+        persistTagAndRecord(
+            serverPlayer,
+            payload.projectName(),
+            registryKey,
+            payload.tagId(),
+            beforeJson,
+            tag,
+            "Remove tag entry"
+        );
     }
 
     /** Set a tag's {@code replace} flag. Disk-only; echoes a fresh draft. */
@@ -1278,18 +1542,17 @@ public final class BLibServerListener {
         if (tag == null) {
             return;
         }
+        var beforeJson = readDiskTagJson(payload.projectName(), registryKey, payload.tagId());
         ProjectTagDraftStore.applySetReplace(tag, payload.replace());
-        try {
-            persistOrCleanupAndSend(serverPlayer, payload.projectName(), registryKey, payload.tagId(), tag);
-        } catch (IOException e) {
-            LOGGER.error(
-                "[BLib] handleSetTagReplace: persist failed for project {} tag {}/{}",
-                payload.projectName(),
-                payload.registryKey(),
-                payload.tagId(),
-                e
-            );
-        }
+        persistTagAndRecord(
+            serverPlayer,
+            payload.projectName(),
+            registryKey,
+            payload.tagId(),
+            beforeJson,
+            tag,
+            "Set tag replace=" + payload.replace()
+        );
     }
 
     /**
@@ -1320,20 +1583,19 @@ public final class BLibServerListener {
         if (tag == null) {
             return;
         }
+        var beforeJson = readDiskTagJson(payload.projectName(), registryKey, payload.tagId());
         if (!ProjectTagDraftStore.applySetEntryRequired(tag, payload.rawIndex(), payload.required())) {
             return;
         }
-        try {
-            persistOrCleanupAndSend(serverPlayer, payload.projectName(), registryKey, payload.tagId(), tag);
-        } catch (IOException e) {
-            LOGGER.error(
-                "[BLib] handleSetTagEntryRequired: persist failed for project {} tag {}/{}",
-                payload.projectName(),
-                payload.registryKey(),
-                payload.tagId(),
-                e
-            );
-        }
+        persistTagAndRecord(
+            serverPlayer,
+            payload.projectName(),
+            registryKey,
+            payload.tagId(),
+            beforeJson,
+            tag,
+            "Toggle tag entry required"
+        );
     }
 
     /**
@@ -1362,19 +1624,19 @@ public final class BLibServerListener {
         var tag = new com.google.gson.JsonObject();
         tag.addProperty("replace", false);
         tag.add("values", new com.google.gson.JsonArray());
-        try {
-            ProjectTagDraftStore.INSTANCE.writeAndPersist(payload.projectName(), registryKey, payload.tagId(), tag);
-        } catch (IOException e) {
-            LOGGER.error(
-                "[BLib] handleCreateTag: write failed for project {} tag {}/{}",
-                payload.projectName(),
-                payload.registryKey(),
-                payload.tagId(),
-                e
-            );
-            return;
-        }
-        sendTagDraft(serverPlayer, payload.projectName(), payload.registryKey(), payload.tagId(), tag);
+        // beforeJson is null since we just refused to proceed if a file already existed. Persist via the helper
+        // so undo collapses to the right delete-then-resync path.
+        persistTagAndRecord(
+            serverPlayer,
+            payload.projectName(),
+            registryKey,
+            payload.tagId(),
+            null,
+            tag,
+            "Create tag " + payload.tagId()
+        );
+        // The legacy create-tag path also pushed a catalog refresh because a new tag entered the project. Keep that
+        // here so the Tag Browser updates immediately.
         pushCatalog(serverPlayer, payload.projectName());
     }
 
@@ -1452,6 +1714,63 @@ public final class BLibServerListener {
     }
 
     /**
+     * Read the on-disk JSON for one tag override (or {@code null} if no project file exists). Used to capture the
+     * before-state for {@link com.blib.mod.common.gameplay.history.ProjectJsonEdit}; the in-memory draft cache isn't a
+     * reliable source since {@code getOrSeedTag} synthesizes seed contents that don't reflect file existence.
+     */
+    private static @Nullable com.google.gson.JsonObject readDiskTagJson(
+        String projectName,
+        ResourceKey<? extends Registry<?>> registryKey,
+        ResourceLocation tagId
+    ) {
+        return EngineProjectIO.readTagJson(projectName, registryKey, tagId)
+            .filter(com.google.gson.JsonElement::isJsonObject)
+            .map(com.google.gson.JsonElement::getAsJsonObject)
+            .orElse(null);
+    }
+
+    /**
+     * Post-mutation tail shared by all tag handlers: decide whether the final tag state collapses to "equivalent to
+     * upstream" (and thus the override file should be deleted) or whether the file should be written; route the apply
+     * through {@link com.blib.mod.common.gameplay.history.exec.ProjectActionExec#applyTagDraft}; push a matching
+     * {@link com.blib.mod.common.gameplay.history.ProjectJsonEdit} for undo/redo.
+     */
+    private static void persistTagAndRecord(
+        ServerPlayer serverPlayer,
+        String projectName,
+        ResourceKey<? extends Registry<?>> registryKey,
+        ResourceLocation tagId,
+        @Nullable com.google.gson.JsonObject beforeJson,
+        com.google.gson.JsonObject tag,
+        String description
+    ) {
+        var server = serverPlayer.serverLevel().getServer();
+        var afterJson = ProjectTagDraftStore.isEquivalentToUpstream(server, projectName, registryKey, tagId, tag)
+            ? null
+            : tag.deepCopy();
+        com.blib.mod.common.gameplay.history.exec.ProjectActionExec.applyTagDraft(
+            server,
+            projectName,
+            registryKey.location(),
+            tagId,
+            afterJson
+        );
+        ActionHistory.push(
+            new com.blib.mod.common.gameplay.history.ProjectJsonEdit(
+                projectName,
+                com.blib.mod.common.gameplay.history.ProjectJsonEdit.Kind.TAG,
+                null,
+                registryKey.location(),
+                tagId,
+                beforeJson,
+                afterJson,
+                description,
+                System.currentTimeMillis()
+            )
+        );
+    }
+
+    /**
      * Move (or copy) a volume of blocks by an integer offset. Op-gated. Reads the source volume into a transient
      * StructureTemplate snapshot, optionally clears the source to air, and replaces the snapshot at the offset
      * destination — vanilla's template machinery handles block-entity NBT, light updates, and registry-aware state
@@ -1468,6 +1787,21 @@ public final class BLibServerListener {
         }
         var dimensionKey = ResourceKey.create(Registries.DIMENSION, payload.dimensionId());
         var server = serverPlayer.serverLevel().getServer();
+        var level = server.getLevel(dimensionKey);
+        var sourceAabb = aabbFromCorners(payload.cornerA(), payload.cornerB());
+        var destAabb = sourceAabb.moved(payload.dx(), payload.dy(), payload.dz());
+
+        // Capture pre-state for both AABBs even when copy=true — destAabb still gets overwritten. Source pre-state is
+        // load-bearing for cut (when copy=false) since the source is cleared.
+        var sourceBeforeStates = new java.util.HashMap<net.minecraft.core.BlockPos, BlockState>();
+        var sourceBeforeBE = new java.util.HashMap<net.minecraft.core.BlockPos, net.minecraft.nbt.CompoundTag>();
+        var destBeforeStates = new java.util.HashMap<net.minecraft.core.BlockPos, BlockState>();
+        var destBeforeBE = new java.util.HashMap<net.minecraft.core.BlockPos, net.minecraft.nbt.CompoundTag>();
+        if (level != null) {
+            captureRegion(level, sourceAabb, sourceBeforeStates, sourceBeforeBE);
+            captureRegion(level, destAabb, destBeforeStates, destBeforeBE);
+        }
+
         var request = new BlockMoveEngine.MoveRequest(
             payload.cornerA(),
             payload.cornerB(),
@@ -1480,6 +1814,54 @@ public final class BLibServerListener {
         var result = BlockMoveEngine.run(server, request);
         BLib.MOD.networking()
             .sendToClient(serverPlayer, new S2CMoveSelectionResultPayload(result.success(), result.message(), result.blockCount()));
+
+        if (!result.success() || level == null) {
+            return;
+        }
+        var sourceAfterStates = new java.util.HashMap<net.minecraft.core.BlockPos, BlockState>();
+        var sourceAfterBE = new java.util.HashMap<net.minecraft.core.BlockPos, net.minecraft.nbt.CompoundTag>();
+        var destAfterStates = new java.util.HashMap<net.minecraft.core.BlockPos, BlockState>();
+        var destAfterBE = new java.util.HashMap<net.minecraft.core.BlockPos, net.minecraft.nbt.CompoundTag>();
+        captureRegion(level, sourceAabb, sourceAfterStates, sourceAfterBE);
+        captureRegion(level, destAabb, destAfterStates, destAfterBE);
+
+        var regions = new java.util.ArrayList<com.blib.mod.common.gameplay.history.RegionSnapshot>(2);
+        regions.add(
+            new com.blib.mod.common.gameplay.history.RegionSnapshot(
+                sourceAabb,
+                sourceBeforeStates,
+                sourceBeforeBE,
+                sourceAfterStates,
+                sourceAfterBE
+            )
+        );
+        regions.add(
+            new com.blib.mod.common.gameplay.history.RegionSnapshot(destAabb, destBeforeStates, destBeforeBE, destAfterStates, destAfterBE)
+        );
+        var description = payload.copy() ? "Copy selection" : "Move selection";
+        var action = new com.blib.mod.common.gameplay.history.BlockRegionEdit(
+            dimensionKey,
+            regions,
+            description,
+            System.currentTimeMillis(),
+            null
+        );
+        ActionHistory.push(action);
+    }
+
+    /** Build an inclusive bounding box from two arbitrary corners (the corners can be in any order on each axis). */
+    private static net.minecraft.world.level.levelgen.structure.BoundingBox aabbFromCorners(
+        net.minecraft.core.BlockPos a,
+        net.minecraft.core.BlockPos b
+    ) {
+        return new net.minecraft.world.level.levelgen.structure.BoundingBox(
+            Math.min(a.getX(), b.getX()),
+            Math.min(a.getY(), b.getY()),
+            Math.min(a.getZ(), b.getZ()),
+            Math.max(a.getX(), b.getX()),
+            Math.max(a.getY(), b.getY()),
+            Math.max(a.getZ(), b.getZ())
+        );
     }
 
     /**
@@ -1497,7 +1879,34 @@ public final class BLibServerListener {
         }
         var dimensionKey = ResourceKey.create(Registries.DIMENSION, payload.dimensionId());
         var server = serverPlayer.serverLevel().getServer();
+        var level = server.getLevel(dimensionKey);
+
+        // Only push history when this is a cut (deleteSource=true) — pure copy doesn't mutate the world. We capture the
+        // pre-cut state from the source AABB; the post-cut state is air for every cell, no BE NBT.
+        var aabb = aabbFromCorners(payload.cornerA(), payload.cornerB());
+        var beforeStates = new java.util.HashMap<net.minecraft.core.BlockPos, BlockState>();
+        var beforeBE = new java.util.HashMap<net.minecraft.core.BlockPos, net.minecraft.nbt.CompoundTag>();
+        if (payload.deleteSource() && level != null) {
+            captureRegion(level, aabb, beforeStates, beforeBE);
+        }
+
         var result = BlockClipboardEngine.copy(server, payload.cornerA(), payload.cornerB(), payload.deleteSource(), dimensionKey);
+
+        if (payload.deleteSource() && result.success() && level != null) {
+            var afterStates = new java.util.HashMap<net.minecraft.core.BlockPos, BlockState>();
+            var afterBE = new java.util.HashMap<net.minecraft.core.BlockPos, net.minecraft.nbt.CompoundTag>();
+            captureRegion(level, aabb, afterStates, afterBE);
+
+            var region = new com.blib.mod.common.gameplay.history.RegionSnapshot(aabb, beforeStates, beforeBE, afterStates, afterBE);
+            var action = new com.blib.mod.common.gameplay.history.BlockRegionEdit(
+                dimensionKey,
+                java.util.List.of(region),
+                "Cut selection",
+                System.currentTimeMillis(),
+                null
+            );
+            ActionHistory.push(action);
+        }
         if (result.success()) {
             var size = ServerBlockClipboard.size();
             if (size != null) {
@@ -1541,7 +1950,41 @@ public final class BLibServerListener {
         }
         var dimensionKey = ResourceKey.create(Registries.DIMENSION, payload.dimensionId());
         var server = serverPlayer.serverLevel().getServer();
-        BlockClipboardEngine.paste(server, payload.destination(), dimensionKey);
+        var level = server.getLevel(dimensionKey);
+        var size = ServerBlockClipboard.size();
+        net.minecraft.world.level.levelgen.structure.BoundingBox aabb = null;
+        var beforeStates = new java.util.HashMap<net.minecraft.core.BlockPos, BlockState>();
+        var beforeBE = new java.util.HashMap<net.minecraft.core.BlockPos, net.minecraft.nbt.CompoundTag>();
+        if (size != null && level != null) {
+            var dest = payload.destination();
+            aabb = new net.minecraft.world.level.levelgen.structure.BoundingBox(
+                dest.getX(),
+                dest.getY(),
+                dest.getZ(),
+                dest.getX() + size.getX() - 1,
+                dest.getY() + size.getY() - 1,
+                dest.getZ() + size.getZ() - 1
+            );
+            captureRegion(level, aabb, beforeStates, beforeBE);
+        }
+
+        var result = BlockClipboardEngine.paste(server, payload.destination(), dimensionKey);
+
+        if (aabb != null && result.success()) {
+            var afterStates = new java.util.HashMap<net.minecraft.core.BlockPos, BlockState>();
+            var afterBE = new java.util.HashMap<net.minecraft.core.BlockPos, net.minecraft.nbt.CompoundTag>();
+            captureRegion(level, aabb, afterStates, afterBE);
+
+            var region = new com.blib.mod.common.gameplay.history.RegionSnapshot(aabb, beforeStates, beforeBE, afterStates, afterBE);
+            var action = new com.blib.mod.common.gameplay.history.BlockRegionEdit(
+                dimensionKey,
+                java.util.List.of(region),
+                "Paste from clipboard",
+                System.currentTimeMillis(),
+                null
+            );
+            ActionHistory.push(action);
+        }
     }
 
     /**
@@ -1557,7 +2000,32 @@ public final class BLibServerListener {
         }
         var dimensionKey = ResourceKey.create(Registries.DIMENSION, payload.dimensionId());
         var server = serverPlayer.serverLevel().getServer();
-        BlockClipboardEngine.delete(server, payload.cornerA(), payload.cornerB(), dimensionKey);
+        var level = server.getLevel(dimensionKey);
+        var aabb = aabbFromCorners(payload.cornerA(), payload.cornerB());
+
+        var beforeStates = new java.util.HashMap<net.minecraft.core.BlockPos, BlockState>();
+        var beforeBE = new java.util.HashMap<net.minecraft.core.BlockPos, net.minecraft.nbt.CompoundTag>();
+        if (level != null) {
+            captureRegion(level, aabb, beforeStates, beforeBE);
+        }
+
+        var result = BlockClipboardEngine.delete(server, payload.cornerA(), payload.cornerB(), dimensionKey);
+
+        if (result.success() && level != null) {
+            var afterStates = new java.util.HashMap<net.minecraft.core.BlockPos, BlockState>();
+            var afterBE = new java.util.HashMap<net.minecraft.core.BlockPos, net.minecraft.nbt.CompoundTag>();
+            captureRegion(level, aabb, afterStates, afterBE);
+
+            var region = new com.blib.mod.common.gameplay.history.RegionSnapshot(aabb, beforeStates, beforeBE, afterStates, afterBE);
+            var action = new com.blib.mod.common.gameplay.history.BlockRegionEdit(
+                dimensionKey,
+                java.util.List.of(region),
+                "Delete selection",
+                System.currentTimeMillis(),
+                null
+            );
+            ActionHistory.push(action);
+        }
     }
 
     /**
@@ -1708,6 +2176,7 @@ public final class BLibServerListener {
         }
         var field = fields[payload.fieldOrdinal()];
         var value = payload.value();
+        var beforeValue = readFactionFieldAsString(faction, field);
         boolean directoryChanged = false;
         switch (field) {
             case NAME -> {
@@ -1765,6 +2234,45 @@ public final class BLibServerListener {
             BLibFactionManager.INSTANCE.pushDirectoryToAllClients(sp.server);
         }
         BLibFactionManager.INSTANCE.pushInspectionToAllClients(sp.server, payload.factionId());
+
+        ActionHistory.push(
+            new com.blib.mod.common.gameplay.history.FactionEdit(
+                payload.factionId(),
+                com.blib.mod.common.gameplay.history.FactionEdit.Kind.FIELD,
+                payload.fieldOrdinal(),
+                beforeValue,
+                value,
+                null,
+                0,
+                0,
+                null,
+                "Edit faction " + field.name().toLowerCase(),
+                System.currentTimeMillis()
+            )
+        );
+    }
+
+    /**
+     * Read the current value of a faction field in the same string form the wire payload uses. Used to capture the
+     * before-value for undo. Mirrors the parsing in the switch above — color is hex, enums are {@code .name()},
+     * booleans are {@code String.valueOf}.
+     */
+    private static String readFactionFieldAsString(
+        com.blib.api.common.faction.v1.Faction<?> faction,
+        C2SUpdateFactionFieldPayload.Field field
+    ) {
+        return switch (field) {
+            case NAME -> faction.name();
+            case COLOR -> String.format("#%06X", faction.color() & 0xFFFFFF);
+            case CLAIM_VISIBILITY -> faction.claimVisibility().name();
+            case BLOCK_BREAK_PROTECTION -> faction.blockBreakProtection().name();
+            case BLOCK_INTERACT_PROTECTION -> faction.blockInteractProtection().name();
+            case ENTITY_INTERACT_PROTECTION -> faction.entityInteractProtection().name();
+            case NONLIVING_ENTITY_ATTACK_PROTECTION -> faction.nonLivingEntityAttackProtection().name();
+            case ALLOW_PVP -> String.valueOf(faction.allowPvp());
+            case ALLOW_EXPLOSIONS -> String.valueOf(faction.allowExplosions());
+            case ALLOW_MOB_GRIEFING -> String.valueOf(faction.allowMobGriefing());
+        };
     }
 
     /** Set the pairwise relationship between two factions. Pushes the directory (which carries the table). */
@@ -1776,8 +2284,25 @@ public final class BLibServerListener {
         if (payload.stateOrdinal() < 0 || payload.stateOrdinal() >= states.length) {
             return;
         }
+        var beforeState = BLibFactionManager.INSTANCE.getRelationship(payload.factionA(), payload.factionB());
         BLibFactionManager.INSTANCE.setRelationship(payload.factionA(), payload.factionB(), states[payload.stateOrdinal()]);
         BLibFactionManager.INSTANCE.pushDirectoryToAllClients(sp.server);
+
+        ActionHistory.push(
+            new com.blib.mod.common.gameplay.history.FactionEdit(
+                payload.factionA(),
+                com.blib.mod.common.gameplay.history.FactionEdit.Kind.RELATIONSHIP,
+                0,
+                null,
+                null,
+                payload.factionB(),
+                beforeState.ordinal(),
+                payload.stateOrdinal(),
+                null,
+                "Set faction relationship",
+                System.currentTimeMillis()
+            )
+        );
     }
 
     /** Add a member to a faction. Pushes the directory (member count) + members roster + entity reverse-lookup. */
@@ -1793,6 +2318,22 @@ public final class BLibServerListener {
             BLibFactionManager.INSTANCE.pushDirectoryToAllClients(sp.server);
             BLibFactionManager.INSTANCE.pushMembersToAllClients(sp.server, payload.factionId());
             pushEntityFactionsTo(sp, payload.memberUuid());
+
+            ActionHistory.push(
+                new com.blib.mod.common.gameplay.history.FactionEdit(
+                    payload.factionId(),
+                    com.blib.mod.common.gameplay.history.FactionEdit.Kind.ADD_MEMBER,
+                    0,
+                    null,
+                    null,
+                    null,
+                    0,
+                    0,
+                    payload.memberUuid(),
+                    "Add faction member",
+                    System.currentTimeMillis()
+                )
+            );
         }
     }
 
@@ -1809,6 +2350,22 @@ public final class BLibServerListener {
             BLibFactionManager.INSTANCE.pushDirectoryToAllClients(sp.server);
             BLibFactionManager.INSTANCE.pushMembersToAllClients(sp.server, payload.factionId());
             pushEntityFactionsTo(sp, payload.memberUuid());
+
+            ActionHistory.push(
+                new com.blib.mod.common.gameplay.history.FactionEdit(
+                    payload.factionId(),
+                    com.blib.mod.common.gameplay.history.FactionEdit.Kind.REMOVE_MEMBER,
+                    0,
+                    null,
+                    null,
+                    null,
+                    0,
+                    0,
+                    payload.memberUuid(),
+                    "Remove faction member",
+                    System.currentTimeMillis()
+                )
+            );
         }
     }
 
@@ -1844,11 +2401,24 @@ public final class BLibServerListener {
         if (BLibFactionManager.INSTANCE.get(payload.factionId()) == null) {
             return;
         }
-        BLibTerritoryManager.INSTANCE.addClaim(
-            sp.serverLevel(),
-            new ChunkPos(payload.chunkX(), payload.chunkZ()),
-            payload.factionId()
+        var level = sp.serverLevel();
+        var pos = new ChunkPos(payload.chunkX(), payload.chunkZ());
+        var added = BLibTerritoryManager.INSTANCE.addClaim(level, pos, payload.factionId());
+        if (!added) {
+            return;
+        }
+        var faction = BLibFactionManager.INSTANCE.get(payload.factionId());
+        var factionName = faction != null ? faction.name() : payload.factionId().toString();
+        var action = new com.blib.mod.common.gameplay.history.ChunkClaimEdit(
+            level.dimension(),
+            payload.chunkX(),
+            payload.chunkZ(),
+            payload.factionId(),
+            com.blib.mod.common.gameplay.history.ChunkClaimEdit.Direction.ADDED,
+            "Claim chunk for " + factionName,
+            System.currentTimeMillis()
         );
+        ActionHistory.push(action);
     }
 
     /** Unclaim a chunk for a faction. Same auto-sync path as {@link #handleAddChunkClaim}. */
@@ -1856,11 +2426,24 @@ public final class BLibServerListener {
         if (!(player instanceof ServerPlayer sp) || !sp.hasPermissions(2)) {
             return;
         }
-        BLibTerritoryManager.INSTANCE.removeClaim(
-            sp.serverLevel(),
-            new ChunkPos(payload.chunkX(), payload.chunkZ()),
-            payload.factionId()
+        var level = sp.serverLevel();
+        var pos = new ChunkPos(payload.chunkX(), payload.chunkZ());
+        var removed = BLibTerritoryManager.INSTANCE.removeClaim(level, pos, payload.factionId());
+        if (!removed) {
+            return;
+        }
+        var faction = BLibFactionManager.INSTANCE.get(payload.factionId());
+        var factionName = faction != null ? faction.name() : payload.factionId().toString();
+        var action = new com.blib.mod.common.gameplay.history.ChunkClaimEdit(
+            level.dimension(),
+            payload.chunkX(),
+            payload.chunkZ(),
+            payload.factionId(),
+            com.blib.mod.common.gameplay.history.ChunkClaimEdit.Direction.REMOVED,
+            "Unclaim chunk for " + factionName,
+            System.currentTimeMillis()
         );
+        ActionHistory.push(action);
     }
 
     /**

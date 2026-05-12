@@ -103,6 +103,9 @@ public final class EngineMode {
         // (e.g. after the player travels and re-enters elsewhere). On next entry we re-request.
         com.blib.engine.jigsaw.ClientPlacedPieceRegistry.clear();
 
+        // Same logic for the action history mirror — the server will repopulate via the next sync after re-entry.
+        com.blib.engine.history.ClientActionHistory.INSTANCE.clear();
+
         session = null;
     }
 

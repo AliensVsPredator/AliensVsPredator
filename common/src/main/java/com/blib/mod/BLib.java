@@ -31,8 +31,9 @@ import com.blib.internal.common.storage.BLibDataStoreManager;
 import com.blib.internal.common.storage.ProjectDraftStore;
 import com.blib.internal.common.territory.BLibTerritoryManager;
 import com.blib.mod.common.gameplay.goap.GOAPDebugTracker;
-import com.blib.mod.common.gameplay.jigsaw.PlacementHistory;
+import com.blib.mod.common.gameplay.history.ActionHistory;
 import com.blib.mod.common.network.BLibPacketDirections;
+import com.blib.mod.common.network.BLibServerListener;
 import com.blib.mod.common.network.BLibServerPacketHandlers;
 import com.blib.mod.common.property.BLibModPropertyAccess;
 import com.blib.mod.common.registry.init.BLibBlockEntityTypes;
@@ -109,7 +110,18 @@ public class BLib {
         BLib.MOD.events().onLevelSave().register(BLibDataStoreManager.INSTANCE::saveLevelData);
         BLib.MOD.events().onServerStopped().register(BLibDataStoreManager.INSTANCE::onServerStopped);
         BLib.MOD.events().onServerStopped().register(GOAPDebugTracker.INSTANCE::clear);
-        BLib.MOD.events().onServerStopped().register(server -> PlacementHistory.clear());
+        // Unified ActionHistory: register the broadcast listener at server-start (so notify hooks have a
+        // MinecraftServer
+        // reference to send packets through), and clear stacks + drop the listener on shutdown.
+        BLib.MOD.events()
+            .onServerStarted()
+            .register(server -> ActionHistory.setChangeListener(() -> BLibServerListener.broadcastActionHistorySync(server)));
+        BLib.MOD.events()
+            .onServerStopped()
+            .register(server -> {
+                ActionHistory.setChangeListener(null);
+                ActionHistory.clear();
+            });
         BLib.MOD.events().onServerStopped().register(server -> ClientTerritoryCache.INSTANCE.clear());
         BLib.MOD.events().onServerStopped().register(server -> ClientFactionCache.INSTANCE.clear());
         BLib.MOD.events().onServerStopped().register(ProjectDraftStore.INSTANCE::onServerStopped);

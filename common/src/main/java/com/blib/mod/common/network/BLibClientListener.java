@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.blib.api.common.data_sync.v1.model.DataUser;
 import com.blib.engine.blockselection.BlockSelection;
 import com.blib.engine.blockselection.BlockSelectionClipboard;
+import com.blib.engine.history.ClientActionHistory;
 import com.blib.engine.jigsaw.ClientPlacedPieceRegistry;
 import com.blib.engine.jigsaw.ProjectDraftCache;
 import com.blib.engine.selection.SelectionManager;
@@ -24,6 +25,7 @@ import com.blib.mod.client.render.debug.PathfindingSearchDebugRenderer;
 import com.blib.mod.client.render.goap.GOAPDebugHUD;
 import com.blib.mod.common.network.packet.C2SRequestTagDraftPayload;
 import com.blib.mod.common.network.packet.ProjectOp;
+import com.blib.mod.common.network.packet.S2CActionHistorySyncPayload;
 import com.blib.mod.common.network.packet.S2CAddPlacedPiecePayload;
 import com.blib.mod.common.network.packet.S2CCaptureListPayload;
 import com.blib.mod.common.network.packet.S2CChunkClaimsSyncPayload;
@@ -50,6 +52,10 @@ public final class BLibClientListener {
 
     public static void handleChunkClaimsSync(S2CChunkClaimsSyncPayload payload, Player player) {
         ClientTerritoryCache.INSTANCE.updateChunk(payload.chunkX(), payload.chunkZ(), payload.factionIds());
+    }
+
+    public static void handleActionHistorySync(S2CActionHistorySyncPayload payload, Player player) {
+        ClientActionHistory.INSTANCE.update(payload.entries(), payload.undoCursor());
     }
 
     public static void handleFactionMetadataSync(S2CFactionMetadataSyncPayload payload, Player player) {

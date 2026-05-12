@@ -21,6 +21,8 @@ public final class Keybindings {
 
     public static final Keybinding UNDO = ctrlKey(GLFW.GLFW_KEY_Z, "edit.undo", "Undo");
 
+    public static final Keybinding REDO = ctrlKey(GLFW.GLFW_KEY_Y, "edit.redo", "Redo");
+
     public static final Keybinding COPY = ctrlKey(GLFW.GLFW_KEY_C, "edit.copy", "Copy");
 
     public static final Keybinding CUT = ctrlKey(GLFW.GLFW_KEY_X, "edit.cut", "Cut");
@@ -100,6 +102,7 @@ public final class Keybindings {
 
     private static final List<Keybinding> ALL_DEFAULTS = List.of(
         UNDO,
+        REDO,
         COPY,
         CUT,
         PASTE,

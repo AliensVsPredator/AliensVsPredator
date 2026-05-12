@@ -37,10 +37,11 @@ import com.blib.engine.spawn.EntitySpawnSelection;
 import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.C2SDeleteProjectPayload;
 import com.blib.mod.common.network.packet.C2SGOAPTrackPayload;
+import com.blib.mod.common.network.packet.C2SRedoActionPayload;
 import com.blib.mod.common.network.packet.C2SReloadProjectPayload;
 import com.blib.mod.common.network.packet.C2SRemoveEntityPayload;
 import com.blib.mod.common.network.packet.C2SRequestFactionDirectoryPayload;
-import com.blib.mod.common.network.packet.C2SUndoPlacementPayload;
+import com.blib.mod.common.network.packet.C2SUndoActionPayload;
 
 /**
  * Top-level editor screen for the BLib Engine. The viewport is divided into a tree of docked regions by a
@@ -1110,11 +1111,16 @@ public final class EngineWorkspaceScreen extends Screen {
             }
         }
 
-        // Ctrl+Z = universal undo. Works regardless of whether a piece is held — the placement history is server-
-        // side and decoupled from the held piece. Ctrl+Y / redo isn't wired yet (PlacementHistory is a one-way stack;
-        // see plan for follow-up scope).
+        // Ctrl+Z = universal undo. Server-side ActionHistory holds all reversible gestures (blocks, entities, chunk
+        // claims, project metadata). Works regardless of whether a piece is held — the action stack is server-side and
+        // decoupled from any client-side selection.
         if (ActiveKeybindings.matchesKey(Keybindings.UNDO, keyCode, modifiers)) {
-            BLib.MOD.networking().sendToServer(C2SUndoPlacementPayload.INSTANCE);
+            BLib.MOD.networking().sendToServer(C2SUndoActionPayload.INSTANCE);
+            return true;
+        }
+
+        if (ActiveKeybindings.matchesKey(Keybindings.REDO, keyCode, modifiers)) {
+            BLib.MOD.networking().sendToServer(C2SRedoActionPayload.INSTANCE);
             return true;
         }
 
@@ -1735,9 +1741,15 @@ public final class EngineWorkspaceScreen extends Screen {
         };
     }
 
-    /** Edit dropdown — currently just "Preferences…" but a natural home for Undo / Copy / Paste later. */
+    /**
+     * Edit dropdown. Undo and Redo send the same payloads the keybindings do — the menu is just a discoverable
+     * alternative to Ctrl+Z / Ctrl+Y. We don't grey them out by stack size because the dropdown is built once on open;
+     * the server silently no-ops if the relevant stack is empty.
+     */
     private DropdownMenu buildEditMenu(int anchorX, int anchorY) {
         var items = new java.util.ArrayList<DropdownMenu.Item>();
+        items.add(new DropdownMenu.Item("Undo", () -> BLib.MOD.networking().sendToServer(C2SUndoActionPayload.INSTANCE)));
+        items.add(new DropdownMenu.Item("Redo", () -> BLib.MOD.networking().sendToServer(C2SRedoActionPayload.INSTANCE)));
         items.add(new DropdownMenu.Item("Preferences…", this::openPreferencesDialog));
         return new DropdownMenu(anchorX, anchorY, items);
     }

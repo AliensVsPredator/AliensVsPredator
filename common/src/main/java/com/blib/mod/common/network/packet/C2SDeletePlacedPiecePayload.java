@@ -13,9 +13,9 @@ import com.blib.mod.BLib;
 
 /**
  * Client → server: delete the placed piece identified by {@code id}. The server clears every block in the piece's AABB
- * to air, removes the record from the {@code PlacedPieceStore}, pushes a
- * {@link com.blib.mod.common.gameplay.jigsaw.PlacementHistory} snapshot so the deletion is itself undoable, and
- * broadcasts an {@code S2CRemovePlacedPiecePayload}.
+ * to air, removes the record from the {@code PlacedPieceStore}, pushes a {@code BlockRegionEdit} (with a deletion
+ * {@code PieceLink} so undo also resurrects the registry entry) onto
+ * {@link com.blib.mod.common.gameplay.history.ActionHistory}, and broadcasts an {@code S2CRemovePlacedPiecePayload}.
  */
 public record C2SDeletePlacedPiecePayload(UUID id) implements CustomPacketPayload {
 
