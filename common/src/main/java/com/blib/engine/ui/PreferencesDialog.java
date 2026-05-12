@@ -7,10 +7,12 @@ import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import com.blib.engine.input.Input;
 import com.blib.engine.input.Keybinding;
@@ -23,10 +25,14 @@ import com.blib.engine.input.Keybindings;
  * edits stage in {@link #stagedOverrides} until the user clicks Apply (writes to disk + refreshes
  * {@link com.blib.engine.input.ActiveKeybindings}). Cancel discards.
  * <p>
- * Conflict policy: blocks within the same category prefix (the text before the first {@code .} in the binding id) to
- * preserve the engine's cross-category overlaps (e.g. {@code T} can be both {@code jigsaw.cycle_mode} and
- * {@code gizmo.translate} since context-disambiguates them). The chip refuses the rebind and surfaces an inline error
- * for {@link #CONFLICT_DISPLAY_TICKS} frames.
+ * Conflict policy: cross-category overlaps are allowed (e.g. {@code T} can be both {@code jigsaw.cycle_mode} and
+ * {@code gizmo.translate} — context disambiguates them). Within a single category, rebinds that collide are still
+ * permitted but their chips render red, Apply is disabled, and a "N conflicts" hint sits next to Apply. The user has to
+ * resolve the collision before committing — but doesn't lose the rebind they just made while figuring out which binding
+ * to move.
+ * <p>
+ * Cancel guards: when the user has staged-but-not-applied changes that <i>could</i> be applied (no conflicts), Cancel
+ * pops a nested {@link ConfirmDialog} asking to discard. Cancel with conflicts or no unsaved edits closes silently.
  * <p>
  * Lifecycle mirrors {@link ManageLayoutsDialog}: the host (EngineWorkspaceScreen) owns the field, dispatches input
  * through it before panels, and clears it via the onClose callback.
@@ -89,6 +95,9 @@ public final class PreferencesDialog {
     private static final int RAIL_PAD = 8;
 
     private static final int ROW_HEIGHT = 18;
+
+    /** Height of the "EDIT" / "JIGSAW" / etc. group headers shown in the All view. */
+    private static final int HEADER_ROW_HEIGHT = 14;
 
     private static final int ROW_PAD_X = 8;
 
@@ -153,6 +162,8 @@ public final class PreferencesDialog {
 
     private @Nullable Rect deleteButtonRect;
 
+    private @Nullable Rect resetAllButtonRect;
+
     private @Nullable Rect cancelButtonRect;
 
     private @Nullable Rect applyButtonRect;
@@ -160,6 +171,15 @@ public final class PreferencesDialog {
     private @Nullable Rect okButtonRect;
 
     private @Nullable DropdownMenu profileMenu;
+
+    /**
+     * Nested confirm dialog for the "discard unsaved changes?" flow when Cancel is pressed with applyable staged edits.
+     * Renders + intercepts input on top of the preferences dialog. Cleared when the confirm resolves either way.
+     */
+    private @Nullable ConfirmDialog discardConfirm;
+
+    /** Per-frame set of binding ids that collide with another binding in the same category — used for red coloring. */
+    private Set<String> conflictedIds = Set.of();
 
     public PreferencesDialog(
         Runnable onClose,
@@ -212,6 +232,10 @@ public final class PreferencesDialog {
                 inlineError = null;
             }
         }
+
+        // Recompute conflicts each frame from current staging. Cheap enough at 31 bindings (~960 comparisons) that
+        // caching with invalidation isn't worth the complexity.
+        this.conflictedIds = computeConflicts();
 
         graphics.fill(0, 0, screenWidth, screenHeight, DIM_COLOR);
 
@@ -295,10 +319,26 @@ public final class PreferencesDialog {
             canEditProfile
         );
 
-        // Search row.
+        // Search row + "Reset all" button (right-aligned).
         var searchY = controlY + CONTROL_ROW_HEIGHT + CONTROL_ROW_GAP;
-        var searchWidth = BOX_WIDTH - 2 * BOX_PAD_X;
+        var resetAllWidth = 80;
+        var searchWidth = BOX_WIDTH - 2 * BOX_PAD_X - resetAllWidth - FOOTER_BUTTON_GAP;
         searchInput.render(graphics, boxX + BOX_PAD_X, searchY, searchWidth, mouseX, mouseY);
+        var resetAllX = boxX + BOX_WIDTH - BOX_PAD_X - resetAllWidth;
+        // Enabled iff there's at least one override staged for the current profile.
+        var canResetAll = !stagedOverrides.isEmpty();
+        resetAllButtonRect = renderButton(
+            graphics,
+            resetAllX,
+            searchY,
+            resetAllWidth,
+            CONTROL_ROW_HEIGHT,
+            "Reset all",
+            mouseX,
+            mouseY,
+            canResetAll ? BUTTON_TEXT : BUTTON_DISABLED_TEXT,
+            canResetAll
+        );
 
         // Body region: left rail + right bindings list.
         var bodyTopY = searchY + CONTROL_ROW_HEIGHT + CONTROL_ROW_GAP;
@@ -311,11 +351,6 @@ public final class PreferencesDialog {
         var bindingsWidth = boxX + BOX_WIDTH - BOX_PAD_X - bindingsX;
         renderBindingsList(graphics, bindingsX, bodyTopY, bindingsWidth, bodyHeight, mouseX, mouseY);
 
-        // Inline conflict error (over the binding list).
-        if (inlineError != null) {
-            graphics.drawString(font, Component.literal(inlineError), bindingsX, bodyBottomY - font.lineHeight - 4, ERROR_COLOR, false);
-        }
-
         // Footer: Cancel / Apply / OK.
         var footerY = boxY + BOX_HEIGHT - BOX_PAD_Y - FOOTER_BUTTON_HEIGHT;
         var footerRightEdge = boxX + BOX_WIDTH - BOX_PAD_X;
@@ -323,6 +358,34 @@ public final class PreferencesDialog {
         var applyX = okX - FOOTER_BUTTON_GAP - FOOTER_BUTTON_WIDTH;
         var cancelX = applyX - FOOTER_BUTTON_GAP - FOOTER_BUTTON_WIDTH;
         var unsaved = hasUnsavedChanges();
+        var conflicts = hasConflicts();
+        var canApply = unsaved && !conflicts;
+        var canOk = !conflicts;
+
+        // Conflict / status hint to the left of the buttons. Renders red when there are conflicts so the user
+        // immediately sees why Apply is disabled; falls back to dim "● modified" / blank.
+        if (conflicts) {
+            var n = conflictedIds.size();
+            var msg = n + (n == 1 ? " conflict" : " conflicts") + " — resolve to apply";
+            graphics.drawString(
+                font,
+                Component.literal(msg),
+                boxX + BOX_PAD_X,
+                footerY + (FOOTER_BUTTON_HEIGHT - font.lineHeight + 2) / 2,
+                ERROR_COLOR,
+                false
+            );
+        } else if (inlineError != null) {
+            graphics.drawString(
+                font,
+                Component.literal(inlineError),
+                boxX + BOX_PAD_X,
+                footerY + (FOOTER_BUTTON_HEIGHT - font.lineHeight + 2) / 2,
+                ERROR_COLOR,
+                false
+            );
+        }
+
         cancelButtonRect = renderButton(
             graphics,
             cancelX,
@@ -344,8 +407,8 @@ public final class PreferencesDialog {
             "Apply",
             mouseX,
             mouseY,
-            unsaved ? BUTTON_TEXT : BUTTON_DISABLED_TEXT,
-            unsaved
+            canApply ? BUTTON_TEXT : BUTTON_DISABLED_TEXT,
+            canApply
         );
         okButtonRect = renderButton(
             graphics,
@@ -356,13 +419,18 @@ public final class PreferencesDialog {
             "OK",
             mouseX,
             mouseY,
-            BUTTON_TEXT,
-            true
+            canOk ? BUTTON_TEXT : BUTTON_DISABLED_TEXT,
+            canOk
         );
 
         // Profile dropdown overlay (drawn last so it stacks over the rest).
         if (profileMenu != null) {
             profileMenu.render(graphics, mouseX, mouseY);
+        }
+
+        // Nested discard-confirm renders on top of everything.
+        if (discardConfirm != null) {
+            discardConfirm.render(graphics, screenWidth, screenHeight, mouseX, mouseY);
         }
     }
 
@@ -420,7 +488,19 @@ public final class PreferencesDialog {
         visibleRowsHeight = height - 2 * RAIL_PAD;
         rowRects.clear();
         var rows = filteredBindings();
-        contentHeight = rows.size() * (ROW_HEIGHT + 2);
+        var showHeaders = selectedCategory == null;
+
+        // Pre-compute content height accounting for inserted category headers in All view.
+        contentHeight = 0;
+        String tallyLastCat = null;
+        for (var b : rows) {
+            var cat = Keybindings.categoryOf(b.id());
+            if (showHeaders && !cat.equals(tallyLastCat)) {
+                contentHeight += HEADER_ROW_HEIGHT + 2;
+                tallyLastCat = cat;
+            }
+            contentHeight += ROW_HEIGHT + 2;
+        }
         var maxScroll = Math.max(0, contentHeight - visibleRowsHeight);
         scrollOffset = Math.max(0, Math.min(maxScroll, scrollOffset));
 
@@ -433,9 +513,19 @@ public final class PreferencesDialog {
 
         var font = EngineFont.get();
         var rowY = clipTop - (int) scrollOffset;
+        String lastCat = null;
 
-        for (var i = 0; i < rows.size(); i++) {
-            var binding = rows.get(i);
+        for (var binding : rows) {
+            var cat = Keybindings.categoryOf(binding.id());
+            // Section header before the first binding of each new category in All view.
+            if (showHeaders && !cat.equals(lastCat)) {
+                if (rowY + HEADER_ROW_HEIGHT <= clipBottom && rowY >= clipTop) {
+                    renderCategoryHeader(graphics, font, x + ROW_PAD_X, rowY, width - 2 * ROW_PAD_X, Keybindings.categoryLabel(cat));
+                }
+                rowY += HEADER_ROW_HEIGHT + 2;
+                lastCat = cat;
+            }
+
             // Hard skip: only render rows fully within the visible band. Partial rows would extend past the panel
             // border without scissor clipping (see note above).
             if (rowY + ROW_HEIGHT > clipBottom || rowY < clipTop) {
@@ -492,6 +582,20 @@ public final class PreferencesDialog {
         }
     }
 
+    private void renderCategoryHeader(GuiGraphics graphics, net.minecraft.client.gui.Font font, int x, int y, int width, String label) {
+        var upper = label.toUpperCase(Locale.ROOT);
+        var textWidth = font.width(upper);
+        var textY = y + (HEADER_ROW_HEIGHT - font.lineHeight + 2) / 2;
+        graphics.drawString(font, Component.literal(upper), x, textY, TITLE_COLOR, false);
+        // Thin separator line from end-of-text to the right edge, gives the header a sectioning feel without a heavy
+        // background fill.
+        var lineX = x + textWidth + 6;
+        var lineY = y + HEADER_ROW_HEIGHT / 2;
+        if (lineX < x + width) {
+            graphics.fill(lineX, lineY, x + width, lineY + 1, BORDER_COLOR);
+        }
+    }
+
     private void renderChip(GuiGraphics graphics, int x, int y, int width, Input resolved, String bindingId, int mouseX, int mouseY) {
         var armed = capturingChip != null && capturingBindingId != null && capturingBindingId.equals(bindingId);
         if (armed) {
@@ -499,13 +603,15 @@ public final class PreferencesDialog {
             return;
         }
         // Static chip for the resolved input.
+        var conflicted = conflictedIds.contains(bindingId);
         var hovered = mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + KeyCaptureWidget.HEIGHT;
         var bg = hovered ? 0xFF1F1F26 : 0xFF14141A;
+        var border = conflicted ? ERROR_COLOR : BORDER_COLOR;
         graphics.fill(x, y, x + width, y + KeyCaptureWidget.HEIGHT, bg);
-        graphics.fill(x, y, x + width, y + 1, BORDER_COLOR);
-        graphics.fill(x, y + KeyCaptureWidget.HEIGHT - 1, x + width, y + KeyCaptureWidget.HEIGHT, BORDER_COLOR);
-        graphics.fill(x, y, x + 1, y + KeyCaptureWidget.HEIGHT, BORDER_COLOR);
-        graphics.fill(x + width - 1, y, x + width, y + KeyCaptureWidget.HEIGHT, BORDER_COLOR);
+        graphics.fill(x, y, x + width, y + 1, border);
+        graphics.fill(x, y + KeyCaptureWidget.HEIGHT - 1, x + width, y + KeyCaptureWidget.HEIGHT, border);
+        graphics.fill(x, y, x + 1, y + KeyCaptureWidget.HEIGHT, border);
+        graphics.fill(x + width - 1, y, x + width, y + KeyCaptureWidget.HEIGHT, border);
 
         var font = EngineFont.get();
         var text = resolved.format();
@@ -514,7 +620,15 @@ public final class PreferencesDialog {
         }
         var textWidth = font.width(text);
         var hasOverride = stagedOverrides.containsKey(bindingId);
-        var textColor = hasOverride ? MODIFIED_COLOR : LABEL_COLOR;
+        // Color priority: red (conflicted) > yellow (modified) > grey (default).
+        int textColor;
+        if (conflicted) {
+            textColor = ERROR_COLOR;
+        } else if (hasOverride) {
+            textColor = MODIFIED_COLOR;
+        } else {
+            textColor = LABEL_COLOR;
+        }
         graphics.drawString(
             font,
             Component.literal(text),
@@ -576,6 +690,12 @@ public final class PreferencesDialog {
     // ============================== Input dispatch ==============================
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        // Nested discard confirm absorbs every click while open.
+        if (discardConfirm != null) {
+            discardConfirm.mouseClicked(mouseX, mouseY, button);
+            return true;
+        }
+
         // Profile dropdown menu absorbs first if open.
         if (profileMenu != null) {
             if (profileMenu.isInside(mouseX, mouseY)) {
@@ -600,6 +720,10 @@ public final class PreferencesDialog {
         if (searchInput.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
+        // Click landed outside the search input — defocus so a subsequent chip rebind doesn't bleed the captured key
+        // into the search field via charTyped (TextInput defocuses only on a click that hits another input, not on a
+        // click that hits non-input UI).
+        TextInput.clearFocus();
 
         // Profile dropdown opens.
         if (profileDropdownRect != null && profileDropdownRect.contains(mouseX, mouseY) && button == 0) {
@@ -632,6 +756,14 @@ public final class PreferencesDialog {
             return true;
         }
 
+        if (resetAllButtonRect != null && resetAllButtonRect.contains(mouseX, mouseY) && button == 0) {
+            if (!stagedOverrides.isEmpty()) {
+                stagedOverrides.clear();
+                clearError();
+            }
+            return true;
+        }
+
         for (var cr : categoryRects) {
             if (cr.rect.contains(mouseX, mouseY) && button == 0) {
                 selectedCategory = cr.catKey;
@@ -654,17 +786,21 @@ public final class PreferencesDialog {
         }
 
         if (cancelButtonRect != null && cancelButtonRect.contains(mouseX, mouseY) && button == 0) {
-            cancelCapture();
-            onClose.run();
+            requestCancel();
             return true;
         }
         if (applyButtonRect != null && applyButtonRect.contains(mouseX, mouseY) && button == 0) {
-            applyChanges();
+            // Apply is gated visually; double-check here so a stale click during a conflict doesn't sneak through.
+            if (hasUnsavedChanges() && !hasConflicts()) {
+                applyChanges();
+            }
             return true;
         }
         if (okButtonRect != null && okButtonRect.contains(mouseX, mouseY) && button == 0) {
-            applyChanges();
-            onClose.run();
+            if (!hasConflicts()) {
+                applyChanges();
+                onClose.run();
+            }
             return true;
         }
 
@@ -672,7 +808,38 @@ public final class PreferencesDialog {
         return true;
     }
 
+    /**
+     * Cancel flow: if the user has applyable unsaved changes (no conflicts), prompt to discard. Otherwise close
+     * silently — there's nothing to lose (clean staging) or nothing they could have kept anyway (conflicts blocked
+     * Apply, so the staged-but-invalid edits don't count as committed intent).
+     */
+    private void requestCancel() {
+        cancelCapture();
+        if (hasUnsavedChanges() && !hasConflicts()) {
+            this.discardConfirm = new ConfirmDialog(
+                "Discard changes?",
+                "You have unsaved keybinding changes for this profile.",
+                "Discard",
+                "Keep editing",
+                true,
+                () -> {
+                    discardConfirm = null;
+                    onClose.run();
+                },
+                () -> discardConfirm = null
+            );
+            return;
+        }
+        onClose.run();
+    }
+
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        // Discard-confirm intercepts. Its keyPressed handles Esc → cancel-confirm; everything else is swallowed so
+        // the underlying preferences dialog doesn't keep editing while the confirm is up.
+        if (discardConfirm != null) {
+            discardConfirm.keyPressed(keyCode);
+            return true;
+        }
         if (capturingChip != null && capturingChip.isArmed()) {
             // Capture priority: the widget consumes the next key, including Esc (which cancels capture only — not the
             // dialog). All other keys complete the capture.
@@ -682,12 +849,11 @@ public final class PreferencesDialog {
             return true;
         }
         if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-            cancelCapture();
-            onClose.run();
+            requestCancel();
             return true;
         }
         if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
-            if (hasUnsavedChanges()) {
+            if (hasUnsavedChanges() && !hasConflicts()) {
                 applyChanges();
                 onClose.run();
                 return true;
@@ -697,6 +863,9 @@ public final class PreferencesDialog {
     }
 
     public boolean charTyped(char ch, int modifiers) {
+        if (discardConfirm != null) {
+            return true;
+        }
         if (searchInput.isFocused()) {
             return searchInput.charTyped(ch, modifiers);
         }
@@ -704,6 +873,9 @@ public final class PreferencesDialog {
     }
 
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (discardConfirm != null) {
+            return true;
+        }
         if (capturingChip != null && capturingChip.isArmed()) {
             return capturingChip.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
         }
@@ -712,6 +884,9 @@ public final class PreferencesDialog {
     }
 
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dx, double dy) {
+        if (discardConfirm != null) {
+            return true;
+        }
         if (searchInput.isFocused() && button == 0) {
             searchInput.mouseDraggedExtend(mouseX);
             return true;
@@ -758,14 +933,8 @@ public final class PreferencesDialog {
     }
 
     private void applyCapture(Keybinding binding, Input captured) {
-        var conflict = findConflict(binding.id(), captured);
-        if (conflict != null) {
-            inlineError = "Conflicts with " + conflict.label() + " (" + Keybindings.categoryLabel(Keybindings.categoryOf(conflict.id()))
-                + ")";
-            inlineErrorTicks = CONFLICT_DISPLAY_TICKS;
-            cancelCapture();
-            return;
-        }
+        // Conflicts are now permitted at capture time — the user can rebind freely while figuring out which collision
+        // to resolve. The conflict is surfaced via red chip coloring in render and gates Apply / OK.
         if (sameTrigger(captured, binding.input())) {
             // Setting to the default = remove the override (keeps the profile sparse).
             stagedOverrides.remove(binding.id());
@@ -776,6 +945,37 @@ public final class PreferencesDialog {
         cancelCapture();
     }
 
+    /**
+     * Pairwise scan for bindings whose resolved {@link Input} matches another binding in the same category. Returns the
+     * ids of every binding involved in a collision (both sides). O(N²) in the binding count; N=31 so ~960 comparisons
+     * per render which is well under render budget.
+     */
+    private Set<String> computeConflicts() {
+        var defaults = Keybindings.defaults();
+        var conflicts = new HashSet<String>();
+        for (var i = 0; i < defaults.size(); i++) {
+            var a = defaults.get(i);
+            var ai = stagedOverrides.getOrDefault(a.id(), a.input());
+            var aCat = Keybindings.categoryOf(a.id());
+            for (var j = i + 1; j < defaults.size(); j++) {
+                var b = defaults.get(j);
+                if (!Keybindings.categoryOf(b.id()).equals(aCat)) {
+                    continue;
+                }
+                var bi = stagedOverrides.getOrDefault(b.id(), b.input());
+                if (sameTrigger(ai, bi)) {
+                    conflicts.add(a.id());
+                    conflicts.add(b.id());
+                }
+            }
+        }
+        return conflicts;
+    }
+
+    private boolean hasConflicts() {
+        return !conflictedIds.isEmpty();
+    }
+
     private void cancelCapture() {
         this.capturingChip = null;
         this.capturingBindingId = null;
@@ -784,27 +984,6 @@ public final class PreferencesDialog {
     private void clearError() {
         this.inlineError = null;
         this.inlineErrorTicks = 0;
-    }
-
-    /**
-     * Returns the other binding in the same category that already uses {@code proposed}, or null if no conflict.
-     * Cross-category collisions are intentionally allowed.
-     */
-    private @Nullable Keybinding findConflict(String selfId, Input proposed) {
-        var prefix = Keybindings.categoryOf(selfId);
-        for (var d : Keybindings.defaults()) {
-            if (d.id().equals(selfId)) {
-                continue;
-            }
-            if (!Keybindings.categoryOf(d.id()).equals(prefix)) {
-                continue;
-            }
-            var dResolved = stagedOverrides.getOrDefault(d.id(), d.input());
-            if (sameTrigger(dResolved, proposed)) {
-                return d;
-            }
-        }
-        return null;
     }
 
     private static boolean sameTrigger(Input a, Input b) {

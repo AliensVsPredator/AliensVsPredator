@@ -164,6 +164,84 @@ public final class EngineWorkspaceScreen extends Screen {
      */
     private @Nullable PreferencesDialog preferencesDialog;
 
+    // ---------------------------------------------------------------------------------------------
+    // Modal z-order tracking
+    //
+    // Every modal dialog field above is also tracked in {@link #modalOrder} — an ordered list of tags representing the
+    // open-time sequence so render + input dispatch can route to the topmost one. Without this, opening a confirm
+    // sub-dialog from a parent modal (e.g. Delete Profile from PreferencesDialog) renders the confirm UNDERNEATH the
+    // parent because the parent's render check fires later in the static if-chain.
+    //
+    // We don't require open/close sites to touch {@code modalOrder} explicitly — {@link #syncModalOrder} runs at the
+    // top of every render and diffs the field state against the last-known state. Newly-set fields get appended to the
+    // top of the stack; newly-cleared fields get removed. Re-opening a closed modal pushes it to the top again. This
+    // means callers can keep doing {@code this.fooDialog = new FooDialog(...)} / {@code = null} without coupling to
+    // the stack.
+    // ---------------------------------------------------------------------------------------------
+
+    private static final String MODAL_CONFIRM = "confirm";
+
+    private static final String MODAL_CAPTURE = "capture";
+
+    private static final String MODAL_LAYOUT_NAME = "layoutName";
+
+    private static final String MODAL_MANAGE_LAYOUTS = "manageLayouts";
+
+    private static final String MODAL_PREFERENCES = "preferences";
+
+    private final java.util.List<String> modalOrder = new java.util.ArrayList<>();
+
+    private boolean lastConfirmOpen;
+
+    private boolean lastCaptureOpen;
+
+    private boolean lastLayoutNameOpen;
+
+    private boolean lastManageLayoutsOpen;
+
+    private boolean lastPreferencesOpen;
+
+    /**
+     * Reconcile {@link #modalOrder} with the current dialog-field state. Call at the top of every render frame and
+     * before any input-dispatch pass that consults the stack — both check for transitions since the last call and
+     * append newly-opened modals to the top of the stack, or remove newly-closed ones.
+     */
+    private void syncModalOrder() {
+        syncOne(MODAL_CONFIRM, confirmDialog != null, lastConfirmOpen);
+        lastConfirmOpen = confirmDialog != null;
+        syncOne(MODAL_CAPTURE, captureDialog != null, lastCaptureOpen);
+        lastCaptureOpen = captureDialog != null;
+        syncOne(MODAL_LAYOUT_NAME, layoutNameDialog != null, lastLayoutNameOpen);
+        lastLayoutNameOpen = layoutNameDialog != null;
+        syncOne(MODAL_MANAGE_LAYOUTS, manageLayoutsDialog != null, lastManageLayoutsOpen);
+        lastManageLayoutsOpen = manageLayoutsDialog != null;
+        syncOne(MODAL_PREFERENCES, preferencesDialog != null, lastPreferencesOpen);
+        lastPreferencesOpen = preferencesDialog != null;
+    }
+
+    private void syncOne(String tag, boolean openNow, boolean openLast) {
+        if (openNow && !openLast) {
+            // Newly opened — push to top.
+            modalOrder.remove(tag);
+            modalOrder.add(tag);
+        } else if (!openNow && openLast) {
+            modalOrder.remove(tag);
+        }
+    }
+
+    private boolean isAnyModalOpen() {
+        return confirmDialog != null
+            || captureDialog != null
+            || layoutNameDialog != null
+            || manageLayoutsDialog != null
+            || preferencesDialog != null;
+    }
+
+    private @Nullable String topModalTag() {
+        syncModalOrder();
+        return modalOrder.isEmpty() ? null : modalOrder.get(modalOrder.size() - 1);
+    }
+
     /**
      * Panel that captured the mouse via {@link Panel#mouseClickedCapture}. While non-null, {@link #mouseDragged} and
      * {@link #mouseReleased} route to this panel before any other handling, so a panel-driven drag (scrollbar, etc.)
@@ -431,44 +509,53 @@ public final class EngineWorkspaceScreen extends Screen {
             panelMouseX = OFFSCREEN_MOUSE;
             panelMouseY = OFFSCREEN_MOUSE;
         }
-        // Confirm dialog is fully modal — every panel underneath must lose hover state.
-        if (confirmDialog != null) {
-            panelMouseX = OFFSCREEN_MOUSE;
-            panelMouseY = OFFSCREEN_MOUSE;
-        }
-        if (captureDialog != null) {
-            panelMouseX = OFFSCREEN_MOUSE;
-            panelMouseY = OFFSCREEN_MOUSE;
-        }
-        if (layoutNameDialog != null || manageLayoutsDialog != null || preferencesDialog != null) {
+        // Any modal dialog suppresses panel hover state.
+        if (isAnyModalOpen()) {
             panelMouseX = OFFSCREEN_MOUSE;
             panelMouseY = OFFSCREEN_MOUSE;
         }
 
         renderNode(graphics, root, 0, 0, logicalWidth, logicalHeight, panelMouseX, panelMouseY, partialTick);
-        renderHoveredDivider(graphics, logicalMouseX, logicalMouseY);
-        renderTabDragOverlay(graphics, logicalMouseX, logicalMouseY);
+        // Use the OFFSCREEN-substituted coords so dividers and tab-drag indicators don't light up under an open modal.
+        renderHoveredDivider(graphics, panelMouseX, panelMouseY);
+        renderTabDragOverlay(graphics, panelMouseX, panelMouseY);
 
         if (openMenu != null) {
             openMenu.render(graphics, logicalMouseX, logicalMouseY);
         }
-        if (confirmDialog != null) {
-            confirmDialog.render(graphics, logicalWidth, logicalHeight, logicalMouseX, logicalMouseY);
-        }
-        if (captureDialog != null) {
-            captureDialog.render(graphics, logicalWidth, logicalHeight, logicalMouseX, logicalMouseY);
-        }
-        if (manageLayoutsDialog != null) {
-            manageLayoutsDialog.render(graphics, logicalWidth, logicalHeight, logicalMouseX, logicalMouseY);
-        }
-        if (preferencesDialog != null) {
-            preferencesDialog.render(graphics, logicalWidth, logicalHeight, logicalMouseX, logicalMouseY);
-        }
-        // LayoutNameDialog renders on top of ManageLayoutsDialog / PreferencesDialog because Save-As / Rename /
-        // Duplicate / etc. opened from the parent modal stack a second sheet on top of it; rendering it last keeps it
-        // visible above the list.
-        if (layoutNameDialog != null) {
-            layoutNameDialog.render(graphics, logicalWidth, logicalHeight, logicalMouseX, logicalMouseY);
+        // Render modals in open-order so a child dialog (e.g. a Delete-Profile confirm spawned from PreferencesDialog)
+        // sits on top of its parent. The order is reconciled with field state by syncModalOrder so individual open /
+        // close sites don't need to push or pop manually.
+        syncModalOrder();
+        for (var tag : modalOrder) {
+            switch (tag) {
+                case MODAL_CONFIRM -> {
+                    if (confirmDialog != null) {
+                        confirmDialog.render(graphics, logicalWidth, logicalHeight, logicalMouseX, logicalMouseY);
+                    }
+                }
+                case MODAL_CAPTURE -> {
+                    if (captureDialog != null) {
+                        captureDialog.render(graphics, logicalWidth, logicalHeight, logicalMouseX, logicalMouseY);
+                    }
+                }
+                case MODAL_MANAGE_LAYOUTS -> {
+                    if (manageLayoutsDialog != null) {
+                        manageLayoutsDialog.render(graphics, logicalWidth, logicalHeight, logicalMouseX, logicalMouseY);
+                    }
+                }
+                case MODAL_PREFERENCES -> {
+                    if (preferencesDialog != null) {
+                        preferencesDialog.render(graphics, logicalWidth, logicalHeight, logicalMouseX, logicalMouseY);
+                    }
+                }
+                case MODAL_LAYOUT_NAME -> {
+                    if (layoutNameDialog != null) {
+                        layoutNameDialog.render(graphics, logicalWidth, logicalHeight, logicalMouseX, logicalMouseY);
+                    }
+                }
+                default -> {}
+            }
         }
         if (openPopup != null) {
             openPopup.render(graphics, logicalMouseX, logicalMouseY, logicalWidth, logicalHeight);
@@ -761,14 +848,14 @@ public final class EngineWorkspaceScreen extends Screen {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        // Modal dialog absorbs all scroll events so panels under the dim don't scroll while the user is deciding.
-        if (confirmDialog != null || captureDialog != null || layoutNameDialog != null || manageLayoutsDialog != null) {
+        // Top modal absorbs / handles scroll. Most modals just absorb (no scrollable content); preferences handles
+        // its own list scroll.
+        var topScrollTag = topModalTag();
+        if (topScrollTag != null) {
+            if (MODAL_PREFERENCES.equals(topScrollTag) && preferencesDialog != null) {
+                return preferencesDialog.mouseScrolled(mouseX / SCALE, mouseY / SCALE, scrollX, scrollY);
+            }
             return true;
-        }
-        if (preferencesDialog != null) {
-            var lx = mouseX / SCALE;
-            var ly = mouseY / SCALE;
-            return preferencesDialog.mouseScrolled(lx, ly, scrollX, scrollY);
         }
         var logicalX = mouseX / SCALE;
         var logicalY = mouseY / SCALE;
@@ -903,16 +990,29 @@ public final class EngineWorkspaceScreen extends Screen {
 
     @Override
     public boolean charTyped(char ch, int modifiers) {
-        // Layout-name dialog has its own TextInput and routes char input through it. Manage dialog has no text input
-        // so it just absorbs char events as a hard modal.
-        if (layoutNameDialog != null) {
-            return layoutNameDialog.charTyped(ch, modifiers);
-        }
-        if (manageLayoutsDialog != null) {
-            return true;
-        }
-        if (preferencesDialog != null) {
-            return preferencesDialog.charTyped(ch, modifiers);
+        // Route through the topmost modal — same priority rules as keyPressed.
+        var topModalChar = topModalTag();
+        if (topModalChar != null) {
+            switch (topModalChar) {
+                case MODAL_CONFIRM, MODAL_CAPTURE, MODAL_MANAGE_LAYOUTS -> {
+                    return true;
+                }
+                case MODAL_LAYOUT_NAME -> {
+                    if (layoutNameDialog != null) {
+                        return layoutNameDialog.charTyped(ch, modifiers);
+                    }
+                    return true;
+                }
+                case MODAL_PREFERENCES -> {
+                    if (preferencesDialog != null) {
+                        return preferencesDialog.charTyped(ch, modifiers);
+                    }
+                    return true;
+                }
+                default -> {
+                    return true;
+                }
+            }
         }
         var focused = TextInput.getFocused();
         if (focused != null && focused.charTyped(ch, modifiers)) {
@@ -923,30 +1023,47 @@ public final class EngineWorkspaceScreen extends Screen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        // Confirm dialog absorbs Esc (treats it as Cancel) before any other Esc handling so a stray tap doesn't
-        // cascade into clearing piece selection / closing the workspace.
-        if (confirmDialog != null && confirmDialog.keyPressed(keyCode)) {
-            confirmDialog = null;
-            return true;
-        }
-        if (confirmDialog != null) {
-            // While the dialog is open, swallow other key events too — typing into nothing while a confirm is
-            // pending would feel unresponsive.
-            return true;
-        }
-        if (captureDialog != null) {
-            return captureDialog.keyPressed(keyCode, scanCode, modifiers);
-        }
-        // LayoutNameDialog stacks over ManageLayoutsDialog / PreferencesDialog (Save-As / Rename / Duplicate / New
-        // Profile sheet), so route to it first.
-        if (layoutNameDialog != null) {
-            return layoutNameDialog.keyPressed(keyCode, scanCode, modifiers);
-        }
-        if (manageLayoutsDialog != null) {
-            return manageLayoutsDialog.keyPressed(keyCode, scanCode, modifiers);
-        }
-        if (preferencesDialog != null) {
-            return preferencesDialog.keyPressed(keyCode, scanCode, modifiers);
+        // Top-of-stack modal handles key events first. Sub-dialogs (confirm spawned over preferences, layout-name
+        // spawned over manage-layouts, etc.) sit above their parent in modalOrder so the topmost gets first crack.
+        var topModalKey = topModalTag();
+        if (topModalKey != null) {
+            switch (topModalKey) {
+                case MODAL_CONFIRM -> {
+                    if (confirmDialog != null && confirmDialog.keyPressed(keyCode)) {
+                        confirmDialog = null;
+                    }
+                    // Swallow non-Esc keys too — typing into nothing while a confirm is pending would feel
+                    // unresponsive.
+                    return true;
+                }
+                case MODAL_CAPTURE -> {
+                    if (captureDialog != null) {
+                        return captureDialog.keyPressed(keyCode, scanCode, modifiers);
+                    }
+                    return true;
+                }
+                case MODAL_LAYOUT_NAME -> {
+                    if (layoutNameDialog != null) {
+                        return layoutNameDialog.keyPressed(keyCode, scanCode, modifiers);
+                    }
+                    return true;
+                }
+                case MODAL_MANAGE_LAYOUTS -> {
+                    if (manageLayoutsDialog != null) {
+                        return manageLayoutsDialog.keyPressed(keyCode, scanCode, modifiers);
+                    }
+                    return true;
+                }
+                case MODAL_PREFERENCES -> {
+                    if (preferencesDialog != null) {
+                        return preferencesDialog.keyPressed(keyCode, scanCode, modifiers);
+                    }
+                    return true;
+                }
+                default -> {
+                    return true;
+                }
+            }
         }
         // Esc closes an open SearchableSelect popup BEFORE TextInput dispatch — otherwise the popup's focused
         // search input would consume Esc as "defocus" and leave the popup visible-but-unfocused, which is confusing.
@@ -1124,31 +1241,39 @@ public final class EngineWorkspaceScreen extends Screen {
         var logicalX = mouseX / SCALE;
         var logicalY = mouseY / SCALE;
 
-        // Confirm dialog has top priority — modal until the user picks confirm or cancel. Outside-clicks consumed
-        // (no click-through to panels below) but ignored by the dialog itself; destructive actions require an
-        // explicit decision via the buttons or Esc.
-        if (confirmDialog != null) {
-            if (confirmDialog.mouseClicked(logicalX, logicalY, button)) {
-                confirmDialog = null;
+        // Top-of-stack modal absorbs the click — sub-dialogs (Delete confirm spawned from Preferences, etc.) sit
+        // above their parent in modalOrder, so the topmost gets first crack. Outside-clicks are still swallowed by
+        // returning true so they don't reach panels under the dim.
+        var topTag = topModalTag();
+        if (topTag != null) {
+            switch (topTag) {
+                case MODAL_CONFIRM -> {
+                    if (confirmDialog != null && confirmDialog.mouseClicked(logicalX, logicalY, button)) {
+                        confirmDialog = null;
+                    }
+                }
+                case MODAL_CAPTURE -> {
+                    if (captureDialog != null) {
+                        captureDialog.mouseClicked(logicalX, logicalY, button);
+                    }
+                }
+                case MODAL_LAYOUT_NAME -> {
+                    if (layoutNameDialog != null) {
+                        layoutNameDialog.mouseClicked(logicalX, logicalY, button);
+                    }
+                }
+                case MODAL_MANAGE_LAYOUTS -> {
+                    if (manageLayoutsDialog != null) {
+                        manageLayoutsDialog.mouseClicked(logicalX, logicalY, button);
+                    }
+                }
+                case MODAL_PREFERENCES -> {
+                    if (preferencesDialog != null) {
+                        preferencesDialog.mouseClicked(logicalX, logicalY, button);
+                    }
+                }
+                default -> {}
             }
-            return true;
-        }
-        if (captureDialog != null) {
-            captureDialog.mouseClicked(logicalX, logicalY, button);
-            return true;
-        }
-        // LayoutNameDialog (when stacked, e.g. Save-As opened from Manage) gets first crack so its TextInput
-        // and confirm/cancel buttons see clicks before the ManageLayoutsDialog list does.
-        if (layoutNameDialog != null) {
-            layoutNameDialog.mouseClicked(logicalX, logicalY, button);
-            return true;
-        }
-        if (manageLayoutsDialog != null) {
-            manageLayoutsDialog.mouseClicked(logicalX, logicalY, button);
-            return true;
-        }
-        if (preferencesDialog != null) {
-            preferencesDialog.mouseClicked(logicalX, logicalY, button);
             return true;
         }
 
@@ -1277,13 +1402,7 @@ public final class EngineWorkspaceScreen extends Screen {
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         // Modal dialog absorbs releases so a drag started before it opened doesn't propagate to panels behind it.
-        if (
-            confirmDialog != null
-                || captureDialog != null
-                || layoutNameDialog != null
-                || manageLayoutsDialog != null
-                || preferencesDialog != null
-        ) {
+        if (isAnyModalOpen()) {
             return true;
         }
         var logicalX = mouseX / SCALE;
@@ -1348,14 +1467,13 @@ public final class EngineWorkspaceScreen extends Screen {
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        // Modal dialog absorbs drags so divider / tab / panel drags can't continue under the dim.
-        if (confirmDialog != null || captureDialog != null || layoutNameDialog != null || manageLayoutsDialog != null) {
+        // Top modal absorbs / handles drags. Preferences forwards drags (for its TextInput); other modals just absorb.
+        var topDragTag = topModalTag();
+        if (topDragTag != null) {
+            if (MODAL_PREFERENCES.equals(topDragTag) && preferencesDialog != null) {
+                return preferencesDialog.mouseDragged(mouseX / SCALE, mouseY / SCALE, button, deltaX, deltaY);
+            }
             return true;
-        }
-        if (preferencesDialog != null) {
-            var lx = mouseX / SCALE;
-            var ly = mouseY / SCALE;
-            return preferencesDialog.mouseDragged(lx, ly, button, deltaX, deltaY);
         }
         var logicalX = mouseX / SCALE;
         var logicalY = mouseY / SCALE;
