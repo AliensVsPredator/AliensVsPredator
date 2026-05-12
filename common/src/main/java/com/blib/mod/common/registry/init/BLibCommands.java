@@ -9,11 +9,8 @@ import com.blib.api.common.registry.v1.impl.BLibCommandRegistry;
 import com.blib.engine.command.BLibEngineCommand;
 import com.blib.engine.command.BLibTransformTuneCommand;
 import com.blib.mod.BLib;
-import com.blib.mod.common.command.BLibFactionCommands;
-import com.blib.mod.common.command.BLibGOAPCommands;
 import com.blib.mod.common.command.BLibPropertyCommands;
 import com.blib.mod.common.command.BLibReputationCommands;
-import com.blib.mod.common.command.BLibTerritoryCommands;
 
 @ApiStatus.Internal
 public class BLibCommands {
@@ -23,11 +20,8 @@ public class BLibCommands {
     public static void initialize() {
         var root = Commands.literal("blib")
             .requires(source -> source.hasPermission(2))
-            .then(BLibFactionCommands.build())
             .then(BLibReputationCommands.build())
-            .then(BLibGOAPCommands.build())
-            .then(BLibPropertyCommands.build())
-            .then(BLibTerritoryCommands.build());
+            .then(BLibPropertyCommands.build());
 
         // Engine mode is intrinsically client-side (camera detachment, gizmos, freecam HUD); only register on the
         // client distribution so referencing client classes from `BLibEngineCommand` can't link-fail on a dedicated
