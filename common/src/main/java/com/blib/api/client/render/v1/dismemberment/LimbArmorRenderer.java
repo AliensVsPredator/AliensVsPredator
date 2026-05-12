@@ -40,9 +40,9 @@ public final class LimbArmorRenderer {
             return;
         }
 
-        var rootBoneName = limb.getRootBoneName();
+        var visuals = limb.resolveVisuals();
 
-        if (rootBoneName == null || rootBoneName.isEmpty()) {
+        if (visuals == null) {
             return;
         }
 
@@ -59,7 +59,7 @@ public final class LimbArmorRenderer {
             return;
         }
 
-        var visibleParts = visiblePartsFor(rootBoneName);
+        var visibleParts = visiblePartsFor(visuals.rootBoneName());
 
         if (visibleParts.isEmpty()) {
             return;
@@ -71,12 +71,13 @@ public final class LimbArmorRenderer {
             return;
         }
 
-        renderArmorAtLimbPose(limb, poseStack, bufferSource, packedLight, ghost, humanoidModel, armorLayer, visibleParts);
+        renderArmorAtLimbPose(limb, visuals, poseStack, bufferSource, packedLight, ghost, humanoidModel, armorLayer, visibleParts);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private static void renderArmorAtLimbPose(
         DismemberedLimbEntity limb,
+        com.blib.api.common.dismemberment.v1.LimbVisuals visuals,
         PoseStack poseStack,
         MultiBufferSource bufferSource,
         int packedLight,
@@ -88,12 +89,15 @@ public final class LimbArmorRenderer {
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(180f - limb.getYRot()));
 
-        var renderRotation = limb.getLimbRenderRotation();
+        var renderRotation = visuals.renderRotation();
         poseStack.mulPose(Axis.ZP.rotationDegrees((float) renderRotation.z));
         poseStack.mulPose(Axis.YP.rotationDegrees((float) renderRotation.y));
         poseStack.mulPose(Axis.XP.rotationDegrees((float) renderRotation.x));
 
-        var renderOffset = limb.getLimbRenderOffset();
+        var renderScale = visuals.renderScale();
+        poseStack.scale((float) renderScale.x, (float) renderScale.y, (float) renderScale.z);
+
+        var renderOffset = visuals.renderOffset();
         poseStack.translate(renderOffset.x, renderOffset.y, renderOffset.z);
 
         // Match LivingEntityRenderer.render's authored-upside-down handling so armor lines up with the bone.

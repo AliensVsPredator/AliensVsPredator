@@ -36,7 +36,13 @@ public final class LimbHeldItemRenderer {
         MultiBufferSource bufferSource,
         int packedLight
     ) {
-        var renderArm = armForBone(limb.getRootBoneName());
+        var visuals = limb.resolveVisuals();
+
+        if (visuals == null) {
+            return;
+        }
+
+        var renderArm = armForBone(visuals.rootBoneName());
 
         if (renderArm == null) {
             return;
@@ -74,12 +80,13 @@ public final class LimbHeldItemRenderer {
             return;
         }
 
-        renderItemAtLimbPose(limb, poseStack, bufferSource, packedLight, ghost, itemLayer, renderArm, rightArm, leftArm);
+        renderItemAtLimbPose(limb, visuals, poseStack, bufferSource, packedLight, ghost, itemLayer, renderArm, rightArm, leftArm);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private static void renderItemAtLimbPose(
         DismemberedLimbEntity limb,
+        com.blib.api.common.dismemberment.v1.LimbVisuals visuals,
         PoseStack poseStack,
         MultiBufferSource bufferSource,
         int packedLight,
@@ -95,12 +102,15 @@ public final class LimbHeldItemRenderer {
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(180f - limb.getYRot()));
 
-        var renderRotation = limb.getLimbRenderRotation();
+        var renderRotation = visuals.renderRotation();
         poseStack.mulPose(Axis.ZP.rotationDegrees((float) renderRotation.z));
         poseStack.mulPose(Axis.YP.rotationDegrees((float) renderRotation.y));
         poseStack.mulPose(Axis.XP.rotationDegrees((float) renderRotation.x));
 
-        var renderOffset = limb.getLimbRenderOffset();
+        var renderScale = visuals.renderScale();
+        poseStack.scale((float) renderScale.x, (float) renderScale.y, (float) renderScale.z);
+
+        var renderOffset = visuals.renderOffset();
         poseStack.translate(renderOffset.x, renderOffset.y, renderOffset.z);
 
         // Match LivingEntityRenderer.render's authored-upside-down handling so the item lines up with the arm.

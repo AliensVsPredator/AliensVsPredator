@@ -1,0 +1,10 @@
+{
+  "limbs": [
+    { "id": "blib:pig_head", "category": "blib:head", "fatal": true },
+    { "id": "blib:pig_body", "category": "blib:head" },
+    { "id": "blib:pig_right_hind_leg",  "category": "blib:leg" },
+    { "id": "blib:pig_left_hind_leg",   "category": "blib:leg" },
+    { "id": "blib:pig_right_front_leg", "category": "blib:leg" },
+    { "id": "blib:pig_left_front_leg",  "category": "blib:leg" }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "limbs": [
+    { "id": "blib:bogged_head", "category": "blib:head", "fatal": true },
+    { "id": "blib:bogged_body", "category": "blib:head" },
+    { "id": "blib:bogged_right_arm", "category": "blib:arm" },
+    { "id": "blib:bogged_left_arm", "category": "blib:arm" },
+    { "id": "blib:bogged_right_leg", "category": "blib:leg" },
+    { "id": "blib:bogged_left_leg", "category": "blib:leg" }
+  ]
+}

@@ -19,6 +19,7 @@ import java.util.List;
 import com.blib.api.client.render.v1.dismemberment.VanillaLimbRenderer;
 import com.blib.api.common.dismemberment.v1.Dismemberable;
 import com.blib.api.common.dismemberment.v1.LimbDefinitionRegistry;
+import com.blib.api.common.dismemberment.v1.LimbVisualsRegistry;
 
 /**
  * Hides {@link ModelPart}s that correspond to detached limbs while a vanilla {@code LivingEntityRenderer} renders the
@@ -70,9 +71,14 @@ public abstract class MixinLivingEntityRenderer_Dismemberment {
                 continue;
             }
 
-            blib$hidePartIfPresent(definition.rootBoneName());
+            var visuals = LimbVisualsRegistry.get(entity.getType(), definition.id());
+            if (visuals == null) {
+                continue;
+            }
 
-            for (var companionBoneName : definition.companionBoneNames()) {
+            blib$hidePartIfPresent(visuals.rootBoneName());
+
+            for (var companionBoneName : visuals.companionBoneNames()) {
                 blib$hidePartIfPresent(companionBoneName);
             }
         }

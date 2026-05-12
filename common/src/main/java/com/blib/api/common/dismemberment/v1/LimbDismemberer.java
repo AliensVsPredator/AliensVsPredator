@@ -162,15 +162,7 @@ public final class LimbDismemberer {
         var sourceNbt = new CompoundTag();
         entity.saveWithoutId(sourceNbt);
 
-        limb.configure(
-            entity.getType(),
-            sourceNbt,
-            definition.id(),
-            definition.rootBoneName(),
-            definition.renderOffset(),
-            definition.renderRotation(),
-            20 * 30
-        );
+        limb.configure(entity.getType(), sourceNbt, definition.id(), 20 * 30);
 
         var spawnOffset = definition.spawnOffsetProvider().apply(entity);
         var spawnPos = entity.position().add(spawnOffset);

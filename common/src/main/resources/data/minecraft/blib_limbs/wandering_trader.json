@@ -1,0 +1,9 @@
+{
+  "limbs": [
+    { "id": "blib:wandering_trader_head", "category": "blib:head", "fatal": true },
+    { "id": "blib:wandering_trader_body", "category": "blib:head" },
+    { "id": "blib:wandering_trader_arms", "category": "blib:arm" },
+    { "id": "blib:wandering_trader_right_leg", "category": "blib:leg" },
+    { "id": "blib:wandering_trader_left_leg", "category": "blib:leg" }
+  ]
+}

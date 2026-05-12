@@ -1,0 +1,10 @@
+{
+  "limbs": [
+    { "id": "blib:chicken_head", "category": "blib:head", "fatal": true },
+    { "id": "blib:chicken_body", "category": "blib:head" },
+    { "id": "blib:chicken_right_leg",  "category": "blib:leg" },
+    { "id": "blib:chicken_left_leg",   "category": "blib:leg" },
+    { "id": "blib:chicken_right_wing", "category": "blib:arm" },
+    { "id": "blib:chicken_left_wing",  "category": "blib:arm" }
+  ]
+}

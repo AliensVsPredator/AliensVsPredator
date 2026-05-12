@@ -1,0 +1,10 @@
+{
+  "visuals": {
+    "blib:mooshroom_head":            { "root_bone": "head",            "render_offset": [0.0, 0.25, 0.0] },
+    "blib:mooshroom_body":            { "root_bone": "body",            "render_offset": [0.0, 0.25, 0.0],  "render_rotation": [90.0, 0.0, 0.0] },
+    "blib:mooshroom_right_hind_leg":  { "root_bone": "right_hind_leg",  "render_offset": [0.0, 0.125, 0.0], "render_rotation": [90.0, 0.0, 0.0] },
+    "blib:mooshroom_left_hind_leg":   { "root_bone": "left_hind_leg",   "render_offset": [0.0, 0.125, 0.0], "render_rotation": [90.0, 0.0, 0.0] },
+    "blib:mooshroom_right_front_leg": { "root_bone": "right_front_leg", "render_offset": [0.0, 0.125, 0.0], "render_rotation": [90.0, 0.0, 0.0] },
+    "blib:mooshroom_left_front_leg":  { "root_bone": "left_front_leg",  "render_offset": [0.0, 0.125, 0.0], "render_rotation": [90.0, 0.0, 0.0] }
+  }
+}

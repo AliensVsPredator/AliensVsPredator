@@ -22,6 +22,8 @@ import org.jetbrains.annotations.Nullable;
 import com.blib.api.common.dismemberment.v1.LimbDefinition;
 import com.blib.api.common.dismemberment.v1.LimbDefinitionRegistry;
 import com.blib.api.common.dismemberment.v1.LimbInteractionRegistry;
+import com.blib.api.common.dismemberment.v1.LimbVisuals;
+import com.blib.api.common.dismemberment.v1.LimbVisualsRegistry;
 
 /**
  * Generic, concrete entity representing a dismembered limb.
@@ -30,6 +32,10 @@ import com.blib.api.common.dismemberment.v1.LimbInteractionRegistry;
  * the renderer can reconstruct a transient "ghost" copy of the source mob and pull its texture/model directly from the
  * source's renderer. This means variant-specific textures, custom skins, and any other state encoded in the source
  * entity's data carry over to the limb fragment without each consumer maintaining a parallel mapping.
+ * <p>
+ * Visual fields (root bone, render offset / rotation / scale, companion bones) are <em>not</em> stored on the entity —
+ * they live in {@link LimbVisualsRegistry} on the client, keyed by {@code (sourceEntityType, limbId)}. The client
+ * resolves them at render time via {@link #resolveVisuals()}.
  * <p>
  * Lifetime, physics, and any side effects (e.g. acid bleeds) are intentionally minimal here — projects that need extra
  * behavior should compose this entity with their own systems rather than subclass it.
@@ -41,20 +47,6 @@ public class DismemberedLimbEntity extends Entity {
     private static final String NBT_SOURCE_NBT = "SourceNbt";
 
     private static final String NBT_LIMB_ID = "LimbId";
-
-    private static final String NBT_ROOT_BONE_NAME = "RootBoneName";
-
-    private static final String NBT_RENDER_OFFSET_X = "RenderOffsetX";
-
-    private static final String NBT_RENDER_OFFSET_Y = "RenderOffsetY";
-
-    private static final String NBT_RENDER_OFFSET_Z = "RenderOffsetZ";
-
-    private static final String NBT_RENDER_ROTATION_X = "RenderRotationX";
-
-    private static final String NBT_RENDER_ROTATION_Y = "RenderRotationY";
-
-    private static final String NBT_RENDER_ROTATION_Z = "RenderRotationZ";
 
     private static final String NBT_LIFETIME_TICKS = "LifetimeTicks";
 
@@ -73,41 +65,6 @@ public class DismemberedLimbEntity extends Entity {
     private static final EntityDataAccessor<String> LIMB_ID = SynchedEntityData.defineId(
         DismemberedLimbEntity.class,
         EntityDataSerializers.STRING
-    );
-
-    private static final EntityDataAccessor<String> ROOT_BONE_NAME = SynchedEntityData.defineId(
-        DismemberedLimbEntity.class,
-        EntityDataSerializers.STRING
-    );
-
-    private static final EntityDataAccessor<Float> RENDER_OFFSET_X = SynchedEntityData.defineId(
-        DismemberedLimbEntity.class,
-        EntityDataSerializers.FLOAT
-    );
-
-    private static final EntityDataAccessor<Float> RENDER_OFFSET_Y = SynchedEntityData.defineId(
-        DismemberedLimbEntity.class,
-        EntityDataSerializers.FLOAT
-    );
-
-    private static final EntityDataAccessor<Float> RENDER_OFFSET_Z = SynchedEntityData.defineId(
-        DismemberedLimbEntity.class,
-        EntityDataSerializers.FLOAT
-    );
-
-    private static final EntityDataAccessor<Float> RENDER_ROTATION_X = SynchedEntityData.defineId(
-        DismemberedLimbEntity.class,
-        EntityDataSerializers.FLOAT
-    );
-
-    private static final EntityDataAccessor<Float> RENDER_ROTATION_Y = SynchedEntityData.defineId(
-        DismemberedLimbEntity.class,
-        EntityDataSerializers.FLOAT
-    );
-
-    private static final EntityDataAccessor<Float> RENDER_ROTATION_Z = SynchedEntityData.defineId(
-        DismemberedLimbEntity.class,
-        EntityDataSerializers.FLOAT
     );
 
     private static final int DEFAULT_LIFETIME_TICKS = 20 * 30;
@@ -132,26 +89,11 @@ public class DismemberedLimbEntity extends Entity {
         setNoGravity(false);
     }
 
-    public void configure(
-        EntityType<?> sourceEntityType,
-        CompoundTag sourceNbt,
-        ResourceLocation limbId,
-        String rootBoneName,
-        Vec3 renderOffset,
-        Vec3 renderRotation,
-        int lifetimeTicks
-    ) {
+    public void configure(EntityType<?> sourceEntityType, CompoundTag sourceNbt, ResourceLocation limbId, int lifetimeTicks) {
         var sourceTypeId = BuiltInRegistries.ENTITY_TYPE.getKey(sourceEntityType);
         entityData.set(SOURCE_ENTITY_TYPE, sourceTypeId.toString());
         entityData.set(SOURCE_NBT, sourceNbt);
         entityData.set(LIMB_ID, limbId.toString());
-        entityData.set(ROOT_BONE_NAME, rootBoneName);
-        entityData.set(RENDER_OFFSET_X, (float) renderOffset.x);
-        entityData.set(RENDER_OFFSET_Y, (float) renderOffset.y);
-        entityData.set(RENDER_OFFSET_Z, (float) renderOffset.z);
-        entityData.set(RENDER_ROTATION_X, (float) renderRotation.x);
-        entityData.set(RENDER_ROTATION_Y, (float) renderRotation.y);
-        entityData.set(RENDER_ROTATION_Z, (float) renderRotation.z);
         this.lifetimeTicks = Math.max(1, lifetimeTicks);
     }
 
@@ -160,13 +102,6 @@ public class DismemberedLimbEntity extends Entity {
         builder.define(SOURCE_ENTITY_TYPE, "");
         builder.define(SOURCE_NBT, new CompoundTag());
         builder.define(LIMB_ID, "");
-        builder.define(ROOT_BONE_NAME, "");
-        builder.define(RENDER_OFFSET_X, 0F);
-        builder.define(RENDER_OFFSET_Y, 0F);
-        builder.define(RENDER_OFFSET_Z, 0F);
-        builder.define(RENDER_ROTATION_X, 0F);
-        builder.define(RENDER_ROTATION_Y, 0F);
-        builder.define(RENDER_ROTATION_Z, 0F);
     }
 
     @Override
@@ -274,10 +209,6 @@ public class DismemberedLimbEntity extends Entity {
         return cachedGhost;
     }
 
-    public String getRootBoneName() {
-        return entityData.get(ROOT_BONE_NAME);
-    }
-
     /**
      * Identifier of the {@link LimbDefinition} this limb was spawned from, or {@code null} if the synced data has not
      * been populated yet (e.g. immediately after spawn before the entity-data packet arrives).
@@ -302,20 +233,20 @@ public class DismemberedLimbEntity extends Entity {
         return LimbDefinitionRegistry.getDefinition(sourceType, limbId);
     }
 
-    public Vec3 getLimbRenderOffset() {
-        return new Vec3(
-            entityData.get(RENDER_OFFSET_X),
-            entityData.get(RENDER_OFFSET_Y),
-            entityData.get(RENDER_OFFSET_Z)
-        );
-    }
+    /**
+     * Client-side helper: resolves the {@link LimbVisuals} record for this limb from {@link LimbVisualsRegistry}.
+     * Returns {@code null} if the limb id / source type haven't synced yet, or if no visual record is registered for
+     * this limb (e.g. a {@code /data} entry without a paired {@code /assets} entry — graceful failure path).
+     */
+    public @Nullable LimbVisuals resolveVisuals() {
+        var sourceType = getSourceEntityType();
+        var limbId = getLimbId();
 
-    public Vec3 getLimbRenderRotation() {
-        return new Vec3(
-            entityData.get(RENDER_ROTATION_X),
-            entityData.get(RENDER_ROTATION_Y),
-            entityData.get(RENDER_ROTATION_Z)
-        );
+        if (sourceType == null || limbId == null) {
+            return null;
+        }
+
+        return LimbVisualsRegistry.get(sourceType, limbId);
     }
 
     public int getLifetimeTicks() {
@@ -336,13 +267,6 @@ public class DismemberedLimbEntity extends Entity {
         entityData.set(SOURCE_ENTITY_TYPE, compoundTag.getString(NBT_SOURCE_ENTITY_TYPE));
         entityData.set(SOURCE_NBT, compoundTag.getCompound(NBT_SOURCE_NBT));
         entityData.set(LIMB_ID, compoundTag.getString(NBT_LIMB_ID));
-        entityData.set(ROOT_BONE_NAME, compoundTag.getString(NBT_ROOT_BONE_NAME));
-        entityData.set(RENDER_OFFSET_X, compoundTag.getFloat(NBT_RENDER_OFFSET_X));
-        entityData.set(RENDER_OFFSET_Y, compoundTag.getFloat(NBT_RENDER_OFFSET_Y));
-        entityData.set(RENDER_OFFSET_Z, compoundTag.getFloat(NBT_RENDER_OFFSET_Z));
-        entityData.set(RENDER_ROTATION_X, compoundTag.getFloat(NBT_RENDER_ROTATION_X));
-        entityData.set(RENDER_ROTATION_Y, compoundTag.getFloat(NBT_RENDER_ROTATION_Y));
-        entityData.set(RENDER_ROTATION_Z, compoundTag.getFloat(NBT_RENDER_ROTATION_Z));
         this.lifetimeTicks = compoundTag.contains(NBT_LIFETIME_TICKS)
             ? compoundTag.getInt(NBT_LIFETIME_TICKS)
             : DEFAULT_LIFETIME_TICKS;
@@ -356,13 +280,6 @@ public class DismemberedLimbEntity extends Entity {
         compoundTag.putString(NBT_SOURCE_ENTITY_TYPE, entityData.get(SOURCE_ENTITY_TYPE));
         compoundTag.put(NBT_SOURCE_NBT, entityData.get(SOURCE_NBT));
         compoundTag.putString(NBT_LIMB_ID, entityData.get(LIMB_ID));
-        compoundTag.putString(NBT_ROOT_BONE_NAME, entityData.get(ROOT_BONE_NAME));
-        compoundTag.putFloat(NBT_RENDER_OFFSET_X, entityData.get(RENDER_OFFSET_X));
-        compoundTag.putFloat(NBT_RENDER_OFFSET_Y, entityData.get(RENDER_OFFSET_Y));
-        compoundTag.putFloat(NBT_RENDER_OFFSET_Z, entityData.get(RENDER_OFFSET_Z));
-        compoundTag.putFloat(NBT_RENDER_ROTATION_X, entityData.get(RENDER_ROTATION_X));
-        compoundTag.putFloat(NBT_RENDER_ROTATION_Y, entityData.get(RENDER_ROTATION_Y));
-        compoundTag.putFloat(NBT_RENDER_ROTATION_Z, entityData.get(RENDER_ROTATION_Z));
         compoundTag.putInt(NBT_LIFETIME_TICKS, lifetimeTicks);
         compoundTag.putInt(NBT_AGE_TICKS, ageTicks);
     }

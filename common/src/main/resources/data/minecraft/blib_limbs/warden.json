@@ -1,0 +1,10 @@
+{
+  "limbs": [
+    { "id": "blib:warden_head", "category": "blib:head", "fatal": true },
+    { "id": "blib:warden_body", "category": "blib:head" },
+    { "id": "blib:warden_right_arm", "category": "blib:arm" },
+    { "id": "blib:warden_left_arm", "category": "blib:arm" },
+    { "id": "blib:warden_right_leg", "category": "blib:leg" },
+    { "id": "blib:warden_left_leg", "category": "blib:leg" }
+  ]
+}

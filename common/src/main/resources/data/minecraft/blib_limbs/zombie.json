@@ -1,0 +1,10 @@
+{
+  "limbs": [
+    { "id": "blib:zombie_head", "category": "blib:head", "fatal": true },
+    { "id": "blib:zombie_body", "category": "blib:head" },
+    { "id": "blib:zombie_right_arm", "category": "blib:arm" },
+    { "id": "blib:zombie_left_arm", "category": "blib:arm" },
+    { "id": "blib:zombie_right_leg", "category": "blib:leg" },
+    { "id": "blib:zombie_left_leg", "category": "blib:leg" }
+  ]
+}

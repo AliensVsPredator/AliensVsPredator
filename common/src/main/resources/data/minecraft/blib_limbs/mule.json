@@ -1,0 +1,11 @@
+{
+  "limbs": [
+    { "id": "blib:mule_head", "category": "blib:head", "fatal": true },
+    { "id": "blib:mule_body", "category": "blib:head" },
+    { "id": "blib:mule_right_hind_leg",  "category": "blib:leg" },
+    { "id": "blib:mule_left_hind_leg",   "category": "blib:leg" },
+    { "id": "blib:mule_right_front_leg", "category": "blib:leg" },
+    { "id": "blib:mule_left_front_leg",  "category": "blib:leg" },
+    { "id": "blib:mule_tail", "category": "blib:tail" }
+  ]
+}

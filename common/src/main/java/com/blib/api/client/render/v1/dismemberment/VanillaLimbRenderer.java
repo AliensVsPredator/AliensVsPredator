@@ -17,6 +17,7 @@ import java.util.Set;
 
 import com.blib.api.common.dismemberment.v1.LimbDefinition;
 import com.blib.api.common.dismemberment.v1.LimbDefinitionRegistry;
+import com.blib.api.common.dismemberment.v1.LimbVisualsRegistry;
 import com.blib.api.common.dismemberment.v1.entity.DismemberedLimbEntity;
 import com.blib.internal.mixin.MixinEntityRenderDispatcher_Accessor;
 import com.blib.internal.mixin.MixinLivingEntityRenderer_Accessor;
@@ -48,14 +49,14 @@ public final class VanillaLimbRenderer {
         int packedLight,
         int packedOverlay
     ) {
-        var rootBoneName = limb.getRootBoneName();
+        var visuals = limb.resolveVisuals();
         var ghost = limb.getOrCreateGhost();
 
-        if (rootBoneName == null || rootBoneName.isEmpty() || ghost == null) {
+        if (visuals == null || ghost == null) {
             return;
         }
 
-        var rootPart = resolveModelPart(ghost, rootBoneName);
+        var rootPart = resolveModelPart(ghost, visuals.rootBoneName());
 
         if (rootPart == null) {
             return;
@@ -66,12 +67,16 @@ public final class VanillaLimbRenderer {
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(180f - limb.getYRot()));
 
-        var renderRotation = limb.getLimbRenderRotation();
+        var renderRotation = visuals.renderRotation();
         poseStack.mulPose(Axis.ZP.rotationDegrees((float) renderRotation.z));
         poseStack.mulPose(Axis.YP.rotationDegrees((float) renderRotation.y));
         poseStack.mulPose(Axis.XP.rotationDegrees((float) renderRotation.x));
 
-        var renderOffset = limb.getLimbRenderOffset();
+        // Authored scale applied around the limb anchor, before the offset translates the fragment into the hitbox.
+        var renderScale = visuals.renderScale();
+        poseStack.scale((float) renderScale.x, (float) renderScale.y, (float) renderScale.z);
+
+        var renderOffset = visuals.renderOffset();
         poseStack.translate(renderOffset.x, renderOffset.y, renderOffset.z);
 
         // Vanilla entity models are authored upside-down relative to world axes;
@@ -83,10 +88,8 @@ public final class VanillaLimbRenderer {
 
         // Companion bones (e.g. chicken's beak/wattle siblings of `head`) live outside the root subtree but ride along
         // with this limb. Render each at the same pose stack as the root so they sit in the same fragment frame.
-        var definition = limb.resolveLimbDefinition();
-
-        if (definition != null && !definition.companionBoneNames().isEmpty()) {
-            for (var companionBoneName : definition.companionBoneNames()) {
+        if (!visuals.companionBoneNames().isEmpty()) {
+            for (var companionBoneName : visuals.companionBoneNames()) {
                 var companionPart = resolveModelPart(ghost, companionBoneName);
 
                 if (companionPart != null) {
@@ -110,8 +113,7 @@ public final class VanillaLimbRenderer {
             return Set.of();
         }
 
-        var thisDefinition = limb.resolveLimbDefinition();
-        var thisLimbId = thisDefinition != null ? thisDefinition.id() : null;
+        var thisLimbId = limb.getLimbId();
         var skip = new HashSet<String>();
 
         for (var def : LimbDefinitionRegistry.getDefinitions(sourceType)) {
@@ -119,8 +121,12 @@ public final class VanillaLimbRenderer {
                 continue;
             }
 
-            skip.add(def.rootBoneName());
-            skip.addAll(def.companionBoneNames());
+            var visuals = LimbVisualsRegistry.get(sourceType, def.id());
+            if (visuals == null) {
+                continue;
+            }
+            skip.add(visuals.rootBoneName());
+            skip.addAll(visuals.companionBoneNames());
         }
 
         return skip;

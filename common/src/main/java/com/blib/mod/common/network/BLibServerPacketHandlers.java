@@ -71,6 +71,7 @@ import com.blib.mod.common.network.packet.S2CFactionInspectionPayload;
 import com.blib.mod.common.network.packet.S2CFactionMembersPayload;
 import com.blib.mod.common.network.packet.S2CFactionMetadataSyncPayload;
 import com.blib.mod.common.network.packet.S2CGOAPDebugPayload;
+import com.blib.mod.common.network.packet.S2CLimbDefinitionsSyncPayload;
 import com.blib.mod.common.network.packet.S2CMoveSelectionResultPayload;
 import com.blib.mod.common.network.packet.S2CPathfindingNavDebugPayload;
 import com.blib.mod.common.network.packet.S2CPathfindingSearchDebugPayload;
@@ -562,6 +563,14 @@ public class BLibServerPacketHandlers {
                 S2CGOAPDebugPayload.TYPE,
                 S2CGOAPDebugPayload.CODEC,
                 BLibClientListener::handleGOAPDebug
+            )
+        );
+
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromServer<>(
+                S2CLimbDefinitionsSyncPayload.TYPE,
+                S2CLimbDefinitionsSyncPayload.CODEC,
+                BLibClientListener::handleLimbDefinitionsSync
             )
         );
 

@@ -1,0 +1,10 @@
+{
+  "limbs": [
+    { "id": "blib:drowned_head", "category": "blib:head", "fatal": true },
+    { "id": "blib:drowned_body", "category": "blib:head" },
+    { "id": "blib:drowned_right_arm", "category": "blib:arm" },
+    { "id": "blib:drowned_left_arm", "category": "blib:arm" },
+    { "id": "blib:drowned_right_leg", "category": "blib:leg" },
+    { "id": "blib:drowned_left_leg", "category": "blib:leg" }
+  ]
+}

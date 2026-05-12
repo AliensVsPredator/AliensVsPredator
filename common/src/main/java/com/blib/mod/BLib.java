@@ -14,8 +14,8 @@ import com.blib.api.BLibAPI;
 import com.blib.api.common.block.v1.BlockBreakProgressManager;
 import com.blib.api.common.data_sync.v1.DataContainer;
 import com.blib.api.common.data_sync.v1.model.DataUser;
-import com.blib.api.common.dismemberment.v1.builtin.BuiltInLimbDefinitions;
 import com.blib.api.common.dismemberment.v1.builtin.BuiltInLimbDrops;
+import com.blib.api.common.dismemberment.v1.builtin.BuiltInSpawnFunctions;
 import com.blib.api.common.faction.v1.FactionMember;
 import com.blib.api.common.mod.v1.BLibMod;
 import com.blib.api.common.reputation.v1.ReputationKey;
@@ -87,8 +87,10 @@ public class BLib {
         BLibReloadListeners.initialize();
         BLibServerPacketHandlers.initialize();
 
-        // Depends on entity types being registered.
-        BuiltInLimbDefinitions.register();
+        // Depends on entity types being registered. Built-in limb definitions are now data-driven (see
+        // resources/data/minecraft/blib_limbs and resources/assets/minecraft/blib_limb_visuals); this call only
+        // registers the function-typed spawn offsets that can't be expressed in JSON, keyed by limb id.
+        BuiltInSpawnFunctions.register();
         BuiltInLimbDrops.register();
 
         BLib.MOD.events().onPlayerStartTrackingEntity().register(BLib::syncDataForTrackedEntity);
@@ -205,6 +207,12 @@ public class BLib {
                                 if (player.connection != null) {
                                     BLibFactionManager.INSTANCE.syncAllFactionMetadataToPlayer(player);
                                     BLibTerritoryManager.INSTANCE.syncAllClaimsToPlayer(player);
+                                    BLib.MOD.networking()
+                                        .sendToClient(
+                                            player,
+                                            com.blib.mod.common.network.packet.S2CLimbDefinitionsSyncPayload
+                                                .snapshotFromRegistry()
+                                        );
                                 }
                             }
                         )

@@ -1,0 +1,10 @@
+{
+  "limbs": [
+    { "id": "blib:wither_skeleton_head", "category": "blib:head", "fatal": true },
+    { "id": "blib:wither_skeleton_body", "category": "blib:head" },
+    { "id": "blib:wither_skeleton_right_arm", "category": "blib:arm" },
+    { "id": "blib:wither_skeleton_left_arm", "category": "blib:arm" },
+    { "id": "blib:wither_skeleton_right_leg", "category": "blib:leg" },
+    { "id": "blib:wither_skeleton_left_leg", "category": "blib:leg" }
+  ]
+}

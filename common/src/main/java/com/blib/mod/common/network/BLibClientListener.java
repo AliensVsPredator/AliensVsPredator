@@ -6,6 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blib.api.common.data_sync.v1.model.DataUser;
+import com.blib.api.common.dismemberment.v1.LimbCategory;
+import com.blib.api.common.dismemberment.v1.LimbDefinition;
+import com.blib.api.common.dismemberment.v1.LimbDefinitionRegistry;
+import com.blib.api.common.dismemberment.v1.SpawnFunctionRegistry;
 import com.blib.engine.blockselection.BlockSelection;
 import com.blib.engine.blockselection.BlockSelectionClipboard;
 import com.blib.engine.history.ClientActionHistory;
@@ -33,6 +37,7 @@ import com.blib.mod.common.network.packet.S2CClipboardStatusPayload;
 import com.blib.mod.common.network.packet.S2CEntityDataSyncPayload;
 import com.blib.mod.common.network.packet.S2CFactionMetadataSyncPayload;
 import com.blib.mod.common.network.packet.S2CGOAPDebugPayload;
+import com.blib.mod.common.network.packet.S2CLimbDefinitionsSyncPayload;
 import com.blib.mod.common.network.packet.S2CMoveSelectionResultPayload;
 import com.blib.mod.common.network.packet.S2CPathfindingNavDebugPayload;
 import com.blib.mod.common.network.packet.S2CPathfindingSearchDebugPayload;
@@ -60,6 +65,31 @@ public final class BLibClientListener {
 
     public static void handleFactionMetadataSync(S2CFactionMetadataSyncPayload payload, Player player) {
         ClientFactionCache.INSTANCE.update(payload.factionId(), payload.name(), payload.color());
+    }
+
+    /**
+     * Replace tier-2 of {@link LimbDefinitionRegistry} with the server's snapshot. The reconstructed
+     * {@link LimbDefinition}s carry {@link SpawnFunctionRegistry#DEFAULT_PROVIDER} as a sentinel; the client never
+     * invokes the provider (spawn position is server-computed and arrives baked into the limb entity's position), so
+     * the no-op default is safe.
+     */
+    public static void handleLimbDefinitionsSync(S2CLimbDefinitionsSyncPayload payload, Player player) {
+        var next =
+            new java.util.LinkedHashMap<net.minecraft.resources.ResourceLocation, java.util.Map<net.minecraft.resources.ResourceLocation, LimbDefinition>>();
+        for (var bucket : payload.entries()) {
+            var perEntity = new java.util.LinkedHashMap<net.minecraft.resources.ResourceLocation, LimbDefinition>();
+            for (var entry : bucket.limbs()) {
+                var def = new LimbDefinition(
+                    entry.limbId(),
+                    new LimbCategory(entry.categoryId()),
+                    SpawnFunctionRegistry.DEFAULT_PROVIDER,
+                    entry.fatal()
+                );
+                perEntity.put(entry.limbId(), def);
+            }
+            next.put(bucket.entityTypeId(), perEntity);
+        }
+        LimbDefinitionRegistry.replaceTier2(next);
     }
 
     public static void handleEntityDataSync(S2CEntityDataSyncPayload entityDataSyncPayload, Player player) {

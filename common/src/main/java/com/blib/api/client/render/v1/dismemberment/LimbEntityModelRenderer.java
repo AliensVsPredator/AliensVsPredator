@@ -29,11 +29,13 @@ public class LimbEntityModelRenderer extends AzEntityModelRenderer<DismemberedLi
     @Override
     public void render(AzRendererPipelineContext<UUID, DismemberedLimbEntity> context, boolean isReRender) {
         var animatable = context.animatable();
-        var rootBoneName = animatable.getRootBoneName();
+        var visuals = animatable.resolveVisuals();
 
-        if (rootBoneName == null || rootBoneName.isEmpty()) {
+        if (visuals == null) {
             return;
         }
+
+        var rootBoneName = visuals.rootBoneName();
 
         // Pick the render path based on the source mob's renderer. AzEntityRenderer means BLib
         // geo bones; anything else (LivingEntityRenderer subclasses, etc.) means vanilla
@@ -97,17 +99,21 @@ public class LimbEntityModelRenderer extends AzEntityModelRenderer<DismemberedLi
         // Authored rotation around the limb's anchor. PoseStack composes right-to-left,
         // so applying Z then Y then X here matches the geo bone Z*Y*X convention once the
         // pivot translation below puts the bone anchor at the entity origin.
-        var renderRotation = animatable.getLimbRenderRotation();
+        var renderRotation = visuals.renderRotation();
         poseStack.mulPose(Axis.ZP.rotationDegrees((float) renderRotation.z));
         poseStack.mulPose(Axis.YP.rotationDegrees((float) renderRotation.y));
         poseStack.mulPose(Axis.XP.rotationDegrees((float) renderRotation.x));
+
+        // Authored scale around the limb anchor — applied after rotation so axes line up with the limb's local frame.
+        var renderScale = visuals.renderScale();
+        poseStack.scale((float) renderScale.x, (float) renderScale.y, (float) renderScale.z);
 
         // Bedrock cube vertices are stored in absolute model-space coordinates, so
         // when we render a single bone in isolation its geometry would draw at the
         // height it occupied on the original entity. Translating by the bone's
         // pivot puts the bone's anchor at the limb entity's origin; the
         // user-supplied render offset then nudges it into the hitbox.
-        var renderOffset = animatable.getLimbRenderOffset();
+        var renderOffset = visuals.renderOffset();
         poseStack.translate(
             -rootBone.getPivotX() / 16f + renderOffset.x,
             -rootBone.getPivotY() / 16f + renderOffset.y,
@@ -130,10 +136,8 @@ public class LimbEntityModelRenderer extends AzEntityModelRenderer<DismemberedLi
 
             // Companion bones live outside the root subtree but ride along with this limb (e.g. authored sibling
             // bones the modeler kept independent of the head bone). Render each at the same pose stack as the root.
-            var definition = animatable.resolveLimbDefinition();
-
-            if (definition != null && !definition.companionBoneNames().isEmpty()) {
-                for (var companionBoneName : definition.companionBoneNames()) {
+            if (!visuals.companionBoneNames().isEmpty()) {
+                for (var companionBoneName : visuals.companionBoneNames()) {
                     var companionBone = bakedModel.getBoneOrNull(companionBoneName);
 
                     if (companionBone != null) {

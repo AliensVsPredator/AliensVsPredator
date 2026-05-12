@@ -1,0 +1,13 @@
+{
+  "limbs": [
+    { "id": "blib:cave_spider_head", "category": "blib:head", "fatal": true },
+    { "id": "blib:cave_spider_right_hind_leg",          "category": "blib:leg" },
+    { "id": "blib:cave_spider_left_hind_leg",           "category": "blib:leg" },
+    { "id": "blib:cave_spider_right_middle_hind_leg",   "category": "blib:leg" },
+    { "id": "blib:cave_spider_left_middle_hind_leg",    "category": "blib:leg" },
+    { "id": "blib:cave_spider_right_middle_front_leg",  "category": "blib:leg" },
+    { "id": "blib:cave_spider_left_middle_front_leg",   "category": "blib:leg" },
+    { "id": "blib:cave_spider_right_front_leg",         "category": "blib:leg" },
+    { "id": "blib:cave_spider_left_front_leg",          "category": "blib:leg" }
+  ]
+}

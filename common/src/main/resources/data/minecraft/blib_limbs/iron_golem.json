@@ -1,0 +1,10 @@
+{
+  "limbs": [
+    { "id": "blib:iron_golem_head", "category": "blib:head", "fatal": true },
+    { "id": "blib:iron_golem_body", "category": "blib:head" },
+    { "id": "blib:iron_golem_right_arm", "category": "blib:arm" },
+    { "id": "blib:iron_golem_left_arm", "category": "blib:arm" },
+    { "id": "blib:iron_golem_right_leg", "category": "blib:leg" },
+    { "id": "blib:iron_golem_left_leg", "category": "blib:leg" }
+  ]
+}

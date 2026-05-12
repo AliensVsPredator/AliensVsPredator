@@ -1,0 +1,10 @@
+{
+  "limbs": [
+    { "id": "blib:stray_head", "category": "blib:head", "fatal": true },
+    { "id": "blib:stray_body", "category": "blib:head" },
+    { "id": "blib:stray_right_arm", "category": "blib:arm" },
+    { "id": "blib:stray_left_arm", "category": "blib:arm" },
+    { "id": "blib:stray_right_leg", "category": "blib:leg" },
+    { "id": "blib:stray_left_leg", "category": "blib:leg" }
+  ]
+}
