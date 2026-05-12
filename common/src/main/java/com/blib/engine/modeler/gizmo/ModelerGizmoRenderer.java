@@ -86,7 +86,13 @@ public final class ModelerGizmoRenderer {
 
         var built = buffer.build();
         if (built != null) {
+            // Draw the gizmo with depth test off so it always overlays the cubes — manipulators behind the cube
+            // would otherwise be invisible and only half-clickable. Picking is already independent of depth
+            // (screen-space distance against projected handle endpoints), so disabling depth here only affects
+            // the visual. Restored after the draw so the next render pass (next frame) starts from a clean state.
+            RenderSystem.disableDepthTest();
             BufferUploader.drawWithShader(built);
+            RenderSystem.enableDepthTest();
         }
 
         ModelerGizmoState.setLastRender(new ModelerGizmoState.RenderSnapshot(geometry, selection.owner(), selection.cube()));

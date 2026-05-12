@@ -20,10 +20,14 @@ import com.blib.engine.session.EngineCameraBasis;
 @ApiStatus.Internal
 public final class ModelerCamera {
 
-    /** Default yaw chosen so the camera sits NE-elevated looking SW-down at the origin on first open. */
-    public float yaw = 150f;
+    /**
+     * Default yaw + pitch chosen so the camera sits NW-elevated looking SE-down at the origin on first open. NW (camera
+     * at {@code (-X, +Y, -Z)}) gives a familiar Blockbench-style isometric angle; yaw=315° points the look direction
+     * toward SE (equal +X and +Z components) so the floor and seed cube are both clearly visible.
+     */
+    public float yaw = 315f;
 
-    public float pitch = 20f;
+    public float pitch = 30f;
 
     public float distance = 64f;
 
