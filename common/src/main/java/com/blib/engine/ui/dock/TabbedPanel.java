@@ -21,11 +21,14 @@ import com.blib.engine.ui.panel.viewport.ViewportPanel;
  * {@link com.blib.engine.ui.EngineWorkspaceScreen}: the panel exposes hit-test queries against its tab strip, and the
  * screen owns the drag state machine so tabs can move <em>between</em> {@code TabbedPanel}s as well as within one.
  * <p>
+ * Input forwarding to the active tab lives in {@link DelegatingPanel} — adding a new {@code Panel} method only requires
+ * a single override there; this class no longer needs to spell out every forward.
+ * <p>
  * An empty {@code TabbedPanel} renders as just a tab-strip background — the user can drop a tab from another panel into
  * it to repopulate.
  */
 @ApiStatus.Internal
-public final class TabbedPanel implements Panel {
+public final class TabbedPanel extends DelegatingPanel {
 
     public static final int TAB_BAR_HEIGHT = 12;
 
@@ -279,61 +282,15 @@ public final class TabbedPanel implements Panel {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        // Tab-strip clicks are handled by the workspace screen (so tab drag can span panels). Only delegate
-        // content-area clicks to the active tab.
-        if (mouseY < rectY + TAB_BAR_HEIGHT) {
-            return false;
-        }
-        var active = activeTab();
-        return active != null && active.mouseClicked(mouseX, mouseY, button);
+    protected @Nullable Panel activeChild() {
+        return activeTab();
     }
 
     @Override
-    public boolean mouseClickedCapture(double mouseX, double mouseY, int button) {
-        // Forward to the active tab so panel-internal capture-eligible UI (e.g. scrollbars) can claim clicks before
-        // the screen's divider hit-test runs. Tab-strip area is never a capture target — those clicks are handled
-        // by the screen's tab-drag state machine.
-        if (mouseY < rectY + TAB_BAR_HEIGHT) {
-            return false;
-        }
-        var active = activeTab();
-        return active != null && active.mouseClickedCapture(mouseX, mouseY, button);
-    }
-
-    @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        if (mouseY < rectY + TAB_BAR_HEIGHT) {
-            return false;
-        }
-        var active = activeTab();
-        return active != null && active.mouseReleased(mouseX, mouseY, button);
-    }
-
-    @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        if (mouseY < rectY + TAB_BAR_HEIGHT) {
-            return false;
-        }
-        var active = activeTab();
-        return active != null && active.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
-    }
-
-    @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        if (mouseY < rectY + TAB_BAR_HEIGHT) {
-            return false;
-        }
-        var active = activeTab();
-        return active != null && active.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
-    }
-
-    @Override
-    public @Nullable Component tooltipText() {
-        // Forward to the active tab — the active tab's render() received the mouse coords and already cached its
-        // own tooltip if applicable. Tab-strip tooltips (e.g. full title on hover) aren't implemented here yet.
-        var active = activeTab();
-        return active != null ? active.tooltipText() : null;
+    protected boolean inContentArea(double mouseX, double mouseY) {
+        // Tab-strip clicks are owned by the workspace screen so tab drag can span panels; everything below the strip
+        // is content and forwards to the active tab.
+        return mouseY >= rectY + TAB_BAR_HEIGHT;
     }
 
     private record TabRect(

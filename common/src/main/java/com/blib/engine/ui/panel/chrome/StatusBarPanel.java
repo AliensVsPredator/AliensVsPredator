@@ -20,9 +20,10 @@ import com.blib.engine.jigsaw.JigsawPieceSelection;
 import com.blib.engine.jigsaw.placement.JigsawPlacementFrameState;
 import com.blib.engine.jigsaw.placement.JigsawTool;
 import com.blib.engine.layout.LayoutCatalog;
+import com.blib.engine.runtime.tool.ActiveTool;
+import com.blib.engine.runtime.tool.ToolStateMachine;
 import com.blib.engine.session.EngineMode;
 import com.blib.engine.session.ProjectSession;
-import com.blib.engine.session.ToolMode;
 import com.blib.engine.territory.ClaimPaintTool;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.EngineWorkspaceScreen;
@@ -131,8 +132,10 @@ public final class StatusBarPanel implements Panel {
         segments.add(new StateSegment("LAYOUT: ", layoutValue, VALUE_COLOR));
 
         var session = EngineMode.get().session();
-        var toolMode = session != null ? session.toolMode() : ToolMode.SELECT;
-        segments.add(new StateSegment("MODE: ", toolMode.name(), VALUE_COLOR));
+        // Tool readout uses {@link ActiveTool} (the canonical state machine), not the old derived SELECT/PLACE view.
+        // Outside an engine session we have no state machine to ask, so fall back to the default.
+        var tool = session != null ? ToolStateMachine.get().active() : ActiveTool.SELECT;
+        segments.add(new StateSegment("MODE: ", tool.name(), VALUE_COLOR));
 
         var picking = BlockSelection.picking();
         if (picking != BlockSelection.PickingState.NONE) {

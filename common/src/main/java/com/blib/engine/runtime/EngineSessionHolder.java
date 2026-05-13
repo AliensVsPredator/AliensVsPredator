@@ -12,8 +12,8 @@ import com.blib.engine.core.lifecycle.EngineSessionScope;
  * <p>
  * Step 9 of the engine architecture refactor: this holder + {@link ServiceContainer} (owned by the session scope)
  * replace the engine's per-feature static singletons. Each subsequent service migration removes one static class and
- * registers an instance with the session's container — accessible via {@link EngineSessionHolder#get()
- * EngineSessionHolder.get().services()}.
+ * registers an instance with the session's container — accessible via {@link #current()} →
+ * {@code .services().require(MyService.class)}.
  */
 @ApiStatus.Internal
 public final class EngineSessionHolder {

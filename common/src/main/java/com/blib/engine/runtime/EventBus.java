@@ -5,35 +5,44 @@ import org.jetbrains.annotations.ApiStatus;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 
+import com.blib.engine.core.lifecycle.EngineSessionScope;
+
 /**
- * Synchronous, in-process event bus scoped to a single engine session. The current implementation is a static singleton
- * so existing static callers (tool singletons, panels, etc.) can publish/subscribe without threading an instance
- * through their call chains; {@link com.blib.engine.session.EngineMode#enter} registers a {@code scope.onClose} that
- * drains the subscriber map so listeners installed during one session don't leak into the next.
+ * Synchronous, in-process event bus owned by the active {@link EngineSessionScope}. A fresh instance is created on
+ * every engine activation and registered in the scope's {@code ServiceContainer}, so subscribers from one session can't
+ * leak into the next — the previous instance is dropped on scope close.
  * <p>
- * Step 9 of the engine architecture refactor promotes services to instances; at that point the bus moves into
- * {@code SessionScope} and the static accessor is deleted. The API shape here is forward-compatible.
+ * {@link #get()} routes through {@link EngineSessionHolder#current()} for callers (panels, tool singletons, mixin entry
+ * points) that don't have a scope reference threaded in. It throws if no session is active — callers must gate on
+ * engine state before publishing.
  */
 @ApiStatus.Internal
 public final class EventBus {
 
-    private static final EventBus INSTANCE = new EventBus();
+    private final HashMap<Class<?>, List<Consumer<?>>> handlers = new HashMap<>();
 
-    private final Map<Class<?>, List<Consumer<?>>> handlers = new HashMap<>();
+    public EventBus() {}
 
-    private EventBus() {}
-
+    /**
+     * The active session's bus. Looks up the instance via {@link EngineSessionHolder}, which is set by
+     * {@code EngineMode.enter} before any subscribers are installed.
+     *
+     * @throws IllegalStateException if called outside an engine session
+     */
     public static EventBus get() {
-        return INSTANCE;
+        var scope = EngineSessionHolder.current();
+        if (scope == null) {
+            throw new IllegalStateException("EventBus.get() called outside an engine session");
+        }
+        return scope.services().require(EventBus.class);
     }
 
     /**
      * Subscribe to events of the given type for the remainder of the active engine session. Handlers are dropped when
-     * {@link #clear()} is called on session close. Re-subscribing on the next session is the caller's responsibility —
-     * typically done from the singleton's {@code installToolListener()} hook invoked at session enter.
+     * the bus instance is collected on session close. Re-subscribing on the next session is the caller's responsibility
+     * — typically done from the tool singleton's {@code installToolListener()} hook invoked at session enter.
      */
     public <E> void subscribe(Class<E> type, Consumer<E> handler) {
         handlers.computeIfAbsent(type, k -> new ArrayList<>()).add(handler);
@@ -56,10 +65,5 @@ public final class EventBus {
                 // Swallow so a single faulty listener can't cancel the broadcast. Real fixes happen in the listener.
             }
         }
-    }
-
-    /** Drop every subscription. Wired to {@code EngineSessionScope.onClose} so the next session starts empty. */
-    public void clear() {
-        handlers.clear();
     }
 }

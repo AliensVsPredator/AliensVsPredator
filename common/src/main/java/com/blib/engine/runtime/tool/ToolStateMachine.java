@@ -2,6 +2,7 @@ package com.blib.engine.runtime.tool;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import com.blib.engine.runtime.EngineSessionHolder;
 import com.blib.engine.runtime.EventBus;
 
 /**
@@ -9,21 +10,29 @@ import com.blib.engine.runtime.EventBus;
  * tool's static singleton can self-disarm when another tool takes over, instead of having every tool's
  * {@code select()/activate()} method call {@code .clear()} on every other tool's singleton.
  * <p>
- * Static singleton for parity with the existing engine state model; promoted to a session-scoped instance in Step 9
- * when {@code SessionScope} owns all services. {@link #reset} is registered on the session scope so the active tool
- * always starts at {@link ActiveTool#SELECT} for a fresh session.
+ * Session-scoped instance owned by {@code EngineSessionScope.services()}: a fresh state machine is created on every
+ * engine activation and discarded on close, so the active tool always starts at {@link ActiveTool#SELECT} for a fresh
+ * session without an explicit reset.
  */
 @ApiStatus.Internal
 public final class ToolStateMachine {
 
-    private static final ToolStateMachine INSTANCE = new ToolStateMachine();
-
     private ActiveTool active = ActiveTool.SELECT;
 
-    private ToolStateMachine() {}
+    public ToolStateMachine() {}
 
+    /**
+     * The active session's tool state machine. Looks up the instance via {@link EngineSessionHolder}, which is set by
+     * {@code EngineMode.enter} before any subscribers are installed.
+     *
+     * @throws IllegalStateException if called outside an engine session
+     */
     public static ToolStateMachine get() {
-        return INSTANCE;
+        var scope = EngineSessionHolder.current();
+        if (scope == null) {
+            throw new IllegalStateException("ToolStateMachine.get() called outside an engine session");
+        }
+        return scope.services().require(ToolStateMachine.class);
     }
 
     public ActiveTool active() {
@@ -42,10 +51,5 @@ public final class ToolStateMachine {
         var previous = active;
         active = tool;
         EventBus.get().publish(new ToolChangedEvent(previous, tool));
-    }
-
-    /** Restore the default armed tool. Wired to {@code EngineSessionScope.onClose} via {@code EngineMode.enter}. */
-    public void reset() {
-        active = ActiveTool.SELECT;
     }
 }

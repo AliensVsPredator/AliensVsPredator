@@ -83,10 +83,23 @@ public final class EngineMode {
         session = new EngineSession(eye.x, eye.y, eye.z, player.getYRot(), player.getXRot());
         var scope = new EngineSessionScope();
 
+        // Register kernel services in the scope's ServiceContainer before anything else runs. The session holder is
+        // set here too — listeners installed below call {@code EventBus.get()}, which routes through the holder, so it
+        // has to be wired up first. Service instances are dropped on scope close (services.clear()), so a stale bus
+        // can never leak into the next session.
+        scope.services().put(com.blib.engine.runtime.EventBus.class, new com.blib.engine.runtime.EventBus());
+        scope.services()
+            .put(
+                com.blib.engine.runtime.tool.ToolStateMachine.class,
+                new com.blib.engine.runtime.tool.ToolStateMachine()
+            );
+        sessionScope = scope;
+        com.blib.engine.runtime.EngineSessionHolder.set(scope);
+
         // Install the per-session tool-mutual-exclusion subscribers. Each tool's static singleton subscribes to
         // ToolChangedEvent so it can disarm itself when another tool becomes active — replacing the prior O(N²)
-        // graph of {@code Foo.select() → Bar.clear()} cross-singleton calls. The bus is drained on session exit so
-        // listeners don't accumulate across sessions.
+        // graph of {@code Foo.select() → Bar.clear()} cross-singleton calls. Subscribers belong to the session's
+        // bus instance, which is dropped on close so they don't accumulate across sessions.
         com.blib.engine.jigsaw.JigsawPieceSelection.installToolListener();
         com.blib.engine.spawn.EntitySpawnSelection.installToolListener();
         com.blib.engine.domain.selection.volume.BlockSelection.installToolListener();
@@ -163,15 +176,8 @@ public final class EngineMode {
         // Captured render-frame matrices referenced the engine's camera — drop them so the next open repopulates.
         scope.onClose(com.blib.engine.session.EngineCameraFrame::clear);
 
-        // Tool state machine + event bus reset last (so they fire LIFO-first on close, before any listeners that
-        // might still react to a tool-change broadcast during teardown — though listeners are also drained below).
-        scope.onClose(com.blib.engine.runtime.tool.ToolStateMachine.get()::reset);
-        scope.onClose(com.blib.engine.runtime.EventBus.get()::clear);
-
-        sessionScope = scope;
-        // Publish the scope to the single static holder used by mixin entry points. The holder is the one static that
-        // survives Step 9's "kill statics" refactor — everything else routes through the scope's ServiceContainer.
-        com.blib.engine.runtime.EngineSessionHolder.set(scope);
+        // The tool state machine and event bus are now session-scoped instances registered above; they're dropped on
+        // scope close, so no explicit reset/clear is needed here.
 
         // Request the server's PlacedPiece set for the current dimension so the client's hover / selection mirror is
         // populated for the very first frame of engine mode. The reply broadcasts to all engine-mode players, but in

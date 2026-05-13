@@ -4,14 +4,12 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 
-import com.blib.engine.jigsaw.JigsawPieceSelection;
-
 /**
- * Mutable per-activation state for {@link EngineMode}. Holds the freecam transform (current and previous-tick for
- * partial-tick interpolation), navigation-mode state, and accumulated mouse input.
+ * Mutable per-activation state for {@link EngineMode}. Holds the freecam transform (current and previous-tick pose for
+ * partial-tick interpolation), the active {@link NavigationMode}, and the orbit-camera pivot.
  * <p>
- * All fields are written from the client thread (input handlers and the tick callback) and read from the camera mixin
- * during render. Single-threaded by design — Minecraft client work is.
+ * Single-threaded by design — written from the client thread (input handlers and the tick callback) and read from the
+ * camera mixin during render.
  */
 @ApiStatus.Internal
 public final class EngineSession {
@@ -32,40 +30,6 @@ public final class EngineSession {
 
     /** Pivot point used by orbit/zoom math. Set on LMB-press in orbit mode; carries through pan/zoom. */
     private Vec3 pivot;
-
-    private double pendingMouseDx;
-
-    private double pendingMouseDy;
-
-    /** Mouse wheel delta accumulated by {@code MouseHandler.onScroll}; consumed during tick. */
-    private double pendingScrollDy;
-
-    /** Previous-tick mouse-button state for edge detection. */
-    private boolean prevLeftDown;
-
-    private boolean prevRightDown;
-
-    /**
-     * Total mouse-pixel distance accumulated since the current LMB press. Used to disambiguate click (under threshold)
-     * from drag (over threshold) so clicks can mean "select" while drags mean "orbit".
-     */
-    private double lmbDragDistance;
-
-    /**
-     * Set true once the current LMB press has crossed the drag threshold. Latches until release. Orbit math runs only
-     * while this is true; before then the press is still a "potential click".
-     */
-    private boolean orbitDragActive;
-
-    /**
-     * Event-buffered LMB press / release. Mouse events fire on the client thread between tick boundaries; a fast click
-     * can press and release entirely within one tick window, so polling {@code isLeftPressed} from the tick handler
-     * would miss it. The mouse mixin sets these flags the moment {@code MouseHandler.onPress} fires; the tick handler
-     * consumes them.
-     */
-    private boolean lmbPressPending;
-
-    private boolean lmbReleasePending;
 
     EngineSession(double x, double y, double z, float yaw, float pitch) {
         this.prevX = this.cameraX = x;
@@ -107,16 +71,6 @@ public final class EngineSession {
 
     public void setMode(NavigationMode mode) {
         this.mode = mode;
-    }
-
-    /**
-     * Derived high-level tool state — {@link ToolMode#PLACE} while the user has a jigsaw piece on the cursor, otherwise
-     * {@link ToolMode#SELECT}. Read-only for now (no setter); recomputed on every call so it always matches the live
-     * selection. Status bar and cursor swap query this rather than poking at {@link JigsawPieceSelection} directly so
-     * the future explicit tool system can take over with no caller changes.
-     */
-    public ToolMode toolMode() {
-        return ToolMode.from(JigsawPieceSelection.hasSelection());
     }
 
     public Vec3 pivot() {
@@ -164,88 +118,5 @@ public final class EngineSession {
     public void setRotation(float yaw, float pitch) {
         this.yaw = yaw;
         this.pitch = Math.max(-89.9f, Math.min(89.9f, pitch));
-    }
-
-    public void addMouseDelta(double dx, double dy) {
-        pendingMouseDx += dx;
-        pendingMouseDy += dy;
-    }
-
-    public double consumeMouseDx() {
-        var v = pendingMouseDx;
-        pendingMouseDx = 0;
-        return v;
-    }
-
-    public double consumeMouseDy() {
-        var v = pendingMouseDy;
-        pendingMouseDy = 0;
-        return v;
-    }
-
-    public void addScroll(double dy) {
-        pendingScrollDy += dy;
-    }
-
-    public double consumeScrollDy() {
-        var v = pendingScrollDy;
-        pendingScrollDy = 0;
-        return v;
-    }
-
-    public boolean prevLeftDown() {
-        return prevLeftDown;
-    }
-
-    public void setPrevLeftDown(boolean v) {
-        this.prevLeftDown = v;
-    }
-
-    public boolean prevRightDown() {
-        return prevRightDown;
-    }
-
-    public void setPrevRightDown(boolean v) {
-        this.prevRightDown = v;
-    }
-
-    public double lmbDragDistance() {
-        return lmbDragDistance;
-    }
-
-    public void resetLmbDragDistance() {
-        this.lmbDragDistance = 0;
-    }
-
-    public void addLmbDragDistance(double v) {
-        this.lmbDragDistance += v;
-    }
-
-    public boolean orbitDragActive() {
-        return orbitDragActive;
-    }
-
-    public void setOrbitDragActive(boolean v) {
-        this.orbitDragActive = v;
-    }
-
-    public void notifyLmbPressed() {
-        this.lmbPressPending = true;
-    }
-
-    public void notifyLmbReleased() {
-        this.lmbReleasePending = true;
-    }
-
-    public boolean consumeLmbPressEvent() {
-        var v = lmbPressPending;
-        lmbPressPending = false;
-        return v;
-    }
-
-    public boolean consumeLmbReleaseEvent() {
-        var v = lmbReleasePending;
-        lmbReleasePending = false;
-        return v;
     }
 }

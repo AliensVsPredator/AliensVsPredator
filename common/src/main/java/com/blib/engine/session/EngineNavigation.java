@@ -68,11 +68,11 @@ public final class EngineNavigation {
      */
     public static void beginOrbitDrag(EngineSession session, double relX, double relY) {
         session.setPivot(computePivot(session, relX, relY));
-        session.setOrbitDragActive(true);
     }
 
     public static void endOrbitDrag(EngineSession session) {
-        session.setOrbitDragActive(false);
+        // No-op now that orbit-drag-active state is gone (no callers ever read it). Kept as a named entry point so the
+        // viewport's gesture-end callsites remain symmetric with {@link #beginOrbitDrag}.
     }
 
     /**

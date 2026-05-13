@@ -279,17 +279,34 @@ public final class BlockSelection {
     }
 
     /**
-     * Install the subscriber that drops volume state when any other tool becomes active. Called once per session from
-     * {@link com.blib.engine.session.EngineMode#enter}. Uses {@link #clearVolume} (not {@link #clear}) so
-     * user-preference fields like capture mode and gizmo mode survive a tool switch — the prior in-place
+     * Install the subscribers that drop volume state when something else takes over the workspace's selection focus.
+     * Called once per session from {@link com.blib.engine.session.EngineMode#enter}. Uses {@link #clearVolume} (not
+     * {@link #clear}) so user-preference fields like capture mode and gizmo mode survive — the prior in-place
      * {@code BlockSelection.clear()} cross-singleton calls used the full clear and wiped these preferences as
      * collateral damage.
+     * <p>
+     * Two triggers:
+     * <ul>
+     * <li><b>Tool change</b> — switching to any non-volume tool drops the corners.</li>
+     * <li><b>Selection change</b> — picking an entity/jigsaw/block also drops the corners, because the wireframe +
+     * gizmos + RMB context menu can't sensibly coexist with a single-thing inspector. Prior to this listener the volume
+     * lingered any time the user clicked a non-volume target while still on the BLOCK_VOLUME tool.</li>
+     * </ul>
      */
     public static void installToolListener() {
-        EventBus.get().subscribe(ToolChangedEvent.class, e -> {
+        var bus = EventBus.get();
+        bus.subscribe(ToolChangedEvent.class, e -> {
             if (e.current() != ActiveTool.BLOCK_VOLUME && (cornerA != null || cornerB != null)) {
                 clearVolume();
             }
         });
+        bus.subscribe(
+            com.blib.engine.domain.selection.picking.event.SelectionChangedEvent.class,
+            e -> {
+                if (!e.current().isEmpty() && (cornerA != null || cornerB != null)) {
+                    clearVolume();
+                }
+            }
+        );
     }
 }

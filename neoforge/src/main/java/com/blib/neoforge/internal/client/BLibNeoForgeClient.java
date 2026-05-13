@@ -5,9 +5,8 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import org.jetbrains.annotations.ApiStatus;
 
-import com.blib.engine.neoforge.BLibNeoForgeEngineMode;
-import com.blib.engine.neoforge.BLibNeoForgeGizmoPreview;
-import com.blib.engine.neoforge.BLibNeoForgeKeyBindings;
+import com.blib.engine.neoforge.BLibNeoForgeEnginePlatform;
+import com.blib.engine.platform.EngineBootstrap;
 import com.blib.internal.client.BLibClient;
 import com.blib.mod.BLib;
 import com.blib.neoforge.internal.client.shader.BLibNeoForgeShaders;
@@ -21,8 +20,6 @@ public class BLibNeoForgeClient {
         BLibNeoForgeShaders.register(modEventBus);
         BLibNeoForgeGOAPDebugHUD.register();
         BLibNeoForgePathfindingNavDebugHUD.register();
-        BLibNeoForgeEngineMode.register();
-        BLibNeoForgeGizmoPreview.register();
-        BLibNeoForgeKeyBindings.register(modEventBus);
+        EngineBootstrap.install(new BLibNeoForgeEnginePlatform(modEventBus));
     }
 }

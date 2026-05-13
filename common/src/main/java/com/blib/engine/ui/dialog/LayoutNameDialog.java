@@ -14,7 +14,6 @@ import com.blib.engine.input.KeybindingProfileCatalog;
 import com.blib.engine.layout.LayoutCatalog;
 import com.blib.engine.layout.LayoutDoc;
 import com.blib.engine.ui.EngineFont;
-import com.blib.engine.ui.modal.ModalDialog;
 import com.blib.engine.ui.widget.TextInput;
 
 /**
@@ -30,12 +29,7 @@ import com.blib.engine.ui.widget.TextInput;
  * {@link Mode#RENAME} accepts the original id even if it would otherwise count as "taken").
  */
 @ApiStatus.Internal
-public final class LayoutNameDialog extends ModalDialog {
-
-    @Override
-    public String tag() {
-        return "layout_name";
-    }
+public final class LayoutNameDialog {
 
     public enum Mode {
 
