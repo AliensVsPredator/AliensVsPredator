@@ -14,6 +14,8 @@ import com.blib.engine.domain.selection.picking.SelectionManager;
 import com.blib.engine.domain.selection.picking.TagSelectable;
 import com.blib.engine.domain.selection.volume.BlockSelection;
 import com.blib.engine.domain.selection.volume.BlockSelectionClipboard;
+import com.blib.engine.domain.selection.volume.PendingCaptureResult;
+import com.blib.engine.domain.selection.volume.PendingMoveResult;
 import com.blib.engine.history.ClientActionHistory;
 import com.blib.engine.jigsaw.ClientPlacedPieceRegistry;
 import com.blib.engine.jigsaw.ProjectDraftCache;
@@ -168,9 +170,12 @@ public final class BLibClientListener {
             }
         }
         // CAPTURE results go to BlockSelection so the Capture Panel can pick them up next render — the picker's
-        // callback channel is for project create/delete/open/reload, and the panel is its own consumer.
+        // callback channel is for project create/delete/open/reload, and the panel is its own consumer. Wrap the
+        // network payload in the domain {@link PendingCaptureResult} so BlockSelection doesn't import packet types.
         if (op == ProjectOp.CAPTURE) {
-            BlockSelection.setPendingCaptureResult(payload);
+            BlockSelection.setPendingCaptureResult(
+                new PendingCaptureResult(payload.success(), payload.projectName(), payload.errorMessage())
+            );
         }
         // Hand off to whatever screen is currently waiting on op replies (typically the picker). The session no-ops
         // when no callback is registered, so a delayed reply that lands after the picker closed is harmless.
@@ -288,7 +293,7 @@ public final class BLibClientListener {
             BlockSelection.translateCorners(offset.getX(), offset.getY(), offset.getZ());
         }
         BlockSelection.setMoveOffset(null);
-        BlockSelection.setPendingMoveResult(payload);
+        BlockSelection.setPendingMoveResult(new PendingMoveResult(payload.success(), payload.message(), payload.blockCount()));
     }
 
     /**

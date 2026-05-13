@@ -1,14 +1,13 @@
 package com.blib.engine.domain.selection.volume;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import org.jetbrains.annotations.ApiStatus;
 
+import com.blib.engine.domain.selection.volume.event.BlockVolumeCopyRequested;
+import com.blib.engine.domain.selection.volume.event.BlockVolumeDeleteRequested;
+import com.blib.engine.domain.selection.volume.event.BlockVolumePasteRequested;
+import com.blib.engine.runtime.EventBus;
 import com.blib.internal.common.clipboard.BlockClipboardEngine;
-import com.blib.mod.BLib;
-import com.blib.mod.common.network.packet.C2SCopySelectionPayload;
-import com.blib.mod.common.network.packet.C2SDeleteSelectionPayload;
-import com.blib.mod.common.network.packet.C2SPasteFromClipboardPayload;
 
 /**
  * Shared op-fire helpers for the clipboard / delete operations on the current {@link BlockSelection}. Used by both the
@@ -18,6 +17,10 @@ import com.blib.mod.common.network.packet.C2SPasteFromClipboardPayload;
  * All methods are no-ops when their preconditions aren't met (no AABB / volume too big / empty clipboard) — callers can
  * fire blindly without re-checking guards. UI affordance (button enabled/disabled) reads {@link #canCopy} /
  * {@link #canPaste} / {@link #canDelete} for the same gating logic.
+ * <p>
+ * Networking is delegated: each op publishes a domain event on the {@link EventBus}, and the network adapter
+ * ({@code BlockVolumeNetAdapter}) translates the event into a packet. The domain layer never imports packet types,
+ * which keeps it possible to drive these ops from tests or alternate transports without touching the domain.
  */
 @ApiStatus.Internal
 public final class BlockSelectionOps {
@@ -41,19 +44,9 @@ public final class BlockSelectionOps {
             return;
         }
         var aabb = BlockSelection.aabb().orElseThrow();
-        var minX = (int) Math.floor(aabb.minX);
-        var minY = (int) Math.floor(aabb.minY);
-        var minZ = (int) Math.floor(aabb.minZ);
-        var maxX = (int) Math.floor(aabb.maxX) - 1;
-        var maxY = (int) Math.floor(aabb.maxY) - 1;
-        var maxZ = (int) Math.floor(aabb.maxZ) - 1;
-        var mc = Minecraft.getInstance();
-        if (mc.player == null) {
-            return;
-        }
-        var dim = mc.player.level().dimension().location();
-        BLib.MOD.networking()
-            .sendToServer(new C2SCopySelectionPayload(new BlockPos(minX, minY, minZ), new BlockPos(maxX, maxY, maxZ), cut, dim));
+        var min = new BlockPos((int) Math.floor(aabb.minX), (int) Math.floor(aabb.minY), (int) Math.floor(aabb.minZ));
+        var max = new BlockPos((int) Math.floor(aabb.maxX) - 1, (int) Math.floor(aabb.maxY) - 1, (int) Math.floor(aabb.maxZ) - 1);
+        EventBus.get().publish(new BlockVolumeCopyRequested(min, max, cut));
         if (cut) {
             // Cut = copy + delete; clearing the AABB matches what delete() does and avoids leaving a wireframe over
             // empty air. Plain copy intentionally keeps the AABB so the user can see what they captured.
@@ -73,12 +66,7 @@ public final class BlockSelectionOps {
         }
         var aabb = BlockSelection.aabb().orElseThrow();
         var dest = new BlockPos((int) Math.floor(aabb.minX), (int) Math.floor(aabb.minY), (int) Math.floor(aabb.minZ));
-        var mc = Minecraft.getInstance();
-        if (mc.player == null) {
-            return;
-        }
-        var dim = mc.player.level().dimension().location();
-        BLib.MOD.networking().sendToServer(new C2SPasteFromClipboardPayload(dest, dim));
+        EventBus.get().publish(new BlockVolumePasteRequested(dest));
 
         // Optimistic AABB shift to wrap the pasted volume.
         var sx = BlockSelectionClipboard.sizeX();
@@ -92,19 +80,9 @@ public final class BlockSelectionOps {
             return;
         }
         var aabb = BlockSelection.aabb().orElseThrow();
-        var minX = (int) Math.floor(aabb.minX);
-        var minY = (int) Math.floor(aabb.minY);
-        var minZ = (int) Math.floor(aabb.minZ);
-        var maxX = (int) Math.floor(aabb.maxX) - 1;
-        var maxY = (int) Math.floor(aabb.maxY) - 1;
-        var maxZ = (int) Math.floor(aabb.maxZ) - 1;
-        var mc = Minecraft.getInstance();
-        if (mc.player == null) {
-            return;
-        }
-        var dim = mc.player.level().dimension().location();
-        BLib.MOD.networking()
-            .sendToServer(new C2SDeleteSelectionPayload(new BlockPos(minX, minY, minZ), new BlockPos(maxX, maxY, maxZ), dim));
+        var min = new BlockPos((int) Math.floor(aabb.minX), (int) Math.floor(aabb.minY), (int) Math.floor(aabb.minZ));
+        var max = new BlockPos((int) Math.floor(aabb.maxX) - 1, (int) Math.floor(aabb.maxY) - 1, (int) Math.floor(aabb.maxZ) - 1);
+        EventBus.get().publish(new BlockVolumeDeleteRequested(min, max));
         // The volume's blocks are about to be gone; leaving the AABB wireframe floating over empty space confuses
         // users into thinking the operation didn't apply. Optimistic clear matches what paste() does for AABB shift.
         BlockSelection.clear();

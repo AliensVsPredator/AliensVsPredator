@@ -1,7 +1,6 @@
 package com.blib.engine.domain.selection.picking;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
@@ -56,8 +55,11 @@ public final class EngineHoverProbe {
      * Re-run raycasts and update the cached hover target. Called every frame from
      * {@link com.blib.engine.ui.panel.viewport.ViewportPanel#render} when the cursor is inside the viewport rect.
      * {@code (relX, relY)} are in {@code [0, 1]} viewport-relative coords.
+     * <p>
+     * {@code ctrlHeld} is read by the caller from the UI input layer and passed in — the domain layer doesn't import
+     * {@code Screen.hasControlDown} so it stays independent of the gui framework.
      */
-    public static void update(EngineSession session, double relX, double relY) {
+    public static void update(EngineSession session, double relX, double relY, boolean ctrlHeld) {
         var mc = Minecraft.getInstance();
         if (mc.level == null || mc.player == null) {
             current = null;
@@ -100,8 +102,8 @@ public final class EngineHoverProbe {
         var blockHit = JigsawPlacementCursor.clipFromCursor(session);
         // Ctrl held = "give me the block under the piece" fallthrough — drill through the piece tier and pick whatever
         // block is at the cursor. Alt was the original choice but conflicts with the Linux window-manager's
-        // alt+drag-to-move gesture, so Ctrl is the portable substitute.
-        var ctrlHeld = Screen.hasControlDown();
+        // alt+drag-to-move gesture, so Ctrl is the portable substitute. {@code ctrlHeld} is passed in from the UI
+        // input layer rather than read via {@code Screen.hasControlDown()} so the domain stays gui-framework-agnostic.
         var pieceHit = ctrlHeld ? null : ClientPlacedPieceRegistry.raycast(origin, rayDir, EngineInteractionRange.MAX);
 
         var haveEntity = entityHit != null && entityHit.getEntity() instanceof LivingEntity;

@@ -82,10 +82,14 @@ public final class GizmoHoverPass {
     }
 
     private static void clearAll() {
-        BlockSelectionScaleGizmo.setHoveredFace(null);
+        // Registered adapters get cleared through the registry; legacy non-adapted gizmos still need direct calls.
+        // Phase-2 of the gizmo unification moves these direct calls away as each gizmo gets a registered adapter.
+        GizmoRegistry.clearAllHover();
         BlockSelectionTranslateGizmo.setHoveredAxis(null);
         MoveBlocksGizmo.setHoveredAxis(null);
         EntityTranslateGizmo.setHoveredAxis(null);
+        // BlockSelectionScaleGizmo + EntityScaleGizmo are now adapter-registered; clearAllHover above covers them.
+        BlockSelectionScaleGizmo.setHoveredFace(null);
         EntityScaleGizmo.setHovered(false);
     }
 

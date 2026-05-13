@@ -2,6 +2,9 @@ package com.blib.engine.domain.selection.picking;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import com.blib.engine.domain.selection.picking.event.SelectionChangedEvent;
+import com.blib.engine.runtime.EventBus;
+
 /**
  * Mutable singleton holding the workspace's current {@link Selection}. Replaces the per-session
  * {@code EngineSession.selectedEntity} field — selection now spans entities, blocks, limbs, and any other
@@ -9,6 +12,10 @@ import org.jetbrains.annotations.ApiStatus;
  * <p>
  * Reads return a snapshot; concurrent writes from other call sites can't tear partway through an inspector render since
  * {@link Selection} is immutable. Cleared on workspace close.
+ * <p>
+ * Publishes {@link SelectionChangedEvent} on every successful state change. Subscribers can react to the transition
+ * instead of polling {@link #current} every frame — Step 8 of the engine architecture refactor introduces the event to
+ * give panels and renderers a notification path. Polling readers continue to work unchanged.
  */
 @ApiStatus.Internal
 public final class SelectionManager {
@@ -36,22 +43,36 @@ public final class SelectionManager {
         if (!hasStale) {
             return current;
         }
+        var previous = current;
         var pruned = current.items().stream().filter(Selectable::isValid).toList();
         current = pruned.isEmpty() ? Selection.empty() : new Selection(pruned);
+        // Pruning is a state change too — subscribers that mirror selection state need the heads-up.
+        EventBus.get().publish(new SelectionChangedEvent(previous, current));
         return current;
     }
 
     /** Replace the selection wholesale. {@code null} maps to empty. */
     public static void replace(Selection selection) {
-        current = selection == null ? Selection.empty() : selection;
+        var next = selection == null ? Selection.empty() : selection;
+        if (next == current) {
+            return;
+        }
+        var previous = current;
+        current = next;
+        EventBus.get().publish(new SelectionChangedEvent(previous, current));
     }
 
     /** Convenience: replace with a single-item selection, or clear if {@code null}. */
     public static void selectSingle(Selectable selectable) {
-        current = selectable == null ? Selection.empty() : Selection.single(selectable);
+        replace(selectable == null ? Selection.empty() : Selection.single(selectable));
     }
 
     public static void clear() {
+        if (current.isEmpty()) {
+            return;
+        }
+        var previous = current;
         current = Selection.empty();
+        EventBus.get().publish(new SelectionChangedEvent(previous, current));
     }
 }

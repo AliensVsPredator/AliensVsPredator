@@ -248,7 +248,12 @@ public final class ViewportPanel implements Panel {
         if (session != null && inRect(mouseX, mouseY)) {
             var relX = (mouseX - rectX) / (double) rectWidth;
             var relY = (mouseY - rectY) / (double) rectHeight;
-            com.blib.engine.domain.selection.picking.EngineHoverProbe.update(session, relX, relY);
+            com.blib.engine.domain.selection.picking.EngineHoverProbe.update(
+                session,
+                relX,
+                relY,
+                net.minecraft.client.gui.screens.Screen.hasControlDown()
+            );
         } else {
             com.blib.engine.domain.selection.picking.EngineHoverProbe.clear();
         }

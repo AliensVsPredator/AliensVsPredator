@@ -58,6 +58,11 @@ public final class EngineMode {
     /**
      * Enter engine mode. Captures the player's current eye position/rotation as the freecam starting transform so the
      * camera doesn't snap when control flips over, and toggles {@code Options.hideGui} so the vanilla HUD disappears.
+     * <p>
+     * Every transient piece of state that lives for exactly one engine activation registers its cleanup on the session
+     * scope here. The list runs LIFO on {@link #exit()}, so the workspace screen's {@code removed()} no longer needs to
+     * repeat a parallel list of {@code Foo.clear()} calls — both lists used to drift out of sync whenever a new
+     * singleton was added.
      */
     public void enter() {
         if (session != null) {
@@ -77,10 +82,96 @@ public final class EngineMode {
         var eye = player.getEyePosition(1.0F);
         session = new EngineSession(eye.x, eye.y, eye.z, player.getYRot(), player.getXRot());
         var scope = new EngineSessionScope();
+
+        // Install the per-session tool-mutual-exclusion subscribers. Each tool's static singleton subscribes to
+        // ToolChangedEvent so it can disarm itself when another tool becomes active — replacing the prior O(N²)
+        // graph of {@code Foo.select() → Bar.clear()} cross-singleton calls. The bus is drained on session exit so
+        // listeners don't accumulate across sessions.
+        com.blib.engine.jigsaw.JigsawPieceSelection.installToolListener();
+        com.blib.engine.spawn.EntitySpawnSelection.installToolListener();
+        com.blib.engine.domain.selection.volume.BlockSelection.installToolListener();
+        com.blib.engine.territory.ClaimPaintTool.installToolListener();
+
+        // Install the network adapters. Each adapter subscribes to a domain event type and translates it into the
+        // matching C2S packet — the domain layer publishes events without importing packet types.
+        com.blib.engine.net.BlockVolumeNetAdapter.install();
+
+        // Wire the unified-gizmo adapters into GizmoRegistry. Phase-1: adapters are facades over the existing static
+        // gizmo classes; the registry is now the active dispatch surface (e.g. {@code GizmoRegistry.clearAllHover()} on
+        // session exit). Phase-2 moves each gizmo's static state into its adapter so the registry is the sole owner.
+        com.blib.engine.tool.gizmo.GizmoRegistry
+            .register(com.blib.engine.tool.gizmo.adapter.BlockSelectionScaleGizmoAdapter.INSTANCE);
+        com.blib.engine.tool.gizmo.GizmoRegistry
+            .register(com.blib.engine.tool.gizmo.adapter.EntityScaleGizmoAdapter.INSTANCE);
+        scope.onClose(
+            () -> com.blib.engine.tool.gizmo.GizmoRegistry
+                .unregister(com.blib.engine.tool.gizmo.adapter.BlockSelectionScaleGizmoAdapter.INSTANCE)
+        );
+        scope.onClose(
+            () -> com.blib.engine.tool.gizmo.GizmoRegistry
+                .unregister(com.blib.engine.tool.gizmo.adapter.EntityScaleGizmoAdapter.INSTANCE)
+        );
+
+        // Session-scoped client caches that mirror server-authoritative state.
         scope.onClose(com.blib.engine.tag.TagStagingCache::clear);
         scope.onClose(com.blib.engine.jigsaw.ClientPlacedPieceRegistry::clear);
         scope.onClose(com.blib.engine.history.ClientActionHistory.INSTANCE::clear);
+        scope.onClose(com.blib.engine.tag.TagDraftCache::clear);
+        scope.onClose(com.blib.engine.tag.TagCatalogCache::clear);
+        scope.onClose(com.blib.engine.tag.RegistryEntriesCache::clear);
+        scope.onClose(com.blib.engine.jigsaw.ProjectDraftCache::clear);
+        scope.onClose(com.blib.engine.projectcontents.ProjectContents::clear);
+        scope.onClose(com.blib.internal.client.faction.ClientFactionDirectoryCache::clear);
+        scope.onClose(com.blib.internal.client.faction.ClientFactionInspectionCache::clear);
+        scope.onClose(com.blib.internal.client.faction.ClientFactionMembersCache::clear);
+        scope.onClose(com.blib.internal.client.faction.ClientEntityFactionsCache::clear);
+
+        // Selection / tool / picking state.
+        scope.onClose(com.blib.engine.domain.selection.picking.SelectionManager::clear);
+        scope.onClose(com.blib.engine.domain.selection.picking.EngineHoverProbe::clear);
+        scope.onClose(com.blib.engine.domain.selection.volume.BlockSelection::clear);
+        scope.onClose(com.blib.engine.jigsaw.JigsawPieceSelection::clear);
+        scope.onClose(com.blib.engine.jigsaw.JigsawPoolSelection::clear);
+        scope.onClose(com.blib.engine.spawn.EntitySpawnSelection::clear);
+        scope.onClose(com.blib.engine.territory.ClaimPaintTool::deactivate);
+
+        // Gizmo drag/hover state — a stray drag-in-progress at close shouldn't continue against fresh state on the
+        // next engine open.
+        scope.onClose(com.blib.engine.domain.selection.volume.BlockSelectionScaleGizmo::clear);
+        scope.onClose(com.blib.engine.domain.selection.volume.BlockSelectionTranslateGizmo::clear);
+        scope.onClose(com.blib.engine.domain.selection.volume.MoveBlocksGizmo::clear);
+        scope.onClose(com.blib.engine.domain.selection.entity.EntityTranslateGizmo::clear);
+        scope.onClose(com.blib.engine.domain.selection.entity.EntityScaleGizmo::clear);
+        scope.onClose(
+            () -> com.blib.engine.domain.selection.entity.EntityGizmoMode
+                .set(com.blib.engine.domain.selection.entity.EntityGizmoMode.TRANSLATE)
+        );
+        scope.onClose(() -> com.blib.engine.gizmo.BLibGizmoState.setDrag(null));
+        scope.onClose(() -> com.blib.engine.gizmo.BLibGizmoState.setLastRender(null));
+        scope.onClose(() -> com.blib.engine.gizmo.BLibGizmoState.setPreviewRender(false));
+        scope.onClose(() -> com.blib.engine.modeler.gizmo.ModelerGizmoState.setDrag(null));
+        scope.onClose(() -> com.blib.engine.modeler.gizmo.ModelerGizmoState.setLastRender(null));
+
+        // Jigsaw authoring caches that hold GPU vertex buffers — must release before the workspace exits.
+        scope.onClose(com.blib.engine.jigsaw.JigsawPlacementCursor::clearViewportRect);
+        scope.onClose(com.blib.engine.jigsaw.JigsawPieceThumbnailCache::clear);
+        scope.onClose(com.blib.engine.jigsaw.placement.JigsawTemplateScanner::clear);
+        scope.onClose(com.blib.engine.jigsaw.placement.JigsawPlacementFrameState::clear);
+        scope.onClose(com.blib.engine.jigsaw.JigsawPieceLibrary::invalidate);
+        scope.onClose(com.blib.engine.jigsaw.placement.JigsawPlacementOptions::reset);
+
+        // Captured render-frame matrices referenced the engine's camera — drop them so the next open repopulates.
+        scope.onClose(com.blib.engine.session.EngineCameraFrame::clear);
+
+        // Tool state machine + event bus reset last (so they fire LIFO-first on close, before any listeners that
+        // might still react to a tool-change broadcast during teardown — though listeners are also drained below).
+        scope.onClose(com.blib.engine.runtime.tool.ToolStateMachine.get()::reset);
+        scope.onClose(com.blib.engine.runtime.EventBus.get()::clear);
+
         sessionScope = scope;
+        // Publish the scope to the single static holder used by mixin entry points. The holder is the one static that
+        // survives Step 9's "kill statics" refactor — everything else routes through the scope's ServiceContainer.
+        com.blib.engine.runtime.EngineSessionHolder.set(scope);
 
         // Request the server's PlacedPiece set for the current dimension so the client's hover / selection mirror is
         // populated for the very first frame of engine mode. The reply broadcasts to all engine-mode players, but in
@@ -117,6 +208,7 @@ public final class EngineMode {
         }
         sessionScope = null;
         session = null;
+        com.blib.engine.runtime.EngineSessionHolder.set(null);
     }
 
     public void toggle() {

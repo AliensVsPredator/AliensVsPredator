@@ -90,12 +90,29 @@ public final class DetailsPanel implements Panel {
 
     private final @Nullable ProjectContentActionHandler actionHandler;
 
+    /**
+     * Local registry of inspector sections keyed by selectable subtype. Replaces the previous inline
+     * {@code switch (single.type())} dispatch — adding a new selectable type now means dropping a new
+     * {@code InspectorSection} into {@code panel.details.section.*} and registering it here. Phase-1 sections delegate
+     * back to the {@code internalRender*View} methods on this panel so behavior is identical; phase-2 work absorbs each
+     * view's state into its section to truly decompose the god panel.
+     */
+    private final java.util.List<com.blib.engine.ui.panel.base.InspectorSection<?>> sections;
+
     public DetailsPanel() {
         this(null);
     }
 
     public DetailsPanel(@Nullable ProjectContentActionHandler actionHandler) {
         this.actionHandler = actionHandler;
+        this.sections = java.util.List.of(
+            new com.blib.engine.ui.panel.details.section.EntityInspectorSection(this),
+            new com.blib.engine.ui.panel.details.section.BlockInspectorSection(this),
+            new com.blib.engine.ui.panel.details.section.BlockVolumeInspectorSection(this),
+            new com.blib.engine.ui.panel.details.section.PlacedJigsawPieceInspectorSection(this),
+            new com.blib.engine.ui.panel.details.section.FactionInspectorSection(this),
+            new com.blib.engine.ui.panel.details.section.TagInspectorSection(this)
+        );
     }
 
     private static final int BACKGROUND_COLOR = 0xFF18181C;
@@ -551,47 +568,45 @@ public final class DetailsPanel implements Panel {
 
         if (single == null) {
             currentBlock = null;
-            renderToolStateView(graphics, font, x, rowY, width, mouseX, mouseY);
+            internalRenderToolStateView(graphics, font, x, rowY, width, mouseX, mouseY);
         } else {
-            switch (single.type()) {
-                case ENTITY -> {
-                    currentBlock = null;
-                    renderEntityView(graphics, font, x, rowY, width, mouseX, mouseY, (EntitySelectable) single);
-                }
-                case BLOCK -> {
-                    if (single instanceof BlockSelectable bs) {
-                        renderGenericBlockView(graphics, font, x, rowY, width, mouseX, mouseY, bs);
-                    } else {
-                        currentBlock = null;
-                        renderGenericView(graphics, font, x, rowY, width, single);
-                    }
-                }
-                case BLOCK_VOLUME -> {
-                    currentBlock = null;
-                    renderBlockVolumeView(graphics, font, x, rowY, width, mouseX, mouseY);
-                }
-                case JIGSAW_PIECE -> {
-                    currentBlock = null;
-                    if (single instanceof com.blib.engine.domain.selection.picking.PlacedJigsawPieceSelectable pjs) {
-                        renderPlacedJigsawPieceView(graphics, font, x, rowY, width, mouseX, mouseY, pjs);
-                    } else {
-                        renderGenericView(graphics, font, x, rowY, width, single);
-                    }
-                }
-                case FACTION -> {
-                    currentBlock = null;
-                    renderFactionView(graphics, font, x, rowY, width, mouseX, mouseY, (FactionSelectable) single);
-                }
-                case TAG -> {
-                    currentBlock = null;
-                    renderTagView(graphics, font, x, rowY, width, mouseX, mouseY, (TagSelectable) single);
-                }
-                default -> {
-                    currentBlock = null;
-                    renderGenericView(graphics, font, x, rowY, width, single);
-                }
+            // Registry-driven dispatch — pick the first registered section whose selectableType matches the runtime
+            // class of the current selection. The legacy {@code switch (single.type())} is gone; adding a new
+            // selectable type now means dropping an InspectorSection in {@code panel.details.section.*} and
+            // registering it in the constructor's section list, no edits to this method.
+            if (!(single instanceof BlockSelectable)) {
+                currentBlock = null;
+            }
+            var section = matchingSection(single);
+            if (section != null) {
+                dispatchSection(section, graphics, x, rowY, width, single, mouseX, mouseY);
+            } else {
+                internalRenderGenericView(graphics, font, x, rowY, width, single);
             }
         }
+    }
+
+    private @Nullable com.blib.engine.ui.panel.base.InspectorSection<?> matchingSection(Selectable target) {
+        for (var s : sections) {
+            if (s.selectableType().isInstance(target)) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private static void dispatchSection(
+        com.blib.engine.ui.panel.base.InspectorSection<?> section,
+        GuiGraphics graphics,
+        int x,
+        int y,
+        int width,
+        Selectable target,
+        int mouseX,
+        int mouseY
+    ) {
+        ((com.blib.engine.ui.panel.base.InspectorSection) section).render(graphics, x, y, width, target, mouseX, mouseY);
     }
 
     @Override
@@ -888,7 +903,7 @@ public final class DetailsPanel implements Panel {
      * sections; that became noise once those subsystems grew their own dedicated panels and live status-bar readouts.
      * Now it just centers a hint pointing the user at how to populate the inspector.
      */
-    private void renderToolStateView(GuiGraphics graphics, Font font, int x, int y, int width, int mouseX, int mouseY) {
+    public void internalRenderToolStateView(GuiGraphics graphics, Font font, int x, int y, int width, int mouseX, int mouseY) {
         var hint = "Pick an entity, block, faction, or tag to inspect its details.";
         var hintWidth = font.width(hint);
         var hintX = x + Math.max(CONTENT_PADDING, (width - hintWidth) / 2);
@@ -905,7 +920,7 @@ public final class DetailsPanel implements Panel {
      * Inputs mirror entity state each frame (skip while focused) so live entity motion / external scale changes flow
      * through to the displayed values without clobbering whatever the user is mid-typing.
      */
-    private void renderEntityView(
+    public void internalRenderEntityView(
         GuiGraphics graphics,
         Font font,
         int x,
@@ -1101,7 +1116,7 @@ public final class DetailsPanel implements Panel {
      * the server's inspection push); each input commits via {@link C2SUpdateFactionFieldPayload}. Selection-swap
      * dispatches a fresh {@link C2SRequestFactionInspectionPayload} so the cache catches up to the new faction.
      */
-    private void renderFactionView(
+    public void internalRenderFactionView(
         GuiGraphics graphics,
         Font font,
         int x,
@@ -1371,7 +1386,7 @@ public final class DetailsPanel implements Panel {
      * Fallback for selectable types that don't have a dedicated view yet. Shows the selectable's display name and its
      * world-bounds center so the user at least sees that something is selected and where it is.
      */
-    private static void renderGenericView(GuiGraphics graphics, Font font, int x, int y, int width, Selectable selectable) {
+    public static void internalRenderGenericView(GuiGraphics graphics, Font font, int x, int y, int width, Selectable selectable) {
         var rowY = y;
         rowY = drawSectionHeader(graphics, font, x, rowY, width, selectable.type().name());
         rowY += CONTENT_PADDING / 2;
@@ -1389,7 +1404,7 @@ public final class DetailsPanel implements Panel {
      * State) is rendered at the top — jigsaw blocks are just blocks with extra editable NBT, so they get every widget a
      * regular block does plus their own.
      */
-    private void renderGenericBlockView(
+    public void internalRenderGenericBlockView(
         GuiGraphics graphics,
         Font font,
         int x,
@@ -1858,7 +1873,7 @@ public final class DetailsPanel implements Panel {
      * Click and commit handlers in {@link #mouseClicked} dispatch by current selection type, so the same widget behaves
      * differently in volume vs piece mode.
      */
-    private void renderPlacedJigsawPieceView(
+    public void internalRenderPlacedJigsawPieceView(
         GuiGraphics graphics,
         Font font,
         int x,
@@ -1988,7 +2003,7 @@ public final class DetailsPanel implements Panel {
         syncVolumeInput(volumeSizeZ, String.valueOf(sizeZ), force);
     }
 
-    private void renderBlockVolumeView(GuiGraphics graphics, Font font, int x, int y, int width, int mouseX, int mouseY) {
+    public void internalRenderBlockVolumeView(GuiGraphics graphics, Font font, int x, int y, int width, int mouseX, int mouseY) {
         var rowY = y;
 
         rowY = drawSectionHeader(graphics, font, x, rowY, width, "Tool");
@@ -2821,7 +2836,7 @@ public final class DetailsPanel implements Panel {
      * {@link C2SRequestTagDraftPayload} on first selection / change to populate the cache, and
      * {@link C2SRequestRegistryEntriesPayload} on first registry-change to populate the picker's choices.
      */
-    private void renderTagView(GuiGraphics graphics, Font font, int x, int y, int width, int mouseX, int mouseY, TagSelectable tag) {
+    public void internalRenderTagView(GuiGraphics graphics, Font font, int x, int y, int width, int mouseX, int mouseY, TagSelectable tag) {
         var registryKey = tag.registryKey();
         var tagId = tag.tagId();
 

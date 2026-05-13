@@ -14,19 +14,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.blib.engine.render.entity.EntityGhostRenderer;
-import com.blib.engine.render.entity.EntityScaleGizmoRenderer;
-import com.blib.engine.render.entity.EntityTranslateGizmoRenderer;
-import com.blib.engine.render.hud.EngineSelectionRenderer;
-import com.blib.engine.render.jigsaw.JigsawAnchorRenderer;
-import com.blib.engine.render.jigsaw.JigsawPlacementWorldRenderer;
-import com.blib.engine.render.selection.EngineHoverRenderer;
-import com.blib.engine.render.territory.ChunkClaimOverlayRenderer;
-import com.blib.engine.render.volume.BlockSelectionScaleGizmoRenderer;
-import com.blib.engine.render.volume.BlockSelectionTranslateGizmoRenderer;
-import com.blib.engine.render.volume.BlockSelectionWireframeRenderer;
-import com.blib.engine.render.volume.MoveBlocksGhostRenderer;
-import com.blib.engine.render.volume.MoveBlocksGizmoRenderer;
+import com.blib.engine.render.pipeline.EngineWorldPasses;
+import com.blib.engine.render.pipeline.WorldRenderFrame;
 import com.blib.mod.client.render.debug.PathfindingSearchDebugRenderer;
 import com.blib.mod.common.property.BLibModProperties;
 import com.blib.mod.common.property.BLibModPropertyAccess;
@@ -95,29 +84,10 @@ public class MixinDebugRenderer {
         double camZ,
         CallbackInfo ci
     ) {
-        // Engine-mode selection visual sits outside the debug-render master gate: engine mode itself is dev-only
-        // gated and the visual should always show when a selection exists, regardless of the user's debug toggle.
-        EngineSelectionRenderer.render(poseStack, bufferSource, camX, camY, camZ);
-        // Anchor highlight first, then the structure ghost on top — depth-test for the anchor is disabled, so the
-        // ghost's depth-tested geometry naturally occludes the parts of the highlight that are behind it.
-        JigsawAnchorRenderer.render(poseStack, camX, camY, camZ);
-        JigsawPlacementWorldRenderer.render(poseStack, bufferSource, camX, camY, camZ);
-        BlockSelectionWireframeRenderer.render(poseStack, camX, camY, camZ);
-        ChunkClaimOverlayRenderer.render(poseStack, camX, camY, camZ);
-        // Hover outline draws last so it lays on top of selection / claim overlays — the "what would I select if I
-        // clicked" cue should be visible even when a selection is already drawn nearby.
-        EngineHoverRenderer.render(poseStack, camX, camY, camZ);
-        // Hover-state for every gizmo is recomputed here, in a single pass, before any gizmo draws. Renderers below
-        // are read-only — they consume the hover field but never write it. This way picking can't silently break when
-        // a renderer is skipped (panel offscreen, shader missing, etc.) and the picker is testable headless.
-        com.blib.engine.tool.gizmo.GizmoHoverPass.tick();
-        BlockSelectionScaleGizmoRenderer.render(poseStack, camX, camY, camZ);
-        BlockSelectionTranslateGizmoRenderer.render(poseStack, camX, camY, camZ);
-        MoveBlocksGhostRenderer.render(poseStack, camX, camY, camZ);
-        MoveBlocksGizmoRenderer.render(poseStack, camX, camY, camZ);
-        EntityGhostRenderer.render(poseStack, camX, camY, camZ);
-        EntityTranslateGizmoRenderer.render(poseStack, camX, camY, camZ);
-        EntityScaleGizmoRenderer.render(poseStack, camX, camY, camZ);
+        // Engine world-render pipeline. Pass order, gating, and per-pass implementations live in
+        // {@link EngineWorldPasses}; this mixin entry is purely a dispatch site. Adding a new render stage is now a
+        // single-line registration in {@code EngineWorldPasses.buildPipeline()} rather than search-and-edit here.
+        EngineWorldPasses.pipeline().render(new WorldRenderFrame(poseStack, bufferSource, camX, camY, camZ));
 
         var access = BLibModPropertyAccess.INSTANCE;
 

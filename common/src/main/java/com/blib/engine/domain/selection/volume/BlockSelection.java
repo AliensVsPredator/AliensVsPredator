@@ -8,9 +8,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 
+import com.blib.engine.runtime.EventBus;
+import com.blib.engine.runtime.tool.ActiveTool;
+import com.blib.engine.runtime.tool.ToolChangedEvent;
+import com.blib.engine.runtime.tool.ToolStateMachine;
 import com.blib.internal.common.capture.CaptureMode;
-import com.blib.mod.common.network.packet.S2CMoveSelectionResultPayload;
-import com.blib.mod.common.network.packet.S2CProjectOpResultPayload;
 
 /**
  * Client-side singleton holding the engine workspace's block-volume selection: the two corner block positions, the
@@ -65,8 +67,11 @@ public final class BlockSelection {
      * Most-recent CAPTURE op result the server has pushed back. The Capture Panel polls + consumes this each frame so
      * the "Capturing…" spinner gets replaced with the actual outcome (success summary or error message). Polled rather
      * than callback-routed because the panel renders every frame anyway and the polling cost is one null-check.
+     * <p>
+     * Domain type — the network listener wraps an {@code S2CProjectOpResultPayload} into this record, keeping packet
+     * types out of the domain layer.
      */
-    private static @Nullable S2CProjectOpResultPayload pendingCaptureResult;
+    private static @Nullable PendingCaptureResult pendingCaptureResult;
 
     /**
      * Active Move Blocks drag offset (delta from origin AABB to ghost destination), or {@code null} when no drag is in
@@ -84,9 +89,9 @@ public final class BlockSelection {
 
     /**
      * Most-recent Move Blocks server reply, drained by the panel for status display and by the listener for the AABB
-     * shift.
+     * shift. Domain type — the network listener wraps an {@code S2CMoveSelectionResultPayload}.
      */
-    private static @Nullable S2CMoveSelectionResultPayload pendingMoveResult;
+    private static @Nullable PendingMoveResult pendingMoveResult;
 
     private BlockSelection() {}
 
@@ -134,8 +139,14 @@ public final class BlockSelection {
     /** Called by the viewport when the user clicks while picking. Stores the corner and exits picking state. */
     public static void onBlockClicked(BlockPos pos) {
         switch (picking) {
-            case A -> cornerA = pos;
-            case B -> cornerB = pos;
+            case A -> {
+                cornerA = pos;
+                ToolStateMachine.get().activate(ActiveTool.BLOCK_VOLUME);
+            }
+            case B -> {
+                cornerB = pos;
+                ToolStateMachine.get().activate(ActiveTool.BLOCK_VOLUME);
+            }
             case NONE -> { /* not picking — ignore */ }
         }
         picking = PickingState.NONE;
@@ -152,6 +163,7 @@ public final class BlockSelection {
     public static void setBounds(BlockPos min, BlockPos max) {
         cornerA = new BlockPos(Math.min(min.getX(), max.getX()), Math.min(min.getY(), max.getY()), Math.min(min.getZ(), max.getZ()));
         cornerB = new BlockPos(Math.max(min.getX(), max.getX()), Math.max(min.getY(), max.getY()), Math.max(min.getZ(), max.getZ()));
+        ToolStateMachine.get().activate(ActiveTool.BLOCK_VOLUME);
     }
 
     /**
@@ -199,12 +211,12 @@ public final class BlockSelection {
         captures = newCaptures == null ? List.of() : List.copyOf(newCaptures);
     }
 
-    public static void setPendingCaptureResult(S2CProjectOpResultPayload result) {
+    public static void setPendingCaptureResult(PendingCaptureResult result) {
         pendingCaptureResult = result;
     }
 
     /** Returns the latest CAPTURE op result and clears it. Returns null if no result has arrived since last poll. */
-    public static @Nullable S2CProjectOpResultPayload consumePendingCaptureResult() {
+    public static @Nullable PendingCaptureResult consumePendingCaptureResult() {
         var r = pendingCaptureResult;
         pendingCaptureResult = null;
         return r;
@@ -226,11 +238,11 @@ public final class BlockSelection {
         moveCopyMode = copy;
     }
 
-    public static void setPendingMoveResult(S2CMoveSelectionResultPayload result) {
+    public static void setPendingMoveResult(PendingMoveResult result) {
         pendingMoveResult = result;
     }
 
-    public static @Nullable S2CMoveSelectionResultPayload consumePendingMoveResult() {
+    public static @Nullable PendingMoveResult consumePendingMoveResult() {
         var r = pendingMoveResult;
         pendingMoveResult = null;
         return r;
@@ -264,5 +276,20 @@ public final class BlockSelection {
         moveOffset = null;
         moveCopyMode = false;
         pendingMoveResult = null;
+    }
+
+    /**
+     * Install the subscriber that drops volume state when any other tool becomes active. Called once per session from
+     * {@link com.blib.engine.session.EngineMode#enter}. Uses {@link #clearVolume} (not {@link #clear}) so
+     * user-preference fields like capture mode and gizmo mode survive a tool switch — the prior in-place
+     * {@code BlockSelection.clear()} cross-singleton calls used the full clear and wiped these preferences as
+     * collateral damage.
+     */
+    public static void installToolListener() {
+        EventBus.get().subscribe(ToolChangedEvent.class, e -> {
+            if (e.current() != ActiveTool.BLOCK_VOLUME && (cornerA != null || cornerB != null)) {
+                clearVolume();
+            }
+        });
     }
 }

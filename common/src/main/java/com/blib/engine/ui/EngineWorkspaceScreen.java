@@ -21,13 +21,7 @@ import com.blib.engine.input.KeybindingProfileCatalog;
 import com.blib.engine.input.Keybindings;
 import com.blib.engine.jigsaw.JigsawPieceLibrary;
 import com.blib.engine.jigsaw.JigsawPieceSelection;
-import com.blib.engine.jigsaw.JigsawPieceThumbnailCache;
-import com.blib.engine.jigsaw.JigsawPlacementCursor;
 import com.blib.engine.jigsaw.JigsawPoolLibrary;
-import com.blib.engine.jigsaw.ProjectDraftCache;
-import com.blib.engine.jigsaw.placement.JigsawPlacementFrameState;
-import com.blib.engine.jigsaw.placement.JigsawPlacementOptions;
-import com.blib.engine.jigsaw.placement.JigsawTemplateScanner;
 import com.blib.engine.layout.ActiveLayoutState;
 import com.blib.engine.layout.LayoutCatalog;
 import com.blib.engine.layout.LayoutDoc;
@@ -537,18 +531,7 @@ public final class EngineWorkspaceScreen extends Screen {
      * load will succeed.
      */
     private void persistOutgoingLayout() {
-        var existing = LayoutCatalog.get(activeLayoutId);
-        if (existing == null) {
-            return;
-        }
-        var capturedBody = LayoutSnapshot.capture(extractBodyRoot(this.root));
-        var updated = existing.withBody(capturedBody);
-        try {
-            LayoutCatalog.save(updated);
-        } catch (java.io.IOException e) {
-            org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class)
-                .warn("[BLib] persistOutgoingLayout: failed to save '{}'", activeLayoutId, e);
-        }
+        com.blib.engine.ui.workspace.WorkspaceLayoutPersistence.persistOutgoingLayout(this.root, this.activeLayoutId);
     }
 
     /**
@@ -556,42 +539,13 @@ public final class EngineWorkspaceScreen extends Screen {
      * {@code switchLayout} and {@code removed()} so per-project active-layout memory survives game restarts.
      */
     private void persistActiveSelection() {
-        var state = ActiveLayoutState.read();
-        var projectName = ProjectSession.activeProject() != null ? ProjectSession.activeProjectName() : null;
-        var newState = projectName != null && !projectName.isEmpty()
-            ? state.withProjectActive(projectName, activeLayoutId)
-            : state.withGlobalActive(activeLayoutId);
-        ActiveLayoutState.write(newState);
+        com.blib.engine.ui.workspace.WorkspaceLayoutPersistence.persistActiveSelection(this.activeLayoutId);
     }
 
-    /**
-     * Walk past the trim wrappers built by {@link #buildOuterLayout} to reach the body subtree. The expected shape is
-     * {@code Split(V, Leaf(MenuBar), Split(V, body, Leaf(StatusBar)))} with the trim splits pinned to
-     * {@link MenuBarPanel#HEIGHT} / {@link StatusBarPanel#HEIGHT}.
-     * <p>
-     * The peel runs in a loop so layout files that were previously double-wrapped — by an older build whose
-     * {@code extractBodyRoot} didn't recognize the trim shape and serialized the full tree as the "body" — heal
-     * themselves on the next save (each surviving wrapper layer gets stripped). Without the loop, double-wrapped files
-     * would keep accreting a layer per layout switch.
-     */
+    /** @deprecated use {@link com.blib.engine.ui.workspace.WorkspaceLayoutPersistence#extractBodyRoot} directly. */
+    @Deprecated
     private static DockNode extractBodyRoot(DockNode root) {
-        // Match by SIZING rather than leaf-panel type: a freshly built tree has a real MenuBarPanel / StatusBarPanel
-        // leaf, but after a save / load round-trip those trim leaves become empty TabbedPanels (LayoutSnapshot has no
-        // id for non-tabbed panels). The sizing pins are stable across both forms.
-        var current = root;
-        while (
-            current instanceof DockNode.Split outer
-                && outer.first() instanceof DockNode.Leaf
-                && outer.sizing() instanceof Sizing.FirstFixed menuSizing
-                && menuSizing.pixels == MenuBarPanel.HEIGHT
-                && outer.second() instanceof DockNode.Split bodyAndStatus
-                && bodyAndStatus.second() instanceof DockNode.Leaf
-                && bodyAndStatus.sizing() instanceof Sizing.SecondFixed statusSizing
-                && statusSizing.pixels == StatusBarPanel.HEIGHT
-        ) {
-            current = bodyAndStatus.first();
-        }
-        return current;
+        return com.blib.engine.ui.workspace.WorkspaceLayoutPersistence.extractBodyRoot(root);
     }
 
     public Mode workspaceMode() {
@@ -1182,88 +1136,34 @@ public final class EngineWorkspaceScreen extends Screen {
     public void removed() {
         super.removed();
 
-        // Menu-overlay mode: lighter cleanup than IN_GAME — skipping persistOutgoingLayout / persistActiveSelection
-        // avoids clobbering the user's preferred in-game layout, and skipping the cache invalidation cascade is fine
-        // because MENU_OVERLAY workflows don't usually populate the project-scoped caches. Selection / freeze state
-        // is still cleared so the live game doesn't keep rendering engine UI after B-toggle.
-        if (mode == Mode.MENU_OVERLAY) {
-            EngineWorkspaceCompositor.clear();
-            if (wrappedScreen != null) {
-                wrappedScreen.removed();
-                wrappedScreen = null;
-            }
-            EngineMode.get().exit();
-            // Restore the integrated server's previous freeze state — the lazy-enter path in render() called
-            // captureAndPause once the world loaded, so we have to pair it with a restore on close. No-op when
-            // captureAndPause never ran (engine closed before any world was loaded).
-            EngineTickControl.restore();
-            // Block-volume selection lives on a static singleton and isn't cleared by EngineMode.exit() — without
-            // this, the wireframe AABB and any other engine selection visuals would linger in the world after B-toggle
-            // because they read from BlockSelection / SelectionManager regardless of the renderer's isActive gate.
-            // (Renderers also self-gate on isActive, but state cleanup keeps the system internally consistent.)
-            BlockSelection.clear();
-            SelectionManager.clear();
-            JigsawPieceSelection.clear();
-            EntitySpawnSelection.clear();
-            com.blib.engine.domain.selection.picking.EngineHoverProbe.clear();
-            com.blib.engine.territory.ClaimPaintTool.deactivate();
-            SearchableSelect.closeOpenPopup();
-            HslColorPickerPopup.closeOpenPopup();
-            FactionManagePopup.closeOpenPopup();
-            EngineCursor.reset();
-            return;
-        }
-
         // Persist the active layout's customized state to disk and update state.json so the next /blib engine — even
         // across game restarts — reopens to the same arrangement of tabs, splits, and active panels. The active-id
         // write also captures any per-project memory so switching projects later restores per-project preferences.
-        persistOutgoingLayout();
-        persistActiveSelection();
+        // Skipped in MENU_OVERLAY mode so a B-toggle from the title screen doesn't clobber the user's in-game layout.
+        if (mode == Mode.IN_GAME) {
+            persistOutgoingLayout();
+            persistActiveSelection();
+        } else if (wrappedScreen != null) {
+            wrappedScreen.removed();
+            wrappedScreen = null;
+        }
+
+        // Workspace-screen-scoped UI state (compositor, popups, cursor) — not session-scoped, so it stays here.
         EngineWorkspaceCompositor.clear();
-        EngineMode.get().exit();
-        EngineTickControl.restore();
-        JigsawPieceSelection.clear();
-        com.blib.engine.jigsaw.JigsawPoolSelection.clear();
-        com.blib.engine.projectcontents.ProjectContents.clear();
-        com.blib.internal.client.faction.ClientFactionDirectoryCache.clear();
-        com.blib.internal.client.faction.ClientFactionInspectionCache.clear();
-        com.blib.internal.client.faction.ClientFactionMembersCache.clear();
-        com.blib.internal.client.faction.ClientEntityFactionsCache.clear();
-        EntitySpawnSelection.clear();
-        JigsawPlacementCursor.clearViewportRect();
-        JigsawPieceThumbnailCache.clear();
-        JigsawTemplateScanner.clear();
-        JigsawPlacementFrameState.clear();
-        // Cascades through TransformedTemplateCache, CollisionScanner, and JigsawPreviewMeshCache so the per-piece
-        // GPU vertex buffers are closed before the workspace exits — otherwise they'd linger until the next workspace
-        // open re-invalidated them from the constructor.
-        JigsawPieceLibrary.invalidate();
-        JigsawPlacementOptions.reset();
-        SelectionManager.clear();
-        EngineCursor.reset();
         SearchableSelect.closeOpenPopup();
         HslColorPickerPopup.closeOpenPopup();
         FactionManagePopup.closeOpenPopup();
-        com.blib.engine.territory.ClaimPaintTool.deactivate();
-        com.blib.engine.domain.selection.picking.EngineHoverProbe.clear();
-        // Project state persists across engine sessions so B-toggle reopens the same project without going through
-        // the picker again. Switching projects is an explicit File→Open action inside the workspace. Transient picker
-        // bits (callback, available-list) get refreshed by the picker itself on next open, so no clearing here.
-        ProjectDraftCache.clear();
-        com.blib.engine.tag.TagDraftCache.clear();
-        com.blib.engine.tag.TagCatalogCache.clear();
-        com.blib.engine.tag.RegistryEntriesCache.clear();
-        // Capture selection is workspace-session-only too — corners and mode reset between engine opens.
-        BlockSelection.clear();
-        // Clear the AABB scale gizmo's hover/drag state so a stray drag-in-progress at close doesn't try to
-        // continue against fresh state on the next engine open.
-        com.blib.engine.domain.selection.volume.BlockSelectionScaleGizmo.clear();
-        com.blib.engine.domain.selection.volume.BlockSelectionTranslateGizmo.clear();
-        com.blib.engine.domain.selection.entity.EntityTranslateGizmo.clear();
-        com.blib.engine.domain.selection.entity.EntityScaleGizmo.clear();
-        // Drop the captured render-frame matrices — they referenced the engine's camera; the next engine open
-        // will repopulate from the first render frame.
-        com.blib.engine.session.EngineCameraFrame.clear();
+        EngineCursor.reset();
+
+        // Tear down the session — all session-scoped singletons (selection, gizmos, caches) register their cleanup
+        // on EngineMode.enter()'s session scope and unwind in LIFO order here. Adding a new transient singleton means
+        // one scope.onClose() line in EngineMode.enter() and zero edits to this method.
+        EngineMode.get().exit();
+
+        // Restore the integrated server's previous freeze state — the lazy-enter path in render() called
+        // captureAndPause once the world loaded, so we have to pair it with a restore on close. No-op when
+        // captureAndPause never ran (engine closed before any world was loaded).
+        EngineTickControl.restore();
     }
 
     @Override

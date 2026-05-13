@@ -5,6 +5,11 @@ import net.minecraft.world.level.ChunkPos;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import com.blib.engine.runtime.EventBus;
+import com.blib.engine.runtime.tool.ActiveTool;
+import com.blib.engine.runtime.tool.ToolChangedEvent;
+import com.blib.engine.runtime.tool.ToolStateMachine;
+
 /**
  * Mutable singleton holding viewport claim-paint mode state. When active, LMB-drag in the viewport claims chunks for
  * the inspected faction, RMB-drag unclaims. The {@link #hoveredChunk} is updated each frame by the viewport renderer so
@@ -13,6 +18,10 @@ import org.jetbrains.annotations.Nullable;
  * The {@link #paintTarget} is the currently-inspected {@code FactionSelectable}'s id, resolved from
  * {@link com.blib.engine.domain.selection.picking.SelectionManager} each frame — switching the selection mid-paint
  * redirects the paint target on the next click/drag tick without an explicit handoff.
+ * <p>
+ * Mutual exclusion with other armed tools (block volume, jigsaw piece, entity spawn) is handled through
+ * {@link ToolStateMachine}: {@link #activate} switches to {@link ActiveTool#CLAIM_PAINT}, and a tool-changed subscriber
+ * installed in {@link #installToolListener} deactivates this singleton when any other tool takes over.
  */
 @ApiStatus.Internal
 public final class ClaimPaintTool {
@@ -36,16 +45,29 @@ public final class ClaimPaintTool {
     }
 
     public static void activate() {
-        // Paint mode is mutually exclusive with editing a block volume — leaving an AABB wireframe up while the user
-        // starts painting chunks would be a contradictory engine state.
-        com.blib.engine.domain.selection.volume.BlockSelection.clear();
         active = true;
+        // Activates CLAIM_PAINT through the tool state machine; subscribed tool listeners (block volume, jigsaw piece,
+        // entity spawn) self-disarm so a contradictory engine state — like a leftover AABB wireframe while painting
+        // chunks — can't occur.
+        ToolStateMachine.get().activate(ActiveTool.CLAIM_PAINT);
     }
 
     public static void deactivate() {
         active = false;
         paintTarget = null;
         hoveredChunk = null;
+    }
+
+    /**
+     * Install the subscriber that deactivates this tool when any other tool becomes active. Called once per session
+     * from {@link com.blib.engine.session.EngineMode#enter}.
+     */
+    public static void installToolListener() {
+        EventBus.get().subscribe(ToolChangedEvent.class, e -> {
+            if (e.current() != ActiveTool.CLAIM_PAINT && active) {
+                deactivate();
+            }
+        });
     }
 
     public static @Nullable ResourceLocation paintTarget() {

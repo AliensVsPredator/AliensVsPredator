@@ -6,6 +6,11 @@ import net.minecraft.world.level.block.Rotation;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import com.blib.engine.runtime.EventBus;
+import com.blib.engine.runtime.tool.ActiveTool;
+import com.blib.engine.runtime.tool.ToolChangedEvent;
+import com.blib.engine.runtime.tool.ToolStateMachine;
+
 /**
  * Mutable singleton holding the user's currently-selected jigsaw piece in engine mode. When non-null, the world preview
  * renderer draws the piece at the targeted block position and a viewport LMB triggers placement instead of selection.
@@ -13,6 +18,12 @@ import org.jetbrains.annotations.Nullable;
  * Cleared automatically on {@link com.blib.engine.session.EngineMode#exit()} so a stale selection doesn't bleed into a
  * later session. Rotation and mirror are user-driven via R/M hotkeys and scroll-while-placing; both reset to
  * {@code NONE} when the user picks a different piece, so per-piece muscle memory doesn't leak across selections.
+ * <p>
+ * Mutual exclusion with other armed tools is handled via {@link ToolStateMachine}: {@link #select} activates the
+ * {@link ActiveTool#JIGSAW_PLACE} tool, and a {@code ToolChangedEvent} subscriber installed in
+ * {@link #installToolListener} disarms this singleton's state when any other tool becomes active. The prior pattern
+ * (each tool's {@code select()} method calling {@code .clear()} on every other tool) is replaced by this single
+ * broadcast.
  */
 @ApiStatus.Internal
 public final class JigsawPieceSelection {
@@ -39,9 +50,9 @@ public final class JigsawPieceSelection {
      * over leftover transforms from the last piece. Re-selecting the same id is a no-op for the transform state, so
      * accidentally clicking the same card twice doesn't reset their work.
      * <p>
-     * Mutually exclusive with the entity-spawn selection and any active block-volume selection: arming a piece clears
-     * both so the viewport's LMB-dispatch picks an unambiguous action and no leftover AABB wireframe coexists with the
-     * piece's placement preview.
+     * Activates {@link ActiveTool#JIGSAW_PLACE} via the tool state machine; the resulting {@code ToolChangedEvent}
+     * disarms other tools (entity spawn, block volume, claim paint) so the viewport's LMB dispatch picks an unambiguous
+     * action and no leftover AABB wireframe coexists with the piece's placement preview.
      */
     public static void select(ResourceLocation id) {
         if (!id.equals(selectedId)) {
@@ -49,8 +60,20 @@ public final class JigsawPieceSelection {
             mirror = Mirror.NONE;
         }
         selectedId = id;
-        com.blib.engine.spawn.EntitySpawnSelection.clear();
-        com.blib.engine.domain.selection.volume.BlockSelection.clear();
+        ToolStateMachine.get().activate(ActiveTool.JIGSAW_PLACE);
+    }
+
+    /**
+     * Install the subscriber that disarms this tool when any other tool becomes active. Called once per session from
+     * {@link com.blib.engine.session.EngineMode#enter}. The {@code EventBus} is cleared on session exit so listeners
+     * don't carry over.
+     */
+    public static void installToolListener() {
+        EventBus.get().subscribe(ToolChangedEvent.class, e -> {
+            if (e.current() != ActiveTool.JIGSAW_PLACE) {
+                clear();
+            }
+        });
     }
 
     public static void clear() {
