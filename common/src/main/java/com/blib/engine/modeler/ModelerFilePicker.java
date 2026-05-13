@@ -7,6 +7,8 @@ import org.lwjgl.util.tinyfd.TinyFileDialogs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
@@ -32,20 +34,35 @@ public final class ModelerFilePicker {
 
     private ModelerFilePicker() {}
 
+    /** Convenience overload — no initial directory hint, dialog opens wherever the OS defaults to. */
+    public static @Nullable Path pickGeoModel() {
+        return pickGeoModel(null);
+    }
+
     /**
      * Prompt the user to pick a geo model file via the OS-native open-file dialog. Returns the chosen {@link Path} or
      * null if the user cancelled / the dialog couldn't be shown.
+     * <p>
+     * {@code initialDir}, when non-null and pointing at an existing directory, is passed to tinyfd as a "default path"
+     * so the dialog opens there. The path is suffixed with the platform separator because tinyfd interprets
+     * trailing-separator strings as a directory hint and other strings as a pre-filled filename — we want just the
+     * directory. Falls back to the no-hint OS default when the dir is null or has since been moved/deleted.
      */
-    public static @Nullable Path pickGeoModel() {
+    public static @Nullable Path pickGeoModel(@Nullable Path initialDir) {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             var filterPatterns = stack.mallocPointer(2);
             filterPatterns.put(stack.UTF8("*.geo.json"));
             filterPatterns.put(stack.UTF8("*.json"));
             filterPatterns.flip();
 
+            var defaultPath = "";
+            if (initialDir != null && Files.isDirectory(initialDir)) {
+                defaultPath = initialDir.toAbsolutePath() + File.separator;
+            }
+
             var picked = TinyFileDialogs.tinyfd_openFileDialog(
                 "Open Geo Model",
-                "",
+                defaultPath,
                 filterPatterns,
                 "Bedrock Geo Models (*.geo.json, *.json)",
                 false

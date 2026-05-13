@@ -456,9 +456,13 @@ public final class ModelerViewportPanel implements Panel {
      * to {@link ModelerSceneLoader#loadFromFile} which replaces the modeler's active scene. On a successful load
      * records the path in {@link ModelerRecentFiles} so it shows up under Recent next time. No-op on cancel; load
      * errors are logged inside the loader.
+     * <p>
+     * Seeds the picker with the parent directory of the most recently opened model for the active project (when any),
+     * so authors who keep coming back to the same folder don't have to navigate from scratch every time. The recent
+     * list already churns to the latest opened file, so this hint stays in sync without separate state.
      */
     private static void openGeoModelFromFile() {
-        var picked = ModelerFilePicker.pickGeoModel();
+        var picked = ModelerFilePicker.pickGeoModel(inferInitialPickerDir());
         if (picked == null) {
             return;
         }
@@ -468,6 +472,23 @@ public final class ModelerViewportPanel implements Panel {
                 ModelerRecentFiles.recordOpen(project, picked.toString());
             }
         }
+    }
+
+    /**
+     * Parent directory of the project's most-recent imported model, or null when there's no recent history (no project,
+     * no recents yet, or the recorded path has no resolvable parent). Falling back to null lets the picker use the OS
+     * default location for a fresh-start feel rather than guessing at game-dir or similar.
+     */
+    private static @Nullable java.nio.file.Path inferInitialPickerDir() {
+        var project = ProjectSession.activeProjectName();
+        if (project.isEmpty()) {
+            return null;
+        }
+        var recents = ModelerRecentFiles.list(project);
+        if (recents.isEmpty()) {
+            return null;
+        }
+        return java.nio.file.Path.of(recents.get(0)).getParent();
     }
 
     /**
