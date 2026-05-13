@@ -76,6 +76,11 @@ public final class StatusBarPanel implements Panel {
     }
 
     @Override
+    public boolean isTrim() {
+        return true;
+    }
+
+    @Override
     public void render(GuiGraphics graphics, int x, int y, int width, int height, int mouseX, int mouseY, float partialTick) {
         graphics.fill(x, y, x + width, y + height, BACKGROUND_COLOR);
         graphics.fill(x, y, x + width, y + 1, BORDER_COLOR);

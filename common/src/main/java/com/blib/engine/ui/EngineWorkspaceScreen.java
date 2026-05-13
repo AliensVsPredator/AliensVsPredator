@@ -454,6 +454,11 @@ public final class EngineWorkspaceScreen extends Screen {
      * with the global menu bar.
      */
     private void openPanelMenu(DropdownMenu menu) {
+        setOpenMenu(menu);
+    }
+
+    /** Single mutation site for {@link #openMenu} — pairs every assignment with a {@link #closeSubmenu} reset. */
+    private void setOpenMenu(@Nullable DropdownMenu menu) {
         this.openMenu = menu;
         closeSubmenu();
     }
@@ -943,11 +948,15 @@ public final class EngineWorkspaceScreen extends Screen {
 
     /**
      * Asks the panel under the cursor for tooltip text and, if any, draws it as a small floating box near the cursor.
-     * Suppressed while a dropdown menu is open (tooltips would visually fight with the menu) and while a divider or tab
-     * is being dragged (the user's focus is on the drag, not the panel beneath).
+     * Suppressed while a dropdown menu is open <em>and the cursor is over it</em> (tooltips would visually fight with
+     * the menu items), and while a divider or tab is being dragged (the user's focus is on the drag, not the panel
+     * beneath). Hover-driven menus stay open as the cursor wanders elsewhere — a blanket "menu open" gate would
+     * suppress tooltips far from the menu too, so we narrow it to the actual overlap region.
      */
     private void renderHoverTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
-        if (openMenu != null || activeDrag != null || (tabDrag != null && tabDrag.active)) {
+        var overMenu = (openMenu != null && openMenu.isInside(mouseX, mouseY))
+            || (openSubmenu != null && openSubmenu.isInside(mouseX, mouseY));
+        if (overMenu || activeDrag != null || (tabDrag != null && tabDrag.active)) {
             return;
         }
         // Suppress tooltips while the color picker is open — they'd float behind the popup and read as junk.
@@ -1390,12 +1399,10 @@ public final class EngineWorkspaceScreen extends Screen {
     ) {}
 
     private void renderHoveredDivider(GuiGraphics graphics, int mouseX, int mouseY) {
-        // While a dropdown menu is open, suppress divider hover feedback — the dropdown should consume hover
-        // interactions over its area, and showing a divider highlight underneath misleads the user into thinking
-        // they can drag a divider through the menu.
-        if (activeDrag == null && openMenu != null) {
-            return;
-        }
+        // No explicit openMenu suppression needed — callers pass {@code panelMouseX/Y}, which the render pipeline
+        // substitutes with {@link #OFFSCREEN_MOUSE} whenever the cursor is over an open menu / submenu / popup.
+        // {@link #findDivider} with OFFSCREEN coords trivially fails to find a divider, so the highlight is gated
+        // by cursor proximity alone — divider hover lights up everywhere except directly under an open dropdown.
         var dragger = activeDrag != null
             ? activeDrag.divider
             : findDivider(root, 0, 0, logicalWidth(), logicalHeight(), mouseX, mouseY);
@@ -1865,8 +1872,7 @@ public final class EngineWorkspaceScreen extends Screen {
             var subIdx = openSubmenu.hitItemAt(logicalX, logicalY);
             if (subIdx >= 0) {
                 var subItem = openSubmenu.itemAt(subIdx);
-                openMenu = null;
-                closeSubmenu();
+                setOpenMenu(null);
                 subItem.action().run();
                 return true;
             }
@@ -1888,14 +1894,12 @@ public final class EngineWorkspaceScreen extends Screen {
                         }
                         return true;
                     }
-                    openMenu = null;
-                    closeSubmenu();
+                    setOpenMenu(null);
                     item.action().run();
                     return true;
                 }
             }
-            openMenu = null;
-            closeSubmenu();
+            setOpenMenu(null);
             // Only fall through to chip-click handling below if the cursor landed on another menu chip — that lets
             // the user close-and-reopen by clicking a different chip in one motion. Anything else (clicks on
             // dividers, tab strips, panel content) is consumed so dropdown clicks never accidentally start a
@@ -1914,8 +1918,7 @@ public final class EngineWorkspaceScreen extends Screen {
                 if (chip != null) {
                     var menu = buildMenuFor(chip, menuBar);
                     if (menu != null) {
-                        openMenu = menu;
-                        closeSubmenu();
+                        setOpenMenu(menu);
                     }
                     return true;
                 }
@@ -1934,7 +1937,7 @@ public final class EngineWorkspaceScreen extends Screen {
             // highlight (which fall inside the adjacent panel's title bar / tab strip) can still start a drag instead
             // of leaking into a tab-strip click. Scrollbar / edge UI is already protected by step 2's panel capture.
             var divider = findDivider(root, 0, 0, logicalWidth(), logicalHeight(), (int) logicalX, (int) logicalY);
-            if (divider != null && isResizable(divider.split.sizing())) {
+            if (divider != null && isResizable(divider.split)) {
                 this.activeDrag = new ActiveDrag(divider);
                 return true;
             }
@@ -2248,12 +2251,19 @@ public final class EngineWorkspaceScreen extends Screen {
     }
 
     /**
-     * Only {@link Sizing.Ratio} splits are user-resizable. {@link Sizing.FirstFixed} / {@link Sizing.SecondFixed}
-     * anchor one side at a pixel count (menu bars, status bars, toolbars), so dragging their boundary would just snap
-     * back — we hide the divider entirely rather than expose a no-op handle.
+     * A split is user-resizable as long as neither side is a chrome-less trim leaf (menu bar at the top, status bar at
+     * the bottom). Body splits — including the {@link Sizing.FirstFixed} / {@link Sizing.SecondFixed} rails that pin
+     * outliner / inspector widths — are all draggable; {@link #applyDividerDrag} writes back into the matching sizing
+     * field so a Fixed rail stays Fixed (just with a new pixel value) and a Ratio split stays Ratio. The trim splits
+     * are the only ones we want to keep immutable, because dragging the menu/status bar's height would look like a
+     * glitch (those panels are sized to their content and rebuilt on resize).
      */
-    private static boolean isResizable(Sizing sizing) {
-        return sizing instanceof Sizing.Ratio;
+    private static boolean isResizable(DockNode.Split split) {
+        return !isTrimLeaf(split.first()) && !isTrimLeaf(split.second());
+    }
+
+    private static boolean isTrimLeaf(DockNode node) {
+        return node instanceof DockNode.Leaf leaf && leaf.panel().isTrim();
     }
 
     private static @Nullable DividerHit findDivider(DockNode node, int x, int y, int width, int height, int mouseX, int mouseY) {
@@ -2261,9 +2271,9 @@ public final class EngineWorkspaceScreen extends Screen {
             return null;
         }
 
-        // Fixed splits aren't draggable, so don't claim their boundary on hover — fall through and let the recursion
-        // find a real (Ratio) divider further down the tree, if any.
-        var resizable = isResizable(split.sizing());
+        // Trim splits (menu bar / status bar) aren't draggable. Skip claiming their boundary on hover and let
+        // recursion find a real divider further down the tree.
+        var resizable = isResizable(split);
 
         if (split.orientation() == Orientation.HORIZONTAL) {
             var firstWidth = DockNode.boundary(split.sizing(), width);
@@ -3104,8 +3114,7 @@ public final class EngineWorkspaceScreen extends Screen {
 
     private void onViewportRightClick(@Nullable LivingEntity entity, double cursorX, double cursorY) {
         if (entity == null) {
-            this.openMenu = null;
-            closeSubmenu();
+            setOpenMenu(null);
             return;
         }
 
@@ -3157,8 +3166,7 @@ public final class EngineWorkspaceScreen extends Screen {
             );
         }
 
-        this.openMenu = new DropdownMenu(menuX, menuY, items);
-        closeSubmenu();
+        setOpenMenu(new DropdownMenu(menuX, menuY, items));
     }
 
     /**
@@ -3202,8 +3210,7 @@ public final class EngineWorkspaceScreen extends Screen {
         items.add(new DropdownMenu.Item("Copy", () -> com.blib.engine.blockselection.BlockSelectionOps.copy(false)));
         items.add(new DropdownMenu.Item("Paste", () -> com.blib.engine.blockselection.BlockSelectionOps.paste()));
         items.add(new DropdownMenu.Item("Delete", () -> com.blib.engine.blockselection.BlockSelectionOps.delete()));
-        this.openMenu = new DropdownMenu((int) cursorX, (int) cursorY, items);
-        closeSubmenu();
+        setOpenMenu(new DropdownMenu((int) cursorX, (int) cursorY, items));
     }
 
     /**
@@ -3255,8 +3262,7 @@ public final class EngineWorkspaceScreen extends Screen {
                     .sendToServer(new com.blib.mod.common.network.packet.C2SDeletePlacedPiecePayload(pieceId));
             })
         );
-        this.openMenu = new DropdownMenu((int) cursorX, (int) cursorY, items);
-        closeSubmenu();
+        setOpenMenu(new DropdownMenu((int) cursorX, (int) cursorY, items));
     }
 
     private static @Nullable TabbedPanel findFirstTabbedPanel(DockNode node) {

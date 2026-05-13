@@ -19,10 +19,20 @@ public interface Panel {
 
     /**
      * Whether this panel should be rendered with a title bar + border via {@link PanelChrome}. Editor trim like menu
-     * bars and status bars return {@code false} to render full-bleed; primary content panels return {@code true}.
+     * bars and status bars return {@code false} to render full-bleed; {@link TabbedPanel} also returns {@code false}
+     * because it draws its own tab strip in place of standard chrome. Primary content panels return {@code true}.
      */
     default boolean hasChrome() {
         return true;
+    }
+
+    /**
+     * Whether this panel is immutable editor trim (menu bar, status bar) whose surrounding split should never be
+     * user-resizable. Distinct from {@link #hasChrome()}: a {@link TabbedPanel} also lacks chrome but is <em>not</em>
+     * trim — its surrounding splits must stay draggable so docked panels can be resized against each other.
+     */
+    default boolean isTrim() {
+        return false;
     }
 
     void render(GuiGraphics graphics, int x, int y, int width, int height, int mouseX, int mouseY, float partialTick);
