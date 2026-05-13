@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import com.blib.engine.ui.EngineFont;
+import com.blib.engine.ui.modal.ModalDialog;
 import com.blib.engine.ui.widget.DropdownMenu;
 
 /**
@@ -21,7 +22,12 @@ import com.blib.engine.ui.widget.DropdownMenu;
  * Outside-clicks intentionally do nothing — destructive confirmations should require an explicit decision.
  */
 @ApiStatus.Internal
-public final class ConfirmDialog {
+public final class ConfirmDialog extends ModalDialog {
+
+    @Override
+    public String tag() {
+        return "confirm";
+    }
 
     private static final int DIM_COLOR = 0x80000000;
 

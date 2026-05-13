@@ -38,46 +38,37 @@ public final class MoveBlocksGizmoRenderer {
     private MoveBlocksGizmoRenderer() {}
 
     public static void render(PoseStack poseStack, double cameraX, double cameraY, double cameraZ) {
+        // Gating mirrors {@code GizmoHoverPass.tick()}; hover-state writes have moved there so this method is
+        // read-only.
         if (!EngineMode.get().isActive()) {
-            MoveBlocksGizmo.setHoveredAxis(null);
             return;
         }
         if (
             com.blib.engine.domain.selection.picking.SelectionManager.current()
                 .single() instanceof com.blib.engine.domain.selection.picking.EntitySelectable
         ) {
-            MoveBlocksGizmo.setHoveredAxis(null);
             return;
         }
         var aabb = BlockSelection.aabb();
         if (aabb.isEmpty()) {
-            MoveBlocksGizmo.setHoveredAxis(null);
             return;
         }
         if (BlockSelection.gizmoMode() != BlockSelection.GizmoMode.MOVE_BLOCKS) {
-            MoveBlocksGizmo.setHoveredAxis(null);
             return;
         }
         if (BlockSelection.picking() != BlockSelection.PickingState.NONE) {
-            MoveBlocksGizmo.setHoveredAxis(null);
             return;
         }
         var session = EngineMode.get().session();
         if (session == null) {
-            MoveBlocksGizmo.setHoveredAxis(null);
             return;
         }
         if (BLibShaders.ENGINE_SELECTION.instance() == null) {
             return;
         }
 
-        var draggingAxis = MoveBlocksGizmo.draggingAxis();
-        if (draggingAxis != null) {
-            MoveBlocksGizmo.setHoveredAxis(draggingAxis);
-        } else {
-            MoveBlocksGizmo.setHoveredAxis(MoveBlocksGizmo.pickUnderCursor(session));
-        }
         var hoveredAxis = MoveBlocksGizmo.hoveredAxis();
+        var draggingAxis = MoveBlocksGizmo.draggingAxis();
 
         var box = aabb.get();
         var minX = (int) Math.floor(box.minX);

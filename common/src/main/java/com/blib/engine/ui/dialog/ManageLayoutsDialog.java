@@ -15,6 +15,7 @@ import com.blib.engine.layout.LayoutCatalog;
 import com.blib.engine.layout.LayoutDoc;
 import com.blib.engine.layout.LayoutStorage;
 import com.blib.engine.ui.EngineFont;
+import com.blib.engine.ui.modal.ModalDialog;
 
 /**
  * Larger modal dialog presenting every available layout in a vertical list with per-row Rename / Duplicate / Delete
@@ -31,7 +32,12 @@ import com.blib.engine.ui.EngineFont;
  * clears it on close.
  */
 @ApiStatus.Internal
-public final class ManageLayoutsDialog {
+public final class ManageLayoutsDialog extends ModalDialog {
+
+    @Override
+    public String tag() {
+        return "manage_layouts";
+    }
 
     private static final int DIM_COLOR = 0x80000000;
 

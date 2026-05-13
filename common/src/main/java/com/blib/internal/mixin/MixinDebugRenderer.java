@@ -107,6 +107,10 @@ public class MixinDebugRenderer {
         // Hover outline draws last so it lays on top of selection / claim overlays — the "what would I select if I
         // clicked" cue should be visible even when a selection is already drawn nearby.
         EngineHoverRenderer.render(poseStack, camX, camY, camZ);
+        // Hover-state for every gizmo is recomputed here, in a single pass, before any gizmo draws. Renderers below
+        // are read-only — they consume the hover field but never write it. This way picking can't silently break when
+        // a renderer is skipped (panel offscreen, shader missing, etc.) and the picker is testable headless.
+        com.blib.engine.tool.gizmo.GizmoHoverPass.tick();
         BlockSelectionScaleGizmoRenderer.render(poseStack, camX, camY, camZ);
         BlockSelectionTranslateGizmoRenderer.render(poseStack, camX, camY, camZ);
         MoveBlocksGhostRenderer.render(poseStack, camX, camY, camZ);

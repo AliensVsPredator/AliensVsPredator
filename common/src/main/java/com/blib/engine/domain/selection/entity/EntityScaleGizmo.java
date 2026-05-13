@@ -7,7 +7,9 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import com.blib.engine.domain.selection.volume.BlockSelectionScaleGizmo;
-import com.blib.engine.session.EngineCameraFrame;
+import com.blib.engine.math.AxisPlaneDrag;
+import com.blib.engine.math.CursorCamera;
+import com.blib.engine.math.RayAabb;
 import com.blib.engine.session.EngineSession;
 
 /**
@@ -75,23 +77,16 @@ public final class EntityScaleGizmo {
     }
 
     public static void beginDrag(LivingEntity entity, EngineSession session) {
-        var capturedCam = EngineCameraFrame.cameraPosition();
-        var camPos = capturedCam != null ? capturedCam : session.cameraPosition();
+        var camPos = CursorCamera.position(session);
         var anchor = handleAnchor(entity, 1.0);
-
-        // Drag plane: contains world-Y, normal is the camera-perpendicular projection. Mirrors the translate gizmo's
-        // plane setup with axis = (0,1,0).
         var axisDir = new Vec3(0, 1, 0);
-        var camToCenter = anchor.subtract(camPos);
-        var inPlane = camToCenter.subtract(axisDir.scale(camToCenter.dot(axisDir)));
-        if (inPlane.lengthSqr() < 1.0e-6) {
-            inPlane = axisDir.cross(new Vec3(1, 0, 0));
-            if (inPlane.lengthSqr() < 1.0e-6) {
-                inPlane = axisDir.cross(new Vec3(0, 0, 1));
-            }
-        }
-        var planeNormal = inPlane.normalize();
-        var initialAxisOffset = computeInitialAxisOffset(session, anchor, planeNormal, axisDir, camPos);
+        var planeNormal = AxisPlaneDrag.pickPlaneNormal(axisDir, anchor, camPos);
+
+        var rayDir = com.blib.engine.jigsaw.JigsawPlacementCursor.cursorRayDirection(session);
+        var initialAxisOffset = rayDir == null
+            ? 0.0
+            : AxisPlaneDrag.projectOntoAxisOrZero(camPos, rayDir, anchor, planeNormal, axisDir);
+
         var initialScale = readEntityScale(entity);
         drag = new DragState(entity, planeNormal, anchor, axisDir, initialAxisOffset, initialScale, initialScale);
     }
@@ -101,47 +96,17 @@ public final class EntityScaleGizmo {
         return attr == null ? 1.0 : attr.getValue();
     }
 
-    private static double computeInitialAxisOffset(
-        EngineSession session,
-        Vec3 planePoint,
-        Vec3 planeNormal,
-        Vec3 axisDir,
-        Vec3 camPos
-    ) {
-        var rayDir = com.blib.engine.jigsaw.JigsawPlacementCursor.cursorRayDirection(session);
-        if (rayDir == null) {
-            return 0.0;
-        }
-        var denom = rayDir.dot(planeNormal);
-        if (Math.abs(denom) < 1.0e-6) {
-            return 0.0;
-        }
-        var t = planePoint.subtract(camPos).dot(planeNormal) / denom;
-        if (t <= 0) {
-            return 0.0;
-        }
-        var hit = camPos.add(rayDir.scale(t));
-        return hit.subtract(planePoint).dot(axisDir);
-    }
-
     public static void updateDrag(EngineSession session, Vec3 cursorRayDir) {
         var d = drag;
         if (d == null) {
             return;
         }
-        var capturedCam = EngineCameraFrame.cameraPosition();
-        var camPos = capturedCam != null ? capturedCam : session.cameraPosition();
-
-        var denom = cursorRayDir.dot(d.planeNormal);
-        if (Math.abs(denom) < 1.0e-6) {
+        var camPos = CursorCamera.position(session);
+        var projected = AxisPlaneDrag.projectOntoAxis(camPos, cursorRayDir, d.planePoint, d.planeNormal, d.axisDir);
+        if (Double.isNaN(projected)) {
             return;
         }
-        var t = d.planePoint.subtract(camPos).dot(d.planeNormal) / denom;
-        if (t <= 0) {
-            return;
-        }
-        var hit = camPos.add(cursorRayDir.scale(t));
-        var deltaY = hit.subtract(d.planePoint).dot(d.axisDir) - d.initialAxisOffset;
+        var deltaY = projected - d.initialAxisOffset;
         var newScale = d.initialScale + deltaY * SCALE_PER_BLOCK;
         d.ghostScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, newScale));
     }
@@ -177,14 +142,19 @@ public final class EntityScaleGizmo {
         if (rayDir == null) {
             return null;
         }
-        var capturedCam = EngineCameraFrame.cameraPosition();
-        var origin = capturedCam != null ? capturedCam : session.cameraPosition();
+        var origin = CursorCamera.position(session);
         var anchor = handleAnchor(entity, ghostScale());
         var scale = BlockSelectionScaleGizmo.scaleForCamera(origin, anchor);
 
         var len = BlockSelectionScaleGizmo.ARROW_LENGTH * scale;
         var perp = BlockSelectionScaleGizmo.TIP_HALF_WIDTH * scale;
-        var box = new BlockSelectionScaleGizmo.HandleBox(
+        var t = RayAabb.intersect(
+            origin.x,
+            origin.y,
+            origin.z,
+            rayDir.x,
+            rayDir.y,
+            rayDir.z,
             anchor.x - perp,
             anchor.y,
             anchor.z - perp,
@@ -192,49 +162,10 @@ public final class EntityScaleGizmo {
             anchor.y + len + perp,
             anchor.z + perp
         );
-        var t = rayHitsBox(origin.x, origin.y, origin.z, rayDir.x, rayDir.y, rayDir.z, box);
         return Double.isNaN(t) || t <= 0 ? null : new HandleHit(t);
     }
 
-    private static double rayHitsBox(
-        double ox,
-        double oy,
-        double oz,
-        double dx,
-        double dy,
-        double dz,
-        BlockSelectionScaleGizmo.HandleBox box
-    ) {
-        var tMin = Double.NEGATIVE_INFINITY;
-        var tMax = Double.POSITIVE_INFINITY;
-        for (var i = 0; i < 3; i++) {
-            var o = i == 0 ? ox : (i == 1 ? oy : oz);
-            var d = i == 0 ? dx : (i == 1 ? dy : dz);
-            var min = i == 0 ? box.minX() : (i == 1 ? box.minY() : box.minZ());
-            var max = i == 0 ? box.maxX() : (i == 1 ? box.maxY() : box.maxZ());
-            if (Math.abs(d) < 1.0e-9) {
-                if (o < min || o > max) {
-                    return Double.NaN;
-                }
-                continue;
-            }
-            var t1 = (min - o) / d;
-            var t2 = (max - o) / d;
-            if (t1 > t2) {
-                var swap = t1;
-                t1 = t2;
-                t2 = swap;
-            }
-            tMin = Math.max(tMin, t1);
-            tMax = Math.min(tMax, t2);
-            if (tMin > tMax) {
-                return Double.NaN;
-            }
-        }
-        return tMin > 0 ? tMin : tMax;
-    }
-
-    public record HandleHit(double t) {}
+    public record HandleHit(double t) implements com.blib.engine.tool.gizmo.GizmoHit {}
 
     public record DragResult(
         LivingEntity entity,

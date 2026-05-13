@@ -38,27 +38,23 @@ public final class EntityScaleGizmoRenderer {
     private EntityScaleGizmoRenderer() {}
 
     public static void render(PoseStack poseStack, double cameraX, double cameraY, double cameraZ) {
+        // Gating mirrors {@code GizmoHoverPass.tick()}; hover writes moved there so render is read-only.
         if (!EngineMode.get().isActive()) {
-            EntityScaleGizmo.setHovered(false);
             return;
         }
         var sel = SelectionManager.current().single();
         if (!(sel instanceof EntitySelectable es)) {
-            EntityScaleGizmo.setHovered(false);
             return;
         }
         if (EntityGizmoMode.get() != EntityGizmoMode.SCALE) {
-            EntityScaleGizmo.setHovered(false);
             return;
         }
         var entity = es.entity();
         if (entity == null) {
-            EntityScaleGizmo.setHovered(false);
             return;
         }
         var session = EngineMode.get().session();
         if (session == null) {
-            EntityScaleGizmo.setHovered(false);
             return;
         }
         if (BLibShaders.ENGINE_SELECTION.instance() == null) {
@@ -66,11 +62,6 @@ public final class EntityScaleGizmoRenderer {
         }
 
         var dragging = EntityScaleGizmo.isDragging();
-        if (dragging) {
-            EntityScaleGizmo.setHovered(true);
-        } else {
-            EntityScaleGizmo.setHovered(EntityScaleGizmo.pickUnderCursorWithDistance(session, entity) != null);
-        }
         var hovered = EntityScaleGizmo.hovered();
 
         var anchor = EntityScaleGizmo.handleAnchor(entity, EntityScaleGizmo.ghostScale());

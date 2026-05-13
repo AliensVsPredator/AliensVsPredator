@@ -9,7 +9,9 @@ import com.blib.engine.domain.selection.volume.BlockSelectionScaleGizmo;
 import com.blib.engine.domain.selection.volume.BlockSelectionTranslateGizmo;
 import com.blib.engine.input.ActiveKeybindings;
 import com.blib.engine.input.Keybindings;
-import com.blib.engine.session.EngineCameraFrame;
+import com.blib.engine.math.AxisPlaneDrag;
+import com.blib.engine.math.CursorCamera;
+import com.blib.engine.math.RayAabb;
 import com.blib.engine.session.EngineSession;
 
 /**
@@ -69,46 +71,16 @@ public final class EntityTranslateGizmo {
 
     public static void beginDrag(LivingEntity entity, BlockSelectionTranslateGizmo.Axis axis, EngineSession session) {
         var center = entityCenter(entity, Vec3.ZERO);
-        var capturedCam = EngineCameraFrame.cameraPosition();
-        var camPos = capturedCam != null ? capturedCam : session.cameraPosition();
-
+        var camPos = CursorCamera.position(session);
         var direction = axis.direction();
-        var camToCenter = center.subtract(camPos);
-        var inPlane = camToCenter.subtract(direction.scale(camToCenter.dot(direction)));
-        if (inPlane.lengthSqr() < 1.0e-6) {
-            inPlane = direction.cross(new Vec3(0, 1, 0));
-            if (inPlane.lengthSqr() < 1.0e-6) {
-                inPlane = direction.cross(new Vec3(0, 0, 1));
-            }
-        }
-        var planeNormal = inPlane.normalize();
+        var planeNormal = AxisPlaneDrag.pickPlaneNormal(direction, center, camPos);
 
-        var initialAxisOffset = computeInitialAxisOffset(session, center, planeNormal, direction, camPos);
+        var rayDir = com.blib.engine.jigsaw.JigsawPlacementCursor.cursorRayDirection(session);
+        var initialAxisOffset = rayDir == null
+            ? 0.0
+            : AxisPlaneDrag.projectOntoAxisOrZero(camPos, rayDir, center, planeNormal, direction);
 
         drag = new DragState(entity, axis, planeNormal, center, direction, initialAxisOffset, entity.position(), Vec3.ZERO);
-    }
-
-    private static double computeInitialAxisOffset(
-        EngineSession session,
-        Vec3 planePoint,
-        Vec3 planeNormal,
-        Vec3 axisDir,
-        Vec3 camPos
-    ) {
-        var rayDir = com.blib.engine.jigsaw.JigsawPlacementCursor.cursorRayDirection(session);
-        if (rayDir == null) {
-            return 0.0;
-        }
-        var denom = rayDir.dot(planeNormal);
-        if (Math.abs(denom) < 1.0e-6) {
-            return 0.0;
-        }
-        var t = planePoint.subtract(camPos).dot(planeNormal) / denom;
-        if (t <= 0) {
-            return 0.0;
-        }
-        var hit = camPos.add(rayDir.scale(t));
-        return hit.subtract(planePoint).dot(axisDir);
     }
 
     /**
@@ -120,19 +92,12 @@ public final class EntityTranslateGizmo {
         if (d == null) {
             return;
         }
-        var capturedCam = EngineCameraFrame.cameraPosition();
-        var camPos = capturedCam != null ? capturedCam : session.cameraPosition();
-
-        var denom = cursorRayDir.dot(d.planeNormal);
-        if (Math.abs(denom) < 1.0e-6) {
+        var camPos = CursorCamera.position(session);
+        var projected = AxisPlaneDrag.projectOntoAxis(camPos, cursorRayDir, d.planePoint, d.planeNormal, d.axisDir);
+        if (Double.isNaN(projected)) {
             return;
         }
-        var t = d.planePoint.subtract(camPos).dot(d.planeNormal) / denom;
-        if (t <= 0) {
-            return;
-        }
-        var hit = camPos.add(cursorRayDir.scale(t));
-        var rawDelta = hit.subtract(d.planePoint).dot(d.axisDir) - d.initialAxisOffset;
+        var rawDelta = projected - d.initialAxisOffset;
         var snapped = ActiveKeybindings.isModifierHeld(Keybindings.GIZMO_SNAP_INT) ? (double) Math.round(rawDelta) : rawDelta;
 
         d.ghostOffset = new Vec3(d.axisDir.x * snapped, d.axisDir.y * snapped, d.axisDir.z * snapped);
@@ -171,8 +136,7 @@ public final class EntityTranslateGizmo {
         if (rayDir == null) {
             return null;
         }
-        var capturedCam = EngineCameraFrame.cameraPosition();
-        var origin = capturedCam != null ? capturedCam : session.cameraPosition();
+        var origin = CursorCamera.position(session);
         var center = entityCenter(entity, ghostOffset());
         var scale = BlockSelectionScaleGizmo.scaleForCamera(origin, center);
 
@@ -180,8 +144,20 @@ public final class EntityTranslateGizmo {
         var closestT = Double.POSITIVE_INFINITY;
         for (var axis : BlockSelectionTranslateGizmo.Axis.values()) {
             var b = BlockSelectionTranslateGizmo.arrowPickBoxRaw(axis, center, scale);
-            var box = new BlockSelectionScaleGizmo.HandleBox(b[0], b[1], b[2], b[3], b[4], b[5]);
-            var t = rayHitsBox(origin.x, origin.y, origin.z, rayDir.x, rayDir.y, rayDir.z, box);
+            var t = RayAabb.intersect(
+                origin.x,
+                origin.y,
+                origin.z,
+                rayDir.x,
+                rayDir.y,
+                rayDir.z,
+                b[0],
+                b[1],
+                b[2],
+                b[3],
+                b[4],
+                b[5]
+            );
             if (t > 0 && t < closestT) {
                 closestT = t;
                 closest = axis;
@@ -190,48 +166,10 @@ public final class EntityTranslateGizmo {
         return closest == null ? null : new AxisHit(closest, closestT);
     }
 
-    private static double rayHitsBox(
-        double ox,
-        double oy,
-        double oz,
-        double dx,
-        double dy,
-        double dz,
-        BlockSelectionScaleGizmo.HandleBox box
-    ) {
-        var tMin = Double.NEGATIVE_INFINITY;
-        var tMax = Double.POSITIVE_INFINITY;
-        for (var i = 0; i < 3; i++) {
-            var o = i == 0 ? ox : (i == 1 ? oy : oz);
-            var d = i == 0 ? dx : (i == 1 ? dy : dz);
-            var min = i == 0 ? box.minX() : (i == 1 ? box.minY() : box.minZ());
-            var max = i == 0 ? box.maxX() : (i == 1 ? box.maxY() : box.maxZ());
-            if (Math.abs(d) < 1.0e-9) {
-                if (o < min || o > max) {
-                    return Double.NaN;
-                }
-                continue;
-            }
-            var t1 = (min - o) / d;
-            var t2 = (max - o) / d;
-            if (t1 > t2) {
-                var swap = t1;
-                t1 = t2;
-                t2 = swap;
-            }
-            tMin = Math.max(tMin, t1);
-            tMax = Math.min(tMax, t2);
-            if (tMin > tMax) {
-                return Double.NaN;
-            }
-        }
-        return tMin > 0 ? tMin : tMax;
-    }
-
     public record AxisHit(
         BlockSelectionTranslateGizmo.Axis axis,
         double t
-    ) {}
+    ) implements com.blib.engine.tool.gizmo.GizmoHit {}
 
     public record DragResult(
         LivingEntity entity,

@@ -42,41 +42,31 @@ public final class EntityTranslateGizmoRenderer {
     private EntityTranslateGizmoRenderer() {}
 
     public static void render(PoseStack poseStack, double cameraX, double cameraY, double cameraZ) {
+        // Gating mirrors {@code GizmoHoverPass.tick()}; hover writes moved there so render is read-only.
         if (!EngineMode.get().isActive()) {
-            EntityTranslateGizmo.setHoveredAxis(null);
             return;
         }
         var sel = SelectionManager.current().single();
         if (!(sel instanceof EntitySelectable es)) {
-            EntityTranslateGizmo.setHoveredAxis(null);
             return;
         }
         if (EntityGizmoMode.get() != EntityGizmoMode.TRANSLATE) {
-            EntityTranslateGizmo.setHoveredAxis(null);
             return;
         }
         var entity = es.entity();
         if (entity == null) {
-            EntityTranslateGizmo.setHoveredAxis(null);
             return;
         }
         var session = EngineMode.get().session();
         if (session == null) {
-            EntityTranslateGizmo.setHoveredAxis(null);
             return;
         }
         if (BLibShaders.ENGINE_SELECTION.instance() == null) {
             return;
         }
 
-        var draggingAxis = EntityTranslateGizmo.draggingAxis();
-        if (draggingAxis != null) {
-            EntityTranslateGizmo.setHoveredAxis(draggingAxis);
-        } else {
-            var pick = EntityTranslateGizmo.pickUnderCursorWithDistance(session, entity);
-            EntityTranslateGizmo.setHoveredAxis(pick == null ? null : pick.axis());
-        }
         var hoveredAxis = EntityTranslateGizmo.hoveredAxis();
+        var draggingAxis = EntityTranslateGizmo.draggingAxis();
 
         var center = EntityTranslateGizmo.entityCenter(entity, EntityTranslateGizmo.ghostOffset());
         var scale = BlockSelectionScaleGizmo.scaleForCamera(new Vec3(cameraX, cameraY, cameraZ), center);

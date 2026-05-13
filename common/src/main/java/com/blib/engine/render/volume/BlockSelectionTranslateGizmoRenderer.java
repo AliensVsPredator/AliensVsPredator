@@ -42,50 +42,37 @@ public final class BlockSelectionTranslateGizmoRenderer {
     private BlockSelectionTranslateGizmoRenderer() {}
 
     public static void render(PoseStack poseStack, double cameraX, double cameraY, double cameraZ) {
+        // Gating mirrors {@code GizmoHoverPass.tick()}; hover-state writes have moved there so this method is
+        // read-only. Returning here when conditions fail leaves the hover field already cleared by the pass.
         if (!EngineMode.get().isActive()) {
-            BlockSelectionTranslateGizmo.setHoveredAxis(null);
             return;
         }
-        // Entity selection takes over the gizmo surface — block gizmo hides while an entity is selected. Hover state
-        // is also cleared so a stale hovered axis doesn't render on the next non-entity frame.
         if (
             com.blib.engine.domain.selection.picking.SelectionManager.current()
                 .single() instanceof com.blib.engine.domain.selection.picking.EntitySelectable
         ) {
-            BlockSelectionTranslateGizmo.setHoveredAxis(null);
             return;
         }
         var aabb = BlockSelection.aabb();
         if (aabb.isEmpty()) {
-            BlockSelectionTranslateGizmo.setHoveredAxis(null);
             return;
         }
-        // Only render when Translate is the active tool — exclusive with the scale gizmo.
         if (BlockSelection.gizmoMode() != BlockSelection.GizmoMode.TRANSLATE_VOLUME) {
-            BlockSelectionTranslateGizmo.setHoveredAxis(null);
             return;
         }
         if (BlockSelection.picking() != BlockSelection.PickingState.NONE) {
-            BlockSelectionTranslateGizmo.setHoveredAxis(null);
             return;
         }
         var session = EngineMode.get().session();
         if (session == null) {
-            BlockSelectionTranslateGizmo.setHoveredAxis(null);
             return;
         }
         if (BLibShaders.ENGINE_SELECTION.instance() == null) {
             return;
         }
 
-        // Hover detection: lock to the dragged axis if a drag is in progress, else re-pick under the cursor.
-        var draggingAxis = BlockSelectionTranslateGizmo.draggingAxis();
-        if (draggingAxis != null) {
-            BlockSelectionTranslateGizmo.setHoveredAxis(draggingAxis);
-        } else {
-            BlockSelectionTranslateGizmo.setHoveredAxis(BlockSelectionTranslateGizmo.pickUnderCursor(session));
-        }
         var hoveredAxis = BlockSelectionTranslateGizmo.hoveredAxis();
+        var draggingAxis = BlockSelectionTranslateGizmo.draggingAxis();
 
         var box = aabb.get();
         var minX = (int) Math.floor(box.minX);

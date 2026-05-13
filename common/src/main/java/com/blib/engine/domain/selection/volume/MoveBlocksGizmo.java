@@ -6,7 +6,9 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import com.blib.engine.session.EngineCameraFrame;
+import com.blib.engine.math.AxisPlaneDrag;
+import com.blib.engine.math.CursorCamera;
+import com.blib.engine.math.RayAabb;
 import com.blib.engine.session.EngineSession;
 
 /**
@@ -113,50 +115,20 @@ public final class MoveBlocksGizmo {
         var maxY = (int) Math.floor(box.maxY) - 1;
         var maxZ = (int) Math.floor(box.maxZ) - 1;
         var center = aabbCenter(minX, minY, minZ, maxX, maxY, maxZ);
-        var capturedCam = EngineCameraFrame.cameraPosition();
-        var camPos = capturedCam != null ? capturedCam : session.cameraPosition();
-
+        var camPos = CursorCamera.position(session);
         var direction = axis.direction();
-        var camToCenter = center.subtract(camPos);
-        var inPlane = camToCenter.subtract(direction.scale(camToCenter.dot(direction)));
-        if (inPlane.lengthSqr() < 1.0e-6) {
-            inPlane = direction.cross(new Vec3(0, 1, 0));
-            if (inPlane.lengthSqr() < 1.0e-6) {
-                inPlane = direction.cross(new Vec3(0, 0, 1));
-            }
-        }
-        var planeNormal = inPlane.normalize();
+        var planeNormal = AxisPlaneDrag.pickPlaneNormal(direction, center, camPos);
 
         // Sample the click cursor's projection onto the axis so the first frame's delta is zero rather than
         // ARROW_LENGTH × scale. See {@code BlockSelectionTranslateGizmo} for the same fix and rationale.
-        var initialAxisOffset = computeInitialAxisOffset(session, center, planeNormal, direction, camPos);
+        var rayDir = com.blib.engine.jigsaw.JigsawPlacementCursor.cursorRayDirection(session);
+        var initialAxisOffset = rayDir == null
+            ? 0.0
+            : AxisPlaneDrag.projectOntoAxisOrZero(camPos, rayDir, center, planeNormal, direction);
 
         BlockSelection.setMoveCopyMode(copy);
         BlockSelection.setMoveOffset(BlockPos.ZERO);
         drag = new DragState(axis, planeNormal, center, direction, initialAxisOffset, copy);
-    }
-
-    private static double computeInitialAxisOffset(
-        EngineSession session,
-        Vec3 planePoint,
-        Vec3 planeNormal,
-        Vec3 axisDir,
-        Vec3 camPos
-    ) {
-        var rayDir = com.blib.engine.jigsaw.JigsawPlacementCursor.cursorRayDirection(session);
-        if (rayDir == null) {
-            return 0.0;
-        }
-        var denom = rayDir.dot(planeNormal);
-        if (Math.abs(denom) < 1.0e-6) {
-            return 0.0;
-        }
-        var t = planePoint.subtract(camPos).dot(planeNormal) / denom;
-        if (t <= 0) {
-            return 0.0;
-        }
-        var hit = camPos.add(rayDir.scale(t));
-        return hit.subtract(planePoint).dot(axisDir);
     }
 
     /**
@@ -168,19 +140,12 @@ public final class MoveBlocksGizmo {
         if (d == null) {
             return;
         }
-        var capturedCam = EngineCameraFrame.cameraPosition();
-        var camPos = capturedCam != null ? capturedCam : session.cameraPosition();
-
-        var denom = cursorRayDir.dot(d.planeNormal);
-        if (Math.abs(denom) < 1.0e-6) {
+        var camPos = CursorCamera.position(session);
+        var projected = AxisPlaneDrag.projectOntoAxis(camPos, cursorRayDir, d.planePoint, d.planeNormal, d.axisDir);
+        if (Double.isNaN(projected)) {
             return;
         }
-        var t = d.planePoint.subtract(camPos).dot(d.planeNormal) / denom;
-        if (t <= 0) {
-            return;
-        }
-        var hit = camPos.add(cursorRayDir.scale(t));
-        var deltaAlongAxis = (int) Math.round(hit.subtract(d.planePoint).dot(d.axisDir) - d.initialAxisOffset);
+        var deltaAlongAxis = (int) Math.round(projected - d.initialAxisOffset);
 
         var dx = (int) (d.axisDir.x * deltaAlongAxis);
         var dy = (int) (d.axisDir.y * deltaAlongAxis);
@@ -221,7 +186,7 @@ public final class MoveBlocksGizmo {
     public record AxisHit(
         Axis axis,
         double t
-    ) {}
+    ) implements com.blib.engine.tool.gizmo.GizmoHit {}
 
     public static @Nullable Axis pickUnderCursor(EngineSession session) {
         var hit = pickUnderCursorWithDistance(session);
@@ -237,8 +202,7 @@ public final class MoveBlocksGizmo {
         if (rayDir == null) {
             return null;
         }
-        var capturedCam = EngineCameraFrame.cameraPosition();
-        var origin = capturedCam != null ? capturedCam : session.cameraPosition();
+        var origin = CursorCamera.position(session);
 
         var box = aabb.get();
         var minX = (int) Math.floor(box.minX);
@@ -253,8 +217,21 @@ public final class MoveBlocksGizmo {
         Axis closest = null;
         var closestT = Double.POSITIVE_INFINITY;
         for (var axis : Axis.values()) {
-            var box3 = arrowPickBox(axis, center, scale);
-            var t = rayHitsBox(origin.x, origin.y, origin.z, rayDir.x, rayDir.y, rayDir.z, box3);
+            var b = arrowPickBoxRaw(axis, center, scale);
+            var t = RayAabb.intersect(
+                origin.x,
+                origin.y,
+                origin.z,
+                rayDir.x,
+                rayDir.y,
+                rayDir.z,
+                b[0],
+                b[1],
+                b[2],
+                b[3],
+                b[4],
+                b[5]
+            );
             if (t > 0 && t < closestT) {
                 closestT = t;
                 closest = axis;
@@ -279,49 +256,6 @@ public final class MoveBlocksGizmo {
         var maxY = Math.max(center.y, endY) + (sy == 0 ? perp : 0);
         var maxZ = Math.max(center.z, endZ) + (sz == 0 ? perp : 0);
         return new double[] { minX, minY, minZ, maxX, maxY, maxZ };
-    }
-
-    private static BlockSelectionScaleGizmo.HandleBox arrowPickBox(Axis axis, Vec3 center, double scale) {
-        var b = arrowPickBoxRaw(axis, center, scale);
-        return new BlockSelectionScaleGizmo.HandleBox(b[0], b[1], b[2], b[3], b[4], b[5]);
-    }
-
-    private static double rayHitsBox(
-        double ox,
-        double oy,
-        double oz,
-        double dx,
-        double dy,
-        double dz,
-        BlockSelectionScaleGizmo.HandleBox box
-    ) {
-        var tMin = Double.NEGATIVE_INFINITY;
-        var tMax = Double.POSITIVE_INFINITY;
-        for (var i = 0; i < 3; i++) {
-            var o = i == 0 ? ox : (i == 1 ? oy : oz);
-            var d = i == 0 ? dx : (i == 1 ? dy : dz);
-            var min = i == 0 ? box.minX() : (i == 1 ? box.minY() : box.minZ());
-            var max = i == 0 ? box.maxX() : (i == 1 ? box.maxY() : box.maxZ());
-            if (Math.abs(d) < 1.0e-9) {
-                if (o < min || o > max) {
-                    return Double.NaN;
-                }
-                continue;
-            }
-            var t1 = (min - o) / d;
-            var t2 = (max - o) / d;
-            if (t1 > t2) {
-                var swap = t1;
-                t1 = t2;
-                t2 = swap;
-            }
-            tMin = Math.max(tMin, t1);
-            tMax = Math.min(tMax, t2);
-            if (tMin > tMax) {
-                return Double.NaN;
-            }
-        }
-        return tMin > 0 ? tMin : tMax;
     }
 
     private record DragState(

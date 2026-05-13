@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 import com.blib.engine.domain.selection.volume.BlockSelection;
 import com.blib.engine.session.ProjectSession;
 import com.blib.engine.ui.EngineFont;
+import com.blib.engine.ui.modal.ModalDialog;
 import com.blib.engine.ui.widget.SegmentedControl;
 import com.blib.engine.ui.widget.TextInput;
 import com.blib.internal.common.capture.BlockCaptureEngine;
@@ -31,7 +32,12 @@ import com.blib.mod.common.network.packet.C2SCaptureBlocksPayload;
  * Esc).
  */
 @ApiStatus.Internal
-public final class CaptureDialog {
+public final class CaptureDialog extends ModalDialog {
+
+    @Override
+    public String tag() {
+        return "capture";
+    }
 
     private static final int DIM_COLOR = 0x80000000;
 

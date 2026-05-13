@@ -20,6 +20,7 @@ import com.blib.engine.input.KeybindingProfile;
 import com.blib.engine.input.KeybindingProfileCatalog;
 import com.blib.engine.input.Keybindings;
 import com.blib.engine.ui.EngineFont;
+import com.blib.engine.ui.modal.ModalDialog;
 import com.blib.engine.ui.widget.DropdownMenu;
 import com.blib.engine.ui.widget.KeyCaptureWidget;
 import com.blib.engine.ui.widget.TextInput;
@@ -42,7 +43,12 @@ import com.blib.engine.ui.widget.TextInput;
  * through it before panels, and clears it via the onClose callback.
  */
 @ApiStatus.Internal
-public final class PreferencesDialog {
+public final class PreferencesDialog extends ModalDialog {
+
+    @Override
+    public String tag() {
+        return "preferences";
+    }
 
     private static final int DIM_COLOR = 0x80000000;
 

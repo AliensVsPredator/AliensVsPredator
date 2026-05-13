@@ -53,36 +53,32 @@ public final class BlockSelectionScaleGizmoRenderer {
     private BlockSelectionScaleGizmoRenderer() {}
 
     public static void render(PoseStack poseStack, double cameraX, double cameraY, double cameraZ) {
+        // Gating mirrors {@code GizmoHoverPass.tick()} — when the pass declines to update hover state, this renderer
+        // declines to draw. Hover-state writes have been moved out of this method entirely: render is read-only.
         if (!EngineMode.get().isActive()) {
-            BlockSelectionScaleGizmo.setHoveredFace(null);
             return;
         }
         if (
             com.blib.engine.domain.selection.picking.SelectionManager.current()
                 .single() instanceof com.blib.engine.domain.selection.picking.EntitySelectable
         ) {
-            BlockSelectionScaleGizmo.setHoveredFace(null);
             return;
         }
         var aabb = BlockSelection.aabb();
         if (aabb.isEmpty()) {
-            BlockSelectionScaleGizmo.setHoveredFace(null);
             return;
         }
         // Only render when Scale is the active tool. Tool switching is exclusive — only one of scale/translate/move
         // is visible at a time so the user always knows what their next click will do.
         if (BlockSelection.gizmoMode() != BlockSelection.GizmoMode.SCALE_VOLUME) {
-            BlockSelectionScaleGizmo.setHoveredFace(null);
             return;
         }
         // No handles while the user is mid-corner-pick — they'd visually compete with the corner-picking flow.
         if (BlockSelection.picking() != BlockSelection.PickingState.NONE) {
-            BlockSelectionScaleGizmo.setHoveredFace(null);
             return;
         }
         var session = EngineMode.get().session();
         if (session == null) {
-            BlockSelectionScaleGizmo.setHoveredFace(null);
             return;
         }
 
@@ -91,16 +87,9 @@ public final class BlockSelectionScaleGizmoRenderer {
             return;
         }
 
-        // Update hover state for this frame. The input handler reads this on click so hover and click target match.
-        // While dragging we lock hover to the dragged face — picker is a no-op since the handles haven't moved by
-        // the cursor's hit (they're attached to the AABB which the drag is editing).
-        var draggingFace = BlockSelectionScaleGizmo.draggingFace();
-        if (draggingFace != null) {
-            BlockSelectionScaleGizmo.setHoveredFace(draggingFace);
-        } else {
-            BlockSelectionScaleGizmo.setHoveredFace(BlockSelectionScaleGizmo.pickUnderCursor(session));
-        }
+        // Hover + drag state were updated this frame by GizmoHoverPass; just read them for colour decisions.
         var hoveredFace = BlockSelectionScaleGizmo.hoveredFace();
+        var draggingFace = BlockSelectionScaleGizmo.draggingFace();
 
         var box = aabb.get();
         var minX = (int) Math.floor(box.minX);

@@ -6,6 +6,9 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import com.blib.engine.math.AxisPlaneDrag;
+import com.blib.engine.math.CursorCamera;
+import com.blib.engine.math.RayAabb;
 import com.blib.engine.session.EngineSession;
 
 /**
@@ -170,25 +173,12 @@ public final class BlockSelectionScaleGizmo {
         var center = aabbFaceCenter(face, minX, minY, minZ, maxX, maxY, maxZ);
         var axis = face.normal();
 
-        // Drag plane: contains axis, normal is perpendicular to axis and roughly facing camera. The plane's normal
-        // is `axis × (axis × camForward)` simplified — but easier: pick the axis-perpendicular vector that has the
-        // largest dot with cameraForward, then its perpendicular-in-axis-plane is the plane normal.
-        // Use the camera position vanilla rendered the most recent frame from — matches the wireframe's apparent
-        // origin during partial-tick interpolation (rendered cam lags session.cameraPosition by up to half a tick).
-        var capturedCam = com.blib.engine.session.EngineCameraFrame.cameraPosition();
-        var camPos = capturedCam != null ? capturedCam : session.cameraPosition();
-        var camToCenter = center.subtract(camPos);
-        // Project camToCenter onto the plane perpendicular to axis, then normalize — that gives the in-plane
-        // direction we want the drag plane normal to align with.
-        var inPlane = camToCenter.subtract(axis.scale(camToCenter.dot(axis)));
-        if (inPlane.lengthSqr() < 1.0e-6) {
-            // Looking nearly straight down the axis — fall back to a world-up reference.
-            inPlane = axis.cross(new Vec3(0, 1, 0));
-            if (inPlane.lengthSqr() < 1.0e-6) {
-                inPlane = axis.cross(new Vec3(0, 0, 1));
-            }
-        }
-        var planeNormal = inPlane.normalize();
+        // Drag plane: contains axis, normal is perpendicular to axis and roughly facing camera. The picker picks the
+        // axis-perpendicular vector that has the largest projection onto the camera-to-anchor ray, so cursor pixel
+        // motion projects cleanly onto the dragged axis. The camera is the captured render-frame position so the
+        // wireframe and the plane stay in lock-step during partial-tick interpolation.
+        var camPos = CursorCamera.position(session);
+        var planeNormal = AxisPlaneDrag.pickPlaneNormal(axis, center, camPos);
 
         var initialValue = switch (face.axis()) {
             case X -> face.targetIsMax() ? maxX : minX;
@@ -199,7 +189,10 @@ public final class BlockSelectionScaleGizmo {
         // Sample the click cursor's projection onto the axis so the first frame's delta is zero. Without this, the
         // user grabbing the handle (offset by ~HANDLE_OFFSET × scale outside the face) instantly grows the AABB by
         // round(HANDLE_OFFSET × scale) blocks before they've moved the cursor.
-        var initialAxisOffset = computeInitialAxisOffset(session, center, planeNormal, axis, camPos);
+        var rayDir = com.blib.engine.jigsaw.JigsawPlacementCursor.cursorRayDirection(session);
+        var initialAxisOffset = rayDir == null
+            ? 0.0
+            : AxisPlaneDrag.projectOntoAxisOrZero(camPos, rayDir, center, planeNormal, axis);
 
         drag = new DragState(
             face,
@@ -219,29 +212,6 @@ public final class BlockSelectionScaleGizmo {
         );
     }
 
-    private static double computeInitialAxisOffset(
-        EngineSession session,
-        Vec3 planePoint,
-        Vec3 planeNormal,
-        Vec3 axisDir,
-        Vec3 camPos
-    ) {
-        var rayDir = com.blib.engine.jigsaw.JigsawPlacementCursor.cursorRayDirection(session);
-        if (rayDir == null) {
-            return 0.0;
-        }
-        var denom = rayDir.dot(planeNormal);
-        if (Math.abs(denom) < 1.0e-6) {
-            return 0.0;
-        }
-        var t = planePoint.subtract(camPos).dot(planeNormal) / denom;
-        if (t <= 0) {
-            return 0.0;
-        }
-        var hit = camPos.add(rayDir.scale(t));
-        return hit.subtract(planePoint).dot(axisDir);
-    }
-
     /**
      * Update the dragged face's position based on the current cursor ray. The new value is clamped so the dragged face
      * can't pass its opposite (preventing zero/negative-volume AABBs); the drag origin remains the value captured at
@@ -254,26 +224,17 @@ public final class BlockSelectionScaleGizmo {
         }
         // Use the camera position vanilla rendered the most recent frame from — matches the wireframe's apparent
         // origin during partial-tick interpolation (rendered cam lags session.cameraPosition by up to half a tick).
-        var capturedCam = com.blib.engine.session.EngineCameraFrame.cameraPosition();
-        var camPos = capturedCam != null ? capturedCam : session.cameraPosition();
-
-        // Ray-plane intersection: t = (planePoint - rayOrigin) · planeNormal / (rayDir · planeNormal).
-        var denom = cursorRayDir.dot(d.planeNormal);
-        if (Math.abs(denom) < 1.0e-6) {
-            // Cursor ray is parallel to plane — can't intersect; ignore this frame.
-            return;
-        }
-        var t = d.planePoint.subtract(camPos).dot(d.planeNormal) / denom;
-        if (t <= 0) {
-            // Plane is behind the camera; ignore.
-            return;
-        }
-        var hit = camPos.add(cursorRayDir.scale(t));
+        var camPos = CursorCamera.position(session);
 
         // Project the hit onto the dragged axis. Subtract the initial click offset so the first frame produces a
         // delta of zero — without this we'd snap the dragged face by round(HANDLE_OFFSET × scale) blocks the moment
         // the user clicks the handle, before any cursor motion.
-        var deltaAlongAxis = hit.subtract(d.planePoint).dot(d.axis) - d.initialAxisOffset;
+        var projected = AxisPlaneDrag.projectOntoAxis(camPos, cursorRayDir, d.planePoint, d.planeNormal, d.axis);
+        if (Double.isNaN(projected)) {
+            // Cursor ray parallel to plane or behind camera — ignore this frame.
+            return;
+        }
+        var deltaAlongAxis = projected - d.initialAxisOffset;
         // Direction sign: face axis dot (positive direction toward face's outward normal). For a +X face,
         // axis = (1,0,0), and a positive deltaAlongAxis along +X grows the AABB. For a -X face, axis = (-1,0,0),
         // so dragging "outward" along that axis (which is -X in world) gives a positive deltaAlongAxis. We then
@@ -362,7 +323,7 @@ public final class BlockSelectionScaleGizmo {
     public record FaceHit(
         Face face,
         double t
-    ) {}
+    ) implements com.blib.engine.tool.gizmo.GizmoHit {}
 
     public static @Nullable Face pickUnderCursor(EngineSession session) {
         var hit = pickUnderCursorWithDistance(session);
@@ -387,8 +348,7 @@ public final class BlockSelectionScaleGizmo {
         var maxZ = (int) Math.floor(box.maxZ) - 1;
         // Use the captured camera position from the most recent render frame so picking origin matches the rendered
         // camera (especially important during partial-tick interpolation between camera-motion ticks).
-        var capturedCam = com.blib.engine.session.EngineCameraFrame.cameraPosition();
-        var origin = capturedCam != null ? capturedCam : session.cameraPosition();
+        var origin = CursorCamera.position(session);
 
         Face closest = null;
         var closestT = Double.POSITIVE_INFINITY;
@@ -399,47 +359,26 @@ public final class BlockSelectionScaleGizmo {
             var faceCenter = aabbFaceCenter(face, minX, minY, minZ, maxX, maxY, maxZ);
             var scale = scaleForCamera(origin, faceCenter);
             var handle = HandleBox.forFace(face, minX, minY, minZ, maxX, maxY, maxZ, scale);
-            var t = rayHitsBox(origin.x, origin.y, origin.z, rayDir.x, rayDir.y, rayDir.z, handle);
+            var t = RayAabb.intersect(
+                origin.x,
+                origin.y,
+                origin.z,
+                rayDir.x,
+                rayDir.y,
+                rayDir.z,
+                handle.minX,
+                handle.minY,
+                handle.minZ,
+                handle.maxX,
+                handle.maxY,
+                handle.maxZ
+            );
             if (t > 0 && t < closestT) {
                 closestT = t;
                 closest = face;
             }
         }
         return closest == null ? null : new FaceHit(closest, closestT);
-    }
-
-    /**
-     * Slab-method ray vs. AABB intersection. Returns the parametric t for the first hit (positive only) or NaN if the
-     * ray misses. {@code rayDir} need not be normalized — t is in units of the input direction.
-     */
-    private static double rayHitsBox(double ox, double oy, double oz, double dx, double dy, double dz, HandleBox box) {
-        var tMin = Double.NEGATIVE_INFINITY;
-        var tMax = Double.POSITIVE_INFINITY;
-        for (var i = 0; i < 3; i++) {
-            var o = i == 0 ? ox : (i == 1 ? oy : oz);
-            var d = i == 0 ? dx : (i == 1 ? dy : dz);
-            var min = i == 0 ? box.minX : (i == 1 ? box.minY : box.minZ);
-            var max = i == 0 ? box.maxX : (i == 1 ? box.maxY : box.maxZ);
-            if (Math.abs(d) < 1.0e-9) {
-                if (o < min || o > max) {
-                    return Double.NaN;
-                }
-                continue;
-            }
-            var t1 = (min - o) / d;
-            var t2 = (max - o) / d;
-            if (t1 > t2) {
-                var swap = t1;
-                t1 = t2;
-                t2 = swap;
-            }
-            tMin = Math.max(tMin, t1);
-            tMax = Math.min(tMax, t2);
-            if (tMin > tMax) {
-                return Double.NaN;
-            }
-        }
-        return tMin > 0 ? tMin : tMax;
     }
 
     /** World-space center of one face of the inclusive integer AABB defined by {@code (min, max)}. */
