@@ -142,7 +142,21 @@ public final class UvMapPanel implements Panel {
 
     private int uvAreaW;
 
+    /**
+     * Visible UV map viewport height — the locked area in which the texture is rendered. Equals
+     * {@code textureHeight × minZoom} (capped at {@link #uvAreaMaxH}), so this stays stable across zoom changes
+     * (zooming in scales the texture inside the viewport rather than expanding the viewport itself). The footer sits
+     * directly under this — its Y stays put regardless of zoom.
+     */
     private int uvAreaH;
+
+    /**
+     * Panel-content height available for the UV viewport (panel height minus header and footer). Used by
+     * {@link #computeMinZoom} as the upper bound on the fit zoom, and as the cap when computing the viewport
+     * {@link #uvAreaH}. Unlike {@link #uvAreaH}, this does NOT shrink to the texture's natural size — it represents
+     * the maximum room the viewport could grow into if the texture were large enough.
+     */
+    private int uvAreaMaxH;
 
     /**
      * Cached per-frame integer offset: screen X where UV {@code u=0} sits. Combines the natural-centering anchor with
@@ -230,14 +244,15 @@ public final class UvMapPanel implements Panel {
 
         var scene = ModelerScene.get();
 
-        // Viewport-style layout: header strip on top, footer (inputs) pinned to the bottom of the panel, UV map area
-        // fills everything in between. The texture floats inside this fixed-shape area at the current zoom — natural
-        // anchor centers it in both axes, and the pan clamp (further down) prevents pan from exposing background past
-        // the texture edges when zoomed in.
+        // Layout: header strip on top, then the UV viewport (size locked at the texture's fit-zoom footprint), then the
+        // footer (inputs) directly underneath the viewport. uvAreaMaxH is the maximum room the viewport could occupy;
+        // uvAreaH is the actual viewport height (texHeight × minZoom, capped). Setting uvAreaH provisionally here lets
+        // the init path run before the zoom-dependent recompute below.
         this.uvAreaX = x;
         this.uvAreaY = y + HEADER_HEIGHT;
         this.uvAreaW = width;
-        this.uvAreaH = Math.max(0, height - HEADER_HEIGHT - FOOTER_HEIGHT);
+        this.uvAreaMaxH = Math.max(0, height - HEADER_HEIGHT - FOOTER_HEIGHT);
+        this.uvAreaH = uvAreaMaxH;
 
         // Reset selection + view state on model load — scene.root identity changes when applyModel runs.
         if (scene.root != lastRoot) {
@@ -252,8 +267,10 @@ public final class UvMapPanel implements Panel {
             viewInitialized = false;
         }
 
-        // Initialize view once we have a known area size.
-        if (!viewInitialized && uvAreaW > 0 && uvAreaH > 0) {
+        // Initialize view once we have a known area size. Guard on uvAreaMaxH (not uvAreaH) since uvAreaH gets locked
+        // to the texture's footprint below — it could collapse to 0 for a zero-size texture even while the panel has
+        // room. uvAreaMaxH reflects the panel allocation, which is what matters for "do we have a viewport yet".
+        if (!viewInitialized && uvAreaW > 0 && uvAreaMaxH > 0) {
             zoom = computeMinZoom(scene);
             panOffsetX = 0;
             panOffsetY = 0;
@@ -280,6 +297,11 @@ public final class UvMapPanel implements Panel {
         // panels) so the range never collapses below min.
         var maxZoom = Math.max(minZoom, MAX_ABSOLUTE_ZOOM);
         zoom = clamp(zoom, minZoom, maxZoom);
+
+        // Lock the viewport height to the texture's footprint AT THE FIT ZOOM (not the current zoom). This keeps the
+        // visible UV map area a stable size as the user zooms in — the texture grows past the viewport edges and gets
+        // scissor-clipped + becomes pannable, instead of the viewport stretching downward and pushing the footer.
+        this.uvAreaH = Math.min((int) Math.round(scene.textureHeight * minZoom), uvAreaMaxH);
 
         // Clamp pan so the texture always fully covers the UV map area on each axis.
         // X axis is centered: symmetric ±(overshoot/2) — pan ranges left/right from the area center.
@@ -404,12 +426,10 @@ public final class UvMapPanel implements Panel {
 
     private void renderFooter(GuiGraphics graphics, ModelerScene scene, int mouseX, int mouseY) {
         var font = EngineFont.get();
-        // Footer follows the texture's rendered bottom edge so the inputs always sit "directly underneath the UV map".
-        // When the texture fits the area in Y, this places the footer right below the texture (with panel bg below the
-        // footer); when the texture overflows, it pins at the panel-content bottom so the footer stays on-screen and
-        // the scissored-off texture continues behind it.
-        var textureRenderedH = (int) Math.round(scene.textureHeight * zoom);
-        var footerY = Math.min(uvAreaY + textureRenderedH, rectY + rectHeight - FOOTER_HEIGHT);
+        // Footer sits directly under the (locked) UV viewport. Because uvAreaH is set from minZoom — not the current
+        // zoom — this position stays put when the user zooms in: the texture grows beyond the viewport and gets
+        // scissor-clipped, but the viewport bottom (and therefore the footer) stays in place.
+        var footerY = uvAreaY + uvAreaH;
         graphics.fill(rectX, footerY, rectX + rectWidth, rectY + rectHeight, BG_COLOR);
 
         var inputY = footerY + (FOOTER_HEIGHT - TextInput.HEIGHT) / 2;
@@ -1028,10 +1048,13 @@ public final class UvMapPanel implements Panel {
      * at native size centered in the area with panel-background padding on every side.
      */
     private double computeMinZoom(ModelerScene scene) {
-        if (uvAreaW <= 0 || uvAreaH <= 0 || scene.textureWidth <= 0 || scene.textureHeight <= 0) {
+        // Use uvAreaMaxH (panel-content max) here, NOT uvAreaH — uvAreaH is the locked viewport, which itself depends
+        // on minZoom, so using it here would be circular. The fit zoom is the largest at which the texture fits within
+        // the FULL available panel space; the viewport then sizes itself to the texture at that zoom.
+        if (uvAreaW <= 0 || uvAreaMaxH <= 0 || scene.textureWidth <= 0 || scene.textureHeight <= 0) {
             return MAX_ABSOLUTE_ZOOM;
         }
-        var fit = Math.min(uvAreaW / scene.textureWidth, uvAreaH / scene.textureHeight);
+        var fit = Math.min(uvAreaW / scene.textureWidth, uvAreaMaxH / scene.textureHeight);
         return Math.min(fit, MAX_ABSOLUTE_ZOOM);
     }
 
