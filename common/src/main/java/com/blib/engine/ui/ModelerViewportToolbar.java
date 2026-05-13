@@ -139,6 +139,36 @@ public final class ModelerViewportToolbar {
         };
     }
 
+    /**
+     * Hover tooltip for the mode buttons. Includes the hotkey letter in the user-facing text so users can learn
+     * keyboard shortcuts by hovering — preferred to a separate cheat-sheet overlay since the hotkeys correspond 1:1
+     * with the button order.
+     */
+    public static Component tooltipForMode(ModelerGizmoMode mode) {
+        return switch (mode) {
+            case OFF -> Component.literal("Select only — no gizmo handles");
+            case TRANSLATE -> Component.literal("Translate (T) — drag the arrows to move the selected cube");
+            case ROTATE -> Component.literal("Rotate (R) — drag a ring to rotate the selected cube");
+            case RESIZE -> Component.literal("Resize (S) — drag a face handle to grow or shrink the cube");
+            case PIVOT -> Component.literal("Move pivot (P) — drag the arrows to move the rotation center; the cube body stays in place");
+        };
+    }
+
+    /**
+     * Hover tooltip for the frame-cycle button. Reads the current frame so the user sees both what's active and what
+     * the click will do next, which matters more here than for the mode buttons because clicking is a cycle, not a
+     * direct select.
+     */
+    public static Component tooltipForFrame() {
+        var current = ModelerGizmoState.frame();
+        var next = current.next();
+        var explanation = switch (current) {
+            case LOCAL -> "arrows align with the selected cube's axes";
+            case GLOBAL -> "arrows align with world axes";
+        };
+        return Component.literal("Frame: " + current.label() + " — " + explanation + ". Click to switch to " + next.label() + ".");
+    }
+
     private record Rect(
         int x,
         int y,

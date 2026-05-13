@@ -3,6 +3,7 @@ package com.blib.engine.ui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -62,9 +63,21 @@ public final class ModelerViewportPanel implements Panel {
     /** Panel rect captured at render time so click handlers can convert workspace coords → viewport-relative. */
     private int panelX, panelY, panelWidth, panelHeight;
 
+    /**
+     * Latest toolbar tooltip — refreshed each frame from {@link ModelerViewportToolbar}'s hit-test. The workspace's
+     * tooltip pipeline calls {@link #tooltipText()} and renders the result near the cursor, so the panel just has to
+     * keep this field current.
+     */
+    private @Nullable Component hoveredTooltip;
+
     @Override
     public String title() {
         return "Modeler Viewport";
+    }
+
+    @Override
+    public @Nullable Component tooltipText() {
+        return hoveredTooltip;
     }
 
     @Override
@@ -89,6 +102,19 @@ public final class ModelerViewportPanel implements Panel {
 
         renderer.render(graphics, x, y, width, height);
         ModelerViewportToolbar.render(graphics, x, y);
+
+        // Toolbar tooltips. Refresh after toolbar render so the hit-test is against the rects just drawn this frame
+        // (panel resize / layout changes are picked up on the same frame). Suppressed during gizmo drag — the user
+        // is busy manipulating, not exploring controls.
+        hoveredTooltip = null;
+        if (!gizmoDragActive) {
+            var modeHover = ModelerViewportToolbar.hitTestMode(mouseX, mouseY, x, y);
+            if (modeHover != null) {
+                hoveredTooltip = ModelerViewportToolbar.tooltipForMode(modeHover);
+            } else if (ModelerViewportToolbar.hitTestFrame(mouseX, mouseY, x, y)) {
+                hoveredTooltip = ModelerViewportToolbar.tooltipForFrame();
+            }
+        }
     }
 
     @Override
