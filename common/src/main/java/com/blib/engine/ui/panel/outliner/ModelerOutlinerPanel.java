@@ -360,12 +360,24 @@ public final class ModelerOutlinerPanel implements Panel {
      * row is its OWN row, not a child row).
      */
     private void expandAncestorsOf(Selection sel) {
+        if (sel instanceof Selection.MultiCubeSelection ms) {
+            // Expand every selected cube's ancestor chain so all rows are visible at once. Calling per-cube is fine —
+            // collapsed.remove is idempotent and the chains share most of their nodes anyway.
+            for (var cs : ms.cubes()) {
+                expandAncestorChainFrom(cs.owner());
+            }
+            return;
+        }
         ModelerBone start = null;
         if (sel instanceof Selection.CubeSelection cs) {
             start = cs.owner();
         } else if (sel instanceof Selection.BoneSelection bs) {
             start = bs.bone().parent;
         }
+        expandAncestorChainFrom(start);
+    }
+
+    private void expandAncestorChainFrom(@Nullable ModelerBone start) {
         while (start != null) {
             collapsed.remove(start);
             start = start.parent;
@@ -378,14 +390,25 @@ public final class ModelerOutlinerPanel implements Panel {
      * motion, doesn't yank the user's view if the row is already visible.
      */
     private void scrollSelectionIntoView(Selection sel) {
+        // For multi-cube selections, scroll the primary into view — that's the one the inspector + gizmo operate on, so
+        // it's the most informative target for the user.
+        ModelerCube targetCube = null;
+        ModelerBone targetBone = null;
+        if (sel instanceof Selection.CubeSelection cs) {
+            targetCube = cs.cube();
+        } else if (sel instanceof Selection.MultiCubeSelection ms) {
+            targetCube = ms.primary().cube();
+        } else if (sel instanceof Selection.BoneSelection bs) {
+            targetBone = bs.bone();
+        }
         int targetIdx = -1;
         for (int i = 0; i < rows.size(); i++) {
             var row = rows.get(i);
-            if (sel instanceof Selection.CubeSelection cs && row.cube == cs.cube()) {
+            if (targetCube != null && row.cube == targetCube) {
                 targetIdx = i;
                 break;
             }
-            if (sel instanceof Selection.BoneSelection bs && row.cube == null && row.owner == bs.bone()) {
+            if (targetBone != null && row.cube == null && row.owner == targetBone) {
                 targetIdx = i;
                 break;
             }
@@ -412,6 +435,11 @@ public final class ModelerOutlinerPanel implements Panel {
         }
         if (sel instanceof Selection.CubeSelection cs) {
             return row.cube != null && row.cube == cs.cube();
+        }
+        if (sel instanceof Selection.MultiCubeSelection ms) {
+            // Every cube in the multi-selection lights up its row. Bone rows aren't highlighted by a multi-cube
+            // selection — the user explicitly picked cubes, not their owning bones.
+            return row.cube != null && ms.contains(row.cube);
         }
         if (sel instanceof Selection.BoneSelection) {
             // Bone selection cascades: the bone row itself, every descendant bone row, and every cube row whose

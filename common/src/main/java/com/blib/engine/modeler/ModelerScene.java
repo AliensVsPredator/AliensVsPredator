@@ -4,6 +4,9 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.blib.engine.modeler.history.ModelerAction;
 import com.blib.engine.modeler.history.ModelerActionHistory;
 
@@ -44,6 +47,15 @@ public final class ModelerScene {
 
     public ModelerBone root = new ModelerBone("root");
 
+    /**
+     * Texture sheet dimensions in pixels, sourced from {@code minecraft:geometry.description.texture_width} on load.
+     * Drives the UV map panel's grid + bounds rectangle. Defaults to 64 (matches a fresh-entity baseline) and is reset
+     * by {@link #resetToEntity}; {@code ModelerSceneLoader.applyModel} overwrites both when a model carries its own.
+     */
+    public double textureWidth = 64.0;
+
+    public double textureHeight = 64.0;
+
     public final ModelerCamera camera = new ModelerCamera();
 
     public @Nullable Selection selection;
@@ -65,10 +77,17 @@ public final class ModelerScene {
         ModelerCube cube
     ) {}
 
-    /** Returns the selected cube + its owning bone, or null when the selection isn't a cube. */
+    /**
+     * Returns the primary selected cube + its owning bone, or null when the selection isn't a cube. For multi-cube
+     * selections this returns the primary (last-clicked) cube — single-cube tools (gizmo, inspector) operate on it.
+     */
     public @Nullable CubeWithOwner selectedCubeWithOwner() {
         if (selection instanceof Selection.CubeSelection cs) {
             return new CubeWithOwner(cs.owner(), cs.cube());
+        }
+        if (selection instanceof Selection.MultiCubeSelection ms) {
+            var primary = ms.primary();
+            return new CubeWithOwner(primary.owner(), primary.cube());
         }
         return null;
     }
@@ -120,6 +139,9 @@ public final class ModelerScene {
         if (selection instanceof Selection.CubeSelection) {
             return deleteSelectedCube();
         }
+        if (selection instanceof Selection.MultiCubeSelection ms) {
+            return deleteMultiCubeSelection(ms);
+        }
         if (selection instanceof Selection.BoneSelection bs) {
             var bone = bs.bone();
             var parent = bone.parent;
@@ -145,6 +167,51 @@ public final class ModelerScene {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Remove every cube in a multi-selection. Each individual removal is captured as its own
+     * {@link ModelerAction.CubeRemoveAction} (at the cube's current index at removal time, which accounts for shifting
+     * when multiple cubes share an owner). The actions are bundled in a {@link ModelerAction.CompositeAction} so a
+     * single {@code Ctrl+Z} restores the whole group.
+     */
+    private boolean deleteMultiCubeSelection(Selection.MultiCubeSelection ms) {
+        var actions = new ArrayList<ModelerAction>();
+        for (var cs : ms.cubes()) {
+            var owner = cs.owner();
+            var cube = cs.cube();
+            // indexOf reflects the post-prior-removals position, so subsequent CubeRemoveActions store the index they
+            // were at when removed — undo (reverse order) reinserts them at those indices, putting the list back the
+            // way it started.
+            var index = owner.cubes.indexOf(cube);
+            if (index < 0) {
+                continue;
+            }
+            owner.cubes.remove(index);
+            actions.add(new ModelerAction.CubeRemoveAction(
+                "cube_remove",
+                "Delete cube " + cube.name,
+                System.currentTimeMillis(),
+                owner,
+                cube,
+                index
+            ));
+        }
+        if (actions.isEmpty()) {
+            return false;
+        }
+        selection = null;
+        if (actions.size() == 1) {
+            ModelerActionHistory.push(actions.get(0));
+        } else {
+            ModelerActionHistory.push(new ModelerAction.CompositeAction(
+                "cube_remove_multi",
+                "Delete " + actions.size() + " cubes",
+                System.currentTimeMillis(),
+                List.copyOf(actions)
+            ));
+        }
+        return true;
     }
 
     private ModelerBone targetBoneForNewCube() {
@@ -178,6 +245,8 @@ public final class ModelerScene {
      */
     public void resetToEntity() {
         this.root = new ModelerBone("root");
+        this.textureWidth = 64.0;
+        this.textureHeight = 64.0;
         seed(this);
         this.selection = null;
         ModelerActionHistory.clear();

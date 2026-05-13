@@ -129,6 +129,17 @@ public final class ModelerSceneLoader {
 
         var scene = ModelerScene.get();
         scene.root = root;
+        // Carry texture_width/height from the model's description block into the scene so panels (the UV map in
+        // particular) can render against the correct sheet bounds. The first geometry's properties win — Bedrock allows
+        // multiple geometries per file but the modeler is single-geometry today.
+        var properties = model.minecraftGeometry()[0].modelProperties();
+        if (properties != null) {
+            scene.textureWidth = properties.textureWidth();
+            scene.textureHeight = properties.textureHeight();
+        } else {
+            scene.textureWidth = 64.0;
+            scene.textureHeight = 64.0;
+        }
         scene.selection = null;
         // Existing undo entries reference bone/cube instances from the previous scene tree — those instances aren't
         // reachable any more, so applying their undo() would mutate detached objects. Wipe history on load so the
@@ -204,7 +215,7 @@ public final class ModelerSceneLoader {
         var rotation = toVec3(source.rotation());
         var pivot = toVec3(source.pivot());
 
-        return new ModelerCube(
+        var cube = new ModelerCube(
             name,
             new Vec3(-(origin.x + size.x), origin.y, origin.z),
             size,
@@ -212,6 +223,20 @@ public final class ModelerSceneLoader {
             new Vec3(-pivot.x, pivot.y, pivot.z),
             inflate
         );
+
+        // Box-UV origin carries through unchanged — UV space is texture pixels, untouched by the X-flip applied to
+        // geometry. Per-face UV cubes are out of scope for v1; their cubes stay at (0, 0) and the UV map renders a
+        // hint so users aren't confused why they stack at the origin.
+        var uv = source.uv();
+        if (uv != null) {
+            if (uv.isBoxUV() && uv.boxUVCoords() != null && uv.boxUVCoords().length >= 2) {
+                cube.uvOriginU = uv.boxUVCoords()[0];
+                cube.uvOriginV = uv.boxUVCoords()[1];
+            } else if (!uv.isBoxUV()) {
+                cube.hasPerFaceUv = true;
+            }
+        }
+        return cube;
     }
 
     /**

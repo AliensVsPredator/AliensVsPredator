@@ -1,0 +1,1143 @@
+package com.blib.engine.ui.panel.uvmap;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.blib.engine.modeler.ModelerBone;
+import com.blib.engine.modeler.ModelerCube;
+import com.blib.engine.modeler.ModelerScene;
+import com.blib.engine.modeler.Selection;
+import com.blib.engine.modeler.history.ModelerAction;
+import com.blib.engine.modeler.history.ModelerActionHistory;
+import com.blib.engine.ui.EngineFont;
+import com.blib.engine.ui.dock.Panel;
+import com.blib.engine.ui.widget.TextInput;
+
+/**
+ * Top-left modeler panel: a pannable 2D plane that draws each cube's box-UV footprint as a cross-unwrap rectangle.
+ * <p>
+ * <strong>Layout</strong>: header strip (texture dimensions readout at top right) → UV map area (texture canvas
+ * horizontally centered + top-aligned within its area) → footer strip (U and V text inputs for the primary selected
+ * cube). The UV map area is the only zone that responds to pan/zoom/marquee input.
+ * <p>
+ * <strong>Selection</strong>: LMB on a cube selects it; LMB-drag on a selected cube moves the entire selection as a
+ * group. LMB-drag on empty space draws a marquee rectangle — on release, every cube whose UV bounding rect intersects
+ * the marquee joins the selection. Multi-selection lives panel-local in a {@code LinkedHashSet}; the engine's
+ * {@code ModelerScene.selection} (single-cube) syncs to the primary (last-clicked) cube so the outliner and inspector
+ * stay in lockstep.
+ * <p>
+ * <strong>Zoom</strong>: range is {@code [fit-to-area, 4 × fit-to-area]}, default is fit (zoomed out all the way).
+ * Scroll-wheel zooms anchored at the cursor. Min and max recompute whenever the panel or texture size changes.
+ * <p>
+ * <strong>Rendering path</strong>: bypasses {@link GuiGraphics#fill} for the geometry. Cube faces/outlines, grid lines,
+ * texture bg, panel bg, and the marquee rect all go into a single batched {@link BufferBuilder} per frame, drawn with
+ * one {@code BufferUploader.drawWithShader} call. Each vertex pre-multiplies through the panel pose's 2D
+ * scale+translate components (two FMAs/vertex instead of a 4×4 matrix multiply).
+ */
+@ApiStatus.Internal
+public final class UvMapPanel implements Panel {
+
+    private static final int BG_COLOR = 0xFF14141A;
+
+    private static final int TEXTURE_BG_COLOR = 0xFF1F1F26;
+
+    private static final int TEXTURE_BORDER_COLOR = 0xFF404048;
+
+    private static final int GRID_MINOR_COLOR = 0xFF26262E;
+
+    private static final int GRID_MAJOR_COLOR = 0xFF303038;
+
+    private static final int CUBE_FACE_COLOR = 0x803EA0E8;
+
+    private static final int CUBE_OUTLINE_COLOR = 0xFF66B8F2;
+
+    private static final int CUBE_SELECTED_OUTLINE = 0xFFE6C26B;
+
+    private static final int CUBE_SELECTED_FACE = 0xA0E6C26B;
+
+    private static final int CUBE_HOVER_OUTLINE = 0xFFFFFFFF;
+
+    private static final int MARQUEE_FILL_COLOR = 0x404F8FFF;
+
+    private static final int MARQUEE_OUTLINE_COLOR = 0xFF4F8FFF;
+
+    private static final int TEXT_COLOR = 0xFFD0D0D0;
+
+    private static final int TEXT_MUTED_COLOR = 0xFF808088;
+
+    /**
+     * Upper bound on zoom in screen-pixels-per-UV-pixel. {@code 1.0} = 1:1 with the texture's native pixels — zooming
+     * past that would just upscale without revealing additional information. The min zoom is the fit-to-area zoom,
+     * which is always ≤ this. When the panel is large enough to show the texture at 1:1, the range collapses to
+     * {@code [1.0, 1.0]} and the scroll wheel becomes a no-op.
+     */
+    private static final double MAX_ABSOLUTE_ZOOM = 1.0;
+
+    /** Pan-drag multiplier — 1px of cursor movement translates to PAN_SENSITIVITY px of view shift. */
+    private static final double PAN_SENSITIVITY = 1.5;
+
+    /** Grid subdivision in UV pixels. Major lines every 16 px (one in-game block at typical 16px:1block ratio). */
+    private static final int GRID_MINOR_STEP = 8;
+
+    private static final int GRID_MAJOR_STEP = 16;
+
+    /** Pixels reserved at the top of the panel for the texture-dim readout. */
+    private static final int HEADER_HEIGHT = 14;
+
+    /** Pixels reserved at the bottom for the U/V input row. */
+    private static final int FOOTER_HEIGHT = 22;
+
+    private static final int FOOTER_PADDING_X = 4;
+
+    private static final int INPUT_GAP = 8;
+
+    /** Screen-pixel offsets from the "natural" texture anchor (horizontally centered, top-aligned). */
+    private double panOffsetX;
+
+    private double panOffsetY;
+
+    /** Pixels-per-UV-unit. Clamped to {@code [minZoom, max(minZoom, MAX_ABSOLUTE_ZOOM)]} each frame. */
+    private double zoom = 1.0;
+
+    /**
+     * Last-frame's fit (min) zoom. Tracked so panel resizes scale {@link #zoom} proportionally — without this, shrinking
+     * the panel below the threshold where the fit zoom drops doesn't pull the current zoom down with it (the clamp
+     * range moves but the existing zoom value stays inside it). Initialized to -1 so the first render is a no-op.
+     */
+    private double lastFitZoom = -1.0;
+
+    private boolean viewInitialized;
+
+    /** Full panel rect (header + UV area + footer), captured each render. */
+    private int rectX;
+
+    private int rectY;
+
+    private int rectWidth;
+
+    private int rectHeight;
+
+    /** UV map subregion (panel minus header/footer), captured each render. */
+    private int uvAreaX;
+
+    private int uvAreaY;
+
+    private int uvAreaW;
+
+    private int uvAreaH;
+
+    /**
+     * Cached per-frame integer offset: screen X where UV {@code u=0} sits. Combines the natural-centering anchor with
+     * {@link #panOffsetX}. All UV→screen conversions use {@code round(u*zoom) + offsetXInt}, so the entire view shifts
+     * by whole pixels when pan crosses a half-pixel boundary — adjacent rects stay pixel-flush.
+     */
+    private int offsetXInt;
+
+    private int offsetYInt;
+
+    /** Visible UV-space bounds captured each render, used by cube/grid culling. */
+    private double visibleMinU;
+
+    private double visibleMaxU;
+
+    private double visibleMinV;
+
+    private double visibleMaxV;
+
+    /** Per-face-UV cube count accumulated during the draw walk, displayed in the header hint. */
+    private int perFaceCount;
+
+    /**
+     * Panel-local multi-selection. Insertion-ordered so the "last added" is well-defined (used as the primary). Cubes
+     * are referenced by identity — when the scene tree is replaced (model load), {@link #syncFromSceneSelection} sees
+     * the cleared {@code scene.selection} and drops these too.
+     */
+    private final Set<ModelerCube> selectedCubes = new LinkedHashSet<>();
+
+    /** Owner bone per selected cube, captured at selection time. Needed when writing {@code scene.selection}. */
+    private final Map<ModelerCube, ModelerBone> ownerByCube = new HashMap<>();
+
+    /** Last-clicked (or last-added-via-marquee) cube. Drives the footer inputs and {@code scene.selection} sync. */
+    private @Nullable ModelerCube primaryCube;
+
+    private @Nullable ModelerBone primaryOwner;
+
+    /** Cube under the cursor this frame, for hover outline. Refreshed on every render. */
+    private @Nullable ModelerCube hoveredCube;
+
+    /** What the current LMB drag is doing. {@link DragState#IDLE} when no LMB-drag is in flight. */
+    private DragState dragState = DragState.IDLE;
+
+    /**
+     * UV-space point at LMB-down. For cube drags, deltas are computed against this anchor so each selected cube moves
+     * by the same delta regardless of where the user grabbed within the group.
+     */
+    private double dragGrabU;
+
+    private double dragGrabV;
+
+    /** Per-cube starting UV origin, snapshotted at drag start. Drag updates: {@code uv = start + (cursor - grab)}. */
+    private final Map<ModelerCube, double[]> dragStartUVs = new HashMap<>();
+
+    /** Per-cube memento snapshot, snapshotted at drag start. Used at release to build the composite undo entry. */
+    private final Map<ModelerCube, ModelerAction.CubeMemento> dragStartMementos = new HashMap<>();
+
+    /** Marquee rectangle endpoints in UV space. Active when {@link #dragState} is {@link DragState#MARQUEE}. */
+    private double marqueeStartU;
+
+    private double marqueeStartV;
+
+    private double marqueeEndU;
+
+    private double marqueeEndV;
+
+    /** Tracks the previous {@code scene.root} reference so we can wipe selection state when a model loads. */
+    private @Nullable ModelerBone lastRoot;
+
+    private final TextInput uInput = new TextInput("U", this::commitU);
+
+    private final TextInput vInput = new TextInput("V", this::commitV);
+
+    @Override
+    public String title() {
+        return "UV Map";
+    }
+
+    @Override
+    public void render(GuiGraphics graphics, int x, int y, int width, int height, int mouseX, int mouseY, float partialTick) {
+        this.rectX = x;
+        this.rectY = y;
+        this.rectWidth = width;
+        this.rectHeight = height;
+
+        var scene = ModelerScene.get();
+
+        // Viewport-style layout: header strip on top, footer (inputs) pinned to the bottom of the panel, UV map area
+        // fills everything in between. The texture floats inside this fixed-shape area at the current zoom — natural
+        // anchor centers it in both axes, and the pan clamp (further down) prevents pan from exposing background past
+        // the texture edges when zoomed in.
+        this.uvAreaX = x;
+        this.uvAreaY = y + HEADER_HEIGHT;
+        this.uvAreaW = width;
+        this.uvAreaH = Math.max(0, height - HEADER_HEIGHT - FOOTER_HEIGHT);
+
+        // Reset selection + view state on model load — scene.root identity changes when applyModel runs.
+        if (scene.root != lastRoot) {
+            selectedCubes.clear();
+            ownerByCube.clear();
+            primaryCube = null;
+            primaryOwner = null;
+            dragState = DragState.IDLE;
+            lastRoot = scene.root;
+            // New model = new texture dimensions, so the previous zoom/pan no longer corresponds to anything sensible.
+            // Force re-init below so the new model starts fully zoomed out and centered.
+            viewInitialized = false;
+        }
+
+        // Initialize view once we have a known area size.
+        if (!viewInitialized && uvAreaW > 0 && uvAreaH > 0) {
+            zoom = computeMinZoom(scene);
+            panOffsetX = 0;
+            panOffsetY = 0;
+            lastFitZoom = zoom;
+            viewInitialized = true;
+        }
+
+        // When the fit zoom changes (panel resize or model load with different texture dimensions), scale the current
+        // zoom + pan proportionally so the user's view tracks the panel. Without this, shrinking the panel leaves the
+        // texture at its old absolute pixel size (it just overflows the smaller area) because the clamp range moves
+        // but the current zoom is still inside it.
+        var minZoom = computeMinZoom(scene);
+        if (lastFitZoom > 0 && minZoom > 0 && minZoom != lastFitZoom) {
+            var scale = minZoom / lastFitZoom;
+            zoom *= scale;
+            panOffsetX *= scale;
+            panOffsetY *= scale;
+        }
+        lastFitZoom = minZoom;
+
+        // Defensive clamp — the proportional scale above keeps zoom in range when fit changes, but the scroll-wheel
+        // handler's anchor math (and any other zoom-mutating path) feeds through here too. Upper bound is the absolute
+        // 1:1 ratio; raise it to minZoom when the area is smaller than texture-aspect would normally fit (degenerate
+        // panels) so the range never collapses below min.
+        var maxZoom = Math.max(minZoom, MAX_ABSOLUTE_ZOOM);
+        zoom = clamp(zoom, minZoom, maxZoom);
+
+        // Clamp pan so the texture always fully covers the UV map area on each axis.
+        // X axis is centered: symmetric ±(overshoot/2) — pan ranges left/right from the area center.
+        // Y axis is TOP-ALIGNED (texture pinned to the top of the area at zoom-out; the inputs sit right below it).
+        // Pan Y therefore ranges [uvAreaH - texH*zoom, 0]: panY=0 keeps the texture top at the area top, and panning to
+        // negative pulls the texture upward so its overflowing bottom comes into view. When the texture fits in Y
+        // (texH*zoom ≤ uvAreaH), the range collapses to {0} and the texture stays pinned to the top with panel bg
+        // below it (the bottom of which is overdrawn by the footer).
+        var halfOvershootX = Math.max(0, (scene.textureWidth * zoom - uvAreaW) / 2.0);
+        var minPanY = Math.min(0.0, uvAreaH - scene.textureHeight * zoom);
+        panOffsetX = clamp(panOffsetX, -halfOvershootX, halfOvershootX);
+        panOffsetY = clamp(panOffsetY, minPanY, 0.0);
+
+        // Natural anchor: X centered in the area (horizontal padding when texture is smaller than area), Y at the top
+        // of the area (no vertical padding above — the texture floats up against the header strip).
+        var naturalX = uvAreaX + (uvAreaW - scene.textureWidth * zoom) / 2.0;
+        var naturalY = (double) uvAreaY;
+        offsetXInt = (int) Math.round(naturalX + panOffsetX);
+        offsetYInt = (int) Math.round(naturalY + panOffsetY);
+
+        visibleMinU = (uvAreaX - offsetXInt) / zoom;
+        visibleMaxU = (uvAreaX + uvAreaW - offsetXInt) / zoom;
+        visibleMinV = (uvAreaY - offsetYInt) / zoom;
+        visibleMaxV = (uvAreaY + uvAreaH - offsetYInt) / zoom;
+
+        syncFromSceneSelection(scene);
+        syncInputs();
+
+        // Hover detection: only over the UV area, only on cubes inside the visible UV range.
+        hoveredCube = inUvArea(mouseX, mouseY)
+            ? pickHover(scene.root, (mouseX - offsetXInt) / zoom, (mouseY - offsetYInt) / zoom)
+            : null;
+
+        renderGeometry(graphics, scene);
+        renderHeader(graphics, scene);
+        renderFooter(graphics, scene, mouseX, mouseY);
+    }
+
+    private void renderGeometry(GuiGraphics graphics, ModelerScene scene) {
+        // All cube/grid/bg/marquee quads go into one batched buffer. Flush pending GuiGraphics output first so prior
+        // panels' draws are committed before we apply scissor + start writing our buffer.
+        graphics.flush();
+        applyRawScissor(graphics, uvAreaX, uvAreaY, uvAreaW, uvAreaH);
+
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.disableCull();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+
+        var pose = graphics.pose().last().pose();
+        var m00 = pose.m00();
+        var m11 = pose.m11();
+        var m30 = pose.m30();
+        var m31 = pose.m31();
+
+        var buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+
+        // UV-area background.
+        addQuad(buffer, m00, m11, m30, m31, uvAreaX, uvAreaY, uvAreaX + uvAreaW, uvAreaY + uvAreaH, BG_COLOR);
+
+        // Texture bg + grid + outline.
+        var texW = (int) scene.textureWidth;
+        var texH = (int) scene.textureHeight;
+        var tx0 = screenXi(0);
+        var ty0 = screenYi(0);
+        var tx1 = screenXi(texW);
+        var ty1 = screenYi(texH);
+        addQuad(buffer, m00, m11, m30, m31, tx0, ty0, tx1, ty1, TEXTURE_BG_COLOR);
+        addGrid(buffer, m00, m11, m30, m31, texW, texH, tx0, ty0, tx1, ty1);
+        addRectOutline(buffer, m00, m11, m30, m31, tx0, ty0, tx1, ty1, TEXTURE_BORDER_COLOR);
+
+        // Cubes (with culling).
+        perFaceCount = 0;
+        addCubes(buffer, m00, m11, m30, m31, scene.root);
+
+        // Marquee rectangle on top of everything.
+        if (dragState == DragState.MARQUEE) {
+            var u0 = Math.min(marqueeStartU, marqueeEndU);
+            var v0 = Math.min(marqueeStartV, marqueeEndV);
+            var u1 = Math.max(marqueeStartU, marqueeEndU);
+            var v1 = Math.max(marqueeStartV, marqueeEndV);
+            var x0 = screenXi(u0);
+            var y0 = screenYi(v0);
+            var x1 = screenXi(u1);
+            var y1 = screenYi(v1);
+            if (x1 > x0 && y1 > y0) {
+                addQuad(buffer, m00, m11, m30, m31, x0, y0, x1, y1, MARQUEE_FILL_COLOR);
+                addRectOutline(buffer, m00, m11, m30, m31, x0, y0, x1, y1, MARQUEE_OUTLINE_COLOR);
+            }
+        }
+
+        BufferUploader.drawWithShader(buffer.buildOrThrow());
+
+        RenderSystem.disableScissor();
+    }
+
+    private void renderHeader(GuiGraphics graphics, ModelerScene scene) {
+        var font = EngineFont.get();
+        // Panel bg behind the header strip (the geometry buffer only painted the UV area's bg).
+        graphics.fill(rectX, rectY, rectX + rectWidth, rectY + HEADER_HEIGHT, BG_COLOR);
+
+        var dims = ((int) scene.textureWidth) + " × " + ((int) scene.textureHeight);
+        var dimsWidth = font.width(dims);
+        graphics.drawString(font, Component.literal(dims), rectX + rectWidth - dimsWidth - 4, rectY + 3, TEXT_COLOR, false);
+
+        if (perFaceCount > 0) {
+            // Small hint for cubes that loaded with per-face UVs — they stack at the texture origin since v1 only edits
+            // box UVs. Drawn under the dim readout in the header strip; if the header is too short for two lines this
+            // would clip — accept that for v1.
+            var hint = "per-face UVs: " + perFaceCount;
+            var hintWidth = font.width(hint);
+            graphics.drawString(
+                font,
+                Component.literal(hint),
+                rectX + rectWidth - hintWidth - 4,
+                rectY + 3 + font.lineHeight + 1,
+                TEXT_MUTED_COLOR,
+                false
+            );
+        }
+    }
+
+    private void renderFooter(GuiGraphics graphics, ModelerScene scene, int mouseX, int mouseY) {
+        var font = EngineFont.get();
+        // Footer follows the texture's rendered bottom edge so the inputs always sit "directly underneath the UV map".
+        // When the texture fits the area in Y, this places the footer right below the texture (with panel bg below the
+        // footer); when the texture overflows, it pins at the panel-content bottom so the footer stays on-screen and
+        // the scissored-off texture continues behind it.
+        var textureRenderedH = (int) Math.round(scene.textureHeight * zoom);
+        var footerY = Math.min(uvAreaY + textureRenderedH, rectY + rectHeight - FOOTER_HEIGHT);
+        graphics.fill(rectX, footerY, rectX + rectWidth, rectY + rectHeight, BG_COLOR);
+
+        var inputY = footerY + (FOOTER_HEIGHT - TextInput.HEIGHT) / 2;
+        var labelWidth = font.width("U: ");
+        var available = Math.max(0, rectWidth - 2 * FOOTER_PADDING_X - 2 * labelWidth - INPUT_GAP);
+        var inputW = Math.max(24, available / 2);
+
+        var labelXU = rectX + FOOTER_PADDING_X;
+        var inputXU = labelXU + labelWidth;
+        var labelXV = inputXU + inputW + INPUT_GAP;
+        var inputXV = labelXV + labelWidth;
+
+        // +2 compensates for MC font's descender padding so labels visually center against the input rect.
+        var labelTextY = inputY + (TextInput.HEIGHT - font.lineHeight + 2) / 2;
+        graphics.drawString(font, Component.literal("U:"), labelXU, labelTextY, TEXT_COLOR, false);
+        uInput.render(graphics, inputXU, inputY, inputW, mouseX, mouseY);
+        graphics.drawString(font, Component.literal("V:"), labelXV, labelTextY, TEXT_COLOR, false);
+        vInput.render(graphics, inputXV, inputY, inputW, mouseX, mouseY);
+    }
+
+    private void addGrid(BufferBuilder buffer, float m00, float m11, float m30, float m31,
+                         int texW, int texH, int tx0, int ty0, int tx1, int ty1) {
+        var uStart = Math.max(GRID_MINOR_STEP, floorToStep(visibleMinU));
+        var uEnd = Math.min(texW, ceilToStep(visibleMaxU));
+        for (var u = uStart; u < uEnd; u += GRID_MINOR_STEP) {
+            var sx = screenXi(u);
+            var color = (u % GRID_MAJOR_STEP == 0) ? GRID_MAJOR_COLOR : GRID_MINOR_COLOR;
+            addQuad(buffer, m00, m11, m30, m31, sx, ty0, sx + 1, ty1, color);
+        }
+        var vStart = Math.max(GRID_MINOR_STEP, floorToStep(visibleMinV));
+        var vEnd = Math.min(texH, ceilToStep(visibleMaxV));
+        for (var v = vStart; v < vEnd; v += GRID_MINOR_STEP) {
+            var sy = screenYi(v);
+            var color = (v % GRID_MAJOR_STEP == 0) ? GRID_MAJOR_COLOR : GRID_MINOR_COLOR;
+            addQuad(buffer, m00, m11, m30, m31, tx0, sy, tx1, sy + 1, color);
+        }
+    }
+
+    private static int floorToStep(double v) {
+        return ((int) Math.floor(v / GRID_MINOR_STEP)) * GRID_MINOR_STEP;
+    }
+
+    private static int ceilToStep(double v) {
+        return ((int) Math.ceil(v / GRID_MINOR_STEP)) * GRID_MINOR_STEP;
+    }
+
+    private void addCubes(BufferBuilder buffer, float m00, float m11, float m30, float m31, ModelerBone bone) {
+        for (var cube : bone.cubes) {
+            if (cube.hasPerFaceUv) {
+                perFaceCount++;
+            }
+            var w = cube.size.x;
+            var h = cube.size.y;
+            var d = cube.size.z;
+            var u0 = cube.uvOriginU;
+            var v0 = cube.uvOriginV;
+            var u1 = u0 + 2 * d + 2 * w;
+            var v1 = v0 + d + h;
+            if (u1 < visibleMinU || u0 > visibleMaxU || v1 < visibleMinV || v0 > visibleMaxV) {
+                continue;
+            }
+            addCubeCross(buffer, m00, m11, m30, m31, w, h, d, u0, v0, selectedCubes.contains(cube), cube == hoveredCube);
+        }
+        for (var child : bone.children) {
+            addCubes(buffer, m00, m11, m30, m31, child);
+        }
+    }
+
+    /**
+     * Emit the 6 face fills + 6 face outlines of a single cube into the batched buffer. Each face is its own filled
+     * rect (preserves the original cross-unwrap visual where you can see each face's bounds), and each face also gets
+     * its own outline so adjacent faces' shared edges read as a divider.
+     */
+    private void addCubeCross(BufferBuilder buffer, float m00, float m11, float m30, float m31,
+                              double w, double h, double d, double u, double v,
+                              boolean selected, boolean hovered) {
+        var faceFill = selected ? CUBE_SELECTED_FACE : CUBE_FACE_COLOR;
+        var outline = selected ? CUBE_SELECTED_OUTLINE : (hovered ? CUBE_HOVER_OUTLINE : CUBE_OUTLINE_COLOR);
+
+        // Six face fills, in the same order as AzBakedModelFactory's per-direction layout.
+        addUvRect(buffer, m00, m11, m30, m31, u + d, v, w, d, faceFill);          // up
+        addUvRect(buffer, m00, m11, m30, m31, u + d + w, v, w, d, faceFill);      // down
+        addUvRect(buffer, m00, m11, m30, m31, u, v + d, d, h, faceFill);          // west
+        addUvRect(buffer, m00, m11, m30, m31, u + d, v + d, w, h, faceFill);      // north (front)
+        addUvRect(buffer, m00, m11, m30, m31, u + d + w, v + d, d, h, faceFill);  // east
+        addUvRect(buffer, m00, m11, m30, m31, u + 2 * d + w, v + d, w, h, faceFill); // south (back)
+
+        // Six face outlines.
+        addUvRectOutline(buffer, m00, m11, m30, m31, u + d, v, w, d, outline);
+        addUvRectOutline(buffer, m00, m11, m30, m31, u + d + w, v, w, d, outline);
+        addUvRectOutline(buffer, m00, m11, m30, m31, u, v + d, d, h, outline);
+        addUvRectOutline(buffer, m00, m11, m30, m31, u + d, v + d, w, h, outline);
+        addUvRectOutline(buffer, m00, m11, m30, m31, u + d + w, v + d, d, h, outline);
+        addUvRectOutline(buffer, m00, m11, m30, m31, u + 2 * d + w, v + d, w, h, outline);
+    }
+
+    private void addUvRect(BufferBuilder buffer, float m00, float m11, float m30, float m31,
+                           double u, double v, double w, double h, int color) {
+        if (w <= 0 || h <= 0) {
+            return;
+        }
+        var x0 = screenXi(u);
+        var y0 = screenYi(v);
+        var x1 = screenXi(u + w);
+        var y1 = screenYi(v + h);
+        if (x1 <= x0 || y1 <= y0) {
+            return;
+        }
+        addQuad(buffer, m00, m11, m30, m31, x0, y0, x1, y1, color);
+    }
+
+    private void addUvRectOutline(BufferBuilder buffer, float m00, float m11, float m30, float m31,
+                                  double u, double v, double w, double h, int color) {
+        if (w <= 0 || h <= 0) {
+            return;
+        }
+        var x0 = screenXi(u);
+        var y0 = screenYi(v);
+        var x1 = screenXi(u + w);
+        var y1 = screenYi(v + h);
+        if (x1 <= x0 || y1 <= y0) {
+            return;
+        }
+        addRectOutline(buffer, m00, m11, m30, m31, x0, y0, x1, y1, color);
+    }
+
+    private static void addRectOutline(BufferBuilder buffer, float m00, float m11, float m30, float m31,
+                                       int x0, int y0, int x1, int y1, int color) {
+        addQuad(buffer, m00, m11, m30, m31, x0, y0, x1, y0 + 1, color);      // top
+        addQuad(buffer, m00, m11, m30, m31, x0, y1 - 1, x1, y1, color);      // bottom
+        addQuad(buffer, m00, m11, m30, m31, x0, y0, x0 + 1, y1, color);      // left
+        addQuad(buffer, m00, m11, m30, m31, x1 - 1, y0, x1, y1, color);      // right
+    }
+
+    /**
+     * Emit one 4-vertex quad into the buffer with manual pose pre-multiplication. The 2D-pose decomposition
+     * ({@code m00, m11, m30, m31}) lets each vertex compute its screen position with two FMAs (one per axis) instead
+     * of the full 16-mul/16-add matrix-vector multiply that {@code GuiGraphics.fill} runs through
+     * {@code Matrix4f.transformPosition} per vertex.
+     */
+    private static void addQuad(BufferBuilder buffer, float m00, float m11, float m30, float m31,
+                                float x0, float y0, float x1, float y1, int color) {
+        var sx0 = m00 * x0 + m30;
+        var sx1 = m00 * x1 + m30;
+        var sy0 = m11 * y0 + m31;
+        var sy1 = m11 * y1 + m31;
+        buffer.addVertex(sx0, sy0, 0).setColor(color);
+        buffer.addVertex(sx0, sy1, 0).setColor(color);
+        buffer.addVertex(sx1, sy1, 0).setColor(color);
+        buffer.addVertex(sx1, sy0, 0).setColor(color);
+    }
+
+    // ----- Selection sync -----
+
+    /**
+     * Reconcile our panel-local multi-selection with {@code scene.selection}. The scene's selection is the source of
+     * truth: external mutations (outliner click, viewport click, etc.) flip us to single-selection on that cube;
+     * MultiCubeSelection — which we typically wrote ourselves — feeds back identically. When the scene's selection is
+     * cleared or set to a non-cube (bone), drop our set.
+     */
+    private void syncFromSceneSelection(ModelerScene scene) {
+        if (scene.selection instanceof Selection.CubeSelection cs) {
+            // Single selection. If we already had it as our sole selection, only the primary needs refreshing.
+            if (selectedCubes.size() == 1 && selectedCubes.contains(cs.cube())) {
+                primaryCube = cs.cube();
+                primaryOwner = cs.owner();
+                return;
+            }
+            selectedCubes.clear();
+            ownerByCube.clear();
+            selectedCubes.add(cs.cube());
+            ownerByCube.put(cs.cube(), cs.owner());
+            primaryCube = cs.cube();
+            primaryOwner = cs.owner();
+        } else if (scene.selection instanceof Selection.MultiCubeSelection ms) {
+            // Multi selection. Rebuild our local set only if it differs from the scene's — avoids churn when we just
+            // wrote this exact list ourselves.
+            var sceneCubes = ms.cubes();
+            if (sceneCubes.size() != selectedCubes.size() || !ms.contains(primaryCube != null ? primaryCube : ms.primary().cube())) {
+                selectedCubes.clear();
+                ownerByCube.clear();
+                for (var cs : sceneCubes) {
+                    selectedCubes.add(cs.cube());
+                    ownerByCube.put(cs.cube(), cs.owner());
+                }
+            }
+            var primary = ms.primary();
+            primaryCube = primary.cube();
+            primaryOwner = primary.owner();
+        } else if (!selectedCubes.isEmpty()) {
+            selectedCubes.clear();
+            ownerByCube.clear();
+            primaryCube = null;
+            primaryOwner = null;
+        }
+    }
+
+    /**
+     * Mirror the local multi-selection back to {@code scene.selection}. Empty → null; single → {@link
+     * Selection.CubeSelection}; two-or-more → {@link Selection.MultiCubeSelection} with the primary cube placed last
+     * so {@code ms.primary()} returns the right one.
+     */
+    private void writeSceneSelection(ModelerScene scene) {
+        if (selectedCubes.isEmpty()) {
+            scene.selection = null;
+            return;
+        }
+        if (selectedCubes.size() == 1) {
+            var cube = selectedCubes.iterator().next();
+            var owner = ownerByCube.get(cube);
+            scene.selection = owner != null ? new Selection.CubeSelection(owner, cube) : null;
+            return;
+        }
+        var list = new ArrayList<Selection.CubeSelection>(selectedCubes.size());
+        for (var cube : selectedCubes) {
+            if (cube == primaryCube) {
+                continue;
+            }
+            var owner = ownerByCube.get(cube);
+            if (owner != null) {
+                list.add(new Selection.CubeSelection(owner, cube));
+            }
+        }
+        if (primaryCube != null && primaryOwner != null) {
+            list.add(new Selection.CubeSelection(primaryOwner, primaryCube));
+        }
+        scene.selection = list.size() >= 2 ? new Selection.MultiCubeSelection(list) : (list.size() == 1 ? list.get(0) : null);
+    }
+
+    // ----- Inputs -----
+
+    private void syncInputs() {
+        if (primaryCube == null) {
+            if (!uInput.isFocused() && !uInput.content().isEmpty()) {
+                uInput.setContent("");
+            }
+            if (!vInput.isFocused() && !vInput.content().isEmpty()) {
+                vInput.setContent("");
+            }
+            return;
+        }
+        syncInput(uInput, formatInt(primaryCube.uvOriginU));
+        syncInput(vInput, formatInt(primaryCube.uvOriginV));
+    }
+
+    private static void syncInput(TextInput input, String value) {
+        if (input.isFocused()) {
+            return;
+        }
+        if (!input.content().equals(value)) {
+            input.setContent(value);
+        }
+    }
+
+    /** Format as a plain integer — decimal UVs aren't supported. */
+    private static String formatInt(double v) {
+        return Long.toString(Math.round(v));
+    }
+
+    private void commitU(String text) {
+        var cube = primaryCube;
+        if (cube == null) {
+            return;
+        }
+        try {
+            var scene = ModelerScene.get();
+            var rounded = (double) Math.round(Double.parseDouble(text.trim()));
+            var bboxW = 2 * cube.size.z + 2 * cube.size.x;
+            var maxU = Math.max(0, scene.textureWidth - bboxW);
+            var clamped = Math.max(0, Math.min(maxU, rounded));
+            var before = ModelerAction.CubeMemento.of(cube);
+            cube.uvOriginU = clamped;
+            pushCubeMemento(cube, before, "Edit UV U " + cube.name);
+        } catch (NumberFormatException ignored) {
+            // Bad input — leave the cube alone, next syncInputs will rewrite the field to a valid value.
+        }
+    }
+
+    private void commitV(String text) {
+        var cube = primaryCube;
+        if (cube == null) {
+            return;
+        }
+        try {
+            var scene = ModelerScene.get();
+            var rounded = (double) Math.round(Double.parseDouble(text.trim()));
+            var bboxH = cube.size.z + cube.size.y;
+            var maxV = Math.max(0, scene.textureHeight - bboxH);
+            var clamped = Math.max(0, Math.min(maxV, rounded));
+            var before = ModelerAction.CubeMemento.of(cube);
+            cube.uvOriginV = clamped;
+            pushCubeMemento(cube, before, "Edit UV V " + cube.name);
+        } catch (NumberFormatException ignored) {
+            // Bad input — leave the cube alone, next syncInputs will rewrite the field to a valid value.
+        }
+    }
+
+    private static void pushCubeMemento(ModelerCube cube, ModelerAction.CubeMemento before, String description) {
+        var after = ModelerAction.CubeMemento.of(cube);
+        if (!after.differsFrom(before)) {
+            return;
+        }
+        ModelerActionHistory.push(
+            new ModelerAction.CubeMementoAction("cube_edit", description, System.currentTimeMillis(), cube, before, after)
+        );
+    }
+
+    // ----- Mouse handling -----
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        // Footer inputs claim clicks within their rects regardless of which strip they're in. Forwarded first so a
+        // click on an input rect doesn't fall through to the UV area's selection logic.
+        if (uInput.mouseClicked(mouseX, mouseY, button)) {
+            return true;
+        }
+        if (vInput.mouseClicked(mouseX, mouseY, button)) {
+            return true;
+        }
+
+        if (!inUvArea(mouseX, mouseY)) {
+            return false;
+        }
+
+        if (button == 0) {
+            var scene = ModelerScene.get();
+            var hit = pickCubeWithOwnerAt(scene, mouseX, mouseY);
+            if (hit != null) {
+                // Clicked a cube. If it's already in the selection, keep the group; otherwise replace the selection
+                // with just this cube. Either way the clicked cube becomes the primary and we start a drag.
+                if (!selectedCubes.contains(hit.cube)) {
+                    selectedCubes.clear();
+                    ownerByCube.clear();
+                    selectedCubes.add(hit.cube);
+                    ownerByCube.put(hit.cube, hit.owner);
+                }
+                primaryCube = hit.cube;
+                primaryOwner = hit.owner;
+                writeSceneSelection(scene);
+
+                startCubeDrag(mouseX, mouseY);
+                return true;
+            }
+            // Empty space — provisional marquee. We don't actually commit to MARQUEE state until the mouse moves; a
+            // pure click on empty (no drag) clears the selection.
+            marqueeStartU = uvAtScreenX(mouseX);
+            marqueeStartV = uvAtScreenY(mouseY);
+            marqueeEndU = marqueeStartU;
+            marqueeEndV = marqueeStartV;
+            dragState = DragState.MAYBE_MARQUEE;
+            return true;
+        }
+        if (button == 2) {
+            // MMB just primes the pan drag; mouseDragged does the actual translation.
+            return true;
+        }
+        return false;
+    }
+
+    private void startCubeDrag(double mouseX, double mouseY) {
+        dragGrabU = uvAtScreenX(mouseX);
+        dragGrabV = uvAtScreenY(mouseY);
+        dragStartUVs.clear();
+        dragStartMementos.clear();
+        for (var cube : selectedCubes) {
+            dragStartUVs.put(cube, new double[] {cube.uvOriginU, cube.uvOriginV});
+            dragStartMementos.put(cube, ModelerAction.CubeMemento.of(cube));
+        }
+        dragState = DragState.DRAGGING_CUBE;
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        if (button == 0) {
+            if (dragState == DragState.DRAGGING_CUBE) {
+                var deltaU = uvAtScreenX(mouseX) - dragGrabU;
+                var deltaV = uvAtScreenY(mouseY) - dragGrabV;
+                // Group-clamp: compute the tightest delta range across all selected cubes (each cube's UV bbox must
+                // stay inside [0, texW] × [0, texH]). The cubes move together by the same clamped delta, so a single
+                // cube hitting an edge stops the whole group rather than letting it drift apart.
+                var scene = ModelerScene.get();
+                var minDeltaU = Double.NEGATIVE_INFINITY;
+                var maxDeltaU = Double.POSITIVE_INFINITY;
+                var minDeltaV = Double.NEGATIVE_INFINITY;
+                var maxDeltaV = Double.POSITIVE_INFINITY;
+                for (var cube : selectedCubes) {
+                    var start = dragStartUVs.get(cube);
+                    if (start == null) {
+                        continue;
+                    }
+                    var bboxW = 2 * cube.size.z + 2 * cube.size.x;
+                    var bboxH = cube.size.z + cube.size.y;
+                    var maxU = Math.max(0, scene.textureWidth - bboxW);
+                    var maxV = Math.max(0, scene.textureHeight - bboxH);
+                    minDeltaU = Math.max(minDeltaU, -start[0]);
+                    maxDeltaU = Math.min(maxDeltaU, maxU - start[0]);
+                    minDeltaV = Math.max(minDeltaV, -start[1]);
+                    maxDeltaV = Math.min(maxDeltaV, maxV - start[1]);
+                }
+                // Guard against an impossible range (some cube already further out of bounds than another can compensate
+                // for) — collapse to zero rather than letting the result flip signs unpredictably.
+                if (minDeltaU > maxDeltaU) {
+                    minDeltaU = maxDeltaU = 0;
+                }
+                if (minDeltaV > maxDeltaV) {
+                    minDeltaV = maxDeltaV = 0;
+                }
+                deltaU = Math.max(minDeltaU, Math.min(maxDeltaU, deltaU));
+                deltaV = Math.max(minDeltaV, Math.min(maxDeltaV, deltaV));
+                for (var cube : selectedCubes) {
+                    var start = dragStartUVs.get(cube);
+                    if (start == null) {
+                        continue;
+                    }
+                    // Snap to whole pixels — decimal UVs aren't authored by Bedrock and would round on save anyway.
+                    cube.uvOriginU = Math.round(start[0] + deltaU);
+                    cube.uvOriginV = Math.round(start[1] + deltaV);
+                }
+                return true;
+            }
+            if (dragState == DragState.MAYBE_MARQUEE || dragState == DragState.MARQUEE) {
+                // First drag event after an LMB-down on empty space promotes us to active marquee.
+                dragState = DragState.MARQUEE;
+                marqueeEndU = uvAtScreenX(mouseX);
+                marqueeEndV = uvAtScreenY(mouseY);
+                return true;
+            }
+            return false;
+        }
+        if (button == 2) {
+            // Float accumulation: panX/Y collect sub-pixel deltas, but render snaps to integer screen pixels via
+            // offsetXInt/Y. PAN_SENSITIVITY scales how fast the view tracks cursor motion.
+            panOffsetX += deltaX * PAN_SENSITIVITY;
+            panOffsetY += deltaY * PAN_SENSITIVITY;
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (button != 0) {
+            return false;
+        }
+        var state = dragState;
+        dragState = DragState.IDLE;
+
+        if (state == DragState.DRAGGING_CUBE) {
+            finalizeCubeDrag();
+            return true;
+        }
+        if (state == DragState.MAYBE_MARQUEE) {
+            // LMB on empty space, released without dragging — clear the selection.
+            selectedCubes.clear();
+            ownerByCube.clear();
+            primaryCube = null;
+            primaryOwner = null;
+            writeSceneSelection(ModelerScene.get());
+            return true;
+        }
+        if (state == DragState.MARQUEE) {
+            marqueeEndU = uvAtScreenX(mouseX);
+            marqueeEndV = uvAtScreenY(mouseY);
+            finalizeMarquee();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Build a composite memento covering every cube that actually moved during the drag, push it as one undo entry.
+     * Single-cube drags push a plain CubeMementoAction; group drags wrap N actions in a CompositeAction so
+     * {@code Ctrl+Z} reverts the entire group move in one step.
+     */
+    private void finalizeCubeDrag() {
+        var root = ModelerScene.get().root;
+        var actions = new ArrayList<ModelerAction>();
+        for (var cube : selectedCubes) {
+            var before = dragStartMementos.get(cube);
+            if (before == null) {
+                continue;
+            }
+            // Guard against a model reload mid-drag detaching the cube from the scene tree — pushing a memento against
+            // a detached cube would let undo write to a heap object nothing else references.
+            if (!isCubeReachable(root, cube)) {
+                continue;
+            }
+            var after = ModelerAction.CubeMemento.of(cube);
+            if (after.differsFrom(before)) {
+                actions.add(new ModelerAction.CubeMementoAction(
+                    "cube_edit",
+                    "Move UV " + cube.name,
+                    System.currentTimeMillis(),
+                    cube,
+                    before,
+                    after
+                ));
+            }
+        }
+        if (actions.size() == 1) {
+            ModelerActionHistory.push(actions.get(0));
+        } else if (actions.size() > 1) {
+            ModelerActionHistory.push(new ModelerAction.CompositeAction(
+                "uv_group_move",
+                "Move " + actions.size() + " UVs",
+                System.currentTimeMillis(),
+                List.copyOf(actions)
+            ));
+        }
+        dragStartUVs.clear();
+        dragStartMementos.clear();
+    }
+
+    private void finalizeMarquee() {
+        var mu0 = Math.min(marqueeStartU, marqueeEndU);
+        var mv0 = Math.min(marqueeStartV, marqueeEndV);
+        var mu1 = Math.max(marqueeStartU, marqueeEndU);
+        var mv1 = Math.max(marqueeStartV, marqueeEndV);
+
+        selectedCubes.clear();
+        ownerByCube.clear();
+        collectMarqueeHits(ModelerScene.get().root, mu0, mv0, mu1, mv1);
+
+        if (selectedCubes.isEmpty()) {
+            primaryCube = null;
+            primaryOwner = null;
+            writeSceneSelection(ModelerScene.get());
+            return;
+        }
+        // Primary = last cube added during DFS walk (deepest in tree order = topmost in draw order).
+        ModelerCube last = null;
+        for (var cube : selectedCubes) {
+            last = cube;
+        }
+        primaryCube = last;
+        primaryOwner = ownerByCube.get(last);
+        writeSceneSelection(ModelerScene.get());
+    }
+
+    private void collectMarqueeHits(ModelerBone bone, double mu0, double mv0, double mu1, double mv1) {
+        for (var cube : bone.cubes) {
+            var w = cube.size.x;
+            var h = cube.size.y;
+            var d = cube.size.z;
+            var u0 = cube.uvOriginU;
+            var v0 = cube.uvOriginV;
+            var u1 = u0 + 2 * d + 2 * w;
+            var v1 = v0 + d + h;
+            // Rect-rect intersection test (any overlap counts — even a corner-touch).
+            if (u0 < mu1 && u1 > mu0 && v0 < mv1 && v1 > mv0) {
+                selectedCubes.add(cube);
+                ownerByCube.put(cube, bone);
+            }
+        }
+        for (var child : bone.children) {
+            collectMarqueeHits(child, mu0, mv0, mu1, mv1);
+        }
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (!inUvArea(mouseX, mouseY)) {
+            return false;
+        }
+        var scene = ModelerScene.get();
+        var minZoom = computeMinZoom(scene);
+        var maxZoom = Math.max(minZoom, MAX_ABSOLUTE_ZOOM);
+
+        // Capture the UV point under the cursor before the zoom change, then reposition panOffsetX/Y so the same UV
+        // point lands at the same screen position after the new zoom is applied (anchored zoom).
+        var uvBeforeX = uvAtScreenX(mouseX);
+        var uvBeforeY = uvAtScreenY(mouseY);
+        var factor = scrollY > 0 ? 1.1 : (1.0 / 1.1);
+        zoom = clamp(zoom * factor, minZoom, maxZoom);
+
+        var naturalX = uvAreaX + (uvAreaW - scene.textureWidth * zoom) / 2.0;
+        var naturalY = (double) uvAreaY;
+        panOffsetX = mouseX - uvBeforeX * zoom - naturalX;
+        panOffsetY = mouseY - uvBeforeY * zoom - naturalY;
+        return true;
+    }
+
+    // ----- Coordinate transforms -----
+
+    /**
+     * UV → screen, rounded to integer pixel and using the per-frame {@code offsetXInt}. Adjacent UV values that should
+     * share a pixel boundary always round to the same screen pixel (because the offset is shared); the whole view
+     * shifts by integer pixels when pan crosses a half-pixel boundary, eliminating the per-line wiggle that would
+     * otherwise show up at non-integer zoom levels.
+     */
+    private int screenXi(double u) {
+        return (int) Math.round(u * zoom) + offsetXInt;
+    }
+
+    private int screenYi(double v) {
+        return (int) Math.round(v * zoom) + offsetYInt;
+    }
+
+    private double uvAtScreenX(double sx) {
+        return (sx - offsetXInt) / zoom;
+    }
+
+    private double uvAtScreenY(double sy) {
+        return (sy - offsetYInt) / zoom;
+    }
+
+    private boolean inUvArea(double mx, double my) {
+        return mx >= uvAreaX && mx < uvAreaX + uvAreaW && my >= uvAreaY && my < uvAreaY + uvAreaH;
+    }
+
+    /**
+     * Fit-to-area zoom: largest zoom at which the texture fits inside the UV map area in both dimensions, capped at
+     * the 1:1 absolute. The cap matters when the area is larger than the texture at native pixel size — without it,
+     * "fit" would upscale the texture past native, which looks blurry and steals the viewport feel of padding around
+     * a 1:1 texture. With the cap, a large panel locks the zoom range at {@code [1.0, 1.0]} and the texture renders
+     * at native size centered in the area with panel-background padding on every side.
+     */
+    private double computeMinZoom(ModelerScene scene) {
+        if (uvAreaW <= 0 || uvAreaH <= 0 || scene.textureWidth <= 0 || scene.textureHeight <= 0) {
+            return MAX_ABSOLUTE_ZOOM;
+        }
+        var fit = Math.min(uvAreaW / scene.textureWidth, uvAreaH / scene.textureHeight);
+        return Math.min(fit, MAX_ABSOLUTE_ZOOM);
+    }
+
+    // ----- Cube traversal + hit testing -----
+
+    private @Nullable CubeWithOwner pickCubeWithOwnerAt(ModelerScene scene, double mx, double my) {
+        if (!inUvArea(mx, my)) {
+            return null;
+        }
+        var uvX = uvAtScreenX(mx);
+        var uvY = uvAtScreenY(my);
+        return pickInBoneReverse(scene.root, uvX, uvY);
+    }
+
+    /**
+     * Hover-only variant of {@link #pickCubeWithOwnerAt} that returns just the cube. Called every frame during render,
+     * so it stays out of the click/selection path to avoid mutating selection state.
+     */
+    private @Nullable ModelerCube pickHover(ModelerBone bone, double uvX, double uvY) {
+        var hit = pickInBoneReverse(bone, uvX, uvY);
+        return hit == null ? null : hit.cube;
+    }
+
+    private @Nullable CubeWithOwner pickInBoneReverse(ModelerBone bone, double uvX, double uvY) {
+        // Walk children + cubes in reverse so later-drawn cubes win the hit-test (matches DFS draw order: cubes-of-self
+        // first, then DFS into children — so deepest-last child is topmost).
+        for (var i = bone.children.size() - 1; i >= 0; i--) {
+            var hit = pickInBoneReverse(bone.children.get(i), uvX, uvY);
+            if (hit != null) {
+                return hit;
+            }
+        }
+        for (var i = bone.cubes.size() - 1; i >= 0; i--) {
+            var cube = bone.cubes.get(i);
+            if (boundingContains(cube, uvX, uvY)) {
+                return new CubeWithOwner(bone, cube);
+            }
+        }
+        return null;
+    }
+
+    private static boolean boundingContains(ModelerCube cube, double uvX, double uvY) {
+        var w = cube.size.x;
+        var h = cube.size.y;
+        var d = cube.size.z;
+        var u0 = cube.uvOriginU;
+        var v0 = cube.uvOriginV;
+        var u1 = u0 + 2 * d + 2 * w;
+        var v1 = v0 + d + h;
+        return uvX >= u0 && uvX < u1 && uvY >= v0 && uvY < v1;
+    }
+
+    private static boolean isCubeReachable(ModelerBone bone, ModelerCube target) {
+        for (var cube : bone.cubes) {
+            if (cube == target) {
+                return true;
+            }
+        }
+        for (var child : bone.children) {
+            if (isCubeReachable(child, target)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private record CubeWithOwner(
+        ModelerBone owner,
+        ModelerCube cube
+    ) {}
+
+    private enum DragState {
+        IDLE,
+        /** LMB-down on empty space; waiting to see if the user drags (→ {@link #MARQUEE}) or releases (→ clear). */
+        MAYBE_MARQUEE,
+        MARQUEE,
+        DRAGGING_CUBE
+    }
+
+    // ----- Helpers -----
+
+    private static double clamp(double value, double min, double max) {
+        return Math.max(min, Math.min(max, value));
+    }
+
+    /**
+     * Apply a raw GL scissor that respects the workspace's pose scale. The engine renders at a 0.375× pose scale, so
+     * {@code GuiGraphics.enableScissor} (which works in logical GUI coords) clips at the wrong place. Same pattern as
+     * {@code TerritoryMapPanel.applyRawScissor}.
+     */
+    private static void applyRawScissor(GuiGraphics graphics, int x, int y, int w, int h) {
+        if (w <= 0 || h <= 0) {
+            RenderSystem.disableScissor();
+            return;
+        }
+        graphics.flush();
+        var matrix = graphics.pose().last().pose();
+        var topLeft = matrix.transformPosition((float) x, (float) y, 0f, new Vector3f());
+        var bottomRight = matrix.transformPosition((float) (x + w), (float) (y + h), 0f, new Vector3f());
+        var window = Minecraft.getInstance().getWindow();
+        var winHeight = window.getHeight();
+        var guiScale = window.getGuiScale();
+        var leftRaw = (int) ((double) topLeft.x * guiScale);
+        var bottomRaw = (int) ((double) winHeight - (double) bottomRight.y * guiScale);
+        var widthRaw = Math.max(0, (int) ((double) (bottomRight.x - topLeft.x) * guiScale));
+        var heightRaw = Math.max(0, (int) ((double) (bottomRight.y - topLeft.y) * guiScale));
+        RenderSystem.enableScissor(leftRaw, bottomRaw, widthRaw, heightRaw);
+    }
+}

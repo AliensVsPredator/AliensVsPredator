@@ -100,6 +100,12 @@ public enum LayoutTemplate {
      * and inspector are fixed-width rails like other layouts; the viewport flexes.
      */
     private static BodyNode modelerBody() {
+        var leftColumn = new BodyNode.Split(
+            Orientation.VERTICAL.name(),
+            new BodyNode.Leaf(List.of(PanelRegistry.MODELER_UV_MAP), 0),
+            new BodyNode.Leaf(List.of(PanelRegistry.MODELER_OUTLINER), 0),
+            new SizingDoc.FirstFixed(LayoutDefaults.UV_MAP_HEIGHT)
+        );
         var centerAndRight = new BodyNode.Split(
             Orientation.HORIZONTAL.name(),
             new BodyNode.Leaf(List.of(PanelRegistry.MODELER_VIEWPORT), 0),
@@ -108,7 +114,7 @@ public enum LayoutTemplate {
         );
         return new BodyNode.Split(
             Orientation.HORIZONTAL.name(),
-            new BodyNode.Leaf(List.of(PanelRegistry.MODELER_OUTLINER), 0),
+            leftColumn,
             centerAndRight,
             new SizingDoc.FirstFixed(LayoutDefaults.OUTLINER_WIDTH)
         );

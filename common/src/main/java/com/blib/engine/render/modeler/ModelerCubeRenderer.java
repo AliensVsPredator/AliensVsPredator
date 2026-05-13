@@ -54,11 +54,16 @@ public final class ModelerCubeRenderer {
         // Filled quads first, outline passes on top.
         renderBoneFilled(pose, root);
 
-        // Selection targets: a CubeSelection outlines just that cube; a BoneSelection cascades to every cube in the
-        // bone's subtree so the user sees the whole group lit up.
+        // Selection targets: a CubeSelection outlines just that cube; a MultiCubeSelection outlines every cube in the
+        // group so the viewport mirrors the UV map / outliner multi-highlight; a BoneSelection cascades to every cube
+        // in the bone's subtree so the user sees the whole group lit up.
         var selectionTargets = new HashSet<ModelerCube>();
         if (selection instanceof Selection.CubeSelection cs) {
             selectionTargets.add(cs.cube());
+        } else if (selection instanceof Selection.MultiCubeSelection ms) {
+            for (var cs : ms.cubes()) {
+                selectionTargets.add(cs.cube());
+            }
         } else if (selection instanceof Selection.BoneSelection bs) {
             collectCubesInSubtree(bs.bone(), selectionTargets);
         }

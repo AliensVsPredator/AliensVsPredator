@@ -16,5 +16,7 @@ public final class LayoutDefaults {
 
     public static final int CONTENT_BROWSER_HEIGHT = 140;
 
+    public static final int UV_MAP_HEIGHT = 220;
+
     private LayoutDefaults() {}
 }

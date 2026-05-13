@@ -153,6 +153,9 @@ public final class ModelerInspectorPanel implements Panel {
             renderBone(graphics, x, y, width, bs.bone(), mouseX, mouseY);
         } else if (selection instanceof Selection.CubeSelection cs) {
             renderCube(graphics, x, y, width, cs.cube(), mouseX, mouseY);
+        } else if (selection instanceof Selection.MultiCubeSelection ms) {
+            // Multi-cube: inspector edits the primary cube only — group edits via the UV map's drag/marquee path.
+            renderCube(graphics, x, y, width, ms.primary().cube(), mouseX, mouseY);
         }
     }
 
@@ -358,8 +361,14 @@ public final class ModelerInspectorPanel implements Panel {
         }
 
         var sel = ModelerScene.get().selection;
+        Selection.CubeSelection cubeSel = null;
         if (sel instanceof Selection.CubeSelection cs) {
-            var cube = cs.cube();
+            cubeSel = cs;
+        } else if (sel instanceof Selection.MultiCubeSelection ms) {
+            cubeSel = ms.primary();
+        }
+        if (cubeSel != null) {
+            var cube = cubeSel.cube();
             var before = ModelerAction.CubeMemento.of(cube);
             switch (field) {
                 case ORIGIN -> cube.origin = withAxis(cube.origin, axis, parsed);
@@ -397,8 +406,15 @@ public final class ModelerInspectorPanel implements Panel {
         if (parsed == null) {
             return;
         }
-        if (ModelerScene.get().selection instanceof Selection.CubeSelection cs) {
-            var cube = cs.cube();
+        var inflateSel = ModelerScene.get().selection;
+        Selection.CubeSelection cubeSel = null;
+        if (inflateSel instanceof Selection.CubeSelection cs) {
+            cubeSel = cs;
+        } else if (inflateSel instanceof Selection.MultiCubeSelection ms) {
+            cubeSel = ms.primary();
+        }
+        if (cubeSel != null) {
+            var cube = cubeSel.cube();
             var before = ModelerAction.CubeMemento.of(cube);
             cube.inflate = parsed;
             pushCubeMemento(cube, before, "Edit cube " + cube.name + " (inflate)");

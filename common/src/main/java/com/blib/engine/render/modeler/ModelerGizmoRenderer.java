@@ -68,6 +68,13 @@ public final class ModelerGizmoRenderer {
             renderCubeGizmo(scenePose, scene, cs, mode, projectionForCapture);
             return;
         }
+        if (scene.selection instanceof Selection.MultiCubeSelection ms) {
+            // Multi-cube: gizmo anchors on the primary (last-clicked) cube. Group manipulation isn't supported by the
+            // gizmo yet — those edits happen via the UV map's drag path. Other multi-cube use cases (3D group drag,
+            // group resize) can grow off this same path later.
+            renderCubeGizmo(scenePose, scene, ms.primary(), mode, projectionForCapture);
+            return;
+        }
         if (scene.selection instanceof Selection.BoneSelection bs) {
             renderBoneGizmo(scenePose, scene, bs, mode, projectionForCapture);
             return;

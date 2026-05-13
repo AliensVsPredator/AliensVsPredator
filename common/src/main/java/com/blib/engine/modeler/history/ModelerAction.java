@@ -48,11 +48,22 @@ public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, M
         Vec3 size,
         Vec3 rotation,
         Vec3 pivot,
-        double inflate
+        double inflate,
+        double uvOriginU,
+        double uvOriginV
     ) {
 
         public static CubeMemento of(ModelerCube cube) {
-            return new CubeMemento(cube.name, cube.origin, cube.size, cube.rotation, cube.pivot, cube.inflate);
+            return new CubeMemento(
+                cube.name,
+                cube.origin,
+                cube.size,
+                cube.rotation,
+                cube.pivot,
+                cube.inflate,
+                cube.uvOriginU,
+                cube.uvOriginV
+            );
         }
 
         public void apply(ModelerCube cube) {
@@ -62,6 +73,8 @@ public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, M
             cube.rotation = rotation;
             cube.pivot = pivot;
             cube.inflate = inflate;
+            cube.uvOriginU = uvOriginU;
+            cube.uvOriginV = uvOriginV;
         }
 
         public boolean differsFrom(CubeMemento other) {
@@ -70,7 +83,9 @@ public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, M
                 || !size.equals(other.size)
                 || !rotation.equals(other.rotation)
                 || !pivot.equals(other.pivot)
-                || inflate != other.inflate;
+                || inflate != other.inflate
+                || uvOriginU != other.uvOriginU
+                || uvOriginV != other.uvOriginV;
         }
     }
 
