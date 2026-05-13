@@ -4,10 +4,13 @@ import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.time.Instant;
 
 import com.blib.engine.layout.ActiveLayoutState;
 import com.blib.engine.layout.LayoutCatalog;
+import com.blib.engine.layout.LayoutDoc;
 import com.blib.engine.layout.LayoutSnapshot;
+import com.blib.engine.layout.LayoutTemplate;
 import com.blib.engine.session.ProjectSession;
 import com.blib.engine.ui.dock.DockNode;
 import com.blib.engine.ui.dock.Sizing;
@@ -30,21 +33,40 @@ public final class WorkspaceLayoutPersistence {
 
     /**
      * Capture the dock tree (with trim wrappers peeled) and write it to the layout catalog under
-     * {@code activeLayoutId}. No-op when no catalog entry exists for that id — the next save after a fresh load will
-     * succeed.
+     * {@code activeLayoutId}. Returns {@code true} when a file was successfully written, {@code false} when the save
+     * couldn't be performed (so callers can decide whether to retry).
+     * <p>
+     * When the disk file is missing or unparseable but the id matches a built-in template, we reconstruct a fresh
+     * {@link LayoutDoc} from the template's metadata (preserving the in-memory body) rather than silently no-op'ing.
+     * Without this fallback, a deleted or corrupt template-file caused every subsequent save attempt for that id to
+     * skip — the in-memory customizations would never reach disk, and the next session would load the template
+     * default. This was the modeler-specific persistence failure: if {@code modeler.json} ever ended up missing
+     * (corrupted seed, manual deletion, etc.), every save attempt silently no-op'd while the default-layout save
+     * kept working because {@code default.json} was intact.
      */
-    public static void persistOutgoingLayout(DockNode root, String activeLayoutId) {
-        var existing = LayoutCatalog.get(activeLayoutId);
-        if (existing == null) {
-            return;
-        }
+    public static boolean persistOutgoingLayout(DockNode root, String activeLayoutId) {
         var capturedBody = LayoutSnapshot.capture(extractBodyRoot(root));
-        var updated = existing.withBody(capturedBody);
+        var existing = LayoutCatalog.get(activeLayoutId);
+        LayoutDoc doc;
+        if (existing != null) {
+            doc = existing.withBody(capturedBody);
+        } else {
+            var template = LayoutTemplate.byId(activeLayoutId);
+            if (template == null) {
+                // A user layout whose disk file vanished — we have no displayName / createdAt history to reconstruct
+                // from. Skip rather than guess; the caller can re-create via Save As if they want.
+                return false;
+            }
+            var now = Instant.now().toString();
+            doc = new LayoutDoc(LayoutDoc.CURRENT_VERSION, activeLayoutId, template.displayName(), null, now, now, capturedBody);
+        }
         try {
-            LayoutCatalog.save(updated);
+            LayoutCatalog.save(doc);
+            return true;
         } catch (IOException e) {
             LoggerFactory.getLogger(WorkspaceLayoutPersistence.class)
                 .warn("[BLib] persistOutgoingLayout: failed to save '{}'", activeLayoutId, e);
+            return false;
         }
     }
 

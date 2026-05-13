@@ -27,6 +27,7 @@ import com.blib.engine.jigsaw.JigsawPieceLibrary;
 import com.blib.engine.jigsaw.JigsawPieceSelection;
 import com.blib.engine.jigsaw.JigsawPoolLibrary;
 import com.blib.engine.layout.ActiveLayoutState;
+import com.blib.engine.layout.BodyNode;
 import com.blib.engine.layout.LayoutCatalog;
 import com.blib.engine.layout.LayoutDoc;
 import com.blib.engine.layout.LayoutSnapshot;
@@ -217,6 +218,16 @@ public final class EngineWorkspaceScreen extends Screen {
      */
     private @Nullable Panel capturedPanel;
 
+    /**
+     * Last {@link BodyNode} known to match what's persisted on disk for the active layout. Compared against a fresh
+     * {@link LayoutSnapshot#capture} of the live dock tree at the end of every render — when they diverge, the new
+     * snapshot is written and this cache is updated. This is the single source of truth for layout persistence: any
+     * dock-tree mutation (divider drag, tab move, tab close, active-tab switch, programmatic panel insertion, …) shows
+     * up in the next capture and gets saved, no matter which code path produced it. Reset to null on layout switch so
+     * the screen re-baselines against the incoming layout rather than diffing against the outgoing layout's body.
+     */
+    private @Nullable BodyNode lastSavedBody;
+
     /** Resolved id of the layout currently shown in the workspace. Read by status-bar / picker UI for display. */
     public static String activeLayoutId() {
         return WorkspaceLayoutController.activeLayoutId();
@@ -343,6 +354,9 @@ public final class EngineWorkspaceScreen extends Screen {
             return;
         }
         this.root = newRoot;
+        // Reset the persistence baseline so the next render's capture-and-diff re-baselines against the freshly loaded
+        // layout body rather than treating it as a "mutation" of the outgoing layout's body.
+        lastSavedBody = null;
         var mld = dialogs.manageLayoutsDialog();
         if (mld != null) {
             mld.setActiveLayoutId(WorkspaceLayoutController.activeLayoutId());
@@ -662,6 +676,11 @@ public final class EngineWorkspaceScreen extends Screen {
         } else {
             EngineCursor.reset();
         }
+
+        // End-of-frame layout autosave. Any dock-tree mutation made anywhere during the frame is captured here and
+        // written to disk if it differs from the last-saved baseline. This is the single source of truth for layout
+        // persistence — see maybePersistLayout's javadoc.
+        maybePersistLayout();
     }
 
     /**
@@ -716,22 +735,23 @@ public final class EngineWorkspaceScreen extends Screen {
     public void removed() {
         super.removed();
 
-        // Persist the active layout's customized state to disk and update state.json so the next /blib engine — even
-        // across game restarts — reopens to the same arrangement of tabs, splits, and active panels. The active-id
-        // write also captures any per-project memory so switching projects later restores per-project preferences.
-        // Skipped in MENU_OVERLAY mode so a B-toggle from the title screen doesn't clobber the user's in-game layout.
-        if (mode == Mode.IN_GAME) {
-            WorkspaceLayoutPersistence.persistOutgoingLayout(
-                this.root,
-                WorkspaceLayoutController.activeLayoutId()
-            );
-            WorkspaceLayoutPersistence.persistActiveSelection(
-                WorkspaceLayoutController.activeLayoutId()
-            );
-        } else if (wrappedScreen != null) {
+        // Propagate removal to the wrapped screen in menu-overlay mode so its own lifecycle hooks fire normally.
+        if (wrappedScreen != null) {
             wrappedScreen.removed();
             wrappedScreen = null;
         }
+
+        // Persist the active layout's customized state to disk and update state.json so the next /blib engine — even
+        // across game restarts — reopens to the same arrangement of tabs, splits, and active panels. Runs in both
+        // modes: layout state is keyed by layout id, so a customization made from the title-screen entry point is
+        // identical to one made from /blib engine in-world — both should round-trip to disk and survive restarts.
+        WorkspaceLayoutPersistence.persistOutgoingLayout(
+            this.root,
+            WorkspaceLayoutController.activeLayoutId()
+        );
+        WorkspaceLayoutPersistence.persistActiveSelection(
+            WorkspaceLayoutController.activeLayoutId()
+        );
 
         // Workspace-screen-scoped UI state (compositor, popups, cursor) — not session-scoped, so it stays here.
         EngineWorkspaceCompositor.clear();
@@ -1124,7 +1144,6 @@ public final class EngineWorkspaceScreen extends Screen {
                     if (tabbed.hitCloseAt(logicalX, logicalY, tabIdx)) {
                         tabbed.removeTab(tabIdx);
                         simplifyDockTree();
-                        persistLayoutChange();
                         return true;
                     }
                     tabbed.setActiveIndex(tabIdx);
@@ -1205,7 +1224,6 @@ public final class EngineWorkspaceScreen extends Screen {
             if (tabDrag.isActive()) {
                 this.root = tabDrag.completeDrop(logicalX, logicalY, this.root, logicalWidth(), logicalHeight());
                 simplifyDockTree();
-                persistLayoutChange();
             }
             tabDrag.cancel();
             return true;
@@ -1213,7 +1231,6 @@ public final class EngineWorkspaceScreen extends Screen {
 
         if (button == 0 && dragController.isActive()) {
             dragController.end();
-            persistLayoutChange();
             return true;
         }
 
@@ -1615,27 +1632,47 @@ public final class EngineWorkspaceScreen extends Screen {
      */
     private void reopenPanel(Class<? extends Panel> panelClass, Supplier<Panel> factory) {
         WorkspaceLayoutController.reopenPanel(this.root, panelClass, factory);
-        persistLayoutChange();
     }
 
     /**
-     * Capture the current dock tree to disk after a user-initiated layout mutation (tab drop, tab close, divider drag
-     * end, panel reopen). Without this, customizations only get written by {@link #removed()} on screen close, which
-     * isn't guaranteed to fire on game shutdown — quitting Minecraft without first closing the workspace would lose
-     * every customization made that session. Gated on {@link Mode#IN_GAME} for the same reason {@link #removed()} is:
-     * the menu-overlay mode is read-only so a B-toggle from the title screen doesn't clobber the in-game layout.
+     * Single source of truth for layout persistence. Called at the end of every render: captures the live dock tree
+     * to a {@link BodyNode}, compares against {@link #lastSavedBody}, and writes to disk + updates the cache when they
+     * differ. This catches every dock-tree mutation regardless of which code path produced it — divider drags, tab
+     * drops, tab closes, active-tab switches via {@code setActiveIndex}, programmatic {@code reopenPanel} insertions,
+     * and any future mutation site — without needing each site to remember to call a persist helper.
+     * <p>
+     * On the first render after init or after {@link #switchLayout}, {@code lastSavedBody} is null; we adopt the
+     * captured body as the baseline rather than writing it back to disk (it just came from disk a moment ago, so
+     * writing would be a redundant no-op). Subsequent diffs measure deltas from that baseline.
+     * <p>
+     * Gated on {@link Mode#IN_GAME} for the same reason {@link #removed()} is: menu-overlay mode is read-only so a
+     * B-toggle from the title screen doesn't clobber the in-game layout.
      */
-    private void persistLayoutChange() {
-        if (mode != Mode.IN_GAME) {
+    private void maybePersistLayout() {
+        var bodyRoot = WorkspaceLayoutPersistence.extractBodyRoot(this.root);
+        var currentBody = LayoutSnapshot.capture(bodyRoot);
+        if (lastSavedBody == null) {
+            // First check after init / layout switch — adopt the live state as the baseline without writing it back.
+            lastSavedBody = currentBody;
             return;
         }
-        WorkspaceLayoutPersistence.persistOutgoingLayout(this.root, WorkspaceLayoutController.activeLayoutId());
+        if (currentBody.equals(lastSavedBody)) {
+            return;
+        }
+        // Only adopt the new body as our baseline AFTER a successful write. If the save fails (e.g. transient disk
+        // issue), keeping the old baseline means the next render still sees a diff and retries — preventing the
+        // "silently swallowed mutation" failure mode where a stale lastSavedBody hides the unsaved customization.
+        if (WorkspaceLayoutPersistence.persistOutgoingLayout(this.root, WorkspaceLayoutController.activeLayoutId())) {
+            lastSavedBody = currentBody;
+        }
     }
 
     private void resetLayout() {
         var newRoot = WorkspaceLayoutController.resetLayout(this.root, panelCtx());
         if (newRoot != null) {
             this.root = newRoot;
+            // Reset baseline so the next render adopts the reset template body without immediately writing it back.
+            lastSavedBody = null;
         }
     }
 
@@ -1836,6 +1873,9 @@ public final class EngineWorkspaceScreen extends Screen {
                             panelCtx()
                         );
                         this.root = WorkspaceLayoutController.buildOuterLayout(bodyRoot);
+                        // Reset baseline — we just swapped to a different layout id, so the next render's diff should
+                        // measure against the new layout, not the previous one.
+                        lastSavedBody = null;
                         WorkspaceLayoutPersistence.persistActiveSelection(
                             WorkspaceLayoutController.activeLayoutId()
                         );
