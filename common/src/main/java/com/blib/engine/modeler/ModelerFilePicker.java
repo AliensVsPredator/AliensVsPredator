@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Wraps the LWJGL TinyFileDialogs native open-file dialog into a method that returns a {@link Path} (or {@code null} on
@@ -80,12 +82,15 @@ public final class ModelerFilePicker {
     }
 
     /**
-     * Prompt the user to pick a PNG texture file via the OS-native open-file dialog. Returns the chosen {@link Path} or
-     * null if the user cancelled / the dialog couldn't be shown. PNG only because
-     * {@link com.mojang.blaze3d.platform.NativeImage} doesn't decode JPG and adding an ImageIO-based fallback is out of
-     * v1 scope for the textures panel.
+     * Prompt the user to pick one or more PNG texture files via the OS-native open-file dialog. Returns the chosen
+     * {@link Path}s in selection order, or an empty list if the user cancelled / the dialog couldn't be shown. PNG only
+     * because {@link com.mojang.blaze3d.platform.NativeImage} doesn't decode JPG and adding an ImageIO-based fallback
+     * is out of v1 scope for the textures panel.
+     * <p>
+     * Multi-select uses tinyfd's pipe-delimited return format ({@code "/path/a|/path/b|..."}); we split on {@code |}
+     * here so callers get a clean list.
      */
-    public static @Nullable Path pickImage() {
+    public static List<Path> pickImages() {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             var filterPatterns = stack.mallocPointer(1);
             filterPatterns.put(stack.UTF8("*.png"));
@@ -96,17 +101,23 @@ public final class ModelerFilePicker {
                 "",
                 filterPatterns,
                 "PNG Images (*.png)",
-                false
+                true
             );
 
             if (picked == null || picked.isBlank()) {
                 LOGGER.info("ModelerFilePicker: image open-file dialog cancelled or unavailable");
-                return null;
+                return List.of();
             }
-            return Path.of(picked);
+            var paths = new ArrayList<Path>();
+            for (var part : picked.split("\\|")) {
+                if (!part.isBlank()) {
+                    paths.add(Path.of(part));
+                }
+            }
+            return paths;
         } catch (RuntimeException e) {
             LOGGER.warn("ModelerFilePicker: native image dialog threw {}", e.getMessage());
-            return null;
+            return List.of();
         }
     }
 }

@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.blib.engine.modeler.ModelerFilePicker;
 import com.blib.engine.modeler.ModelerScene;
+import com.blib.engine.modeler.texture.LoadedTexture;
 import com.blib.engine.modeler.texture.TextureLoader;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.dock.Panel;
@@ -205,18 +206,26 @@ public final class TexturesPanel implements Panel {
     }
 
     private void openTexturePicker() {
-        var path = ModelerFilePicker.pickImage();
-        if (path == null) {
-            return;
-        }
-        var loaded = TextureLoader.loadFromDisk(path);
-        if (loaded == null) {
+        var paths = ModelerFilePicker.pickImages();
+        if (paths.isEmpty()) {
             return;
         }
         var scene = ModelerScene.get();
-        scene.textures.add(loaded);
-        scene.activeTexture = loaded;
-        LOGGER.info("TexturesPanel: loaded {} → {}", path, loaded.textureId());
+        LoadedTexture lastLoaded = null;
+        for (var path : paths) {
+            var loaded = TextureLoader.loadFromDisk(path);
+            if (loaded == null) {
+                continue;
+            }
+            scene.textures.add(loaded);
+            lastLoaded = loaded;
+            LOGGER.info("TexturesPanel: loaded {} → {}", path, loaded.textureId());
+        }
+        // Auto-select the last successfully loaded texture so the user immediately sees something on the model and
+        // overlay; if every load failed (e.g. all corrupt PNGs), keep the previous active texture untouched.
+        if (lastLoaded != null) {
+            scene.activeTexture = lastLoaded;
+        }
     }
 
     /**

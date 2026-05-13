@@ -61,17 +61,9 @@ public final class UvMapPanel implements Panel {
 
     private static final int TEXTURE_BORDER_COLOR = 0xFF404048;
 
-    private static final int GRID_MINOR_COLOR = 0xFF26262E;
+    private static final int CUBE_SELECTED_OUTLINE = 0x80E6C26B;
 
-    private static final int GRID_MAJOR_COLOR = 0xFF303038;
-
-    private static final int CUBE_FACE_COLOR = 0x803EA0E8;
-
-    private static final int CUBE_OUTLINE_COLOR = 0xFF66B8F2;
-
-    private static final int CUBE_SELECTED_OUTLINE = 0xFFE6C26B;
-
-    private static final int CUBE_SELECTED_FACE = 0xA0E6C26B;
+    private static final int CUBE_SELECTED_FACE = 0x20E6C26B;
 
     private static final int CUBE_HOVER_OUTLINE = 0xFFFFFFFF;
 
@@ -84,20 +76,14 @@ public final class UvMapPanel implements Panel {
     private static final int TEXT_MUTED_COLOR = 0xFF808088;
 
     /**
-     * Upper bound on zoom in screen-pixels-per-UV-pixel. {@code 1.0} = 1:1 with the texture's native pixels — zooming
-     * past that would just upscale without revealing additional information. The min zoom is the fit-to-area zoom,
-     * which is always ≤ this. When the panel is large enough to show the texture at 1:1, the range collapses to
-     * {@code [1.0, 1.0]} and the scroll wheel becomes a no-op.
+     * Upper bound on zoom in screen-pixels-per-UV-pixel. Past {@code 1.0} the texture is upscaled with nearest-neighbor
+     * (no new detail), but individual texels become large enough to align cube UVs against pixel-precise. The min zoom
+     * is the fit-to-area zoom, which is always ≤ this.
      */
-    private static final double MAX_ABSOLUTE_ZOOM = 1.0;
+    private static final double MAX_ABSOLUTE_ZOOM = 16.0;
 
     /** Pan-drag multiplier — 1px of cursor movement translates to PAN_SENSITIVITY px of view shift. */
     private static final double PAN_SENSITIVITY = 1.5;
-
-    /** Grid subdivision in UV pixels. Major lines every 16 px (one in-game block at typical 16px:1block ratio). */
-    private static final int GRID_MINOR_STEP = 8;
-
-    private static final int GRID_MAJOR_STEP = 16;
 
     /** Pixels reserved at the top of the panel for the texture-dim readout. */
     private static final int HEADER_HEIGHT = 14;
@@ -392,7 +378,6 @@ public final class UvMapPanel implements Panel {
             RenderSystem.setShader(GameRenderer::getPositionColorShader);
             buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         }
-        addGrid(buffer, m00, m11, m30, m31, texW, texH, tx0, ty0, tx1, ty1);
         addRectOutline(buffer, m00, m11, m30, m31, tx0, ty0, tx1, ty1, TEXTURE_BORDER_COLOR);
 
         // Cubes (with culling).
@@ -472,43 +457,6 @@ public final class UvMapPanel implements Panel {
         vInput.render(graphics, inputXV, inputY, inputW, mouseX, mouseY);
     }
 
-    private void addGrid(
-        BufferBuilder buffer,
-        float m00,
-        float m11,
-        float m30,
-        float m31,
-        int texW,
-        int texH,
-        int tx0,
-        int ty0,
-        int tx1,
-        int ty1
-    ) {
-        var uStart = Math.max(GRID_MINOR_STEP, floorToStep(visibleMinU));
-        var uEnd = Math.min(texW, ceilToStep(visibleMaxU));
-        for (var u = uStart; u < uEnd; u += GRID_MINOR_STEP) {
-            var sx = screenXi(u);
-            var color = (u % GRID_MAJOR_STEP == 0) ? GRID_MAJOR_COLOR : GRID_MINOR_COLOR;
-            addQuad(buffer, m00, m11, m30, m31, sx, ty0, sx + 1, ty1, color);
-        }
-        var vStart = Math.max(GRID_MINOR_STEP, floorToStep(visibleMinV));
-        var vEnd = Math.min(texH, ceilToStep(visibleMaxV));
-        for (var v = vStart; v < vEnd; v += GRID_MINOR_STEP) {
-            var sy = screenYi(v);
-            var color = (v % GRID_MAJOR_STEP == 0) ? GRID_MAJOR_COLOR : GRID_MINOR_COLOR;
-            addQuad(buffer, m00, m11, m30, m31, tx0, sy, tx1, sy + 1, color);
-        }
-    }
-
-    private static int floorToStep(double v) {
-        return ((int) Math.floor(v / GRID_MINOR_STEP)) * GRID_MINOR_STEP;
-    }
-
-    private static int ceilToStep(double v) {
-        return ((int) Math.ceil(v / GRID_MINOR_STEP)) * GRID_MINOR_STEP;
-    }
-
     private void addCubes(BufferBuilder buffer, float m00, float m11, float m30, float m31, ModelerBone bone) {
         for (var cube : bone.cubes) {
             if (cube.hasPerFaceUv) {
@@ -532,9 +480,8 @@ public final class UvMapPanel implements Panel {
     }
 
     /**
-     * Emit the 6 face fills + 6 face outlines of a single cube into the batched buffer. Each face is its own filled
-     * rect (preserves the original cross-unwrap visual where you can see each face's bounds), and each face also gets
-     * its own outline so adjacent faces' shared edges read as a divider.
+     * Emit the cube's footprint on the UV map. Default-state cubes draw nothing (so a loaded texture is fully visible);
+     * selection adds a translucent yellow fill plus a yellow outline on each face, and hover adds the white outline.
      */
     private void addCubeCross(
         BufferBuilder buffer,
@@ -550,24 +497,76 @@ public final class UvMapPanel implements Panel {
         boolean selected,
         boolean hovered
     ) {
-        var faceFill = selected ? CUBE_SELECTED_FACE : CUBE_FACE_COLOR;
-        var outline = selected ? CUBE_SELECTED_OUTLINE : (hovered ? CUBE_HOVER_OUTLINE : CUBE_OUTLINE_COLOR);
+        if (selected) {
+            // Six face fills, in the same order as AzBakedModelFactory's per-direction layout.
+            addUvRect(buffer, m00, m11, m30, m31, u + d, v, w, d, CUBE_SELECTED_FACE); // up
+            addUvRect(buffer, m00, m11, m30, m31, u + d + w, v, w, d, CUBE_SELECTED_FACE); // down
+            addUvRect(buffer, m00, m11, m30, m31, u, v + d, d, h, CUBE_SELECTED_FACE); // west
+            addUvRect(buffer, m00, m11, m30, m31, u + d, v + d, w, h, CUBE_SELECTED_FACE); // north (front)
+            addUvRect(buffer, m00, m11, m30, m31, u + d + w, v + d, d, h, CUBE_SELECTED_FACE); // east
+            addUvRect(buffer, m00, m11, m30, m31, u + 2 * d + w, v + d, w, h, CUBE_SELECTED_FACE); // south (back)
+        }
 
-        // Six face fills, in the same order as AzBakedModelFactory's per-direction layout.
-        addUvRect(buffer, m00, m11, m30, m31, u + d, v, w, d, faceFill); // up
-        addUvRect(buffer, m00, m11, m30, m31, u + d + w, v, w, d, faceFill); // down
-        addUvRect(buffer, m00, m11, m30, m31, u, v + d, d, h, faceFill); // west
-        addUvRect(buffer, m00, m11, m30, m31, u + d, v + d, w, h, faceFill); // north (front)
-        addUvRect(buffer, m00, m11, m30, m31, u + d + w, v + d, d, h, faceFill); // east
-        addUvRect(buffer, m00, m11, m30, m31, u + 2 * d + w, v + d, w, h, faceFill); // south (back)
+        if (!selected && !hovered) {
+            return;
+        }
+        var outline = selected ? CUBE_SELECTED_OUTLINE : CUBE_HOVER_OUTLINE;
+        addUvCrossOutline(buffer, m00, m11, m30, m31, w, h, d, u, v, outline);
+    }
 
-        // Six face outlines.
-        addUvRectOutline(buffer, m00, m11, m30, m31, u + d, v, w, d, outline);
-        addUvRectOutline(buffer, m00, m11, m30, m31, u + d + w, v, w, d, outline);
-        addUvRectOutline(buffer, m00, m11, m30, m31, u, v + d, d, h, outline);
-        addUvRectOutline(buffer, m00, m11, m30, m31, u + d, v + d, w, h, outline);
-        addUvRectOutline(buffer, m00, m11, m30, m31, u + d + w, v + d, d, h, outline);
-        addUvRectOutline(buffer, m00, m11, m30, m31, u + 2 * d + w, v + d, w, h, outline);
+    /**
+     * Emit the cross-unwrap outline: perimeter + internal face seams, each at 1px. Replaces the previous "6 rects with
+     * 4 edges each = 24 segments" approach where every internal seam was double-drawn (once by each adjacent face's
+     * outline) and read as a 2px stroke. Here every shared edge is a single 1px segment; verticals at columns shared
+     * between the top row and middle row (left edge of up = west|north seam; up|down seam = north|east seam) are drawn
+     * as one continuous segment spanning both rows, and the horizontal at V=v+d is the full middle-row top (subsuming
+     * the two perimeter "step" segments + the up|north / down|east|south horizontal seam).
+     */
+    private void addUvCrossOutline(
+        BufferBuilder buffer,
+        float m00,
+        float m11,
+        float m30,
+        float m31,
+        double w,
+        double h,
+        double d,
+        double u,
+        double v,
+        int color
+    ) {
+        if (w <= 0 || h <= 0 || d <= 0) {
+            return;
+        }
+        var sxTopL = screenXi(u + d); // left of up = west|north seam
+        var sxTopM = screenXi(u + d + w); // up|down seam = north|east seam
+        var sxTopR = screenXi(u + d + 2 * w); // right of down
+        var sxEastSouth = screenXi(u + 2 * d + w); // east|south seam
+        var sxMidL = screenXi(u); // left of west
+        var sxMidR = screenXi(u + 2 * d + 2 * w); // right of south
+        var syT = screenYi(v);
+        var syM = screenYi(v + d);
+        var syB = screenYi(v + d + h);
+        if (sxTopR <= sxTopL || sxMidR <= sxMidL || syM <= syT || syB <= syM) {
+            return;
+        }
+
+        // Horizontals.
+        addQuad(buffer, m00, m11, m30, m31, sxTopL, syT, sxTopR, syT + 1, color); // top of up+down
+        addQuad(buffer, m00, m11, m30, m31, sxMidL, syM, sxMidR, syM + 1, color); // top of middle row (full)
+        addQuad(buffer, m00, m11, m30, m31, sxMidL, syB - 1, sxMidR, syB, color); // bottom of middle row
+
+        // Verticals — full height (top-row + middle-row, since both rows share this column at a face boundary).
+        addQuad(buffer, m00, m11, m30, m31, sxTopL, syT, sxTopL + 1, syB, color); // left of up + west|north seam
+        addQuad(buffer, m00, m11, m30, m31, sxTopM, syT, sxTopM + 1, syB, color); // up|down + north|east seam
+
+        // Verticals — top-row only.
+        addQuad(buffer, m00, m11, m30, m31, sxTopR - 1, syT, sxTopR, syM, color); // right of down
+
+        // Verticals — middle-row only.
+        addQuad(buffer, m00, m11, m30, m31, sxMidL, syM, sxMidL + 1, syB, color); // left of west
+        addQuad(buffer, m00, m11, m30, m31, sxEastSouth, syM, sxEastSouth + 1, syB, color); // east|south seam
+        addQuad(buffer, m00, m11, m30, m31, sxMidR - 1, syM, sxMidR, syB, color); // right of south
     }
 
     private void addUvRect(
@@ -593,31 +592,6 @@ public final class UvMapPanel implements Panel {
             return;
         }
         addQuad(buffer, m00, m11, m30, m31, x0, y0, x1, y1, color);
-    }
-
-    private void addUvRectOutline(
-        BufferBuilder buffer,
-        float m00,
-        float m11,
-        float m30,
-        float m31,
-        double u,
-        double v,
-        double w,
-        double h,
-        int color
-    ) {
-        if (w <= 0 || h <= 0) {
-            return;
-        }
-        var x0 = screenXi(u);
-        var y0 = screenYi(v);
-        var x1 = screenXi(u + w);
-        var y1 = screenYi(v + h);
-        if (x1 <= x0 || y1 <= y0) {
-            return;
-        }
-        addRectOutline(buffer, m00, m11, m30, m31, x0, y0, x1, y1, color);
     }
 
     private static void addRectOutline(
