@@ -188,4 +188,41 @@ public final class EngineWorkspaceCompositor {
             wrappedScreenRT = null;
         }
     }
+
+    /**
+     * Composit the main RT into a workspace-logical rect. Converts the logical rect (top-left origin, in workspace
+     * logical pixels) to GL framebuffer coordinates (bottom-left origin, raw window pixels) using {@code logicalScale}
+     * — the workspace's pose scale — and the current window's GUI scale, then calls {@link #composit}.
+     */
+    public static void compositWorldIntoLogicalRect(int rectX, int rectY, int rectW, int rectH, float logicalScale) {
+        var raw = logicalRectToRawFramebuffer(rectX, rectY, rectW, rectH, logicalScale);
+        composit(raw[0], raw[1], raw[2], raw[3]);
+    }
+
+    /**
+     * Same conversion as {@link #compositWorldIntoLogicalRect} but sourcing pixels from the wrapped-screen offscreen RT
+     * rather than the main RT.
+     */
+    public static void compositWrappedIntoLogicalRect(int rectX, int rectY, int rectW, int rectH, float logicalScale) {
+        var raw = logicalRectToRawFramebuffer(rectX, rectY, rectW, rectH, logicalScale);
+        blitWrappedToViewport(raw[0], raw[1], raw[2], raw[3]);
+    }
+
+    /** Returns {@code {x, y, w, h}} in raw bottom-origin framebuffer pixels for the given workspace-logical rect. */
+    private static int[] logicalRectToRawFramebuffer(int rectX, int rectY, int rectW, int rectH, float logicalScale) {
+        var window = Minecraft.getInstance().getWindow();
+        var guiScale = window.getGuiScale();
+        var rawWindowHeight = window.getHeight();
+
+        var screenX = rectX * logicalScale;
+        var screenY = rectY * logicalScale;
+        var screenW = rectW * logicalScale;
+        var screenH = rectH * logicalScale;
+
+        var rawX = (int) Math.round(screenX * guiScale);
+        var rawY = (int) Math.round(rawWindowHeight - (screenY + screenH) * guiScale);
+        var rawW = (int) Math.round(screenW * guiScale);
+        var rawH = (int) Math.round(screenH * guiScale);
+        return new int[] { rawX, rawY, rawW, rawH };
+    }
 }

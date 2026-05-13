@@ -4,21 +4,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import com.blib.api.common.dismemberment.v1.Dismemberable;
-import com.blib.api.common.dismemberment.v1.LimbDismemberer;
 import com.blib.engine.command.api.Command;
 import com.blib.engine.command.api.CommandBus;
 import com.blib.engine.domain.selection.picking.SelectionManager;
-import com.blib.engine.domain.selection.volume.BlockSelection;
-import com.blib.engine.domain.selection.volume.BlockSelectionOps;
-import com.blib.engine.input.ActiveKeybindings;
 import com.blib.engine.input.KeybindingProfile;
 import com.blib.engine.input.KeybindingProfileCatalog;
-import com.blib.engine.input.Keybindings;
 import com.blib.engine.jigsaw.JigsawPieceLibrary;
 import com.blib.engine.jigsaw.JigsawPieceSelection;
 import com.blib.engine.jigsaw.JigsawPoolLibrary;
@@ -28,7 +21,6 @@ import com.blib.engine.layout.LayoutDoc;
 import com.blib.engine.layout.LayoutSnapshot;
 import com.blib.engine.layout.LayoutTemplate;
 import com.blib.engine.layout.PanelRegistry;
-import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.platform.spi.EngineRenderState;
 import com.blib.engine.session.EngineMode;
 import com.blib.engine.session.NavigationMode;
@@ -43,15 +35,8 @@ import com.blib.engine.ui.dock.DockNode;
 import com.blib.engine.ui.dock.Orientation;
 import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.dock.PanelChrome;
-import com.blib.engine.ui.dock.Sizing;
 import com.blib.engine.ui.dock.TabbedPanel;
 import com.blib.engine.ui.panel.chrome.MenuBarPanel;
-import com.blib.engine.ui.panel.chrome.ModelerMenuBar;
-import com.blib.engine.ui.panel.chrome.StatusBarPanel;
-import com.blib.engine.ui.panel.details.GOAPDetailsPanel;
-import com.blib.engine.ui.panel.details.ModelerInspectorPanel;
-import com.blib.engine.ui.panel.outliner.ModelerOutlinerPanel;
-import com.blib.engine.ui.panel.viewport.ModelerViewportPanel;
 import com.blib.engine.ui.panel.viewport.ViewportPanel;
 import com.blib.engine.ui.popup.FactionManagePopup;
 import com.blib.engine.ui.popup.HslColorPickerPopup;
@@ -59,11 +44,14 @@ import com.blib.engine.ui.screen.ProjectPickerScreen;
 import com.blib.engine.ui.widget.DropdownMenu;
 import com.blib.engine.ui.widget.SearchableSelect;
 import com.blib.engine.ui.widget.TextInput;
+import com.blib.engine.ui.workspace.HoverOverlayRenderer;
+import com.blib.engine.ui.workspace.ViewportContextMenuHandler;
+import com.blib.engine.ui.workspace.WorkspaceLayoutController;
 import com.blib.engine.ui.workspace.dock.DividerDragController;
 import com.blib.engine.ui.workspace.dock.DockTreeHitTest;
 import com.blib.engine.ui.workspace.dock.DockTreeMutator;
 import com.blib.engine.ui.workspace.dock.TabDragController;
-import com.blib.engine.ui.workspace.modal.ModalStack;
+import com.blib.engine.ui.workspace.menubar.MenuBarController;
 
 /**
  * Top-level editor screen for the BLib Engine. The viewport is divided into a tree of docked regions by a
@@ -125,19 +113,11 @@ public final class EngineWorkspaceScreen extends Screen {
      */
     private static final double TAB_DRAG_THRESHOLD_SQ = 16.0;
 
-    private static final int DIVIDER_HIGHLIGHT_COLOR = 0xFF4F8FFF;
-
     private static final int TAB_GHOST_BG_COLOR = 0xCC2C2C32;
 
     private static final int TAB_GHOST_TEXT_COLOR = 0xFFE0E0E0;
 
     private static final int TAB_DROP_TARGET_COLOR = 0x404F8FFF;
-
-    private static final int TOOLTIP_BG_COLOR = 0xF01A1A1F;
-
-    private static final int TOOLTIP_BORDER_COLOR = 0xFF353540;
-
-    private static final int TOOLTIP_TEXT_COLOR = 0xFFD0D0D0;
 
     /**
      * Sentinel mouse coordinate used in place of the real one when the cursor is over an overlay (e.g. an open
@@ -186,88 +166,31 @@ public final class EngineWorkspaceScreen extends Screen {
 
     private final DividerDragController dragController = new DividerDragController();
 
-    private @Nullable TabDragController.Drag tabDrag;
-
-    private @Nullable DropdownMenu openMenu;
+    private final TabDragController tabDrag = new TabDragController();
 
     /**
-     * One-level cascading submenu of {@link #openMenu} (e.g. the Dismember… → limb list on entity right-click). Only
-     * non-null while {@link #openMenu} is also non-null, and always cleared in lock-step with it so a stale child can't
-     * outlive its parent. We only support a single level of nesting — nothing in the workspace UI needs deeper.
+     * Owns the workspace's menu-bar dropdown state — open menu, optional submenu, hover-driven cascade behaviour, and
+     * the per-chip menu builders. The screen forwards every menu lifecycle call to this controller so adding a new menu
+     * item is contained to {@link MenuBarController} + the matching action on {@link MenuBarActionsImpl}.
      */
-    private @Nullable DropdownMenu openSubmenu;
+    private final MenuBarController menuBar = new MenuBarController(new MenuBarActionsImpl());
 
     /**
-     * Index of the {@link #openMenu} item that {@link #openSubmenu} was spawned from. Tracked so hover-driven submenu
-     * opening doesn't re-spawn the same submenu every frame, and so moving the cursor onto a different parent-menu item
-     * correctly swaps which submenu is shown. {@code null} whenever {@link #openSubmenu} is null.
+     * Owns the five workspace modal dialogs (confirm, capture, layout-name, manage-layouts, preferences) and the modal
+     * z-order stack. The screen forwards render + input dispatch through this controller.
      */
-    private @Nullable Integer openSubmenuParentIndex;
-
-    /**
-     * Modal yes/no confirmation overlay for destructive actions (FILE → Delete Project). When non-null, takes priority
-     * over every other input pathway and dims the underlying workspace.
-     */
-    private @Nullable ConfirmDialog confirmDialog;
-
-    /**
-     * Modal Capture dialog opened from the viewport's right-click context menu. Same modal lifecycle as
-     * {@link #confirmDialog} — render after panels, mouseClicked / keyPressed take priority, cleared on close.
-     */
-    private @Nullable CaptureDialog captureDialog;
-
-    /**
-     * Modal text-input dialog for Save-As / Rename / Duplicate / New-from-Template flows. Shares the
-     * {@link #confirmDialog} / {@link #captureDialog} lifecycle pattern.
-     */
-    private @Nullable LayoutNameDialog layoutNameDialog;
-
-    /**
-     * Modal layout-management dialog (list view with per-row actions). Same lifecycle as the others.
-     */
-    private @Nullable ManageLayoutsDialog manageLayoutsDialog;
-
-    /**
-     * Modal preferences dialog (keybinding editor). Same lifecycle as the others. {@link LayoutNameDialog} can stack on
-     * top when the user creates / renames / duplicates a profile.
-     */
-    private @Nullable PreferencesDialog preferencesDialog;
-
-    // ---------------------------------------------------------------------------------------------
-    // Modal z-order tracking
-    //
-    // Each dialog field above is registered with {@link #modalStack}; the stack reconciles itself against the field
-    // state each frame so callers can keep doing {@code this.fooDialog = new FooDialog(...)} / {@code = null} without
-    // touching the stack. Render and input dispatch consult {@link ModalStack#top()} to route to the topmost open
-    // dialog, which is essential when a child modal (e.g. a Confirm from inside Preferences) needs to sit on top of
-    // its parent.
-    // ---------------------------------------------------------------------------------------------
-
-    private static final String MODAL_CONFIRM = "confirm";
-
-    private static final String MODAL_CAPTURE = "capture";
-
-    private static final String MODAL_LAYOUT_NAME = "layoutName";
-
-    private static final String MODAL_MANAGE_LAYOUTS = "manageLayouts";
-
-    private static final String MODAL_PREFERENCES = "preferences";
-
-    private final ModalStack modalStack = new ModalStack();
+    private final com.blib.engine.ui.workspace.WorkspaceDialogController dialogs =
+        new com.blib.engine.ui.workspace.WorkspaceDialogController();
 
     private final CommandBus commands = new CommandBus();
 
-    {
-        modalStack.register(MODAL_CONFIRM, () -> confirmDialog != null);
-        modalStack.register(MODAL_CAPTURE, () -> captureDialog != null);
-        modalStack.register(MODAL_LAYOUT_NAME, () -> layoutNameDialog != null);
-        modalStack.register(MODAL_MANAGE_LAYOUTS, () -> manageLayoutsDialog != null);
-        modalStack.register(MODAL_PREFERENCES, () -> preferencesDialog != null);
-    }
+    private final ViewportContextMenuHandler viewportContextMenu = new ViewportContextMenuHandler(
+        commands,
+        new ViewportContextMenuHostImpl()
+    );
 
-    private @Nullable String topModalTag() {
-        return modalStack.top();
-    }
+    private final com.blib.engine.ui.workspace.WorkspaceHotkeyDispatcher hotkeys =
+        new com.blib.engine.ui.workspace.WorkspaceHotkeyDispatcher(new WorkspaceHotkeyHostImpl());
 
     /**
      * Panel that captured the mouse via {@link Panel#mouseClickedCapture}. While non-null, {@link #mouseDragged} and
@@ -276,17 +199,9 @@ public final class EngineWorkspaceScreen extends Screen {
      */
     private @Nullable Panel capturedPanel;
 
-    /**
-     * Id of the layout the user is currently editing. Sticks across screen re-opens within the same JVM session and is
-     * persisted to {@code <gameDir>/blib/engine/state.json} on close so subsequent game sessions reopen to the same
-     * layout. Resolution honors per-project overrides (see {@link ActiveLayoutState#resolve}); this field caches the
-     * resolved id for the active session.
-     */
-    private static String activeLayoutId = LayoutTemplate.DEFAULT.id();
-
     /** Resolved id of the layout currently shown in the workspace. Read by status-bar / picker UI for display. */
     public static String activeLayoutId() {
-        return activeLayoutId;
+        return WorkspaceLayoutController.activeLayoutId();
     }
 
     /** Legacy entry: {@code /blib engine} from in-world. Project picker must have set an active project. */
@@ -331,7 +246,7 @@ public final class EngineWorkspaceScreen extends Screen {
             // back to state.json on close (see removed()), so reading here is purely a load — the user's preferred
             // layout choice persists untouched across game state transitions.
             var bodyRoot = loadActiveLayoutBody();
-            this.root = buildOuterLayout(bodyRoot);
+            this.root = WorkspaceLayoutController.buildOuterLayout(bodyRoot);
             return;
         }
 
@@ -370,7 +285,7 @@ public final class EngineWorkspaceScreen extends Screen {
         commands.dispatch(new Command.RequestFactionDirectory());
 
         var bodyRoot = loadActiveLayoutBody();
-        this.root = buildOuterLayout(bodyRoot);
+        this.root = WorkspaceLayoutController.buildOuterLayout(bodyRoot);
     }
 
     /**
@@ -379,94 +294,16 @@ public final class EngineWorkspaceScreen extends Screen {
      * no readable file on disk — guarantees the workspace always opens to <em>something</em>.
      */
     private DockNode loadActiveLayoutBody() {
-        var state = ActiveLayoutState.read();
-        var projectName = ProjectSession.activeProject() != null ? ProjectSession.activeProjectName() : null;
-        var resolvedId = ActiveLayoutState.resolve(projectName, state);
-        activeLayoutId = resolvedId;
-
-        var doc = LayoutCatalog.get(resolvedId);
-        if (doc == null) {
-            // Resolved id has no file (deleted externally, or seed failed). Fall back to a fresh default template.
-            activeLayoutId = LayoutTemplate.DEFAULT.id();
-            doc = LayoutTemplate.DEFAULT.toDoc();
-        }
-        return LayoutSnapshot.hydrate(doc.body(), panelCtx());
+        return WorkspaceLayoutController.loadActiveLayoutBody(panelCtx());
     }
 
     private PanelRegistry.Context panelCtx() {
         return new PanelRegistry.Context(
-            buildViewportRightClickHandler(),
-            this::onViewportRightClick,
+            viewportContextMenu,
+            viewportContextMenu,
             this::openContentConfirm,
-            this::openPanelMenu
+            menuBar::open
         );
-    }
-
-    /**
-     * Bridge used by panels that host their own menu bar ({@link ModelerMenuBar}, etc.) — they build a fresh
-     * {@link DropdownMenu} on chip click and ask the workspace to render it as the active overlay. Existing
-     * close-on-outside-click + item-action absorber logic in {@link #mouseClicked} then handles dismissal uniformly
-     * with the global menu bar.
-     */
-    private void openPanelMenu(DropdownMenu menu) {
-        setOpenMenu(menu);
-    }
-
-    /** Single mutation site for {@link #openMenu} — pairs every assignment with a {@link #closeSubmenu} reset. */
-    private void setOpenMenu(@Nullable DropdownMenu menu) {
-        this.openMenu = menu;
-        closeSubmenu();
-    }
-
-    /**
-     * Clear the cascading submenu in lock-step with its tracker index. Called from every site that previously did
-     * {@code openSubmenu = null} so the hover-driven submenu logic always sees a consistent (submenu, parent-index)
-     * pair.
-     */
-    private void closeSubmenu() {
-        this.openSubmenu = null;
-        this.openSubmenuParentIndex = null;
-    }
-
-    /**
-     * Hover-driven cascading-submenu opener. Runs once per frame from {@link #render}: when the cursor sits on a
-     * parent-menu item with children, spawn (or keep) the submenu for that item; when it sits on a leaf item, close any
-     * open submenu. Cursor over the submenu itself or in the gap between menus leaves state untouched so users can move
-     * diagonally from parent → submenu without flicker.
-     */
-    private void updateHoverSubmenu(int mouseX, int mouseY) {
-        if (openMenu == null) {
-            closeSubmenu();
-            return;
-        }
-        // Hovering inside the existing submenu? Leave both open — the user is on their way to clicking an item.
-        if (openSubmenu != null && openSubmenu.isInside(mouseX, mouseY)) {
-            return;
-        }
-        if (!openMenu.isInside(mouseX, mouseY)) {
-            // Cursor is outside both menus — preserve current state so the cursor can travel through the gap from
-            // parent menu to submenu without the submenu vanishing mid-traverse. Outside-click closure is handled
-            // separately by the mouseClicked absorber.
-            return;
-        }
-        var idx = openMenu.hitItemAt(mouseX, mouseY);
-        if (idx < 0) {
-            // On the menu's border / dead row — treat the same as the gap case.
-            return;
-        }
-        var item = openMenu.itemAt(idx);
-        if (item.hasSubmenu()) {
-            // Re-spawn only when the parent index actually changed, otherwise every frame would rebuild the same
-            // submenu and the hover state inside it would constantly reset.
-            if (openSubmenuParentIndex == null || openSubmenuParentIndex != idx) {
-                openSubmenu = DropdownMenu.spawnSubmenu(openMenu, idx, item.children(), logicalWidth(), logicalHeight());
-                openSubmenuParentIndex = idx;
-            }
-        } else {
-            // Hovering a leaf item closes any submenu that was open for a sibling parent item — visually pinning the
-            // submenu would be confusing when the user has moved focus away from its parent row.
-            closeSubmenu();
-        }
     }
 
     /**
@@ -475,77 +312,24 @@ public final class EngineWorkspaceScreen extends Screen {
      * either path gets the same modal behavior.
      */
     private void openContentConfirm(String title, String message, String confirmLabel, boolean destructive, Runnable onConfirm) {
-        this.confirmDialog = new ConfirmDialog(title, message, confirmLabel, "Cancel", destructive, onConfirm, () -> {});
-    }
-
-    /**
-     * Wraps {@code workspaceBody} (the central editable area) in the standard menu-bar / toolbar / status-bar trim
-     * shared by every layout. Splits are pinned to the trim panels' fixed heights so the body fills the remaining
-     * space.
-     */
-    private DockNode buildOuterLayout(DockNode workspaceBody) {
-        var bodyAndStatus = new DockNode.Split(
-            Orientation.VERTICAL,
-            workspaceBody,
-            new DockNode.Leaf(new StatusBarPanel()),
-            new Sizing.SecondFixed(StatusBarPanel.HEIGHT)
-        );
-
-        return new DockNode.Split(
-            Orientation.VERTICAL,
-            new DockNode.Leaf(new MenuBarPanel()),
-            bodyAndStatus,
-            new Sizing.FirstFixed(MenuBarPanel.HEIGHT)
-        );
+        dialogs.setConfirmDialog(new ConfirmDialog(title, message, confirmLabel, "Cancel", destructive, onConfirm, () -> {}));
     }
 
     /**
      * Switch the active layout to {@code newLayoutId}. Persists the outgoing layout's body to disk before switching so
-     * any in-session customizations carry over to the next reopen, then loads the incoming layout (falling back to the
-     * default template if its file has been deleted in the meantime).
+     * any in-session customisations carry over to the next reopen, then loads the incoming layout.
      */
     private void switchLayout(String newLayoutId) {
-        if (newLayoutId.equals(activeLayoutId)) {
+        var newRoot = WorkspaceLayoutController.switchLayout(newLayoutId, this.root, panelCtx());
+        if (newRoot == null) {
             return;
         }
-        persistOutgoingLayout();
-        activeLayoutId = newLayoutId;
-        var doc = LayoutCatalog.get(newLayoutId);
-        if (doc == null) {
-            activeLayoutId = LayoutTemplate.DEFAULT.id();
-            doc = LayoutTemplate.DEFAULT.toDoc();
+        this.root = newRoot;
+        var mld = dialogs.manageLayoutsDialog();
+        if (mld != null) {
+            mld.setActiveLayoutId(WorkspaceLayoutController.activeLayoutId());
+            mld.refresh();
         }
-        var bodyRoot = LayoutSnapshot.hydrate(doc.body(), panelCtx());
-        this.root = buildOuterLayout(bodyRoot);
-        persistActiveSelection();
-        // Refresh the manage dialog if it's open so the active marker tracks the switch.
-        if (manageLayoutsDialog != null) {
-            manageLayoutsDialog.setActiveLayoutId(activeLayoutId);
-            manageLayoutsDialog.refresh();
-        }
-    }
-
-    /**
-     * Capture the current body subtree into the active layout's {@link LayoutDoc} and write it to disk. No-op if no
-     * file exists for the active id (e.g. the layout was deleted out from under us); the next persist after a fresh
-     * load will succeed.
-     */
-    private void persistOutgoingLayout() {
-        com.blib.engine.ui.workspace.WorkspaceLayoutPersistence.persistOutgoingLayout(this.root, this.activeLayoutId);
-    }
-
-    /**
-     * Update {@code state.json} with the active layout id, scoped to the active project if there is one. Called from
-     * {@code switchLayout} and {@code removed()} so per-project active-layout memory survives game restarts.
-     */
-    private void persistActiveSelection() {
-        com.blib.engine.ui.workspace.WorkspaceLayoutPersistence.persistActiveSelection(this.activeLayoutId);
-    }
-
-    /** @deprecated use {@link com.blib.engine.ui.workspace.WorkspaceLayoutPersistence#extractBodyRoot} directly. */
-    @Deprecated
-    private static DockNode extractBodyRoot(DockNode root) {
-        return com.blib.engine.ui.workspace.WorkspaceLayoutPersistence.extractBodyRoot(root);
     }
 
     public Mode workspaceMode() {
@@ -730,9 +514,21 @@ public final class EngineWorkspaceScreen extends Screen {
         var viewportRect = findViewportRect(root, 0, 0, logicalWidth(), logicalHeight());
         if (viewportRect != null) {
             if (wrappedScreen != null) {
-                compositWrappedIntoViewport(viewportRect);
+                EngineWorkspaceCompositor.compositWrappedIntoLogicalRect(
+                    viewportRect.x(),
+                    viewportRect.y(),
+                    viewportRect.width(),
+                    viewportRect.height(),
+                    SCALE
+                );
             } else {
-                compositWorldIntoViewport(viewportRect);
+                EngineWorkspaceCompositor.compositWorldIntoLogicalRect(
+                    viewportRect.x(),
+                    viewportRect.y(),
+                    viewportRect.width(),
+                    viewportRect.height(),
+                    SCALE
+                );
             }
         }
 
@@ -748,7 +544,7 @@ public final class EngineWorkspaceScreen extends Screen {
         // Hover-driven submenu spawning. Runs once per frame so the user can mouse over a parent-menu item and see
         // its submenu cascade without clicking. Must come BEFORE the "is cursor over a menu" panel-mouse-suppress
         // checks below so the just-spawned submenu is considered when masking panel hover state.
-        updateHoverSubmenu(logicalMouseX, logicalMouseY);
+        menuBar.updateHoverSubmenu(logicalMouseX, logicalMouseY, logicalWidth, logicalHeight);
 
         // While a dropdown menu is open AND the cursor is over the menu rect, panels under the menu must not see the
         // mouse — otherwise their hover-state code (segmented-control buttons, viewport selection highlights, tab-
@@ -758,11 +554,7 @@ public final class EngineWorkspaceScreen extends Screen {
         // / tooltip overlays already check {@code openMenu} themselves and stay suppressed.
         int panelMouseX = logicalMouseX;
         int panelMouseY = logicalMouseY;
-        if (openMenu != null && openMenu.isInside(logicalMouseX, logicalMouseY)) {
-            panelMouseX = OFFSCREEN_MOUSE;
-            panelMouseY = OFFSCREEN_MOUSE;
-        }
-        if (openSubmenu != null && openSubmenu.isInside(logicalMouseX, logicalMouseY)) {
+        if (menuBar.isInsideOpenMenu(logicalMouseX, logicalMouseY)) {
             panelMouseX = OFFSCREEN_MOUSE;
             panelMouseY = OFFSCREEN_MOUSE;
         }
@@ -782,55 +574,30 @@ public final class EngineWorkspaceScreen extends Screen {
             panelMouseY = OFFSCREEN_MOUSE;
         }
         // Any modal dialog suppresses panel hover state.
-        if (modalStack.isAnyOpen()) {
+        if (dialogs.isAnyOpen()) {
             panelMouseX = OFFSCREEN_MOUSE;
             panelMouseY = OFFSCREEN_MOUSE;
         }
 
         renderNode(graphics, root, 0, 0, logicalWidth, logicalHeight, panelMouseX, panelMouseY, partialTick);
         // Use the OFFSCREEN-substituted coords so dividers and tab-drag indicators don't light up under an open modal.
-        renderHoveredDivider(graphics, panelMouseX, panelMouseY);
-        renderTabDragOverlay(graphics, panelMouseX, panelMouseY);
+        HoverOverlayRenderer.renderHoveredDivider(
+            graphics,
+            root,
+            logicalWidth,
+            logicalHeight,
+            panelMouseX,
+            panelMouseY,
+            DIVIDER_HIT_PX,
+            dragController.isActive(),
+            dragController.active()
+        );
+        tabDrag.renderOverlay(graphics, panelMouseX, panelMouseY, root, logicalWidth, logicalHeight);
 
-        if (openMenu != null) {
-            openMenu.render(graphics, logicalMouseX, logicalMouseY);
-        }
-        if (openSubmenu != null) {
-            openSubmenu.render(graphics, logicalMouseX, logicalMouseY);
-        }
-        // Render modals in open-order so a child dialog (e.g. a Delete-Profile confirm spawned from PreferencesDialog)
-        // sits on top of its parent. The order is reconciled with field state by {@link ModalStack#sync()} so
-        // individual open / close sites don't need to push or pop manually.
-        for (var tag : modalStack.order()) {
-            switch (tag) {
-                case MODAL_CONFIRM -> {
-                    if (confirmDialog != null) {
-                        confirmDialog.render(graphics, logicalWidth, logicalHeight, logicalMouseX, logicalMouseY);
-                    }
-                }
-                case MODAL_CAPTURE -> {
-                    if (captureDialog != null) {
-                        captureDialog.render(graphics, logicalWidth, logicalHeight, logicalMouseX, logicalMouseY);
-                    }
-                }
-                case MODAL_MANAGE_LAYOUTS -> {
-                    if (manageLayoutsDialog != null) {
-                        manageLayoutsDialog.render(graphics, logicalWidth, logicalHeight, logicalMouseX, logicalMouseY);
-                    }
-                }
-                case MODAL_PREFERENCES -> {
-                    if (preferencesDialog != null) {
-                        preferencesDialog.render(graphics, logicalWidth, logicalHeight, logicalMouseX, logicalMouseY);
-                    }
-                }
-                case MODAL_LAYOUT_NAME -> {
-                    if (layoutNameDialog != null) {
-                        layoutNameDialog.render(graphics, logicalWidth, logicalHeight, logicalMouseX, logicalMouseY);
-                    }
-                }
-                default -> {}
-            }
-        }
+        menuBar.render(graphics, logicalMouseX, logicalMouseY);
+        // Modal dialogs render after panels in z-order so a child modal (e.g. a Delete-Profile confirm spawned from
+        // Preferences) sits on top of its parent. Open/close lifecycle is managed by the dialog controller.
+        dialogs.render(graphics, logicalWidth, logicalHeight, logicalMouseX, logicalMouseY);
         if (openPopup != null) {
             openPopup.render(graphics, logicalMouseX, logicalMouseY, logicalWidth, logicalHeight);
         }
@@ -842,7 +609,22 @@ public final class EngineWorkspaceScreen extends Screen {
             openFactionPopup.render(graphics, logicalMouseX, logicalMouseY, logicalWidth, logicalHeight);
         }
 
-        renderHoverTooltip(graphics, logicalMouseX, logicalMouseY);
+        // Tooltips are suppressed while any visible overlay (menu, popup, drag) is active so the box doesn't fight
+        // with the overlay. The screen knows about all of these; the helper just renders what's allowed.
+        var tooltipsAllowed = !menuBar.isInsideOpenMenu(logicalMouseX, logicalMouseY)
+            && !dragController.isActive()
+            && !tabDrag.isActive()
+            && HslColorPickerPopup.getOpenPopup() == null
+            && FactionManagePopup.getOpenPopup() == null;
+        HoverOverlayRenderer.renderHoverTooltip(
+            graphics,
+            root,
+            logicalWidth,
+            logicalHeight,
+            logicalMouseX,
+            logicalMouseY,
+            tooltipsAllowed
+        );
 
         pose.popPose();
 
@@ -862,225 +644,6 @@ public final class EngineWorkspaceScreen extends Screen {
         } else {
             EngineCursor.reset();
         }
-    }
-
-    /**
-     * Asks the panel under the cursor for tooltip text and, if any, draws it as a small floating box near the cursor.
-     * Suppressed while a dropdown menu is open <em>and the cursor is over it</em> (tooltips would visually fight with
-     * the menu items), and while a divider or tab is being dragged (the user's focus is on the drag, not the panel
-     * beneath). Hover-driven menus stay open as the cursor wanders elsewhere — a blanket "menu open" gate would
-     * suppress tooltips far from the menu too, so we narrow it to the actual overlap region.
-     */
-    private void renderHoverTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
-        var overMenu = (openMenu != null && openMenu.isInside(mouseX, mouseY))
-            || (openSubmenu != null && openSubmenu.isInside(mouseX, mouseY));
-        if (overMenu || dragController.isActive() || (tabDrag != null && tabDrag.active)) {
-            return;
-        }
-        // Suppress tooltips while the color picker is open — they'd float behind the popup and read as junk.
-        if (HslColorPickerPopup.getOpenPopup() != null) {
-            return;
-        }
-        // Same suppression for the faction-management popup.
-        if (FactionManagePopup.getOpenPopup() != null) {
-            return;
-        }
-        var leaf = DockTreeHitTest.panelAt(root, 0, 0, logicalWidth(), logicalHeight(), mouseX, mouseY);
-        if (leaf == null) {
-            return;
-        }
-        var tip = leaf.tooltipText();
-        if (tip == null) {
-            return;
-        }
-        drawTooltipBox(graphics, tip, mouseX, mouseY);
-    }
-
-    /**
-     * Maximum tooltip body width before {@link Font#split} wraps. Picked so multi-sentence help text breaks across 3-4
-     * lines at typical workspace logical-pixel sizes — wide enough to avoid awkward 1-2 word lines, narrow enough that
-     * the tooltip doesn't span half the screen.
-     */
-    private static final int TOOLTIP_MAX_WIDTH = 240;
-
-    /**
-     * Draws a tooltip for {@code text} positioned next to the cursor, kept inside the workspace bounds. Wraps long text
-     * via {@link Font#split} so multi-sentence help text renders as multiple lines instead of overflowing past the
-     * right edge. Manual rendering (rather than {@code GuiGraphics.renderTooltip}) so the styling matches the
-     * workspace's flat dark theme and so we control sizing in workspace-logical pixels.
-     */
-    private void drawTooltipBox(GuiGraphics graphics, Component text, int mouseX, int mouseY) {
-        var font = EngineFont.get();
-        var paddingX = 3;
-        var paddingY = 2;
-        var lineHeight = font.lineHeight;
-
-        var lines = font.split(text, TOOLTIP_MAX_WIDTH - 2 * paddingX);
-        if (lines.isEmpty()) {
-            return;
-        }
-        var textWidth = 0;
-        for (var line : lines) {
-            textWidth = Math.max(textWidth, font.width(line));
-        }
-
-        var boxW = textWidth + paddingX * 2;
-        var boxH = lines.size() * lineHeight + paddingY * 2;
-
-        // Default position: just to the right of and below the cursor, with a small offset.
-        var tipX = mouseX + 8;
-        var tipY = mouseY + 8;
-        // Keep the box inside the workspace; flip to the other side of the cursor if it'd overflow right/bottom.
-        if (tipX + boxW > logicalWidth()) {
-            tipX = mouseX - 4 - boxW;
-        }
-        if (tipY + boxH > logicalHeight()) {
-            tipY = mouseY - 4 - boxH;
-        }
-        // Background + 1-px border in the same flat-dark style the rest of the workspace uses.
-        graphics.fill(tipX, tipY, tipX + boxW, tipY + boxH, TOOLTIP_BG_COLOR);
-        graphics.fill(tipX, tipY, tipX + boxW, tipY + 1, TOOLTIP_BORDER_COLOR);
-        graphics.fill(tipX, tipY + boxH - 1, tipX + boxW, tipY + boxH, TOOLTIP_BORDER_COLOR);
-        graphics.fill(tipX, tipY, tipX + 1, tipY + boxH, TOOLTIP_BORDER_COLOR);
-        graphics.fill(tipX + boxW - 1, tipY, tipX + boxW, tipY + boxH, TOOLTIP_BORDER_COLOR);
-
-        // Top-anchored layout: first line at tipY + paddingY (+1 for descender padding so the glyph sits visually
-        // centered on its baseline, mirroring the single-line math from before), subsequent lines stacked by
-        // lineHeight.
-        var lineY = tipY + paddingY + 1;
-        for (var line : lines) {
-            graphics.drawString(font, line, tipX + paddingX, lineY, TOOLTIP_TEXT_COLOR, false);
-            lineY += lineHeight;
-        }
-    }
-
-    private void renderTabDragOverlay(GuiGraphics graphics, int mouseX, int mouseY) {
-        if (tabDrag == null || !tabDrag.active) {
-            return;
-        }
-
-        // Highlight the drop target — strip area for tab merges, half-rect for edge splits, full content for
-        // center-zone merges.
-        var target = findTabbedPanelAt(mouseX, mouseY);
-        if (target != null) {
-            if (target.isInTabStrip(mouseX, mouseY)) {
-                graphics.fill(
-                    target.rectX(),
-                    target.rectY(),
-                    target.rectX() + target.rectWidth(),
-                    target.rectY() + TabbedPanel.TAB_BAR_HEIGHT,
-                    TAB_DROP_TARGET_COLOR
-                );
-            } else {
-                renderDropZoneOverlay(graphics, target, computeDropZoneInContent(target, mouseX, mouseY));
-            }
-        }
-
-        // Ghost: a translucent tab-shaped chip floating with the cursor.
-        var font = EngineFont.get();
-        var label = tabDrag.tab.title();
-        var labelWidth = font.width(label);
-        var w = labelWidth + 12;
-        var h = TabbedPanel.TAB_BAR_HEIGHT;
-        var x = mouseX - w / 2;
-        var y = mouseY - h / 2;
-        graphics.fill(x, y, x + w, y + h, TAB_GHOST_BG_COLOR);
-        // +2 compensates for MC font's descender padding so the tab-drag ghost label visually centers; see
-        // MenuBarPanel.
-        graphics.drawString(font, Component.literal(label), x + 6, y + (h - font.lineHeight + 2) / 2, TAB_GHOST_TEXT_COLOR, false);
-    }
-
-    /**
-     * Map the cursor's position over a {@link TabbedPanel}'s content area (excluding the tab strip) to a
-     * {@link DropZone}. The middle 50% × 50% of the content rect is the {@code CENTER} (tab-merge) zone; outside that
-     * inner rect, the closest edge defines the split direction.
-     */
-    private static DropZone computeDropZoneInContent(TabbedPanel target, double mouseX, double mouseY) {
-        var contentY = target.rectY() + TabbedPanel.TAB_BAR_HEIGHT;
-        var contentH = Math.max(1, target.rectHeight() - TabbedPanel.TAB_BAR_HEIGHT);
-        var contentW = Math.max(1, target.rectWidth());
-
-        var relX = (mouseX - target.rectX()) / contentW;
-        var relY = (mouseY - contentY) / contentH;
-
-        if (relX > 0.25 && relX < 0.75 && relY > 0.25 && relY < 0.75) {
-            return DropZone.CENTER;
-        }
-
-        var distLeft = relX;
-        var distRight = 1.0 - relX;
-        var distTop = relY;
-        var distBottom = 1.0 - relY;
-        var minDist = Math.min(Math.min(distLeft, distRight), Math.min(distTop, distBottom));
-
-        if (minDist == distLeft) {
-            return DropZone.LEFT;
-        }
-        if (minDist == distRight) {
-            return DropZone.RIGHT;
-        }
-        if (minDist == distTop) {
-            return DropZone.TOP;
-        }
-        return DropZone.BOTTOM;
-    }
-
-    private static void renderDropZoneOverlay(GuiGraphics graphics, TabbedPanel target, DropZone zone) {
-        var x = target.rectX();
-        var w = target.rectWidth();
-        var contentY = target.rectY() + TabbedPanel.TAB_BAR_HEIGHT;
-        var contentH = Math.max(0, target.rectHeight() - TabbedPanel.TAB_BAR_HEIGHT);
-
-        var x0 = x;
-        var y0 = contentY;
-        var x1 = x + w;
-        var y1 = contentY + contentH;
-        switch (zone) {
-            case CENTER -> {
-                // full content rect
-            }
-            case TOP -> y1 = contentY + contentH / 2;
-            case BOTTOM -> y0 = contentY + contentH / 2;
-            case LEFT -> x1 = x + w / 2;
-            case RIGHT -> x0 = x + w / 2;
-        }
-        graphics.fill(x0, y0, x1, y1, TAB_DROP_TARGET_COLOR);
-    }
-
-    /**
-     * Convert the viewport panel's logical rect (top-left origin, in workspace logical pixels) to GL framebuffer coords
-     * (bottom-left origin, in raw window pixels) and ask the compositor to downsample-blit the main RT into it.
-     */
-    private void compositWorldIntoViewport(LogicalRect rect) {
-        var raw = logicalRectToRawFramebuffer(rect);
-        EngineWorkspaceCompositor.composit(raw[0], raw[1], raw[2], raw[3]);
-    }
-
-    /**
-     * Same framebuffer-coord transform, but sourcing pixels from the wrapped-screen offscreen RT rather than the main
-     * RT.
-     */
-    private void compositWrappedIntoViewport(LogicalRect rect) {
-        var raw = logicalRectToRawFramebuffer(rect);
-        EngineWorkspaceCompositor.blitWrappedToViewport(raw[0], raw[1], raw[2], raw[3]);
-    }
-
-    /** Returns {@code {x, y, w, h}} in raw bottom-origin framebuffer pixels for the given workspace-logical rect. */
-    private int[] logicalRectToRawFramebuffer(LogicalRect rect) {
-        var window = Minecraft.getInstance().getWindow();
-        var guiScale = window.getGuiScale();
-        var rawWindowHeight = window.getHeight();
-
-        var screenX = rect.x() * SCALE;
-        var screenY = rect.y() * SCALE;
-        var screenW = rect.width() * SCALE;
-        var screenH = rect.height() * SCALE;
-
-        var rawX = (int) Math.round(screenX * guiScale);
-        var rawY = (int) Math.round(rawWindowHeight - (screenY + screenH) * guiScale);
-        var rawW = (int) Math.round(screenW * guiScale);
-        var rawH = (int) Math.round(screenH * guiScale);
-        return new int[] { rawX, rawY, rawW, rawH };
     }
 
     /**
@@ -1123,9 +686,8 @@ public final class EngineWorkspaceScreen extends Screen {
      * the cursor is over the viewport rect.
      */
     private boolean engineModalAbsorbing() {
-        return topModalTag() != null
-            || openMenu != null
-            || openSubmenu != null
+        return dialogs.topTag() != null
+            || menuBar.isAnyMenuOpen()
             || SearchableSelect.getOpenPopup() != null
             || HslColorPickerPopup.getOpenPopup() != null
             || FactionManagePopup.getOpenPopup() != null
@@ -1141,8 +703,13 @@ public final class EngineWorkspaceScreen extends Screen {
         // write also captures any per-project memory so switching projects later restores per-project preferences.
         // Skipped in MENU_OVERLAY mode so a B-toggle from the title screen doesn't clobber the user's in-game layout.
         if (mode == Mode.IN_GAME) {
-            persistOutgoingLayout();
-            persistActiveSelection();
+            com.blib.engine.ui.workspace.WorkspaceLayoutPersistence.persistOutgoingLayout(
+                this.root,
+                WorkspaceLayoutController.activeLayoutId()
+            );
+            com.blib.engine.ui.workspace.WorkspaceLayoutPersistence.persistActiveSelection(
+                WorkspaceLayoutController.activeLayoutId()
+            );
         } else if (wrappedScreen != null) {
             wrappedScreen.removed();
             wrappedScreen = null;
@@ -1170,10 +737,9 @@ public final class EngineWorkspaceScreen extends Screen {
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         // Top modal absorbs / handles scroll. Most modals just absorb (no scrollable content); preferences handles
         // its own list scroll.
-        var topScrollTag = topModalTag();
-        if (topScrollTag != null) {
-            if (MODAL_PREFERENCES.equals(topScrollTag) && preferencesDialog != null) {
-                return preferencesDialog.mouseScrolled(mouseX / SCALE, mouseY / SCALE, scrollX, scrollY);
+        if (dialogs.isAnyOpen()) {
+            if (dialogs.handleMouseScrolled(mouseX / SCALE, mouseY / SCALE, scrollX, scrollY)) {
+                return true;
             }
             return true;
         }
@@ -1207,10 +773,7 @@ public final class EngineWorkspaceScreen extends Screen {
         }
         // Scroll-wheel events that land on an open menu shouldn't tunnel through to the scroll containers of panels
         // below — consume them.
-        if (openMenu != null && openMenu.isInside(logicalX, logicalY)) {
-            return true;
-        }
-        if (openSubmenu != null && openSubmenu.isInside(logicalX, logicalY)) {
+        if (menuBar.isInsideOpenMenu(logicalX, logicalY)) {
             return true;
         }
         var leaf = DockTreeHitTest.panelAt(root, 0, 0, logicalWidth(), logicalHeight(), logicalX, logicalY);
@@ -1262,30 +825,6 @@ public final class EngineWorkspaceScreen extends Screen {
         int height
     ) {}
 
-    private void renderHoveredDivider(GuiGraphics graphics, int mouseX, int mouseY) {
-        // No explicit openMenu suppression needed — callers pass {@code panelMouseX/Y}, which the render pipeline
-        // substitutes with {@link #OFFSCREEN_MOUSE} whenever the cursor is over an open menu / submenu / popup.
-        // {@link #findDivider} with OFFSCREEN coords trivially fails to find a divider, so the highlight is gated
-        // by cursor proximity alone — divider hover lights up everywhere except directly under an open dropdown.
-        var dragger = dragController.isActive()
-            ? dragController.active()
-            : DockTreeHitTest.findDivider(root, 0, 0, logicalWidth(), logicalHeight(), mouseX, mouseY, DIVIDER_HIT_PX);
-        if (dragger == null) {
-            return;
-        }
-
-        var bx = dragger.boundaryStartX();
-        var by = dragger.boundaryStartY();
-        // Highlight stripe is intentionally a fixed 4-pixel band straddling the boundary line, regardless of the
-        // hit-zone width. {@link #DIVIDER_HIT_PX} controls click accuracy; this constant controls how visible the
-        // divider is on hover. The hit zone always covers ≥ the highlight (DIVIDER_HIT_PX ≥ 2 by design).
-        if (dragger.split().orientation() == Orientation.HORIZONTAL) {
-            graphics.fill(bx - 2, by, bx + 2, by + dragger.parentHeight(), DIVIDER_HIGHLIGHT_COLOR);
-        } else {
-            graphics.fill(bx, by - 2, bx + dragger.parentWidth(), by + 2, DIVIDER_HIGHLIGHT_COLOR);
-        }
-    }
-
     private static void renderNode(
         GuiGraphics graphics,
         DockNode node,
@@ -1323,29 +862,18 @@ public final class EngineWorkspaceScreen extends Screen {
 
     @Override
     public boolean charTyped(char ch, int modifiers) {
-        // Route through the topmost modal — same priority rules as keyPressed.
-        var topModalChar = topModalTag();
-        if (topModalChar != null) {
-            switch (topModalChar) {
-                case MODAL_CONFIRM, MODAL_CAPTURE, MODAL_MANAGE_LAYOUTS -> {
-                    return true;
-                }
-                case MODAL_LAYOUT_NAME -> {
-                    if (layoutNameDialog != null) {
-                        return layoutNameDialog.charTyped(ch, modifiers);
-                    }
-                    return true;
-                }
-                case MODAL_PREFERENCES -> {
-                    if (preferencesDialog != null) {
-                        return preferencesDialog.charTyped(ch, modifiers);
-                    }
-                    return true;
-                }
-                default -> {
-                    return true;
-                }
+        // Route char input through any open modal — only the two text-input modals (LayoutName, Preferences) consume
+        // chars; the rest absorb them so background panels don't receive keystrokes under the dim.
+        if (dialogs.isAnyOpen()) {
+            var lnd = dialogs.layoutNameDialog();
+            if (lnd != null) {
+                return lnd.charTyped(ch, modifiers);
             }
+            var pd = dialogs.preferencesDialog();
+            if (pd != null) {
+                return pd.charTyped(ch, modifiers);
+            }
+            return true;
         }
         var focused = TextInput.getFocused();
         if (focused != null && focused.charTyped(ch, modifiers)) {
@@ -1362,46 +890,12 @@ public final class EngineWorkspaceScreen extends Screen {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         // Top-of-stack modal handles key events first. Sub-dialogs (confirm spawned over preferences, layout-name
-        // spawned over manage-layouts, etc.) sit above their parent in modalOrder so the topmost gets first crack.
-        var topModalKey = topModalTag();
-        if (topModalKey != null) {
-            switch (topModalKey) {
-                case MODAL_CONFIRM -> {
-                    if (confirmDialog != null && confirmDialog.keyPressed(keyCode)) {
-                        confirmDialog = null;
-                    }
-                    // Swallow non-Esc keys too — typing into nothing while a confirm is pending would feel
-                    // unresponsive.
-                    return true;
-                }
-                case MODAL_CAPTURE -> {
-                    if (captureDialog != null) {
-                        return captureDialog.keyPressed(keyCode, scanCode, modifiers);
-                    }
-                    return true;
-                }
-                case MODAL_LAYOUT_NAME -> {
-                    if (layoutNameDialog != null) {
-                        return layoutNameDialog.keyPressed(keyCode, scanCode, modifiers);
-                    }
-                    return true;
-                }
-                case MODAL_MANAGE_LAYOUTS -> {
-                    if (manageLayoutsDialog != null) {
-                        return manageLayoutsDialog.keyPressed(keyCode, scanCode, modifiers);
-                    }
-                    return true;
-                }
-                case MODAL_PREFERENCES -> {
-                    if (preferencesDialog != null) {
-                        return preferencesDialog.keyPressed(keyCode, scanCode, modifiers);
-                    }
-                    return true;
-                }
-                default -> {
-                    return true;
-                }
-            }
+        // spawned over manage-layouts, etc.) sit above their parent so the topmost gets first crack.
+        if (dialogs.handleKeyPressed(keyCode, scanCode, modifiers)) {
+            return true;
+        }
+        if (dialogs.isAnyOpen()) {
+            return true;
         }
         // Esc closes an open SearchableSelect popup BEFORE TextInput dispatch — otherwise the popup's focused
         // search input would consume Esc as "defocus" and leave the popup visible-but-unfocused, which is confusing.
@@ -1464,163 +958,9 @@ public final class EngineWorkspaceScreen extends Screen {
             }
         }
 
-        // Ctrl+Z = universal undo. Modeler layout routes to the client-side modeler history (scene is heap-only,
-        // no server roundtrip needed); everywhere else routes to the server-side ActionHistory (blocks, entities,
-        // chunk claims, project metadata). The split mirrors Delete's layout-aware routing — same context check.
-        if (ActiveKeybindings.matchesKey(Keybindings.UNDO, keyCode, modifiers)) {
-            if (layoutHasModelerPanel()) {
-                com.blib.engine.modeler.history.ModelerActionHistory.undo();
-            } else {
-                commands.dispatch(new Command.UndoAction());
-            }
-            return true;
-        }
-
-        if (ActiveKeybindings.matchesKey(Keybindings.REDO, keyCode, modifiers)) {
-            if (layoutHasModelerPanel()) {
-                com.blib.engine.modeler.history.ModelerActionHistory.redo();
-            } else {
-                commands.dispatch(new Command.RedoAction());
-            }
-            return true;
-        }
-
-        // F5 = Reload Project. Mirrors the File menu entry. Wipes the tag-staging overlay since reload catches the
-        // runtime registry up to disk — the red staging tint is no longer meaningful, so rows settle into green / blue.
-        if (ActiveKeybindings.matchesKey(Keybindings.RELOAD_PROJECT, keyCode, modifiers)) {
-            if (ProjectSession.activeProject() != null) {
-                commands.dispatch(new Command.ReloadProject(ProjectSession.activeProjectName()));
-                com.blib.engine.tag.TagStagingCache.clear();
-            }
-            return true;
-        }
-
-        // Space = play / pause toggle. Mirrors the play / pause button on ViewportTransportToolbar. Text-input focus
-        // is already gated above, so typing a space into a search box doesn't freeze the world.
-        if (ActiveKeybindings.matchesKey(Keybindings.VIEWPORT_PLAY_PAUSE, keyCode, modifiers)) {
-            EngineTickControl.toggle();
-            return true;
-        }
-
-        // Placement-mode hotkeys: R cycles rotation forward (clockwise), M cycles mirror, T toggles between FREE
-        // and JIGSAW_SNAP placement modes. Gated by an active piece selection so these keys don't steal input from
-        // other potential editor tools later. Suppressed while a text input is focused (handled above), so typing
-        // them into the search box won't rotate the world preview / change modes.
-        if (JigsawPieceSelection.hasSelection()) {
-            if (ActiveKeybindings.matchesKey(Keybindings.JIGSAW_ROTATE, keyCode, modifiers)) {
-                JigsawPieceSelection.cycleRotation(1);
-                return true;
-            }
-            if (ActiveKeybindings.matchesKey(Keybindings.JIGSAW_MIRROR, keyCode, modifiers)) {
-                JigsawPieceSelection.cycleMirror();
-                return true;
-            }
-            if (ActiveKeybindings.matchesKey(Keybindings.JIGSAW_CYCLE_MODE, keyCode, modifiers)) {
-                com.blib.engine.jigsaw.placement.JigsawTool.cycleNextImplementedMode();
-                return true;
-            }
-        }
-
-        // Modeler-layout tool hotkeys take priority — T translate, R rotate, S resize, P pivot on the selected cube's
-        // gizmo. Gated on layout so the same keys still drive world-engine gizmos in other layouts. Setting the mode
-        // without a cube selection is fine — ModelerGizmoState just remembers the mode for the next cube the user
-        // picks.
-        if (layoutHasModelerPanel()) {
-            if (ActiveKeybindings.matchesKey(Keybindings.GIZMO_TRANSLATE, keyCode, modifiers)) {
-                com.blib.engine.modeler.gizmo.ModelerGizmoState
-                    .setMode(com.blib.engine.modeler.gizmo.ModelerGizmoMode.TRANSLATE);
-                return true;
-            }
-            if (ActiveKeybindings.matchesKey(Keybindings.GIZMO_ROTATE, keyCode, modifiers)) {
-                com.blib.engine.modeler.gizmo.ModelerGizmoState
-                    .setMode(com.blib.engine.modeler.gizmo.ModelerGizmoMode.ROTATE);
-                return true;
-            }
-            if (ActiveKeybindings.matchesKey(Keybindings.GIZMO_SCALE, keyCode, modifiers)) {
-                com.blib.engine.modeler.gizmo.ModelerGizmoState
-                    .setMode(com.blib.engine.modeler.gizmo.ModelerGizmoMode.RESIZE);
-                return true;
-            }
-            if (ActiveKeybindings.matchesKey(Keybindings.GIZMO_PIVOT, keyCode, modifiers)) {
-                com.blib.engine.modeler.gizmo.ModelerGizmoState
-                    .setMode(com.blib.engine.modeler.gizmo.ModelerGizmoMode.PIVOT);
-                return true;
-            }
-        }
-
-        // Tool hotkeys: T / S / M for Translate / Scale / Move-Blocks. Mirrors Blender's G/S/R muscle memory.
-        // Auto-switches between block-volume and entity gizmo modes based on the active selection — same keys, the
-        // selection type decides which gizmo state changes. M is intentionally block-only since entities have no
-        // analog to MOVE_BLOCKS.
-        var tssel = SelectionManager.current().single();
-        if (tssel instanceof com.blib.engine.domain.selection.picking.EntitySelectable) {
-            if (ActiveKeybindings.matchesKey(Keybindings.GIZMO_TRANSLATE, keyCode, modifiers)) {
-                com.blib.engine.domain.selection.entity.EntityGizmoMode.set(
-                    com.blib.engine.domain.selection.entity.EntityGizmoMode.TRANSLATE
-                );
-                return true;
-            }
-            if (ActiveKeybindings.matchesKey(Keybindings.GIZMO_SCALE, keyCode, modifiers)) {
-                com.blib.engine.domain.selection.entity.EntityGizmoMode.set(com.blib.engine.domain.selection.entity.EntityGizmoMode.SCALE);
-                return true;
-            }
-            // GIZMO_MOVE_BLOCKS intentionally not handled here — entity gizmo has no MOVE_BLOCKS analog.
-        } else {
-            if (ActiveKeybindings.matchesKey(Keybindings.GIZMO_TRANSLATE, keyCode, modifiers)) {
-                BlockSelection.setGizmoMode(BlockSelection.GizmoMode.TRANSLATE_VOLUME);
-                return true;
-            }
-            if (ActiveKeybindings.matchesKey(Keybindings.GIZMO_SCALE, keyCode, modifiers)) {
-                BlockSelection.setGizmoMode(BlockSelection.GizmoMode.SCALE_VOLUME);
-                return true;
-            }
-            if (ActiveKeybindings.matchesKey(Keybindings.GIZMO_MOVE_BLOCKS, keyCode, modifiers)) {
-                BlockSelection.setGizmoMode(BlockSelection.GizmoMode.MOVE_BLOCKS);
-                return true;
-            }
-        }
-
-        // Clipboard hotkeys: Ctrl+C / Ctrl+X / Ctrl+V for copy / cut / paste, Delete for clear. Gated on no focused
-        // text input so the muscle-memory of Ctrl+C in a name field doesn't accidentally copy blocks instead of text.
-        // BlockSelectionOps self-gates on AABB presence + volume cap; clicks/keys without a valid AABB are no-ops.
-        if (TextInput.getFocused() == null) {
-            if (ActiveKeybindings.matchesKey(Keybindings.COPY, keyCode, modifiers)) {
-                BlockSelectionOps.copy(false);
-                return true;
-            }
-            if (ActiveKeybindings.matchesKey(Keybindings.CUT, keyCode, modifiers)) {
-                BlockSelectionOps.copy(true);
-                return true;
-            }
-            if (ActiveKeybindings.matchesKey(Keybindings.PASTE, keyCode, modifiers)) {
-                BlockSelectionOps.paste();
-                return true;
-            }
-        }
-        if (TextInput.getFocused() == null && ActiveKeybindings.matchesKey(Keybindings.DELETE, keyCode, modifiers)) {
-            // Modeler-layout delete takes priority and always consumes the key. The modeler scene's selection state is
-            // separate from the world {@link SelectionManager}, so when the user is looking at modeler UI we route
-            // Delete there exclusively — falling through to world-delete on a "nothing to delete" or root-bone case
-            // would surprise the user by killing a stale world entity that isn't visible in the modeler layout.
-            if (layoutHasModelerPanel()) {
-                ModelerScene.get().deleteSelection();
-                return true;
-            }
-            var deleteSel = SelectionManager.current().single();
-            if (deleteSel instanceof com.blib.engine.domain.selection.picking.EntitySelectable es) {
-                // Mirrors the context-menu "Delete Entity" gate — players aren't deletable, the server would reject
-                // anyway but the no-op feels nicer with a client-side check.
-                var entity = es.entity();
-                if (entity != null && !(entity instanceof net.minecraft.world.entity.player.Player)) {
-                    commands.dispatch(new Command.RemoveEntity(entity.getId()));
-                }
-                return true;
-            }
-            if (deleteSel instanceof com.blib.engine.domain.selection.picking.BlockSelectable bs) {
-                deleteSingleBlock(bs.pos());
-                return true;
-            }
-            BlockSelectionOps.delete();
+        // Delegate to the workspace hotkey dispatcher — undo/redo, reload, play-pause, jigsaw R/M/T, modeler gizmos,
+        // world gizmos, clipboard, Delete. Returns true if any hotkey consumed the key.
+        if (hotkeys.dispatch(keyCode, modifiers)) {
             return true;
         }
 
@@ -1649,38 +989,9 @@ public final class EngineWorkspaceScreen extends Screen {
         var logicalY = mouseY / SCALE;
 
         // Top-of-stack modal absorbs the click — sub-dialogs (Delete confirm spawned from Preferences, etc.) sit
-        // above their parent in modalOrder, so the topmost gets first crack. Outside-clicks are still swallowed by
+        // above their parent in z-order, so the topmost gets first crack. Outside-clicks are still swallowed by
         // returning true so they don't reach panels under the dim.
-        var topTag = topModalTag();
-        if (topTag != null) {
-            switch (topTag) {
-                case MODAL_CONFIRM -> {
-                    if (confirmDialog != null && confirmDialog.mouseClicked(logicalX, logicalY, button)) {
-                        confirmDialog = null;
-                    }
-                }
-                case MODAL_CAPTURE -> {
-                    if (captureDialog != null) {
-                        captureDialog.mouseClicked(logicalX, logicalY, button);
-                    }
-                }
-                case MODAL_LAYOUT_NAME -> {
-                    if (layoutNameDialog != null) {
-                        layoutNameDialog.mouseClicked(logicalX, logicalY, button);
-                    }
-                }
-                case MODAL_MANAGE_LAYOUTS -> {
-                    if (manageLayoutsDialog != null) {
-                        manageLayoutsDialog.mouseClicked(logicalX, logicalY, button);
-                    }
-                }
-                case MODAL_PREFERENCES -> {
-                    if (preferencesDialog != null) {
-                        preferencesDialog.mouseClicked(logicalX, logicalY, button);
-                    }
-                }
-                default -> {}
-            }
+        if (dialogs.handleMouseClicked(logicalX, logicalY, button)) {
             return true;
         }
 
@@ -1732,42 +1043,14 @@ public final class EngineWorkspaceScreen extends Screen {
         // 0) An open dropdown takes priority: clicking an item fires it; clicking outside just closes the menu.
         // Submenu is checked first (innermost wins); clicks inside the parent menu re-spawn the submenu when they
         // land on a submenu-parent row, or close everything and run the action when they land on a leaf row.
-        if (openSubmenu != null && button == 0 && openSubmenu.isInside(logicalX, logicalY)) {
-            var subIdx = openSubmenu.hitItemAt(logicalX, logicalY);
-            if (subIdx >= 0) {
-                var subItem = openSubmenu.itemAt(subIdx);
-                setOpenMenu(null);
-                subItem.action().run();
-                return true;
-            }
-            // Inside submenu but on a border / dead row: consume and keep both menus open.
+        // 0) An open dropdown takes priority. The controller handles item dispatch + submenu cascade entirely; the
+        // CLOSED_TRY_CHIP_REOPEN outcome only falls through if the cursor landed on another menu chip, so
+        // close-and-reopen across chips in one click still works.
+        var menuOutcome = menuBar.handleClick(logicalX, logicalY, button, logicalWidth(), logicalHeight());
+        if (menuOutcome == MenuBarController.ClickOutcome.CONSUMED) {
             return true;
         }
-        if (openMenu != null) {
-            if (button == 0) {
-                var idx = openMenu.hitItemAt(logicalX, logicalY);
-                if (idx >= 0) {
-                    var item = openMenu.itemAt(idx);
-                    if (item.hasSubmenu()) {
-                        // Submenus open on hover (see {@link #updateHoverSubmenu}); a click on the parent item is a
-                        // no-op that just keeps everything open. Defensive re-spawn in case hover never fired for
-                        // this item (touch / synthetic input that lands directly on the parent).
-                        if (openSubmenuParentIndex == null || openSubmenuParentIndex != idx) {
-                            openSubmenu = DropdownMenu.spawnSubmenu(openMenu, idx, item.children(), logicalWidth(), logicalHeight());
-                            openSubmenuParentIndex = idx;
-                        }
-                        return true;
-                    }
-                    setOpenMenu(null);
-                    item.action().run();
-                    return true;
-                }
-            }
-            setOpenMenu(null);
-            // Only fall through to chip-click handling below if the cursor landed on another menu chip — that lets
-            // the user close-and-reopen by clicking a different chip in one motion. Anything else (clicks on
-            // dividers, tab strips, panel content) is consumed so dropdown clicks never accidentally start a
-            // divider drag or activate the panel beneath the menu.
+        if (menuOutcome == MenuBarController.ClickOutcome.CLOSED_TRY_CHIP_REOPEN) {
             var underClose = DockTreeHitTest.panelAt(root, 0, 0, logicalWidth(), logicalHeight(), logicalX, logicalY);
             if (!(underClose instanceof MenuBarPanel menuBarUnderClose) || menuBarUnderClose.hitChipAt(logicalX, logicalY) == null) {
                 return true;
@@ -1777,12 +1060,12 @@ public final class EngineWorkspaceScreen extends Screen {
         if (button == 0) {
             // 1) Menu-bar chip click: open dropdown.
             var underCursor = DockTreeHitTest.panelAt(root, 0, 0, logicalWidth(), logicalHeight(), logicalX, logicalY);
-            if (underCursor instanceof MenuBarPanel menuBar) {
-                var chip = menuBar.hitChipAt(logicalX, logicalY);
+            if (underCursor instanceof MenuBarPanel menuBarPanel) {
+                var chip = menuBarPanel.hitChipAt(logicalX, logicalY);
                 if (chip != null) {
-                    var menu = buildMenuFor(chip, menuBar);
+                    var menu = buildMenuFor(chip, menuBarPanel);
                     if (menu != null) {
-                        setOpenMenu(menu);
+                        menuBar.open(menu);
                     }
                     return true;
                 }
@@ -1826,7 +1109,7 @@ public final class EngineWorkspaceScreen extends Screen {
                         return true;
                     }
                     tabbed.setActiveIndex(tabIdx);
-                    this.tabDrag = new TabDragController.Drag(tabbed, tabIdx, tabbed.tabs().get(tabIdx), logicalX, logicalY);
+                    this.tabDrag.begin(tabbed, tabIdx, tabbed.tabs().get(tabIdx), logicalX, logicalY);
                     return true;
                 }
                 // Click on empty tab-strip space — no-op but consume so it doesn't fall through to content.
@@ -1853,7 +1136,7 @@ public final class EngineWorkspaceScreen extends Screen {
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         // Modal dialog absorbs releases so a drag started before it opened doesn't propagate to panels behind it.
-        if (modalStack.isAnyOpen()) {
+        if (dialogs.isAnyOpen()) {
             return true;
         }
         var logicalX = mouseX / SCALE;
@@ -1899,12 +1182,12 @@ public final class EngineWorkspaceScreen extends Screen {
             return true;
         }
 
-        if (button == 0 && tabDrag != null) {
-            if (tabDrag.active) {
-                completeTabDrop(tabDrag, logicalX, logicalY);
+        if (button == 0 && tabDrag.isPending()) {
+            if (tabDrag.isActive()) {
+                this.root = tabDrag.completeDrop(logicalX, logicalY, this.root, logicalWidth(), logicalHeight());
                 simplifyDockTree();
             }
-            tabDrag = null;
+            tabDrag.cancel();
             return true;
         }
 
@@ -1914,10 +1197,7 @@ public final class EngineWorkspaceScreen extends Screen {
         }
 
         // Releases over an open menu shouldn't reach panels below it.
-        if (openMenu != null && openMenu.isInside(logicalX, logicalY)) {
-            return true;
-        }
-        if (openSubmenu != null && openSubmenu.isInside(logicalX, logicalY)) {
+        if (menuBar.isInsideOpenMenu(logicalX, logicalY)) {
             return true;
         }
 
@@ -1931,10 +1211,10 @@ public final class EngineWorkspaceScreen extends Screen {
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         // Top modal absorbs / handles drags. Preferences forwards drags (for its TextInput); other modals just absorb.
-        var topDragTag = topModalTag();
-        if (topDragTag != null) {
-            if (MODAL_PREFERENCES.equals(topDragTag) && preferencesDialog != null) {
-                return preferencesDialog.mouseDragged(mouseX / SCALE, mouseY / SCALE, button, deltaX, deltaY);
+        if (dialogs.isAnyOpen()) {
+            var pd = dialogs.preferencesDialog();
+            if (pd != null) {
+                return pd.mouseDragged(mouseX / SCALE, mouseY / SCALE, button, deltaX, deltaY);
             }
             return true;
         }
@@ -1978,14 +1258,8 @@ public final class EngineWorkspaceScreen extends Screen {
             return true;
         }
 
-        if (tabDrag != null) {
-            if (!tabDrag.active) {
-                var dx = logicalX - tabDrag.startX;
-                var dy = logicalY - tabDrag.startY;
-                if (dx * dx + dy * dy > TAB_DRAG_THRESHOLD_SQ) {
-                    tabDrag.active = true;
-                }
-            }
+        if (tabDrag.isPending()) {
+            tabDrag.promoteIfFarEnough(logicalX, logicalY, TAB_DRAG_THRESHOLD_SQ);
             return true;
         }
 
@@ -1994,10 +1268,7 @@ public final class EngineWorkspaceScreen extends Screen {
         }
 
         // Drags over an open menu shouldn't hit panels below it.
-        if (openMenu != null && openMenu.isInside(logicalX, logicalY)) {
-            return true;
-        }
-        if (openSubmenu != null && openSubmenu.isInside(logicalX, logicalY)) {
+        if (menuBar.isInsideOpenMenu(logicalX, logicalY)) {
             return true;
         }
 
@@ -2009,146 +1280,21 @@ public final class EngineWorkspaceScreen extends Screen {
     }
 
     /**
-     * Finalize a tab drag at release time. Behavior depends on the drop zone:
-     * <ul>
-     * <li>Tab strip or content {@code CENTER}: tab merges into the target's tab list (reorder if same source, insert
-     * otherwise).</li>
-     * <li>Content edge ({@code TOP/BOTTOM/LEFT/RIGHT}): the target leaf is replaced in the dock tree with a new
-     * {@link DockNode.Split} containing the original target on one side and a new {@link TabbedPanel} (holding the
-     * dragged tab) on the other. A subsequent {@link #simplifyDockTree()} call collapses the source if it's now
-     * empty.</li>
-     * </ul>
-     * Cursor outside any tab panel: drag cancels, tab stays put.
-     */
-    private void completeTabDrop(TabDragController.Drag drag, double logicalX, double logicalY) {
-        var target = findTabbedPanelAt((int) logicalX, (int) logicalY);
-        if (target == null) {
-            return;
-        }
-
-        var zone = target.isInTabStrip(logicalX, logicalY)
-            ? DropZone.CENTER
-            : computeDropZoneInContent(target, logicalX, logicalY);
-
-        if (zone == DropZone.CENTER) {
-            mergeTab(drag, target, logicalX);
-            return;
-        }
-
-        // Edge drop → split the target panel.
-        drag.source.removeTab(drag.sourceIndex);
-        splitPanel(target, drag.tab, zone);
-    }
-
-    private static void mergeTab(TabDragController.Drag drag, TabbedPanel target, double logicalX) {
-        if (target == drag.source) {
-            var dropIdx = target.dropInsertionIndex(logicalX);
-            if (dropIdx == drag.sourceIndex || dropIdx == drag.sourceIndex + 1) {
-                return;
-            }
-            target.removeTab(drag.sourceIndex);
-            if (dropIdx > drag.sourceIndex) {
-                dropIdx--;
-            }
-            target.insertTab(dropIdx, drag.tab);
-        } else {
-            drag.source.removeTab(drag.sourceIndex);
-            var dropIdx = target.dropInsertionIndex(logicalX);
-            target.insertTab(dropIdx, drag.tab);
-        }
-    }
-
-    /**
-     * Replace {@code target}'s leaf in the dock tree with a fresh {@link DockNode.Split} containing two leaves: the
-     * original target panel (now wrapped in a new leaf) on one side, and a new {@link TabbedPanel} holding
-     * {@code droppedTab} on the other. Side determined by {@code zone}; default 50/50 ratio.
-     */
-    private void splitPanel(TabbedPanel target, Panel droppedTab, DropZone zone) {
-        var existingLeaf = new DockNode.Leaf(target);
-        var newLeaf = new DockNode.Leaf(new TabbedPanel(droppedTab));
-        var sizing = new Sizing.Ratio(0.5f);
-
-        var newSplit = switch (zone) {
-            case TOP -> new DockNode.Split(Orientation.VERTICAL, newLeaf, existingLeaf, sizing);
-            case BOTTOM -> new DockNode.Split(Orientation.VERTICAL, existingLeaf, newLeaf, sizing);
-            case LEFT -> new DockNode.Split(Orientation.HORIZONTAL, newLeaf, existingLeaf, sizing);
-            case RIGHT -> new DockNode.Split(Orientation.HORIZONTAL, existingLeaf, newLeaf, sizing);
-            case CENTER -> throw new IllegalStateException("CENTER is not a split zone");
-        };
-
-        this.root = replaceTabbedPanel(this.root, target, newSplit);
-    }
-
-    private static DockNode replaceTabbedPanel(DockNode node, TabbedPanel target, DockNode replacement) {
-        if (node instanceof DockNode.Leaf leaf && leaf.panel() == target) {
-            return replacement;
-        }
-        if (node instanceof DockNode.Split split) {
-            var first = replaceTabbedPanel(split.first(), target, replacement);
-            var second = replaceTabbedPanel(split.second(), target, replacement);
-            if (first == split.first() && second == split.second()) {
-                return split;
-            }
-            return new DockNode.Split(split.orientation(), first, second, split.sizing());
-        }
-        return node;
-    }
-
-    private enum DropZone {
-        CENTER,
-        TOP,
-        BOTTOM,
-        LEFT,
-        RIGHT
-    }
-
-    /**
      * True when the active layout contains at least one modeler panel (viewport / outliner / inspector). Used by the
      * Delete handler to gate modeler-scene delete behavior — the modeler scene state is global, but Delete should only
      * dispatch to it when the user's actually looking at modeler UI, not when they happen to have a stale modeler
      * selection in some unrelated layout.
      */
     public boolean layoutHasModelerPanel() {
-        return panelTreeContainsModeler(root);
+        return WorkspaceLayoutController.hasModelerPanel(root);
     }
 
     /**
-     * Convenience for callers that don't already hold a workspace reference (e.g. the action-stack panel, which is
-     * agnostic to its host screen). Returns true when the currently-active screen is a workspace whose layout has a
-     * modeler panel. False on any other screen state.
+     * Convenience for callers without a workspace reference (e.g. the action-stack panel). Delegates to the controller,
+     * which checks the active screen.
      */
     public static boolean activeLayoutHasModelerPanel() {
-        var mc = Minecraft.getInstance();
-        return mc.screen instanceof EngineWorkspaceScreen ws && ws.layoutHasModelerPanel();
-    }
-
-    private static boolean panelTreeContainsModeler(DockNode node) {
-        return switch (node) {
-            case DockNode.Leaf leaf -> panelOrTabsContainsModeler(leaf.panel());
-            case DockNode.Split split -> panelTreeContainsModeler(split.first()) || panelTreeContainsModeler(split.second());
-        };
-    }
-
-    private static boolean panelOrTabsContainsModeler(Panel panel) {
-        if (isModelerPanel(panel)) {
-            return true;
-        }
-        // TabbedPanel hosts a list of swappable child panels. Walk them so a layout with a modeler tab next to other
-        // tabs in the same panel still counts as "has modeler" — the user can switch tabs without changing layouts.
-        if (panel instanceof TabbedPanel tp) {
-            for (var tab : tp.tabs()) {
-                if (isModelerPanel(tab)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private static boolean isModelerPanel(Panel panel) {
-        return panel instanceof ModelerOutlinerPanel
-            || panel instanceof ModelerViewportPanel
-            || panel instanceof ModelerInspectorPanel;
+        return WorkspaceLayoutController.activeLayoutHasModelerPanel();
     }
 
     private @Nullable TabbedPanel findTabbedPanelAt(int mouseX, int mouseY) {
@@ -2157,10 +1303,10 @@ public final class EngineWorkspaceScreen extends Screen {
 
     /**
      * Build the dropdown menu for the clicked menu-bar chip. Anchored just below the chip's screen rect. Returns
-     * {@code null} for chips that don't have menus implemented yet (so Edit / View are inert no-ops for now).
+     * {@code null} for chips with no menu wired up.
      */
-    private @Nullable DropdownMenu buildMenuFor(String chipName, MenuBarPanel menuBar) {
-        var chipRect = menuBar.chipRect(chipName);
+    private @Nullable DropdownMenu buildMenuFor(String chipName, MenuBarPanel menuBarPanel) {
+        var chipRect = menuBarPanel.chipRect(chipName);
         if (chipRect == null) {
             return null;
         }
@@ -2168,26 +1314,134 @@ public final class EngineWorkspaceScreen extends Screen {
         var anchorY = chipRect.y() + chipRect.height() + 1;
 
         return switch (chipName) {
-            case MenuBarPanel.CHIP_PROJECT -> buildProjectMenu(anchorX, anchorY);
-            case MenuBarPanel.CHIP_EDIT -> buildEditMenu(anchorX, anchorY);
-            case MenuBarPanel.CHIP_VIEW -> buildViewMenu(anchorX, anchorY);
-            case MenuBarPanel.CHIP_WINDOW -> buildWindowMenu(anchorX, anchorY);
-            case MenuBarPanel.CHIP_LAYOUT -> buildLayoutMenu(anchorX, anchorY);
+            case MenuBarPanel.CHIP_PROJECT -> menuBar.buildProjectMenu(anchorX, anchorY);
+            case MenuBarPanel.CHIP_EDIT -> menuBar.buildEditMenu(anchorX, anchorY);
+            case MenuBarPanel.CHIP_VIEW -> menuBar.buildViewMenu(anchorX, anchorY);
+            case MenuBarPanel.CHIP_WINDOW -> menuBar.buildWindowMenu(anchorX, anchorY);
+            case MenuBarPanel.CHIP_LAYOUT -> menuBar.buildLayoutMenu(anchorX, anchorY);
             default -> null;
         };
     }
 
     /**
-     * Edit dropdown. Undo and Redo do the same thing as Ctrl+Z / Ctrl+Y — route to the modeler history in the modeler
-     * layout, server-side history elsewhere. We don't grey them out by stack size because the dropdown is built once on
-     * open; both backends silently no-op if the relevant stack is empty.
+     * Glue between {@link MenuBarController} and this screen — each menu item's action delegates back through this
+     * inner class so the controller has no direct dependency on {@link EngineWorkspaceScreen}.
      */
-    private DropdownMenu buildEditMenu(int anchorX, int anchorY) {
-        var items = new java.util.ArrayList<DropdownMenu.Item>();
-        items.add(new DropdownMenu.Item("Undo", this::dispatchUndo));
-        items.add(new DropdownMenu.Item("Redo", this::dispatchRedo));
-        items.add(new DropdownMenu.Item("Preferences…", this::openPreferencesDialog));
-        return new DropdownMenu(anchorX, anchorY, items);
+    private final class MenuBarActionsImpl implements MenuBarController.Actions {
+
+        @Override
+        public void dispatchUndo() {
+            EngineWorkspaceScreen.this.dispatchUndo();
+        }
+
+        @Override
+        public void dispatchRedo() {
+            EngineWorkspaceScreen.this.dispatchRedo();
+        }
+
+        @Override
+        public void openPreferencesDialog() {
+            EngineWorkspaceScreen.this.openPreferencesDialog();
+        }
+
+        @Override
+        public void switchLayout(String id) {
+            EngineWorkspaceScreen.this.switchLayout(id);
+        }
+
+        @Override
+        public void openSaveAsDialog() {
+            EngineWorkspaceScreen.this.openSaveAsDialog();
+        }
+
+        @Override
+        public void openRenameDialog() {
+            EngineWorkspaceScreen.this.openRenameDialog();
+        }
+
+        @Override
+        public void openDuplicateDialog() {
+            EngineWorkspaceScreen.this.openDuplicateDialog();
+        }
+
+        @Override
+        public void openDeleteConfirm() {
+            EngineWorkspaceScreen.this.openDeleteConfirm();
+        }
+
+        @Override
+        public void resetLayout() {
+            EngineWorkspaceScreen.this.resetLayout();
+        }
+
+        @Override
+        public void openNewFromTemplateDialog(LayoutTemplate template) {
+            EngineWorkspaceScreen.this.openNewFromTemplateDialog(template);
+        }
+
+        @Override
+        public void openManageLayoutsDialog() {
+            EngineWorkspaceScreen.this.openManageLayoutsDialog();
+        }
+
+        @Override
+        public void openLayoutsFolder() {
+            EngineWorkspaceScreen.this.openLayoutsFolder();
+        }
+
+        @Override
+        public PanelRegistry.Context panelCtx() {
+            return EngineWorkspaceScreen.this.panelCtx();
+        }
+
+        @Override
+        public void reopenPanel(Class<? extends Panel> panelClass, java.util.function.Supplier<Panel> factory) {
+            EngineWorkspaceScreen.this.reopenPanel(panelClass, factory);
+        }
+
+        @Override
+        public void openPicker(boolean createMode) {
+            EngineWorkspaceScreen.this.openPicker(createMode);
+        }
+
+        @Override
+        public void reloadProject() {
+            commands.dispatch(new Command.ReloadProject(ProjectSession.activeProjectName()));
+            // Wipe the tag-staging overlay — reload makes the runtime registry catch up to disk, so the red staging
+            // tint is no longer meaningful (rows settle into green / blue based on committed state).
+            com.blib.engine.tag.TagStagingCache.clear();
+        }
+
+        @Override
+        public void requestDeleteProjectConfirm(String projectName, Runnable onConfirm) {
+            dialogs.setConfirmDialog(
+                new ConfirmDialog(
+                    "Delete project?",
+                    "Are you sure you want to delete '" + projectName + "'? This will remove the entire datapack folder "
+                        + "from the world's datapacks directory and cannot be undone.",
+                    "Delete",
+                    "Cancel",
+                    true,
+                    onConfirm,
+                    () -> {}
+                )
+            );
+        }
+
+        @Override
+        public void deleteProject(String name) {
+            commands.dispatch(new Command.DeleteProject(name));
+        }
+
+        @Override
+        public void closeEngine() {
+            EngineWorkspaceScreen.closeEngine();
+        }
+
+        @Override
+        public String activeLayoutId() {
+            return WorkspaceLayoutController.activeLayoutId();
+        }
     }
 
     private void dispatchUndo() {
@@ -2207,35 +1461,40 @@ public final class EngineWorkspaceScreen extends Screen {
     }
 
     private void openPreferencesDialog() {
-        this.preferencesDialog = new PreferencesDialog(
-            () -> this.preferencesDialog = null,
-            this::openPreferencesNewProfile,
-            this::openPreferencesRenameProfile,
-            this::openPreferencesDuplicateProfile,
-            this::openPreferencesDeleteProfile
+        dialogs.setPreferencesDialog(
+            new PreferencesDialog(
+                () -> dialogs.setPreferencesDialog(null),
+                this::openPreferencesNewProfile,
+                this::openPreferencesRenameProfile,
+                this::openPreferencesDuplicateProfile,
+                this::openPreferencesDeleteProfile
+            )
         );
     }
 
     private void openPreferencesNewProfile() {
-        this.layoutNameDialog = new LayoutNameDialog(
-            LayoutNameDialog.Mode.PROFILE_NEW,
-            "",
-            id -> KeybindingProfileCatalog.idAvailable(id),
-            this::confirmCreateProfile,
-            () -> this.layoutNameDialog = null
+        dialogs.setLayoutNameDialog(
+            new LayoutNameDialog(
+                LayoutNameDialog.Mode.PROFILE_NEW,
+                "",
+                id -> KeybindingProfileCatalog.idAvailable(id),
+                this::confirmCreateProfile,
+                () -> dialogs.setLayoutNameDialog(null)
+            )
         );
     }
 
     private void confirmCreateProfile(String displayName) {
-        this.layoutNameDialog = null;
+        dialogs.setLayoutNameDialog(null);
         try {
             var id = KeybindingProfileCatalog.suggestId(displayName);
             var profile = KeybindingProfile.empty(id, displayName);
             KeybindingProfileCatalog.save(profile);
             KeybindingProfileCatalog.setActive(id);
-            if (preferencesDialog != null) {
-                preferencesDialog.refreshProfiles();
-                preferencesDialog.loadProfile(id);
+            var pd = dialogs.preferencesDialog();
+            if (pd != null) {
+                pd.refreshProfiles();
+                pd.loadProfile(id);
             }
         } catch (java.io.IOException e) {
             org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] confirmCreateProfile: write failed", e);
@@ -2243,23 +1502,26 @@ public final class EngineWorkspaceScreen extends Screen {
     }
 
     private void openPreferencesRenameProfile(KeybindingProfile profile) {
-        this.layoutNameDialog = new LayoutNameDialog(
-            LayoutNameDialog.Mode.PROFILE_RENAME,
-            profile.displayName(),
-            id -> KeybindingProfileCatalog.idAvailable(id) || id.equals(profile.id()),
-            newName -> confirmRenameProfile(profile, newName),
-            () -> this.layoutNameDialog = null
+        dialogs.setLayoutNameDialog(
+            new LayoutNameDialog(
+                LayoutNameDialog.Mode.PROFILE_RENAME,
+                profile.displayName(),
+                id -> KeybindingProfileCatalog.idAvailable(id) || id.equals(profile.id()),
+                newName -> confirmRenameProfile(profile, newName),
+                () -> dialogs.setLayoutNameDialog(null)
+            )
         );
     }
 
     private void confirmRenameProfile(KeybindingProfile profile, String newDisplayName) {
-        this.layoutNameDialog = null;
+        dialogs.setLayoutNameDialog(null);
         try {
             var renamed = profile.withDisplayName(newDisplayName);
             KeybindingProfileCatalog.save(renamed);
-            if (preferencesDialog != null) {
-                preferencesDialog.refreshProfiles();
-                preferencesDialog.loadProfile(profile.id());
+            var pd = dialogs.preferencesDialog();
+            if (pd != null) {
+                pd.refreshProfiles();
+                pd.loadProfile(profile.id());
             }
         } catch (java.io.IOException e) {
             org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] confirmRenameProfile: write failed", e);
@@ -2268,25 +1530,28 @@ public final class EngineWorkspaceScreen extends Screen {
 
     private void openPreferencesDuplicateProfile(KeybindingProfile profile) {
         var initial = profile.displayName() + " (copy)";
-        this.layoutNameDialog = new LayoutNameDialog(
-            LayoutNameDialog.Mode.PROFILE_DUPLICATE,
-            initial,
-            KeybindingProfileCatalog::idAvailable,
-            newName -> confirmDuplicateProfile(profile, newName),
-            () -> this.layoutNameDialog = null
+        dialogs.setLayoutNameDialog(
+            new LayoutNameDialog(
+                LayoutNameDialog.Mode.PROFILE_DUPLICATE,
+                initial,
+                KeybindingProfileCatalog::idAvailable,
+                newName -> confirmDuplicateProfile(profile, newName),
+                () -> dialogs.setLayoutNameDialog(null)
+            )
         );
     }
 
     private void confirmDuplicateProfile(KeybindingProfile source, String newDisplayName) {
-        this.layoutNameDialog = null;
+        dialogs.setLayoutNameDialog(null);
         try {
             var newId = KeybindingProfileCatalog.suggestId(newDisplayName);
             var copy = new KeybindingProfile(KeybindingProfile.CURRENT_VERSION, newId, newDisplayName, source.overrides());
             KeybindingProfileCatalog.save(copy);
             KeybindingProfileCatalog.setActive(newId);
-            if (preferencesDialog != null) {
-                preferencesDialog.refreshProfiles();
-                preferencesDialog.loadProfile(newId);
+            var pd = dialogs.preferencesDialog();
+            if (pd != null) {
+                pd.refreshProfiles();
+                pd.loadProfile(newId);
             }
         } catch (java.io.IOException e) {
             org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] confirmDuplicateProfile: write failed", e);
@@ -2294,75 +1559,31 @@ public final class EngineWorkspaceScreen extends Screen {
     }
 
     private void openPreferencesDeleteProfile(KeybindingProfile profile) {
-        this.confirmDialog = new ConfirmDialog(
-            "Delete Profile",
-            "Delete profile '" + profile.displayName() + "'? This cannot be undone.",
-            "Delete",
-            "Cancel",
-            true,
-            () -> confirmDeleteProfile(profile),
-            () -> this.confirmDialog = null
+        dialogs.setConfirmDialog(
+            new ConfirmDialog(
+                "Delete Profile",
+                "Delete profile '" + profile.displayName() + "'? This cannot be undone.",
+                "Delete",
+                "Cancel",
+                true,
+                () -> confirmDeleteProfile(profile),
+                () -> dialogs.setConfirmDialog(null)
+            )
         );
     }
 
     private void confirmDeleteProfile(KeybindingProfile profile) {
-        this.confirmDialog = null;
+        dialogs.setConfirmDialog(null);
         try {
             KeybindingProfileCatalog.delete(profile.id());
-            if (preferencesDialog != null) {
-                preferencesDialog.refreshProfiles();
-                preferencesDialog.loadProfile(KeybindingProfileCatalog.getActive().id());
+            var pd = dialogs.preferencesDialog();
+            if (pd != null) {
+                pd.refreshProfiles();
+                pd.loadProfile(KeybindingProfileCatalog.getActive().id());
             }
         } catch (java.io.IOException e) {
             org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] confirmDeleteProfile: delete failed", e);
         }
-    }
-
-    /**
-     * View dropdown — toggles that affect what's drawn in the viewport without changing project state. Items use a
-     * leading "✓" prefix when on / blank prefix when off ({@link DropdownMenu} doesn't have a checkbox UI, so the
-     * label-prefix idiom is the cheapest way to convey toggle state).
-     */
-    private DropdownMenu buildViewMenu(int anchorX, int anchorY) {
-        var items = new java.util.ArrayList<DropdownMenu.Item>();
-        var territoryOn = com.blib.engine.territory.ClaimPaintTool.isOverlayVisible();
-        items.add(
-            new DropdownMenu.Item(
-                (territoryOn ? "✓ " : "   ") + "Show Territory Claims",
-                com.blib.engine.territory.ClaimPaintTool::toggleOverlayVisible
-            )
-        );
-        return new DropdownMenu(anchorX, anchorY, items);
-    }
-
-    /**
-     * Build the WINDOW dropdown by iterating {@link PanelRegistry} — every body-eligible panel gets a "Reopen <title>"
-     * entry where {@code <title>} comes from the panel's own {@link Panel#title()} method. This is the single
-     * source-of-truth fix for menu / tab label drift: adding a new panel to {@link PanelRegistry} automatically adds it
-     * here, and renaming a panel's title automatically updates the menu label since both paths read the same string.
-     * <p>
-     * Each menu item's reopen-factory routes through {@link PanelRegistry#create} so panels with constructor args
-     * (viewport's right-click handler, content-browser's confirm handler) get wired correctly without per-panel manual
-     * factory closures.
-     */
-    private DropdownMenu buildWindowMenu(int anchorX, int anchorY) {
-        var items = new java.util.ArrayList<DropdownMenu.Item>();
-        for (var id : PanelRegistry.orderedIds()) {
-            var sample = PanelRegistry.create(id, panelCtx());
-            if (sample == null) {
-                continue;
-            }
-            var displayName = sample.title();
-            var panelClass = sample.getClass();
-            items.add(
-                new DropdownMenu.Item(
-                    "Reopen " + displayName,
-                    () -> reopenPanel(panelClass, () -> PanelRegistry.create(id, panelCtx()))
-                )
-            );
-        }
-        items.add(new DropdownMenu.Item("Reset Layout", this::resetLayout));
-        return new DropdownMenu(anchorX, anchorY, items);
     }
 
     /**
@@ -2372,298 +1593,241 @@ public final class EngineWorkspaceScreen extends Screen {
      * (the user has closed everything), the action is a no-op and the user can use Reset Layout to recover.
      */
     private void reopenPanel(Class<? extends Panel> panelClass, java.util.function.Supplier<Panel> factory) {
-        var existingOwner = findOwnerWithPanelOfType(this.root, panelClass);
-        if (existingOwner != null) {
-            for (var i = 0; i < existingOwner.tabCount(); i++) {
-                if (panelClass.isInstance(existingOwner.tabs().get(i))) {
-                    existingOwner.setActiveIndex(i);
-                    return;
-                }
-            }
-        }
-        var first = findFirstTabbedPanel(this.root);
-        if (first != null) {
-            first.insertTab(first.tabCount(), factory.get());
-        }
+        WorkspaceLayoutController.reopenPanel(this.root, panelClass, factory);
     }
 
     private void resetLayout() {
-        // Reset semantics:
-        // - Built-in template id → rebuild from the canonical code-baked LayoutTemplate.toDoc().
-        // - User layout with a templateBase → rebuild from that template's body but keep the user's id/displayName.
-        // - User layout with no templateBase → reload from disk (discards in-memory edits since last save).
-        // The reset is then persisted so the user's choice is durable.
-        var current = LayoutCatalog.get(activeLayoutId);
-        BodyNodeAndDoc next = computeResetBody(current);
-        if (next == null) {
-            return;
+        var newRoot = WorkspaceLayoutController.resetLayout(this.root, panelCtx());
+        if (newRoot != null) {
+            this.root = newRoot;
         }
-        var bodyRoot = LayoutSnapshot.hydrate(next.body, panelCtx());
-        this.root = buildOuterLayout(bodyRoot);
-        try {
-            LayoutCatalog.save(next.docToWrite);
-        } catch (java.io.IOException e) {
-            org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class)
-                .warn("[BLib] resetLayout: failed to persist reset", e);
-        }
-    }
-
-    private BodyNodeAndDoc computeResetBody(@Nullable LayoutDoc current) {
-        if (LayoutCatalog.isTemplateId(activeLayoutId)) {
-            var template = LayoutTemplate.byId(activeLayoutId);
-            // Defensive null check — isTemplateId is true iff byId is non-null.
-            assert template != null;
-            var templateDoc = template.toDoc();
-            return new BodyNodeAndDoc(templateDoc.body(), templateDoc);
-        }
-        if (current != null && current.templateBase() != null) {
-            var template = LayoutTemplate.byId(current.templateBase());
-            if (template != null) {
-                var templateBody = template.toDoc().body();
-                return new BodyNodeAndDoc(templateBody, current.withBody(templateBody));
-            }
-        }
-        // No template baseline: reload from disk to drop in-memory edits since last save. Returning null signals the
-        // caller to no-op when there's nothing on disk to reload from.
-        if (current == null) {
-            return null;
-        }
-        return new BodyNodeAndDoc(current.body(), current);
-    }
-
-    private record BodyNodeAndDoc(
-        com.blib.engine.layout.BodyNode body,
-        LayoutDoc docToWrite
-    ) {}
-
-    /**
-     * LAYOUT menu — full create/manage flow. Top section lists every layout (•-prefixed for active), separator, then
-     * Save-As / Rename / Duplicate / Delete / Reset, separator, "New from <Template>…" entries (one per template,
-     * inline since {@link DropdownMenu} doesn't support submenus), then Manage Layouts… and Show Layouts Folder.
-     */
-    private DropdownMenu buildLayoutMenu(int anchorX, int anchorY) {
-        var items = new java.util.ArrayList<DropdownMenu.Item>();
-        for (var doc : LayoutCatalog.listAll()) {
-            var prefix = doc.id().equals(activeLayoutId) ? "• " : "  ";
-            var suffix = LayoutCatalog.isTemplateId(doc.id()) ? "  (template)" : "";
-            items.add(new DropdownMenu.Item(prefix + doc.displayName() + suffix, () -> switchLayout(doc.id())));
-        }
-        items.add(new DropdownMenu.Item("────────────", () -> {}));
-        items.add(new DropdownMenu.Item("Save As New…", this::openSaveAsDialog));
-        items.add(new DropdownMenu.Item("Rename…", this::openRenameDialog));
-        items.add(new DropdownMenu.Item("Duplicate…", this::openDuplicateDialog));
-        items.add(new DropdownMenu.Item("Delete…", this::openDeleteConfirm));
-        var current = LayoutCatalog.get(activeLayoutId);
-        var canReset = LayoutCatalog.isTemplateId(activeLayoutId)
-            || (current != null && current.templateBase() != null);
-        if (canReset) {
-            items.add(new DropdownMenu.Item("Reset to Template", this::resetLayout));
-        }
-        items.add(new DropdownMenu.Item("────────────", () -> {}));
-        for (var t : LayoutTemplate.all()) {
-            items.add(new DropdownMenu.Item("New from " + t.displayName() + "…", () -> openNewFromTemplateDialog(t)));
-        }
-        items.add(new DropdownMenu.Item("────────────", () -> {}));
-        items.add(new DropdownMenu.Item("Manage Layouts…", this::openManageLayoutsDialog));
-        items.add(new DropdownMenu.Item("Show Layouts Folder", this::openLayoutsFolder));
-        return new DropdownMenu(anchorX, anchorY, items);
     }
 
     private void openSaveAsDialog() {
-        this.layoutNameDialog = new LayoutNameDialog(
-            LayoutNameDialog.Mode.SAVE_AS,
-            "",
-            LayoutCatalog::idAvailable,
-            displayName -> {
-                var newId = LayoutCatalog.suggestId(displayName);
-                var capturedBody = LayoutSnapshot.capture(extractBodyRoot(this.root));
-                var now = java.time.Instant.now().toString();
-                var templateBase = LayoutCatalog.isTemplateId(activeLayoutId) ? activeLayoutId : null;
-                var doc = new LayoutDoc(LayoutDoc.CURRENT_VERSION, newId, displayName, templateBase, now, now, capturedBody);
-                try {
-                    LayoutCatalog.save(doc);
-                    activeLayoutId = newId;
-                    persistActiveSelection();
-                } catch (java.io.IOException e) {
-                    org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Save As failed", e);
-                }
-                this.layoutNameDialog = null;
-            },
-            () -> this.layoutNameDialog = null
+        dialogs.setLayoutNameDialog(
+            new LayoutNameDialog(
+                LayoutNameDialog.Mode.SAVE_AS,
+                "",
+                LayoutCatalog::idAvailable,
+                displayName -> {
+                    var newId = LayoutCatalog.suggestId(displayName);
+                    var capturedBody = LayoutSnapshot.capture(
+                        com.blib.engine.ui.workspace.WorkspaceLayoutPersistence.extractBodyRoot(this.root)
+                    );
+                    var now = java.time.Instant.now().toString();
+                    var templateBase = LayoutCatalog.isTemplateId(WorkspaceLayoutController.activeLayoutId())
+                        ? WorkspaceLayoutController.activeLayoutId()
+                        : null;
+                    var doc = new LayoutDoc(LayoutDoc.CURRENT_VERSION, newId, displayName, templateBase, now, now, capturedBody);
+                    try {
+                        LayoutCatalog.save(doc);
+                        WorkspaceLayoutController.setActiveLayoutId(newId);
+                        com.blib.engine.ui.workspace.WorkspaceLayoutPersistence.persistActiveSelection(newId);
+                    } catch (java.io.IOException e) {
+                        org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Save As failed", e);
+                    }
+                    dialogs.setLayoutNameDialog(null);
+                },
+                () -> dialogs.setLayoutNameDialog(null)
+            )
         );
     }
 
     private void openRenameDialog() {
-        var current = LayoutCatalog.get(activeLayoutId);
+        var current = LayoutCatalog.get(WorkspaceLayoutController.activeLayoutId());
         if (current == null) {
             return;
         }
         // Rename can collide on its own id (no-op rename → keep the existing); availability check excludes the
         // current id so the user can confirm without an "already exists" complaint when they only edited casing.
-        var currentId = activeLayoutId;
-        this.layoutNameDialog = new LayoutNameDialog(
-            LayoutNameDialog.Mode.RENAME,
-            current.displayName(),
-            id -> id.equals(currentId) || LayoutCatalog.idAvailable(id),
-            displayName -> {
-                var newId = LayoutCatalog.suggestId(displayName);
-                var renamed = current.withDisplayName(displayName);
-                try {
-                    if (newId.equals(currentId)) {
-                        // Display-name-only change.
-                        LayoutCatalog.save(renamed);
-                    } else {
-                        // Id change → write under the new id, then delete the old file.
-                        LayoutCatalog.save(renamed.withId(newId));
-                        LayoutCatalog.delete(currentId);
-                        // Rewire active-state references from old id → new id.
-                        var state = ActiveLayoutState.read();
-                        ActiveLayoutState.write(state.withoutLayout(currentId));
-                        activeLayoutId = newId;
-                        persistActiveSelection();
+        var currentId = WorkspaceLayoutController.activeLayoutId();
+        dialogs.setLayoutNameDialog(
+            new LayoutNameDialog(
+                LayoutNameDialog.Mode.RENAME,
+                current.displayName(),
+                id -> id.equals(currentId) || LayoutCatalog.idAvailable(id),
+                displayName -> {
+                    var newId = LayoutCatalog.suggestId(displayName);
+                    var renamed = current.withDisplayName(displayName);
+                    try {
+                        if (newId.equals(currentId)) {
+                            // Display-name-only change.
+                            LayoutCatalog.save(renamed);
+                        } else {
+                            // Id change → write under the new id, then delete the old file.
+                            LayoutCatalog.save(renamed.withId(newId));
+                            LayoutCatalog.delete(currentId);
+                            // Rewire active-state references from old id → new id.
+                            var state = ActiveLayoutState.read();
+                            ActiveLayoutState.write(state.withoutLayout(currentId));
+                            WorkspaceLayoutController.setActiveLayoutId(newId);
+                            com.blib.engine.ui.workspace.WorkspaceLayoutPersistence.persistActiveSelection(
+                                WorkspaceLayoutController.activeLayoutId()
+                            );
+                        }
+                    } catch (java.io.IOException e) {
+                        org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Rename failed", e);
                     }
-                } catch (java.io.IOException e) {
-                    org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Rename failed", e);
-                }
-                if (manageLayoutsDialog != null) {
-                    manageLayoutsDialog.setActiveLayoutId(activeLayoutId);
-                    manageLayoutsDialog.refresh();
-                }
-                this.layoutNameDialog = null;
-            },
-            () -> this.layoutNameDialog = null
+                    if (dialogs.manageLayoutsDialog() != null) {
+                        dialogs.manageLayoutsDialog().setActiveLayoutId(WorkspaceLayoutController.activeLayoutId());
+                        dialogs.manageLayoutsDialog().refresh();
+                    }
+                    dialogs.setLayoutNameDialog(null);
+                },
+                () -> dialogs.setLayoutNameDialog(null)
+            )
         );
     }
 
     private void openDuplicateDialog() {
-        var current = LayoutCatalog.get(activeLayoutId);
+        var current = LayoutCatalog.get(WorkspaceLayoutController.activeLayoutId());
         if (current == null) {
             return;
         }
-        this.layoutNameDialog = new LayoutNameDialog(
-            LayoutNameDialog.Mode.DUPLICATE,
-            current.displayName() + " Copy",
-            LayoutCatalog::idAvailable,
-            displayName -> {
-                var newId = LayoutCatalog.suggestId(displayName);
-                var now = java.time.Instant.now().toString();
-                var capturedBody = LayoutSnapshot.capture(extractBodyRoot(this.root));
-                var copy = new LayoutDoc(
-                    LayoutDoc.CURRENT_VERSION,
-                    newId,
-                    displayName,
-                    current.templateBase(),
-                    now,
-                    now,
-                    capturedBody
-                );
-                try {
-                    LayoutCatalog.save(copy);
-                    activeLayoutId = newId;
-                    persistActiveSelection();
-                } catch (java.io.IOException e) {
-                    org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Duplicate failed", e);
-                }
-                if (manageLayoutsDialog != null) {
-                    manageLayoutsDialog.setActiveLayoutId(activeLayoutId);
-                    manageLayoutsDialog.refresh();
-                }
-                this.layoutNameDialog = null;
-            },
-            () -> this.layoutNameDialog = null
+        dialogs.setLayoutNameDialog(
+            new LayoutNameDialog(
+                LayoutNameDialog.Mode.DUPLICATE,
+                current.displayName() + " Copy",
+                LayoutCatalog::idAvailable,
+                displayName -> {
+                    var newId = LayoutCatalog.suggestId(displayName);
+                    var now = java.time.Instant.now().toString();
+                    var capturedBody = LayoutSnapshot.capture(
+                        com.blib.engine.ui.workspace.WorkspaceLayoutPersistence.extractBodyRoot(this.root)
+                    );
+                    var copy = new LayoutDoc(
+                        LayoutDoc.CURRENT_VERSION,
+                        newId,
+                        displayName,
+                        current.templateBase(),
+                        now,
+                        now,
+                        capturedBody
+                    );
+                    try {
+                        LayoutCatalog.save(copy);
+                        WorkspaceLayoutController.setActiveLayoutId(newId);
+                        com.blib.engine.ui.workspace.WorkspaceLayoutPersistence.persistActiveSelection(newId);
+                    } catch (java.io.IOException e) {
+                        org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Duplicate failed", e);
+                    }
+                    var mld = dialogs.manageLayoutsDialog();
+                    if (mld != null) {
+                        mld.setActiveLayoutId(WorkspaceLayoutController.activeLayoutId());
+                        mld.refresh();
+                    }
+                    dialogs.setLayoutNameDialog(null);
+                },
+                () -> dialogs.setLayoutNameDialog(null)
+            )
         );
     }
 
     private void openDeleteConfirm() {
-        var current = LayoutCatalog.get(activeLayoutId);
+        var current = LayoutCatalog.get(WorkspaceLayoutController.activeLayoutId());
         if (current == null) {
             return;
         }
-        var isTemplate = LayoutCatalog.isTemplateId(activeLayoutId);
+        var isTemplate = LayoutCatalog.isTemplateId(WorkspaceLayoutController.activeLayoutId());
         var message = isTemplate
             ? "Delete '" + current.displayName()
                 + "'? This is a template — it will be re-seeded with default content next time the workspace opens."
             : "Delete '" + current.displayName() + "'? This cannot be undone.";
-        var deletedId = activeLayoutId;
-        this.confirmDialog = new ConfirmDialog(
-            "Delete layout?",
-            message,
-            "Delete",
-            "Cancel",
-            true,
-            () -> {
-                try {
-                    LayoutCatalog.delete(deletedId);
-                } catch (java.io.IOException e) {
-                    org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Delete failed", e);
-                }
-                var state = ActiveLayoutState.read();
-                ActiveLayoutState.write(state.withoutLayout(deletedId));
-                // Switch off the deleted layout to whatever resolves now (default fallback if nothing else).
-                var newId = ActiveLayoutState.resolve(
-                    ProjectSession.activeProject() != null ? ProjectSession.activeProjectName() : null,
-                    ActiveLayoutState.read()
-                );
-                activeLayoutId = LayoutTemplate.DEFAULT.id(); // Force the equality check in switchLayout to fire.
-                switchLayout(newId);
-                if (manageLayoutsDialog != null) {
-                    manageLayoutsDialog.setActiveLayoutId(activeLayoutId);
-                    manageLayoutsDialog.refresh();
-                }
-            },
-            () -> {}
+        var deletedId = WorkspaceLayoutController.activeLayoutId();
+        dialogs.setConfirmDialog(
+            new ConfirmDialog(
+                "Delete layout?",
+                message,
+                "Delete",
+                "Cancel",
+                true,
+                () -> {
+                    try {
+                        LayoutCatalog.delete(deletedId);
+                    } catch (java.io.IOException e) {
+                        org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Delete failed", e);
+                    }
+                    var state = ActiveLayoutState.read();
+                    ActiveLayoutState.write(state.withoutLayout(deletedId));
+                    // Switch off the deleted layout to whatever resolves now (default fallback if nothing else).
+                    var newId = ActiveLayoutState.resolve(
+                        ProjectSession.activeProject() != null ? ProjectSession.activeProjectName() : null,
+                        ActiveLayoutState.read()
+                    );
+                    WorkspaceLayoutController.setActiveLayoutId(LayoutTemplate.DEFAULT.id()); // Force the equality
+                                                                                              // check in switchLayout
+                                                                                              // to fire.
+                    switchLayout(newId);
+                    var mld = dialogs.manageLayoutsDialog();
+                    if (mld != null) {
+                        mld.setActiveLayoutId(WorkspaceLayoutController.activeLayoutId());
+                        mld.refresh();
+                    }
+                },
+                () -> {}
+            )
         );
     }
 
     private void openNewFromTemplateDialog(LayoutTemplate template) {
-        this.layoutNameDialog = new LayoutNameDialog(
-            LayoutNameDialog.Mode.NEW_FROM_TEMPLATE,
-            template.displayName() + " (custom)",
-            LayoutCatalog::idAvailable,
-            displayName -> {
-                var newId = LayoutCatalog.suggestId(displayName);
-                var now = java.time.Instant.now().toString();
-                var doc = new LayoutDoc(
-                    LayoutDoc.CURRENT_VERSION,
-                    newId,
-                    displayName,
-                    template.id(),
-                    now,
-                    now,
-                    template.toDoc().body()
-                );
-                try {
-                    LayoutCatalog.save(doc);
-                    persistOutgoingLayout();
-                    activeLayoutId = newId;
-                    var loaded = LayoutCatalog.get(newId);
-                    var bodyRoot = LayoutSnapshot.hydrate(
-                        loaded != null ? loaded.body() : doc.body(),
-                        panelCtx()
+        dialogs.setLayoutNameDialog(
+            new LayoutNameDialog(
+                LayoutNameDialog.Mode.NEW_FROM_TEMPLATE,
+                template.displayName() + " (custom)",
+                LayoutCatalog::idAvailable,
+                displayName -> {
+                    var newId = LayoutCatalog.suggestId(displayName);
+                    var now = java.time.Instant.now().toString();
+                    var doc = new LayoutDoc(
+                        LayoutDoc.CURRENT_VERSION,
+                        newId,
+                        displayName,
+                        template.id(),
+                        now,
+                        now,
+                        template.toDoc().body()
                     );
-                    this.root = buildOuterLayout(bodyRoot);
-                    persistActiveSelection();
-                } catch (java.io.IOException e) {
-                    org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] New from Template failed", e);
-                }
-                if (manageLayoutsDialog != null) {
-                    manageLayoutsDialog.setActiveLayoutId(activeLayoutId);
-                    manageLayoutsDialog.refresh();
-                }
-                this.layoutNameDialog = null;
-            },
-            () -> this.layoutNameDialog = null
+                    try {
+                        LayoutCatalog.save(doc);
+                        com.blib.engine.ui.workspace.WorkspaceLayoutPersistence.persistOutgoingLayout(
+                            this.root,
+                            WorkspaceLayoutController.activeLayoutId()
+                        );
+                        WorkspaceLayoutController.setActiveLayoutId(newId);
+                        var loaded = LayoutCatalog.get(newId);
+                        var bodyRoot = LayoutSnapshot.hydrate(
+                            loaded != null ? loaded.body() : doc.body(),
+                            panelCtx()
+                        );
+                        this.root = WorkspaceLayoutController.buildOuterLayout(bodyRoot);
+                        com.blib.engine.ui.workspace.WorkspaceLayoutPersistence.persistActiveSelection(
+                            WorkspaceLayoutController.activeLayoutId()
+                        );
+                    } catch (java.io.IOException e) {
+                        org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] New from Template failed", e);
+                    }
+                    var mld = dialogs.manageLayoutsDialog();
+                    if (mld != null) {
+                        mld.setActiveLayoutId(WorkspaceLayoutController.activeLayoutId());
+                        mld.refresh();
+                    }
+                    dialogs.setLayoutNameDialog(null);
+                },
+                () -> dialogs.setLayoutNameDialog(null)
+            )
         );
     }
 
     private void openManageLayoutsDialog() {
-        this.manageLayoutsDialog = new ManageLayoutsDialog(
-            activeLayoutId,
-            () -> this.manageLayoutsDialog = null,
-            doc -> switchLayout(doc.id()),
-            this::renameFromManage,
-            this::duplicateFromManage,
-            this::deleteFromManage
+        dialogs.setManageLayoutsDialog(
+            new ManageLayoutsDialog(
+                WorkspaceLayoutController.activeLayoutId(),
+                () -> dialogs.setManageLayoutsDialog(null),
+                doc -> switchLayout(doc.id()),
+                this::renameFromManage,
+                this::duplicateFromManage,
+                this::deleteFromManage
+            )
         );
     }
 
@@ -2678,66 +1842,74 @@ public final class EngineWorkspaceScreen extends Screen {
 
     private void renameFromManage(LayoutDoc doc) {
         var existingId = doc.id();
-        this.layoutNameDialog = new LayoutNameDialog(
-            LayoutNameDialog.Mode.RENAME,
-            doc.displayName(),
-            id -> id.equals(existingId) || LayoutCatalog.idAvailable(id),
-            displayName -> {
-                var newId = LayoutCatalog.suggestId(displayName);
-                try {
-                    if (newId.equals(existingId)) {
-                        LayoutCatalog.save(doc.withDisplayName(displayName));
-                    } else {
-                        LayoutCatalog.save(doc.withDisplayName(displayName).withId(newId));
-                        LayoutCatalog.delete(existingId);
-                        var state = ActiveLayoutState.read();
-                        ActiveLayoutState.write(state.withoutLayout(existingId));
-                        if (existingId.equals(activeLayoutId)) {
-                            activeLayoutId = newId;
-                            persistActiveSelection();
+        dialogs.setLayoutNameDialog(
+            new LayoutNameDialog(
+                LayoutNameDialog.Mode.RENAME,
+                doc.displayName(),
+                id -> id.equals(existingId) || LayoutCatalog.idAvailable(id),
+                displayName -> {
+                    var newId = LayoutCatalog.suggestId(displayName);
+                    try {
+                        if (newId.equals(existingId)) {
+                            LayoutCatalog.save(doc.withDisplayName(displayName));
+                        } else {
+                            LayoutCatalog.save(doc.withDisplayName(displayName).withId(newId));
+                            LayoutCatalog.delete(existingId);
+                            var state = ActiveLayoutState.read();
+                            ActiveLayoutState.write(state.withoutLayout(existingId));
+                            if (existingId.equals(WorkspaceLayoutController.activeLayoutId())) {
+                                WorkspaceLayoutController.setActiveLayoutId(newId);
+                                com.blib.engine.ui.workspace.WorkspaceLayoutPersistence.persistActiveSelection(
+                                    WorkspaceLayoutController.activeLayoutId()
+                                );
+                            }
                         }
+                    } catch (java.io.IOException e) {
+                        org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Rename (manage) failed", e);
                     }
-                } catch (java.io.IOException e) {
-                    org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Rename (manage) failed", e);
-                }
-                if (manageLayoutsDialog != null) {
-                    manageLayoutsDialog.setActiveLayoutId(activeLayoutId);
-                    manageLayoutsDialog.refresh();
-                }
-                this.layoutNameDialog = null;
-            },
-            () -> this.layoutNameDialog = null
+                    var mld = dialogs.manageLayoutsDialog();
+                    if (mld != null) {
+                        mld.setActiveLayoutId(WorkspaceLayoutController.activeLayoutId());
+                        mld.refresh();
+                    }
+                    dialogs.setLayoutNameDialog(null);
+                },
+                () -> dialogs.setLayoutNameDialog(null)
+            )
         );
     }
 
     private void duplicateFromManage(LayoutDoc doc) {
-        this.layoutNameDialog = new LayoutNameDialog(
-            LayoutNameDialog.Mode.DUPLICATE,
-            doc.displayName() + " Copy",
-            LayoutCatalog::idAvailable,
-            displayName -> {
-                var newId = LayoutCatalog.suggestId(displayName);
-                var now = java.time.Instant.now().toString();
-                var copy = new LayoutDoc(
-                    LayoutDoc.CURRENT_VERSION,
-                    newId,
-                    displayName,
-                    doc.templateBase(),
-                    now,
-                    now,
-                    doc.body()
-                );
-                try {
-                    LayoutCatalog.save(copy);
-                } catch (java.io.IOException e) {
-                    org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Duplicate (manage) failed", e);
-                }
-                if (manageLayoutsDialog != null) {
-                    manageLayoutsDialog.refresh();
-                }
-                this.layoutNameDialog = null;
-            },
-            () -> this.layoutNameDialog = null
+        dialogs.setLayoutNameDialog(
+            new LayoutNameDialog(
+                LayoutNameDialog.Mode.DUPLICATE,
+                doc.displayName() + " Copy",
+                LayoutCatalog::idAvailable,
+                displayName -> {
+                    var newId = LayoutCatalog.suggestId(displayName);
+                    var now = java.time.Instant.now().toString();
+                    var copy = new LayoutDoc(
+                        LayoutDoc.CURRENT_VERSION,
+                        newId,
+                        displayName,
+                        doc.templateBase(),
+                        now,
+                        now,
+                        doc.body()
+                    );
+                    try {
+                        LayoutCatalog.save(copy);
+                    } catch (java.io.IOException e) {
+                        org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Duplicate (manage) failed", e);
+                    }
+                    var mld = dialogs.manageLayoutsDialog();
+                    if (mld != null) {
+                        mld.refresh();
+                    }
+                    dialogs.setLayoutNameDialog(null);
+                },
+                () -> dialogs.setLayoutNameDialog(null)
+            )
         );
     }
 
@@ -2748,102 +1920,38 @@ public final class EngineWorkspaceScreen extends Screen {
             ? "Delete '" + doc.displayName()
                 + "'? This is a template — it will be re-seeded with default content next time the workspace opens."
             : "Delete '" + doc.displayName() + "'? This cannot be undone.";
-        this.confirmDialog = new ConfirmDialog(
-            "Delete layout?",
-            message,
-            "Delete",
-            "Cancel",
-            true,
-            () -> {
-                try {
-                    LayoutCatalog.delete(deletedId);
-                } catch (java.io.IOException e) {
-                    org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Delete (manage) failed", e);
-                }
-                var state = ActiveLayoutState.read();
-                ActiveLayoutState.write(state.withoutLayout(deletedId));
-                if (deletedId.equals(activeLayoutId)) {
-                    var newId = ActiveLayoutState.resolve(
-                        ProjectSession.activeProject() != null ? ProjectSession.activeProjectName() : null,
-                        ActiveLayoutState.read()
-                    );
-                    activeLayoutId = LayoutTemplate.DEFAULT.id();
-                    switchLayout(newId);
-                }
-                if (manageLayoutsDialog != null) {
-                    manageLayoutsDialog.setActiveLayoutId(activeLayoutId);
-                    manageLayoutsDialog.refresh();
-                }
-            },
-            () -> {}
+        dialogs.setConfirmDialog(
+            new ConfirmDialog(
+                "Delete layout?",
+                message,
+                "Delete",
+                "Cancel",
+                true,
+                () -> {
+                    try {
+                        LayoutCatalog.delete(deletedId);
+                    } catch (java.io.IOException e) {
+                        org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Delete (manage) failed", e);
+                    }
+                    var state = ActiveLayoutState.read();
+                    ActiveLayoutState.write(state.withoutLayout(deletedId));
+                    if (deletedId.equals(WorkspaceLayoutController.activeLayoutId())) {
+                        var newId = ActiveLayoutState.resolve(
+                            ProjectSession.activeProject() != null ? ProjectSession.activeProjectName() : null,
+                            ActiveLayoutState.read()
+                        );
+                        WorkspaceLayoutController.setActiveLayoutId(LayoutTemplate.DEFAULT.id());
+                        switchLayout(newId);
+                    }
+                    var mld = dialogs.manageLayoutsDialog();
+                    if (mld != null) {
+                        mld.setActiveLayoutId(WorkspaceLayoutController.activeLayoutId());
+                        mld.refresh();
+                    }
+                },
+                () -> {}
+            )
         );
-    }
-
-    /**
-     * PROJECT menu — project lifecycle CRUD. Create / Open close the workspace and open the picker (workspace's
-     * removed() clears ProjectSession; the picker's onConfirmedOpen rebuilds the workspace after a successful Open).
-     * Reload / Delete act on the active project; both are inert when no project is active (which shouldn't happen
-     * post-picker-gating but is defensive).
-     */
-    private DropdownMenu buildProjectMenu(int anchorX, int anchorY) {
-        var hasProject = ProjectSession.activeProject() != null;
-        var hasWorld = Minecraft.getInstance().level != null;
-        var items = new java.util.ArrayList<DropdownMenu.Item>();
-
-        // Project CRUD requires the integrated server (server-side handlers for the picker / reload / delete payloads).
-        // With no world, all four items are inert — surface that in the label.
-        var noWorldSuffix = hasWorld ? "" : " (no world)";
-        items.add(new DropdownMenu.Item("Create…" + noWorldSuffix, () -> {
-            if (!hasWorld) {
-                return;
-            }
-            openPicker(true);
-        }));
-        items.add(new DropdownMenu.Item("Open…" + noWorldSuffix, () -> {
-            if (!hasWorld) {
-                return;
-            }
-            openPicker(false);
-        }));
-        items.add(
-            new DropdownMenu.Item(hasProject ? "Reload" : "Reload" + (hasWorld ? " (no project)" : noWorldSuffix), () -> {
-                if (!hasWorld || !hasProject) {
-                    return;
-                }
-                commands.dispatch(new Command.ReloadProject(ProjectSession.activeProjectName()));
-                // Wipe the tag-staging overlay — reload makes the runtime registry catch up to disk, so the red
-                // staging tint is no longer meaningful (rows settle into green / blue based on committed state).
-                com.blib.engine.tag.TagStagingCache.clear();
-            })
-        );
-        items.add(
-            new DropdownMenu.Item(hasProject ? "Delete…" : "Delete…" + (hasWorld ? " (no project)" : noWorldSuffix), () -> {
-                if (!hasWorld || !hasProject) {
-                    return;
-                }
-                // Destructive — gate behind the modal confirm. On confirm we fire the delete and bounce back to
-                // the picker (the workspace is meaningless once its project disappears, and the picker will
-                // refresh its list when the S2CProjectListPayload arrives).
-                var name = ProjectSession.activeProjectName();
-                this.confirmDialog = new ConfirmDialog(
-                    "Delete project?",
-                    "Are you sure you want to delete '" + name + "'? This will remove the entire datapack folder "
-                        + "from the world's datapacks directory and cannot be undone.",
-                    "Delete",
-                    "Cancel",
-                    true,
-                    () -> {
-                        commands.dispatch(new Command.DeleteProject(name));
-                        openPicker(false);
-                    },
-                    () -> {}
-                );
-            })
-        );
-        // Always-available exit: bypasses the setScreen redirect via the preparingToClose flag so the engine actually
-        // unwinds instead of trapping the user in overlay mode.
-        items.add(new DropdownMenu.Item("Close Engine", EngineWorkspaceScreen::closeEngine));
-        return new DropdownMenu(anchorX, anchorY, items);
     }
 
     private void openPicker(boolean createMode) {
@@ -2867,208 +1975,47 @@ public final class EngineWorkspaceScreen extends Screen {
      * {@link ViewportPanel.RightClickHandler} now has a second method ({@code onRightClickVolume}) the screen needs to
      * override. Bound to {@code this} so both callbacks dispatch to the screen's instance methods.
      */
-    private ViewportPanel.RightClickHandler buildViewportRightClickHandler() {
-        return new ViewportPanel.RightClickHandler() {
+    /** Bridges the workspace screen to the {@link ViewportContextMenuHandler}'s host hooks. */
+    /** Bridges {@link WorkspaceHotkeyDispatcher} to this screen's command bus and modeler-panel introspection. */
+    private final class WorkspaceHotkeyHostImpl implements com.blib.engine.ui.workspace.WorkspaceHotkeyDispatcher.Host {
 
-            @Override
-            public void onRightClick(@Nullable LivingEntity entity, double cursorX, double cursorY) {
-                onViewportRightClick(entity, cursorX, cursorY);
-            }
+        @Override
+        public CommandBus commands() {
+            return EngineWorkspaceScreen.this.commands;
+        }
 
-            @Override
-            public void onRightClickVolume(double cursorX, double cursorY) {
-                onViewportRightClickVolume(cursorX, cursorY);
-            }
+        @Override
+        public boolean layoutHasModelerPanel() {
+            return EngineWorkspaceScreen.this.layoutHasModelerPanel();
+        }
 
-            @Override
-            public void onRightClickPiece(java.util.UUID pieceId, double cursorX, double cursorY) {
-                onViewportRightClickPiece(pieceId, cursorX, cursorY);
-            }
-        };
+        @Override
+        public void deleteSingleBlock(net.minecraft.core.BlockPos pos) {
+            EngineWorkspaceScreen.this.deleteSingleBlock(pos);
+        }
     }
 
-    private void onViewportRightClick(@Nullable LivingEntity entity, double cursorX, double cursorY) {
-        if (entity == null) {
-            setOpenMenu(null);
-            return;
+    private final class ViewportContextMenuHostImpl implements ViewportContextMenuHandler.Host {
+
+        @Override
+        public void openMenu(DropdownMenu menu) {
+            menuBar.open(menu);
         }
 
-        var entityId = entity.getId();
-        var entityUuid = entity.getUUID();
-        var entityDisplayName = entity.getName().getString();
-        var menuX = (int) cursorX;
-        var menuY = (int) cursorY;
-        var items = new java.util.ArrayList<DropdownMenu.Item>();
-        items.add(
-            new DropdownMenu.Item("View GOAP Details", () -> {
-                commands.dispatch(new Command.GoapTrack(entityId));
-                reopenPanel(GOAPDetailsPanel.class, GOAPDetailsPanel::new);
-            })
-        );
-        items.add(
-            new DropdownMenu.Item("Manage Factions", () -> {
-                // Anchor the popup at the original right-click point — by the time the menu item fires, the menu
-                // itself has been dismissed, but the user expects the popup to land where their click was.
-                FactionManagePopup.openAt(menuX, menuY, entityUuid, entityDisplayName);
-            })
-        );
-        if (!(entity instanceof net.minecraft.world.entity.player.Player)) {
-            if (entity instanceof Dismemberable) {
-                var remaining = LimbDismemberer.getRemainingDefinitions(entity);
-                if (!remaining.isEmpty()) {
-                    var limbItems = new java.util.ArrayList<DropdownMenu.Item>();
-                    limbItems.add(
-                        new DropdownMenu.Item("All", () -> {
-                            commands.dispatch(new Command.DismemberAllLimbs(entityId));
-                        })
-                    );
-                    for (var def : remaining) {
-                        var label = prettifyLimbName(def.id().getPath());
-                        var limbId = def.id();
-                        limbItems.add(
-                            new DropdownMenu.Item(label, () -> {
-                                commands.dispatch(new Command.DismemberLimb(entityId, limbId));
-                            })
-                        );
-                    }
-                    items.add(new DropdownMenu.Item("Dismember…", () -> {}, limbItems));
-                }
-            }
-            items.add(
-                new DropdownMenu.Item("Delete Entity", () -> {
-                    commands.dispatch(new Command.RemoveEntity(entityId));
-                })
-            );
+        @Override
+        public void closeMenu() {
+            menuBar.closeAll();
         }
 
-        setOpenMenu(new DropdownMenu(menuX, menuY, items));
-    }
-
-    /**
-     * Turn a limb id's path component ("left_arm", "head") into a display label ("Left Arm", "Head") for the Dismember
-     * submenu. Splits on underscores and title-cases each segment; preserves any other characters in case authors used
-     * mixed-case ids.
-     */
-    private static String prettifyLimbName(String path) {
-        var parts = path.split("_");
-        var sb = new StringBuilder();
-        for (var i = 0; i < parts.length; i++) {
-            if (i > 0) {
-                sb.append(' ');
-            }
-            var part = parts[i];
-            if (part.isEmpty()) {
-                continue;
-            }
-            sb.append(Character.toUpperCase(part.charAt(0)));
-            if (part.length() > 1) {
-                sb.append(part.substring(1));
-            }
+        @Override
+        public void reopenPanel(Class<? extends Panel> panelClass, java.util.function.Supplier<Panel> factory) {
+            EngineWorkspaceScreen.this.reopenPanel(panelClass, factory);
         }
-        return sb.toString();
-    }
 
-    /**
-     * Right-click on the block-volume selection. Opens a context menu with the operations the old Selection panel
-     * surfaced inline: Capture (opens a dialog), Cut, Copy, Paste, Delete. Ops are non-destructive when their
-     * preconditions aren't met (BlockSelectionOps self-gates), so disabled-state rendering isn't strictly necessary for
-     * v1 — clicking a no-op item just does nothing.
-     */
-    private void onViewportRightClickVolume(double cursorX, double cursorY) {
-        var items = new java.util.ArrayList<DropdownMenu.Item>();
-        items.add(
-            new DropdownMenu.Item("Capture…", () -> {
-                this.captureDialog = new CaptureDialog(() -> this.captureDialog = null);
-            })
-        );
-        items.add(new DropdownMenu.Item("Cut", () -> com.blib.engine.domain.selection.volume.BlockSelectionOps.copy(true)));
-        items.add(new DropdownMenu.Item("Copy", () -> com.blib.engine.domain.selection.volume.BlockSelectionOps.copy(false)));
-        items.add(new DropdownMenu.Item("Paste", () -> com.blib.engine.domain.selection.volume.BlockSelectionOps.paste()));
-        items.add(new DropdownMenu.Item("Delete", () -> com.blib.engine.domain.selection.volume.BlockSelectionOps.delete()));
-        setOpenMenu(new DropdownMenu((int) cursorX, (int) cursorY, items));
-    }
-
-    /**
-     * Right-click on a placed jigsaw piece. Mirrors the block-volume context menu so users get the same affordances
-     * (Capture / Cut / Copy / Delete) plus an Open Inspector entry. Capture / Cut / Copy work by promoting the piece to
-     * a block-volume selection covering its AABB and then dispatching the existing
-     * {@link com.blib.engine.domain.selection.volume.BlockSelectionOps}; Delete keeps the identity-aware
-     * {@link com.blib.mod.common.network.packet.C2SDeletePlacedPiecePayload} path so the registry entry is removed, not
-     * just the blocks.
-     * <p>
-     * Cut on a piece is implemented as Copy-then-DeletePiece — the existing volume Cut would clear the blocks but leave
-     * the piece record orphaned (a ghost piece outline over empty air); the explicit delete-piece call avoids that.
-     */
-    private void onViewportRightClickPiece(java.util.UUID pieceId, double cursorX, double cursorY) {
-        var items = new java.util.ArrayList<DropdownMenu.Item>();
-        items.add(
-            new DropdownMenu.Item("Open Inspector", () -> {
-                // Mutual exclusion: the volume wireframe must not coexist with a piece selection — the inspector
-                // shows the piece, so the volume outline would be visual noise representing nothing inspectable.
-                // performSelectionAt clears the volume on every single-thing LMB pick; the context-menu path needs
-                // the same call.
-                BlockSelection.clearVolume();
-                SelectionManager.selectSingle(new com.blib.engine.domain.selection.picking.PlacedJigsawPieceSelectable(pieceId));
-            })
-        );
-        items.add(
-            new DropdownMenu.Item("Capture…", () -> {
-                com.blib.engine.domain.selection.picking.PlacedJigsawPieceSelectable.promoteToVolume(pieceId, null);
-                this.captureDialog = new CaptureDialog(() -> this.captureDialog = null);
-            })
-        );
-        items.add(
-            new DropdownMenu.Item("Cut", () -> {
-                com.blib.engine.domain.selection.picking.PlacedJigsawPieceSelectable.promoteToVolume(pieceId, null);
-                com.blib.engine.domain.selection.volume.BlockSelectionOps.copy(false);
-                commands.dispatch(new Command.DeletePlacedPiece(pieceId));
-            })
-        );
-        items.add(
-            new DropdownMenu.Item("Copy", () -> {
-                com.blib.engine.domain.selection.picking.PlacedJigsawPieceSelectable.promoteToVolume(pieceId, null);
-                com.blib.engine.domain.selection.volume.BlockSelectionOps.copy(false);
-            })
-        );
-        items.add(
-            new DropdownMenu.Item("Delete", () -> {
-                commands.dispatch(new Command.DeletePlacedPiece(pieceId));
-            })
-        );
-        setOpenMenu(new DropdownMenu((int) cursorX, (int) cursorY, items));
-    }
-
-    private static @Nullable TabbedPanel findFirstTabbedPanel(DockNode node) {
-        if (node instanceof DockNode.Leaf leaf && leaf.panel() instanceof TabbedPanel tp) {
-            return tp;
+        @Override
+        public void openCaptureDialog() {
+            dialogs.setCaptureDialog(new CaptureDialog(() -> dialogs.setCaptureDialog(null)));
         }
-        if (node instanceof DockNode.Split split) {
-            var f = findFirstTabbedPanel(split.first());
-            if (f != null) {
-                return f;
-            }
-            return findFirstTabbedPanel(split.second());
-        }
-        return null;
-    }
-
-    private static @Nullable TabbedPanel findOwnerWithPanelOfType(DockNode node, Class<? extends Panel> panelClass) {
-        if (node instanceof DockNode.Leaf leaf && leaf.panel() instanceof TabbedPanel tp) {
-            for (var p : tp.tabs()) {
-                if (panelClass.isInstance(p)) {
-                    return tp;
-                }
-            }
-            return null;
-        }
-        if (node instanceof DockNode.Split split) {
-            var f = findOwnerWithPanelOfType(split.first(), panelClass);
-            if (f != null) {
-                return f;
-            }
-            return findOwnerWithPanelOfType(split.second(), panelClass);
-        }
-        return null;
     }
 
     /**
