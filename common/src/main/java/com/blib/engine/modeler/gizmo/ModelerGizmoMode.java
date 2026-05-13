@@ -28,5 +28,13 @@ public enum ModelerGizmoMode {
      * cube's rendered geometry stays put when rotation is identity; with a non-zero authored rotation, the cube swings
      * around the new pivot (which is the desired effect — the user is repositioning the rotation center).
      */
-    PIVOT
+    PIVOT,
+
+    /**
+     * Three axis arrows that drive uniform scale. Only meaningful for bones (mutates {@code bone.scale}) and for the
+     * item-transform shim bone the preview viewport uses. Cubes don't have a scale field — SCALE is a no-op against a
+     * cube selection. Drag along any axis applies a uniform scale factor proportional to cursor travel along that axis;
+     * the same drag motion produces the same factor regardless of which axis ring the user grabbed.
+     */
+    SCALE
 }

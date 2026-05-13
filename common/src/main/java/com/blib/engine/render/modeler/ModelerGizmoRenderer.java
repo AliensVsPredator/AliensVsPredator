@@ -47,6 +47,26 @@ public final class ModelerGizmoRenderer {
     private ModelerGizmoRenderer() {}
 
     /**
+     * Pick a BLib-unit gizmo length that lands the handles at a roughly grabbable on-screen size, branching on
+     * projection type. Perspective ({@code projection.m33 == 0}) uses the historic {@code depth * 0.15} formula —
+     * view-space depth from the pose pivot, which under a 60° FOV camera produces a constant-ish screen-pixel length
+     * regardless of camera distance. Orthographic ({@code m33 == 1}, the GUI-preview camera) has no meaningful depth —
+     * distance from the modelview origin doesn't change screen size — so the perspective formula would spit out tens of
+     * BLib units and draw arrows the size of the FBO. For ortho, use a small fixed BLib-unit length tuned against the
+     * GUI-preview's pixels-per-BLib-unit modelview scale (see ModelerRenderer's GUI branch); 0.35 lands the arrows
+     * around 50–60 px on a default-sized viewport.
+     */
+    private static float gizmoScale(PoseStack pose, Matrix4f projection) {
+        boolean isOrtho = Math.abs(projection.m33() - 1f) < 1e-4f;
+        if (isOrtho) {
+            return 0.35f;
+        }
+        var probe = GizmoGeometry.capture(pose, 1f, projection);
+        float depth = probe.viewPivot().length();
+        return Math.max(0.15f, depth * 0.15f);
+    }
+
+    /**
      * Component-wise lerp toward 1.0 by {@link #HOVER_BRIGHTEN}; produces the hovered tint from the axis base color.
      */
     private static float[] hoverTint(float[] base) {
@@ -64,18 +84,21 @@ public final class ModelerGizmoRenderer {
             return;
         }
 
-        if (scene.selection instanceof Selection.CubeSelection cs) {
+        // The gizmo can target an override selection (item-preview shim bone) instead of the scene's UI selection
+        // without disrupting the inspector / outliner — they keep reading scene.selection.
+        var target = scene.gizmoTargetSelection != null ? scene.gizmoTargetSelection : scene.selection;
+        if (target instanceof Selection.CubeSelection cs) {
             renderCubeGizmo(scenePose, scene, cs, mode, projectionForCapture);
             return;
         }
-        if (scene.selection instanceof Selection.MultiCubeSelection ms) {
+        if (target instanceof Selection.MultiCubeSelection ms) {
             // Multi-cube: gizmo anchors on the primary (last-clicked) cube. Group manipulation isn't supported by the
             // gizmo yet — those edits happen via the UV map's drag path. Other multi-cube use cases (3D group drag,
             // group resize) can grow off this same path later.
             renderCubeGizmo(scenePose, scene, ms.primary(), mode, projectionForCapture);
             return;
         }
-        if (scene.selection instanceof Selection.BoneSelection bs) {
+        if (target instanceof Selection.BoneSelection bs) {
             renderBoneGizmo(scenePose, scene, bs, mode, projectionForCapture);
             return;
         }
@@ -89,6 +112,12 @@ public final class ModelerGizmoRenderer {
         ModelerGizmoMode mode,
         Matrix4f projectionForCapture
     ) {
+        // Cubes don't have a uniform scale field (only origin/size/rotation/pivot/inflate). SCALE is a bone / item-
+        // transform concept — render nothing for cube targets so the user doesn't see a gizmo that would do nothing.
+        if (mode == ModelerGizmoMode.SCALE) {
+            ModelerGizmoState.setLastRender(null);
+            return;
+        }
         // Walk the bone tree until we find the owner. Same convention as ModelerCubeRenderer so the gizmo lines
         // up with what the user sees.
         var pose = new PoseStack();
@@ -129,11 +158,7 @@ public final class ModelerGizmoRenderer {
             poseMat.identity().setTranslation(tx, ty, tz);
         }
 
-        // Depth-based scale: same formula as BLibGizmoRenderer so the gizmo looks roughly the same on-screen size
-        // regardless of camera distance.
-        var probe = GizmoGeometry.capture(pose, 1f, projectionForCapture);
-        float depth = probe.viewPivot().length();
-        float scale = Math.max(0.15f, depth * 0.15f);
+        float scale = gizmoScale(pose, projectionForCapture);
 
         var geometry = GizmoGeometry.capture(pose, scale, projectionForCapture);
 
@@ -226,8 +251,11 @@ public final class ModelerGizmoRenderer {
         var pose = new PoseStack();
         pose.last().pose().mul(scenePose);
 
-        // Walk to the parent of the bone, stopping BEFORE applying the bone's own transform.
-        if (!walkToParent(pose, scene.root, bone)) {
+        // Item-transform shim bones live outside the scene's bone tree — they're a synthetic target that mirrors a
+        // BLibTransform via the gizmoTargetSelection override. Skip the bone-tree walk and just apply the scene pose
+        // directly; the shim's own applyBone below positions it at its translation/pivot/rotation.
+        boolean isItemTransformShim = scene.itemSession != null && scene.itemSession.gizmoShimBone == bone;
+        if (!isItemTransformShim && !walkToParent(pose, scene.root, bone)) {
             ModelerGizmoState.setLastRender(null);
             return;
         }
@@ -253,9 +281,7 @@ public final class ModelerGizmoRenderer {
             poseMat.identity().setTranslation(tx, ty, tz);
         }
 
-        var probe = GizmoGeometry.capture(pose, 1f, projectionForCapture);
-        float depth = probe.viewPivot().length();
-        float scale = Math.max(0.15f, depth * 0.15f);
+        float scale = gizmoScale(pose, projectionForCapture);
 
         var geometry = GizmoGeometry.capture(pose, scale, projectionForCapture);
 
@@ -263,7 +289,9 @@ public final class ModelerGizmoRenderer {
         RenderSystem.lineWidth(4.0f);
         var linesBuffer = Tesselator.getInstance().begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR_NORMAL);
         switch (mode) {
-            case TRANSLATE, PIVOT -> drawTranslateShafts(pose, linesBuffer, scale);
+            // SCALE reuses the translate-arrow visual — the mode is identifiable from the toolbar, and the per-axis
+            // arrow handles map cleanly onto "drag along any axis to scale uniformly."
+            case TRANSLATE, PIVOT, SCALE -> drawTranslateShafts(pose, linesBuffer, scale);
             case ROTATE -> drawRotate(pose, linesBuffer, scale);
             default -> {
                 /* OFF / RESIZE — RESIZE already early-returned. */
@@ -276,7 +304,7 @@ public final class ModelerGizmoRenderer {
             RenderSystem.enableDepthTest();
         }
 
-        if (mode == ModelerGizmoMode.TRANSLATE || mode == ModelerGizmoMode.PIVOT) {
+        if (mode == ModelerGizmoMode.TRANSLATE || mode == ModelerGizmoMode.PIVOT || mode == ModelerGizmoMode.SCALE) {
             RenderSystem.setShader(GameRenderer::getPositionColorShader);
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();

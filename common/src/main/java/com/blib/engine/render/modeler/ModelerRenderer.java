@@ -6,6 +6,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexSorting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.world.item.ItemDisplayContext;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -118,18 +119,49 @@ public final class ModelerRenderer {
         GlStateManager._clear(GL30.GL_COLOR_BUFFER_BIT | GL30.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
 
         var scene = ModelerScene.get();
-        var aspect = (float) width / (float) height;
-        var projection = scene.camera.projectionMatrix(aspect);
+        // GUI display context needs to render under vanilla's GUI projection — orthographic screen-pixel space
+        // with the model's +Y appearing up on screen — so the user authoring item transforms sees what the
+        // hotbar slot will actually show. Every other preview context (GROUND, FIXED, FIRST/THIRD_PERSON_*,
+        // HEAD) and the edit-mode geo view stay on the orbital perspective camera since those poses are read in
+        // 3D world space anyway.
+        var itemSession = scene.itemSession;
+        boolean guiPreview = itemSession != null && itemSession.previewContext == ItemDisplayContext.GUI;
+
+        Matrix4f projection;
+        if (guiPreview) {
+            // ortho(0, W, 0, H, ...) gives screen-pixel coords with +Y up in OpenGL FBO convention. The FBO is
+            // blitted bottom-up to the GUI rect (see blitToGui), so "FBO top" lands at "panel top" on screen.
+            projection = new Matrix4f().ortho(0f, (float) width, 0f, (float) height, -1000f, 1000f);
+        } else {
+            var aspect = (float) width / (float) height;
+            projection = scene.camera.projectionMatrix(aspect);
+        }
         RenderSystem.setProjectionMatrix(projection, VertexSorting.DISTANCE_TO_ORIGIN);
 
         var modelview = RenderSystem.getModelViewStack();
         modelview.pushMatrix();
         modelview.identity();
-        var camPos = scene.camera.position();
-        var focus = new Vector3f((float) scene.camera.focusPoint.x, (float) scene.camera.focusPoint.y, (float) scene.camera.focusPoint.z);
-        // Use the camera's own derived up vector — not constant world-up — so the orbit stays stable as pitch
-        // approaches ±90° (the polar gimbal-lock case).
-        modelview.lookAt(camPos, focus, scene.camera.up());
+        if (guiPreview) {
+            // Vanilla's renderGuiItem does T(slot_center) · S_yflip · S(16) on the modelview. We mirror that
+            // shape but skip the Y-flip (our ortho is already +Y up) and substitute a larger pixels-per-BLib-
+            // unit so the item fills a meaningful fraction of the preview FBO instead of a 16×16 speck. The
+            // BLibTransform — applied later on the local PoseStack — therefore composes against the modelview
+            // identically to how it composes against vanilla's hotbar modelview: same direction, same
+            // proportional response (translation.y = 1 BLib unit = "one slot" of visual motion).
+            float slotPixels = Math.min(width, height) * 0.4f;
+            modelview.translate(width * 0.5f, height * 0.5f, 0f);
+            modelview.scale(slotPixels, slotPixels, slotPixels);
+        } else {
+            var camPos = scene.camera.position();
+            var focus = new Vector3f(
+                (float) scene.camera.focusPoint.x,
+                (float) scene.camera.focusPoint.y,
+                (float) scene.camera.focusPoint.z
+            );
+            // Use the camera's own derived up vector — not constant world-up — so the orbit stays stable as
+            // pitch approaches ±90° (the polar gimbal-lock case).
+            modelview.lookAt(camPos, focus, scene.camera.up());
+        }
         RenderSystem.applyModelViewMatrix();
 
         try {
@@ -143,12 +175,32 @@ public final class ModelerRenderer {
             GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
 
             var pose = new Matrix4f();
-            ModelerGridRenderer.render(pose);
-            ModelerCubeRenderer.render(pose, scene.root, scene.selection);
-            // Gizmo rendered last so its line strips overlay the cube faces / selection outline; the projection
-            // matrix is the one we just set (modeler camera) — pass it explicitly so the capture sees it even after
-            // the FBO pass restores the saved projection on the way out.
-            ModelerGizmoRenderer.render(pose, scene, projection);
+            if (itemSession != null && itemSession.previewContext != null) {
+                // Preview mode — show the item exactly as vanilla's ItemRenderer would render it for this display
+                // context. Grid + cube wireframe are suppressed so the user sees only the item under its display
+                // transform; the gizmo IS rendered so users can drag the modeler's TRANSLATE / ROTATE / SCALE /
+                // PIVOT handles against the item's BLibTransform (via the shim bone).
+                ModelerItemPreviewRenderer.render(itemSession);
+                // bufferSource.endBatch() inside the preview renderer ran each consumed RenderType's
+                // clearRenderState — most vanilla render types re-enable backface culling at teardown. The gizmo's
+                // wide-line shader expands each line into a camera-facing quad, and when culling is on those quads
+                // get culled at certain camera angles, leaving "invisible" shafts. Re-apply the canonical baseline
+                // ModelerRenderer.renderScene set at the top so the gizmo sees the same GL state edit-mode gives it.
+                RenderSystem.enableDepthTest();
+                RenderSystem.depthFunc(GL11.GL_LEQUAL);
+                RenderSystem.disableCull();
+                ModelerGizmoRenderer.render(pose, scene, projection);
+            } else {
+                // Clear any stale gizmoTargetSelection from a previous preview-mode frame so the gizmo falls back
+                // to the regular scene.selection in edit mode.
+                scene.gizmoTargetSelection = null;
+                ModelerGridRenderer.render(pose);
+                ModelerCubeRenderer.render(pose, scene.root, scene.selection);
+                // Gizmo rendered last so its line strips overlay the cube faces / selection outline; the projection
+                // matrix is the one we just set (modeler camera) — pass it explicitly so the capture sees it even
+                // after the FBO pass restores the saved projection on the way out.
+                ModelerGizmoRenderer.render(pose, scene, projection);
+            }
         } finally {
             GL11.glDisable(GL11.GL_LINE_SMOOTH);
 

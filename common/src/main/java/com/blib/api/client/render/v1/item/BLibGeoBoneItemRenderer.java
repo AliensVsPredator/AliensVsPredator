@@ -4,10 +4,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.UUID;
@@ -18,11 +16,7 @@ import com.blib.api.client.render.v1.BLibTransform;
 import com.blib.api.client.render.v1.item.model.BLibGeoBoneItemModelRenderer;
 import com.blib.api.client.render.v1.item.pipeline.AzItemRendererPipeline;
 import com.blib.api.client.render.v1.item.pipeline.AzItemRendererPipelineContext;
-import com.blib.engine.gizmo.BLibGizmoMode;
-import com.blib.engine.gizmo.BLibGizmoState;
 import com.blib.engine.gizmo.BLibItemTransformOverrides;
-import com.blib.engine.gizmo.BLibTunableItemTransforms;
-import com.blib.engine.render.gizmo.BLibGizmoRenderer;
 
 /**
  * Renders a single named bone subtree of an existing geo model as an item — designed for cases where you want to reuse
@@ -94,7 +88,6 @@ public class BLibGeoBoneItemRenderer extends AzItemRenderer {
         var stack = context.animatable();
 
         BLibTransform transform = null;
-        var transformMode = BLibItemTransformMode.IDLE;
 
         // Short-circuit the blocking predicate when the debug `force-blocking` toggle is on so the user
         // can tune blocking-pose transforms (with gizmos / set-nudge commands) without physically holding
@@ -104,10 +97,6 @@ public class BLibGeoBoneItemRenderer extends AzItemRenderer {
 
         if (blockingActive) {
             transform = config.blockingTransforms().getOrNull(displayContext);
-
-            if (transform != null) {
-                transformMode = BLibItemTransformMode.BLOCKING;
-            }
         }
 
         if (transform == null) {
@@ -135,24 +124,8 @@ public class BLibGeoBoneItemRenderer extends AzItemRenderer {
         var pivot = bonePivotInPoseFrame(context.bakedModel(), config.boneName());
         var poseStack = itemContext.poseStack();
 
-        // In preview-render mode (HUD-corner preview), strip the user's translation so the preview stays
-        // anchored at the corner the preview renderer placed it. Rotation/scale/pivot are kept so the
-        // user can see the effect of those drags reflected in the preview directly. The original
-        // transform is what actually gets written to the override map by drag input — the preview just
-        // *displays* the effect of changes other than translation.
-        var renderTransform = BLibGizmoState.isPreviewRender() ? withZeroTranslation(transform) : transform;
-
         if (BLibItemTransformOverrides.isPivotVisualizationEnabled()) {
-            drawPivotDebug(itemContext, renderTransform);
-        }
-
-        // Gizmo render + per-frame snapshot for picking. Drawn at the same anchor as the pivot debug —
-        // post-translation, post-tuner-pivot, but pre-user-rotation — so the axis arrows/rings stay
-        // aligned to the model's pre-rotation frame and don't sweep around as the user adds rotation.
-        var tunableId = tunableItemId(config);
-
-        if (tunableId != null && BLibGizmoState.mode() != BLibGizmoMode.OFF) {
-            BLibGizmoRenderer.renderAndCapture(itemContext, renderTransform, tunableId, transformMode);
+            drawPivotDebug(itemContext, transform);
         }
 
         // Compose `pose = T(translation) · T(user.pivot) · R · S · T(-user.pivot) · T(-bone.pivot/16)`.
@@ -162,27 +135,8 @@ public class BLibGeoBoneItemRenderer extends AzItemRenderer {
         // that's the hand / gui slot / item-frame center; with non-zero translation the pivot moves with it
         // regardless of user rotation/scale (rotation/scale operates around the pivot, not the model origin,
         // because we anchor *after* the rotation/scale on the matrix stack).
-        renderTransform.apply(poseStack);
+        transform.apply(poseStack);
         poseStack.translate(-pivot.x, -pivot.y, -pivot.z);
-    }
-
-    private static BLibTransform withZeroTranslation(BLibTransform t) {
-        return new BLibTransform(new Vector3f(), t.rotation(), t.scale(), t.pivot());
-    }
-
-    /**
-     * Returns the {@link BLibTunableItemTransforms#itemId} when the renderer's idle transforms wrap a tuner-aware base,
-     * else null. The gizmo only targets items whose author opted in to live tuning, so the input handler can resolve a
-     * click back to the right (item, mode, context) override slot.
-     */
-    private static @Nullable ResourceLocation tunableItemId(
-        BLibGeoBoneItemRendererConfig config
-    ) {
-        if (config.idleTransforms() instanceof BLibTunableItemTransforms tunable) {
-            return tunable.itemId();
-        }
-
-        return null;
     }
 
     /**

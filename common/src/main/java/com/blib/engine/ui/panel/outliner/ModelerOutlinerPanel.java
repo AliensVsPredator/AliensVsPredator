@@ -3,6 +3,7 @@ package com.blib.engine.ui.panel.outliner;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -15,10 +16,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import com.blib.api.client.registry.v1.AzItemRendererRegistry;
+import com.blib.api.client.render.v1.item.BLibGeoBoneItemRenderer;
 import com.blib.engine.modeler.ModelerBone;
 import com.blib.engine.modeler.ModelerCube;
 import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.Selection;
+import com.blib.engine.modeler.item.ModelerItemSession;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.widget.ScrollContainer;
@@ -59,6 +63,9 @@ public final class ModelerOutlinerPanel implements Panel {
     private static final int BONE_COLOR = 0xFFD6D6E0;
 
     private static final int CUBE_COLOR = 0xFFA6C8FF;
+
+    /** Color used to mark the bone that the attached item session is authoring — matches the inspector accent. */
+    private static final int ITEM_BONE_COLOR = 0xFFE6C26B;
 
     private static final int CARET_COLOR = 0xFF8A8A95;
 
@@ -161,6 +168,12 @@ public final class ModelerOutlinerPanel implements Panel {
             collectAllBones(bs.bone(), selectedSubtree);
         }
 
+        // Pull the item-bone name from the attached session (if any) so the matching bone row is rendered in the
+        // item-accent color. Lookup walks Item → AzItemRenderer → BLibGeoBoneItemRendererConfig.boneName(); null when
+        // no session is attached, the registry doesn't know the item, or the registered renderer isn't a
+        // BLibGeoBoneItemRenderer (e.g. some other AzItemRenderer subclass).
+        var itemBoneName = resolveItemBoneName(scene.itemSession);
+
         var font = EngineFont.get();
         var scrollY = (int) scroll.scrollY();
 
@@ -199,14 +212,15 @@ public final class ModelerOutlinerPanel implements Panel {
                     graphics.drawString(font, Component.literal(caret), indentX, labelY, CARET_COLOR, false);
                 }
                 var labelX = indentX + CARET_WIDTH;
-                graphics.drawString(
-                    font,
-                    Component.literal(row.label),
-                    labelX,
-                    labelY,
-                    row.cube != null ? CUBE_COLOR : BONE_COLOR,
-                    false
-                );
+                int labelColor;
+                if (row.cube != null) {
+                    labelColor = CUBE_COLOR;
+                } else if (itemBoneName != null && itemBoneName.equals(row.owner.name)) {
+                    labelColor = ITEM_BONE_COLOR;
+                } else {
+                    labelColor = BONE_COLOR;
+                }
+                graphics.drawString(font, Component.literal(row.label), labelX, labelY, labelColor, false);
             }
         } finally {
             graphics.flush();
@@ -448,6 +462,27 @@ public final class ModelerOutlinerPanel implements Panel {
             return selectedSubtree.contains(row.owner);
         }
         return false;
+    }
+
+    /**
+     * Resolve the bone name the attached item session is authoring, by walking Item → AzItemRenderer →
+     * BLibGeoBoneItemRendererConfig. Returns {@code null} when there's no session, the item isn't registered, the
+     * renderer isn't a {@link BLibGeoBoneItemRenderer} (different AzItemRenderer subclass), or the renderer hasn't been
+     * instantiated yet by the registry's lazy supplier.
+     */
+    private static @Nullable String resolveItemBoneName(@Nullable ModelerItemSession session) {
+        if (session == null) {
+            return null;
+        }
+        var item = BuiltInRegistries.ITEM.get(session.itemId);
+        if (item == null) {
+            return null;
+        }
+        var renderer = AzItemRendererRegistry.getOrNull(item);
+        if (renderer instanceof BLibGeoBoneItemRenderer geoRenderer) {
+            return geoRenderer.geoBoneItemConfig().boneName();
+        }
+        return null;
     }
 
     private record Row(

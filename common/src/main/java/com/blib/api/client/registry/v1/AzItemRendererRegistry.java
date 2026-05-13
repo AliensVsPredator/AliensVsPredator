@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import com.blib.api.client.render.v1.item.AzItemRenderer;
@@ -37,5 +38,15 @@ public class AzItemRendererRegistry {
             var rendererSupplier = ITEM_TO_RENDERER_SUPPLIER.get(item);
             return rendererSupplier == null ? null : rendererSupplier.get();
         });
+    }
+
+    /**
+     * Items whose renderer has been registered via {@link #register} (suppliers, not yet instantiated). Useful for
+     * tooling that wants to force-instantiate every registered renderer up front — e.g. the Modeler item-config
+     * inspector, which needs the renderers' constructors to run so any {@code BLibTunableItemTransforms.wrap} calls
+     * fire and register the items with {@code BLibItemTransformOverrides}.
+     */
+    public static Set<Item> registeredItems() {
+        return Set.copyOf(ITEM_TO_RENDERER_SUPPLIER.keySet());
     }
 }

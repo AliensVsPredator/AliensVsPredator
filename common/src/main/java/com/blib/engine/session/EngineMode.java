@@ -15,7 +15,6 @@ import com.blib.engine.domain.selection.volume.BlockSelection;
 import com.blib.engine.domain.selection.volume.BlockSelectionScaleGizmo;
 import com.blib.engine.domain.selection.volume.BlockSelectionTranslateGizmo;
 import com.blib.engine.domain.selection.volume.MoveBlocksGizmo;
-import com.blib.engine.gizmo.BLibGizmoState;
 import com.blib.engine.history.ClientActionHistory;
 import com.blib.engine.jigsaw.ClientPlacedPieceRegistry;
 import com.blib.engine.jigsaw.JigsawPieceLibrary;
@@ -201,9 +200,6 @@ public final class EngineMode {
             () -> EntityGizmoMode
                 .set(EntityGizmoMode.TRANSLATE)
         );
-        scope.onClose(() -> BLibGizmoState.setDrag(null));
-        scope.onClose(() -> BLibGizmoState.setLastRender(null));
-        scope.onClose(() -> BLibGizmoState.setPreviewRender(false));
         scope.onClose(() -> ModelerGizmoState.setDrag(null));
         scope.onClose(() -> ModelerGizmoState.setLastRender(null));
 

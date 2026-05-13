@@ -72,6 +72,14 @@ public final class ModelerInspectorPanel implements Panel {
     /** Gap below the header before the first section starts. */
     private static final int HEADER_TO_SECTION_GAP = 6;
 
+    /** Section break drawn between the item-config section and the selection inspector below it. */
+    private static final int DIVIDER_COLOR = 0xFF353540;
+
+    /** Vertical padding around the divider strip when an item is attached. */
+    private static final int DIVIDER_GAP = 6;
+
+    private final ModelerItemConfigSection itemConfig = new ModelerItemConfigSection();
+
     /** Which Vec3 field on the selected cube or bone an input commits into. */
     private enum VecField {
         ORIGIN,
@@ -143,19 +151,34 @@ public final class ModelerInspectorPanel implements Panel {
         visibleInputs.clear();
 
         var scene = ModelerScene.get();
+
+        // Item config section always at the top — handles its own collapsed (no-session) state by showing just
+        // the item picker, so users can attach an item from anywhere.
+        var afterItemConfig = itemConfig.render(graphics, x, y + CONTENT_PADDING, width, mouseX, mouseY);
+
         var selection = scene.selection;
+        if (selection == null && scene.itemSession == null) {
+            // Both nothing selected and no item attached — fall back to the legacy "Nothing selected" header
+            // below the item-config section so the panel doesn't read as empty.
+            drawHeader(graphics, x, afterItemConfig, "Nothing selected");
+            return;
+        }
         if (selection == null) {
-            drawHeader(graphics, x, y, "Nothing selected");
             return;
         }
 
+        // Divider between the item-config section and the selection inspector.
+        var dividerY = afterItemConfig + DIVIDER_GAP;
+        graphics.fill(x + CONTENT_PADDING, dividerY, x + width - CONTENT_PADDING, dividerY + 1, DIVIDER_COLOR);
+        var selectionY = dividerY + 1 + DIVIDER_GAP;
+
         if (selection instanceof Selection.BoneSelection bs) {
-            renderBone(graphics, x, y, width, bs.bone(), mouseX, mouseY);
+            renderBone(graphics, x, selectionY, width, bs.bone(), mouseX, mouseY);
         } else if (selection instanceof Selection.CubeSelection cs) {
-            renderCube(graphics, x, y, width, cs.cube(), mouseX, mouseY);
+            renderCube(graphics, x, selectionY, width, cs.cube(), mouseX, mouseY);
         } else if (selection instanceof Selection.MultiCubeSelection ms) {
             // Multi-cube: inspector edits the primary cube only — group edits via the UV map's drag/marquee path.
-            renderCube(graphics, x, y, width, ms.primary().cube(), mouseX, mouseY);
+            renderCube(graphics, x, selectionY, width, ms.primary().cube(), mouseX, mouseY);
         }
     }
 
@@ -302,8 +325,13 @@ public final class ModelerInspectorPanel implements Panel {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        // Forward to inputs that were actually rendered this frame; stale rects from the other selection kind don't
-        // get a chance to spuriously claim focus.
+        // Item-config widgets first — its pickers, mode toggle, dump button, pivot-viz checkbox, and 12 transform
+        // inputs all belong to the section.
+        if (itemConfig.mouseClicked(mouseX, mouseY, button)) {
+            return true;
+        }
+        // Then forward to selection-inspector inputs that were actually rendered this frame; stale rects from the
+        // other selection kind don't get a chance to spuriously claim focus.
         for (var input : visibleInputs) {
             if (input.mouseClicked(mouseX, mouseY, button)) {
                 return true;

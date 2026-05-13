@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
+import com.blib.api.common.registry.v1.BLibHolder;
+
 /**
  * Server-authoritative description of one detachable limb. Logic-only fields:
  * <ul>
@@ -52,13 +54,42 @@ public record LimbDefinition(
         ).apply(instance, (id, category, fatal) -> new LimbDefinition(id, category, SpawnFunctionRegistry.get(id), fatal))
     );
 
+    /**
+     * Build a limb against an entity type registered by id. Pre-binding-safe — call freely at mod-init before
+     * {@link BLibHolder}s have been bound, because the registries here are keyed by id rather than by live registry
+     * entry.
+     */
+    public static Builder builder(ResourceLocation entityTypeId, ResourceLocation id, String rootBoneName, LimbCategory category) {
+        return new Builder(entityTypeId, id, rootBoneName, category);
+    }
+
+    /**
+     * Convenience overload that resolves the entity type's id via {@link BuiltInRegistries#ENTITY_TYPE}. Requires the
+     * entity type to be registered already; for code paths that run during mod init before that point, use
+     * {@link #builder(ResourceLocation, ResourceLocation, String, LimbCategory)} with the id directly (or with a
+     * {@link BLibHolder#getResourceLocation()}).
+     */
     public static Builder builder(EntityType<?> entityType, ResourceLocation id, String rootBoneName, LimbCategory category) {
-        return new Builder(entityType, id, rootBoneName, category);
+        var entityTypeId = BuiltInRegistries.ENTITY_TYPE.getKey(Objects.requireNonNull(entityType, "entityType"));
+        return new Builder(entityTypeId, id, rootBoneName, category);
+    }
+
+    /**
+     * Convenience overload that extracts the entity type id from a {@link BLibHolder} without binding it. Lets callers
+     * register limbs at mod-init time when the underlying registry entry isn't resolved yet.
+     */
+    public static Builder builder(
+        BLibHolder<? extends EntityType<?>> entityTypeHolder,
+        ResourceLocation id,
+        String rootBoneName,
+        LimbCategory category
+    ) {
+        return new Builder(Objects.requireNonNull(entityTypeHolder, "entityTypeHolder").getResourceLocation(), id, rootBoneName, category);
     }
 
     public static final class Builder {
 
-        private final EntityType<?> entityType;
+        private final ResourceLocation entityTypeId;
 
         private final ResourceLocation id;
 
@@ -78,8 +109,8 @@ public record LimbDefinition(
 
         private boolean fatal = false;
 
-        private Builder(EntityType<?> entityType, ResourceLocation id, String rootBoneName, LimbCategory category) {
-            this.entityType = Objects.requireNonNull(entityType, "entityType");
+        private Builder(ResourceLocation entityTypeId, ResourceLocation id, String rootBoneName, LimbCategory category) {
+            this.entityTypeId = Objects.requireNonNull(entityTypeId, "entityTypeId");
             this.id = Objects.requireNonNull(id, "id");
             this.rootBoneName = Objects.requireNonNull(rootBoneName, "rootBoneName");
             this.category = Objects.requireNonNull(category, "category");
@@ -155,7 +186,6 @@ public record LimbDefinition(
         public LimbDefinition build() {
             var definition = new LimbDefinition(id, category, spawnOffsetProvider, fatal);
             var visuals = new LimbVisuals(rootBoneName, companionBoneNames, renderOffset, renderRotation, renderScale);
-            var entityTypeId = BuiltInRegistries.ENTITY_TYPE.getKey(entityType);
 
             LimbDefinitionRegistry.register(entityTypeId, definition);
             LimbVisualsRegistry.register(entityTypeId, id, visuals);

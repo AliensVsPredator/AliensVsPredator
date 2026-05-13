@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.blib.engine.modeler.history.ModelerAction;
 import com.blib.engine.modeler.history.ModelerActionHistory;
+import com.blib.engine.modeler.item.ModelerItemSession;
 import com.blib.engine.modeler.texture.LoadedTexture;
 import com.blib.engine.modeler.texture.TextureLoader;
 
@@ -63,6 +64,14 @@ public final class ModelerScene {
     public @Nullable Selection selection;
 
     /**
+     * When non-null, the modeler gizmo renderer and input target this selection instead of {@link #selection}.
+     * Inspector / outliner still read {@link #selection}, so the override is invisible to the rest of the UI. Used by
+     * the item-preview path to point the gizmo at {@link com.blib.engine.modeler.item.ModelerItemSession#gizmoShimBone}
+     * without confusing the inspector / outliner.
+     */
+    public @Nullable Selection gizmoTargetSelection;
+
+    /**
      * Cube currently under the mouse cursor in the viewport, refreshed each frame by
      * {@code ModelerViewportPanel.render}. Drives the hover outline the cube renderer draws so users can see what
      * they'd select before clicking. Null whenever the cursor isn't over a cube, isn't over the panel, or a gizmo drag
@@ -81,6 +90,14 @@ public final class ModelerScene {
      * cube faces and the UV map panel overlays it on the texture canvas.
      */
     public @Nullable LoadedTexture activeTexture;
+
+    /**
+     * Item-authoring session for the geo-bone item renderer. When non-null, the Inspector exposes the per-pose
+     * transform editor and the Viewport gains a "Preview as" picker. Transform data lives in the existing tuner
+     * ({@link com.blib.engine.gizmo.BLibItemTransformOverrides}), not here — this just tracks which item is attached
+     * and which fields the Inspector/Viewport currently target.
+     */
+    public @Nullable ModelerItemSession itemSession;
 
     /**
      * Pair of {@code (owner-bone, selected-cube)} when a cube is selected. Used by the gizmo system to rebuild the bone
@@ -263,6 +280,7 @@ public final class ModelerScene {
      */
     public void resetToEntity() {
         closeTextures();
+        this.itemSession = null;
         this.root = new ModelerBone("root");
         this.textureWidth = 64.0;
         this.textureHeight = 64.0;

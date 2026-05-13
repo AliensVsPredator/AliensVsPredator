@@ -97,6 +97,23 @@ public final class ModelerViewportPanel implements Panel {
 
     private @Nullable ModelerGizmoMode gizmoDragMode;
 
+    /**
+     * Item-transform drag baseline. Set at drag-start when the drag targets the modeler item-config shim bone (vs. a
+     * real scene bone) so the drag-end can push a {@link ModelerAction.ItemTransformMementoAction} keyed on the session
+     * slot the drag was authored against. Captured at start because the user could change
+     * {@code session.editingContext} / {@code session.mode} mid-drag in principle, and the memento must record the slot
+     * the user was editing.
+     */
+    private @Nullable ModelerAction.ItemTransformMemento gizmoDragItemBefore;
+
+    private @Nullable net.minecraft.resources.ResourceLocation gizmoDragItemId;
+
+    private @Nullable com.blib.api.client.render.v1.item.BLibItemTransformMode gizmoDragItemMode;
+
+    private @Nullable net.minecraft.world.item.ItemDisplayContext gizmoDragItemContext;
+
+    private boolean gizmoDragItemWallFixed;
+
     /** Panel rect captured at render time so click handlers can convert workspace coords → viewport-relative. */
     private int panelX, panelY, panelWidth, panelHeight;
 
@@ -153,6 +170,9 @@ public final class ModelerViewportPanel implements Panel {
         ModelerMenuBar.render(graphics, x, y, width, mouseX, mouseY);
         int toolbarY = y + ModelerMenuBar.HEIGHT;
         ModelerViewportToolbar.render(graphics, x, toolbarY);
+        // Preview-mode overlay (top-right) — visible whenever an item session is attached. Lets the user swap
+        // between the editable geo view and the per-context vanilla-render preview without leaving the viewport.
+        ModelerPreviewOverlay.render(graphics, x, width, toolbarY, scene.itemSession, mouseX, mouseY);
         // Navigation axis gizmo at the bottom-right — three labeled colored balls that follow the camera so the user
         // can read world orientation at a glance, and click an axis to snap the view orthogonally.
         ModelerAxisGizmo.render(graphics, x, y, width, height, scene.camera);
@@ -243,6 +263,11 @@ public final class ModelerViewportPanel implements Panel {
                 }
                 return true;
             }
+            // Preview-mode overlay (top-right) — clicked button opens the dropdown via the panel menu opener. Checked
+            // before toolbar / gizmo / axis-gizmo so the overlay always wins clicks in its rect.
+            if (ModelerPreviewOverlay.mouseClicked(mouseX, mouseY, menuOpener, ModelerScene.get().itemSession)) {
+                return true;
+            }
             // Toolbar takes priority — if the cursor is over a button, switch modes and consume the click so it
             // doesn't fall through to selection / gizmo picking.
             int toolbarY = panelY + ModelerMenuBar.HEIGHT;
@@ -283,8 +308,28 @@ public final class ModelerViewportPanel implements Panel {
                         gizmoDragBefore = ModelerAction.CubeMemento.of(startCube);
                     } else if (snapshot.isBone()) {
                         var startBone = snapshot.bone();
-                        gizmoDragBoneTarget = startBone;
-                        gizmoDragBoneBefore = ModelerAction.BoneMemento.of(startBone);
+                        // Distinguish a real bone-selection drag from an item-transform shim drag — when the bone is
+                        // the active session's shim, capture the override slot identity (mode/context/wallFixed) and
+                        // an ItemTransformMemento read straight from BLibItemTransformOverrides at drag-start. The
+                        // sync in ModelerItemPreviewRenderer keeps shim.{position,rotation,scale,pivot} in lockstep
+                        // with the override on entry, so the shim's drag-start fields ARE the before-transform.
+                        var session = ModelerScene.get().itemSession;
+                        if (session != null && startBone == session.gizmoShimBone) {
+                            var wall = session.wallFixedActive
+                                && session.editingContext == net.minecraft.world.item.ItemDisplayContext.FIXED;
+                            var current = wall
+                                ? com.blib.engine.gizmo.BLibItemTransformOverrides.getEffectiveWallFixed(session.itemId, session.mode)
+                                : com.blib.engine.gizmo.BLibItemTransformOverrides
+                                    .getEffective(session.itemId, session.mode, session.editingContext);
+                            gizmoDragItemBefore = ModelerAction.ItemTransformMemento.of(current);
+                            gizmoDragItemId = session.itemId;
+                            gizmoDragItemMode = session.mode;
+                            gizmoDragItemContext = session.editingContext;
+                            gizmoDragItemWallFixed = wall;
+                        } else {
+                            gizmoDragBoneTarget = startBone;
+                            gizmoDragBoneBefore = ModelerAction.BoneMemento.of(startBone);
+                        }
                     }
                     gizmoDragMode = drag.mode();
                 }
@@ -347,11 +392,21 @@ public final class ModelerViewportPanel implements Panel {
             var cubeTarget = gizmoDragTarget;
             var boneBefore = gizmoDragBoneBefore;
             var boneTarget = gizmoDragBoneTarget;
+            var itemBefore = gizmoDragItemBefore;
+            var itemId = gizmoDragItemId;
+            var itemMode = gizmoDragItemMode;
+            var itemContext = gizmoDragItemContext;
+            var itemWallFixed = gizmoDragItemWallFixed;
             var mode = gizmoDragMode;
             gizmoDragBefore = null;
             gizmoDragTarget = null;
             gizmoDragBoneBefore = null;
             gizmoDragBoneTarget = null;
+            gizmoDragItemBefore = null;
+            gizmoDragItemId = null;
+            gizmoDragItemMode = null;
+            gizmoDragItemContext = null;
+            gizmoDragItemWallFixed = false;
             gizmoDragMode = null;
             if (mode != null && cubeBefore != null && cubeTarget != null) {
                 var after = ModelerAction.CubeMemento.of(cubeTarget);
@@ -374,6 +429,43 @@ public final class ModelerViewportPanel implements Panel {
                         new ModelerAction.CubeMementoAction(typeId, description, System.currentTimeMillis(), cubeTarget, cubeBefore, after)
                     );
                 }
+            } else if (mode != null && itemBefore != null && itemId != null && itemMode != null && itemContext != null) {
+                // Item-transform drag — read the current effective transform back from the override (the gizmo sync
+                // already wrote shim → override each frame during the drag), build the after-memento, and push
+                // unless the drag was a no-op.
+                var current = itemWallFixed
+                    ? com.blib.engine.gizmo.BLibItemTransformOverrides.getEffectiveWallFixed(itemId, itemMode)
+                    : com.blib.engine.gizmo.BLibItemTransformOverrides.getEffective(itemId, itemMode, itemContext);
+                var after = ModelerAction.ItemTransformMemento.of(current);
+                if (after.differsFrom(itemBefore)) {
+                    var typeId = switch (mode) {
+                        case TRANSLATE -> "item_transform_translate";
+                        case ROTATE -> "item_transform_rotate";
+                        case SCALE -> "item_transform_scale";
+                        case PIVOT -> "item_transform_pivot";
+                        default -> "item_transform_edit";
+                    };
+                    var description = switch (mode) {
+                        case TRANSLATE -> "Translate " + itemId + " (" + itemContext.name().toLowerCase(java.util.Locale.ROOT) + ")";
+                        case ROTATE -> "Rotate " + itemId + " (" + itemContext.name().toLowerCase(java.util.Locale.ROOT) + ")";
+                        case SCALE -> "Scale " + itemId + " (" + itemContext.name().toLowerCase(java.util.Locale.ROOT) + ")";
+                        case PIVOT -> "Move pivot of " + itemId + " (" + itemContext.name().toLowerCase(java.util.Locale.ROOT) + ")";
+                        default -> "Edit " + itemId;
+                    };
+                    ModelerActionHistory.push(
+                        new ModelerAction.ItemTransformMementoAction(
+                            typeId,
+                            description,
+                            System.currentTimeMillis(),
+                            itemId,
+                            itemMode,
+                            itemContext,
+                            itemWallFixed,
+                            itemBefore,
+                            after
+                        )
+                    );
+                }
             } else if (mode != null && boneBefore != null && boneTarget != null) {
                 var after = ModelerAction.BoneMemento.of(boneTarget);
                 if (after.differsFrom(boneBefore)) {
@@ -381,12 +473,14 @@ public final class ModelerViewportPanel implements Panel {
                         case TRANSLATE -> "bone_translate";
                         case ROTATE -> "bone_rotate";
                         case PIVOT -> "bone_pivot";
+                        case SCALE -> "bone_scale";
                         default -> "bone_edit";
                     };
                     var description = switch (mode) {
                         case TRANSLATE -> "Translate bone " + boneTarget.name;
                         case ROTATE -> "Rotate bone " + boneTarget.name;
                         case PIVOT -> "Move pivot of bone " + boneTarget.name;
+                        case SCALE -> "Scale bone " + boneTarget.name;
                         default -> "Edit bone " + boneTarget.name;
                     };
                     ModelerActionHistory.push(

@@ -3,7 +3,6 @@ package com.blib.engine.platform;
 import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.engine.input.BLibKeyBindings;
-import com.blib.engine.render.gizmo.BLibGizmoPreviewRenderer;
 import com.blib.engine.session.EngineNavigation;
 
 /**
@@ -23,6 +22,5 @@ public final class EngineBootstrap {
     public static void install(EnginePlatform platform) {
         platform.registerClientTickEnd(EngineNavigation::tick);
         platform.registerKeyBinding(BLibKeyBindings.TOGGLE_ENGINE);
-        platform.registerHudRenderer(BLibGizmoPreviewRenderer::render);
     }
 }

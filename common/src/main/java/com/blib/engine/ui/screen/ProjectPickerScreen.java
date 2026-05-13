@@ -8,6 +8,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -503,7 +504,26 @@ public final class ProjectPickerScreen extends Screen {
         pendingOp = ProjectOp.CREATE;
         pendingProjectName = name;
         validationMessage = null;
-        BLib.MOD.networking().sendToServer(new C2SCreateProjectPayload(name, descriptionInput.content()));
+        var result = BLib.MOD.networking().sendToServer(new C2SCreateProjectPayload(name, descriptionInput.content()));
+        if (result.isErr()) {
+            // No server — title-screen flow. Create the project on the client side directly (creation is pure
+            // filesystem; no datapack-repo reload is needed since there's no world loaded). Mirrors the no-server
+            // fallback sendOpen uses for the same scenario, then simulates the success ack so the picker exits
+            // CREATE mode and the list refreshes.
+            try {
+                EngineProjectIO.createProject(name, descriptionInput.content());
+                ProjectSession.setAvailableProjects(EngineProjectIO.listProjects());
+                pendingOp = null;
+                pendingProjectName = null;
+                mode = Mode.LIST;
+                nameInput.setContent("");
+                descriptionInput.setContent("");
+            } catch (IllegalArgumentException | IOException e) {
+                pendingOp = null;
+                pendingProjectName = null;
+                validationMessage = e.getMessage() == null ? "Failed to create project" : e.getMessage();
+            }
+        }
     }
 
     private void sendOpen(String name) {

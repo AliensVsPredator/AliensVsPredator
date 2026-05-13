@@ -16,7 +16,9 @@ import com.blib.api.client.render.v1.item.BLibItemTransforms;
  * <ol>
  * <li>{@code translate(translation)} — moves the pose-stack origin to the configured anchor point.</li>
  * <li>{@code translate(pivot)} — shifts the pose-stack origin to the pivot point relative to that anchor.</li>
- * <li>{@code rotate(rotation)} — rotates around the pivot point. Euler XYZ order.</li>
+ * <li>{@code rotate(rotation)} — rotates around the pivot point. Z-Y-X intrinsic Euler (Bedrock convention, matching
+ * {@code ModelerTransforms.applyBone}). The modeler gizmos compose drag-math matrices in the same order so what you
+ * grab in the viewport is what you get when the item renders.</li>
  * <li>{@code scale(scale)} — scales around the pivot point.</li>
  * <li>{@code translate(-pivot)} — restores the pose-stack origin back to {@code translation} in the
  * now-rotated-and-scaled frame, so subsequent bone-walk transforms cascade from there.</li>
@@ -28,7 +30,8 @@ import com.blib.api.client.render.v1.item.BLibItemTransforms;
  * the rotation center to the bottom of a hat).
  *
  * @param translation Translation in model space (blocks, where 1.0 = 16 pixels at scale 1.0).
- * @param rotation    Rotation in degrees, applied as X then Y then Z.
+ * @param rotation    Rotation in degrees. Composed as Z-Y-X intrinsic (Bedrock convention, matches the modeler's bone
+ *                    math) so gizmo edits in the viewport apply 1:1 to the rendered orientation.
  * @param scale       Per-axis scale.
  * @param pivot       Offset from {@code translation} that rotation and scale are applied around.
  */
@@ -88,16 +91,19 @@ public record BLibTransform(
             poseStack.translate(pivot.x, pivot.y, pivot.z);
         }
 
-        if (rotation.x != 0) {
-            poseStack.mulPose(Axis.XP.rotationDegrees(rotation.x));
+        // Z-Y-X intrinsic — matches ModelerTransforms.applyBone exactly so the modeler gizmos (which build their
+        // drag-math rotation matrices as Rz·Ry·Rx) compose identically with what's rendered. One convention across
+        // entity-model editing and item-config editing, no per-frame conversion.
+        if (rotation.z != 0) {
+            poseStack.mulPose(Axis.ZP.rotationDegrees(rotation.z));
         }
 
         if (rotation.y != 0) {
             poseStack.mulPose(Axis.YP.rotationDegrees(rotation.y));
         }
 
-        if (rotation.z != 0) {
-            poseStack.mulPose(Axis.ZP.rotationDegrees(rotation.z));
+        if (rotation.x != 0) {
+            poseStack.mulPose(Axis.XP.rotationDegrees(rotation.x));
         }
 
         poseStack.scale(scale.x, scale.y, scale.z);

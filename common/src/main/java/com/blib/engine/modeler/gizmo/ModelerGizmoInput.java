@@ -121,6 +121,13 @@ public final class ModelerGizmoInput {
                     applyPivotTranslate(drag, panelCursorX, panelCursorY, panelW, panelH);
                 }
             }
+            case SCALE -> {
+                // SCALE is bone-only (cubes don't have a uniform scale field; their renderer early-returns in SCALE
+                // mode so no cube drag is reachable here).
+                if (bone) {
+                    applyBoneScale(drag, panelCursorX, panelCursorY, panelW, panelH);
+                }
+            }
             default -> {
                 /* OFF — no drag math to apply. */
             }
@@ -167,8 +174,8 @@ public final class ModelerGizmoInput {
         int h
     ) {
         return switch (mode) {
-            // PIVOT reuses the same axis-arrow handles as TRANSLATE; only the drag math differs.
-            case TRANSLATE, PIVOT -> pickAxisHandle(snapshot, cx, cy, w, h, TRANSLATE_PICK_THRESHOLD_PX);
+            // PIVOT / SCALE reuse the same axis-arrow handles as TRANSLATE; only the drag math differs.
+            case TRANSLATE, PIVOT, SCALE -> pickAxisHandle(snapshot, cx, cy, w, h, TRANSLATE_PICK_THRESHOLD_PX);
             case ROTATE -> pickRingHandle(snapshot, cx, cy, w, h);
             case RESIZE -> pickFaceHandle(snapshot, cx, cy, w, h);
             default -> null;
@@ -762,5 +769,29 @@ public final class ModelerGizmoInput {
         var startPos = baseline.position();
         bone.pivot = new Vec3(startPivot.x + dPivot.x, startPivot.y + dPivot.y, startPivot.z + dPivot.z);
         bone.position = new Vec3(startPos.x + dPos.x, startPos.y + dPos.y, startPos.z + dPos.z);
+    }
+
+    /**
+     * Bone SCALE — uniform scale derived from the cursor's travel along the dragged axis. The cursor travel maps
+     * through the same {@code axisDelta} helper as TRANSLATE, but the result is interpreted as a fractional scale
+     * adjustment rather than a position delta: {@code newScale = startScale + delta * 0.1f}, clamped to
+     * {@code [0.01, 100]} so a runaway drag can't degenerate the bone to zero or NaN.
+     * <p>
+     * Uniform — all three scale axes get the same value regardless of which arrow handle was grabbed. That's the "U"
+     * (uniform-scale) semantic; per-axis scaling would need three independent baselines and isn't a target of v1.
+     */
+    private static void applyBoneScale(ModelerGizmoState.DragState drag, double cx, double cy, int w, int h) {
+        var s = drag.startSnapshot();
+        var bone = s.bone();
+        var baseline = drag.startBone();
+        if (bone == null || baseline == null) {
+            return;
+        }
+        float delta = GizmoMath.axisDelta(s.geometry(), drag.axis(), drag.sign(), drag.startCursorX(), drag.startCursorY(), cx, cy, w, h);
+        // 0.1f maps a 1-unit gizmo arm drag to a 10% scale change — gives the user fine control on short drags.
+        var startScale = baseline.scale();
+        double startUniform = (startScale.x + startScale.y + startScale.z) / 3.0;
+        double newUniform = Math.max(0.01, Math.min(100.0, startUniform + delta * 0.1));
+        bone.scale = new Vec3(newUniform, newUniform, newUniform);
     }
 }

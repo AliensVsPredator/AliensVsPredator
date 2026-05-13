@@ -52,7 +52,8 @@ public final class ModelerViewportToolbar {
         ModelerGizmoMode.TRANSLATE,
         ModelerGizmoMode.ROTATE,
         ModelerGizmoMode.RESIZE,
-        ModelerGizmoMode.PIVOT };
+        ModelerGizmoMode.PIVOT,
+        ModelerGizmoMode.SCALE };
 
     private ModelerViewportToolbar() {}
 
@@ -137,6 +138,7 @@ public final class ModelerViewportToolbar {
             case ROTATE -> Component.literal("R");
             case RESIZE -> Component.literal("S");
             case PIVOT -> Component.literal("P");
+            case SCALE -> Component.literal("U");
         };
     }
 
@@ -152,6 +154,7 @@ public final class ModelerViewportToolbar {
             case ROTATE -> Component.literal("Rotate (R) — drag a ring to rotate the selected cube");
             case RESIZE -> Component.literal("Resize (S) — drag a face handle to grow or shrink the cube");
             case PIVOT -> Component.literal("Move pivot (P) — drag the arrows to move the rotation center; the cube body stays in place");
+            case SCALE -> Component.literal("Uniform scale (U) — drag any axis to scale bones / item transforms proportionally");
         };
     }
 

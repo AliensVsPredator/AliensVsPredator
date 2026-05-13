@@ -3,10 +3,7 @@ package com.blib.mod.common.registry.init;
 import net.minecraft.commands.Commands;
 import org.jetbrains.annotations.ApiStatus;
 
-import com.blib.api.BLibAPI;
-import com.blib.api.common.mod.v1.model.DistributionEnvironmentType;
 import com.blib.api.common.registry.v1.impl.BLibCommandRegistry;
-import com.blib.engine.command.BLibTransformTuneCommand;
 import com.blib.mod.BLib;
 import com.blib.mod.common.command.BLibPropertyCommands;
 import com.blib.mod.common.command.BLibReputationCommands;
@@ -21,14 +18,6 @@ public class BLibCommands {
             .requires(source -> source.hasPermission(2))
             .then(BLibReputationCommands.build())
             .then(BLibPropertyCommands.build());
-
-        // Debug-only: only register dev subcommands in development environments so they never ship with a production
-        // build. Op-level-2 gating from the parent already blocks survival players from typing it.
-        if (BLibAPI.isDevelopmentEnvironment()) {
-            if (BLibAPI.getDistributionType() == DistributionEnvironmentType.CLIENT) {
-                root = root.then(BLibTransformTuneCommand.build());
-            }
-        }
 
         REGISTRY.register(root);
     }

@@ -1,10 +1,16 @@
 package com.blib.engine.modeler.history;
 
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
+import org.joml.Vector3f;
 
 import java.util.List;
 
+import com.blib.api.client.render.v1.BLibTransform;
+import com.blib.api.client.render.v1.item.BLibItemTransformMode;
+import com.blib.engine.gizmo.BLibItemTransformOverrides;
 import com.blib.engine.modeler.ModelerBone;
 import com.blib.engine.modeler.ModelerCube;
 import com.blib.engine.modeler.ModelerScene;
@@ -21,7 +27,7 @@ import com.blib.mod.common.network.packet.ActionDescriptor;
  * still reference, so layered undo+redo across multiple actions stays coherent.
  */
 @ApiStatus.Internal
-public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, ModelerAction.BoneMementoAction, ModelerAction.CubeInsertAction, ModelerAction.CubeRemoveAction, ModelerAction.BoneRemoveAction, ModelerAction.CompositeAction {
+public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, ModelerAction.BoneMementoAction, ModelerAction.CubeInsertAction, ModelerAction.CubeRemoveAction, ModelerAction.BoneRemoveAction, ModelerAction.ItemTransformMementoAction, ModelerAction.CompositeAction {
 
     String typeId();
 
@@ -256,6 +262,80 @@ public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, M
             var sel = ModelerScene.get().selection;
             if (sel instanceof Selection.BoneSelection bs && bs.bone() == bone) {
                 ModelerScene.get().selection = null;
+            }
+        }
+    }
+
+    /**
+     * Snapshot of a {@link BLibTransform}'s four mutable {@link Vector3f}s, used as the before/after halves of
+     * {@link ItemTransformMementoAction}. Defensive-copies the inputs since {@link BLibTransform}'s vectors are mutable
+     * references shared across {@link BLibItemTransformOverrides} reads.
+     */
+    record ItemTransformMemento(
+        Vector3f translation,
+        Vector3f rotation,
+        Vector3f scale,
+        Vector3f pivot
+    ) {
+
+        public static ItemTransformMemento of(BLibTransform transform) {
+            return new ItemTransformMemento(
+                new Vector3f(transform.translation()),
+                new Vector3f(transform.rotation()),
+                new Vector3f(transform.scale()),
+                new Vector3f(transform.pivot())
+            );
+        }
+
+        public BLibTransform toTransform() {
+            return new BLibTransform(new Vector3f(translation), new Vector3f(rotation), new Vector3f(scale), new Vector3f(pivot));
+        }
+
+        public boolean differsFrom(ItemTransformMemento other) {
+            return !translation.equals(other.translation)
+                || !rotation.equals(other.rotation)
+                || !scale.equals(other.scale)
+                || !pivot.equals(other.pivot);
+        }
+    }
+
+    /**
+     * Field-level memento for {@link BLibTransform} edits made via the Modeler's item config — covers gizmo drags
+     * (translate/rotate/scale/pivot) in preview mode and Inspector text-field commits. The slot the transform lives in
+     * is identified by {@code (itemId, mode, context)} or {@code (itemId, mode, wallFixed)}; undo / redo apply the
+     * corresponding {@link BLibItemTransformOverrides#set} or {@link BLibItemTransformOverrides#setWallFixed}.
+     * <p>
+     * {@link #wallFixed} disambiguates the regular {@code FIXED} slot from the wall-fixed slot; when true,
+     * {@link #context} is implicitly {@link ItemDisplayContext#FIXED} and the wall-fixed setter is used instead.
+     */
+    record ItemTransformMementoAction(
+        String typeId,
+        String description,
+        long timestamp,
+        ResourceLocation itemId,
+        BLibItemTransformMode mode,
+        ItemDisplayContext context,
+        boolean wallFixed,
+        ItemTransformMemento before,
+        ItemTransformMemento after
+    ) implements ModelerAction {
+
+        @Override
+        public void undo() {
+            applyTransform(before);
+        }
+
+        @Override
+        public void redo() {
+            applyTransform(after);
+        }
+
+        private void applyTransform(ItemTransformMemento memento) {
+            var transform = memento.toTransform();
+            if (wallFixed) {
+                BLibItemTransformOverrides.setWallFixed(itemId, mode, transform);
+            } else {
+                BLibItemTransformOverrides.set(itemId, mode, context, transform);
             }
         }
     }

@@ -12,7 +12,6 @@
     "MixinKeyboardInput_Engine",
     "MixinMinecraft_Engine",
     "MixinMinecraft_EngineScreenRedirect",
-    "MixinMouseHandler_Gizmo",
     "MixinScreen_EngineSkipBlur"
   ],
   "server": [],
