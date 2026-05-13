@@ -15,6 +15,7 @@ import com.blib.engine.modeler.ModelerPicker;
 import com.blib.engine.modeler.ModelerRecentFiles;
 import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.ModelerSceneLoader;
+import com.blib.engine.modeler.ModelerTransformOps;
 import com.blib.engine.modeler.Selection;
 import com.blib.engine.modeler.gizmo.ModelerGizmoInput;
 import com.blib.engine.modeler.gizmo.ModelerGizmoMode;
@@ -127,10 +128,13 @@ public final class ModelerViewportPanel implements Panel {
         ModelerMenuBar.render(graphics, x, y, width, mouseX, mouseY);
         int toolbarY = y + ModelerMenuBar.HEIGHT;
         ModelerViewportToolbar.render(graphics, x, toolbarY);
+        // Navigation axis gizmo at the bottom-right — three labeled colored balls that follow the camera so the user
+        // can read world orientation at a glance, and click an axis to snap the view orthogonally.
+        ModelerAxisGizmo.render(graphics, x, y, width, height, scene.camera);
 
-        // Toolbar tooltips. Refresh after toolbar render so the hit-test is against the rects just drawn this frame
-        // (panel resize / layout changes are picked up on the same frame). Suppressed during gizmo drag — the user
-        // is busy manipulating, not exploring controls.
+        // Toolbar / axis-gizmo tooltips. Refresh after the overlays render so the hit-test is against the rects just
+        // drawn this frame (panel resize / layout changes are picked up on the same frame). Suppressed during gizmo
+        // drag — the user is busy manipulating, not exploring controls.
         hoveredTooltip = null;
         if (!gizmoDragActive) {
             var modeHover = ModelerViewportToolbar.hitTestMode(mouseX, mouseY, x, toolbarY);
@@ -138,6 +142,11 @@ public final class ModelerViewportPanel implements Panel {
                 hoveredTooltip = ModelerViewportToolbar.tooltipForMode(modeHover);
             } else if (ModelerViewportToolbar.hitTestFrame(mouseX, mouseY, x, toolbarY)) {
                 hoveredTooltip = ModelerViewportToolbar.tooltipForFrame();
+            } else {
+                var axisHover = ModelerAxisGizmo.hitTest(mouseX, mouseY, x, y, width, height, scene.camera);
+                if (axisHover != null) {
+                    hoveredTooltip = ModelerAxisGizmo.tooltipFor(axisHover);
+                }
             }
         }
     }
@@ -221,6 +230,14 @@ public final class ModelerViewportPanel implements Panel {
             // redesign.
             if (ModelerViewportToolbar.hitTestFrame(mouseX, mouseY, panelX, toolbarY)) {
                 ModelerGizmoState.setFrame(ModelerGizmoState.frame().next());
+                return true;
+            }
+            // Navigation axis gizmo (bottom-right) — click on an axis ball snaps the camera to look down that axis.
+            // Checked before gizmo-handle picking so the bottom-right overlay always wins clicks against any handle
+            // that happens to project to the same area.
+            var axisHit = ModelerAxisGizmo.hitTest(mouseX, mouseY, panelX, panelY, panelWidth, panelHeight, ModelerScene.get().camera);
+            if (axisHit != null) {
+                ModelerAxisGizmo.snapCamera(ModelerScene.get().camera, axisHit);
                 return true;
             }
 
@@ -411,8 +428,92 @@ public final class ModelerViewportPanel implements Panel {
                 items.add(new DropdownMenu.Item("Open Model", ModelerViewportPanel::openGeoModelFromFile));
                 yield new DropdownMenu(anchorX, anchorY, items);
             }
+            case ModelerMenuBar.CHIP_TRANSFORM -> {
+                var items = new java.util.ArrayList<DropdownMenu.Item>();
+                items.add(new DropdownMenu.Item("Rotate", () -> {}, buildRotateSubmenu()));
+                items.add(new DropdownMenu.Item("Flip", () -> {}, buildFlipSubmenu()));
+                items.add(new DropdownMenu.Item("Center", () -> {}, buildCenterSubmenu()));
+                yield new DropdownMenu(anchorX, anchorY, items);
+            }
             default -> null;
         };
+    }
+
+    /**
+     * "Rotate" submenu — two entries per axis (+90 and -90). The hand-written labels include the degree symbol so the
+     * dropdown reads as a precise gesture rather than an ambiguous direction toggle.
+     */
+    private static java.util.List<DropdownMenu.Item> buildRotateSubmenu() {
+        return java.util.List
+            .of(
+                new DropdownMenu.Item(
+                    "+90° around X",
+                    () -> ModelerTransformOps.rotate(ModelerTransformOps.Axis.X, 90)
+                ),
+                new DropdownMenu.Item(
+                    "-90° around X",
+                    () -> ModelerTransformOps.rotate(ModelerTransformOps.Axis.X, -90)
+                ),
+                new DropdownMenu.Item(
+                    "+90° around Y",
+                    () -> ModelerTransformOps.rotate(ModelerTransformOps.Axis.Y, 90)
+                ),
+                new DropdownMenu.Item(
+                    "-90° around Y",
+                    () -> ModelerTransformOps.rotate(ModelerTransformOps.Axis.Y, -90)
+                ),
+                new DropdownMenu.Item(
+                    "+90° around Z",
+                    () -> ModelerTransformOps.rotate(ModelerTransformOps.Axis.Z, 90)
+                ),
+                new DropdownMenu.Item(
+                    "-90° around Z",
+                    () -> ModelerTransformOps.rotate(ModelerTransformOps.Axis.Z, -90)
+                )
+            );
+    }
+
+    /** "Flip" submenu — one entry per axis. */
+    private static java.util.List<DropdownMenu.Item> buildFlipSubmenu() {
+        return java.util.List
+            .of(
+                new DropdownMenu.Item(
+                    "Flip across X",
+                    () -> ModelerTransformOps.flip(ModelerTransformOps.Axis.X)
+                ),
+                new DropdownMenu.Item(
+                    "Flip across Y",
+                    () -> ModelerTransformOps.flip(ModelerTransformOps.Axis.Y)
+                ),
+                new DropdownMenu.Item(
+                    "Flip across Z",
+                    () -> ModelerTransformOps.flip(ModelerTransformOps.Axis.Z)
+                )
+            );
+    }
+
+    /**
+     * "Center" submenu — per-axis entries plus the lateral combo (X + Z). The lateral option exists because entity
+     * authors often want a footprint centered on origin while keeping the model's vertical placement (feet on the
+     * ground, head reaching upward) — neither a per-axis option nor a full-3D center captures that ergonomically.
+     */
+    private static java.util.List<DropdownMenu.Item> buildCenterSubmenu() {
+        return java.util.List
+            .of(
+                new DropdownMenu.Item(
+                    "Center on X",
+                    () -> ModelerTransformOps.center(ModelerTransformOps.Axis.X)
+                ),
+                new DropdownMenu.Item(
+                    "Center on Y",
+                    () -> ModelerTransformOps.center(ModelerTransformOps.Axis.Y)
+                ),
+                new DropdownMenu.Item(
+                    "Center on Z",
+                    () -> ModelerTransformOps.center(ModelerTransformOps.Axis.Z)
+                ),
+                new DropdownMenu.Item("Center laterally (X + Z)", ModelerTransformOps::centerLateral)
+            );
     }
 
     /**

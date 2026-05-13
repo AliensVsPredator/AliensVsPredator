@@ -19,7 +19,7 @@ import com.blib.mod.common.network.packet.ActionDescriptor;
  * still reference, so layered undo+redo across multiple actions stays coherent.
  */
 @ApiStatus.Internal
-public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, ModelerAction.BoneMementoAction, ModelerAction.CubeInsertAction, ModelerAction.CubeRemoveAction, ModelerAction.BoneRemoveAction {
+public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, ModelerAction.BoneMementoAction, ModelerAction.CubeInsertAction, ModelerAction.CubeRemoveAction, ModelerAction.BoneRemoveAction, ModelerAction.CompositeAction {
 
     String typeId();
 
@@ -239,6 +239,34 @@ public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, M
             var sel = ModelerScene.get().selection;
             if (sel instanceof Selection.BoneSelection bs && bs.bone() == bone) {
                 ModelerScene.get().selection = null;
+            }
+        }
+    }
+
+    /**
+     * Bundle of inner actions applied + reverted as a unit. Used by gestures that touch many bones / cubes at once
+     * (whole-model flips, batched property edits) so undo and redo round-trip the entire gesture rather than walking
+     * through every individual field change. Children apply in list order on redo; undo reverses so layered changes
+     * unwind correctly.
+     */
+    record CompositeAction(
+        String typeId,
+        String description,
+        long timestamp,
+        java.util.List<ModelerAction> children
+    ) implements ModelerAction {
+
+        @Override
+        public void undo() {
+            for (var i = children.size() - 1; i >= 0; i--) {
+                children.get(i).undo();
+            }
+        }
+
+        @Override
+        public void redo() {
+            for (var child : children) {
+                child.redo();
             }
         }
     }

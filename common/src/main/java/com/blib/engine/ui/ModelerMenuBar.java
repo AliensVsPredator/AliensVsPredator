@@ -25,7 +25,9 @@ public final class ModelerMenuBar {
 
     public static final String CHIP_FILE = "File";
 
-    private static final String[] CHIPS = { CHIP_FILE };
+    public static final String CHIP_TRANSFORM = "Transform";
+
+    private static final String[] CHIPS = { CHIP_FILE, CHIP_TRANSFORM };
 
     // Color + spacing constants are intentionally identical to {@link MenuBarPanel} — the two menu bars must read as
     // the same control type. If the global bar ever drifts visually, update both together (or move the constants to
