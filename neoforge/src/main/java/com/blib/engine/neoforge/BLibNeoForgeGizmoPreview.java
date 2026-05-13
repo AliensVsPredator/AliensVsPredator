@@ -4,7 +4,7 @@ import net.neoforged.neoforge.client.event.RenderGuiEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.ApiStatus;
 
-import com.blib.engine.gizmo.BLibGizmoPreviewRenderer;
+import com.blib.engine.render.gizmo.BLibGizmoPreviewRenderer;
 
 @ApiStatus.Internal
 public final class BLibNeoForgeGizmoPreview {

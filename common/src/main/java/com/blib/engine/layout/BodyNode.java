@@ -4,16 +4,16 @@ import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
 
-import com.blib.engine.ui.Orientation;
+import com.blib.engine.ui.dock.Orientation;
 
 /**
- * Immutable, serializable mirror of {@link com.blib.engine.ui.DockNode} for the editable body subtree of a layout. The
- * outer trim (menu / toolbar / status bars) is always rebuilt by {@code EngineWorkspaceScreen.buildOuterLayout} on load
- * and never appears here.
+ * Immutable, serializable mirror of {@link com.blib.engine.ui.dock.DockNode} for the editable body subtree of a layout.
+ * The outer trim (menu / toolbar / status bars) is always rebuilt by {@code EngineWorkspaceScreen.buildOuterLayout} on
+ * load and never appears here.
  * <p>
- * Body invariant: every leaf in the live tree wraps a {@link com.blib.engine.ui.TabbedPanel}, so {@link Leaf} stores a
- * tab-id list rather than a single panel id. A non-tabbed leaf doesn't exist in the body — single-panel state is a
- * {@link Leaf} with one entry in {@link Leaf#tabs}.
+ * Body invariant: every leaf in the live tree wraps a {@link com.blib.engine.ui.dock.TabbedPanel}, so {@link Leaf}
+ * stores a tab-id list rather than a single panel id. A non-tabbed leaf doesn't exist in the body — single-panel state
+ * is a {@link Leaf} with one entry in {@link Leaf#tabs}.
  * <p>
  * {@link Split#orientation} is stored as a string ({@code "HORIZONTAL"} / {@code "VERTICAL"}) for forward-compatibility
  * and hand-editability of the JSON; the runtime conversion to {@link Orientation} happens during hydrate.

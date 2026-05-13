@@ -2,7 +2,7 @@ package com.blib.engine.layout;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import com.blib.engine.ui.Sizing;
+import com.blib.engine.ui.dock.Sizing;
 
 /**
  * Immutable, serializable mirror of {@link Sizing}. Exists so persisted layouts can capture a snapshot of the live

@@ -19,10 +19,10 @@ import com.blib.engine.session.EngineSession;
  * viewport. Lives outside {@link com.blib.engine.session.EngineNavigation} because placement isn't a navigation
  * concern, but reuses the same camera-ray math under the hood.
  * <p>
- * Two pieces of state are stitched together each frame: the {@link com.blib.engine.ui.ViewportPanel}'s rect (published
- * via {@link #updateViewportRect}) and the global mouse position (via {@link Minecraft#mouseHandler}). When both are
- * known and the cursor is inside the viewport, a clip ray is cast from the engine camera to find the hit block; the
- * placement anchor is the block on the hit face (the standard "place on surface" position).
+ * Two pieces of state are stitched together each frame: the {@link com.blib.engine.ui.panel.viewport.ViewportPanel}'s
+ * rect (published via {@link #updateViewportRect}) and the global mouse position (via {@link Minecraft#mouseHandler}).
+ * When both are known and the cursor is inside the viewport, a clip ray is cast from the engine camera to find the hit
+ * block; the placement anchor is the block on the hit face (the standard "place on surface" position).
  */
 @ApiStatus.Internal
 public final class JigsawPlacementCursor {

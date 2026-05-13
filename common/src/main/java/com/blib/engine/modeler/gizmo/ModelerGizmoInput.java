@@ -7,6 +7,7 @@ import org.joml.Vector3f;
 
 import com.blib.engine.gizmo.GizmoMath;
 import com.blib.engine.modeler.ModelerCube;
+import com.blib.engine.render.modeler.ModelerGizmoRenderer;
 
 /**
  * Picking + drag logic for the modeler gizmo. Stateless; reads/writes {@link ModelerGizmoState} and mutates the

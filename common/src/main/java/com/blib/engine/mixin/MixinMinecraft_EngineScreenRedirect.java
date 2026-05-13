@@ -8,8 +8,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.blib.engine.platform.spi.EngineRenderState;
 import com.blib.engine.ui.EngineWorkspaceScreen;
-import com.blib.engine.ui.ProjectPickerScreen;
+import com.blib.engine.ui.screen.ProjectPickerScreen;
 
 /**
  * While the engine workspace is open in menu-overlay mode, intercept {@link Minecraft#setScreen(Screen)} and redirect
@@ -33,7 +34,7 @@ public abstract class MixinMinecraft_EngineScreenRedirect {
         if (!engine.isWrappingScreen()) {
             return;
         }
-        if (EngineWorkspaceScreen.isPreparingToClose()) {
+        if (EngineRenderState.isPreparingToClose()) {
             return;
         }
         if (guiScreen == engine) {

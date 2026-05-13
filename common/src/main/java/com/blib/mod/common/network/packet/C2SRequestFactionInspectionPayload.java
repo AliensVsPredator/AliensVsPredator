@@ -11,7 +11,7 @@ import com.blib.mod.BLib;
 
 /**
  * Client → server: ask for one faction's full editable state. Triggered by the universal Inspector when a
- * {@link com.blib.engine.selection.FactionSelectable} becomes the active selection. Reply is
+ * {@link com.blib.engine.domain.selection.picking.FactionSelectable} becomes the active selection. Reply is
  * {@link S2CFactionInspectionPayload}.
  */
 public record C2SRequestFactionInspectionPayload(ResourceLocation factionId) implements CustomPacketPayload {

@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.blib.engine.ui.EngineWorkspaceScreen;
+import com.blib.engine.platform.spi.EngineRenderState;
 
 /**
  * Skip {@link Screen#renderBlurredBackground} while the engine is rendering a wrapped menu screen into its offscreen
@@ -24,7 +24,7 @@ public abstract class MixinScreen_EngineSkipBlur {
 
     @Inject(method = "renderBlurredBackground", at = @At("HEAD"), cancellable = true)
     private void blib$skipBlurInWrappedRender(float partialTick, CallbackInfo ci) {
-        if (EngineWorkspaceScreen.isInWrappedScreenRender()) {
+        if (EngineRenderState.isInWrappedScreenRender()) {
             ci.cancel();
         }
     }

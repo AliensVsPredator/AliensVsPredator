@@ -10,8 +10,11 @@ import org.jetbrains.annotations.Nullable;
 
 import com.blib.api.common.dismemberment.v1.Dismemberable;
 import com.blib.api.common.dismemberment.v1.LimbDismemberer;
-import com.blib.engine.blockselection.BlockSelection;
-import com.blib.engine.blockselection.BlockSelectionOps;
+import com.blib.engine.command.api.Command;
+import com.blib.engine.command.api.CommandBus;
+import com.blib.engine.domain.selection.picking.SelectionManager;
+import com.blib.engine.domain.selection.volume.BlockSelection;
+import com.blib.engine.domain.selection.volume.BlockSelectionOps;
 import com.blib.engine.input.ActiveKeybindings;
 import com.blib.engine.input.KeybindingProfile;
 import com.blib.engine.input.KeybindingProfileCatalog;
@@ -32,21 +35,41 @@ import com.blib.engine.layout.LayoutSnapshot;
 import com.blib.engine.layout.LayoutTemplate;
 import com.blib.engine.layout.PanelRegistry;
 import com.blib.engine.modeler.ModelerScene;
-import com.blib.engine.selection.SelectionManager;
+import com.blib.engine.platform.spi.EngineRenderState;
 import com.blib.engine.session.EngineMode;
 import com.blib.engine.session.NavigationMode;
 import com.blib.engine.session.ProjectSession;
 import com.blib.engine.spawn.EntitySpawnSelection;
-import com.blib.mod.BLib;
-import com.blib.mod.common.network.packet.C2SDeleteProjectPayload;
-import com.blib.mod.common.network.packet.C2SDismemberAllLimbsPayload;
-import com.blib.mod.common.network.packet.C2SDismemberLimbPayload;
-import com.blib.mod.common.network.packet.C2SGOAPTrackPayload;
-import com.blib.mod.common.network.packet.C2SRedoActionPayload;
-import com.blib.mod.common.network.packet.C2SReloadProjectPayload;
-import com.blib.mod.common.network.packet.C2SRemoveEntityPayload;
-import com.blib.mod.common.network.packet.C2SRequestFactionDirectoryPayload;
-import com.blib.mod.common.network.packet.C2SUndoActionPayload;
+import com.blib.engine.ui.dialog.CaptureDialog;
+import com.blib.engine.ui.dialog.ConfirmDialog;
+import com.blib.engine.ui.dialog.LayoutNameDialog;
+import com.blib.engine.ui.dialog.ManageLayoutsDialog;
+import com.blib.engine.ui.dialog.PreferencesDialog;
+import com.blib.engine.ui.dock.DockNode;
+import com.blib.engine.ui.dock.Orientation;
+import com.blib.engine.ui.dock.Panel;
+import com.blib.engine.ui.dock.PanelChrome;
+import com.blib.engine.ui.dock.Sizing;
+import com.blib.engine.ui.dock.TabbedPanel;
+import com.blib.engine.ui.panel.chrome.MenuBarPanel;
+import com.blib.engine.ui.panel.chrome.ModelerMenuBar;
+import com.blib.engine.ui.panel.chrome.StatusBarPanel;
+import com.blib.engine.ui.panel.details.GOAPDetailsPanel;
+import com.blib.engine.ui.panel.details.ModelerInspectorPanel;
+import com.blib.engine.ui.panel.outliner.ModelerOutlinerPanel;
+import com.blib.engine.ui.panel.viewport.ModelerViewportPanel;
+import com.blib.engine.ui.panel.viewport.ViewportPanel;
+import com.blib.engine.ui.popup.FactionManagePopup;
+import com.blib.engine.ui.popup.HslColorPickerPopup;
+import com.blib.engine.ui.screen.ProjectPickerScreen;
+import com.blib.engine.ui.widget.DropdownMenu;
+import com.blib.engine.ui.widget.SearchableSelect;
+import com.blib.engine.ui.widget.TextInput;
+import com.blib.engine.ui.workspace.dock.DividerDragController;
+import com.blib.engine.ui.workspace.dock.DockTreeHitTest;
+import com.blib.engine.ui.workspace.dock.DockTreeMutator;
+import com.blib.engine.ui.workspace.dock.TabDragController;
+import com.blib.engine.ui.workspace.modal.ModalStack;
 
 /**
  * Top-level editor screen for the BLib Engine. The viewport is divided into a tree of docked regions by a
@@ -103,12 +126,6 @@ public final class EngineWorkspaceScreen extends Screen {
     public static final int DIVIDER_HIT_PX = 2;
 
     /**
-     * Floor on any panel size during a divider drag (logical pixels). Prevents the user from collapsing a panel to zero
-     * width / height where it would be unrecoverable without resetting the workspace.
-     */
-    private static final int MIN_PANEL_SIZE_PX = 24;
-
-    /**
      * Squared cursor-motion threshold (logical pixels) to promote a pending tab click into an active drag. Below this,
      * a press-and-release on a tab is just an "activate this tab" click.
      */
@@ -157,10 +174,10 @@ public final class EngineWorkspaceScreen extends Screen {
     private @Nullable Screen wrappedScreen;
 
     /**
-     * Set true around the explicit close path ({@link #closeEngine}) so the setScreen redirect mixin lets the call pass
-     * through to vanilla rather than re-wrapping the new screen.
+     * Mixin-visible render-state flags ({@code preparingToClose}, {@code inWrappedScreenRender}) now live on
+     * {@link EngineRenderState} so the mixin layer can import a narrow SPI instead of this whole screen class. The
+     * screen still drives the flags; mixins read them via the SPI.
      */
-    private static volatile boolean preparingToClose;
 
     /**
      * Tracks whether {@link #wrappedScreen}'s {@code added()} / {@code init()} lifecycle has fired since it became the
@@ -171,25 +188,11 @@ public final class EngineWorkspaceScreen extends Screen {
      */
     private boolean wrappedScreenAdded;
 
-    /**
-     * Set true around the wrapped screen's render pass so {@code MixinScreen_EngineSkipBlur} can detect it and skip
-     * {@link net.minecraft.client.gui.screens.Screen#renderBlurredBackground} — that vanilla method ends with
-     * {@code mainRT.bindWrite(false)}, which silently swaps our offscreen RT out from under the wrapped screen mid
-     * render and sends every widget / text draw to the main RT instead. Skipping is fine because the blur targets the
-     * main RT, which we don't composit; the panorama backdrop already serves as the menu-mode visual.
-     */
-    private static volatile boolean inWrappedScreenRender;
-
-    /** Read by {@code MixinScreen_EngineSkipBlur}. True while {@link #render} is mid-wrappedScreen-pass. */
-    public static boolean isInWrappedScreenRender() {
-        return inWrappedScreenRender;
-    }
-
     private DockNode root;
 
-    private @Nullable ActiveDrag activeDrag;
+    private final DividerDragController dragController = new DividerDragController();
 
-    private @Nullable TabDrag tabDrag;
+    private @Nullable TabDragController.Drag tabDrag;
 
     private @Nullable DropdownMenu openMenu;
 
@@ -239,16 +242,11 @@ public final class EngineWorkspaceScreen extends Screen {
     // ---------------------------------------------------------------------------------------------
     // Modal z-order tracking
     //
-    // Every modal dialog field above is also tracked in {@link #modalOrder} — an ordered list of tags representing the
-    // open-time sequence so render + input dispatch can route to the topmost one. Without this, opening a confirm
-    // sub-dialog from a parent modal (e.g. Delete Profile from PreferencesDialog) renders the confirm UNDERNEATH the
-    // parent because the parent's render check fires later in the static if-chain.
-    //
-    // We don't require open/close sites to touch {@code modalOrder} explicitly — {@link #syncModalOrder} runs at the
-    // top of every render and diffs the field state against the last-known state. Newly-set fields get appended to the
-    // top of the stack; newly-cleared fields get removed. Re-opening a closed modal pushes it to the top again. This
-    // means callers can keep doing {@code this.fooDialog = new FooDialog(...)} / {@code = null} without coupling to
-    // the stack.
+    // Each dialog field above is registered with {@link #modalStack}; the stack reconciles itself against the field
+    // state each frame so callers can keep doing {@code this.fooDialog = new FooDialog(...)} / {@code = null} without
+    // touching the stack. Render and input dispatch consult {@link ModalStack#top()} to route to the topmost open
+    // dialog, which is essential when a child modal (e.g. a Confirm from inside Preferences) needs to sit on top of
+    // its parent.
     // ---------------------------------------------------------------------------------------------
 
     private static final String MODAL_CONFIRM = "confirm";
@@ -261,57 +259,20 @@ public final class EngineWorkspaceScreen extends Screen {
 
     private static final String MODAL_PREFERENCES = "preferences";
 
-    private final java.util.List<String> modalOrder = new java.util.ArrayList<>();
+    private final ModalStack modalStack = new ModalStack();
 
-    private boolean lastConfirmOpen;
+    private final CommandBus commands = new CommandBus();
 
-    private boolean lastCaptureOpen;
-
-    private boolean lastLayoutNameOpen;
-
-    private boolean lastManageLayoutsOpen;
-
-    private boolean lastPreferencesOpen;
-
-    /**
-     * Reconcile {@link #modalOrder} with the current dialog-field state. Call at the top of every render frame and
-     * before any input-dispatch pass that consults the stack — both check for transitions since the last call and
-     * append newly-opened modals to the top of the stack, or remove newly-closed ones.
-     */
-    private void syncModalOrder() {
-        syncOne(MODAL_CONFIRM, confirmDialog != null, lastConfirmOpen);
-        lastConfirmOpen = confirmDialog != null;
-        syncOne(MODAL_CAPTURE, captureDialog != null, lastCaptureOpen);
-        lastCaptureOpen = captureDialog != null;
-        syncOne(MODAL_LAYOUT_NAME, layoutNameDialog != null, lastLayoutNameOpen);
-        lastLayoutNameOpen = layoutNameDialog != null;
-        syncOne(MODAL_MANAGE_LAYOUTS, manageLayoutsDialog != null, lastManageLayoutsOpen);
-        lastManageLayoutsOpen = manageLayoutsDialog != null;
-        syncOne(MODAL_PREFERENCES, preferencesDialog != null, lastPreferencesOpen);
-        lastPreferencesOpen = preferencesDialog != null;
-    }
-
-    private void syncOne(String tag, boolean openNow, boolean openLast) {
-        if (openNow && !openLast) {
-            // Newly opened — push to top.
-            modalOrder.remove(tag);
-            modalOrder.add(tag);
-        } else if (!openNow && openLast) {
-            modalOrder.remove(tag);
-        }
-    }
-
-    private boolean isAnyModalOpen() {
-        return confirmDialog != null
-            || captureDialog != null
-            || layoutNameDialog != null
-            || manageLayoutsDialog != null
-            || preferencesDialog != null;
+    {
+        modalStack.register(MODAL_CONFIRM, () -> confirmDialog != null);
+        modalStack.register(MODAL_CAPTURE, () -> captureDialog != null);
+        modalStack.register(MODAL_LAYOUT_NAME, () -> layoutNameDialog != null);
+        modalStack.register(MODAL_MANAGE_LAYOUTS, () -> manageLayoutsDialog != null);
+        modalStack.register(MODAL_PREFERENCES, () -> preferencesDialog != null);
     }
 
     private @Nullable String topModalTag() {
-        syncModalOrder();
-        return modalOrder.isEmpty() ? null : modalOrder.get(modalOrder.size() - 1);
+        return modalStack.top();
     }
 
     /**
@@ -412,7 +373,7 @@ public final class EngineWorkspaceScreen extends Screen {
         // ClientFactionDirectoryCache and falls back to grey when the cache is empty. The Faction Browser panel
         // also requests this on show, but it isn't part of every layout (default doesn't include it), so without
         // this kick the overlay stays grey until the user opens that panel. The cache is cleared in removed().
-        BLib.MOD.networking().sendToServer(C2SRequestFactionDirectoryPayload.INSTANCE);
+        commands.dispatch(new Command.RequestFactionDirectory());
 
         var bodyRoot = loadActiveLayoutBody();
         this.root = buildOuterLayout(bodyRoot);
@@ -649,9 +610,13 @@ public final class EngineWorkspaceScreen extends Screen {
         return wrappedScreen != null;
     }
 
-    /** Used by the setScreen redirect mixin to recognise the explicit close path and stand down. */
+    /**
+     * Used by the setScreen redirect mixin to recognise the explicit close path and stand down. Backed by
+     * {@link EngineRenderState#isPreparingToClose()} — exposed here as a shim so existing call sites within the screen
+     * keep working unchanged.
+     */
     public static boolean isPreparingToClose() {
-        return preparingToClose;
+        return EngineRenderState.isPreparingToClose();
     }
 
     /**
@@ -701,11 +666,11 @@ public final class EngineWorkspaceScreen extends Screen {
      * substitutes a fresh TitleScreen. Wired to the Project menu's "Close Engine" item.
      */
     public static void closeEngine() {
-        preparingToClose = true;
+        EngineRenderState.setPreparingToClose(true);
         try {
             Minecraft.getInstance().setScreen(null);
         } finally {
-            preparingToClose = false;
+            EngineRenderState.setPreparingToClose(false);
         }
     }
 
@@ -794,12 +759,12 @@ public final class EngineWorkspaceScreen extends Screen {
             var mc = Minecraft.getInstance();
             var mainRT = mc.getMainRenderTarget();
             EngineWorkspaceCompositor.bindWrappedScreenTarget();
-            inWrappedScreenRender = true;
+            EngineRenderState.setInWrappedScreenRender(true);
             try {
                 wrappedScreen.renderWithTooltip(graphics, wrappedMouseX, wrappedMouseY, partialTick);
                 graphics.flush();
             } finally {
-                inWrappedScreenRender = false;
+                EngineRenderState.setInWrappedScreenRender(false);
                 mainRT.bindWrite(true);
             }
         }
@@ -863,7 +828,7 @@ public final class EngineWorkspaceScreen extends Screen {
             panelMouseY = OFFSCREEN_MOUSE;
         }
         // Any modal dialog suppresses panel hover state.
-        if (isAnyModalOpen()) {
+        if (modalStack.isAnyOpen()) {
             panelMouseX = OFFSCREEN_MOUSE;
             panelMouseY = OFFSCREEN_MOUSE;
         }
@@ -880,10 +845,9 @@ public final class EngineWorkspaceScreen extends Screen {
             openSubmenu.render(graphics, logicalMouseX, logicalMouseY);
         }
         // Render modals in open-order so a child dialog (e.g. a Delete-Profile confirm spawned from PreferencesDialog)
-        // sits on top of its parent. The order is reconciled with field state by syncModalOrder so individual open /
-        // close sites don't need to push or pop manually.
-        syncModalOrder();
-        for (var tag : modalOrder) {
+        // sits on top of its parent. The order is reconciled with field state by {@link ModalStack#sync()} so
+        // individual open / close sites don't need to push or pop manually.
+        for (var tag : modalStack.order()) {
             switch (tag) {
                 case MODAL_CONFIRM -> {
                     if (confirmDialog != null) {
@@ -956,7 +920,7 @@ public final class EngineWorkspaceScreen extends Screen {
     private void renderHoverTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
         var overMenu = (openMenu != null && openMenu.isInside(mouseX, mouseY))
             || (openSubmenu != null && openSubmenu.isInside(mouseX, mouseY));
-        if (overMenu || activeDrag != null || (tabDrag != null && tabDrag.active)) {
+        if (overMenu || dragController.isActive() || (tabDrag != null && tabDrag.active)) {
             return;
         }
         // Suppress tooltips while the color picker is open — they'd float behind the popup and read as junk.
@@ -967,7 +931,7 @@ public final class EngineWorkspaceScreen extends Screen {
         if (FactionManagePopup.getOpenPopup() != null) {
             return;
         }
-        var leaf = panelAt(root, 0, 0, logicalWidth(), logicalHeight(), mouseX, mouseY);
+        var leaf = DockTreeHitTest.panelAt(root, 0, 0, logicalWidth(), logicalHeight(), mouseX, mouseY);
         if (leaf == null) {
             return;
         }
@@ -1241,7 +1205,7 @@ public final class EngineWorkspaceScreen extends Screen {
             SelectionManager.clear();
             JigsawPieceSelection.clear();
             EntitySpawnSelection.clear();
-            com.blib.engine.selection.EngineHoverProbe.clear();
+            com.blib.engine.domain.selection.picking.EngineHoverProbe.clear();
             com.blib.engine.territory.ClaimPaintTool.deactivate();
             SearchableSelect.closeOpenPopup();
             HslColorPickerPopup.closeOpenPopup();
@@ -1281,7 +1245,7 @@ public final class EngineWorkspaceScreen extends Screen {
         HslColorPickerPopup.closeOpenPopup();
         FactionManagePopup.closeOpenPopup();
         com.blib.engine.territory.ClaimPaintTool.deactivate();
-        com.blib.engine.selection.EngineHoverProbe.clear();
+        com.blib.engine.domain.selection.picking.EngineHoverProbe.clear();
         // Project state persists across engine sessions so B-toggle reopens the same project without going through
         // the picker again. Switching projects is an explicit File→Open action inside the workspace. Transient picker
         // bits (callback, available-list) get refreshed by the picker itself on next open, so no clearing here.
@@ -1293,10 +1257,10 @@ public final class EngineWorkspaceScreen extends Screen {
         BlockSelection.clear();
         // Clear the AABB scale gizmo's hover/drag state so a stray drag-in-progress at close doesn't try to
         // continue against fresh state on the next engine open.
-        com.blib.engine.blockselection.BlockSelectionScaleGizmo.clear();
-        com.blib.engine.blockselection.BlockSelectionTranslateGizmo.clear();
-        com.blib.engine.entityselection.EntityTranslateGizmo.clear();
-        com.blib.engine.entityselection.EntityScaleGizmo.clear();
+        com.blib.engine.domain.selection.volume.BlockSelectionScaleGizmo.clear();
+        com.blib.engine.domain.selection.volume.BlockSelectionTranslateGizmo.clear();
+        com.blib.engine.domain.selection.entity.EntityTranslateGizmo.clear();
+        com.blib.engine.domain.selection.entity.EntityScaleGizmo.clear();
         // Drop the captured render-frame matrices — they referenced the engine's camera; the next engine open
         // will repopulate from the first render frame.
         com.blib.engine.session.EngineCameraFrame.clear();
@@ -1349,7 +1313,7 @@ public final class EngineWorkspaceScreen extends Screen {
         if (openSubmenu != null && openSubmenu.isInside(logicalX, logicalY)) {
             return true;
         }
-        var leaf = panelAt(root, 0, 0, logicalWidth(), logicalHeight(), logicalX, logicalY);
+        var leaf = DockTreeHitTest.panelAt(root, 0, 0, logicalWidth(), logicalHeight(), logicalX, logicalY);
         if (leaf != null && leaf.mouseScrolled(logicalX, logicalY, scrollX, scrollY)) {
             return true;
         }
@@ -1403,9 +1367,9 @@ public final class EngineWorkspaceScreen extends Screen {
         // substitutes with {@link #OFFSCREEN_MOUSE} whenever the cursor is over an open menu / submenu / popup.
         // {@link #findDivider} with OFFSCREEN coords trivially fails to find a divider, so the highlight is gated
         // by cursor proximity alone — divider hover lights up everywhere except directly under an open dropdown.
-        var dragger = activeDrag != null
-            ? activeDrag.divider
-            : findDivider(root, 0, 0, logicalWidth(), logicalHeight(), mouseX, mouseY);
+        var dragger = dragController.isActive()
+            ? dragController.active()
+            : DockTreeHitTest.findDivider(root, 0, 0, logicalWidth(), logicalHeight(), mouseX, mouseY, DIVIDER_HIT_PX);
         if (dragger == null) {
             return;
         }
@@ -1415,10 +1379,10 @@ public final class EngineWorkspaceScreen extends Screen {
         // Highlight stripe is intentionally a fixed 4-pixel band straddling the boundary line, regardless of the
         // hit-zone width. {@link #DIVIDER_HIT_PX} controls click accuracy; this constant controls how visible the
         // divider is on hover. The hit zone always covers ≥ the highlight (DIVIDER_HIT_PX ≥ 2 by design).
-        if (dragger.split.orientation() == Orientation.HORIZONTAL) {
-            graphics.fill(bx - 2, by, bx + 2, by + dragger.parentHeight, DIVIDER_HIGHLIGHT_COLOR);
+        if (dragger.split().orientation() == Orientation.HORIZONTAL) {
+            graphics.fill(bx - 2, by, bx + 2, by + dragger.parentHeight(), DIVIDER_HIGHLIGHT_COLOR);
         } else {
-            graphics.fill(bx, by - 2, bx + dragger.parentWidth, by + 2, DIVIDER_HIGHLIGHT_COLOR);
+            graphics.fill(bx, by - 2, bx + dragger.parentWidth(), by + 2, DIVIDER_HIGHLIGHT_COLOR);
         }
     }
 
@@ -1607,7 +1571,7 @@ public final class EngineWorkspaceScreen extends Screen {
             if (layoutHasModelerPanel()) {
                 com.blib.engine.modeler.history.ModelerActionHistory.undo();
             } else {
-                BLib.MOD.networking().sendToServer(C2SUndoActionPayload.INSTANCE);
+                commands.dispatch(new Command.UndoAction());
             }
             return true;
         }
@@ -1616,7 +1580,7 @@ public final class EngineWorkspaceScreen extends Screen {
             if (layoutHasModelerPanel()) {
                 com.blib.engine.modeler.history.ModelerActionHistory.redo();
             } else {
-                BLib.MOD.networking().sendToServer(C2SRedoActionPayload.INSTANCE);
+                commands.dispatch(new Command.RedoAction());
             }
             return true;
         }
@@ -1625,7 +1589,7 @@ public final class EngineWorkspaceScreen extends Screen {
         // runtime registry up to disk — the red staging tint is no longer meaningful, so rows settle into green / blue.
         if (ActiveKeybindings.matchesKey(Keybindings.RELOAD_PROJECT, keyCode, modifiers)) {
             if (ProjectSession.activeProject() != null) {
-                BLib.MOD.networking().sendToServer(new C2SReloadProjectPayload(ProjectSession.activeProjectName()));
+                commands.dispatch(new Command.ReloadProject(ProjectSession.activeProjectName()));
                 com.blib.engine.tag.TagStagingCache.clear();
             }
             return true;
@@ -1689,13 +1653,15 @@ public final class EngineWorkspaceScreen extends Screen {
         // selection type decides which gizmo state changes. M is intentionally block-only since entities have no
         // analog to MOVE_BLOCKS.
         var tssel = SelectionManager.current().single();
-        if (tssel instanceof com.blib.engine.selection.EntitySelectable) {
+        if (tssel instanceof com.blib.engine.domain.selection.picking.EntitySelectable) {
             if (ActiveKeybindings.matchesKey(Keybindings.GIZMO_TRANSLATE, keyCode, modifiers)) {
-                com.blib.engine.entityselection.EntityGizmoMode.set(com.blib.engine.entityselection.EntityGizmoMode.TRANSLATE);
+                com.blib.engine.domain.selection.entity.EntityGizmoMode.set(
+                    com.blib.engine.domain.selection.entity.EntityGizmoMode.TRANSLATE
+                );
                 return true;
             }
             if (ActiveKeybindings.matchesKey(Keybindings.GIZMO_SCALE, keyCode, modifiers)) {
-                com.blib.engine.entityselection.EntityGizmoMode.set(com.blib.engine.entityselection.EntityGizmoMode.SCALE);
+                com.blib.engine.domain.selection.entity.EntityGizmoMode.set(com.blib.engine.domain.selection.entity.EntityGizmoMode.SCALE);
                 return true;
             }
             // GIZMO_MOVE_BLOCKS intentionally not handled here — entity gizmo has no MOVE_BLOCKS analog.
@@ -1741,17 +1707,16 @@ public final class EngineWorkspaceScreen extends Screen {
                 return true;
             }
             var deleteSel = SelectionManager.current().single();
-            if (deleteSel instanceof com.blib.engine.selection.EntitySelectable es) {
+            if (deleteSel instanceof com.blib.engine.domain.selection.picking.EntitySelectable es) {
                 // Mirrors the context-menu "Delete Entity" gate — players aren't deletable, the server would reject
                 // anyway but the no-op feels nicer with a client-side check.
                 var entity = es.entity();
                 if (entity != null && !(entity instanceof net.minecraft.world.entity.player.Player)) {
-                    BLib.MOD.networking()
-                        .sendToServer(new com.blib.mod.common.network.packet.C2SRemoveEntityPayload(entity.getId()));
+                    commands.dispatch(new Command.RemoveEntity(entity.getId()));
                 }
                 return true;
             }
-            if (deleteSel instanceof com.blib.engine.selection.BlockSelectable bs) {
+            if (deleteSel instanceof com.blib.engine.domain.selection.picking.BlockSelectable bs) {
                 deleteSingleBlock(bs.pos());
                 return true;
             }
@@ -1766,17 +1731,16 @@ public final class EngineWorkspaceScreen extends Screen {
      * Delete a single inspected block by reusing the volume-delete packet with a degenerate one-block AABB. Avoids a
      * parallel "delete one block" packet — the server's volume delete already special-cases tiny volumes, and routing
      * through the same handler keeps op-gating + edit logging consistent. The
-     * {@link com.blib.engine.selection.BlockSelectable#isValid} check that prunes the now-air block from
+     * {@link com.blib.engine.domain.selection.picking.BlockSelectable#isValid} check that prunes the now-air block from
      * {@link SelectionManager} fires naturally on the next read, so no explicit clear is needed here.
      */
-    private static void deleteSingleBlock(net.minecraft.core.BlockPos pos) {
+    private void deleteSingleBlock(net.minecraft.core.BlockPos pos) {
         var mc = net.minecraft.client.Minecraft.getInstance();
         if (mc.player == null) {
             return;
         }
         var dim = mc.player.level().dimension().location();
-        BLib.MOD.networking()
-            .sendToServer(new com.blib.mod.common.network.packet.C2SDeleteSelectionPayload(pos, pos, dim));
+        commands.dispatch(new Command.DeleteBlockVolume(pos, pos, dim));
     }
 
     @Override
@@ -1904,7 +1868,7 @@ public final class EngineWorkspaceScreen extends Screen {
             // the user close-and-reopen by clicking a different chip in one motion. Anything else (clicks on
             // dividers, tab strips, panel content) is consumed so dropdown clicks never accidentally start a
             // divider drag or activate the panel beneath the menu.
-            var underClose = panelAt(root, 0, 0, logicalWidth(), logicalHeight(), logicalX, logicalY);
+            var underClose = DockTreeHitTest.panelAt(root, 0, 0, logicalWidth(), logicalHeight(), logicalX, logicalY);
             if (!(underClose instanceof MenuBarPanel menuBarUnderClose) || menuBarUnderClose.hitChipAt(logicalX, logicalY) == null) {
                 return true;
             }
@@ -1912,7 +1876,7 @@ public final class EngineWorkspaceScreen extends Screen {
 
         if (button == 0) {
             // 1) Menu-bar chip click: open dropdown.
-            var underCursor = panelAt(root, 0, 0, logicalWidth(), logicalHeight(), logicalX, logicalY);
+            var underCursor = DockTreeHitTest.panelAt(root, 0, 0, logicalWidth(), logicalHeight(), logicalX, logicalY);
             if (underCursor instanceof MenuBarPanel menuBar) {
                 var chip = menuBar.hitChipAt(logicalX, logicalY);
                 if (chip != null) {
@@ -1927,7 +1891,7 @@ public final class EngineWorkspaceScreen extends Screen {
             // 2) Panel-internal high-priority UI (scrollbar thumb, close buttons, etc.). Runs before the divider so a
             // scrollbar at the right edge of a panel adjacent to a vertical dock split isn't eaten by divider drag.
             // A true return also captures subsequent drag / release for this panel — see #capturedPanel.
-            var preDivider = panelAt(root, 0, 0, logicalWidth(), logicalHeight(), logicalX, logicalY);
+            var preDivider = DockTreeHitTest.panelAt(root, 0, 0, logicalWidth(), logicalHeight(), logicalX, logicalY);
             if (preDivider != null && preDivider.mouseClickedCapture(logicalX, logicalY, button)) {
                 this.capturedPanel = preDivider;
                 return true;
@@ -1936,9 +1900,18 @@ public final class EngineWorkspaceScreen extends Screen {
             // 3) Divider drag start — must run before the tab-strip check so the bottom rows of the visible divider
             // highlight (which fall inside the adjacent panel's title bar / tab strip) can still start a drag instead
             // of leaking into a tab-strip click. Scrollbar / edge UI is already protected by step 2's panel capture.
-            var divider = findDivider(root, 0, 0, logicalWidth(), logicalHeight(), (int) logicalX, (int) logicalY);
-            if (divider != null && isResizable(divider.split)) {
-                this.activeDrag = new ActiveDrag(divider);
+            var divider = DockTreeHitTest.findDivider(
+                root,
+                0,
+                0,
+                logicalWidth(),
+                logicalHeight(),
+                (int) logicalX,
+                (int) logicalY,
+                DIVIDER_HIT_PX
+            );
+            if (divider != null) {
+                this.dragController.begin(divider);
                 return true;
             }
 
@@ -1953,7 +1926,7 @@ public final class EngineWorkspaceScreen extends Screen {
                         return true;
                     }
                     tabbed.setActiveIndex(tabIdx);
-                    this.tabDrag = new TabDrag(tabbed, tabIdx, tabbed.tabs().get(tabIdx), logicalX, logicalY);
+                    this.tabDrag = new TabDragController.Drag(tabbed, tabIdx, tabbed.tabs().get(tabIdx), logicalX, logicalY);
                     return true;
                 }
                 // Click on empty tab-strip space — no-op but consume so it doesn't fall through to content.
@@ -1962,7 +1935,7 @@ public final class EngineWorkspaceScreen extends Screen {
         }
 
         // 5) Otherwise, delegate to the panel under the cursor for content-area handling.
-        var leaf = panelAt(root, 0, 0, logicalWidth(), logicalHeight(), logicalX, logicalY);
+        var leaf = DockTreeHitTest.panelAt(root, 0, 0, logicalWidth(), logicalHeight(), logicalX, logicalY);
 
         // Allow non-LMB capture too: the viewport claims MMB so its camera drag stays routed even when the cursor
         // leaves the viewport rect mid-stroke. LMB capture for scrollbars / edge UI is handled in step 3 above.
@@ -1980,7 +1953,7 @@ public final class EngineWorkspaceScreen extends Screen {
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         // Modal dialog absorbs releases so a drag started before it opened doesn't propagate to panels behind it.
-        if (isAnyModalOpen()) {
+        if (modalStack.isAnyOpen()) {
             return true;
         }
         var logicalX = mouseX / SCALE;
@@ -2035,8 +2008,8 @@ public final class EngineWorkspaceScreen extends Screen {
             return true;
         }
 
-        if (button == 0 && activeDrag != null) {
-            activeDrag = null;
+        if (button == 0 && dragController.isActive()) {
+            dragController.end();
             return true;
         }
 
@@ -2048,7 +2021,7 @@ public final class EngineWorkspaceScreen extends Screen {
             return true;
         }
 
-        var leaf = panelAt(root, 0, 0, logicalWidth(), logicalHeight(), logicalX, logicalY);
+        var leaf = DockTreeHitTest.panelAt(root, 0, 0, logicalWidth(), logicalHeight(), logicalX, logicalY);
         if (leaf != null && leaf.mouseReleased(logicalX, logicalY, button)) {
             return true;
         }
@@ -2090,7 +2063,7 @@ public final class EngineWorkspaceScreen extends Screen {
 
         // Wrapped-screen forward — drags over the viewport rect (e.g. slider drags in Options) reach the wrapped
         // screen. Captured-panel + activeDrag checks below cover engine-internal drags.
-        if (wrappedScreen != null && !engineModalAbsorbing() && capturedPanel == null && activeDrag == null) {
+        if (wrappedScreen != null && !engineModalAbsorbing() && capturedPanel == null && !dragController.isActive()) {
             var wrappedCoords = mapToWrappedCoords(mouseX, mouseY);
             if (wrappedCoords != null && wrappedScreen.mouseDragged(wrappedCoords[0], wrappedCoords[1], button, deltaX, deltaY)) {
                 return true;
@@ -2116,8 +2089,7 @@ public final class EngineWorkspaceScreen extends Screen {
             return true;
         }
 
-        if (activeDrag != null) {
-            applyDrag(activeDrag.divider, logicalX, logicalY);
+        if (dragController.apply(logicalX, logicalY)) {
             return true;
         }
 
@@ -2129,7 +2101,7 @@ public final class EngineWorkspaceScreen extends Screen {
             return true;
         }
 
-        var leaf = panelAt(root, 0, 0, logicalWidth(), logicalHeight(), logicalX, logicalY);
+        var leaf = DockTreeHitTest.panelAt(root, 0, 0, logicalWidth(), logicalHeight(), logicalX, logicalY);
         if (leaf != null && leaf.mouseDragged(logicalX, logicalY, button, deltaX, deltaY)) {
             return true;
         }
@@ -2148,7 +2120,7 @@ public final class EngineWorkspaceScreen extends Screen {
      * </ul>
      * Cursor outside any tab panel: drag cancels, tab stays put.
      */
-    private void completeTabDrop(TabDrag drag, double logicalX, double logicalY) {
+    private void completeTabDrop(TabDragController.Drag drag, double logicalX, double logicalY) {
         var target = findTabbedPanelAt((int) logicalX, (int) logicalY);
         if (target == null) {
             return;
@@ -2168,7 +2140,7 @@ public final class EngineWorkspaceScreen extends Screen {
         splitPanel(target, drag.tab, zone);
     }
 
-    private static void mergeTab(TabDrag drag, TabbedPanel target, double logicalX) {
+    private static void mergeTab(TabDragController.Drag drag, TabbedPanel target, double logicalX) {
         if (target == drag.source) {
             var dropIdx = target.dropInsertionIndex(logicalX);
             if (dropIdx == drag.sourceIndex || dropIdx == drag.sourceIndex + 1) {
@@ -2230,76 +2202,6 @@ public final class EngineWorkspaceScreen extends Screen {
         RIGHT
     }
 
-    private static void applyDrag(DividerHit divider, double mouseLogicalX, double mouseLogicalY) {
-        if (divider.split.orientation() == Orientation.HORIZONTAL) {
-            var newBoundary = (int) Math.round(mouseLogicalX - divider.parentX);
-            var clamped = Math.max(MIN_PANEL_SIZE_PX, Math.min(divider.parentWidth - MIN_PANEL_SIZE_PX, newBoundary));
-            updateSizing(divider.split.sizing(), clamped, divider.parentWidth);
-        } else {
-            var newBoundary = (int) Math.round(mouseLogicalY - divider.parentY);
-            var clamped = Math.max(MIN_PANEL_SIZE_PX, Math.min(divider.parentHeight - MIN_PANEL_SIZE_PX, newBoundary));
-            updateSizing(divider.split.sizing(), clamped, divider.parentHeight);
-        }
-    }
-
-    private static void updateSizing(Sizing sizing, int newBoundary, int parentSize) {
-        switch (sizing) {
-            case Sizing.Ratio r -> r.value = Math.max(0.01f, Math.min(0.99f, (float) newBoundary / parentSize));
-            case Sizing.FirstFixed f -> f.pixels = newBoundary;
-            case Sizing.SecondFixed s -> s.pixels = parentSize - newBoundary;
-        }
-    }
-
-    /**
-     * A split is user-resizable as long as neither side is a chrome-less trim leaf (menu bar at the top, status bar at
-     * the bottom). Body splits — including the {@link Sizing.FirstFixed} / {@link Sizing.SecondFixed} rails that pin
-     * outliner / inspector widths — are all draggable; {@link #applyDividerDrag} writes back into the matching sizing
-     * field so a Fixed rail stays Fixed (just with a new pixel value) and a Ratio split stays Ratio. The trim splits
-     * are the only ones we want to keep immutable, because dragging the menu/status bar's height would look like a
-     * glitch (those panels are sized to their content and rebuilt on resize).
-     */
-    private static boolean isResizable(DockNode.Split split) {
-        return !isTrimLeaf(split.first()) && !isTrimLeaf(split.second());
-    }
-
-    private static boolean isTrimLeaf(DockNode node) {
-        return node instanceof DockNode.Leaf leaf && leaf.panel().isTrim();
-    }
-
-    private static @Nullable DividerHit findDivider(DockNode node, int x, int y, int width, int height, int mouseX, int mouseY) {
-        if (!(node instanceof DockNode.Split split)) {
-            return null;
-        }
-
-        // Trim splits (menu bar / status bar) aren't draggable. Skip claiming their boundary on hover and let
-        // recursion find a real divider further down the tree.
-        var resizable = isResizable(split);
-
-        if (split.orientation() == Orientation.HORIZONTAL) {
-            var firstWidth = DockNode.boundary(split.sizing(), width);
-            var boundaryX = x + firstWidth;
-            if (resizable && Math.abs(mouseX - boundaryX) <= DIVIDER_HIT_PX && mouseY >= y && mouseY < y + height) {
-                return new DividerHit(split, x, y, width, height);
-            }
-            var inFirst = findDivider(split.first(), x, y, firstWidth, height, mouseX, mouseY);
-            if (inFirst != null) {
-                return inFirst;
-            }
-            return findDivider(split.second(), x + firstWidth, y, width - firstWidth, height, mouseX, mouseY);
-        } else {
-            var firstHeight = DockNode.boundary(split.sizing(), height);
-            var boundaryY = y + firstHeight;
-            if (resizable && Math.abs(mouseY - boundaryY) <= DIVIDER_HIT_PX && mouseX >= x && mouseX < x + width) {
-                return new DividerHit(split, x, y, width, height);
-            }
-            var inFirst = findDivider(split.first(), x, y, width, firstHeight, mouseX, mouseY);
-            if (inFirst != null) {
-                return inFirst;
-            }
-            return findDivider(split.second(), x, y + firstHeight, width, height - firstHeight, mouseX, mouseY);
-        }
-    }
-
     /**
      * True when the active layout contains at least one modeler panel (viewport / outliner / inspector). Used by the
      * Delete handler to gate modeler-scene delete behavior — the modeler scene state is global, but Delete should only
@@ -2349,35 +2251,8 @@ public final class EngineWorkspaceScreen extends Screen {
             || panel instanceof ModelerInspectorPanel;
     }
 
-    private static @Nullable Panel panelAt(DockNode node, int x, int y, int width, int height, double mouseX, double mouseY) {
-        return switch (node) {
-            case DockNode.Leaf leaf -> {
-                if (mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height) {
-                    yield leaf.panel();
-                }
-                yield null;
-            }
-            case DockNode.Split split -> {
-                if (split.orientation() == Orientation.HORIZONTAL) {
-                    var firstWidth = DockNode.boundary(split.sizing(), width);
-                    if (mouseX < x + firstWidth) {
-                        yield panelAt(split.first(), x, y, firstWidth, height, mouseX, mouseY);
-                    }
-                    yield panelAt(split.second(), x + firstWidth, y, width - firstWidth, height, mouseX, mouseY);
-                } else {
-                    var firstHeight = DockNode.boundary(split.sizing(), height);
-                    if (mouseY < y + firstHeight) {
-                        yield panelAt(split.first(), x, y, width, firstHeight, mouseX, mouseY);
-                    }
-                    yield panelAt(split.second(), x, y + firstHeight, width, height - firstHeight, mouseX, mouseY);
-                }
-            }
-        };
-    }
-
     private @Nullable TabbedPanel findTabbedPanelAt(int mouseX, int mouseY) {
-        var leaf = panelAt(root, 0, 0, logicalWidth(), logicalHeight(), mouseX, mouseY);
-        return leaf instanceof TabbedPanel tp ? tp : null;
+        return DockTreeHitTest.findTabbedPanelAt(root, logicalWidth(), logicalHeight(), mouseX, mouseY);
     }
 
     /**
@@ -2419,7 +2294,7 @@ public final class EngineWorkspaceScreen extends Screen {
         if (layoutHasModelerPanel()) {
             com.blib.engine.modeler.history.ModelerActionHistory.undo();
         } else {
-            BLib.MOD.networking().sendToServer(C2SUndoActionPayload.INSTANCE);
+            commands.dispatch(new Command.UndoAction());
         }
     }
 
@@ -2427,7 +2302,7 @@ public final class EngineWorkspaceScreen extends Screen {
         if (layoutHasModelerPanel()) {
             com.blib.engine.modeler.history.ModelerActionHistory.redo();
         } else {
-            BLib.MOD.networking().sendToServer(C2SRedoActionPayload.INSTANCE);
+            commands.dispatch(new Command.RedoAction());
         }
     }
 
@@ -3035,7 +2910,7 @@ public final class EngineWorkspaceScreen extends Screen {
                 if (!hasWorld || !hasProject) {
                     return;
                 }
-                BLib.MOD.networking().sendToServer(new C2SReloadProjectPayload(ProjectSession.activeProjectName()));
+                commands.dispatch(new Command.ReloadProject(ProjectSession.activeProjectName()));
                 // Wipe the tag-staging overlay — reload makes the runtime registry catch up to disk, so the red
                 // staging tint is no longer meaningful (rows settle into green / blue based on committed state).
                 com.blib.engine.tag.TagStagingCache.clear();
@@ -3058,7 +2933,7 @@ public final class EngineWorkspaceScreen extends Screen {
                     "Cancel",
                     true,
                     () -> {
-                        BLib.MOD.networking().sendToServer(new C2SDeleteProjectPayload(name));
+                        commands.dispatch(new Command.DeleteProject(name));
                         openPicker(false);
                     },
                     () -> {}
@@ -3126,7 +3001,7 @@ public final class EngineWorkspaceScreen extends Screen {
         var items = new java.util.ArrayList<DropdownMenu.Item>();
         items.add(
             new DropdownMenu.Item("View GOAP Details", () -> {
-                BLib.MOD.networking().sendToServer(new C2SGOAPTrackPayload(entityId));
+                commands.dispatch(new Command.GoapTrack(entityId));
                 reopenPanel(GOAPDetailsPanel.class, GOAPDetailsPanel::new);
             })
         );
@@ -3144,7 +3019,7 @@ public final class EngineWorkspaceScreen extends Screen {
                     var limbItems = new java.util.ArrayList<DropdownMenu.Item>();
                     limbItems.add(
                         new DropdownMenu.Item("All", () -> {
-                            BLib.MOD.networking().sendToServer(new C2SDismemberAllLimbsPayload(entityId));
+                            commands.dispatch(new Command.DismemberAllLimbs(entityId));
                         })
                     );
                     for (var def : remaining) {
@@ -3152,7 +3027,7 @@ public final class EngineWorkspaceScreen extends Screen {
                         var limbId = def.id();
                         limbItems.add(
                             new DropdownMenu.Item(label, () -> {
-                                BLib.MOD.networking().sendToServer(new C2SDismemberLimbPayload(entityId, limbId));
+                                commands.dispatch(new Command.DismemberLimb(entityId, limbId));
                             })
                         );
                     }
@@ -3161,7 +3036,7 @@ public final class EngineWorkspaceScreen extends Screen {
             }
             items.add(
                 new DropdownMenu.Item("Delete Entity", () -> {
-                    BLib.MOD.networking().sendToServer(new C2SRemoveEntityPayload(entityId));
+                    commands.dispatch(new Command.RemoveEntity(entityId));
                 })
             );
         }
@@ -3206,10 +3081,10 @@ public final class EngineWorkspaceScreen extends Screen {
                 this.captureDialog = new CaptureDialog(() -> this.captureDialog = null);
             })
         );
-        items.add(new DropdownMenu.Item("Cut", () -> com.blib.engine.blockselection.BlockSelectionOps.copy(true)));
-        items.add(new DropdownMenu.Item("Copy", () -> com.blib.engine.blockselection.BlockSelectionOps.copy(false)));
-        items.add(new DropdownMenu.Item("Paste", () -> com.blib.engine.blockselection.BlockSelectionOps.paste()));
-        items.add(new DropdownMenu.Item("Delete", () -> com.blib.engine.blockselection.BlockSelectionOps.delete()));
+        items.add(new DropdownMenu.Item("Cut", () -> com.blib.engine.domain.selection.volume.BlockSelectionOps.copy(true)));
+        items.add(new DropdownMenu.Item("Copy", () -> com.blib.engine.domain.selection.volume.BlockSelectionOps.copy(false)));
+        items.add(new DropdownMenu.Item("Paste", () -> com.blib.engine.domain.selection.volume.BlockSelectionOps.paste()));
+        items.add(new DropdownMenu.Item("Delete", () -> com.blib.engine.domain.selection.volume.BlockSelectionOps.delete()));
         setOpenMenu(new DropdownMenu((int) cursorX, (int) cursorY, items));
     }
 
@@ -3217,7 +3092,7 @@ public final class EngineWorkspaceScreen extends Screen {
      * Right-click on a placed jigsaw piece. Mirrors the block-volume context menu so users get the same affordances
      * (Capture / Cut / Copy / Delete) plus an Open Inspector entry. Capture / Cut / Copy work by promoting the piece to
      * a block-volume selection covering its AABB and then dispatching the existing
-     * {@link com.blib.engine.blockselection.BlockSelectionOps}; Delete keeps the identity-aware
+     * {@link com.blib.engine.domain.selection.volume.BlockSelectionOps}; Delete keeps the identity-aware
      * {@link com.blib.mod.common.network.packet.C2SDeletePlacedPiecePayload} path so the registry entry is removed, not
      * just the blocks.
      * <p>
@@ -3233,33 +3108,31 @@ public final class EngineWorkspaceScreen extends Screen {
                 // performSelectionAt clears the volume on every single-thing LMB pick; the context-menu path needs
                 // the same call.
                 BlockSelection.clearVolume();
-                SelectionManager.selectSingle(new com.blib.engine.selection.PlacedJigsawPieceSelectable(pieceId));
+                SelectionManager.selectSingle(new com.blib.engine.domain.selection.picking.PlacedJigsawPieceSelectable(pieceId));
             })
         );
         items.add(
             new DropdownMenu.Item("Capture…", () -> {
-                com.blib.engine.selection.PlacedJigsawPieceSelectable.promoteToVolume(pieceId, null);
+                com.blib.engine.domain.selection.picking.PlacedJigsawPieceSelectable.promoteToVolume(pieceId, null);
                 this.captureDialog = new CaptureDialog(() -> this.captureDialog = null);
             })
         );
         items.add(
             new DropdownMenu.Item("Cut", () -> {
-                com.blib.engine.selection.PlacedJigsawPieceSelectable.promoteToVolume(pieceId, null);
-                com.blib.engine.blockselection.BlockSelectionOps.copy(false);
-                BLib.MOD.networking()
-                    .sendToServer(new com.blib.mod.common.network.packet.C2SDeletePlacedPiecePayload(pieceId));
+                com.blib.engine.domain.selection.picking.PlacedJigsawPieceSelectable.promoteToVolume(pieceId, null);
+                com.blib.engine.domain.selection.volume.BlockSelectionOps.copy(false);
+                commands.dispatch(new Command.DeletePlacedPiece(pieceId));
             })
         );
         items.add(
             new DropdownMenu.Item("Copy", () -> {
-                com.blib.engine.selection.PlacedJigsawPieceSelectable.promoteToVolume(pieceId, null);
-                com.blib.engine.blockselection.BlockSelectionOps.copy(false);
+                com.blib.engine.domain.selection.picking.PlacedJigsawPieceSelectable.promoteToVolume(pieceId, null);
+                com.blib.engine.domain.selection.volume.BlockSelectionOps.copy(false);
             })
         );
         items.add(
             new DropdownMenu.Item("Delete", () -> {
-                BLib.MOD.networking()
-                    .sendToServer(new com.blib.mod.common.network.packet.C2SDeletePlacedPiecePayload(pieceId));
+                commands.dispatch(new Command.DeletePlacedPiece(pieceId));
             })
         );
         setOpenMenu(new DropdownMenu((int) cursorX, (int) cursorY, items));
@@ -3305,37 +3178,7 @@ public final class EngineWorkspaceScreen extends Screen {
      * (degenerate state, e.g. the user closed every tab), the first child is kept arbitrarily.
      */
     private void simplifyDockTree() {
-        this.root = simplify(this.root);
-    }
-
-    private static DockNode simplify(DockNode node) {
-        if (!(node instanceof DockNode.Split split)) {
-            return node;
-        }
-        var first = simplify(split.first());
-        var second = simplify(split.second());
-        var firstEmpty = isEmptyTabbedPanel(first);
-        var secondEmpty = isEmptyTabbedPanel(second);
-
-        if (firstEmpty && !secondEmpty) {
-            return second;
-        }
-        if (secondEmpty && !firstEmpty) {
-            return first;
-        }
-        if (firstEmpty && secondEmpty) {
-            return first;
-        }
-        if (first == split.first() && second == split.second()) {
-            return split;
-        }
-        return new DockNode.Split(split.orientation(), first, second, split.sizing());
-    }
-
-    private static boolean isEmptyTabbedPanel(DockNode node) {
-        return node instanceof DockNode.Leaf leaf
-            && leaf.panel() instanceof TabbedPanel tp
-            && tp.tabCount() == 0;
+        this.root = DockTreeMutator.simplify(this.root);
     }
 
     private int logicalWidth() {
@@ -3346,56 +3189,4 @@ public final class EngineWorkspaceScreen extends Screen {
         return (int) (this.height / SCALE);
     }
 
-    private record DividerHit(
-        DockNode.Split split,
-        int parentX,
-        int parentY,
-        int parentWidth,
-        int parentHeight
-    ) {
-
-        int boundaryStartX() {
-            if (split.orientation() == Orientation.HORIZONTAL) {
-                return parentX + DockNode.boundary(split.sizing(), parentWidth);
-            }
-            return parentX;
-        }
-
-        int boundaryStartY() {
-            if (split.orientation() == Orientation.VERTICAL) {
-                return parentY + DockNode.boundary(split.sizing(), parentHeight);
-            }
-            return parentY;
-        }
-    }
-
-    private record ActiveDrag(DividerHit divider) {}
-
-    /**
-     * Mutable tab-drag state. Created on tab press; turns {@link #active} once the cursor moves past the threshold;
-     * cleared on release. The tab itself stays in {@link #source} during the drag — only on a successful drop does the
-     * source actually lose it.
-     */
-    private static final class TabDrag {
-
-        final TabbedPanel source;
-
-        final int sourceIndex;
-
-        final Panel tab;
-
-        final double startX;
-
-        final double startY;
-
-        boolean active;
-
-        TabDrag(TabbedPanel source, int sourceIndex, Panel tab, double startX, double startY) {
-            this.source = source;
-            this.sourceIndex = sourceIndex;
-            this.tab = tab;
-            this.startX = startX;
-            this.startY = startY;
-        }
-    }
 }

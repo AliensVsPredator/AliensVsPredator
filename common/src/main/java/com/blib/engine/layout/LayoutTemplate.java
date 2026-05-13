@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Instant;
 import java.util.List;
 
-import com.blib.engine.ui.Orientation;
+import com.blib.engine.ui.dock.Orientation;
 
 /**
  * The set of built-in layout templates shipped with BLib. Each template produces a fresh {@link LayoutDoc} on demand
@@ -50,7 +50,7 @@ public enum LayoutTemplate {
     /**
      * Build a fresh {@link LayoutDoc} for this template. Each call creates new {@link SizingDoc} instances so the
      * returned doc is fully independent of any previous one — important because hydrate produces mutable
-     * {@link com.blib.engine.ui.Sizing} instances that get drag-resized in place.
+     * {@link com.blib.engine.ui.dock.Sizing} instances that get drag-resized in place.
      */
     public LayoutDoc toDoc() {
         var now = Instant.now().toString();

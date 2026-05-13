@@ -4,7 +4,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Transient per-frame state written by {@link com.blib.engine.jigsaw.JigsawPlacementWorldRenderer} and read by
+ * Transient per-frame state written by {@link com.blib.engine.render.jigsaw.JigsawPlacementWorldRenderer} and read by
  * downstream consumers (status-bar overlay, click handler) so they don't have to redo the resolver + collision-scan
  * work. Refreshed every frame the world renders; cleared on workspace close.
  * <p>

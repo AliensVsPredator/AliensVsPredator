@@ -6,9 +6,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 
-import com.blib.engine.ui.DockNode;
-import com.blib.engine.ui.Panel;
-import com.blib.engine.ui.TabbedPanel;
+import com.blib.engine.ui.dock.DockNode;
+import com.blib.engine.ui.dock.Panel;
+import com.blib.engine.ui.dock.TabbedPanel;
 
 /**
  * Pure conversion between a live {@link DockNode} body subtree and its serialized {@link BodyNode} form. The body

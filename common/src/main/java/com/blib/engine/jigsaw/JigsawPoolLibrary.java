@@ -24,8 +24,8 @@ import com.blib.internal.mixin.MixinStructureTemplatePool_Accessor;
 
 /**
  * Reads the integrated server's {@link Registries#TEMPLATE_POOL} and exposes the pool ↔ template-id graph for the
- * {@link com.blib.engine.ui.PiecePalettePanel}'s pool filter. Like {@link JigsawPieceLibrary}, this is dev-only and
- * single-player only — uses {@code Minecraft.getSingleplayerServer().registryAccess()}.
+ * {@link com.blib.engine.ui.panel.jigsaw.PiecePalettePanel}'s pool filter. Like {@link JigsawPieceLibrary}, this is
+ * dev-only and single-player only — uses {@code Minecraft.getSingleplayerServer().registryAccess()}.
  * <p>
  * Two layers of cache: a sorted list of pool ids for filter dropdown enumeration, and a
  * {@code poolId → Set<templateId>} map built by walking each pool's {@link StructurePoolElement}s and recursing through

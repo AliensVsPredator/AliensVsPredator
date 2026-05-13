@@ -10,13 +10,13 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 
-import com.blib.engine.blockselection.BlockSelection;
+import com.blib.engine.domain.selection.picking.BlockSelectable;
+import com.blib.engine.domain.selection.picking.EntitySelectable;
+import com.blib.engine.domain.selection.picking.PlacedJigsawPieceSelectable;
+import com.blib.engine.domain.selection.picking.SelectionManager;
+import com.blib.engine.domain.selection.volume.BlockSelection;
 import com.blib.engine.jigsaw.ClientPlacedPieceRegistry;
 import com.blib.engine.jigsaw.JigsawPlacementCursor;
-import com.blib.engine.selection.BlockSelectable;
-import com.blib.engine.selection.EntitySelectable;
-import com.blib.engine.selection.PlacedJigsawPieceSelectable;
-import com.blib.engine.selection.SelectionManager;
 
 /**
  * Camera-control math for engine mode. Driven directly from workspace mouse events: the {@code ViewportPanel} calls the

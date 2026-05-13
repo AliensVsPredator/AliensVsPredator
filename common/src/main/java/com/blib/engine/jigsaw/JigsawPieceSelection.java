@@ -50,7 +50,7 @@ public final class JigsawPieceSelection {
         }
         selectedId = id;
         com.blib.engine.spawn.EntitySpawnSelection.clear();
-        com.blib.engine.blockselection.BlockSelection.clear();
+        com.blib.engine.domain.selection.volume.BlockSelection.clear();
     }
 
     public static void clear() {

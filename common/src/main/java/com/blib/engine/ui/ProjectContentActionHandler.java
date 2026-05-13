@@ -2,6 +2,9 @@ package com.blib.engine.ui;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import com.blib.engine.ui.dialog.ConfirmDialog;
+import com.blib.engine.ui.popup.EntityContextMenuHandler;
+
 /**
  * Open a destructive {@link ConfirmDialog} via the engine workspace screen. Implemented by
  * {@code EngineWorkspaceScreen} and forwarded through {@link com.blib.engine.layout.PanelRegistry.Context} so panels

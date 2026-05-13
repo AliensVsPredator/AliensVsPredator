@@ -11,8 +11,8 @@ import org.jetbrains.annotations.Nullable;
  * the world overlay can highlight the chunk under the cursor.
  * <p>
  * The {@link #paintTarget} is the currently-inspected {@code FactionSelectable}'s id, resolved from
- * {@link com.blib.engine.selection.SelectionManager} each frame — switching the selection mid-paint redirects the paint
- * target on the next click/drag tick without an explicit handoff.
+ * {@link com.blib.engine.domain.selection.picking.SelectionManager} each frame — switching the selection mid-paint
+ * redirects the paint target on the next click/drag tick without an explicit handoff.
  */
 @ApiStatus.Internal
 public final class ClaimPaintTool {
@@ -38,7 +38,7 @@ public final class ClaimPaintTool {
     public static void activate() {
         // Paint mode is mutually exclusive with editing a block volume — leaving an AABB wireframe up while the user
         // starts painting chunks would be a contradictory engine state.
-        com.blib.engine.blockselection.BlockSelection.clear();
+        com.blib.engine.domain.selection.volume.BlockSelection.clear();
         active = true;
     }
 

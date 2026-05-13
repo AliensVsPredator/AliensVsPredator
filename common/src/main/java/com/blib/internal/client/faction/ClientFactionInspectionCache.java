@@ -10,7 +10,7 @@ import com.blib.mod.common.network.packet.S2CFactionInspectionPayload;
 
 /**
  * Single-faction inspection snapshot the universal Inspector reads when a
- * {@link com.blib.engine.selection.FactionSelectable} is the active selection. Populated by
+ * {@link com.blib.engine.domain.selection.picking.FactionSelectable} is the active selection. Populated by
  * {@link S2CFactionInspectionPayload}: requested on selection swap and pushed proactively when the inspected faction's
  * state changes server-side.
  * <p>

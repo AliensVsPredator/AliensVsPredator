@@ -10,8 +10,8 @@ import com.blib.mod.common.network.packet.S2CFactionMembersPayload;
 
 /**
  * Member roster for the workspace's currently-inspected faction. Populated by {@link S2CFactionMembersPayload} —
- * requested when the active selection becomes a {@link com.blib.engine.selection.FactionSelectable} (or its faction id
- * changes) and pushed proactively when the server adds / removes a member of that faction.
+ * requested when the active selection becomes a {@link com.blib.engine.domain.selection.picking.FactionSelectable} (or
+ * its faction id changes) and pushed proactively when the server adds / removes a member of that faction.
  * <p>
  * Single-faction at-a-time cache: switching the active faction in the Browser overwrites the prior roster. The Members
  * panel shows "(select a faction in the Browser)" when {@link #factionId} is null and the selection isn't a faction.

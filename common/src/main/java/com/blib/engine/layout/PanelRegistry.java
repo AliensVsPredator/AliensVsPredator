@@ -8,27 +8,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.blib.engine.ui.ActionStackPanel;
-import com.blib.engine.ui.ContentBrowserPanel;
-import com.blib.engine.ui.DetailsPanel;
-import com.blib.engine.ui.DiplomacyMatrixPanel;
-import com.blib.engine.ui.EntityContextMenuHandler;
-import com.blib.engine.ui.EntityPalettePanel;
-import com.blib.engine.ui.FactionBrowserPanel;
-import com.blib.engine.ui.FactionMembersPanel;
-import com.blib.engine.ui.GOAPDetailsPanel;
-import com.blib.engine.ui.ModelerInspectorPanel;
-import com.blib.engine.ui.ModelerOutlinerPanel;
-import com.blib.engine.ui.ModelerViewportPanel;
-import com.blib.engine.ui.OutlinerPanel;
-import com.blib.engine.ui.Panel;
-import com.blib.engine.ui.PanelMenuOpener;
-import com.blib.engine.ui.PiecePalettePanel;
-import com.blib.engine.ui.PoolEditorPanel;
 import com.blib.engine.ui.ProjectContentActionHandler;
-import com.blib.engine.ui.TagBrowserPanel;
-import com.blib.engine.ui.TerritoryMapPanel;
-import com.blib.engine.ui.ViewportPanel;
+import com.blib.engine.ui.dock.Panel;
+import com.blib.engine.ui.panel.action.ActionStackPanel;
+import com.blib.engine.ui.panel.content.ContentBrowserPanel;
+import com.blib.engine.ui.panel.details.DetailsPanel;
+import com.blib.engine.ui.panel.details.GOAPDetailsPanel;
+import com.blib.engine.ui.panel.details.ModelerInspectorPanel;
+import com.blib.engine.ui.panel.entity.EntityPalettePanel;
+import com.blib.engine.ui.panel.faction.DiplomacyMatrixPanel;
+import com.blib.engine.ui.panel.faction.FactionBrowserPanel;
+import com.blib.engine.ui.panel.faction.FactionMembersPanel;
+import com.blib.engine.ui.panel.jigsaw.PiecePalettePanel;
+import com.blib.engine.ui.panel.jigsaw.PoolEditorPanel;
+import com.blib.engine.ui.panel.outliner.ModelerOutlinerPanel;
+import com.blib.engine.ui.panel.outliner.OutlinerPanel;
+import com.blib.engine.ui.panel.tag.TagBrowserPanel;
+import com.blib.engine.ui.panel.territory.TerritoryMapPanel;
+import com.blib.engine.ui.panel.viewport.ModelerViewportPanel;
+import com.blib.engine.ui.panel.viewport.ViewportPanel;
+import com.blib.engine.ui.popup.EntityContextMenuHandler;
+import com.blib.engine.ui.popup.PanelMenuOpener;
 
 /**
  * String-id ↔ {@link Panel} factory mapping for panels that may appear in the editable body region of a layout. Layouts
@@ -38,8 +38,8 @@ import com.blib.engine.ui.ViewportPanel;
  * Trim panels (menu bar, toolbar, status bar) are <em>not</em> registered — they are screen-level chrome added back by
  * {@code EngineWorkspaceScreen.buildOuterLayout} after the body is hydrated, never serialized.
  * <p>
- * The reverse mapping ({@link #idOf}) is keyed by panel class so {@link com.blib.engine.ui.TabbedPanel} contents can be
- * captured back to ids without each panel needing to expose its own id getter.
+ * The reverse mapping ({@link #idOf}) is keyed by panel class so {@link com.blib.engine.ui.dock.TabbedPanel} contents
+ * can be captured back to ids without each panel needing to expose its own id getter.
  */
 @ApiStatus.Internal
 public final class PanelRegistry {
@@ -142,9 +142,9 @@ public final class PanelRegistry {
     }
 
     /**
-     * Reverse lookup by panel class. Used during capture: walk a {@link com.blib.engine.ui.TabbedPanel}'s tabs and emit
-     * the registered id for each. Panels without a registered id are dropped from the captured form (the layout still
-     * saves; the unregistered tab simply won't reappear on next load).
+     * Reverse lookup by panel class. Used during capture: walk a {@link com.blib.engine.ui.dock.TabbedPanel}'s tabs and
+     * emit the registered id for each. Panels without a registered id are dropped from the captured form (the layout
+     * still saves; the unregistered tab simply won't reappear on next load).
      */
     public static @Nullable String idOf(Panel panel) {
         return IDS_BY_CLASS.get(panel.getClass());

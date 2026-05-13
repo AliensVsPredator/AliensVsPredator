@@ -5,6 +5,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import com.blib.api.BLibAPI;
+import com.blib.engine.core.lifecycle.EngineSessionScope;
 
 /**
  * Dev-only in-game editor mode. While active, the player camera is detached, player input is suppressed, the vanilla
@@ -25,6 +26,8 @@ public final class EngineMode {
      */
     private volatile @Nullable EngineSession session;
 
+    private volatile @Nullable EngineSessionScope sessionScope;
+
     /** Saved {@code Options.hideGui} value at engine entry, restored on exit. {@code hideGui} is session-only state. */
     private boolean prevHideGui;
 
@@ -40,6 +43,16 @@ public final class EngineMode {
 
     public @Nullable EngineSession session() {
         return session;
+    }
+
+    /**
+     * Active per-session scope. Resources that should live exactly for one engine activation register cleanup actions
+     * on this scope (typically right after they're populated); on {@link #exit()} the scope unwinds them in LIFO order
+     * so we don't have to maintain a parallel list of {@code .clear()} calls here. Returns {@code null} between
+     * sessions.
+     */
+    public @Nullable EngineSessionScope sessionScope() {
+        return sessionScope;
     }
 
     /**
@@ -63,6 +76,11 @@ public final class EngineMode {
 
         var eye = player.getEyePosition(1.0F);
         session = new EngineSession(eye.x, eye.y, eye.z, player.getYRot(), player.getXRot());
+        var scope = new EngineSessionScope();
+        scope.onClose(com.blib.engine.tag.TagStagingCache::clear);
+        scope.onClose(com.blib.engine.jigsaw.ClientPlacedPieceRegistry::clear);
+        scope.onClose(com.blib.engine.history.ClientActionHistory.INSTANCE::clear);
+        sessionScope = scope;
 
         // Request the server's PlacedPiece set for the current dimension so the client's hover / selection mirror is
         // populated for the very first frame of engine mode. The reply broadcasts to all engine-mode players, but in
@@ -90,17 +108,14 @@ public final class EngineMode {
             mc.mouseHandler.grabMouse();
         }
 
-        // Pending tag-edits from the inspector are also static; clear so an uncommitted overlay doesn't shadow the
-        // runtime registry the next time the user enters the engine.
-        com.blib.engine.tag.TagStagingCache.clear();
-
-        // Drop the placed-piece mirror so a stale set from this dimension doesn't ghost into the next engine entry
-        // (e.g. after the player travels and re-enters elsewhere). On next entry we re-request.
-        com.blib.engine.jigsaw.ClientPlacedPieceRegistry.clear();
-
-        // Same logic for the action history mirror — the server will repopulate via the next sync after re-entry.
-        com.blib.engine.history.ClientActionHistory.INSTANCE.clear();
-
+        // Tear down everything that registered on the session scope at enter() — currently the tag-staging cache, the
+        // placed-piece mirror, and the action-history mirror. New session-scoped resources can register with
+        // {@link EngineSessionScope#onClose} at their own initialization site and don't need to touch this method.
+        var scope = sessionScope;
+        if (scope != null) {
+            scope.close();
+        }
+        sessionScope = null;
         session = null;
     }
 

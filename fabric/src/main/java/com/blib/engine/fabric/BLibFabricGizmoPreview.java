@@ -3,7 +3,7 @@ package com.blib.engine.fabric;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import org.jetbrains.annotations.ApiStatus;
 
-import com.blib.engine.gizmo.BLibGizmoPreviewRenderer;
+import com.blib.engine.render.gizmo.BLibGizmoPreviewRenderer;
 
 @ApiStatus.Internal
 public final class BLibFabricGizmoPreview {

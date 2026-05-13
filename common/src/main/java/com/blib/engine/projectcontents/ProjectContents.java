@@ -10,10 +10,10 @@ import java.util.List;
  * ({@code BLibClientListener.handlePoolList} / {@code handleStructureList}) and read each frame by
  * {@code ContentBrowserPanel}.
  * <p>
- * Captures intentionally aren't mirrored here — they remain in {@link com.blib.engine.blockselection.BlockSelection}
- * which is where the existing Capture Panel sources them, and the content browser reads through to keep one
- * authoritative source. Pools and structures are full namespaced ids since the project's datapack can carry multiple
- * namespaces.
+ * Captures intentionally aren't mirrored here — they remain in
+ * {@link com.blib.engine.domain.selection.volume.BlockSelection} which is where the existing Capture Panel sources
+ * them, and the content browser reads through to keep one authoritative source. Pools and structures are full
+ * namespaced ids since the project's datapack can carry multiple namespaces.
  * <p>
  * Cleared on workspace close (and on active-project change implicitly because the workspace recreates) so a stale list
  * from a previous project doesn't bleed into the next session.

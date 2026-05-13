@@ -15,8 +15,8 @@ import com.blib.mod.common.network.packet.S2CProjectOpResultPayload;
  * closes (so reopening lands on the picker again — projects are not persisted across sessions per the project plan).
  * <p>
  * Single-player only — the engine is gated to integrated-server worlds, so a session-scoped global is the right
- * granularity. The {@link com.blib.engine.ui.ProjectPickerScreen} (Phase 4) writes into this on Open; the workspace
- * panels read from it for status bar display + outgoing edit packets.
+ * granularity. The {@link com.blib.engine.ui.screen.ProjectPickerScreen} (Phase 4) writes into this on Open; the
+ * workspace panels read from it for status bar display + outgoing edit packets.
  */
 @ApiStatus.Internal
 public final class ProjectSession {

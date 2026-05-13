@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
+import com.blib.engine.history.api.HistoryService;
 import com.blib.mod.common.network.packet.ActionDescriptor;
 
 /**
@@ -14,10 +15,10 @@ import com.blib.mod.common.network.packet.ActionDescriptor;
  * {@code com.blib.mod.common.gameplay.history.ActionHistory} but lives purely on the client: the modeler scene is
  * heap-only (no server sync), so reverting a gesture is a local field-write rather than a network round-trip.
  * <p>
- * The {@link com.blib.engine.ui.ActionStackPanel} reads this store via {@link #descriptors} / {@link #undoCursor} when
- * the active workspace layout contains modeler panels — otherwise it shows the server-synced history. Cleared on
- * {@link com.blib.engine.modeler.ModelerSceneLoader#loadFromFile model load} since the new scene's bones / cubes are
- * different heap instances that the existing actions can't address.
+ * The {@link com.blib.engine.ui.panel.action.ActionStackPanel} reads this store via {@link #descriptors} /
+ * {@link #undoCursor} when the active workspace layout contains modeler panels — otherwise it shows the server-synced
+ * history. Cleared on {@link com.blib.engine.modeler.ModelerSceneLoader#loadFromFile model load} since the new scene's
+ * bones / cubes are different heap instances that the existing actions can't address.
  */
 @ApiStatus.Internal
 public final class ModelerActionHistory {
@@ -93,4 +94,25 @@ public final class ModelerActionHistory {
     public static synchronized int undoCursor() {
         return undoStack.size();
     }
+
+    /**
+     * Read-only adapter that exposes this static store as a {@link HistoryService} — lets UI panels stay agnostic to
+     * which history backend they're reading.
+     */
+    public static HistoryService asService() {
+        return SERVICE;
+    }
+
+    private static final HistoryService SERVICE = new HistoryService() {
+
+        @Override
+        public List<ActionDescriptor> entries() {
+            return descriptors();
+        }
+
+        @Override
+        public int undoCursor() {
+            return ModelerActionHistory.undoCursor();
+        }
+    };
 }
