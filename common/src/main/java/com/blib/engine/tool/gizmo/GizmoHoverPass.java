@@ -1,5 +1,6 @@
 package com.blib.engine.tool.gizmo;
 
+import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.engine.domain.selection.entity.EntityGizmoMode;
@@ -12,6 +13,7 @@ import com.blib.engine.domain.selection.volume.BlockSelectionScaleGizmo;
 import com.blib.engine.domain.selection.volume.BlockSelectionTranslateGizmo;
 import com.blib.engine.domain.selection.volume.MoveBlocksGizmo;
 import com.blib.engine.session.EngineMode;
+import com.blib.engine.session.EngineSession;
 
 /**
  * Per-frame gizmo hover update. Prior to this pass every {@code *GizmoRenderer} ran the cursor-vs-handle picker inside
@@ -93,7 +95,7 @@ public final class GizmoHoverPass {
         EntityScaleGizmo.setHovered(false);
     }
 
-    private static void tickBlockScale(com.blib.engine.session.EngineSession session) {
+    private static void tickBlockScale(EngineSession session) {
         var dragging = BlockSelectionScaleGizmo.draggingFace();
         BlockSelectionScaleGizmo.setHoveredFace(
             dragging != null ? dragging : BlockSelectionScaleGizmo.pickUnderCursor(session)
@@ -102,7 +104,7 @@ public final class GizmoHoverPass {
         MoveBlocksGizmo.setHoveredAxis(null);
     }
 
-    private static void tickBlockTranslate(com.blib.engine.session.EngineSession session) {
+    private static void tickBlockTranslate(EngineSession session) {
         var dragging = BlockSelectionTranslateGizmo.draggingAxis();
         BlockSelectionTranslateGizmo.setHoveredAxis(
             dragging != null ? dragging : BlockSelectionTranslateGizmo.pickUnderCursor(session)
@@ -111,7 +113,7 @@ public final class GizmoHoverPass {
         MoveBlocksGizmo.setHoveredAxis(null);
     }
 
-    private static void tickMoveBlocks(com.blib.engine.session.EngineSession session) {
+    private static void tickMoveBlocks(EngineSession session) {
         var dragging = MoveBlocksGizmo.draggingAxis();
         MoveBlocksGizmo.setHoveredAxis(dragging != null ? dragging : MoveBlocksGizmo.pickUnderCursor(session));
         BlockSelectionScaleGizmo.setHoveredFace(null);
@@ -119,8 +121,8 @@ public final class GizmoHoverPass {
     }
 
     private static void tickEntityTranslate(
-        com.blib.engine.session.EngineSession session,
-        net.minecraft.world.entity.LivingEntity entity
+        EngineSession session,
+        LivingEntity entity
     ) {
         var dragging = EntityTranslateGizmo.draggingAxis();
         if (dragging != null) {
@@ -133,8 +135,8 @@ public final class GizmoHoverPass {
     }
 
     private static void tickEntityScale(
-        com.blib.engine.session.EngineSession session,
-        net.minecraft.world.entity.LivingEntity entity
+        EngineSession session,
+        LivingEntity entity
     ) {
         if (EntityScaleGizmo.isDragging()) {
             EntityScaleGizmo.setHovered(true);

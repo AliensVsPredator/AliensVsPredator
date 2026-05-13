@@ -12,6 +12,7 @@ import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.Nullable;
 
+import com.blib.api.common.dismemberment.v1.LimbVisuals;
 import com.blib.api.common.dismemberment.v1.entity.DismemberedLimbEntity;
 import com.blib.internal.mixin.MixinEntityRenderDispatcher_Accessor;
 import com.blib.internal.mixin.MixinLivingEntityRenderer_Accessor;
@@ -86,7 +87,7 @@ public final class LimbHeldItemRenderer {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private static void renderItemAtLimbPose(
         DismemberedLimbEntity limb,
-        com.blib.api.common.dismemberment.v1.LimbVisuals visuals,
+        LimbVisuals visuals,
         PoseStack poseStack,
         MultiBufferSource bufferSource,
         int packedLight,

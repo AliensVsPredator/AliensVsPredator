@@ -7,10 +7,12 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import com.blib.engine.domain.selection.volume.BlockSelectionScaleGizmo;
+import com.blib.engine.jigsaw.JigsawPlacementCursor;
 import com.blib.engine.math.AxisPlaneDrag;
 import com.blib.engine.math.CursorCamera;
 import com.blib.engine.math.RayAabb;
 import com.blib.engine.session.EngineSession;
+import com.blib.engine.tool.gizmo.GizmoHit;
 
 /**
  * Uniform-scale gizmo for the engine's entity selection — a single Y-axis handle on top of the entity AABB. Drag up to
@@ -82,7 +84,7 @@ public final class EntityScaleGizmo {
         var axisDir = new Vec3(0, 1, 0);
         var planeNormal = AxisPlaneDrag.pickPlaneNormal(axisDir, anchor, camPos);
 
-        var rayDir = com.blib.engine.jigsaw.JigsawPlacementCursor.cursorRayDirection(session);
+        var rayDir = JigsawPlacementCursor.cursorRayDirection(session);
         var initialAxisOffset = rayDir == null
             ? 0.0
             : AxisPlaneDrag.projectOntoAxisOrZero(camPos, rayDir, anchor, planeNormal, axisDir);
@@ -138,7 +140,7 @@ public final class EntityScaleGizmo {
      * consistent.
      */
     public static @Nullable HandleHit pickUnderCursorWithDistance(EngineSession session, LivingEntity entity) {
-        var rayDir = com.blib.engine.jigsaw.JigsawPlacementCursor.cursorRayDirection(session);
+        var rayDir = JigsawPlacementCursor.cursorRayDirection(session);
         if (rayDir == null) {
             return null;
         }
@@ -165,7 +167,7 @@ public final class EntityScaleGizmo {
         return Double.isNaN(t) || t <= 0 ? null : new HandleHit(t);
     }
 
-    public record HandleHit(double t) implements com.blib.engine.tool.gizmo.GizmoHit {}
+    public record HandleHit(double t) implements GizmoHit {}
 
     public record DragResult(
         LivingEntity entity,

@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 import com.blib.engine.jigsaw.ClientPlacedPieceRegistry;
+import com.blib.engine.jigsaw.JigsawPieceSelection;
 import com.blib.engine.jigsaw.JigsawPlacementCursor;
 import com.blib.engine.session.EngineCameraFrame;
 import com.blib.engine.session.EngineInteractionRange;
@@ -68,7 +69,7 @@ public final class EngineHoverProbe {
         // Suppress hover entirely while the user has a piece armed for placement. The placement ghost preview is the
         // affordance in that mode; layering a block/piece hover outline on top adds visual noise the user can't act
         // on (LMB always places, RMB is a no-op in place mode).
-        if (com.blib.engine.jigsaw.JigsawPieceSelection.selectedId() != null) {
+        if (JigsawPieceSelection.selectedId() != null) {
             current = null;
             return;
         }

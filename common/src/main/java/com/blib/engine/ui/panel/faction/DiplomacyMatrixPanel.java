@@ -8,9 +8,11 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import com.blib.api.common.faction.v1.RelationshipState;
 import com.blib.engine.ui.EngineFont;
@@ -154,7 +156,7 @@ public final class DiplomacyMatrixPanel implements Panel {
             return;
         }
 
-        var query = searchInput.content().toLowerCase(java.util.Locale.ROOT).trim();
+        var query = searchInput.content().toLowerCase(Locale.ROOT).trim();
         var entries = filter(query);
 
         var font = EngineFont.get();
@@ -350,8 +352,8 @@ public final class DiplomacyMatrixPanel implements Panel {
         var out = new ArrayList<S2CFactionDirectoryPayload.FactionEntry>();
         for (var entry : all) {
             if (
-                entry.name().toLowerCase(java.util.Locale.ROOT).contains(query)
-                    || entry.id().toString().toLowerCase(java.util.Locale.ROOT).contains(query)
+                entry.name().toLowerCase(Locale.ROOT).contains(query)
+                    || entry.id().toString().toLowerCase(Locale.ROOT).contains(query)
             ) {
                 out.add(entry);
             }
@@ -463,8 +465,8 @@ public final class DiplomacyMatrixPanel implements Panel {
 
     private static boolean isShiftHeld() {
         var window = Minecraft.getInstance().getWindow().getWindow();
-        return org.lwjgl.glfw.GLFW.glfwGetKey(window, org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT_SHIFT) == org.lwjgl.glfw.GLFW.GLFW_PRESS
-            || org.lwjgl.glfw.GLFW.glfwGetKey(window, org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT_SHIFT) == org.lwjgl.glfw.GLFW.GLFW_PRESS;
+        return GLFW.glfwGetKey(window, GLFW.GLFW_KEY_LEFT_SHIFT) == GLFW.GLFW_PRESS
+            || GLFW.glfwGetKey(window, GLFW.GLFW_KEY_RIGHT_SHIFT) == GLFW.GLFW_PRESS;
     }
 
     private static void applyRawScissor(GuiGraphics graphics, int x, int y, int w, int h) {

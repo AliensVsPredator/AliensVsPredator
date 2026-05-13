@@ -3,6 +3,8 @@ package com.blib.engine.jigsaw.placement;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -33,8 +35,8 @@ public final class CollisionScanner {
         StructureTemplate template,
         ResourceKey<Level> dimension,
         BlockPos anchor,
-        net.minecraft.world.level.block.Rotation rotation,
-        net.minecraft.world.level.block.Mirror mirror,
+        Rotation rotation,
+        Mirror mirror,
         @Nullable BlockPos exemptPos
     ) {}
 

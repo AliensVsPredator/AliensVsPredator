@@ -1,5 +1,6 @@
 package com.blib.engine.mixin;
 
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
 import org.spongepowered.asm.mixin.Mixin;
@@ -57,7 +58,7 @@ public abstract class MixinMinecraft_Engine {
         ci.cancel();
     }
 
-    private static void drain(net.minecraft.client.KeyMapping mapping) {
+    private static void drain(KeyMapping mapping) {
         while (mapping.consumeClick()) {
             // discard
         }

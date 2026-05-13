@@ -12,6 +12,7 @@ import com.blib.engine.layout.LayoutCatalog;
 import com.blib.engine.layout.LayoutTemplate;
 import com.blib.engine.layout.PanelRegistry;
 import com.blib.engine.session.ProjectSession;
+import com.blib.engine.territory.ClaimPaintTool;
 import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.widget.DropdownMenu;
 
@@ -252,11 +253,11 @@ public final class MenuBarController {
      */
     public DropdownMenu buildViewMenu(int anchorX, int anchorY) {
         var items = new ArrayList<DropdownMenu.Item>();
-        var territoryOn = com.blib.engine.territory.ClaimPaintTool.isOverlayVisible();
+        var territoryOn = ClaimPaintTool.isOverlayVisible();
         items.add(
             new DropdownMenu.Item(
                 (territoryOn ? "✓ " : "   ") + "Show Territory Claims",
-                com.blib.engine.territory.ClaimPaintTool::toggleOverlayVisible
+                ClaimPaintTool::toggleOverlayVisible
             )
         );
         return new DropdownMenu(anchorX, anchorY, items);

@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -75,7 +76,7 @@ public final class PlacedJigsawPieceSelectable implements Selectable {
      * No-op if the piece UUID is no longer in the client registry — the piece may have been removed between the user
      * clicking and us getting here, in which case there's nothing meaningful to promote to.
      */
-    public static void promoteToVolume(UUID pieceId, @org.jetbrains.annotations.Nullable BlockSelection.GizmoMode seedMode) {
+    public static void promoteToVolume(UUID pieceId, @Nullable BlockSelection.GizmoMode seedMode) {
         var piece = ClientPlacedPieceRegistry.get(pieceId);
         if (piece == null) {
             return;

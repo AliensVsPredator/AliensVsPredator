@@ -1,6 +1,7 @@
 package com.blib.engine.render.modeler;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -10,6 +11,9 @@ import net.minecraft.client.renderer.GameRenderer;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import com.blib.engine.modeler.ModelerBone;
 import com.blib.engine.modeler.ModelerCube;
@@ -50,7 +54,7 @@ public final class ModelerCubeRenderer {
 
         // Selection targets: a CubeSelection outlines just that cube; a BoneSelection cascades to every cube in the
         // bone's subtree so the user sees the whole group lit up.
-        var selectionTargets = new java.util.HashSet<ModelerCube>();
+        var selectionTargets = new HashSet<ModelerCube>();
         if (selection instanceof Selection.CubeSelection cs) {
             selectionTargets.add(cs.cube());
         } else if (selection instanceof Selection.BoneSelection bs) {
@@ -61,7 +65,7 @@ public final class ModelerCubeRenderer {
         // selection set so the selection's yellow always wins on the cube the user has actually picked.
         var hovered = ModelerScene.get().hoveredCube;
         if (hovered != null && !selectionTargets.contains(hovered)) {
-            renderOutlines(pose, root, java.util.Set.of(hovered), HOVER_COLOR);
+            renderOutlines(pose, root, Set.of(hovered), HOVER_COLOR);
         }
 
         if (!selectionTargets.isEmpty()) {
@@ -70,7 +74,7 @@ public final class ModelerCubeRenderer {
     }
 
     /** Recursively collects every cube reachable from {@code bone} into {@code out}. */
-    private static void collectCubesInSubtree(ModelerBone bone, java.util.Set<ModelerCube> out) {
+    private static void collectCubesInSubtree(ModelerBone bone, Set<ModelerCube> out) {
         out.addAll(bone.cubes);
         for (var child : bone.children) {
             collectCubesInSubtree(child, out);
@@ -102,7 +106,7 @@ public final class ModelerCubeRenderer {
         pose.popPose();
     }
 
-    private static void emitCubeFaces(com.mojang.blaze3d.vertex.BufferBuilder buffer, PoseStack pose, ModelerCube cube) {
+    private static void emitCubeFaces(BufferBuilder buffer, PoseStack pose, ModelerCube cube) {
         pose.pushPose();
         ModelerTransforms.applyCube(pose, cube);
         var matrix = pose.last().pose();
@@ -132,7 +136,7 @@ public final class ModelerCubeRenderer {
     }
 
     private static void addQuad(
-        com.mojang.blaze3d.vertex.BufferBuilder buffer,
+        BufferBuilder buffer,
         Matrix4f matrix,
         float x0,
         float y0,
@@ -164,7 +168,7 @@ public final class ModelerCubeRenderer {
      * Set-based so a bone selection (many cubes) and a cube selection / hover (one cube) share the same render path;
      * the color parameter lets the caller distinguish hover (white, semi-transparent) from selection (yellow).
      */
-    private static void renderOutlines(PoseStack pose, ModelerBone bone, java.util.Set<ModelerCube> targets, int color) {
+    private static void renderOutlines(PoseStack pose, ModelerBone bone, Set<ModelerCube> targets, int color) {
         pose.pushPose();
         ModelerTransforms.applyBone(pose, bone);
 
@@ -246,7 +250,7 @@ public final class ModelerCubeRenderer {
 
     /** Thin rectangular prism along the X axis from {@code (xa, y, z)} to {@code (xb, y, z)}. */
     private static void emitPrismX(
-        com.mojang.blaze3d.vertex.BufferBuilder buffer,
+        BufferBuilder buffer,
         Matrix4f matrix,
         float xa,
         float xb,
@@ -271,7 +275,7 @@ public final class ModelerCubeRenderer {
 
     /** Thin rectangular prism along the Y axis from {@code (x, ya, z)} to {@code (x, yb, z)}. */
     private static void emitPrismY(
-        com.mojang.blaze3d.vertex.BufferBuilder buffer,
+        BufferBuilder buffer,
         Matrix4f matrix,
         float x,
         float ya,
@@ -296,7 +300,7 @@ public final class ModelerCubeRenderer {
 
     /** Thin rectangular prism along the Z axis from {@code (x, y, za)} to {@code (x, y, zb)}. */
     private static void emitPrismZ(
-        com.mojang.blaze3d.vertex.BufferBuilder buffer,
+        BufferBuilder buffer,
         Matrix4f matrix,
         float x,
         float y,
@@ -320,7 +324,7 @@ public final class ModelerCubeRenderer {
     }
 
     private static void addQuadColor(
-        com.mojang.blaze3d.vertex.BufferBuilder buffer,
+        BufferBuilder buffer,
         Matrix4f matrix,
         float x0,
         float y0,

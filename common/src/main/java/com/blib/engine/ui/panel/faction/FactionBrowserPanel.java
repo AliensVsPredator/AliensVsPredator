@@ -10,7 +10,9 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 
 import com.blib.engine.domain.selection.picking.FactionSelectable;
 import com.blib.engine.domain.selection.picking.SelectionManager;
@@ -164,7 +166,7 @@ public final class FactionBrowserPanel implements Panel {
             return;
         }
 
-        var query = searchInput.content().toLowerCase(java.util.Locale.ROOT).trim();
+        var query = searchInput.content().toLowerCase(Locale.ROOT).trim();
         var filtered = filter(query);
 
         if (filtered.isEmpty()) {
@@ -268,8 +270,8 @@ public final class FactionBrowserPanel implements Panel {
         var out = new ArrayList<S2CFactionDirectoryPayload.FactionEntry>();
         for (var entry : all) {
             if (
-                entry.name().toLowerCase(java.util.Locale.ROOT).contains(query)
-                    || entry.id().toString().toLowerCase(java.util.Locale.ROOT).contains(query)
+                entry.name().toLowerCase(Locale.ROOT).contains(query)
+                    || entry.id().toString().toLowerCase(Locale.ROOT).contains(query)
             ) {
                 out.add(entry);
             }
@@ -293,7 +295,7 @@ public final class FactionBrowserPanel implements Panel {
      */
     private void createNewFaction() {
         var existing = ClientFactionDirectoryCache.entries();
-        var taken = new java.util.HashSet<ResourceLocation>(existing.size());
+        var taken = new HashSet<ResourceLocation>(existing.size());
         for (var e : existing) {
             taken.add(e.id());
         }

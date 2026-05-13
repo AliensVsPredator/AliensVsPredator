@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import com.blib.engine.modeler.ModelerBone;
 import com.blib.engine.modeler.ModelerCube;
@@ -340,7 +341,7 @@ public final class ModelerInspectorPanel implements Panel {
     }
 
     private static String formatDouble(double v) {
-        return String.format(java.util.Locale.ROOT, "%.2f", v);
+        return String.format(Locale.ROOT, "%.2f", v);
     }
 
     private static String formatInt(double v) {
@@ -435,7 +436,7 @@ public final class ModelerInspectorPanel implements Panel {
             case SIZE -> "size";
             case ROTATION -> "rotation";
             case PIVOT -> "pivot";
-            default -> field.name().toLowerCase(java.util.Locale.ROOT);
+            default -> field.name().toLowerCase(Locale.ROOT);
         };
         return "Edit cube " + cubeName + " (" + axisLabel + ")";
     }
@@ -446,7 +447,7 @@ public final class ModelerInspectorPanel implements Panel {
             case ROTATION -> "rotation";
             case SCALE -> "scale";
             case PIVOT -> "pivot";
-            default -> field.name().toLowerCase(java.util.Locale.ROOT);
+            default -> field.name().toLowerCase(Locale.ROOT);
         };
         return "Edit bone " + boneName + " (" + axisLabel + ")";
     }

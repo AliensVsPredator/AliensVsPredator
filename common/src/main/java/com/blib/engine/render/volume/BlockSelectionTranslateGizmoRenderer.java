@@ -8,9 +8,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.core.Direction;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 import org.joml.Matrix4f;
 
+import com.blib.engine.domain.selection.picking.EntitySelectable;
+import com.blib.engine.domain.selection.picking.SelectionManager;
 import com.blib.engine.domain.selection.volume.BlockSelection;
 import com.blib.engine.domain.selection.volume.BlockSelectionScaleGizmo;
 import com.blib.engine.domain.selection.volume.BlockSelectionTranslateGizmo;
@@ -48,8 +51,8 @@ public final class BlockSelectionTranslateGizmoRenderer {
             return;
         }
         if (
-            com.blib.engine.domain.selection.picking.SelectionManager.current()
-                .single() instanceof com.blib.engine.domain.selection.picking.EntitySelectable
+            SelectionManager.current()
+                .single() instanceof EntitySelectable
         ) {
             return;
         }
@@ -82,7 +85,7 @@ public final class BlockSelectionTranslateGizmoRenderer {
         var maxY = (int) Math.floor(box.maxY) - 1;
         var maxZ = (int) Math.floor(box.maxZ) - 1;
         var center = BlockSelectionTranslateGizmo.aabbCenter(minX, minY, minZ, maxX, maxY, maxZ);
-        var scale = BlockSelectionScaleGizmo.scaleForCamera(new net.minecraft.world.phys.Vec3(cameraX, cameraY, cameraZ), center);
+        var scale = BlockSelectionScaleGizmo.scaleForCamera(new Vec3(cameraX, cameraY, cameraZ), center);
 
         var matrix = poseStack.last().pose();
         RenderSystem.setShader(BLibShaders.ENGINE_SELECTION.supplier());
@@ -126,7 +129,7 @@ public final class BlockSelectionTranslateGizmoRenderer {
         BufferBuilder buffer,
         Matrix4f matrix,
         BlockSelectionTranslateGizmo.Axis axis,
-        net.minecraft.world.phys.Vec3 center,
+        Vec3 center,
         double scale,
         double camX,
         double camY,
@@ -187,8 +190,8 @@ public final class BlockSelectionTranslateGizmoRenderer {
      * {@code (x, y, z)}.
      */
     private static double[] perpendicularSubtract(
-        net.minecraft.world.phys.Vec3 start,
-        net.minecraft.world.phys.Vec3 end,
+        Vec3 start,
+        Vec3 end,
         BlockSelectionTranslateGizmo.Axis axis,
         double half,
         boolean min

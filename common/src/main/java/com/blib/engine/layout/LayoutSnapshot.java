@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.blib.engine.ui.dock.DockNode;
 import com.blib.engine.ui.dock.Panel;
@@ -50,7 +51,7 @@ public final class LayoutSnapshot {
                 "[BLib] LayoutSnapshot.capture: unexpected non-tabbed leaf {}; capturing as empty",
                 leaf.panel().getClass().getSimpleName()
             );
-            return new BodyNode.Leaf(java.util.List.of(), 0);
+            return new BodyNode.Leaf(List.of(), 0);
         }
         var ids = new ArrayList<String>(tabbed.tabCount());
         for (var p : tabbed.tabs()) {

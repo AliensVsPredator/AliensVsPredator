@@ -2,6 +2,7 @@ package com.blib.engine.ui.panel.territory;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -11,10 +12,12 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.blib.engine.domain.selection.picking.FactionSelectable;
 import com.blib.engine.domain.selection.picking.SelectionManager;
+import com.blib.engine.territory.ContestedClaimAnimation;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.PanelPlaceholder;
 import com.blib.engine.ui.dock.Panel;
@@ -203,7 +206,7 @@ public final class TerritoryMapPanel implements Panel {
 
     private void renderMap(
         GuiGraphics graphics,
-        net.minecraft.client.gui.Font font,
+        Font font,
         int mouseX,
         int mouseY,
         @Nullable ResourceLocation inspected
@@ -321,7 +324,7 @@ public final class TerritoryMapPanel implements Panel {
      * inspected faction's segment uses {@link #CELL_OWN_ALPHA} (bright) and other claimants use
      * {@link #CELL_OTHER_ALPHA} (muted), matching how those factions would render on a chunk they fully owned.
      */
-    private static int contestedCycleArgb(java.util.List<ResourceLocation> ids, @Nullable ResourceLocation inspected, long nowMs) {
+    private static int contestedCycleArgb(List<ResourceLocation> ids, @Nullable ResourceLocation inspected, long nowMs) {
         var rgbs = new int[ids.size()];
         var alphas = new double[ids.size()];
         for (var i = 0; i < ids.size(); i++) {
@@ -329,12 +332,12 @@ public final class TerritoryMapPanel implements Panel {
             rgbs[i] = entry == null ? 0x888888 : (entry.color() & 0xFFFFFF);
             alphas[i] = ids.get(i).equals(inspected) ? CELL_OWN_ALPHA : CELL_OTHER_ALPHA;
         }
-        var sample = com.blib.engine.territory.ContestedClaimAnimation.sampleAt(rgbs, alphas, nowMs);
+        var sample = ContestedClaimAnimation.sampleAt(rgbs, alphas, nowMs);
         var alpha = Math.max(0, Math.min(255, (int) Math.round(sample.alpha())));
         return (alpha << 24) | sample.rgb();
     }
 
-    private void renderLegend(GuiGraphics graphics, net.minecraft.client.gui.Font font, int x, int y, int ownColor) {
+    private void renderLegend(GuiGraphics graphics, Font font, int x, int y, int ownColor) {
         var swatchSize = 6;
         var entries = new String[] { "Inspected", "Other", "Contested", "Unclaimed" };
         var colors = new int[] {
@@ -383,7 +386,7 @@ public final class TerritoryMapPanel implements Panel {
 
     private static void drawButton(
         GuiGraphics graphics,
-        net.minecraft.client.gui.Font font,
+        Font font,
         Rect rect,
         String label,
         int mouseX,

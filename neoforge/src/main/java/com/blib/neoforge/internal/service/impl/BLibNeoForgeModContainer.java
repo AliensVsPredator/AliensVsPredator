@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import com.blib.api.client.event.v1.BLibScreenInitEvent;
 import com.blib.api.common.entity.v1.spawning.BLibEntitySpawnData;
 import com.blib.api.common.event.v1.BLibBlockBreakEvent;
 import com.blib.api.common.event.v1.BLibChunkClaimAddedEvent;
@@ -122,7 +123,7 @@ public class BLibNeoForgeModContainer {
 
     private final BLibNeoForgeEventHandle<BLibLevelTickEvent> postLevelTick;
 
-    private final BLibNeoForgeEventHandle<com.blib.api.client.event.v1.BLibScreenInitEvent> postScreenInit;
+    private final BLibNeoForgeEventHandle<BLibScreenInitEvent> postScreenInit;
 
     private final BLibNeoForgeEventHandle<BLibBlockBreakEvent> preBlockBreak;
 
@@ -246,7 +247,7 @@ public class BLibNeoForgeModContainer {
         return postLevelTick;
     }
 
-    public BLibNeoForgeEventHandle<com.blib.api.client.event.v1.BLibScreenInitEvent> postScreenInit() {
+    public BLibNeoForgeEventHandle<BLibScreenInitEvent> postScreenInit() {
         return postScreenInit;
     }
 

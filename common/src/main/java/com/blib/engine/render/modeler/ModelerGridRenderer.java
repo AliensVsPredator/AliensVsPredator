@@ -1,6 +1,7 @@
 package com.blib.engine.render.modeler;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
@@ -79,7 +80,7 @@ public final class ModelerGridRenderer {
     }
 
     private static void addLine(
-        com.mojang.blaze3d.vertex.BufferBuilder buffer,
+        BufferBuilder buffer,
         Matrix4f pose,
         float x0,
         float y0,

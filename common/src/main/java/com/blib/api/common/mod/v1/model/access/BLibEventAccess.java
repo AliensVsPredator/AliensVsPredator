@@ -2,6 +2,7 @@ package com.blib.api.common.mod.v1.model.access;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import com.blib.api.client.event.v1.BLibScreenInitEvent;
 import com.blib.api.common.event.v1.BLibBlockBreakEvent;
 import com.blib.api.common.event.v1.BLibChunkClaimAddedEvent;
 import com.blib.api.common.event.v1.BLibChunkClaimRemovedEvent;
@@ -94,7 +95,7 @@ public class BLibEventAccess {
      * widgets into vanilla screens (e.g. an "Open BLib" button on the TitleScreen). Cross-loader wrapper around
      * Fabric's {@code ScreenEvents.AFTER_INIT} and NeoForge's {@code ScreenEvent.Init.Post}.
      */
-    public BLibEventHandle<com.blib.api.client.event.v1.BLibScreenInitEvent> postScreenInit() {
+    public BLibEventHandle<BLibScreenInitEvent> postScreenInit() {
         return BLibInternalServices.EVENT.postScreenInit(mod);
     }
 

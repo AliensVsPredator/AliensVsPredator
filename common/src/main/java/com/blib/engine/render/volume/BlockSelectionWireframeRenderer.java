@@ -7,9 +7,13 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.core.BlockPos;
 import org.jetbrains.annotations.ApiStatus;
 import org.joml.Matrix4f;
 
+import com.blib.engine.domain.selection.picking.BlockSelectable;
+import com.blib.engine.domain.selection.picking.EntitySelectable;
+import com.blib.engine.domain.selection.picking.SelectionManager;
 import com.blib.engine.domain.selection.volume.BlockSelection;
 import com.blib.engine.session.EngineMode;
 import com.blib.internal.client.shader.BLibShaders;
@@ -62,15 +66,15 @@ public final class BlockSelectionWireframeRenderer {
         }
         // Entity selection takes over the gizmo surface — hide the volume wireframe so it doesn't visually compete with
         // the entity's selection highlight.
-        var single = com.blib.engine.domain.selection.picking.SelectionManager.current().single();
-        if (single instanceof com.blib.engine.domain.selection.picking.EntitySelectable) {
+        var single = SelectionManager.current().single();
+        if (single instanceof EntitySelectable) {
             return;
         }
 
         // Single-block selection (generic block or jigsaw): draw a 1×1×1 highlight at the block and skip the volume
         // box. Conveys "this block is selected" with the same visual vocabulary as the corner markers on a multi-
         // block volume — same color, same translucent shading — so users don't need to learn a second affordance.
-        if (single instanceof com.blib.engine.domain.selection.picking.BlockSelectable bs) {
+        if (single instanceof BlockSelectable bs) {
             renderSingleBlockHighlight(bs.pos(), poseStack, cameraX, cameraY, cameraZ);
             return;
         }
@@ -128,7 +132,7 @@ public final class BlockSelectionWireframeRenderer {
      * the inspector panel is offscreen or scrolled away.
      */
     private static void renderSingleBlockHighlight(
-        net.minecraft.core.BlockPos pos,
+        BlockPos pos,
         PoseStack poseStack,
         double cameraX,
         double cameraY,
@@ -167,7 +171,7 @@ public final class BlockSelectionWireframeRenderer {
     private static void addBoxQuadsForBlock(
         BufferBuilder buffer,
         Matrix4f matrix,
-        net.minecraft.core.BlockPos pos,
+        BlockPos pos,
         double cameraX,
         double cameraY,
         double cameraZ,

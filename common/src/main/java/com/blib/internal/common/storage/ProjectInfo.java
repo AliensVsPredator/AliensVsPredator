@@ -7,6 +7,7 @@ import com.just.codec.stream.StreamCodec;
 import com.just.codec.stream.impl.StreamCodecs;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -84,12 +85,12 @@ public record ProjectInfo(
         return new ProjectInfo(name, description, createdAt, mcVersion, version);
     }
 
-    public static ProjectInfo readMarker(Path packRoot) throws java.io.IOException {
+    public static ProjectInfo readMarker(Path packRoot) throws IOException {
         var marker = packRoot.resolve(MARKER_FILE_NAME);
         var text = Files.readString(marker);
         var parsed = JsonParser.parseString(text);
         if (!parsed.isJsonObject()) {
-            throw new java.io.IOException("Malformed " + MARKER_FILE_NAME + ": expected JSON object");
+            throw new IOException("Malformed " + MARKER_FILE_NAME + ": expected JSON object");
         }
         return fromJson(parsed.getAsJsonObject());
     }

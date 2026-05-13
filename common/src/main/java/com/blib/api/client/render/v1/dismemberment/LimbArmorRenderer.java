@@ -7,10 +7,12 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
+import net.minecraft.world.entity.LivingEntity;
 
 import java.util.EnumSet;
 import java.util.Set;
 
+import com.blib.api.common.dismemberment.v1.LimbVisuals;
 import com.blib.api.common.dismemberment.v1.entity.DismemberedLimbEntity;
 import com.blib.internal.mixin.MixinEntityRenderDispatcher_Accessor;
 import com.blib.internal.mixin.MixinLivingEntityRenderer_Accessor;
@@ -77,11 +79,11 @@ public final class LimbArmorRenderer {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private static void renderArmorAtLimbPose(
         DismemberedLimbEntity limb,
-        com.blib.api.common.dismemberment.v1.LimbVisuals visuals,
+        LimbVisuals visuals,
         PoseStack poseStack,
         MultiBufferSource bufferSource,
         int packedLight,
-        net.minecraft.world.entity.LivingEntity ghost,
+        LivingEntity ghost,
         HumanoidModel<?> humanoidModel,
         HumanoidArmorLayer armorLayer,
         Set<HumanoidPart> visibleParts

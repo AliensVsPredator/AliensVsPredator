@@ -6,10 +6,12 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import com.blib.engine.jigsaw.JigsawPlacementCursor;
 import com.blib.engine.math.AxisPlaneDrag;
 import com.blib.engine.math.CursorCamera;
 import com.blib.engine.math.RayAabb;
 import com.blib.engine.session.EngineSession;
+import com.blib.engine.tool.gizmo.GizmoHit;
 
 /**
  * Translation gizmo for the <em>blocks within</em> the selection AABB (Move Blocks tool). Visually identical to
@@ -121,7 +123,7 @@ public final class MoveBlocksGizmo {
 
         // Sample the click cursor's projection onto the axis so the first frame's delta is zero rather than
         // ARROW_LENGTH × scale. See {@code BlockSelectionTranslateGizmo} for the same fix and rationale.
-        var rayDir = com.blib.engine.jigsaw.JigsawPlacementCursor.cursorRayDirection(session);
+        var rayDir = JigsawPlacementCursor.cursorRayDirection(session);
         var initialAxisOffset = rayDir == null
             ? 0.0
             : AxisPlaneDrag.projectOntoAxisOrZero(camPos, rayDir, center, planeNormal, direction);
@@ -186,7 +188,7 @@ public final class MoveBlocksGizmo {
     public record AxisHit(
         Axis axis,
         double t
-    ) implements com.blib.engine.tool.gizmo.GizmoHit {}
+    ) implements GizmoHit {}
 
     public static @Nullable Axis pickUnderCursor(EngineSession session) {
         var hit = pickUnderCursorWithDistance(session);
@@ -198,7 +200,7 @@ public final class MoveBlocksGizmo {
         if (aabb.isEmpty()) {
             return null;
         }
-        var rayDir = com.blib.engine.jigsaw.JigsawPlacementCursor.cursorRayDirection(session);
+        var rayDir = JigsawPlacementCursor.cursorRayDirection(session);
         if (rayDir == null) {
             return null;
         }

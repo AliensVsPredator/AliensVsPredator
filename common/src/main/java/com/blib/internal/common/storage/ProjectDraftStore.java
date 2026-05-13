@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.blib.mod.common.network.packet.DraftPoolElement;
+
 /**
  * Server-side cache + mutation entrypoint for project-owned pool JSON. The disk file is the source of truth — this
  * class avoids re-reading it on every edit packet, but on every change it writes through to disk via
@@ -198,8 +200,8 @@ public final class ProjectDraftStore {
      * address them via per-row edit packets. Other element types ({@code empty_pool_element},
      * {@code feature_pool_element}) are skipped — they don't have a template id to display.
      */
-    public static List<com.blib.mod.common.network.packet.DraftPoolElement> extractDraftElements(JsonObject pool) {
-        var out = new ArrayList<com.blib.mod.common.network.packet.DraftPoolElement>();
+    public static List<DraftPoolElement> extractDraftElements(JsonObject pool) {
+        var out = new ArrayList<DraftPoolElement>();
         var elements = pool.has("elements") && pool.get("elements").isJsonArray() ? pool.getAsJsonArray("elements") : null;
         if (elements == null) {
             return Collections.emptyList();
@@ -222,7 +224,7 @@ public final class ProjectDraftStore {
                     continue;
                 }
                 var projOrd = projectionOrdinal(element);
-                out.add(new com.blib.mod.common.network.packet.DraftPoolElement(i, rl, weight, projOrd));
+                out.add(new DraftPoolElement(i, rl, weight, projOrd));
             } else if (isListElement(element)) {
                 var nested = element.has("elements") && element.get("elements").isJsonArray() ? element.getAsJsonArray("elements") : null;
                 if (nested == null) {
@@ -242,7 +244,7 @@ public final class ProjectDraftStore {
                         continue;
                     }
                     var projOrd = projectionOrdinal(childObj);
-                    out.add(new com.blib.mod.common.network.packet.DraftPoolElement(-1, rl, weight, projOrd));
+                    out.add(new DraftPoolElement(-1, rl, weight, projOrd));
                 }
             }
         }

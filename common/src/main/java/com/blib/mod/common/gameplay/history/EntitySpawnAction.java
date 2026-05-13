@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.ApiStatus;
@@ -80,7 +81,7 @@ public record EntitySpawnAction(
         entity.load(savedNbt);
         entity.setUUID(entityUuid);
         entity.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
-        if (entity instanceof net.minecraft.world.entity.Mob mob) {
+        if (entity instanceof Mob mob) {
             mob.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), MobSpawnType.COMMAND, null);
         }
         level.addFreshEntity(entity);

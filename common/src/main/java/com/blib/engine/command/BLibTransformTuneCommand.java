@@ -16,6 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.io.IOException;
@@ -308,8 +309,8 @@ public final class BLibTransformTuneCommand {
         ResourceLocation itemId,
         Map<ItemDisplayContext, BLibTransform> idle,
         Map<ItemDisplayContext, BLibTransform> blocking,
-        @org.jetbrains.annotations.Nullable BLibTransform idleWallFixed,
-        @org.jetbrains.annotations.Nullable BLibTransform blockingWallFixed
+        @Nullable BLibTransform idleWallFixed,
+        @Nullable BLibTransform blockingWallFixed
     ) {
         var timestamp = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         var sb = new StringBuilder();

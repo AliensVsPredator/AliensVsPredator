@@ -7,9 +7,12 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 import org.joml.Matrix4f;
 
+import com.blib.engine.domain.selection.picking.EntitySelectable;
+import com.blib.engine.domain.selection.picking.SelectionManager;
 import com.blib.engine.domain.selection.volume.BlockSelection;
 import com.blib.engine.domain.selection.volume.BlockSelectionScaleGizmo;
 import com.blib.engine.session.EngineMode;
@@ -59,8 +62,8 @@ public final class BlockSelectionScaleGizmoRenderer {
             return;
         }
         if (
-            com.blib.engine.domain.selection.picking.SelectionManager.current()
-                .single() instanceof com.blib.engine.domain.selection.picking.EntitySelectable
+            SelectionManager.current()
+                .single() instanceof EntitySelectable
         ) {
             return;
         }
@@ -108,7 +111,7 @@ public final class BlockSelectionScaleGizmoRenderer {
         // makes; without this, indoor captures would have invisible handles on the far side of nearby walls.
         RenderSystem.disableDepthTest();
 
-        var renderCamPos = new net.minecraft.world.phys.Vec3(cameraX, cameraY, cameraZ);
+        var renderCamPos = new Vec3(cameraX, cameraY, cameraZ);
         var buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         for (var face : BlockSelectionScaleGizmo.Face.values()) {
             // Per-face scale: arrows farther from the camera grow proportionally so on-screen size stays roughly
@@ -153,7 +156,7 @@ public final class BlockSelectionScaleGizmoRenderer {
         BufferBuilder buffer,
         Matrix4f matrix,
         BlockSelectionScaleGizmo.Face face,
-        net.minecraft.world.phys.Vec3 faceCenter,
+        Vec3 faceCenter,
         double scale,
         double camX,
         double camY,

@@ -7,6 +7,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -279,7 +280,7 @@ public final class ManageLayoutsDialog {
         if (openFolderRect != null && openFolderRect.contains(mouseX, mouseY)) {
             try {
                 LayoutStorage.ensureRootExists();
-            } catch (java.io.IOException ignored) {
+            } catch (IOException ignored) {
                 // Best-effort; if the directory can't be created, fall through to openUri which will likely fail too
                 // and the user will see no folder open. Silent rather than blocking the dialog.
             }

@@ -1,14 +1,21 @@
 package com.blib.mod;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.TickTask;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Set;
+import java.util.function.Function;
 
 import com.blib.api.BLibAPI;
 import com.blib.api.common.block.v1.BlockBreakProgressManager;
@@ -16,7 +23,10 @@ import com.blib.api.common.data_sync.v1.DataContainer;
 import com.blib.api.common.data_sync.v1.model.DataUser;
 import com.blib.api.common.dismemberment.v1.builtin.BuiltInLimbDrops;
 import com.blib.api.common.dismemberment.v1.builtin.BuiltInSpawnFunctions;
+import com.blib.api.common.faction.v1.Faction;
 import com.blib.api.common.faction.v1.FactionMember;
+import com.blib.api.common.faction.v1.ProtectionMode;
+import com.blib.api.common.faction.v1.RelationshipState;
 import com.blib.api.common.mod.v1.BLibMod;
 import com.blib.api.common.reputation.v1.ReputationKey;
 import com.blib.api.common.server.v1.ServerScheduler;
@@ -35,6 +45,7 @@ import com.blib.mod.common.gameplay.history.ActionHistory;
 import com.blib.mod.common.network.BLibPacketDirections;
 import com.blib.mod.common.network.BLibServerListener;
 import com.blib.mod.common.network.BLibServerPacketHandlers;
+import com.blib.mod.common.network.packet.S2CLimbDefinitionsSyncPayload;
 import com.blib.mod.common.property.BLibModPropertyAccess;
 import com.blib.mod.common.registry.init.BLibBlockEntityTypes;
 import com.blib.mod.common.registry.init.BLibBlocks;
@@ -199,9 +210,9 @@ public class BLib {
         BLib.MOD.events()
             .onEntityLoad()
             .register(entity -> {
-                if (entity instanceof net.minecraft.server.level.ServerPlayer player) {
+                if (entity instanceof ServerPlayer player) {
                     player.server.tell(
-                        new net.minecraft.server.TickTask(
+                        new TickTask(
                             player.server.getTickCount() + 20,
                             () -> {
                                 if (player.connection != null) {
@@ -210,7 +221,7 @@ public class BLib {
                                     BLib.MOD.networking()
                                         .sendToClient(
                                             player,
-                                            com.blib.mod.common.network.packet.S2CLimbDefinitionsSyncPayload
+                                            S2CLimbDefinitionsSyncPayload
                                                 .snapshotFromRegistry()
                                         );
                                 }
@@ -276,47 +287,47 @@ public class BLib {
     }
 
     private static boolean handleBlockBreakProtection(
-        net.minecraft.world.level.Level level,
+        Level level,
         Player player,
-        net.minecraft.core.BlockPos blockPos,
-        net.minecraft.world.level.block.state.BlockState blockState
+        BlockPos blockPos,
+        BlockState blockState
     ) {
-        return checkProtection(level, player, blockPos, com.blib.api.common.faction.v1.Faction::blockBreakProtection);
+        return checkProtection(level, player, blockPos, Faction::blockBreakProtection);
     }
 
     public static boolean checkBlockInteractProtection(
-        net.minecraft.world.level.Level level,
+        Level level,
         Player player,
-        net.minecraft.core.BlockPos blockPos
+        BlockPos blockPos
     ) {
-        return checkProtection(level, player, blockPos, com.blib.api.common.faction.v1.Faction::blockInteractProtection);
+        return checkProtection(level, player, blockPos, Faction::blockInteractProtection);
     }
 
     public static boolean checkEntityInteractProtection(
-        net.minecraft.world.level.Level level,
+        Level level,
         Player player,
-        net.minecraft.core.BlockPos entityPos
+        BlockPos entityPos
     ) {
-        return checkProtection(level, player, entityPos, com.blib.api.common.faction.v1.Faction::entityInteractProtection);
+        return checkProtection(level, player, entityPos, Faction::entityInteractProtection);
     }
 
     public static boolean checkNonLivingEntityAttackProtection(
-        net.minecraft.world.level.Level level,
+        Level level,
         Player player,
-        net.minecraft.core.BlockPos entityPos
+        BlockPos entityPos
     ) {
-        return checkProtection(level, player, entityPos, com.blib.api.common.faction.v1.Faction::nonLivingEntityAttackProtection);
+        return checkProtection(level, player, entityPos, Faction::nonLivingEntityAttackProtection);
     }
 
     public static boolean checkPvpProtection(
-        net.minecraft.world.level.Level level,
-        net.minecraft.core.BlockPos pos
+        Level level,
+        BlockPos pos
     ) {
-        if (level.isClientSide || !(level instanceof net.minecraft.server.level.ServerLevel serverLevel)) {
+        if (level.isClientSide || !(level instanceof ServerLevel serverLevel)) {
             return true;
         }
 
-        var chunkPos = new net.minecraft.world.level.ChunkPos(pos);
+        var chunkPos = new ChunkPos(pos);
         var claimants = BLibTerritoryManager.INSTANCE.getClaimants(serverLevel, chunkPos);
 
         for (var factionId : claimants) {
@@ -331,16 +342,16 @@ public class BLib {
     }
 
     private static boolean checkProtection(
-        net.minecraft.world.level.Level level,
+        Level level,
         Player player,
-        net.minecraft.core.BlockPos blockPos,
-        java.util.function.Function<com.blib.api.common.faction.v1.Faction<?>, com.blib.api.common.faction.v1.ProtectionMode> protectionGetter
+        BlockPos blockPos,
+        Function<Faction<?>, ProtectionMode> protectionGetter
     ) {
-        if (level.isClientSide || !(level instanceof net.minecraft.server.level.ServerLevel serverLevel)) {
+        if (level.isClientSide || !(level instanceof ServerLevel serverLevel)) {
             return true;
         }
 
-        var chunkPos = new net.minecraft.world.level.ChunkPos(blockPos);
+        var chunkPos = new ChunkPos(blockPos);
         var claimants = BLibTerritoryManager.INSTANCE.getClaimants(serverLevel, chunkPos);
 
         if (claimants.isEmpty()) {
@@ -359,7 +370,7 @@ public class BLib {
 
             var protection = protectionGetter.apply(faction);
 
-            if (protection == com.blib.api.common.faction.v1.ProtectionMode.PUBLIC) {
+            if (protection == ProtectionMode.PUBLIC) {
                 continue;
             }
 
@@ -367,7 +378,7 @@ public class BLib {
                 continue;
             }
 
-            if (protection == com.blib.api.common.faction.v1.ProtectionMode.ALLIED) {
+            if (protection == ProtectionMode.ALLIED) {
                 var isAllied = false;
 
                 for (var playerFactionId : playerFactionIds) {
@@ -375,7 +386,7 @@ public class BLib {
                         BLibFactionManager.INSTANCE.getRelationship(
                             playerFactionId,
                             claimantFactionId
-                        ) == com.blib.api.common.faction.v1.RelationshipState.ALLIED
+                        ) == RelationshipState.ALLIED
                     ) {
                         isAllied = true;
                         break;

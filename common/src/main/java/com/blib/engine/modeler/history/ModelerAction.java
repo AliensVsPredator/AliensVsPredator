@@ -3,6 +3,8 @@ package com.blib.engine.modeler.history;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.List;
+
 import com.blib.engine.modeler.ModelerBone;
 import com.blib.engine.modeler.ModelerCube;
 import com.blib.engine.modeler.ModelerScene;
@@ -253,7 +255,7 @@ public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, M
         String typeId,
         String description,
         long timestamp,
-        java.util.List<ModelerAction> children
+        List<ModelerAction> children
     ) implements ModelerAction {
 
         @Override

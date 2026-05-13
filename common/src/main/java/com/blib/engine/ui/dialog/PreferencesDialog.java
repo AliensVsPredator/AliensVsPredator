@@ -1,18 +1,22 @@
 package com.blib.engine.ui.dialog;
 
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import com.blib.engine.input.Input;
 import com.blib.engine.input.Keybinding;
@@ -121,11 +125,11 @@ public final class PreferencesDialog {
 
     private final Runnable onNewProfile;
 
-    private final java.util.function.Consumer<KeybindingProfile> onRenameProfile;
+    private final Consumer<KeybindingProfile> onRenameProfile;
 
-    private final java.util.function.Consumer<KeybindingProfile> onDuplicateProfile;
+    private final Consumer<KeybindingProfile> onDuplicateProfile;
 
-    private final java.util.function.Consumer<KeybindingProfile> onDeleteProfile;
+    private final Consumer<KeybindingProfile> onDeleteProfile;
 
     private String activeProfileId;
 
@@ -188,9 +192,9 @@ public final class PreferencesDialog {
     public PreferencesDialog(
         Runnable onClose,
         Runnable onNewProfile,
-        java.util.function.Consumer<KeybindingProfile> onRenameProfile,
-        java.util.function.Consumer<KeybindingProfile> onDuplicateProfile,
-        java.util.function.Consumer<KeybindingProfile> onDeleteProfile
+        Consumer<KeybindingProfile> onRenameProfile,
+        Consumer<KeybindingProfile> onDuplicateProfile,
+        Consumer<KeybindingProfile> onDeleteProfile
     ) {
         this.onClose = onClose;
         this.onNewProfile = onNewProfile;
@@ -465,9 +469,9 @@ public final class PreferencesDialog {
         @Nullable String catKey,
         String label,
         int count,
-        net.minecraft.client.gui.Font font
+        Font font
     ) {
-        var isSelected = java.util.Objects.equals(selectedCategory, catKey);
+        var isSelected = Objects.equals(selectedCategory, catKey);
         var hovered = mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + CATEGORY_ROW_HEIGHT;
         if (isSelected) {
             graphics.fill(x, y, x + width, y + CATEGORY_ROW_HEIGHT, CATEGORY_ACTIVE_BG);
@@ -586,7 +590,7 @@ public final class PreferencesDialog {
         }
     }
 
-    private void renderCategoryHeader(GuiGraphics graphics, net.minecraft.client.gui.Font font, int x, int y, int width, String label) {
+    private void renderCategoryHeader(GuiGraphics graphics, Font font, int x, int y, int width, String label) {
         var upper = label.toUpperCase(Locale.ROOT);
         var textWidth = font.width(upper);
         var textY = y + (HEADER_ROW_HEIGHT - font.lineHeight + 2) / 2;
@@ -908,7 +912,7 @@ public final class PreferencesDialog {
         var updated = active.withOverrides(stagedOverrides);
         try {
             KeybindingProfileCatalog.save(updated);
-        } catch (java.io.IOException e) {
+        } catch (IOException e) {
             inlineError = "Failed to write profile: " + e.getMessage();
             inlineErrorTicks = CONFLICT_DISPLAY_TICKS;
             return;

@@ -6,10 +6,12 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import com.blib.engine.jigsaw.JigsawPlacementCursor;
 import com.blib.engine.math.AxisPlaneDrag;
 import com.blib.engine.math.CursorCamera;
 import com.blib.engine.math.RayAabb;
 import com.blib.engine.session.EngineSession;
+import com.blib.engine.tool.gizmo.GizmoHit;
 
 /**
  * Axis-aligned scale gizmo for the capture AABB. After both corners are set via two-corner click, six face handles (±X,
@@ -71,7 +73,7 @@ public final class BlockSelectionScaleGizmo {
      * arbitrary upper limit on how far a face could be dragged before the user could no longer grab it for the next
      * drag. Renderer and picker call this with the same anchor + camera so visuals and hit boxes always agree.
      */
-    public static double scaleForCamera(net.minecraft.world.phys.Vec3 cameraPos, net.minecraft.world.phys.Vec3 anchor) {
+    public static double scaleForCamera(Vec3 cameraPos, Vec3 anchor) {
         var dx = anchor.x - cameraPos.x;
         var dy = anchor.y - cameraPos.y;
         var dz = anchor.z - cameraPos.z;
@@ -189,7 +191,7 @@ public final class BlockSelectionScaleGizmo {
         // Sample the click cursor's projection onto the axis so the first frame's delta is zero. Without this, the
         // user grabbing the handle (offset by ~HANDLE_OFFSET × scale outside the face) instantly grows the AABB by
         // round(HANDLE_OFFSET × scale) blocks before they've moved the cursor.
-        var rayDir = com.blib.engine.jigsaw.JigsawPlacementCursor.cursorRayDirection(session);
+        var rayDir = JigsawPlacementCursor.cursorRayDirection(session);
         var initialAxisOffset = rayDir == null
             ? 0.0
             : AxisPlaneDrag.projectOntoAxisOrZero(camPos, rayDir, center, planeNormal, axis);
@@ -323,7 +325,7 @@ public final class BlockSelectionScaleGizmo {
     public record FaceHit(
         Face face,
         double t
-    ) implements com.blib.engine.tool.gizmo.GizmoHit {}
+    ) implements GizmoHit {}
 
     public static @Nullable Face pickUnderCursor(EngineSession session) {
         var hit = pickUnderCursorWithDistance(session);
@@ -335,7 +337,7 @@ public final class BlockSelectionScaleGizmo {
         if (aabb.isEmpty()) {
             return null;
         }
-        var rayDir = com.blib.engine.jigsaw.JigsawPlacementCursor.cursorRayDirection(session);
+        var rayDir = JigsawPlacementCursor.cursorRayDirection(session);
         if (rayDir == null) {
             return null;
         }

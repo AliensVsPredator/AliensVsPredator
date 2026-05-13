@@ -10,6 +10,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.Map;
 import com.blib.engine.jigsaw.JigsawPieceLibrary;
 import com.blib.engine.jigsaw.JigsawPieceThumbnailCache;
 import com.blib.engine.jigsaw.JigsawPoolLibrary;
+import com.blib.engine.jigsaw.JigsawPoolSelection;
 import com.blib.engine.jigsaw.ProjectDraftCache;
 import com.blib.engine.session.ProjectSession;
 import com.blib.engine.ui.EngineFont;
@@ -185,10 +187,10 @@ public final class PoolEditorPanel implements Panel {
         // Consume any pending pool-open request from the content browser (or other cross-panel callers). One-shot:
         // applying the value to the SearchableSelect drives the existing lastShownPool drift-check on the next render
         // pass, so the body re-loads the pool's contents naturally without a parallel reload path.
-        var requestedPool = com.blib.engine.jigsaw.JigsawPoolSelection.requested();
+        var requestedPool = JigsawPoolSelection.requested();
         if (requestedPool != null && !requestedPool.equals(poolSelect.currentValue())) {
             poolSelect.setCurrentValue(requestedPool);
-            com.blib.engine.jigsaw.JigsawPoolSelection.clear();
+            JigsawPoolSelection.clear();
         }
 
         // Reset the per-frame thumbnail render budget once at the top of our render — same idiom PiecePalettePanel
@@ -267,7 +269,7 @@ public final class PoolEditorPanel implements Panel {
         // cache reflects on-disk state, which may have unreloaded edits the registry doesn't see.
         var draft = ProjectDraftCache.get(poolId);
         if (draft != null) {
-            var converted = new java.util.ArrayList<JigsawPoolLibrary.PoolElementInfo>(draft.size());
+            var converted = new ArrayList<JigsawPoolLibrary.PoolElementInfo>(draft.size());
             for (var d : draft) {
                 converted.add(ProjectDraftCache.toPoolElementInfo(d));
             }

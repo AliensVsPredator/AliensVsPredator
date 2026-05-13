@@ -4,12 +4,15 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.List;
 import java.util.UUID;
 
+import com.blib.internal.common.storage.BLibDataStoreManager;
 import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.S2CAddPlacedPiecePayload;
 import com.blib.mod.common.network.packet.S2CRemovePlacedPiecePayload;
 import com.blib.mod.common.network.packet.S2CSyncPlacedPiecesPayload;
+import com.blib.mod.common.registry.init.BLibJigsawDataStoreTypes;
 
 /**
  * Server-side fan-out for {@link PlacedPiece} lifecycle changes. The {@link PlacedPieceStore} is authoritative; this
@@ -42,9 +45,9 @@ public final class PlacedPieceSync {
     /** Called when a client requests the full set for its current dimension (engine-mode entry). */
     public static void sendFullSyncTo(ServerPlayer player) {
         var level = player.serverLevel();
-        var store = com.blib.internal.common.storage.BLibDataStoreManager.INSTANCE
-            .getLevel(level, com.blib.mod.common.registry.init.BLibJigsawDataStoreTypes.PLACED_PIECES);
-        var payload = new S2CSyncPlacedPiecesPayload(level.dimension().location(), java.util.List.copyOf(store.all()));
+        var store = BLibDataStoreManager.INSTANCE
+            .getLevel(level, BLibJigsawDataStoreTypes.PLACED_PIECES);
+        var payload = new S2CSyncPlacedPiecesPayload(level.dimension().location(), List.copyOf(store.all()));
         BLib.MOD.networking().sendToClient(player, payload);
     }
 

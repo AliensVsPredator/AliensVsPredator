@@ -11,6 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -70,9 +73,9 @@ public class AzBakedModelCache extends AzResourceCache {
      * entries deterministically across runs. The cache is populated at resource-reload time, so the list reflects the
      * models available to the current resource packs.
      */
-    public java.util.List<ResourceLocation> allModelIds() {
-        var ids = new java.util.ArrayList<>(bakedModels.keySet());
-        ids.sort(java.util.Comparator.comparing(ResourceLocation::toString));
+    public List<ResourceLocation> allModelIds() {
+        var ids = new ArrayList<>(bakedModels.keySet());
+        ids.sort(Comparator.comparing(ResourceLocation::toString));
         return ids;
     }
 

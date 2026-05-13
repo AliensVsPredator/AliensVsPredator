@@ -11,6 +11,7 @@ import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -233,7 +234,7 @@ public final class TagBrowserPanel implements Panel {
 
         // Filtered view: one entry per registry that has matching tags. We pre-filter into a flat list so the
         // virtualization pass (below) is a simple linear walk with early-exit when we leave the viewport.
-        var filtered = new java.util.LinkedHashMap<ResourceLocation, List<TagCatalogEntry>>();
+        var filtered = new LinkedHashMap<ResourceLocation, List<TagCatalogEntry>>();
         for (var entry : grouped.entrySet()) {
             var matched = new ArrayList<TagCatalogEntry>();
             for (var ce : entry.getValue()) {

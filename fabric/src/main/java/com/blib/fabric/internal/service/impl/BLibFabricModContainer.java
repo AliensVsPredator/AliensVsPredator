@@ -26,6 +26,7 @@ import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -37,6 +38,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import com.blib.api.client.event.v1.BLibScreenInitEvent;
 import com.blib.api.common.entity.v1.spawning.BLibEntitySpawnData;
 import com.blib.api.common.event.v1.BLibBlockBreakEvent;
 import com.blib.api.common.event.v1.BLibChunkClaimAddedEvent;
@@ -125,7 +127,7 @@ public class BLibFabricModContainer {
 
     private final BLibEventHandle<BLibLevelTickEvent> postLevelTick;
 
-    private final BLibEventHandle<com.blib.api.client.event.v1.BLibScreenInitEvent> postScreenInit;
+    private final BLibEventHandle<BLibScreenInitEvent> postScreenInit;
 
     private final BLibEventHandle<BLibBlockBreakEvent> preBlockBreak;
 
@@ -234,7 +236,7 @@ public class BLibFabricModContainer {
         return postLevelTick;
     }
 
-    public BLibEventHandle<com.blib.api.client.event.v1.BLibScreenInitEvent> postScreenInit() {
+    public BLibEventHandle<BLibScreenInitEvent> postScreenInit() {
         return postScreenInit;
     }
 
@@ -331,7 +333,7 @@ public class BLibFabricModContainer {
     ) {
         deferredBrewingRecipeRegistrations.add(
             () -> FabricBrewingRecipeRegistryBuilder.BUILD.register(
-                builder -> builder.registerPotionRecipe(input, net.minecraft.world.item.crafting.Ingredient.of(ingredient.get()), output)
+                builder -> builder.registerPotionRecipe(input, Ingredient.of(ingredient.get()), output)
             )
         );
     }

@@ -2,6 +2,7 @@ package com.blib.fabric.internal.service.impl;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import com.blib.api.client.event.v1.BLibScreenInitEvent;
 import com.blib.api.common.event.v1.BLibBlockBreakEvent;
 import com.blib.api.common.event.v1.BLibChunkClaimAddedEvent;
 import com.blib.api.common.event.v1.BLibChunkClaimRemovedEvent;
@@ -112,7 +113,7 @@ public class BLibFabricEventServiceImpl implements BLibEventService {
     }
 
     @Override
-    public BLibEventHandle<com.blib.api.client.event.v1.BLibScreenInitEvent> postScreenInit(BLibMod mod) {
+    public BLibEventHandle<BLibScreenInitEvent> postScreenInit(BLibMod mod) {
         return BLibFabricModContainerLookup.INSTANCE.get(mod)
             .postScreenInit();
     }

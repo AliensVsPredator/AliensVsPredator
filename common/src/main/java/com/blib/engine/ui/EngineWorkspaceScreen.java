@@ -1,11 +1,22 @@
 package com.blib.engine.ui;
 
+import com.mojang.blaze3d.vertex.BufferUploader;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.time.Instant;
+import java.util.function.Supplier;
 
 import com.blib.engine.command.api.Command;
 import com.blib.engine.command.api.CommandBus;
@@ -19,13 +30,17 @@ import com.blib.engine.layout.ActiveLayoutState;
 import com.blib.engine.layout.LayoutCatalog;
 import com.blib.engine.layout.LayoutDoc;
 import com.blib.engine.layout.LayoutSnapshot;
+import com.blib.engine.layout.LayoutStorage;
 import com.blib.engine.layout.LayoutTemplate;
 import com.blib.engine.layout.PanelRegistry;
+import com.blib.engine.modeler.history.ModelerActionHistory;
 import com.blib.engine.platform.spi.EngineRenderState;
 import com.blib.engine.session.EngineMode;
 import com.blib.engine.session.NavigationMode;
 import com.blib.engine.session.ProjectSession;
 import com.blib.engine.spawn.EntitySpawnSelection;
+import com.blib.engine.tag.TagStagingCache;
+import com.blib.engine.territory.ClaimPaintTool;
 import com.blib.engine.ui.dialog.CaptureDialog;
 import com.blib.engine.ui.dialog.ConfirmDialog;
 import com.blib.engine.ui.dialog.LayoutNameDialog;
@@ -46,7 +61,10 @@ import com.blib.engine.ui.widget.SearchableSelect;
 import com.blib.engine.ui.widget.TextInput;
 import com.blib.engine.ui.workspace.HoverOverlayRenderer;
 import com.blib.engine.ui.workspace.ViewportContextMenuHandler;
+import com.blib.engine.ui.workspace.WorkspaceDialogController;
+import com.blib.engine.ui.workspace.WorkspaceHotkeyDispatcher;
 import com.blib.engine.ui.workspace.WorkspaceLayoutController;
+import com.blib.engine.ui.workspace.WorkspaceLayoutPersistence;
 import com.blib.engine.ui.workspace.dock.DividerDragController;
 import com.blib.engine.ui.workspace.dock.DockTreeHitTest;
 import com.blib.engine.ui.workspace.dock.DockTreeMutator;
@@ -179,8 +197,8 @@ public final class EngineWorkspaceScreen extends Screen {
      * Owns the five workspace modal dialogs (confirm, capture, layout-name, manage-layouts, preferences) and the modal
      * z-order stack. The screen forwards render + input dispatch through this controller.
      */
-    private final com.blib.engine.ui.workspace.WorkspaceDialogController dialogs =
-        new com.blib.engine.ui.workspace.WorkspaceDialogController();
+    private final WorkspaceDialogController dialogs =
+        new WorkspaceDialogController();
 
     private final CommandBus commands = new CommandBus();
 
@@ -189,8 +207,8 @@ public final class EngineWorkspaceScreen extends Screen {
         new ViewportContextMenuHostImpl()
     );
 
-    private final com.blib.engine.ui.workspace.WorkspaceHotkeyDispatcher hotkeys =
-        new com.blib.engine.ui.workspace.WorkspaceHotkeyDispatcher(new WorkspaceHotkeyHostImpl());
+    private final WorkspaceHotkeyDispatcher hotkeys =
+        new WorkspaceHotkeyDispatcher(new WorkspaceHotkeyHostImpl());
 
     /**
      * Panel that captured the mouse via {@link Panel#mouseClickedCapture}. While non-null, {@link #mouseDragged} and
@@ -232,7 +250,7 @@ public final class EngineWorkspaceScreen extends Screen {
         // on the main RT, no wrapped-screen RT). Fall back to a fresh TitleScreen so the user sees the main menu inside
         // the viewport rather than the recursive engine-in-engine artifact.
         if (mode == Mode.MENU_OVERLAY && initialWrapped == null && Minecraft.getInstance().level == null) {
-            initialWrapped = new net.minecraft.client.gui.screens.TitleScreen();
+            initialWrapped = new TitleScreen();
         }
         this.wrappedScreen = initialWrapped;
 
@@ -375,7 +393,7 @@ public final class EngineWorkspaceScreen extends Screen {
         // one, the world-path composit reads the engine's own previous frame and recurses infinitely (OBS effect).
         // Common trigger: a wrapped screen (PauseScreen, picker) closes via setScreen(null) → redirect mixin → here.
         if (next == null && mode == Mode.MENU_OVERLAY && Minecraft.getInstance().level == null) {
-            next = new net.minecraft.client.gui.screens.TitleScreen();
+            next = new TitleScreen();
         }
         var prev = this.wrappedScreen;
         this.wrappedScreen = next;
@@ -385,7 +403,7 @@ public final class EngineWorkspaceScreen extends Screen {
         }
         if (next != null && next != prev && minecraft != null) {
             next.added();
-            com.mojang.blaze3d.vertex.BufferUploader.reset();
+            BufferUploader.reset();
             next.init(minecraft, width, height);
             this.wrappedScreenAdded = true;
         }
@@ -420,7 +438,7 @@ public final class EngineWorkspaceScreen extends Screen {
         // the lifecycle — they're a no-op for the wrapped screen; resize() handles layout updates directly below.
         if (wrappedScreen != null && !wrappedScreenAdded) {
             wrappedScreen.added();
-            com.mojang.blaze3d.vertex.BufferUploader.reset();
+            BufferUploader.reset();
             wrappedScreen.init(minecraft, width, height);
             wrappedScreenAdded = true;
         }
@@ -703,11 +721,11 @@ public final class EngineWorkspaceScreen extends Screen {
         // write also captures any per-project memory so switching projects later restores per-project preferences.
         // Skipped in MENU_OVERLAY mode so a B-toggle from the title screen doesn't clobber the user's in-game layout.
         if (mode == Mode.IN_GAME) {
-            com.blib.engine.ui.workspace.WorkspaceLayoutPersistence.persistOutgoingLayout(
+            WorkspaceLayoutPersistence.persistOutgoingLayout(
                 this.root,
                 WorkspaceLayoutController.activeLayoutId()
             );
-            com.blib.engine.ui.workspace.WorkspaceLayoutPersistence.persistActiveSelection(
+            WorkspaceLayoutPersistence.persistActiveSelection(
                 WorkspaceLayoutController.activeLayoutId()
             );
         } else if (wrappedScreen != null) {
@@ -899,18 +917,18 @@ public final class EngineWorkspaceScreen extends Screen {
         }
         // Esc closes an open SearchableSelect popup BEFORE TextInput dispatch — otherwise the popup's focused
         // search input would consume Esc as "defocus" and leave the popup visible-but-unfocused, which is confusing.
-        if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE && SearchableSelect.getOpenPopup() != null) {
+        if (keyCode == GLFW.GLFW_KEY_ESCAPE && SearchableSelect.getOpenPopup() != null) {
             SearchableSelect.closeOpenPopup();
             TextInput.clearFocus();
             return true;
         }
         // Esc closes an open color-picker popup too.
-        if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE && HslColorPickerPopup.getOpenPopup() != null) {
+        if (keyCode == GLFW.GLFW_KEY_ESCAPE && HslColorPickerPopup.getOpenPopup() != null) {
             HslColorPickerPopup.closeOpenPopup();
             return true;
         }
         // Same for the faction-management popup.
-        if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE && FactionManagePopup.getOpenPopup() != null) {
+        if (keyCode == GLFW.GLFW_KEY_ESCAPE && FactionManagePopup.getOpenPopup() != null) {
             FactionManagePopup.closeOpenPopup();
             return true;
         }
@@ -931,9 +949,9 @@ public final class EngineWorkspaceScreen extends Screen {
         // Esc cascades through transient state before reaching the "open pause menu" fallback: claim paint mode → held
         // piece → entity spawn selection → general selection → wrap PauseScreen (in-world only). This gives users a
         // single "get me out" key that doesn't immediately surface the pause menu when they're mid-edit.
-        if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE) {
-            if (com.blib.engine.territory.ClaimPaintTool.isActive()) {
-                com.blib.engine.territory.ClaimPaintTool.deactivate();
+        if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+            if (ClaimPaintTool.isActive()) {
+                ClaimPaintTool.deactivate();
                 return true;
             }
             if (JigsawPieceSelection.hasSelection()) {
@@ -953,7 +971,7 @@ public final class EngineWorkspaceScreen extends Screen {
             // will drop the wrap, returning the viewport to the world. Pressing B is still the way to close the
             // engine itself.
             if (wrappedScreen == null && Minecraft.getInstance().level != null) {
-                setWrappedScreen(new net.minecraft.client.gui.screens.PauseScreen(true));
+                setWrappedScreen(new PauseScreen(true));
                 return true;
             }
         }
@@ -974,8 +992,8 @@ public final class EngineWorkspaceScreen extends Screen {
      * {@link com.blib.engine.domain.selection.picking.BlockSelectable#isValid} check that prunes the now-air block from
      * {@link SelectionManager} fires naturally on the next read, so no explicit clear is needed here.
      */
-    private void deleteSingleBlock(net.minecraft.core.BlockPos pos) {
-        var mc = net.minecraft.client.Minecraft.getInstance();
+    private void deleteSingleBlock(BlockPos pos) {
+        var mc = Minecraft.getInstance();
         if (mc.player == null) {
             return;
         }
@@ -1395,7 +1413,7 @@ public final class EngineWorkspaceScreen extends Screen {
         }
 
         @Override
-        public void reopenPanel(Class<? extends Panel> panelClass, java.util.function.Supplier<Panel> factory) {
+        public void reopenPanel(Class<? extends Panel> panelClass, Supplier<Panel> factory) {
             EngineWorkspaceScreen.this.reopenPanel(panelClass, factory);
         }
 
@@ -1409,7 +1427,7 @@ public final class EngineWorkspaceScreen extends Screen {
             commands.dispatch(new Command.ReloadProject(ProjectSession.activeProjectName()));
             // Wipe the tag-staging overlay — reload makes the runtime registry catch up to disk, so the red staging
             // tint is no longer meaningful (rows settle into green / blue based on committed state).
-            com.blib.engine.tag.TagStagingCache.clear();
+            TagStagingCache.clear();
         }
 
         @Override
@@ -1446,7 +1464,7 @@ public final class EngineWorkspaceScreen extends Screen {
 
     private void dispatchUndo() {
         if (layoutHasModelerPanel()) {
-            com.blib.engine.modeler.history.ModelerActionHistory.undo();
+            ModelerActionHistory.undo();
         } else {
             commands.dispatch(new Command.UndoAction());
         }
@@ -1454,7 +1472,7 @@ public final class EngineWorkspaceScreen extends Screen {
 
     private void dispatchRedo() {
         if (layoutHasModelerPanel()) {
-            com.blib.engine.modeler.history.ModelerActionHistory.redo();
+            ModelerActionHistory.redo();
         } else {
             commands.dispatch(new Command.RedoAction());
         }
@@ -1496,8 +1514,8 @@ public final class EngineWorkspaceScreen extends Screen {
                 pd.refreshProfiles();
                 pd.loadProfile(id);
             }
-        } catch (java.io.IOException e) {
-            org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] confirmCreateProfile: write failed", e);
+        } catch (IOException e) {
+            LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] confirmCreateProfile: write failed", e);
         }
     }
 
@@ -1523,8 +1541,8 @@ public final class EngineWorkspaceScreen extends Screen {
                 pd.refreshProfiles();
                 pd.loadProfile(profile.id());
             }
-        } catch (java.io.IOException e) {
-            org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] confirmRenameProfile: write failed", e);
+        } catch (IOException e) {
+            LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] confirmRenameProfile: write failed", e);
         }
     }
 
@@ -1553,8 +1571,8 @@ public final class EngineWorkspaceScreen extends Screen {
                 pd.refreshProfiles();
                 pd.loadProfile(newId);
             }
-        } catch (java.io.IOException e) {
-            org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] confirmDuplicateProfile: write failed", e);
+        } catch (IOException e) {
+            LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] confirmDuplicateProfile: write failed", e);
         }
     }
 
@@ -1581,8 +1599,8 @@ public final class EngineWorkspaceScreen extends Screen {
                 pd.refreshProfiles();
                 pd.loadProfile(KeybindingProfileCatalog.getActive().id());
             }
-        } catch (java.io.IOException e) {
-            org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] confirmDeleteProfile: delete failed", e);
+        } catch (IOException e) {
+            LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] confirmDeleteProfile: delete failed", e);
         }
     }
 
@@ -1592,7 +1610,7 @@ public final class EngineWorkspaceScreen extends Screen {
      * as a tab in the first {@link TabbedPanel} found via depth-first walk. If no {@code TabbedPanel} exists at all
      * (the user has closed everything), the action is a no-op and the user can use Reset Layout to recover.
      */
-    private void reopenPanel(Class<? extends Panel> panelClass, java.util.function.Supplier<Panel> factory) {
+    private void reopenPanel(Class<? extends Panel> panelClass, Supplier<Panel> factory) {
         WorkspaceLayoutController.reopenPanel(this.root, panelClass, factory);
     }
 
@@ -1612,9 +1630,9 @@ public final class EngineWorkspaceScreen extends Screen {
                 displayName -> {
                     var newId = LayoutCatalog.suggestId(displayName);
                     var capturedBody = LayoutSnapshot.capture(
-                        com.blib.engine.ui.workspace.WorkspaceLayoutPersistence.extractBodyRoot(this.root)
+                        WorkspaceLayoutPersistence.extractBodyRoot(this.root)
                     );
-                    var now = java.time.Instant.now().toString();
+                    var now = Instant.now().toString();
                     var templateBase = LayoutCatalog.isTemplateId(WorkspaceLayoutController.activeLayoutId())
                         ? WorkspaceLayoutController.activeLayoutId()
                         : null;
@@ -1622,9 +1640,9 @@ public final class EngineWorkspaceScreen extends Screen {
                     try {
                         LayoutCatalog.save(doc);
                         WorkspaceLayoutController.setActiveLayoutId(newId);
-                        com.blib.engine.ui.workspace.WorkspaceLayoutPersistence.persistActiveSelection(newId);
-                    } catch (java.io.IOException e) {
-                        org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Save As failed", e);
+                        WorkspaceLayoutPersistence.persistActiveSelection(newId);
+                    } catch (IOException e) {
+                        LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Save As failed", e);
                     }
                     dialogs.setLayoutNameDialog(null);
                 },
@@ -1661,12 +1679,12 @@ public final class EngineWorkspaceScreen extends Screen {
                             var state = ActiveLayoutState.read();
                             ActiveLayoutState.write(state.withoutLayout(currentId));
                             WorkspaceLayoutController.setActiveLayoutId(newId);
-                            com.blib.engine.ui.workspace.WorkspaceLayoutPersistence.persistActiveSelection(
+                            WorkspaceLayoutPersistence.persistActiveSelection(
                                 WorkspaceLayoutController.activeLayoutId()
                             );
                         }
-                    } catch (java.io.IOException e) {
-                        org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Rename failed", e);
+                    } catch (IOException e) {
+                        LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Rename failed", e);
                     }
                     if (dialogs.manageLayoutsDialog() != null) {
                         dialogs.manageLayoutsDialog().setActiveLayoutId(WorkspaceLayoutController.activeLayoutId());
@@ -1691,9 +1709,9 @@ public final class EngineWorkspaceScreen extends Screen {
                 LayoutCatalog::idAvailable,
                 displayName -> {
                     var newId = LayoutCatalog.suggestId(displayName);
-                    var now = java.time.Instant.now().toString();
+                    var now = Instant.now().toString();
                     var capturedBody = LayoutSnapshot.capture(
-                        com.blib.engine.ui.workspace.WorkspaceLayoutPersistence.extractBodyRoot(this.root)
+                        WorkspaceLayoutPersistence.extractBodyRoot(this.root)
                     );
                     var copy = new LayoutDoc(
                         LayoutDoc.CURRENT_VERSION,
@@ -1707,9 +1725,9 @@ public final class EngineWorkspaceScreen extends Screen {
                     try {
                         LayoutCatalog.save(copy);
                         WorkspaceLayoutController.setActiveLayoutId(newId);
-                        com.blib.engine.ui.workspace.WorkspaceLayoutPersistence.persistActiveSelection(newId);
-                    } catch (java.io.IOException e) {
-                        org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Duplicate failed", e);
+                        WorkspaceLayoutPersistence.persistActiveSelection(newId);
+                    } catch (IOException e) {
+                        LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Duplicate failed", e);
                     }
                     var mld = dialogs.manageLayoutsDialog();
                     if (mld != null) {
@@ -1744,8 +1762,8 @@ public final class EngineWorkspaceScreen extends Screen {
                 () -> {
                     try {
                         LayoutCatalog.delete(deletedId);
-                    } catch (java.io.IOException e) {
-                        org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Delete failed", e);
+                    } catch (IOException e) {
+                        LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Delete failed", e);
                     }
                     var state = ActiveLayoutState.read();
                     ActiveLayoutState.write(state.withoutLayout(deletedId));
@@ -1777,7 +1795,7 @@ public final class EngineWorkspaceScreen extends Screen {
                 LayoutCatalog::idAvailable,
                 displayName -> {
                     var newId = LayoutCatalog.suggestId(displayName);
-                    var now = java.time.Instant.now().toString();
+                    var now = Instant.now().toString();
                     var doc = new LayoutDoc(
                         LayoutDoc.CURRENT_VERSION,
                         newId,
@@ -1789,7 +1807,7 @@ public final class EngineWorkspaceScreen extends Screen {
                     );
                     try {
                         LayoutCatalog.save(doc);
-                        com.blib.engine.ui.workspace.WorkspaceLayoutPersistence.persistOutgoingLayout(
+                        WorkspaceLayoutPersistence.persistOutgoingLayout(
                             this.root,
                             WorkspaceLayoutController.activeLayoutId()
                         );
@@ -1800,11 +1818,11 @@ public final class EngineWorkspaceScreen extends Screen {
                             panelCtx()
                         );
                         this.root = WorkspaceLayoutController.buildOuterLayout(bodyRoot);
-                        com.blib.engine.ui.workspace.WorkspaceLayoutPersistence.persistActiveSelection(
+                        WorkspaceLayoutPersistence.persistActiveSelection(
                             WorkspaceLayoutController.activeLayoutId()
                         );
-                    } catch (java.io.IOException e) {
-                        org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] New from Template failed", e);
+                    } catch (IOException e) {
+                        LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] New from Template failed", e);
                     }
                     var mld = dialogs.manageLayoutsDialog();
                     if (mld != null) {
@@ -1833,11 +1851,11 @@ public final class EngineWorkspaceScreen extends Screen {
 
     private void openLayoutsFolder() {
         try {
-            com.blib.engine.layout.LayoutStorage.ensureRootExists();
-        } catch (java.io.IOException ignored) {
+            LayoutStorage.ensureRootExists();
+        } catch (IOException ignored) {
             // Best-effort — openUri below will fail loudly if the directory still isn't reachable.
         }
-        net.minecraft.Util.getPlatform().openUri(com.blib.engine.layout.LayoutStorage.layoutsRoot().toUri());
+        Util.getPlatform().openUri(LayoutStorage.layoutsRoot().toUri());
     }
 
     private void renameFromManage(LayoutDoc doc) {
@@ -1859,13 +1877,13 @@ public final class EngineWorkspaceScreen extends Screen {
                             ActiveLayoutState.write(state.withoutLayout(existingId));
                             if (existingId.equals(WorkspaceLayoutController.activeLayoutId())) {
                                 WorkspaceLayoutController.setActiveLayoutId(newId);
-                                com.blib.engine.ui.workspace.WorkspaceLayoutPersistence.persistActiveSelection(
+                                WorkspaceLayoutPersistence.persistActiveSelection(
                                     WorkspaceLayoutController.activeLayoutId()
                                 );
                             }
                         }
-                    } catch (java.io.IOException e) {
-                        org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Rename (manage) failed", e);
+                    } catch (IOException e) {
+                        LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Rename (manage) failed", e);
                     }
                     var mld = dialogs.manageLayoutsDialog();
                     if (mld != null) {
@@ -1887,7 +1905,7 @@ public final class EngineWorkspaceScreen extends Screen {
                 LayoutCatalog::idAvailable,
                 displayName -> {
                     var newId = LayoutCatalog.suggestId(displayName);
-                    var now = java.time.Instant.now().toString();
+                    var now = Instant.now().toString();
                     var copy = new LayoutDoc(
                         LayoutDoc.CURRENT_VERSION,
                         newId,
@@ -1899,8 +1917,8 @@ public final class EngineWorkspaceScreen extends Screen {
                     );
                     try {
                         LayoutCatalog.save(copy);
-                    } catch (java.io.IOException e) {
-                        org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Duplicate (manage) failed", e);
+                    } catch (IOException e) {
+                        LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Duplicate (manage) failed", e);
                     }
                     var mld = dialogs.manageLayoutsDialog();
                     if (mld != null) {
@@ -1930,8 +1948,8 @@ public final class EngineWorkspaceScreen extends Screen {
                 () -> {
                     try {
                         LayoutCatalog.delete(deletedId);
-                    } catch (java.io.IOException e) {
-                        org.slf4j.LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Delete (manage) failed", e);
+                    } catch (IOException e) {
+                        LoggerFactory.getLogger(EngineWorkspaceScreen.class).warn("[BLib] Delete (manage) failed", e);
                     }
                     var state = ActiveLayoutState.read();
                     ActiveLayoutState.write(state.withoutLayout(deletedId));
@@ -1977,7 +1995,7 @@ public final class EngineWorkspaceScreen extends Screen {
      */
     /** Bridges the workspace screen to the {@link ViewportContextMenuHandler}'s host hooks. */
     /** Bridges {@link WorkspaceHotkeyDispatcher} to this screen's command bus and modeler-panel introspection. */
-    private final class WorkspaceHotkeyHostImpl implements com.blib.engine.ui.workspace.WorkspaceHotkeyDispatcher.Host {
+    private final class WorkspaceHotkeyHostImpl implements WorkspaceHotkeyDispatcher.Host {
 
         @Override
         public CommandBus commands() {
@@ -1990,7 +2008,7 @@ public final class EngineWorkspaceScreen extends Screen {
         }
 
         @Override
-        public void deleteSingleBlock(net.minecraft.core.BlockPos pos) {
+        public void deleteSingleBlock(BlockPos pos) {
             EngineWorkspaceScreen.this.deleteSingleBlock(pos);
         }
     }
@@ -2008,7 +2026,7 @@ public final class EngineWorkspaceScreen extends Screen {
         }
 
         @Override
-        public void reopenPanel(Class<? extends Panel> panelClass, java.util.function.Supplier<Panel> factory) {
+        public void reopenPanel(Class<? extends Panel> panelClass, Supplier<Panel> factory) {
             EngineWorkspaceScreen.this.reopenPanel(panelClass, factory);
         }
 

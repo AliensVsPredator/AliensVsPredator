@@ -2,6 +2,7 @@ package com.blib.engine.ui.panel.action;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
@@ -14,6 +15,7 @@ import com.blib.engine.ui.EngineWorkspaceScreen;
 import com.blib.engine.ui.PanelPlaceholder;
 import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.widget.ScrollContainer;
+import com.blib.mod.common.network.packet.ActionDescriptor;
 
 /**
  * Display-only view of the server-side action history. Each row corresponds to one {@code EditorAction} pushed since
@@ -130,7 +132,7 @@ public final class ActionStackPanel implements Panel {
         int x,
         int y,
         int width,
-        com.blib.mod.common.network.packet.ActionDescriptor entry,
+        ActionDescriptor entry,
         boolean isUndoable,
         int mouseX,
         int mouseY
@@ -176,7 +178,7 @@ public final class ActionStackPanel implements Panel {
         return hours + "h";
     }
 
-    private static String truncate(net.minecraft.client.gui.Font font, String text, int maxWidth) {
+    private static String truncate(Font font, String text, int maxWidth) {
         if (font.width(text) <= maxWidth) {
             return text;
         }

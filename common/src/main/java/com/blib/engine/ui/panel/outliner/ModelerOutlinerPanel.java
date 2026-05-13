@@ -7,10 +7,12 @@ import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import com.blib.engine.modeler.ModelerBone;
@@ -119,7 +121,7 @@ public final class ModelerOutlinerPanel implements Panel {
         // Selection change → walk the ancestor chain of the new selection and remove each ancestor from `collapsed`
         // so the selected row is visible. Fires only on change so a manual collapse of the parent doesn't fight the
         // auto-expand on the next frame. Scroll-into-view is deferred until after rows are rebuilt below.
-        boolean selectionChanged = !java.util.Objects.equals(scene.selection, lastSelection);
+        boolean selectionChanged = !Objects.equals(scene.selection, lastSelection);
         if (selectionChanged && scene.selection != null) {
             expandAncestorsOf(scene.selection);
         }
@@ -315,11 +317,11 @@ public final class ModelerOutlinerPanel implements Panel {
         // bone, whole subtree on bone). The workspace doesn't currently route keyPressed to panels, so the layout-
         // level Delete handler in EngineWorkspaceScreen.keyPressed is what fires in practice — keeping this method
         // makes it work the moment per-panel key dispatch is wired up.
-        if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_A) {
+        if (keyCode == GLFW.GLFW_KEY_A) {
             ModelerScene.get().addDefaultCube();
             return true;
         }
-        if (keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_DELETE || keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_BACKSPACE) {
+        if (keyCode == GLFW.GLFW_KEY_DELETE || keyCode == GLFW.GLFW_KEY_BACKSPACE) {
             return ModelerScene.get().deleteSelection();
         }
         return false;

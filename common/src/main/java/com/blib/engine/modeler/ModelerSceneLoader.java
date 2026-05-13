@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import com.blib.engine.modeler.history.ModelerActionHistory;
 import com.blib.internal.client.model.BoneStructure;
 import com.blib.internal.client.model.Cube;
 import com.blib.internal.client.model.GeometryTree;
@@ -132,7 +133,7 @@ public final class ModelerSceneLoader {
         // Existing undo entries reference bone/cube instances from the previous scene tree — those instances aren't
         // reachable any more, so applying their undo() would mutate detached objects. Wipe history on load so the
         // first action in the new scene starts a fresh stack.
-        com.blib.engine.modeler.history.ModelerActionHistory.clear();
+        ModelerActionHistory.clear();
         return true;
     }
 

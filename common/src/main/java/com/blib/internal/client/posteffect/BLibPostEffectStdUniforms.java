@@ -6,10 +6,12 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
 /**
@@ -99,7 +101,7 @@ public final class BLibPostEffectStdUniforms {
         }
     }
 
-    private static float nightVisionScale(@org.jetbrains.annotations.Nullable LivingEntity entity, float partial) {
+    private static float nightVisionScale(@Nullable LivingEntity entity, float partial) {
         if (entity == null || !entity.hasEffect(MobEffects.NIGHT_VISION)) {
             return 0.0F;
         }
@@ -108,8 +110,8 @@ public final class BLibPostEffectStdUniforms {
     }
 
     private static float effectStrength(
-        @org.jetbrains.annotations.Nullable LivingEntity entity,
-        net.minecraft.core.Holder<MobEffect> effect
+        @Nullable LivingEntity entity,
+        Holder<MobEffect> effect
     ) {
         if (entity == null) {
             return 0.0F;

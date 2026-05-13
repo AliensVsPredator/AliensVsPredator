@@ -4,14 +4,25 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
+import com.blib.engine.domain.selection.entity.EntityGizmoMode;
+import com.blib.engine.domain.selection.entity.EntityScaleGizmo;
+import com.blib.engine.domain.selection.entity.EntityTranslateGizmo;
 import com.blib.engine.domain.selection.picking.BlockSelectable;
 import com.blib.engine.domain.selection.picking.BlockVolumeSelectable;
+import com.blib.engine.domain.selection.picking.EngineHoverProbe;
 import com.blib.engine.domain.selection.picking.EntitySelectable;
 import com.blib.engine.domain.selection.picking.FactionSelectable;
 import com.blib.engine.domain.selection.picking.Selectable;
@@ -31,8 +42,10 @@ import com.blib.engine.jigsaw.placement.JigsawTool;
 import com.blib.engine.jigsaw.placement.JigsawWorldRaycast;
 import com.blib.engine.jigsaw.placement.PlacementContext;
 import com.blib.engine.jigsaw.placement.PlacementMode;
+import com.blib.engine.session.EngineCameraFrame;
 import com.blib.engine.session.EngineMode;
 import com.blib.engine.session.EngineNavigation;
+import com.blib.engine.session.EngineSession;
 import com.blib.engine.spawn.EntitySpawnSelection;
 import com.blib.engine.territory.ClaimPaintTool;
 import com.blib.engine.ui.EngineTickControl;
@@ -45,7 +58,9 @@ import com.blib.mod.common.network.packet.C2SAddChunkClaimPayload;
 import com.blib.mod.common.network.packet.C2SMoveSelectionPayload;
 import com.blib.mod.common.network.packet.C2SPlaceJigsawPiecePayload;
 import com.blib.mod.common.network.packet.C2SRemoveChunkClaimPayload;
+import com.blib.mod.common.network.packet.C2SSetEntityScalePayload;
 import com.blib.mod.common.network.packet.C2SSpawnEntityPayload;
+import com.blib.mod.common.network.packet.C2STranslateEntityPayload;
 
 /**
  * The viewport panel — the rect where the downsampled world+HUD blit lands. This panel doesn't draw anything itself; it
@@ -83,7 +98,7 @@ public final class ViewportPanel implements Panel {
          * RMB hover-hit on a placed jigsaw piece. Receives the piece UUID so the menu can wire actions (open inspector,
          * delete, etc.). Default no-op so existing handlers don't break.
          */
-        default void onRightClickPiece(java.util.UUID pieceId, double cursorX, double cursorY) {}
+        default void onRightClickPiece(UUID pieceId, double cursorX, double cursorY) {}
     }
 
     private final String title;
@@ -161,7 +176,7 @@ public final class ViewportPanel implements Panel {
      * remembers which ones we've already fired packets for so dragging back over them doesn't spam the network. Keyed
      * by {@code ChunkPos.toLong}. Cleared on mouseReleased.
      */
-    private final java.util.Set<Long> claimPaintedThisDrag = new java.util.HashSet<>();
+    private final Set<Long> claimPaintedThisDrag = new HashSet<>();
 
     /**
      * Mouse button (0 = claim, 1 = unclaim) of the active claim-paint drag, or {@code null} when no drag is in flight.
@@ -248,14 +263,14 @@ public final class ViewportPanel implements Panel {
         if (session != null && inRect(mouseX, mouseY)) {
             var relX = (mouseX - rectX) / (double) rectWidth;
             var relY = (mouseY - rectY) / (double) rectHeight;
-            com.blib.engine.domain.selection.picking.EngineHoverProbe.update(
+            EngineHoverProbe.update(
                 session,
                 relX,
                 relY,
-                net.minecraft.client.gui.screens.Screen.hasControlDown()
+                Screen.hasControlDown()
             );
         } else {
-            com.blib.engine.domain.selection.picking.EngineHoverProbe.clear();
+            EngineHoverProbe.clear();
         }
     }
 
@@ -267,7 +282,7 @@ public final class ViewportPanel implements Panel {
      * mountainside), not the chunk whose floor plane sat visually under the cursor. Returns {@code null} when the ray
      * doesn't reach the floor (looking up at the sky, or grazingly horizontal).
      */
-    private static @Nullable net.minecraft.world.level.ChunkPos floorPlaneChunkUnderCursor(com.blib.engine.session.EngineSession session) {
+    private static @Nullable ChunkPos floorPlaneChunkUnderCursor(EngineSession session) {
         var mc = Minecraft.getInstance();
         if (mc.level == null) {
             return null;
@@ -289,9 +304,9 @@ public final class ViewportPanel implements Panel {
         }
         var hitX = origin.x + dir.x * t;
         var hitZ = origin.z + dir.z * t;
-        return new net.minecraft.world.level.ChunkPos(
-            net.minecraft.core.SectionPos.blockToSectionCoord((int) Math.floor(hitX)),
-            net.minecraft.core.SectionPos.blockToSectionCoord((int) Math.floor(hitZ))
+        return new ChunkPos(
+            SectionPos.blockToSectionCoord((int) Math.floor(hitX)),
+            SectionPos.blockToSectionCoord((int) Math.floor(hitZ))
         );
     }
 
@@ -384,22 +399,22 @@ public final class ViewportPanel implements Panel {
             // Entity gizmo arms first (and only) when an entity is the active selection — block gizmos are hidden
             // by their renderers in this case so a click against an entity wouldn't reach a block-handle anyway, but
             // routing entity-first here keeps the dispatch deterministic.
-            var entitySel = com.blib.engine.domain.selection.picking.SelectionManager.current().single();
-            if (entitySel instanceof com.blib.engine.domain.selection.picking.EntitySelectable es && es.entity() != null) {
+            var entitySel = SelectionManager.current().single();
+            if (entitySel instanceof EntitySelectable es && es.entity() != null) {
                 var entity = es.entity();
                 if (
-                    com.blib.engine.domain.selection.entity.EntityGizmoMode
-                        .get() == com.blib.engine.domain.selection.entity.EntityGizmoMode.TRANSLATE
+                    EntityGizmoMode
+                        .get() == EntityGizmoMode.TRANSLATE
                 ) {
-                    var hit = com.blib.engine.domain.selection.entity.EntityTranslateGizmo.pickUnderCursorWithDistance(session, entity);
+                    var hit = EntityTranslateGizmo.pickUnderCursorWithDistance(session, entity);
                     if (hit != null) {
-                        com.blib.engine.domain.selection.entity.EntityTranslateGizmo.beginDrag(entity, hit.axis(), session);
+                        EntityTranslateGizmo.beginDrag(entity, hit.axis(), session);
                         return true;
                     }
                 } else {
-                    var hit = com.blib.engine.domain.selection.entity.EntityScaleGizmo.pickUnderCursorWithDistance(session, entity);
+                    var hit = EntityScaleGizmo.pickUnderCursorWithDistance(session, entity);
                     if (hit != null) {
-                        com.blib.engine.domain.selection.entity.EntityScaleGizmo.beginDrag(entity, session);
+                        EntityScaleGizmo.beginDrag(entity, session);
                         return true;
                     }
                 }
@@ -471,7 +486,7 @@ public final class ViewportPanel implements Panel {
             if (BlockSelection.picking() != BlockSelection.PickingState.NONE) {
                 var hit = JigsawPlacementCursor.clipFromCursor(session);
                 if (hit != null) {
-                    var pos = net.minecraft.client.gui.screens.Screen.hasShiftDown()
+                    var pos = Screen.hasShiftDown()
                         ? hit.getBlockPos().relative(hit.getDirection())
                         : hit.getBlockPos();
                     BlockSelection.onBlockClicked(pos);
@@ -503,7 +518,7 @@ public final class ViewportPanel implements Panel {
                         // re-scanning gives us "the count as of this exact click" which is the right thing to gate
                         // policy decisions on. Frame state is a render-side cache; trusting it across the click event
                         // boundary would be one more invalidation rule to maintain.
-                        var mc = net.minecraft.client.Minecraft.getInstance();
+                        var mc = Minecraft.getInstance();
                         var policy = JigsawPlacementOptions.collisionPolicy();
                         var collisionCount = 0;
                         if (
@@ -559,7 +574,7 @@ public final class ViewportPanel implements Panel {
                 var hit = JigsawPlacementCursor.clipFromCursor(session);
                 if (hit != null) {
                     var anchor = hit.getBlockPos().relative(hit.getDirection());
-                    var mc = net.minecraft.client.Minecraft.getInstance();
+                    var mc = Minecraft.getInstance();
                     if (mc.player != null) {
                         var dim = mc.player.level().dimension().location();
                         BLib.MOD.networking().sendToServer(new C2SSpawnEntityPayload(spawnTypeId, anchor, dim));
@@ -627,12 +642,12 @@ public final class ViewportPanel implements Panel {
                     rightClickHandler.onRightClickVolume(mouseX, mouseY);
                     return true;
                 }
-                var hover = com.blib.engine.domain.selection.picking.EngineHoverProbe.current();
-                if (hover instanceof com.blib.engine.domain.selection.picking.EngineHoverProbe.Target.Piece pt) {
+                var hover = EngineHoverProbe.current();
+                if (hover instanceof EngineHoverProbe.Target.Piece pt) {
                     rightClickHandler.onRightClickPiece(pt.id(), mouseX, mouseY);
                     return true;
                 }
-                if (hover instanceof com.blib.engine.domain.selection.picking.EngineHoverProbe.Target.Entity et) {
+                if (hover instanceof EngineHoverProbe.Target.Entity et) {
                     rightClickHandler.onRightClick(et.entity(), mouseX, mouseY);
                     return true;
                 }
@@ -695,8 +710,8 @@ public final class ViewportPanel implements Panel {
         if (
             button == 0
                 && (BlockSelectionScaleGizmo.isDragging() || BlockSelectionTranslateGizmo.isDragging() || MoveBlocksGizmo.isDragging()
-                    || com.blib.engine.domain.selection.entity.EntityTranslateGizmo.isDragging()
-                    || com.blib.engine.domain.selection.entity.EntityScaleGizmo.isDragging())
+                    || EntityTranslateGizmo.isDragging()
+                    || EntityScaleGizmo.isDragging())
         ) {
             var rayDir = JigsawPlacementCursor.cursorRayDirection(session);
             if (rayDir != null) {
@@ -709,11 +724,11 @@ public final class ViewportPanel implements Panel {
                 if (MoveBlocksGizmo.isDragging()) {
                     MoveBlocksGizmo.updateDrag(session, rayDir);
                 }
-                if (com.blib.engine.domain.selection.entity.EntityTranslateGizmo.isDragging()) {
-                    com.blib.engine.domain.selection.entity.EntityTranslateGizmo.updateDrag(session, rayDir);
+                if (EntityTranslateGizmo.isDragging()) {
+                    EntityTranslateGizmo.updateDrag(session, rayDir);
                 }
-                if (com.blib.engine.domain.selection.entity.EntityScaleGizmo.isDragging()) {
-                    com.blib.engine.domain.selection.entity.EntityScaleGizmo.updateDrag(session, rayDir);
+                if (EntityScaleGizmo.isDragging()) {
+                    EntityScaleGizmo.updateDrag(session, rayDir);
                 }
             }
             return true;
@@ -767,23 +782,23 @@ public final class ViewportPanel implements Panel {
         if (
             button == 0
                 && (BlockSelectionScaleGizmo.isDragging() || BlockSelectionTranslateGizmo.isDragging() || MoveBlocksGizmo.isDragging()
-                    || com.blib.engine.domain.selection.entity.EntityTranslateGizmo.isDragging()
-                    || com.blib.engine.domain.selection.entity.EntityScaleGizmo.isDragging())
+                    || EntityTranslateGizmo.isDragging()
+                    || EntityScaleGizmo.isDragging())
         ) {
             BlockSelectionScaleGizmo.endDrag();
             BlockSelectionTranslateGizmo.endDrag();
             // Entity translate / scale commits via single packet on release. Both could theoretically be active
             // simultaneously (they aren't, since LMB capture is exclusive), but defensively endDrag both so we don't
             // leak ghost state if some future change introduces concurrent gestures.
-            var entityTranslateResult = com.blib.engine.domain.selection.entity.EntityTranslateGizmo.endDrag();
-            var entityScaleResult = com.blib.engine.domain.selection.entity.EntityScaleGizmo.endDrag();
-            var mcInst = net.minecraft.client.Minecraft.getInstance();
+            var entityTranslateResult = EntityTranslateGizmo.endDrag();
+            var entityScaleResult = EntityScaleGizmo.endDrag();
+            var mcInst = Minecraft.getInstance();
             if (mcInst.player != null) {
                 var dim = mcInst.player.level().dimension().location();
                 if (entityTranslateResult != null) {
                     BLib.MOD.networking()
                         .sendToServer(
-                            new com.blib.mod.common.network.packet.C2STranslateEntityPayload(
+                            new C2STranslateEntityPayload(
                                 entityTranslateResult.entity().getId(),
                                 entityTranslateResult.finalX(),
                                 entityTranslateResult.finalY(),
@@ -795,7 +810,7 @@ public final class ViewportPanel implements Panel {
                 if (entityScaleResult != null) {
                     BLib.MOD.networking()
                         .sendToServer(
-                            new com.blib.mod.common.network.packet.C2SSetEntityScalePayload(
+                            new C2SSetEntityScalePayload(
                                 entityScaleResult.entity().getId(),
                                 entityScaleResult.newScale(),
                                 dim
@@ -891,12 +906,12 @@ public final class ViewportPanel implements Panel {
      * box at any positive parametric distance — including the case where the camera is inside the AABB, since the user
      * might want to right-click "into" their selection from inside it.
      */
-    private static boolean rmbHitsAabb(com.blib.engine.session.EngineSession session, net.minecraft.world.phys.AABB aabb) {
+    private static boolean rmbHitsAabb(EngineSession session, AABB aabb) {
         var rayDir = JigsawPlacementCursor.cursorRayDirection(session);
         if (rayDir == null) {
             return false;
         }
-        var capturedCam = com.blib.engine.session.EngineCameraFrame.cameraPosition();
+        var capturedCam = EngineCameraFrame.cameraPosition();
         var origin = capturedCam != null ? capturedCam : session.cameraPosition();
         return rayIntersectsAabb(origin.x, origin.y, origin.z, rayDir.x, rayDir.y, rayDir.z, aabb);
     }
@@ -908,7 +923,7 @@ public final class ViewportPanel implements Panel {
         double dx,
         double dy,
         double dz,
-        net.minecraft.world.phys.AABB aabb
+        AABB aabb
     ) {
         var tMin = Double.NEGATIVE_INFINITY;
         var tMax = Double.POSITIVE_INFINITY;

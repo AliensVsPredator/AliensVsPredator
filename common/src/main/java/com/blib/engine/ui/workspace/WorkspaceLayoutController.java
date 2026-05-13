@@ -3,7 +3,9 @@ package com.blib.engine.ui.workspace;
 import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.function.Supplier;
 
 import com.blib.engine.layout.ActiveLayoutState;
@@ -141,8 +143,8 @@ public final class WorkspaceLayoutController {
         var newRoot = buildOuterLayout(bodyRoot);
         try {
             LayoutCatalog.save(next.docToWrite);
-        } catch (java.io.IOException e) {
-            org.slf4j.LoggerFactory.getLogger(WorkspaceLayoutController.class)
+        } catch (IOException e) {
+            LoggerFactory.getLogger(WorkspaceLayoutController.class)
                 .warn("[BLib] resetLayout: failed to persist reset", e);
         }
         return newRoot;

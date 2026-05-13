@@ -6,6 +6,11 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import com.blib.api.client.render.v1.BLibTransform;
 import com.blib.api.client.render.v1.item.BLibItemTransformMode;
 
 /**
@@ -44,7 +49,7 @@ public final class BLibGizmoState {
      * is actually trying to click on. Entries older than {@link #SNAPSHOT_MAX_AGE_NANOS} are dropped on add, so the
      * list naturally trims to "this frame's captures" without needing an explicit per-frame clear hook.
      */
-    private static final java.util.List<TimedSnapshot> recentRenders = new java.util.concurrent.CopyOnWriteArrayList<>();
+    private static final List<TimedSnapshot> recentRenders = new CopyOnWriteArrayList<>();
 
     /**
      * Snapshots older than this on add are dropped. Roughly two frames at 60fps — long enough to span a frame's worth
@@ -115,9 +120,9 @@ public final class BLibGizmoState {
      * closest to — handles the case where multiple tunable items are visible at once and the "most-recently-rendered"
      * one isn't the one the user is clicking on.
      */
-    public static java.util.List<RenderSnapshot> recentRenders() {
+    public static List<RenderSnapshot> recentRenders() {
         long now = System.nanoTime();
-        var result = new java.util.ArrayList<RenderSnapshot>();
+        var result = new ArrayList<RenderSnapshot>();
 
         for (var t : recentRenders) {
             if (now - t.timestamp() <= SNAPSHOT_MAX_AGE_NANOS) {
@@ -235,7 +240,7 @@ public final class BLibGizmoState {
         ResourceLocation itemId,
         BLibItemTransformMode transformMode,
         ItemDisplayContext displayContext,
-        com.blib.api.client.render.v1.BLibTransform startTransform,
+        BLibTransform startTransform,
         double startCursorX,
         double startCursorY,
         RenderSnapshot startSnapshot

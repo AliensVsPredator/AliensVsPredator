@@ -15,10 +15,13 @@ import com.blib.engine.domain.selection.volume.BlockSelectionOps;
 import com.blib.engine.input.ActiveKeybindings;
 import com.blib.engine.input.Keybindings;
 import com.blib.engine.jigsaw.JigsawPieceSelection;
+import com.blib.engine.jigsaw.placement.JigsawTool;
 import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.gizmo.ModelerGizmoMode;
 import com.blib.engine.modeler.gizmo.ModelerGizmoState;
+import com.blib.engine.modeler.history.ModelerActionHistory;
 import com.blib.engine.session.ProjectSession;
+import com.blib.engine.tag.TagStagingCache;
 import com.blib.engine.ui.EngineTickControl;
 import com.blib.engine.ui.widget.TextInput;
 
@@ -62,7 +65,7 @@ public final class WorkspaceHotkeyDispatcher {
         // the server-side ActionHistory. Same context check Delete uses below.
         if (ActiveKeybindings.matchesKey(Keybindings.UNDO, keyCode, modifiers)) {
             if (host.layoutHasModelerPanel()) {
-                com.blib.engine.modeler.history.ModelerActionHistory.undo();
+                ModelerActionHistory.undo();
             } else {
                 host.commands().dispatch(new Command.UndoAction());
             }
@@ -71,7 +74,7 @@ public final class WorkspaceHotkeyDispatcher {
 
         if (ActiveKeybindings.matchesKey(Keybindings.REDO, keyCode, modifiers)) {
             if (host.layoutHasModelerPanel()) {
-                com.blib.engine.modeler.history.ModelerActionHistory.redo();
+                ModelerActionHistory.redo();
             } else {
                 host.commands().dispatch(new Command.RedoAction());
             }
@@ -82,7 +85,7 @@ public final class WorkspaceHotkeyDispatcher {
         if (ActiveKeybindings.matchesKey(Keybindings.RELOAD_PROJECT, keyCode, modifiers)) {
             if (ProjectSession.activeProject() != null) {
                 host.commands().dispatch(new Command.ReloadProject(ProjectSession.activeProjectName()));
-                com.blib.engine.tag.TagStagingCache.clear();
+                TagStagingCache.clear();
             }
             return true;
         }
@@ -104,7 +107,7 @@ public final class WorkspaceHotkeyDispatcher {
                 return true;
             }
             if (ActiveKeybindings.matchesKey(Keybindings.JIGSAW_CYCLE_MODE, keyCode, modifiers)) {
-                com.blib.engine.jigsaw.placement.JigsawTool.cycleNextImplementedMode();
+                JigsawTool.cycleNextImplementedMode();
                 return true;
             }
         }

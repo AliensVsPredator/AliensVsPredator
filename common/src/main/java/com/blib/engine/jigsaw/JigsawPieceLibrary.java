@@ -8,9 +8,14 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import com.blib.engine.jigsaw.placement.CollisionScanner;
+import com.blib.engine.jigsaw.placement.TransformedTemplateCache;
 
 /**
  * Reads the integrated server's {@link StructureTemplateManager} for the list of available structure templates and
@@ -30,7 +35,7 @@ public final class JigsawPieceLibrary {
 
     private static @Nullable List<ResourceLocation> cachedIds;
 
-    private static final java.util.Map<ResourceLocation, StructureTemplate> templateCache = new java.util.HashMap<>();
+    private static final Map<ResourceLocation, StructureTemplate> templateCache = new HashMap<>();
 
     private JigsawPieceLibrary() {}
 
@@ -81,8 +86,8 @@ public final class JigsawPieceLibrary {
         // Downstream caches reference templates by identity — the next StructureTemplateManager fetch may return new
         // instances after a datapack reload, but old instances might still live in these caches with stale GPU
         // resources. Drop everything in lockstep.
-        com.blib.engine.jigsaw.placement.TransformedTemplateCache.invalidate();
-        com.blib.engine.jigsaw.placement.CollisionScanner.invalidate();
+        TransformedTemplateCache.invalidate();
+        CollisionScanner.invalidate();
         JigsawPreviewMeshCache.invalidate();
     }
 

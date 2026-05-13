@@ -1,6 +1,7 @@
 package com.blib.engine.render.pipeline;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +32,7 @@ public final class WorldPassPipeline {
             } catch (RuntimeException e) {
                 // A single faulty pass shouldn't blank the whole frame; log via the standard renderer log facility once
                 // available. For now swallow + continue so user-facing visuals still render.
-                org.slf4j.LoggerFactory.getLogger(WorldPassPipeline.class)
+                LoggerFactory.getLogger(WorldPassPipeline.class)
                     .warn("[BLib] world pass '{}' threw; continuing pipeline", p.id(), e);
             }
         }

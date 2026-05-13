@@ -11,6 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
 import com.blib.engine.domain.selection.picking.FactionSelectable;
@@ -176,7 +177,7 @@ public final class ChunkClaimOverlayRenderer {
         RenderSystem.disableBlend();
     }
 
-    private static @org.jetbrains.annotations.Nullable ResourceLocation inspectedFactionId() {
+    private static @Nullable ResourceLocation inspectedFactionId() {
         var single = SelectionManager.current().single();
         return single instanceof FactionSelectable fs ? fs.factionId() : null;
     }

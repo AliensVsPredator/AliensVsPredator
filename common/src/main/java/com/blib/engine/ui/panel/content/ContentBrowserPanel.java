@@ -12,6 +12,7 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Locale;
 
 import com.blib.engine.domain.selection.volume.BlockSelection;
 import com.blib.engine.jigsaw.JigsawPoolSelection;
@@ -215,7 +216,7 @@ public final class ContentBrowserPanel implements Panel {
             return;
         }
 
-        var query = searchInput.content().toLowerCase(java.util.Locale.ROOT).trim();
+        var query = searchInput.content().toLowerCase(Locale.ROOT).trim();
         var pools = filterPools(query);
         var structures = filterStructures(query);
         var captures = filterCaptures(query);
@@ -460,7 +461,7 @@ public final class ContentBrowserPanel implements Panel {
         }
         var out = new ArrayList<String>();
         for (var name : all) {
-            if (name.toLowerCase(java.util.Locale.ROOT).contains(query)) {
+            if (name.toLowerCase(Locale.ROOT).contains(query)) {
                 out.add(name);
             }
         }
@@ -473,7 +474,7 @@ public final class ContentBrowserPanel implements Panel {
         }
         var out = new ArrayList<ResourceLocation>();
         for (var id : all) {
-            if (id.toString().toLowerCase(java.util.Locale.ROOT).contains(query)) {
+            if (id.toString().toLowerCase(Locale.ROOT).contains(query)) {
                 out.add(id);
             }
         }

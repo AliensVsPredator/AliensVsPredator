@@ -6,8 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Single facade the workspace screen talks to for layout discovery and persistence. Hides the {@link LayoutStorage} +
@@ -43,8 +45,8 @@ public final class LayoutCatalog {
      */
     public static List<LayoutDoc> listAll() {
         var all = LayoutStorage.list();
-        var templates = new java.util.ArrayList<LayoutDoc>();
-        var userLayouts = new java.util.ArrayList<LayoutDoc>();
+        var templates = new ArrayList<LayoutDoc>();
+        var userLayouts = new ArrayList<LayoutDoc>();
         for (var doc : all) {
             if (LayoutTemplate.byId(doc.id()) != null) {
                 templates.add(doc);
@@ -59,7 +61,7 @@ public final class LayoutCatalog {
             return t == null ? Integer.MAX_VALUE : t.ordinal();
         }));
         userLayouts.sort(Comparator.comparing(LayoutDoc::displayName, String.CASE_INSENSITIVE_ORDER));
-        var out = new java.util.ArrayList<LayoutDoc>(templates.size() + userLayouts.size());
+        var out = new ArrayList<LayoutDoc>(templates.size() + userLayouts.size());
         out.addAll(templates);
         out.addAll(userLayouts);
         return out;
@@ -133,7 +135,7 @@ public final class LayoutCatalog {
         if (s == null) {
             return "";
         }
-        var lower = s.toLowerCase(java.util.Locale.ROOT);
+        var lower = s.toLowerCase(Locale.ROOT);
         var sb = new StringBuilder(lower.length());
         var lastWasUnderscore = false;
         for (var i = 0; i < lower.length(); i++) {

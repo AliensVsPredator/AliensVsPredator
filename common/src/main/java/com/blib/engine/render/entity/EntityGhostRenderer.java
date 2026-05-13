@@ -7,6 +7,8 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.ApiStatus;
 import org.joml.Matrix4f;
 
@@ -67,7 +69,7 @@ public final class EntityGhostRenderer {
         box = box.move(translateOffset.x, translateOffset.y, translateOffset.z);
 
         if (scaleEntity != null) {
-            var attr = entity.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.SCALE);
+            var attr = entity.getAttribute(Attributes.SCALE);
             var current = attr == null ? 1.0 : attr.getValue();
             if (current > 0.0) {
                 var ratio = EntityScaleGizmo.ghostScale() / current;
@@ -76,7 +78,7 @@ public final class EntityGhostRenderer {
                 var halfX = (box.maxX - box.minX) * 0.5 * ratio;
                 var halfZ = (box.maxZ - box.minZ) * 0.5 * ratio;
                 var height = (box.maxY - box.minY) * ratio;
-                box = new net.minecraft.world.phys.AABB(cx - halfX, box.minY, cz - halfZ, cx + halfX, box.minY + height, cz + halfZ);
+                box = new AABB(cx - halfX, box.minY, cz - halfZ, cx + halfX, box.minY + height, cz + halfZ);
             }
         }
 

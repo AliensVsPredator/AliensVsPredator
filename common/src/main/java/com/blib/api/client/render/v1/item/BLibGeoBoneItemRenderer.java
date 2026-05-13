@@ -4,8 +4,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.UUID;
@@ -173,7 +175,7 @@ public class BLibGeoBoneItemRenderer extends AzItemRenderer {
      * else null. The gizmo only targets items whose author opted in to live tuning, so the input handler can resolve a
      * click back to the right (item, mode, context) override slot.
      */
-    private static @org.jetbrains.annotations.Nullable net.minecraft.resources.ResourceLocation tunableItemId(
+    private static @Nullable ResourceLocation tunableItemId(
         BLibGeoBoneItemRendererConfig config
     ) {
         if (config.idleTransforms() instanceof BLibTunableItemTransforms tunable) {

@@ -1,6 +1,9 @@
 package com.blib.engine.ui.workspace;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 import com.blib.engine.layout.ActiveLayoutState;
 import com.blib.engine.layout.LayoutCatalog;
@@ -39,8 +42,8 @@ public final class WorkspaceLayoutPersistence {
         var updated = existing.withBody(capturedBody);
         try {
             LayoutCatalog.save(updated);
-        } catch (java.io.IOException e) {
-            org.slf4j.LoggerFactory.getLogger(WorkspaceLayoutPersistence.class)
+        } catch (IOException e) {
+            LoggerFactory.getLogger(WorkspaceLayoutPersistence.class)
                 .warn("[BLib] persistOutgoingLayout: failed to save '{}'", activeLayoutId, e);
         }
     }

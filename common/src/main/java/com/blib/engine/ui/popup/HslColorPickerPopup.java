@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Locale;
 import java.util.function.IntConsumer;
 
 import com.blib.api.common.color.v1.Color;
@@ -289,7 +290,7 @@ public final class HslColorPickerPopup {
     private void renderHexLabel(GuiGraphics graphics) {
         var font = EngineFont.get();
         var argb = Color.HSLtoARGB(hue, saturation, lightness);
-        var hex = String.format(java.util.Locale.ROOT, "#%06X", argb & 0xFFFFFF);
+        var hex = String.format(Locale.ROOT, "#%06X", argb & 0xFFFFFF);
         var swatchX = popupX + PADDING;
         var swatchY = popupY + POPUP_HEIGHT - PADDING - 12;
         graphics.fill(swatchX, swatchY, swatchX + 12, swatchY + 12, argb);

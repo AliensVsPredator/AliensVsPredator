@@ -2,6 +2,7 @@ package com.blib.engine.jigsaw.placement;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -104,6 +105,6 @@ public final class JigsawSnapResolver implements PlacementResolver {
 
     private record CompatibleAlignment(
         TemplateJigsawInfo candidate,
-        net.minecraft.world.level.block.Rotation rotation
+        Rotation rotation
     ) {}
 }

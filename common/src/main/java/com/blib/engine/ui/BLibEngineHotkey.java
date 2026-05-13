@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.blib.engine.session.ProjectSession;
 import com.blib.engine.ui.screen.ProjectPickerScreen;
+import com.blib.engine.ui.widget.TextInput;
 
 /**
  * Universal "toggle the BLib engine" entry-point fired by the {@code TOGGLE_ENGINE} keybinding (see
@@ -62,7 +63,7 @@ public final class BLibEngineHotkey {
      */
     public static boolean shouldInterceptHotkey() {
         var mc = Minecraft.getInstance();
-        if (com.blib.engine.ui.widget.TextInput.getFocused() != null) {
+        if (TextInput.getFocused() != null) {
             return false;
         }
         if (mc.screen != null) {

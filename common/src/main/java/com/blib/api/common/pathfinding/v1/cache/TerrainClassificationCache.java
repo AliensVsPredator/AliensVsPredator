@@ -6,6 +6,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Set;
+
 import com.blib.api.common.pathfinding.v1.terrain.TerrainClassifier;
 import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
 
@@ -74,7 +76,7 @@ public final class TerrainClassificationCache {
      * Returns the set of terrain types present in the section at the given section coordinates. Populates the section
      * lazily if needed.
      */
-    public java.util.Set<TerrainType> getSectionTerrainTypes(LevelReader level, int sectionX, int sectionY, int sectionZ) {
+    public Set<TerrainType> getSectionTerrainTypes(LevelReader level, int sectionX, int sectionY, int sectionZ) {
         var section = getOrPopulateSection(level, sectionX, sectionY, sectionZ);
 
         return section.getContainedTerrainTypes();

@@ -16,6 +16,7 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 import com.blib.engine.spawn.EntitySpawnSelection;
 import com.blib.engine.ui.EngineFont;
@@ -263,7 +264,7 @@ public final class EntityPalettePanel implements Panel {
      * palette doesn't list helpers like lightning bolts and items that wouldn't behave as users expect.
      */
     private List<Entry> filter(String query) {
-        var needle = query.toLowerCase(java.util.Locale.ROOT).trim();
+        var needle = query.toLowerCase(Locale.ROOT).trim();
         var out = new ArrayList<Entry>();
         for (var type : BuiltInRegistries.ENTITY_TYPE) {
             if (!type.canSummon()) {
@@ -275,7 +276,7 @@ public final class EntityPalettePanel implements Panel {
             }
             var displayName = type.getDescription().getString();
             if (!needle.isEmpty()) {
-                var hay = (displayName + " " + id).toLowerCase(java.util.Locale.ROOT);
+                var hay = (displayName + " " + id).toLowerCase(Locale.ROOT);
                 if (!hay.contains(needle)) {
                     continue;
                 }

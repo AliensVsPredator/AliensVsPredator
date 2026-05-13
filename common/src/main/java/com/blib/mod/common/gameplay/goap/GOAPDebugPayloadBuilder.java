@@ -4,6 +4,7 @@ import com.just.ai.goap.Agent;
 import com.just.ai.goap.graph.Graph;
 import com.just.ai.goap.plan.Plan;
 import com.just.ai.goap.plan.executor.impl.ConcurrentPlanExecutor;
+import com.just.ai.goap.state.Blackboard;
 import com.just.ai.goap.state.ReadableWorldState;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -172,7 +173,7 @@ final class GOAPDebugPayloadBuilder {
         return result;
     }
 
-    private static Map<String, String> snapshotBlackboard(com.just.ai.goap.state.Blackboard blackboard) {
+    private static Map<String, String> snapshotBlackboard(Blackboard blackboard) {
         var result = new LinkedHashMap<String, String>();
         var stateMap = blackboard.getStateMap();
 

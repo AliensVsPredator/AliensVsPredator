@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 
+import com.blib.engine.domain.selection.picking.event.SelectionChangedEvent;
 import com.blib.engine.runtime.EventBus;
 import com.blib.engine.runtime.tool.ActiveTool;
 import com.blib.engine.runtime.tool.ToolChangedEvent;
@@ -301,7 +302,7 @@ public final class BlockSelection {
             }
         });
         bus.subscribe(
-            com.blib.engine.domain.selection.picking.event.SelectionChangedEvent.class,
+            SelectionChangedEvent.class,
             e -> {
                 if (!e.current().isEmpty() && (cornerA != null || cornerB != null)) {
                     clearVolume();

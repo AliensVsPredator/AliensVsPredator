@@ -12,6 +12,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.List;
+
 import com.blib.internal.common.territory.BLibTerritoryManager;
 
 @Mixin(Explosion.class)
@@ -22,7 +24,7 @@ public abstract class MixinExplosion_TerritoryProtection {
     private Level level;
 
     @Shadow
-    public abstract java.util.List<BlockPos> getToBlow();
+    public abstract List<BlockPos> getToBlow();
 
     @Inject(at = @At("HEAD"), method = "finalizeExplosion")
     private void blib$removeProtectedBlocks(boolean spawnParticles, CallbackInfo ci) {

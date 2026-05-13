@@ -3,9 +3,12 @@ package com.blib.engine.gizmo;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 import org.slf4j.Logger;
 import org.slf4j.helpers.MessageFormatter;
+
+import java.util.List;
 
 import com.blib.api.client.render.v1.BLibTransform;
 
@@ -98,7 +101,7 @@ public final class BLibGizmoInput {
                 trace("tryStartDrag: no render snapshot — item not rendered this frame, picking impossible");
                 return false;
             }
-            snapshots = java.util.List.of(legacy);
+            snapshots = List.of(legacy);
         }
 
         var snapshot = pickClosestSnapshot(snapshots, cursorX, cursorY, w, h);
@@ -191,8 +194,8 @@ public final class BLibGizmoInput {
      * Returns null if no snapshot's projected origin is within reach of the cursor — typically means either no gizmo is
      * on screen at the click point, or all rendered gizmos are far from where the cursor was when the click fired.
      */
-    private static @org.jetbrains.annotations.Nullable BLibGizmoState.RenderSnapshot pickClosestSnapshot(
-        java.util.List<BLibGizmoState.RenderSnapshot> snapshots,
+    private static @Nullable BLibGizmoState.RenderSnapshot pickClosestSnapshot(
+        List<BLibGizmoState.RenderSnapshot> snapshots,
         double cursorX,
         double cursorY,
         int w,

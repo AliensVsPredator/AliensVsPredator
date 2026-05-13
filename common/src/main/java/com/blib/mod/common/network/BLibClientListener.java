@@ -1,9 +1,13 @@
 package com.blib.mod.common.network;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import com.blib.api.common.data_sync.v1.model.DataUser;
 import com.blib.api.common.dismemberment.v1.LimbCategory;
@@ -19,11 +23,16 @@ import com.blib.engine.domain.selection.volume.PendingMoveResult;
 import com.blib.engine.history.ClientActionHistory;
 import com.blib.engine.jigsaw.ClientPlacedPieceRegistry;
 import com.blib.engine.jigsaw.ProjectDraftCache;
+import com.blib.engine.projectcontents.ProjectContents;
 import com.blib.engine.session.ProjectSession;
 import com.blib.engine.tag.RegistryEntriesCache;
 import com.blib.engine.tag.TagCatalogCache;
 import com.blib.engine.tag.TagDraftCache;
+import com.blib.internal.client.faction.ClientEntityFactionsCache;
 import com.blib.internal.client.faction.ClientFactionCache;
+import com.blib.internal.client.faction.ClientFactionDirectoryCache;
+import com.blib.internal.client.faction.ClientFactionInspectionCache;
+import com.blib.internal.client.faction.ClientFactionMembersCache;
 import com.blib.internal.client.territory.ClientTerritoryCache;
 import com.blib.mod.BLib;
 import com.blib.mod.client.render.debug.PathfindingNavDebugHUD;
@@ -37,6 +46,10 @@ import com.blib.mod.common.network.packet.S2CCaptureListPayload;
 import com.blib.mod.common.network.packet.S2CChunkClaimsSyncPayload;
 import com.blib.mod.common.network.packet.S2CClipboardStatusPayload;
 import com.blib.mod.common.network.packet.S2CEntityDataSyncPayload;
+import com.blib.mod.common.network.packet.S2CEntityFactionsPayload;
+import com.blib.mod.common.network.packet.S2CFactionDirectoryPayload;
+import com.blib.mod.common.network.packet.S2CFactionInspectionPayload;
+import com.blib.mod.common.network.packet.S2CFactionMembersPayload;
 import com.blib.mod.common.network.packet.S2CFactionMetadataSyncPayload;
 import com.blib.mod.common.network.packet.S2CGOAPDebugPayload;
 import com.blib.mod.common.network.packet.S2CLimbDefinitionsSyncPayload;
@@ -44,13 +57,16 @@ import com.blib.mod.common.network.packet.S2CMoveSelectionResultPayload;
 import com.blib.mod.common.network.packet.S2CPathfindingNavDebugPayload;
 import com.blib.mod.common.network.packet.S2CPathfindingSearchDebugPayload;
 import com.blib.mod.common.network.packet.S2CPoolDraftPayload;
+import com.blib.mod.common.network.packet.S2CPoolListPayload;
 import com.blib.mod.common.network.packet.S2CProjectListPayload;
 import com.blib.mod.common.network.packet.S2CProjectOpResultPayload;
 import com.blib.mod.common.network.packet.S2CRegistryEntriesPayload;
 import com.blib.mod.common.network.packet.S2CRemovePlacedPiecePayload;
+import com.blib.mod.common.network.packet.S2CStructureListPayload;
 import com.blib.mod.common.network.packet.S2CSyncPlacedPiecesPayload;
 import com.blib.mod.common.network.packet.S2CTagCatalogPayload;
 import com.blib.mod.common.network.packet.S2CTagDraftPayload;
+import com.blib.mod.common.network.packet.TagEntryDraft;
 
 @ApiStatus.Internal
 public final class BLibClientListener {
@@ -77,9 +93,9 @@ public final class BLibClientListener {
      */
     public static void handleLimbDefinitionsSync(S2CLimbDefinitionsSyncPayload payload, Player player) {
         var next =
-            new java.util.LinkedHashMap<net.minecraft.resources.ResourceLocation, java.util.Map<net.minecraft.resources.ResourceLocation, LimbDefinition>>();
+            new LinkedHashMap<ResourceLocation, Map<ResourceLocation, LimbDefinition>>();
         for (var bucket : payload.entries()) {
-            var perEntity = new java.util.LinkedHashMap<net.minecraft.resources.ResourceLocation, LimbDefinition>();
+            var perEntity = new LinkedHashMap<ResourceLocation, LimbDefinition>();
             for (var entry : bucket.limbs()) {
                 var def = new LimbDefinition(
                     entry.limbId(),
@@ -206,7 +222,7 @@ public final class BLibClientListener {
         // catalog re-push.
         var equivalent = payload.inProject()
             && !payload.replace()
-            && payload.entries().stream().allMatch(com.blib.mod.common.network.packet.TagEntryDraft::inUpstream);
+            && payload.entries().stream().allMatch(TagEntryDraft::inUpstream);
         TagCatalogCache.setEquivalentToUpstream(payload.registryKey(), payload.tagId(), equivalent);
     }
 
@@ -237,45 +253,45 @@ public final class BLibClientListener {
     }
 
     /** Server-pushed list of project pools. Stored in {@link com.blib.engine.projectcontents.ProjectContents}. */
-    public static void handlePoolList(com.blib.mod.common.network.packet.S2CPoolListPayload payload, Player player) {
-        com.blib.engine.projectcontents.ProjectContents.setPools(payload.poolIds());
+    public static void handlePoolList(S2CPoolListPayload payload, Player player) {
+        ProjectContents.setPools(payload.poolIds());
     }
 
     /** Server-pushed list of project structures. Stored in {@link com.blib.engine.projectcontents.ProjectContents}. */
-    public static void handleStructureList(com.blib.mod.common.network.packet.S2CStructureListPayload payload, Player player) {
-        com.blib.engine.projectcontents.ProjectContents.setStructures(payload.structureIds());
+    public static void handleStructureList(S2CStructureListPayload payload, Player player) {
+        ProjectContents.setStructures(payload.structureIds());
     }
 
     /** Server-pushed faction directory snapshot. Replaces the workspace's directory cache. */
     public static void handleFactionDirectory(
-        com.blib.mod.common.network.packet.S2CFactionDirectoryPayload payload,
+        S2CFactionDirectoryPayload payload,
         Player player
     ) {
-        com.blib.internal.client.faction.ClientFactionDirectoryCache.apply(payload);
+        ClientFactionDirectoryCache.apply(payload);
     }
 
     /** Server-pushed inspector snapshot for a single faction. */
     public static void handleFactionInspection(
-        com.blib.mod.common.network.packet.S2CFactionInspectionPayload payload,
+        S2CFactionInspectionPayload payload,
         Player player
     ) {
-        com.blib.internal.client.faction.ClientFactionInspectionCache.apply(payload);
+        ClientFactionInspectionCache.apply(payload);
     }
 
     /** Server-pushed member roster for a single faction. */
     public static void handleFactionMembers(
-        com.blib.mod.common.network.packet.S2CFactionMembersPayload payload,
+        S2CFactionMembersPayload payload,
         Player player
     ) {
-        com.blib.internal.client.faction.ClientFactionMembersCache.apply(payload);
+        ClientFactionMembersCache.apply(payload);
     }
 
     /** Server-pushed reverse lookup: every faction this entity (UUID) currently belongs to. */
     public static void handleEntityFactions(
-        com.blib.mod.common.network.packet.S2CEntityFactionsPayload payload,
+        S2CEntityFactionsPayload payload,
         Player player
     ) {
-        com.blib.internal.client.faction.ClientEntityFactionsCache.apply(payload);
+        ClientEntityFactionsCache.apply(payload);
     }
 
     /**

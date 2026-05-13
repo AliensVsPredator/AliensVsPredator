@@ -2,7 +2,11 @@ package com.blib.internal.client.posteffect;
 
 import com.mojang.blaze3d.shaders.Program;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Locale;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -105,7 +109,7 @@ public final class BLibEntityShaderPatcher {
 
     private static final Pattern VERSION_DIRECTIVE = Pattern.compile("(?m)^\\s*#version\\s+\\d+\\s*$");
 
-    private static final java.util.Set<String> LOGGED_NAMES = java.util.concurrent.ConcurrentHashMap.newKeySet();
+    private static final Set<String> LOGGED_NAMES = ConcurrentHashMap.newKeySet();
 
     private BLibEntityShaderPatcher() {
         throw new UnsupportedOperationException();
@@ -144,7 +148,7 @@ public final class BLibEntityShaderPatcher {
         }
     }
 
-    public static @org.jetbrains.annotations.Nullable Category categoryFor(String name) {
+    public static @Nullable Category categoryFor(String name) {
         if (name.startsWith("rendertype_entity_")) {
             // Shadow and glint are alpha-blended overlays drawn AFTER the underlying entity. Patching them with
             // their own mask byte (or even a passthrough-zero) blends with the entity's mask=1.0 underneath and
@@ -366,7 +370,7 @@ public final class BLibEntityShaderPatcher {
         // LPV voxelization is now in the vertex shader (see patchVertex above) — fragment-stage imageStore was
         // silently dropped by the chunk-rendering path on the test driver while same-shader held-item fragments
         // wrote successfully. Vertex-stage writes are JCL's approach and are far more driver-portable.
-        var maskLiteral = String.format(java.util.Locale.ROOT, "%.4f", category.maskValue);
+        var maskLiteral = String.format(Locale.ROOT, "%.4f", category.maskValue);
 
         // `length() > 0.0` guards against the rare case where the interpolated normal collapses to zero.
         // entityDrawData channel layout (all biome/dimension-independent):
@@ -438,7 +442,7 @@ public final class BLibEntityShaderPatcher {
         var withOuts = matcher.replaceFirst(Matcher.quoteReplacement(replacement));
         var withExt = insertAfterVersion(withOuts, "#extension GL_ARB_explicit_attrib_location : require\n");
 
-        var maskLiteral = String.format(java.util.Locale.ROOT, "%.4f", category.maskValue);
+        var maskLiteral = String.format(Locale.ROOT, "%.4f", category.maskValue);
 
         // Celestial bodies (sun, moon) need to capture the raw texture luminance into entityDrawData.r so the
         // post shader can drive the recolor from the actual texture brightness rather than the post-blend

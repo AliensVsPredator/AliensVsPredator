@@ -228,7 +228,7 @@ public final class ModelerGizmoInput {
         }
         var axisView = geom.axis(axis);
         float resizeLen = geom.scale() * 0.6f * sign;
-        var tipView = new org.joml.Vector3f(baseView).fma(resizeLen, axisView);
+        var tipView = new Vector3f(baseView).fma(resizeLen, axisView);
         var tip = GizmoMath.projectToScreen(tipView, geom.projection(), w, h);
         if (tip == null) {
             return Float.POSITIVE_INFINITY;

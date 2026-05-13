@@ -5,6 +5,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -170,7 +171,7 @@ public final class EntityInspectorSection implements InspectorSection<EntitySele
         BlockVolumeInspectorSection.syncInput(entityPosY, String.format(Locale.ROOT, "%.2f", pos.y), force);
         BlockVolumeInspectorSection.syncInput(entityPosZ, String.format(Locale.ROOT, "%.2f", pos.z), force);
 
-        var attr = entity.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.SCALE);
+        var attr = entity.getAttribute(Attributes.SCALE);
         var scaleValue = attr == null ? 1.0 : attr.getValue();
         BlockVolumeInspectorSection.syncInput(entityScale, String.format(Locale.ROOT, "%.2f", scaleValue), force);
     }

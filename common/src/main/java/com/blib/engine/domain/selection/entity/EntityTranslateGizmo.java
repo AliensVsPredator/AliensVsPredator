@@ -9,10 +9,12 @@ import com.blib.engine.domain.selection.volume.BlockSelectionScaleGizmo;
 import com.blib.engine.domain.selection.volume.BlockSelectionTranslateGizmo;
 import com.blib.engine.input.ActiveKeybindings;
 import com.blib.engine.input.Keybindings;
+import com.blib.engine.jigsaw.JigsawPlacementCursor;
 import com.blib.engine.math.AxisPlaneDrag;
 import com.blib.engine.math.CursorCamera;
 import com.blib.engine.math.RayAabb;
 import com.blib.engine.session.EngineSession;
+import com.blib.engine.tool.gizmo.GizmoHit;
 
 /**
  * Translation gizmo for the engine's entity selection — three axis arrows extending from the entity AABB center.
@@ -75,7 +77,7 @@ public final class EntityTranslateGizmo {
         var direction = axis.direction();
         var planeNormal = AxisPlaneDrag.pickPlaneNormal(direction, center, camPos);
 
-        var rayDir = com.blib.engine.jigsaw.JigsawPlacementCursor.cursorRayDirection(session);
+        var rayDir = JigsawPlacementCursor.cursorRayDirection(session);
         var initialAxisOffset = rayDir == null
             ? 0.0
             : AxisPlaneDrag.projectOntoAxisOrZero(camPos, rayDir, center, planeNormal, direction);
@@ -132,7 +134,7 @@ public final class EntityTranslateGizmo {
      * lock-step with the block-volume implementation.
      */
     public static @Nullable AxisHit pickUnderCursorWithDistance(EngineSession session, LivingEntity entity) {
-        var rayDir = com.blib.engine.jigsaw.JigsawPlacementCursor.cursorRayDirection(session);
+        var rayDir = JigsawPlacementCursor.cursorRayDirection(session);
         if (rayDir == null) {
             return null;
         }
@@ -169,7 +171,7 @@ public final class EntityTranslateGizmo {
     public record AxisHit(
         BlockSelectionTranslateGizmo.Axis axis,
         double t
-    ) implements com.blib.engine.tool.gizmo.GizmoHit {}
+    ) implements GizmoHit {}
 
     public record DragResult(
         LivingEntity entity,

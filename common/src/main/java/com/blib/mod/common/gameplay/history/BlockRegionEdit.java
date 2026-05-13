@@ -14,8 +14,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import com.blib.internal.common.storage.BLibDataStoreManager;
+import com.blib.mod.common.gameplay.jigsaw.PlacedPiece;
 import com.blib.mod.common.gameplay.jigsaw.PlacedPieceSync;
 import com.blib.mod.common.registry.init.BLibJigsawDataStoreTypes;
 
@@ -155,12 +157,12 @@ public record BlockRegionEdit(
         }
     }
 
-    private static void addPiece(ServerLevel level, com.blib.mod.common.gameplay.jigsaw.PlacedPiece piece) {
+    private static void addPiece(ServerLevel level, PlacedPiece piece) {
         BLibDataStoreManager.INSTANCE.getLevel(level, BLibJigsawDataStoreTypes.PLACED_PIECES).add(piece);
         PlacedPieceSync.onPieceAdded(level, piece);
     }
 
-    private static void removePiece(ServerLevel level, java.util.UUID id) {
+    private static void removePiece(ServerLevel level, UUID id) {
         if (id == null) {
             return;
         }

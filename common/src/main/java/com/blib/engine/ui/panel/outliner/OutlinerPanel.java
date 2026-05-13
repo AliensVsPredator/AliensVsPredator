@@ -18,6 +18,7 @@ import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Locale;
 
 import com.blib.engine.domain.selection.picking.EntitySelectable;
 import com.blib.engine.domain.selection.picking.SelectionManager;
@@ -335,12 +336,12 @@ public final class OutlinerPanel implements Panel {
             return grouped;
         }
         var camera = cameraPos();
-        var query = searchInput.content().toLowerCase(java.util.Locale.ROOT).trim();
+        var query = searchInput.content().toLowerCase(Locale.ROOT).trim();
 
         for (var e : mc.level.entitiesForRendering()) {
             var cat = categoryOf(e);
             var name = displayNameFor(e);
-            if (!query.isEmpty() && !name.toLowerCase(java.util.Locale.ROOT).contains(query)) {
+            if (!query.isEmpty() && !name.toLowerCase(Locale.ROOT).contains(query)) {
                 continue;
             }
             var dist = camera.distanceTo(e.position());

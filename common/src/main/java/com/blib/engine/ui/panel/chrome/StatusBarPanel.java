@@ -3,6 +3,7 @@ package com.blib.engine.ui.panel.chrome;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.Rotation;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ArrayList;
@@ -303,7 +304,7 @@ public final class StatusBarPanel implements Panel {
         }
     }
 
-    private static String rotationLabel(net.minecraft.world.level.block.Rotation rotation) {
+    private static String rotationLabel(Rotation rotation) {
         return switch (rotation) {
             case NONE -> "0";
             case CLOCKWISE_90 -> "90";

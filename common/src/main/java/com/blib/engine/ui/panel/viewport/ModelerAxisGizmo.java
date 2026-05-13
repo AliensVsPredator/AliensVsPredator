@@ -5,6 +5,8 @@ import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+
 import com.blib.engine.modeler.ModelerCamera;
 import com.blib.engine.session.EngineCameraBasis;
 import com.blib.engine.ui.EngineFont;
@@ -97,7 +99,7 @@ public final class ModelerAxisGizmo {
         // Sort back-to-front (largest depth first). With our depth = dot(axis, forward), a value > 0 means the axis
         // points away from the camera (behind the gizmo plane). Drawing those first lets the in-front endpoints
         // occlude them when ball rects overlap.
-        java.util.Arrays.sort(endpoints, (a, b) -> Float.compare(b.depth, a.depth));
+        Arrays.sort(endpoints, (a, b) -> Float.compare(b.depth, a.depth));
 
         // Lines come first as a separate pass so balls always draw on top of axis lines (including lines from other
         // axes that happen to overlap). Only positive axes get lines — negative endpoints are minor depth indicators.

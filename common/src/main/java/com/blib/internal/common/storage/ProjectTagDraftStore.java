@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -18,8 +19,10 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.blib.mod.common.network.packet.TagEntryDraft;
 
@@ -287,7 +290,7 @@ public final class ProjectTagDraftStore {
             return false;
         }
         if (required) {
-            values.set(rawIndex, new com.google.gson.JsonPrimitive(idStr));
+            values.set(rawIndex, new JsonPrimitive(idStr));
         } else {
             var entry = new JsonObject();
             entry.addProperty("id", idStr);
@@ -383,15 +386,15 @@ public final class ProjectTagDraftStore {
      * hadn't yet authored the tag. Used to flag draft entries that duplicate upstream — those are no-ops to remove or
      * toggle in merge mode.
      */
-    public static java.util.Set<String> extractUpstreamEntryKeys(
-        net.minecraft.server.MinecraftServer server,
+    public static Set<String> extractUpstreamEntryKeys(
+        MinecraftServer server,
         String projectName,
         ResourceKey<? extends Registry<?>> registryKey,
         ResourceLocation tagId
     ) {
         var seed = seedFromUpstreamJsons(server, projectName, registryKey, tagId);
         var entries = extractDraftEntries(seed);
-        var keys = new java.util.HashSet<String>(entries.size());
+        var keys = new HashSet<String>(entries.size());
         for (var entry : entries) {
             keys.add(entryKey(entry.isTagRef(), entry.id()));
         }
@@ -407,7 +410,7 @@ public final class ProjectTagDraftStore {
      * the project's JSON is a candidate for cleanup.
      */
     public static boolean isEquivalentToUpstream(
-        net.minecraft.server.MinecraftServer server,
+        MinecraftServer server,
         String projectName,
         ResourceKey<? extends Registry<?>> registryKey,
         ResourceLocation tagId
@@ -425,7 +428,7 @@ public final class ProjectTagDraftStore {
      * what's about to be persisted.
      */
     public static boolean isEquivalentToUpstream(
-        net.minecraft.server.MinecraftServer server,
+        MinecraftServer server,
         String projectName,
         ResourceKey<? extends Registry<?>> registryKey,
         ResourceLocation tagId,

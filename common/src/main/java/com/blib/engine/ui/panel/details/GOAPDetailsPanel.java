@@ -2,9 +2,11 @@ package com.blib.engine.ui.panel.details;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -80,14 +82,14 @@ public final class GOAPDetailsPanel implements Panel {
      * its GOAP), reset both scrolls — without this, the new agent's content opens in whatever scrolled state the
      * previous agent's was left in, hiding the top of the new agent's data.
      */
-    private @org.jetbrains.annotations.Nullable String lastAgentUuid;
+    private @Nullable String lastAgentUuid;
 
     /**
      * Cached tooltip text for the currently-hovered row, computed during {@link #render} (which has the mouse
      * coordinates and the row geometry). Null when no row is hovered or the hovered row's text fits without truncation.
      * Read by {@link #tooltipText()}.
      */
-    private @org.jetbrains.annotations.Nullable Component hoveredTooltip;
+    private @Nullable Component hoveredTooltip;
 
     @Override
     public void onShown() {
@@ -421,7 +423,7 @@ public final class GOAPDetailsPanel implements Panel {
      * {@link net.minecraft.client.gui.Font#plainSubstrByWidth} so the cut lands on a glyph boundary instead of
      * mid-character.
      */
-    private static String truncateToWidth(net.minecraft.client.gui.Font font, String text, int maxWidth) {
+    private static String truncateToWidth(Font font, String text, int maxWidth) {
         if (maxWidth <= 0) {
             return "";
         }

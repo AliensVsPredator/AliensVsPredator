@@ -2,6 +2,8 @@ package com.blib.engine.render.pipeline;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.function.Consumer;
+
 import com.blib.engine.render.entity.EntityGhostRenderer;
 import com.blib.engine.render.entity.EntityScaleGizmoRenderer;
 import com.blib.engine.render.entity.EntityTranslateGizmoRenderer;
@@ -81,7 +83,7 @@ public final class EngineWorldPasses {
         return p;
     }
 
-    private static WorldPass pass(String id, java.util.function.Consumer<WorldRenderFrame> body) {
+    private static WorldPass pass(String id, Consumer<WorldRenderFrame> body) {
         return new WorldPass() {
 
             @Override

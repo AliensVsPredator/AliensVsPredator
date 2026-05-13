@@ -4,6 +4,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +55,7 @@ public class ClientTerritoryCache {
      * / map cells. Mutations go through {@link #updateChunk}; the view doesn't support direct edits.
      */
     public Map<ChunkPos, List<ResourceLocation>> factionsByChunk() {
-        return java.util.Collections.unmodifiableMap(factionsByChunk);
+        return Collections.unmodifiableMap(factionsByChunk);
     }
 
     /** Counts how many chunks in the cache list {@code factionId} as a claimant. Used by the inspector. */

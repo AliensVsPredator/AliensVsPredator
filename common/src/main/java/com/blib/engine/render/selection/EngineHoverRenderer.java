@@ -9,6 +9,7 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
 import com.blib.engine.domain.selection.picking.BlockSelectable;
@@ -17,6 +18,8 @@ import com.blib.engine.domain.selection.picking.EngineHoverProbe;
 import com.blib.engine.domain.selection.picking.EntitySelectable;
 import com.blib.engine.domain.selection.picking.PlacedJigsawPieceSelectable;
 import com.blib.engine.domain.selection.picking.SelectionManager;
+import com.blib.engine.domain.selection.volume.BlockSelection;
+import com.blib.engine.jigsaw.ClientPlacedPieceRegistry;
 import com.blib.engine.session.EngineMode;
 import com.blib.internal.client.shader.BLibShaders;
 
@@ -93,19 +96,19 @@ public final class EngineHoverRenderer {
         return switch (target) {
             case EngineHoverProbe.Target.Entity et -> single instanceof EntitySelectable es && es.entity() == et.entity();
             case EngineHoverProbe.Target.Block bt -> (single instanceof BlockSelectable bs && bs.pos().equals(bt.pos()))
-                || (single instanceof BlockVolumeSelectable && com.blib.engine.domain.selection.volume.BlockSelection.cornerA() != null
-                    && bt.pos().equals(com.blib.engine.domain.selection.volume.BlockSelection.cornerA())
-                    && bt.pos().equals(com.blib.engine.domain.selection.volume.BlockSelection.cornerB()));
+                || (single instanceof BlockVolumeSelectable && BlockSelection.cornerA() != null
+                    && bt.pos().equals(BlockSelection.cornerA())
+                    && bt.pos().equals(BlockSelection.cornerB()));
             case EngineHoverProbe.Target.Piece pt -> single instanceof PlacedJigsawPieceSelectable ps && ps.id().equals(pt.id());
         };
     }
 
-    private static @org.jetbrains.annotations.Nullable AABB aabbFor(EngineHoverProbe.Target target) {
+    private static @Nullable AABB aabbFor(EngineHoverProbe.Target target) {
         return switch (target) {
             case EngineHoverProbe.Target.Entity et -> et.entity().getBoundingBox();
             case EngineHoverProbe.Target.Block bt -> new AABB(bt.pos());
             case EngineHoverProbe.Target.Piece pt -> {
-                var piece = com.blib.engine.jigsaw.ClientPlacedPieceRegistry.get(pt.id());
+                var piece = ClientPlacedPieceRegistry.get(pt.id());
                 yield piece == null ? null : piece.worldAabb();
             }
         };

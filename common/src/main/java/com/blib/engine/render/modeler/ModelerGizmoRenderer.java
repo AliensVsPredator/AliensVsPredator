@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.GameRenderer;
 import org.jetbrains.annotations.ApiStatus;
@@ -209,7 +210,7 @@ public final class ModelerGizmoRenderer {
         return hover == null ? 1 : hover.sign();
     }
 
-    private static void drawTranslateShafts(PoseStack pose, com.mojang.blaze3d.vertex.VertexConsumer buffer, float scale) {
+    private static void drawTranslateShafts(PoseStack pose, VertexConsumer buffer, float scale) {
         int dragAxis = activeDragAxis();
         int hoverAxis = activeHoverAxis();
         for (int axis = 0; axis < 3; axis++) {
@@ -220,7 +221,7 @@ public final class ModelerGizmoRenderer {
         }
     }
 
-    private static void drawTranslateTips(PoseStack pose, com.mojang.blaze3d.vertex.VertexConsumer buffer, float scale) {
+    private static void drawTranslateTips(PoseStack pose, VertexConsumer buffer, float scale) {
         int dragAxis = activeDragAxis();
         int hoverAxis = activeHoverAxis();
         for (int axis = 0; axis < 3; axis++) {
@@ -231,7 +232,7 @@ public final class ModelerGizmoRenderer {
         }
     }
 
-    private static void drawRotate(PoseStack pose, com.mojang.blaze3d.vertex.VertexConsumer buffer, float scale) {
+    private static void drawRotate(PoseStack pose, VertexConsumer buffer, float scale) {
         int dragAxis = activeDragAxis();
         int hoverAxis = activeHoverAxis();
         for (int axis = 0; axis < 3; axis++) {
@@ -248,7 +249,7 @@ public final class ModelerGizmoRenderer {
      * the gizmo origin stays at the pivot but each handle's BASE sits on its face. Shaft (lines) pass — pair with
      * {@link #drawResizeTips} for the filled tips.
      */
-    private static void drawResizeShafts(PoseStack pose, com.mojang.blaze3d.vertex.VertexConsumer buffer, float scale, ModelerCube cube) {
+    private static void drawResizeShafts(PoseStack pose, VertexConsumer buffer, float scale, ModelerCube cube) {
         int dragAxis = activeDragAxis();
         int dragSign = activeDragSign();
         int hoverAxis = activeHoverAxis();
@@ -277,7 +278,7 @@ public final class ModelerGizmoRenderer {
      * pyramids) because resize is a "grab this handle and pull" gesture, not a "drag this direction" gesture; the cube
      * reads as a grabbable knob and matches the block-volume scale gizmo's style.
      */
-    private static void drawResizeTips(PoseStack pose, com.mojang.blaze3d.vertex.VertexConsumer buffer, float scale, ModelerCube cube) {
+    private static void drawResizeTips(PoseStack pose, VertexConsumer buffer, float scale, ModelerCube cube) {
         int dragAxis = activeDragAxis();
         int dragSign = activeDragSign();
         int hoverAxis = activeHoverAxis();

@@ -3,6 +3,7 @@ package com.blib.engine.gizmo;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.RenderType;
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 /**
@@ -333,7 +334,7 @@ public final class GizmoPrimitives {
     /** Emit the six axis-aligned quad faces of an AABB into a {@code QUADS / POSITION_COLOR} buffer. */
     private static void emitBoxQuads(
         VertexConsumer buffer,
-        org.joml.Matrix4f matrix,
+        Matrix4f matrix,
         float minX,
         float minY,
         float minZ,

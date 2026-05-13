@@ -3,6 +3,7 @@ package com.blib.engine.jigsaw;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.ByteBufferBuilder;
+import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexBuffer;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -299,8 +300,8 @@ public final class JigsawPreviewMeshCache {
             return builder;
         }
 
-        Map<RenderType, com.mojang.blaze3d.vertex.MeshData> finishMeshes() {
-            var out = new LinkedHashMap<RenderType, com.mojang.blaze3d.vertex.MeshData>();
+        Map<RenderType, MeshData> finishMeshes() {
+            var out = new LinkedHashMap<RenderType, MeshData>();
             for (var entry : builders.entrySet()) {
                 var meshData = entry.getValue().build();
                 if (meshData != null) {

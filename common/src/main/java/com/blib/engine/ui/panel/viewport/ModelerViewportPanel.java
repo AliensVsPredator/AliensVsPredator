@@ -9,6 +9,11 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.blib.engine.modeler.ModelerCamera;
 import com.blib.engine.modeler.ModelerCube;
 import com.blib.engine.modeler.ModelerFilePicker;
 import com.blib.engine.modeler.ModelerPicker;
@@ -23,6 +28,7 @@ import com.blib.engine.modeler.gizmo.ModelerGizmoState;
 import com.blib.engine.modeler.history.ModelerAction;
 import com.blib.engine.modeler.history.ModelerActionHistory;
 import com.blib.engine.render.modeler.ModelerRenderer;
+import com.blib.engine.session.EngineCameraBasis;
 import com.blib.engine.session.ProjectSession;
 import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.panel.chrome.ModelerMenuBar;
@@ -185,7 +191,7 @@ public final class ModelerViewportPanel implements Panel {
      * Ray-pick the cube under the cursor. Returns the {@link ModelerPicker.Hit} or null on a miss. Used by both the
      * hover refresh and the click handler so the two stay aligned with the renderer's transform stack.
      */
-    private @org.jetbrains.annotations.Nullable ModelerPicker.Hit pickCubeAt(double mouseX, double mouseY) {
+    private @Nullable ModelerPicker.Hit pickCubeAt(double mouseX, double mouseY) {
         var relX = (float) ((mouseX - panelX) / (double) panelWidth);
         var relY = (float) ((mouseY - panelY) / (double) panelHeight);
         var aspect = (float) panelWidth / (float) panelHeight;
@@ -391,14 +397,14 @@ public final class ModelerViewportPanel implements Panel {
         return false;
     }
 
-    private static void applyPan(com.blib.engine.modeler.ModelerCamera camera, double rawDx, double rawDy) {
+    private static void applyPan(ModelerCamera camera, double rawDx, double rawDy) {
         // Drag-the-scene convention in both axes: cursor and scene move together. Formula matches
         // EngineNavigation.applyPanDelta exactly — focus += right·dx + up·dy. The subtle point is that
         // EngineCameraBasis.screenRight is named from a screen-space-mapping POV (the direction the camera shifts
         // when the cursor moves +x), which under MC's left-handed yaw is actually opposite the camera's world-space
         // right axis. Negating dx here would un-do that and give push-the-camera; the plus signs give drag-the-scene.
-        var right = com.blib.engine.session.EngineCameraBasis.screenRight(camera.yaw);
-        var up = com.blib.engine.session.EngineCameraBasis.screenUp(camera.yaw, camera.pitch);
+        var right = EngineCameraBasis.screenRight(camera.yaw);
+        var up = EngineCameraBasis.screenUp(camera.yaw, camera.pitch);
         var scale = PAN_SENSITIVITY * camera.distance / 64.0;
         var dx = (right.x * rawDx + up.x * rawDy) * scale;
         var dy = (right.y * rawDx + up.y * rawDy) * scale;
@@ -427,14 +433,14 @@ public final class ModelerViewportPanel implements Panel {
 
         return switch (chip) {
             case ModelerMenuBar.CHIP_FILE -> {
-                var items = new java.util.ArrayList<DropdownMenu.Item>();
+                var items = new ArrayList<DropdownMenu.Item>();
                 items.add(new DropdownMenu.Item("New", () -> {}, buildNewSubmenu()));
                 items.add(new DropdownMenu.Item("Recent", () -> {}, buildRecentSubmenu()));
                 items.add(new DropdownMenu.Item("Open Model", ModelerViewportPanel::openGeoModelFromFile));
                 yield new DropdownMenu(anchorX, anchorY, items);
             }
             case ModelerMenuBar.CHIP_TRANSFORM -> {
-                var items = new java.util.ArrayList<DropdownMenu.Item>();
+                var items = new ArrayList<DropdownMenu.Item>();
                 items.add(new DropdownMenu.Item("Rotate", () -> {}, buildRotateSubmenu()));
                 items.add(new DropdownMenu.Item("Flip", () -> {}, buildFlipSubmenu()));
                 items.add(new DropdownMenu.Item("Center", () -> {}, buildCenterSubmenu()));
@@ -448,8 +454,8 @@ public final class ModelerViewportPanel implements Panel {
      * "Rotate" submenu — two entries per axis (+90 and -90). The hand-written labels include the degree symbol so the
      * dropdown reads as a precise gesture rather than an ambiguous direction toggle.
      */
-    private static java.util.List<DropdownMenu.Item> buildRotateSubmenu() {
-        return java.util.List
+    private static List<DropdownMenu.Item> buildRotateSubmenu() {
+        return List
             .of(
                 new DropdownMenu.Item(
                     "+90° around X",
@@ -479,8 +485,8 @@ public final class ModelerViewportPanel implements Panel {
     }
 
     /** "Flip" submenu — one entry per axis. */
-    private static java.util.List<DropdownMenu.Item> buildFlipSubmenu() {
-        return java.util.List
+    private static List<DropdownMenu.Item> buildFlipSubmenu() {
+        return List
             .of(
                 new DropdownMenu.Item(
                     "Flip across X",
@@ -502,8 +508,8 @@ public final class ModelerViewportPanel implements Panel {
      * authors often want a footprint centered on origin while keeping the model's vertical placement (feet on the
      * ground, head reaching upward) — neither a per-axis option nor a full-3D center captures that ergonomically.
      */
-    private static java.util.List<DropdownMenu.Item> buildCenterSubmenu() {
-        return java.util.List
+    private static List<DropdownMenu.Item> buildCenterSubmenu() {
+        return List
             .of(
                 new DropdownMenu.Item(
                     "Center on X",
@@ -525,8 +531,8 @@ public final class ModelerViewportPanel implements Panel {
      * "New" submenu items. Only Entity for now — the modeler's data model implicitly assumes entity-shaped output;
      * Block / Item types will land alongside their authoring affordances later.
      */
-    private static java.util.List<DropdownMenu.Item> buildNewSubmenu() {
-        return java.util.List.of(new DropdownMenu.Item("Entity", ModelerViewportPanel::newEntityModel));
+    private static List<DropdownMenu.Item> buildNewSubmenu() {
+        return List.of(new DropdownMenu.Item("Entity", ModelerViewportPanel::newEntityModel));
     }
 
     /**
@@ -535,18 +541,18 @@ public final class ModelerViewportPanel implements Panel {
      * disabled-looking placeholder when there's no project or no history yet — submitting an empty submenu would render
      * a 0-row dropdown that looks broken.
      */
-    private static java.util.List<DropdownMenu.Item> buildRecentSubmenu() {
+    private static List<DropdownMenu.Item> buildRecentSubmenu() {
         var project = ProjectSession.activeProjectName();
         if (project.isEmpty()) {
-            return java.util.List.of(new DropdownMenu.Item("(no project active)", () -> {}));
+            return List.of(new DropdownMenu.Item("(no project active)", () -> {}));
         }
         var paths = ModelerRecentFiles.list(project);
         if (paths.isEmpty()) {
-            return java.util.List.of(new DropdownMenu.Item("(no recent files)", () -> {}));
+            return List.of(new DropdownMenu.Item("(no recent files)", () -> {}));
         }
-        var items = new java.util.ArrayList<DropdownMenu.Item>(paths.size());
+        var items = new ArrayList<DropdownMenu.Item>(paths.size());
         for (var pathStr : paths) {
-            var label = java.nio.file.Path.of(pathStr).getFileName().toString();
+            var label = Path.of(pathStr).getFileName().toString();
             items.add(new DropdownMenu.Item(label, () -> openRecentFile(pathStr)));
         }
         return items;
@@ -585,7 +591,7 @@ public final class ModelerViewportPanel implements Panel {
      * no recents yet, or the recorded path has no resolvable parent). Falling back to null lets the picker use the OS
      * default location for a fresh-start feel rather than guessing at game-dir or similar.
      */
-    private static @Nullable java.nio.file.Path inferInitialPickerDir() {
+    private static @Nullable Path inferInitialPickerDir() {
         var project = ProjectSession.activeProjectName();
         if (project.isEmpty()) {
             return null;
@@ -594,7 +600,7 @@ public final class ModelerViewportPanel implements Panel {
         if (recents.isEmpty()) {
             return null;
         }
-        return java.nio.file.Path.of(recents.get(0)).getParent();
+        return Path.of(recents.get(0)).getParent();
     }
 
     /**
@@ -602,7 +608,7 @@ public final class ModelerViewportPanel implements Panel {
      * the path so opening from Recent promotes the entry back to the top, which is the standard convention.
      */
     private static void openRecentFile(String pathStr) {
-        var path = java.nio.file.Path.of(pathStr);
+        var path = Path.of(pathStr);
         if (ModelerSceneLoader.loadFromFile(path)) {
             var project = ProjectSession.activeProjectName();
             if (!project.isEmpty()) {

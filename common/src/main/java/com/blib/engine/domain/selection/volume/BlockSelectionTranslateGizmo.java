@@ -6,10 +6,12 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import com.blib.engine.jigsaw.JigsawPlacementCursor;
 import com.blib.engine.math.AxisPlaneDrag;
 import com.blib.engine.math.CursorCamera;
 import com.blib.engine.math.RayAabb;
 import com.blib.engine.session.EngineSession;
+import com.blib.engine.tool.gizmo.GizmoHit;
 
 /**
  * Axis-aligned translation gizmo for the capture AABB. Three colored arrows (X red, Y green, Z blue) extend from the
@@ -127,7 +129,7 @@ public final class BlockSelectionTranslateGizmo {
         // Sample the click cursor's projection onto the axis at drag start, so the first frame's delta is exactly
         // zero rather than the ARROW_LENGTH offset of the arrow tip the user grabbed. Without this, every drag would
         // immediately snap the AABB by ~round(ARROW_LENGTH × scale) blocks before the user has moved the cursor.
-        var rayDir = com.blib.engine.jigsaw.JigsawPlacementCursor.cursorRayDirection(session);
+        var rayDir = JigsawPlacementCursor.cursorRayDirection(session);
         var initialAxisOffset = rayDir == null
             ? 0.0
             : AxisPlaneDrag.projectOntoAxisOrZero(camPos, rayDir, center, planeNormal, direction);
@@ -179,7 +181,7 @@ public final class BlockSelectionTranslateGizmo {
     public record AxisHit(
         Axis axis,
         double t
-    ) implements com.blib.engine.tool.gizmo.GizmoHit {}
+    ) implements GizmoHit {}
 
     public static @Nullable Axis pickUnderCursor(EngineSession session) {
         var hit = pickUnderCursorWithDistance(session);
@@ -191,7 +193,7 @@ public final class BlockSelectionTranslateGizmo {
         if (aabb.isEmpty()) {
             return null;
         }
-        var rayDir = com.blib.engine.jigsaw.JigsawPlacementCursor.cursorRayDirection(session);
+        var rayDir = JigsawPlacementCursor.cursorRayDirection(session);
         if (rayDir == null) {
             return null;
         }

@@ -2,12 +2,15 @@ package com.blib.internal.common.faction;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -238,7 +241,7 @@ public class BLibFactionManager implements FactionManager {
         shardManager.clear();
     }
 
-    public void syncAllFactionMetadataToPlayer(net.minecraft.server.level.ServerPlayer player) {
+    public void syncAllFactionMetadataToPlayer(ServerPlayer player) {
         for (var faction : factions.values()) {
             var payload = new S2CFactionMetadataSyncPayload(faction.id(), faction.name(), faction.color());
             BLib.MOD.networking().sendToClient(player, payload);
@@ -378,7 +381,7 @@ public class BLibFactionManager implements FactionManager {
     public void onEntityMemberAdded(
         ResourceLocation factionId,
         FactionMember member,
-        net.minecraft.world.entity.Entity entity
+        Entity entity
     ) {
         memberIndex.onMemberChanged(factionId, member, true);
 
@@ -454,7 +457,7 @@ public class BLibFactionManager implements FactionManager {
     private void loadRelationshipTable(MinecraftServer server) {
         var path = FactionIO.getRelationshipsPath(server);
 
-        if (!java.nio.file.Files.exists(path)) {
+        if (!Files.exists(path)) {
             return;
         }
 

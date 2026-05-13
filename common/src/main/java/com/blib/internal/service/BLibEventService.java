@@ -2,6 +2,7 @@ package com.blib.internal.service;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import com.blib.api.client.event.v1.BLibScreenInitEvent;
 import com.blib.api.common.event.v1.BLibBlockBreakEvent;
 import com.blib.api.common.event.v1.BLibChunkClaimAddedEvent;
 import com.blib.api.common.event.v1.BLibChunkClaimRemovedEvent;
@@ -56,7 +57,7 @@ public interface BLibEventService {
 
     BLibEventHandle<BLibLevelTickEvent> postLevelTick(BLibMod mod);
 
-    BLibEventHandle<com.blib.api.client.event.v1.BLibScreenInitEvent> postScreenInit(BLibMod mod);
+    BLibEventHandle<BLibScreenInitEvent> postScreenInit(BLibMod mod);
 
     BLibEventHandle<BLibBlockBreakEvent> preBlockBreak(BLibMod mod);
 

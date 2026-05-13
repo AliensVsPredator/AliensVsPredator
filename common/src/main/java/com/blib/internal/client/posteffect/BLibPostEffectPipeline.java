@@ -14,9 +14,11 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
 import java.util.Comparator;
+import java.util.List;
 
 import com.blib.api.client.shader.v1.BLibPostEffectInput;
 import com.blib.api.client.shader.v1.BLibPostEffectUniform;
+import com.blib.internal.mixin.posteffect.LightTextureAccessor;
 
 /**
  * Per-frame runner. Walks {@link BLibPostEffectRegistry#ALL}, filters by active state, ping-pongs source/dest across
@@ -131,7 +133,7 @@ public final class BLibPostEffectPipeline {
 
         if (inputs.contains(BLibPostEffectInput.LIGHTMAP_TEXTURE)) {
             var lightmap = mc().gameRenderer.lightTexture();
-            var loc = ((com.blib.internal.mixin.posteffect.LightTextureAccessor) lightmap).blib$getLightTextureLocation();
+            var loc = ((LightTextureAccessor) lightmap).blib$getLightTextureLocation();
             var tex = mc().getTextureManager().getTexture(loc);
 
             if (tex != null) {
@@ -173,7 +175,7 @@ public final class BLibPostEffectPipeline {
         shader.clear();
     }
 
-    private static void applyEffectUniforms(ShaderInstance shader, java.util.List<BLibPostEffectUniform> uniforms) {
+    private static void applyEffectUniforms(ShaderInstance shader, List<BLibPostEffectUniform> uniforms) {
         for (var u : uniforms) {
             var slot = shader.getUniform(u.name());
 

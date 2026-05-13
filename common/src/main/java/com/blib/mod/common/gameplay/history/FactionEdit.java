@@ -7,9 +7,12 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
 import java.util.UUID;
 
+import com.blib.api.common.faction.v1.ClaimVisibility;
 import com.blib.api.common.faction.v1.FactionMember;
+import com.blib.api.common.faction.v1.ProtectionMode;
 import com.blib.api.common.faction.v1.RelationshipState;
 import com.blib.internal.common.faction.BLibFactionManager;
 import com.blib.mod.common.network.packet.C2SUpdateFactionFieldPayload;
@@ -103,15 +106,15 @@ public record FactionEdit(
                     LOGGER.warn("[BLib] FactionEdit.applyFieldValue: bad color value {}", value);
                 }
             }
-            case CLAIM_VISIBILITY -> parseEnum(com.blib.api.common.faction.v1.ClaimVisibility.class, value)
+            case CLAIM_VISIBILITY -> parseEnum(ClaimVisibility.class, value)
                 .ifPresent(faction::setClaimVisibility);
-            case BLOCK_BREAK_PROTECTION -> parseEnum(com.blib.api.common.faction.v1.ProtectionMode.class, value)
+            case BLOCK_BREAK_PROTECTION -> parseEnum(ProtectionMode.class, value)
                 .ifPresent(faction::setBlockBreakProtection);
-            case BLOCK_INTERACT_PROTECTION -> parseEnum(com.blib.api.common.faction.v1.ProtectionMode.class, value)
+            case BLOCK_INTERACT_PROTECTION -> parseEnum(ProtectionMode.class, value)
                 .ifPresent(faction::setBlockInteractProtection);
-            case ENTITY_INTERACT_PROTECTION -> parseEnum(com.blib.api.common.faction.v1.ProtectionMode.class, value)
+            case ENTITY_INTERACT_PROTECTION -> parseEnum(ProtectionMode.class, value)
                 .ifPresent(faction::setEntityInteractProtection);
-            case NONLIVING_ENTITY_ATTACK_PROTECTION -> parseEnum(com.blib.api.common.faction.v1.ProtectionMode.class, value)
+            case NONLIVING_ENTITY_ATTACK_PROTECTION -> parseEnum(ProtectionMode.class, value)
                 .ifPresent(faction::setNonLivingEntityAttackProtection);
             case ALLOW_PVP -> faction.setAllowPvp(Boolean.parseBoolean(value));
             case ALLOW_EXPLOSIONS -> faction.setAllowExplosions(Boolean.parseBoolean(value));
@@ -149,11 +152,11 @@ public record FactionEdit(
         }
     }
 
-    private static <E extends Enum<E>> java.util.Optional<E> parseEnum(Class<E> enumClass, String value) {
+    private static <E extends Enum<E>> Optional<E> parseEnum(Class<E> enumClass, String value) {
         try {
-            return java.util.Optional.of(Enum.valueOf(enumClass, value));
+            return Optional.of(Enum.valueOf(enumClass, value));
         } catch (IllegalArgumentException e) {
-            return java.util.Optional.empty();
+            return Optional.empty();
         }
     }
 }

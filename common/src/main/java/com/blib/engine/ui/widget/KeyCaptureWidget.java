@@ -1,6 +1,7 @@
 package com.blib.engine.ui.widget;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.lwjgl.glfw.GLFW;
@@ -117,13 +118,13 @@ public final class KeyCaptureWidget {
             // user just clicked the chip to arm it, so the next mouse click usually means "I'm rebinding to LMB."
             // We capture every button; Esc-key cancels are the escape hatch.
             var mods = 0;
-            if (net.minecraft.client.gui.screens.Screen.hasControlDown()) {
+            if (Screen.hasControlDown()) {
                 mods |= GLFW.GLFW_MOD_CONTROL;
             }
-            if (net.minecraft.client.gui.screens.Screen.hasShiftDown()) {
+            if (Screen.hasShiftDown()) {
                 mods |= GLFW.GLFW_MOD_SHIFT;
             }
-            if (net.minecraft.client.gui.screens.Screen.hasAltDown()) {
+            if (Screen.hasAltDown()) {
                 mods |= GLFW.GLFW_MOD_ALT;
             }
             armed = false;
@@ -173,13 +174,13 @@ public final class KeyCaptureWidget {
             return false;
         }
         var mods = 0;
-        if (net.minecraft.client.gui.screens.Screen.hasControlDown()) {
+        if (Screen.hasControlDown()) {
             mods |= GLFW.GLFW_MOD_CONTROL;
         }
-        if (net.minecraft.client.gui.screens.Screen.hasShiftDown()) {
+        if (Screen.hasShiftDown()) {
             mods |= GLFW.GLFW_MOD_SHIFT;
         }
-        if (net.minecraft.client.gui.screens.Screen.hasAltDown()) {
+        if (Screen.hasAltDown()) {
             mods |= GLFW.GLFW_MOD_ALT;
         }
         armed = false;

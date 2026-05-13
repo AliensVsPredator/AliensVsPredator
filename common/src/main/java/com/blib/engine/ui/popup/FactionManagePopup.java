@@ -1,7 +1,9 @@
 package com.blib.engine.ui.popup;
 
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -154,7 +156,7 @@ public final class FactionManagePopup {
         renderRows(graphics, font, mouseX, mouseY);
     }
 
-    private void renderRows(GuiGraphics graphics, net.minecraft.client.gui.Font font, int mouseX, int mouseY) {
+    private void renderRows(GuiGraphics graphics, Font font, int mouseX, int mouseY) {
         var entries = ClientFactionDirectoryCache.entries();
         var rowsTop = popupY + BORDER_THICKNESS + HEADER_HEIGHT;
         if (entries.isEmpty()) {
@@ -169,7 +171,7 @@ public final class FactionManagePopup {
             return;
         }
 
-        Set<net.minecraft.resources.ResourceLocation> currentMemberships = currentMemberships();
+        Set<ResourceLocation> currentMemberships = currentMemberships();
 
         var visible = Math.min(MAX_VISIBLE_ROWS, entries.size());
         for (var i = 0; i < visible; i++) {
@@ -223,7 +225,7 @@ public final class FactionManagePopup {
     }
 
     /** Defensive copy of the reverse-lookup result so per-frame iteration is stable even if the cache is replaced. */
-    private Set<net.minecraft.resources.ResourceLocation> currentMemberships() {
+    private Set<ResourceLocation> currentMemberships() {
         var list = ClientEntityFactionsCache.get(entityUuid);
         return list == null ? Set.of() : new HashSet<>(list);
     }

@@ -6,6 +6,8 @@ import com.just.codec.stream.impl.StreamCodecs;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+
 import com.blib.api.common.codec.v1.BLibCodecs;
 
 /**
@@ -41,20 +43,20 @@ public record ActionDescriptor(
         ActionDescriptor::fromOptionals
     );
 
-    public java.util.Optional<ResourceLocation> dimOptional() {
-        return java.util.Optional.ofNullable(dim);
+    public Optional<ResourceLocation> dimOptional() {
+        return Optional.ofNullable(dim);
     }
 
-    public java.util.Optional<String> projectNameOptional() {
-        return java.util.Optional.ofNullable(projectName);
+    public Optional<String> projectNameOptional() {
+        return Optional.ofNullable(projectName);
     }
 
     public static ActionDescriptor fromOptionals(
         String typeId,
         String description,
         long timestamp,
-        java.util.Optional<ResourceLocation> dim,
-        java.util.Optional<String> projectName
+        Optional<ResourceLocation> dim,
+        Optional<String> projectName
     ) {
         return new ActionDescriptor(typeId, description, timestamp, dim.orElse(null), projectName.orElse(null));
     }
