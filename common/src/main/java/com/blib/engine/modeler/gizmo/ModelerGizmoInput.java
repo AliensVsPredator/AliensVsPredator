@@ -270,10 +270,10 @@ public final class ModelerGizmoInput {
     private static void applyTranslate(ModelerGizmoState.DragState drag, double cx, double cy, int w, int h) {
         var s = drag.startSnapshot();
         float delta = GizmoMath.axisDelta(s.geometry(), drag.axis(), drag.sign(), drag.startCursorX(), drag.startCursorY(), cx, cy, w, h);
-        if (delta == 0f) {
-            return;
-        }
 
+        // No early-return on delta == 0: the cube must always be set to baseline + currentDelta, otherwise a previous
+        // frame's non-zero delta would persist when the cursor returns to drag-start, leaving the cube offset from
+        // baseline.
         // LOCAL frame: delta is already along the cube's post-rotation X/Y/Z; adding it to origin.<axis> shifts the
         // cube body in cube-local pre-rotation, and the cube's own rotation matrix carries the body through into
         // the world-space motion the user expects. No inverse-transform needed.
@@ -335,10 +335,10 @@ public final class ModelerGizmoInput {
     private static void applyPivotTranslate(ModelerGizmoState.DragState drag, double cx, double cy, int w, int h) {
         var s = drag.startSnapshot();
         float delta = GizmoMath.axisDelta(s.geometry(), drag.axis(), drag.sign(), drag.startCursorX(), drag.startCursorY(), cx, cy, w, h);
-        if (delta == 0f) {
-            return;
-        }
 
+        // No early-return on delta == 0: pivot and origin must always be set to baseline + currentDelta so the cube
+        // returns to its baseline transform when the cursor returns to drag-start (rather than freezing at the
+        // previous frame's mutated state).
         // Build the cube's start rotation matrix in Z-Y-X intrinsic Euler order (matches ModelerTransforms.applyCube
         // and applyRotate elsewhere in this file). Use the drag-start rotation, not live state — applyPivotTranslate
         // re-runs each frame with absolute deltas from drag-start, so the baseline must be drag-start to stay stable.
@@ -503,10 +503,17 @@ public final class ModelerGizmoInput {
      * Resize delta application. The handle's visible length is 0.6 × snapshot.scale; we call {@code axisDelta} with the
      * snapshot's full scale and scale the returned delta down by 0.6 so a full drag of the visible arrow length grows /
      * shrinks the cube by exactly the arrow's world-length.
+     * <p>
+     * The face position is read from the drag-start baseline, not the live cube. The live face moves as the cube
+     * resizes, which would perturb the screen-projected axis direction through perspective and produce inconsistent
+     * per-frame deltas — concretely, returning the cursor to drag-start would over- or under-shoot the baseline size
+     * because each intermediate frame measured cursor displacement against a slightly different axis vector. Anchoring
+     * the face at drag-start keeps the math linear in {@code cursor - startCursor}, matching the way
+     * {@link #applyTranslate} / {@link #applyRotate} treat their baselines.
      */
     private static void applyResize(ModelerGizmoState.DragState drag, double cx, double cy, int w, int h) {
         var s = drag.startSnapshot();
-        var face = ModelerGizmoRenderer.faceCenterLocal(s.cube(), drag.axis(), drag.sign());
+        var face = ModelerGizmoRenderer.faceCenterLocal(drag.startCube(), drag.axis(), drag.sign());
         float rawDelta = GizmoMath.offsetAxisDelta(
             s.geometry(),
             (float) face[0],
@@ -521,19 +528,17 @@ public final class ModelerGizmoInput {
             w,
             h
         );
-        if (rawDelta == 0f) {
-            return;
-        }
         // Visible handle is 60% of the snapshot's scale; axisDelta is parameterized on the full scale so a 60%-as-
         // long handle yields a delta that's 1/0.6 × too big. Scale down to match what the user sees, then snap to
         // an integer — cube size is a whole-number authoring concept (Bedrock pixel units), and fractional values
         // would show up in the inspector / JSON export. Snap-to-int also gives the drag a tactile "click" feel.
+        //
+        // No early-return on delta == 0: we must ALWAYS write back baseline + delta, even when delta is zero. Skipping
+        // the write would leave the cube at the previous frame's mutated state — so a drag that grew the cube by 1 and
+        // then returned the cursor back through the round-to-zero plateau (rawDelta ∈ [-0.833, 0.833) in pre-rounding
+        // units) would never restore the baseline size. Instead it would skip straight from baseline+1 to baseline-1
+        // once the cursor reached the next integer threshold (the "increase by 1, decrease by 2" bug).
         int delta = Math.round(rawDelta * 0.6f);
-        if (delta == 0) {
-            // Sub-unit motion hasn't crossed an integer threshold yet — leave the cube alone until the user has
-            // moved far enough to register one whole unit.
-            return;
-        }
 
         var startOrigin = drag.startCube().origin();
         var startSize = drag.startCube().size();
@@ -619,10 +624,9 @@ public final class ModelerGizmoInput {
             return;
         }
         float delta = GizmoMath.axisDelta(s.geometry(), drag.axis(), drag.sign(), drag.startCursorX(), drag.startCursorY(), cx, cy, w, h);
-        if (delta == 0f) {
-            return;
-        }
 
+        // No early-return on delta == 0: bone.position must always be set to baseline + currentDelta so a return to
+        // drag-start cursor restores the baseline position rather than freezing at the previous frame's value.
         var dLocal = new Vector3f(0, 0, 0);
         dLocal.setComponent(drag.axis(), delta);
 
@@ -728,10 +732,9 @@ public final class ModelerGizmoInput {
             return;
         }
         float delta = GizmoMath.axisDelta(s.geometry(), drag.axis(), drag.sign(), drag.startCursorX(), drag.startCursorY(), cx, cy, w, h);
-        if (delta == 0f) {
-            return;
-        }
 
+        // No early-return on delta == 0: bone.position and bone.pivot must always be set to baseline + currentDelta
+        // so a cursor return to drag-start restores the baseline values rather than freezing.
         var startRot = baseline.rotation();
         var rbone = new Matrix3f()
             .rotateZ((float) Math.toRadians(startRot.z))

@@ -471,16 +471,67 @@ public final class ModelerGizmoRenderer {
      * pivot.
      */
     public static double[] faceCenterLocal(ModelerCube cube, int axis, int sign) {
-        double cx = cube.origin.x + cube.size.x * 0.5;
-        double cy = cube.origin.y + cube.size.y * 0.5;
-        double cz = cube.origin.z + cube.size.z * 0.5;
+        return faceCenterFromFields(
+            cube.origin.x,
+            cube.origin.y,
+            cube.origin.z,
+            cube.size.x,
+            cube.size.y,
+            cube.size.z,
+            cube.pivot.x,
+            cube.pivot.y,
+            cube.pivot.z,
+            axis,
+            sign
+        );
+    }
+
+    /**
+     * Same as {@link #faceCenterLocal(ModelerCube, int, int)} but reads from a drag-start baseline.
+     * {@link com.blib.engine.modeler.gizmo.ModelerGizmoInput#applyResize} uses this so the cursor-delta math projects
+     * against a face position frozen at drag-start. Reading the live cube each frame would let the face move as the
+     * cube grew / shrunk, perturbing the screen-projected axis direction and producing inconsistent per-frame deltas
+     * (the "increase by 1, decrease by 2" effect a moving face creates through perspective).
+     */
+    public static double[] faceCenterLocal(com.blib.engine.modeler.gizmo.ModelerGizmoState.CubeBaseline baseline, int axis, int sign) {
+        return faceCenterFromFields(
+            baseline.origin().x,
+            baseline.origin().y,
+            baseline.origin().z,
+            baseline.size().x,
+            baseline.size().y,
+            baseline.size().z,
+            baseline.pivot().x,
+            baseline.pivot().y,
+            baseline.pivot().z,
+            axis,
+            sign
+        );
+    }
+
+    private static double[] faceCenterFromFields(
+        double originX,
+        double originY,
+        double originZ,
+        double sizeX,
+        double sizeY,
+        double sizeZ,
+        double pivotX,
+        double pivotY,
+        double pivotZ,
+        int axis,
+        int sign
+    ) {
+        double cx = originX + sizeX * 0.5;
+        double cy = originY + sizeY * 0.5;
+        double cz = originZ + sizeZ * 0.5;
         double fx = cx, fy = cy, fz = cz;
         switch (axis) {
-            case 0 -> fx = sign > 0 ? cube.origin.x + cube.size.x : cube.origin.x;
-            case 1 -> fy = sign > 0 ? cube.origin.y + cube.size.y : cube.origin.y;
-            default -> fz = sign > 0 ? cube.origin.z + cube.size.z : cube.origin.z;
+            case 0 -> fx = sign > 0 ? originX + sizeX : originX;
+            case 1 -> fy = sign > 0 ? originY + sizeY : originY;
+            default -> fz = sign > 0 ? originZ + sizeZ : originZ;
         }
         // Convert face position from cube-local-origin coords to gizmo-pivot-relative coords (subtract pivot).
-        return new double[] { fx - cube.pivot.x, fy - cube.pivot.y, fz - cube.pivot.z };
+        return new double[] { fx - pivotX, fy - pivotY, fz - pivotZ };
     }
 }
