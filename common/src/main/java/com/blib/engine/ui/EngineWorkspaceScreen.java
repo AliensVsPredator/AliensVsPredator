@@ -1124,6 +1124,7 @@ public final class EngineWorkspaceScreen extends Screen {
                     if (tabbed.hitCloseAt(logicalX, logicalY, tabIdx)) {
                         tabbed.removeTab(tabIdx);
                         simplifyDockTree();
+                        persistLayoutChange();
                         return true;
                     }
                     tabbed.setActiveIndex(tabIdx);
@@ -1204,6 +1205,7 @@ public final class EngineWorkspaceScreen extends Screen {
             if (tabDrag.isActive()) {
                 this.root = tabDrag.completeDrop(logicalX, logicalY, this.root, logicalWidth(), logicalHeight());
                 simplifyDockTree();
+                persistLayoutChange();
             }
             tabDrag.cancel();
             return true;
@@ -1211,6 +1213,7 @@ public final class EngineWorkspaceScreen extends Screen {
 
         if (button == 0 && dragController.isActive()) {
             dragController.end();
+            persistLayoutChange();
             return true;
         }
 
@@ -1612,6 +1615,21 @@ public final class EngineWorkspaceScreen extends Screen {
      */
     private void reopenPanel(Class<? extends Panel> panelClass, Supplier<Panel> factory) {
         WorkspaceLayoutController.reopenPanel(this.root, panelClass, factory);
+        persistLayoutChange();
+    }
+
+    /**
+     * Capture the current dock tree to disk after a user-initiated layout mutation (tab drop, tab close, divider drag
+     * end, panel reopen). Without this, customizations only get written by {@link #removed()} on screen close, which
+     * isn't guaranteed to fire on game shutdown — quitting Minecraft without first closing the workspace would lose
+     * every customization made that session. Gated on {@link Mode#IN_GAME} for the same reason {@link #removed()} is:
+     * the menu-overlay mode is read-only so a B-toggle from the title screen doesn't clobber the in-game layout.
+     */
+    private void persistLayoutChange() {
+        if (mode != Mode.IN_GAME) {
+            return;
+        }
+        WorkspaceLayoutPersistence.persistOutgoingLayout(this.root, WorkspaceLayoutController.activeLayoutId());
     }
 
     private void resetLayout() {
