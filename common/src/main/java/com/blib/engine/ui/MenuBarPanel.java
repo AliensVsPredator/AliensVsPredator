@@ -18,6 +18,12 @@ public final class MenuBarPanel implements Panel {
 
     public static final int HEIGHT = 16;
 
+    /**
+     * Constant kept for back-compat with the workspace's chip-dispatch switch (and so general-purpose file ops can be
+     * re-added later). Intentionally not in {@link #CHIPS}: the only item that used to live under FILE — Open Model
+     * from File — moved into the modeler viewport's panel-local menu bar, so the global FILE menu is empty for now and
+     * showing an empty chip would be misleading.
+     */
     public static final String CHIP_FILE = "File";
 
     public static final String CHIP_PROJECT = "Project";
@@ -30,7 +36,7 @@ public final class MenuBarPanel implements Panel {
 
     public static final String CHIP_LAYOUT = "Layout";
 
-    private static final String[] CHIPS = { CHIP_PROJECT, CHIP_FILE, CHIP_EDIT, CHIP_VIEW, CHIP_WINDOW, CHIP_LAYOUT };
+    private static final String[] CHIPS = { CHIP_PROJECT, CHIP_EDIT, CHIP_VIEW, CHIP_WINDOW, CHIP_LAYOUT };
 
     private static final int BACKGROUND_COLOR = 0xFF202024;
 

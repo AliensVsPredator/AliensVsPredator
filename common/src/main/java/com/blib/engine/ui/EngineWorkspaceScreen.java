@@ -31,9 +31,7 @@ import com.blib.engine.layout.LayoutDoc;
 import com.blib.engine.layout.LayoutSnapshot;
 import com.blib.engine.layout.LayoutTemplate;
 import com.blib.engine.layout.PanelRegistry;
-import com.blib.engine.modeler.ModelerFilePicker;
 import com.blib.engine.modeler.ModelerScene;
-import com.blib.engine.modeler.ModelerSceneLoader;
 import com.blib.engine.selection.SelectionManager;
 import com.blib.engine.session.EngineMode;
 import com.blib.engine.session.NavigationMode;
@@ -201,6 +199,13 @@ public final class EngineWorkspaceScreen extends Screen {
      * outlive its parent. We only support a single level of nesting — nothing in the workspace UI needs deeper.
      */
     private @Nullable DropdownMenu openSubmenu;
+
+    /**
+     * Index of the {@link #openMenu} item that {@link #openSubmenu} was spawned from. Tracked so hover-driven submenu
+     * opening doesn't re-spawn the same submenu every frame, and so moving the cursor onto a different parent-menu item
+     * correctly swaps which submenu is shown. {@code null} whenever {@link #openSubmenu} is null.
+     */
+    private @Nullable Integer openSubmenuParentIndex;
 
     /**
      * Modal yes/no confirmation overlay for destructive actions (FILE → Delete Project). When non-null, takes priority
@@ -437,8 +442,71 @@ public final class EngineWorkspaceScreen extends Screen {
         return new PanelRegistry.Context(
             buildViewportRightClickHandler(),
             this::onViewportRightClick,
-            this::openContentConfirm
+            this::openContentConfirm,
+            this::openPanelMenu
         );
+    }
+
+    /**
+     * Bridge used by panels that host their own menu bar ({@link ModelerMenuBar}, etc.) — they build a fresh
+     * {@link DropdownMenu} on chip click and ask the workspace to render it as the active overlay. Existing
+     * close-on-outside-click + item-action absorber logic in {@link #mouseClicked} then handles dismissal uniformly
+     * with the global menu bar.
+     */
+    private void openPanelMenu(DropdownMenu menu) {
+        this.openMenu = menu;
+        closeSubmenu();
+    }
+
+    /**
+     * Clear the cascading submenu in lock-step with its tracker index. Called from every site that previously did
+     * {@code openSubmenu = null} so the hover-driven submenu logic always sees a consistent (submenu, parent-index)
+     * pair.
+     */
+    private void closeSubmenu() {
+        this.openSubmenu = null;
+        this.openSubmenuParentIndex = null;
+    }
+
+    /**
+     * Hover-driven cascading-submenu opener. Runs once per frame from {@link #render}: when the cursor sits on a
+     * parent-menu item with children, spawn (or keep) the submenu for that item; when it sits on a leaf item, close any
+     * open submenu. Cursor over the submenu itself or in the gap between menus leaves state untouched so users can move
+     * diagonally from parent → submenu without flicker.
+     */
+    private void updateHoverSubmenu(int mouseX, int mouseY) {
+        if (openMenu == null) {
+            closeSubmenu();
+            return;
+        }
+        // Hovering inside the existing submenu? Leave both open — the user is on their way to clicking an item.
+        if (openSubmenu != null && openSubmenu.isInside(mouseX, mouseY)) {
+            return;
+        }
+        if (!openMenu.isInside(mouseX, mouseY)) {
+            // Cursor is outside both menus — preserve current state so the cursor can travel through the gap from
+            // parent menu to submenu without the submenu vanishing mid-traverse. Outside-click closure is handled
+            // separately by the mouseClicked absorber.
+            return;
+        }
+        var idx = openMenu.hitItemAt(mouseX, mouseY);
+        if (idx < 0) {
+            // On the menu's border / dead row — treat the same as the gap case.
+            return;
+        }
+        var item = openMenu.itemAt(idx);
+        if (item.hasSubmenu()) {
+            // Re-spawn only when the parent index actually changed, otherwise every frame would rebuild the same
+            // submenu and the hover state inside it would constantly reset.
+            if (openSubmenuParentIndex == null || openSubmenuParentIndex != idx) {
+                openSubmenu = DropdownMenu.spawnSubmenu(openMenu, idx, item.children(), logicalWidth(), logicalHeight());
+                openSubmenuParentIndex = idx;
+            }
+        } else {
+            // Hovering a leaf item closes any submenu that was open for a sibling parent item — visually pinning the
+            // submenu would be confusing when the user has moved focus away from its parent row.
+            closeSubmenu();
+        }
     }
 
     /**
@@ -752,6 +820,11 @@ public final class EngineWorkspaceScreen extends Screen {
         int logicalHeight = logicalHeight();
         int logicalMouseX = (int) (mouseX / SCALE);
         int logicalMouseY = (int) (mouseY / SCALE);
+
+        // Hover-driven submenu spawning. Runs once per frame so the user can mouse over a parent-menu item and see
+        // its submenu cascade without clicking. Must come BEFORE the "is cursor over a menu" panel-mouse-suppress
+        // checks below so the just-spawned submenu is considered when masking panel hover state.
+        updateHoverSubmenu(logicalMouseX, logicalMouseY);
 
         // While a dropdown menu is open AND the cursor is over the menu rect, panels under the menu must not see the
         // mouse — otherwise their hover-state code (segmented-control buttons, viewport selection highlights, tab-
@@ -1793,7 +1866,7 @@ public final class EngineWorkspaceScreen extends Screen {
             if (subIdx >= 0) {
                 var subItem = openSubmenu.itemAt(subIdx);
                 openMenu = null;
-                openSubmenu = null;
+                closeSubmenu();
                 subItem.action().run();
                 return true;
             }
@@ -1806,24 +1879,23 @@ public final class EngineWorkspaceScreen extends Screen {
                 if (idx >= 0) {
                     var item = openMenu.itemAt(idx);
                     if (item.hasSubmenu()) {
-                        // (Re-)spawn the cascading submenu. The parent menu stays open.
-                        openSubmenu = DropdownMenu.spawnSubmenu(
-                            openMenu,
-                            idx,
-                            item.children(),
-                            logicalWidth(),
-                            logicalHeight()
-                        );
+                        // Submenus open on hover (see {@link #updateHoverSubmenu}); a click on the parent item is a
+                        // no-op that just keeps everything open. Defensive re-spawn in case hover never fired for
+                        // this item (touch / synthetic input that lands directly on the parent).
+                        if (openSubmenuParentIndex == null || openSubmenuParentIndex != idx) {
+                            openSubmenu = DropdownMenu.spawnSubmenu(openMenu, idx, item.children(), logicalWidth(), logicalHeight());
+                            openSubmenuParentIndex = idx;
+                        }
                         return true;
                     }
                     openMenu = null;
-                    openSubmenu = null;
+                    closeSubmenu();
                     item.action().run();
                     return true;
                 }
             }
             openMenu = null;
-            openSubmenu = null;
+            closeSubmenu();
             // Only fall through to chip-click handling below if the cursor landed on another menu chip — that lets
             // the user close-and-reopen by clicking a different chip in one motion. Anything else (clicks on
             // dividers, tab strips, panel content) is consumed so dropdown clicks never accidentally start a
@@ -1843,7 +1915,7 @@ public final class EngineWorkspaceScreen extends Screen {
                     var menu = buildMenuFor(chip, menuBar);
                     if (menu != null) {
                         openMenu = menu;
-                        openSubmenu = null;
+                        closeSubmenu();
                     }
                     return true;
                 }
@@ -2311,7 +2383,6 @@ public final class EngineWorkspaceScreen extends Screen {
         var anchorY = chipRect.y() + chipRect.height() + 1;
 
         return switch (chipName) {
-            case MenuBarPanel.CHIP_FILE -> buildFileMenu(anchorX, anchorY);
             case MenuBarPanel.CHIP_PROJECT -> buildProjectMenu(anchorX, anchorY);
             case MenuBarPanel.CHIP_EDIT -> buildEditMenu(anchorX, anchorY);
             case MenuBarPanel.CHIP_VIEW -> buildViewMenu(anchorX, anchorY);
@@ -2924,17 +2995,6 @@ public final class EngineWorkspaceScreen extends Screen {
     }
 
     /**
-     * FILE menu — disk-level open actions that aren't scoped to a project. Currently just the modeler import; grows
-     * here if more general-purpose file ops appear later. Project lifecycle (New / Open / Reload / Delete) lives on its
-     * own top-level {@link MenuBarPanel#CHIP_PROJECT} menu — see {@link #buildProjectMenu}.
-     */
-    private DropdownMenu buildFileMenu(int anchorX, int anchorY) {
-        var items = new java.util.ArrayList<DropdownMenu.Item>();
-        items.add(new DropdownMenu.Item("Open Model from File…", EngineWorkspaceScreen::openGeoModelFromFile));
-        return new DropdownMenu(anchorX, anchorY, items);
-    }
-
-    /**
      * PROJECT menu — project lifecycle CRUD. Create / Open close the workspace and open the picker (workspace's
      * removed() clears ProjectSession; the picker's onConfirmedOpen rebuilds the workspace after a successful Open).
      * Reload / Delete act on the active project; both are inert when no project is active (which shouldn't happen
@@ -3011,19 +3071,6 @@ public final class EngineWorkspaceScreen extends Screen {
     }
 
     /**
-     * Handler for "FILE → Open Model from File…". Opens the OS-native open-file dialog via
-     * {@link ModelerFilePicker#pickGeoModel} and, on a successful pick, hands the path to
-     * {@link ModelerSceneLoader#loadFromFile} which replaces the modeler's active scene. No-op on cancel; errors are
-     * logged inside the loader.
-     */
-    private static void openGeoModelFromFile() {
-        var picked = ModelerFilePicker.pickGeoModel();
-        if (picked != null) {
-            ModelerSceneLoader.loadFromFile(picked);
-        }
-    }
-
-    /**
      * Right-click in the viewport — opens a context menu at the cursor anchored as a {@link DropdownMenu}. When the
      * cursor was over a living entity, items include "View GOAP Details" (dispatches a {@link C2SGOAPTrackPayload} and
      * opens the {@link GOAPDetailsPanel}) and "Delete Entity" (dispatches a {@link C2SRemoveEntityPayload}). The delete
@@ -3058,7 +3105,7 @@ public final class EngineWorkspaceScreen extends Screen {
     private void onViewportRightClick(@Nullable LivingEntity entity, double cursorX, double cursorY) {
         if (entity == null) {
             this.openMenu = null;
-            this.openSubmenu = null;
+            closeSubmenu();
             return;
         }
 
@@ -3111,7 +3158,7 @@ public final class EngineWorkspaceScreen extends Screen {
         }
 
         this.openMenu = new DropdownMenu(menuX, menuY, items);
-        this.openSubmenu = null;
+        closeSubmenu();
     }
 
     /**
@@ -3156,7 +3203,7 @@ public final class EngineWorkspaceScreen extends Screen {
         items.add(new DropdownMenu.Item("Paste", () -> com.blib.engine.blockselection.BlockSelectionOps.paste()));
         items.add(new DropdownMenu.Item("Delete", () -> com.blib.engine.blockselection.BlockSelectionOps.delete()));
         this.openMenu = new DropdownMenu((int) cursorX, (int) cursorY, items);
-        this.openSubmenu = null;
+        closeSubmenu();
     }
 
     /**
@@ -3209,7 +3256,7 @@ public final class EngineWorkspaceScreen extends Screen {
             })
         );
         this.openMenu = new DropdownMenu((int) cursorX, (int) cursorY, items);
-        this.openSubmenu = null;
+        closeSubmenu();
     }
 
     private static @Nullable TabbedPanel findFirstTabbedPanel(DockNode node) {

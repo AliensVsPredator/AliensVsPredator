@@ -10,8 +10,11 @@ import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import com.blib.engine.modeler.ModelerCube;
+import com.blib.engine.modeler.ModelerFilePicker;
 import com.blib.engine.modeler.ModelerPicker;
+import com.blib.engine.modeler.ModelerRecentFiles;
 import com.blib.engine.modeler.ModelerScene;
+import com.blib.engine.modeler.ModelerSceneLoader;
 import com.blib.engine.modeler.Selection;
 import com.blib.engine.modeler.gizmo.ModelerGizmoInput;
 import com.blib.engine.modeler.gizmo.ModelerGizmoMode;
@@ -19,6 +22,7 @@ import com.blib.engine.modeler.gizmo.ModelerGizmoState;
 import com.blib.engine.modeler.history.ModelerAction;
 import com.blib.engine.modeler.history.ModelerActionHistory;
 import com.blib.engine.modeler.render.ModelerRenderer;
+import com.blib.engine.session.ProjectSession;
 
 /**
  * 3D viewport for the in-engine Blockbench-style modeler. Renders an orbital-camera view of {@code ModelerScene} via an
@@ -47,6 +51,13 @@ public final class ModelerViewportPanel implements Panel {
 
     private final ModelerRenderer renderer = new ModelerRenderer();
 
+    /**
+     * Bridge to the workspace's dropdown overlay — used by the panel-local {@link ModelerMenuBar} to open menus on chip
+     * click. Null when the panel was constructed without a context (e.g. in tests); the menu-bar click handler gates on
+     * it before attempting to open.
+     */
+    private final @Nullable PanelMenuOpener menuOpener;
+
     /** Modifier state latched at MMB press time. Non-null while a middle-button drag is active. */
     private @Nullable MmbDrag mmbDrag;
 
@@ -69,6 +80,15 @@ public final class ModelerViewportPanel implements Panel {
      * keep this field current.
      */
     private @Nullable Component hoveredTooltip;
+
+    /** Tests / direct callers can construct without a workspace-bound menu opener; chip clicks no-op in that case. */
+    public ModelerViewportPanel() {
+        this(null);
+    }
+
+    public ModelerViewportPanel(@Nullable PanelMenuOpener menuOpener) {
+        this.menuOpener = menuOpener;
+    }
 
     @Override
     public String title() {
@@ -101,17 +121,22 @@ public final class ModelerViewportPanel implements Panel {
         }
 
         renderer.render(graphics, x, y, width, height);
-        ModelerViewportToolbar.render(graphics, x, y);
+        // Panel-local menu bar lives along the top edge of the viewport — modeler-only file/edit/etc. menus that
+        // would clutter the global menu bar if they lived there. Toolbar is shifted down by the menu-bar height so
+        // the two strips stack instead of overlapping.
+        ModelerMenuBar.render(graphics, x, y, width, mouseX, mouseY);
+        int toolbarY = y + ModelerMenuBar.HEIGHT;
+        ModelerViewportToolbar.render(graphics, x, toolbarY);
 
         // Toolbar tooltips. Refresh after toolbar render so the hit-test is against the rects just drawn this frame
         // (panel resize / layout changes are picked up on the same frame). Suppressed during gizmo drag — the user
         // is busy manipulating, not exploring controls.
         hoveredTooltip = null;
         if (!gizmoDragActive) {
-            var modeHover = ModelerViewportToolbar.hitTestMode(mouseX, mouseY, x, y);
+            var modeHover = ModelerViewportToolbar.hitTestMode(mouseX, mouseY, x, toolbarY);
             if (modeHover != null) {
                 hoveredTooltip = ModelerViewportToolbar.tooltipForMode(modeHover);
-            } else if (ModelerViewportToolbar.hitTestFrame(mouseX, mouseY, x, y)) {
+            } else if (ModelerViewportToolbar.hitTestFrame(mouseX, mouseY, x, toolbarY)) {
                 hoveredTooltip = ModelerViewportToolbar.tooltipForFrame();
             }
         }
@@ -169,16 +194,32 @@ public final class ModelerViewportPanel implements Panel {
         }
 
         if (button == 0) {
+            // Menu bar chip click — opens the matching modeler-scoped dropdown. Handled before the toolbar so a chip
+            // that visually overlaps a toolbar slot (it doesn't today, but future layouts might be tighter) goes to
+            // the menu. Consume the click for any hit inside the menu-bar strip to avoid falling through to gizmo
+            // picking / cube selection underneath.
+            int menuBarBottom = panelY + ModelerMenuBar.HEIGHT;
+            if (mouseY >= panelY && mouseY < menuBarBottom) {
+                var chip = ModelerMenuBar.hitChipAt(mouseX, mouseY);
+                if (chip != null && menuOpener != null) {
+                    var menu = buildModelerMenuFor(chip);
+                    if (menu != null) {
+                        menuOpener.open(menu);
+                    }
+                }
+                return true;
+            }
             // Toolbar takes priority — if the cursor is over a button, switch modes and consume the click so it
             // doesn't fall through to selection / gizmo picking.
-            var modeHit = ModelerViewportToolbar.hitTestMode(mouseX, mouseY, panelX, panelY);
+            int toolbarY = panelY + ModelerMenuBar.HEIGHT;
+            var modeHit = ModelerViewportToolbar.hitTestMode(mouseX, mouseY, panelX, toolbarY);
             if (modeHit != null) {
                 ModelerGizmoState.setMode(modeHit);
                 return true;
             }
             // Frame cycle button — click rotates LOCAL → GLOBAL → … so multi-frame support extends without a UI
             // redesign.
-            if (ModelerViewportToolbar.hitTestFrame(mouseX, mouseY, panelX, panelY)) {
+            if (ModelerViewportToolbar.hitTestFrame(mouseX, mouseY, panelX, toolbarY)) {
                 ModelerGizmoState.setFrame(ModelerGizmoState.frame().next());
                 return true;
             }
@@ -347,4 +388,99 @@ public final class ModelerViewportPanel implements Panel {
         boolean shift,
         boolean ctrl
     ) {}
+
+    /**
+     * Build the dropdown for a {@link ModelerMenuBar} chip click. Anchored just below the chip rect so the dropdown
+     * pins to the affordance the user just clicked. Returns null when the chip is unrecognized or its rect hasn't been
+     * laid out yet (first frame before {@link ModelerMenuBar#render} ran — practically never reached, but the null
+     * check keeps the dispatch defensive).
+     */
+    private @Nullable DropdownMenu buildModelerMenuFor(String chip) {
+        var chipRect = ModelerMenuBar.chipRect(chip);
+        if (chipRect == null) {
+            return null;
+        }
+        int anchorX = chipRect.x();
+        int anchorY = chipRect.y() + chipRect.height() + 1;
+
+        return switch (chip) {
+            case ModelerMenuBar.CHIP_FILE -> {
+                var items = new java.util.ArrayList<DropdownMenu.Item>();
+                items.add(new DropdownMenu.Item("New", () -> {}, buildNewSubmenu()));
+                items.add(new DropdownMenu.Item("Recent", () -> {}, buildRecentSubmenu()));
+                items.add(new DropdownMenu.Item("Open Model", ModelerViewportPanel::openGeoModelFromFile));
+                yield new DropdownMenu(anchorX, anchorY, items);
+            }
+            default -> null;
+        };
+    }
+
+    /**
+     * "New" submenu items. Only Entity for now — the modeler's data model implicitly assumes entity-shaped output;
+     * Block / Item types will land alongside their authoring affordances later.
+     */
+    private static java.util.List<DropdownMenu.Item> buildNewSubmenu() {
+        return java.util.List.of(new DropdownMenu.Item("Entity", ModelerViewportPanel::newEntityModel));
+    }
+
+    /**
+     * "Recent" submenu — newest-first list of paths from {@link ModelerRecentFiles}, scoped to the active project. Each
+     * item, when clicked, loads its file and bumps it back to the head of the list. Falls back to a single
+     * disabled-looking placeholder when there's no project or no history yet — submitting an empty submenu would render
+     * a 0-row dropdown that looks broken.
+     */
+    private static java.util.List<DropdownMenu.Item> buildRecentSubmenu() {
+        var project = ProjectSession.activeProjectName();
+        if (project.isEmpty()) {
+            return java.util.List.of(new DropdownMenu.Item("(no project active)", () -> {}));
+        }
+        var paths = ModelerRecentFiles.list(project);
+        if (paths.isEmpty()) {
+            return java.util.List.of(new DropdownMenu.Item("(no recent files)", () -> {}));
+        }
+        var items = new java.util.ArrayList<DropdownMenu.Item>(paths.size());
+        for (var pathStr : paths) {
+            var label = java.nio.file.Path.of(pathStr).getFileName().toString();
+            items.add(new DropdownMenu.Item(label, () -> openRecentFile(pathStr)));
+        }
+        return items;
+    }
+
+    /** "New → Entity": replace the modeler scene with a fresh default-cube seed. */
+    private static void newEntityModel() {
+        ModelerScene.get().resetToEntity();
+    }
+
+    /**
+     * FILE → "Open Model" — OS-native open-file dialog via {@link ModelerFilePicker#pickGeoModel}, then hand the path
+     * to {@link ModelerSceneLoader#loadFromFile} which replaces the modeler's active scene. On a successful load
+     * records the path in {@link ModelerRecentFiles} so it shows up under Recent next time. No-op on cancel; load
+     * errors are logged inside the loader.
+     */
+    private static void openGeoModelFromFile() {
+        var picked = ModelerFilePicker.pickGeoModel();
+        if (picked == null) {
+            return;
+        }
+        if (ModelerSceneLoader.loadFromFile(picked)) {
+            var project = ProjectSession.activeProjectName();
+            if (!project.isEmpty()) {
+                ModelerRecentFiles.recordOpen(project, picked.toString());
+            }
+        }
+    }
+
+    /**
+     * "Recent → &lt;file&gt;" — same load path as {@link #openGeoModelFromFile} but skips the file picker. Re-records
+     * the path so opening from Recent promotes the entry back to the top, which is the standard convention.
+     */
+    private static void openRecentFile(String pathStr) {
+        var path = java.nio.file.Path.of(pathStr);
+        if (ModelerSceneLoader.loadFromFile(path)) {
+            var project = ProjectSession.activeProjectName();
+            if (!project.isEmpty()) {
+                ModelerRecentFiles.recordOpen(project, pathStr);
+            }
+        }
+    }
 }

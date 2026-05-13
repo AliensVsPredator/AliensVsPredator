@@ -22,6 +22,7 @@ import com.blib.engine.ui.ModelerOutlinerPanel;
 import com.blib.engine.ui.ModelerViewportPanel;
 import com.blib.engine.ui.OutlinerPanel;
 import com.blib.engine.ui.Panel;
+import com.blib.engine.ui.PanelMenuOpener;
 import com.blib.engine.ui.PiecePalettePanel;
 import com.blib.engine.ui.PoolEditorPanel;
 import com.blib.engine.ui.ProjectContentActionHandler;
@@ -51,7 +52,8 @@ public final class PanelRegistry {
     public record Context(
         ViewportPanel.RightClickHandler viewportRightClickHandler,
         EntityContextMenuHandler entityContextMenuHandler,
-        ProjectContentActionHandler projectContentActionHandler
+        ProjectContentActionHandler projectContentActionHandler,
+        PanelMenuOpener panelMenuOpener
     ) {}
 
     @FunctionalInterface
@@ -117,7 +119,7 @@ public final class PanelRegistry {
         register(TERRITORY_MAP, TerritoryMapPanel.class, ctx -> new TerritoryMapPanel());
         register(TAG_BROWSER, TagBrowserPanel.class, ctx -> new TagBrowserPanel());
         register(ACTION_STACK, ActionStackPanel.class, ctx -> new ActionStackPanel());
-        register(MODELER_VIEWPORT, ModelerViewportPanel.class, ctx -> new ModelerViewportPanel());
+        register(MODELER_VIEWPORT, ModelerViewportPanel.class, ctx -> new ModelerViewportPanel(ctx.panelMenuOpener()));
         register(MODELER_OUTLINER, ModelerOutlinerPanel.class, ctx -> new ModelerOutlinerPanel());
         register(MODELER_INSPECTOR, ModelerInspectorPanel.class, ctx -> new ModelerInspectorPanel());
     }

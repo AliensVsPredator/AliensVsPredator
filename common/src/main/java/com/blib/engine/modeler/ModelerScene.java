@@ -170,4 +170,16 @@ public final class ModelerScene {
         );
         scene.root.cubes.add(cube);
     }
+
+    /**
+     * Reset the scene to the fresh-entity-model starting state — same seed as a brand-new ModelerScene instance, but
+     * applied to the existing singleton so panels holding references stay valid. Clears the selection and modeler
+     * action history because the old action entries point at bones/cubes from the discarded tree.
+     */
+    public void resetToEntity() {
+        this.root = new ModelerBone("root");
+        seed(this);
+        this.selection = null;
+        ModelerActionHistory.clear();
+    }
 }
