@@ -39,10 +39,10 @@ public final class WorkspaceLayoutPersistence {
      * When the disk file is missing or unparseable but the id matches a built-in template, we reconstruct a fresh
      * {@link LayoutDoc} from the template's metadata (preserving the in-memory body) rather than silently no-op'ing.
      * Without this fallback, a deleted or corrupt template-file caused every subsequent save attempt for that id to
-     * skip — the in-memory customizations would never reach disk, and the next session would load the template
-     * default. This was the modeler-specific persistence failure: if {@code modeler.json} ever ended up missing
-     * (corrupted seed, manual deletion, etc.), every save attempt silently no-op'd while the default-layout save
-     * kept working because {@code default.json} was intact.
+     * skip — the in-memory customizations would never reach disk, and the next session would load the template default.
+     * This was the modeler-specific persistence failure: if {@code modeler.json} ever ended up missing (corrupted seed,
+     * manual deletion, etc.), every save attempt silently no-op'd while the default-layout save kept working because
+     * {@code default.json} was intact.
      */
     public static boolean persistOutgoingLayout(DockNode root, String activeLayoutId) {
         var capturedBody = LayoutSnapshot.capture(extractBodyRoot(root));

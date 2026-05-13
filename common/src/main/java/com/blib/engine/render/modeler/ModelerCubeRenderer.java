@@ -8,11 +8,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.blib.engine.modeler.ModelerBone;
@@ -214,14 +217,34 @@ public final class ModelerCubeRenderer {
         ModelerTransforms.applyBone(pose, bone);
 
         if (!bone.cubes.isEmpty()) {
-            RenderSystem.setShader(GameRenderer::getPositionColorShader);
-            var buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-            for (var cube : bone.cubes) {
-                emitCubeFaces(buffer, pose, cube);
-            }
-            var built = buffer.build();
-            if (built != null) {
-                BufferUploader.drawWithShader(built);
+            var scene = ModelerScene.get();
+            var active = scene.activeTexture;
+            if (active == null) {
+                renderFlatCubes(pose, bone.cubes);
+            } else {
+                // Split: hasPerFaceUv cubes can't use box-UV math, so they keep the flat render until v2 wires up
+                // per-face UV authoring. Textured cubes go through the position+tex+color path.
+                List<ModelerCube> textured = null;
+                List<ModelerCube> flat = null;
+                for (var cube : bone.cubes) {
+                    if (cube.hasPerFaceUv) {
+                        if (flat == null) {
+                            flat = new ArrayList<>();
+                        }
+                        flat.add(cube);
+                    } else {
+                        if (textured == null) {
+                            textured = new ArrayList<>();
+                        }
+                        textured.add(cube);
+                    }
+                }
+                if (textured != null) {
+                    renderTexturedCubes(pose, textured, active.textureId(), (float) scene.textureWidth, (float) scene.textureHeight);
+                }
+                if (flat != null) {
+                    renderFlatCubes(pose, flat);
+                }
             }
         }
 
@@ -230,6 +253,45 @@ public final class ModelerCubeRenderer {
         }
 
         pose.popPose();
+    }
+
+    /** Emits the flat-color filled pass for {@code cubes}, all in the caller's current bone-local pose. */
+    private static void renderFlatCubes(PoseStack pose, List<ModelerCube> cubes) {
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        var buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        for (var cube : cubes) {
+            emitCubeFaces(buffer, pose, cube);
+        }
+        var built = buffer.build();
+        if (built != null) {
+            BufferUploader.drawWithShader(built);
+        }
+    }
+
+    /**
+     * Emits the textured filled pass for {@code cubes}. Binds {@code textureId}, switches to the position+tex+color
+     * shader/format, and writes per-vertex UVs derived from each cube's box-UV origin + size, matching
+     * {@code AzBakedModelFactory.buildQuad}'s direction-keyed unwrap so the model in the viewport reads from the same
+     * texture region the UV map panel highlights for each face. {@code FACE_SHADE} is preserved as a grayscale vertex
+     * tint multiplied into the sampled texture color.
+     */
+    private static void renderTexturedCubes(
+        PoseStack pose,
+        List<ModelerCube> cubes,
+        ResourceLocation textureId,
+        float texW,
+        float texH
+    ) {
+        RenderSystem.setShaderTexture(0, textureId);
+        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+        var buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+        for (var cube : cubes) {
+            emitCubeFacesTextured(buffer, pose, cube, texW, texH);
+        }
+        var built = buffer.build();
+        if (built != null) {
+            BufferUploader.drawWithShader(built);
+        }
     }
 
     private static void emitCubeFaces(BufferBuilder buffer, PoseStack pose, ModelerCube cube) {
@@ -285,6 +347,154 @@ public final class ModelerCubeRenderer {
         buffer.addVertex(matrix, x1, y1, z1).setColor(r, g, b, 1f);
         buffer.addVertex(matrix, x2, y2, z2).setColor(r, g, b, 1f);
         buffer.addVertex(matrix, x3, y3, z3).setColor(r, g, b, 1f);
+    }
+
+    /**
+     * Textured analog of {@link #emitCubeFaces}. Emits 6 box-UV-mapped quads for {@code cube}. UV pixel rects per face
+     * mirror {@code AzBakedModelFactory.buildQuad}'s direction switch: EAST/NORTH/WEST/SOUTH unwrap left-to-right on
+     * the V-band at {@code v+sz}, UP/DOWN occupy the top row at {@code v}, and the DOWN face uses a negative vSize so
+     * its texture sample is V-flipped (Bedrock convention so the bottom of the cube reads right-side-up when viewed
+     * from below). The {@code (uA/uB)} naming preserves {@code GeoQuad.build}'s non-mirror "swap u and uWidth" step;
+     * mapping into this renderer's vertex order is consistent across faces —
+     * {@code my[0..3] = vert3, vert0, vert1, vert2} → {@code (uA,vB), (uA,vT), (uB,vT), (uB,vB)}.
+     */
+    private static void emitCubeFacesTextured(BufferBuilder buffer, PoseStack pose, ModelerCube cube, float texW, float texH) {
+        pose.pushPose();
+        ModelerTransforms.applyCube(pose, cube);
+        var matrix = pose.last().pose();
+
+        var inflate = (float) cube.inflate;
+        var x0 = (float) cube.origin.x - inflate;
+        var y0 = (float) cube.origin.y - inflate;
+        var z0 = (float) cube.origin.z - inflate;
+        var x1 = x0 + (float) cube.size.x + 2 * inflate;
+        var y1 = y0 + (float) cube.size.y + 2 * inflate;
+        var z1 = z0 + (float) cube.size.z + 2 * inflate;
+
+        var u = (float) cube.uvOriginU;
+        var v = (float) cube.uvOriginV;
+        // Box-UV uses floor'd integer cube sizes to derive the unwrap rectangle (so a 7.5-pixel-wide cube unwraps as
+        // 7).
+        var sx = (float) Math.floor(cube.size.x);
+        var sy = (float) Math.floor(cube.size.y);
+        var sz = (float) Math.floor(cube.size.z);
+
+        // +X (EAST): u_pix=u, v_pix=v+sz, uSize=sz, vSize=sy
+        emitTexturedFace(buffer, matrix, x1, y0, z0, x1, y1, z0, x1, y1, z1, x1, y0, z1, u, v + sz, sz, sy, texW, texH, FACE_SHADE[0]);
+        // -X (WEST): u_pix=u+sz+sx, v_pix=v+sz, uSize=sz, vSize=sy
+        emitTexturedFace(
+            buffer,
+            matrix,
+            x0,
+            y0,
+            z1,
+            x0,
+            y1,
+            z1,
+            x0,
+            y1,
+            z0,
+            x0,
+            y0,
+            z0,
+            u + sz + sx,
+            v + sz,
+            sz,
+            sy,
+            texW,
+            texH,
+            FACE_SHADE[1]
+        );
+        // +Y (UP): u_pix=u+sz, v_pix=v, uSize=sx, vSize=sz
+        emitTexturedFace(buffer, matrix, x0, y1, z0, x0, y1, z1, x1, y1, z1, x1, y1, z0, u + sz, v, sx, sz, texW, texH, FACE_SHADE[2]);
+        // -Y (DOWN): u_pix=u+sz+sx, v_pix=v+sz, uSize=sx, vSize=-sz (V-flipped intentionally)
+        emitTexturedFace(
+            buffer,
+            matrix,
+            x0,
+            y0,
+            z1,
+            x0,
+            y0,
+            z0,
+            x1,
+            y0,
+            z0,
+            x1,
+            y0,
+            z1,
+            u + sz + sx,
+            v + sz,
+            sx,
+            -sz,
+            texW,
+            texH,
+            FACE_SHADE[3]
+        );
+        // +Z (SOUTH): u_pix=u+2sz+sx, v_pix=v+sz, uSize=sx, vSize=sy
+        emitTexturedFace(
+            buffer,
+            matrix,
+            x1,
+            y0,
+            z1,
+            x1,
+            y1,
+            z1,
+            x0,
+            y1,
+            z1,
+            x0,
+            y0,
+            z1,
+            u + 2 * sz + sx,
+            v + sz,
+            sx,
+            sy,
+            texW,
+            texH,
+            FACE_SHADE[4]
+        );
+        // -Z (NORTH): u_pix=u+sz, v_pix=v+sz, uSize=sx, vSize=sy
+        emitTexturedFace(buffer, matrix, x0, y0, z0, x0, y1, z0, x1, y1, z0, x1, y0, z0, u + sz, v + sz, sx, sy, texW, texH, FACE_SHADE[5]);
+
+        pose.popPose();
+    }
+
+    private static void emitTexturedFace(
+        BufferBuilder buffer,
+        Matrix4f matrix,
+        float vx0,
+        float vy0,
+        float vz0,
+        float vx1,
+        float vy1,
+        float vz1,
+        float vx2,
+        float vy2,
+        float vz2,
+        float vx3,
+        float vy3,
+        float vz3,
+        float uPix,
+        float vPix,
+        float uSize,
+        float vSize,
+        float texW,
+        float texH,
+        float shade
+    ) {
+        // (uA, vT) is the AzBakedModelFactory "swap u with uWidth" right-edge UV applied to vertex 0 and 3 in GeoQuad
+        // order. Our four vertices arrive in (vert3, vert0, vert1, vert2) order — same across all six faces — so the
+        // UV cycle that consistently produces the correct unwrap is (uA,vB), (uA,vT), (uB,vT), (uB,vB).
+        var uA = (uPix + uSize) / texW;
+        var uB = uPix / texW;
+        var vT = vPix / texH;
+        var vB = (vPix + vSize) / texH;
+        buffer.addVertex(matrix, vx0, vy0, vz0).setUv(uA, vB).setColor(shade, shade, shade, 1f);
+        buffer.addVertex(matrix, vx1, vy1, vz1).setUv(uA, vT).setColor(shade, shade, shade, 1f);
+        buffer.addVertex(matrix, vx2, vy2, vz2).setUv(uB, vT).setColor(shade, shade, shade, 1f);
+        buffer.addVertex(matrix, vx3, vy3, vz3).setUv(uB, vB).setColor(shade, shade, shade, 1f);
     }
 
     // === Outline pass ===

@@ -25,6 +25,7 @@ import com.blib.engine.ui.panel.outliner.ModelerOutlinerPanel;
 import com.blib.engine.ui.panel.outliner.OutlinerPanel;
 import com.blib.engine.ui.panel.tag.TagBrowserPanel;
 import com.blib.engine.ui.panel.territory.TerritoryMapPanel;
+import com.blib.engine.ui.panel.texture.TexturesPanel;
 import com.blib.engine.ui.panel.uvmap.UvMapPanel;
 import com.blib.engine.ui.panel.viewport.ModelerViewportPanel;
 import com.blib.engine.ui.panel.viewport.ViewportPanel;
@@ -99,6 +100,8 @@ public final class PanelRegistry {
 
     public static final String MODELER_UV_MAP = "modeler_uv_map";
 
+    public static final String MODELER_TEXTURES = "modeler_textures";
+
     private static final Map<String, PanelFactory> FACTORIES = new LinkedHashMap<>();
 
     private static final Map<Class<? extends Panel>, String> IDS_BY_CLASS = new LinkedHashMap<>();
@@ -126,6 +129,7 @@ public final class PanelRegistry {
         register(MODELER_OUTLINER, ModelerOutlinerPanel.class, ctx -> new ModelerOutlinerPanel());
         register(MODELER_INSPECTOR, ModelerInspectorPanel.class, ctx -> new ModelerInspectorPanel());
         register(MODELER_UV_MAP, UvMapPanel.class, ctx -> new UvMapPanel());
+        register(MODELER_TEXTURES, TexturesPanel.class, ctx -> new TexturesPanel());
     }
 
     private PanelRegistry() {}

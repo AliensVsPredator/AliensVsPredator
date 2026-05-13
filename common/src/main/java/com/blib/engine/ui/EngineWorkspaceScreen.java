@@ -1635,8 +1635,8 @@ public final class EngineWorkspaceScreen extends Screen {
     }
 
     /**
-     * Single source of truth for layout persistence. Called at the end of every render: captures the live dock tree
-     * to a {@link BodyNode}, compares against {@link #lastSavedBody}, and writes to disk + updates the cache when they
+     * Single source of truth for layout persistence. Called at the end of every render: captures the live dock tree to
+     * a {@link BodyNode}, compares against {@link #lastSavedBody}, and writes to disk + updates the cache when they
      * differ. This catches every dock-tree mutation regardless of which code path produced it — divider drags, tab
      * drops, tab closes, active-tab switches via {@code setActiveIndex}, programmatic {@code reopenPanel} insertions,
      * and any future mutation site — without needing each site to remember to call a persist helper.

@@ -78,4 +78,35 @@ public final class ModelerFilePicker {
             return null;
         }
     }
+
+    /**
+     * Prompt the user to pick a PNG texture file via the OS-native open-file dialog. Returns the chosen {@link Path} or
+     * null if the user cancelled / the dialog couldn't be shown. PNG only because
+     * {@link com.mojang.blaze3d.platform.NativeImage} doesn't decode JPG and adding an ImageIO-based fallback is out of
+     * v1 scope for the textures panel.
+     */
+    public static @Nullable Path pickImage() {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            var filterPatterns = stack.mallocPointer(1);
+            filterPatterns.put(stack.UTF8("*.png"));
+            filterPatterns.flip();
+
+            var picked = TinyFileDialogs.tinyfd_openFileDialog(
+                "Open Texture",
+                "",
+                filterPatterns,
+                "PNG Images (*.png)",
+                false
+            );
+
+            if (picked == null || picked.isBlank()) {
+                LOGGER.info("ModelerFilePicker: image open-file dialog cancelled or unavailable");
+                return null;
+            }
+            return Path.of(picked);
+        } catch (RuntimeException e) {
+            LOGGER.warn("ModelerFilePicker: native image dialog threw {}", e.getMessage());
+            return null;
+        }
+    }
 }

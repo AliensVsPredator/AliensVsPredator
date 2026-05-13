@@ -118,9 +118,9 @@ public final class UvMapPanel implements Panel {
     private double zoom = 1.0;
 
     /**
-     * Last-frame's fit (min) zoom. Tracked so panel resizes scale {@link #zoom} proportionally — without this, shrinking
-     * the panel below the threshold where the fit zoom drops doesn't pull the current zoom down with it (the clamp
-     * range moves but the existing zoom value stays inside it). Initialized to -1 so the first render is a no-op.
+     * Last-frame's fit (min) zoom. Tracked so panel resizes scale {@link #zoom} proportionally — without this,
+     * shrinking the panel below the threshold where the fit zoom drops doesn't pull the current zoom down with it (the
+     * clamp range moves but the existing zoom value stays inside it). Initialized to -1 so the first render is a no-op.
      */
     private double lastFitZoom = -1.0;
 
@@ -153,8 +153,8 @@ public final class UvMapPanel implements Panel {
     /**
      * Panel-content height available for the UV viewport (panel height minus header and footer). Used by
      * {@link #computeMinZoom} as the upper bound on the fit zoom, and as the cap when computing the viewport
-     * {@link #uvAreaH}. Unlike {@link #uvAreaH}, this does NOT shrink to the texture's natural size — it represents
-     * the maximum room the viewport could grow into if the texture were large enough.
+     * {@link #uvAreaH}. Unlike {@link #uvAreaH}, this does NOT shrink to the texture's natural size — it represents the
+     * maximum room the viewport could grow into if the texture were large enough.
      */
     private int uvAreaMaxH;
 
@@ -369,7 +369,29 @@ public final class UvMapPanel implements Panel {
         var ty0 = screenYi(0);
         var tx1 = screenXi(texW);
         var ty1 = screenYi(texH);
-        addQuad(buffer, m00, m11, m30, m31, tx0, ty0, tx1, ty1, TEXTURE_BG_COLOR);
+        var activeTexture = scene.activeTexture;
+        if (activeTexture == null) {
+            addQuad(buffer, m00, m11, m30, m31, tx0, ty0, tx1, ty1, TEXTURE_BG_COLOR);
+        } else {
+            // Flush the BG quad through the position-color shader, then draw the texture overlay in a separate
+            // single-quad position-tex-color pass. Restart the original buffer + shader afterwards so the grid /
+            // outline / cubes / marquee passes continue layering on top of the texture.
+            BufferUploader.drawWithShader(buffer.buildOrThrow());
+            RenderSystem.setShaderTexture(0, activeTexture.textureId());
+            RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+            var texBuffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+            var sx0 = m00 * tx0 + m30;
+            var sx1 = m00 * tx1 + m30;
+            var sy0 = m11 * ty0 + m31;
+            var sy1 = m11 * ty1 + m31;
+            texBuffer.addVertex(sx0, sy0, 0).setUv(0f, 0f).setColor(0xFFFFFFFF);
+            texBuffer.addVertex(sx0, sy1, 0).setUv(0f, 1f).setColor(0xFFFFFFFF);
+            texBuffer.addVertex(sx1, sy1, 0).setUv(1f, 1f).setColor(0xFFFFFFFF);
+            texBuffer.addVertex(sx1, sy0, 0).setUv(1f, 0f).setColor(0xFFFFFFFF);
+            BufferUploader.drawWithShader(texBuffer.buildOrThrow());
+            RenderSystem.setShader(GameRenderer::getPositionColorShader);
+            buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        }
         addGrid(buffer, m00, m11, m30, m31, texW, texH, tx0, ty0, tx1, ty1);
         addRectOutline(buffer, m00, m11, m30, m31, tx0, ty0, tx1, ty1, TEXTURE_BORDER_COLOR);
 
@@ -450,8 +472,19 @@ public final class UvMapPanel implements Panel {
         vInput.render(graphics, inputXV, inputY, inputW, mouseX, mouseY);
     }
 
-    private void addGrid(BufferBuilder buffer, float m00, float m11, float m30, float m31,
-                         int texW, int texH, int tx0, int ty0, int tx1, int ty1) {
+    private void addGrid(
+        BufferBuilder buffer,
+        float m00,
+        float m11,
+        float m30,
+        float m31,
+        int texW,
+        int texH,
+        int tx0,
+        int ty0,
+        int tx1,
+        int ty1
+    ) {
         var uStart = Math.max(GRID_MINOR_STEP, floorToStep(visibleMinU));
         var uEnd = Math.min(texW, ceilToStep(visibleMaxU));
         for (var u = uStart; u < uEnd; u += GRID_MINOR_STEP) {
@@ -503,18 +536,29 @@ public final class UvMapPanel implements Panel {
      * rect (preserves the original cross-unwrap visual where you can see each face's bounds), and each face also gets
      * its own outline so adjacent faces' shared edges read as a divider.
      */
-    private void addCubeCross(BufferBuilder buffer, float m00, float m11, float m30, float m31,
-                              double w, double h, double d, double u, double v,
-                              boolean selected, boolean hovered) {
+    private void addCubeCross(
+        BufferBuilder buffer,
+        float m00,
+        float m11,
+        float m30,
+        float m31,
+        double w,
+        double h,
+        double d,
+        double u,
+        double v,
+        boolean selected,
+        boolean hovered
+    ) {
         var faceFill = selected ? CUBE_SELECTED_FACE : CUBE_FACE_COLOR;
         var outline = selected ? CUBE_SELECTED_OUTLINE : (hovered ? CUBE_HOVER_OUTLINE : CUBE_OUTLINE_COLOR);
 
         // Six face fills, in the same order as AzBakedModelFactory's per-direction layout.
-        addUvRect(buffer, m00, m11, m30, m31, u + d, v, w, d, faceFill);          // up
-        addUvRect(buffer, m00, m11, m30, m31, u + d + w, v, w, d, faceFill);      // down
-        addUvRect(buffer, m00, m11, m30, m31, u, v + d, d, h, faceFill);          // west
-        addUvRect(buffer, m00, m11, m30, m31, u + d, v + d, w, h, faceFill);      // north (front)
-        addUvRect(buffer, m00, m11, m30, m31, u + d + w, v + d, d, h, faceFill);  // east
+        addUvRect(buffer, m00, m11, m30, m31, u + d, v, w, d, faceFill); // up
+        addUvRect(buffer, m00, m11, m30, m31, u + d + w, v, w, d, faceFill); // down
+        addUvRect(buffer, m00, m11, m30, m31, u, v + d, d, h, faceFill); // west
+        addUvRect(buffer, m00, m11, m30, m31, u + d, v + d, w, h, faceFill); // north (front)
+        addUvRect(buffer, m00, m11, m30, m31, u + d + w, v + d, d, h, faceFill); // east
         addUvRect(buffer, m00, m11, m30, m31, u + 2 * d + w, v + d, w, h, faceFill); // south (back)
 
         // Six face outlines.
@@ -526,8 +570,18 @@ public final class UvMapPanel implements Panel {
         addUvRectOutline(buffer, m00, m11, m30, m31, u + 2 * d + w, v + d, w, h, outline);
     }
 
-    private void addUvRect(BufferBuilder buffer, float m00, float m11, float m30, float m31,
-                           double u, double v, double w, double h, int color) {
+    private void addUvRect(
+        BufferBuilder buffer,
+        float m00,
+        float m11,
+        float m30,
+        float m31,
+        double u,
+        double v,
+        double w,
+        double h,
+        int color
+    ) {
         if (w <= 0 || h <= 0) {
             return;
         }
@@ -541,8 +595,18 @@ public final class UvMapPanel implements Panel {
         addQuad(buffer, m00, m11, m30, m31, x0, y0, x1, y1, color);
     }
 
-    private void addUvRectOutline(BufferBuilder buffer, float m00, float m11, float m30, float m31,
-                                  double u, double v, double w, double h, int color) {
+    private void addUvRectOutline(
+        BufferBuilder buffer,
+        float m00,
+        float m11,
+        float m30,
+        float m31,
+        double u,
+        double v,
+        double w,
+        double h,
+        int color
+    ) {
         if (w <= 0 || h <= 0) {
             return;
         }
@@ -556,22 +620,42 @@ public final class UvMapPanel implements Panel {
         addRectOutline(buffer, m00, m11, m30, m31, x0, y0, x1, y1, color);
     }
 
-    private static void addRectOutline(BufferBuilder buffer, float m00, float m11, float m30, float m31,
-                                       int x0, int y0, int x1, int y1, int color) {
-        addQuad(buffer, m00, m11, m30, m31, x0, y0, x1, y0 + 1, color);      // top
-        addQuad(buffer, m00, m11, m30, m31, x0, y1 - 1, x1, y1, color);      // bottom
-        addQuad(buffer, m00, m11, m30, m31, x0, y0, x0 + 1, y1, color);      // left
-        addQuad(buffer, m00, m11, m30, m31, x1 - 1, y0, x1, y1, color);      // right
+    private static void addRectOutline(
+        BufferBuilder buffer,
+        float m00,
+        float m11,
+        float m30,
+        float m31,
+        int x0,
+        int y0,
+        int x1,
+        int y1,
+        int color
+    ) {
+        addQuad(buffer, m00, m11, m30, m31, x0, y0, x1, y0 + 1, color); // top
+        addQuad(buffer, m00, m11, m30, m31, x0, y1 - 1, x1, y1, color); // bottom
+        addQuad(buffer, m00, m11, m30, m31, x0, y0, x0 + 1, y1, color); // left
+        addQuad(buffer, m00, m11, m30, m31, x1 - 1, y0, x1, y1, color); // right
     }
 
     /**
      * Emit one 4-vertex quad into the buffer with manual pose pre-multiplication. The 2D-pose decomposition
-     * ({@code m00, m11, m30, m31}) lets each vertex compute its screen position with two FMAs (one per axis) instead
-     * of the full 16-mul/16-add matrix-vector multiply that {@code GuiGraphics.fill} runs through
+     * ({@code m00, m11, m30, m31}) lets each vertex compute its screen position with two FMAs (one per axis) instead of
+     * the full 16-mul/16-add matrix-vector multiply that {@code GuiGraphics.fill} runs through
      * {@code Matrix4f.transformPosition} per vertex.
      */
-    private static void addQuad(BufferBuilder buffer, float m00, float m11, float m30, float m31,
-                                float x0, float y0, float x1, float y1, int color) {
+    private static void addQuad(
+        BufferBuilder buffer,
+        float m00,
+        float m11,
+        float m30,
+        float m31,
+        float x0,
+        float y0,
+        float x1,
+        float y1,
+        int color
+    ) {
         var sx0 = m00 * x0 + m30;
         var sx1 = m00 * x1 + m30;
         var sy0 = m11 * y0 + m31;
@@ -628,9 +712,9 @@ public final class UvMapPanel implements Panel {
     }
 
     /**
-     * Mirror the local multi-selection back to {@code scene.selection}. Empty → null; single → {@link
-     * Selection.CubeSelection}; two-or-more → {@link Selection.MultiCubeSelection} with the primary cube placed last
-     * so {@code ms.primary()} returns the right one.
+     * Mirror the local multi-selection back to {@code scene.selection}. Empty → null; single →
+     * {@link Selection.CubeSelection}; two-or-more → {@link Selection.MultiCubeSelection} with the primary cube placed
+     * last so {@code ms.primary()} returns the right one.
      */
     private void writeSceneSelection(ModelerScene scene) {
         if (selectedCubes.isEmpty()) {
@@ -795,7 +879,7 @@ public final class UvMapPanel implements Panel {
         dragStartUVs.clear();
         dragStartMementos.clear();
         for (var cube : selectedCubes) {
-            dragStartUVs.put(cube, new double[] {cube.uvOriginU, cube.uvOriginV});
+            dragStartUVs.put(cube, new double[] { cube.uvOriginU, cube.uvOriginV });
             dragStartMementos.put(cube, ModelerAction.CubeMemento.of(cube));
         }
         dragState = DragState.DRAGGING_CUBE;
@@ -829,7 +913,8 @@ public final class UvMapPanel implements Panel {
                     minDeltaV = Math.max(minDeltaV, -start[1]);
                     maxDeltaV = Math.min(maxDeltaV, maxV - start[1]);
                 }
-                // Guard against an impossible range (some cube already further out of bounds than another can compensate
+                // Guard against an impossible range (some cube already further out of bounds than another can
+                // compensate
                 // for) — collapse to zero rather than letting the result flip signs unpredictably.
                 if (minDeltaU > maxDeltaU) {
                     minDeltaU = maxDeltaU = 0;
@@ -919,25 +1004,29 @@ public final class UvMapPanel implements Panel {
             }
             var after = ModelerAction.CubeMemento.of(cube);
             if (after.differsFrom(before)) {
-                actions.add(new ModelerAction.CubeMementoAction(
-                    "cube_edit",
-                    "Move UV " + cube.name,
-                    System.currentTimeMillis(),
-                    cube,
-                    before,
-                    after
-                ));
+                actions.add(
+                    new ModelerAction.CubeMementoAction(
+                        "cube_edit",
+                        "Move UV " + cube.name,
+                        System.currentTimeMillis(),
+                        cube,
+                        before,
+                        after
+                    )
+                );
             }
         }
         if (actions.size() == 1) {
             ModelerActionHistory.push(actions.get(0));
         } else if (actions.size() > 1) {
-            ModelerActionHistory.push(new ModelerAction.CompositeAction(
-                "uv_group_move",
-                "Move " + actions.size() + " UVs",
-                System.currentTimeMillis(),
-                List.copyOf(actions)
-            ));
+            ModelerActionHistory.push(
+                new ModelerAction.CompositeAction(
+                    "uv_group_move",
+                    "Move " + actions.size() + " UVs",
+                    System.currentTimeMillis(),
+                    List.copyOf(actions)
+                )
+            );
         }
         dragStartUVs.clear();
         dragStartMementos.clear();
@@ -1041,11 +1130,11 @@ public final class UvMapPanel implements Panel {
     }
 
     /**
-     * Fit-to-area zoom: largest zoom at which the texture fits inside the UV map area in both dimensions, capped at
-     * the 1:1 absolute. The cap matters when the area is larger than the texture at native pixel size — without it,
-     * "fit" would upscale the texture past native, which looks blurry and steals the viewport feel of padding around
-     * a 1:1 texture. With the cap, a large panel locks the zoom range at {@code [1.0, 1.0]} and the texture renders
-     * at native size centered in the area with panel-background padding on every side.
+     * Fit-to-area zoom: largest zoom at which the texture fits inside the UV map area in both dimensions, capped at the
+     * 1:1 absolute. The cap matters when the area is larger than the texture at native pixel size — without it, "fit"
+     * would upscale the texture past native, which looks blurry and steals the viewport feel of padding around a 1:1
+     * texture. With the cap, a large panel locks the zoom range at {@code [1.0, 1.0]} and the texture renders at native
+     * size centered in the area with panel-background padding on every side.
      */
     private double computeMinZoom(ModelerScene scene) {
         // Use uvAreaMaxH (panel-content max) here, NOT uvAreaH — uvAreaH is the locked viewport, which itself depends

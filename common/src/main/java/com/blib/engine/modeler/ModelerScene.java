@@ -9,6 +9,8 @@ import java.util.List;
 
 import com.blib.engine.modeler.history.ModelerAction;
 import com.blib.engine.modeler.history.ModelerActionHistory;
+import com.blib.engine.modeler.texture.LoadedTexture;
+import com.blib.engine.modeler.texture.TextureLoader;
 
 /**
  * Singleton state for the in-engine modeler. Heap-only (no codecs, no S2C sync, no project files for v1) — closing the
@@ -67,6 +69,18 @@ public final class ModelerScene {
      * is in flight (hover is noise during manipulation).
      */
     public @Nullable ModelerCube hoveredCube;
+
+    /**
+     * PNG textures the user has loaded via the Textures panel. Insertion-ordered; the panel renders rows in the same
+     * order and uses identity for "is this the active one". Cleared on {@link #resetToEntity}.
+     */
+    public final List<LoadedTexture> textures = new ArrayList<>();
+
+    /**
+     * Currently selected texture (or null when nothing is selected). When non-null, the cube renderer applies it to
+     * cube faces and the UV map panel overlays it on the texture canvas.
+     */
+    public @Nullable LoadedTexture activeTexture;
 
     /**
      * Pair of {@code (owner-bone, selected-cube)} when a cube is selected. Used by the gizmo system to rebuild the bone
@@ -188,14 +202,16 @@ public final class ModelerScene {
                 continue;
             }
             owner.cubes.remove(index);
-            actions.add(new ModelerAction.CubeRemoveAction(
-                "cube_remove",
-                "Delete cube " + cube.name,
-                System.currentTimeMillis(),
-                owner,
-                cube,
-                index
-            ));
+            actions.add(
+                new ModelerAction.CubeRemoveAction(
+                    "cube_remove",
+                    "Delete cube " + cube.name,
+                    System.currentTimeMillis(),
+                    owner,
+                    cube,
+                    index
+                )
+            );
         }
         if (actions.isEmpty()) {
             return false;
@@ -204,12 +220,14 @@ public final class ModelerScene {
         if (actions.size() == 1) {
             ModelerActionHistory.push(actions.get(0));
         } else {
-            ModelerActionHistory.push(new ModelerAction.CompositeAction(
-                "cube_remove_multi",
-                "Delete " + actions.size() + " cubes",
-                System.currentTimeMillis(),
-                List.copyOf(actions)
-            ));
+            ModelerActionHistory.push(
+                new ModelerAction.CompositeAction(
+                    "cube_remove_multi",
+                    "Delete " + actions.size() + " cubes",
+                    System.currentTimeMillis(),
+                    List.copyOf(actions)
+                )
+            );
         }
         return true;
     }
@@ -244,11 +262,24 @@ public final class ModelerScene {
      * action history because the old action entries point at bones/cubes from the discarded tree.
      */
     public void resetToEntity() {
+        closeTextures();
         this.root = new ModelerBone("root");
         this.textureWidth = 64.0;
         this.textureHeight = 64.0;
         seed(this);
         this.selection = null;
         ModelerActionHistory.clear();
+    }
+
+    /**
+     * Release every loaded texture's GPU resource and drop the list. Called from {@link #resetToEntity} so a fresh
+     * scene starts with no imported textures. Safe to call when the list is already empty.
+     */
+    public void closeTextures() {
+        for (var loaded : textures) {
+            TextureLoader.release(loaded);
+        }
+        textures.clear();
+        activeTexture = null;
     }
 }

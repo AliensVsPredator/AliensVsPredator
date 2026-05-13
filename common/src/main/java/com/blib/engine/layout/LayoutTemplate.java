@@ -102,7 +102,7 @@ public enum LayoutTemplate {
     private static BodyNode modelerBody() {
         var leftColumn = new BodyNode.Split(
             Orientation.VERTICAL.name(),
-            new BodyNode.Leaf(List.of(PanelRegistry.MODELER_UV_MAP), 0),
+            new BodyNode.Leaf(List.of(PanelRegistry.MODELER_UV_MAP, PanelRegistry.MODELER_TEXTURES), 0),
             new BodyNode.Leaf(List.of(PanelRegistry.MODELER_OUTLINER), 0),
             new SizingDoc.FirstFixed(LayoutDefaults.UV_MAP_HEIGHT)
         );
