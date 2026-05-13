@@ -62,12 +62,18 @@ public final class ModelerGizmoInput {
             }
         }
 
+        // Seed the drag with whichever baseline matches the snapshot's target. Exactly one of {cube, bone} is non-null
+        // per the RenderSnapshot invariant; we use that to pick the baseline kind.
+        var cubeBaseline = snapshot.isCube() ? ModelerGizmoState.CubeBaseline.of(snapshot.cube()) : null;
+        var boneBaseline = snapshot.isBone() ? ModelerGizmoState.BoneBaseline.of(snapshot.bone()) : null;
+
         ModelerGizmoState.setDrag(
             new ModelerGizmoState.DragState(
                 mode,
                 pick.axis,
                 pick.sign,
-                ModelerGizmoState.CubeBaseline.of(snapshot.cube()),
+                cubeBaseline,
+                boneBaseline,
                 panelCursorX,
                 panelCursorY,
                 snapshot,
@@ -85,11 +91,36 @@ public final class ModelerGizmoInput {
             return;
         }
 
+        boolean bone = drag.isBoneDrag();
         switch (drag.mode()) {
-            case TRANSLATE -> applyTranslate(drag, panelCursorX, panelCursorY, panelW, panelH);
-            case ROTATE -> applyRotate(drag, panelCursorX, panelCursorY, panelW, panelH);
-            case RESIZE -> applyResize(drag, panelCursorX, panelCursorY, panelW, panelH);
-            case PIVOT -> applyPivotTranslate(drag, panelCursorX, panelCursorY, panelW, panelH);
+            case TRANSLATE -> {
+                if (bone) {
+                    applyBoneTranslate(drag, panelCursorX, panelCursorY, panelW, panelH);
+                } else {
+                    applyTranslate(drag, panelCursorX, panelCursorY, panelW, panelH);
+                }
+            }
+            case ROTATE -> {
+                if (bone) {
+                    applyBoneRotate(drag, panelCursorX, panelCursorY, panelW, panelH);
+                } else {
+                    applyRotate(drag, panelCursorX, panelCursorY, panelW, panelH);
+                }
+            }
+            case RESIZE -> {
+                // RESIZE has no bone version — the renderer doesn't capture a bone snapshot in RESIZE mode, so a
+                // bone-targeted drag in this branch shouldn't be reachable. Skip if it somehow is, to stay safe.
+                if (!bone) {
+                    applyResize(drag, panelCursorX, panelCursorY, panelW, panelH);
+                }
+            }
+            case PIVOT -> {
+                if (bone) {
+                    applyBonePivotTranslate(drag, panelCursorX, panelCursorY, panelW, panelH);
+                } else {
+                    applyPivotTranslate(drag, panelCursorX, panelCursorY, panelW, panelH);
+                }
+            }
             default -> {
                 /* OFF — no drag math to apply. */
             }
@@ -429,6 +460,7 @@ public final class ModelerGizmoInput {
                 drag.axis(),
                 drag.sign(),
                 drag.startCube(),
+                drag.startBone(),
                 drag.startCursorX(),
                 drag.startCursorY(),
                 drag.startSnapshot(),
@@ -564,5 +596,168 @@ public final class ModelerGizmoInput {
         ModelerCube cube = s.cube();
         cube.origin = new Vec3(newOriginX, newOriginY, newOriginZ);
         cube.size = new Vec3(newSizeX, newSizeY, newSizeZ);
+    }
+
+    /**
+     * Bone TRANSLATE — mutates {@code bone.position}. Unlike a cube's origin (which sits INSIDE the cube's rotation),
+     * the bone's position is the FIRST transform in {@code applyBone} — applied in the parent's frame, before the
+     * bone's own rotation. That changes the LOCAL-frame math vs. the cube version:
+     * <ul>
+     * <li><b>LOCAL</b>: visible X axis is {@code parentChain · R_bone · (1,0,0)}. To shift the bone's world position
+     * along that direction by {@code δ}, we need {@code Δposition_parent_frame = R_bone · (δ along axis)} — the bone's
+     * own rotation has to be applied manually because {@code position} doesn't get rotated by it.</li>
+     * <li><b>GLOBAL</b>: {@code δ} is along world X/Y/Z. World shift = {@code parentChain · Δposition_parent}, so
+     * {@code Δposition_parent = parentChain^T · δ_world}. Inverse-transform through the parent chain only, NOT through
+     * the bone's own rotation.</li>
+     * </ul>
+     */
+    private static void applyBoneTranslate(ModelerGizmoState.DragState drag, double cx, double cy, int w, int h) {
+        var s = drag.startSnapshot();
+        var bone = s.bone();
+        var baseline = drag.startBone();
+        if (bone == null || baseline == null) {
+            return;
+        }
+        float delta = GizmoMath.axisDelta(s.geometry(), drag.axis(), drag.sign(), drag.startCursorX(), drag.startCursorY(), cx, cy, w, h);
+        if (delta == 0f) {
+            return;
+        }
+
+        var dLocal = new Vector3f(0, 0, 0);
+        dLocal.setComponent(drag.axis(), delta);
+
+        if (s.frame() == ModelerGizmoFrame.LOCAL) {
+            var startRot = baseline.rotation();
+            var rbone = new Matrix3f()
+                .rotateZ((float) Math.toRadians(startRot.z))
+                .rotateY((float) Math.toRadians(startRot.y))
+                .rotateX((float) Math.toRadians(startRot.x));
+            rbone.transform(dLocal);
+        } else {
+            var parentInv = new Matrix3f(s.boneChainRotation()).transpose();
+            parentInv.transform(dLocal);
+        }
+
+        var startPos = baseline.position();
+        bone.position = new Vec3(startPos.x + dLocal.x, startPos.y + dLocal.y, startPos.z + dLocal.z);
+    }
+
+    /**
+     * Bone ROTATE — identical algorithm to {@link #applyRotate} but reads/writes the bone's rotation. The rotation is
+     * applied around the bone's pivot by {@code applyBone}, so the gizmo (positioned at the pivot) rotates the bone in
+     * place. Frame-over-frame angle accumulation around the projected gizmo origin, post-multiply by axis-local
+     * rotation, decompose back to Z-Y-X Euler.
+     */
+    private static void applyBoneRotate(ModelerGizmoState.DragState drag, double cx, double cy, int w, int h) {
+        var s = drag.startSnapshot();
+        var bone = s.bone();
+        var baseline = drag.startBone();
+        if (bone == null || baseline == null) {
+            return;
+        }
+        var origin = GizmoMath.projectToScreen(s.geometry().viewPivot(), s.geometry().projection(), w, h);
+        if (origin == null) {
+            return;
+        }
+
+        double currentAngle = Math.atan2(cy - origin.y, cx - origin.x);
+        double frameDeltaRad = currentAngle - drag.previousCursorAngleRad();
+        while (frameDeltaRad > Math.PI) {
+            frameDeltaRad -= 2 * Math.PI;
+        }
+        while (frameDeltaRad < -Math.PI) {
+            frameDeltaRad += 2 * Math.PI;
+        }
+
+        var axisView = s.geometry().axis(drag.axis());
+        float signFactor = axisView.z > 0 ? -1f : 1f;
+        float frameDeltaDegrees = (float) Math.toDegrees(frameDeltaRad) * signFactor;
+        float newAccumulated = drag.accumulatedRotationDegrees() + frameDeltaDegrees;
+
+        var startRot = baseline.rotation();
+        var mStart = new Matrix3f()
+            .rotateZ((float) Math.toRadians(startRot.z))
+            .rotateY((float) Math.toRadians(startRot.y))
+            .rotateX((float) Math.toRadians(startRot.x));
+
+        float thetaRad = (float) Math.toRadians(newAccumulated);
+        var mNew = new Matrix3f(mStart);
+        switch (drag.axis()) {
+            case 0 -> mNew.rotateX(thetaRad);
+            case 1 -> mNew.rotateY(thetaRad);
+            default -> mNew.rotateZ(thetaRad);
+        }
+
+        bone.rotation = decomposeZYX(mNew);
+
+        ModelerGizmoState.setDrag(
+            new ModelerGizmoState.DragState(
+                drag.mode(),
+                drag.axis(),
+                drag.sign(),
+                drag.startCube(),
+                drag.startBone(),
+                drag.startCursorX(),
+                drag.startCursorY(),
+                drag.startSnapshot(),
+                currentAngle,
+                newAccumulated
+            )
+        );
+    }
+
+    /**
+     * Bone PIVOT translate — moves {@code bone.pivot} while compensating {@code bone.position} to keep the rendered
+     * body stationary. Two differences from {@link #applyPivotTranslate}:
+     * <ol>
+     * <li><b>Pivot shift direction</b>: bone {@code pivot} (like {@code position}) lives in the parent's frame, NOT
+     * inside the bone's rotation. So to move the world pivot along the visible (post-rotation) axis by {@code δ}, we
+     * shift {@code pivot} by {@code R_bone · (δ along local axis)} — same shape as {@link #applyBoneTranslate}'s
+     * LOCAL-frame delta.</li>
+     * <li><b>Body compensation includes scale</b>: the bone has a non-trivial scale field. The body transform is
+     * {@code T(pos)·T(pivot)·R·S·T(-pivot)}; shifting pivot by {@code Δp} moves the body by {@code (I - R·S)·Δp}, so to
+     * cancel we set {@code Δpos = (R·S - I)·Δp}. Cubes don't have a scale, which is why the cube version uses just
+     * {@code R}.</li>
+     * </ol>
+     */
+    private static void applyBonePivotTranslate(ModelerGizmoState.DragState drag, double cx, double cy, int w, int h) {
+        var s = drag.startSnapshot();
+        var bone = s.bone();
+        var baseline = drag.startBone();
+        if (bone == null || baseline == null) {
+            return;
+        }
+        float delta = GizmoMath.axisDelta(s.geometry(), drag.axis(), drag.sign(), drag.startCursorX(), drag.startCursorY(), cx, cy, w, h);
+        if (delta == 0f) {
+            return;
+        }
+
+        var startRot = baseline.rotation();
+        var rbone = new Matrix3f()
+            .rotateZ((float) Math.toRadians(startRot.z))
+            .rotateY((float) Math.toRadians(startRot.y))
+            .rotateX((float) Math.toRadians(startRot.x));
+
+        // Δp in parent frame. LOCAL: rotate cube-local δ by R_bone. GLOBAL: inverse-transform world δ through parent.
+        var dPivot = new Vector3f(0, 0, 0);
+        dPivot.setComponent(drag.axis(), delta);
+        if (s.frame() == ModelerGizmoFrame.LOCAL) {
+            rbone.transform(dPivot);
+        } else {
+            var parentInv = new Matrix3f(s.boneChainRotation()).transpose();
+            parentInv.transform(dPivot);
+        }
+
+        // Body compensation: Δpos = (R*S - I) * Δp. Build R*S explicitly so non-unit bone scale stays correct.
+        var startScale = baseline.scale();
+        var rs = new Matrix3f(rbone).scale((float) startScale.x, (float) startScale.y, (float) startScale.z);
+        var rsDp = new Vector3f(dPivot);
+        rs.transform(rsDp);
+        var dPos = new Vector3f(rsDp).sub(dPivot);
+
+        var startPivot = baseline.pivot();
+        var startPos = baseline.position();
+        bone.pivot = new Vec3(startPivot.x + dPivot.x, startPivot.y + dPivot.y, startPivot.z + dPivot.z);
+        bone.position = new Vec3(startPos.x + dPos.x, startPos.y + dPos.y, startPos.z + dPos.z);
     }
 }

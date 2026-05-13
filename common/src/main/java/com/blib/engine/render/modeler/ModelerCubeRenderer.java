@@ -20,6 +20,8 @@ import com.blib.engine.modeler.ModelerCube;
 import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.ModelerTransforms;
 import com.blib.engine.modeler.Selection;
+import com.blib.engine.modeler.gizmo.ModelerGizmoMode;
+import com.blib.engine.modeler.gizmo.ModelerGizmoState;
 
 /**
  * Emits filled quads + selection outline for every cube in the scene. Walks the bone tree depth-first and applies the
@@ -70,6 +72,125 @@ public final class ModelerCubeRenderer {
 
         if (!selectionTargets.isEmpty()) {
             renderOutlines(pose, root, selectionTargets, SELECTION_COLOR);
+        }
+
+        // Drag ghost pass — when a TRANSLATE / ROTATE / RESIZE drag is in flight, emit a second outline using the
+        // baseline (drag-start) field values so the user sees a "phantom" at the original position alongside the
+        // live geometry. PIVOT mode is skipped: its drag compensates the body so the ghost would coincide with the
+        // live cube and add no visual information.
+        var drag = ModelerGizmoState.drag();
+        if (drag != null) {
+            var mode = drag.mode();
+            if (mode == ModelerGizmoMode.TRANSLATE || mode == ModelerGizmoMode.ROTATE || mode == ModelerGizmoMode.RESIZE) {
+                renderGhost(pose, root, drag);
+            }
+        }
+    }
+
+    /**
+     * Render the drag-ghost outline for the in-flight drag. For a cube drag, this emits one outline for the dragged
+     * cube at its baseline pivot/rotation/origin/size/inflate. For a bone drag, this walks the dragged bone's subtree
+     * with the bone's baseline transform substituted in, emitting outlines for every cube in the subtree.
+     */
+    private static void renderGhost(PoseStack pose, ModelerBone root, ModelerGizmoState.DragState drag) {
+        var snapshot = drag.startSnapshot();
+        if (drag.isBoneDrag()) {
+            var bone = snapshot.bone();
+            var baseline = drag.startBone();
+            if (bone == null || baseline == null) {
+                return;
+            }
+            walkAndEmitBoneGhost(pose, root, bone, baseline);
+        } else {
+            var cube = snapshot.cube();
+            var owner = snapshot.owner();
+            var baseline = drag.startCube();
+            if (cube == null || owner == null || baseline == null) {
+                return;
+            }
+            walkAndEmitCubeGhost(pose, root, owner, cube, baseline);
+        }
+    }
+
+    /**
+     * Walk the bone tree to {@code owner} (applying transforms onto pose as usual), then emit the ghost outline for
+     * {@code target} using {@code baseline} values. Other cubes are skipped — ghost is per-drag-target, not whole-
+     * subtree.
+     */
+    private static boolean walkAndEmitCubeGhost(
+        PoseStack pose,
+        ModelerBone current,
+        ModelerBone owner,
+        ModelerCube target,
+        ModelerGizmoState.CubeBaseline baseline
+    ) {
+        pose.pushPose();
+        ModelerTransforms.applyBone(pose, current);
+
+        if (current == owner) {
+            // We're at the owner bone's local frame. Emit the baseline outline for the dragged cube.
+            if (current.cubes.contains(target)) {
+                emitCubeEdgesFromBaseline(pose, baseline, SELECTION_COLOR);
+            }
+            pose.popPose();
+            return true;
+        }
+        for (var child : current.children) {
+            if (walkAndEmitCubeGhost(pose, child, owner, target, baseline)) {
+                pose.popPose();
+                return true;
+            }
+        }
+
+        pose.popPose();
+        return false;
+    }
+
+    /**
+     * Walk the bone tree to {@code target} (applying transforms onto pose as usual), then at the target apply the
+     * BASELINE bone transform and recurse into the subtree emitting outlines for every cube. Cubes outside the target's
+     * subtree are not ghosted.
+     */
+    private static boolean walkAndEmitBoneGhost(
+        PoseStack pose,
+        ModelerBone current,
+        ModelerBone target,
+        ModelerGizmoState.BoneBaseline baseline
+    ) {
+        if (current == target) {
+            pose.pushPose();
+            ModelerTransforms.applyBone(pose, baseline);
+            emitSubtreeOutlines(pose, current);
+            pose.popPose();
+            return true;
+        }
+        pose.pushPose();
+        ModelerTransforms.applyBone(pose, current);
+        for (var child : current.children) {
+            if (walkAndEmitBoneGhost(pose, child, target, baseline)) {
+                pose.popPose();
+                return true;
+            }
+        }
+        pose.popPose();
+        return false;
+    }
+
+    /**
+     * Emit selection-color outlines for every cube in {@code bone}'s subtree. The caller is responsible for having the
+     * pose stack positioned at the bone's local frame (with the bone's own transform applied — possibly from baseline
+     * values for the topmost call); descendant bones get their CURRENT transforms applied recursively since only the
+     * target bone's fields change during a bone drag.
+     */
+    private static void emitSubtreeOutlines(PoseStack pose, ModelerBone bone) {
+        for (var cube : bone.cubes) {
+            emitCubeEdges(pose, cube, SELECTION_COLOR);
+        }
+        for (var child : bone.children) {
+            pose.pushPose();
+            ModelerTransforms.applyBone(pose, child);
+            emitSubtreeOutlines(pose, child);
+            pose.popPose();
         }
     }
 
@@ -201,15 +322,60 @@ public final class ModelerCubeRenderer {
     private static void emitCubeEdges(PoseStack pose, ModelerCube cube, int color) {
         pose.pushPose();
         ModelerTransforms.applyCube(pose, cube);
-        var matrix = pose.last().pose();
+        emitCubeEdgeQuads(
+            pose,
+            (float) cube.origin.x,
+            (float) cube.origin.y,
+            (float) cube.origin.z,
+            (float) cube.size.x,
+            (float) cube.size.y,
+            (float) cube.size.z,
+            (float) cube.inflate,
+            color
+        );
+        pose.popPose();
+    }
 
-        var inflate = (float) cube.inflate;
-        var x0 = (float) cube.origin.x - inflate;
-        var y0 = (float) cube.origin.y - inflate;
-        var z0 = (float) cube.origin.z - inflate;
-        var x1 = x0 + (float) cube.size.x + 2 * inflate;
-        var y1 = y0 + (float) cube.size.y + 2 * inflate;
-        var z1 = z0 + (float) cube.size.z + 2 * inflate;
+    /**
+     * Same as {@link #emitCubeEdges(PoseStack, ModelerCube, int)} but reads from a drag-start baseline — used by the
+     * ghost-outline pass to draw at the cube's baseline transform without touching the live cube fields.
+     */
+    private static void emitCubeEdgesFromBaseline(PoseStack pose, ModelerGizmoState.CubeBaseline baseline, int color) {
+        pose.pushPose();
+        ModelerTransforms.applyCube(pose, baseline);
+        emitCubeEdgeQuads(
+            pose,
+            (float) baseline.origin().x,
+            (float) baseline.origin().y,
+            (float) baseline.origin().z,
+            (float) baseline.size().x,
+            (float) baseline.size().y,
+            (float) baseline.size().z,
+            (float) baseline.inflate(),
+            color
+        );
+        pose.popPose();
+    }
+
+    /** Shared geometry emission for {@link #emitCubeEdges} and {@link #emitCubeEdgesFromBaseline}. */
+    private static void emitCubeEdgeQuads(
+        PoseStack pose,
+        float originX,
+        float originY,
+        float originZ,
+        float sizeX,
+        float sizeY,
+        float sizeZ,
+        float inflate,
+        int color
+    ) {
+        var matrix = pose.last().pose();
+        var x0 = originX - inflate;
+        var y0 = originY - inflate;
+        var z0 = originZ - inflate;
+        var x1 = x0 + sizeX + 2 * inflate;
+        var y1 = y0 + sizeY + 2 * inflate;
+        var z1 = z0 + sizeZ + 2 * inflate;
         var t = OUTLINE_THICKNESS;
 
         var a = ((color >> 24) & 0xFF) / 255f;
@@ -244,8 +410,6 @@ public final class ModelerCubeRenderer {
             BufferUploader.drawWithShader(built);
         }
         RenderSystem.disableBlend();
-
-        pose.popPose();
     }
 
     /** Thin rectangular prism along the X axis from {@code (xa, y, z)} to {@code (xb, y, z)}. */

@@ -5,6 +5,8 @@ import com.mojang.math.Axis;
 import org.jetbrains.annotations.ApiStatus;
 import org.joml.Matrix4f;
 
+import com.blib.engine.modeler.gizmo.ModelerGizmoState;
+
 /**
  * Shared transform-stack convention for the modeler. Bone transforms are applied as
  * {@code translate → pivot → rotate Z-Y-X → scale → unpivot}; cube transforms as
@@ -53,5 +55,28 @@ public final class ModelerTransforms {
         m.rotateY((float) Math.toRadians(cube.rotation.y));
         m.rotateX((float) Math.toRadians(cube.rotation.x));
         m.translate((float) -cube.pivot.x, (float) -cube.pivot.y, (float) -cube.pivot.z);
+    }
+
+    /**
+     * Same shape as {@link #applyBone(PoseStack, ModelerBone)} but reads from a baseline snapshot — used by the ghost-
+     * outline renderer to place a bone at its drag-start transform without touching the live model.
+     */
+    public static void applyBone(PoseStack pose, ModelerGizmoState.BoneBaseline baseline) {
+        pose.translate(baseline.position().x, baseline.position().y, baseline.position().z);
+        pose.translate(baseline.pivot().x, baseline.pivot().y, baseline.pivot().z);
+        pose.mulPose(Axis.ZP.rotationDegrees((float) baseline.rotation().z));
+        pose.mulPose(Axis.YP.rotationDegrees((float) baseline.rotation().y));
+        pose.mulPose(Axis.XP.rotationDegrees((float) baseline.rotation().x));
+        pose.scale((float) baseline.scale().x, (float) baseline.scale().y, (float) baseline.scale().z);
+        pose.translate(-baseline.pivot().x, -baseline.pivot().y, -baseline.pivot().z);
+    }
+
+    /** Same shape as {@link #applyCube(PoseStack, ModelerCube)} but reads from a baseline snapshot. */
+    public static void applyCube(PoseStack pose, ModelerGizmoState.CubeBaseline baseline) {
+        pose.translate(baseline.pivot().x, baseline.pivot().y, baseline.pivot().z);
+        pose.mulPose(Axis.ZP.rotationDegrees((float) baseline.rotation().z));
+        pose.mulPose(Axis.YP.rotationDegrees((float) baseline.rotation().y));
+        pose.mulPose(Axis.XP.rotationDegrees((float) baseline.rotation().x));
+        pose.translate(-baseline.pivot().x, -baseline.pivot().y, -baseline.pivot().z);
     }
 }

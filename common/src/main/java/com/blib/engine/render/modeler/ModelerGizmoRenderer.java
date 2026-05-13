@@ -18,6 +18,7 @@ import com.blib.engine.modeler.ModelerBone;
 import com.blib.engine.modeler.ModelerCube;
 import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.ModelerTransforms;
+import com.blib.engine.modeler.Selection;
 import com.blib.engine.modeler.gizmo.ModelerGizmoFrame;
 import com.blib.engine.modeler.gizmo.ModelerGizmoMode;
 import com.blib.engine.modeler.gizmo.ModelerGizmoState;
@@ -63,12 +64,24 @@ public final class ModelerGizmoRenderer {
             return;
         }
 
-        var selection = scene.selectedCubeWithOwner();
-        if (selection == null) {
-            ModelerGizmoState.setLastRender(null);
+        if (scene.selection instanceof Selection.CubeSelection cs) {
+            renderCubeGizmo(scenePose, scene, cs, mode, projectionForCapture);
             return;
         }
+        if (scene.selection instanceof Selection.BoneSelection bs) {
+            renderBoneGizmo(scenePose, scene, bs, mode, projectionForCapture);
+            return;
+        }
+        ModelerGizmoState.setLastRender(null);
+    }
 
+    private static void renderCubeGizmo(
+        Matrix4f scenePose,
+        ModelerScene scene,
+        Selection.CubeSelection selection,
+        ModelerGizmoMode mode,
+        Matrix4f projectionForCapture
+    ) {
         // Walk the bone tree until we find the owner. Same convention as ModelerCubeRenderer so the gizmo lines
         // up with what the user sees.
         var pose = new PoseStack();
@@ -166,7 +179,114 @@ public final class ModelerGizmoRenderer {
 
         ModelerGizmoState
             .setLastRender(
-                new ModelerGizmoState.RenderSnapshot(geometry, selection.owner(), selection.cube(), boneChainRotation, frame)
+                new ModelerGizmoState.RenderSnapshot(
+                    geometry,
+                    selection.owner(),
+                    selection.cube(),
+                    null,
+                    boneChainRotation,
+                    frame
+                )
+            );
+    }
+
+    /**
+     * Render the gizmo for a bone selection. Mirrors {@link #renderCubeGizmo} structure with a few key differences:
+     * <ul>
+     * <li>RESIZE is skipped — bones have a scale field rather than a size, and exposing scale through the resize gizmo
+     * is out of scope for this iteration. The toolbar button still works (it switches the mode), but for a bone
+     * selection in RESIZE mode no gizmo is drawn and clicks fall through to plain cube picking.</li>
+     * <li>The gizmo is anchored at the bone's pivot ({@code applyBone} followed by translate by {@code +bone.pivot}
+     * lands at the world pivot since the bone-local point {@code pivot} maps to world {@code position + pivot}).</li>
+     * <li>{@code boneChainRotation} captures only the PARENT chain — the bone's own rotation is NOT included, because
+     * the bone's rotation operates on its children, not on its own {@code position}. GLOBAL-frame drag math uses this
+     * to inverse-transform world deltas back to parent-frame position deltas.</li>
+     * </ul>
+     */
+    private static void renderBoneGizmo(
+        Matrix4f scenePose,
+        ModelerScene scene,
+        Selection.BoneSelection selection,
+        ModelerGizmoMode mode,
+        Matrix4f projectionForCapture
+    ) {
+        if (mode == ModelerGizmoMode.RESIZE) {
+            ModelerGizmoState.setLastRender(null);
+            return;
+        }
+
+        var bone = selection.bone();
+        var pose = new PoseStack();
+        pose.last().pose().mul(scenePose);
+
+        // Walk to the parent of the bone, stopping BEFORE applying the bone's own transform.
+        if (!walkToParent(pose, scene.root, bone)) {
+            ModelerGizmoState.setLastRender(null);
+            return;
+        }
+
+        // Capture the cumulative parent-chain rotation BEFORE applyBone for the selected bone. This is what GLOBAL-
+        // frame drag math inverse-transforms world deltas through.
+        var boneChainRotation = pose.last().pose().get3x3(new Matrix3f());
+
+        // Apply the bone's own transform, then translate by +bone.pivot to land at the world pivot point. After
+        // applyBone the pose-stack basis is the bone's post-rotation frame, so axes drawn here align with the bone's
+        // local rotation — matching the cube path's "follow the target's rotation" behavior.
+        ModelerTransforms.applyBone(pose, bone);
+        pose.translate((float) bone.pivot.x, (float) bone.pivot.y, (float) bone.pivot.z);
+
+        var frame = ModelerGizmoState.frame();
+        boolean global = frame == ModelerGizmoFrame.GLOBAL
+            && (mode == ModelerGizmoMode.TRANSLATE || mode == ModelerGizmoMode.PIVOT);
+        if (global) {
+            var poseMat = pose.last().pose();
+            var tx = poseMat.m30();
+            var ty = poseMat.m31();
+            var tz = poseMat.m32();
+            poseMat.identity().setTranslation(tx, ty, tz);
+        }
+
+        var probe = GizmoGeometry.capture(pose, 1f, projectionForCapture);
+        float depth = probe.viewPivot().length();
+        float scale = Math.max(0.15f, depth * 0.15f);
+
+        var geometry = GizmoGeometry.capture(pose, scale, projectionForCapture);
+
+        RenderSystem.setShader(GameRenderer::getRendertypeLinesShader);
+        RenderSystem.lineWidth(4.0f);
+        var linesBuffer = Tesselator.getInstance().begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR_NORMAL);
+        switch (mode) {
+            case TRANSLATE, PIVOT -> drawTranslateShafts(pose, linesBuffer, scale);
+            case ROTATE -> drawRotate(pose, linesBuffer, scale);
+            default -> {
+                /* OFF / RESIZE — RESIZE already early-returned. */
+            }
+        }
+        var linesBuilt = linesBuffer.build();
+        if (linesBuilt != null) {
+            RenderSystem.disableDepthTest();
+            BufferUploader.drawWithShader(linesBuilt);
+            RenderSystem.enableDepthTest();
+        }
+
+        if (mode == ModelerGizmoMode.TRANSLATE || mode == ModelerGizmoMode.PIVOT) {
+            RenderSystem.setShader(GameRenderer::getPositionColorShader);
+            RenderSystem.enableBlend();
+            RenderSystem.defaultBlendFunc();
+            var quadsBuffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+            drawTranslateTips(pose, quadsBuffer, scale);
+            var quadsBuilt = quadsBuffer.build();
+            if (quadsBuilt != null) {
+                RenderSystem.disableDepthTest();
+                BufferUploader.drawWithShader(quadsBuilt);
+                RenderSystem.enableDepthTest();
+            }
+            RenderSystem.disableBlend();
+        }
+
+        ModelerGizmoState
+            .setLastRender(
+                new ModelerGizmoState.RenderSnapshot(geometry, null, null, bone, boneChainRotation, frame)
             );
     }
 
@@ -182,6 +302,30 @@ public final class ModelerGizmoRenderer {
 
         for (var child : bone.children) {
             if (walkToOwner(pose, child, target)) {
+                return true;
+            }
+        }
+
+        pose.popPose();
+        return false;
+    }
+
+    /**
+     * Walk the bone tree to the parent of {@code target}, applying transforms onto {@code pose} for every bone EXCEPT
+     * {@code target} itself. On success the pose stack is left in the target's parent frame — caller can then call
+     * {@link ModelerTransforms#applyBone(PoseStack, ModelerBone)} on the target to land at the bone's post-rotation
+     * local frame. When {@code target == current} (e.g. selecting the implicit root), returns immediately with no pose
+     * changes — the caller's applyBone places the gizmo at the root's pivot in scene space.
+     */
+    private static boolean walkToParent(PoseStack pose, ModelerBone current, ModelerBone target) {
+        if (current == target) {
+            return true;
+        }
+        pose.pushPose();
+        ModelerTransforms.applyBone(pose, current);
+
+        for (var child : current.children) {
+            if (walkToParent(pose, child, target)) {
                 return true;
             }
         }

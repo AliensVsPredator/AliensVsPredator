@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.blib.engine.modeler.ModelerBone;
 import com.blib.engine.modeler.ModelerCamera;
 import com.blib.engine.modeler.ModelerCube;
 import com.blib.engine.modeler.ModelerFilePicker;
@@ -76,10 +77,23 @@ public final class ModelerViewportPanel implements Panel {
     /** True while the LMB is held over a gizmo handle and we own the drag. */
     private boolean gizmoDragActive;
 
-    /** Cube state captured at gizmo drag-start; on release we diff against the live cube to push a memento action. */
+    /**
+     * Cube state captured at gizmo drag-start; on release we diff against the live cube to push a
+     * {@link ModelerAction.CubeMementoAction}. Null when the drag targets a bone — exactly one of
+     * {@code (gizmoDragTarget,
+     * gizmoDragBoneTarget)} is non-null per drag.
+     */
     private @Nullable ModelerCube gizmoDragTarget;
 
     private @Nullable ModelerAction.CubeMemento gizmoDragBefore;
+
+    /**
+     * Bone state captured at gizmo drag-start; on release we diff against the live bone to push a
+     * {@link ModelerAction.BoneMementoAction}. Null when the drag targets a cube.
+     */
+    private @Nullable ModelerBone gizmoDragBoneTarget;
+
+    private @Nullable ModelerAction.BoneMemento gizmoDragBoneBefore;
 
     private @Nullable ModelerGizmoMode gizmoDragMode;
 
@@ -257,14 +271,21 @@ public final class ModelerViewportPanel implements Panel {
             var panelRelY = mouseY - panelY;
             if (panelWidth > 0 && panelHeight > 0 && ModelerGizmoInput.tryStartDrag(panelRelX, panelRelY, panelWidth, panelHeight)) {
                 gizmoDragActive = true;
-                // Snapshot the cube's full mutable state at drag-start so on release we can push a memento action that
-                // restores it on undo. The drag mutates origin/size/rotation in place; capturing all fields keeps the
-                // memento type uniform with inspector edits (which also touch pivot/inflate).
+                // Snapshot the target's full mutable state at drag-start so on release we can push a memento action
+                // that restores it on undo. The drag mutates fields in place; capturing every editable field keeps the
+                // memento type uniform with inspector edits.
                 var drag = ModelerGizmoState.drag();
                 if (drag != null) {
-                    var startCube = drag.startSnapshot().cube();
-                    gizmoDragTarget = startCube;
-                    gizmoDragBefore = ModelerAction.CubeMemento.of(startCube);
+                    var snapshot = drag.startSnapshot();
+                    if (snapshot.isCube()) {
+                        var startCube = snapshot.cube();
+                        gizmoDragTarget = startCube;
+                        gizmoDragBefore = ModelerAction.CubeMemento.of(startCube);
+                    } else if (snapshot.isBone()) {
+                        var startBone = snapshot.bone();
+                        gizmoDragBoneTarget = startBone;
+                        gizmoDragBoneBefore = ModelerAction.BoneMemento.of(startBone);
+                    }
                     gizmoDragMode = drag.mode();
                 }
                 return true;
@@ -318,18 +339,23 @@ public final class ModelerViewportPanel implements Panel {
         if (button == 0 && gizmoDragActive) {
             ModelerGizmoInput.endDrag();
             gizmoDragActive = false;
-            // Diff before-snapshot against the post-drag cube. If anything changed, the gesture's a real edit and
+            // Diff before-snapshot against the post-drag target. If anything changed, the gesture's a real edit and
             // belongs on the undo stack; a click that didn't move the cursor far enough to register a delta is a
-            // no-op and we skip the push to keep the action stack clean.
-            var before = gizmoDragBefore;
-            var target = gizmoDragTarget;
+            // no-op and we skip the push to keep the action stack clean. Branches on which target captured at
+            // drag-start — exactly one of {cube, bone} is non-null per drag.
+            var cubeBefore = gizmoDragBefore;
+            var cubeTarget = gizmoDragTarget;
+            var boneBefore = gizmoDragBoneBefore;
+            var boneTarget = gizmoDragBoneTarget;
             var mode = gizmoDragMode;
             gizmoDragBefore = null;
             gizmoDragTarget = null;
+            gizmoDragBoneBefore = null;
+            gizmoDragBoneTarget = null;
             gizmoDragMode = null;
-            if (before != null && target != null && mode != null) {
-                var after = ModelerAction.CubeMemento.of(target);
-                if (after.differsFrom(before)) {
+            if (mode != null && cubeBefore != null && cubeTarget != null) {
+                var after = ModelerAction.CubeMemento.of(cubeTarget);
+                if (after.differsFrom(cubeBefore)) {
                     var typeId = switch (mode) {
                         case TRANSLATE -> "cube_translate";
                         case ROTATE -> "cube_rotate";
@@ -338,14 +364,33 @@ public final class ModelerViewportPanel implements Panel {
                         default -> "cube_edit";
                     };
                     var description = switch (mode) {
-                        case TRANSLATE -> "Translate cube " + target.name;
-                        case ROTATE -> "Rotate cube " + target.name;
-                        case RESIZE -> "Resize cube " + target.name;
-                        case PIVOT -> "Move pivot of cube " + target.name;
-                        default -> "Edit cube " + target.name;
+                        case TRANSLATE -> "Translate cube " + cubeTarget.name;
+                        case ROTATE -> "Rotate cube " + cubeTarget.name;
+                        case RESIZE -> "Resize cube " + cubeTarget.name;
+                        case PIVOT -> "Move pivot of cube " + cubeTarget.name;
+                        default -> "Edit cube " + cubeTarget.name;
                     };
                     ModelerActionHistory.push(
-                        new ModelerAction.CubeMementoAction(typeId, description, System.currentTimeMillis(), target, before, after)
+                        new ModelerAction.CubeMementoAction(typeId, description, System.currentTimeMillis(), cubeTarget, cubeBefore, after)
+                    );
+                }
+            } else if (mode != null && boneBefore != null && boneTarget != null) {
+                var after = ModelerAction.BoneMemento.of(boneTarget);
+                if (after.differsFrom(boneBefore)) {
+                    var typeId = switch (mode) {
+                        case TRANSLATE -> "bone_translate";
+                        case ROTATE -> "bone_rotate";
+                        case PIVOT -> "bone_pivot";
+                        default -> "bone_edit";
+                    };
+                    var description = switch (mode) {
+                        case TRANSLATE -> "Translate bone " + boneTarget.name;
+                        case ROTATE -> "Rotate bone " + boneTarget.name;
+                        case PIVOT -> "Move pivot of bone " + boneTarget.name;
+                        default -> "Edit bone " + boneTarget.name;
+                    };
+                    ModelerActionHistory.push(
+                        new ModelerAction.BoneMementoAction(typeId, description, System.currentTimeMillis(), boneTarget, boneBefore, after)
                     );
                 }
             }

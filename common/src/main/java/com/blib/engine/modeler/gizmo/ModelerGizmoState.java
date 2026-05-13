@@ -91,44 +91,67 @@ public final class ModelerGizmoState {
     }
 
     /**
-     * Per-frame snapshot of where the gizmo was drawn — composes a {@link GizmoGeometry} with the cube context. The
-     * cube is identified by reference; if it's deleted between render and click, the input handler bails before
-     * mutating.
+     * Per-frame snapshot of where the gizmo was drawn — composes a {@link GizmoGeometry} with target context (either a
+     * cube + its owning bone, or a bone). The target is identified by reference; if it's deleted between render and
+     * click, the input handler bails before mutating.
+     * <p>
+     * <b>Invariant</b>: exactly one of {@code {cube, bone}} is non-null. {@link #isCube()} and {@link #isBone()}
+     * reflect which target the snapshot describes; {@code owner} is meaningful only for cube targets.
      *
      * @param geometry          View-space pivot, axes, scale, projection. The axes match whatever frame the gizmo was
-     *                          rendered in (cube-local in LOCAL mode, world-axis-aligned in GLOBAL mode).
+     *                          rendered in (target-local in LOCAL mode, world-axis-aligned in GLOBAL mode).
      * @param owner             Bone that owns the selected cube — needed to rebuild the bone transform chain when
-     *                          applying drag deltas in cube-local space.
-     * @param cube              The selected cube — drag math reads/writes its origin/rotation/size.
-     * @param boneChainRotation 3x3 rotation matrix accumulated by walking from {@code scene.root} to {@code owner},
-     *                          BEFORE applying the cube's own rotation. Used by GLOBAL-frame drag math to inverse-
-     *                          transform a world-space delta back to cube-local pre-rotation coords.
+     *                          applying drag deltas in cube-local space. Null when the target is a bone.
+     * @param cube              The selected cube — drag math reads/writes its origin/rotation/size. Null for bone
+     *                          targets.
+     * @param bone              The selected bone — drag math reads/writes its position/rotation/pivot. Null for cube
+     *                          targets.
+     * @param boneChainRotation 3x3 rotation matrix accumulated by walking the parent chain. For cube targets: from
+     *                          {@code scene.root} to {@code owner} (i.e. through every parent bone) BEFORE applying the
+     *                          cube's own rotation. For bone targets: from {@code scene.root} to the bone's parent
+     *                          (i.e. NOT through the bone's own rotation, since the bone's own rotation operates on its
+     *                          children, not on its own {@code position}). Used by GLOBAL-frame drag math to
+     *                          inverse-transform a world-space delta back to target-local pre-rotation coords.
      * @param frame             Reference frame at render time. Drag math reads this to pick the LOCAL vs GLOBAL path so
      *                          a drag-in-flight stays consistent even if the user toggles frame mid-drag (the toggle
      *                          itself cancels the drag, but reading from the snapshot is the safer source).
      */
     public record RenderSnapshot(
         GizmoGeometry geometry,
-        ModelerBone owner,
-        ModelerCube cube,
+        @Nullable ModelerBone owner,
+        @Nullable ModelerCube cube,
+        @Nullable ModelerBone bone,
         Matrix3f boneChainRotation,
         ModelerGizmoFrame frame
-    ) {}
+    ) {
+
+        public boolean isCube() {
+            return cube != null;
+        }
+
+        public boolean isBone() {
+            return bone != null;
+        }
+    }
 
     /**
-     * Captured at drag-start. {@code startCube} is a baseline of the cube's mutable fields so per-frame drag math
-     * applies an absolute delta from drag-start rather than accumulating per-frame drift.
+     * Captured at drag-start. {@code startCube} / {@code startBone} is a baseline of the target's mutable fields so
+     * per-frame drag math applies an absolute delta from drag-start rather than accumulating per-frame drift.
+     * <p>
+     * <b>Invariant</b>: exactly one of {@code {startCube, startBone}} is non-null, matching {@code startSnapshot}'s
+     * cube/bone target.
      * <p>
      * {@code previousCursorAngleRad} and {@code accumulatedRotationDegrees} are written each frame for ROTATE drags to
      * track the cumulative cursor sweep around the gizmo origin — necessary because a stateless atan2 delta from
      * drag-start would wrap at ±π and prevent rotations beyond 180°. For TRANSLATE / RESIZE these fields stay at their
      * drag-start values (0).
      *
-     * @param mode                       Mode at drag-start (TRANSLATE / ROTATE / RESIZE — never OFF).
+     * @param mode                       Mode at drag-start (TRANSLATE / ROTATE / RESIZE / PIVOT — never OFF).
      * @param axis                       Which axis (0=X, 1=Y, 2=Z) the drag is along.
      * @param sign                       For RESIZE: +1 for MAX-face handles, -1 for MIN-face handles. Always +1 for
-     *                                   TRANSLATE / ROTATE (which use positive axis only).
-     * @param startCube                  Cube field baseline at drag-start (origin/size/rotation copied as Vec3s).
+     *                                   TRANSLATE / ROTATE / PIVOT (which use positive axis only).
+     * @param startCube                  Cube field baseline at drag-start. Null when the drag targets a bone.
+     * @param startBone                  Bone field baseline at drag-start. Null when the drag targets a cube.
      * @param startCursorX               Cursor X (panel-relative pixels) at drag-start.
      * @param startCursorY               Cursor Y (panel-relative pixels) at drag-start.
      * @param startSnapshot              Render snapshot at drag-start — the drag math projects against this fixed
@@ -138,21 +161,27 @@ public final class ModelerGizmoState {
      *                                   {@code atan2(y, x)}). Seeded from the click position at drag-start; each frame
      *                                   computes a wrapped delta against it for the accumulator.
      * @param accumulatedRotationDegrees Total signed cursor sweep around the gizmo since drag-start (degrees). The live
-     *                                   cube rotation is {@code startCube.rotation + accumulated} along the dragged
-     *                                   axis, so sweeps beyond 360° rotate the cube past a full revolution rather than
-     *                                   wrapping back to start.
+     *                                   target rotation is {@code startRotation + accumulated} along the dragged axis,
+     *                                   so sweeps beyond 360° rotate past a full revolution rather than wrapping back
+     *                                   to start.
      */
     public record DragState(
         ModelerGizmoMode mode,
         int axis,
         int sign,
-        CubeBaseline startCube,
+        @Nullable CubeBaseline startCube,
+        @Nullable BoneBaseline startBone,
         double startCursorX,
         double startCursorY,
         RenderSnapshot startSnapshot,
         double previousCursorAngleRad,
         float accumulatedRotationDegrees
-    ) {}
+    ) {
+
+        public boolean isBoneDrag() {
+            return startBone != null;
+        }
+    }
 
     /**
      * Hovered gizmo handle. Refreshed each frame by {@code ModelerGizmoInput.updateHover} from the viewport panel's
@@ -166,17 +195,36 @@ public final class ModelerGizmoState {
     ) {}
 
     /**
-     * Snapshot of a cube's mutable fields at drag-start. Pivot's included so PIVOT-mode drags read a stable baseline.
+     * Snapshot of a cube's mutable fields at drag-start. Pivot's included so PIVOT-mode drags read a stable baseline;
+     * inflate's included so the ghost outline renderer can draw the cube at its true drag-start size.
      */
     public record CubeBaseline(
         Vec3 origin,
         Vec3 size,
         Vec3 rotation,
-        Vec3 pivot
+        Vec3 pivot,
+        double inflate
     ) {
 
         public static CubeBaseline of(ModelerCube cube) {
-            return new CubeBaseline(cube.origin, cube.size, cube.rotation, cube.pivot);
+            return new CubeBaseline(cube.origin, cube.size, cube.rotation, cube.pivot, cube.inflate);
+        }
+    }
+
+    /**
+     * Snapshot of a bone's mutable fields at drag-start. Parallel to {@link CubeBaseline}; lets bone-target drag math
+     * compute deltas against a stable baseline and lets the ghost-outline renderer place the bone at its drag-start
+     * world transform.
+     */
+    public record BoneBaseline(
+        Vec3 position,
+        Vec3 rotation,
+        Vec3 pivot,
+        Vec3 scale
+    ) {
+
+        public static BoneBaseline of(ModelerBone bone) {
+            return new BoneBaseline(bone.position, bone.rotation, bone.pivot, bone.scale);
         }
     }
 }
