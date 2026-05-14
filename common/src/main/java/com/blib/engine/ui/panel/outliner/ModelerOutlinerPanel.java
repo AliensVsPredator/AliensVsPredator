@@ -1,13 +1,9 @@
 package com.blib.engine.ui.panel.outliner;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -25,7 +21,9 @@ import com.blib.engine.modeler.Selection;
 import com.blib.engine.modeler.item.ModelerItemSession;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.dock.Panel;
-import com.blib.engine.ui.widget.ScrollContainer;
+import com.blib.engine.ui.layout.ScrollViewport;
+import com.blib.engine.ui.layout.UiRect;
+import com.blib.engine.ui.layout.UiText;
 
 /**
  * Hierarchical tree view of the modeler scene: root → bones → cubes. Each row is selectable; the click event sets
@@ -75,7 +73,7 @@ public final class ModelerOutlinerPanel implements Panel {
     /** Bones currently in the collapsed state. Children of these bones aren't included in {@link #rows}. */
     private final Set<ModelerBone> collapsed = new HashSet<>();
 
-    private final ScrollContainer scroll = new ScrollContainer();
+    private final ScrollViewport scroll = new ScrollViewport();
 
     /**
      * Tracks the scene root pointer so we can detect a new model being loaded and reset collapse / scroll state. Null
@@ -137,21 +135,18 @@ public final class ModelerOutlinerPanel implements Panel {
         buildRows(scene.root, 0);
 
         // Compute rows region — inset by PADDING_X on each side so the scrollbar sits inside the panel padding
-        // instead of flush against the right edge (matches OutlinerPanel / ContentBrowserPanel). The scrollbar
-        // gutter is then subtracted from the inner width so row labels and hover backgrounds stop just before the
-        // bar.
+        // instead of flush against the right edge. ScrollViewport reserves the gutter for row content.
         var rowsTop = y + PADDING_Y;
         var rowsHeight = Math.max(0, (y + height) - rowsTop);
         var innerLeft = x + PADDING_X;
         var innerWidth = Math.max(0, width - 2 * PADDING_X);
-        var contentWidth = Math.max(0, innerWidth - ScrollContainer.SCROLLBAR_GUTTER);
         rowsTopY = rowsTop;
         rowsLeftX = innerLeft;
         rowsViewportHeight = rowsHeight;
-        rowsContentWidth = contentWidth;
 
         var contentHeight = rows.size() * ROW_HEIGHT;
-        scroll.layout(rowsHeight, contentHeight);
+        var frame = scroll.begin(graphics, UiRect.of(innerLeft, rowsTop, innerWidth, rowsHeight), contentHeight);
+        rowsContentWidth = frame.contentWidth();
 
         // Scroll-into-view: now that rows have been rebuilt with the ancestors un-collapsed, the selected row exists
         // in `rows` at a known index. If it's outside the viewport, nudge the scroll position so it lands at the
@@ -175,14 +170,8 @@ public final class ModelerOutlinerPanel implements Panel {
         var itemBoneName = resolveItemBoneName(scene.itemSession);
 
         var font = EngineFont.get();
-        var scrollY = (int) scroll.scrollY();
+        var scrollY = scroll.scrollY();
 
-        // RAW GL scissor (not GuiGraphics.enableScissor) — the engine workspace renders at a 0.375× pose-stack scale,
-        // and GuiGraphics.enableScissor uses raw GUI-scale pixels with no pose-stack transform, so rectangles given
-        // in workspace logical pixels end up clipping the wrong region of the screen (typically hiding everything).
-        // Mirrors OutlinerPanel.applyRawScissor / ContentBrowserPanel: transform through the active pose then enable
-        // the GL scissor directly.
-        applyRawScissor(graphics, x, rowsTop, width, rowsHeight);
         try {
             for (var i = 0; i < rows.size(); i++) {
                 var row = rows.get(i);
@@ -196,20 +185,20 @@ public final class ModelerOutlinerPanel implements Panel {
 
                 var selected = isHighlighted(row, scene.selection, selectedSubtree);
                 var hovered = mouseX >= innerLeft
-                    && mouseX < innerLeft + contentWidth
+                    && mouseX < innerLeft + rowsContentWidth
                     && mouseY >= rowTop
                     && mouseY < rowBottom;
                 if (selected) {
-                    graphics.fill(innerLeft, rowTop, innerLeft + contentWidth, rowBottom, ROW_SELECTED_COLOR);
+                    graphics.fill(innerLeft, rowTop, innerLeft + rowsContentWidth, rowBottom, ROW_SELECTED_COLOR);
                 } else if (hovered) {
-                    graphics.fill(innerLeft, rowTop, innerLeft + contentWidth, rowBottom, ROW_HOVER_COLOR);
+                    graphics.fill(innerLeft, rowTop, innerLeft + rowsContentWidth, rowBottom, ROW_HOVER_COLOR);
                 }
 
                 var indentX = innerLeft + row.depth * INDENT_PX;
                 var labelY = rowTop + (ROW_HEIGHT - font.lineHeight + 2) / 2;
                 if (row.cube == null && isCollapsible(row.owner)) {
                     var caret = collapsed.contains(row.owner) ? "▸" : "▾";
-                    graphics.drawString(font, Component.literal(caret), indentX, labelY, CARET_COLOR, false);
+                    UiText.drawClipped(graphics, font, caret, indentX, labelY, CARET_WIDTH, CARET_COLOR);
                 }
                 var labelX = indentX + CARET_WIDTH;
                 int labelColor;
@@ -220,40 +209,11 @@ public final class ModelerOutlinerPanel implements Panel {
                 } else {
                     labelColor = BONE_COLOR;
                 }
-                graphics.drawString(font, Component.literal(row.label), labelX, labelY, labelColor, false);
+                UiText.drawClipped(graphics, font, row.label, labelX, labelY, Math.max(0, innerLeft + rowsContentWidth - labelX), labelColor);
             }
         } finally {
-            graphics.flush();
-            RenderSystem.disableScissor();
+            scroll.end(graphics, mouseX, mouseY);
         }
-
-        scroll.renderScrollbar(graphics, innerLeft, rowsTop, innerWidth, rowsHeight, mouseX, mouseY);
-    }
-
-    /**
-     * Pose-aware GL scissor in workspace logical-pixel space. Transforms {@code (x, y, w, h)} through the active pose
-     * matrix to raw window pixels, then enables the GL scissor directly. Used instead of
-     * {@link GuiGraphics#enableScissor} because the engine workspace's pose stack scale doesn't propagate through that
-     * API.
-     */
-    private static void applyRawScissor(GuiGraphics graphics, int x, int y, int w, int h) {
-        if (w <= 0 || h <= 0) {
-            RenderSystem.disableScissor();
-            return;
-        }
-        graphics.flush();
-        var matrix = graphics.pose().last().pose();
-        var topLeft = matrix.transformPosition((float) x, (float) y, 0f, new Vector3f());
-        var bottomRight = matrix.transformPosition((float) (x + w), (float) (y + h), 0f, new Vector3f());
-
-        var window = Minecraft.getInstance().getWindow();
-        var winHeight = window.getHeight();
-        var guiScale = window.getGuiScale();
-        var leftRaw = (int) ((double) topLeft.x * guiScale);
-        var bottomRaw = (int) ((double) winHeight - (double) bottomRight.y * guiScale);
-        var widthRaw = Math.max(0, (int) ((double) (bottomRight.x - topLeft.x) * guiScale));
-        var heightRaw = Math.max(0, (int) ((double) (bottomRight.y - topLeft.y) * guiScale));
-        RenderSystem.enableScissor(leftRaw, bottomRaw, widthRaw, heightRaw);
     }
 
     @Override
@@ -275,7 +235,7 @@ public final class ModelerOutlinerPanel implements Panel {
         }
 
         // Convert cursor Y to a row index using scroll offset so off-screen / scrolled rows pick correctly.
-        var contentY = (int) (mouseY - rowsTopY) + (int) scroll.scrollY();
+        var contentY = (int) (mouseY - rowsTopY) + scroll.scrollY();
         if (contentY < 0) {
             return false;
         }
@@ -322,7 +282,7 @@ public final class ModelerOutlinerPanel implements Panel {
         if (mouseX < panelX || mouseX >= panelX + panelWidth || mouseY < panelY || mouseY >= panelY + panelHeight) {
             return false;
         }
-        return scroll.mouseScrolled(scrollY);
+        return scroll.mouseScrolled(mouseX, mouseY, scrollY);
     }
 
     @Override

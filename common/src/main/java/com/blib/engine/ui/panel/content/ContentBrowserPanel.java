@@ -1,13 +1,10 @@
 package com.blib.engine.ui.panel.content;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -22,7 +19,9 @@ import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.PanelPlaceholder;
 import com.blib.engine.ui.ProjectContentActionHandler;
 import com.blib.engine.ui.dock.Panel;
-import com.blib.engine.ui.widget.ScrollContainer;
+import com.blib.engine.ui.layout.ScrollViewport;
+import com.blib.engine.ui.layout.UiRect;
+import com.blib.engine.ui.layout.UiText;
 import com.blib.engine.ui.widget.TextInput;
 import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.C2SDeleteCapturePayload;
@@ -113,7 +112,7 @@ public final class ContentBrowserPanel implements Panel {
 
     private final TextInput searchInput = new TextInput("Filter…");
 
-    private final ScrollContainer scroll = new ScrollContainer();
+    private final ScrollViewport scroll = new ScrollViewport();
 
     private final EnumSet<Section> collapsed = EnumSet.noneOf(Section.class);
 
@@ -176,10 +175,12 @@ public final class ContentBrowserPanel implements Panel {
         // Content browser is project-scoped — and projects require the integrated server to enumerate. Surface both
         // conditions as placeholders so the user knows what's needed.
         if (Minecraft.getInstance().level == null) {
+            scroll.clear();
             PanelPlaceholder.drawCentered(graphics, x, y, width, height, PanelPlaceholder.NEEDS_WORLD);
             return;
         }
         if (ProjectSession.activeProject() == null) {
+            scroll.clear();
             PanelPlaceholder.drawCentered(graphics, x, y, width, height, PanelPlaceholder.NEEDS_PROJECT);
             return;
         }
@@ -208,11 +209,13 @@ public final class ContentBrowserPanel implements Panel {
         var listW = width - 2 * CONTENT_PADDING;
         var listH = Math.max(0, height - (listY - y) - CONTENT_PADDING);
         if (listH <= 0) {
+            scroll.clear();
             return;
         }
 
         if (projectName.isEmpty()) {
-            graphics.drawString(font, Component.literal("(no project open)"), listX, listY, EMPTY_TEXT_COLOR, false);
+            scroll.clear();
+            UiText.drawClipped(graphics, font, "(no project open)", listX, listY, listW, EMPTY_TEXT_COLOR);
             return;
         }
 
@@ -232,48 +235,44 @@ public final class ContentBrowserPanel implements Panel {
             var rowCount = sectionSize(section, pools, structures, captures);
             contentHeight += Math.max(1, rowCount) * ROW_HEIGHT;
         }
-        scroll.layout(listH, contentHeight);
-
-        applyRawScissor(graphics, listX, listY, listW, listH);
+        var frame = scroll.begin(graphics, UiRect.of(listX, listY, listW, listH), contentHeight);
         try {
-            var scrollY = (int) scroll.scrollY();
-            var cursorY = listY - scrollY;
-            cursorY = renderSection(graphics, listX, cursorY, listW, Section.POOLS, pools.size(), mouseX, mouseY);
+            var contentX = frame.contentX();
+            var contentW = frame.contentWidth();
+            var cursorY = frame.contentY();
+            cursorY = renderSection(graphics, contentX, cursorY, contentW, Section.POOLS, pools.size(), mouseX, mouseY);
             if (!collapsed.contains(Section.POOLS)) {
                 if (pools.isEmpty()) {
-                    cursorY = renderEmptyRow(graphics, listX, cursorY, listW);
+                    cursorY = renderEmptyRow(graphics, contentX, cursorY, contentW);
                 } else {
                     for (var id : pools) {
-                        cursorY = renderPoolRow(graphics, listX, cursorY, listW, id, projectName, mouseX, mouseY);
+                        cursorY = renderPoolRow(graphics, contentX, cursorY, contentW, id, projectName, mouseX, mouseY);
                     }
                 }
             }
-            cursorY = renderSection(graphics, listX, cursorY, listW, Section.STRUCTURES, structures.size(), mouseX, mouseY);
+            cursorY = renderSection(graphics, contentX, cursorY, contentW, Section.STRUCTURES, structures.size(), mouseX, mouseY);
             if (!collapsed.contains(Section.STRUCTURES)) {
                 if (structures.isEmpty()) {
-                    cursorY = renderEmptyRow(graphics, listX, cursorY, listW);
+                    cursorY = renderEmptyRow(graphics, contentX, cursorY, contentW);
                 } else {
                     for (var id : structures) {
-                        cursorY = renderStructureRow(graphics, listX, cursorY, listW, id, projectName, mouseX, mouseY);
+                        cursorY = renderStructureRow(graphics, contentX, cursorY, contentW, id, projectName, mouseX, mouseY);
                     }
                 }
             }
-            cursorY = renderSection(graphics, listX, cursorY, listW, Section.CAPTURES, captures.size(), mouseX, mouseY);
+            cursorY = renderSection(graphics, contentX, cursorY, contentW, Section.CAPTURES, captures.size(), mouseX, mouseY);
             if (!collapsed.contains(Section.CAPTURES)) {
                 if (captures.isEmpty()) {
-                    cursorY = renderEmptyRow(graphics, listX, cursorY, listW);
+                    cursorY = renderEmptyRow(graphics, contentX, cursorY, contentW);
                 } else {
                     for (var name : captures) {
-                        cursorY = renderCaptureRow(graphics, listX, cursorY, listW, name, projectName, mouseX, mouseY);
+                        cursorY = renderCaptureRow(graphics, contentX, cursorY, contentW, name, projectName, mouseX, mouseY);
                     }
                 }
             }
         } finally {
-            graphics.flush();
-            RenderSystem.disableScissor();
+            scroll.end(graphics, mouseX, mouseY);
         }
-
-        scroll.renderScrollbar(graphics, listX, listY, listW, listH, mouseX, mouseY);
     }
 
     private static int sectionSize(
@@ -290,8 +289,7 @@ public final class ContentBrowserPanel implements Panel {
     }
 
     private int renderSection(GuiGraphics graphics, int x, int y, int width, Section section, int count, int mouseX, int mouseY) {
-        // Reserve the scrollbar gutter so the header background and right-aligned count don't slide under the bar.
-        var rowRight = x + width - ScrollContainer.SCROLLBAR_GUTTER;
+        var rowRight = x + width;
         var hovered = mouseX >= x && mouseX < rowRight && mouseY >= y && mouseY < y + HEADER_HEIGHT;
         var bg = hovered ? HEADER_BG_HOVER_COLOR : HEADER_BG_COLOR;
         graphics.fill(x, y, rowRight, y + HEADER_HEIGHT, bg);
@@ -300,12 +298,13 @@ public final class ContentBrowserPanel implements Panel {
         var font = EngineFont.get();
         var caret = collapsed.contains(section) ? "▸" : "▾";
         var textY = y + (HEADER_HEIGHT - font.lineHeight + 2) / 2;
-        graphics.drawString(font, Component.literal(caret), x + 4, textY, HEADER_TEXT_COLOR, false);
-        graphics.drawString(font, Component.literal(section.displayName), x + 4 + CARET_WIDTH + 2, textY, HEADER_TEXT_COLOR, false);
 
         var countLabel = "(" + count + ")";
         var countX = rowRight - 4 - font.width(countLabel);
-        graphics.drawString(font, Component.literal(countLabel), countX, textY, HEADER_COUNT_COLOR, false);
+        UiText.drawClipped(graphics, font, caret, x + 4, textY, CARET_WIDTH, HEADER_TEXT_COLOR);
+        var labelX = x + 4 + CARET_WIDTH + 2;
+        UiText.drawClipped(graphics, font, section.displayName, labelX, textY, Math.max(0, countX - labelX - 4), HEADER_TEXT_COLOR);
+        UiText.drawClipped(graphics, font, countLabel, countX, textY, Math.max(0, rowRight - countX - 4), HEADER_COUNT_COLOR);
 
         headerHits.add(new HeaderHit(x, y, rowRight - x, HEADER_HEIGHT, section));
         return y + HEADER_HEIGHT;
@@ -313,7 +312,7 @@ public final class ContentBrowserPanel implements Panel {
 
     private int renderEmptyRow(GuiGraphics graphics, int x, int y, int width) {
         var font = EngineFont.get();
-        graphics.drawString(font, Component.literal("(none)"), x + 12, y + (ROW_HEIGHT - font.lineHeight + 2) / 2, EMPTY_TEXT_COLOR, false);
+        UiText.drawClipped(graphics, font, "(none)", x + 12, y + (ROW_HEIGHT - font.lineHeight + 2) / 2, Math.max(0, width - 12), EMPTY_TEXT_COLOR);
         return y + ROW_HEIGHT;
     }
 
@@ -392,8 +391,7 @@ public final class ContentBrowserPanel implements Panel {
         Runnable onOpen,
         Runnable onDelete
     ) {
-        // Reserve the scrollbar gutter so the row hover background and right-aligned buttons don't sit under the bar.
-        var rowRight = x + width - ScrollContainer.SCROLLBAR_GUTTER;
+        var rowRight = x + width;
         var hovered = mouseX >= x && mouseX < rowRight && mouseY >= y && mouseY < y + ROW_HEIGHT;
         if (hovered) {
             graphics.fill(x, y, rowRight, y + ROW_HEIGHT, ROW_BG_HOVER_COLOR);
@@ -421,8 +419,7 @@ public final class ContentBrowserPanel implements Panel {
         // Truncate label to avoid overlap with buttons.
         var labelMaxX = openX - 6;
         var labelMaxWidth = Math.max(0, labelMaxX - (x + 12));
-        var truncated = font.plainSubstrByWidth(label, labelMaxWidth);
-        graphics.drawString(font, Component.literal(truncated), x + 12, textY, hovered ? ROW_TEXT_HOVER_COLOR : ROW_TEXT_COLOR, false);
+        UiText.drawClipped(graphics, font, label, x + 12, textY, labelMaxWidth, hovered ? ROW_TEXT_HOVER_COLOR : ROW_TEXT_COLOR);
 
         rowButtonHits.add(new RowButtonHit(deleteRect, onDelete));
         if (openRect != null) {
@@ -441,9 +438,7 @@ public final class ContentBrowserPanel implements Panel {
         graphics.fill(rect.x + rect.w - 1, rect.y, rect.x + rect.w, rect.y + rect.h, BUTTON_BORDER);
 
         var font = EngineFont.get();
-        var textX = rect.x + (rect.w - font.width(label)) / 2;
-        var textY = rect.y + (rect.h - font.lineHeight + 2) / 2;
-        graphics.drawString(font, Component.literal(label), textX, textY, textColor, false);
+        UiText.drawCentered(graphics, font, label, UiRect.of(rect.x + 2, rect.y, Math.max(0, rect.w - 4), rect.h), textColor);
     }
 
     private List<ResourceLocation> filterPools(String query) {
@@ -576,28 +571,7 @@ public final class ContentBrowserPanel implements Panel {
         if (mouseX < rectX || mouseX >= rectX + rectWidth || mouseY < rectY || mouseY >= rectY + rectHeight) {
             return false;
         }
-        return scroll.mouseScrolled(scrollY);
-    }
-
-    private static void applyRawScissor(GuiGraphics graphics, int x, int y, int w, int h) {
-        if (w <= 0 || h <= 0) {
-            RenderSystem.disableScissor();
-            return;
-        }
-        graphics.flush();
-
-        var matrix = graphics.pose().last().pose();
-        var topLeft = matrix.transformPosition((float) x, (float) y, 0f, new Vector3f());
-        var bottomRight = matrix.transformPosition((float) (x + w), (float) (y + h), 0f, new Vector3f());
-
-        var window = Minecraft.getInstance().getWindow();
-        var winHeight = window.getHeight();
-        var guiScale = window.getGuiScale();
-        var leftRaw = (int) ((double) topLeft.x * guiScale);
-        var bottomRaw = (int) ((double) winHeight - (double) bottomRight.y * guiScale);
-        var widthRaw = Math.max(0, (int) ((double) (bottomRight.x - topLeft.x) * guiScale));
-        var heightRaw = Math.max(0, (int) ((double) (bottomRight.y - topLeft.y) * guiScale));
-        RenderSystem.enableScissor(leftRaw, bottomRaw, widthRaw, heightRaw);
+        return scroll.mouseScrolled(mouseX, mouseY, scrollY);
     }
 
     private record Rect(

@@ -29,6 +29,8 @@ import com.blib.engine.modeler.history.ModelerActionHistory;
 import com.blib.engine.modeler.item.ModelerItemSession;
 import com.blib.engine.session.ProjectSession;
 import com.blib.engine.ui.EngineFont;
+import com.blib.engine.ui.layout.UiRect;
+import com.blib.engine.ui.layout.UiText;
 import com.blib.engine.ui.widget.SearchableSelect;
 import com.blib.engine.ui.widget.TextInput;
 import com.blib.mod.BLib;
@@ -182,10 +184,10 @@ public final class ModelerItemConfigSection {
         rowY += CONTENT_PADDING;
 
         var pickerX = x + CONTENT_PADDING;
-        var pickerW = Math.max(40, width - 2 * CONTENT_PADDING);
+        var pickerW = Math.max(0, width - 2 * CONTENT_PADDING);
 
         // Mode toggle — two side-by-side buttons.
-        modeButtonW = (pickerW - INPUT_GAP) / 2;
+        modeButtonW = Math.max(0, (pickerW - INPUT_GAP) / 2);
         modeIdleX = pickerX;
         modeIdleY = rowY;
         modeBlockingX = pickerX + modeButtonW + INPUT_GAP;
@@ -282,6 +284,24 @@ public final class ModelerItemConfigSection {
         visibleInputs.add(pzInput);
 
         return rowY;
+    }
+
+    public int measureHeight(int width) {
+        var session = ModelerScene.get().itemSession;
+        if (session == null) {
+            return 0;
+        }
+        var h = SECTION_HEADER_HEIGHT + CONTENT_PADDING;
+        h += BUTTON_HEIGHT + ROW_GAP;
+        h += SearchableSelect.HEIGHT + ROW_GAP;
+        if (session.editingContext == ItemDisplayContext.FIXED) {
+            h += BUTTON_HEIGHT + ROW_GAP;
+        }
+        h += 4 * vecSectionHeight();
+        if (assetConfigIdFor(session.itemId) == null) {
+            h += EngineFont.get().lineHeight + ROW_GAP;
+        }
+        return h;
     }
 
     /** Route click to the section's interactive widgets. Returns true when the click is consumed. */
@@ -556,7 +576,7 @@ public final class ModelerItemConfigSection {
         rowY += CONTENT_PADDING / 2;
         var inputsStart = x + CONTENT_PADDING;
         var available = Math.max(0, width - 2 * CONTENT_PADDING - 2 * INPUT_GAP);
-        var perInput = Math.max(24, available / 3);
+        var perInput = available / 3;
         var xX = inputsStart;
         var yX = inputsStart + perInput + INPUT_GAP;
         var zX = inputsStart + 2 * (perInput + INPUT_GAP);
@@ -571,18 +591,26 @@ public final class ModelerItemConfigSection {
 
     private static int drawSectionHeader(GuiGraphics graphics, Font font, int x, int y, int width, String label) {
         graphics.fill(x, y, x + width, y + SECTION_HEADER_HEIGHT, SECTION_HEADER_BG_COLOR);
-        graphics.drawString(
+        UiText.drawClipped(
+            graphics,
             font,
-            Component.literal(label),
+            label,
             x + CONTENT_PADDING,
             y + (SECTION_HEADER_HEIGHT - font.lineHeight + 2) / 2,
-            SECTION_HEADER_TEXT_COLOR,
-            false
+            Math.max(0, width - 2 * CONTENT_PADDING),
+            SECTION_HEADER_TEXT_COLOR
         );
         return y + SECTION_HEADER_HEIGHT;
     }
 
+    private static int vecSectionHeight() {
+        return SECTION_HEADER_HEIGHT + CONTENT_PADDING / 2 + TextInput.HEIGHT + ROW_GAP;
+    }
+
     private static void drawAxisCorner(GuiGraphics graphics, int inputX, int inputY, int inputWidth, int color) {
+        if (inputWidth <= 0) {
+            return;
+        }
         var rightEdge = inputX + inputWidth - 1;
         var topY = inputY;
         for (var i = 0; i < AXIS_CORNER_SIZE; i++) {
@@ -607,15 +635,7 @@ public final class ModelerItemConfigSection {
         int bg = active ? BUTTON_ACTIVE_BG : (hovered ? BUTTON_HOVER_BG : BUTTON_BG);
         graphics.fill(x, y, x + width, y + BUTTON_HEIGHT, bg);
         drawBorder(graphics, x, y, width, BUTTON_HEIGHT);
-        var labelWidth = font.width(label);
-        graphics.drawString(
-            font,
-            Component.literal(label),
-            x + (width - labelWidth) / 2,
-            y + (BUTTON_HEIGHT - font.lineHeight + 2) / 2,
-            BUTTON_TEXT,
-            false
-        );
+        UiText.drawCentered(graphics, font, label, UiRect.of(x + 2, y, Math.max(0, width - 4), BUTTON_HEIGHT), BUTTON_TEXT);
     }
 
     private static void drawCheckboxRow(
@@ -642,13 +662,15 @@ public final class ModelerItemConfigSection {
         if (checked) {
             graphics.fill(boxX + 2, boxY + 2, boxX + CHECKBOX_SIZE - 2, boxY + CHECKBOX_SIZE - 2, CHECKBOX_FILL);
         }
-        graphics.drawString(
+        var labelX = boxX + CHECKBOX_SIZE + 4;
+        UiText.drawClipped(
+            graphics,
             font,
-            Component.literal(label),
-            boxX + CHECKBOX_SIZE + 4,
+            label,
+            labelX,
             y + (BUTTON_HEIGHT - font.lineHeight + 2) / 2,
-            BUTTON_TEXT,
-            false
+            Math.max(0, x + width - labelX - 2),
+            BUTTON_TEXT
         );
     }
 

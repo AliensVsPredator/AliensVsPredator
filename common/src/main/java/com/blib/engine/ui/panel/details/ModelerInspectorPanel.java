@@ -2,7 +2,6 @@ package com.blib.engine.ui.panel.details;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -19,6 +18,10 @@ import com.blib.engine.modeler.history.ModelerAction;
 import com.blib.engine.modeler.history.ModelerActionHistory;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.dock.Panel;
+import com.blib.engine.ui.layout.ScrollViewport;
+import com.blib.engine.ui.layout.UiRect;
+import com.blib.engine.ui.layout.UiText;
+import com.blib.engine.ui.widget.ScrollContainer;
 import com.blib.engine.ui.widget.TextInput;
 
 /**
@@ -80,6 +83,8 @@ public final class ModelerInspectorPanel implements Panel {
 
     private final ModelerItemConfigSection itemConfig = new ModelerItemConfigSection();
 
+    private final ScrollViewport scroll = new ScrollViewport();
+
     /** Which Vec3 field on the selected cube or bone an input commits into. */
     private enum VecField {
         ORIGIN,
@@ -140,6 +145,8 @@ public final class ModelerInspectorPanel implements Panel {
      */
     private final List<TextInput> visibleInputs = new ArrayList<>();
 
+    private int panelX, panelY, panelWidth, panelHeight;
+
     @Override
     public String title() {
         return "Modeler Inspector";
@@ -147,38 +154,52 @@ public final class ModelerInspectorPanel implements Panel {
 
     @Override
     public void render(GuiGraphics graphics, int x, int y, int width, int height, int mouseX, int mouseY, float partialTick) {
+        panelX = x;
+        panelY = y;
+        panelWidth = width;
+        panelHeight = height;
         graphics.fill(x, y, x + width, y + height, BG_COLOR);
         visibleInputs.clear();
 
         var scene = ModelerScene.get();
+        var measuredWidth = Math.max(0, width - ScrollContainer.SCROLLBAR_GUTTER);
+        var contentHeight = measureContentHeight(scene, measuredWidth);
+        var frame = scroll.begin(graphics, UiRect.of(x, y, width, height), contentHeight);
+        var contentX = frame.contentX();
+        var contentY = frame.contentY() + CONTENT_PADDING;
+        var contentW = frame.contentWidth();
 
-        // Item-config mode is mutually exclusive with entity-model editing: when a session is attached, only the
-        // Item Config section is shown; the cube/bone inspector below would be referencing a scene the user isn't
-        // editing anyway.
-        if (scene.itemSession != null) {
-            itemConfig.render(graphics, x, y + CONTENT_PADDING, width, mouseX, mouseY);
-            return;
-        }
+        try {
+            // Item-config mode is mutually exclusive with entity-model editing: when a session is attached, only the
+            // Item Config section is shown; the cube/bone inspector below would be referencing a scene the user isn't
+            // editing anyway.
+            if (scene.itemSession != null) {
+                itemConfig.render(graphics, contentX, contentY, contentW, mouseX, mouseY);
+                return;
+            }
 
-        var selection = scene.selection;
-        if (selection == null) {
-            drawHeader(graphics, x, y + CONTENT_PADDING, "Nothing selected");
-            return;
-        }
+            var selection = scene.selection;
+            if (selection == null) {
+                drawHeader(graphics, contentX, contentY, contentW, "Nothing selected");
+                return;
+            }
 
-        if (selection instanceof Selection.BoneSelection bs) {
-            renderBone(graphics, x, y + CONTENT_PADDING, width, bs.bone(), mouseX, mouseY);
-        } else if (selection instanceof Selection.CubeSelection cs) {
-            renderCube(graphics, x, y + CONTENT_PADDING, width, cs.cube(), mouseX, mouseY);
-        } else if (selection instanceof Selection.MultiCubeSelection ms) {
-            // Multi-cube: inspector edits the primary cube only — group edits via the UV map's drag/marquee path.
-            renderCube(graphics, x, y + CONTENT_PADDING, width, ms.primary().cube(), mouseX, mouseY);
+            if (selection instanceof Selection.BoneSelection bs) {
+                renderBone(graphics, contentX, contentY, contentW, bs.bone(), mouseX, mouseY);
+            } else if (selection instanceof Selection.CubeSelection cs) {
+                renderCube(graphics, contentX, contentY, contentW, cs.cube(), mouseX, mouseY);
+            } else if (selection instanceof Selection.MultiCubeSelection ms) {
+                // Multi-cube: inspector edits the primary cube only — group edits via the UV map's drag/marquee path.
+                renderCube(graphics, contentX, contentY, contentW, ms.primary().cube(), mouseX, mouseY);
+            }
+        } finally {
+            scroll.end(graphics, mouseX, mouseY);
         }
     }
 
     private void renderCube(GuiGraphics graphics, int x, int y, int width, ModelerCube cube, int mouseX, int mouseY) {
         var font = EngineFont.get();
-        drawHeader(graphics, x, y, "Cube: " + cube.name);
+        drawHeader(graphics, x, y, width, "Cube: " + cube.name);
 
         // Sync inputs from the live cube state. Per-input skip-when-focused keeps the user's in-flight edit intact.
         // Size displays as whole numbers (no decimals) since the resize gizmo + commit path both snap to ints.
@@ -198,7 +219,7 @@ public final class ModelerInspectorPanel implements Panel {
 
     private void renderBone(GuiGraphics graphics, int x, int y, int width, ModelerBone bone, int mouseX, int mouseY) {
         var font = EngineFont.get();
-        drawHeader(graphics, x, y, "Bone: " + bone.name);
+        drawHeader(graphics, x, y, width, "Bone: " + bone.name);
 
         // Bones only expose pivot + rotation in the inspector; position and size (scale) edits aren't meaningful for
         // a bone group and were dropped for the same reason Blockbench keeps the bone properties minimal.
@@ -208,12 +229,20 @@ public final class ModelerInspectorPanel implements Panel {
         var rowY = y + HEADER_TOP_PADDING + font.lineHeight + HEADER_TO_SECTION_GAP;
         rowY = renderVecSection(graphics, font, x, rowY, width, "Pivot Point", pivotX, pivotY, pivotZ, mouseX, mouseY);
         rowY = renderVecSection(graphics, font, x, rowY, width, "Rotation", rotationX, rotationY, rotationZ, mouseX, mouseY);
-        drawCountRow(graphics, font, x, rowY + CONTENT_PADDING, "Children", bone.children.size(), "Cubes", bone.cubes.size());
+        drawCountRow(graphics, font, x, rowY + CONTENT_PADDING, width, "Children", bone.children.size(), "Cubes", bone.cubes.size());
     }
 
-    private void drawHeader(GuiGraphics graphics, int x, int y, String text) {
+    private void drawHeader(GuiGraphics graphics, int x, int y, int width, String text) {
         var font = EngineFont.get();
-        graphics.drawString(font, Component.literal(text), x + CONTENT_PADDING, y + HEADER_TOP_PADDING, HEADER_COLOR, false);
+        UiText.drawClipped(
+            graphics,
+            font,
+            text,
+            x + CONTENT_PADDING,
+            y + HEADER_TOP_PADDING,
+            Math.max(0, width - 2 * CONTENT_PADDING),
+            HEADER_COLOR
+        );
     }
 
     /**
@@ -238,7 +267,7 @@ public final class ModelerInspectorPanel implements Panel {
 
         var inputsStart = x + CONTENT_PADDING;
         var available = Math.max(0, width - 2 * CONTENT_PADDING - 2 * INPUT_GAP);
-        var perInput = Math.max(24, available / 3);
+        var perInput = available / 3;
         var xX = inputsStart;
         var yX = inputsStart + perInput + INPUT_GAP;
         var zX = inputsStart + 2 * (perInput + INPUT_GAP);
@@ -265,6 +294,9 @@ public final class ModelerInspectorPanel implements Panel {
      * standard pixel-stair style.
      */
     private static void drawAxisCorner(GuiGraphics graphics, int inputX, int inputY, int inputWidth, int color) {
+        if (inputWidth <= 0) {
+            return;
+        }
         var rightEdge = inputX + inputWidth - 1;
         var topY = inputY;
         for (var i = 0; i < AXIS_CORNER_SIZE; i++) {
@@ -292,7 +324,7 @@ public final class ModelerInspectorPanel implements Panel {
         var rowY = drawSectionHeader(graphics, font, x, y, width, label);
         rowY += CONTENT_PADDING / 2;
         var inputX = x + CONTENT_PADDING;
-        var inputW = Math.max(24, width - 2 * CONTENT_PADDING);
+        var inputW = Math.max(0, width - 2 * CONTENT_PADDING);
         input.render(graphics, inputX, rowY, inputW, mouseX, mouseY);
         visibleInputs.add(input);
         return rowY + TextInput.HEIGHT + ROW_GAP;
@@ -300,25 +332,41 @@ public final class ModelerInspectorPanel implements Panel {
 
     private static int drawSectionHeader(GuiGraphics graphics, Font font, int x, int y, int width, String label) {
         graphics.fill(x, y, x + width, y + SECTION_HEADER_HEIGHT, SECTION_HEADER_BG_COLOR);
-        graphics.drawString(
+        UiText.drawClipped(
+            graphics,
             font,
-            Component.literal(label),
+            label,
             x + CONTENT_PADDING,
             // +2 compensates for MC font's descender padding so the section label visually centers.
             y + (SECTION_HEADER_HEIGHT - font.lineHeight + 2) / 2,
-            SECTION_HEADER_TEXT_COLOR,
-            false
+            Math.max(0, width - 2 * CONTENT_PADDING),
+            SECTION_HEADER_TEXT_COLOR
         );
         return y + SECTION_HEADER_HEIGHT;
     }
 
-    private static void drawCountRow(GuiGraphics graphics, Font font, int x, int y, String label1, int count1, String label2, int count2) {
-        graphics.drawString(font, Component.literal(label1 + ": " + count1), x + CONTENT_PADDING, y, LABEL_COLOR, false);
-        graphics.drawString(font, Component.literal(label2 + ": " + count2), x + CONTENT_PADDING + 80, y, LABEL_COLOR, false);
+    private static void drawCountRow(
+        GuiGraphics graphics,
+        Font font,
+        int x,
+        int y,
+        int width,
+        String label1,
+        int count1,
+        String label2,
+        int count2
+    ) {
+        var row = UiRect.of(x + CONTENT_PADDING, y, Math.max(0, width - 2 * CONTENT_PADDING), font.lineHeight);
+        var columns = com.blib.engine.ui.layout.VerticalLayout.columns(row, 2, INPUT_GAP);
+        UiText.drawClipped(graphics, font, label1 + ": " + count1, columns[0].x(), columns[0].y(), columns[0].width(), LABEL_COLOR);
+        UiText.drawClipped(graphics, font, label2 + ": " + count2, columns[1].x(), columns[1].y(), columns[1].width(), LABEL_COLOR);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (scroll.mouseClicked(mouseX, mouseY, button)) {
+            return true;
+        }
         // Item-config widgets first — its pickers, mode toggle, dump button, pivot-viz checkbox, and 12 transform
         // inputs all belong to the section.
         if (itemConfig.mouseClicked(mouseX, mouseY, button)) {
@@ -332,6 +380,43 @@ public final class ModelerInspectorPanel implements Panel {
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        return scroll.mouseDragged(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        return scroll.mouseReleased(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (mouseX < panelX || mouseX >= panelX + panelWidth || mouseY < panelY || mouseY >= panelY + panelHeight) {
+            return false;
+        }
+        return scroll.mouseScrolled(mouseX, mouseY, scrollY);
+    }
+
+    private int measureContentHeight(ModelerScene scene, int width) {
+        var font = EngineFont.get();
+        if (scene.itemSession != null) {
+            return CONTENT_PADDING + itemConfig.measureHeight(width) + CONTENT_PADDING;
+        }
+        var headerHeight = HEADER_TOP_PADDING + font.lineHeight + HEADER_TO_SECTION_GAP;
+        if (scene.selection == null) {
+            return CONTENT_PADDING + headerHeight + CONTENT_PADDING;
+        }
+        if (scene.selection instanceof Selection.BoneSelection) {
+            return CONTENT_PADDING + headerHeight + 2 * inspectorSectionHeight() + CONTENT_PADDING + font.lineHeight + CONTENT_PADDING;
+        }
+        return CONTENT_PADDING + headerHeight + 5 * inspectorSectionHeight() + CONTENT_PADDING;
+    }
+
+    private static int inspectorSectionHeight() {
+        return SECTION_HEADER_HEIGHT + CONTENT_PADDING / 2 + TextInput.HEIGHT + ROW_GAP;
     }
 
     // === Sync ===

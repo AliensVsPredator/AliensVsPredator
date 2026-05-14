@@ -1,13 +1,10 @@
 package com.blib.engine.ui.panel.faction;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -20,7 +17,9 @@ import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.PanelPlaceholder;
 import com.blib.engine.ui.ProjectContentActionHandler;
 import com.blib.engine.ui.dock.Panel;
-import com.blib.engine.ui.widget.ScrollContainer;
+import com.blib.engine.ui.layout.ScrollViewport;
+import com.blib.engine.ui.layout.UiRect;
+import com.blib.engine.ui.layout.UiText;
 import com.blib.engine.ui.widget.TextInput;
 import com.blib.internal.client.faction.ClientFactionDirectoryCache;
 import com.blib.mod.BLib;
@@ -84,7 +83,7 @@ public final class FactionBrowserPanel implements Panel {
 
     private final TextInput searchInput = new TextInput("Filter…");
 
-    private final ScrollContainer scroll = new ScrollContainer();
+    private final ScrollViewport scroll = new ScrollViewport();
 
     private final @Nullable ProjectContentActionHandler actionHandler;
 
@@ -135,6 +134,7 @@ public final class FactionBrowserPanel implements Panel {
 
         // Faction directory is fetched from the server. No world ⇒ no server ⇒ no directory.
         if (Minecraft.getInstance().level == null) {
+            scroll.clear();
             PanelPlaceholder.drawCentered(graphics, x, y, width, height, PanelPlaceholder.NEEDS_WORLD);
             return;
         }
@@ -157,6 +157,7 @@ public final class FactionBrowserPanel implements Panel {
         var listW = width - 2 * CONTENT_PADDING;
         var listH = Math.max(0, height - (listY - y) - CONTENT_PADDING);
         if (listH <= 0) {
+            scroll.clear();
             return;
         }
 
@@ -164,33 +165,32 @@ public final class FactionBrowserPanel implements Panel {
         var filtered = filter(query);
 
         if (filtered.isEmpty()) {
+            scroll.clear();
             var font = EngineFont.get();
             var msg = ClientFactionDirectoryCache.entries().isEmpty() ? "(no factions)" : "(no matches)";
-            graphics.drawString(font, Component.literal(msg), listX, listY, EMPTY_TEXT_COLOR, false);
+            UiText.drawClipped(graphics, font, msg, listX, listY, listW, EMPTY_TEXT_COLOR);
             return;
         }
 
         var contentHeight = filtered.size() * ROW_HEIGHT;
-        scroll.layout(listH, contentHeight);
 
         var selected = currentSelectedFactionId();
 
-        applyRawScissor(graphics, listX, listY, listW, listH);
+        var frame = scroll.begin(graphics, UiRect.of(listX, listY, listW, listH), contentHeight);
         try {
-            var scrollY = (int) scroll.scrollY();
+            var contentX = frame.contentX();
+            var contentW = frame.contentWidth();
+            var scrollY = frame.scrollY();
             var firstVisibleRow = Math.max(0, scrollY / ROW_HEIGHT);
             var lastVisibleRow = Math.min(filtered.size() - 1, (scrollY + listH) / ROW_HEIGHT);
             for (var i = firstVisibleRow; i <= lastVisibleRow; i++) {
                 var entry = filtered.get(i);
                 var rowY = listY + i * ROW_HEIGHT - scrollY;
-                renderRow(graphics, listX, rowY, listW, entry, selected, mouseX, mouseY);
+                renderRow(graphics, contentX, rowY, contentW, entry, selected, mouseX, mouseY);
             }
         } finally {
-            graphics.flush();
-            RenderSystem.disableScissor();
+            scroll.end(graphics, mouseX, mouseY);
         }
-
-        scroll.renderScrollbar(graphics, listX, listY, listW, listH, mouseX, mouseY);
     }
 
     private void renderRow(
@@ -203,8 +203,7 @@ public final class FactionBrowserPanel implements Panel {
         int mouseX,
         int mouseY
     ) {
-        // Reserve the scrollbar gutter so the row hover background and right-aligned Delete button stay clear of it.
-        var rowRight = x + width - ScrollContainer.SCROLLBAR_GUTTER;
+        var rowRight = x + width;
         var hovered = mouseX >= x && mouseX < rowRight && mouseY >= y && mouseY < y + ROW_HEIGHT;
         var isSelected = selectedId != null && selectedId.equals(entry.id());
         if (isSelected) {
@@ -235,9 +234,8 @@ public final class FactionBrowserPanel implements Panel {
         var memberWidth = font.width(memberLabel);
         var nameMaxWidth = Math.max(0, deleteX - nameX - memberWidth - 12);
         var nameColor = hovered ? ROW_TEXT_HOVER_COLOR : ROW_TEXT_COLOR;
-        var truncatedName = font.plainSubstrByWidth(entry.name(), nameMaxWidth);
-        graphics.drawString(font, Component.literal(truncatedName), nameX, textY, nameColor, false);
-        graphics.drawString(font, Component.literal(memberLabel), deleteX - memberWidth - 6, textY, META_COLOR, false);
+        UiText.drawClipped(graphics, font, entry.name(), nameX, textY, nameMaxWidth, nameColor);
+        UiText.drawClipped(graphics, font, memberLabel, deleteX - memberWidth - 6, textY, memberWidth, META_COLOR);
 
         rowHits.add(new RowHit(x, y, width, ROW_HEIGHT, entry.id(), deleteRect));
     }
@@ -251,9 +249,7 @@ public final class FactionBrowserPanel implements Panel {
         graphics.fill(rect.x + rect.w - 1, rect.y, rect.x + rect.w, rect.y + rect.h, BUTTON_BORDER);
 
         var font = EngineFont.get();
-        var textX = rect.x + (rect.w - font.width(label)) / 2;
-        var textY = rect.y + (rect.h - font.lineHeight + 2) / 2;
-        graphics.drawString(font, Component.literal(label), textX, textY, textColor, false);
+        UiText.drawCentered(graphics, font, label, UiRect.of(rect.x + 2, rect.y, Math.max(0, rect.w - 4), rect.h), textColor);
     }
 
     private List<S2CFactionDirectoryPayload.FactionEntry> filter(String query) {
@@ -365,28 +361,7 @@ public final class FactionBrowserPanel implements Panel {
         if (mouseX < rectX || mouseX >= rectX + rectWidth || mouseY < rectY || mouseY >= rectY + rectHeight) {
             return false;
         }
-        return scroll.mouseScrolled(scrollY);
-    }
-
-    private static void applyRawScissor(GuiGraphics graphics, int x, int y, int w, int h) {
-        if (w <= 0 || h <= 0) {
-            RenderSystem.disableScissor();
-            return;
-        }
-        graphics.flush();
-
-        var matrix = graphics.pose().last().pose();
-        var topLeft = matrix.transformPosition((float) x, (float) y, 0f, new Vector3f());
-        var bottomRight = matrix.transformPosition((float) (x + w), (float) (y + h), 0f, new Vector3f());
-
-        var window = Minecraft.getInstance().getWindow();
-        var winHeight = window.getHeight();
-        var guiScale = window.getGuiScale();
-        var leftRaw = (int) ((double) topLeft.x * guiScale);
-        var bottomRaw = (int) ((double) winHeight - (double) bottomRight.y * guiScale);
-        var widthRaw = Math.max(0, (int) ((double) (bottomRight.x - topLeft.x) * guiScale));
-        var heightRaw = Math.max(0, (int) ((double) (bottomRight.y - topLeft.y) * guiScale));
-        RenderSystem.enableScissor(leftRaw, bottomRaw, widthRaw, heightRaw);
+        return scroll.mouseScrolled(mouseX, mouseY, scrollY);
     }
 
     private record Rect(

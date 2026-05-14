@@ -4,30 +4,28 @@ import net.minecraft.client.gui.GuiGraphics;
 import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.engine.ui.dock.Panel;
-import com.blib.engine.ui.widget.ScrollContainer;
+import com.blib.engine.ui.layout.ScrollViewport;
+import com.blib.engine.ui.layout.UiRect;
 
 /**
  * Common base for the engine's many "scrollable list" panels (outliner, content browser, faction members, tag browser,
- * action stack, pool editor, etc.). Centralises the {@link ScrollContainer} ownership + the scroll/clip/translate
- * pattern those panels currently repeat individually. Each implementer keeps its own row layout and render code; the
- * base just makes the scaffolding common.
+ * action stack, pool editor, etc.). Centralises the {@link ScrollViewport} ownership plus scroll, raw clipping, and
+ * scrollbar input. Each implementer keeps its own row layout and render code; the base just makes the scaffolding
+ * common.
  * <p>
  * Subclass contract:
  * <ul>
  * <li>{@link #contentHeight} reports total content height for the current frame's data.</li>
- * <li>{@link #renderRows} draws rows at content-coordinate {@code y} (i.e. before the scroll translate). The base
- * translates the pose stack so {@code y=0} is the top of the panel's visible area at the current scroll offset.</li>
+ * <li>{@link #renderRows} draws rows at screen-space content coordinates after the current scroll offset has already
+ * been applied. This keeps child widget hit-rects in the same coordinate space as mouse input.</li>
  * </ul>
- * Mouse + keyboard inputs flow through normally; only {@link #mouseScrolled} is intercepted to drive the scroll
- * container. Panels that also want to forward scrollbar clicks/drags should expose their own
- * {@link #mouseClickedCapture} / {@link #mouseDragged} / {@link #mouseReleased} overrides; the base provides hooks for
- * doing this against {@link #scrollbar()} but does not bind them by default (panels often have additional capture
- * regions like splitters or thumb drags they need to coordinate).
+ * Mouse + keyboard inputs flow through normally; scroll wheel and scrollbar dragging are handled here. Subclasses can
+ * still layer additional capture regions around the scrollbar.
  */
 @ApiStatus.Internal
 public abstract class ScrollableListPanel implements Panel {
 
-    protected final ScrollContainer scrollbar = new ScrollContainer();
+    protected final ScrollViewport scrollbar = new ScrollViewport();
 
     /** Last rendered rect — captured at render time so input methods can hit-test against it. */
     private int lastX;
@@ -38,7 +36,7 @@ public abstract class ScrollableListPanel implements Panel {
 
     private int lastHeight;
 
-    protected final ScrollContainer scrollbar() {
+    protected final ScrollViewport scrollbar() {
         return scrollbar;
     }
 
@@ -93,17 +91,27 @@ public abstract class ScrollableListPanel implements Panel {
         this.lastWidth = width;
         this.lastHeight = height;
 
-        scrollbar.layout(height, contentHeight());
-        var scrollY = (int) scrollbar.scrollY();
+        var frame = scrollbar.begin(graphics, UiRect.of(x, y, width, height), contentHeight());
+        try {
+            renderRows(graphics, frame.contentX(), frame.contentY(), frame.contentWidth(), height, mouseX, mouseY + frame.scrollY(), partialTick);
+        } finally {
+            scrollbar.end(graphics, mouseX, mouseY);
+        }
+    }
 
-        graphics.enableScissor(x, y, x + width, y + height);
-        graphics.pose().pushPose();
-        graphics.pose().translate(0, -scrollY, 0);
-        renderRows(graphics, x, y, width, height, mouseX, mouseY + scrollY, partialTick);
-        graphics.pose().popPose();
-        graphics.disableScissor();
+    @Override
+    public boolean mouseClickedCapture(double mouseX, double mouseY, int button) {
+        return scrollbar.mouseClicked(mouseX, mouseY, button);
+    }
 
-        scrollbar.renderScrollbar(graphics, x, y, width, height, mouseX, mouseY);
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        return scrollbar.mouseDragged(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        return scrollbar.mouseReleased(mouseX, mouseY, button);
     }
 
     @Override
@@ -114,7 +122,7 @@ public abstract class ScrollableListPanel implements Panel {
                 && mouseY >= lastY
                 && mouseY < lastY + lastHeight
         ) {
-            return scrollbar.mouseScrolled(scrollY);
+            return scrollbar.mouseScrolled(mouseX, mouseY, scrollY);
         }
         return false;
     }

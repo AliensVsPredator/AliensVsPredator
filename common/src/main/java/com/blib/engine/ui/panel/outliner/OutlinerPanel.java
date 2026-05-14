@@ -1,6 +1,5 @@
 package com.blib.engine.ui.panel.outliner;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -11,7 +10,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -26,8 +24,10 @@ import com.blib.engine.session.EngineMode;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.PanelPlaceholder;
 import com.blib.engine.ui.dock.Panel;
+import com.blib.engine.ui.layout.ScrollViewport;
+import com.blib.engine.ui.layout.UiRect;
+import com.blib.engine.ui.layout.UiText;
 import com.blib.engine.ui.popup.EntityContextMenuHandler;
-import com.blib.engine.ui.widget.ScrollContainer;
 import com.blib.engine.ui.widget.TextInput;
 
 /**
@@ -104,7 +104,7 @@ public final class OutlinerPanel implements Panel {
 
     private final TextInput searchInput = new TextInput("Filter entities…");
 
-    private final ScrollContainer scroll = new ScrollContainer();
+    private final ScrollViewport scroll = new ScrollViewport();
 
     private final EnumSet<Category> collapsed = EnumSet.noneOf(Category.class);
 
@@ -170,6 +170,7 @@ public final class OutlinerPanel implements Panel {
         // No world ⇒ no entities ⇒ no point rendering the search bar or list. Stop before touching mc.level anywhere
         // downstream.
         if (Minecraft.getInstance().level == null) {
+            scroll.clear();
             PanelPlaceholder.drawCentered(graphics, x, y, width, height, PanelPlaceholder.NEEDS_WORLD);
             return;
         }
@@ -188,6 +189,7 @@ public final class OutlinerPanel implements Panel {
         var totalEntries = grouped.values().stream().mapToInt(List::size).sum();
 
         if (totalEntries == 0) {
+            scroll.clear();
             renderEmptyMessage(graphics, x + CONTENT_PADDING, listY);
             return;
         }
@@ -206,38 +208,31 @@ public final class OutlinerPanel implements Panel {
                 contentHeight += rows.size() * ROW_HEIGHT;
             }
         }
-        scroll.layout(listH, contentHeight);
-
         var selectedEntity = currentSelectedEntity();
 
-        // Scissor-clip the list region so rows don't bleed past the panel rect during scroll. Mirrors the pattern
-        // used by PiecePalettePanel/GOAPDetailsPanel — raw scissor (not GuiGraphics's stack) for predictable behavior
-        // even if upstream HUD code left dirty state on the stack.
-        applyRawScissor(graphics, x + CONTENT_PADDING, listY, width - 2 * CONTENT_PADDING, listH);
+        var frame = scroll.begin(graphics, UiRect.of(x + CONTENT_PADDING, listY, width - 2 * CONTENT_PADDING, listH), contentHeight);
         try {
-            var scrollY = (int) scroll.scrollY();
-            var cursorY = listY - scrollY;
+            var contentX = frame.contentX();
+            var contentW = frame.contentWidth();
+            var cursorY = frame.contentY();
             for (var cat : Category.values()) {
                 var rows = grouped.get(cat);
                 if (rows == null || rows.isEmpty()) {
                     continue;
                 }
-                renderHeader(graphics, x + CONTENT_PADDING, cursorY, width - 2 * CONTENT_PADDING, cat, rows.size(), mouseX, mouseY);
+                renderHeader(graphics, contentX, cursorY, contentW, cat, rows.size(), mouseX, mouseY);
                 cursorY += HEADER_HEIGHT;
                 if (collapsed.contains(cat)) {
                     continue;
                 }
                 for (var entry : rows) {
-                    renderRow(graphics, x + CONTENT_PADDING, cursorY, width - 2 * CONTENT_PADDING, entry, selectedEntity, mouseX, mouseY);
+                    renderRow(graphics, contentX, cursorY, contentW, entry, selectedEntity, mouseX, mouseY);
                     cursorY += ROW_HEIGHT;
                 }
             }
         } finally {
-            graphics.flush();
-            RenderSystem.disableScissor();
+            scroll.end(graphics, mouseX, mouseY);
         }
-
-        scroll.renderScrollbar(graphics, x + CONTENT_PADDING, listY, width - 2 * CONTENT_PADDING, listH, mouseX, mouseY);
     }
 
     private void renderEmptyMessage(GuiGraphics graphics, int x, int y) {
@@ -250,12 +245,11 @@ public final class OutlinerPanel implements Panel {
         } else {
             msg = "(no matches)";
         }
-        graphics.drawString(font, Component.literal(msg), x, y, EMPTY_TEXT_COLOR, false);
+        UiText.drawClipped(graphics, font, msg, x, y, 160, EMPTY_TEXT_COLOR);
     }
 
     private void renderHeader(GuiGraphics graphics, int x, int y, int width, Category cat, int count, int mouseX, int mouseY) {
-        // Reserve the scrollbar gutter so the header background and right-aligned count don't slide under the bar.
-        var rowRight = x + width - ScrollContainer.SCROLLBAR_GUTTER;
+        var rowRight = x + width;
         var hovered = mouseX >= x && mouseX < rowRight && mouseY >= y && mouseY < y + HEADER_HEIGHT;
         var bg = hovered ? HEADER_BG_HOVER_COLOR : HEADER_BG_COLOR;
         graphics.fill(x, y, rowRight, y + HEADER_HEIGHT, bg);
@@ -265,12 +259,12 @@ public final class OutlinerPanel implements Panel {
         var font = EngineFont.get();
         var caret = collapsed.contains(cat) ? "▸" : "▾";
         var textY = y + (HEADER_HEIGHT - font.lineHeight + 2) / 2;
-        graphics.drawString(font, Component.literal(caret), x + 4, textY, HEADER_TEXT_COLOR, false);
-        graphics.drawString(font, Component.literal(cat.displayName), x + 4 + CARET_WIDTH + 2, textY, HEADER_TEXT_COLOR, false);
-
         var countLabel = "(" + count + ")";
         var countX = rowRight - 4 - font.width(countLabel);
-        graphics.drawString(font, Component.literal(countLabel), countX, textY, HEADER_COUNT_COLOR, false);
+        UiText.drawClipped(graphics, font, caret, x + 4, textY, CARET_WIDTH, HEADER_TEXT_COLOR);
+        var labelX = x + 4 + CARET_WIDTH + 2;
+        UiText.drawClipped(graphics, font, cat.displayName, labelX, textY, Math.max(0, countX - labelX - 4), HEADER_TEXT_COLOR);
+        UiText.drawClipped(graphics, font, countLabel, countX, textY, Math.max(0, rowRight - countX - 4), HEADER_COUNT_COLOR);
 
         headerHits.add(new HeaderHit(x, y, rowRight - x, HEADER_HEIGHT, cat));
     }
@@ -285,8 +279,7 @@ public final class OutlinerPanel implements Panel {
         int mouseX,
         int mouseY
     ) {
-        // Reserve the scrollbar gutter so the row hover background and right-aligned distance label stay clear of it.
-        var rowRight = x + width - ScrollContainer.SCROLLBAR_GUTTER;
+        var rowRight = x + width;
         var hovered = mouseX >= x && mouseX < rowRight && mouseY >= y && mouseY < y + ROW_HEIGHT;
         var selected = selectedEntity != null && selectedEntity == entry.entity;
         if (selected) {
@@ -303,13 +296,12 @@ public final class OutlinerPanel implements Panel {
         var distLabel = formatDistance(entry.distance);
         var distWidth = font.width(distLabel);
         var distX = rowRight - distWidth - 4;
-        graphics.drawString(font, Component.literal(distLabel), distX, textY, DISTANCE_TEXT_COLOR, false);
+        UiText.drawClipped(graphics, font, distLabel, distX, textY, distWidth, DISTANCE_TEXT_COLOR);
 
         var nameX = x + ROW_INDENT_X;
         var nameMaxWidth = Math.max(0, distX - nameX - 4);
         var nameColor = entry.selectable ? (hovered ? 0xFFFFFFFF : ROW_TEXT_COLOR) : ROW_TEXT_NONSELECTABLE_COLOR;
-        var truncated = font.plainSubstrByWidth(entry.name, nameMaxWidth);
-        graphics.drawString(font, Component.literal(truncated), nameX, textY, nameColor, false);
+        UiText.drawClipped(graphics, font, entry.name, nameX, textY, nameMaxWidth, nameColor);
 
         rowHits.add(new RowHit(x, y, rowRight - x, ROW_HEIGHT, entry.entity, entry.selectable));
 
@@ -476,33 +468,7 @@ public final class OutlinerPanel implements Panel {
         if (mouseX < rectX || mouseX >= rectX + rectWidth || mouseY < rectY || mouseY >= rectY + rectHeight) {
             return false;
         }
-        return scroll.mouseScrolled(scrollY);
-    }
-
-    /**
-     * GL scissor in workspace logical-pixel space. Same approach as PiecePalettePanel: transform through the active
-     * pose stack to get raw window pixels, then enable scissor directly so we don't depend on GuiGraphics's scissor
-     * stack being clean from upstream HUD callbacks.
-     */
-    private static void applyRawScissor(GuiGraphics graphics, int x, int y, int w, int h) {
-        if (w <= 0 || h <= 0) {
-            RenderSystem.disableScissor();
-            return;
-        }
-        graphics.flush();
-
-        var matrix = graphics.pose().last().pose();
-        var topLeft = matrix.transformPosition((float) x, (float) y, 0f, new Vector3f());
-        var bottomRight = matrix.transformPosition((float) (x + w), (float) (y + h), 0f, new Vector3f());
-
-        var window = Minecraft.getInstance().getWindow();
-        var winHeight = window.getHeight();
-        var guiScale = window.getGuiScale();
-        var leftRaw = (int) ((double) topLeft.x * guiScale);
-        var bottomRaw = (int) ((double) winHeight - (double) bottomRight.y * guiScale);
-        var widthRaw = Math.max(0, (int) ((double) (bottomRight.x - topLeft.x) * guiScale));
-        var heightRaw = Math.max(0, (int) ((double) (bottomRight.y - topLeft.y) * guiScale));
-        RenderSystem.enableScissor(leftRaw, bottomRaw, widthRaw, heightRaw);
+        return scroll.mouseScrolled(mouseX, mouseY, scrollY);
     }
 
     private record EntityEntry(
