@@ -108,6 +108,18 @@ public class BLibTerritoryIndex {
         return Collections.unmodifiableSet(allClaimedChunks);
     }
 
+    public Set<ChunkPos> getClaimedChunksInArea(int minChunkX, int minChunkZ, int maxChunkX, int maxChunkZ) {
+        var result = new HashSet<ChunkPos>();
+
+        for (var pos : allClaimedChunks) {
+            if (pos.x >= minChunkX && pos.x <= maxChunkX && pos.z >= minChunkZ && pos.z <= maxChunkZ) {
+                result.add(pos);
+            }
+        }
+
+        return Collections.unmodifiableSet(result);
+    }
+
     public Set<ResourceLocation> getClaimants(ChunkPos pos) {
         return Collections.unmodifiableSet(chunkToFactions.getOrDefault(pos, Set.of()));
     }

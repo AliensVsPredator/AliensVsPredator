@@ -77,7 +77,18 @@ public final class BLibClientListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(BLibClientListener.class);
 
     public static void handleChunkClaimsSync(S2CChunkClaimsSyncPayload payload, Player player) {
-        ClientTerritoryCache.INSTANCE.updateChunks(payload.dimension(), payload.entries());
+        if (payload.replaceArea()) {
+            ClientTerritoryCache.INSTANCE.replaceArea(
+                payload.dimension(),
+                payload.minChunkX(),
+                payload.minChunkZ(),
+                payload.maxChunkX(),
+                payload.maxChunkZ(),
+                payload.entries()
+            );
+        } else {
+            ClientTerritoryCache.INSTANCE.updateChunks(payload.dimension(), payload.entries());
+        }
     }
 
     public static void handleActionHistorySync(S2CActionHistorySyncPayload payload, Player player) {

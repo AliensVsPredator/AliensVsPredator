@@ -126,6 +126,7 @@ import com.blib.mod.common.network.packet.C2SRequestFactionMembersPayload;
 import com.blib.mod.common.network.packet.C2SRequestPlacedPiecesPayload;
 import com.blib.mod.common.network.packet.C2SRequestPoolDraftPayload;
 import com.blib.mod.common.network.packet.C2SRequestRegistryEntriesPayload;
+import com.blib.mod.common.network.packet.C2SRequestTerritoryClaimsPayload;
 import com.blib.mod.common.network.packet.C2SRequestTagCatalogPayload;
 import com.blib.mod.common.network.packet.C2SRequestTagDraftPayload;
 import com.blib.mod.common.network.packet.C2SSetBlockStatePropertyPayload;
@@ -166,6 +167,8 @@ import com.blib.mod.common.registry.init.BLibJigsawDataStoreTypes;
 public final class BLibServerListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BLibServerListener.class);
+
+    private static final int MAX_TERRITORY_REQUEST_WIDTH = 256;
 
     private BLibServerListener() {}
 
@@ -2606,6 +2609,56 @@ public final class BLibServerListener {
         );
         ActionHistory.push(action);
     }
+
+    public static void handleRequestTerritoryClaims(C2SRequestTerritoryClaimsPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer sp)) {
+            return;
+        }
+
+        var bounds = clampTerritoryRequestBounds(
+            payload.minChunkX(),
+            payload.minChunkZ(),
+            payload.maxChunkX(),
+            payload.maxChunkZ()
+        );
+
+        BLibTerritoryManager.INSTANCE.syncClaimsInAreaToPlayer(
+            sp.serverLevel(),
+            bounds.minChunkX(),
+            bounds.minChunkZ(),
+            bounds.maxChunkX(),
+            bounds.maxChunkZ(),
+            sp
+        );
+    }
+
+    private static TerritoryRequestBounds clampTerritoryRequestBounds(int minChunkX, int minChunkZ, int maxChunkX, int maxChunkZ) {
+        var minX = Math.min(minChunkX, maxChunkX);
+        var minZ = Math.min(minChunkZ, maxChunkZ);
+        var maxX = Math.max(minChunkX, maxChunkX);
+        var maxZ = Math.max(minChunkZ, maxChunkZ);
+
+        if ((long) maxX - minX + 1L > MAX_TERRITORY_REQUEST_WIDTH) {
+            var center = minX + (maxX - minX) / 2;
+            minX = center - MAX_TERRITORY_REQUEST_WIDTH / 2;
+            maxX = minX + MAX_TERRITORY_REQUEST_WIDTH - 1;
+        }
+
+        if ((long) maxZ - minZ + 1L > MAX_TERRITORY_REQUEST_WIDTH) {
+            var center = minZ + (maxZ - minZ) / 2;
+            minZ = center - MAX_TERRITORY_REQUEST_WIDTH / 2;
+            maxZ = minZ + MAX_TERRITORY_REQUEST_WIDTH - 1;
+        }
+
+        return new TerritoryRequestBounds(minX, minZ, maxX, maxZ);
+    }
+
+    private record TerritoryRequestBounds(
+        int minChunkX,
+        int minChunkZ,
+        int maxChunkX,
+        int maxChunkZ
+    ) {}
 
     /**
      * Parse a hex color string ("#RRGGBB", "RRGGBB", or "0xRRGGBB") into an int. Returns null on parse failure so the

@@ -26,6 +26,7 @@ import com.blib.internal.client.territory.ClientTerritoryCache;
 import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.C2SAddChunkClaimPayload;
 import com.blib.mod.common.network.packet.C2SRemoveChunkClaimPayload;
+import com.blib.mod.common.network.packet.C2SRequestTerritoryClaimsPayload;
 
 /**
  * Top-down 2D chunk-grid editor. Each cell represents one chunk; cell color follows the same rules as the world overlay
@@ -85,6 +86,10 @@ public final class TerritoryMapPanel implements Panel {
 
     private static final int DEFAULT_CELL_SIZE = 10;
 
+    private static final int TERRITORY_REQUEST_PADDING_CHUNKS = 8;
+
+    private static final long TERRITORY_REQUEST_INTERVAL_MS = 250L;
+
     /** View origin — the chunk centered in the map area. Floats so MMB pan accumulates smoothly. */
     private double viewCenterX;
 
@@ -129,6 +134,20 @@ public final class TerritoryMapPanel implements Panel {
 
     private @Nullable Integer paintButton;
 
+    private @Nullable ResourceLocation lastRequestedDimension;
+
+    private boolean hasRequestedArea;
+
+    private int lastRequestedMinChunkX;
+
+    private int lastRequestedMinChunkZ;
+
+    private int lastRequestedMaxChunkX;
+
+    private int lastRequestedMaxChunkZ;
+
+    private long lastTerritoryRequestMs;
+
     @Override
     public String title() {
         return "Territory Map";
@@ -137,6 +156,7 @@ public final class TerritoryMapPanel implements Panel {
     @Override
     public void onShown() {
         centerOnPlayer();
+        hasRequestedArea = false;
     }
 
     @Override
@@ -228,6 +248,7 @@ public final class TerritoryMapPanel implements Panel {
             var visibleCellsY = (mapH + cellSize) / cellSize + 1;
             var lastX = firstX + visibleCellsX;
             var lastZ = firstZ + visibleCellsY;
+            requestVisibleClaims(dimension, firstX, firstZ, lastX - 1, lastZ - 1);
 
             // Grid lines — drawn once per row/column as long strips spanning the full map area, instead of two per-
             // cell border fills × every visible cell. At 30×30 visible chunks this is ~60 fills vs ~1800 before.
@@ -540,6 +561,40 @@ public final class TerritoryMapPanel implements Panel {
         } else {
             BLib.MOD.networking().sendToServer(new C2SRemoveChunkClaimPayload(factionId, chunk.x, chunk.z));
         }
+    }
+
+    private void requestVisibleClaims(ResourceLocation dimension, int minChunkX, int minChunkZ, int maxChunkX, int maxChunkZ) {
+        var requestMinX = minChunkX - TERRITORY_REQUEST_PADDING_CHUNKS;
+        var requestMinZ = minChunkZ - TERRITORY_REQUEST_PADDING_CHUNKS;
+        var requestMaxX = maxChunkX + TERRITORY_REQUEST_PADDING_CHUNKS;
+        var requestMaxZ = maxChunkZ + TERRITORY_REQUEST_PADDING_CHUNKS;
+
+        if (
+            hasRequestedArea
+                && dimension.equals(lastRequestedDimension)
+                && requestMinX >= lastRequestedMinChunkX
+                && requestMinZ >= lastRequestedMinChunkZ
+                && requestMaxX <= lastRequestedMaxChunkX
+                && requestMaxZ <= lastRequestedMaxChunkZ
+        ) {
+            return;
+        }
+
+        var now = System.currentTimeMillis();
+        if (now - lastTerritoryRequestMs < TERRITORY_REQUEST_INTERVAL_MS) {
+            return;
+        }
+
+        BLib.MOD.networking()
+            .sendToServer(new C2SRequestTerritoryClaimsPayload(dimension, requestMinX, requestMinZ, requestMaxX, requestMaxZ));
+
+        lastRequestedDimension = dimension;
+        hasRequestedArea = true;
+        lastRequestedMinChunkX = requestMinX;
+        lastRequestedMinChunkZ = requestMinZ;
+        lastRequestedMaxChunkX = requestMaxX;
+        lastRequestedMaxChunkZ = requestMaxZ;
+        lastTerritoryRequestMs = now;
     }
 
     private static void applyRawScissor(GuiGraphics graphics, int x, int y, int w, int h) {

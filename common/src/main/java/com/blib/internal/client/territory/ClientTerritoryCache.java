@@ -48,6 +48,38 @@ public class ClientTerritoryCache {
         }
     }
 
+    public void replaceArea(
+        ResourceLocation dimension,
+        int minChunkX,
+        int minChunkZ,
+        int maxChunkX,
+        int maxChunkZ,
+        List<com.blib.mod.common.network.packet.S2CChunkClaimsSyncPayload.Entry> entries
+    ) {
+        var factionsByChunk = factionsByDimension.computeIfAbsent(dimension, $ -> new HashMap<>());
+        factionsByChunk
+            .keySet()
+            .removeIf(pos -> pos.x >= minChunkX && pos.x <= maxChunkX && pos.z >= minChunkZ && pos.z <= maxChunkZ);
+
+        for (var entry : entries) {
+            var pos = new ChunkPos(entry.chunkX(), entry.chunkZ());
+
+            if (entry.factionIds().isEmpty()) {
+                factionsByChunk.remove(pos);
+            } else {
+                factionsByChunk.put(pos, List.copyOf(entry.factionIds()));
+            }
+        }
+
+        if (factionsByChunk.isEmpty()) {
+            factionsByDimension.remove(dimension);
+        }
+
+        if (XaeroWorldMapCompat.isLoaded()) {
+            BLibChunkHighlighter.invalidateAll();
+        }
+    }
+
     public List<ResourceLocation> getFactionIds(ResourceLocation dimension, ChunkPos pos) {
         return chunksForDimension(dimension).getOrDefault(pos, List.of());
     }

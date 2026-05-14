@@ -217,7 +217,7 @@ public class BLibTerritoryManager {
     public S2CChunkClaimsSyncPayload buildSyncPayload(ServerLevel level, ChunkPos pos) {
         var claimants = getClaimants(level, pos);
 
-        return new S2CChunkClaimsSyncPayload(
+        return S2CChunkClaimsSyncPayload.incremental(
             level.dimension().location(),
             List.of(new S2CChunkClaimsSyncPayload.Entry(pos.x, pos.z, new ArrayList<>(claimants)))
         );
@@ -258,7 +258,7 @@ public class BLibTerritoryManager {
             .filter(factionId -> isFactionVisibleToPlayer(factionId, player))
             .toList();
 
-        return new S2CChunkClaimsSyncPayload(
+        return S2CChunkClaimsSyncPayload.incremental(
             level.dimension().location(),
             List.of(new S2CChunkClaimsSyncPayload.Entry(pos.x, pos.z, visibleFactions))
         );
@@ -280,14 +280,59 @@ public class BLibTerritoryManager {
             entries.add(new S2CChunkClaimsSyncPayload.Entry(pos.x, pos.z, visibleFactions));
 
             if (entries.size() >= SYNC_BATCH_SIZE) {
-                BLib.MOD.networking().sendToClient(player, new S2CChunkClaimsSyncPayload(level.dimension().location(), List.copyOf(entries)));
+                BLib.MOD.networking().sendToClient(player, S2CChunkClaimsSyncPayload.incremental(level.dimension().location(), List.copyOf(entries)));
                 entries.clear();
             }
         }
 
         if (!entries.isEmpty()) {
-            BLib.MOD.networking().sendToClient(player, new S2CChunkClaimsSyncPayload(level.dimension().location(), List.copyOf(entries)));
+            BLib.MOD.networking().sendToClient(player, S2CChunkClaimsSyncPayload.incremental(level.dimension().location(), List.copyOf(entries)));
         }
+    }
+
+    public void syncClaimsInAreaToPlayer(
+        ServerLevel level,
+        int minChunkX,
+        int minChunkZ,
+        int maxChunkX,
+        int maxChunkZ,
+        ServerPlayer player
+    ) {
+        var minX = Math.min(minChunkX, maxChunkX);
+        var minZ = Math.min(minChunkZ, maxChunkZ);
+        var maxX = Math.max(minChunkX, maxChunkX);
+        var maxZ = Math.max(minChunkZ, maxChunkZ);
+        var index = getOrCreateIndex(level);
+        var entries = new ArrayList<S2CChunkClaimsSyncPayload.Entry>();
+
+        for (var pos : index.getClaimedChunksInArea(minX, minZ, maxX, maxZ)) {
+            var visibleFactions = index.getClaimants(pos)
+                .stream()
+                .filter(factionId -> isFactionVisibleToPlayer(factionId, player))
+                .toList();
+
+            if (!visibleFactions.isEmpty()) {
+                entries.add(new S2CChunkClaimsSyncPayload.Entry(pos.x, pos.z, visibleFactions));
+            }
+        }
+
+        BLib.MOD.networking()
+            .sendToClient(
+                player,
+                S2CChunkClaimsSyncPayload.replaceArea(level.dimension().location(), minX, minZ, maxX, maxZ, entries)
+            );
+    }
+
+    public void syncClaimsAroundPlayer(ServerPlayer player, int radiusChunks) {
+        var center = player.chunkPosition();
+        syncClaimsInAreaToPlayer(
+            player.serverLevel(),
+            center.x - radiusChunks,
+            center.z - radiusChunks,
+            center.x + radiusChunks,
+            center.z + radiusChunks,
+            player
+        );
     }
 
     private boolean isFactionVisibleToPlayer(ResourceLocation factionId, ServerPlayer player) {

@@ -46,6 +46,7 @@ import com.blib.mod.common.network.packet.C2SRequestFactionMembersPayload;
 import com.blib.mod.common.network.packet.C2SRequestPlacedPiecesPayload;
 import com.blib.mod.common.network.packet.C2SRequestPoolDraftPayload;
 import com.blib.mod.common.network.packet.C2SRequestRegistryEntriesPayload;
+import com.blib.mod.common.network.packet.C2SRequestTerritoryClaimsPayload;
 import com.blib.mod.common.network.packet.C2SRequestTagCatalogPayload;
 import com.blib.mod.common.network.packet.C2SRequestTagDraftPayload;
 import com.blib.mod.common.network.packet.C2SSetBlockStatePropertyPayload;
@@ -404,6 +405,13 @@ public class BLibServerPacketHandlers {
                 C2SRemoveChunkClaimPayload.TYPE,
                 C2SRemoveChunkClaimPayload.CODEC,
                 BLibServerListener::handleRemoveChunkClaim
+            )
+        );
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromClient<>(
+                C2SRequestTerritoryClaimsPayload.TYPE,
+                C2SRequestTerritoryClaimsPayload.CODEC,
+                BLibServerListener::handleRequestTerritoryClaims
             )
         );
 

@@ -245,7 +245,10 @@ public class BLib {
                             () -> {
                                 if (player.connection != null) {
                                     BLibFactionManager.INSTANCE.syncAllFactionMetadataToPlayer(player);
-                                    BLibTerritoryManager.INSTANCE.syncAllClaimsToPlayer(player);
+                                    BLibTerritoryManager.INSTANCE.syncClaimsAroundPlayer(
+                                        player,
+                                        Math.max(16, player.server.getPlayerList().getViewDistance() + 2)
+                                    );
                                     BLib.MOD.networking()
                                         .sendToClient(
                                             player,
