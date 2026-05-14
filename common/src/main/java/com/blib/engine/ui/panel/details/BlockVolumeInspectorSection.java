@@ -66,15 +66,14 @@ public final class BlockVolumeInspectorSection implements InspectorSection<Block
 
     @Override
     public int render(GuiGraphics graphics, int x, int y, int width, BlockVolumeSelectable target, int mouseX, int mouseY) {
-        renderVolumeBody(graphics, EngineFont.get(), x, y, width, mouseX, mouseY);
-        return 0;
+        return renderVolumeBody(graphics, EngineFont.get(), x, y, width, mouseX, mouseY);
     }
 
     /**
      * Body of the volume inspector. Lifted from {@code DetailsPanel.internalRenderBlockVolumeView}.
      * {@link PlacedJigsawPieceInspectorSection} also calls this when rendering its embedded volume widgets.
      */
-    void renderVolumeBody(GuiGraphics graphics, Font font, int x, int y, int width, int mouseX, int mouseY) {
+    int renderVolumeBody(GuiGraphics graphics, Font font, int x, int y, int width, int mouseX, int mouseY) {
         var rowY = y;
 
         rowY = DetailsPanel.drawSectionHeader(graphics, font, x, rowY, width, "Tool");
@@ -104,8 +103,9 @@ public final class BlockVolumeInspectorSection implements InspectorSection<Block
             var sx = (long) (box.maxX - box.minX);
             var sy = (long) (box.maxY - box.minY);
             var sz = (long) (box.maxZ - box.minZ);
-            DetailsPanel.drawNote(graphics, font, x, rowY, "= " + (sx * sy * sz) + " blocks");
+            rowY = DetailsPanel.drawNote(graphics, font, x, rowY, "= " + (sx * sy * sz) + " blocks");
         }
+        return rowY;
     }
 
     /**

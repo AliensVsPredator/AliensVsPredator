@@ -20,6 +20,7 @@ import com.blib.engine.ui.PanelPlaceholder;
 import com.blib.engine.ui.ProjectContentActionHandler;
 import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.panel.base.InspectorSection;
+import com.blib.engine.ui.panel.base.InspectorSectionRegistry;
 import com.blib.engine.ui.widget.SearchableSelect;
 import com.blib.engine.ui.widget.SegmentedControl;
 import com.blib.engine.ui.widget.TextInput;
@@ -190,9 +191,15 @@ public final class DetailsPanel implements Panel {
             }
             var section = matchingSection(single);
             if (section != null) {
-                dispatchSection(section, graphics, x, rowY, width, single, mouseX, mouseY);
+                rowY = dispatchSection(section, graphics, x, rowY, width, single, mouseX, mouseY);
             } else {
                 internalRenderGenericView(graphics, font, x, rowY, width, single);
+            }
+            // After the built-in section, chain any externally-registered sections (registered via the public
+            // com.blib.api.client.engine.v1.inspector.InspectorSectionRegistry facade) at the y the built-in section
+            // returned. Downstream sections that don't apply to the current selection should just return y unchanged.
+            for (var contributed : InspectorSectionRegistry.matching(single)) {
+                rowY = dispatchSection(contributed, graphics, x, rowY, width, single, mouseX, mouseY);
             }
         }
     }
@@ -207,7 +214,7 @@ public final class DetailsPanel implements Panel {
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private static void dispatchSection(
+    private static int dispatchSection(
         InspectorSection<?> section,
         GuiGraphics graphics,
         int x,
@@ -217,7 +224,7 @@ public final class DetailsPanel implements Panel {
         int mouseX,
         int mouseY
     ) {
-        ((InspectorSection) section).render(graphics, x, y, width, target, mouseX, mouseY);
+        return ((InspectorSection) section).render(graphics, x, y, width, target, mouseX, mouseY);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -238,8 +245,14 @@ public final class DetailsPanel implements Panel {
             return false;
         }
         var section = matchingSection(single);
-        if (section != null) {
-            return dispatchSectionClick(section, mouseX, mouseY, button, single);
+        if (section != null && dispatchSectionClick(section, mouseX, mouseY, button, single)) {
+            return true;
+        }
+        // Fall through to contributed sections so downstream debug views can handle clicks (e.g. row hits, buttons).
+        for (var contributed : InspectorSectionRegistry.matching(single)) {
+            if (dispatchSectionClick(contributed, mouseX, mouseY, button, single)) {
+                return true;
+            }
         }
         return false;
     }

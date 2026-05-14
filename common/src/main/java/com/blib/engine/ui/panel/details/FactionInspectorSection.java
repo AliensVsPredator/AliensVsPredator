@@ -133,11 +133,10 @@ public final class FactionInspectorSection implements InspectorSection<FactionSe
 
     @Override
     public int render(GuiGraphics graphics, int x, int y, int width, FactionSelectable target, int mouseX, int mouseY) {
-        renderBody(graphics, EngineFont.get(), x, y, width, mouseX, mouseY, target);
-        return 0;
+        return renderBody(graphics, EngineFont.get(), x, y, width, mouseX, mouseY, target);
     }
 
-    private void renderBody(
+    private int renderBody(
         GuiGraphics graphics,
         Font font,
         int x,
@@ -160,8 +159,7 @@ public final class FactionInspectorSection implements InspectorSection<FactionSe
         if (inspection == null || !inspection.id().equals(factionId)) {
             rowY = DetailsPanel.drawSectionHeader(graphics, font, x, rowY, width, "Faction");
             rowY += InspectorStyle.CONTENT_PADDING / 2;
-            DetailsPanel.drawNote(graphics, font, x, rowY, "(loading…)");
-            return;
+            return DetailsPanel.drawNote(graphics, font, x, rowY, "(loading…)");
         }
 
         syncFactionInputsFromInspection(inspection, force);
@@ -289,6 +287,7 @@ public final class FactionInspectorSection implements InspectorSection<FactionSe
             mouseX,
             mouseY
         );
+        return rowY;
     }
 
     private int drawColorRow(GuiGraphics graphics, Font font, int x, int y, int width, int currentArgb, int mouseX, int mouseY) {

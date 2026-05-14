@@ -66,18 +66,16 @@ public final class EntityInspectorSection implements InspectorSection<EntitySele
 
     @Override
     public int render(GuiGraphics graphics, int x, int y, int width, EntitySelectable target, int mouseX, int mouseY) {
-        renderBody(graphics, EngineFont.get(), x, y, width, mouseX, mouseY, target);
-        return 0;
+        return renderBody(graphics, EngineFont.get(), x, y, width, mouseX, mouseY, target);
     }
 
-    private void renderBody(GuiGraphics graphics, Font font, int x, int y, int width, int mouseX, int mouseY, EntitySelectable selectable) {
+    private int renderBody(GuiGraphics graphics, Font font, int x, int y, int width, int mouseX, int mouseY, EntitySelectable selectable) {
         var rowY = y;
         var entity = selectable.entity();
         if (entity == null) {
             rowY = DetailsPanel.drawSectionHeader(graphics, font, x, rowY, width, "Entity");
             rowY += InspectorStyle.CONTENT_PADDING / 2;
-            DetailsPanel.drawNote(graphics, font, x, rowY, "(unloaded)");
-            return;
+            return DetailsPanel.drawNote(graphics, font, x, rowY, "(unloaded)");
         }
 
         rowY = DetailsPanel.drawSectionHeader(graphics, font, x, rowY, width, "Tool");
@@ -113,7 +111,7 @@ public final class EntityInspectorSection implements InspectorSection<EntitySele
             String.format("%.1f / %.1f", entity.getHealth(), entity.getMaxHealth())
         );
 
-        renderFactionsSection(graphics, font, x, rowY, width, entity.getUUID());
+        return renderFactionsSection(graphics, font, x, rowY, width, entity.getUUID());
     }
 
     private int renderFactionsSection(GuiGraphics graphics, Font font, int x, int rowY, int width, UUID uuid) {

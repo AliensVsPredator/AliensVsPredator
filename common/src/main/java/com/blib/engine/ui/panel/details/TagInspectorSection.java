@@ -131,11 +131,10 @@ public final class TagInspectorSection implements InspectorSection<TagSelectable
 
     @Override
     public int render(GuiGraphics graphics, int x, int y, int width, TagSelectable target, int mouseX, int mouseY) {
-        renderBody(graphics, EngineFont.get(), x, y, width, mouseX, mouseY, target);
-        return 0;
+        return renderBody(graphics, EngineFont.get(), x, y, width, mouseX, mouseY, target);
     }
 
-    private void renderBody(GuiGraphics graphics, Font font, int x, int y, int width, int mouseX, int mouseY, TagSelectable tag) {
+    private int renderBody(GuiGraphics graphics, Font font, int x, int y, int width, int mouseX, int mouseY, TagSelectable tag) {
         var registryKey = tag.registryKey();
         var tagId = tag.tagId();
 
@@ -193,6 +192,10 @@ public final class TagInspectorSection implements InspectorSection<TagSelectable
         } else {
             renderTagResolvedList(graphics, font, listX, bodyY, listW, bodyHeight, resolvedMembers, mouseX, mouseY);
         }
+        // Tag content fills to the bottom of the panel (with an optional footer area in source mode); report that as
+        // the consumed height so any chained sections register as effectively below the panel and don't ghost into
+        // the scrollable list area.
+        return panelBottom;
     }
 
     private void renderTagSourceList(

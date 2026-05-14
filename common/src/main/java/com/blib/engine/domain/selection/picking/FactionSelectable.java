@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.ApiStatus;
 
+import com.blib.api.client.engine.v1.selection.FactionSelection;
 import com.blib.internal.client.faction.ClientFactionCache;
 import com.blib.internal.client.faction.ClientFactionDirectoryCache;
 
@@ -20,7 +21,7 @@ import com.blib.internal.client.faction.ClientFactionDirectoryCache;
  * the directory landing still shows a sensible label.
  */
 @ApiStatus.Internal
-public final class FactionSelectable implements Selectable {
+public final class FactionSelectable implements Selectable, FactionSelection {
 
     private static final AABB EMPTY_BOUNDS = new AABB(0, 0, 0, 0, 0, 0);
 
@@ -30,6 +31,7 @@ public final class FactionSelectable implements Selectable {
         this.factionId = factionId;
     }
 
+    @Override
     public ResourceLocation factionId() {
         return factionId;
     }

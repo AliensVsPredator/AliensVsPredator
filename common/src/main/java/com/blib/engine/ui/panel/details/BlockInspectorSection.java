@@ -245,8 +245,7 @@ public final class BlockInspectorSection implements InspectorSection<BlockSelect
 
     @Override
     public int render(GuiGraphics graphics, int x, int y, int width, BlockSelectable target, int mouseX, int mouseY) {
-        renderBody(graphics, EngineFont.get(), x, y, width, mouseX, mouseY, target);
-        return 0;
+        return renderBody(graphics, EngineFont.get(), x, y, width, mouseX, mouseY, target);
     }
 
     /**
@@ -254,7 +253,7 @@ public final class BlockInspectorSection implements InspectorSection<BlockSelect
      * Block Entity); when the block at {@code bs.pos()} is a jigsaw, an additional jigsaw section (Identity / Joint /
      * Final State) is rendered at the top.
      */
-    private void renderBody(GuiGraphics graphics, Font font, int x, int y, int width, int mouseX, int mouseY, BlockSelectable bs) {
+    private int renderBody(GuiGraphics graphics, Font font, int x, int y, int width, int mouseX, int mouseY, BlockSelectable bs) {
         currentBlock = bs;
         var state = bs.state();
         if (state == null) {
@@ -266,8 +265,7 @@ public final class BlockInspectorSection implements InspectorSection<BlockSelect
             blockTagRowHits.clear();
             genericBlockCachedPos = null;
             genericBlockCachedBlock = null;
-            DetailsPanel.drawNote(graphics, font, x, y, "Block is no longer loaded.");
-            return;
+            return DetailsPanel.drawNote(graphics, font, x, y, "Block is no longer loaded.");
         }
 
         var pos = bs.pos();
@@ -313,8 +311,9 @@ public final class BlockInspectorSection implements InspectorSection<BlockSelect
             rowY = DetailsPanel.drawSectionHeader(graphics, font, x, rowY, width, "Block Entity");
             rowY += InspectorStyle.CONTENT_PADDING / 2;
             var beTypeId = BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(be.getType());
-            DetailsPanel.drawRow(graphics, font, x, rowY, "Type", beTypeId != null ? beTypeId.toString() : "?");
+            rowY = DetailsPanel.drawRow(graphics, font, x, rowY, "Type", beTypeId != null ? beTypeId.toString() : "?");
         }
+        return rowY;
     }
 
     /**

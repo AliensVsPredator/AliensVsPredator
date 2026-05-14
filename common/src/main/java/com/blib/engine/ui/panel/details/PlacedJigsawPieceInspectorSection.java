@@ -67,11 +67,10 @@ public final class PlacedJigsawPieceInspectorSection implements InspectorSection
 
     @Override
     public int render(GuiGraphics graphics, int x, int y, int width, PlacedJigsawPieceSelectable target, int mouseX, int mouseY) {
-        renderBody(graphics, EngineFont.get(), x, y, width, mouseX, mouseY, target);
-        return 0;
+        return renderBody(graphics, EngineFont.get(), x, y, width, mouseX, mouseY, target);
     }
 
-    private void renderBody(
+    private int renderBody(
         GuiGraphics graphics,
         Font font,
         int x,
@@ -83,8 +82,7 @@ public final class PlacedJigsawPieceInspectorSection implements InspectorSection
     ) {
         var piece = ClientPlacedPieceRegistry.get(selectable.id());
         if (piece == null) {
-            DetailsPanel.drawNote(graphics, font, x, y, "Piece is no longer present.");
-            return;
+            return DetailsPanel.drawNote(graphics, font, x, y, "Piece is no longer present.");
         }
 
         var rowY = y;
@@ -201,6 +199,7 @@ public final class PlacedJigsawPieceInspectorSection implements InspectorSection
         pieceDeleteBtnY = rowY;
         pieceDeleteBtnW = deleteW;
         pieceDeleteBtnH = btnH;
+        return rowY + btnH;
     }
 
     @Override
