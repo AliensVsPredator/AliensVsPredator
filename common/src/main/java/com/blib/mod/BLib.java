@@ -122,6 +122,7 @@ public class BLib {
         // the C2S handler — that path used to leave clients stale until they hit Refresh.
         BLib.MOD.events().postLevelTick().register(level -> {
             if (!level.isClientSide && level.dimension() == Level.OVERWORLD) {
+                BLibFactionManager.INSTANCE.tickMemberLocationValidation(level.getServer());
                 BLibFactionManager.INSTANCE.flushPendingPushes(level.getServer());
             }
         });
@@ -160,6 +161,7 @@ public class BLib {
         BLib.MOD.events().onServerStarted().register(BLibTerritoryManager.INSTANCE::onServerStarted);
         BLib.MOD.events().onServerStopped().register(BLibTerritoryManager.INSTANCE::onServerStopped);
         BLib.MOD.events().onChunkLoad().register(BLibTerritoryManager.INSTANCE::onChunkLoaded);
+        BLib.MOD.events().onChunkLoad().register(BLibFactionManager.INSTANCE::onMemberChunkLoaded);
         BLib.MOD.events().onChunkUnload().register(BLibTerritoryManager.INSTANCE::onChunkUnloaded);
 
         BLib.MOD.events().onChunkLoad().register((level, chunk) -> {
@@ -246,6 +248,7 @@ public class BLib {
             .register(entity -> {
                 var uuid = entity.getUUID();
                 var factionIds = BLibFactionManager.INSTANCE.getFactionIds(uuid);
+                BLibFactionManager.INSTANCE.onMemberEntityLoaded(entity);
 
                 for (var factionId : factionIds) {
                     var faction = BLibFactionManager.INSTANCE.get(factionId);
@@ -280,7 +283,20 @@ public class BLib {
                         BLibReputationManager.INSTANCE.removeReputation(ReputationKey.entity(uuid));
 
                     }
-                    case UNLOADED_TO_CHUNK, UNLOADED_WITH_PLAYER, CHANGED_DIMENSION -> {
+                    case UNLOADED_TO_CHUNK, UNLOADED_WITH_PLAYER -> {
+                        var uuid = entity.getUUID();
+                        var factionIds = BLibFactionManager.INSTANCE.getFactionIds(uuid);
+                        BLibFactionManager.INSTANCE.onMemberEntityUnloaded(entity);
+
+                        for (var factionId : factionIds) {
+                            var faction = BLibFactionManager.INSTANCE.get(factionId);
+
+                            if (faction != null && faction.data() != null) {
+                                faction.data().onMemberUnloaded(entity);
+                            }
+                        }
+                    }
+                    case CHANGED_DIMENSION -> {
                         var uuid = entity.getUUID();
                         var factionIds = BLibFactionManager.INSTANCE.getFactionIds(uuid);
 

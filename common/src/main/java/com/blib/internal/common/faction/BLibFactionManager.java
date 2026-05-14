@@ -5,6 +5,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.chunk.LevelChunk;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -33,6 +34,7 @@ import com.blib.api.common.registry.v1.BLibHolder;
 import com.blib.internal.common.event.BLibGlobalEvents;
 import com.blib.internal.common.faction.io.FactionDataIO;
 import com.blib.internal.common.faction.io.FactionIO;
+import com.blib.internal.common.faction.io.FactionMemberLocationIO;
 import com.blib.internal.common.faction.io.FactionMembershipIO;
 import com.blib.internal.common.faction.serializer.FactionRelationshipTableSerializer;
 import com.blib.internal.common.util.ShardManager;
@@ -54,6 +56,8 @@ public class BLibFactionManager implements FactionManager {
     private final Map<ResourceLocation, Faction<?>> factions;
 
     private final FactionMemberIndex memberIndex;
+
+    private final FactionMemberLocationIndex memberLocationIndex;
 
     private final FactionRelationshipTable relationshipTable;
 
@@ -78,6 +82,7 @@ public class BLibFactionManager implements FactionManager {
     private BLibFactionManager() {
         this.factions = new HashMap<>();
         this.memberIndex = new FactionMemberIndex();
+        this.memberLocationIndex = new FactionMemberLocationIndex();
         this.relationshipTable = new FactionRelationshipTable();
         this.shardManager = new ShardManager<>(SHARD_SIZE);
     }
@@ -275,6 +280,8 @@ public class BLibFactionManager implements FactionManager {
         }
 
         memberIndex.rebuild(relationships);
+        memberLocationIndex.load(FactionMemberLocationIO.load(server));
+        memberLocationIndex.retainMembers(collectMemberUuids(relationships.values()));
 
         relationshipTable.clear();
         loadRelationshipTable(server);
@@ -286,6 +293,7 @@ public class BLibFactionManager implements FactionManager {
         // Don't short-circuit on empty factions — pending deletion-shards still need to be rewritten if the last
         // faction was just removed. Save sub-methods no-op when there's nothing to do.
         saveMemberships(server);
+        saveMemberLocations(server);
         saveData(server);
         saveRelationshipTable(server);
         shardManager.clearDirty();
@@ -294,6 +302,7 @@ public class BLibFactionManager implements FactionManager {
     public void clear(MinecraftServer minecraftServer) {
         factions.clear();
         memberIndex.clear();
+        memberLocationIndex.clear();
         relationshipTable.clear();
         shardManager.clear();
     }
@@ -434,6 +443,10 @@ public class BLibFactionManager implements FactionManager {
             }
         }
 
+        if (!added && member instanceof FactionMember.Entity entityMember && memberIndex.getFactionIds(entityMember.uuid()).isEmpty()) {
+            memberLocationIndex.forget(entityMember.uuid());
+        }
+
         markMembersDirty(factionId);
     }
 
@@ -443,6 +456,7 @@ public class BLibFactionManager implements FactionManager {
         Entity entity
     ) {
         memberIndex.onMemberChanged(factionId, member, true);
+        memberLocationIndex.recordLoadedMember(entity, currentServerTick(entity));
 
         var faction = factions.get(factionId);
 
@@ -451,6 +465,52 @@ public class BLibFactionManager implements FactionManager {
         }
 
         markMembersDirty(factionId);
+    }
+
+    public void onMemberEntityLoaded(Entity entity) {
+        if (!memberIndex.getFactionIds(entity.getUUID()).isEmpty()) {
+            memberLocationIndex.recordLoadedMember(entity, currentServerTick(entity));
+        }
+    }
+
+    public void onMemberEntityUnloaded(Entity entity) {
+        if (!memberIndex.getFactionIds(entity.getUUID()).isEmpty()) {
+            memberLocationIndex.recordUnloadedMember(entity, currentServerTick(entity));
+        }
+    }
+
+    public void onMemberChunkLoaded(net.minecraft.server.level.ServerLevel level, LevelChunk chunk) {
+        memberLocationIndex.queueChunkValidation(level, chunk);
+    }
+
+    public void tickMemberLocationValidation(MinecraftServer server) {
+        var staleMembers = memberLocationIndex.collectStaleMembers(server, server.getTickCount(), memberIndex::getFactionIds);
+        for (var uuid : staleMembers) {
+            var factionIds = Set.copyOf(memberIndex.getFactionIds(uuid));
+            if (factionIds.isEmpty()) {
+                memberLocationIndex.forget(uuid);
+                continue;
+            }
+
+            var member = FactionMember.entity(uuid);
+            var removed = 0;
+            for (var factionId : factionIds) {
+                var faction = factions.get(factionId);
+                if (faction != null && faction.membership().removeMember(member)) {
+                    removed++;
+                }
+            }
+
+            if (removed > 0) {
+                LOGGER.warn(
+                    "Pruned stale faction member {} from {} faction(s) after its last-seen chunk loaded without the entity.",
+                    uuid,
+                    removed
+                );
+            } else {
+                memberLocationIndex.forget(uuid);
+            }
+        }
     }
 
     private void saveMemberships(MinecraftServer server) {
@@ -479,6 +539,15 @@ public class BLibFactionManager implements FactionManager {
         for (var faction : factions.values()) {
             faction.membership().clearDirty();
         }
+    }
+
+    private void saveMemberLocations(MinecraftServer server) {
+        if (!memberLocationIndex.isDirty()) {
+            return;
+        }
+
+        FactionMemberLocationIO.save(server, memberLocationIndex.snapshot());
+        memberLocationIndex.clearDirty();
     }
 
     private void saveData(MinecraftServer server) {
@@ -513,6 +582,23 @@ public class BLibFactionManager implements FactionManager {
         for (var faction : factions.values()) {
             faction.internalData().clearDirty();
         }
+    }
+
+    private static Set<UUID> collectMemberUuids(Collection<FactionMembership> memberships) {
+        var uuids = new java.util.HashSet<UUID>();
+        for (var membership : memberships) {
+            for (var member : membership.getMembers()) {
+                if (member instanceof FactionMember.Entity entityMember) {
+                    uuids.add(entityMember.uuid());
+                }
+            }
+        }
+        return uuids;
+    }
+
+    private static long currentServerTick(Entity entity) {
+        var server = entity.getServer();
+        return server != null ? server.getTickCount() : 0L;
     }
 
     private void loadRelationshipTable(MinecraftServer server) {
