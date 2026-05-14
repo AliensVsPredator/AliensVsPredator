@@ -4,6 +4,7 @@ import com.just.core.functional.option.Option;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -18,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 import com.blib.api.common.registry.v1.BLibHolder;
 import com.blib.api.common.storage.v1.DataStore;
@@ -59,17 +61,55 @@ class BLibChunkDataStoreManager {
             return Option.none();
         }
 
+        return getOrCreate(level, pos, type);
+    }
+
+    <T extends DataStore> Option<T> getOrCreatePersistent(
+        ServerLevel level,
+        ChunkPos pos,
+        BLibHolder<DataStoreType<T>> type
+    ) {
+        return getOrCreate(level, pos, type);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T extends DataStore> Option<T> getOrCreate(
+        ServerLevel level,
+        ChunkPos pos,
+        BLibHolder<DataStoreType<T>> type
+    ) {
         var levelKey = level.dimension();
         var id = type.getResourceLocation();
         var levelChunkStores = stores.computeIfAbsent(levelKey, k -> new HashMap<>());
         var isNewChunk = !levelChunkStores.containsKey(pos);
         var chunkDataStores = levelChunkStores.computeIfAbsent(pos, p -> new HashMap<>());
 
-        if (isNewChunk) {
+        if (isNewChunk && level.hasChunk(pos.x, pos.z)) {
             incrementRegionRefCount(levelKey, pos);
         }
 
         return Option.some((T) chunkDataStores.computeIfAbsent(id, k -> loadOrCreate(level, pos, type)));
+    }
+
+    <T extends DataStore> void forEachStoredChunk(
+        ServerLevel level,
+        BLibHolder<DataStoreType<T>> type,
+        BiConsumer<ChunkPos, T> consumer
+    ) {
+        var id = type.getResourceLocation();
+        var folder = getRegionFolder(level, id.getNamespace());
+
+        if (!Files.isDirectory(folder)) {
+            return;
+        }
+
+        try (var paths = Files.list(folder)) {
+            paths
+                .filter(Files::isRegularFile)
+                .forEach(path -> loadStoredChunksFromRegion(level, type, consumer, path));
+        } catch (IOException e) {
+            LOGGER.error("Failed to list chunk data store region files in {}", folder, e);
+        }
     }
 
     void saveChunk(ServerLevel level, ChunkPos pos) {
@@ -318,6 +358,48 @@ class BLibChunkDataStoreManager {
 
     // ==================== Region Cache ====================
 
+    private <T extends DataStore> void loadStoredChunksFromRegion(
+        ServerLevel level,
+        BLibHolder<DataStoreType<T>> type,
+        BiConsumer<ChunkPos, T> consumer,
+        Path path
+    ) {
+        var regionKey = parseRegionKey(path.getFileName().toString());
+
+        if (regionKey == null) {
+            return;
+        }
+
+        var id = type.getResourceLocation();
+        var regionTag = getOrLoadRegionByKey(level, id.getNamespace(), regionKey);
+
+        if (regionTag == null || regionTag.isEmpty()) {
+            return;
+        }
+
+        for (var chunkKey : regionTag.getAllKeys()) {
+            if (REGION_SIZE_KEY.equals(chunkKey) || !regionTag.contains(chunkKey, Tag.TAG_COMPOUND)) {
+                continue;
+            }
+
+            var pos = parseChunkPos(regionKey, chunkKey);
+
+            if (pos == null) {
+                continue;
+            }
+
+            var chunkTag = regionTag.getCompound(chunkKey);
+
+            if (!chunkTag.contains(id.getPath(), Tag.TAG_COMPOUND)) {
+                continue;
+            }
+
+            var store = type.value().createInstance();
+            store.load(chunkTag.getCompound(id.getPath()));
+            consumer.accept(pos, store);
+        }
+    }
+
     private CompoundTag getOrLoadRegion(ServerLevel level, ChunkPos pos, String namespace) {
         return getOrLoadRegionByKey(level, namespace, getRegionKey(pos));
     }
@@ -429,12 +511,16 @@ class BLibChunkDataStoreManager {
         var rx = (int) (regionKey >> 32);
         var rz = (int) regionKey;
 
+        return getRegionFolder(level, namespace)
+            .resolve("r" + REGION_SIZE + "." + rx + "." + rz + ".nbt");
+    }
+
+    private Path getRegionFolder(ServerLevel level, String namespace) {
         return DataStoreIO.getBlibDataPath(level.getServer())
             .resolve(namespace)
             .resolve(LEVELS_FOLDER)
             .resolve(DataStoreIO.getDimensionFolder(level))
-            .resolve(CHUNKS_FOLDER)
-            .resolve("r" + REGION_SIZE + "." + rx + "." + rz + ".nbt");
+            .resolve(CHUNKS_FOLDER);
     }
 
     // ==================== Region Coordinate Helper Methods ====================
@@ -449,6 +535,31 @@ class BLibChunkDataStoreManager {
         return ((long) rx << 32) | (rz & 0xFFFFFFFFL);
     }
 
+    private static Long parseRegionKey(String fileName) {
+        var prefix = "r" + REGION_SIZE + ".";
+        var suffix = ".nbt";
+
+        if (!fileName.startsWith(prefix) || !fileName.endsWith(suffix)) {
+            return null;
+        }
+
+        var coordinates = fileName.substring(prefix.length(), fileName.length() - suffix.length());
+        var separator = coordinates.indexOf('.');
+
+        if (separator < 0) {
+            return null;
+        }
+
+        try {
+            var rx = Integer.parseInt(coordinates.substring(0, separator));
+            var rz = Integer.parseInt(coordinates.substring(separator + 1));
+
+            return ((long) rx << 32) | (rz & 0xFFFFFFFFL);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
     /**
      * Gets the chunk key for storage within a region file. Uses relative coordinates within the region (0-31, 0-31).
      */
@@ -457,5 +568,29 @@ class BLibChunkDataStoreManager {
         var relZ = pos.z & REGION_MASK;
 
         return relX + "," + relZ;
+    }
+
+    private static ChunkPos parseChunkPos(long regionKey, String chunkKey) {
+        var separator = chunkKey.indexOf(',');
+
+        if (separator < 0) {
+            return null;
+        }
+
+        try {
+            var relX = Integer.parseInt(chunkKey.substring(0, separator));
+            var relZ = Integer.parseInt(chunkKey.substring(separator + 1));
+
+            if (relX < 0 || relX > REGION_MASK || relZ < 0 || relZ > REGION_MASK) {
+                return null;
+            }
+
+            var rx = (int) (regionKey >> 32);
+            var rz = (int) regionKey;
+
+            return new ChunkPos((rx << REGION_SHIFT) + relX, (rz << REGION_SHIFT) + relZ);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 }

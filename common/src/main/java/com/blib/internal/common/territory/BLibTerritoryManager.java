@@ -40,6 +40,7 @@ public class BLibTerritoryManager {
 
     public void onServerStarted(MinecraftServer server) {
         this.server = server;
+        rebuildIndexes(server);
     }
 
     public void onServerStopped(MinecraftServer server) {
@@ -63,11 +64,7 @@ public class BLibTerritoryManager {
     }
 
     public void onChunkUnloaded(ServerLevel level, LevelChunk chunk) {
-        var index = indexes.get(level);
-
-        if (index != null) {
-            index.onChunkUnloaded(chunk.getPos());
-        }
+        // Territory claims are persisted independently of chunk load state.
     }
 
     public boolean addClaim(ServerLevel level, ChunkPos pos, ResourceLocation factionId) {
@@ -77,7 +74,13 @@ public class BLibTerritoryManager {
             return false;
         }
 
-        return store.addClaim(factionId);
+        var changed = store.addClaim(factionId);
+
+        if (changed) {
+            BLibDataStoreManager.INSTANCE.saveChunkData(level, pos);
+        }
+
+        return changed;
     }
 
     public boolean removeClaim(ServerLevel level, ChunkPos pos, ResourceLocation factionId) {
@@ -87,7 +90,13 @@ public class BLibTerritoryManager {
             return false;
         }
 
-        return store.removeClaim(factionId);
+        var changed = store.removeClaim(factionId);
+
+        if (changed) {
+            BLibDataStoreManager.INSTANCE.saveChunkData(level, pos);
+        }
+
+        return changed;
     }
 
     public boolean transferClaim(ServerLevel level, ChunkPos pos, ResourceLocation from, ResourceLocation to) {
@@ -97,10 +106,22 @@ public class BLibTerritoryManager {
             return false;
         }
 
-        return store.transferClaim(from, to);
+        var changed = store.transferClaim(from, to);
+
+        if (changed) {
+            BLibDataStoreManager.INSTANCE.saveChunkData(level, pos);
+        }
+
+        return changed;
     }
 
     public Set<ResourceLocation> getClaimants(ServerLevel level, ChunkPos pos) {
+        var index = indexes.get(level);
+
+        if (index != null) {
+            return index.getClaimants(pos);
+        }
+
         var store = getOrCreateStore(level, pos);
 
         if (store == null) {
@@ -170,11 +191,7 @@ public class BLibTerritoryManager {
             var chunks = Set.copyOf(index.getChunks(factionId));
 
             for (var pos : chunks) {
-                var store = getOrCreateStore(level, pos);
-
-                if (store != null) {
-                    store.removeClaim(factionId);
-                }
+                removeClaim(level, pos, factionId);
             }
         }
     }
@@ -291,9 +308,27 @@ public class BLibTerritoryManager {
         return indexes.computeIfAbsent(level, $ -> new BLibTerritoryIndex());
     }
 
+    private void rebuildIndexes(MinecraftServer server) {
+        indexes.clear();
+
+        for (var level : server.getAllLevels()) {
+            BLibDataStoreManager.INSTANCE.forEachStoredChunk(
+                level,
+                BLibTerritoryDataStoreTypes.CHUNK_CLAIMS,
+                (pos, store) -> {
+                    var claimants = store.getClaimants();
+
+                    if (!claimants.isEmpty()) {
+                        getOrCreateIndex(level).onChunkLoaded(pos, claimants);
+                    }
+                }
+            );
+        }
+    }
+
     private ChunkClaimDataStore getOrCreateStore(ServerLevel level, ChunkPos pos) {
         return BLibDataStoreManager.INSTANCE
-            .getChunk(level, pos, BLibTerritoryDataStoreTypes.CHUNK_CLAIMS)
+            .getOrCreatePersistentChunk(level, pos, BLibTerritoryDataStoreTypes.CHUNK_CLAIMS)
             .inspect(store -> store.setContext(level, pos))
             .unwrapOr(null);
     }

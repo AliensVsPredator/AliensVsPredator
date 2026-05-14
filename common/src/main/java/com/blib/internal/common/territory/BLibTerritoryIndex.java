@@ -108,6 +108,10 @@ public class BLibTerritoryIndex {
         return Collections.unmodifiableSet(allClaimedChunks);
     }
 
+    public Set<ResourceLocation> getClaimants(ChunkPos pos) {
+        return Collections.unmodifiableSet(chunkToFactions.getOrDefault(pos, Set.of()));
+    }
+
     public boolean isClaimed(ChunkPos pos) {
         return allClaimedChunks.contains(pos);
     }
