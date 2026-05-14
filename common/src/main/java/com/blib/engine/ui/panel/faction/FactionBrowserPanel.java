@@ -92,8 +92,6 @@ public final class FactionBrowserPanel implements Panel {
 
     private @Nullable Rect newFactionRect;
 
-    private @Nullable Rect refreshRect;
-
     private int rectX;
 
     private int rectY;
@@ -132,7 +130,6 @@ public final class FactionBrowserPanel implements Panel {
         this.rectHeight = height;
         rowHits.clear();
         newFactionRect = null;
-        refreshRect = null;
 
         graphics.fill(x, y, x + width, y + height, BACKGROUND_COLOR);
 
@@ -143,20 +140,17 @@ public final class FactionBrowserPanel implements Panel {
         }
 
         // First render with an empty cache → request the directory once. Subsequent renders rely on server pushes
-        // and the explicit Refresh button.
+        // (BLibFactionManager marks dirty on every mutation; postLevelTick broadcasts the fresh snapshot).
         if (!requestedAtLeastOnce && ClientFactionDirectoryCache.entries().isEmpty()) {
             requestDirectory();
         }
 
         var topRowY = y + CONTENT_PADDING;
-        var refreshX = x + width - CONTENT_PADDING - HEADER_BUTTON_WIDTH;
-        var newFactionX = refreshX - 4 - HEADER_BUTTON_WIDTH;
-        refreshRect = new Rect(refreshX, topRowY, HEADER_BUTTON_WIDTH, HEADER_BUTTON_HEIGHT);
+        var newFactionX = x + width - CONTENT_PADDING - HEADER_BUTTON_WIDTH;
         newFactionRect = new Rect(newFactionX, topRowY, HEADER_BUTTON_WIDTH, HEADER_BUTTON_HEIGHT);
         var searchInputW = Math.max(0, newFactionX - (x + CONTENT_PADDING) - 4);
         searchInput.render(graphics, x + CONTENT_PADDING, topRowY, searchInputW, mouseX, mouseY);
         renderButton(graphics, newFactionRect, "New", mouseX, mouseY, BUTTON_TEXT);
-        renderButton(graphics, refreshRect, "Refresh", mouseX, mouseY, BUTTON_TEXT);
 
         var listX = x + CONTENT_PADDING;
         var listY = topRowY + HEADER_BUTTON_HEIGHT + SEARCH_GAP_BELOW;
@@ -340,10 +334,6 @@ public final class FactionBrowserPanel implements Panel {
         }
         if (newFactionRect != null && newFactionRect.contains(mouseX, mouseY)) {
             createNewFaction();
-            return true;
-        }
-        if (refreshRect != null && refreshRect.contains(mouseX, mouseY)) {
-            requestDirectory();
             return true;
         }
         for (var hit : rowHits) {

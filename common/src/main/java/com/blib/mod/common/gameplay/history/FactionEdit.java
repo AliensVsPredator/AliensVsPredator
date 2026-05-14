@@ -133,7 +133,7 @@ public record FactionEdit(
             return;
         }
         BLibFactionManager.INSTANCE.setRelationship(factionId, otherFactionId, states[ordinal]);
-        BLibFactionManager.INSTANCE.pushDirectoryToAllClients(server);
+        // setRelationship marks the manager directory dirty; the postLevelTick flush broadcasts within ~50ms.
     }
 
     private void applyMemberOp(MinecraftServer server, boolean add) {
@@ -145,10 +145,11 @@ public record FactionEdit(
             return;
         }
         var member = FactionMember.entity(memberUuid);
-        var changed = add ? faction.membership().addMember(member) : faction.membership().removeMember(member);
-        if (changed) {
-            BLibFactionManager.INSTANCE.pushDirectoryToAllClients(server);
-            BLibFactionManager.INSTANCE.pushMembersToAllClients(server, factionId);
+        // membership add/remove → onMemberChanged → marks directory + members dirty on the manager.
+        if (add) {
+            faction.membership().addMember(member);
+        } else {
+            faction.membership().removeMember(member);
         }
     }
 

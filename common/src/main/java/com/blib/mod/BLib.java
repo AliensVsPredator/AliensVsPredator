@@ -116,6 +116,16 @@ public class BLib {
             }
         });
 
+        // Faction directory + members live-update: every mutation path (C2S handler, mod-side BLibFactionAccess, undo/
+        // redo, internal API) flips a dirty flag inside BLibFactionManager. End of the overworld tick flushes those
+        // flags by broadcasting fresh snapshots. Catches the mod-creation path (e.g. AVP-Alien queens) that bypasses
+        // the C2S handler — that path used to leave clients stale until they hit Refresh.
+        BLib.MOD.events().postLevelTick().register(level -> {
+            if (!level.isClientSide && level.dimension() == Level.OVERWORLD) {
+                BLibFactionManager.INSTANCE.flushPendingPushes(level.getServer());
+            }
+        });
+
         BLib.MOD.events().onChunkSave().register(BLibDataStoreManager.INSTANCE::saveChunkData);
         BLib.MOD.events().onChunkUnload().register(BLibDataStoreManager.INSTANCE::onChunkUnload);
         BLib.MOD.events().onServerSave().register(BLibDataStoreManager.INSTANCE::saveGlobalData);

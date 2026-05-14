@@ -2282,29 +2282,22 @@ public final class BLibServerListener {
     }
 
     /**
-     * Create a faction with the given id + type id. Resolves the type via the registry-backed lookup and silently
-     * no-ops on unknown types; on success pushes the directory to all clients so the new faction appears in the Browser
-     * everywhere.
+     * Create a faction with the given id + type id. The manager marks the directory dirty inside the mutation; the
+     * server-tick flush broadcasts the change to all clients next tick.
      */
     public static void handleCreateFaction(C2SCreateFactionPayload payload, Player player) {
         if (!(player instanceof ServerPlayer sp) || !sp.hasPermissions(2)) {
             return;
         }
-        var faction = BLibFactionManager.INSTANCE.getOrCreateByTypeId(payload.factionId(), payload.typeId());
-        if (faction == null) {
-            return;
-        }
-        BLibFactionManager.INSTANCE.pushDirectoryToAllClients(sp.server);
+        BLibFactionManager.INSTANCE.getOrCreateByTypeId(payload.factionId(), payload.typeId());
     }
 
-    /** Delete a faction. Op-gated; pushes the directory after a successful delete so all clients refresh. */
+    /** Delete a faction. Op-gated; manager marks directory dirty, tick flush broadcasts to all clients. */
     public static void handleDeleteFaction(C2SDeleteFactionPayload payload, Player player) {
         if (!(player instanceof ServerPlayer sp) || !sp.hasPermissions(2)) {
             return;
         }
-        if (BLibFactionManager.INSTANCE.remove(payload.factionId())) {
-            BLibFactionManager.INSTANCE.pushDirectoryToAllClients(sp.server);
-        }
+        BLibFactionManager.INSTANCE.remove(payload.factionId());
     }
 
     /**
@@ -2437,7 +2430,7 @@ public final class BLibServerListener {
         }
         var beforeState = BLibFactionManager.INSTANCE.getRelationship(payload.factionA(), payload.factionB());
         BLibFactionManager.INSTANCE.setRelationship(payload.factionA(), payload.factionB(), states[payload.stateOrdinal()]);
-        BLibFactionManager.INSTANCE.pushDirectoryToAllClients(sp.server);
+        // setRelationship marks the manager directory dirty; the postLevelTick flush broadcasts within ~50ms.
 
         ActionHistory.push(
             new FactionEdit(
@@ -2456,7 +2449,11 @@ public final class BLibServerListener {
         );
     }
 
-    /** Add a member to a faction. Pushes the directory (member count) + members roster + entity reverse-lookup. */
+    /**
+     * Add a member to a faction. addMember → onMemberChanged → marks directory + members dirty on the manager; the
+     * postLevelTick flush broadcasts within ~50ms. We still push the per-entity reverse-lookup directly here because
+     * that snapshot isn't covered by the dirty-flag flow.
+     */
     public static void handleAddFactionMember(C2SAddFactionMemberPayload payload, Player player) {
         if (!(player instanceof ServerPlayer sp) || !sp.hasPermissions(2)) {
             return;
@@ -2466,8 +2463,6 @@ public final class BLibServerListener {
             return;
         }
         if (faction.membership().addMember(FactionMember.entity(payload.memberUuid()))) {
-            BLibFactionManager.INSTANCE.pushDirectoryToAllClients(sp.server);
-            BLibFactionManager.INSTANCE.pushMembersToAllClients(sp.server, payload.factionId());
             pushEntityFactionsTo(sp, payload.memberUuid());
 
             ActionHistory.push(
@@ -2488,7 +2483,11 @@ public final class BLibServerListener {
         }
     }
 
-    /** Remove a member from a faction. Pushes the directory + members roster + entity reverse-lookup on success. */
+    /**
+     * Remove a member from a faction. removeMember → onMemberChanged marks the manager dirty; the postLevelTick flush
+     * broadcasts directory + members within ~50ms. The per-entity reverse-lookup snapshot is still pushed directly
+     * here.
+     */
     public static void handleRemoveFactionMember(C2SRemoveFactionMemberPayload payload, Player player) {
         if (!(player instanceof ServerPlayer sp) || !sp.hasPermissions(2)) {
             return;
@@ -2498,8 +2497,6 @@ public final class BLibServerListener {
             return;
         }
         if (faction.membership().removeMember(FactionMember.entity(payload.memberUuid()))) {
-            BLibFactionManager.INSTANCE.pushDirectoryToAllClients(sp.server);
-            BLibFactionManager.INSTANCE.pushMembersToAllClients(sp.server, payload.factionId());
             pushEntityFactionsTo(sp, payload.memberUuid());
 
             ActionHistory.push(

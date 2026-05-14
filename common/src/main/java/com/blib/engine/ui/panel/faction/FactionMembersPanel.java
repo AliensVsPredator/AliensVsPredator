@@ -86,8 +86,6 @@ public final class FactionMembersPanel implements Panel {
 
     private @Nullable Rect addRect;
 
-    private @Nullable Rect refreshRect;
-
     private int rectX;
 
     private int rectY;
@@ -129,7 +127,6 @@ public final class FactionMembersPanel implements Panel {
         this.rectHeight = height;
         rowHits.clear();
         addRect = null;
-        refreshRect = null;
 
         graphics.fill(x, y, x + width, y + height, BACKGROUND_COLOR);
 
@@ -163,14 +160,11 @@ public final class FactionMembersPanel implements Panel {
         }
 
         var topRowY = y + CONTENT_PADDING;
-        var refreshX = x + width - CONTENT_PADDING - HEADER_BUTTON_WIDTH;
-        var addX = refreshX - 4 - HEADER_BUTTON_WIDTH;
+        var addX = x + width - CONTENT_PADDING - HEADER_BUTTON_WIDTH;
         addRect = new Rect(addX, topRowY, HEADER_BUTTON_WIDTH, HEADER_BUTTON_HEIGHT);
-        refreshRect = new Rect(refreshX, topRowY, HEADER_BUTTON_WIDTH, HEADER_BUTTON_HEIGHT);
         var inputW = Math.max(0, addX - (x + CONTENT_PADDING) - 4);
         memberInput.render(graphics, x + CONTENT_PADDING, topRowY, inputW, mouseX, mouseY);
         renderButton(graphics, addRect, "Add", mouseX, mouseY, BUTTON_TEXT);
-        renderButton(graphics, refreshRect, "Refresh", mouseX, mouseY, BUTTON_TEXT);
 
         var listX = x + CONTENT_PADDING;
         var listY = topRowY + HEADER_BUTTON_HEIGHT + SEARCH_GAP_BELOW;
@@ -324,10 +318,6 @@ public final class FactionMembersPanel implements Panel {
         }
         if (addRect != null && addRect.contains(mouseX, mouseY)) {
             tryAddMember(active);
-            return true;
-        }
-        if (refreshRect != null && refreshRect.contains(mouseX, mouseY)) {
-            requestMembers(active);
             return true;
         }
         for (var hit : rowHits) {

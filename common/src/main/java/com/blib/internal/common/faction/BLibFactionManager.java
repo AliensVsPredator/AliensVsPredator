@@ -59,11 +59,64 @@ public class BLibFactionManager implements FactionManager {
 
     private final ShardManager<ResourceLocation> shardManager;
 
+    /**
+     * Set by every mutation that changes what the directory snapshot would carry — create / remove / relationship
+     * change / member add or remove (member count is in the directory). Flushed by {@link #flushPendingPushes} on the
+     * next server tick, which broadcasts the fresh snapshot and clears the flag. This is the catch-all for live updates
+     * regardless of which code path triggered the mutation: C2S handler, mod-side {@code BLibFactionAccess}, undo/redo
+     * via {@link com.blib.mod.common.gameplay.history.FactionEdit}, or anything else that goes through this class.
+     */
+    private volatile boolean directoryDirty;
+
+    /**
+     * Per-faction set of member rosters that need a fresh broadcast. Mutations to {@code FactionMembership.members}
+     * route through {@link #onMemberChanged}, which adds the affected id here; the tick flush pushes a members snapshot
+     * for each entry and clears the set.
+     */
+    private final java.util.Set<ResourceLocation> pendingMemberPushes = new java.util.HashSet<>();
+
     private BLibFactionManager() {
         this.factions = new HashMap<>();
         this.memberIndex = new FactionMemberIndex();
         this.relationshipTable = new FactionRelationshipTable();
         this.shardManager = new ShardManager<>(SHARD_SIZE);
+    }
+
+    /** Set the directory-dirty flag. Tick flush will see this and broadcast next tick. */
+    public void markDirectoryDirty() {
+        directoryDirty = true;
+    }
+
+    /**
+     * Mark this faction's members roster as needing a broadcast. Also flips the directory-dirty flag because the member
+     * count surfaces in the directory entry — clients reading either the Browser or the Members panel get a fresh view
+     * in one tick.
+     */
+    public void markMembersDirty(ResourceLocation factionId) {
+        pendingMemberPushes.add(factionId);
+        directoryDirty = true;
+    }
+
+    /**
+     * End-of-server-tick coalesced broadcast. Wired into the per-tick lifecycle by the BLib bootstrap. Skips when no
+     * one's connected — building a snapshot only to drop it is wasted work. Members pushes pop the id out before the
+     * push so a re-mark mid-broadcast just queues for the next tick.
+     */
+    public void flushPendingPushes(MinecraftServer server) {
+        if (server == null || server.getPlayerCount() == 0) {
+            return;
+        }
+        if (directoryDirty) {
+            directoryDirty = false;
+            pushDirectoryToAllClients(server);
+        }
+        if (!pendingMemberPushes.isEmpty()) {
+            var ids = new ArrayList<>(pendingMemberPushes);
+            pendingMemberPushes.clear();
+            for (var id : ids) {
+                pushMembersToAllClients(server, id);
+            }
+        }
     }
 
     @Override
@@ -90,6 +143,7 @@ public class BLibFactionManager implements FactionManager {
         @SuppressWarnings("unchecked")
         var faction = (Faction<T>) new Faction<>(id, typeId, relationships, internalData);
         factions.put(id, faction);
+        markDirectoryDirty();
 
         return faction;
     }
@@ -118,6 +172,7 @@ public class BLibFactionManager implements FactionManager {
 
         var faction = new Faction<>(id, typeId, relationships, internalData);
         factions.put(id, faction);
+        markDirectoryDirty();
 
         return faction;
     }
@@ -149,6 +204,7 @@ public class BLibFactionManager implements FactionManager {
     @Override
     public void setRelationship(ResourceLocation factionA, ResourceLocation factionB, RelationshipState state) {
         relationshipTable.setRelationship(factionA, factionB, state);
+        markDirectoryDirty();
     }
 
     @Override
@@ -175,6 +231,7 @@ public class BLibFactionManager implements FactionManager {
             listener.invoke(id);
         }
 
+        markDirectoryDirty();
         return true;
     }
 
@@ -376,6 +433,8 @@ public class BLibFactionManager implements FactionManager {
                 faction.data().onMemberRemoved(member);
             }
         }
+
+        markMembersDirty(factionId);
     }
 
     public void onEntityMemberAdded(
@@ -390,6 +449,8 @@ public class BLibFactionManager implements FactionManager {
         if (faction != null && faction.data() != null) {
             faction.data().onMemberAdded(member, entity);
         }
+
+        markMembersDirty(factionId);
     }
 
     private void saveMemberships(MinecraftServer server) {
