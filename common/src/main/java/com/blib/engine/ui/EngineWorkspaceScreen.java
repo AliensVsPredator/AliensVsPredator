@@ -52,6 +52,8 @@ import com.blib.engine.ui.dock.Orientation;
 import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.dock.PanelChrome;
 import com.blib.engine.ui.dock.TabbedPanel;
+import com.blib.engine.ui.layout.UiRect;
+import com.blib.engine.ui.layout.UiText;
 import com.blib.engine.ui.panel.chrome.MenuBarPanel;
 import com.blib.engine.ui.panel.viewport.ViewportPanel;
 import com.blib.engine.ui.popup.FactionManagePopup;
@@ -611,6 +613,7 @@ public final class EngineWorkspaceScreen extends Screen {
             panelMouseY = OFFSCREEN_MOUSE;
         }
 
+        UiText.clearCapturedTruncatedTextTooltip();
         renderNode(graphics, root, 0, 0, logicalWidth, logicalHeight, panelMouseX, panelMouseY, partialTick);
         // Use the OFFSCREEN-substituted coords so dividers and tab-drag indicators don't light up under an open modal.
         HoverOverlayRenderer.renderHoveredDivider(
@@ -879,9 +882,9 @@ public final class EngineWorkspaceScreen extends Screen {
                 var panel = leaf.panel();
                 if (panel.hasChrome()) {
                     var inner = PanelChrome.draw(graphics, x, y, width, height, panel.title());
-                    panel.render(graphics, inner.x(), inner.y(), inner.width(), inner.height(), mouseX, mouseY, partialTick);
+                    renderPanel(graphics, panel, inner.x(), inner.y(), inner.width(), inner.height(), mouseX, mouseY, partialTick);
                 } else {
-                    panel.render(graphics, x, y, width, height, mouseX, mouseY, partialTick);
+                    renderPanel(graphics, panel, x, y, width, height, mouseX, mouseY, partialTick);
                 }
             }
             case DockNode.Split split -> {
@@ -895,6 +898,29 @@ public final class EngineWorkspaceScreen extends Screen {
                     renderNode(graphics, split.second(), x, y + firstHeight, width, height - firstHeight, mouseX, mouseY, partialTick);
                 }
             }
+        }
+    }
+
+    private static void renderPanel(
+        GuiGraphics graphics,
+        Panel panel,
+        int x,
+        int y,
+        int width,
+        int height,
+        int mouseX,
+        int mouseY,
+        float partialTick
+    ) {
+        try (
+            var ignored = UiText.captureTruncatedTextTooltips(
+                mouseX,
+                mouseY,
+                UiRect.of(x, y, width, height),
+                UiText::setCapturedTruncatedTextTooltip
+            )
+        ) {
+            panel.render(graphics, x, y, width, height, mouseX, mouseY, partialTick);
         }
     }
 

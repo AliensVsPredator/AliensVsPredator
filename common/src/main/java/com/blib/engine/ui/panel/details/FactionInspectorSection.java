@@ -168,7 +168,7 @@ public final class FactionInspectorSection implements InspectorSection<FactionSe
         rowY += InspectorStyle.CONTENT_PADDING / 2;
         rowY = panel.drawInputRow(graphics, font, x, rowY, width, "Name", null, factionName, mouseX, mouseY);
         rowY = drawColorRow(graphics, font, x, rowY, width, inspection.color() | 0xFF000000, mouseX, mouseY);
-        rowY = DetailsPanel.drawRow(graphics, font, x, rowY, "ID", factionId.toString());
+        rowY = DetailsPanel.drawClippedRow(graphics, font, x, rowY, width, "ID", factionId.toString());
         rowY = DetailsPanel.drawRow(graphics, font, x, rowY, "Type", inspection.typeId().toString());
 
         rowY = panel.drawSectionHeaderWithHelp(graphics, font, x, rowY, width, "Territory", HELP_FACTION_TERRITORY, mouseX, mouseY);
@@ -294,6 +294,7 @@ public final class FactionInspectorSection implements InspectorSection<FactionSe
         var label = "Color";
         var labelY = y + (TextInput.HEIGHT - font.lineHeight + 2) / 2;
         graphics.drawString(font, Component.literal(label), x + InspectorStyle.CONTENT_PADDING, labelY, InspectorStyle.LABEL_COLOR, false);
+        DetailsPanel.trackContentRight(x + InspectorStyle.CONTENT_PADDING + font.width(label) + InspectorStyle.CONTENT_PADDING);
 
         var swatchSize = TextInput.HEIGHT;
         var swatchGap = 4;
@@ -314,6 +315,7 @@ public final class FactionInspectorSection implements InspectorSection<FactionSe
         this.factionSwatchY = y;
         this.factionSwatchSize = swatchSize;
         this.factionSwatchArgb = currentArgb;
+        DetailsPanel.trackControlContentRight(inputX, swatchGap + swatchSize);
         return y + TextInput.HEIGHT + InspectorStyle.ROW_GAP;
     }
 
@@ -347,6 +349,7 @@ public final class FactionInspectorSection implements InspectorSection<FactionSe
         var textX = btnX + (btnW - font.width(label)) / 2;
         var textY = btnY + (btnH - font.lineHeight + 2) / 2;
         graphics.drawString(font, Component.literal(label), textX, textY, textColor, false);
+        DetailsPanel.trackContentRight(btnX + btnW + InspectorStyle.CONTENT_PADDING);
 
         factionPaintToggleX = btnX;
         factionPaintToggleY = btnY;

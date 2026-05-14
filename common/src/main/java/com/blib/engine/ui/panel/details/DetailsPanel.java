@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.List;
+import java.util.Objects;
 
 import com.blib.engine.domain.selection.picking.BlockSelectable;
 import com.blib.engine.domain.selection.picking.Selectable;
@@ -19,10 +20,14 @@ import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.PanelPlaceholder;
 import com.blib.engine.ui.ProjectContentActionHandler;
 import com.blib.engine.ui.dock.Panel;
+import com.blib.engine.ui.layout.ScrollViewport;
+import com.blib.engine.ui.layout.UiRect;
+import com.blib.engine.ui.layout.UiText;
 import com.blib.engine.ui.panel.base.InspectorSection;
 import com.blib.engine.ui.panel.base.InspectorSectionRegistry;
 import com.blib.engine.ui.widget.SearchableSelect;
 import com.blib.engine.ui.widget.SegmentedControl;
+import com.blib.engine.ui.widget.ScrollContainer;
 import com.blib.engine.ui.widget.TextInput;
 
 /**
@@ -67,6 +72,8 @@ public final class DetailsPanel implements Panel {
         tagSection
     );
 
+    private final ScrollViewport contentScroll = new ScrollViewport();
+
     public DetailsPanel() {
         this(null);
     }
@@ -99,6 +106,12 @@ public final class DetailsPanel implements Panel {
 
     private static final int HEADER_BAR_HEIGHT = 14;
 
+    private static final int MIN_SCROLL_CONTENT_WIDTH = 240;
+
+    private static final int MIN_CONTROL_CONTENT_WIDTH = 130;
+
+    private static final ThreadLocal<ContentBounds> CONTENT_BOUNDS = new ThreadLocal<>();
+
     /** Vertical gap between editable rows. */
     private static final int ROW_GAP = 2;
 
@@ -124,6 +137,12 @@ public final class DetailsPanel implements Panel {
     @Nullable
     Component hoveredHelpTooltip;
 
+    private int measuredContentHeight;
+
+    private int measuredContentWidth = MIN_SCROLL_CONTENT_WIDTH;
+
+    private @Nullable String measuredSelectionKey;
+
     // Cached panel rect — needed by sections that lay out against the panel's full extent (e.g. the tag view's pinned
     // footer). Package-default so sibling section files can read it.
     int rectX;
@@ -140,7 +159,12 @@ public final class DetailsPanel implements Panel {
     }
 
     @Override
-    public void onShown() {}
+    public void onShown() {
+        contentScroll.reset();
+        measuredContentHeight = 0;
+        measuredContentWidth = MIN_SCROLL_CONTENT_WIDTH;
+        measuredSelectionKey = null;
+    }
 
     @Override
     public @Nullable Component tooltipText() {
@@ -154,6 +178,7 @@ public final class DetailsPanel implements Panel {
         // Inspector depends on a selection in the world (block, entity, faction, etc.) — no world ⇒ no selection
         // logic worth running.
         if (Minecraft.getInstance().level == null) {
+            contentScroll.clear();
             PanelPlaceholder.drawCentered(graphics, x, y, width, height, PanelPlaceholder.NEEDS_WORLD);
             return;
         }
@@ -175,33 +200,85 @@ public final class DetailsPanel implements Panel {
 
         var selection = SelectionManager.current();
         var single = selection.single();
+        resetMeasuredContentIfSelectionChanged(single);
 
         rowY = drawHeaderBar(graphics, font, x, rowY, width, single);
 
+        if (single instanceof TagSelectable) {
+            contentScroll.clear();
+            var bodyViewport = UiRect.of(x, rowY, width, Math.max(0, y + height - rowY));
+            try (var ignored = UiText.captureTruncatedTextTooltips(mouseX, mouseY, bodyViewport, this::setHoveredTooltip)) {
+                renderInspectorContent(graphics, font, x, rowY, width, single, mouseX, mouseY);
+            }
+            return;
+        }
+
+        var viewport = UiRect.of(x, rowY, width, Math.max(0, y + height - rowY));
+        if (viewport.isEmpty()) {
+            contentScroll.clear();
+            return;
+        }
+
+        var baseContentWidth = baseContentWidth(viewport);
+        var frame = contentScroll.begin(graphics, viewport, Math.max(baseContentWidth, measuredContentWidth), measuredContentHeight);
+        var previousBounds = CONTENT_BOUNDS.get();
+        var bounds = new ContentBounds(frame.contentX() + baseContentWidth);
+        CONTENT_BOUNDS.set(bounds);
+        try (var ignored = UiText.captureTruncatedTextTooltips(mouseX, mouseY, frame.visibleContentRect(), this::setHoveredTooltip)) {
+            var contentMouseX = contentScroll.containsVisibleContent(mouseX, mouseY) ? mouseX : Integer.MIN_VALUE;
+            var contentMouseY = contentScroll.containsVisibleContent(mouseX, mouseY) ? mouseY : Integer.MIN_VALUE;
+            var contentBottom = renderInspectorContent(graphics, font, frame.contentX(), frame.contentY(), frame.contentWidth(), single, contentMouseX, contentMouseY);
+            measuredContentHeight = Math.max(0, contentBottom - frame.contentY() + CONTENT_PADDING);
+            measuredContentWidth = Math.max(baseContentWidth, bounds.contentWidth(frame.contentX()));
+        } finally {
+            if (previousBounds == null) {
+                CONTENT_BOUNDS.remove();
+            } else {
+                CONTENT_BOUNDS.set(previousBounds);
+            }
+            contentScroll.end(graphics, mouseX, mouseY);
+        }
+    }
+
+    private int renderInspectorContent(
+        GuiGraphics graphics,
+        Font font,
+        int x,
+        int rowY,
+        int width,
+        @Nullable Selectable single,
+        int mouseX,
+        int mouseY
+    ) {
         if (single == null) {
             blockSection.clearCurrentBlock();
-            internalRenderToolStateView(graphics, font, x, rowY, width, mouseX, mouseY);
-        } else {
-            // Registry-driven dispatch — pick the first registered section whose selectableType matches the runtime
-            // class of the current selection. The legacy {@code switch (single.type())} is gone; adding a new
-            // selectable type now means dropping an InspectorSection in {@code panel.details.*} and registering it
-            // in the constructor's section list, no edits to this method.
-            if (!(single instanceof BlockSelectable)) {
-                blockSection.clearCurrentBlock();
-            }
-            var section = matchingSection(single);
-            if (section != null) {
-                rowY = dispatchSection(section, graphics, x, rowY, width, single, mouseX, mouseY);
-            } else {
-                internalRenderGenericView(graphics, font, x, rowY, width, single);
-            }
-            // After the built-in section, chain any externally-registered sections (registered via the public
-            // com.blib.api.client.engine.v1.inspector.InspectorSectionRegistry facade) at the y the built-in section
-            // returned. Downstream sections that don't apply to the current selection should just return y unchanged.
-            for (var contributed : InspectorSectionRegistry.matching(single)) {
-                rowY = dispatchSection(contributed, graphics, x, rowY, width, single, mouseX, mouseY);
-            }
+            return internalRenderToolStateView(graphics, font, x, rowY, width, mouseX, mouseY);
         }
+
+        // Registry-driven dispatch — pick the first registered section whose selectableType matches the runtime class
+        // of the current selection. The legacy {@code switch (single.type())} is gone; adding a new selectable type now
+        // means dropping an InspectorSection in {@code panel.details.*} and registering it in the constructor's
+        // section list, no edits to this method.
+        if (!(single instanceof BlockSelectable)) {
+            blockSection.clearCurrentBlock();
+        }
+        var section = matchingSection(single);
+        if (section != null) {
+            rowY = dispatchSection(section, graphics, x, rowY, width, single, mouseX, mouseY);
+        } else {
+            rowY = internalRenderGenericView(graphics, font, x, rowY, width, single);
+        }
+        // After the built-in section, chain any externally-registered sections (registered via the public
+        // com.blib.api.client.engine.v1.inspector.InspectorSectionRegistry facade) at the y the built-in section
+        // returned. Downstream sections that don't apply to the current selection should just return y unchanged.
+        for (var contributed : InspectorSectionRegistry.matching(single)) {
+            rowY = dispatchSection(contributed, graphics, x, rowY, width, single, mouseX, mouseY);
+        }
+        return rowY;
+    }
+
+    private void setHoveredTooltip(Component tooltip) {
+        hoveredHelpTooltip = tooltip;
     }
 
     private @Nullable InspectorSection<?> matchingSection(Selectable target) {
@@ -211,6 +288,21 @@ public final class DetailsPanel implements Panel {
             }
         }
         return null;
+    }
+
+    private void resetMeasuredContentIfSelectionChanged(@Nullable Selectable selection) {
+        var key = selection == null ? "<tool-state>" : selection.type().name() + ":" + selection.displayName().getString();
+        if (Objects.equals(key, measuredSelectionKey)) {
+            return;
+        }
+        measuredSelectionKey = key;
+        measuredContentHeight = 0;
+        measuredContentWidth = MIN_SCROLL_CONTENT_WIDTH;
+        contentScroll.reset();
+    }
+
+    private static int baseContentWidth(UiRect viewport) {
+        return Math.max(MIN_SCROLL_CONTENT_WIDTH, viewport.width() - ScrollContainer.SCROLLBAR_GUTTER);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -239,10 +331,26 @@ public final class DetailsPanel implements Panel {
     }
 
     @Override
+    public boolean mouseClickedCapture(double mouseX, double mouseY, int button) {
+        if (SelectionManager.current().single() instanceof TagSelectable) {
+            return false;
+        }
+        return contentScroll.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         var single = SelectionManager.current().single();
         if (single == null) {
             return false;
+        }
+        if (!(single instanceof TagSelectable)) {
+            if (contentScroll.mouseClicked(mouseX, mouseY, button)) {
+                return true;
+            }
+            if (!contentScroll.containsVisibleContent(mouseX, mouseY)) {
+                return false;
+            }
         }
         var section = matchingSection(single);
         if (section != null && dispatchSectionClick(section, mouseX, mouseY, button, single)) {
@@ -284,19 +392,21 @@ public final class DetailsPanel implements Panel {
      * sections; that became noise once those subsystems grew their own dedicated panels and live status-bar readouts.
      * Now it just centers a hint pointing the user at how to populate the inspector.
      */
-    public void internalRenderToolStateView(GuiGraphics graphics, Font font, int x, int y, int width, int mouseX, int mouseY) {
+    public int internalRenderToolStateView(GuiGraphics graphics, Font font, int x, int y, int width, int mouseX, int mouseY) {
         var hint = "Pick an entity, block, faction, or tag to inspect its details.";
         var hintWidth = font.width(hint);
         var hintX = x + Math.max(CONTENT_PADDING, (width - hintWidth) / 2);
         var hintY = y + LINE_HEIGHT;
         graphics.drawString(font, Component.literal(hint), hintX, hintY, LABEL_COLOR, false);
+        trackTextRight(font, x + CONTENT_PADDING, hint);
+        return hintY + LINE_HEIGHT;
     }
 
     /**
      * Fallback for selectable types that don't have a dedicated view yet. Shows the selectable's display name and its
      * world-bounds center so the user at least sees that something is selected and where it is.
      */
-    public static void internalRenderGenericView(GuiGraphics graphics, Font font, int x, int y, int width, Selectable selectable) {
+    public static int internalRenderGenericView(GuiGraphics graphics, Font font, int x, int y, int width, Selectable selectable) {
         var rowY = y;
         rowY = drawSectionHeader(graphics, font, x, rowY, width, selectable.type().name());
         rowY += CONTENT_PADDING / 2;
@@ -306,6 +416,7 @@ public final class DetailsPanel implements Panel {
             rowY = drawRow(graphics, font, x, rowY, "Y", String.format("%.2f", pivot.y));
             rowY = drawRow(graphics, font, x, rowY, "Z", String.format("%.2f", pivot.z));
         }
+        return rowY;
     }
 
     static @Nullable Integer parseInt(String text) {
@@ -319,6 +430,25 @@ public final class DetailsPanel implements Panel {
         }
     }
 
+    static void trackContentRight(int right) {
+        var bounds = CONTENT_BOUNDS.get();
+        if (bounds != null) {
+            bounds.includeRight(right);
+        }
+    }
+
+    static void trackControlContentRight(int controlX) {
+        trackControlContentRight(controlX, 0);
+    }
+
+    static void trackControlContentRight(int controlX, int trailingWidth) {
+        trackContentRight(controlX + MIN_CONTROL_CONTENT_WIDTH + trailingWidth + CONTENT_PADDING);
+    }
+
+    private static void trackTextRight(Font font, int x, String text) {
+        trackContentRight(x + font.width(text) + CONTENT_PADDING);
+    }
+
     static int drawSectionHeader(GuiGraphics graphics, Font font, int x, int y, int width, String label) {
         graphics.fill(x, y, x + width, y + SECTION_HEADER_HEIGHT, SECTION_HEADER_BG_COLOR);
         graphics.drawString(
@@ -330,6 +460,7 @@ public final class DetailsPanel implements Panel {
             HEADER_TEXT_COLOR,
             false
         );
+        trackTextRight(font, x + CONTENT_PADDING, label);
         return y + SECTION_HEADER_HEIGHT;
     }
 
@@ -355,17 +486,31 @@ public final class DetailsPanel implements Panel {
         if (drawHelpIcon(graphics, font, iconX, iconY, mouseX, mouseY)) {
             hoveredHelpTooltip = helpText;
         }
+        trackContentRight(iconX + HELP_ICON_SIZE + CONTENT_PADDING);
         return nextY;
     }
 
     static int drawRow(GuiGraphics graphics, Font font, int x, int y, String label, String value) {
         graphics.drawString(font, Component.literal(label), x + CONTENT_PADDING, y, LABEL_COLOR, false);
         graphics.drawString(font, Component.literal(value), x + CONTENT_PADDING + LABEL_COLUMN_WIDTH, y, VALUE_COLOR, false);
+        trackTextRight(font, x + CONTENT_PADDING, label);
+        trackTextRight(font, x + CONTENT_PADDING + LABEL_COLUMN_WIDTH, value);
+        return y + LINE_HEIGHT;
+    }
+
+    static int drawClippedRow(GuiGraphics graphics, Font font, int x, int y, int width, String label, String value) {
+        var labelX = x + CONTENT_PADDING;
+        var valueX = labelX + LABEL_COLUMN_WIDTH;
+        var rowRight = x + width - CONTENT_PADDING;
+        UiText.drawClipped(graphics, font, label, labelX, y, Math.max(0, LABEL_COLUMN_WIDTH), LABEL_COLOR);
+        UiText.drawClipped(graphics, font, value, valueX, y, Math.max(0, rowRight - valueX), VALUE_COLOR);
+        trackTextRight(font, labelX, label);
         return y + LINE_HEIGHT;
     }
 
     static int drawNote(GuiGraphics graphics, Font font, int x, int y, String text) {
         graphics.drawString(font, Component.literal(text), x + CONTENT_PADDING, y, LABEL_COLOR, false);
+        trackTextRight(font, x + CONTENT_PADDING, text);
         return y + LINE_HEIGHT;
     }
 
@@ -389,15 +534,18 @@ public final class DetailsPanel implements Panel {
     ) {
         var labelY = y + (TextInput.HEIGHT - font.lineHeight + 2) / 2;
         graphics.drawString(font, Component.literal(label), x + CONTENT_PADDING, labelY, LABEL_COLOR, false);
+        trackTextRight(font, x + CONTENT_PADDING, label);
         if (helpText != null) {
             var iconX = x + CONTENT_PADDING + font.width(label) + HELP_ICON_GAP;
             if (drawHelpIcon(graphics, font, iconX, labelY, mouseX, mouseY)) {
                 hoveredHelpTooltip = helpText;
             }
+            trackContentRight(iconX + HELP_ICON_SIZE + CONTENT_PADDING);
         }
         var inputX = x + CONTENT_PADDING + LABEL_COLUMN_WIDTH;
         var inputW = Math.max(0, width - LABEL_COLUMN_WIDTH - 2 * CONTENT_PADDING);
         input.render(graphics, inputX, y, inputW, mouseX, mouseY);
+        trackControlContentRight(inputX);
         return y + TextInput.HEIGHT + ROW_GAP;
     }
 
@@ -434,6 +582,7 @@ public final class DetailsPanel implements Panel {
             && mouseY < iconY + HELP_ICON_SIZE;
         var c = hovered ? hoverColor : color;
         graphics.drawString(font, Component.literal(glyph), iconX, iconY, c, false);
+        trackContentRight(iconX + HELP_ICON_SIZE + CONTENT_PADDING);
         return hovered;
     }
 
@@ -444,6 +593,7 @@ public final class DetailsPanel implements Panel {
     static int drawSegmentedRow(GuiGraphics graphics, int x, int y, int width, SegmentedControl control, int mouseX, int mouseY) {
         var ctrlW = Math.max(0, width - 2 * CONTENT_PADDING);
         control.render(graphics, x + CONTENT_PADDING, y, ctrlW, mouseX, mouseY);
+        trackControlContentRight(x + CONTENT_PADDING);
         return y + SegmentedControl.HEIGHT + ROW_GAP;
     }
 
@@ -468,15 +618,18 @@ public final class DetailsPanel implements Panel {
     ) {
         var labelY = y + (SegmentedControl.HEIGHT - font.lineHeight + 2) / 2;
         graphics.drawString(font, Component.literal(label), x + CONTENT_PADDING, labelY, LABEL_COLOR, false);
+        trackTextRight(font, x + CONTENT_PADDING, label);
         if (helpText != null) {
             var iconX = x + CONTENT_PADDING + font.width(label) + HELP_ICON_GAP;
             if (drawHelpIcon(graphics, font, iconX, labelY, mouseX, mouseY)) {
                 hoveredHelpTooltip = helpText;
             }
+            trackContentRight(iconX + HELP_ICON_SIZE + CONTENT_PADDING);
         }
         var ctrlX = x + CONTENT_PADDING + labelColumnWidth;
         var ctrlW = Math.max(0, width - labelColumnWidth - 2 * CONTENT_PADDING);
         control.render(graphics, ctrlX, y, ctrlW, mouseX, mouseY);
+        trackControlContentRight(ctrlX);
         return y + SegmentedControl.HEIGHT + ROW_GAP;
     }
 
@@ -499,15 +652,18 @@ public final class DetailsPanel implements Panel {
     ) {
         var labelY = y + (SearchableSelect.HEIGHT - font.lineHeight + 2) / 2;
         graphics.drawString(font, Component.literal(label), x + CONTENT_PADDING, labelY, LABEL_COLOR, false);
+        trackTextRight(font, x + CONTENT_PADDING, label);
         if (helpText != null) {
             var iconX = x + CONTENT_PADDING + font.width(label) + HELP_ICON_GAP;
             if (drawHelpIcon(graphics, font, iconX, labelY, mouseX, mouseY)) {
                 hoveredHelpTooltip = helpText;
             }
+            trackContentRight(iconX + HELP_ICON_SIZE + CONTENT_PADDING);
         }
         var ctrlX = x + CONTENT_PADDING + LABEL_COLUMN_WIDTH;
         var ctrlW = Math.max(0, width - LABEL_COLUMN_WIDTH - 2 * CONTENT_PADDING);
         select.render(graphics, ctrlX, y, ctrlW, mouseX, mouseY);
+        trackControlContentRight(ctrlX);
         return y + SearchableSelect.HEIGHT + ROW_GAP;
     }
 
@@ -517,6 +673,7 @@ public final class DetailsPanel implements Panel {
         var noteX = x + (width - textWidth) / 2;
         var noteY = y + (height - font.lineHeight + 2) / 2;
         graphics.drawString(font, Component.literal(text), noteX, noteY, 0xFF606068, false);
+        trackTextRight(font, x + CONTENT_PADDING, text);
     }
 
     @Override
@@ -524,7 +681,7 @@ public final class DetailsPanel implements Panel {
         if (SelectionManager.current().single() instanceof TagSelectable) {
             return tagSection.mouseDragged(mouseX, mouseY, button);
         }
-        return false;
+        return contentScroll.mouseDragged(mouseX, mouseY, button);
     }
 
     @Override
@@ -532,7 +689,7 @@ public final class DetailsPanel implements Panel {
         if (SelectionManager.current().single() instanceof TagSelectable) {
             return tagSection.mouseReleased(mouseX, mouseY, button);
         }
-        return false;
+        return contentScroll.mouseReleased(mouseX, mouseY, button);
     }
 
     @Override
@@ -540,7 +697,24 @@ public final class DetailsPanel implements Panel {
         if (SelectionManager.current().single() instanceof TagSelectable) {
             return tagSection.mouseScrolled(mouseX, mouseY, scrollY);
         }
-        return false;
+        return contentScroll.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    }
+
+    private static final class ContentBounds {
+
+        private int right;
+
+        private ContentBounds(int initialRight) {
+            this.right = initialRight;
+        }
+
+        private void includeRight(int nextRight) {
+            right = Math.max(right, nextRight);
+        }
+
+        private int contentWidth(int contentX) {
+            return Math.max(0, right - contentX);
+        }
     }
 
     /**

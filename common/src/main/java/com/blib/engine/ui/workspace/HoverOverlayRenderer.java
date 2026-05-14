@@ -8,6 +8,7 @@ import org.jetbrains.annotations.ApiStatus;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.dock.DockNode;
 import com.blib.engine.ui.dock.Orientation;
+import com.blib.engine.ui.layout.UiText;
 import com.blib.engine.ui.workspace.dock.DividerHit;
 import com.blib.engine.ui.workspace.dock.DockTreeHitTest;
 
@@ -95,6 +96,9 @@ public final class HoverOverlayRenderer {
             return;
         }
         var tip = leaf.tooltipText();
+        if (tip == null) {
+            tip = UiText.capturedTruncatedTextTooltip();
+        }
         if (tip == null) {
             return;
         }
