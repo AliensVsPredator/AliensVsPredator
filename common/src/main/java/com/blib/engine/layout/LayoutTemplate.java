@@ -28,7 +28,8 @@ public enum LayoutTemplate {
     GOAP("goap", "GOAP"),
     JIGSAW("jigsaw", "Jigsaw"),
     FACTION("faction", "Faction"),
-    MODELER("modeler", "Modeler");
+    MODELER("modeler", "Modeler"),
+    TEXTURE("texture", "Texture");
 
     private final String id;
 
@@ -92,6 +93,9 @@ public enum LayoutTemplate {
             // Modeler layout: Blockbench-style three-column — outliner (left) | custom 3D viewport (center) | inspector
             // (right). No bottom tab strip — modeler authoring is purely in the viewport.
             case MODELER -> modelerBody();
+            // Texture layout: paint.net-style workspace — texture list on the left, editable image surface in the
+            // center, and tool / color / selection controls on the right.
+            case TEXTURE -> textureBody();
         };
     }
 
@@ -102,7 +106,7 @@ public enum LayoutTemplate {
     private static BodyNode modelerBody() {
         var leftColumn = new BodyNode.Split(
             Orientation.VERTICAL.name(),
-            new BodyNode.Leaf(List.of(PanelRegistry.MODELER_UV_MAP, PanelRegistry.MODELER_TEXTURES), 0),
+            new BodyNode.Leaf(List.of(PanelRegistry.MODELER_UV_MAP, PanelRegistry.TEXTURES), 0),
             new BodyNode.Leaf(List.of(PanelRegistry.MODELER_OUTLINER), 0),
             new SizingDoc.FirstFixed(LayoutDefaults.UV_MAP_HEIGHT)
         );
@@ -115,6 +119,21 @@ public enum LayoutTemplate {
         return new BodyNode.Split(
             Orientation.HORIZONTAL.name(),
             leftColumn,
+            centerAndRight,
+            new SizingDoc.FirstFixed(LayoutDefaults.OUTLINER_WIDTH)
+        );
+    }
+
+    private static BodyNode textureBody() {
+        var centerAndRight = new BodyNode.Split(
+            Orientation.HORIZONTAL.name(),
+            new BodyNode.Leaf(List.of(PanelRegistry.TEXTURE_VIEWPORT), 0),
+            new BodyNode.Leaf(List.of(PanelRegistry.TEXTURE_INSPECTOR), 0),
+            new SizingDoc.SecondFixed(LayoutDefaults.DETAILS_WIDTH)
+        );
+        return new BodyNode.Split(
+            Orientation.HORIZONTAL.name(),
+            new BodyNode.Leaf(List.of(PanelRegistry.TEXTURES), 0),
             centerAndRight,
             new SizingDoc.FirstFixed(LayoutDefaults.OUTLINER_WIDTH)
         );

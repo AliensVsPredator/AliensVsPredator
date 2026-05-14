@@ -25,6 +25,8 @@ import com.blib.engine.ui.panel.outliner.ModelerOutlinerPanel;
 import com.blib.engine.ui.panel.outliner.OutlinerPanel;
 import com.blib.engine.ui.panel.tag.TagBrowserPanel;
 import com.blib.engine.ui.panel.territory.TerritoryMapPanel;
+import com.blib.engine.ui.panel.texture.TextureInspectorPanel;
+import com.blib.engine.ui.panel.texture.TextureViewportPanel;
 import com.blib.engine.ui.panel.texture.TexturesPanel;
 import com.blib.engine.ui.panel.uvmap.UvMapPanel;
 import com.blib.engine.ui.panel.viewport.ModelerViewportPanel;
@@ -100,7 +102,13 @@ public final class PanelRegistry {
 
     public static final String MODELER_UV_MAP = "modeler_uv_map";
 
+    public static final String TEXTURES = "textures";
+
     public static final String MODELER_TEXTURES = "modeler_textures";
+
+    public static final String TEXTURE_VIEWPORT = "texture_viewport";
+
+    public static final String TEXTURE_INSPECTOR = "texture_inspector";
 
     private static final Map<String, PanelFactory> FACTORIES = new LinkedHashMap<>();
 
@@ -129,7 +137,10 @@ public final class PanelRegistry {
         register(MODELER_OUTLINER, ModelerOutlinerPanel.class, ctx -> new ModelerOutlinerPanel());
         register(MODELER_INSPECTOR, ModelerInspectorPanel.class, ctx -> new ModelerInspectorPanel());
         register(MODELER_UV_MAP, UvMapPanel.class, ctx -> new UvMapPanel());
-        register(MODELER_TEXTURES, TexturesPanel.class, ctx -> new TexturesPanel());
+        register(TEXTURES, TexturesPanel.class, ctx -> new TexturesPanel());
+        registerAlias(MODELER_TEXTURES, ctx -> new TexturesPanel());
+        register(TEXTURE_VIEWPORT, TextureViewportPanel.class, ctx -> new TextureViewportPanel());
+        register(TEXTURE_INSPECTOR, TextureInspectorPanel.class, ctx -> new TextureInspectorPanel());
     }
 
     private PanelRegistry() {}
@@ -137,6 +148,10 @@ public final class PanelRegistry {
     private static void register(String id, Class<? extends Panel> panelClass, PanelFactory factory) {
         FACTORIES.put(id, factory);
         IDS_BY_CLASS.put(panelClass, id);
+    }
+
+    private static void registerAlias(String id, PanelFactory factory) {
+        FACTORIES.put(id, factory);
     }
 
     /**
@@ -168,6 +183,6 @@ public final class PanelRegistry {
      * panels are registered, in the order they were declared.
      */
     public static List<String> orderedIds() {
-        return List.copyOf(FACTORIES.keySet());
+        return List.copyOf(IDS_BY_CLASS.values());
     }
 }
