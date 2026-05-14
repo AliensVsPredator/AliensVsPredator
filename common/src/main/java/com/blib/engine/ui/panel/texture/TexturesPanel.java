@@ -19,8 +19,8 @@ import com.blib.engine.ui.widget.ScrollContainer;
 
 /**
  * Lists the PNG textures the user has imported via the "Load Texture…" button. Clicking a row sets
- * {@link ModelerScene#activeTexture} so the cube renderer and UV map overlay pick it up; clicking the active row
- * toggles it off.
+ * {@link ModelerScene#activeTexture} so the modeler renderer, UV map overlay, and texture editor pick it up; clicking the
+ * active row toggles it off.
  * <p>
  * Thumbnails are rendered by re-blitting each entry's already-registered
  * {@link net.minecraft.resources.ResourceLocation} scaled to the row's thumb rect — no separate thumbnail generation.
