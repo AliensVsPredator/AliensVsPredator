@@ -2,7 +2,6 @@ package com.blib.engine.ui.widget;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.lwjgl.glfw.GLFW;
 
@@ -11,6 +10,8 @@ import java.util.function.Supplier;
 
 import com.blib.engine.input.Input;
 import com.blib.engine.ui.EngineFont;
+import com.blib.engine.ui.layout.UiRect;
+import com.blib.engine.ui.layout.UiText;
 
 /**
  * Inline "binding chip" widget — renders the current {@link Input}'s display string. Clicking arms the widget; the next
@@ -82,6 +83,9 @@ public final class KeyCaptureWidget {
         this.rectX = x;
         this.rectY = y;
         this.rectWidth = width;
+        if (width <= 0) {
+            return;
+        }
 
         var hovered = mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + HEIGHT;
         var bg = armed ? BG_ARMED : (hovered ? BG_HOVER : BG_IDLE);
@@ -100,16 +104,7 @@ public final class KeyCaptureWidget {
         if (text.isEmpty()) {
             text = "(none)";
         }
-        var textWidth = font.width(text);
-        // Centered horizontally. +2 compensates for MC font's descender padding so labels visually center.
-        graphics.drawString(
-            font,
-            Component.literal(text),
-            x + (width - textWidth) / 2,
-            y + (HEIGHT - font.lineHeight + 2) / 2,
-            textColor,
-            false
-        );
+        UiText.drawCentered(graphics, font, text, UiRect.of(x + 3, y, Math.max(0, width - 6), HEIGHT), textColor);
     }
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {

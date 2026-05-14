@@ -1,13 +1,10 @@
 package com.blib.engine.ui.panel.faction;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +16,9 @@ import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.PanelPlaceholder;
 import com.blib.engine.ui.ProjectContentActionHandler;
 import com.blib.engine.ui.dock.Panel;
-import com.blib.engine.ui.widget.ScrollContainer;
+import com.blib.engine.ui.layout.ScrollViewport;
+import com.blib.engine.ui.layout.UiRect;
+import com.blib.engine.ui.layout.UiText;
 import com.blib.engine.ui.widget.TextInput;
 import com.blib.internal.client.faction.ClientFactionDirectoryCache;
 import com.blib.internal.client.faction.ClientFactionMembersCache;
@@ -78,7 +77,7 @@ public final class FactionMembersPanel implements Panel {
 
     private final TextInput memberInput = new TextInput("Entity UUID");
 
-    private final ScrollContainer scroll = new ScrollContainer();
+    private final ScrollViewport scroll = new ScrollViewport();
 
     private final @Nullable ProjectContentActionHandler actionHandler;
 
@@ -132,6 +131,7 @@ public final class FactionMembersPanel implements Panel {
 
         // Faction membership is server-pushed. No world ⇒ no faction directory, no member lists.
         if (Minecraft.getInstance().level == null) {
+            scroll.clear();
             PanelPlaceholder.drawCentered(graphics, x, y, width, height, PanelPlaceholder.NEEDS_WORLD);
             return;
         }
@@ -142,14 +142,8 @@ public final class FactionMembersPanel implements Panel {
         // No faction selected → render a clear hint and bail. Don't disable the input visually since drawing it
         // disabled would mean swap-and-mouse-fall-through edge cases; just show the hint message instead.
         if (active == null) {
-            graphics.drawString(
-                font,
-                Component.literal("(select a faction in the Browser)"),
-                x + CONTENT_PADDING,
-                y + CONTENT_PADDING,
-                EMPTY_TEXT_COLOR,
-                false
-            );
+            scroll.clear();
+            UiText.drawClipped(graphics, font, "(select a faction in the Browser)", x + CONTENT_PADDING, y + CONTENT_PADDING, Math.max(0, width - 2 * CONTENT_PADDING), EMPTY_TEXT_COLOR);
             return;
         }
 
@@ -171,13 +165,14 @@ public final class FactionMembersPanel implements Panel {
         var listW = width - 2 * CONTENT_PADDING;
         var listH = Math.max(0, height - (listY - y) - CONTENT_PADDING);
         if (listH <= 0) {
+            scroll.clear();
             return;
         }
 
         // Sub-panel header showing which faction we're inspecting (for clarity when this tab is brought to front).
         var directoryEntry = ClientFactionDirectoryCache.get(active);
         var headerLabel = "Members of " + (directoryEntry == null ? active.toString() : directoryEntry.name());
-        graphics.drawString(font, Component.literal(headerLabel), listX, listY, META_COLOR, false);
+        UiText.drawClipped(graphics, font, headerLabel, listX, listY, listW, META_COLOR);
         listY += font.lineHeight + 2;
         listH = Math.max(0, listH - font.lineHeight - 2);
 
@@ -185,32 +180,33 @@ public final class FactionMembersPanel implements Panel {
         var cachedFaction = ClientFactionMembersCache.factionId();
         var members = ClientFactionMembersCache.members();
         if (cachedFaction == null || !cachedFaction.equals(active)) {
-            graphics.drawString(font, Component.literal("(loading…)"), listX, listY, EMPTY_TEXT_COLOR, false);
+            scroll.clear();
+            UiText.drawClipped(graphics, font, "(loading...)", listX, listY, listW, EMPTY_TEXT_COLOR);
             return;
         }
         if (members.isEmpty()) {
-            graphics.drawString(font, Component.literal("(no members)"), listX, listY, EMPTY_TEXT_COLOR, false);
+            scroll.clear();
+            UiText.drawClipped(graphics, font, "(no members)", listX, listY, listW, EMPTY_TEXT_COLOR);
             return;
         }
 
         var contentHeight = members.size() * ROW_HEIGHT;
-        scroll.layout(listH, contentHeight);
 
-        applyRawScissor(graphics, listX, listY, listW, listH);
+        var frame = scroll.begin(graphics, UiRect.of(listX, listY, listW, listH), contentHeight);
         try {
-            var scrollY = (int) scroll.scrollY();
+            var contentX = frame.contentX();
+            var contentW = frame.contentWidth();
+            var scrollY = frame.scrollY();
             var firstVisibleRow = Math.max(0, scrollY / ROW_HEIGHT);
             var lastVisibleRow = Math.min(members.size() - 1, (scrollY + listH) / ROW_HEIGHT);
             for (var i = firstVisibleRow; i <= lastVisibleRow; i++) {
                 var entry = members.get(i);
                 var rowY = listY + i * ROW_HEIGHT - scrollY;
-                renderRow(graphics, listX, rowY, listW, entry, active, mouseX, mouseY);
+                renderRow(graphics, contentX, rowY, contentW, entry, active, mouseX, mouseY);
             }
         } finally {
-            graphics.flush();
-            RenderSystem.disableScissor();
+            scroll.end(graphics, mouseX, mouseY);
         }
-        scroll.renderScrollbar(graphics, listX, listY, listW, listH, mouseX, mouseY);
     }
 
     private void renderRow(
@@ -223,8 +219,7 @@ public final class FactionMembersPanel implements Panel {
         int mouseX,
         int mouseY
     ) {
-        // Reserve the scrollbar gutter so the row hover background and right-aligned Remove button stay clear of it.
-        var rowRight = x + width - ScrollContainer.SCROLLBAR_GUTTER;
+        var rowRight = x + width;
         var hovered = mouseX >= x && mouseX < rowRight && mouseY >= y && mouseY < y + ROW_HEIGHT;
         if (hovered) {
             graphics.fill(x, y, rowRight, y + ROW_HEIGHT, ROW_BG_HOVER_COLOR);
@@ -239,10 +234,9 @@ public final class FactionMembersPanel implements Panel {
         renderButton(graphics, removeRect, "Remove", mouseX, mouseY, BUTTON_DESTRUCTIVE_TEXT);
 
         var label = entry.displayName().isEmpty()
-            ? entry.uuid().toString().substring(0, 8) + "…  (offline / unloaded)"
-            : entry.displayName() + "  " + entry.uuid().toString().substring(0, 8) + "…";
-        var truncated = font.plainSubstrByWidth(label, Math.max(0, removeX - x - 8));
-        graphics.drawString(font, Component.literal(truncated), x + 4, textY, hovered ? ROW_TEXT_HOVER_COLOR : ROW_TEXT_COLOR, false);
+            ? entry.uuid().toString().substring(0, 8) + "...  (offline / unloaded)"
+            : entry.displayName() + "  " + entry.uuid().toString().substring(0, 8) + "...";
+        UiText.drawClipped(graphics, font, label, x + 4, textY, Math.max(0, removeX - x - 8), hovered ? ROW_TEXT_HOVER_COLOR : ROW_TEXT_COLOR);
 
         rowHits.add(new RowHit(removeRect, factionId, entry.uuid(), entry.displayName()));
     }
@@ -256,9 +250,7 @@ public final class FactionMembersPanel implements Panel {
         graphics.fill(rect.x + rect.w - 1, rect.y, rect.x + rect.w, rect.y + rect.h, BUTTON_BORDER);
 
         var font = EngineFont.get();
-        var textX = rect.x + (rect.w - font.width(label)) / 2;
-        var textY = rect.y + (rect.h - font.lineHeight + 2) / 2;
-        graphics.drawString(font, Component.literal(label), textX, textY, textColor, false);
+        UiText.drawCentered(graphics, font, label, UiRect.of(rect.x + 2, rect.y, Math.max(0, rect.w - 4), rect.h), textColor);
     }
 
     private static @Nullable ResourceLocation activeFactionId() {
@@ -291,7 +283,7 @@ public final class FactionMembersPanel implements Panel {
         if (actionHandler == null) {
             return;
         }
-        var label = displayName.isEmpty() ? memberUuid.toString().substring(0, 8) + "…" : displayName;
+        var label = displayName.isEmpty() ? memberUuid.toString().substring(0, 8) + "..." : displayName;
         actionHandler.confirmDelete(
             "Remove member?",
             "Remove '" + label + "' from this faction? They can be re-added afterwards.",
@@ -344,28 +336,7 @@ public final class FactionMembersPanel implements Panel {
         if (mouseX < rectX || mouseX >= rectX + rectWidth || mouseY < rectY || mouseY >= rectY + rectHeight) {
             return false;
         }
-        return scroll.mouseScrolled(scrollY);
-    }
-
-    private static void applyRawScissor(GuiGraphics graphics, int x, int y, int w, int h) {
-        if (w <= 0 || h <= 0) {
-            RenderSystem.disableScissor();
-            return;
-        }
-        graphics.flush();
-
-        var matrix = graphics.pose().last().pose();
-        var topLeft = matrix.transformPosition((float) x, (float) y, 0f, new Vector3f());
-        var bottomRight = matrix.transformPosition((float) (x + w), (float) (y + h), 0f, new Vector3f());
-
-        var window = Minecraft.getInstance().getWindow();
-        var winHeight = window.getHeight();
-        var guiScale = window.getGuiScale();
-        var leftRaw = (int) ((double) topLeft.x * guiScale);
-        var bottomRaw = (int) ((double) winHeight - (double) bottomRight.y * guiScale);
-        var widthRaw = Math.max(0, (int) ((double) (bottomRight.x - topLeft.x) * guiScale));
-        var heightRaw = Math.max(0, (int) ((double) (bottomRight.y - topLeft.y) * guiScale));
-        RenderSystem.enableScissor(leftRaw, bottomRaw, widthRaw, heightRaw);
+        return scroll.mouseScrolled(mouseX, mouseY, scrollY);
     }
 
     private record Rect(

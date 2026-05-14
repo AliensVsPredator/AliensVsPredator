@@ -1,12 +1,8 @@
 package com.blib.engine.ui.panel.action;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
-import org.joml.Vector3f;
 
 import com.blib.engine.history.ClientActionHistory;
 import com.blib.engine.modeler.history.ModelerActionHistory;
@@ -14,7 +10,9 @@ import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.EngineWorkspaceScreen;
 import com.blib.engine.ui.PanelPlaceholder;
 import com.blib.engine.ui.dock.Panel;
-import com.blib.engine.ui.widget.ScrollContainer;
+import com.blib.engine.ui.layout.ScrollViewport;
+import com.blib.engine.ui.layout.UiRect;
+import com.blib.engine.ui.layout.UiText;
 import com.blib.mod.common.network.packet.ActionDescriptor;
 
 /**
@@ -51,7 +49,7 @@ public final class ActionStackPanel implements Panel {
 
     private static final int CURSOR_LINE_HEIGHT = 1;
 
-    private final ScrollContainer scroll = new ScrollContainer();
+    private final ScrollViewport scroll = new ScrollViewport();
 
     @Override
     public String title() {
@@ -73,6 +71,7 @@ public final class ActionStackPanel implements Panel {
         // Server-history needs a world; local history is purely client-side and works at the title screen too. Only
         // gate on the "needs world" placeholder when we're showing the server history.
         if (!localHistoryMode && Minecraft.getInstance().level == null) {
+            scroll.clear();
             PanelPlaceholder.drawCentered(graphics, x, y, width, height, PanelPlaceholder.NEEDS_WORLD);
             return;
         }
@@ -82,6 +81,7 @@ public final class ActionStackPanel implements Panel {
         var cursor = history.undoCursor();
 
         if (entries.isEmpty()) {
+            scroll.clear();
             renderEmpty(graphics, x + CONTENT_PADDING, y + CONTENT_PADDING);
             return;
         }
@@ -93,25 +93,14 @@ public final class ActionStackPanel implements Panel {
         if (listH <= 0) {
             return;
         }
-        scroll.layout(listH, contentHeight);
-
-        var listX = x + CONTENT_PADDING;
-        var listY = y + CONTENT_PADDING;
-        var listW = width - 2 * CONTENT_PADDING;
-
-        applyRawScissor(graphics, listX, listY, listW, listH);
+        var frame = scroll.begin(graphics, UiRect.of(x + CONTENT_PADDING, y + CONTENT_PADDING, width - 2 * CONTENT_PADDING, listH), contentHeight);
         try {
-            var scrollY = (int) scroll.scrollY();
-            var cursorY = listY - scrollY;
+            var listX = frame.contentX();
+            var listW = frame.contentWidth();
+            var cursorY = frame.contentY();
             for (var i = 0; i < entries.size(); i++) {
                 if (i == cursor) {
-                    graphics.fill(
-                        listX,
-                        cursorY,
-                        listX + listW - ScrollContainer.SCROLLBAR_GUTTER,
-                        cursorY + CURSOR_LINE_HEIGHT,
-                        CURSOR_LINE_COLOR
-                    );
+                    graphics.fill(listX, cursorY, listX + listW, cursorY + CURSOR_LINE_HEIGHT, CURSOR_LINE_COLOR);
                     cursorY += CURSOR_LINE_HEIGHT;
                 }
                 renderRow(graphics, listX, cursorY, listW, entries.get(i), i < cursor, mouseX, mouseY);
@@ -120,11 +109,8 @@ public final class ActionStackPanel implements Panel {
             // Cursor at the very bottom (entries.size() == cursor — all undoable, nothing to redo). Skip drawing then
             // since there's no row below to visually separate from; the very-end case isn't load-bearing for the user.
         } finally {
-            graphics.flush();
-            RenderSystem.disableScissor();
+            scroll.end(graphics, mouseX, mouseY);
         }
-
-        scroll.renderScrollbar(graphics, listX, listY, listW, listH, mouseX, mouseY);
     }
 
     private void renderRow(
@@ -137,8 +123,9 @@ public final class ActionStackPanel implements Panel {
         int mouseX,
         int mouseY
     ) {
-        var rowRight = x + width - ScrollContainer.SCROLLBAR_GUTTER;
-        var hovered = mouseX >= x && mouseX < rowRight && mouseY >= y && mouseY < y + ROW_HEIGHT;
+        var rowRight = x + width;
+        var row = UiRect.of(x, y, width, ROW_HEIGHT);
+        var hovered = row.contains(mouseX, mouseY);
         if (hovered) {
             graphics.fill(x, y, rowRight, y + ROW_HEIGHT, ROW_BG_HOVER_COLOR);
         }
@@ -152,16 +139,15 @@ public final class ActionStackPanel implements Panel {
         var textY = y + (ROW_HEIGHT - font.lineHeight) / 2;
 
         // Right-align meta first; truncate the description if it overflows the remaining space.
-        graphics.drawString(font, Component.literal(meta), rowRight - metaWidth - 2, textY, metaColor, false);
+        UiText.drawRight(graphics, font, meta, UiRect.of(x, y, width - 2, ROW_HEIGHT), metaColor);
 
         var available = (rowRight - metaWidth - 6) - (x + 2);
-        var desc = truncate(font, entry.description(), Math.max(0, available));
-        graphics.drawString(font, Component.literal(desc), x + 2, textY, textColor, false);
+        UiText.drawClipped(graphics, font, entry.description(), x + 2, textY, Math.max(0, available), textColor);
     }
 
     private void renderEmpty(GuiGraphics graphics, int x, int y) {
         var font = EngineFont.get();
-        graphics.drawString(font, Component.literal("(no actions yet)"), x, y, EMPTY_TEXT_COLOR, false);
+        UiText.drawClipped(graphics, font, "(no actions yet)", x, y, 120, EMPTY_TEXT_COLOR);
     }
 
     private static String relativeTime(long ts) {
@@ -178,46 +164,23 @@ public final class ActionStackPanel implements Panel {
         return hours + "h";
     }
 
-    private static String truncate(Font font, String text, int maxWidth) {
-        if (font.width(text) <= maxWidth) {
-            return text;
-        }
-        var ellipsis = "…";
-        var ellipsisWidth = font.width(ellipsis);
-        var clipWidth = Math.max(0, maxWidth - ellipsisWidth);
-        if (clipWidth <= 0) {
-            return ellipsis;
-        }
-        var truncated = font.plainSubstrByWidth(text, clipWidth);
-        return truncated + ellipsis;
+    @Override
+    public boolean mouseClickedCapture(double mouseX, double mouseY, int button) {
+        return scroll.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        return scroll.mouseDragged(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        return scroll.mouseReleased(mouseX, mouseY, button);
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        scroll.scrollBy((int) (-scrollY * ROW_HEIGHT));
-        return true;
-    }
-
-    /**
-     * Raw GL scissor in workspace logical-pixel space. Same pattern as OutlinerPanel — bypasses GuiGraphics's scissor
-     * stack so we don't depend on upstream cleanliness.
-     */
-    private static void applyRawScissor(GuiGraphics graphics, int x, int y, int w, int h) {
-        if (w <= 0 || h <= 0) {
-            RenderSystem.disableScissor();
-            return;
-        }
-        graphics.flush();
-        var matrix = graphics.pose().last().pose();
-        var topLeft = matrix.transformPosition((float) x, (float) y, 0f, new Vector3f());
-        var bottomRight = matrix.transformPosition((float) (x + w), (float) (y + h), 0f, new Vector3f());
-        var window = Minecraft.getInstance().getWindow();
-        var winHeight = window.getHeight();
-        var guiScale = window.getGuiScale();
-        var leftRaw = (int) ((double) topLeft.x * guiScale);
-        var bottomRaw = (int) ((double) winHeight - (double) bottomRight.y * guiScale);
-        var widthRaw = Math.max(0, (int) ((double) (bottomRight.x - topLeft.x) * guiScale));
-        var heightRaw = Math.max(0, (int) ((double) (bottomRight.y - topLeft.y) * guiScale));
-        RenderSystem.enableScissor(leftRaw, bottomRaw, widthRaw, heightRaw);
+        return scroll.mouseScrolled(mouseX, mouseY, scrollY);
     }
 }

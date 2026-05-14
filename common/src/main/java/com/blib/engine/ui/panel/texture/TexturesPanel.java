@@ -1,11 +1,7 @@
 package com.blib.engine.ui.panel.texture;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
-import org.joml.Vector3f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +11,9 @@ import com.blib.engine.modeler.texture.LoadedTexture;
 import com.blib.engine.modeler.texture.TextureLoader;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.dock.Panel;
-import com.blib.engine.ui.widget.ScrollContainer;
+import com.blib.engine.ui.layout.ScrollViewport;
+import com.blib.engine.ui.layout.UiRect;
+import com.blib.engine.ui.layout.UiText;
 
 /**
  * Lists the PNG textures the user has imported via the "Load Texture…" button. Clicking a row sets
@@ -56,7 +54,7 @@ public final class TexturesPanel implements Panel {
 
     private static final int THUMB_SIZE = 18;
 
-    private final ScrollContainer scroll = new ScrollContainer();
+    private final ScrollViewport scroll = new ScrollViewport();
 
     private int panelX, panelY, panelWidth, panelHeight;
 
@@ -90,30 +88,20 @@ public final class TexturesPanel implements Panel {
         graphics.fill(buttonX, buttonY, buttonX + 1, buttonY + BUTTON_HEIGHT, BUTTON_BORDER_COLOR);
         graphics.fill(buttonX + buttonWidth - 1, buttonY, buttonX + buttonWidth, buttonY + BUTTON_HEIGHT, BUTTON_BORDER_COLOR);
         var label = "Load Texture…";
-        var labelWidth = font.width(label);
-        graphics.drawString(
-            font,
-            Component.literal(label),
-            buttonX + (buttonWidth - labelWidth) / 2,
-            buttonY + (BUTTON_HEIGHT - font.lineHeight + 2) / 2,
-            TEXT_COLOR,
-            false
-        );
+        UiText.drawCentered(graphics, font, label, UiRect.of(buttonX + 2, buttonY, Math.max(0, buttonWidth - 4), BUTTON_HEIGHT), TEXT_COLOR);
 
         // Rows region: below the button (with one PADDING gap), extending to the bottom of the panel.
         rowsTopY = buttonY + BUTTON_HEIGHT + PADDING;
         rowsLeftX = x + PADDING;
         rowsViewportHeight = Math.max(0, (y + height) - rowsTopY - PADDING);
         var innerWidth = Math.max(0, width - 2 * PADDING);
-        rowsContentWidth = Math.max(0, innerWidth - ScrollContainer.SCROLLBAR_GUTTER);
 
         var rows = scene.textures;
         var contentHeight = rows.size() * ROW_HEIGHT;
-        scroll.layout(rowsViewportHeight, contentHeight);
-
-        applyRawScissor(graphics, rowsLeftX, rowsTopY, rowsContentWidth, rowsViewportHeight);
+        var frame = scroll.begin(graphics, UiRect.of(rowsLeftX, rowsTopY, innerWidth, rowsViewportHeight), contentHeight);
+        rowsContentWidth = frame.contentWidth();
         try {
-            var scrollY = (int) scroll.scrollY();
+            var scrollY = frame.scrollY();
             for (var i = 0; i < rows.size(); i++) {
                 var row = rows.get(i);
                 var rowTop = rowsTopY - scrollY + i * ROW_HEIGHT;
@@ -140,15 +128,11 @@ public final class TexturesPanel implements Panel {
                 var labelX = thumbX + THUMB_SIZE + 6;
                 var labelY = rowTop + (ROW_HEIGHT - font.lineHeight + 2) / 2;
                 var nameMaxWidth = rowsLeftX + rowsContentWidth - labelX - 2;
-                var name = nameMaxWidth > 0 ? font.plainSubstrByWidth(row.displayName(), nameMaxWidth) : "";
-                graphics.drawString(font, Component.literal(name), labelX, labelY, TEXT_COLOR, false);
+                UiText.drawClipped(graphics, font, row.displayName(), labelX, labelY, nameMaxWidth, TEXT_COLOR);
             }
         } finally {
-            graphics.flush();
-            RenderSystem.disableScissor();
+            scroll.end(graphics, mouseX, mouseY);
         }
-
-        scroll.renderScrollbar(graphics, rowsLeftX, rowsTopY, innerWidth, rowsViewportHeight, mouseX, mouseY);
     }
 
     @Override
@@ -202,7 +186,7 @@ public final class TexturesPanel implements Panel {
         if (mouseX < panelX || mouseX >= panelX + panelWidth || mouseY < panelY || mouseY >= panelY + panelHeight) {
             return false;
         }
-        return scroll.mouseScrolled(scrollY);
+        return scroll.mouseScrolled(mouseX, mouseY, scrollY);
     }
 
     private void openTexturePicker() {
@@ -228,28 +212,4 @@ public final class TexturesPanel implements Panel {
         }
     }
 
-    /**
-     * Raw-GL scissor mirroring {@code ModelerOutlinerPanel.applyRawScissor} — the engine workspace renders at a
-     * pose-stack scale that {@link GuiGraphics#enableScissor} doesn't account for, so we have to transform the rect
-     * through the active pose ourselves and call the GL primitive directly.
-     */
-    private static void applyRawScissor(GuiGraphics graphics, int x, int y, int w, int h) {
-        if (w <= 0 || h <= 0) {
-            RenderSystem.disableScissor();
-            return;
-        }
-        graphics.flush();
-        var matrix = graphics.pose().last().pose();
-        var topLeft = matrix.transformPosition((float) x, (float) y, 0f, new Vector3f());
-        var bottomRight = matrix.transformPosition((float) (x + w), (float) (y + h), 0f, new Vector3f());
-
-        var window = Minecraft.getInstance().getWindow();
-        var winHeight = window.getHeight();
-        var guiScale = window.getGuiScale();
-        var leftRaw = (int) ((double) topLeft.x * guiScale);
-        var bottomRaw = (int) ((double) winHeight - (double) bottomRight.y * guiScale);
-        var widthRaw = Math.max(0, (int) ((double) (bottomRight.x - topLeft.x) * guiScale));
-        var heightRaw = Math.max(0, (int) ((double) (bottomRight.y - topLeft.y) * guiScale));
-        RenderSystem.enableScissor(leftRaw, bottomRaw, widthRaw, heightRaw);
-    }
 }

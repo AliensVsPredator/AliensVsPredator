@@ -1,13 +1,10 @@
 package com.blib.engine.ui.widget;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +14,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.blib.engine.ui.EngineFont;
+import com.blib.engine.ui.layout.PanelScissor;
+import com.blib.engine.ui.layout.UiRect;
+import com.blib.engine.ui.layout.UiText;
 
 /**
  * Generic searchable select widget. The inline element is a button-like row showing the current selection's label plus
@@ -167,6 +167,9 @@ public final class SearchableSelect<T> {
         this.rectX = x;
         this.rectY = y;
         this.rectWidth = width;
+        if (width <= 0) {
+            return;
+        }
 
         var hovered = mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + HEIGHT;
         var bg = hovered ? BG_HOVER_COLOR : BG_COLOR;
@@ -421,26 +424,7 @@ public final class SearchableSelect<T> {
                 return;
             }
 
-            // Clip drawing to the list area via raw GL scissor, transformed through the current pose matrix so the
-            // workspace's SCALE is applied automatically. Mirrors GOAPDetailsPanel.applyRawScissor; bypasses
-            // GuiGraphics.enableScissor to avoid intersecting with stale upstream scissor stack entries.
-            graphics.flush();
-            var matrix = graphics.pose().last().pose();
-            var topLeft = matrix.transformPosition((float) listAreaX, (float) listAreaY, 0f, new Vector3f());
-            var bottomRight = matrix.transformPosition(
-                (float) (listAreaX + listAreaWidth),
-                (float) (listAreaY + listAreaHeight),
-                0f,
-                new Vector3f()
-            );
-            var window = Minecraft.getInstance().getWindow();
-            var winHeight = window.getHeight();
-            var guiScale = window.getGuiScale();
-            var leftRaw = (int) ((double) topLeft.x * guiScale);
-            var bottomRaw = (int) ((double) winHeight - (double) bottomRight.y * guiScale);
-            var widthRaw = Math.max(0, (int) ((double) (bottomRight.x - topLeft.x) * guiScale));
-            var heightRaw = Math.max(0, (int) ((double) (bottomRight.y - topLeft.y) * guiScale));
-            RenderSystem.enableScissor(leftRaw, bottomRaw, widthRaw, heightRaw);
+            PanelScissor.enable(graphics, UiRect.of(listAreaX, listAreaY, listAreaWidth, listAreaHeight));
             try {
                 var font = EngineFont.get();
                 var firstVisible = (int) (scroll.scrollY() / ROW_HEIGHT);
@@ -480,18 +464,18 @@ public final class SearchableSelect<T> {
                             graphics.renderItem(stack, iconX, rowY + (ROW_HEIGHT - ICON_SIZE) / 2);
                         }
                     }
-                    var truncated = font.plainSubstrByWidth(item.label(), rowTextMaxWidth);
-                    graphics.drawString(
+                    UiText.drawClipped(
+                        graphics,
                         font,
-                        Component.literal(truncated),
+                        item.label(),
                         rowTextX,
                         rowY + (ROW_HEIGHT - font.lineHeight + 2) / 2,
-                        ROW_TEXT_COLOR,
-                        false
+                        rowTextMaxWidth,
+                        ROW_TEXT_COLOR
                     );
                 }
             } finally {
-                RenderSystem.disableScissor();
+                PanelScissor.disable(graphics);
             }
 
             scroll.renderScrollbar(graphics, listAreaX, listAreaY, listAreaWidth, listAreaHeight, mouseX, mouseY);

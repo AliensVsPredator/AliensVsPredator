@@ -51,6 +51,10 @@ public final class HorizontalScrollContainer {
         if (scrollX < 0) {
             scrollX = 0;
         }
+        if (!canScroll()) {
+            rectKnown = false;
+            draggingThumb = false;
+        }
     }
 
     public float scrollX() {

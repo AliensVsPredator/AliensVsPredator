@@ -1,12 +1,13 @@
 package com.blib.engine.ui.widget;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
 
 import com.blib.engine.ui.EngineFont;
+import com.blib.engine.ui.layout.UiRect;
+import com.blib.engine.ui.layout.UiText;
 
 /**
  * Horizontal radio-button strip — a row of equal-width labeled segments where exactly one is "selected". Clicking a
@@ -64,6 +65,9 @@ public final class SegmentedControl {
         this.rectX = x;
         this.rectY = y;
         this.rectWidth = width;
+        if (width <= 0) {
+            return;
+        }
 
         graphics.fill(x, y, x + width, y + HEIGHT, BG_COLOR);
 
@@ -77,17 +81,7 @@ public final class SegmentedControl {
 
             var label = labels.get(i);
             var textColor = i == selectedIndex ? TEXT_ACTIVE : TEXT_INACTIVE;
-            var labelWidth = font.width(label);
-            graphics.drawString(
-                font,
-                Component.literal(label),
-                sx + (sxEnd - sx - labelWidth) / 2,
-                // +2 compensates for MC font's descender padding so labels visually center; see MenuBarPanel for
-                // details.
-                y + (HEIGHT - font.lineHeight + 2) / 2,
-                textColor,
-                false
-            );
+            UiText.drawCentered(graphics, font, label, UiRect.of(sx + 2, y, Math.max(0, sxEnd - sx - 4), HEIGHT), textColor);
 
             if (i > 0) {
                 graphics.fill(sx, y, sx + 1, y + HEIGHT, SEPARATOR_COLOR);

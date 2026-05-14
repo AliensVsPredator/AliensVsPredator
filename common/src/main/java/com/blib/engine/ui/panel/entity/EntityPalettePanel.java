@@ -1,6 +1,5 @@
 package com.blib.engine.ui.panel.entity;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -11,7 +10,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -21,7 +19,9 @@ import java.util.Locale;
 import com.blib.engine.spawn.EntitySpawnSelection;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.dock.Panel;
-import com.blib.engine.ui.widget.ScrollContainer;
+import com.blib.engine.ui.layout.ScrollViewport;
+import com.blib.engine.ui.layout.UiRect;
+import com.blib.engine.ui.layout.UiText;
 import com.blib.engine.ui.widget.TextInput;
 
 /**
@@ -93,7 +93,7 @@ public final class EntityPalettePanel implements Panel {
 
     private final TextInput searchInput = new TextInput("Search entities…");
 
-    private final ScrollContainer scroll = new ScrollContainer();
+    private final ScrollViewport scroll = new ScrollViewport();
 
     /** Cached filtered entries; rebuilt on search-content drift. */
     private List<Entry> filtered = List.of();
@@ -155,10 +155,12 @@ public final class EntityPalettePanel implements Panel {
         var listW = width - 2 * CONTENT_PADDING;
         var listH = Math.max(0, height - (listY - y) - CONTENT_PADDING);
         if (listH <= 0) {
+            scroll.clear();
             return;
         }
 
         if (filtered.isEmpty()) {
+            scroll.clear();
             var msg = query.isEmpty() ? "(no summonable entities)" : "(no matches)";
             var font = EngineFont.get();
             graphics.drawString(font, Component.literal(msg), listX, listY, EMPTY_TEXT_COLOR, false);
@@ -166,14 +168,14 @@ public final class EntityPalettePanel implements Panel {
         }
 
         var contentHeight = filtered.size() * ROW_HEIGHT;
-        scroll.layout(listH, contentHeight);
-
         var blockedByPeaceful = isPeaceful();
         var selectedId = EntitySpawnSelection.selectedTypeId();
 
-        applyRawScissor(graphics, listX, listY, listW, listH);
+        var frame = scroll.begin(graphics, UiRect.of(listX, listY, listW, listH), contentHeight);
         try {
-            var scrollY = (int) scroll.scrollY();
+            var contentX = frame.contentX();
+            var contentW = frame.contentWidth();
+            var scrollY = frame.scrollY();
             // Skip rows entirely outside the visible window — even at 200 entries this keeps text-rendering work
             // bounded by visible-row count instead of total catalog size.
             var firstVisibleRow = Math.max(0, scrollY / ROW_HEIGHT);
@@ -181,14 +183,11 @@ public final class EntityPalettePanel implements Panel {
             for (var i = firstVisibleRow; i <= lastVisibleRow; i++) {
                 var entry = filtered.get(i);
                 var rowY = listY + i * ROW_HEIGHT - scrollY;
-                renderRow(graphics, listX, rowY, listW, entry, blockedByPeaceful, selectedId, mouseX, mouseY);
+                renderRow(graphics, contentX, rowY, contentW, entry, blockedByPeaceful, selectedId, mouseX, mouseY);
             }
         } finally {
-            graphics.flush();
-            RenderSystem.disableScissor();
+            scroll.end(graphics, mouseX, mouseY);
         }
-
-        scroll.renderScrollbar(graphics, listX, listY, listW, listH, mouseX, mouseY);
     }
 
     private void renderRow(
@@ -202,8 +201,7 @@ public final class EntityPalettePanel implements Panel {
         int mouseX,
         int mouseY
     ) {
-        // Reserve the scrollbar gutter so the row hover background and right-aligned chip don't slide under the bar.
-        var rowRight = x + width - ScrollContainer.SCROLLBAR_GUTTER;
+        var rowRight = x + width;
         var hovered = mouseX >= x && mouseX < rowRight && mouseY >= y && mouseY < y + ROW_HEIGHT;
         var selected = entry.id.equals(selectedId);
         var blocked = peaceful && entry.category == MobCategory.MONSTER;
@@ -223,12 +221,12 @@ public final class EntityPalettePanel implements Panel {
         // Right-aligned category chip — drawn first so we know how much horizontal room is left for the name.
         var chipText = categoryLabel(entry.category);
         var chipPaddingX = 3;
-        var chipWidth = font.width(chipText) + chipPaddingX * 2;
+        var chipWidth = Math.min(Math.max(0, rowRight - x - 6), font.width(chipText) + chipPaddingX * 2);
         var chipHeight = font.lineHeight + 2;
         var chipX = rowRight - chipWidth - 6;
         var chipY = y + (ROW_HEIGHT - chipHeight) / 2;
         graphics.fill(chipX, chipY, chipX + chipWidth, chipY + chipHeight, categoryColor(entry.category));
-        graphics.drawString(font, Component.literal(chipText), chipX + chipPaddingX, chipY + 1, CATEGORY_CHIP_TEXT_COLOR, false);
+        UiText.drawCentered(graphics, font, chipText, UiRect.of(chipX, chipY, chipWidth, chipHeight), CATEGORY_CHIP_TEXT_COLOR);
 
         var nameX = x + ROW_INDENT_X + 4;
         var nameMaxWidth = Math.max(0, chipX - nameX - 4);
@@ -240,8 +238,7 @@ public final class EntityPalettePanel implements Panel {
         } else {
             textColor = ROW_TEXT_COLOR;
         }
-        var truncated = font.plainSubstrByWidth(entry.displayName, nameMaxWidth);
-        graphics.drawString(font, Component.literal(truncated), nameX, textY, textColor, false);
+        UiText.drawClipped(graphics, font, entry.displayName, nameX, textY, nameMaxWidth, textColor);
 
         rowHits.add(new RowHit(x, y, width, ROW_HEIGHT, entry.id, blocked));
 
@@ -340,29 +337,7 @@ public final class EntityPalettePanel implements Panel {
         if (mouseX < rectX || mouseX >= rectX + rectWidth || mouseY < rectY || mouseY >= rectY + rectHeight) {
             return false;
         }
-        return scroll.mouseScrolled(scrollY);
-    }
-
-    /** Same scissor pattern as PiecePalettePanel / OutlinerPanel — see their docs for the rationale. */
-    private static void applyRawScissor(GuiGraphics graphics, int x, int y, int w, int h) {
-        if (w <= 0 || h <= 0) {
-            RenderSystem.disableScissor();
-            return;
-        }
-        graphics.flush();
-
-        var matrix = graphics.pose().last().pose();
-        var topLeft = matrix.transformPosition((float) x, (float) y, 0f, new Vector3f());
-        var bottomRight = matrix.transformPosition((float) (x + w), (float) (y + h), 0f, new Vector3f());
-
-        var window = Minecraft.getInstance().getWindow();
-        var winHeight = window.getHeight();
-        var guiScale = window.getGuiScale();
-        var leftRaw = (int) ((double) topLeft.x * guiScale);
-        var bottomRaw = (int) ((double) winHeight - (double) bottomRight.y * guiScale);
-        var widthRaw = Math.max(0, (int) ((double) (bottomRight.x - topLeft.x) * guiScale));
-        var heightRaw = Math.max(0, (int) ((double) (bottomRight.y - topLeft.y) * guiScale));
-        RenderSystem.enableScissor(leftRaw, bottomRaw, widthRaw, heightRaw);
+        return scroll.mouseScrolled(mouseX, mouseY, scrollY);
     }
 
     private record Entry(

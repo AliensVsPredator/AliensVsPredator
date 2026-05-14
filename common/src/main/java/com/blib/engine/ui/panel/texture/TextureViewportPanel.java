@@ -7,13 +7,11 @@ import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
 import java.util.ArrayDeque;
 import java.util.Objects;
@@ -26,6 +24,8 @@ import com.blib.engine.texture.TextureEditorState;
 import com.blib.engine.texture.TextureTool;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.dock.Panel;
+import com.blib.engine.ui.layout.PanelScissor;
+import com.blib.engine.ui.layout.UiRect;
 
 @ApiStatus.Internal
 public final class TextureViewportPanel implements Panel {
@@ -308,37 +308,39 @@ public final class TextureViewportPanel implements Panel {
 
     private void renderCanvas(GuiGraphics graphics, NativeImage pixels) {
         graphics.flush();
-        applyRawScissor(graphics, canvasX, canvasY, canvasW, canvasH);
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.disableCull();
+        PanelScissor.enable(graphics, UiRect.of(canvasX, canvasY, canvasW, canvasH));
+        try {
+            RenderSystem.enableBlend();
+            RenderSystem.defaultBlendFunc();
+            RenderSystem.disableCull();
 
-        var pose = graphics.pose().last().pose();
-        var m00 = pose.m00();
-        var m11 = pose.m11();
-        var m30 = pose.m30();
-        var m31 = pose.m31();
+            var pose = graphics.pose().last().pose();
+            var m00 = pose.m00();
+            var m11 = pose.m11();
+            var m30 = pose.m30();
+            var m31 = pose.m31();
 
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        var buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        addQuad(buffer, m00, m11, m30, m31, canvasX, canvasY, canvasX + canvasW, canvasY + canvasH, BG_COLOR);
-        addCheckerboard(buffer, m00, m11, m30, m31, pixels);
-        BufferUploader.drawWithShader(buffer.buildOrThrow());
+            RenderSystem.setShader(GameRenderer::getPositionColorShader);
+            var buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+            addQuad(buffer, m00, m11, m30, m31, canvasX, canvasY, canvasX + canvasW, canvasY + canvasH, BG_COLOR);
+            addCheckerboard(buffer, m00, m11, m30, m31, pixels);
+            BufferUploader.drawWithShader(buffer.buildOrThrow());
 
-        renderTextureQuad(pixels, m00, m11, m30, m31);
+            renderTextureQuad(pixels, m00, m11, m30, m31);
 
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        var x0 = (int) Math.round(imageX(pixels));
-        var y0 = (int) Math.round(imageY(pixels));
-        var x1 = (int) Math.round(x0 + pixels.getWidth() * zoom);
-        var y1 = (int) Math.round(y0 + pixels.getHeight() * zoom);
-        addPixelGrid(buffer, m00, m11, m30, m31, pixels);
-        addRectOutline(buffer, m00, m11, m30, m31, x0, y0, x1, y1, IMAGE_BORDER_COLOR);
-        addSelection(buffer, m00, m11, m30, m31);
-        BufferUploader.drawWithShader(buffer.buildOrThrow());
-
-        RenderSystem.disableScissor();
+            RenderSystem.setShader(GameRenderer::getPositionColorShader);
+            buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+            var x0 = (int) Math.round(imageX(pixels));
+            var y0 = (int) Math.round(imageY(pixels));
+            var x1 = (int) Math.round(x0 + pixels.getWidth() * zoom);
+            var y1 = (int) Math.round(y0 + pixels.getHeight() * zoom);
+            addPixelGrid(buffer, m00, m11, m30, m31, pixels);
+            addRectOutline(buffer, m00, m11, m30, m31, x0, y0, x1, y1, IMAGE_BORDER_COLOR);
+            addSelection(buffer, m00, m11, m30, m31);
+            BufferUploader.drawWithShader(buffer.buildOrThrow());
+        } finally {
+            PanelScissor.disable(graphics);
+        }
     }
 
     private void renderTextureQuad(NativeImage pixels, float m00, float m11, float m30, float m31) {
@@ -667,26 +669,6 @@ public final class TextureViewportPanel implements Panel {
         buffer.addVertex(m00 * x0 + m30, m11 * y1 + m31, 0).setColor(color);
         buffer.addVertex(m00 * x1 + m30, m11 * y1 + m31, 0).setColor(color);
         buffer.addVertex(m00 * x1 + m30, m11 * y0 + m31, 0).setColor(color);
-    }
-
-    private static void applyRawScissor(GuiGraphics graphics, int x, int y, int w, int h) {
-        if (w <= 0 || h <= 0) {
-            RenderSystem.disableScissor();
-            return;
-        }
-        graphics.flush();
-        var matrix = graphics.pose().last().pose();
-        var topLeft = matrix.transformPosition((float) x, (float) y, 0f, new Vector3f());
-        var bottomRight = matrix.transformPosition((float) (x + w), (float) (y + h), 0f, new Vector3f());
-
-        var window = Minecraft.getInstance().getWindow();
-        var winHeight = window.getHeight();
-        var guiScale = window.getGuiScale();
-        var leftRaw = (int) ((double) topLeft.x * guiScale);
-        var bottomRaw = (int) ((double) winHeight - (double) bottomRight.y * guiScale);
-        var widthRaw = Math.max(0, (int) ((double) (bottomRight.x - topLeft.x) * guiScale));
-        var heightRaw = Math.max(0, (int) ((double) (bottomRight.y - topLeft.y) * guiScale));
-        RenderSystem.enableScissor(leftRaw, bottomRaw, widthRaw, heightRaw);
     }
 
     private record Pixel(

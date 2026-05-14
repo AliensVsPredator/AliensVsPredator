@@ -187,6 +187,9 @@ public final class TextInput {
         this.rectX = x;
         this.rectY = y;
         this.rectWidth = width;
+        if (width <= 0) {
+            return;
+        }
 
         var bg = focusedFlag ? BG_FOCUSED_COLOR : BG_COLOR;
         var border = focusedFlag ? BORDER_FOCUSED_COLOR : BORDER_COLOR;

@@ -63,6 +63,10 @@ public final class ScrollContainer {
         if (scrollY < 0) {
             scrollY = 0;
         }
+        if (!canScroll()) {
+            rectKnown = false;
+            draggingThumb = false;
+        }
     }
 
     public float scrollY() {
