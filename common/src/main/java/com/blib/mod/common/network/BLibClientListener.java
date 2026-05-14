@@ -38,9 +38,9 @@ import com.blib.internal.client.faction.ClientFactionMembersCache;
 import com.blib.internal.client.territory.ClientTerritoryCache;
 import com.blib.internal.common.storage.EngineProjectIO;
 import com.blib.mod.BLib;
-import com.blib.mod.client.render.debug.PathfindingNavDebugHUD;
+import com.blib.mod.client.render.debug.PathfindingDebugState;
 import com.blib.mod.client.render.debug.PathfindingSearchDebugRenderer;
-import com.blib.mod.client.render.goap.GOAPDebugHUD;
+import com.blib.mod.client.render.goap.GOAPDebugState;
 import com.blib.mod.common.network.packet.C2SRequestTagDraftPayload;
 import com.blib.mod.common.network.packet.ProjectOp;
 import com.blib.mod.common.network.packet.S2CActionHistorySyncPayload;
@@ -128,7 +128,7 @@ public final class BLibClientListener {
     }
 
     public static void handleGOAPDebug(S2CGOAPDebugPayload payload, Player player) {
-        GOAPDebugHUD.INSTANCE.update(payload);
+        GOAPDebugState.INSTANCE.update(payload);
     }
 
     public static void handlePathfindingSearchDebug(S2CPathfindingSearchDebugPayload payload, Player player) {
@@ -136,7 +136,7 @@ public final class BLibClientListener {
     }
 
     public static void handlePathfindingNavDebug(S2CPathfindingNavDebugPayload payload, Player player) {
-        PathfindingNavDebugHUD.INSTANCE.update(payload);
+        PathfindingDebugState.INSTANCE.update(payload);
     }
 
     /**

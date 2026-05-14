@@ -9,7 +9,6 @@ import com.blib.mod.common.network.packet.C2SDeleteProjectPayload;
 import com.blib.mod.common.network.packet.C2SDeleteSelectionPayload;
 import com.blib.mod.common.network.packet.C2SDismemberAllLimbsPayload;
 import com.blib.mod.common.network.packet.C2SDismemberLimbPayload;
-import com.blib.mod.common.network.packet.C2SGOAPTrackPayload;
 import com.blib.mod.common.network.packet.C2SRedoActionPayload;
 import com.blib.mod.common.network.packet.C2SReloadProjectPayload;
 import com.blib.mod.common.network.packet.C2SRemoveEntityPayload;
@@ -41,10 +40,6 @@ public final class NetworkCommandHandler {
 
     public void onDeleteProject(Command.DeleteProject cmd) {
         BLib.MOD.networking().sendToServer(new C2SDeleteProjectPayload(cmd.projectName()));
-    }
-
-    public void onGoapTrack(Command.GoapTrack cmd) {
-        BLib.MOD.networking().sendToServer(new C2SGOAPTrackPayload(cmd.entityId()));
     }
 
     public void onDismemberAll(Command.DismemberAllLimbs cmd) {

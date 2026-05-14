@@ -191,6 +191,10 @@ public final class WorkspaceLayoutController {
         return panelTreeContainsLocalHistoryPanel(root);
     }
 
+    public static boolean hasActivePanel(DockNode root, Class<? extends Panel> panelClass) {
+        return panelTreeContainsActivePanel(root, panelClass);
+    }
+
     /**
      * Convenience for callers without a workspace reference (e.g. the action-stack panel). True when the active screen
      * is an engine workspace whose layout has a modeler panel.
@@ -221,6 +225,21 @@ public final class WorkspaceLayoutController {
             case DockNode.Leaf leaf -> panelOrTabsContainsLocalHistoryPanel(leaf.panel());
             case DockNode.Split split -> panelTreeContainsLocalHistoryPanel(split.first()) || panelTreeContainsLocalHistoryPanel(split.second());
         };
+    }
+
+    private static boolean panelTreeContainsActivePanel(DockNode node, Class<? extends Panel> panelClass) {
+        return switch (node) {
+            case DockNode.Leaf leaf -> panelOrActiveTabMatches(leaf.panel(), panelClass);
+            case DockNode.Split split -> panelTreeContainsActivePanel(split.first(), panelClass)
+                || panelTreeContainsActivePanel(split.second(), panelClass);
+        };
+    }
+
+    private static boolean panelOrActiveTabMatches(Panel panel, Class<? extends Panel> panelClass) {
+        if (panelClass.isInstance(panel)) {
+            return true;
+        }
+        return panel instanceof TabbedPanel tp && panelClass.isInstance(tp.activeTab());
     }
 
     private static boolean panelOrTabsContainsModeler(Panel panel) {

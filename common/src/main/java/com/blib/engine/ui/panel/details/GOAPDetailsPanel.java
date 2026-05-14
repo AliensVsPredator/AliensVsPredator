@@ -20,13 +20,13 @@ import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.widget.ScrollContainer;
 import com.blib.engine.ui.widget.SegmentedControl;
 import com.blib.engine.ui.widget.TextInput;
-import com.blib.mod.client.render.goap.GOAPDebugHUD;
+import com.blib.mod.client.render.goap.GOAPDebugState;
 import com.blib.mod.client.render.goap.model.GOAPAgentDebugData;
 
 /**
- * Editor inspector for the currently-tracked GOAP agent. Reads from {@link GOAPDebugHUD#latestPayload()} (which the
- * existing server packet handler populates), so it shows live data whenever someone has run {@code /goap track} or the
- * engine has otherwise pinned an entity for tracking.
+ * Editor inspector for the currently-tracked GOAP agent. Reads from {@link GOAPDebugState#latestPayload()} (which the
+ * existing server packet handler populates), so it shows live data for the selected entity while the engine workspace
+ * is open.
  * <p>
  * Two modes via a {@link SegmentedControl}: <strong>Agent</strong> shows identity / plan list / blackboards, and
  * <strong>World State</strong> shows the agent's sensor map filtered by a {@link TextInput} search box. Both modes
@@ -142,7 +142,7 @@ public final class GOAPDetailsPanel implements Panel {
 
         // Reset scroll for both modes when the tracked agent changes — viewing a new entity should always show its
         // content from the top, not at whatever scroll position the previous entity was left at.
-        var payload = GOAPDebugHUD.INSTANCE.latestPayload();
+        var payload = GOAPDebugState.INSTANCE.latestPayload();
         if (payload != null && !payload.agents().isEmpty()) {
             var idx = payload.selectedIndex();
             if (idx >= 0 && idx < payload.agents().size()) {
@@ -267,11 +267,11 @@ public final class GOAPDetailsPanel implements Panel {
     }
 
     private List<Row> buildRows() {
-        var payload = GOAPDebugHUD.INSTANCE.latestPayload();
+        var payload = GOAPDebugState.INSTANCE.latestPayload();
         if (payload == null || payload.agents().isEmpty()) {
             return List.of(
                 new Row(0, "No agent tracked.", LABEL_COLOR),
-                new Row(0, "Run /goap track <entity> to start.", LABEL_COLOR)
+                new Row(0, "Select an entity in the viewport to start.", LABEL_COLOR)
             );
         }
 
@@ -331,7 +331,7 @@ public final class GOAPDetailsPanel implements Panel {
 
         // Iterate the agent's full sensor key set rather than just worldState.entrySet() — sensors that haven't
         // produced a value yet (or whose value is the type's default) often don't appear in worldState, but the user
-        // still wants to see the key listed (matching the GOAP debug HUD's behavior on the right side of the screen).
+        // still wants to see the key listed.
         var allKeys = agent.graphSensorKeys();
         var worldState = agent.worldState();
 

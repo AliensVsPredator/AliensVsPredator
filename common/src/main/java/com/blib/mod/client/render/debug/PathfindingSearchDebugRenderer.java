@@ -60,6 +60,10 @@ public final class PathfindingSearchDebugRenderer {
         snapshots.remove(entityId);
     }
 
+    public void clearAll() {
+        snapshots.clear();
+    }
+
     public void render(
         PoseStack poseStack,
         MultiBufferSource.BufferSource bufferSource,
@@ -267,7 +271,7 @@ public final class PathfindingSearchDebugRenderer {
     }
 
     private static float[] getPathNodeColor(int pathIndex, int entityId) {
-        var navPayload = PathfindingNavDebugHUD.INSTANCE.getLatestPayload();
+        var navPayload = PathfindingDebugState.INSTANCE.latestPayload();
 
         if (navPayload == null || navPayload.entityId() != entityId) {
             return DEFAULT_PATH_COLOR;

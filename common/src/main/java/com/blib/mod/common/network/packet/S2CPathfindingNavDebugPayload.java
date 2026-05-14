@@ -16,7 +16,7 @@ import com.blib.mod.BLib;
 
 /**
  * Server-to-client payload carrying a rolling window of path nodes around the navigator's current position for the
- * pathfinding nav debug HUD.
+ * engine pathfinding panel.
  */
 public record S2CPathfindingNavDebugPayload(
     int entityId,

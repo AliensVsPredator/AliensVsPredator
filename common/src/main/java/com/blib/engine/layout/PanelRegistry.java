@@ -23,6 +23,7 @@ import com.blib.engine.ui.panel.jigsaw.PiecePalettePanel;
 import com.blib.engine.ui.panel.jigsaw.PoolEditorPanel;
 import com.blib.engine.ui.panel.outliner.ModelerOutlinerPanel;
 import com.blib.engine.ui.panel.outliner.OutlinerPanel;
+import com.blib.engine.ui.panel.pathfinding.PathfindingDebugPanel;
 import com.blib.engine.ui.panel.tag.TagBrowserPanel;
 import com.blib.engine.ui.panel.territory.TerritoryMapPanel;
 import com.blib.engine.ui.panel.texture.TextureInspectorPanel;
@@ -80,6 +81,8 @@ public final class PanelRegistry {
 
     public static final String GOAP_DETAILS = "goap_details";
 
+    public static final String PATHFINDING_DEBUG = "pathfinding_debug";
+
     public static final String ENTITY_PALETTE = "entity_palette";
 
     public static final String FACTION_BROWSER = "faction_browser";
@@ -126,6 +129,7 @@ public final class PanelRegistry {
         register(PIECE_PALETTE, PiecePalettePanel.class, ctx -> new PiecePalettePanel());
         register(POOL_EDITOR, PoolEditorPanel.class, ctx -> new PoolEditorPanel());
         register(GOAP_DETAILS, GOAPDetailsPanel.class, ctx -> new GOAPDetailsPanel());
+        register(PATHFINDING_DEBUG, PathfindingDebugPanel.class, ctx -> new PathfindingDebugPanel());
         register(ENTITY_PALETTE, EntityPalettePanel.class, ctx -> new EntityPalettePanel());
         register(FACTION_BROWSER, FactionBrowserPanel.class, ctx -> new FactionBrowserPanel(ctx.projectContentActionHandler()));
         register(DIPLOMACY_MATRIX, DiplomacyMatrixPanel.class, ctx -> new DiplomacyMatrixPanel());

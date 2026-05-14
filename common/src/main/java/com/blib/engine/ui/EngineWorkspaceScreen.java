@@ -112,8 +112,7 @@ import com.blib.engine.ui.workspace.menubar.MenuBarController;
 public final class EngineWorkspaceScreen extends Screen {
 
     /**
-     * Pose scale applied to the entire workspace render. {@code 0.375f = 0.5 × 0.75} — three-quarters of the GOAP debug
-     * HUD's text size, so editor text is denser without sacrificing legibility. Layout uses logical pixels; physical
+     * Pose scale applied to the entire workspace render. Layout uses logical pixels; physical
      * size equals {@code logical × SCALE}.
      */
     private static final float SCALE = 0.375f;
@@ -1360,6 +1359,10 @@ public final class EngineWorkspaceScreen extends Screen {
         return WorkspaceLayoutController.hasLocalHistoryPanel(root);
     }
 
+    public boolean layoutHasActivePanel(Class<? extends Panel> panelClass) {
+        return WorkspaceLayoutController.hasActivePanel(root, panelClass);
+    }
+
     /**
      * Convenience for callers without a workspace reference (e.g. the action-stack panel). Delegates to the controller,
      * which checks the active screen.
@@ -2078,10 +2081,10 @@ public final class EngineWorkspaceScreen extends Screen {
 
     /**
      * Right-click in the viewport — opens a context menu at the cursor anchored as a {@link DropdownMenu}. When the
-     * cursor was over a living entity, items include "View GOAP Details" (dispatches a {@link C2SGOAPTrackPayload} and
-     * opens the {@link GOAPDetailsPanel}) and "Delete Entity" (dispatches a {@link C2SRemoveEntityPayload}). The delete
-     * option is hidden for players since deleting other players via this menu would be inappropriate; the server-side
-     * handler also rejects player targets as a safety net. Empty-space right-clicks just close any existing menu.
+     * cursor was over a living entity, items include entity management actions such as Manage Factions and Delete
+     * Entity. The delete option is hidden for players since deleting other players via this menu would be inappropriate;
+     * the server-side handler also rejects player targets as a safety net. Empty-space right-clicks just close any
+     * existing menu.
      */
     /**
      * Builds the viewport's right-click handler. Anonymous class rather than method reference because
@@ -2123,11 +2126,6 @@ public final class EngineWorkspaceScreen extends Screen {
         @Override
         public void closeMenu() {
             menuBar.closeAll();
-        }
-
-        @Override
-        public void reopenPanel(Class<? extends Panel> panelClass, Supplier<Panel> factory) {
-            EngineWorkspaceScreen.this.reopenPanel(panelClass, factory);
         }
 
         @Override

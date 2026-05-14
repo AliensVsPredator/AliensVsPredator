@@ -27,8 +27,6 @@ public sealed interface Command {
 
     record DeleteProject(String projectName) implements Command {}
 
-    record GoapTrack(int entityId) implements Command {}
-
     record DismemberAllLimbs(int entityId) implements Command {}
 
     record DismemberLimb(

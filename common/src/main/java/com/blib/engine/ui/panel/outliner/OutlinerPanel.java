@@ -414,7 +414,7 @@ public final class OutlinerPanel implements Panel {
         }
         if (button == 1) {
             // RMB on a LivingEntity row opens the same context menu as right-clicking the entity in the viewport
-            // (View GOAP Details, Delete Entity, etc.). Headers and non-living rows ignore RMB; the click is
+            // (Manage Factions, Delete Entity, etc.). Headers and non-living rows ignore RMB; the click is
             // consumed in either case so the panel beneath (the dock divider, etc.) doesn't get it.
             for (var rh : rowHits) {
                 if (mouseX >= rh.x && mouseX < rh.x + rh.w && mouseY >= rh.y && mouseY < rh.y + rh.h) {

@@ -14,6 +14,8 @@ public final class LayoutDefaults {
 
     public static final int DETAILS_WIDTH = 190;
 
+    public static final int GOAP_DETAILS_WIDTH = 260;
+
     public static final int CONTENT_BROWSER_HEIGHT = 140;
 
     public static final int UV_MAP_HEIGHT = 220;

@@ -174,12 +174,25 @@ public final class BLibServerListener {
             return;
         }
 
-        var entity = serverPlayer.serverLevel().getEntity(payload.entityId());
-        if (!(entity instanceof LivingEntity living) || !(living instanceof GOAPUser<?>)) {
+        if (payload.entityIds().isEmpty()) {
+            GOAPDebugTracker.INSTANCE.untrack(serverPlayer.getUUID());
             return;
         }
 
-        GOAPDebugTracker.INSTANCE.track(serverPlayer.getUUID(), List.of(living.getUUID()));
+        var tracked = new ArrayList<UUID>();
+        for (var entityId : payload.entityIds()) {
+            var entity = serverPlayer.serverLevel().getEntity(entityId);
+            if (entity instanceof LivingEntity living && living instanceof GOAPUser<?>) {
+                tracked.add(living.getUUID());
+            }
+        }
+
+        if (tracked.isEmpty()) {
+            GOAPDebugTracker.INSTANCE.untrack(serverPlayer.getUUID());
+            return;
+        }
+
+        GOAPDebugTracker.INSTANCE.track(serverPlayer.getUUID(), tracked);
     }
 
     /**

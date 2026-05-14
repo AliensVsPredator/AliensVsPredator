@@ -18,8 +18,6 @@ public class BLibNeoForgeClient {
     public BLibNeoForgeClient(IEventBus modEventBus) {
         BLibClient.initialize();
         BLibNeoForgeShaders.register(modEventBus);
-        BLibNeoForgeGOAPDebugHUD.register();
-        BLibNeoForgePathfindingNavDebugHUD.register();
         EngineBootstrap.install(new BLibNeoForgeEnginePlatform(modEventBus));
     }
 }

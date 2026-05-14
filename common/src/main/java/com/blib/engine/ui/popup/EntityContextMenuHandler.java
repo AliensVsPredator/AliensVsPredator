@@ -6,7 +6,7 @@ import org.jetbrains.annotations.ApiStatus;
 import com.blib.engine.ui.panel.viewport.ViewportPanel;
 
 /**
- * Open the engine's entity context menu (View GOAP Details / Delete Entity / etc.) at the supplied screen-logical
+ * Open the engine's entity context menu (Manage Factions / Delete Entity / etc.) at the supplied screen-logical
  * coordinates for {@code entity}. Implemented by {@code EngineWorkspaceScreen} and forwarded through
  * {@link com.blib.engine.layout.PanelRegistry.Context} so non-viewport panels (currently the outliner) can request the
  * same menu the viewport's right-click produces, without reaching back into the screen instance directly.

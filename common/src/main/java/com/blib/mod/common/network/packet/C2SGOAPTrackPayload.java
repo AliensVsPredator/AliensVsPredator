@@ -7,23 +7,23 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 import com.blib.mod.BLib;
 
 /**
- * Client → server: ask the server to track {@code entityId} for GOAP debug snapshots, replacing whatever was tracked
- * for this player previously. Fired by the engine workspace's right-click → "View GOAP Details" flow so the user
- * doesn't have to type {@code /goap track} manually. The server resolves the entity from the int id, validates that
- * it's a living GOAP user, and feeds {@code GOAPDebugTracker} — same back-end as the slash command.
+ * Client → server: ask the server to mirror the selected entity ids into the GOAP debug tracker. An empty list clears
+ * tracking for this player.
  */
-public record C2SGOAPTrackPayload(int entityId) implements CustomPacketPayload {
+public record C2SGOAPTrackPayload(List<Integer> entityIds) implements CustomPacketPayload {
 
     public static final ResourceLocation PAYLOAD_ID = BLib.MOD.resources().createLocation("goap_track");
 
     public static final Type<C2SGOAPTrackPayload> TYPE = new Type<>(PAYLOAD_ID);
 
     public static final StreamCodec<C2SGOAPTrackPayload> CODEC = RecordStreamCodec.of(
-        StreamCodecs.INT,
-        C2SGOAPTrackPayload::entityId,
+        StreamCodecs.INT.asList(),
+        C2SGOAPTrackPayload::entityIds,
         C2SGOAPTrackPayload::new
     );
 

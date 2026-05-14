@@ -76,10 +76,7 @@ public enum LayoutTemplate {
                 List.of(PanelRegistry.CONTENT_BROWSER),
                 PanelRegistry.DETAILS
             );
-            case GOAP -> threeColumnBody(
-                List.of(PanelRegistry.CONTENT_BROWSER),
-                PanelRegistry.GOAP_DETAILS
-            );
+            case GOAP -> goapBody();
             // Jigsaw bottom slot tabs Piece Palette (placement) and Pool Editor (browse pool contents); both surfaces
             // serve the same authoring task.
             case JIGSAW -> threeColumnBody(
@@ -140,6 +137,33 @@ public enum LayoutTemplate {
         return new BodyNode.Split(
             Orientation.HORIZONTAL.name(),
             new BodyNode.Leaf(List.of(PanelRegistry.TEXTURES), 0),
+            centerAndRight,
+            new SizingDoc.FirstFixed(LayoutDefaults.OUTLINER_WIDTH)
+        );
+    }
+
+    private static BodyNode goapBody() {
+        var viewportColumn = new BodyNode.Split(
+            Orientation.VERTICAL.name(),
+            new BodyNode.Leaf(List.of(PanelRegistry.VIEWPORT), 0),
+            new BodyNode.Leaf(List.of(PanelRegistry.CONTENT_BROWSER), 0),
+            new SizingDoc.SecondFixed(LayoutDefaults.CONTENT_BROWSER_HEIGHT)
+        );
+        var rightColumn = new BodyNode.Split(
+            Orientation.VERTICAL.name(),
+            new BodyNode.Leaf(List.of(PanelRegistry.GOAP_DETAILS), 0),
+            new BodyNode.Leaf(List.of(PanelRegistry.PATHFINDING_DEBUG), 0),
+            new SizingDoc.SecondFixed(LayoutDefaults.CONTENT_BROWSER_HEIGHT)
+        );
+        var centerAndRight = new BodyNode.Split(
+            Orientation.HORIZONTAL.name(),
+            viewportColumn,
+            rightColumn,
+            new SizingDoc.SecondFixed(LayoutDefaults.GOAP_DETAILS_WIDTH)
+        );
+        return new BodyNode.Split(
+            Orientation.HORIZONTAL.name(),
+            new BodyNode.Leaf(List.of(PanelRegistry.OUTLINER), 0),
             centerAndRight,
             new SizingDoc.FirstFixed(LayoutDefaults.OUTLINER_WIDTH)
         );

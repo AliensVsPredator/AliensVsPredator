@@ -28,6 +28,7 @@ import com.blib.engine.jigsaw.placement.JigsawPlacementOptions;
 import com.blib.engine.jigsaw.placement.JigsawTemplateScanner;
 import com.blib.engine.modeler.gizmo.ModelerGizmoState;
 import com.blib.engine.net.BlockVolumeNetAdapter;
+import com.blib.engine.net.GOAPSelectionNetAdapter;
 import com.blib.engine.projectcontents.ProjectContents;
 import com.blib.engine.runtime.EngineSessionHolder;
 import com.blib.engine.runtime.EventBus;
@@ -149,6 +150,7 @@ public final class EngineMode {
         // Install the network adapters. Each adapter subscribes to a domain event type and translates it into the
         // matching C2S packet — the domain layer publishes events without importing packet types.
         BlockVolumeNetAdapter.install();
+        GOAPSelectionNetAdapter.install();
 
         // Wire the unified-gizmo adapters into GizmoRegistry. Phase-1: adapters are facades over the existing static
         // gizmo classes; the registry is now the active dispatch surface (e.g. {@code GizmoRegistry.clearAllHover()} on
@@ -179,6 +181,7 @@ public final class EngineMode {
         scope.onClose(ClientFactionInspectionCache::clear);
         scope.onClose(ClientFactionMembersCache::clear);
         scope.onClose(ClientEntityFactionsCache::clear);
+        scope.onClose(GOAPSelectionNetAdapter::clear);
 
         // Selection / tool / picking state.
         scope.onClose(SelectionManager::clear);

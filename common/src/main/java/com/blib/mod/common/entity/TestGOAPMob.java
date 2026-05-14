@@ -26,7 +26,7 @@ import com.blib.api.common.goap.v1.action.impl.WanderAction;
  * <p>
  * The graph is intentionally minimal: a handful of pre-built sensors so the {@code World State} tab in the engine's
  * GOAP details panel has visible data, and one wander action / goal pair that produces a non-empty plan list. Spawn
- * with {@code /summon blib:test_goap_mob ~ ~ ~}, then right-click it in the engine viewport → "View GOAP Details".
+ * with {@code /summon blib:test_goap_mob ~ ~ ~}, then select it in the engine viewport.
  */
 @ApiStatus.Internal
 public final class TestGOAPMob extends Cow {

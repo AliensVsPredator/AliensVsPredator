@@ -7,7 +7,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 import com.blib.api.common.dismemberment.v1.Dismemberable;
 import com.blib.api.common.dismemberment.v1.LimbDismemberer;
@@ -17,8 +16,6 @@ import com.blib.engine.domain.selection.picking.PlacedJigsawPieceSelectable;
 import com.blib.engine.domain.selection.picking.SelectionManager;
 import com.blib.engine.domain.selection.volume.BlockSelection;
 import com.blib.engine.domain.selection.volume.BlockSelectionOps;
-import com.blib.engine.ui.dock.Panel;
-import com.blib.engine.ui.panel.details.GOAPDetailsPanel;
 import com.blib.engine.ui.panel.viewport.ViewportPanel;
 import com.blib.engine.ui.popup.EntityContextMenuHandler;
 import com.blib.engine.ui.popup.FactionManagePopup;
@@ -42,8 +39,6 @@ public final class ViewportContextMenuHandler implements ViewportPanel.RightClic
         void openMenu(DropdownMenu menu);
 
         void closeMenu();
-
-        void reopenPanel(Class<? extends Panel> panelClass, Supplier<Panel> factory);
 
         void openCaptureDialog();
     }
@@ -78,12 +73,6 @@ public final class ViewportContextMenuHandler implements ViewportPanel.RightClic
         var menuX = (int) cursorX;
         var menuY = (int) cursorY;
         var items = new ArrayList<DropdownMenu.Item>();
-        items.add(
-            new DropdownMenu.Item("View GOAP Details", () -> {
-                commands.dispatch(new Command.GoapTrack(entityId));
-                host.reopenPanel(GOAPDetailsPanel.class, GOAPDetailsPanel::new);
-            })
-        );
         items.add(
             new DropdownMenu.Item("Manage Factions", () -> {
                 // Anchor the popup at the original right-click point — by the time the menu item fires, the menu

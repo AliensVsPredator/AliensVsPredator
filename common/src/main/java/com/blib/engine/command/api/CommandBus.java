@@ -20,7 +20,6 @@ public final class CommandBus {
             case Command.RedoAction c -> network.onRedoAction(c);
             case Command.ReloadProject c -> network.onReloadProject(c);
             case Command.DeleteProject c -> network.onDeleteProject(c);
-            case Command.GoapTrack c -> network.onGoapTrack(c);
             case Command.DismemberAllLimbs c -> network.onDismemberAll(c);
             case Command.DismemberLimb c -> network.onDismemberLimb(c);
             case Command.RemoveEntity c -> network.onRemoveEntity(c);

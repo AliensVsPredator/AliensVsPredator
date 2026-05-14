@@ -1,11 +1,11 @@
 package com.blib.internal.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.debug.DebugRenderer;
 import net.minecraft.client.renderer.debug.GoalSelectorDebugRenderer;
 import net.minecraft.client.renderer.debug.LightSectionDebugRenderer;
-import net.minecraft.client.renderer.debug.PathfindingRenderer;
 import net.minecraft.client.renderer.debug.StructureRenderer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,8 +14,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.blib.engine.ui.EngineWorkspaceScreen;
 import com.blib.engine.render.pipeline.EngineWorldPasses;
 import com.blib.engine.render.pipeline.WorldRenderFrame;
+import com.blib.engine.ui.panel.pathfinding.PathfindingDebugPanel;
 import com.blib.mod.client.render.debug.PathfindingSearchDebugRenderer;
 import com.blib.mod.common.property.BLibModProperties;
 import com.blib.mod.common.property.BLibModPropertyAccess;
@@ -53,10 +55,6 @@ public class MixinDebugRenderer {
 
     @Shadow
     @Final
-    public PathfindingRenderer pathfindingRenderer;
-
-    @Shadow
-    @Final
     public LightSectionDebugRenderer skyLightSectionDebugRenderer;
 
     @Shadow
@@ -89,14 +87,17 @@ public class MixinDebugRenderer {
         // single-line registration in {@code EngineWorldPasses.buildPipeline()} rather than search-and-edit here.
         EngineWorldPasses.pipeline().render(new WorldRenderFrame(poseStack, bufferSource, camX, camY, camZ));
 
+        if (
+            Minecraft.getInstance().screen instanceof EngineWorkspaceScreen workspace
+                && workspace.layoutHasActivePanel(PathfindingDebugPanel.class)
+        ) {
+            PathfindingSearchDebugRenderer.INSTANCE.render(poseStack, bufferSource, camX, camY, camZ);
+        }
+
         var access = BLibModPropertyAccess.INSTANCE;
 
         if (!access.get(BLibModProperties.Debug.Render.ENABLED)) {
             return;
-        }
-
-        if (access.get(BLibModProperties.Debug.Render.Path.ENABLED)) {
-            pathfindingRenderer.render(poseStack, bufferSource, camX, camY, camZ);
         }
 
         if (access.get(BLibModProperties.Debug.Render.Goal.ENABLED)) {
@@ -147,8 +148,5 @@ public class MixinDebugRenderer {
             skyLightSectionDebugRenderer.render(poseStack, bufferSource, camX, camY, camZ);
         }
 
-        if (access.get(BLibModProperties.Debug.Render.PathSearch.ENABLED)) {
-            PathfindingSearchDebugRenderer.INSTANCE.render(poseStack, bufferSource, camX, camY, camZ);
-        }
     }
 }
