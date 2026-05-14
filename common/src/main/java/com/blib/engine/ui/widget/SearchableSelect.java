@@ -66,6 +66,30 @@ public final class SearchableSelect<T> {
         openPopup = null;
     }
 
+    /**
+     * Open a popup without an inline {@link SearchableSelect} row — e.g. when surfacing the picker from a menu item.
+     * Anchors at {@code (anchorX, anchorY)} with the natural popup width clamped to {@code anchorWidth}; the popup
+     * extends downward and flips above when it would overflow the viewport, same as the inline-spawned popups. Creates
+     * a transient owner widget so the existing {@link Popup} routing (which writes back to {@code owner.currentValue})
+     * keeps working — that field goes nowhere since the owner isn't rendered.
+     */
+    public static <T> void openPopupAt(
+        int anchorX,
+        int anchorY,
+        int anchorWidth,
+        int anchorHeight,
+        List<Item<T>> items,
+        Function<T, String> displayLabel,
+        @Nullable Function<T, ItemStack> iconProvider,
+        Consumer<T> onSelect
+    ) {
+        var transientOwner = new SearchableSelect<T>(() -> items, displayLabel, iconProvider, null, onSelect);
+        var popup = new Popup<>(transientOwner, items, displayLabel, iconProvider, null);
+        popup.openAt(anchorX, anchorY, anchorWidth, anchorHeight);
+        openPopup = popup;
+        popup.searchInput.focus();
+    }
+
     private final Supplier<List<Item<T>>> itemsProvider;
 
     private final Function<T, String> displayLabel;

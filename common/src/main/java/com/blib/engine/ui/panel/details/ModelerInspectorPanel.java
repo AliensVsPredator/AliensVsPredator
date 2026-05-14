@@ -152,33 +152,27 @@ public final class ModelerInspectorPanel implements Panel {
 
         var scene = ModelerScene.get();
 
-        // Item config section always at the top — handles its own collapsed (no-session) state by showing just
-        // the item picker, so users can attach an item from anywhere.
-        var afterItemConfig = itemConfig.render(graphics, x, y + CONTENT_PADDING, width, mouseX, mouseY);
+        // Item-config mode is mutually exclusive with entity-model editing: when a session is attached, only the
+        // Item Config section is shown; the cube/bone inspector below would be referencing a scene the user isn't
+        // editing anyway.
+        if (scene.itemSession != null) {
+            itemConfig.render(graphics, x, y + CONTENT_PADDING, width, mouseX, mouseY);
+            return;
+        }
 
         var selection = scene.selection;
-        if (selection == null && scene.itemSession == null) {
-            // Both nothing selected and no item attached — fall back to the legacy "Nothing selected" header
-            // below the item-config section so the panel doesn't read as empty.
-            drawHeader(graphics, x, afterItemConfig, "Nothing selected");
-            return;
-        }
         if (selection == null) {
+            drawHeader(graphics, x, y + CONTENT_PADDING, "Nothing selected");
             return;
         }
-
-        // Divider between the item-config section and the selection inspector.
-        var dividerY = afterItemConfig + DIVIDER_GAP;
-        graphics.fill(x + CONTENT_PADDING, dividerY, x + width - CONTENT_PADDING, dividerY + 1, DIVIDER_COLOR);
-        var selectionY = dividerY + 1 + DIVIDER_GAP;
 
         if (selection instanceof Selection.BoneSelection bs) {
-            renderBone(graphics, x, selectionY, width, bs.bone(), mouseX, mouseY);
+            renderBone(graphics, x, y + CONTENT_PADDING, width, bs.bone(), mouseX, mouseY);
         } else if (selection instanceof Selection.CubeSelection cs) {
-            renderCube(graphics, x, selectionY, width, cs.cube(), mouseX, mouseY);
+            renderCube(graphics, x, y + CONTENT_PADDING, width, cs.cube(), mouseX, mouseY);
         } else if (selection instanceof Selection.MultiCubeSelection ms) {
             // Multi-cube: inspector edits the primary cube only — group edits via the UV map's drag/marquee path.
-            renderCube(graphics, x, selectionY, width, ms.primary().cube(), mouseX, mouseY);
+            renderCube(graphics, x, y + CONTENT_PADDING, width, ms.primary().cube(), mouseX, mouseY);
         }
     }
 

@@ -4,6 +4,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -13,6 +15,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.blib.api.client.registry.v1.AzItemRendererRegistry;
+import com.blib.engine.gizmo.BLibItemTransformOverrides;
 import com.blib.engine.modeler.ModelerBone;
 import com.blib.engine.modeler.ModelerCamera;
 import com.blib.engine.modeler.ModelerCube;
@@ -36,6 +40,7 @@ import com.blib.engine.ui.panel.chrome.ModelerMenuBar;
 import com.blib.engine.ui.panel.chrome.ModelerViewportToolbar;
 import com.blib.engine.ui.popup.PanelMenuOpener;
 import com.blib.engine.ui.widget.DropdownMenu;
+import com.blib.engine.ui.widget.SearchableSelect;
 
 /**
  * 3D viewport for the in-engine Blockbench-style modeler. Renders an orbital-camera view of {@code ModelerScene} via an
@@ -170,9 +175,6 @@ public final class ModelerViewportPanel implements Panel {
         ModelerMenuBar.render(graphics, x, y, width, mouseX, mouseY);
         int toolbarY = y + ModelerMenuBar.HEIGHT;
         ModelerViewportToolbar.render(graphics, x, toolbarY);
-        // Preview-mode overlay (top-right) — visible whenever an item session is attached. Lets the user swap
-        // between the editable geo view and the per-context vanilla-render preview without leaving the viewport.
-        ModelerPreviewOverlay.render(graphics, x, width, toolbarY, scene.itemSession, mouseX, mouseY);
         // Navigation axis gizmo at the bottom-right — three labeled colored balls that follow the camera so the user
         // can read world orientation at a glance, and click an axis to snap the view orthogonally.
         ModelerAxisGizmo.render(graphics, x, y, width, height, scene.camera);
@@ -263,11 +265,6 @@ public final class ModelerViewportPanel implements Panel {
                 }
                 return true;
             }
-            // Preview-mode overlay (top-right) — clicked button opens the dropdown via the panel menu opener. Checked
-            // before toolbar / gizmo / axis-gizmo so the overlay always wins clicks in its rect.
-            if (ModelerPreviewOverlay.mouseClicked(mouseX, mouseY, menuOpener, ModelerScene.get().itemSession)) {
-                return true;
-            }
             // Toolbar takes priority — if the cursor is over a button, switch modes and consume the click so it
             // doesn't fall through to selection / gizmo picking.
             int toolbarY = panelY + ModelerMenuBar.HEIGHT;
@@ -315,10 +312,10 @@ public final class ModelerViewportPanel implements Panel {
                         // with the override on entry, so the shim's drag-start fields ARE the before-transform.
                         var session = ModelerScene.get().itemSession;
                         if (session != null && startBone == session.gizmoShimBone) {
-                            // Match what syncShimBone writes to — preview context wins over editingContext when in
-                            // preview mode, so the undo memento records the slot that actually gets mutated.
-                            var activeContext = session.activeContext();
-                            var wall = session.activeWallFixed();
+                            // The inspector's editingContext drives both the rendered preview and the gizmo target,
+                            // so the undo memento records that slot's transform at drag-start.
+                            var activeContext = session.editingContext;
+                            var wall = activeContext == ItemDisplayContext.FIXED && session.wallFixedActive;
                             var current = wall
                                 ? com.blib.engine.gizmo.BLibItemTransformOverrides.getEffectiveWallFixed(session.itemId, session.mode)
                                 : com.blib.engine.gizmo.BLibItemTransformOverrides
@@ -577,7 +574,7 @@ public final class ModelerViewportPanel implements Panel {
                 var items = new ArrayList<DropdownMenu.Item>();
                 items.add(new DropdownMenu.Item("New", () -> {}, buildNewSubmenu()));
                 items.add(new DropdownMenu.Item("Recent", () -> {}, buildRecentSubmenu()));
-                items.add(new DropdownMenu.Item("Open Model", ModelerViewportPanel::openGeoModelFromFile));
+                items.add(new DropdownMenu.Item("Open", () -> {}, buildOpenSubmenu()));
                 yield new DropdownMenu(anchorX, anchorY, items);
             }
             case ModelerMenuBar.CHIP_TRANSFORM -> {
@@ -677,6 +674,19 @@ public final class ModelerViewportPanel implements Panel {
     }
 
     /**
+     * "Open" submenu — split between disk-backed geo models ("From File…") and in-game registered item configs ("Item
+     * Config…"). The two flows are different enough that putting them at the same level avoids the asymmetry of having
+     * the inspector own the item picker while disk loads live in the menu bar.
+     */
+    private static List<DropdownMenu.Item> buildOpenSubmenu() {
+        return List
+            .of(
+                new DropdownMenu.Item("From File…", ModelerViewportPanel::openGeoModelFromFile),
+                new DropdownMenu.Item("Item Config…", ModelerViewportPanel::openItemConfigPicker)
+            );
+    }
+
+    /**
      * "Recent" submenu — newest-first list of paths from {@link ModelerRecentFiles}, scoped to the active project. Each
      * item, when clicked, loads its file and bumps it back to the head of the list. Falls back to a single
      * disabled-looking placeholder when there's no project or no history yet — submitting an empty submenu would render
@@ -705,8 +715,8 @@ public final class ModelerViewportPanel implements Panel {
     }
 
     /**
-     * FILE → "Open Model" — OS-native open-file dialog via {@link ModelerFilePicker#pickGeoModel}, then hand the path
-     * to {@link ModelerSceneLoader#loadFromFile} which replaces the modeler's active scene. On a successful load
+     * FILE → Open → "From File…" — OS-native open-file dialog via {@link ModelerFilePicker#pickGeoModel}, then hand the
+     * path to {@link ModelerSceneLoader#loadFromFile} which replaces the modeler's active scene. On a successful load
      * records the path in {@link ModelerRecentFiles} so it shows up under Recent next time. No-op on cancel; load
      * errors are logged inside the loader.
      * <p>
@@ -725,6 +735,46 @@ public final class ModelerViewportPanel implements Panel {
                 ModelerRecentFiles.recordOpen(project, picked.toString());
             }
         }
+    }
+
+    /**
+     * FILE → Open → "Item Config…" — pops a searchable list of every tunable item ID. Selecting one swaps the modeler
+     * into item-config mode via {@link ModelerScene#attachItemSession}: the entity scene is cleared, the inspector
+     * shows the Item Config section, and the viewport renders the item through vanilla's {@code ItemRenderer} at the
+     * session's default display context.
+     * <p>
+     * Force-instantiates every registered item renderer first because the renderer constructors are what call
+     * {@code BLibTunableItemTransforms.wrap} and populate {@link BLibItemTransformOverrides#tunableItemIds()}. Without
+     * this, items the user has never seen in-game won't appear in the picker. {@link AzItemRendererRegistry} caches via
+     * computeIfAbsent so the walk is cheap on subsequent invocations.
+     */
+    private static void openItemConfigPicker() {
+        for (var item : AzItemRendererRegistry.registeredItems()) {
+            AzItemRendererRegistry.getOrNull(item);
+        }
+        var ids = new ArrayList<ResourceLocation>(BLibItemTransformOverrides.tunableItemIds());
+        ids.sort((a, b) -> a.toString().compareToIgnoreCase(b.toString()));
+        var items = new ArrayList<SearchableSelect.Item<ResourceLocation>>(ids.size());
+        for (var id : ids) {
+            items.add(new SearchableSelect.Item<>(id, id.toString()));
+        }
+        // Anchor the popup just below the File chip — same position the dropdown lived in, so the visual flow from
+        // menu click to picker feels continuous. Popup clamps itself to the viewport when this overflows.
+        var chipRect = ModelerMenuBar.chipRect(ModelerMenuBar.CHIP_FILE);
+        int anchorX = chipRect != null ? chipRect.x() : 8;
+        int anchorY = chipRect != null ? chipRect.y() : 8;
+        int anchorHeight = chipRect != null ? chipRect.height() : 12;
+        SearchableSelect
+            .openPopupAt(
+                anchorX,
+                anchorY,
+                280,
+                anchorHeight,
+                items,
+                ResourceLocation::toString,
+                null,
+                id -> ModelerScene.get().attachItemSession(id)
+            );
     }
 
     /**

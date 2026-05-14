@@ -3,7 +3,6 @@ package com.blib.engine.modeler.item;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
 
 import com.blib.api.client.render.v1.item.BLibItemTransformMode;
 import com.blib.engine.modeler.ModelerBone;
@@ -11,12 +10,12 @@ import com.blib.engine.modeler.ModelerBone;
 /**
  * Modeler-side state for "I'm authoring item transforms for {@link #itemId} right now". Attached to
  * {@link com.blib.engine.modeler.ModelerScene} as a nullable field — when null, the Modeler is in its default
- * entity-edit mode; when non-null, the Inspector exposes the item-config section and the Viewport gains a "Preview as"
- * picker.
+ * entity-edit mode; when non-null, the Inspector exposes the item-config section and the Viewport renders the item via
+ * vanilla's {@code ItemRenderer} for the current {@link #editingContext}.
  * <p>
  * No transform data lives here — edits write straight into {@link com.blib.engine.gizmo.BLibItemTransformOverrides} so
  * the live game world and the Modeler viewport read from the same source on the next frame. This object only tracks
- * which fields the Inspector is currently editing and which context the Viewport is currently previewing.
+ * which fields the Inspector is currently editing (= which context the Viewport currently renders).
  */
 @ApiStatus.Internal
 public final class ModelerItemSession {
@@ -29,7 +28,11 @@ public final class ModelerItemSession {
     /** Which transform set the Inspector vec3 fields target. Toggled via the Inspector mode button. */
     public BLibItemTransformMode mode = BLibItemTransformMode.IDLE;
 
-    /** Which {@link ItemDisplayContext} the Inspector vec3 fields target. */
+    /**
+     * Which {@link ItemDisplayContext} the Inspector vec3 fields target. Also drives what the Viewport renders — one
+     * picker controls both the edit slot and the preview pose so the user can't end up dragging in a context they don't
+     * see.
+     */
     public ItemDisplayContext editingContext = ItemDisplayContext.GUI;
 
     /**
@@ -39,17 +42,6 @@ public final class ModelerItemSession {
      * {@code FIXED}.
      */
     public boolean wallFixedActive;
-
-    /**
-     * What the Viewport renders. {@code null} means "edit mode" — show the geo with cubes/gizmos/UV editing. Non-null
-     * means "preview mode" — invoke vanilla's actual {@code ItemRenderer} path for this context so the preview is
-     * pixel-identical to the in-game render. The wall-FIXED variant is selected by combining {@code FIXED} with
-     * {@link #previewWallFixed}.
-     */
-    public @Nullable ItemDisplayContext previewContext;
-
-    /** Pair with {@link #previewContext == FIXED} to render the wall-mounted variant. */
-    public boolean previewWallFixed;
 
     /**
      * Synthetic {@link ModelerBone} whose mutable fields ({@code position} / {@code rotation} / {@code pivot} /
@@ -63,25 +55,5 @@ public final class ModelerItemSession {
 
     public ModelerItemSession(ResourceLocation itemId) {
         this.itemId = itemId;
-    }
-
-    /**
-     * The override slot the gizmo and shim bone currently target. In preview mode the user expects edits to land on the
-     * context they're previewing — otherwise rotating in the "Third Person Right Hand" preview silently writes to GUI
-     * (the default {@link #editingContext}) and the rendered item never updates. Preview wins; edit-mode falls through
-     * to the inspector's picker.
-     */
-    public ItemDisplayContext activeContext() {
-        return previewContext != null ? previewContext : editingContext;
-    }
-
-    /**
-     * Wall-fixed slot for {@link #activeContext()} — pulled from the preview flag in preview mode, the inspector's in
-     * edit mode.
-     */
-    public boolean activeWallFixed() {
-        return previewContext != null
-            ? previewContext == ItemDisplayContext.FIXED && previewWallFixed
-            : editingContext == ItemDisplayContext.FIXED && wallFixedActive;
     }
 }

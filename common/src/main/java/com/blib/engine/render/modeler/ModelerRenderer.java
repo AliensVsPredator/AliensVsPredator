@@ -125,7 +125,7 @@ public final class ModelerRenderer {
         // HEAD) and the edit-mode geo view stay on the orbital perspective camera since those poses are read in
         // 3D world space anyway.
         var itemSession = scene.itemSession;
-        boolean guiPreview = itemSession != null && itemSession.previewContext == ItemDisplayContext.GUI;
+        boolean guiPreview = itemSession != null && itemSession.editingContext == ItemDisplayContext.GUI;
 
         Matrix4f projection;
         if (guiPreview) {
@@ -175,11 +175,11 @@ public final class ModelerRenderer {
             GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
 
             var pose = new Matrix4f();
-            if (itemSession != null && itemSession.previewContext != null) {
-                // Preview mode — show the item exactly as vanilla's ItemRenderer would render it for this display
-                // context. Grid + cube wireframe are suppressed so the user sees only the item under its display
-                // transform; the gizmo IS rendered so users can drag the modeler's TRANSLATE / ROTATE / SCALE /
-                // PIVOT handles against the item's BLibTransform (via the shim bone).
+            if (itemSession != null) {
+                // Item-config mode — show the item exactly as vanilla's ItemRenderer would render it for the
+                // session's editingContext. Grid + cube wireframe are suppressed; the gizmo IS rendered so users can
+                // drag the modeler's TRANSLATE / ROTATE / SCALE / PIVOT handles against the item's BLibTransform (via
+                // the shim bone).
                 ModelerItemPreviewRenderer.render(itemSession);
                 // bufferSource.endBatch() inside the preview renderer ran each consumed RenderType's
                 // clearRenderState — most vanilla render types re-enable backface culling at teardown. The gizmo's
@@ -191,8 +191,7 @@ public final class ModelerRenderer {
                 RenderSystem.disableCull();
                 ModelerGizmoRenderer.render(pose, scene, projection);
             } else {
-                // Clear any stale gizmoTargetSelection from a previous preview-mode frame so the gizmo falls back
-                // to the regular scene.selection in edit mode.
+                // Entity-model edit mode — no item session attached.
                 scene.gizmoTargetSelection = null;
                 ModelerGridRenderer.render(pose);
                 ModelerCubeRenderer.render(pose, scene.root, scene.selection);

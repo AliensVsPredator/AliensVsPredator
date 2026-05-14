@@ -51,15 +51,6 @@ public final class BLibItemTransformOverrides {
         new HashMap<>();
 
     /**
-     * When true, the geo-bone item renderer draws a small wireframe AABB and a colored axis tripod at the pivot
-     * location each frame. Used by the tuner's {@code debug pivot} subcommand so the user can see where rotation/scale
-     * is anchored and which direction each rotation axis currently points. Volatile because the toggle is flipped from
-     * the server thread (command source) and read from the client render thread; both run in the same JVM in
-     * single-player.
-     */
-    private static volatile boolean PIVOT_VISUALIZATION_ENABLED = false;
-
-    /**
      * When true, the geo-bone item renderer treats every render as if the holder were actively using the item (e.g.,
      * raising the shield), so the {@link BLibItemTransformMode#BLOCKING} transforms are picked regardless of the
      * holder's actual use state. Lets users tune the blocking pose with gizmos without needing to physically hold RMB
@@ -81,14 +72,6 @@ public final class BLibItemTransformOverrides {
 
     private BLibItemTransformOverrides() {
         throw new UnsupportedOperationException();
-    }
-
-    public static boolean isPivotVisualizationEnabled() {
-        return PIVOT_VISUALIZATION_ENABLED;
-    }
-
-    public static void setPivotVisualizationEnabled(boolean enabled) {
-        PIVOT_VISUALIZATION_ENABLED = enabled;
     }
 
     public static boolean isForceBlockingEnabled() {

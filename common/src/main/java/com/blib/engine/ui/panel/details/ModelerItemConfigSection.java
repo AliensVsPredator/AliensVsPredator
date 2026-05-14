@@ -38,18 +38,17 @@ import com.blib.mod.common.network.packet.C2SWriteItemRendererConfigPayload;
  * Inspector section for editing the per-pose item display transforms of the currently-attached
  * {@link ModelerItemSession}. Reads the effective transform from {@link BLibItemTransformOverrides} every frame, and
  * writes every commit back to the same store so both the modeler preview and the live in-world render see the change on
- * the next frame.
+ * the next frame. Session attachment happens via {@code File > Open > Item Config…} in the modeler's menu bar; the
+ * inspector itself no longer offers an item picker.
  * <p>
  * Layout, top to bottom:
  * <ul>
- * <li>Item picker — {@link SearchableSelect} of {@link BLibItemTransformOverrides#registeredItemIds()}.</li>
  * <li>Mode toggle — Idle / Blocking buttons (target which transform set is being edited).</li>
  * <li>Context picker — {@link SearchableSelect} of {@link ItemDisplayContext} values (which display context is being
- * edited).</li>
+ * edited and previewed in the viewport).</li>
  * <li>Wall toggle (only when context is FIXED) — switches the edit target to the wall-fixed slot.</li>
  * <li>Translation / Rotation / Scale / Pivot — four vec3 sections matching
  * {@link ModelerInspectorPanel#renderVecSection}'s style.</li>
- * <li>Pivot Visualization checkbox — toggles the wireframe-pivot overlay the geo-bone item renderer draws.</li>
  * </ul>
  * Auto-save: on every commit, if the selected item is asset-backed (registered via
  * {@code BLibClientRegistryAccess#registerGeoBoneItemRendererFromAsset}), the full effective config is serialized and
@@ -113,8 +112,6 @@ public final class ModelerItemConfigSection {
         ItemDisplayContext.THIRD_PERSON_LEFT_HAND
     };
 
-    private final SearchableSelect<ResourceLocation> itemPicker;
-
     private final SearchableSelect<ItemDisplayContext> contextPicker;
 
     private final TextInput txInput = new TextInput("X", v -> commit(Field.TX, v));
@@ -151,35 +148,7 @@ public final class ModelerItemConfigSection {
 
     private boolean wallToggleVisible;
 
-    private int pivotVizX, pivotVizY, pivotVizW, pivotVizH;
-
     public ModelerItemConfigSection() {
-        this.itemPicker = new SearchableSelect<>(
-            () -> {
-                // Item renderers are registered as lazy suppliers — their constructors (which call
-                // BLibTunableItemTransforms.wrap and populate BLibItemTransformOverrides) only run when vanilla
-                // first renders the item. From the title screen / engine-open path the user has never rendered
-                // these items, so the override registry is empty. Force-instantiate every registered renderer up
-                // front so the picker sees AVP-Alien-style items immediately. getOrNull is computeIfAbsent so
-                // repeated calls are cheap map lookups.
-                for (var item : AzItemRendererRegistry.registeredItems()) {
-                    AzItemRendererRegistry.getOrNull(item);
-                }
-                // tunableItemIds() = items that called BLibTunableItemTransforms.wrap (the bases). registeredItemIds()
-                // would only surface items that someone has set an override on, which excludes freshly-wrapped items
-                // the user hasn't touched yet — the modeler picker needs to see EVERY tuner-wrapped item.
-                var ids = new ArrayList<ResourceLocation>(BLibItemTransformOverrides.tunableItemIds());
-                ids.sort((a, b) -> a.toString().compareToIgnoreCase(b.toString()));
-                var items = new ArrayList<SearchableSelect.Item<ResourceLocation>>();
-                for (var id : ids) {
-                    items.add(new SearchableSelect.Item<>(id, id.toString()));
-                }
-                return items;
-            },
-            ResourceLocation::toString,
-            null,
-            this::onItemPicked
-        );
         this.contextPicker = new SearchableSelect<>(
             () -> {
                 var items = new ArrayList<SearchableSelect.Item<ItemDisplayContext>>();
@@ -194,7 +163,10 @@ public final class ModelerItemConfigSection {
         );
     }
 
-    /** Render section. {@code y} is the top edge; returns the next-Y for chained rendering downstream. */
+    /**
+     * Render section. {@code y} is the top edge; returns the next-Y for chained rendering downstream. Caller is
+     * expected to skip this method when no item session is attached — the section has nothing to render in that case.
+     */
     public int render(GuiGraphics graphics, int x, int y, int width, int mouseX, int mouseY) {
         visibleInputs.clear();
         wallToggleVisible = false;
@@ -202,29 +174,15 @@ public final class ModelerItemConfigSection {
         var font = EngineFont.get();
         var scene = ModelerScene.get();
         var session = scene.itemSession;
+        if (session == null) {
+            return y;
+        }
 
         var rowY = drawSectionHeader(graphics, font, x, y, width, "Item Config");
         rowY += CONTENT_PADDING;
 
-        // Item picker — sync `currentValue` from the scene so external changes (clearing the session) flip
-        // the dropdown back to "(none)".
-        itemPicker.setCurrentValue(session == null ? null : session.itemId);
         var pickerX = x + CONTENT_PADDING;
         var pickerW = Math.max(40, width - 2 * CONTENT_PADDING);
-        itemPicker.render(graphics, pickerX, rowY, pickerW, mouseX, mouseY);
-        rowY += SearchableSelect.HEIGHT + ROW_GAP;
-
-        if (session == null) {
-            graphics.drawString(
-                font,
-                Component.literal("Pick an item to begin editing transforms."),
-                x + CONTENT_PADDING,
-                rowY,
-                LABEL_COLOR,
-                false
-            );
-            return rowY + font.lineHeight + ROW_GAP;
-        }
 
         // Mode toggle — two side-by-side buttons.
         modeButtonW = (pickerW - INPUT_GAP) / 2;
@@ -295,24 +253,6 @@ public final class ModelerItemConfigSection {
         rowY = renderVecSection(graphics, font, x, rowY, width, "Scale", sxInput, syInput, szInput, mouseX, mouseY);
         rowY = renderVecSection(graphics, font, x, rowY, width, "Pivot", pxInput, pyInput, pzInput, mouseX, mouseY);
 
-        // Pivot-viz row.
-        pivotVizX = pickerX;
-        pivotVizY = rowY;
-        pivotVizW = pickerW;
-        pivotVizH = BUTTON_HEIGHT;
-        drawCheckboxRow(
-            graphics,
-            font,
-            pivotVizX,
-            pivotVizY,
-            pivotVizW,
-            "Pivot Viz",
-            BLibItemTransformOverrides.isPivotVisualizationEnabled(),
-            mouseX,
-            mouseY
-        );
-        rowY += BUTTON_HEIGHT + ROW_GAP;
-
         // Read-only notice for Java-backed items: their transforms live in code, so auto-save has nowhere to go. The
         // inputs still let the user nudge values in-memory (good for one-off tuning), but the bytes can't be persisted
         // until the renderer is migrated to registerGeoBoneItemRendererFromAsset.
@@ -346,14 +286,14 @@ public final class ModelerItemConfigSection {
 
     /** Route click to the section's interactive widgets. Returns true when the click is consumed. */
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (itemPicker.mouseClicked(mouseX, mouseY, button)) {
-            return true;
+        var session = ModelerScene.get().itemSession;
+        if (session == null) {
+            return false;
         }
         if (contextPicker.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
-        var session = ModelerScene.get().itemSession;
-        if (session != null && button == 0) {
+        if (button == 0) {
             if (insideRect(mouseX, mouseY, modeIdleX, modeIdleY, modeButtonW, BUTTON_HEIGHT)) {
                 session.mode = BLibItemTransformMode.IDLE;
                 return true;
@@ -366,10 +306,6 @@ public final class ModelerItemConfigSection {
                 session.wallFixedActive = !session.wallFixedActive;
                 return true;
             }
-            if (insideRect(mouseX, mouseY, pivotVizX, pivotVizY, pivotVizW, pivotVizH)) {
-                BLibItemTransformOverrides.setPivotVisualizationEnabled(!BLibItemTransformOverrides.isPivotVisualizationEnabled());
-                return true;
-            }
         }
         for (var input : visibleInputs) {
             if (input.mouseClicked(mouseX, mouseY, button)) {
@@ -377,15 +313,6 @@ public final class ModelerItemConfigSection {
             }
         }
         return false;
-    }
-
-    private void onItemPicked(ResourceLocation itemId) {
-        var scene = ModelerScene.get();
-        var existing = scene.itemSession;
-        if (existing != null && existing.itemId.equals(itemId)) {
-            return;
-        }
-        scene.itemSession = new ModelerItemSession(itemId);
     }
 
     private void onContextPicked(ItemDisplayContext context) {

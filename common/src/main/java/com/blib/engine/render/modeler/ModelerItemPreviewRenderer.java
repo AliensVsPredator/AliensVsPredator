@@ -30,7 +30,7 @@ import com.blib.engine.modeler.gizmo.ModelerGizmoState;
 import com.blib.engine.modeler.item.ModelerItemSession;
 
 /**
- * Renders an {@link ItemStack} for the {@link ModelerItemSession}'s preview context through vanilla's actual
+ * Renders an {@link ItemStack} for the {@link ModelerItemSession}'s editing context through vanilla's actual
  * {@code ItemRenderer.renderStatic} path. Same render code as in-game, same display transform applied, same
  * {@link BLibItemTransformOverrides} consulted — so the modeler viewport's preview is guaranteed identical to what the
  * player sees in-game.
@@ -41,7 +41,7 @@ import com.blib.engine.modeler.item.ModelerItemSession;
  * <li>{@code GUI} — a darkened inventory-slot quad behind the item.</li>
  * <li>{@code GROUND} — a grass block beneath the item, plus vanilla's age-driven Y spin + sine Y-bob.</li>
  * <li>{@code FIXED} — an oak-planks slab behind the item (item-frame mockup).</li>
- * <li>{@code FIXED} with {@code previewWallFixed} — a cobblestone wall behind the item.</li>
+ * <li>{@code FIXED} with {@code wallFixedActive} — a cobblestone wall behind the item.</li>
  * </ul>
  * Backdrops sit in the same pose-stack frame as the item so the modeler camera orbits item + backdrop together.
  * Animation (spin + bob) is applied AFTER backdrop emission so the ground stays put while the item rotates.
@@ -58,15 +58,12 @@ public final class ModelerItemPreviewRenderer {
     private static final float GROUND_TOP_Y = -0.5f;
 
     /**
-     * Render the item for {@code session.previewContext}. Caller has already set up the modeler camera's projection and
+     * Render the item for {@code session.editingContext}. Caller has already set up the modeler camera's projection and
      * modelview matrices; this method opens its own {@link PoseStack} for the local item transforms and reuses
      * {@link Minecraft#renderBuffers}'s buffer source.
      */
     public static void render(ModelerItemSession session) {
-        var previewContext = session.previewContext;
-        if (previewContext == null) {
-            return;
-        }
+        var renderContext = session.editingContext;
         var mc = Minecraft.getInstance();
         var item = BuiltInRegistries.ITEM.get(session.itemId);
         if (item == null) {
@@ -80,7 +77,7 @@ public final class ModelerItemPreviewRenderer {
         var bufferSource = mc.renderBuffers().bufferSource();
         var poseStack = new PoseStack();
         var packedLight = LightTexture.FULL_BRIGHT;
-        boolean wallFixed = previewContext == ItemDisplayContext.FIXED && session.previewWallFixed;
+        boolean wallFixed = renderContext == ItemDisplayContext.FIXED && session.wallFixedActive;
 
         // Sync the shim bone with the active BLibTransform — drives the modeler gizmos against the item-transform.
         // During a gizmo drag the shim's fields are the source of truth (the user is mutating them via the gizmo),
@@ -97,11 +94,11 @@ public final class ModelerItemPreviewRenderer {
         // misled tuning; trust the projection/modelview instead. Other contexts (GROUND, FIXED, FIRST/THIRD_*,
         // HEAD) keep the perspective orbital camera and don't need a static orientation tweak.
 
-        renderBackdrop(poseStack, packedLight, previewContext, wallFixed);
+        renderBackdrop(poseStack, packedLight, renderContext, wallFixed);
 
         // Animation transform — only meaningful for GROUND; everywhere else this is a no-op. Applied after the
         // backdrop so the ground block doesn't spin along with the item.
-        applyAnimationTransform(poseStack, previewContext);
+        applyAnimationTransform(poseStack, renderContext);
 
         boolean forceBlocking = session.mode == BLibItemTransformMode.BLOCKING;
         boolean priorForceBlocking = BLibItemTransformOverrides.isForceBlockingEnabled();
@@ -114,7 +111,7 @@ public final class ModelerItemPreviewRenderer {
             mc.getItemRenderer()
                 .renderStatic(
                     stack,
-                    previewContext,
+                    renderContext,
                     packedLight,
                     OverlayTexture.NO_OVERLAY,
                     poseStack,
@@ -222,10 +219,9 @@ public final class ModelerItemPreviewRenderer {
      */
     private static void syncShimBone(ModelerItemSession session, boolean wallFixed) {
         var shim = session.gizmoShimBone;
-        // Active slot: the preview context wins over the inspector's editingContext when previewing. Without this, a
-        // drag on the "Third Person Right Hand" preview writes to the GUI slot (editingContext's default) and the
-        // rendered item never moves.
-        var activeContext = session.activeContext();
+        // editingContext drives both what's rendered and where gizmo drags land — one picker, one slot, no chance of
+        // dragging a transform that lives in a context the user can't see.
+        var activeContext = session.editingContext;
         var drag = ModelerGizmoState.drag();
         boolean dragTargetsShim = drag != null && drag.isBoneDrag() && drag.startSnapshot() != null && drag.startSnapshot().bone() == shim;
         if (dragTargetsShim) {

@@ -1,9 +1,5 @@
 package com.blib.api.client.render.v1.item;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Vector3f;
@@ -124,10 +120,6 @@ public class BLibGeoBoneItemRenderer extends AzItemRenderer {
         var pivot = bonePivotInPoseFrame(context.bakedModel(), config.boneName());
         var poseStack = itemContext.poseStack();
 
-        if (BLibItemTransformOverrides.isPivotVisualizationEnabled()) {
-            drawPivotDebug(itemContext, transform);
-        }
-
         // Compose `pose = T(translation) · T(user.pivot) · R · S · T(-user.pivot) · T(-bone.pivot/16)`.
         // The trailing `T(-bone.pivot/16)` is the anchor — combined with the bone walk's bind transform
         // `T(+pivot) · R_bone · S_bone · T(-pivot)` the two `T(±pivot/16)` translations cancel, leaving the
@@ -153,59 +145,5 @@ public class BLibGeoBoneItemRenderer extends AzItemRenderer {
         }
 
         return new Vector3f(bone.getPivotX() / 16f, bone.getPivotY() / 16f, bone.getPivotZ() / 16f);
-    }
-
-    /**
-     * Draws a wireframe AABB and a colored XYZ axis tripod at the user's rotation pivot, in the pose-stack frame BEFORE
-     * the user's rotation/scale is applied — that's where rotations actually anchor. With default
-     * {@link BLibTransform#pivot()} of zero, the debug lands at {@code translation} in the original pose frame, which
-     * is also where the bone's pivot ends up after the bone walk; rotating around X tips the head along the red line, Y
-     * around the green line, Z around the blue line. Only fires when the tuner's {@code debug pivot} toggle is on.
-     */
-    private static void drawPivotDebug(AzItemRendererPipelineContext itemContext, BLibTransform transform) {
-        var poseStack = itemContext.poseStack();
-        poseStack.pushPose();
-
-        poseStack.translate(transform.translation().x, transform.translation().y, transform.translation().z);
-        poseStack.translate(transform.pivot().x, transform.pivot().y, transform.pivot().z);
-
-        var buffer = itemContext.multiBufferSource().getBuffer(RenderType.lines());
-
-        // Small wireframe box at pivot — yellow, ~3-pixel sized cube so it stands out without obscuring the
-        // model.
-        var box = 0.05;
-        LevelRenderer.renderLineBox(poseStack, buffer, -box, -box, -box, box, box, box, 1.0F, 1.0F, 0.0F, 1.0F);
-
-        // Axis tripod: full-length lines for the +axes, half-length for - axes (so the user can tell + apart
-        // from - direction at a glance).
-        var len = 0.25f;
-        drawAxisLine(poseStack, buffer, len, 0, 0, 1f, 0f, 0f, 1f);
-        drawAxisLine(poseStack, buffer, -len * 0.5f, 0, 0, 1f, 0f, 0f, 0.4f);
-        drawAxisLine(poseStack, buffer, 0, len, 0, 0f, 1f, 0f, 1f);
-        drawAxisLine(poseStack, buffer, 0, -len * 0.5f, 0, 0f, 1f, 0f, 0.4f);
-        drawAxisLine(poseStack, buffer, 0, 0, len, 0f, 0f, 1f, 1f);
-        drawAxisLine(poseStack, buffer, 0, 0, -len * 0.5f, 0f, 0f, 1f, 0.4f);
-
-        poseStack.popPose();
-    }
-
-    private static void drawAxisLine(
-        PoseStack poseStack,
-        VertexConsumer buffer,
-        float x,
-        float y,
-        float z,
-        float r,
-        float g,
-        float b,
-        float a
-    ) {
-        var pose = poseStack.last();
-        var nx = x == 0 ? 0 : Math.signum(x);
-        var ny = y == 0 ? 0 : Math.signum(y);
-        var nz = z == 0 ? 0 : Math.signum(z);
-
-        buffer.addVertex(pose.pose(), 0, 0, 0).setColor(r, g, b, a).setNormal(pose, nx, ny, nz);
-        buffer.addVertex(pose.pose(), x, y, z).setColor(r, g, b, a).setNormal(pose, nx, ny, nz);
     }
 }

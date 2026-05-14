@@ -1,5 +1,6 @@
 package com.blib.engine.modeler;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -271,6 +272,20 @@ public final class ModelerScene {
             0.0
         );
         scene.root.cubes.add(cube);
+    }
+
+    /**
+     * Drop any current scene contents (entity model + textures + selection + history) and attach an item-config session
+     * for {@code itemId}. After this call the modeler is in item-config mode: the viewport renders the item via
+     * vanilla's {@code ItemRenderer} for the session's default {@link net.minecraft.world.item.ItemDisplayContext}, and
+     * the inspector exposes only the Item Config section.
+     */
+    public void attachItemSession(ResourceLocation itemId) {
+        resetToEntity();
+        // resetToEntity reseeds the entity scene with a default cube. Wipe the root again so the item-config viewport
+        // doesn't see a stray cube in the background.
+        this.root = new ModelerBone("root");
+        this.itemSession = new ModelerItemSession(itemId);
     }
 
     /**
