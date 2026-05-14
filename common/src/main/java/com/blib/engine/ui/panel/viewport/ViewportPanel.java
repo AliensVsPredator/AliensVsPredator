@@ -144,6 +144,18 @@ public final class ViewportPanel implements Panel {
 
     private static final double DRAG_PROMOTE_THRESHOLD_SQ = DRAG_PROMOTE_THRESHOLD_PX * DRAG_PROMOTE_THRESHOLD_PX;
 
+    private static final long ENTITY_DOUBLE_CLICK_WINDOW_MS = 350L;
+
+    private static final double ENTITY_DOUBLE_CLICK_DISTANCE_SQ = 6.0 * 6.0;
+
+    private @Nullable UUID lastEntityClickUuid;
+
+    private long lastEntityClickMillis;
+
+    private double lastEntityClickMouseX;
+
+    private double lastEntityClickMouseY;
+
     /**
      * Block under cursor at the most recent INSPECT-mode LMB-press, or {@code null} if the cursor was over the sky.
      * Used as the marquee anchor when {@link #pendingClickActive} promotes to a volume drag.
@@ -594,6 +606,7 @@ public final class ViewportPanel implements Panel {
             // performSelectionAt clears the selection on a sky miss. Then stage the deferred-decision state so
             // mouseDragged can promote to a volume marquee on enough motion (or immediately if Shift was held).
             EngineNavigation.performSelectionAt(session, relX, relY);
+            var doubleClickedEntity = handleEntityDoubleClick(session, mouseX, mouseY);
 
             var blockHit = JigsawPlacementCursor.clipFromCursor(session);
             this.pendingClickBlock = blockHit != null ? blockHit.getBlockPos() : null;
@@ -605,13 +618,13 @@ public final class ViewportPanel implements Panel {
             // drag-nudge. Preserves the feel of "I clicked an entity, then nudged the mouse a few pixels before
             // releasing". Shift extend-from-previous below bypasses this filter and promotes anyway.
             var sel = SelectionManager.current().single();
-            this.pendingClickActive = !(sel instanceof EntitySelectable);
+            this.pendingClickActive = !doubleClickedEntity && !(sel instanceof EntitySelectable);
 
             // Shift+LMB extends the marquee: cornerA = the previous single-block / volume anchor, cornerB = the
             // just-clicked block. Lets the user "select between two clicks" without dragging. When there's no
             // meaningful prior anchor (entity, faction, tag, nothing), it falls back to a fresh 1-block volume at
             // the click point so the gesture still feels deterministic.
-            if (pressShiftDown && pendingClickBlock != null) {
+            if (!doubleClickedEntity && pressShiftDown && pendingClickBlock != null) {
                 var anchor = anchorForShiftExtend(previousSelection, previousCornerA, pendingClickBlock);
                 BlockSelection.setCornersDirect(anchor, pendingClickBlock);
                 SelectionManager.selectSingle(new BlockVolumeSelectable());
@@ -659,6 +672,46 @@ public final class ViewportPanel implements Panel {
         }
 
         return false;
+    }
+
+    private boolean handleEntityDoubleClick(EngineSession session, double mouseX, double mouseY) {
+        var selected = SelectionManager.current().single();
+        if (!(selected instanceof EntitySelectable entitySelectable)) {
+            clearEntityDoubleClick();
+            return false;
+        }
+
+        var entity = entitySelectable.entity();
+        if (entity == null) {
+            clearEntityDoubleClick();
+            return false;
+        }
+
+        var now = System.currentTimeMillis();
+        var dx = mouseX - lastEntityClickMouseX;
+        var dy = mouseY - lastEntityClickMouseY;
+        var doubleClick = entity.getUUID().equals(lastEntityClickUuid)
+            && now - lastEntityClickMillis <= ENTITY_DOUBLE_CLICK_WINDOW_MS
+            && dx * dx + dy * dy <= ENTITY_DOUBLE_CLICK_DISTANCE_SQ;
+
+        if (doubleClick) {
+            EngineNavigation.selectVisibleEntitiesOfSameType(session, entity);
+            clearEntityDoubleClick();
+            return true;
+        }
+
+        lastEntityClickUuid = entity.getUUID();
+        lastEntityClickMillis = now;
+        lastEntityClickMouseX = mouseX;
+        lastEntityClickMouseY = mouseY;
+        return false;
+    }
+
+    private void clearEntityDoubleClick() {
+        lastEntityClickUuid = null;
+        lastEntityClickMillis = 0L;
+        lastEntityClickMouseX = 0.0;
+        lastEntityClickMouseY = 0.0;
     }
 
     @Override

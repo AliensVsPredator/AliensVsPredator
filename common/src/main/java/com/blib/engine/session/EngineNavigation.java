@@ -10,9 +10,13 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.ArrayList;
+
 import com.blib.engine.domain.selection.picking.BlockSelectable;
 import com.blib.engine.domain.selection.picking.EntitySelectable;
 import com.blib.engine.domain.selection.picking.PlacedJigsawPieceSelectable;
+import com.blib.engine.domain.selection.picking.Selectable;
+import com.blib.engine.domain.selection.picking.Selection;
 import com.blib.engine.domain.selection.picking.SelectionManager;
 import com.blib.engine.domain.selection.volume.BlockSelection;
 import com.blib.engine.jigsaw.ClientPlacedPieceRegistry;
@@ -272,6 +276,87 @@ public final class EngineNavigation {
         } else {
             SelectionManager.selectSingle(new BlockSelectable(blockHit.getBlockPos()));
         }
+    }
+
+    public static void selectVisibleEntitiesOfSameType(EngineSession session, LivingEntity seed) {
+        var mc = Minecraft.getInstance();
+        if (mc.level == null || mc.player == null || !seed.isAlive()) {
+            return;
+        }
+
+        var origin = EngineCameraFrame.cameraPosition();
+        if (origin == null) {
+            origin = session.cameraPosition();
+        }
+
+        var seedType = seed.getType();
+        var selected = new ArrayList<Selectable>();
+        for (var candidate : mc.level.entitiesForRendering()) {
+            if (!(candidate instanceof LivingEntity living)) {
+                continue;
+            }
+            if (living == mc.player || living.isSpectator() || !living.isAlive() || living.getType() != seedType) {
+                continue;
+            }
+            if (living != seed && !isCameraVisible(mc, origin, living)) {
+                continue;
+            }
+            selected.add(new EntitySelectable(living));
+        }
+
+        if (selected.isEmpty()) {
+            selected.add(new EntitySelectable(seed));
+        }
+        BlockSelection.clearVolume();
+        SelectionManager.replace(new Selection(selected));
+    }
+
+    private static boolean isCameraVisible(Minecraft mc, Vec3 origin, LivingEntity entity) {
+        if (!EngineCameraFrame.isAabbInView(entity.getBoundingBox())) {
+            return false;
+        }
+        if (mc.player != null && entity.isInvisibleTo(mc.player)) {
+            return false;
+        }
+        return hasCameraLineOfSight(mc, origin, entity);
+    }
+
+    private static boolean hasCameraLineOfSight(Minecraft mc, Vec3 origin, LivingEntity entity) {
+        var box = entity.getBoundingBox();
+        var centerX = (box.minX + box.maxX) * 0.5;
+        var centerY = (box.minY + box.maxY) * 0.5;
+        var centerZ = (box.minZ + box.maxZ) * 0.5;
+        var height = Math.max(0.0, box.maxY - box.minY);
+        var insetY = Math.min(0.2, height * 0.25);
+        var lowerY = Math.min(box.maxY, box.minY + insetY);
+        var upperY = Math.max(box.minY, box.maxY - insetY);
+
+        return hasUnblockedCameraRay(mc, origin, entity.getEyePosition())
+            || hasUnblockedCameraRay(mc, origin, new Vec3(centerX, centerY, centerZ))
+            || hasUnblockedCameraRay(mc, origin, new Vec3(centerX, lowerY, centerZ))
+            || hasUnblockedCameraRay(mc, origin, new Vec3(centerX, upperY, centerZ))
+            || hasUnblockedCameraRay(mc, origin, new Vec3(box.minX, centerY, centerZ))
+            || hasUnblockedCameraRay(mc, origin, new Vec3(box.maxX, centerY, centerZ))
+            || hasUnblockedCameraRay(mc, origin, new Vec3(centerX, centerY, box.minZ))
+            || hasUnblockedCameraRay(mc, origin, new Vec3(centerX, centerY, box.maxZ));
+    }
+
+    private static boolean hasUnblockedCameraRay(Minecraft mc, Vec3 origin, Vec3 target) {
+        if (mc.level == null || mc.player == null) {
+            return true;
+        }
+
+        var targetDistSqr = target.distanceToSqr(origin);
+        if (targetDistSqr < 1.0E-8) {
+            return true;
+        }
+
+        var hit = mc.level.clip(new ClipContext(origin, target, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, mc.player));
+        if (hit.getType() == HitResult.Type.MISS) {
+            return true;
+        }
+
+        return hit.getLocation().distanceToSqr(origin) >= targetDistSqr - 0.04;
     }
 
     /**

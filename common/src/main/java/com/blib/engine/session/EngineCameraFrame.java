@@ -1,5 +1,6 @@
 package com.blib.engine.session;
 
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -51,6 +52,48 @@ public final class EngineCameraFrame {
 
     public static @Nullable Vec3 cameraPosition() {
         return cameraPosition;
+    }
+
+    public static boolean isAabbInView(AABB aabb) {
+        if (projection == null || frustum == null || cameraPosition == null) {
+            return false;
+        }
+
+        var viewProjection = new Matrix4f(projection).mul(frustum);
+        var minX = (float) (aabb.minX - cameraPosition.x);
+        var minY = (float) (aabb.minY - cameraPosition.y);
+        var minZ = (float) (aabb.minZ - cameraPosition.z);
+        var maxX = (float) (aabb.maxX - cameraPosition.x);
+        var maxY = (float) (aabb.maxY - cameraPosition.y);
+        var maxZ = (float) (aabb.maxZ - cameraPosition.z);
+
+        var outsideLeft = true;
+        var outsideRight = true;
+        var outsideBottom = true;
+        var outsideTop = true;
+        var outsideNear = true;
+        var outsideFar = true;
+
+        for (var xIndex = 0; xIndex < 2; xIndex++) {
+            var x = xIndex == 0 ? minX : maxX;
+            for (var yIndex = 0; yIndex < 2; yIndex++) {
+                var y = yIndex == 0 ? minY : maxY;
+                for (var zIndex = 0; zIndex < 2; zIndex++) {
+                    var z = zIndex == 0 ? minZ : maxZ;
+                    var corner = new Vector4f(x, y, z, 1.0f);
+                    viewProjection.transform(corner);
+
+                    outsideLeft &= corner.x() < -corner.w();
+                    outsideRight &= corner.x() > corner.w();
+                    outsideBottom &= corner.y() < -corner.w();
+                    outsideTop &= corner.y() > corner.w();
+                    outsideNear &= corner.z() < -corner.w();
+                    outsideFar &= corner.z() > corner.w();
+                }
+            }
+        }
+
+        return !(outsideLeft || outsideRight || outsideBottom || outsideTop || outsideNear || outsideFar);
     }
 
     /**
