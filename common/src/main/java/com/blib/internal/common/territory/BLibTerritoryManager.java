@@ -217,7 +217,10 @@ public class BLibTerritoryManager {
     public S2CChunkClaimsSyncPayload buildSyncPayload(ServerLevel level, ChunkPos pos) {
         var claimants = getClaimants(level, pos);
 
-        return new S2CChunkClaimsSyncPayload(List.of(new S2CChunkClaimsSyncPayload.Entry(pos.x, pos.z, new ArrayList<>(claimants))));
+        return new S2CChunkClaimsSyncPayload(
+            level.dimension().location(),
+            List.of(new S2CChunkClaimsSyncPayload.Entry(pos.x, pos.z, new ArrayList<>(claimants)))
+        );
     }
 
     public boolean allowExplosionsAt(ServerLevel level, ChunkPos pos) {
@@ -255,7 +258,10 @@ public class BLibTerritoryManager {
             .filter(factionId -> isFactionVisibleToPlayer(factionId, player))
             .toList();
 
-        return new S2CChunkClaimsSyncPayload(List.of(new S2CChunkClaimsSyncPayload.Entry(pos.x, pos.z, visibleFactions)));
+        return new S2CChunkClaimsSyncPayload(
+            level.dimension().location(),
+            List.of(new S2CChunkClaimsSyncPayload.Entry(pos.x, pos.z, visibleFactions))
+        );
     }
 
     public void syncClaimChunksToPlayer(ServerLevel level, Iterable<ChunkPos> chunks, ServerPlayer player) {
@@ -274,13 +280,13 @@ public class BLibTerritoryManager {
             entries.add(new S2CChunkClaimsSyncPayload.Entry(pos.x, pos.z, visibleFactions));
 
             if (entries.size() >= SYNC_BATCH_SIZE) {
-                BLib.MOD.networking().sendToClient(player, new S2CChunkClaimsSyncPayload(List.copyOf(entries)));
+                BLib.MOD.networking().sendToClient(player, new S2CChunkClaimsSyncPayload(level.dimension().location(), List.copyOf(entries)));
                 entries.clear();
             }
         }
 
         if (!entries.isEmpty()) {
-            BLib.MOD.networking().sendToClient(player, new S2CChunkClaimsSyncPayload(List.copyOf(entries)));
+            BLib.MOD.networking().sendToClient(player, new S2CChunkClaimsSyncPayload(level.dimension().location(), List.copyOf(entries)));
         }
     }
 

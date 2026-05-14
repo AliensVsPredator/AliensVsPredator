@@ -88,12 +88,13 @@ public class BLibChunkHighlighter extends ChunkHighlighter {
     @Override
     public boolean regionHasHighlights(ResourceKey<Level> dimension, int regionX, int regionZ) {
         var cache = ClientTerritoryCache.INSTANCE;
+        var dimensionId = dimension.location();
         var startX = regionX * 32;
         var startZ = regionZ * 32;
 
         for (var x = startX; x < startX + 32; x++) {
             for (var z = startZ; z < startZ + 32; z++) {
-                if (cache.isClaimed(new ChunkPos(x, z))) {
+                if (cache.isClaimed(dimensionId, new ChunkPos(x, z))) {
                     return true;
                 }
             }
@@ -104,14 +105,15 @@ public class BLibChunkHighlighter extends ChunkHighlighter {
 
     @Override
     public boolean chunkIsHighlit(ResourceKey<Level> dimension, int x, int z) {
-        return ClientTerritoryCache.INSTANCE.isClaimed(new ChunkPos(x, z));
+        return ClientTerritoryCache.INSTANCE.isClaimed(dimension.location(), new ChunkPos(x, z));
     }
 
     @Override
     protected int[] getColors(ResourceKey<Level> dimension, int x, int z) {
         var cache = ClientTerritoryCache.INSTANCE;
+        var dimensionId = dimension.location();
         var pos = new ChunkPos(x, z);
-        var factionIds = cache.getFactionIds(pos);
+        var factionIds = cache.getFactionIds(dimensionId, pos);
 
         if (factionIds.isEmpty()) {
             return null;
@@ -137,10 +139,10 @@ public class BLibChunkHighlighter extends ChunkHighlighter {
         var edge = (packed & 0xFFFFFF00) | BORDER_OPACITY;
 
         resultStore[0] = fill;
-        resultStore[1] = sameOwner(cache, x, z - 1, primaryFaction) ? fill : edge;
-        resultStore[2] = sameOwner(cache, x + 1, z, primaryFaction) ? fill : edge;
-        resultStore[3] = sameOwner(cache, x, z + 1, primaryFaction) ? fill : edge;
-        resultStore[4] = sameOwner(cache, x - 1, z, primaryFaction) ? fill : edge;
+        resultStore[1] = sameOwner(cache, dimensionId, x, z - 1, primaryFaction) ? fill : edge;
+        resultStore[2] = sameOwner(cache, dimensionId, x + 1, z, primaryFaction) ? fill : edge;
+        resultStore[3] = sameOwner(cache, dimensionId, x, z + 1, primaryFaction) ? fill : edge;
+        resultStore[4] = sameOwner(cache, dimensionId, x - 1, z, primaryFaction) ? fill : edge;
 
         return resultStore;
     }
@@ -148,13 +150,14 @@ public class BLibChunkHighlighter extends ChunkHighlighter {
     @Override
     public int calculateRegionHash(ResourceKey<Level> dimension, int regionX, int regionZ) {
         var cache = ClientTerritoryCache.INSTANCE;
+        var dimensionId = dimension.location();
         var startX = regionX * 32;
         var startZ = regionZ * 32;
         var hash = 0L;
 
         for (var x = startX; x < startX + 32; x++) {
             for (var z = startZ; z < startZ + 32; z++) {
-                var factionIds = cache.getFactionIds(new ChunkPos(x, z));
+                var factionIds = cache.getFactionIds(dimensionId, new ChunkPos(x, z));
 
                 for (var factionId : factionIds) {
                     hash = hash * 37L + factionId.hashCode();
@@ -170,7 +173,7 @@ public class BLibChunkHighlighter extends ChunkHighlighter {
 
     @Override
     public Component getChunkHighlightSubtleTooltip(ResourceKey<Level> dimension, int x, int z) {
-        var factionIds = ClientTerritoryCache.INSTANCE.getFactionIds(new ChunkPos(x, z));
+        var factionIds = ClientTerritoryCache.INSTANCE.getFactionIds(dimension.location(), new ChunkPos(x, z));
 
         if (factionIds.isEmpty()) {
             return Component.empty();
@@ -197,8 +200,8 @@ public class BLibChunkHighlighter extends ChunkHighlighter {
         int width
     ) {}
 
-    private static boolean sameOwner(ClientTerritoryCache cache, int x, int z, ResourceLocation factionId) {
-        var neighborFactions = cache.getFactionIds(new ChunkPos(x, z));
+    private static boolean sameOwner(ClientTerritoryCache cache, ResourceLocation dimension, int x, int z, ResourceLocation factionId) {
+        var neighborFactions = cache.getFactionIds(dimension, new ChunkPos(x, z));
 
         if (neighborFactions.isEmpty()) {
             return false;

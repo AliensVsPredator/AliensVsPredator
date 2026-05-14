@@ -1,5 +1,6 @@
 package com.blib.engine.ui.panel.details;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -173,7 +174,8 @@ public final class FactionInspectorSection implements InspectorSection<FactionSe
 
         rowY = panel.drawSectionHeaderWithHelp(graphics, font, x, rowY, width, "Territory", HELP_FACTION_TERRITORY, mouseX, mouseY);
         rowY += InspectorStyle.CONTENT_PADDING / 2;
-        var chunkCount = ClientTerritoryCache.INSTANCE.chunkCountForFaction(factionId);
+        var level = Minecraft.getInstance().level;
+        var chunkCount = level == null ? 0 : ClientTerritoryCache.INSTANCE.chunkCountForFaction(level.dimension().location(), factionId);
         rowY = DetailsPanel.drawRow(graphics, font, x, rowY, "Chunks", Integer.toString(chunkCount));
         rowY = drawPaintToggleRow(graphics, font, x, rowY, width, factionId, mouseX, mouseY);
 

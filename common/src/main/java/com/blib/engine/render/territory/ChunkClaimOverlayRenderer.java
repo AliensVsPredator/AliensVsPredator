@@ -77,7 +77,7 @@ public final class ChunkClaimOverlayRenderer {
         if (mc.level == null) {
             return;
         }
-        var claims = ClientTerritoryCache.INSTANCE.factionsByChunk();
+        var claims = ClientTerritoryCache.INSTANCE.factionsByChunk(mc.level.dimension().location());
         var hoveredChunk = ClaimPaintTool.isActive() ? ClaimPaintTool.hoveredChunk() : null;
         if (claims.isEmpty() && hoveredChunk == null) {
             return;

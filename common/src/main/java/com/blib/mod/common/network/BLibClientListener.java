@@ -77,7 +77,7 @@ public final class BLibClientListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(BLibClientListener.class);
 
     public static void handleChunkClaimsSync(S2CChunkClaimsSyncPayload payload, Player player) {
-        ClientTerritoryCache.INSTANCE.updateChunks(payload.entries());
+        ClientTerritoryCache.INSTANCE.updateChunks(payload.dimension(), payload.entries());
     }
 
     public static void handleActionHistorySync(S2CActionHistorySyncPayload payload, Player player) {

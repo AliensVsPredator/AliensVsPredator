@@ -160,10 +160,11 @@ public final class TerritoryMapPanel implements Panel {
             viewInitialized = true;
         }
 
+        var dimension = currentDimension();
         var font = EngineFont.get();
         var inspected = inspectedFactionId();
         var inspectedEntry = inspected == null ? null : ClientFactionDirectoryCache.get(inspected);
-        var chunkCount = inspected == null ? 0 : ClientTerritoryCache.INSTANCE.chunkCountForFaction(inspected);
+        var chunkCount = inspected == null ? 0 : ClientTerritoryCache.INSTANCE.chunkCountForFaction(dimension, inspected);
 
         // --- Header ---
         graphics.fill(x, y, x + width, y + HEADER_HEIGHT, HEADER_BG_COLOR);
@@ -195,7 +196,7 @@ public final class TerritoryMapPanel implements Panel {
         mapH = Math.max(0, height - HEADER_HEIGHT - LEGEND_HEIGHT);
 
         if (mapH > 0) {
-            renderMap(graphics, font, mouseX, mouseY, inspected);
+            renderMap(graphics, font, mouseX, mouseY, dimension, inspected);
         }
 
         // --- Legend ---
@@ -209,6 +210,7 @@ public final class TerritoryMapPanel implements Panel {
         Font font,
         int mouseX,
         int mouseY,
+        ResourceLocation dimension,
         @Nullable ResourceLocation inspected
     ) {
         applyRawScissor(graphics, mapX, mapY, mapW, mapH);
@@ -248,7 +250,7 @@ public final class TerritoryMapPanel implements Panel {
             // grid (~900 at default zoom), each emitting 2-4 fills regardless of claim state. Now it touches at
             // most the claim count, and unclaimed cells inherit the panel background for free.
             var nowMs = System.currentTimeMillis();
-            for (var entry : ClientTerritoryCache.INSTANCE.factionsByChunk().entrySet()) {
+            for (var entry : ClientTerritoryCache.INSTANCE.factionsByChunk(dimension).entrySet()) {
                 var pos = entry.getKey();
                 if (pos.x < firstX || pos.x >= lastX || pos.z < firstZ || pos.z >= lastZ) {
                     continue;
@@ -415,6 +417,10 @@ public final class TerritoryMapPanel implements Panel {
     private static @Nullable ResourceLocation inspectedFactionId() {
         var single = SelectionManager.current().single();
         return single instanceof FactionSelectable fs ? fs.factionId() : null;
+    }
+
+    private static ResourceLocation currentDimension() {
+        return Minecraft.getInstance().level.dimension().location();
     }
 
     private void centerOnPlayer() {

@@ -12,7 +12,10 @@ import java.util.List;
 import com.blib.api.common.codec.v1.BLibCodecs;
 import com.blib.mod.BLib;
 
-public record S2CChunkClaimsSyncPayload(List<Entry> entries) implements CustomPacketPayload {
+public record S2CChunkClaimsSyncPayload(
+    ResourceLocation dimension,
+    List<Entry> entries
+) implements CustomPacketPayload {
 
     public record Entry(
         int chunkX,
@@ -36,6 +39,8 @@ public record S2CChunkClaimsSyncPayload(List<Entry> entries) implements CustomPa
     public static final Type<S2CChunkClaimsSyncPayload> TYPE = new Type<>(PAYLOAD_ID);
 
     public static final StreamCodec<S2CChunkClaimsSyncPayload> CODEC = RecordStreamCodec.of(
+        BLibCodecs.Stream.RESOURCE_LOCATION,
+        S2CChunkClaimsSyncPayload::dimension,
         Entry.CODEC.asList(),
         S2CChunkClaimsSyncPayload::entries,
         S2CChunkClaimsSyncPayload::new
