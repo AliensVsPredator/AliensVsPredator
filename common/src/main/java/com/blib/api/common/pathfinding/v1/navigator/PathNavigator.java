@@ -3,8 +3,6 @@ package com.blib.api.common.pathfinding.v1.navigator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 import java.util.Set;
@@ -30,8 +28,6 @@ import com.blib.api.common.pathfinding.v1.transition.TerrainTransition;
  * </p>
  */
 public final class PathNavigator {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(PathNavigator.class);
 
     private final PathNavigatorConfig config;
 
@@ -104,12 +100,6 @@ public final class PathNavigator {
      */
     public boolean navigateTo(BlockPos entityPos, BlockPos target) {
         if (isInFailureCooldown(target)) {
-            LOGGER.info(
-                "[Nav] navigateTo BLOCKED by failure cooldown (failures={}, cooldown={}t, ticksSinceFail={})",
-                consecutiveFailures,
-                failureCooldownTicks,
-                tickCount - lastFailureTick
-            );
             return false;
         }
 
@@ -121,27 +111,12 @@ public final class PathNavigator {
         var startNanos = System.nanoTime();
 
         if (planner != null) {
-            LOGGER.info(
-                "[Nav] navigateTo via planner: {} -> {} (dist={})",
-                entityPos,
-                target,
-                entityPos.distManhattan(target)
-            );
             this.currentPath = planner.findPath(level, entityPos, target);
         } else {
-            LOGGER.info("[Nav] navigateTo via direct pathfinder: {} -> {}", entityPos, target);
             this.currentPath = pathFinder.findPath(level, entityPos, target);
         }
 
         this.lastPathComputeNanos = System.nanoTime() - startNanos;
-
-        LOGGER.info(
-            "[Nav] navigateTo result: path={}, reached={}, nodes={}, plannerActive={}",
-            currentPath != null ? "found" : "null",
-            currentPath != null ? currentPath.isReached() : "n/a",
-            currentPath != null ? currentPath.getNodeCount() : 0,
-            planner != null && planner.hasActiveRoute()
-        );
 
         this.lastPathComputeTick = tickCount;
         this.lastProgressTick = tickCount;
@@ -153,7 +128,6 @@ public final class PathNavigator {
             this.currentTerrain = startNode.getTerrainType();
             resetFailureCooldown();
         } else {
-            LOGGER.info("[Nav] navigateTo recording failure (consecutiveFailures will be {})", consecutiveFailures + 1);
             recordFailure();
         }
 
@@ -242,10 +216,8 @@ public final class PathNavigator {
         // Advance to next segment if current path is done but route hasn't reached the final target.
         if (currentPath != null && currentPath.isDone() && planner != null && planner.hasActiveRoute()) {
             if (currentPath.isReached()) {
-                LOGGER.info("[Nav] tick: segment reached goal, clearing planner route");
                 planner.clear();
             } else {
-                LOGGER.info("[Nav] tick: segment done (partial), advancing to next segment");
                 advanceToNextSegment(entityX, entityY, entityZ);
             }
         }
@@ -433,6 +405,10 @@ public final class PathNavigator {
 
     public @Nullable Set<TerrainType> getExcludedTerrains() {
         return excludedTerrains;
+    }
+
+    public void setDebugCaptureEnabled(boolean debugCaptureEnabled) {
+        pathFinder.setDebugCaptureEnabled(debugCaptureEnabled);
     }
 
     /**
@@ -645,14 +621,6 @@ public final class PathNavigator {
         this.lastPathComputeTick = tickCount;
         this.lastProgressTick = tickCount;
         this.lastDistanceToTarget = Double.MAX_VALUE;
-
-        LOGGER.info(
-            "[Nav] advanceToNextSegment from {}: path={}, reached={}, nodes={}",
-            entityPos,
-            currentPath != null ? "found" : "null",
-            currentPath != null ? currentPath.isReached() : "n/a",
-            currentPath != null ? currentPath.getNodeCount() : 0
-        );
 
         if (currentPath != null) {
             this.currentTerrain = currentPath.getCurrentNode().getTerrainType();

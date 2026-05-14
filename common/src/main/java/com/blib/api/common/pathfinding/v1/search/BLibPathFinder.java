@@ -3,8 +3,6 @@ package com.blib.api.common.pathfinding.v1.search;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,8 +23,6 @@ import com.blib.api.common.pathfinding.v1.evaluator.UnifiedTerrainEvaluator;
 import com.blib.api.common.pathfinding.v1.node.PathNode;
 import com.blib.api.common.pathfinding.v1.path.BLibPath;
 import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
-import com.blib.mod.common.property.BLibModProperties;
-import com.blib.mod.common.property.BLibModPropertyAccess;
 
 /**
  * A* pathfinding with optional two-level hierarchical search. When a {@link TerrainClassificationCache} is provided,
@@ -34,8 +30,6 @@ import com.blib.mod.common.property.BLibModPropertyAccess;
  * 16x16x16 sections, then runs the block-level A* restricted to that corridor.
  */
 public final class BLibPathFinder {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(BLibPathFinder.class);
 
     private static final int MAX_NEIGHBORS = 40;
 
@@ -73,6 +67,8 @@ public final class BLibPathFinder {
 
     private boolean debugEnabled;
 
+    private boolean debugCaptureEnabled;
+
     private @Nullable Set<TerrainType> excludedTerrains;
 
     public BLibPathFinder(TerrainEvaluator evaluator, SearchConfig config) {
@@ -92,15 +88,16 @@ public final class BLibPathFinder {
         this.excludedTerrains = excludedTerrains;
     }
 
+    public void setDebugCaptureEnabled(boolean debugCaptureEnabled) {
+        this.debugCaptureEnabled = debugCaptureEnabled;
+    }
+
     public @Nullable PathSearchSnapshot getLastSearchSnapshot() {
         return lastSearchSnapshot;
     }
 
     public @Nullable BLibPath findPath(LevelReader level, BlockPos startPos, BlockPos targetPos) {
-        var start = System.nanoTime();
-
-        debugEnabled = BLibModPropertyAccess.INSTANCE.get(BLibModProperties.Debug.Render.ENABLED)
-            && BLibModPropertyAccess.INSTANCE.get(BLibModProperties.Debug.Render.PathSearch.ENABLED);
+        debugEnabled = debugCaptureEnabled;
 
         evaluator.prepare(level);
         applyExcludedTerrains();
@@ -126,20 +123,7 @@ public final class BLibPathFinder {
                 }
             }
 
-            var path = searchBlocks(startPos, targetPos, corridor);
-            var ms = (System.nanoTime() - start) / 1_000_000.0;
-
-            LOGGER.info(
-                "[Pathfinding] {}ms | {} -> {} dist={} result={} nodes={}",
-                "%.3f".formatted(ms),
-                startPos,
-                targetPos,
-                startPos.distManhattan(targetPos),
-                path != null ? (path.isReached() ? "REACHED" : "PARTIAL") : "NONE",
-                path != null ? path.getNodeCount() : 0
-            );
-
-            return path;
+            return searchBlocks(startPos, targetPos, corridor);
         } finally {
             evaluator.cleanup();
         }
@@ -156,8 +140,7 @@ public final class BLibPathFinder {
             return CompletableFuture.completedFuture(findPath(level, startPos, targetPos));
         }
 
-        debugEnabled = BLibModPropertyAccess.INSTANCE.get(BLibModProperties.Debug.Render.ENABLED)
-            && BLibModPropertyAccess.INSTANCE.get(BLibModProperties.Debug.Render.PathSearch.ENABLED);
+        debugEnabled = debugCaptureEnabled;
 
         // --- Main thread: snapshot chunks and pre-populate terrain cache ---
 
@@ -250,29 +233,13 @@ public final class BLibPathFinder {
         BlockPos targetPos,
         @Nullable Set<Long> corridor
     ) {
-        var start = System.nanoTime();
-
-        debugEnabled = BLibModPropertyAccess.INSTANCE.get(BLibModProperties.Debug.Render.ENABLED)
-            && BLibModPropertyAccess.INSTANCE.get(BLibModProperties.Debug.Render.PathSearch.ENABLED);
+        debugEnabled = debugCaptureEnabled;
 
         evaluator.prepare(level);
         applyExcludedTerrains();
 
         try {
-            var path = searchBlocks(startPos, targetPos, corridor);
-            var ms = (System.nanoTime() - start) / 1_000_000.0;
-
-            LOGGER.info(
-                "[Pathfinding/Segment] {}ms | {} -> {} dist={} result={} nodes={}",
-                "%.3f".formatted(ms),
-                startPos,
-                targetPos,
-                startPos.distManhattan(targetPos),
-                path != null ? (path.isReached() ? "REACHED" : "PARTIAL") : "NONE",
-                path != null ? path.getNodeCount() : 0
-            );
-
-            return path;
+            return searchBlocks(startPos, targetPos, corridor);
         } finally {
             evaluator.cleanup();
         }

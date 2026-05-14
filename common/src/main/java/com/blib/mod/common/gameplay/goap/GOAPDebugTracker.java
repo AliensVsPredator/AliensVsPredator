@@ -1,6 +1,7 @@
 package com.blib.mod.common.gameplay.goap;
 
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -85,6 +86,21 @@ public final class GOAPDebugTracker {
 
     public @Nullable GOAPDebugTrackingState getTrackingState(UUID playerUuid) {
         return trackingByPlayer.get(playerUuid);
+    }
+
+    public List<ServerPlayer> playersTracking(MinecraftServer server, UUID entityUuid) {
+        var players = new ArrayList<ServerPlayer>();
+        for (var entry : trackingByPlayer.entrySet()) {
+            if (!entry.getValue().entityUuids().contains(entityUuid)) {
+                continue;
+            }
+
+            var player = server.getPlayerList().getPlayer(entry.getKey());
+            if (player != null) {
+                players.add(player);
+            }
+        }
+        return players;
     }
 
     public boolean worldStateNext(UUID playerUuid) {

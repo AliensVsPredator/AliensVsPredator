@@ -3,8 +3,6 @@ package com.blib.api.common.pathfinding.v1.search;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.blib.api.common.pathfinding.v1.path.BLibPath;
 
@@ -18,8 +16,6 @@ import com.blib.api.common.pathfinding.v1.path.BLibPath;
  * </p>
  */
 public final class SegmentedPathPlanner {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(SegmentedPathPlanner.class);
 
     private static final int SHORT_DISTANCE_THRESHOLD = 48;
 
@@ -44,20 +40,11 @@ public final class SegmentedPathPlanner {
         clear();
         this.finalTarget = target;
 
-        LOGGER.info("[Planner] findPath: {} -> {} (dist={})", start, target, start.distManhattan(target));
-
         var result = pathFinder.computeCorridor(level, start, target);
 
         if (result == null) {
-            LOGGER.info("[Planner] computeCorridor returned null — falling back to direct pathfinding");
             return pathFinder.findPath(level, start, target);
         }
-
-        LOGGER.info(
-            "[Planner] corridor found: {} sections in corridor, {} waypoints",
-            result.corridor().size(),
-            result.sectionWaypoints().size()
-        );
 
         this.activeRoute = result;
 
@@ -72,11 +59,9 @@ public final class SegmentedPathPlanner {
      */
     public @Nullable BLibPath computeNextSegment(LevelReader level, BlockPos entityPos) {
         if (activeRoute == null || finalTarget == null) {
-            LOGGER.info("[Planner] computeNextSegment: no active route");
             return null;
         }
 
-        LOGGER.info("[Planner] computeNextSegment from {} toward {}", entityPos, finalTarget);
         return computeSegment(level, entityPos);
     }
 
@@ -108,17 +93,6 @@ public final class SegmentedPathPlanner {
         var useCorridor = dist > SHORT_DISTANCE_THRESHOLD;
         var corridor = useCorridor ? activeRoute.corridor() : null;
 
-        LOGGER.info("[Planner] computeSegment from {} (dist={}, useCorridor={})", from, dist, useCorridor);
-
-        var path = pathFinder.findPathInCorridor(level, from, finalTarget, corridor);
-
-        LOGGER.info(
-            "[Planner] computeSegment result: path={}, reached={}, nodes={}",
-            path != null ? "found" : "null",
-            path != null ? path.isReached() : "n/a",
-            path != null ? path.getNodeCount() : 0
-        );
-
-        return path;
+        return pathFinder.findPathInCorridor(level, from, finalTarget, corridor);
     }
 }

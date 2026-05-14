@@ -54,6 +54,12 @@ public final class NeoMoveToPosAction {
         var entityPos = actor.blockPosition();
         var targetBlockPos = BlockPos.containing(targetPos);
 
+        if (actor instanceof Mob mob) {
+            navigator.setDebugCaptureEnabled(PathDebugUtil.hasDebugWatchers(mob));
+        } else {
+            navigator.setDebugCaptureEnabled(false);
+        }
+
         if (!navigator.isNavigating()) {
             var found = navigator.navigateTo(entityPos, targetBlockPos);
 
@@ -73,7 +79,6 @@ public final class NeoMoveToPosAction {
         );
 
         if (actor instanceof Mob mob) {
-            PathDebugUtil.sendDebugPath(mob, navigator.getCurrentPath());
             PathDebugUtil.sendDebugSearchSnapshot(mob, navigator);
             PathDebugUtil.sendDebugNavState(mob, navigator);
         }

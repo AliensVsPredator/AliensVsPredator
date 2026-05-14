@@ -3,6 +3,7 @@ package com.blib.api.common.pathfinding.v1.debug;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.game.DebugPackets;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.pathfinder.Node;
@@ -16,28 +17,22 @@ import com.blib.api.common.pathfinding.v1.navigator.PathNavigator;
 import com.blib.api.common.pathfinding.v1.node.PathNode;
 import com.blib.api.common.pathfinding.v1.path.BLibPath;
 import com.blib.mod.BLib;
+import com.blib.mod.common.gameplay.goap.GOAPDebugTracker;
 import com.blib.mod.common.network.packet.S2CPathfindingNavDebugPayload;
 import com.blib.mod.common.network.packet.S2CPathfindingSearchDebugPayload;
-import com.blib.mod.common.property.BLibModProperties;
-import com.blib.mod.common.property.BLibModPropertyAccess;
 
 /**
- * Debug utilities for BLib pathfinding. Converts BLibPath to vanilla Path and sends debug packets to clients for
- * rendering via Minecraft's built-in pathfinding debug renderer.
+ * Debug utilities for BLib pathfinding. Streams path state to clients that are inspecting a GOAP entity in the engine.
  */
 public final class PathDebugUtil {
 
     private static final float DEFAULT_MAX_DISTANCE_TO_WAYPOINT = 1.0f;
 
     /**
-     * Sends a BLibPath as a debug packet if debug rendering is enabled.
+     * Sends a BLibPath as a vanilla debug packet if a player is tracking this GOAP entity in the engine.
      */
     public static void sendDebugPath(Mob mob, @Nullable BLibPath path) {
-        if (!BLibModPropertyAccess.INSTANCE.get(BLibModProperties.Debug.Render.ENABLED)) {
-            return;
-        }
-
-        if (path == null) {
+        if (path == null || !hasDebugWatchers(mob)) {
             return;
         }
 
@@ -73,14 +68,11 @@ public final class PathDebugUtil {
     }
 
     /**
-     * Sends the last A* search snapshot as a debug packet if search debug rendering is enabled.
+     * Sends the last A* search snapshot to players currently tracking this GOAP entity in the engine.
      */
     public static void sendDebugSearchSnapshot(Mob mob, PathNavigator navigator) {
-        if (!BLibModPropertyAccess.INSTANCE.get(BLibModProperties.Debug.Render.ENABLED)) {
-            return;
-        }
-
-        if (!BLibModPropertyAccess.INSTANCE.get(BLibModProperties.Debug.Render.PathSearch.ENABLED)) {
+        var players = debugWatchers(mob);
+        if (players.isEmpty()) {
             return;
         }
 
@@ -98,20 +90,19 @@ public final class PathDebugUtil {
             snapshot.maxSearchNodes()
         );
 
-        BLib.MOD.networking().sendToAllClientsTrackingEntity(mob, payload);
+        for (var player : players) {
+            BLib.MOD.networking().sendToClient(player, payload);
+        }
     }
 
     private static final int NAV_WINDOW_RADIUS = 2;
 
     /**
-     * Sends a rolling window of path nodes around the navigator's current position for the nav debug HUD.
+     * Sends a rolling window of path nodes around the navigator's current position for the engine pathfinding panel.
      */
     public static void sendDebugNavState(Mob mob, PathNavigator navigator) {
-        if (!BLibModPropertyAccess.INSTANCE.get(BLibModProperties.Debug.Render.ENABLED)) {
-            return;
-        }
-
-        if (!BLibModPropertyAccess.INSTANCE.get(BLibModProperties.Debug.Render.PathSearch.ENABLED)) {
+        var players = debugWatchers(mob);
+        if (players.isEmpty()) {
             return;
         }
 
@@ -135,7 +126,21 @@ public final class PathDebugUtil {
             navigator.getLastPathComputeTick()
         );
 
-        BLib.MOD.networking().sendToAllClientsTrackingEntity(mob, payload);
+        for (var player : players) {
+            BLib.MOD.networking().sendToClient(player, payload);
+        }
+    }
+
+    public static boolean hasDebugWatchers(Mob mob) {
+        return !debugWatchers(mob).isEmpty();
+    }
+
+    private static List<ServerPlayer> debugWatchers(Mob mob) {
+        var server = mob.getServer();
+        if (server == null) {
+            return List.of();
+        }
+        return GOAPDebugTracker.INSTANCE.playersTracking(server, mob.getUUID());
     }
 
     private static S2CPathfindingNavDebugPayload buildPayload(
