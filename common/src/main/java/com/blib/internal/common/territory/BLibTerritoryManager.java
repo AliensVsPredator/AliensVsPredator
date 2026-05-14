@@ -30,6 +30,8 @@ public class BLibTerritoryManager {
 
     public static final BLibTerritoryManager INSTANCE = new BLibTerritoryManager();
 
+    private static final int SYNC_BATCH_SIZE = 512;
+
     private final Map<ServerLevel, BLibTerritoryIndex> indexes;
 
     private @Nullable MinecraftServer server;
@@ -208,20 +210,14 @@ public class BLibTerritoryManager {
                 continue;
             }
 
-            for (var pos : index.getAllClaimedChunks()) {
-                var payload = buildSyncPayloadForPlayer(level, pos, player);
-
-                if (!payload.factionIds().isEmpty()) {
-                    BLib.MOD.networking().sendToClient(player, payload);
-                }
-            }
+            syncClaimChunksToPlayer(level, index.getAllClaimedChunks(), player);
         }
     }
 
     public S2CChunkClaimsSyncPayload buildSyncPayload(ServerLevel level, ChunkPos pos) {
         var claimants = getClaimants(level, pos);
 
-        return new S2CChunkClaimsSyncPayload(pos.x, pos.z, new ArrayList<>(claimants));
+        return new S2CChunkClaimsSyncPayload(List.of(new S2CChunkClaimsSyncPayload.Entry(pos.x, pos.z, new ArrayList<>(claimants))));
     }
 
     public boolean allowExplosionsAt(ServerLevel level, ChunkPos pos) {
@@ -259,7 +255,33 @@ public class BLibTerritoryManager {
             .filter(factionId -> isFactionVisibleToPlayer(factionId, player))
             .toList();
 
-        return new S2CChunkClaimsSyncPayload(pos.x, pos.z, visibleFactions);
+        return new S2CChunkClaimsSyncPayload(List.of(new S2CChunkClaimsSyncPayload.Entry(pos.x, pos.z, visibleFactions)));
+    }
+
+    public void syncClaimChunksToPlayer(ServerLevel level, Iterable<ChunkPos> chunks, ServerPlayer player) {
+        var entries = new ArrayList<S2CChunkClaimsSyncPayload.Entry>(SYNC_BATCH_SIZE);
+
+        for (var pos : chunks) {
+            var claimants = getClaimants(level, pos);
+            var visibleFactions = claimants.stream()
+                .filter(factionId -> isFactionVisibleToPlayer(factionId, player))
+                .toList();
+
+            if (visibleFactions.isEmpty()) {
+                continue;
+            }
+
+            entries.add(new S2CChunkClaimsSyncPayload.Entry(pos.x, pos.z, visibleFactions));
+
+            if (entries.size() >= SYNC_BATCH_SIZE) {
+                BLib.MOD.networking().sendToClient(player, new S2CChunkClaimsSyncPayload(List.copyOf(entries)));
+                entries.clear();
+            }
+        }
+
+        if (!entries.isEmpty()) {
+            BLib.MOD.networking().sendToClient(player, new S2CChunkClaimsSyncPayload(List.copyOf(entries)));
+        }
     }
 
     private boolean isFactionVisibleToPlayer(ResourceLocation factionId, ServerPlayer player) {

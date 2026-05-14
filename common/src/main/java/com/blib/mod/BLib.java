@@ -189,7 +189,7 @@ public class BLib {
                     if (player.connection != null) {
                         var payload = BLibTerritoryManager.INSTANCE.buildSyncPayloadForPlayer(level, pos, player);
 
-                        if (!payload.factionIds().isEmpty()) {
+                        if (!payload.entries().isEmpty()) {
                             BLib.MOD.networking().sendToClient(player, payload);
                         }
                     }

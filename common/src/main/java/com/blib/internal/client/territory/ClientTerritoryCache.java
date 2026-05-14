@@ -37,6 +37,12 @@ public class ClientTerritoryCache {
         }
     }
 
+    public void updateChunks(List<com.blib.mod.common.network.packet.S2CChunkClaimsSyncPayload.Entry> entries) {
+        for (var entry : entries) {
+            updateChunk(entry.chunkX(), entry.chunkZ(), entry.factionIds());
+        }
+    }
+
     public List<ResourceLocation> getFactionIds(ChunkPos pos) {
         return factionsByChunk.getOrDefault(pos, List.of());
     }

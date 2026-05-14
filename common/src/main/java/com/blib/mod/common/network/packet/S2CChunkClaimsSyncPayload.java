@@ -12,23 +12,32 @@ import java.util.List;
 import com.blib.api.common.codec.v1.BLibCodecs;
 import com.blib.mod.BLib;
 
-public record S2CChunkClaimsSyncPayload(
-    int chunkX,
-    int chunkZ,
-    List<ResourceLocation> factionIds
-) implements CustomPacketPayload {
+public record S2CChunkClaimsSyncPayload(List<Entry> entries) implements CustomPacketPayload {
+
+    public record Entry(
+        int chunkX,
+        int chunkZ,
+        List<ResourceLocation> factionIds
+    ) {
+
+        public static final StreamCodec<Entry> CODEC = RecordStreamCodec.of(
+            StreamCodecs.INT,
+            Entry::chunkX,
+            StreamCodecs.INT,
+            Entry::chunkZ,
+            BLibCodecs.Stream.RESOURCE_LOCATION.asList(),
+            Entry::factionIds,
+            Entry::new
+        );
+    }
 
     public static final ResourceLocation PAYLOAD_ID = BLib.MOD.resources().createLocation("chunk_claims_sync");
 
     public static final Type<S2CChunkClaimsSyncPayload> TYPE = new Type<>(PAYLOAD_ID);
 
     public static final StreamCodec<S2CChunkClaimsSyncPayload> CODEC = RecordStreamCodec.of(
-        StreamCodecs.INT,
-        S2CChunkClaimsSyncPayload::chunkX,
-        StreamCodecs.INT,
-        S2CChunkClaimsSyncPayload::chunkZ,
-        BLibCodecs.Stream.RESOURCE_LOCATION.asList(),
-        S2CChunkClaimsSyncPayload::factionIds,
+        Entry.CODEC.asList(),
+        S2CChunkClaimsSyncPayload::entries,
         S2CChunkClaimsSyncPayload::new
     );
 
