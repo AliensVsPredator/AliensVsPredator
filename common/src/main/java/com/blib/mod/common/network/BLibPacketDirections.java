@@ -59,6 +59,7 @@ import com.blib.mod.common.network.packet.C2SUndoActionPayload;
 import com.blib.mod.common.network.packet.C2SUpdateFactionFieldPayload;
 import com.blib.mod.common.network.packet.C2SUpdateJigsawBlockPayload;
 import com.blib.mod.common.network.packet.C2SUpdatePoolElementPayload;
+import com.blib.mod.common.network.packet.C2SWriteItemRendererConfigPayload;
 import com.blib.mod.common.network.packet.S2CActionHistorySyncPayload;
 import com.blib.mod.common.network.packet.S2CAddPlacedPiecePayload;
 import com.blib.mod.common.network.packet.S2CCaptureListPayload;
@@ -268,6 +269,9 @@ public class BLibPacketDirections {
             new PacketDirection.C2S<>(C2SSetTagEntryRequiredPayload.TYPE, C2SSetTagEntryRequiredPayload.CODEC)
         );
         REGISTRY.registerPacketDirection(new PacketDirection.C2S<>(C2SCreateTagPayload.TYPE, C2SCreateTagPayload.CODEC));
+        REGISTRY.registerPacketDirection(
+            new PacketDirection.C2S<>(C2SWriteItemRendererConfigPayload.TYPE, C2SWriteItemRendererConfigPayload.CODEC)
+        );
 
         // Placed-piece identity layer (engine-mode inspector / context menu).
         REGISTRY.registerPacketDirection(

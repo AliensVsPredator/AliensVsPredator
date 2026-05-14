@@ -64,4 +64,24 @@ public final class ModelerItemSession {
     public ModelerItemSession(ResourceLocation itemId) {
         this.itemId = itemId;
     }
+
+    /**
+     * The override slot the gizmo and shim bone currently target. In preview mode the user expects edits to land on the
+     * context they're previewing — otherwise rotating in the "Third Person Right Hand" preview silently writes to GUI
+     * (the default {@link #editingContext}) and the rendered item never updates. Preview wins; edit-mode falls through
+     * to the inspector's picker.
+     */
+    public ItemDisplayContext activeContext() {
+        return previewContext != null ? previewContext : editingContext;
+    }
+
+    /**
+     * Wall-fixed slot for {@link #activeContext()} — pulled from the preview flag in preview mode, the inspector's in
+     * edit mode.
+     */
+    public boolean activeWallFixed() {
+        return previewContext != null
+            ? previewContext == ItemDisplayContext.FIXED && previewWallFixed
+            : editingContext == ItemDisplayContext.FIXED && wallFixedActive;
+    }
 }

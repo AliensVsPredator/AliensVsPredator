@@ -2,7 +2,12 @@ package com.blib.api.client.render.v1;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.joml.Vector3f;
+
+import java.util.List;
 
 import com.blib.api.client.render.v1.item.BLibGeoBoneItemRenderer;
 import com.blib.api.client.render.v1.item.BLibItemTransforms;
@@ -47,6 +52,29 @@ public record BLibTransform(
         new Vector3f(0, 0, 0),
         new Vector3f(1, 1, 1),
         new Vector3f(0, 0, 0)
+    );
+
+    /** Codec for a JOML {@link Vector3f}, serialized as a 3-element float array. Used by {@link #CODEC}. */
+    public static final Codec<Vector3f> VEC3F_CODEC = Codec.FLOAT.listOf()
+        .comapFlatMap(
+            list -> list.size() == 3
+                ? DataResult.success(new Vector3f(list.get(0), list.get(1), list.get(2)))
+                : DataResult.error(() -> "Expected 3 floats for Vector3f, got " + list.size()),
+            v -> List.of(v.x, v.y, v.z)
+        );
+
+    /**
+     * JSON shape matches the vanilla item-model {@code display} entry (so Blockbench exports drop in), with
+     * {@code pivot} added as a BLib extension. All four sub-fields are optional and default to the components of
+     * {@link #IDENTITY}.
+     */
+    public static final Codec<BLibTransform> CODEC = RecordCodecBuilder.create(
+        instance -> instance.group(
+            VEC3F_CODEC.optionalFieldOf("translation", new Vector3f(0, 0, 0)).forGetter(BLibTransform::translation),
+            VEC3F_CODEC.optionalFieldOf("rotation", new Vector3f(0, 0, 0)).forGetter(BLibTransform::rotation),
+            VEC3F_CODEC.optionalFieldOf("scale", new Vector3f(1, 1, 1)).forGetter(BLibTransform::scale),
+            VEC3F_CODEC.optionalFieldOf("pivot", new Vector3f(0, 0, 0)).forGetter(BLibTransform::pivot)
+        ).apply(instance, BLibTransform::new)
     );
 
     public static BLibTransform of(float tx, float ty, float tz, float rx, float ry, float rz, float scale) {

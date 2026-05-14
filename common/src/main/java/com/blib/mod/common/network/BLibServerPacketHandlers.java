@@ -59,6 +59,7 @@ import com.blib.mod.common.network.packet.C2SUndoActionPayload;
 import com.blib.mod.common.network.packet.C2SUpdateFactionFieldPayload;
 import com.blib.mod.common.network.packet.C2SUpdateJigsawBlockPayload;
 import com.blib.mod.common.network.packet.C2SUpdatePoolElementPayload;
+import com.blib.mod.common.network.packet.C2SWriteItemRendererConfigPayload;
 import com.blib.mod.common.network.packet.S2CActionHistorySyncPayload;
 import com.blib.mod.common.network.packet.S2CAddPlacedPiecePayload;
 import com.blib.mod.common.network.packet.S2CCaptureListPayload;
@@ -500,6 +501,13 @@ public class BLibServerPacketHandlers {
                 C2SCreateTagPayload.TYPE,
                 C2SCreateTagPayload.CODEC,
                 BLibServerListener::handleCreateTag
+            )
+        );
+        REGISTRY.registerPacketHandler(
+            new NetworkHandler.FromClient<>(
+                C2SWriteItemRendererConfigPayload.TYPE,
+                C2SWriteItemRendererConfigPayload.CODEC,
+                BLibServerListener::handleWriteItemRendererConfig
             )
         );
         REGISTRY.registerPacketHandler(

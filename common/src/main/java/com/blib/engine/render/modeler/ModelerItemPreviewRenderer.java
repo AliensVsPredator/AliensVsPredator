@@ -222,6 +222,10 @@ public final class ModelerItemPreviewRenderer {
      */
     private static void syncShimBone(ModelerItemSession session, boolean wallFixed) {
         var shim = session.gizmoShimBone;
+        // Active slot: the preview context wins over the inspector's editingContext when previewing. Without this, a
+        // drag on the "Third Person Right Hand" preview writes to the GUI slot (editingContext's default) and the
+        // rendered item never moves.
+        var activeContext = session.activeContext();
         var drag = ModelerGizmoState.drag();
         boolean dragTargetsShim = drag != null && drag.isBoneDrag() && drag.startSnapshot() != null && drag.startSnapshot().bone() == shim;
         if (dragTargetsShim) {
@@ -236,13 +240,13 @@ public final class ModelerItemPreviewRenderer {
             if (wallFixed) {
                 BLibItemTransformOverrides.setWallFixed(session.itemId, session.mode, updated);
             } else {
-                BLibItemTransformOverrides.set(session.itemId, session.mode, session.editingContext, updated);
+                BLibItemTransformOverrides.set(session.itemId, session.mode, activeContext, updated);
             }
             return;
         }
         var current = wallFixed
             ? BLibItemTransformOverrides.getEffectiveWallFixed(session.itemId, session.mode)
-            : BLibItemTransformOverrides.getEffective(session.itemId, session.mode, session.editingContext);
+            : BLibItemTransformOverrides.getEffective(session.itemId, session.mode, activeContext);
         shim.position = new Vec3(current.translation().x, current.translation().y, current.translation().z);
         shim.rotation = new Vec3(current.rotation().x, current.rotation().y, current.rotation().z);
         shim.scale = new Vec3(current.scale().x, current.scale().y, current.scale().z);

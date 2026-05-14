@@ -1,10 +1,12 @@
 package com.blib.api.client.render.v1.item;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.world.item.ItemDisplayContext;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.EnumMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.blib.api.client.render.v1.BLibTransform;
@@ -15,6 +17,17 @@ import com.blib.api.client.render.v1.BLibTransform;
  * entity, head slot, etc.). Lookup falls back to {@link BLibTransform#IDENTITY} when a context isn't configured.
  */
 public class BLibItemTransforms {
+
+    /**
+     * JSON shape matches the vanilla item-model {@code display} block (snake-case keys like
+     * {@code thirdperson_righthand} — sourced from {@link ItemDisplayContext#getSerializedName()}). The
+     * {@code fixed_wall} key is a BLib extension that routes to {@link #fixedWall}. Empty maps decode to a
+     * builder-default (identity) transform set.
+     */
+    public static final Codec<BLibItemTransforms> CODEC = Codec.unboundedMap(Codec.STRING, BLibTransform.CODEC)
+        .xmap(BLibItemTransforms::fromSerializedMap, BLibItemTransforms::toSerializedMap);
+
+    private static final String FIXED_WALL_KEY = "fixed_wall";
 
     private final Map<ItemDisplayContext, BLibTransform> transforms;
 
@@ -54,6 +67,55 @@ public class BLibItemTransforms {
      */
     public @Nullable BLibTransform getFixedWallOrNull() {
         return fixedWall;
+    }
+
+    /**
+     * Decode a vanilla-style display-block map (keys = {@link ItemDisplayContext#getSerializedName()} plus the BLib
+     * {@code fixed_wall} extension) into a {@link BLibItemTransforms}. Unknown keys are ignored — vanilla's display
+     * block is small but stable, and silently skipping unrecognized perspectives keeps forward compatibility cheap.
+     */
+    private static BLibItemTransforms fromSerializedMap(Map<String, BLibTransform> map) {
+        var builder = builder();
+
+        for (var entry : map.entrySet()) {
+            var key = entry.getKey();
+            var transform = entry.getValue();
+
+            if (FIXED_WALL_KEY.equals(key)) {
+                builder.fixedWall(transform);
+                continue;
+            }
+
+            for (var ctx : ItemDisplayContext.values()) {
+                if (ctx.getSerializedName().equals(key)) {
+                    builder.set(ctx, transform);
+                    break;
+                }
+            }
+        }
+
+        return builder.build();
+    }
+
+    /**
+     * Inverse of {@link #fromSerializedMap}. Emits one entry per context with a non-null transform, plus optional wall.
+     */
+    private static Map<String, BLibTransform> toSerializedMap(BLibItemTransforms transforms) {
+        var out = new LinkedHashMap<String, BLibTransform>();
+
+        for (var ctx : ItemDisplayContext.values()) {
+            var t = transforms.getOrNull(ctx);
+
+            if (t != null) {
+                out.put(ctx.getSerializedName(), t);
+            }
+        }
+
+        if (transforms.fixedWall != null) {
+            out.put(FIXED_WALL_KEY, transforms.fixedWall);
+        }
+
+        return out;
     }
 
     public static Builder builder() {

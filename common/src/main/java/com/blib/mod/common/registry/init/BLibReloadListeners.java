@@ -14,6 +14,7 @@ import com.blib.api.common.registry.v1.impl.BLibReloadListenerRegistry;
 import com.blib.internal.client.animation.cache.AzBakedAnimationCache;
 import com.blib.internal.client.dismemberment.LimbVisualsLoader;
 import com.blib.internal.client.model.AzBakedModelCache;
+import com.blib.internal.client.render.item.config.BLibItemRendererConfigLoader;
 import com.blib.internal.common.dismemberment.LimbDefinitionDataLoader;
 import com.blib.mod.BLib;
 
@@ -29,6 +30,7 @@ public class BLibReloadListeners {
         // server when the listener constructor is invoked at mod init.
         if (BLibAPI.getDistributionType() == DistributionEnvironmentType.CLIENT) {
             REGISTRY.register("blib_limb_visuals", new LimbVisualsLoader(), PackType.CLIENT_RESOURCES);
+            REGISTRY.register("blib_item_renderers", new BLibItemRendererConfigLoader(), PackType.CLIENT_RESOURCES);
         }
     }
 

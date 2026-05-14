@@ -3,6 +3,8 @@ package com.blib.mod.common.network;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -137,6 +139,7 @@ import com.blib.mod.common.network.packet.C2SUndoActionPayload;
 import com.blib.mod.common.network.packet.C2SUpdateFactionFieldPayload;
 import com.blib.mod.common.network.packet.C2SUpdateJigsawBlockPayload;
 import com.blib.mod.common.network.packet.C2SUpdatePoolElementPayload;
+import com.blib.mod.common.network.packet.C2SWriteItemRendererConfigPayload;
 import com.blib.mod.common.network.packet.ProjectOp;
 import com.blib.mod.common.network.packet.S2CActionHistorySyncPayload;
 import com.blib.mod.common.network.packet.S2CCaptureListPayload;
@@ -1711,6 +1714,46 @@ public final class BLibServerListener {
      * refreshed {@link S2CTagCatalogPayload} (so the browser shows the new tag) and an {@link S2CTagDraftPayload} (so a
      * client that just opened the editor finds it populated).
      */
+    /**
+     * Client → server: write an inspector-edited item-renderer config to the project's resource pack. Op-gated; treats
+     * the body as opaque JSON (the client serializes via its Codec) and just persists the bytes. The new file lands at
+     * {@code <project>/resourcepack/assets/<configId.namespace>/blib/item_renderers/<configId.path>.json}. Clients pick
+     * up the change on the next "Reload Project" — the write itself doesn't reload because gizmo drags emit one write
+     * per commit and we don't want each one to trigger a heavyweight resource-pack reload.
+     */
+    public static void handleWriteItemRendererConfig(C2SWriteItemRendererConfigPayload payload, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        if (!serverPlayer.hasPermissions(2)) {
+            return;
+        }
+        if (ProjectDraftStore.INSTANCE.isReloading()) {
+            return;
+        }
+        if (!validProjectFor(payload.projectName())) {
+            return;
+        }
+        try {
+            var json = JsonParser.parseString(payload.json());
+            EngineProjectIO.writeItemRendererConfigJson(payload.projectName(), payload.configId(), json);
+        } catch (JsonParseException e) {
+            LOGGER.warn(
+                "[BLib] handleWriteItemRendererConfig: refusing to write malformed JSON for {} (project '{}'): {}",
+                payload.configId(),
+                payload.projectName(),
+                e.getMessage()
+            );
+        } catch (IOException e) {
+            LOGGER.warn(
+                "[BLib] handleWriteItemRendererConfig: write failed for {} (project '{}')",
+                payload.configId(),
+                payload.projectName(),
+                e
+            );
+        }
+    }
+
     public static void handleCreateTag(C2SCreateTagPayload payload, Player player) {
         if (!(player instanceof ServerPlayer serverPlayer)) {
             return;

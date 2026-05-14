@@ -5,6 +5,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 import com.blib.api.client.render.v1.BLibTransform;
 import com.blib.api.client.render.v1.item.BLibItemTransformMode;
@@ -12,13 +13,17 @@ import com.blib.api.client.render.v1.item.BLibItemTransforms;
 
 /**
  * {@link BLibItemTransforms} variant whose {@link #get} consults {@link BLibItemTransformOverrides} before falling back
- * to the wrapped base transforms — letting the {@code /blib transform-tune} command live-tweak per-context values for a
- * specific item without restarting the game.
+ * to the wrapped base — letting the {@code /blib transform-tune} command and the modeler inspector live-tweak
+ * per-context values without restarting the game.
  * <p>
- * Wrap your renderer's idle and blocking transform constants with {@link #wrap} during development, run the tuner
- * command to dial in pose values, then dump the final values via the command and paste them back into the base
- * constants. Once tuned, you can leave the wrapping in place (overrides default to no-op) or strip it back to the base
- * {@link BLibItemTransforms} for a tighter production setup.
+ * Two construction modes:
+ * <ul>
+ * <li>{@link #wrap} — wraps a fixed {@link BLibItemTransforms} snapshot. Used for Java-built configs where the base is
+ * a compiled constant.</li>
+ * <li>{@link #wrapDynamic} — wraps a {@link Supplier} that resolves the base every read. Used for asset-backed configs
+ * where the base lives in {@code BLibItemRendererConfigs} and changes on every resource-pack reload — the supplier
+ * lookup ensures reads always see the most recently loaded transforms.</li>
+ * </ul>
  */
 public class BLibTunableItemTransforms extends BLibItemTransforms {
 
@@ -26,18 +31,33 @@ public class BLibTunableItemTransforms extends BLibItemTransforms {
 
     private final BLibItemTransformMode mode;
 
-    private final BLibItemTransforms base;
+    private final Supplier<BLibItemTransforms> baseSupplier;
 
-    private BLibTunableItemTransforms(ResourceLocation itemId, BLibItemTransformMode mode, BLibItemTransforms base) {
+    private BLibTunableItemTransforms(ResourceLocation itemId, BLibItemTransformMode mode, Supplier<BLibItemTransforms> baseSupplier) {
         super(Map.of());
         this.itemId = itemId;
         this.mode = mode;
-        this.base = base;
+        this.baseSupplier = baseSupplier;
     }
 
     public static BLibTunableItemTransforms wrap(ResourceLocation itemId, BLibItemTransformMode mode, BLibItemTransforms base) {
-        BLibItemTransformOverrides.registerBase(itemId, mode, base);
-        return new BLibTunableItemTransforms(itemId, mode, base);
+        Supplier<BLibItemTransforms> supplier = () -> base;
+        BLibItemTransformOverrides.registerBase(itemId, mode, supplier);
+        return new BLibTunableItemTransforms(itemId, mode, supplier);
+    }
+
+    /**
+     * For asset-backed configs: the base is resolved from {@code BLibItemRendererConfigs} (or any other live source) on
+     * every read. Reloads of the underlying asset propagate without re-creating the wrap or the renderer. Supplier may
+     * legitimately return {@code null} when the asset isn't loaded yet — readers treat that as IDENTITY.
+     */
+    public static BLibTunableItemTransforms wrapDynamic(
+        ResourceLocation itemId,
+        BLibItemTransformMode mode,
+        Supplier<BLibItemTransforms> baseSupplier
+    ) {
+        BLibItemTransformOverrides.registerBase(itemId, mode, baseSupplier);
+        return new BLibTunableItemTransforms(itemId, mode, baseSupplier);
     }
 
     public ResourceLocation itemId() {
@@ -48,8 +68,8 @@ public class BLibTunableItemTransforms extends BLibItemTransforms {
         return mode;
     }
 
-    public BLibItemTransforms base() {
-        return base;
+    public @Nullable BLibItemTransforms base() {
+        return baseSupplier.get();
     }
 
     @Override
@@ -58,6 +78,12 @@ public class BLibTunableItemTransforms extends BLibItemTransforms {
 
         if (override != null) {
             return override;
+        }
+
+        var base = baseSupplier.get();
+
+        if (base == null) {
+            return BLibTransform.IDENTITY;
         }
 
         return base.get(context);
@@ -71,6 +97,12 @@ public class BLibTunableItemTransforms extends BLibItemTransforms {
             return override;
         }
 
+        var base = baseSupplier.get();
+
+        if (base == null) {
+            return null;
+        }
+
         return base.getOrNull(context);
     }
 
@@ -80,6 +112,12 @@ public class BLibTunableItemTransforms extends BLibItemTransforms {
 
         if (override != null) {
             return override;
+        }
+
+        var base = baseSupplier.get();
+
+        if (base == null) {
+            return null;
         }
 
         return base.getFixedWallOrNull();

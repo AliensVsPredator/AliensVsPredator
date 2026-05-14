@@ -62,6 +62,7 @@
     "posteffect.MixinModelPart_PerBoneLight",
     "posteffect.MixinRenderTarget_MRT",
     "posteffect.MixinShaderInstance_GbufferUniforms",
+    "MixinMinecraft_ProjectResourcePackSource",
     "MixinModelPart_Accessor",
     "MixinLivingEntity_ForceBlocking",
     "MixinQuadrupedModel_Accessor"

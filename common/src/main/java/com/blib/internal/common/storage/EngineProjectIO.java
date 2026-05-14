@@ -76,6 +76,14 @@ public final class EngineProjectIO {
     /** Subdirectory inside a project that holds the vanilla datapack tree. */
     public static final String DATAPACK_SUBDIR = "datapack";
 
+    /**
+     * Subdirectory inside a project that holds the vanilla resource-pack tree (client-side counterpart to
+     * {@link #DATAPACK_SUBDIR}). Populated by inspector auto-save — currently item-renderer transform JSON, future
+     * client-side authored assets — and mounted via
+     * {@link com.blib.internal.client.storage.BLibProjectResourcePackSource}.
+     */
+    public static final String RESOURCEPACK_SUBDIR = "resourcepack";
+
     /** Subdirectory inside a project that holds user-triggered NBT block captures. */
     public static final String CAPTURES_SUBDIR = "captures";
 
@@ -111,6 +119,11 @@ public final class EngineProjectIO {
     /** {@code <gameDir>/blib/projects/<name>/datapack/}. The datapack vanilla actually loads. */
     public static Path datapackRoot(String name) {
         return projectRoot(name).resolve(DATAPACK_SUBDIR);
+    }
+
+    /** {@code <gameDir>/blib/projects/<name>/resourcepack/}. The resource pack vanilla actually loads (client-side). */
+    public static Path resourcepackRoot(String name) {
+        return projectRoot(name).resolve(RESOURCEPACK_SUBDIR);
     }
 
     /** {@code <gameDir>/blib/projects/<name>/captures/}. Future block-snapshot storage. */
@@ -197,8 +210,11 @@ public final class EngineProjectIO {
         Files.createDirectories(projectRoot);
         var datapackRoot = projectRoot.resolve(DATAPACK_SUBDIR);
         Files.createDirectories(datapackRoot);
+        var resourcepackRoot = projectRoot.resolve(RESOURCEPACK_SUBDIR);
+        Files.createDirectories(resourcepackRoot);
         Files.createDirectories(projectRoot.resolve(CAPTURES_SUBDIR));
-        writePackMcmeta(datapackRoot, description);
+        writePackMcmeta(datapackRoot, description, PackType.SERVER_DATA);
+        writePackMcmeta(resourcepackRoot, description, PackType.CLIENT_RESOURCES);
         var info = new ProjectInfo(
             name,
             description == null ? "" : description,
@@ -277,6 +293,51 @@ public final class EngineProjectIO {
         Files.createDirectories(filePath.getParent());
         Files.writeString(filePath, GSON.toJson(json));
         return filePath;
+    }
+
+    /**
+     * Generic asset-tree write — the resource-pack counterpart to {@link #writeDataJson}. {@code relPath} is the
+     * pack-relative path (e.g. {@code assets/<ns>/blib/item_renderers/<path>.json}); the file lands at
+     * {@code <project>/resourcepack/<relPath>}. Lazily creates the {@code resourcepack/} subdir and writes a
+     * {@code pack.mcmeta} for projects that pre-date the resource-pack feature, so existing projects light up the
+     * moment the first asset is written without needing an explicit migration step.
+     */
+    public static Path writeAssetJson(String projectName, String relPath, JsonElement json) throws IOException {
+        var projectRoot = projectRoot(projectName);
+
+        if (!isBLibProject(projectRoot)) {
+            throw new IOException("Project '" + projectName + "' does not exist");
+        }
+
+        var resourcepackRoot = projectRoot.resolve(RESOURCEPACK_SUBDIR);
+
+        if (!Files.isRegularFile(resourcepackRoot.resolve("pack.mcmeta"))) {
+            // First write into a pre-existing project that doesn't have a resourcepack/ subdir yet.
+            Files.createDirectories(resourcepackRoot);
+
+            try {
+                var info = ProjectInfo.readMarker(projectRoot);
+                writePackMcmeta(resourcepackRoot, info.description(), PackType.CLIENT_RESOURCES);
+            } catch (IOException e) {
+                // Marker read failure shouldn't block the write — fall back to a generic description.
+                writePackMcmeta(resourcepackRoot, "BLib engine project", PackType.CLIENT_RESOURCES);
+            }
+        }
+
+        var filePath = resourcepackRoot.resolve(relPath);
+        Files.createDirectories(filePath.getParent());
+        Files.writeString(filePath, GSON.toJson(json));
+        return filePath;
+    }
+
+    /**
+     * Convenience wrapper around {@link #writeAssetJson} for item-renderer configs. {@code configId} maps to the
+     * {@code assets/<ns>/blib/item_renderers/<path>.json} layout
+     * {@link com.blib.internal.client.render.item.config.BLibItemRendererConfigLoader} scans.
+     */
+    public static Path writeItemRendererConfigJson(String projectName, ResourceLocation configId, JsonElement json) throws IOException {
+        var relPath = "assets/" + configId.getNamespace() + "/blib/item_renderers/" + configId.getPath() + ".json";
+        return writeAssetJson(projectName, relPath, json);
     }
 
     /**
@@ -667,8 +728,8 @@ public final class EngineProjectIO {
         return "data/" + poolId.getNamespace() + "/worldgen/template_pool/" + poolId.getPath() + ".json";
     }
 
-    private static void writePackMcmeta(Path datapackRoot, String description) throws IOException {
-        var packFormat = SharedConstants.getCurrentVersion().getPackVersion(PackType.SERVER_DATA);
+    private static void writePackMcmeta(Path packRoot, String description, PackType packType) throws IOException {
+        var packFormat = SharedConstants.getCurrentVersion().getPackVersion(packType);
         var safeDescription = description == null || description.isEmpty()
             ? "BLib engine project"
             : description.replace("\"", "'");
@@ -680,7 +741,7 @@ public final class EngineProjectIO {
               }
             }
             """.formatted(packFormat, safeDescription);
-        Files.writeString(datapackRoot.resolve("pack.mcmeta"), content);
+        Files.writeString(packRoot.resolve("pack.mcmeta"), content);
     }
 
     /**

@@ -1,11 +1,13 @@
 package com.blib.mod.common.network;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -34,6 +36,7 @@ import com.blib.internal.client.faction.ClientFactionDirectoryCache;
 import com.blib.internal.client.faction.ClientFactionInspectionCache;
 import com.blib.internal.client.faction.ClientFactionMembersCache;
 import com.blib.internal.client.territory.ClientTerritoryCache;
+import com.blib.internal.common.storage.EngineProjectIO;
 import com.blib.mod.BLib;
 import com.blib.mod.client.render.debug.PathfindingNavDebugHUD;
 import com.blib.mod.client.render.debug.PathfindingSearchDebugRenderer;
@@ -175,6 +178,33 @@ public final class BLibClientListener {
         if (op == ProjectOp.RELOAD && payload.success()) {
             ProjectDraftCache.clear();
             TagDraftCache.clear();
+            // Server-side reload only refreshes the data pack — the client's resource pack (where the engine writes
+            // item-renderer configs and other client assets) needs its own reload to pick up files that landed under
+            // <project>/resourcepack/. Mirrors the datapack pipeline in EngineProjectIO.reloadProject: rescan the
+            // repo, ensure the project pack id is in the selected list, then trigger a full reload. Scheduled on the
+            // render thread; reloadResourcePacks and setSelected are not safe from the network thread.
+            Minecraft.getInstance().execute(() -> {
+                var mc = Minecraft.getInstance();
+                var packRepo = mc.getResourcePackRepository();
+                var packId = EngineProjectIO.PACK_ID_PREFIX + payload.projectName();
+
+                // Rescan first so a pack whose resourcepack/ subdir was created lazily on first auto-save (see
+                // EngineProjectIO.writeAssetJson) becomes visible to the setSelected call below.
+                packRepo.reload();
+
+                if (packRepo.getAvailableIds().contains(packId)) {
+                    var selected = new ArrayList<>(packRepo.getSelectedIds());
+
+                    if (!selected.contains(packId)) {
+                        // Append: lowest priority, same as the datapack side. Other resource packs (mods, vanilla)
+                        // continue to override entries the project pack hasn't redefined.
+                        selected.add(packId);
+                        packRepo.setSelected(selected);
+                    }
+                }
+
+                mc.reloadResourcePacks();
+            });
             // The inspector's tag-view drift-detect only re-fetches on (registryKey, tagId) changes, not on cache
             // invalidation — so without an explicit refetch here, the inspector renders blank for the currently-
             // selected tag until the user clicks a different tag and back. Kick a fresh request immediately so the
@@ -184,6 +214,23 @@ public final class BLibClientListener {
                 BLib.MOD.networking()
                     .sendToServer(new C2SRequestTagDraftPayload(ProjectSession.activeProjectName(), ts.registryKey(), ts.tagId()));
             }
+        }
+        // Deselect a deleted project's resource pack from the client repo before vanilla notices the files are gone.
+        // Mirrors EngineProjectIO.deleteProject which deselects the datapack server-side before deleting files;
+        // without this, a previously-Reload-selected project pack would linger in the selected list after deletion
+        // and the next reload would warn about a missing pack id.
+        if (op == ProjectOp.DELETE && payload.success()) {
+            Minecraft.getInstance().execute(() -> {
+                var mc = Minecraft.getInstance();
+                var packRepo = mc.getResourcePackRepository();
+                var packId = EngineProjectIO.PACK_ID_PREFIX + payload.projectName();
+                var selected = new ArrayList<>(packRepo.getSelectedIds());
+
+                if (selected.remove(packId)) {
+                    packRepo.setSelected(selected);
+                    mc.reloadResourcePacks();
+                }
+            });
         }
         // CAPTURE results go to BlockSelection so the Capture Panel can pick them up next render — the picker's
         // callback channel is for project create/delete/open/reload, and the panel is its own consumer. Wrap the

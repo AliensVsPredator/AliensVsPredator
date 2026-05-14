@@ -1,33 +1,38 @@
 package com.blib.engine.ui.panel.details;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import com.blib.api.client.registry.v1.AzItemRendererRegistry;
 import com.blib.api.client.render.v1.BLibTransform;
+import com.blib.api.client.render.v1.item.BLibGeoBoneItemRenderer;
 import com.blib.api.client.render.v1.item.BLibItemTransformMode;
+import com.blib.api.client.render.v1.item.BLibItemTransforms;
 import com.blib.engine.gizmo.BLibItemTransformOverrides;
 import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.history.ModelerAction;
 import com.blib.engine.modeler.history.ModelerActionHistory;
-import com.blib.engine.modeler.item.ItemTransformDump;
 import com.blib.engine.modeler.item.ModelerItemSession;
+import com.blib.engine.session.ProjectSession;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.widget.SearchableSelect;
 import com.blib.engine.ui.widget.TextInput;
+import com.blib.mod.BLib;
+import com.blib.mod.common.network.packet.C2SWriteItemRendererConfigPayload;
 
 /**
  * Inspector section for editing the per-pose item display transforms of the currently-attached
@@ -44,15 +49,17 @@ import com.blib.engine.ui.widget.TextInput;
  * <li>Wall toggle (only when context is FIXED) — switches the edit target to the wall-fixed slot.</li>
  * <li>Translation / Rotation / Scale / Pivot — four vec3 sections matching
  * {@link ModelerInspectorPanel#renderVecSection}'s style.</li>
- * <li>Dump button — invokes {@link ItemTransformDump#dump} so users can paste finalized values back into their
- * renderer's base constants.</li>
  * <li>Pivot Visualization checkbox — toggles the wireframe-pivot overlay the geo-bone item renderer draws.</li>
  * </ul>
+ * Auto-save: on every commit, if the selected item is asset-backed (registered via
+ * {@code BLibClientRegistryAccess#registerGeoBoneItemRendererFromAsset}), the full effective config is serialized and
+ * sent to the server via {@link C2SWriteItemRendererConfigPayload}, which writes it into the active project's resource
+ * pack. The user picks up the new bytes by clicking "Reload Project" in the engine menu — that triggers both server-
+ * data and client-resource reloads. Java-backed items have no auto-save target and silently no-op; the inspector shows
+ * a small notice when one is selected.
  */
 @ApiStatus.Internal
 public final class ModelerItemConfigSection {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ModelerItemConfigSection.class);
 
     private static final int SECTION_HEADER_BG_COLOR = 0xFF26262C;
 
@@ -144,10 +151,6 @@ public final class ModelerItemConfigSection {
 
     private boolean wallToggleVisible;
 
-    private int dumpX, dumpY, dumpW, dumpH;
-
-    private boolean dumpVisible;
-
     private int pivotVizX, pivotVizY, pivotVizW, pivotVizH;
 
     public ModelerItemConfigSection() {
@@ -195,7 +198,6 @@ public final class ModelerItemConfigSection {
     public int render(GuiGraphics graphics, int x, int y, int width, int mouseX, int mouseY) {
         visibleInputs.clear();
         wallToggleVisible = false;
-        dumpVisible = false;
 
         var font = EngineFont.get();
         var scene = ModelerScene.get();
@@ -293,17 +295,10 @@ public final class ModelerItemConfigSection {
         rowY = renderVecSection(graphics, font, x, rowY, width, "Scale", sxInput, syInput, szInput, mouseX, mouseY);
         rowY = renderVecSection(graphics, font, x, rowY, width, "Pivot", pxInput, pyInput, pzInput, mouseX, mouseY);
 
-        // Dump + pivot-viz row.
-        dumpVisible = true;
-        dumpX = pickerX;
-        dumpY = rowY;
-        dumpW = (pickerW - INPUT_GAP) / 2;
-        dumpH = BUTTON_HEIGHT;
-        drawButton(graphics, font, dumpX, dumpY, dumpW, dumpH, "Dump as Java", mouseX, mouseY);
-
-        pivotVizX = pickerX + dumpW + INPUT_GAP;
+        // Pivot-viz row.
+        pivotVizX = pickerX;
         pivotVizY = rowY;
-        pivotVizW = pickerW - dumpW - INPUT_GAP;
+        pivotVizW = pickerW;
         pivotVizH = BUTTON_HEIGHT;
         drawCheckboxRow(
             graphics,
@@ -317,6 +312,21 @@ public final class ModelerItemConfigSection {
             mouseY
         );
         rowY += BUTTON_HEIGHT + ROW_GAP;
+
+        // Read-only notice for Java-backed items: their transforms live in code, so auto-save has nowhere to go. The
+        // inputs still let the user nudge values in-memory (good for one-off tuning), but the bytes can't be persisted
+        // until the renderer is migrated to registerGeoBoneItemRendererFromAsset.
+        if (assetConfigIdFor(session.itemId) == null) {
+            graphics.drawString(
+                font,
+                Component.literal("Configured in Java — edits are session-only."),
+                pickerX,
+                rowY,
+                LABEL_COLOR,
+                false
+            );
+            rowY += font.lineHeight + ROW_GAP;
+        }
 
         visibleInputs.add(txInput);
         visibleInputs.add(tyInput);
@@ -356,11 +366,7 @@ public final class ModelerItemConfigSection {
                 session.wallFixedActive = !session.wallFixedActive;
                 return true;
             }
-            if (dumpVisible && insideRect(mouseX, mouseY, dumpX, dumpY, dumpW, dumpH)) {
-                doDump(session.itemId);
-                return true;
-            }
-            if (dumpVisible && insideRect(mouseX, mouseY, pivotVizX, pivotVizY, pivotVizW, pivotVizH)) {
+            if (insideRect(mouseX, mouseY, pivotVizX, pivotVizY, pivotVizW, pivotVizH)) {
                 BLibItemTransformOverrides.setPivotVisualizationEnabled(!BLibItemTransformOverrides.isPivotVisualizationEnabled());
                 return true;
             }
@@ -395,17 +401,124 @@ public final class ModelerItemConfigSection {
         }
     }
 
-    private void doDump(ResourceLocation itemId) {
-        try {
-            var path = ItemTransformDump.dump(itemId);
-            if (path == null) {
-                LOGGER.info("ModelerItemConfigSection: no transforms to dump for {}", itemId);
-            } else {
-                LOGGER.info("ModelerItemConfigSection: dumped {} to {}", itemId, path);
-            }
-        } catch (IOException e) {
-            LOGGER.warn("ModelerItemConfigSection: dump failed for {}: {}", itemId, e.getMessage());
+    /**
+     * Resolve the asset-backed config id for {@code itemId}, or null when the item isn't asset-backed (Java
+     * registration). Used both by auto-save (to pick a write target) and by the inspector's read-only notice (to decide
+     * whether to show it).
+     */
+    private static @Nullable ResourceLocation assetConfigIdFor(ResourceLocation itemId) {
+        var item = BuiltInRegistries.ITEM.get(itemId);
+
+        if (item == null) {
+            return null;
         }
+
+        var renderer = AzItemRendererRegistry.getOrNull(item);
+
+        if (!(renderer instanceof BLibGeoBoneItemRenderer geoRenderer)) {
+            return null;
+        }
+
+        return geoRenderer.geoBoneItemConfig().assetConfigId();
+    }
+
+    /**
+     * Fire after each commit: if the selected item is asset-backed and an engine project is active, serialize the full
+     * current config (model/texture/bone from the live registry, idle+blocking transforms from the override registry)
+     * and ship it to the server via {@link C2SWriteItemRendererConfigPayload}. The bytes land in
+     * {@code <project>/resourcepack/assets/<ns>/blib/item_renderers/<id>.json}; the user picks them up on the next
+     * "Reload Project" action.
+     */
+    private void triggerAutoSave(ResourceLocation itemId) {
+        var configId = assetConfigIdFor(itemId);
+
+        if (configId == null) {
+            return;
+        }
+
+        var projectName = ProjectSession.activeProjectName();
+
+        if (projectName == null || projectName.isEmpty()) {
+            return;
+        }
+
+        var item = BuiltInRegistries.ITEM.get(itemId);
+
+        if (item == null) {
+            return;
+        }
+
+        var renderer = AzItemRendererRegistry.getOrNull(item);
+
+        if (!(renderer instanceof BLibGeoBoneItemRenderer geoRenderer)) {
+            return;
+        }
+
+        var config = geoRenderer.geoBoneItemConfig();
+        var idleTransforms = buildEffectiveTransforms(itemId, BLibItemTransformMode.IDLE);
+        var blockingTransforms = buildEffectiveTransforms(itemId, BLibItemTransformMode.BLOCKING);
+
+        // Build a RawItemRendererConfig payload via the inner JSON shape — we don't use the codec on
+        // RawItemRendererConfig directly because that class lives in internal/. Compose the JSON manually instead
+        // so the inspector doesn't need to import internals.
+        var jsonObject = new JsonObject();
+        jsonObject.addProperty("model", config.geoModel().toString());
+        jsonObject.addProperty("texture", config.texture().toString());
+        jsonObject.addProperty("bone", config.boneName());
+        var transformsObj = new JsonObject();
+
+        if (hasAnyEntry(idleTransforms)) {
+            transformsObj.add("idle", encodeTransforms(idleTransforms));
+        }
+
+        if (hasAnyEntry(blockingTransforms)) {
+            transformsObj.add("blocking", encodeTransforms(blockingTransforms));
+        }
+
+        jsonObject.add("transforms", transformsObj);
+
+        var jsonString = jsonObject.toString();
+        BLib.MOD.networking().sendToServer(new C2SWriteItemRendererConfigPayload(projectName, configId, jsonString));
+    }
+
+    /**
+     * Build a {@link BLibItemTransforms} containing only the entries that are actually authored — either via an
+     * override (recent edit) or via the asset-backed base (already-persisted value). Empty entries are omitted so the
+     * serialized JSON doesn't pin perspectives to identity that weren't explicitly set.
+     */
+    private static BLibItemTransforms buildEffectiveTransforms(ResourceLocation itemId, BLibItemTransformMode mode) {
+        var builder = BLibItemTransforms.builder();
+
+        for (var ctx : EDITABLE_CONTEXTS) {
+            var t = BLibItemTransformOverrides.getModeValueOrNull(itemId, mode, ctx);
+
+            if (t != null) {
+                builder.set(ctx, t);
+            }
+        }
+
+        var wall = BLibItemTransformOverrides.getWallEffectiveOrNull(itemId, mode);
+
+        if (wall != null) {
+            builder.fixedWall(wall);
+        }
+
+        return builder.build();
+    }
+
+    private static JsonElement encodeTransforms(BLibItemTransforms transforms) {
+        var result = BLibItemTransforms.CODEC.encodeStart(JsonOps.INSTANCE, transforms);
+        return result.result().orElse(new JsonObject());
+    }
+
+    private static boolean hasAnyEntry(BLibItemTransforms transforms) {
+        for (var ctx : EDITABLE_CONTEXTS) {
+            if (transforms.getOrNull(ctx) != null) {
+                return true;
+            }
+        }
+
+        return transforms.getFixedWallOrNull() != null;
     }
 
     private static BLibTransform readEffective(ModelerItemSession session) {
@@ -484,6 +597,7 @@ public final class ModelerItemConfigSection {
                     after
                 )
             );
+            triggerAutoSave(session.itemId);
         }
     }
 
@@ -572,31 +686,6 @@ public final class ModelerItemConfigSection {
             Component.literal(label),
             x + (width - labelWidth) / 2,
             y + (BUTTON_HEIGHT - font.lineHeight + 2) / 2,
-            BUTTON_TEXT,
-            false
-        );
-    }
-
-    private static void drawButton(
-        GuiGraphics graphics,
-        Font font,
-        int x,
-        int y,
-        int width,
-        int height,
-        String label,
-        int mouseX,
-        int mouseY
-    ) {
-        var hovered = mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
-        graphics.fill(x, y, x + width, y + height, hovered ? BUTTON_HOVER_BG : BUTTON_BG);
-        drawBorder(graphics, x, y, width, height);
-        var labelWidth = font.width(label);
-        graphics.drawString(
-            font,
-            Component.literal(label),
-            x + (width - labelWidth) / 2,
-            y + (height - font.lineHeight + 2) / 2,
             BUTTON_TEXT,
             false
         );

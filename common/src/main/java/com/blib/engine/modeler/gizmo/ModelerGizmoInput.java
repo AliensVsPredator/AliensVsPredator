@@ -216,6 +216,14 @@ public final class ModelerGizmoInput {
     }
 
     private static HandleHit pickFaceHandle(ModelerGizmoState.RenderSnapshot snapshot, double cx, double cy, int w, int h) {
+        if (snapshot.cube() == null) {
+            // RESIZE picks against per-face handles whose geometry is computed from cube origin/size/pivot. When the
+            // last render was a bone target (item-transform shim, etc.) the snapshot has bone != null and cube == null;
+            // there are no faces to pick. This is reachable because updateHover runs at the start of a frame and reads
+            // the snapshot from the *previous* frame — if the mode changes to RESIZE between frames while a bone is
+            // selected, the previous frame's bone-snapshot is the one being picked against.
+            return null;
+        }
         int bestAxis = -1;
         int bestSign = 1;
         float bestDist = RESIZE_PICK_THRESHOLD_PX;

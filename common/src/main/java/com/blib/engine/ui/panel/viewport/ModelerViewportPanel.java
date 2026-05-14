@@ -315,16 +315,18 @@ public final class ModelerViewportPanel implements Panel {
                         // with the override on entry, so the shim's drag-start fields ARE the before-transform.
                         var session = ModelerScene.get().itemSession;
                         if (session != null && startBone == session.gizmoShimBone) {
-                            var wall = session.wallFixedActive
-                                && session.editingContext == net.minecraft.world.item.ItemDisplayContext.FIXED;
+                            // Match what syncShimBone writes to — preview context wins over editingContext when in
+                            // preview mode, so the undo memento records the slot that actually gets mutated.
+                            var activeContext = session.activeContext();
+                            var wall = session.activeWallFixed();
                             var current = wall
                                 ? com.blib.engine.gizmo.BLibItemTransformOverrides.getEffectiveWallFixed(session.itemId, session.mode)
                                 : com.blib.engine.gizmo.BLibItemTransformOverrides
-                                    .getEffective(session.itemId, session.mode, session.editingContext);
+                                    .getEffective(session.itemId, session.mode, activeContext);
                             gizmoDragItemBefore = ModelerAction.ItemTransformMemento.of(current);
                             gizmoDragItemId = session.itemId;
                             gizmoDragItemMode = session.mode;
-                            gizmoDragItemContext = session.editingContext;
+                            gizmoDragItemContext = activeContext;
                             gizmoDragItemWallFixed = wall;
                         } else {
                             gizmoDragBoneTarget = startBone;

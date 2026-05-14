@@ -8,6 +8,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import com.blib.api.client.render.v1.BLibTransform;
 import com.blib.api.client.render.v1.item.BLibItemTransformMode;
@@ -36,7 +37,18 @@ public final class BLibItemTransformOverrides {
      */
     private static final Map<ResourceLocation, EnumMap<BLibItemTransformMode, BLibTransform>> WALL_FIXED_OVERRIDES = new HashMap<>();
 
-    private static final Map<ResourceLocation, EnumMap<BLibItemTransformMode, BLibItemTransforms>> BASES = new HashMap<>();
+    /**
+     * Per-(item, mode) supplier that resolves the current base transforms. For Java-backed configs this is a fixed
+     * supplier returning the constant {@link BLibItemTransforms} the user passed to
+     * {@link BLibTunableItemTransforms#wrap(ResourceLocation, BLibItemTransformMode, BLibItemTransforms)} — a snapshot
+     * that doesn't change at runtime. For asset-backed configs (registered via
+     * {@code BLibTunableItemTransforms#wrapDynamic}) the supplier queries the live {@code BLibItemRendererConfigs}
+     * registry so resource-pack reloads propagate into the tuner/inspector view without re-instantiating the renderer.
+     * Suppliers can return {@code null} when the asset isn't loaded yet — callers must treat that as "no base, fall
+     * through to identity."
+     */
+    private static final Map<ResourceLocation, EnumMap<BLibItemTransformMode, Supplier<BLibItemTransforms>>> BASES =
+        new HashMap<>();
 
     /**
      * When true, the geo-bone item renderer draws a small wireframe AABB and a colored axis tripod at the pivot
@@ -98,9 +110,9 @@ public final class BLibItemTransformOverrides {
     /**
      * Records the base transforms a {@link BLibTunableItemTransforms} wraps so the tuner command can read the current
      * effective value (override or base) for {@code nudge} operations. Called automatically by
-     * {@link BLibTunableItemTransforms#wrap}.
+     * {@link BLibTunableItemTransforms#wrap} (snapshot) and {@code wrapDynamic} (asset-backed supplier).
      */
-    public static void registerBase(ResourceLocation itemId, BLibItemTransformMode mode, BLibItemTransforms base) {
+    public static void registerBase(ResourceLocation itemId, BLibItemTransformMode mode, Supplier<BLibItemTransforms> base) {
         BASES.computeIfAbsent(itemId, $ -> new EnumMap<>(BLibItemTransformMode.class)).put(mode, base);
     }
 
@@ -126,7 +138,13 @@ public final class BLibItemTransformOverrides {
             return null;
         }
 
-        var base = modeBases.get(mode);
+        var baseSupplier = modeBases.get(mode);
+
+        if (baseSupplier == null) {
+            return null;
+        }
+
+        var base = baseSupplier.get();
 
         if (base == null) {
             return null;
@@ -193,6 +211,40 @@ public final class BLibItemTransformOverrides {
     }
 
     /**
+     * Effective wall-fixed transform — override if set, else base's wall slot, else {@code null}. Mirrors
+     * {@link #getModeValueOrNull} but for the wall slot. Used by the inspector's serializer so a write back to the
+     * project pack only emits a {@code fixed_wall} entry when one was actually authored (not whenever the cascading
+     * fallback would synthesize identity).
+     */
+    public static @Nullable BLibTransform getWallEffectiveOrNull(ResourceLocation itemId, BLibItemTransformMode mode) {
+        var override = getWallFixed(itemId, mode);
+
+        if (override != null) {
+            return override;
+        }
+
+        var modeBases = BASES.get(itemId);
+
+        if (modeBases == null) {
+            return null;
+        }
+
+        var baseSupplier = modeBases.get(mode);
+
+        if (baseSupplier == null) {
+            return null;
+        }
+
+        var base = baseSupplier.get();
+
+        if (base == null) {
+            return null;
+        }
+
+        return base.getFixedWallOrNull();
+    }
+
+    /**
      * Wall-fixed override for the given (item, mode), or {@code null} if no override has been set. Distinct from the
      * regular {@link #get} path because wall-fixed isn't context-keyed — there's only one wall pose per mode, so it
      * doesn't share the (item, mode, context) override map.
@@ -227,13 +279,17 @@ public final class BLibItemTransformOverrides {
         var modeBases = BASES.get(itemId);
 
         if (modeBases != null) {
-            var base = modeBases.get(mode);
+            var baseSupplier = modeBases.get(mode);
 
-            if (base != null) {
-                var wallBase = base.getFixedWallOrNull();
+            if (baseSupplier != null) {
+                var base = baseSupplier.get();
 
-                if (wallBase != null) {
-                    return wallBase;
+                if (base != null) {
+                    var wallBase = base.getFixedWallOrNull();
+
+                    if (wallBase != null) {
+                        return wallBase;
+                    }
                 }
             }
         }
