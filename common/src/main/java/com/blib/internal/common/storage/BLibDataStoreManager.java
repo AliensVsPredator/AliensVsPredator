@@ -7,6 +7,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.Collection;
 import java.util.function.BiConsumer;
 
 import com.blib.api.common.registry.v1.BLibHolder;
@@ -61,6 +62,10 @@ public class BLibDataStoreManager {
 
     public void saveChunkData(ServerLevel serverLevel, ChunkPos chunkPos) {
         chunk.saveChunk(serverLevel, chunkPos);
+    }
+
+    public void saveChunkData(ServerLevel serverLevel, Collection<ChunkPos> chunkPositions) {
+        chunk.saveChunks(serverLevel, chunkPositions);
     }
 
     public void onServerStopped(MinecraftServer minecraftServer) {

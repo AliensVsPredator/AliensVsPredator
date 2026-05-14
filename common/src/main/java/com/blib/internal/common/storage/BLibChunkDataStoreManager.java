@@ -146,6 +146,29 @@ class BLibChunkDataStoreManager {
         }
     }
 
+    void saveChunks(ServerLevel level, Iterable<ChunkPos> positions) {
+        var levelKey = level.dimension();
+        var levelChunkStores = stores.get(levelKey);
+
+        if (levelChunkStores == null || levelChunkStores.isEmpty()) {
+            return;
+        }
+
+        var byNamespaceAndRegion = new HashMap<String, Map<Long, Map<ChunkPos, Map<ResourceLocation, DataStore>>>>();
+
+        for (var pos : positions) {
+            var chunkStores = levelChunkStores.get(pos);
+
+            if (chunkStores == null || chunkStores.isEmpty()) {
+                continue;
+            }
+
+            addChunkStoresByNamespaceAndRegion(byNamespaceAndRegion, pos, chunkStores);
+        }
+
+        saveGroupedRegions(level, byNamespaceAndRegion);
+    }
+
     void saveAllForLevel(ServerLevel level) {
         var levelKey = level.dimension();
         var levelChunkStores = stores.get(levelKey);
@@ -161,21 +184,35 @@ class BLibChunkDataStoreManager {
         for (var chunkEntry : levelChunkStores.entrySet()) {
             var pos = chunkEntry.getKey();
             var chunkStores = chunkEntry.getValue();
-            var regionKey = getRegionKey(pos);
-
-            for (var storeEntry : chunkStores.entrySet()) {
-                var id = storeEntry.getKey();
-                var store = storeEntry.getValue();
-
-                byNamespaceAndRegion
-                    .computeIfAbsent(id.getNamespace(), k -> new HashMap<>())
-                    .computeIfAbsent(regionKey, k -> new HashMap<>())
-                    .computeIfAbsent(pos, k -> new HashMap<>())
-                    .put(id, store);
-            }
+            addChunkStoresByNamespaceAndRegion(byNamespaceAndRegion, pos, chunkStores);
         }
 
-        // Save each region
+        saveGroupedRegions(level, byNamespaceAndRegion);
+    }
+
+    private static void addChunkStoresByNamespaceAndRegion(
+        Map<String, Map<Long, Map<ChunkPos, Map<ResourceLocation, DataStore>>>> byNamespaceAndRegion,
+        ChunkPos pos,
+        Map<ResourceLocation, DataStore> chunkStores
+    ) {
+        var regionKey = getRegionKey(pos);
+
+        for (var storeEntry : chunkStores.entrySet()) {
+            var id = storeEntry.getKey();
+            var store = storeEntry.getValue();
+
+            byNamespaceAndRegion
+                .computeIfAbsent(id.getNamespace(), k -> new HashMap<>())
+                .computeIfAbsent(regionKey, k -> new HashMap<>())
+                .computeIfAbsent(pos, k -> new HashMap<>())
+                .put(id, store);
+        }
+    }
+
+    private void saveGroupedRegions(
+        ServerLevel level,
+        Map<String, Map<Long, Map<ChunkPos, Map<ResourceLocation, DataStore>>>> byNamespaceAndRegion
+    ) {
         for (var namespaceEntry : byNamespaceAndRegion.entrySet()) {
             var namespace = namespaceEntry.getKey();
 

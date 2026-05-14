@@ -34,10 +34,13 @@ public class BLibTerritoryManager {
 
     private final Map<ServerLevel, BLibTerritoryIndex> indexes;
 
+    private final Map<ServerLevel, Set<ChunkPos>> pendingClaimStoreSaves;
+
     private @Nullable MinecraftServer server;
 
     private BLibTerritoryManager() {
         this.indexes = new HashMap<>();
+        this.pendingClaimStoreSaves = new HashMap<>();
     }
 
     public void onServerStarted(MinecraftServer server) {
@@ -46,7 +49,9 @@ public class BLibTerritoryManager {
     }
 
     public void onServerStopped(MinecraftServer server) {
+        flushPendingClaimStoreSaves(server);
         indexes.clear();
+        pendingClaimStoreSaves.clear();
         this.server = null;
     }
 
@@ -79,7 +84,7 @@ public class BLibTerritoryManager {
         var changed = store.addClaim(factionId);
 
         if (changed) {
-            BLibDataStoreManager.INSTANCE.saveChunkData(level, pos);
+            markClaimStoreDirty(level, pos);
         }
 
         return changed;
@@ -95,7 +100,7 @@ public class BLibTerritoryManager {
         var changed = store.removeClaim(factionId);
 
         if (changed) {
-            BLibDataStoreManager.INSTANCE.saveChunkData(level, pos);
+            markClaimStoreDirty(level, pos);
         }
 
         return changed;
@@ -111,7 +116,7 @@ public class BLibTerritoryManager {
         var changed = store.transferClaim(from, to);
 
         if (changed) {
-            BLibDataStoreManager.INSTANCE.saveChunkData(level, pos);
+            markClaimStoreDirty(level, pos);
         }
 
         return changed;
@@ -335,6 +340,26 @@ public class BLibTerritoryManager {
         );
     }
 
+    public void flushPendingClaimStoreSaves(MinecraftServer server) {
+        if (pendingClaimStoreSaves.isEmpty()) {
+            return;
+        }
+
+        var pending = new HashMap<ServerLevel, Set<ChunkPos>>();
+
+        for (var entry : pendingClaimStoreSaves.entrySet()) {
+            pending.put(entry.getKey(), Set.copyOf(entry.getValue()));
+        }
+
+        pendingClaimStoreSaves.clear();
+
+        for (var entry : pending.entrySet()) {
+            if (!entry.getValue().isEmpty()) {
+                BLibDataStoreManager.INSTANCE.saveChunkData(entry.getKey(), entry.getValue());
+            }
+        }
+    }
+
     private boolean isFactionVisibleToPlayer(ResourceLocation factionId, ServerPlayer player) {
         var faction = BLibFactionManager.INSTANCE.get(factionId);
 
@@ -379,6 +404,12 @@ public class BLibTerritoryManager {
 
     private BLibTerritoryIndex getOrCreateIndex(ServerLevel level) {
         return indexes.computeIfAbsent(level, $ -> new BLibTerritoryIndex());
+    }
+
+    private void markClaimStoreDirty(ServerLevel level, ChunkPos pos) {
+        pendingClaimStoreSaves
+            .computeIfAbsent(level, $ -> new HashSet<>())
+            .add(pos);
     }
 
     private void rebuildIndexes(MinecraftServer server) {
