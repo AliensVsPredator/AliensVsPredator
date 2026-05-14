@@ -7,17 +7,21 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 import com.blib.api.common.reputation.v1.ReputationData;
 import com.blib.api.common.reputation.v1.ReputationKey;
 import com.blib.api.common.reputation.v1.ReputationManager;
+import com.blib.internal.common.entityreference.EntityReferenceOwner;
 import com.blib.internal.common.reputation.io.ReputationDataIO;
 import com.blib.internal.common.util.ShardManager;
 
 @ApiStatus.Internal
-public class BLibReputationManager implements ReputationManager {
+public class BLibReputationManager implements ReputationManager, EntityReferenceOwner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BLibReputationManager.class);
 
@@ -116,6 +120,34 @@ public class BLibReputationManager implements ReputationManager {
         return data.containsKey(reputationKey);
     }
 
+    @Override
+    public String id() {
+        return "reputations";
+    }
+
+    @Override
+    public boolean referencesEntityUuid(UUID uuid) {
+        var key = ReputationKey.entity(uuid);
+        return data.containsKey(key) || reputationIndex.hasIncoming(key);
+    }
+
+    @Override
+    public Set<UUID> referencedEntityUuids() {
+        var uuids = new HashSet<UUID>();
+        for (var entry : data.entrySet()) {
+            collectEntityUuid(entry.getKey(), uuids);
+            for (var target : entry.getValue().getAll().keySet()) {
+                collectEntityUuid(target, uuids);
+            }
+        }
+        return Set.copyOf(uuids);
+    }
+
+    @Override
+    public void removeEntityReference(UUID uuid) {
+        removeReputation(ReputationKey.entity(uuid));
+    }
+
     public void load(MinecraftServer server) {
         data.clear();
         reputationIndex.clear();
@@ -162,6 +194,12 @@ public class BLibReputationManager implements ReputationManager {
         data.clear();
         reputationIndex.clear();
         shardManager.clear();
+    }
+
+    private static void collectEntityUuid(ReputationKey key, Set<UUID> uuids) {
+        if (key instanceof ReputationKey.Entity entityKey) {
+            uuids.add(entityKey.uuid());
+        }
     }
 
 }

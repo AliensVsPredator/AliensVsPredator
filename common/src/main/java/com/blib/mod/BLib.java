@@ -14,7 +14,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Set;
 import java.util.function.Function;
 
 import com.blib.api.BLibAPI;
@@ -24,7 +23,6 @@ import com.blib.api.common.data_sync.v1.model.DataUser;
 import com.blib.api.common.dismemberment.v1.builtin.BuiltInLimbDrops;
 import com.blib.api.common.dismemberment.v1.builtin.BuiltInSpawnFunctions;
 import com.blib.api.common.faction.v1.Faction;
-import com.blib.api.common.faction.v1.FactionMember;
 import com.blib.api.common.faction.v1.ProtectionMode;
 import com.blib.api.common.faction.v1.RelationshipState;
 import com.blib.api.common.mod.v1.BLibMod;
@@ -34,6 +32,7 @@ import com.blib.internal.client.faction.ClientFactionCache;
 import com.blib.internal.client.render.armor.compat.ShoulderSurfingCompat;
 import com.blib.internal.client.territory.ClientTerritoryCache;
 import com.blib.internal.client.territory.compat.XaeroWorldMapCompat;
+import com.blib.internal.common.entityreference.BLibEntityReferenceManager;
 import com.blib.internal.common.faction.BLibFactionManager;
 import com.blib.internal.common.property.BLibPropertyContainerSaveHandler;
 import com.blib.internal.common.reputation.BLibReputationManager;
@@ -104,6 +103,9 @@ public class BLib {
         BuiltInSpawnFunctions.register();
         BuiltInLimbDrops.register();
 
+        BLibEntityReferenceManager.INSTANCE.registerOwner(BLibFactionManager.INSTANCE);
+        BLibEntityReferenceManager.INSTANCE.registerOwner(BLibReputationManager.INSTANCE);
+
         BLib.MOD.events().onPlayerStartTrackingEntity().register(BLib::syncDataForTrackedEntity);
         // TODO: There's a small bug here. This runs for both client and server levels!
         BLib.MOD.events().postLevelTick().register(ServerScheduler::tick);
@@ -122,7 +124,7 @@ public class BLib {
         // the C2S handler — that path used to leave clients stale until they hit Refresh.
         BLib.MOD.events().postLevelTick().register(level -> {
             if (!level.isClientSide && level.dimension() == Level.OVERWORLD) {
-                BLibFactionManager.INSTANCE.tickMemberLocationValidation(level.getServer());
+                BLibEntityReferenceManager.INSTANCE.tick(level.getServer());
                 BLibFactionManager.INSTANCE.flushPendingPushes(level.getServer());
             }
         });
@@ -150,18 +152,32 @@ public class BLib {
         BLib.MOD.events().onServerStopped().register(server -> ClientFactionCache.INSTANCE.clear());
         BLib.MOD.events().onServerStopped().register(ProjectDraftStore.INSTANCE::onServerStopped);
 
-        BLib.MOD.events().onServerStarted().register(BLibFactionManager.INSTANCE::load);
-        BLib.MOD.events().onServerSave().register(BLibFactionManager.INSTANCE::save);
-        BLib.MOD.events().onServerStopped().register(BLibFactionManager.INSTANCE::clear);
-
-        BLib.MOD.events().onServerStarted().register(BLibReputationManager.INSTANCE::load);
-        BLib.MOD.events().onServerSave().register(BLibReputationManager.INSTANCE::save);
-        BLib.MOD.events().onServerStopped().register(BLibReputationManager.INSTANCE::clear);
+        BLib.MOD.events()
+            .onServerStarted()
+            .register(server -> {
+                BLibFactionManager.INSTANCE.load(server);
+                BLibReputationManager.INSTANCE.load(server);
+                BLibEntityReferenceManager.INSTANCE.load(server);
+            });
+        BLib.MOD.events()
+            .onServerSave()
+            .register(server -> {
+                BLibFactionManager.INSTANCE.save(server);
+                BLibReputationManager.INSTANCE.save(server);
+                BLibEntityReferenceManager.INSTANCE.save(server);
+            });
+        BLib.MOD.events()
+            .onServerStopped()
+            .register(server -> {
+                BLibEntityReferenceManager.INSTANCE.clear(server);
+                BLibFactionManager.INSTANCE.clear(server);
+                BLibReputationManager.INSTANCE.clear(server);
+            });
 
         BLib.MOD.events().onServerStarted().register(BLibTerritoryManager.INSTANCE::onServerStarted);
         BLib.MOD.events().onServerStopped().register(BLibTerritoryManager.INSTANCE::onServerStopped);
         BLib.MOD.events().onChunkLoad().register(BLibTerritoryManager.INSTANCE::onChunkLoaded);
-        BLib.MOD.events().onChunkLoad().register(BLibFactionManager.INSTANCE::onMemberChunkLoaded);
+        BLib.MOD.events().onChunkLoad().register(BLibEntityReferenceManager.INSTANCE::onChunkLoaded);
         BLib.MOD.events().onChunkUnload().register(BLibTerritoryManager.INSTANCE::onChunkUnloaded);
 
         BLib.MOD.events().onChunkLoad().register((level, chunk) -> {
@@ -246,9 +262,10 @@ public class BLib {
         BLib.MOD.events()
             .onEntityLoad()
             .register(entity -> {
+                BLibEntityReferenceManager.INSTANCE.onEntityLoaded(entity);
+
                 var uuid = entity.getUUID();
                 var factionIds = BLibFactionManager.INSTANCE.getFactionIds(uuid);
-                BLibFactionManager.INSTANCE.onMemberEntityLoaded(entity);
 
                 for (var factionId : factionIds) {
                     var faction = BLibFactionManager.INSTANCE.get(factionId);
@@ -268,25 +285,12 @@ public class BLib {
                             return;
                         }
 
-                        var uuid = entity.getUUID();
-                        var factionIds = Set.copyOf(BLibFactionManager.INSTANCE.getFactionIds(uuid));
-                        var member = new FactionMember.Entity(uuid);
-
-                        for (var factionId : factionIds) {
-                            var faction = BLibFactionManager.INSTANCE.get(factionId);
-
-                            if (faction != null) {
-                                faction.membership().removeMember(member);
-                            }
-                        }
-
-                        BLibReputationManager.INSTANCE.removeReputation(ReputationKey.entity(uuid));
-
+                        BLibEntityReferenceManager.INSTANCE.removeEntityReferences(entity.getUUID());
                     }
                     case UNLOADED_TO_CHUNK, UNLOADED_WITH_PLAYER -> {
                         var uuid = entity.getUUID();
                         var factionIds = BLibFactionManager.INSTANCE.getFactionIds(uuid);
-                        BLibFactionManager.INSTANCE.onMemberEntityUnloaded(entity);
+                        BLibEntityReferenceManager.INSTANCE.onEntityUnloaded(entity);
 
                         for (var factionId : factionIds) {
                             var faction = BLibFactionManager.INSTANCE.get(factionId);

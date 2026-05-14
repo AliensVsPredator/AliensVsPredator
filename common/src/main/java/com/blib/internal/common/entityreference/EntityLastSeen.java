@@ -1,11 +1,11 @@
-package com.blib.internal.common.faction;
+package com.blib.internal.common.entityreference;
 
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 
 import java.util.UUID;
 
-public record FactionMemberLastSeen(
+public record EntityLastSeen(
     UUID uuid,
     ResourceKey<Level> dimension,
     int chunkX,
