@@ -16,8 +16,11 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.ArrayDeque;
+import java.util.Objects;
 
 import com.blib.engine.modeler.ModelerScene;
+import com.blib.engine.modeler.history.ModelerAction;
+import com.blib.engine.modeler.history.ModelerActionHistory;
 import com.blib.engine.modeler.texture.LoadedTexture;
 import com.blib.engine.texture.TextureEditorState;
 import com.blib.engine.texture.TextureTool;
@@ -82,6 +85,12 @@ public final class TextureViewportPanel implements Panel {
     private int lastPaintX;
 
     private int lastPaintY;
+
+    private @Nullable LoadedTexture paintTexture;
+
+    private @Nullable ModelerAction.TexturePixelsMemento paintBefore;
+
+    private @Nullable TextureEditorState.Selection selectionBefore;
 
     private enum DragMode {
         NONE,
@@ -177,6 +186,12 @@ public final class TextureViewportPanel implements Panel {
         if (dragMode == DragMode.NONE) {
             return false;
         }
+        if (dragMode == DragMode.SELECT) {
+            pushSelectionAction(selectionBefore, TextureEditorState.selection());
+            selectionBefore = null;
+        } else if (dragMode == DragMode.PAINT) {
+            pushPaintAction();
+        }
         dragMode = DragMode.NONE;
         return true;
     }
@@ -227,10 +242,13 @@ public final class TextureViewportPanel implements Panel {
         if (tool == TextureTool.SELECT) {
             var pixel = pixelAt(mouseX, mouseY, pixels, false);
             if (pixel == null) {
+                var before = TextureEditorState.selection();
                 TextureEditorState.clearSelection();
+                pushSelectionAction(before, null);
                 return true;
             }
             dragMode = DragMode.SELECT;
+            selectionBefore = TextureEditorState.selection();
             selectStartX = pixel.x();
             selectStartY = pixel.y();
             updateSelection(pixel.x(), pixel.y());
@@ -242,13 +260,19 @@ public final class TextureViewportPanel implements Panel {
         }
         if (tool == TextureTool.PENCIL) {
             dragMode = DragMode.PAINT;
+            paintTexture = active;
+            paintBefore = ModelerAction.TexturePixelsMemento.of(pixels);
             lastPaintX = pixel.x();
             lastPaintY = pixel.y();
             paintLine(active, pixels, pixel.x(), pixel.y(), pixel.x(), pixel.y());
             return true;
         }
         if (tool == TextureTool.BUCKET) {
-            bucketFill(active, pixels, pixel.x(), pixel.y());
+            var before = ModelerAction.TexturePixelsMemento.of(pixels);
+            if (bucketFill(active, pixels, pixel.x(), pixel.y())) {
+                var after = ModelerAction.TexturePixelsMemento.of(pixels);
+                pushTexturePixelsAction("texture_bucket", "Bucket Fill", active, before, after);
+            }
             return true;
         }
         return false;
@@ -410,6 +434,9 @@ public final class TextureViewportPanel implements Panel {
         panX = 0;
         panY = 0;
         dragMode = DragMode.NONE;
+        paintTexture = null;
+        paintBefore = null;
+        selectionBefore = null;
         TextureEditorState.clearSelection();
     }
 
@@ -464,15 +491,16 @@ public final class TextureViewportPanel implements Panel {
         texture.texture().upload();
     }
 
-    private void bucketFill(LoadedTexture texture, NativeImage pixels, int startX, int startY) {
+    private boolean bucketFill(LoadedTexture texture, NativeImage pixels, int startX, int startY) {
         if (!TextureEditorState.containsSelectedPixel(startX, startY)) {
-            return;
+            return false;
         }
         var replacement = TextureEditorState.argbToNative(TextureEditorState.primaryColor());
         var target = pixels.getPixelRGBA(startX, startY);
         if (target == replacement) {
-            return;
+            return false;
         }
+        var changed = false;
         var width = pixels.getWidth();
         var height = pixels.getHeight();
         var visited = new boolean[width * height];
@@ -491,6 +519,7 @@ public final class TextureViewportPanel implements Panel {
                 continue;
             }
             pixels.setPixelRGBA(x, y, replacement);
+            changed = true;
             if (x > 0) {
                 queue.add(idx - 1);
             }
@@ -504,7 +533,67 @@ public final class TextureViewportPanel implements Panel {
                 queue.add(idx + width);
             }
         }
-        texture.texture().upload();
+        if (changed) {
+            texture.texture().upload();
+        }
+        return changed;
+    }
+
+    private void pushPaintAction() {
+        var texture = paintTexture;
+        var before = paintBefore;
+        paintTexture = null;
+        paintBefore = null;
+        if (texture == null || before == null) {
+            return;
+        }
+        var pixels = texture.texture().getPixels();
+        if (pixels == null) {
+            return;
+        }
+        var after = ModelerAction.TexturePixelsMemento.of(pixels);
+        pushTexturePixelsAction("texture_pencil", "Pencil Stroke", texture, before, after);
+    }
+
+    private static void pushTexturePixelsAction(
+        String typeId,
+        String description,
+        LoadedTexture texture,
+        ModelerAction.TexturePixelsMemento before,
+        ModelerAction.TexturePixelsMemento after
+    ) {
+        if (!before.differsFrom(after)) {
+            return;
+        }
+        ModelerActionHistory.push(
+            new ModelerAction.TexturePixelsAction(
+                typeId,
+                description + " " + texture.displayName(),
+                System.currentTimeMillis(),
+                texture,
+                before,
+                after
+            )
+        );
+    }
+
+    private static void pushSelectionAction(
+        @Nullable TextureEditorState.Selection before,
+        @Nullable TextureEditorState.Selection after
+    ) {
+        if (Objects.equals(before, after)) {
+            return;
+        }
+        var description = after == null ? "Clear Texture Selection" : "Select Texture Region";
+        ModelerActionHistory.push(
+            new ModelerAction.TextureSelectionAction(
+                "texture_select",
+                description,
+                System.currentTimeMillis(),
+                before,
+                after
+            )
+        );
     }
 
     private boolean insidePanel(double mouseX, double mouseY) {

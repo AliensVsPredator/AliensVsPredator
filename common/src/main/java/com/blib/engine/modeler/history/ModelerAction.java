@@ -1,9 +1,11 @@
 package com.blib.engine.modeler.history;
 
+import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.List;
@@ -15,19 +17,21 @@ import com.blib.engine.modeler.ModelerBone;
 import com.blib.engine.modeler.ModelerCube;
 import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.Selection;
+import com.blib.engine.modeler.texture.LoadedTexture;
+import com.blib.engine.texture.TextureEditorState;
 import com.blib.mod.common.network.packet.ActionDescriptor;
 
 /**
- * Sealed root of the modeler's client-side undo/redo entries. Every reversible modeler gesture (gizmo transform,
- * inspector edit, add cube, delete cube/bone) produces one instance which {@link ModelerActionHistory} stores so Ctrl+Z
- * / Ctrl+Y can step through them in order.
+ * Sealed root of the engine workspace's client-side authoring undo/redo entries. Every reversible local gesture
+ * (modeler gizmo transform, inspector edit, texture paint stroke, texture selection change, etc.) produces one instance
+ * which {@link ModelerActionHistory} stores so Ctrl+Z / Ctrl+Y can step through them in order.
  * <p>
  * Concrete variants are records carrying the state needed to round-trip the change. References to bones/cubes are held
  * by identity — when an undo restores a previously-deleted bone/cube, it's the same heap instance that other actions
  * still reference, so layered undo+redo across multiple actions stays coherent.
  */
 @ApiStatus.Internal
-public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, ModelerAction.BoneMementoAction, ModelerAction.CubeInsertAction, ModelerAction.CubeRemoveAction, ModelerAction.BoneRemoveAction, ModelerAction.ItemTransformMementoAction, ModelerAction.CompositeAction {
+public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, ModelerAction.BoneMementoAction, ModelerAction.CubeInsertAction, ModelerAction.CubeRemoveAction, ModelerAction.BoneRemoveAction, ModelerAction.ItemTransformMementoAction, ModelerAction.TexturePixelsAction, ModelerAction.TextureSelectionAction, ModelerAction.CompositeAction {
 
     String typeId();
 
@@ -336,6 +340,103 @@ public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, M
                 BLibItemTransformOverrides.setWallFixed(itemId, mode, transform);
             } else {
                 BLibItemTransformOverrides.set(itemId, mode, context, transform);
+            }
+        }
+    }
+
+    /**
+     * Pixel snapshot for runtime-loaded texture edits. Stores the texture dimensions alongside a native-order pixel copy
+     * so undo/redo can safely no-op if the underlying dynamic texture has been replaced with a different-sized image.
+     */
+    record TexturePixelsMemento(
+        int width,
+        int height,
+        int[] pixels
+    ) {
+
+        public static TexturePixelsMemento of(NativeImage image) {
+            var width = image.getWidth();
+            var height = image.getHeight();
+            var copy = new int[width * height];
+            for (var y = 0; y < height; y++) {
+                for (var x = 0; x < width; x++) {
+                    copy[y * width + x] = image.getPixelRGBA(x, y);
+                }
+            }
+            return new TexturePixelsMemento(width, height, copy);
+        }
+
+        public void apply(LoadedTexture texture) {
+            var image = texture.texture().getPixels();
+            if (image == null || image.getWidth() != width || image.getHeight() != height) {
+                return;
+            }
+            for (var y = 0; y < height; y++) {
+                for (var x = 0; x < width; x++) {
+                    image.setPixelRGBA(x, y, pixels[y * width + x]);
+                }
+            }
+            texture.texture().upload();
+        }
+
+        public boolean differsFrom(TexturePixelsMemento other) {
+            if (width != other.width || height != other.height) {
+                return true;
+            }
+            for (var i = 0; i < pixels.length; i++) {
+                if (pixels[i] != other.pixels[i]) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    /** Pixel-level texture edit: pencil strokes and bucket fills both restore the whole edited image. */
+    record TexturePixelsAction(
+        String typeId,
+        String description,
+        long timestamp,
+        LoadedTexture target,
+        TexturePixelsMemento before,
+        TexturePixelsMemento after
+    ) implements ModelerAction {
+
+        @Override
+        public void undo() {
+            before.apply(target);
+        }
+
+        @Override
+        public void redo() {
+            after.apply(target);
+        }
+    }
+
+    /** Region-selection edit for the texture viewport. Selection state is part of the editable texture workflow. */
+    record TextureSelectionAction(
+        String typeId,
+        String description,
+        long timestamp,
+        @Nullable TextureEditorState.Selection before,
+        @Nullable TextureEditorState.Selection after
+    ) implements ModelerAction {
+
+        @Override
+        public void undo() {
+            apply(before);
+        }
+
+        @Override
+        public void redo() {
+            apply(after);
+        }
+
+        private static void apply(@Nullable TextureEditorState.Selection selection) {
+            if (selection == null) {
+                TextureEditorState.clearSelection();
+            } else {
+                TextureEditorState.setSelection(selection.x0(), selection.y0(), selection.x1Exclusive(), selection.y1Exclusive());
             }
         }
     }

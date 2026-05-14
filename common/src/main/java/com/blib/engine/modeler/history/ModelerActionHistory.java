@@ -16,9 +16,10 @@ import com.blib.mod.common.network.packet.ActionDescriptor;
  * heap-only (no server sync), so reverting a gesture is a local field-write rather than a network round-trip.
  * <p>
  * The {@link com.blib.engine.ui.panel.action.ActionStackPanel} reads this store via {@link #descriptors} /
- * {@link #undoCursor} when the active workspace layout contains modeler panels — otherwise it shows the server-synced
- * history. Cleared on {@link com.blib.engine.modeler.ModelerSceneLoader#loadFromFile model load} since the new scene's
- * bones / cubes are different heap instances that the existing actions can't address.
+ * {@link #undoCursor} when the active workspace layout contains client-local authoring panels (modeler / texture) —
+ * otherwise it shows the server-synced history. Cleared on
+ * {@link com.blib.engine.modeler.ModelerSceneLoader#loadFromFile model load} since the new scene's bones / cubes are
+ * different heap instances that the existing actions can't address.
  */
 @ApiStatus.Internal
 public final class ModelerActionHistory {

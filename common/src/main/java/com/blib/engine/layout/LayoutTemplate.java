@@ -94,7 +94,7 @@ public enum LayoutTemplate {
             // (right). No bottom tab strip — modeler authoring is purely in the viewport.
             case MODELER -> modelerBody();
             // Texture layout: paint.net-style workspace — texture list on the left, editable image surface in the
-            // center, and tool / color / selection controls on the right.
+            // center, and tool / color / selection controls plus history on the right.
             case TEXTURE -> textureBody();
         };
     }
@@ -125,10 +125,16 @@ public enum LayoutTemplate {
     }
 
     private static BodyNode textureBody() {
+        var rightColumn = new BodyNode.Split(
+            Orientation.VERTICAL.name(),
+            new BodyNode.Leaf(List.of(PanelRegistry.TEXTURE_INSPECTOR), 0),
+            new BodyNode.Leaf(List.of(PanelRegistry.ACTION_STACK), 0),
+            new SizingDoc.SecondFixed(LayoutDefaults.CONTENT_BROWSER_HEIGHT)
+        );
         var centerAndRight = new BodyNode.Split(
             Orientation.HORIZONTAL.name(),
             new BodyNode.Leaf(List.of(PanelRegistry.TEXTURE_VIEWPORT), 0),
-            new BodyNode.Leaf(List.of(PanelRegistry.TEXTURE_INSPECTOR), 0),
+            rightColumn,
             new SizingDoc.SecondFixed(LayoutDefaults.DETAILS_WIDTH)
         );
         return new BodyNode.Split(

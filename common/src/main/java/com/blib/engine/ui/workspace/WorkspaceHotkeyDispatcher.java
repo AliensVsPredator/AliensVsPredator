@@ -44,6 +44,8 @@ public final class WorkspaceHotkeyDispatcher {
 
         boolean layoutHasModelerPanel();
 
+        boolean layoutHasLocalHistoryPanel();
+
         /**
          * Single-block delete via degenerate one-block volume — kept on the host so the dim lookup stays consistent.
          */
@@ -61,10 +63,10 @@ public final class WorkspaceHotkeyDispatcher {
      * continue its own handling (Esc cascade, super.keyPressed, etc.).
      */
     public boolean dispatch(int keyCode, int modifiers) {
-        // Ctrl+Z = universal undo. Modeler layout routes to the client-side modeler history; everywhere else routes to
-        // the server-side ActionHistory. Same context check Delete uses below.
+        // Ctrl+Z = universal undo. Local authoring layouts (modeler / texture) route to the client-side history;
+        // everywhere else routes to the server-side ActionHistory.
         if (ActiveKeybindings.matchesKey(Keybindings.UNDO, keyCode, modifiers)) {
-            if (host.layoutHasModelerPanel()) {
+            if (host.layoutHasLocalHistoryPanel()) {
                 ModelerActionHistory.undo();
             } else {
                 host.commands().dispatch(new Command.UndoAction());
@@ -73,7 +75,7 @@ public final class WorkspaceHotkeyDispatcher {
         }
 
         if (ActiveKeybindings.matchesKey(Keybindings.REDO, keyCode, modifiers)) {
-            if (host.layoutHasModelerPanel()) {
+            if (host.layoutHasLocalHistoryPanel()) {
                 ModelerActionHistory.redo();
             } else {
                 host.commands().dispatch(new Command.RedoAction());

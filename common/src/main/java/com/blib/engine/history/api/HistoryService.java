@@ -9,7 +9,7 @@ import com.blib.mod.common.network.packet.ActionDescriptor;
 /**
  * Unified read-side contract for the editor's undo/redo histories. Two backends implement this: the server-mirrored
  * {@link com.blib.engine.history.ClientActionHistory} (fed by S2C sync packets) and the local
- * {@link com.blib.engine.modeler.history.ModelerActionHistory} (driven by client-only modeler gestures). UI panels
+ * {@link com.blib.engine.modeler.history.ModelerActionHistory} (driven by client-only authoring gestures). UI panels
  * select which one to read by domain — the contract itself is identical.
  * <p>
  * The view-side methods are intentionally read-only; mutation lives on the concrete classes since the two backends are

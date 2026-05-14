@@ -26,6 +26,8 @@ import com.blib.engine.ui.panel.chrome.MenuBarPanel;
 import com.blib.engine.ui.panel.chrome.StatusBarPanel;
 import com.blib.engine.ui.panel.details.ModelerInspectorPanel;
 import com.blib.engine.ui.panel.outliner.ModelerOutlinerPanel;
+import com.blib.engine.ui.panel.texture.TextureInspectorPanel;
+import com.blib.engine.ui.panel.texture.TextureViewportPanel;
 import com.blib.engine.ui.panel.viewport.ModelerViewportPanel;
 
 /**
@@ -182,6 +184,14 @@ public final class WorkspaceLayoutController {
     }
 
     /**
+     * True when the dock root contains a panel whose edits are backed by the client-local history store rather than the
+     * server-synced world history. Currently covers modeler and texture authoring panels.
+     */
+    public static boolean hasLocalHistoryPanel(DockNode root) {
+        return panelTreeContainsLocalHistoryPanel(root);
+    }
+
+    /**
      * Convenience for callers without a workspace reference (e.g. the action-stack panel). True when the active screen
      * is an engine workspace whose layout has a modeler panel.
      */
@@ -190,10 +200,26 @@ public final class WorkspaceLayoutController {
         return mc.screen instanceof EngineWorkspaceScreen ws && ws.layoutHasModelerPanel();
     }
 
+    /**
+     * Convenience for callers without a workspace reference (e.g. the action-stack panel). True when the active screen
+     * is an engine workspace whose layout should show the client-local action history.
+     */
+    public static boolean activeLayoutHasLocalHistoryPanel() {
+        var mc = Minecraft.getInstance();
+        return mc.screen instanceof EngineWorkspaceScreen ws && ws.layoutHasLocalHistoryPanel();
+    }
+
     private static boolean panelTreeContainsModeler(DockNode node) {
         return switch (node) {
             case DockNode.Leaf leaf -> panelOrTabsContainsModeler(leaf.panel());
             case DockNode.Split split -> panelTreeContainsModeler(split.first()) || panelTreeContainsModeler(split.second());
+        };
+    }
+
+    private static boolean panelTreeContainsLocalHistoryPanel(DockNode node) {
+        return switch (node) {
+            case DockNode.Leaf leaf -> panelOrTabsContainsLocalHistoryPanel(leaf.panel());
+            case DockNode.Split split -> panelTreeContainsLocalHistoryPanel(split.first()) || panelTreeContainsLocalHistoryPanel(split.second());
         };
     }
 
@@ -213,10 +239,28 @@ public final class WorkspaceLayoutController {
         return false;
     }
 
+    private static boolean panelOrTabsContainsLocalHistoryPanel(Panel panel) {
+        if (isLocalHistoryPanel(panel)) {
+            return true;
+        }
+        if (panel instanceof TabbedPanel tp) {
+            for (var tab : tp.tabs()) {
+                if (isLocalHistoryPanel(tab)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private static boolean isModelerPanel(Panel panel) {
         return panel instanceof ModelerOutlinerPanel
             || panel instanceof ModelerViewportPanel
             || panel instanceof ModelerInspectorPanel;
+    }
+
+    private static boolean isLocalHistoryPanel(Panel panel) {
+        return isModelerPanel(panel) || panel instanceof TextureViewportPanel || panel instanceof TextureInspectorPanel;
     }
 
     private static @Nullable TabbedPanel findFirstTabbedPanel(DockNode node) {

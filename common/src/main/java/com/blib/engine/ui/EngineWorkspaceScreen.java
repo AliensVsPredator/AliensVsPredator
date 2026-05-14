@@ -1328,11 +1328,22 @@ public final class EngineWorkspaceScreen extends Screen {
     }
 
     /**
+     * True when the active layout should use the client-local undo/redo history instead of server-synced world history.
+     */
+    public boolean layoutHasLocalHistoryPanel() {
+        return WorkspaceLayoutController.hasLocalHistoryPanel(root);
+    }
+
+    /**
      * Convenience for callers without a workspace reference (e.g. the action-stack panel). Delegates to the controller,
      * which checks the active screen.
      */
     public static boolean activeLayoutHasModelerPanel() {
         return WorkspaceLayoutController.activeLayoutHasModelerPanel();
+    }
+
+    public static boolean activeLayoutHasLocalHistoryPanel() {
+        return WorkspaceLayoutController.activeLayoutHasLocalHistoryPanel();
     }
 
     private @Nullable TabbedPanel findTabbedPanelAt(int mouseX, int mouseY) {
@@ -1483,7 +1494,7 @@ public final class EngineWorkspaceScreen extends Screen {
     }
 
     private void dispatchUndo() {
-        if (layoutHasModelerPanel()) {
+        if (layoutHasLocalHistoryPanel()) {
             ModelerActionHistory.undo();
         } else {
             commands.dispatch(new Command.UndoAction());
@@ -1491,7 +1502,7 @@ public final class EngineWorkspaceScreen extends Screen {
     }
 
     private void dispatchRedo() {
-        if (layoutHasModelerPanel()) {
+        if (layoutHasLocalHistoryPanel()) {
             ModelerActionHistory.redo();
         } else {
             commands.dispatch(new Command.RedoAction());
@@ -2063,6 +2074,11 @@ public final class EngineWorkspaceScreen extends Screen {
         @Override
         public boolean layoutHasModelerPanel() {
             return EngineWorkspaceScreen.this.layoutHasModelerPanel();
+        }
+
+        @Override
+        public boolean layoutHasLocalHistoryPanel() {
+            return EngineWorkspaceScreen.this.layoutHasLocalHistoryPanel();
         }
 
         @Override

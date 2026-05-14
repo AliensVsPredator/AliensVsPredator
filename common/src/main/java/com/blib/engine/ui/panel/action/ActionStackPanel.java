@@ -67,17 +67,17 @@ public final class ActionStackPanel implements Panel {
     public void render(GuiGraphics graphics, int x, int y, int width, int height, int mouseX, int mouseY, float partialTick) {
         graphics.fill(x, y, x + width, y + height, BACKGROUND_COLOR);
 
-        // Modeler layout has a parallel client-side history (the modeler scene is heap-only — no server roundtrip).
-        // Picking the right source by layout-context lets the same panel cover both worlds.
-        var modelerMode = EngineWorkspaceScreen.activeLayoutHasModelerPanel();
-        // Server-history needs a world; modeler-history is purely client-side and works at the title screen too. Only
+        // Local authoring layouts have a parallel client-side history (heap-only — no server roundtrip). Picking the
+        // right source by layout-context lets the same panel cover both worlds.
+        var localHistoryMode = EngineWorkspaceScreen.activeLayoutHasLocalHistoryPanel();
+        // Server-history needs a world; local history is purely client-side and works at the title screen too. Only
         // gate on the "needs world" placeholder when we're showing the server history.
-        if (!modelerMode && Minecraft.getInstance().level == null) {
+        if (!localHistoryMode && Minecraft.getInstance().level == null) {
             PanelPlaceholder.drawCentered(graphics, x, y, width, height, PanelPlaceholder.NEEDS_WORLD);
             return;
         }
 
-        var history = modelerMode ? ModelerActionHistory.asService() : ClientActionHistory.INSTANCE;
+        var history = localHistoryMode ? ModelerActionHistory.asService() : ClientActionHistory.INSTANCE;
         var entries = history.entries();
         var cursor = history.undoCursor();
 

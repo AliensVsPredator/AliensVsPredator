@@ -290,8 +290,8 @@ public final class ModelerScene {
 
     /**
      * Reset the scene to the fresh-entity-model starting state — same seed as a brand-new ModelerScene instance, but
-     * applied to the existing singleton so panels holding references stay valid. Clears the selection and modeler
-     * action history because the old action entries point at bones/cubes from the discarded tree.
+     * applied to the existing singleton so panels holding references stay valid. Clears the selection and local action
+     * history because the old action entries point at bones/cubes/textures from the discarded scene.
      */
     public void resetToEntity() {
         closeTextures();
