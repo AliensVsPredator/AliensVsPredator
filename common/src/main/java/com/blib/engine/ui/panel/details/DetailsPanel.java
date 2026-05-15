@@ -25,9 +25,9 @@ import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.layout.UiText;
 import com.blib.engine.ui.panel.base.InspectorSection;
 import com.blib.engine.ui.panel.base.InspectorSectionRegistry;
+import com.blib.engine.ui.widget.ScrollContainer;
 import com.blib.engine.ui.widget.SearchableSelect;
 import com.blib.engine.ui.widget.SegmentedControl;
-import com.blib.engine.ui.widget.ScrollContainer;
 import com.blib.engine.ui.widget.TextInput;
 
 /**
@@ -227,7 +227,16 @@ public final class DetailsPanel implements Panel {
         try (var ignored = UiText.captureTruncatedTextTooltips(mouseX, mouseY, frame.visibleContentRect(), this::setHoveredTooltip)) {
             var contentMouseX = contentScroll.containsVisibleContent(mouseX, mouseY) ? mouseX : Integer.MIN_VALUE;
             var contentMouseY = contentScroll.containsVisibleContent(mouseX, mouseY) ? mouseY : Integer.MIN_VALUE;
-            var contentBottom = renderInspectorContent(graphics, font, frame.contentX(), frame.contentY(), frame.contentWidth(), single, contentMouseX, contentMouseY);
+            var contentBottom = renderInspectorContent(
+                graphics,
+                font,
+                frame.contentX(),
+                frame.contentY(),
+                frame.contentWidth(),
+                single,
+                contentMouseX,
+                contentMouseY
+            );
             measuredContentHeight = Math.max(0, contentBottom - frame.contentY() + CONTENT_PADDING);
             measuredContentWidth = Math.max(baseContentWidth, bounds.contentWidth(frame.contentX()));
         } finally {

@@ -35,6 +35,7 @@ public interface FactionInspectionView {
             return null;
         }
         return new FactionInspectionView() {
+
             @Override
             public ResourceLocation factionId() {
                 return snapshot.id();

@@ -14,8 +14,10 @@ import org.lwjgl.glfw.GLFW;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import com.blib.api.client.registry.v1.AzItemRendererRegistry;
+import com.blib.api.client.render.v1.item.BLibItemTransformMode;
 import com.blib.engine.gizmo.BLibItemTransformOverrides;
 import com.blib.engine.modeler.ModelerBone;
 import com.blib.engine.modeler.ModelerCamera;
@@ -111,11 +113,11 @@ public final class ModelerViewportPanel implements Panel {
      */
     private @Nullable ModelerAction.ItemTransformMemento gizmoDragItemBefore;
 
-    private @Nullable net.minecraft.resources.ResourceLocation gizmoDragItemId;
+    private @Nullable ResourceLocation gizmoDragItemId;
 
-    private @Nullable com.blib.api.client.render.v1.item.BLibItemTransformMode gizmoDragItemMode;
+    private @Nullable BLibItemTransformMode gizmoDragItemMode;
 
-    private @Nullable net.minecraft.world.item.ItemDisplayContext gizmoDragItemContext;
+    private @Nullable ItemDisplayContext gizmoDragItemContext;
 
     private boolean gizmoDragItemWallFixed;
 
@@ -317,8 +319,8 @@ public final class ModelerViewportPanel implements Panel {
                             var activeContext = session.editingContext;
                             var wall = activeContext == ItemDisplayContext.FIXED && session.wallFixedActive;
                             var current = wall
-                                ? com.blib.engine.gizmo.BLibItemTransformOverrides.getEffectiveWallFixed(session.itemId, session.mode)
-                                : com.blib.engine.gizmo.BLibItemTransformOverrides
+                                ? BLibItemTransformOverrides.getEffectiveWallFixed(session.itemId, session.mode)
+                                : BLibItemTransformOverrides
                                     .getEffective(session.itemId, session.mode, activeContext);
                             gizmoDragItemBefore = ModelerAction.ItemTransformMemento.of(current);
                             gizmoDragItemId = session.itemId;
@@ -433,8 +435,8 @@ public final class ModelerViewportPanel implements Panel {
                 // already wrote shim → override each frame during the drag), build the after-memento, and push
                 // unless the drag was a no-op.
                 var current = itemWallFixed
-                    ? com.blib.engine.gizmo.BLibItemTransformOverrides.getEffectiveWallFixed(itemId, itemMode)
-                    : com.blib.engine.gizmo.BLibItemTransformOverrides.getEffective(itemId, itemMode, itemContext);
+                    ? BLibItemTransformOverrides.getEffectiveWallFixed(itemId, itemMode)
+                    : BLibItemTransformOverrides.getEffective(itemId, itemMode, itemContext);
                 var after = ModelerAction.ItemTransformMemento.of(current);
                 if (after.differsFrom(itemBefore)) {
                     var typeId = switch (mode) {
@@ -445,10 +447,10 @@ public final class ModelerViewportPanel implements Panel {
                         default -> "item_transform_edit";
                     };
                     var description = switch (mode) {
-                        case TRANSLATE -> "Translate " + itemId + " (" + itemContext.name().toLowerCase(java.util.Locale.ROOT) + ")";
-                        case ROTATE -> "Rotate " + itemId + " (" + itemContext.name().toLowerCase(java.util.Locale.ROOT) + ")";
-                        case SCALE -> "Scale " + itemId + " (" + itemContext.name().toLowerCase(java.util.Locale.ROOT) + ")";
-                        case PIVOT -> "Move pivot of " + itemId + " (" + itemContext.name().toLowerCase(java.util.Locale.ROOT) + ")";
+                        case TRANSLATE -> "Translate " + itemId + " (" + itemContext.name().toLowerCase(Locale.ROOT) + ")";
+                        case ROTATE -> "Rotate " + itemId + " (" + itemContext.name().toLowerCase(Locale.ROOT) + ")";
+                        case SCALE -> "Scale " + itemId + " (" + itemContext.name().toLowerCase(Locale.ROOT) + ")";
+                        case PIVOT -> "Move pivot of " + itemId + " (" + itemContext.name().toLowerCase(Locale.ROOT) + ")";
                         default -> "Edit " + itemId;
                     };
                     ModelerActionHistory.push(

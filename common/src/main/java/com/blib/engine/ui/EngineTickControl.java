@@ -67,9 +67,9 @@ public final class EngineTickControl {
 
     /**
      * Advance the integrated server by the selected number of game ticks while paused — equivalent to
-     * {@code /tick step <n>t}. No-op outside singleplayer or when the server isn't currently frozen (the underlying
-     * API only steps a frozen game). Used by the toolbar's step button so the user can scrub forward without leaving
-     * the editor.
+     * {@code /tick step <n>t}. No-op outside singleplayer or when the server isn't currently frozen (the underlying API
+     * only steps a frozen game). Used by the toolbar's step button so the user can scrub forward without leaving the
+     * editor.
      */
     public static void step() {
         var server = Minecraft.getInstance().getSingleplayerServer();

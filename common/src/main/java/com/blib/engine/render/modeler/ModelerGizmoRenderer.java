@@ -528,7 +528,7 @@ public final class ModelerGizmoRenderer {
      * cube grew / shrunk, perturbing the screen-projected axis direction and producing inconsistent per-frame deltas
      * (the "increase by 1, decrease by 2" effect a moving face creates through perspective).
      */
-    public static double[] faceCenterLocal(com.blib.engine.modeler.gizmo.ModelerGizmoState.CubeBaseline baseline, int axis, int sign) {
+    public static double[] faceCenterLocal(ModelerGizmoState.CubeBaseline baseline, int axis, int sign) {
         return faceCenterFromFields(
             baseline.origin().x,
             baseline.origin().y,

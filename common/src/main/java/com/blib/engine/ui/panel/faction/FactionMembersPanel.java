@@ -143,7 +143,15 @@ public final class FactionMembersPanel implements Panel {
         // disabled would mean swap-and-mouse-fall-through edge cases; just show the hint message instead.
         if (active == null) {
             scroll.clear();
-            UiText.drawClipped(graphics, font, "(select a faction in the Browser)", x + CONTENT_PADDING, y + CONTENT_PADDING, Math.max(0, width - 2 * CONTENT_PADDING), EMPTY_TEXT_COLOR);
+            UiText.drawClipped(
+                graphics,
+                font,
+                "(select a faction in the Browser)",
+                x + CONTENT_PADDING,
+                y + CONTENT_PADDING,
+                Math.max(0, width - 2 * CONTENT_PADDING),
+                EMPTY_TEXT_COLOR
+            );
             return;
         }
 
@@ -236,7 +244,15 @@ public final class FactionMembersPanel implements Panel {
         var label = entry.displayName().isEmpty()
             ? entry.uuid().toString().substring(0, 8) + "...  (offline / unloaded)"
             : entry.displayName() + "  " + entry.uuid().toString().substring(0, 8) + "...";
-        UiText.drawClipped(graphics, font, label, x + 4, textY, Math.max(0, removeX - x - 8), hovered ? ROW_TEXT_HOVER_COLOR : ROW_TEXT_COLOR);
+        UiText.drawClipped(
+            graphics,
+            font,
+            label,
+            x + 4,
+            textY,
+            Math.max(0, removeX - x - 8),
+            hovered ? ROW_TEXT_HOVER_COLOR : ROW_TEXT_COLOR
+        );
 
         rowHits.add(new RowHit(removeRect, factionId, entry.uuid(), entry.displayName()));
     }

@@ -1,8 +1,5 @@
 package com.blib.api.client.engine.v1.inspector;
 
-import com.blib.engine.ui.layout.UiRect;
-import com.blib.engine.ui.layout.UiText;
-import com.blib.engine.ui.panel.details.InspectorStyle;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 
@@ -11,12 +8,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.blib.engine.ui.layout.UiRect;
+import com.blib.engine.ui.layout.UiText;
+import com.blib.engine.ui.panel.details.InspectorStyle;
+
 /**
  * Reusable immediate-mode collapse state for groups inside an inspector section.
  * <p>
- * Call {@link #beginFrame()} once at the start of the owning inspector section's render pass, then draw each header with
- * {@link #drawHeader}. If the returned {@link Header#expanded()} is false, skip that group's body. Forward clicks from
- * the owning {@link InspectorSection#mouseClicked} implementation to {@link #mouseClicked}.
+ * Call {@link #beginFrame()} once at the start of the owning inspector section's render pass, then draw each header
+ * with {@link #drawHeader}. If the returned {@link Header#expanded()} is false, skip that group's body. Forward clicks
+ * from the owning {@link InspectorSection#mouseClicked} implementation to {@link #mouseClicked}.
  */
 public final class CollapsibleInspectorSections {
 
@@ -55,7 +56,13 @@ public final class CollapsibleInspectorSections {
         var expanded = !collapsed.contains(fullKey);
         var rect = UiRect.of(x, y, width, InspectorStyle.SECTION_HEADER_HEIGHT);
         var hovered = rect.contains(mouseX, mouseY);
-        graphics.fill(rect.x(), rect.y(), rect.right(), rect.bottom(), hovered ? HOVER_HEADER_BG_COLOR : InspectorStyle.SECTION_HEADER_BG_COLOR);
+        graphics.fill(
+            rect.x(),
+            rect.y(),
+            rect.right(),
+            rect.bottom(),
+            hovered ? HOVER_HEADER_BG_COLOR : InspectorStyle.SECTION_HEADER_BG_COLOR
+        );
 
         var textY = UiText.centeredY(font, rect);
         UiText.drawClipped(

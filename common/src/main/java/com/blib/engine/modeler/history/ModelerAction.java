@@ -349,8 +349,9 @@ public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, M
     }
 
     /**
-     * Pixel snapshot for runtime-loaded texture edits. Stores the texture dimensions alongside a native-order pixel copy
-     * so undo/redo can safely no-op if the underlying dynamic texture has been replaced with a different-sized image.
+     * Pixel snapshot for runtime-loaded texture edits. Stores the texture dimensions alongside a native-order pixel
+     * copy so undo/redo can safely no-op if the underlying dynamic texture has been replaced with a different-sized
+     * image.
      */
     record TexturePixelsMemento(
         int width,

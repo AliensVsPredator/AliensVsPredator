@@ -3,8 +3,8 @@ package com.blib.api.client.engine.v1.inspector;
 import net.minecraft.client.gui.GuiGraphics;
 
 /**
- * One contributed view inside the engine workspace's right-side Inspector panel. Implementations declare
- * which selection type they render against via {@link #selectableType()} (e.g.
+ * One contributed view inside the engine workspace's right-side Inspector panel. Implementations declare which
+ * selection type they render against via {@link #selectableType()} (e.g.
  * {@link com.blib.api.client.engine.v1.selection.FactionSelection}) and the engine routes selections to all matching
  * sections in registration order. Built-in BLib sections render first; downstream sections chain after at the y the
  * built-in returned, so a contributed faction inspector appears below the stock identity/territory/protection rows.
@@ -17,8 +17,8 @@ public interface InspectorSection<S> {
     String id();
 
     /**
-     * The selection type this section handles. The engine matches via {@code selectableType().isInstance(selection)}
-     * so a section can target a concrete public interface like {@code FactionSelection.class}.
+     * The selection type this section handles. The engine matches via {@code selectableType().isInstance(selection)} so
+     * a section can target a concrete public interface like {@code FactionSelection.class}.
      */
     Class<S> selectableType();
 

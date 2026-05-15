@@ -40,14 +40,26 @@ public final class ScrollViewport {
     }
 
     public Frame begin(GuiGraphics graphics, UiRect nextViewport, int contentHeight) {
-        return beginInternal(graphics, nextViewport, Math.max(0, nextViewport.width() - ScrollContainer.SCROLLBAR_GUTTER), contentHeight, false);
+        return beginInternal(
+            graphics,
+            nextViewport,
+            Math.max(0, nextViewport.width() - ScrollContainer.SCROLLBAR_GUTTER),
+            contentHeight,
+            false
+        );
     }
 
     public Frame begin(GuiGraphics graphics, UiRect nextViewport, int contentWidth, int contentHeight) {
         return beginInternal(graphics, nextViewport, contentWidth, contentHeight, true);
     }
 
-    private Frame beginInternal(GuiGraphics graphics, UiRect nextViewport, int contentWidth, int contentHeight, boolean allowHorizontalScroll) {
+    private Frame beginInternal(
+        GuiGraphics graphics,
+        UiRect nextViewport,
+        int contentWidth,
+        int contentHeight,
+        boolean allowHorizontalScroll
+    ) {
         this.viewport = nextViewport;
         var logicalContentWidth = Math.max(0, contentWidth);
         var logicalContentHeight = Math.max(0, contentHeight);

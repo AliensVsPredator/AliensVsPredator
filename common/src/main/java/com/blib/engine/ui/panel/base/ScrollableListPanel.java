@@ -93,7 +93,16 @@ public abstract class ScrollableListPanel implements Panel {
 
         var frame = scrollbar.begin(graphics, UiRect.of(x, y, width, height), contentHeight());
         try {
-            renderRows(graphics, frame.contentX(), frame.contentY(), frame.contentWidth(), height, mouseX, mouseY + frame.scrollY(), partialTick);
+            renderRows(
+                graphics,
+                frame.contentX(),
+                frame.contentY(),
+                frame.contentWidth(),
+                height,
+                mouseX,
+                mouseY + frame.scrollY(),
+                partialTick
+            );
         } finally {
             scrollbar.end(graphics, mouseX, mouseY);
         }

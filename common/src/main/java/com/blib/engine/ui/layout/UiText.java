@@ -35,7 +35,12 @@ public final class UiText {
         capturedTruncatedTextTooltip = tooltip;
     }
 
-    public static TooltipCaptureScope captureTruncatedTextTooltips(int mouseX, int mouseY, UiRect hoverBounds, Consumer<Component> tooltipSink) {
+    public static TooltipCaptureScope captureTruncatedTextTooltips(
+        int mouseX,
+        int mouseY,
+        UiRect hoverBounds,
+        Consumer<Component> tooltipSink
+    ) {
         var previous = TOOLTIP_CAPTURE.get();
         TOOLTIP_CAPTURE.set(new TooltipCapture(mouseX, mouseY, hoverBounds, tooltipSink));
         return new TooltipCaptureScope(previous);

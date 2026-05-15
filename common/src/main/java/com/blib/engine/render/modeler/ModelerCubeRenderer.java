@@ -384,7 +384,30 @@ public final class ModelerCubeRenderer {
         var westU = mirror ? u : u + sz + sx;
 
         // +X (EAST): u_pix=u, v_pix=v+sz, uSize=sz, vSize=sy
-        emitTexturedFace(buffer, matrix, x1, y0, z0, x1, y1, z0, x1, y1, z1, x1, y0, z1, eastU, v + sz, sz, sy, texW, texH, mirror, FACE_SHADE[0]);
+        emitTexturedFace(
+            buffer,
+            matrix,
+            x1,
+            y0,
+            z0,
+            x1,
+            y1,
+            z0,
+            x1,
+            y1,
+            z1,
+            x1,
+            y0,
+            z1,
+            eastU,
+            v + sz,
+            sz,
+            sy,
+            texW,
+            texH,
+            mirror,
+            FACE_SHADE[0]
+        );
         // -X (WEST): u_pix=u+sz+sx, v_pix=v+sz, uSize=sz, vSize=sy
         emitTexturedFace(
             buffer,
@@ -411,7 +434,30 @@ public final class ModelerCubeRenderer {
             FACE_SHADE[1]
         );
         // +Y (UP): u_pix=u+sz, v_pix=v, uSize=sx, vSize=sz
-        emitTexturedFace(buffer, matrix, x0, y1, z0, x0, y1, z1, x1, y1, z1, x1, y1, z0, u + sz, v, sx, sz, texW, texH, mirror, FACE_SHADE[2]);
+        emitTexturedFace(
+            buffer,
+            matrix,
+            x0,
+            y1,
+            z0,
+            x0,
+            y1,
+            z1,
+            x1,
+            y1,
+            z1,
+            x1,
+            y1,
+            z0,
+            u + sz,
+            v,
+            sx,
+            sz,
+            texW,
+            texH,
+            mirror,
+            FACE_SHADE[2]
+        );
         // -Y (DOWN): u_pix=u+sz+sx, v_pix=v+sz, uSize=sx, vSize=-sz (V-flipped intentionally)
         emitTexturedFace(
             buffer,
@@ -463,7 +509,30 @@ public final class ModelerCubeRenderer {
             FACE_SHADE[4]
         );
         // -Z (NORTH): u_pix=u+sz, v_pix=v+sz, uSize=sx, vSize=sy
-        emitTexturedFace(buffer, matrix, x0, y0, z0, x0, y1, z0, x1, y1, z0, x1, y0, z0, u + sz, v + sz, sx, sy, texW, texH, mirror, FACE_SHADE[5]);
+        emitTexturedFace(
+            buffer,
+            matrix,
+            x0,
+            y0,
+            z0,
+            x0,
+            y1,
+            z0,
+            x1,
+            y1,
+            z0,
+            x1,
+            y0,
+            z0,
+            u + sz,
+            v + sz,
+            sx,
+            sy,
+            texW,
+            texH,
+            mirror,
+            FACE_SHADE[5]
+        );
 
         pose.popPose();
     }

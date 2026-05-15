@@ -93,7 +93,11 @@ public final class ActionStackPanel implements Panel {
         if (listH <= 0) {
             return;
         }
-        var frame = scroll.begin(graphics, UiRect.of(x + CONTENT_PADDING, y + CONTENT_PADDING, width - 2 * CONTENT_PADDING, listH), contentHeight);
+        var frame = scroll.begin(
+            graphics,
+            UiRect.of(x + CONTENT_PADDING, y + CONTENT_PADDING, width - 2 * CONTENT_PADDING, listH),
+            contentHeight
+        );
         try {
             var listX = frame.contentX();
             var listW = frame.contentWidth();

@@ -8,8 +8,9 @@ import com.blib.engine.ui.panel.base.PublicInspectorSectionAdapter;
  * order. Registration is process-wide and should happen during client init.
  * <p>
  * Example:
+ *
  * <pre>
- *   InspectorSectionRegistry.register(new MyHiveLocationInspectorSection());
+ * InspectorSectionRegistry.register(new MyHiveLocationInspectorSection());
  * </pre>
  */
 public final class InspectorSectionRegistry {
@@ -17,9 +18,9 @@ public final class InspectorSectionRegistry {
     private InspectorSectionRegistry() {}
 
     /**
-     * Register a section. The {@link InspectorSection#selectableType()} declares which selection class triggers
-     * the section; the engine routes to all matching sections in registration order. Calling this with a section
-     * targeting an unsupported selection type is allowed but the section will simply never render.
+     * Register a section. The {@link InspectorSection#selectableType()} declares which selection class triggers the
+     * section; the engine routes to all matching sections in registration order. Calling this with a section targeting
+     * an unsupported selection type is allowed but the section will simply never render.
      */
     public static void register(InspectorSection<?> section) {
         com.blib.engine.ui.panel.base.InspectorSectionRegistry.register(PublicInspectorSectionAdapter.wrap(section));

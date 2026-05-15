@@ -11,6 +11,7 @@ import java.util.Map;
 
 import com.blib.internal.client.territory.compat.XaeroWorldMapCompat;
 import com.blib.internal.client.territory.compat.xaero.BLibChunkHighlighter;
+import com.blib.mod.common.network.packet.S2CChunkClaimsSyncPayload;
 
 @ApiStatus.Internal
 public class ClientTerritoryCache {
@@ -42,7 +43,7 @@ public class ClientTerritoryCache {
         }
     }
 
-    public void updateChunks(ResourceLocation dimension, List<com.blib.mod.common.network.packet.S2CChunkClaimsSyncPayload.Entry> entries) {
+    public void updateChunks(ResourceLocation dimension, List<S2CChunkClaimsSyncPayload.Entry> entries) {
         for (var entry : entries) {
             updateChunk(dimension, entry.chunkX(), entry.chunkZ(), entry.factionIds());
         }
@@ -54,7 +55,7 @@ public class ClientTerritoryCache {
         int minChunkZ,
         int maxChunkX,
         int maxChunkZ,
-        List<com.blib.mod.common.network.packet.S2CChunkClaimsSyncPayload.Entry> entries
+        List<S2CChunkClaimsSyncPayload.Entry> entries
     ) {
         var factionsByChunk = factionsByDimension.computeIfAbsent(dimension, $ -> new HashMap<>());
         factionsByChunk

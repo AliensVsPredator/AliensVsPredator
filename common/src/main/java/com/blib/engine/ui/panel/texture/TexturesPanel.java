@@ -17,8 +17,8 @@ import com.blib.engine.ui.layout.UiText;
 
 /**
  * Lists the PNG textures the user has imported via the "Load Texture…" button. Clicking a row sets
- * {@link ModelerScene#activeTexture} so the modeler renderer, UV map overlay, and texture editor pick it up; clicking the
- * active row toggles it off.
+ * {@link ModelerScene#activeTexture} so the modeler renderer, UV map overlay, and texture editor pick it up; clicking
+ * the active row toggles it off.
  * <p>
  * Thumbnails are rendered by re-blitting each entry's already-registered
  * {@link net.minecraft.resources.ResourceLocation} scaled to the row's thumb rect — no separate thumbnail generation.
@@ -88,7 +88,13 @@ public final class TexturesPanel implements Panel {
         graphics.fill(buttonX, buttonY, buttonX + 1, buttonY + BUTTON_HEIGHT, BUTTON_BORDER_COLOR);
         graphics.fill(buttonX + buttonWidth - 1, buttonY, buttonX + buttonWidth, buttonY + BUTTON_HEIGHT, BUTTON_BORDER_COLOR);
         var label = "Load Texture…";
-        UiText.drawCentered(graphics, font, label, UiRect.of(buttonX + 2, buttonY, Math.max(0, buttonWidth - 4), BUTTON_HEIGHT), TEXT_COLOR);
+        UiText.drawCentered(
+            graphics,
+            font,
+            label,
+            UiRect.of(buttonX + 2, buttonY, Math.max(0, buttonWidth - 4), BUTTON_HEIGHT),
+            TEXT_COLOR
+        );
 
         // Rows region: below the button (with one PADDING gap), extending to the bottom of the panel.
         rowsTopY = buttonY + BUTTON_HEIGHT + PADDING;

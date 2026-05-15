@@ -21,6 +21,7 @@ import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.layout.ScrollViewport;
 import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.layout.UiText;
+import com.blib.engine.ui.layout.VerticalLayout;
 import com.blib.engine.ui.widget.ScrollContainer;
 import com.blib.engine.ui.widget.TextInput;
 
@@ -357,7 +358,7 @@ public final class ModelerInspectorPanel implements Panel {
         int count2
     ) {
         var row = UiRect.of(x + CONTENT_PADDING, y, Math.max(0, width - 2 * CONTENT_PADDING), font.lineHeight);
-        var columns = com.blib.engine.ui.layout.VerticalLayout.columns(row, 2, INPUT_GAP);
+        var columns = VerticalLayout.columns(row, 2, INPUT_GAP);
         UiText.drawClipped(graphics, font, label1 + ": " + count1, columns[0].x(), columns[0].y(), columns[0].width(), LABEL_COLOR);
         UiText.drawClipped(graphics, font, label2 + ": " + count2, columns[1].x(), columns[1].y(), columns[1].width(), LABEL_COLOR);
     }

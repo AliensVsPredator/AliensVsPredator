@@ -112,8 +112,8 @@ import com.blib.engine.ui.workspace.menubar.MenuBarController;
 public final class EngineWorkspaceScreen extends Screen {
 
     /**
-     * Pose scale applied to the entire workspace render. Layout uses logical pixels; physical
-     * size equals {@code logical × SCALE}.
+     * Pose scale applied to the entire workspace render. Layout uses logical pixels; physical size equals
+     * {@code logical × SCALE}.
      */
     private static final float SCALE = 0.375f;
 
@@ -2082,9 +2082,9 @@ public final class EngineWorkspaceScreen extends Screen {
     /**
      * Right-click in the viewport — opens a context menu at the cursor anchored as a {@link DropdownMenu}. When the
      * cursor was over a living entity, items include entity management actions such as Manage Factions and Delete
-     * Entity. The delete option is hidden for players since deleting other players via this menu would be inappropriate;
-     * the server-side handler also rejects player targets as a safety net. Empty-space right-clicks just close any
-     * existing menu.
+     * Entity. The delete option is hidden for players since deleting other players via this menu would be
+     * inappropriate; the server-side handler also rejects player targets as a safety net. Empty-space right-clicks just
+     * close any existing menu.
      */
     /**
      * Builds the viewport's right-click handler. Anonymous class rather than method reference because

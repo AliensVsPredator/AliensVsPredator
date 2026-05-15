@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -95,7 +96,7 @@ public final class BLibItemRendererConfigLoader extends SimpleJsonResourceReload
         Map<ResourceLocation, RawItemRendererConfig> raw
     ) {
         var visited = new LinkedHashSet<ResourceLocation>();
-        var chainTopDown = new java.util.ArrayList<RawItemRendererConfig>();
+        var chainTopDown = new ArrayList<RawItemRendererConfig>();
         var cursor = id;
 
         while (cursor != null) {

@@ -1,5 +1,6 @@
 package com.blib.engine.ui.panel.texture;
 
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -168,7 +169,15 @@ public final class TextureInspectorPanel implements Panel {
     private void drawSection(GuiGraphics graphics, UiRect rect, String label) {
         var font = EngineFont.get();
         graphics.fill(rect.x(), rect.y(), rect.right(), rect.bottom(), SECTION_BG_COLOR);
-        UiText.drawClipped(graphics, font, label, rect.x() + PADDING, rect.y() + 3, Math.max(0, rect.width() - 2 * PADDING), SECTION_TEXT_COLOR);
+        UiText.drawClipped(
+            graphics,
+            font,
+            label,
+            rect.x() + PADDING,
+            rect.y() + 3,
+            Math.max(0, rect.width() - 2 * PADDING),
+            SECTION_TEXT_COLOR
+        );
     }
 
     private void drawToolButtons(GuiGraphics graphics, VerticalLayout layout, int mouseX, int mouseY) {
@@ -227,11 +236,23 @@ public final class TextureInspectorPanel implements Panel {
             drawLabelValue(graphics, font, layout.take(ROW_HEIGHT).inset(0, PADDING, 0, PADDING), "Region", "(none)");
             return;
         }
-        drawLabelValue(graphics, font, layout.take(ROW_HEIGHT).inset(0, PADDING, 0, PADDING), "Origin", selection.x0() + ", " + selection.y0());
-        drawLabelValue(graphics, font, layout.take(ROW_HEIGHT).inset(0, PADDING, 0, PADDING), "Size", selection.width() + " x " + selection.height());
+        drawLabelValue(
+            graphics,
+            font,
+            layout.take(ROW_HEIGHT).inset(0, PADDING, 0, PADDING),
+            "Origin",
+            selection.x0() + ", " + selection.y0()
+        );
+        drawLabelValue(
+            graphics,
+            font,
+            layout.take(ROW_HEIGHT).inset(0, PADDING, 0, PADDING),
+            "Size",
+            selection.width() + " x " + selection.height()
+        );
     }
 
-    private void drawLabelValue(GuiGraphics graphics, net.minecraft.client.gui.Font font, UiRect row, String label, String value) {
+    private void drawLabelValue(GuiGraphics graphics, Font font, UiRect row, String label, String value) {
         UiText.drawLabelValue(graphics, font, row, label, value, 48, 5, LABEL_COLOR, TEXT_COLOR);
     }
 

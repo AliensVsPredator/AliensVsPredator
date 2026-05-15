@@ -154,7 +154,13 @@ public final class PathfindingDebugPanel implements Panel {
         rows.add(new Row(0, "Movement", SECTION_COLOR));
         rows.add(rowf(8, VELOCITY_COLOR, "Velocity: (%.4f, %.4f, %.4f)", payload.deltaX(), payload.deltaY(), payload.deltaZ()));
         rows.add(rowf(8, PHYSICS_COLOR, "Wanted:   (%.2f, %.2f, %.2f)", payload.wantedX(), payload.wantedY(), payload.wantedZ()));
-        rows.add(new Row(8, "Physics: " + (payload.onGround() ? "ON_GROUND" : "airborne") + " | " + (payload.inWater() ? "IN_WATER" : "dry"), PHYSICS_COLOR));
+        rows.add(
+            new Row(
+                8,
+                "Physics: " + (payload.onGround() ? "ON_GROUND" : "airborne") + " | " + (payload.inWater() ? "IN_WATER" : "dry"),
+                PHYSICS_COLOR
+            )
+        );
         rows.add(rowf(8, PHYSICS_COLOR, "Move: op=%s  speed=%.4f", payload.moveOperation(), payload.resolvedSpeed()));
         rows.add(new Row(8, "Solid: " + formatSurfaceBitmap(payload.surfaceSolidBitmap()), PHYSICS_COLOR));
         rows.add(emptyRow());

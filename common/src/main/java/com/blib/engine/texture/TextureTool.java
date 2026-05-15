@@ -4,6 +4,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Internal
 public enum TextureTool {
+
     SELECT("Select"),
     PENCIL("Pencil"),
     BUCKET("Bucket");

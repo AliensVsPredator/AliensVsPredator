@@ -10,10 +10,10 @@ import com.blib.engine.domain.selection.picking.Selectable;
  * Bridges a downstream-facing {@link com.blib.api.client.engine.v1.inspector.InspectorSection} (typed against a public
  * selection interface like {@link com.blib.api.client.engine.v1.selection.FactionSelection}) into the internal
  * {@link com.blib.engine.ui.panel.base.InspectorSection} (typed against {@link Selectable}). The adapter claims a
- * catch-all {@code Selectable} selectable-type so the internal registry routes every selection through it, then
- * filters per-render against the public section's declared selectable-type — that way an internal selectable like
- * {@code FactionSelectable} (which implements the public {@code FactionSelection}) flows through correctly without
- * the public API needing to know about internal selectable classes.
+ * catch-all {@code Selectable} selectable-type so the internal registry routes every selection through it, then filters
+ * per-render against the public section's declared selectable-type — that way an internal selectable like
+ * {@code FactionSelectable} (which implements the public {@code FactionSelection}) flows through correctly without the
+ * public API needing to know about internal selectable classes.
  */
 @ApiStatus.Internal
 public final class PublicInspectorSectionAdapter implements com.blib.engine.ui.panel.base.InspectorSection<Selectable> {

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -75,7 +76,7 @@ public class BLibFactionManager implements FactionManager, EntityReferenceOwner 
      * route through {@link #onMemberChanged}, which adds the affected id here; the tick flush pushes a members snapshot
      * for each entry and clears the set.
      */
-    private final java.util.Set<ResourceLocation> pendingMemberPushes = new java.util.HashSet<>();
+    private final Set<ResourceLocation> pendingMemberPushes = new HashSet<>();
 
     private BLibFactionManager() {
         this.factions = new HashMap<>();
@@ -435,7 +436,7 @@ public class BLibFactionManager implements FactionManager, EntityReferenceOwner 
 
     @Override
     public Set<UUID> referencedEntityUuids() {
-        var uuids = new java.util.HashSet<UUID>();
+        var uuids = new HashSet<UUID>();
         for (var faction : factions.values()) {
             for (var member : faction.membership().getMembers()) {
                 if (member instanceof FactionMember.Entity entityMember) {

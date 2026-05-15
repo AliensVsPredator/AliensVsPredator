@@ -223,7 +223,9 @@ public final class WorkspaceLayoutController {
     private static boolean panelTreeContainsLocalHistoryPanel(DockNode node) {
         return switch (node) {
             case DockNode.Leaf leaf -> panelOrTabsContainsLocalHistoryPanel(leaf.panel());
-            case DockNode.Split split -> panelTreeContainsLocalHistoryPanel(split.first()) || panelTreeContainsLocalHistoryPanel(split.second());
+            case DockNode.Split split -> panelTreeContainsLocalHistoryPanel(split.first()) || panelTreeContainsLocalHistoryPanel(
+                split.second()
+            );
         };
     }
 

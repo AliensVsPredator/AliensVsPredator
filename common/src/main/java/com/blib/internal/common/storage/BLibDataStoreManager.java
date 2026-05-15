@@ -43,11 +43,19 @@ public class BLibDataStoreManager {
         return chunk.get(serverLevel, chunkPos, holder);
     }
 
-    public <T extends DataStore> Option<T> getOrCreatePersistentChunk(ServerLevel serverLevel, ChunkPos chunkPos, BLibHolder<DataStoreType<T>> holder) {
+    public <T extends DataStore> Option<T> getOrCreatePersistentChunk(
+        ServerLevel serverLevel,
+        ChunkPos chunkPos,
+        BLibHolder<DataStoreType<T>> holder
+    ) {
         return chunk.getOrCreatePersistent(serverLevel, chunkPos, holder);
     }
 
-    public <T extends DataStore> void forEachStoredChunk(ServerLevel serverLevel, BLibHolder<DataStoreType<T>> holder, BiConsumer<ChunkPos, T> consumer) {
+    public <T extends DataStore> void forEachStoredChunk(
+        ServerLevel serverLevel,
+        BLibHolder<DataStoreType<T>> holder,
+        BiConsumer<ChunkPos, T> consumer
+    ) {
         chunk.forEachStoredChunk(serverLevel, holder, consumer);
     }
 

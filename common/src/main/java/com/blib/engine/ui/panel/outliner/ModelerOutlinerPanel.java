@@ -209,7 +209,15 @@ public final class ModelerOutlinerPanel implements Panel {
                 } else {
                     labelColor = BONE_COLOR;
                 }
-                UiText.drawClipped(graphics, font, row.label, labelX, labelY, Math.max(0, innerLeft + rowsContentWidth - labelX), labelColor);
+                UiText.drawClipped(
+                    graphics,
+                    font,
+                    row.label,
+                    labelX,
+                    labelY,
+                    Math.max(0, innerLeft + rowsContentWidth - labelX),
+                    labelColor
+                );
             }
         } finally {
             scroll.end(graphics, mouseX, mouseY);

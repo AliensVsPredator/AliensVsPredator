@@ -200,7 +200,8 @@ public final class EntityInspectorSection implements InspectorSection<EntitySele
 
     /**
      * Render entity-type tags for the selected entity. Runtime tags come from the entity type registry holder; pending
-     * inspector edits are overlaid from {@link TagStagingCache} so the UI reflects add/remove clicks before project reload.
+     * inspector edits are overlaid from {@link TagStagingCache} so the UI reflects add/remove clicks before project
+     * reload.
      */
     private int renderEntityTagsSection(
         GuiGraphics graphics,
@@ -326,8 +327,8 @@ public final class EntityInspectorSection implements InspectorSection<EntitySele
     }
 
     /**
-     * Effective tag set for an entity type as the inspector should display it: live runtime tags plus pending adds minus
-     * pending removes. Sorted by id for stable row order across frames.
+     * Effective tag set for an entity type as the inspector should display it: live runtime tags plus pending adds
+     * minus pending removes. Sorted by id for stable row order across frames.
      */
     private static List<ResourceLocation> effectiveEntityTags(ResourceLocation entityTypeId) {
         var entityRegistry = Registries.ENTITY_TYPE.location();
@@ -340,8 +341,8 @@ public final class EntityInspectorSection implements InspectorSection<EntitySele
     }
 
     /**
-     * Build the items list for the "+ Add tag" picker: every entity-type-registry catalog entry minus tags already shown
-     * for this entity type.
+     * Build the items list for the "+ Add tag" picker: every entity-type-registry catalog entry minus tags already
+     * shown for this entity type.
      */
     private List<SearchableSelect.Item<ResourceLocation>> availableEntityTagItems(ResourceLocation entityTypeId) {
         var entityRegistry = Registries.ENTITY_TYPE.location();

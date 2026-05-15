@@ -1,6 +1,7 @@
 package com.blib.engine.render.modeler;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -25,6 +26,7 @@ import org.joml.Vector3f;
 import com.blib.api.client.render.v1.BLibTransform;
 import com.blib.api.client.render.v1.item.BLibItemTransformMode;
 import com.blib.engine.gizmo.BLibItemTransformOverrides;
+import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.Selection;
 import com.blib.engine.modeler.gizmo.ModelerGizmoState;
 import com.blib.engine.modeler.item.ModelerItemSession;
@@ -85,7 +87,7 @@ public final class ModelerItemPreviewRenderer {
         // and we propagate override → shim. The gizmo target is set on the scene so ModelerGizmoRenderer picks the
         // shim instead of scene.selection without confusing the inspector / outliner.
         syncShimBone(session, wallFixed);
-        var scene = com.blib.engine.modeler.ModelerScene.get();
+        var scene = ModelerScene.get();
         scene.gizmoTargetSelection = new Selection.BoneSelection(session.gizmoShimBone);
 
         // GUI orientation isn't handled here anymore — ModelerRenderer's GUI-preview branch sets up an
@@ -250,7 +252,7 @@ public final class ModelerItemPreviewRenderer {
     }
 
     private static void addQuad(
-        com.mojang.blaze3d.vertex.BufferBuilder buffer,
+        BufferBuilder buffer,
         Matrix4f matrix,
         float x0,
         float y0,

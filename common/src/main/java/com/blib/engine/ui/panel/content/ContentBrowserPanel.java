@@ -312,7 +312,15 @@ public final class ContentBrowserPanel implements Panel {
 
     private int renderEmptyRow(GuiGraphics graphics, int x, int y, int width) {
         var font = EngineFont.get();
-        UiText.drawClipped(graphics, font, "(none)", x + 12, y + (ROW_HEIGHT - font.lineHeight + 2) / 2, Math.max(0, width - 12), EMPTY_TEXT_COLOR);
+        UiText.drawClipped(
+            graphics,
+            font,
+            "(none)",
+            x + 12,
+            y + (ROW_HEIGHT - font.lineHeight + 2) / 2,
+            Math.max(0, width - 12),
+            EMPTY_TEXT_COLOR
+        );
         return y + ROW_HEIGHT;
     }
 

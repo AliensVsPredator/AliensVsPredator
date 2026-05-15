@@ -285,13 +285,15 @@ public class BLibTerritoryManager {
             entries.add(new S2CChunkClaimsSyncPayload.Entry(pos.x, pos.z, visibleFactions));
 
             if (entries.size() >= SYNC_BATCH_SIZE) {
-                BLib.MOD.networking().sendToClient(player, S2CChunkClaimsSyncPayload.incremental(level.dimension().location(), List.copyOf(entries)));
+                BLib.MOD.networking()
+                    .sendToClient(player, S2CChunkClaimsSyncPayload.incremental(level.dimension().location(), List.copyOf(entries)));
                 entries.clear();
             }
         }
 
         if (!entries.isEmpty()) {
-            BLib.MOD.networking().sendToClient(player, S2CChunkClaimsSyncPayload.incremental(level.dimension().location(), List.copyOf(entries)));
+            BLib.MOD.networking()
+                .sendToClient(player, S2CChunkClaimsSyncPayload.incremental(level.dimension().location(), List.copyOf(entries)));
         }
     }
 
