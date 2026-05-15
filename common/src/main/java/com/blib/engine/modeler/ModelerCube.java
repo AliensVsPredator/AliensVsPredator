@@ -1,7 +1,12 @@
 package com.blib.engine.modeler;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 /**
  * Mutable cube draft inside the in-engine modeler. Field set mirrors {@code com.blib.internal.client.model.Cube} (the
@@ -11,6 +16,24 @@ import org.jetbrains.annotations.ApiStatus;
  */
 @ApiStatus.Internal
 public final class ModelerCube {
+
+    /** Renderer face keys in the same order as {@code ModelerCubeRenderer}'s +X/-X/+Y/-Y/+Z/-Z passes. */
+    public enum Face {
+        EAST,
+        WEST,
+        UP,
+        DOWN,
+        SOUTH,
+        NORTH
+    }
+
+    /** Texture-space rectangle for one imported per-face UV, expressed in texture pixels. */
+    public record FaceUv(double u, double v, double width, double height, @Nullable ResourceLocation textureSource) {
+
+        public FaceUv(double u, double v, double width, double height) {
+            this(u, v, width, height, null);
+        }
+    }
 
     public String name;
 
@@ -53,6 +76,12 @@ public final class ModelerCube {
      */
     public boolean hasPerFaceUv;
 
+    /**
+     * Imported per-face UV rectangles. The v1 editor still edits box UVs only, but render/import paths can preserve
+     * vanilla block model faces well enough to preview them correctly.
+     */
+    public final EnumMap<Face, FaceUv> faceUvs = new EnumMap<>(Face.class);
+
     public ModelerCube(String name, Vec3 origin, Vec3 size, Vec3 rotation, Vec3 pivot, double inflate) {
         this.name = name;
         this.origin = origin;
@@ -68,5 +97,20 @@ public final class ModelerCube {
 
     public static ModelerCube defaultCube(String name) {
         return new ModelerCube(name, new Vec3(0, 0, 0), new Vec3(8, 8, 8), Vec3.ZERO, new Vec3(0, 0, 0), 0.0);
+    }
+
+    public void setFaceUv(Face face, FaceUv uv) {
+        faceUvs.put(face, uv);
+        hasPerFaceUv = true;
+    }
+
+    public @Nullable FaceUv faceUv(Face face) {
+        return faceUvs.get(face);
+    }
+
+    public void replaceFaceUvs(Map<Face, FaceUv> next) {
+        faceUvs.clear();
+        faceUvs.putAll(next);
+        hasPerFaceUv = !faceUvs.isEmpty();
     }
 }

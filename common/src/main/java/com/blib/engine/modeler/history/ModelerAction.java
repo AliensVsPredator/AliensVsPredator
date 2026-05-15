@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.List;
+import java.util.Map;
 
 import com.blib.api.client.render.v1.BLibTransform;
 import com.blib.api.client.render.v1.item.BLibItemTransformMode;
@@ -61,7 +62,9 @@ public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, M
         double inflate,
         double uvOriginU,
         double uvOriginV,
-        boolean mirrorUv
+        boolean mirrorUv,
+        boolean hasPerFaceUv,
+        Map<ModelerCube.Face, ModelerCube.FaceUv> faceUvs
     ) {
 
         public static CubeMemento of(ModelerCube cube) {
@@ -74,7 +77,9 @@ public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, M
                 cube.inflate,
                 cube.uvOriginU,
                 cube.uvOriginV,
-                cube.mirrorUv
+                cube.mirrorUv,
+                cube.hasPerFaceUv,
+                Map.copyOf(cube.faceUvs)
             );
         }
 
@@ -88,6 +93,9 @@ public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, M
             cube.uvOriginU = uvOriginU;
             cube.uvOriginV = uvOriginV;
             cube.mirrorUv = mirrorUv;
+            cube.hasPerFaceUv = hasPerFaceUv;
+            cube.faceUvs.clear();
+            cube.faceUvs.putAll(faceUvs);
         }
 
         public boolean differsFrom(CubeMemento other) {
@@ -99,7 +107,9 @@ public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, M
                 || inflate != other.inflate
                 || uvOriginU != other.uvOriginU
                 || uvOriginV != other.uvOriginV
-                || mirrorUv != other.mirrorUv;
+                || mirrorUv != other.mirrorUv
+                || hasPerFaceUv != other.hasPerFaceUv
+                || !faceUvs.equals(other.faceUvs);
         }
     }
 

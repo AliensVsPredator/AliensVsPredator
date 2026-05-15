@@ -219,32 +219,37 @@ public final class ModelerCubeRenderer {
         if (!bone.cubes.isEmpty()) {
             var scene = ModelerScene.get();
             var active = scene.activeTexture;
-            if (active == null) {
-                renderFlatCubes(pose, bone.cubes);
-            } else {
-                // Split: hasPerFaceUv cubes can't use box-UV math, so they keep the flat render until v2 wires up
-                // per-face UV authoring. Textured cubes go through the position+tex+color path.
-                List<ModelerCube> textured = null;
-                List<ModelerCube> flat = null;
-                for (var cube : bone.cubes) {
-                    if (cube.hasPerFaceUv) {
-                        if (flat == null) {
-                            flat = new ArrayList<>();
-                        }
-                        flat.add(cube);
-                    } else {
-                        if (textured == null) {
-                            textured = new ArrayList<>();
-                        }
-                        textured.add(cube);
+            // Split: imported per-face UV cubes can preview through their captured face rectangles; legacy per-face
+            // cubes without rectangles stay flat because box-UV math would be misleading.
+            List<ModelerCube> boxTextured = null;
+            List<ModelerCube> perFaceTextured = null;
+            List<ModelerCube> flat = null;
+            for (var cube : bone.cubes) {
+                if (cube.hasPerFaceUv && !cube.faceUvs.isEmpty()) {
+                    if (perFaceTextured == null) {
+                        perFaceTextured = new ArrayList<>();
                     }
+                    perFaceTextured.add(cube);
+                } else if (active != null && !cube.hasPerFaceUv) {
+                    if (boxTextured == null) {
+                        boxTextured = new ArrayList<>();
+                    }
+                    boxTextured.add(cube);
+                } else {
+                    if (flat == null) {
+                        flat = new ArrayList<>();
+                    }
+                    flat.add(cube);
                 }
-                if (textured != null) {
-                    renderTexturedCubes(pose, textured, active.textureId(), (float) scene.textureWidth, (float) scene.textureHeight);
-                }
-                if (flat != null) {
-                    renderFlatCubes(pose, flat);
-                }
+            }
+            if (boxTextured != null) {
+                renderTexturedCubes(pose, boxTextured, active.textureId(), (float) scene.textureWidth, (float) scene.textureHeight);
+            }
+            if (perFaceTextured != null) {
+                renderPerFaceTexturedCubes(pose, perFaceTextured, scene);
+            }
+            if (flat != null) {
+                renderFlatCubes(pose, flat);
             }
         }
 
@@ -292,6 +297,72 @@ public final class ModelerCubeRenderer {
         if (built != null) {
             BufferUploader.drawWithShader(built);
         }
+    }
+
+    private static void renderPerFaceTexturedCubes(PoseStack pose, List<ModelerCube> cubes, ModelerScene scene) {
+        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+        ResourceLocation boundTexture = null;
+        BufferBuilder buffer = null;
+        var texW = (float) scene.textureWidth;
+        var texH = (float) scene.textureHeight;
+
+        for (var cube : cubes) {
+            pose.pushPose();
+            ModelerTransforms.applyCube(pose, cube);
+            var matrix = pose.last().pose();
+
+            var inflate = (float) cube.inflate;
+            var x0 = (float) cube.origin.x - inflate;
+            var y0 = (float) cube.origin.y - inflate;
+            var z0 = (float) cube.origin.z - inflate;
+            var x1 = x0 + (float) cube.size.x + 2 * inflate;
+            var y1 = y0 + (float) cube.size.y + 2 * inflate;
+            var z1 = z0 + (float) cube.size.z + 2 * inflate;
+
+            for (var face : ModelerCube.Face.values()) {
+                var uv = cube.faceUv(face);
+                if (uv == null) {
+                    continue;
+                }
+                var textureId = textureIdForFace(scene, uv);
+                if (textureId == null) {
+                    continue;
+                }
+                if (!textureId.equals(boundTexture)) {
+                    if (buffer != null) {
+                        var built = buffer.build();
+                        if (built != null) {
+                            BufferUploader.drawWithShader(built);
+                        }
+                    }
+                    boundTexture = textureId;
+                    RenderSystem.setShaderTexture(0, boundTexture);
+                    buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+                }
+                emitImportedFaceGeometry(buffer, matrix, cube, face, x0, y0, z0, x1, y1, z1, texW, texH);
+            }
+            pose.popPose();
+        }
+
+        if (buffer != null) {
+            var built = buffer.build();
+            if (built != null) {
+                BufferUploader.drawWithShader(built);
+            }
+        }
+    }
+
+    private static @Nullable ResourceLocation textureIdForFace(ModelerScene scene, ModelerCube.FaceUv uv) {
+        var source = uv.textureSource();
+        if (source != null) {
+            for (var loaded : scene.textures) {
+                if (source.equals(loaded.sourceResource())) {
+                    return loaded.textureId();
+                }
+            }
+        }
+        var active = scene.activeTexture;
+        return active != null ? active.textureId() : null;
     }
 
     private static void emitCubeFaces(BufferBuilder buffer, PoseStack pose, ModelerCube cube) {
@@ -371,6 +442,12 @@ public final class ModelerCubeRenderer {
         var x1 = x0 + (float) cube.size.x + 2 * inflate;
         var y1 = y0 + (float) cube.size.y + 2 * inflate;
         var z1 = z0 + (float) cube.size.z + 2 * inflate;
+
+        if (cube.hasPerFaceUv && !cube.faceUvs.isEmpty()) {
+            emitPerFaceUvs(buffer, matrix, cube, x0, y0, z0, x1, y1, z1, texW, texH);
+            pose.popPose();
+            return;
+        }
 
         var u = (float) cube.uvOriginU;
         var v = (float) cube.uvOriginV;
@@ -535,6 +612,219 @@ public final class ModelerCubeRenderer {
         );
 
         pose.popPose();
+    }
+
+    private static void emitPerFaceUvs(
+        BufferBuilder buffer,
+        Matrix4f matrix,
+        ModelerCube cube,
+        float x0,
+        float y0,
+        float z0,
+        float x1,
+        float y1,
+        float z1,
+        float texW,
+        float texH
+    ) {
+        for (var face : ModelerCube.Face.values()) {
+            emitImportedFaceGeometry(buffer, matrix, cube, face, x0, y0, z0, x1, y1, z1, texW, texH);
+        }
+    }
+
+    private static void emitImportedFaceGeometry(
+        BufferBuilder buffer,
+        Matrix4f matrix,
+        ModelerCube cube,
+        ModelerCube.Face face,
+        float x0,
+        float y0,
+        float z0,
+        float x1,
+        float y1,
+        float z1,
+        float texW,
+        float texH
+    ) {
+        switch (face) {
+            case EAST -> emitImportedFace(
+                buffer,
+                matrix,
+                cube,
+                face,
+                x1,
+                y0,
+                z0,
+                x1,
+                y1,
+                z0,
+                x1,
+                y1,
+                z1,
+                x1,
+                y0,
+                z1,
+                texW,
+                texH,
+                FACE_SHADE[0]
+            );
+            case WEST -> emitImportedFace(
+                buffer,
+                matrix,
+                cube,
+                face,
+                x0,
+                y0,
+                z1,
+                x0,
+                y1,
+                z1,
+                x0,
+                y1,
+                z0,
+                x0,
+                y0,
+                z0,
+                texW,
+                texH,
+                FACE_SHADE[1]
+            );
+            case UP -> emitImportedFace(
+                buffer,
+                matrix,
+                cube,
+                face,
+                x0,
+                y1,
+                z0,
+                x0,
+                y1,
+                z1,
+                x1,
+                y1,
+                z1,
+                x1,
+                y1,
+                z0,
+                texW,
+                texH,
+                FACE_SHADE[2]
+            );
+            case DOWN -> emitImportedFace(
+                buffer,
+                matrix,
+                cube,
+                face,
+                x0,
+                y0,
+                z1,
+                x0,
+                y0,
+                z0,
+                x1,
+                y0,
+                z0,
+                x1,
+                y0,
+                z1,
+                texW,
+                texH,
+                FACE_SHADE[3]
+            );
+            case SOUTH -> emitImportedFace(
+                buffer,
+                matrix,
+                cube,
+                face,
+                x1,
+                y0,
+                z1,
+                x1,
+                y1,
+                z1,
+                x0,
+                y1,
+                z1,
+                x0,
+                y0,
+                z1,
+                texW,
+                texH,
+                FACE_SHADE[4]
+            );
+            case NORTH -> emitImportedFace(
+                buffer,
+                matrix,
+                cube,
+                face,
+                x0,
+                y0,
+                z0,
+                x0,
+                y1,
+                z0,
+                x1,
+                y1,
+                z0,
+                x1,
+                y0,
+                z0,
+                texW,
+                texH,
+                FACE_SHADE[5]
+            );
+        }
+    }
+
+    private static void emitImportedFace(
+        BufferBuilder buffer,
+        Matrix4f matrix,
+        ModelerCube cube,
+        ModelerCube.Face face,
+        float vx0,
+        float vy0,
+        float vz0,
+        float vx1,
+        float vy1,
+        float vz1,
+        float vx2,
+        float vy2,
+        float vz2,
+        float vx3,
+        float vy3,
+        float vz3,
+        float texW,
+        float texH,
+        float shade
+    ) {
+        var uv = cube.faceUv(face);
+        if (uv == null) {
+            return;
+        }
+        emitTexturedFace(
+            buffer,
+            matrix,
+            vx0,
+            vy0,
+            vz0,
+            vx1,
+            vy1,
+            vz1,
+            vx2,
+            vy2,
+            vz2,
+            vx3,
+            vy3,
+            vz3,
+            (float) uv.u(),
+            (float) uv.v(),
+            (float) uv.width(),
+            (float) uv.height(),
+            texW,
+            texH,
+            true,
+            shade
+        );
     }
 
     private static void emitTexturedFace(

@@ -3,6 +3,7 @@ package com.blib.engine.ui.panel.viewport;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -19,6 +20,7 @@ import java.util.Locale;
 import com.blib.api.client.registry.v1.AzItemRendererRegistry;
 import com.blib.api.client.render.v1.item.BLibItemTransformMode;
 import com.blib.engine.gizmo.BLibItemTransformOverrides;
+import com.blib.engine.modeler.ModelerBlockModelLoader;
 import com.blib.engine.modeler.ModelerBone;
 import com.blib.engine.modeler.ModelerCamera;
 import com.blib.engine.modeler.ModelerCube;
@@ -702,6 +704,7 @@ public final class ModelerViewportPanel implements Panel {
         return List
             .of(
                 new DropdownMenu.Item("From File…", ModelerViewportPanel::openGeoModelFromFile),
+                new DropdownMenu.Item("Block Model…", ModelerViewportPanel::openBlockModelPicker),
                 new DropdownMenu.Item("Item Config…", ModelerViewportPanel::openItemConfigPicker)
             );
     }
@@ -794,6 +797,39 @@ public final class ModelerViewportPanel implements Panel {
                 ResourceLocation::toString,
                 null,
                 id -> ModelerScene.get().attachItemSession(id)
+            );
+    }
+
+    /**
+     * FILE → Open → "Block Model…" — list every registered block, then import the selected blockstate/model JSON into
+     * the modeler as cubes plus resource-backed block textures.
+     */
+    private static void openBlockModelPicker() {
+        var ids = new ArrayList<ResourceLocation>();
+        for (var block : BuiltInRegistries.BLOCK) {
+            ids.add(BuiltInRegistries.BLOCK.getKey(block));
+        }
+        ids.sort((a, b) -> a.toString().compareToIgnoreCase(b.toString()));
+
+        var items = new ArrayList<SearchableSelect.Item<ResourceLocation>>(ids.size());
+        for (var id : ids) {
+            items.add(new SearchableSelect.Item<>(id, id.toString()));
+        }
+
+        var chipRect = ModelerMenuBar.chipRect(ModelerMenuBar.CHIP_FILE);
+        int anchorX = chipRect != null ? chipRect.x() : 8;
+        int anchorY = chipRect != null ? chipRect.y() : 8;
+        int anchorHeight = chipRect != null ? chipRect.height() : 12;
+        SearchableSelect
+            .openPopupAt(
+                anchorX,
+                anchorY,
+                280,
+                anchorHeight,
+                items,
+                ResourceLocation::toString,
+                null,
+                ModelerBlockModelLoader::load
             );
     }
 
