@@ -1,5 +1,6 @@
 package com.blib.engine.ui.panel.texture;
 
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
@@ -18,7 +19,7 @@ import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.layout.UiText;
 
 /**
- * Lists the PNG textures the user has imported via the "Load Texture…" button. Clicking a row sets
+ * Lists the PNG textures the user has imported via the import button. Clicking a row sets
  * {@link ModelerScene#activeTexture} so the modeler renderer, UV map overlay, and texture editor pick it up; clicking
  * the active row toggles it off.
  * <p>
@@ -50,13 +51,17 @@ public final class TexturesPanel implements Panel {
 
     private static final int TEXT_COLOR = 0xFFD0D0D0;
 
+    private static final int META_TEXT_COLOR = 0xFF808088;
+
+    private static final int RESOLUTION_TEXT_COLOR = 0xFFE6C26B;
+
     private static final int PADDING = 6;
 
     private static final int BUTTON_SIZE = 16;
 
-    private static final int ROW_HEIGHT = 22;
+    private static final int ROW_HEIGHT = 34;
 
-    private static final int THUMB_SIZE = 18;
+    private static final int THUMB_SIZE = 28;
 
     private final ScrollViewport scroll = new ScrollViewport();
 
@@ -140,9 +145,12 @@ public final class TexturesPanel implements Panel {
                 graphics.blit(row.textureId(), thumbX, thumbY, 0, 0, THUMB_SIZE, THUMB_SIZE, THUMB_SIZE, THUMB_SIZE);
 
                 var labelX = thumbX + THUMB_SIZE + 6;
-                var labelY = rowTop + (ROW_HEIGHT - font.lineHeight + 2) / 2;
+                var labelY = rowTop + 5;
                 var nameMaxWidth = rowsLeftX + rowsContentWidth - labelX - 2;
                 UiText.drawClipped(graphics, font, row.displayName(), labelX, labelY, nameMaxWidth, TEXT_COLOR);
+
+                var metaY = labelY + font.lineHeight + 1;
+                drawTextureMeta(graphics, font, row, scene, labelX, metaY, nameMaxWidth);
             }
         } finally {
             scroll.end(graphics, mouseX, mouseY);
@@ -231,6 +239,49 @@ public final class TexturesPanel implements Panel {
         var cy = y + BUTTON_SIZE / 2;
         graphics.fill(cx - 4, cy, cx + 5, cy + 1, BUTTON_ICON_COLOR);
         graphics.fill(cx, cy - 4, cx + 1, cy + 5, BUTTON_ICON_COLOR);
+    }
+
+    private static void drawTextureMeta(
+        GuiGraphics graphics,
+        Font font,
+        LoadedTexture texture,
+        ModelerScene scene,
+        int x,
+        int y,
+        int width
+    ) {
+        var dims = textureDimensions(texture);
+        var resolution = textureResolution(texture, scene);
+        var gap = 8;
+        var resolutionWidth = font.width(resolution);
+        var available = Math.max(0, width);
+        if (available <= resolutionWidth + gap) {
+            UiText.drawClipped(graphics, font, dims, x, y, available, META_TEXT_COLOR);
+            return;
+        }
+
+        var dimsWidth = Math.min(font.width(dims), available - resolutionWidth - gap);
+        UiText.drawClipped(graphics, font, dims, x, y, dimsWidth, META_TEXT_COLOR);
+        UiText.drawClipped(graphics, font, resolution, x + dimsWidth + gap, y, resolutionWidth, RESOLUTION_TEXT_COLOR);
+    }
+
+    private static String textureDimensions(LoadedTexture texture) {
+        var pixels = texture.texture().getPixels();
+        if (pixels == null) {
+            return "-";
+        }
+        return pixels.getWidth() + "x" + pixels.getHeight();
+    }
+
+    private static String textureResolution(LoadedTexture texture, ModelerScene scene) {
+        var pixels = texture.texture().getPixels();
+        if (pixels == null) {
+            return "-";
+        }
+        var baseWidth = scene.textureWidth > 0.0 ? scene.textureWidth : pixels.getWidth();
+        var baseHeight = scene.textureHeight > 0.0 ? scene.textureHeight : pixels.getHeight();
+        var scale = Math.max(pixels.getWidth() / baseWidth, pixels.getHeight() / baseHeight);
+        return Math.max(1, (int) Math.round(16.0 * scale)) + "x";
     }
 
 }
