@@ -52,6 +52,8 @@ public final class ModelerInspectorPanel implements Panel {
 
     private static final int WARNING_COLOR = 0xFFE6C26B;
 
+    private static final String BLOCK_BONE_TRANSFORM_NOTE = "Java block JSON has no group transform; select elements to edit them.";
+
     /**
      * Axis tint colors painted as a small triangle in each input's top-right corner. Match the gizmo's red / green /
      * blue X/Y/Z palette so the inspector and viewport read the same axis affordance.
@@ -265,6 +267,21 @@ public final class ModelerInspectorPanel implements Panel {
     private void renderBone(GuiGraphics graphics, int x, int y, int width, ModelerBone bone, int mouseX, int mouseY) {
         var font = EngineFont.get();
         drawHeader(graphics, x, y, width, "Bone: " + bone.name);
+
+        if (ModelerScene.get().isJavaBlockModel()) {
+            var rowY = y + HEADER_TOP_PADDING + font.lineHeight + HEADER_TO_SECTION_GAP;
+            UiText.drawClipped(
+                graphics,
+                font,
+                BLOCK_BONE_TRANSFORM_NOTE,
+                x + CONTENT_PADDING,
+                rowY,
+                Math.max(0, width - 2 * CONTENT_PADDING),
+                WARNING_COLOR
+            );
+            drawCountRow(graphics, font, x, rowY + font.lineHeight + ROW_GAP, width, "Children", bone.children.size(), "Cubes", bone.cubes.size());
+            return;
+        }
 
         // Bones only expose pivot + rotation in the inspector; position and size (scale) edits aren't meaningful for
         // a bone group and were dropped for the same reason Blockbench keeps the bone properties minimal.
@@ -565,6 +582,9 @@ public final class ModelerInspectorPanel implements Panel {
             return CONTENT_PADDING + headerHeight + CONTENT_PADDING;
         }
         if (scene.selection instanceof Selection.BoneSelection) {
+            if (scene.isJavaBlockModel()) {
+                return CONTENT_PADDING + headerHeight + font.lineHeight + ROW_GAP + font.lineHeight + CONTENT_PADDING;
+            }
             return CONTENT_PADDING + headerHeight + 2 * inspectorSectionHeight() + CONTENT_PADDING + font.lineHeight + CONTENT_PADDING;
         }
         if (scene.isJavaBlockModel()) {
@@ -669,6 +689,9 @@ public final class ModelerInspectorPanel implements Panel {
             }
             pushCubeMemento(cube, before, cubeMementoDescription(field, cube.name));
         } else if (sel instanceof Selection.BoneSelection bs) {
+            if (ModelerScene.get().isJavaBlockModel()) {
+                return;
+            }
             var bone = bs.bone();
             var before = ModelerAction.BoneMemento.of(bone);
             switch (field) {

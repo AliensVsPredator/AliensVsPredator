@@ -246,19 +246,23 @@ public final class ModelerGizmoRenderer {
         ModelerGizmoMode mode,
         Matrix4f projectionForCapture
     ) {
+        var bone = selection.bone();
+        boolean isItemTransformShim = scene.itemSession != null && scene.itemSession.gizmoShimBone == bone;
+        if (scene.isJavaBlockModel() && !isItemTransformShim) {
+            ModelerGizmoState.setLastRender(null);
+            return;
+        }
         if (mode == ModelerGizmoMode.RESIZE) {
             ModelerGizmoState.setLastRender(null);
             return;
         }
 
-        var bone = selection.bone();
         var pose = new PoseStack();
         pose.last().pose().mul(scenePose);
 
         // Item-transform shim bones live outside the scene's bone tree — they're a synthetic target that mirrors a
         // BLibTransform via the gizmoTargetSelection override. Skip the bone-tree walk and just apply the scene pose
         // directly; the shim's own applyBone below positions it at its translation/pivot/rotation.
-        boolean isItemTransformShim = scene.itemSession != null && scene.itemSession.gizmoShimBone == bone;
         if (!isItemTransformShim && !walkToParent(pose, scene.root, bone)) {
             ModelerGizmoState.setLastRender(null);
             return;

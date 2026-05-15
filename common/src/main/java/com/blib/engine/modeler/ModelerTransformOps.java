@@ -57,6 +57,9 @@ public final class ModelerTransformOps {
             rotateSelectedCubes(selected, axis, degrees);
             return;
         }
+        if (scene.isJavaBlockModel()) {
+            return;
+        }
 
         var root = scene.root;
         var before = ModelerAction.BoneMemento.of(root);

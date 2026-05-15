@@ -672,6 +672,9 @@ public final class ModelerGizmoInput {
      * </ul>
      */
     private static void applyBoneTranslate(ModelerGizmoState.DragState drag, double cx, double cy, int w, int h) {
+        if (ModelerScene.get().isJavaBlockModel()) {
+            return;
+        }
         var s = drag.startSnapshot();
         var bone = s.bone();
         var baseline = drag.startBone();
@@ -708,6 +711,9 @@ public final class ModelerGizmoInput {
      * rotation, decompose back to Z-Y-X Euler.
      */
     private static void applyBoneRotate(ModelerGizmoState.DragState drag, double cx, double cy, int w, int h) {
+        if (ModelerScene.get().isJavaBlockModel()) {
+            return;
+        }
         var s = drag.startSnapshot();
         var bone = s.bone();
         var baseline = drag.startBone();
@@ -780,6 +786,9 @@ public final class ModelerGizmoInput {
      * </ol>
      */
     private static void applyBonePivotTranslate(ModelerGizmoState.DragState drag, double cx, double cy, int w, int h) {
+        if (ModelerScene.get().isJavaBlockModel()) {
+            return;
+        }
         var s = drag.startSnapshot();
         var bone = s.bone();
         var baseline = drag.startBone();
@@ -837,6 +846,9 @@ public final class ModelerGizmoInput {
      * (uniform-scale) semantic; per-axis scaling would need three independent baselines and isn't a target of v1.
      */
     private static void applyBoneScale(ModelerGizmoState.DragState drag, double cx, double cy, int w, int h) {
+        if (ModelerScene.get().isJavaBlockModel()) {
+            return;
+        }
         var s = drag.startSnapshot();
         var bone = s.bone();
         var baseline = drag.startBone();

@@ -633,33 +633,52 @@ public final class ModelerViewportPanel implements Panel {
      * dropdown reads as a precise gesture rather than an ambiguous direction toggle.
      */
     private static List<DropdownMenu.Item> buildRotateSubmenu() {
+        var canRotate = canUseRotateTransform();
+        var disabledTooltip = Component.literal("Java block models do not store group rotation. Select elements to rotate them.");
         return List
             .of(
                 new DropdownMenu.Item(
                     "+90° around X",
-                    () -> ModelerTransformOps.rotate(ModelerTransformOps.Axis.X, 90)
+                    () -> ModelerTransformOps.rotate(ModelerTransformOps.Axis.X, 90),
+                    canRotate,
+                    disabledTooltip
                 ),
                 new DropdownMenu.Item(
                     "-90° around X",
-                    () -> ModelerTransformOps.rotate(ModelerTransformOps.Axis.X, -90)
+                    () -> ModelerTransformOps.rotate(ModelerTransformOps.Axis.X, -90),
+                    canRotate,
+                    disabledTooltip
                 ),
                 new DropdownMenu.Item(
                     "+90° around Y",
-                    () -> ModelerTransformOps.rotate(ModelerTransformOps.Axis.Y, 90)
+                    () -> ModelerTransformOps.rotate(ModelerTransformOps.Axis.Y, 90),
+                    canRotate,
+                    disabledTooltip
                 ),
                 new DropdownMenu.Item(
                     "-90° around Y",
-                    () -> ModelerTransformOps.rotate(ModelerTransformOps.Axis.Y, -90)
+                    () -> ModelerTransformOps.rotate(ModelerTransformOps.Axis.Y, -90),
+                    canRotate,
+                    disabledTooltip
                 ),
                 new DropdownMenu.Item(
                     "+90° around Z",
-                    () -> ModelerTransformOps.rotate(ModelerTransformOps.Axis.Z, 90)
+                    () -> ModelerTransformOps.rotate(ModelerTransformOps.Axis.Z, 90),
+                    canRotate,
+                    disabledTooltip
                 ),
                 new DropdownMenu.Item(
                     "-90° around Z",
-                    () -> ModelerTransformOps.rotate(ModelerTransformOps.Axis.Z, -90)
+                    () -> ModelerTransformOps.rotate(ModelerTransformOps.Axis.Z, -90),
+                    canRotate,
+                    disabledTooltip
                 )
             );
+    }
+
+    private static boolean canUseRotateTransform() {
+        var scene = ModelerScene.get();
+        return !scene.isJavaBlockModel() || hasCubeSelection();
     }
 
     /** "Flip" submenu — one entry per axis. */
