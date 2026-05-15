@@ -1,7 +1,9 @@
 package com.blib.engine.ui.panel.texture;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +40,8 @@ public final class TexturesPanel implements Panel {
 
     private static final int BUTTON_BORDER_COLOR = 0xFF505058;
 
+    private static final int BUTTON_ICON_COLOR = 0xFFD0D0D0;
+
     private static final int ROW_HOVER_COLOR = 0xFF24242A;
 
     private static final int ROW_SELECTED_COLOR = 0xFF3A3A48;
@@ -48,13 +52,15 @@ public final class TexturesPanel implements Panel {
 
     private static final int PADDING = 6;
 
-    private static final int BUTTON_HEIGHT = 16;
+    private static final int BUTTON_SIZE = 16;
 
     private static final int ROW_HEIGHT = 22;
 
     private static final int THUMB_SIZE = 18;
 
     private final ScrollViewport scroll = new ScrollViewport();
+
+    private @Nullable Component hoveredTooltip;
 
     private int panelX, panelY, panelWidth, panelHeight;
 
@@ -68,7 +74,13 @@ public final class TexturesPanel implements Panel {
     }
 
     @Override
+    public @Nullable Component tooltipText() {
+        return hoveredTooltip;
+    }
+
+    @Override
     public void render(GuiGraphics graphics, int x, int y, int width, int height, int mouseX, int mouseY, float partialTick) {
+        hoveredTooltip = null;
         panelX = x;
         panelY = y;
         panelWidth = width;
@@ -80,24 +92,20 @@ public final class TexturesPanel implements Panel {
 
         buttonX = x + PADDING;
         buttonY = y + PADDING;
-        buttonWidth = Math.max(0, width - 2 * PADDING);
-        var buttonHovered = mouseX >= buttonX && mouseX < buttonX + buttonWidth && mouseY >= buttonY && mouseY < buttonY + BUTTON_HEIGHT;
-        graphics.fill(buttonX, buttonY, buttonX + buttonWidth, buttonY + BUTTON_HEIGHT, buttonHovered ? BUTTON_HOVER_COLOR : BUTTON_COLOR);
+        buttonWidth = BUTTON_SIZE;
+        var buttonHovered = mouseX >= buttonX && mouseX < buttonX + buttonWidth && mouseY >= buttonY && mouseY < buttonY + BUTTON_SIZE;
+        if (buttonHovered) {
+            hoveredTooltip = Component.literal("Load texture");
+        }
+        graphics.fill(buttonX, buttonY, buttonX + buttonWidth, buttonY + BUTTON_SIZE, buttonHovered ? BUTTON_HOVER_COLOR : BUTTON_COLOR);
         graphics.fill(buttonX, buttonY, buttonX + buttonWidth, buttonY + 1, BUTTON_BORDER_COLOR);
-        graphics.fill(buttonX, buttonY + BUTTON_HEIGHT - 1, buttonX + buttonWidth, buttonY + BUTTON_HEIGHT, BUTTON_BORDER_COLOR);
-        graphics.fill(buttonX, buttonY, buttonX + 1, buttonY + BUTTON_HEIGHT, BUTTON_BORDER_COLOR);
-        graphics.fill(buttonX + buttonWidth - 1, buttonY, buttonX + buttonWidth, buttonY + BUTTON_HEIGHT, BUTTON_BORDER_COLOR);
-        var label = "Load Texture…";
-        UiText.drawCentered(
-            graphics,
-            font,
-            label,
-            UiRect.of(buttonX + 2, buttonY, Math.max(0, buttonWidth - 4), BUTTON_HEIGHT),
-            TEXT_COLOR
-        );
+        graphics.fill(buttonX, buttonY + BUTTON_SIZE - 1, buttonX + buttonWidth, buttonY + BUTTON_SIZE, BUTTON_BORDER_COLOR);
+        graphics.fill(buttonX, buttonY, buttonX + 1, buttonY + BUTTON_SIZE, BUTTON_BORDER_COLOR);
+        graphics.fill(buttonX + buttonWidth - 1, buttonY, buttonX + buttonWidth, buttonY + BUTTON_SIZE, BUTTON_BORDER_COLOR);
+        drawPlusIcon(graphics, buttonX, buttonY);
 
         // Rows region: below the button (with one PADDING gap), extending to the bottom of the panel.
-        rowsTopY = buttonY + BUTTON_HEIGHT + PADDING;
+        rowsTopY = buttonY + BUTTON_SIZE + PADDING;
         rowsLeftX = x + PADDING;
         rowsViewportHeight = Math.max(0, (y + height) - rowsTopY - PADDING);
         var innerWidth = Math.max(0, width - 2 * PADDING);
@@ -149,7 +157,7 @@ public final class TexturesPanel implements Panel {
         if (mouseX < panelX || mouseX >= panelX + panelWidth || mouseY < panelY || mouseY >= panelY + panelHeight) {
             return false;
         }
-        if (mouseX >= buttonX && mouseX < buttonX + buttonWidth && mouseY >= buttonY && mouseY < buttonY + BUTTON_HEIGHT) {
+        if (mouseX >= buttonX && mouseX < buttonX + buttonWidth && mouseY >= buttonY && mouseY < buttonY + BUTTON_SIZE) {
             openTexturePicker();
             return true;
         }
@@ -216,6 +224,13 @@ public final class TexturesPanel implements Panel {
         if (lastLoaded != null) {
             scene.activeTexture = lastLoaded;
         }
+    }
+
+    private static void drawPlusIcon(GuiGraphics graphics, int x, int y) {
+        var cx = x + BUTTON_SIZE / 2;
+        var cy = y + BUTTON_SIZE / 2;
+        graphics.fill(cx - 4, cy, cx + 5, cy + 1, BUTTON_ICON_COLOR);
+        graphics.fill(cx, cy - 4, cx + 1, cy + 5, BUTTON_ICON_COLOR);
     }
 
 }
