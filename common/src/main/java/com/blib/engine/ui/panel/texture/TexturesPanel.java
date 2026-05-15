@@ -81,7 +81,7 @@ public final class TexturesPanel implements Panel {
 
     private final @Nullable PanelMenuOpener panelMenuOpener;
 
-    private static @Nullable Path copiedTexturePath;
+    private static @Nullable TextureClipboard copiedTexture;
 
     private @Nullable Component hoveredTooltip;
 
@@ -224,12 +224,12 @@ public final class TexturesPanel implements Panel {
 
         var copyTexture = new DropdownMenu.Item("Copy", () -> copyTexture(texture));
         var duplicateTexture = new DropdownMenu.Item("Duplicate", () -> duplicateTexture(texture));
-        var sourceFileAvailable = Files.isRegularFile(texture.sourcePath());
+        var sourceAvailable = TextureLoader.canReload(texture);
         var refreshTexture = new DropdownMenu.Item(
             "Refresh",
             () -> refreshTexture(texture),
-            sourceFileAvailable,
-            Component.literal("The source file is no longer available.")
+            sourceAvailable,
+            Component.literal("The source texture is no longer available.")
         );
         var deleteTexture = new DropdownMenu.Item("Delete", () -> deleteTexture(texture));
         var sourceDir = sourceDirectory(texture);
@@ -253,10 +253,10 @@ public final class TexturesPanel implements Panel {
             return true;
         }
 
-        var pasteEnabled = copiedTexturePath != null && Files.isRegularFile(copiedTexturePath);
-        var disabledTooltip = copiedTexturePath == null
+        var pasteEnabled = copiedTexture != null && copiedTexture.isAvailable();
+        var disabledTooltip = copiedTexture == null
             ? Component.literal("Copy a texture first.")
-            : Component.literal("The copied texture source file is no longer available.");
+            : Component.literal("The copied texture source is no longer available.");
         var pasteTexture = new DropdownMenu.Item(
             "Paste",
             TexturesPanel::pasteCopiedTexture,
@@ -339,21 +339,22 @@ public final class TexturesPanel implements Panel {
     private static void openTextureSourceFolder(LoadedTexture texture) {
         var sourceDir = sourceDirectory(texture);
         if (sourceDir == null) {
-            LOGGER.warn("TexturesPanel: source folder is unavailable for {}", texture.sourcePath());
+            LOGGER.warn("TexturesPanel: source folder is unavailable for {}", sourceDescription(texture));
             return;
         }
         Util.getPlatform().openUri(sourceDir.toUri());
     }
 
     private static void copyTexture(LoadedTexture texture) {
-        copiedTexturePath = texture.sourcePath().toAbsolutePath().normalize();
+        copiedTexture = TextureClipboard.of(texture);
     }
 
     private static void pasteCopiedTexture() {
-        if (copiedTexturePath == null) {
+        var clipboard = copiedTexture;
+        if (clipboard == null) {
             return;
         }
-        loadTextureFromPath(copiedTexturePath);
+        clipboard.load();
     }
 
     private static @Nullable LoadedTexture loadTextureFromPath(Path path) {
@@ -387,7 +388,7 @@ public final class TexturesPanel implements Panel {
     }
 
     private static void refreshTexture(LoadedTexture texture) {
-        if (!TextureLoader.reloadFromDisk(texture)) {
+        if (!TextureLoader.reload(texture)) {
             return;
         }
         if (ModelerScene.get().activeTexture == texture) {
@@ -402,12 +403,25 @@ public final class TexturesPanel implements Panel {
     }
 
     private static @Nullable Path sourceDirectory(LoadedTexture texture) {
+        if (texture.sourcePath() == null) {
+            return null;
+        }
         var source = texture.sourcePath().toAbsolutePath().normalize();
         var dir = Files.isDirectory(source) ? source : source.getParent();
         if (dir == null || !Files.isDirectory(dir)) {
             return null;
         }
         return dir;
+    }
+
+    private static String sourceDescription(LoadedTexture texture) {
+        if (texture.sourcePath() != null) {
+            return texture.sourcePath().toString();
+        }
+        if (texture.sourceResource() != null) {
+            return texture.sourceResource().toString();
+        }
+        return texture.displayName();
     }
 
     private void renderMenuBar(GuiGraphics graphics, int x, int y, int width, int mouseX, int mouseY, Font font) {
@@ -486,6 +500,37 @@ public final class TexturesPanel implements Panel {
         var baseHeight = scene.textureHeight > 0.0 ? scene.textureHeight : pixels.getHeight();
         var scale = Math.max(pixels.getWidth() / baseWidth, pixels.getHeight() / baseHeight);
         return Math.max(1, (int) Math.round(16.0 * scale)) + "x";
+    }
+
+    private record TextureClipboard(
+        String displayName,
+        @Nullable Path sourcePath,
+        @Nullable net.minecraft.resources.ResourceLocation sourceResource
+    ) {
+
+        static TextureClipboard of(LoadedTexture texture) {
+            var path = texture.sourcePath() == null ? null : texture.sourcePath().toAbsolutePath().normalize();
+            return new TextureClipboard(texture.displayName(), path, texture.sourceResource());
+        }
+
+        boolean isAvailable() {
+            if (sourcePath != null) {
+                return Files.isRegularFile(sourcePath);
+            }
+            return sourceResource != null
+                && net.minecraft.client.Minecraft.getInstance().getResourceManager().getResource(sourceResource).isPresent();
+        }
+
+        void load() {
+            if (sourcePath != null) {
+                loadTextureFromPath(sourcePath);
+            } else if (sourceResource != null) {
+                var loaded = TextureLoader.loadFromResource(sourceResource, displayName);
+                if (loaded != null) {
+                    addLoadedTexture(loaded);
+                }
+            }
+        }
     }
 
 }

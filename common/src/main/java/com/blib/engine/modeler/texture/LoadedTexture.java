@@ -3,6 +3,7 @@ package com.blib.engine.modeler.texture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 
@@ -14,7 +15,25 @@ import java.nio.file.Path;
 @ApiStatus.Internal
 public record LoadedTexture(
     String displayName,
-    Path sourcePath,
+    @Nullable Path sourcePath,
+    @Nullable ResourceLocation sourceResource,
     ResourceLocation textureId,
     DynamicTexture texture
-) {}
+) {
+
+    public LoadedTexture(String displayName, Path sourcePath, ResourceLocation textureId, DynamicTexture texture) {
+        this(displayName, sourcePath, null, textureId, texture);
+    }
+
+    public LoadedTexture(String displayName, ResourceLocation sourceResource, ResourceLocation textureId, DynamicTexture texture) {
+        this(displayName, null, sourceResource, textureId, texture);
+    }
+
+    public boolean isFileBacked() {
+        return sourcePath != null;
+    }
+
+    public boolean isResourceBacked() {
+        return sourceResource != null;
+    }
+}

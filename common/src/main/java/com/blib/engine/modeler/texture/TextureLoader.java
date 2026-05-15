@@ -44,18 +44,42 @@ public final class TextureLoader {
         }
 
         var fileName = path.getFileName().toString();
-        return register(fileName, path, image);
+        return register(fileName, path, null, image);
     }
 
-    /** Reload the pixels of an existing runtime texture from its original source path. */
-    public static boolean reloadFromDisk(LoadedTexture target) {
-        var image = readImage(target.sourcePath());
+    /**
+     * Read a PNG from the active resource packs, upload it as an editable runtime texture, and remember the resource
+     * location so refresh can pull the latest resource-pack version later.
+     */
+    public static @Nullable LoadedTexture loadFromResource(ResourceLocation resource, String displayName) {
+        var image = readResource(resource);
+        if (image == null) {
+            return null;
+        }
+        return register(displayName, null, resource, image);
+    }
+
+    /** Reload the pixels of an existing runtime texture from its original disk path or resource-pack location. */
+    public static boolean reload(LoadedTexture target) {
+        NativeImage image = null;
+        if (target.sourcePath() != null) {
+            image = readImage(target.sourcePath());
+        } else if (target.sourceResource() != null) {
+            image = readResource(target.sourceResource());
+        }
         if (image == null) {
             return false;
         }
         target.texture().setPixels(image);
         target.texture().upload();
         return true;
+    }
+
+    public static boolean canReload(LoadedTexture target) {
+        if (target.sourcePath() != null) {
+            return Files.isRegularFile(target.sourcePath());
+        }
+        return target.sourceResource() != null && Minecraft.getInstance().getResourceManager().getResource(target.sourceResource()).isPresent();
     }
 
     private static @Nullable NativeImage readImage(Path path) {
@@ -67,6 +91,23 @@ public final class TextureLoader {
         } catch (RuntimeException e) {
             // NativeImage.read wraps decode errors in unchecked exceptions for non-PNG inputs.
             LOGGER.warn("TextureLoader: not a valid PNG at {}: {}", path, e.getMessage());
+            return null;
+        }
+    }
+
+    private static @Nullable NativeImage readResource(ResourceLocation resource) {
+        var optional = Minecraft.getInstance().getResourceManager().getResource(resource);
+        if (optional.isEmpty()) {
+            LOGGER.warn("TextureLoader: resource texture {} is unavailable", resource);
+            return null;
+        }
+        try (InputStream in = optional.get().open()) {
+            return NativeImage.read(in);
+        } catch (IOException e) {
+            LOGGER.warn("TextureLoader: failed to read resource texture {}: {}", resource, e.getMessage());
+            return null;
+        } catch (RuntimeException e) {
+            LOGGER.warn("TextureLoader: not a valid PNG resource at {}: {}", resource, e.getMessage());
             return null;
         }
     }
@@ -84,17 +125,22 @@ public final class TextureLoader {
 
         var copy = new NativeImage(pixels.getWidth(), pixels.getHeight(), false);
         copy.copyFrom(pixels);
-        return register(source.displayName(), source.sourcePath(), copy);
+        return register(source.displayName(), source.sourcePath(), source.sourceResource(), copy);
     }
 
-    private static LoadedTexture register(String displayName, Path sourcePath, NativeImage image) {
+    private static LoadedTexture register(
+        String displayName,
+        @Nullable Path sourcePath,
+        @Nullable ResourceLocation sourceResource,
+        NativeImage image
+    ) {
         var dynamic = new DynamicTexture(image);
         var id = ResourceLocation.fromNamespaceAndPath(
             NAMESPACE,
             PATH_PREFIX + UUID.randomUUID().toString().replace("-", "").substring(0, 16)
         );
         Minecraft.getInstance().getTextureManager().register(id, dynamic);
-        return new LoadedTexture(displayName, sourcePath, id, dynamic);
+        return new LoadedTexture(displayName, sourcePath, sourceResource, id, dynamic);
     }
 
     /**
