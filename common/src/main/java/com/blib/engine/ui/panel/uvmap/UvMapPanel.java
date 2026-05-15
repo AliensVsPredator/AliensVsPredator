@@ -8,6 +8,7 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
@@ -179,13 +180,22 @@ public final class UvMapPanel implements Panel {
     /** Owner bone per selected cube, captured at selection time. Needed when writing {@code scene.selection}. */
     private final Map<ModelerCube, ModelerBone> ownerByCube = new HashMap<>();
 
+    /** Imported per-face UV selections, local to this panel so the rest of the modeler can keep cube-level context. */
+    private final Set<FaceSelection> selectedFaces = new LinkedHashSet<>();
+
     /** Last-clicked (or last-added-via-marquee) cube. Drives the footer inputs and {@code scene.selection} sync. */
     private @Nullable ModelerCube primaryCube;
 
     private @Nullable ModelerBone primaryOwner;
 
+    /** Last-clicked imported UV face. Drives per-face U/V input and drag behavior. */
+    private @Nullable FaceSelection primaryFace;
+
     /** Cube under the cursor this frame, for hover outline. Refreshed on every render. */
     private @Nullable ModelerCube hoveredCube;
+
+    /** Imported UV face under the cursor this frame, for hover outline. */
+    private @Nullable FaceSelection hoveredFace;
 
     /** What the current LMB drag is doing. {@link DragState#IDLE} when no LMB-drag is in flight. */
     private DragState dragState = DragState.IDLE;
@@ -200,6 +210,9 @@ public final class UvMapPanel implements Panel {
 
     /** Per-cube starting UV origin, snapshotted at drag start. Drag updates: {@code uv = start + (cursor - grab)}. */
     private final Map<ModelerCube, double[]> dragStartUVs = new HashMap<>();
+
+    /** Per-face starting UV records, snapshotted at drag start. */
+    private final Map<FaceSelection, ModelerCube.FaceUv> dragStartFaceUvs = new HashMap<>();
 
     /** Per-cube memento snapshot, snapshotted at drag start. Used at release to build the composite undo entry. */
     private final Map<ModelerCube, ModelerAction.CubeMemento> dragStartMementos = new HashMap<>();
@@ -246,10 +259,7 @@ public final class UvMapPanel implements Panel {
 
         // Reset selection + view state on model load — scene.root identity changes when applyModel runs.
         if (scene.root != lastRoot) {
-            selectedCubes.clear();
-            ownerByCube.clear();
-            primaryCube = null;
-            primaryOwner = null;
+            clearSelectionState();
             dragState = DragState.IDLE;
             lastRoot = scene.root;
             // New model = new texture dimensions, so the previous zoom/pan no longer corresponds to anything sensible.
@@ -318,12 +328,19 @@ public final class UvMapPanel implements Panel {
         visibleMaxV = (uvAreaY + uvAreaH - offsetYInt) / zoom;
 
         syncFromSceneSelection(scene);
+        pruneFaceSelectionForTexture(scene.activeTexture);
         syncInputs();
 
-        // Hover detection: only over the UV area, only on cubes inside the visible UV range.
-        hoveredCube = inUvArea(mouseX, mouseY)
-            ? pickHover(scene.root, (mouseX - offsetXInt) / zoom, (mouseY - offsetYInt) / zoom, scene.activeTexture)
-            : null;
+        // Hover detection: only over the UV area, only on UV rects inside the visible UV range.
+        if (inUvArea(mouseX, mouseY)) {
+            var hoverU = (mouseX - offsetXInt) / zoom;
+            var hoverV = (mouseY - offsetYInt) / zoom;
+            hoveredFace = pickFaceAt(scene.root, hoverU, hoverV, scene.activeTexture);
+            hoveredCube = hoveredFace != null ? hoveredFace.cube() : pickHover(scene.root, hoverU, hoverV);
+        } else {
+            hoveredFace = null;
+            hoveredCube = null;
+        }
 
         renderGeometry(graphics, scene);
         renderHeader(graphics, scene);
@@ -434,7 +451,7 @@ public final class UvMapPanel implements Panel {
 
         var inputY = footerY + (FOOTER_HEIGHT - TextInput.HEIGHT) / 2;
         if (!uvInputsEnabled()) {
-            if (primaryCube != null && primaryCube.hasPerFaceUv) {
+            if (primaryCube != null && primaryCube.hasPerFaceUv && primaryFace == null) {
                 var textY = inputY + (TextInput.HEIGHT - font.lineHeight + 2) / 2;
                 graphics.drawString(font, Component.literal("Per-face UV"), rectX + FOOTER_PADDING_X, textY, TEXT_MUTED_COLOR, false);
             }
@@ -469,7 +486,7 @@ public final class UvMapPanel implements Panel {
     ) {
         for (var cube : bone.cubes) {
             if (cube.hasPerFaceUv) {
-                addPerFaceCubeUvs(buffer, m00, m11, m30, m31, cube, activeTexture);
+                addPerFaceCubeUvs(buffer, m00, m11, m30, m31, bone, cube, activeTexture);
                 continue;
             }
             var w = cube.size.x;
@@ -510,6 +527,7 @@ public final class UvMapPanel implements Panel {
         float m11,
         float m30,
         float m31,
+        ModelerBone owner,
         ModelerCube cube,
         @Nullable LoadedTexture activeTexture
     ) {
@@ -517,21 +535,24 @@ public final class UvMapPanel implements Panel {
             return;
         }
 
-        var selected = selectedCubes.contains(cube);
-        var hovered = cube == hoveredCube;
-        for (var uv : cube.faceUvs.values()) {
+        for (var entry : cube.faceUvs.entrySet()) {
+            var face = new FaceSelection(owner, cube, entry.getKey());
+            var uv = entry.getValue();
             if (!ModelerTextureUsage.usesTexture(activeTexture, uv)) {
                 continue;
             }
-            var u0 = Math.min(uv.u(), uv.u() + uv.width());
-            var v0 = Math.min(uv.v(), uv.v() + uv.height());
-            var u1 = Math.max(uv.u(), uv.u() + uv.width());
-            var v1 = Math.max(uv.v(), uv.v() + uv.height());
+            var rect = faceRect(uv);
+            var u0 = rect.u0();
+            var v0 = rect.v0();
+            var u1 = rect.u1();
+            var v1 = rect.v1();
             if (u1 < visibleMinU || u0 > visibleMaxU || v1 < visibleMinV || v0 > visibleMaxV) {
                 continue;
             }
 
             var marqueePreview = dragState == DragState.MARQUEE && intersectsCurrentMarquee(u0, v0, u1, v1);
+            var selected = selectedFaces.contains(face) || (selectedFaces.isEmpty() && selectedCubes.contains(cube));
+            var hovered = face.equals(hoveredFace);
             if (selected) {
                 addUvRect(buffer, m00, m11, m30, m31, u0, v0, u1 - u0, v1 - v0, CUBE_SELECTED_FACE);
                 addUvRectOutline(buffer, m00, m11, m30, m31, u0, v0, u1, v1, CUBE_SELECTED_OUTLINE);
@@ -734,6 +755,45 @@ public final class UvMapPanel implements Panel {
 
     // ----- Selection sync -----
 
+    private void clearSelectionState() {
+        clearCubeSelection();
+        clearFaceSelection();
+    }
+
+    private void clearCubeSelection() {
+        selectedCubes.clear();
+        ownerByCube.clear();
+        primaryCube = null;
+        primaryOwner = null;
+    }
+
+    private void clearFaceSelection() {
+        selectedFaces.clear();
+        primaryFace = null;
+    }
+
+    private void pruneFaceSelectionForTexture(@Nullable LoadedTexture activeTexture) {
+        if (selectedFaces.isEmpty()) {
+            return;
+        }
+        var changed = selectedFaces.removeIf(face -> {
+            var uv = face.cube().faceUv(face.face());
+            return uv == null || !ModelerTextureUsage.usesTexture(activeTexture, uv);
+        });
+        if (!changed) {
+            return;
+        }
+        primaryFace = selectedFaces.contains(primaryFace) ? primaryFace : lastSelectedFace();
+        if (primaryFace != null) {
+            primaryCube = primaryFace.cube();
+            primaryOwner = primaryFace.owner();
+        } else {
+            primaryCube = null;
+            primaryOwner = null;
+        }
+        writeSceneSelection(ModelerScene.get());
+    }
+
     /**
      * Reconcile our panel-local multi-selection with {@code scene.selection}. The scene's selection is the source of
      * truth: external mutations (outliner click, viewport click, etc.) flip us to single-selection on that cube;
@@ -741,6 +801,14 @@ public final class UvMapPanel implements Panel {
      * cleared or set to a non-cube (bone), drop our set.
      */
     private void syncFromSceneSelection(ModelerScene scene) {
+        if (!selectedFaces.isEmpty()) {
+            if (sceneSelectionMatchesSelectedFaces(scene.selection)) {
+                return;
+            }
+            selectedFaces.clear();
+            primaryFace = null;
+        }
+
         if (scene.selection instanceof Selection.CubeSelection cs) {
             // Single selection. If we already had it as our sole selection, only the primary needs refreshing.
             if (selectedCubes.size() == 1 && selectedCubes.contains(cs.cube())) {
@@ -770,10 +838,7 @@ public final class UvMapPanel implements Panel {
             primaryCube = primary.cube();
             primaryOwner = primary.owner();
         } else if (!selectedCubes.isEmpty()) {
-            selectedCubes.clear();
-            ownerByCube.clear();
-            primaryCube = null;
-            primaryOwner = null;
+            clearCubeSelection();
         }
     }
 
@@ -783,6 +848,10 @@ public final class UvMapPanel implements Panel {
      * last so {@code ms.primary()} returns the right one.
      */
     private void writeSceneSelection(ModelerScene scene) {
+        if (!selectedFaces.isEmpty()) {
+            writeFaceSceneSelection(scene);
+            return;
+        }
         if (selectedCubes.isEmpty()) {
             scene.selection = null;
             return;
@@ -809,10 +878,72 @@ public final class UvMapPanel implements Panel {
         scene.selection = list.size() >= 2 ? new Selection.MultiCubeSelection(list) : (list.size() == 1 ? list.get(0) : null);
     }
 
+    private boolean sceneSelectionMatchesSelectedFaces(@Nullable Selection selection) {
+        if (selection instanceof Selection.CubeSelection cs) {
+            return selectedFaceCubeCount() == 1
+                && selectedFaces.iterator().next().cube() == cs.cube()
+                && selectedFaces.iterator().next().owner() == cs.owner();
+        }
+        if (selection instanceof Selection.MultiCubeSelection ms) {
+            var cubeCount = selectedFaceCubeCount();
+            if (ms.cubes().size() != cubeCount) {
+                return false;
+            }
+            for (var face : selectedFaces) {
+                var found = false;
+                for (var cs : ms.cubes()) {
+                    if (cs.cube() == face.cube() && cs.owner() == face.owner()) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private int selectedFaceCubeCount() {
+        var cubes = new LinkedHashSet<ModelerCube>();
+        for (var face : selectedFaces) {
+            cubes.add(face.cube());
+        }
+        return cubes.size();
+    }
+
+    private void writeFaceSceneSelection(ModelerScene scene) {
+        var list = new ArrayList<Selection.CubeSelection>();
+        var seen = new LinkedHashSet<ModelerCube>();
+        for (var face : selectedFaces) {
+            if (face == primaryFace) {
+                continue;
+            }
+            if (seen.add(face.cube())) {
+                list.add(new Selection.CubeSelection(face.owner(), face.cube()));
+            }
+        }
+        if (primaryFace != null) {
+            list.removeIf(cs -> cs.cube() == primaryFace.cube());
+            list.add(new Selection.CubeSelection(primaryFace.owner(), primaryFace.cube()));
+        }
+        scene.selection = list.size() >= 2 ? new Selection.MultiCubeSelection(list) : (list.size() == 1 ? list.get(0) : null);
+    }
+
     // ----- Inputs -----
 
     private void syncInputs() {
-        if (!uvInputsEnabled()) {
+        var faceUv = primaryFaceUv();
+        if (faceUv != null) {
+            var rect = faceRect(faceUv);
+            syncInput(uInput, formatInt(rect.u0()));
+            syncInput(vInput, formatInt(rect.v0()));
+            return;
+        }
+
+        if (primaryCube == null || primaryCube.hasPerFaceUv) {
             if (uInput.isFocused() || vInput.isFocused()) {
                 TextInput.clearFocus();
             }
@@ -829,7 +960,12 @@ public final class UvMapPanel implements Panel {
     }
 
     private boolean uvInputsEnabled() {
-        return primaryCube != null && !primaryCube.hasPerFaceUv;
+        return primaryFaceUv() != null || (primaryCube != null && !primaryCube.hasPerFaceUv);
+    }
+
+    private @Nullable ModelerCube.FaceUv primaryFaceUv() {
+        var face = primaryFace;
+        return face == null ? null : face.cube().faceUv(face.face());
     }
 
     private static void syncInput(TextInput input, String value) {
@@ -847,11 +983,21 @@ public final class UvMapPanel implements Panel {
     }
 
     private void commitU(String text) {
-        var cube = primaryCube;
-        if (cube == null || cube.hasPerFaceUv) {
-            return;
-        }
         try {
+            if (primaryFace != null) {
+                var uv = primaryFaceUv();
+                if (uv == null) {
+                    return;
+                }
+                var rounded = (double) Math.round(Double.parseDouble(text.trim()));
+                moveSelectedFaces(rounded - faceRect(uv).u0(), 0.0, "Edit face UV U");
+                return;
+            }
+
+            var cube = primaryCube;
+            if (cube == null || cube.hasPerFaceUv) {
+                return;
+            }
             var scene = ModelerScene.get();
             var rounded = (double) Math.round(Double.parseDouble(text.trim()));
             var bboxW = 2 * cube.size.z + 2 * cube.size.x;
@@ -866,11 +1012,21 @@ public final class UvMapPanel implements Panel {
     }
 
     private void commitV(String text) {
-        var cube = primaryCube;
-        if (cube == null || cube.hasPerFaceUv) {
-            return;
-        }
         try {
+            if (primaryFace != null) {
+                var uv = primaryFaceUv();
+                if (uv == null) {
+                    return;
+                }
+                var rounded = (double) Math.round(Double.parseDouble(text.trim()));
+                moveSelectedFaces(0.0, rounded - faceRect(uv).v0(), "Edit face UV V");
+                return;
+            }
+
+            var cube = primaryCube;
+            if (cube == null || cube.hasPerFaceUv) {
+                return;
+            }
             var scene = ModelerScene.get();
             var rounded = (double) Math.round(Double.parseDouble(text.trim()));
             var bboxH = cube.size.z + cube.size.y;
@@ -915,13 +1071,21 @@ public final class UvMapPanel implements Panel {
 
         if (button == 0) {
             var scene = ModelerScene.get();
+            var faceCandidates = faceCandidatesAt(scene, mouseX, mouseY);
+            if (!faceCandidates.isEmpty()) {
+                selectClickedFace(scene, faceCandidates, Screen.hasShiftDown());
+                if (!Screen.hasShiftDown()) {
+                    startFaceDrag(mouseX, mouseY);
+                }
+                return true;
+            }
+
             var hit = pickCubeWithOwnerAt(scene, mouseX, mouseY);
             if (hit != null) {
                 // Clicked a cube. If it's already in the selection, keep the group; otherwise replace the selection
                 // with just this cube. Either way the clicked cube becomes the primary and we start a drag.
                 if (!selectedCubes.contains(hit.cube)) {
-                    selectedCubes.clear();
-                    ownerByCube.clear();
+                    clearSelectionState();
                     selectedCubes.add(hit.cube);
                     ownerByCube.put(hit.cube, hit.owner);
                 }
@@ -962,6 +1126,70 @@ public final class UvMapPanel implements Panel {
             dragStartMementos.put(cube, ModelerAction.CubeMemento.of(cube));
         }
         dragState = DragState.DRAGGING_CUBE;
+    }
+
+    private void selectClickedFace(ModelerScene scene, List<FaceSelection> candidates, boolean extendSelection) {
+        var clicked = faceCandidateForClick(candidates);
+        clearCubeSelection();
+        if (extendSelection) {
+            if (selectedFaces.remove(clicked)) {
+                if (clicked.equals(primaryFace)) {
+                    primaryFace = lastSelectedFace();
+                }
+            } else {
+                selectedFaces.add(clicked);
+                primaryFace = clicked;
+            }
+        } else if (selectedFaces.contains(clicked)) {
+            primaryFace = clicked;
+        } else {
+            clearFaceSelection();
+            selectedFaces.add(clicked);
+            primaryFace = clicked;
+        }
+
+        if (primaryFace != null) {
+            primaryCube = primaryFace.cube();
+            primaryOwner = primaryFace.owner();
+        } else {
+            primaryCube = null;
+            primaryOwner = null;
+        }
+        writeSceneSelection(scene);
+    }
+
+    private FaceSelection faceCandidateForClick(List<FaceSelection> candidates) {
+        if (primaryFace != null && candidates.size() > 1) {
+            var index = candidates.indexOf(primaryFace);
+            if (index >= 0) {
+                return candidates.get((index + 1) % candidates.size());
+            }
+        }
+        return candidates.get(0);
+    }
+
+    private @Nullable FaceSelection lastSelectedFace() {
+        FaceSelection last = null;
+        for (var face : selectedFaces) {
+            last = face;
+        }
+        return last;
+    }
+
+    private void startFaceDrag(double mouseX, double mouseY) {
+        dragGrabU = uvAtScreenX(mouseX);
+        dragGrabV = uvAtScreenY(mouseY);
+        dragStartFaceUvs.clear();
+        dragStartMementos.clear();
+        for (var face : selectedFaces) {
+            var uv = face.cube().faceUv(face.face());
+            if (uv == null) {
+                continue;
+            }
+            dragStartFaceUvs.put(face, uv);
+            dragStartMementos.putIfAbsent(face.cube(), ModelerAction.CubeMemento.of(face.cube()));
+        }
+        dragState = DragState.DRAGGING_FACE;
     }
 
     private boolean selectedCubesUseBoxUvsOnly() {
@@ -1026,6 +1254,12 @@ public final class UvMapPanel implements Panel {
                 }
                 return true;
             }
+            if (dragState == DragState.DRAGGING_FACE) {
+                var deltaU = uvAtScreenX(mouseX) - dragGrabU;
+                var deltaV = uvAtScreenY(mouseY) - dragGrabV;
+                applySelectedFaceDelta(deltaU, deltaV, dragStartFaceUvs);
+                return true;
+            }
             if (dragState == DragState.MAYBE_MARQUEE || dragState == DragState.MARQUEE) {
                 // First drag event after an LMB-down on empty space promotes us to active marquee.
                 dragState = DragState.MARQUEE;
@@ -1057,12 +1291,13 @@ public final class UvMapPanel implements Panel {
             finalizeCubeDrag();
             return true;
         }
+        if (state == DragState.DRAGGING_FACE) {
+            finalizeFaceDrag();
+            return true;
+        }
         if (state == DragState.MAYBE_MARQUEE) {
             // LMB on empty space, released without dragging — clear the selection.
-            selectedCubes.clear();
-            ownerByCube.clear();
-            primaryCube = null;
-            primaryOwner = null;
+            clearSelectionState();
             writeSceneSelection(ModelerScene.get());
             return true;
         }
@@ -1123,16 +1358,133 @@ public final class UvMapPanel implements Panel {
         dragStartMementos.clear();
     }
 
+    private void finalizeFaceDrag() {
+        pushFaceMementoActions(dragStartMementos, "Move face UVs");
+        dragStartFaceUvs.clear();
+        dragStartMementos.clear();
+    }
+
+    private void moveSelectedFaces(double deltaU, double deltaV, String description) {
+        if (selectedFaces.isEmpty()) {
+            return;
+        }
+        var starts = new HashMap<FaceSelection, ModelerCube.FaceUv>();
+        var before = new HashMap<ModelerCube, ModelerAction.CubeMemento>();
+        for (var face : selectedFaces) {
+            var uv = face.cube().faceUv(face.face());
+            if (uv == null) {
+                continue;
+            }
+            starts.put(face, uv);
+            before.putIfAbsent(face.cube(), ModelerAction.CubeMemento.of(face.cube()));
+        }
+        if (starts.isEmpty()) {
+            return;
+        }
+        applySelectedFaceDelta(deltaU, deltaV, starts);
+        pushFaceMementoActions(before, description);
+    }
+
+    private void applySelectedFaceDelta(double deltaU, double deltaV, Map<FaceSelection, ModelerCube.FaceUv> starts) {
+        if (starts.isEmpty()) {
+            return;
+        }
+        var scene = ModelerScene.get();
+        var minDeltaU = Double.NEGATIVE_INFINITY;
+        var maxDeltaU = Double.POSITIVE_INFINITY;
+        var minDeltaV = Double.NEGATIVE_INFINITY;
+        var maxDeltaV = Double.POSITIVE_INFINITY;
+        for (var uv : starts.values()) {
+            var rect = faceRect(uv);
+            minDeltaU = Math.max(minDeltaU, -rect.u0());
+            maxDeltaU = Math.min(maxDeltaU, scene.textureWidth - rect.u1());
+            minDeltaV = Math.max(minDeltaV, -rect.v0());
+            maxDeltaV = Math.min(maxDeltaV, scene.textureHeight - rect.v1());
+        }
+        if (minDeltaU > maxDeltaU) {
+            minDeltaU = maxDeltaU = 0.0;
+        }
+        if (minDeltaV > maxDeltaV) {
+            minDeltaV = maxDeltaV = 0.0;
+        }
+        deltaU = Math.max(minDeltaU, Math.min(maxDeltaU, deltaU));
+        deltaV = Math.max(minDeltaV, Math.min(maxDeltaV, deltaV));
+        for (var entry : starts.entrySet()) {
+            var face = entry.getKey();
+            var start = entry.getValue();
+            face.cube()
+                .setFaceUv(
+                    face.face(),
+                    new ModelerCube.FaceUv(
+                        Math.round(start.u() + deltaU),
+                        Math.round(start.v() + deltaV),
+                        start.width(),
+                        start.height(),
+                        start.rotation(),
+                        start.textureSource()
+                    )
+                );
+        }
+    }
+
+    private void pushFaceMementoActions(Map<ModelerCube, ModelerAction.CubeMemento> beforeByCube, String description) {
+        var root = ModelerScene.get().root;
+        var actions = new ArrayList<ModelerAction>();
+        for (var entry : beforeByCube.entrySet()) {
+            var cube = entry.getKey();
+            if (!isCubeReachable(root, cube)) {
+                continue;
+            }
+            var before = entry.getValue();
+            var after = ModelerAction.CubeMemento.of(cube);
+            if (after.differsFrom(before)) {
+                actions.add(
+                    new ModelerAction.CubeMementoAction(
+                        "cube_edit",
+                        description + " " + cube.name,
+                        System.currentTimeMillis(),
+                        cube,
+                        before,
+                        after
+                    )
+                );
+            }
+        }
+        if (actions.size() == 1) {
+            ModelerActionHistory.push(actions.get(0));
+        } else if (actions.size() > 1) {
+            ModelerActionHistory.push(
+                new ModelerAction.CompositeAction(
+                    "face_uv_group_edit",
+                    description + " (" + actions.size() + " cubes)",
+                    System.currentTimeMillis(),
+                    List.copyOf(actions)
+                )
+            );
+        }
+    }
+
     private void finalizeMarquee() {
         var mu0 = Math.min(marqueeStartU, marqueeEndU);
         var mv0 = Math.min(marqueeStartV, marqueeEndV);
         var mu1 = Math.max(marqueeStartU, marqueeEndU);
         var mv1 = Math.max(marqueeStartV, marqueeEndV);
 
-        selectedCubes.clear();
-        ownerByCube.clear();
+        clearSelectionState();
         var scene = ModelerScene.get();
         collectMarqueeHits(scene.root, mu0, mv0, mu1, mv1, scene.activeTexture);
+
+        if (!selectedFaces.isEmpty()) {
+            FaceSelection lastFace = null;
+            for (var face : selectedFaces) {
+                lastFace = face;
+            }
+            primaryFace = lastFace;
+            primaryCube = lastFace != null ? lastFace.cube() : null;
+            primaryOwner = lastFace != null ? lastFace.owner() : null;
+            writeSceneSelection(scene);
+            return;
+        }
 
         if (selectedCubes.isEmpty()) {
             primaryCube = null;
@@ -1168,10 +1520,7 @@ public final class UvMapPanel implements Panel {
     ) {
         for (var cube : bone.cubes) {
             if (cube.hasPerFaceUv) {
-                if (intersectsAnyFace(cube, mu0, mv0, mu1, mv1, activeTexture)) {
-                    selectedCubes.add(cube);
-                    ownerByCube.put(cube, bone);
-                }
+                collectIntersectingFaces(bone, cube, mu0, mv0, mu1, mv1, activeTexture);
                 continue;
             }
             var w = cube.size.x;
@@ -1192,7 +1541,8 @@ public final class UvMapPanel implements Panel {
         }
     }
 
-    private static boolean intersectsAnyFace(
+    private void collectIntersectingFaces(
+        ModelerBone owner,
         ModelerCube cube,
         double mu0,
         double mv0,
@@ -1200,19 +1550,16 @@ public final class UvMapPanel implements Panel {
         double mv1,
         @Nullable LoadedTexture activeTexture
     ) {
-        for (var uv : cube.faceUvs.values()) {
+        for (var entry : cube.faceUvs.entrySet()) {
+            var uv = entry.getValue();
             if (!ModelerTextureUsage.usesTexture(activeTexture, uv)) {
                 continue;
             }
-            var u0 = Math.min(uv.u(), uv.u() + uv.width());
-            var v0 = Math.min(uv.v(), uv.v() + uv.height());
-            var u1 = Math.max(uv.u(), uv.u() + uv.width());
-            var v1 = Math.max(uv.v(), uv.v() + uv.height());
-            if (intersects(u0, v0, u1, v1, mu0, mv0, mu1, mv1)) {
-                return true;
+            var rect = faceRect(uv);
+            if (intersects(rect.u0(), rect.v0(), rect.u1(), rect.v1(), mu0, mv0, mu1, mv1)) {
+                selectedFaces.add(new FaceSelection(owner, cube, entry.getKey()));
             }
         }
-        return false;
     }
 
     private static boolean intersects(double u0, double v0, double u1, double v1, double mu0, double mv0, double mu1, double mv1) {
@@ -1296,57 +1643,89 @@ public final class UvMapPanel implements Panel {
         }
         var uvX = uvAtScreenX(mx);
         var uvY = uvAtScreenY(my);
-        return pickInBoneReverse(scene.root, uvX, uvY, scene.activeTexture);
+        return pickBoxInBoneReverse(scene.root, uvX, uvY);
     }
 
     /**
      * Hover-only variant of {@link #pickCubeWithOwnerAt} that returns just the cube. Called every frame during render,
      * so it stays out of the click/selection path to avoid mutating selection state.
      */
-    private @Nullable ModelerCube pickHover(ModelerBone bone, double uvX, double uvY, @Nullable LoadedTexture activeTexture) {
-        var hit = pickInBoneReverse(bone, uvX, uvY, activeTexture);
+    private @Nullable ModelerCube pickHover(ModelerBone bone, double uvX, double uvY) {
+        var hit = pickBoxInBoneReverse(bone, uvX, uvY);
         return hit == null ? null : hit.cube;
     }
 
-    private @Nullable CubeWithOwner pickInBoneReverse(
-        ModelerBone bone,
-        double uvX,
-        double uvY,
-        @Nullable LoadedTexture activeTexture
-    ) {
+    private @Nullable CubeWithOwner pickBoxInBoneReverse(ModelerBone bone, double uvX, double uvY) {
         // Walk children + cubes in reverse so later-drawn cubes win the hit-test (matches DFS draw order: cubes-of-self
         // first, then DFS into children — so deepest-last child is topmost).
         for (var i = bone.children.size() - 1; i >= 0; i--) {
-            var hit = pickInBoneReverse(bone.children.get(i), uvX, uvY, activeTexture);
+            var hit = pickBoxInBoneReverse(bone.children.get(i), uvX, uvY);
             if (hit != null) {
                 return hit;
             }
         }
         for (var i = bone.cubes.size() - 1; i >= 0; i--) {
             var cube = bone.cubes.get(i);
-            if (boundingContains(cube, uvX, uvY, activeTexture)) {
+            if (!cube.hasPerFaceUv && boundingContains(cube, uvX, uvY)) {
                 return new CubeWithOwner(bone, cube);
             }
         }
         return null;
     }
 
-    private static boolean boundingContains(ModelerCube cube, double uvX, double uvY, @Nullable LoadedTexture activeTexture) {
-        if (cube.hasPerFaceUv) {
-            for (var uv : cube.faceUvs.values()) {
-                if (!ModelerTextureUsage.usesTexture(activeTexture, uv)) {
+    private @Nullable FaceSelection pickFaceAt(
+        ModelerBone bone,
+        double uvX,
+        double uvY,
+        @Nullable LoadedTexture activeTexture
+    ) {
+        var hits = new ArrayList<FaceSelection>();
+        collectFaceHitsReverse(bone, uvX, uvY, activeTexture, hits);
+        return hits.isEmpty() ? null : hits.get(0);
+    }
+
+    private List<FaceSelection> faceCandidatesAt(ModelerScene scene, double mx, double my) {
+        if (!inUvArea(mx, my)) {
+            return List.of();
+        }
+        var uvX = uvAtScreenX(mx);
+        var uvY = uvAtScreenY(my);
+        var hits = new ArrayList<FaceSelection>();
+        collectFaceHitsReverse(scene.root, uvX, uvY, scene.activeTexture, hits);
+        return hits;
+    }
+
+    private void collectFaceHitsReverse(
+        ModelerBone bone,
+        double uvX,
+        double uvY,
+        @Nullable LoadedTexture activeTexture,
+        List<FaceSelection> hits
+    ) {
+        for (var i = bone.children.size() - 1; i >= 0; i--) {
+            collectFaceHitsReverse(bone.children.get(i), uvX, uvY, activeTexture, hits);
+        }
+        for (var i = bone.cubes.size() - 1; i >= 0; i--) {
+            var cube = bone.cubes.get(i);
+            if (!cube.hasPerFaceUv) {
+                continue;
+            }
+            var faces = ModelerCube.Face.values();
+            for (var f = faces.length - 1; f >= 0; f--) {
+                var face = faces[f];
+                var uv = cube.faceUv(face);
+                if (uv == null || !ModelerTextureUsage.usesTexture(activeTexture, uv)) {
                     continue;
                 }
-                var u0 = Math.min(uv.u(), uv.u() + uv.width());
-                var v0 = Math.min(uv.v(), uv.v() + uv.height());
-                var u1 = Math.max(uv.u(), uv.u() + uv.width());
-                var v1 = Math.max(uv.v(), uv.v() + uv.height());
-                if (uvX >= u0 && uvX < u1 && uvY >= v0 && uvY < v1) {
-                    return true;
+                var rect = faceRect(uv);
+                if (uvX >= rect.u0() && uvX < rect.u1() && uvY >= rect.v0() && uvY < rect.v1()) {
+                    hits.add(new FaceSelection(bone, cube, face));
                 }
             }
-            return false;
         }
+    }
+
+    private static boolean boundingContains(ModelerCube cube, double uvX, double uvY) {
         var w = cube.size.x;
         var h = cube.size.y;
         var d = cube.size.z;
@@ -1371,6 +1750,28 @@ public final class UvMapPanel implements Panel {
         return false;
     }
 
+    private static UvRect faceRect(ModelerCube.FaceUv uv) {
+        return new UvRect(
+            Math.min(uv.u(), uv.u() + uv.width()),
+            Math.min(uv.v(), uv.v() + uv.height()),
+            Math.max(uv.u(), uv.u() + uv.width()),
+            Math.max(uv.v(), uv.v() + uv.height())
+        );
+    }
+
+    private record UvRect(
+        double u0,
+        double v0,
+        double u1,
+        double v1
+    ) {}
+
+    private record FaceSelection(
+        ModelerBone owner,
+        ModelerCube cube,
+        ModelerCube.Face face
+    ) {}
+
     private record CubeWithOwner(
         ModelerBone owner,
         ModelerCube cube
@@ -1381,7 +1782,8 @@ public final class UvMapPanel implements Panel {
         /** LMB-down on empty space; waiting to see if the user drags (→ {@link #MARQUEE}) or releases (→ clear). */
         MAYBE_MARQUEE,
         MARQUEE,
-        DRAGGING_CUBE
+        DRAGGING_CUBE,
+        DRAGGING_FACE
     }
 
     // ----- Helpers -----
