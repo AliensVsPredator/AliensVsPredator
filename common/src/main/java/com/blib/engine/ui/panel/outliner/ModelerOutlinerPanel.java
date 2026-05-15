@@ -52,6 +52,8 @@ public final class ModelerOutlinerPanel implements Panel {
 
     private static final int PADDING_Y = 6;
 
+    private static final int BOTTOM_SCROLL_PADDING = ROW_HEIGHT * 4;
+
     private static final int BG_COLOR = 0xFF18181C;
 
     private static final int ROW_HOVER_COLOR = 0xFF24242A;
@@ -144,7 +146,7 @@ public final class ModelerOutlinerPanel implements Panel {
         rowsLeftX = innerLeft;
         rowsViewportHeight = rowsHeight;
 
-        var contentHeight = rows.size() * ROW_HEIGHT;
+        var contentHeight = rows.size() * ROW_HEIGHT + BOTTOM_SCROLL_PADDING;
         var frame = scroll.begin(graphics, UiRect.of(innerLeft, rowsTop, innerWidth, rowsHeight), contentHeight);
         rowsContentWidth = frame.contentWidth();
 
