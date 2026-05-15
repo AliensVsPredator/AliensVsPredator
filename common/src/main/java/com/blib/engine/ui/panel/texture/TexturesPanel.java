@@ -17,6 +17,7 @@ import com.blib.engine.modeler.ModelerFilePicker;
 import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.texture.LoadedTexture;
 import com.blib.engine.modeler.texture.TextureLoader;
+import com.blib.engine.texture.TextureEditorState;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.layout.ScrollViewport;
@@ -222,6 +223,7 @@ public final class TexturesPanel implements Panel {
 
         var copyTexture = new DropdownMenu.Item("Copy", () -> copyTexture(texture));
         var duplicateTexture = new DropdownMenu.Item("Duplicate", () -> duplicateTexture(texture));
+        var deleteTexture = new DropdownMenu.Item("Delete", () -> deleteTexture(texture));
         var sourceDir = sourceDirectory(texture);
         var openSource = new DropdownMenu.Item(
             "Open in File Explorer",
@@ -229,7 +231,7 @@ public final class TexturesPanel implements Panel {
             sourceDir != null,
             Component.literal("The source folder is no longer available.")
         );
-        panelMenuOpener.open(new DropdownMenu((int) mouseX, (int) mouseY, List.of(copyTexture, duplicateTexture, openSource)));
+        panelMenuOpener.open(new DropdownMenu((int) mouseX, (int) mouseY, List.of(copyTexture, duplicateTexture, deleteTexture, openSource)));
         return true;
     }
 
@@ -358,6 +360,20 @@ public final class TexturesPanel implements Panel {
         if (duplicate != null) {
             addLoadedTexture(duplicate);
         }
+    }
+
+    private static void deleteTexture(LoadedTexture texture) {
+        var scene = ModelerScene.get();
+        var idx = scene.textures.indexOf(texture);
+        if (idx < 0) {
+            return;
+        }
+        scene.textures.remove(idx);
+        if (scene.activeTexture == texture) {
+            scene.activeTexture = null;
+            TextureEditorState.clearSelection();
+        }
+        TextureLoader.release(texture);
     }
 
     private static void addLoadedTexture(LoadedTexture loaded) {
