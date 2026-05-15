@@ -99,7 +99,7 @@ public final class BLibEntityReferenceManager {
     }
 
     public void onEntityReferenceAdded(Entity entity) {
-        if (entity instanceof Player || !isReferenced(entity.getUUID())) {
+        if (isClientSide(entity) || entity instanceof Player || !isReferenced(entity.getUUID())) {
             return;
         }
 
@@ -118,7 +118,7 @@ public final class BLibEntityReferenceManager {
     }
 
     public void onEntityLoaded(Entity entity) {
-        if (entity instanceof Player || !isReferenced(entity.getUUID())) {
+        if (isClientSide(entity) || entity instanceof Player || !isReferenced(entity.getUUID())) {
             return;
         }
 
@@ -126,7 +126,7 @@ public final class BLibEntityReferenceManager {
     }
 
     public void onEntityUnloaded(Entity entity) {
-        if (entity instanceof Player) {
+        if (isClientSide(entity) || entity instanceof Player) {
             return;
         }
 
@@ -355,6 +355,10 @@ public final class BLibEntityReferenceManager {
     private static long currentServerTick(Entity entity) {
         var server = entity.getServer();
         return server != null ? server.getTickCount() : 0L;
+    }
+
+    private static boolean isClientSide(Entity entity) {
+        return entity.level().isClientSide;
     }
 
     private static Entity findLoadedEntity(MinecraftServer server, UUID uuid) {

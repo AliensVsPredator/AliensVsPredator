@@ -272,6 +272,10 @@ public class BLib {
         BLib.MOD.events()
             .onEntityLoad()
             .register(entity -> {
+                if (entity.level().isClientSide) {
+                    return;
+                }
+
                 BLibEntityReferenceManager.INSTANCE.onEntityLoaded(entity);
 
                 var uuid = entity.getUUID();
@@ -289,6 +293,10 @@ public class BLib {
         BLib.MOD.events()
             .onEntityRemove()
             .register((entity, reason) -> {
+                if (entity.level().isClientSide) {
+                    return;
+                }
+
                 switch (reason) {
                     case KILLED, DISCARDED -> {
                         if (entity instanceof Player) {
