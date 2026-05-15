@@ -354,9 +354,10 @@ public final class ModelerCubeRenderer {
      * mirror {@code AzBakedModelFactory.buildQuad}'s direction switch: EAST/NORTH/WEST/SOUTH unwrap left-to-right on
      * the V-band at {@code v+sz}, UP/DOWN occupy the top row at {@code v}, and the DOWN face uses a negative vSize so
      * its texture sample is V-flipped (Bedrock convention so the bottom of the cube reads right-side-up when viewed
-     * from below). The {@code (uA/uB)} naming preserves {@code GeoQuad.build}'s non-mirror "swap u and uWidth" step;
-     * mapping into this renderer's vertex order is consistent across faces —
-     * {@code my[0..3] = vert3, vert0, vert1, vert2} → {@code (uA,vB), (uA,vT), (uB,vT), (uB,vB)}.
+     * from below). Mirrored box-UV cubes follow the baked renderer's convention: WEST/EAST texture islands are applied
+     * to the opposite X face, and all faces skip {@code GeoQuad.build}'s non-mirror U swap so the island reads
+     * horizontally mirrored. Mapping into this renderer's vertex order is consistent across faces —
+     * {@code my[0..3] = vert3, vert0, vert1, vert2}.
      */
     private static void emitCubeFacesTextured(BufferBuilder buffer, PoseStack pose, ModelerCube cube, float texW, float texH) {
         pose.pushPose();
@@ -378,9 +379,12 @@ public final class ModelerCubeRenderer {
         var sx = (float) Math.floor(cube.size.x);
         var sy = (float) Math.floor(cube.size.y);
         var sz = (float) Math.floor(cube.size.z);
+        var mirror = cube.mirrorUv;
+        var eastU = mirror ? u + sz + sx : u;
+        var westU = mirror ? u : u + sz + sx;
 
         // +X (EAST): u_pix=u, v_pix=v+sz, uSize=sz, vSize=sy
-        emitTexturedFace(buffer, matrix, x1, y0, z0, x1, y1, z0, x1, y1, z1, x1, y0, z1, u, v + sz, sz, sy, texW, texH, FACE_SHADE[0]);
+        emitTexturedFace(buffer, matrix, x1, y0, z0, x1, y1, z0, x1, y1, z1, x1, y0, z1, eastU, v + sz, sz, sy, texW, texH, mirror, FACE_SHADE[0]);
         // -X (WEST): u_pix=u+sz+sx, v_pix=v+sz, uSize=sz, vSize=sy
         emitTexturedFace(
             buffer,
@@ -397,16 +401,17 @@ public final class ModelerCubeRenderer {
             x0,
             y0,
             z0,
-            u + sz + sx,
+            westU,
             v + sz,
             sz,
             sy,
             texW,
             texH,
+            mirror,
             FACE_SHADE[1]
         );
         // +Y (UP): u_pix=u+sz, v_pix=v, uSize=sx, vSize=sz
-        emitTexturedFace(buffer, matrix, x0, y1, z0, x0, y1, z1, x1, y1, z1, x1, y1, z0, u + sz, v, sx, sz, texW, texH, FACE_SHADE[2]);
+        emitTexturedFace(buffer, matrix, x0, y1, z0, x0, y1, z1, x1, y1, z1, x1, y1, z0, u + sz, v, sx, sz, texW, texH, mirror, FACE_SHADE[2]);
         // -Y (DOWN): u_pix=u+sz+sx, v_pix=v+sz, uSize=sx, vSize=-sz (V-flipped intentionally)
         emitTexturedFace(
             buffer,
@@ -429,6 +434,7 @@ public final class ModelerCubeRenderer {
             -sz,
             texW,
             texH,
+            mirror,
             FACE_SHADE[3]
         );
         // +Z (SOUTH): u_pix=u+2sz+sx, v_pix=v+sz, uSize=sx, vSize=sy
@@ -453,10 +459,11 @@ public final class ModelerCubeRenderer {
             sy,
             texW,
             texH,
+            mirror,
             FACE_SHADE[4]
         );
         // -Z (NORTH): u_pix=u+sz, v_pix=v+sz, uSize=sx, vSize=sy
-        emitTexturedFace(buffer, matrix, x0, y0, z0, x0, y1, z0, x1, y1, z0, x1, y0, z0, u + sz, v + sz, sx, sy, texW, texH, FACE_SHADE[5]);
+        emitTexturedFace(buffer, matrix, x0, y0, z0, x0, y1, z0, x1, y1, z0, x1, y0, z0, u + sz, v + sz, sx, sy, texW, texH, mirror, FACE_SHADE[5]);
 
         pose.popPose();
     }
@@ -482,13 +489,13 @@ public final class ModelerCubeRenderer {
         float vSize,
         float texW,
         float texH,
+        boolean mirror,
         float shade
     ) {
-        // (uA, vT) is the AzBakedModelFactory "swap u with uWidth" right-edge UV applied to vertex 0 and 3 in GeoQuad
-        // order. Our four vertices arrive in (vert3, vert0, vert1, vert2) order — same across all six faces — so the
-        // UV cycle that consistently produces the correct unwrap is (uA,vB), (uA,vT), (uB,vT), (uB,vB).
-        var uA = (uPix + uSize) / texW;
-        var uB = uPix / texW;
+        // Our vertices arrive in GeoQuad order (vert3, vert0, vert1, vert2). Non-mirror follows GeoQuad.build's U
+        // swap; mirror leaves U in the natural left-to-right order.
+        var uA = mirror ? uPix / texW : (uPix + uSize) / texW;
+        var uB = mirror ? (uPix + uSize) / texW : uPix / texW;
         var vT = vPix / texH;
         var vB = (vPix + vSize) / texH;
         buffer.addVertex(matrix, vx0, vy0, vz0).setUv(uA, vB).setColor(shade, shade, shade, 1f);

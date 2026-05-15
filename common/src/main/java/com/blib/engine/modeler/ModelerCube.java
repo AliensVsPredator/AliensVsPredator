@@ -40,6 +40,12 @@ public final class ModelerCube {
     public double uvOriginV;
 
     /**
+     * Bedrock cube {@code "mirror": true} flag for box UVs. Mirrored cubes reuse the same texture island as their
+     * opposite-side counterpart with horizontally flipped UV assignment.
+     */
+    public boolean mirrorUv;
+
+    /**
      * Set when the source model authored per-face UVs ({@code "uv": {"north": ..., "south": ...}}) instead of a single
      * box origin. Surfaces in the UV map panel as a "not editable in v1" hint — those cubes still load at UV (0, 0)
      * (since v1 only edits box UVs) and stack visibly at the texture origin; the flag lets us distinguish them from
@@ -56,6 +62,7 @@ public final class ModelerCube {
         this.inflate = inflate;
         this.uvOriginU = 0.0;
         this.uvOriginV = 0.0;
+        this.mirrorUv = false;
         this.hasPerFaceUv = false;
     }
 

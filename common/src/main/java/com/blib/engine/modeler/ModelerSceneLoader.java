@@ -224,6 +224,8 @@ public final class ModelerSceneLoader {
             inflate
         );
 
+        cube.mirrorUv = source.mirror() == Boolean.TRUE;
+
         // Box-UV origin carries through unchanged — UV space is texture pixels, untouched by the X-flip applied to
         // geometry. Per-face UV cubes are out of scope for v1; their cubes stay at (0, 0) and the UV map renders a
         // hint so users aren't confused why they stack at the origin.
