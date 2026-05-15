@@ -183,9 +183,8 @@ public final class ModelerSceneLoader {
         var effectiveInflate = source.inflate() != null ? source.inflate() : inheritedInflate;
 
         if (source.cubes() != null) {
-            int cubeIndex = 0;
             for (var cube : source.cubes()) {
-                modelerBone.cubes.add(convertCube(cube, name + "_cube" + cubeIndex++, effectiveInflate));
+                modelerBone.cubes.add(convertCube(cube, effectiveInflate));
             }
         }
 
@@ -210,7 +209,7 @@ public final class ModelerSceneLoader {
      * Inflate falls back to the inherited bone-level value when the cube doesn't specify its own; zero if neither is
      * set.
      */
-    private static ModelerCube convertCube(Cube source, String name, @Nullable Double inheritedInflate) {
+    private static ModelerCube convertCube(Cube source, @Nullable Double inheritedInflate) {
         double inflate = source.inflate() != null
             ? source.inflate()
             : (inheritedInflate != null ? inheritedInflate : 0.0);
@@ -221,7 +220,7 @@ public final class ModelerSceneLoader {
         var pivot = toVec3(source.pivot());
 
         var cube = new ModelerCube(
-            name,
+            cubeName(source),
             new Vec3(-(origin.x + size.x), origin.y, origin.z),
             size,
             new Vec3(-rotation.x, -rotation.y, rotation.z),
@@ -244,6 +243,11 @@ public final class ModelerSceneLoader {
             }
         }
         return cube;
+    }
+
+    private static String cubeName(Cube source) {
+        var name = source.name();
+        return name == null || name.isBlank() ? "cube" : name;
     }
 
     /**
