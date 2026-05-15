@@ -74,7 +74,7 @@ public final class PanelRegistry {
         JIGSAW("Structures"),
         FACTION("Factions & Territory"),
         AI_DEBUG("AI & Pathfinding"),
-        MODELER("Modelling"),
+        MODELER("Modeling"),
         TEXTURE("Texturing"),
         HISTORY("History");
 
