@@ -92,6 +92,7 @@ public final class ModelerBlockModelLoader {
         scene.selection = null;
         scene.gizmoTargetSelection = null;
         scene.hoveredCube = null;
+        scene.hoveredFace = null;
 
         LoadedTexture first = null;
         for (var texture : usedTextures) {

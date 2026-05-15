@@ -20,6 +20,7 @@ public final class ModelerPicker {
     public record Hit(
         ModelerBone owner,
         ModelerCube cube,
+        ModelerCube.Face face,
         double t
     ) {}
 
@@ -51,11 +52,12 @@ public final class ModelerPicker {
             var localOrigin = worldToCube.transformPosition(new Vector3f(state.worldOrigin));
             var localDir = worldToCube.transformDirection(new Vector3f(state.worldDir));
 
-            var t = intersectAabb(localOrigin, localDir, cube);
-            if (t > 0 && t < state.bestT) {
-                state.bestT = t;
+            var hit = intersectAabb(localOrigin, localDir, cube);
+            if (hit != null && hit.t() > 0 && hit.t() < state.bestT) {
+                state.bestT = hit.t();
                 state.bestBone = bone;
                 state.bestCube = cube;
+                state.bestFace = hit.face();
             }
         }
 
@@ -64,8 +66,8 @@ public final class ModelerPicker {
         }
     }
 
-    /** Slab-method ray-AABB intersect. Returns the entry t (or exit t if the ray origin is inside), or -1 on miss. */
-    private static double intersectAabb(Vector3f origin, Vector3f dir, ModelerCube cube) {
+    /** Slab-method ray-AABB intersect. Returns the entry t + face, or the exit face if the ray starts inside. */
+    private static @Nullable AabbHit intersectAabb(Vector3f origin, Vector3f dir, ModelerCube cube) {
         var inflate = (float) cube.inflate;
         var minX = (float) cube.origin.x - inflate;
         var minY = (float) cube.origin.y - inflate;
@@ -76,63 +78,100 @@ public final class ModelerPicker {
 
         double tMin = Double.NEGATIVE_INFINITY;
         double tMax = Double.POSITIVE_INFINITY;
+        ModelerCube.Face enterFace = ModelerCube.Face.NORTH;
+        ModelerCube.Face exitFace = ModelerCube.Face.SOUTH;
 
         // X slab.
         if (Math.abs(dir.x) < EPSILON) {
             if (origin.x < minX || origin.x > maxX)
-                return -1;
+                return null;
         } else {
             var t1 = (minX - origin.x) / dir.x;
             var t2 = (maxX - origin.x) / dir.x;
+            var nearFace = ModelerCube.Face.WEST;
+            var farFace = ModelerCube.Face.EAST;
             if (t1 > t2) {
                 var tmp = t1;
                 t1 = t2;
                 t2 = tmp;
+                nearFace = ModelerCube.Face.EAST;
+                farFace = ModelerCube.Face.WEST;
             }
-            tMin = Math.max(tMin, t1);
-            tMax = Math.min(tMax, t2);
+            if (t1 > tMin) {
+                tMin = t1;
+                enterFace = nearFace;
+            }
+            if (t2 < tMax) {
+                tMax = t2;
+                exitFace = farFace;
+            }
             if (tMin > tMax)
-                return -1;
+                return null;
         }
         // Y slab.
         if (Math.abs(dir.y) < EPSILON) {
             if (origin.y < minY || origin.y > maxY)
-                return -1;
+                return null;
         } else {
             var t1 = (minY - origin.y) / dir.y;
             var t2 = (maxY - origin.y) / dir.y;
+            var nearFace = ModelerCube.Face.DOWN;
+            var farFace = ModelerCube.Face.UP;
             if (t1 > t2) {
                 var tmp = t1;
                 t1 = t2;
                 t2 = tmp;
+                nearFace = ModelerCube.Face.UP;
+                farFace = ModelerCube.Face.DOWN;
             }
-            tMin = Math.max(tMin, t1);
-            tMax = Math.min(tMax, t2);
+            if (t1 > tMin) {
+                tMin = t1;
+                enterFace = nearFace;
+            }
+            if (t2 < tMax) {
+                tMax = t2;
+                exitFace = farFace;
+            }
             if (tMin > tMax)
-                return -1;
+                return null;
         }
         // Z slab.
         if (Math.abs(dir.z) < EPSILON) {
             if (origin.z < minZ || origin.z > maxZ)
-                return -1;
+                return null;
         } else {
             var t1 = (minZ - origin.z) / dir.z;
             var t2 = (maxZ - origin.z) / dir.z;
+            var nearFace = ModelerCube.Face.NORTH;
+            var farFace = ModelerCube.Face.SOUTH;
             if (t1 > t2) {
                 var tmp = t1;
                 t1 = t2;
                 t2 = tmp;
+                nearFace = ModelerCube.Face.SOUTH;
+                farFace = ModelerCube.Face.NORTH;
             }
-            tMin = Math.max(tMin, t1);
-            tMax = Math.min(tMax, t2);
+            if (t1 > tMin) {
+                tMin = t1;
+                enterFace = nearFace;
+            }
+            if (t2 < tMax) {
+                tMax = t2;
+                exitFace = farFace;
+            }
             if (tMin > tMax)
-                return -1;
+                return null;
         }
 
         if (tMax < 0)
-            return -1;
-        return tMin > 0 ? tMin : tMax;
+            return null;
+        return tMin > 0 ? new AabbHit(tMin, enterFace) : new AabbHit(tMax, exitFace);
     }
+
+    private record AabbHit(
+        double t,
+        ModelerCube.Face face
+    ) {}
 
     private static final class State {
 
@@ -146,6 +185,8 @@ public final class ModelerPicker {
 
         ModelerCube bestCube;
 
+        ModelerCube.Face bestFace;
+
         State(Vector3f origin, Vector3f dir) {
             this.worldOrigin = origin;
             this.worldDir = dir;
@@ -153,7 +194,7 @@ public final class ModelerPicker {
 
         @Nullable
         Hit toHit() {
-            return bestCube == null ? null : new Hit(bestBone, bestCube, bestT);
+            return bestCube == null || bestFace == null ? null : new Hit(bestBone, bestCube, bestFace, bestT);
         }
     }
 }

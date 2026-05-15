@@ -207,7 +207,7 @@ public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, M
             // Clear the active selection if it was this cube — otherwise the inspector would keep showing a removed
             // target. Bone-selecting parent is fine; only the exact cube reference invalidates.
             var sel = ModelerScene.get().selection;
-            if (sel instanceof Selection.CubeSelection cs && cs.cube() == cube) {
+            if (selectionTargetsCube(sel, cube)) {
                 ModelerScene.get().selection = null;
             }
         }
@@ -245,10 +245,23 @@ public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, M
         public void redo() {
             parent.cubes.remove(cube);
             var sel = ModelerScene.get().selection;
-            if (sel instanceof Selection.CubeSelection cs && cs.cube() == cube) {
+            if (selectionTargetsCube(sel, cube)) {
                 ModelerScene.get().selection = null;
             }
         }
+    }
+
+    private static boolean selectionTargetsCube(@Nullable Selection selection, ModelerCube cube) {
+        if (selection instanceof Selection.CubeSelection cs) {
+            return cs.cube() == cube;
+        }
+        if (selection instanceof Selection.FaceSelection fs) {
+            return fs.cube() == cube;
+        }
+        if (selection instanceof Selection.MultiCubeSelection ms) {
+            return ms.contains(cube);
+        }
+        return false;
     }
 
     /**

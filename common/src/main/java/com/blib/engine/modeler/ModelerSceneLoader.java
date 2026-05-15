@@ -141,6 +141,8 @@ public final class ModelerSceneLoader {
             scene.textureHeight = 64.0;
         }
         scene.selection = null;
+        scene.hoveredCube = null;
+        scene.hoveredFace = null;
         // Existing undo entries reference bone/cube instances from the previous scene tree — those instances aren't
         // reachable any more, so applying their undo() would mutate detached objects. Wipe history on load so the
         // first action in the new scene starts a fresh stack.

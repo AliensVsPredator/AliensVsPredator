@@ -81,6 +81,12 @@ public final class ModelerScene {
     public @Nullable ModelerCube hoveredCube;
 
     /**
+     * Exact cube face currently under the viewport cursor. Null when no face is hovered. The UV map uses this to
+     * highlight the matching imported UV island while the user explores geometry in the 3D viewport.
+     */
+    public @Nullable Selection.FaceSelection hoveredFace;
+
+    /**
      * PNG textures the user has loaded via the Textures panel. Insertion-ordered; the panel renders rows in the same
      * order and uses identity for "is this the active one". Cleared on {@link #resetToEntity}.
      */
@@ -117,6 +123,9 @@ public final class ModelerScene {
         if (selection instanceof Selection.CubeSelection cs) {
             return new CubeWithOwner(cs.owner(), cs.cube());
         }
+        if (selection instanceof Selection.FaceSelection fs) {
+            return new CubeWithOwner(fs.owner(), fs.cube());
+        }
         if (selection instanceof Selection.MultiCubeSelection ms) {
             var primary = ms.primary();
             return new CubeWithOwner(primary.owner(), primary.cube());
@@ -144,11 +153,12 @@ public final class ModelerScene {
 
     /** Delete the currently-selected cube (no-op if a bone is selected or nothing is). */
     public boolean deleteSelectedCube() {
-        if (!(selection instanceof Selection.CubeSelection cs)) {
+        var selected = selectedCubeWithOwner();
+        if (selected == null) {
             return false;
         }
-        var owner = cs.owner();
-        var cube = cs.cube();
+        var owner = selected.owner();
+        var cube = selected.cube();
         var index = owner.cubes.indexOf(cube);
         if (index < 0) {
             return false;
@@ -168,7 +178,7 @@ public final class ModelerScene {
      * delete is a separate workflow). Returns true when something was removed.
      */
     public boolean deleteSelection() {
-        if (selection instanceof Selection.CubeSelection) {
+        if (selection instanceof Selection.CubeSelection || selection instanceof Selection.FaceSelection) {
             return deleteSelectedCube();
         }
         if (selection instanceof Selection.MultiCubeSelection ms) {
@@ -257,6 +267,9 @@ public final class ModelerScene {
         if (selection instanceof Selection.CubeSelection cs) {
             return cs.owner();
         }
+        if (selection instanceof Selection.FaceSelection fs) {
+            return fs.owner();
+        }
         return root;
     }
 
@@ -301,6 +314,8 @@ public final class ModelerScene {
         this.textureHeight = 64.0;
         seed(this);
         this.selection = null;
+        this.hoveredCube = null;
+        this.hoveredFace = null;
         ModelerActionHistory.clear();
     }
 

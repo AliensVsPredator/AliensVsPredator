@@ -188,19 +188,30 @@ public final class ModelerInspectorPanel implements Panel {
             if (selection instanceof Selection.BoneSelection bs) {
                 renderBone(graphics, contentX, contentY, contentW, bs.bone(), mouseX, mouseY);
             } else if (selection instanceof Selection.CubeSelection cs) {
-                renderCube(graphics, contentX, contentY, contentW, cs.cube(), mouseX, mouseY);
+                renderCube(graphics, contentX, contentY, contentW, cs.cube(), null, mouseX, mouseY);
+            } else if (selection instanceof Selection.FaceSelection fs) {
+                renderCube(graphics, contentX, contentY, contentW, fs.cube(), fs.face(), mouseX, mouseY);
             } else if (selection instanceof Selection.MultiCubeSelection ms) {
                 // Multi-cube: inspector edits the primary cube only — group edits via the UV map's drag/marquee path.
-                renderCube(graphics, contentX, contentY, contentW, ms.primary().cube(), mouseX, mouseY);
+                renderCube(graphics, contentX, contentY, contentW, ms.primary().cube(), null, mouseX, mouseY);
             }
         } finally {
             scroll.end(graphics, mouseX, mouseY);
         }
     }
 
-    private void renderCube(GuiGraphics graphics, int x, int y, int width, ModelerCube cube, int mouseX, int mouseY) {
+    private void renderCube(
+        GuiGraphics graphics,
+        int x,
+        int y,
+        int width,
+        ModelerCube cube,
+        @Nullable ModelerCube.Face selectedFace,
+        int mouseX,
+        int mouseY
+    ) {
         var font = EngineFont.get();
-        drawHeader(graphics, x, y, width, "Cube: " + cube.name);
+        drawHeader(graphics, x, y, width, cubeHeaderText(cube, selectedFace));
 
         // Sync inputs from the live cube state. Per-input skip-when-focused keeps the user's in-flight edit intact.
         // Size displays as whole numbers (no decimals) since the resize gizmo + commit path both snap to ints.
@@ -244,6 +255,22 @@ public final class ModelerInspectorPanel implements Panel {
             Math.max(0, width - 2 * CONTENT_PADDING),
             HEADER_COLOR
         );
+    }
+
+    private static String cubeHeaderText(ModelerCube cube, @Nullable ModelerCube.Face selectedFace) {
+        if (selectedFace == null) {
+            return "Cube: " + cube.name;
+        }
+        var text = "Cube: " + cube.name + " / Face: " + selectedFace.name().toLowerCase(Locale.ROOT);
+        var uv = cube.faceUv(selectedFace);
+        if (uv == null) {
+            return text;
+        }
+        var u0 = Math.min(uv.u(), uv.u() + uv.width());
+        var v0 = Math.min(uv.v(), uv.v() + uv.height());
+        var w = Math.abs(uv.width());
+        var h = Math.abs(uv.height());
+        return text + "  " + Math.round(w) + "x" + Math.round(h) + " @ " + Math.round(u0) + "," + Math.round(v0);
     }
 
     /**
@@ -469,12 +496,7 @@ public final class ModelerInspectorPanel implements Panel {
         }
 
         var sel = ModelerScene.get().selection;
-        Selection.CubeSelection cubeSel = null;
-        if (sel instanceof Selection.CubeSelection cs) {
-            cubeSel = cs;
-        } else if (sel instanceof Selection.MultiCubeSelection ms) {
-            cubeSel = ms.primary();
-        }
+        var cubeSel = primaryCubeSelection(sel);
         if (cubeSel != null) {
             var cube = cubeSel.cube();
             var before = ModelerAction.CubeMemento.of(cube);
@@ -515,12 +537,7 @@ public final class ModelerInspectorPanel implements Panel {
             return;
         }
         var inflateSel = ModelerScene.get().selection;
-        Selection.CubeSelection cubeSel = null;
-        if (inflateSel instanceof Selection.CubeSelection cs) {
-            cubeSel = cs;
-        } else if (inflateSel instanceof Selection.MultiCubeSelection ms) {
-            cubeSel = ms.primary();
-        }
+        var cubeSel = primaryCubeSelection(inflateSel);
         if (cubeSel != null) {
             var cube = cubeSel.cube();
             var before = ModelerAction.CubeMemento.of(cube);
@@ -552,6 +569,19 @@ public final class ModelerInspectorPanel implements Panel {
         ModelerActionHistory.push(
             new ModelerAction.BoneMementoAction("bone_edit", description, System.currentTimeMillis(), bone, before, after)
         );
+    }
+
+    private static @Nullable Selection.CubeSelection primaryCubeSelection(@Nullable Selection selection) {
+        if (selection instanceof Selection.CubeSelection cs) {
+            return cs;
+        }
+        if (selection instanceof Selection.FaceSelection fs) {
+            return new Selection.CubeSelection(fs.owner(), fs.cube());
+        }
+        if (selection instanceof Selection.MultiCubeSelection ms) {
+            return ms.primary();
+        }
+        return null;
     }
 
     private static String cubeMementoDescription(VecField field, String cubeName) {

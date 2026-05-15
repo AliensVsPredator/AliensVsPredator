@@ -42,8 +42,12 @@ public final class ModelerCubeRenderer {
 
     private static final int SELECTION_COLOR = 0xFFFFCC33;
 
+    private static final int FACE_SELECTION_FILL_COLOR = 0x66FFCC33;
+
     /** Hover outline color — semi-transparent white so it reads as "preview" against the yellow selection. */
     private static final int HOVER_COLOR = 0xAAFFFFFF;
+
+    private static final int FACE_HOVER_FILL_COLOR = 0x40FFFFFF;
 
     /** Per-face brightness multiplier in face order (+X, -X, +Y, -Y, +Z, -Z) — fakes a top-lit room. */
     private static final float[] FACE_SHADE = { 0.82f, 0.82f, 1.00f, 0.55f, 0.72f, 0.72f };
@@ -61,8 +65,12 @@ public final class ModelerCubeRenderer {
         // group so the viewport mirrors the UV map / outliner multi-highlight; a BoneSelection cascades to every cube
         // in the bone's subtree so the user sees the whole group lit up.
         var selectionTargets = new HashSet<ModelerCube>();
+        Selection.FaceSelection selectedFace = null;
         if (selection instanceof Selection.CubeSelection cs) {
             selectionTargets.add(cs.cube());
+        } else if (selection instanceof Selection.FaceSelection fs) {
+            selectedFace = fs;
+            selectionTargets.add(fs.cube());
         } else if (selection instanceof Selection.MultiCubeSelection ms) {
             for (var cs : ms.cubes()) {
                 selectionTargets.add(cs.cube());
@@ -80,6 +88,13 @@ public final class ModelerCubeRenderer {
 
         if (!selectionTargets.isEmpty()) {
             renderOutlines(pose, root, selectionTargets, SELECTION_COLOR);
+        }
+        var hoveredFace = ModelerScene.get().hoveredFace;
+        if (hoveredFace != null && !sameFace(hoveredFace, selectedFace)) {
+            renderFaceOverlay(pose, root, hoveredFace, FACE_HOVER_FILL_COLOR);
+        }
+        if (selectedFace != null) {
+            renderFaceOverlay(pose, root, selectedFace, FACE_SELECTION_FILL_COLOR);
         }
 
         // Drag ghost pass — when a TRANSLATE / ROTATE / RESIZE drag is in flight, emit a second outline using the
@@ -937,6 +952,67 @@ public final class ModelerCubeRenderer {
             renderOutlines(pose, child, targets, color);
         }
 
+        pose.popPose();
+    }
+
+    private static boolean sameFace(@Nullable Selection.FaceSelection a, @Nullable Selection.FaceSelection b) {
+        return a != null && b != null && a.owner() == b.owner() && a.cube() == b.cube() && a.face() == b.face();
+    }
+
+    private static void renderFaceOverlay(PoseStack pose, ModelerBone bone, Selection.FaceSelection target, int color) {
+        pose.pushPose();
+        ModelerTransforms.applyBone(pose, bone);
+
+        if (bone == target.owner() && bone.cubes.contains(target.cube())) {
+            emitFaceOverlay(pose, target.cube(), target.face(), color);
+            pose.popPose();
+            return;
+        }
+        for (var child : bone.children) {
+            renderFaceOverlay(pose, child, target, color);
+        }
+
+        pose.popPose();
+    }
+
+    private static void emitFaceOverlay(PoseStack pose, ModelerCube cube, ModelerCube.Face face, int color) {
+        pose.pushPose();
+        ModelerTransforms.applyCube(pose, cube);
+
+        var matrix = pose.last().pose();
+        var inflate = (float) cube.inflate;
+        var x0 = (float) cube.origin.x - inflate;
+        var y0 = (float) cube.origin.y - inflate;
+        var z0 = (float) cube.origin.z - inflate;
+        var x1 = x0 + (float) cube.size.x + 2 * inflate;
+        var y1 = y0 + (float) cube.size.y + 2 * inflate;
+        var z1 = z0 + (float) cube.size.z + 2 * inflate;
+        var offset = 0.025f;
+
+        var a = ((color >> 24) & 0xFF) / 255f;
+        var r = ((color >> 16) & 0xFF) / 255f;
+        var g = ((color >> 8) & 0xFF) / 255f;
+        var b = (color & 0xFF) / 255f;
+
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        var buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+
+        switch (face) {
+            case EAST -> addQuadColor(buffer, matrix, x1 + offset, y0, z0, x1 + offset, y1, z0, x1 + offset, y1, z1, x1 + offset, y0, z1, r, g, b, a);
+            case WEST -> addQuadColor(buffer, matrix, x0 - offset, y0, z1, x0 - offset, y1, z1, x0 - offset, y1, z0, x0 - offset, y0, z0, r, g, b, a);
+            case UP -> addQuadColor(buffer, matrix, x0, y1 + offset, z0, x0, y1 + offset, z1, x1, y1 + offset, z1, x1, y1 + offset, z0, r, g, b, a);
+            case DOWN -> addQuadColor(buffer, matrix, x0, y0 - offset, z1, x0, y0 - offset, z0, x1, y0 - offset, z0, x1, y0 - offset, z1, r, g, b, a);
+            case SOUTH -> addQuadColor(buffer, matrix, x1, y0, z1 + offset, x1, y1, z1 + offset, x0, y1, z1 + offset, x0, y0, z1 + offset, r, g, b, a);
+            case NORTH -> addQuadColor(buffer, matrix, x0, y0, z0 - offset, x0, y1, z0 - offset, x1, y1, z0 - offset, x1, y0, z0 - offset, r, g, b, a);
+        }
+
+        var built = buffer.build();
+        if (built != null) {
+            BufferUploader.drawWithShader(built);
+        }
+        RenderSystem.disableBlend();
         pose.popPose();
     }
 

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,12 +27,14 @@ import com.blib.engine.modeler.ModelerBone;
 import com.blib.engine.modeler.ModelerCube;
 import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.Selection;
+import com.blib.engine.modeler.Selection.FaceSelection;
 import com.blib.engine.modeler.history.ModelerAction;
 import com.blib.engine.modeler.history.ModelerActionHistory;
 import com.blib.engine.modeler.texture.LoadedTexture;
 import com.blib.engine.modeler.texture.ModelerTextureUsage;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.dock.Panel;
+import com.blib.engine.ui.layout.UiText;
 import com.blib.engine.ui.widget.TextInput;
 
 /**
@@ -331,15 +334,16 @@ public final class UvMapPanel implements Panel {
         pruneFaceSelectionForTexture(scene.activeTexture);
         syncInputs();
 
-        // Hover detection: only over the UV area, only on UV rects inside the visible UV range.
+        // Hover detection: UV-map hover wins while the cursor is over this panel; otherwise mirror the 3D viewport's
+        // hovered face so moving across geometry highlights the matching imported UV island here.
         if (inUvArea(mouseX, mouseY)) {
             var hoverU = (mouseX - offsetXInt) / zoom;
             var hoverV = (mouseY - offsetYInt) / zoom;
             hoveredFace = pickFaceAt(scene.root, hoverU, hoverV, scene.activeTexture);
             hoveredCube = hoveredFace != null ? hoveredFace.cube() : pickHover(scene.root, hoverU, hoverV);
         } else {
-            hoveredFace = null;
-            hoveredCube = null;
+            hoveredFace = viewportHoveredFaceForActiveTexture(scene);
+            hoveredCube = hoveredFace != null ? hoveredFace.cube() : null;
         }
 
         renderGeometry(graphics, scene);
@@ -435,9 +439,13 @@ public final class UvMapPanel implements Panel {
         var dimsWidth = font.width(dims);
         graphics.drawString(font, Component.literal(dims), rectX + rectWidth - dimsWidth - 4, rectY + 3, TEXT_COLOR, false);
 
-        if (perFaceCount > 0) {
-            var hint = perFaceCount + (perFaceCount == 1 ? " face" : " faces");
-            graphics.drawString(font, Component.literal(hint), rectX + 4, rectY + 3, TEXT_MUTED_COLOR, false);
+        var label = selectedFaceLabel();
+        if (label == null && perFaceCount > 0) {
+            label = perFaceCount + (perFaceCount == 1 ? " face" : " faces");
+        }
+        if (label != null) {
+            var color = primaryFace != null ? TEXT_COLOR : TEXT_MUTED_COLOR;
+            UiText.drawClipped(graphics, font, label, rectX + 4, rectY + 3, Math.max(0, rectWidth - dimsWidth - 12), color);
         }
     }
 
@@ -473,6 +481,29 @@ public final class UvMapPanel implements Panel {
         uInput.render(graphics, inputXU, inputY, inputW, mouseX, mouseY);
         graphics.drawString(font, Component.literal("V:"), labelXV, labelTextY, TEXT_COLOR, false);
         vInput.render(graphics, inputXV, inputY, inputW, mouseX, mouseY);
+    }
+
+    private @Nullable String selectedFaceLabel() {
+        var face = primaryFace;
+        var uv = primaryFaceUv();
+        if (face == null || uv == null) {
+            return null;
+        }
+        var rect = faceRect(uv);
+        var size = Math.round(rect.u1() - rect.u0()) + "x" + Math.round(rect.v1() - rect.v0());
+        var at = Math.round(rect.u0()) + "," + Math.round(rect.v0());
+        var faceName = face.face().name().toLowerCase(Locale.ROOT);
+        var prefix = selectedFaces.size() > 1 ? selectedFaces.size() + " faces - " : "";
+        return prefix + face.cube().name + "." + faceName + "  " + size + " @ " + at;
+    }
+
+    private @Nullable FaceSelection viewportHoveredFaceForActiveTexture(ModelerScene scene) {
+        var face = scene.hoveredFace;
+        if (face == null) {
+            return null;
+        }
+        var uv = face.cube().faceUv(face.face());
+        return uv != null && ModelerTextureUsage.usesTexture(scene.activeTexture, uv) ? face : null;
     }
 
     private void addCubes(
@@ -801,6 +832,21 @@ public final class UvMapPanel implements Panel {
      * cleared or set to a non-cube (bone), drop our set.
      */
     private void syncFromSceneSelection(ModelerScene scene) {
+        if (scene.selection instanceof FaceSelection fs) {
+            if (selectedFaces.size() == 1 && selectedFaces.contains(fs)) {
+                primaryFace = fs;
+                primaryCube = fs.cube();
+                primaryOwner = fs.owner();
+                return;
+            }
+            clearSelectionState();
+            selectedFaces.add(fs);
+            primaryFace = fs;
+            primaryCube = fs.cube();
+            primaryOwner = fs.owner();
+            return;
+        }
+
         if (!selectedFaces.isEmpty()) {
             if (sceneSelectionMatchesSelectedFaces(scene.selection)) {
                 return;
@@ -879,6 +925,9 @@ public final class UvMapPanel implements Panel {
     }
 
     private boolean sceneSelectionMatchesSelectedFaces(@Nullable Selection selection) {
+        if (selection instanceof FaceSelection fs) {
+            return selectedFaces.size() == 1 && selectedFaces.contains(fs);
+        }
         if (selection instanceof Selection.CubeSelection cs) {
             return selectedFaceCubeCount() == 1
                 && selectedFaces.iterator().next().cube() == cs.cube()
@@ -915,6 +964,10 @@ public final class UvMapPanel implements Panel {
     }
 
     private void writeFaceSceneSelection(ModelerScene scene) {
+        if (selectedFaces.size() == 1 && primaryFace != null) {
+            scene.selection = primaryFace;
+            return;
+        }
         var list = new ArrayList<Selection.CubeSelection>();
         var seen = new LinkedHashSet<ModelerCube>();
         for (var face : selectedFaces) {
@@ -1764,12 +1817,6 @@ public final class UvMapPanel implements Panel {
         double v0,
         double u1,
         double v1
-    ) {}
-
-    private record FaceSelection(
-        ModelerBone owner,
-        ModelerCube cube,
-        ModelerCube.Face face
     ) {}
 
     private record CubeWithOwner(

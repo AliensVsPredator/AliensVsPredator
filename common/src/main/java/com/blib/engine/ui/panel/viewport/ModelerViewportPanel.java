@@ -36,6 +36,7 @@ import com.blib.engine.modeler.gizmo.ModelerGizmoMode;
 import com.blib.engine.modeler.gizmo.ModelerGizmoState;
 import com.blib.engine.modeler.history.ModelerAction;
 import com.blib.engine.modeler.history.ModelerActionHistory;
+import com.blib.engine.modeler.texture.ModelerTextureUsage;
 import com.blib.engine.render.modeler.ModelerRenderer;
 import com.blib.engine.session.EngineCameraBasis;
 import com.blib.engine.session.ProjectSession;
@@ -165,10 +166,17 @@ public final class ModelerViewportPanel implements Panel {
         var scene = ModelerScene.get();
         if (cursorInsidePanel(mouseX, mouseY) && !gizmoDragActive) {
             var hit = pickCubeAt(mouseX, mouseY);
-            scene.hoveredCube = hit != null ? hit.cube() : null;
+            if (hit != null) {
+                scene.hoveredCube = hit.cube();
+                scene.hoveredFace = new Selection.FaceSelection(hit.owner(), hit.cube(), hit.face());
+            } else {
+                scene.hoveredCube = null;
+                scene.hoveredFace = null;
+            }
             ModelerGizmoInput.updateHover(mouseX - panelX, mouseY - panelY, panelWidth, panelHeight);
         } else {
             scene.hoveredCube = null;
+            scene.hoveredFace = null;
             ModelerGizmoState.setHover(null);
         }
 
@@ -215,7 +223,20 @@ public final class ModelerViewportPanel implements Panel {
         // selection. A miss clears the selection (Blockbench convention — click empty space to deselect).
         var hit = pickCubeAt(mouseX, mouseY);
         var scene = ModelerScene.get();
-        scene.selection = hit != null ? new Selection.CubeSelection(hit.owner(), hit.cube()) : null;
+        if (hit == null) {
+            scene.selection = null;
+        } else {
+            var uv = hit.cube().faceUv(hit.face());
+            if (uv != null) {
+                if (selectTextureForFace(scene, uv)) {
+                    scene.selection = new Selection.FaceSelection(hit.owner(), hit.cube(), hit.face());
+                } else {
+                    scene.selection = new Selection.CubeSelection(hit.owner(), hit.cube());
+                }
+            } else {
+                scene.selection = new Selection.CubeSelection(hit.owner(), hit.cube());
+            }
+        }
         return true;
     }
 
@@ -242,6 +263,19 @@ public final class ModelerViewportPanel implements Panel {
         var camPos = camera.position();
         var rayOrigin = new Vec3(camPos.x, camPos.y, camPos.z);
         return ModelerPicker.pick(scene, rayOrigin, rayDir);
+    }
+
+    private static boolean selectTextureForFace(ModelerScene scene, ModelerCube.FaceUv uv) {
+        if (ModelerTextureUsage.usesTexture(scene.activeTexture, uv)) {
+            return true;
+        }
+        for (var texture : scene.textures) {
+            if (ModelerTextureUsage.usesTexture(texture, uv)) {
+                scene.activeTexture = texture;
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -684,7 +718,9 @@ public final class ModelerViewportPanel implements Panel {
 
     private static boolean hasCubeSelection() {
         var selection = ModelerScene.get().selection;
-        return selection instanceof Selection.CubeSelection || selection instanceof Selection.MultiCubeSelection;
+        return selection instanceof Selection.CubeSelection
+            || selection instanceof Selection.FaceSelection
+            || selection instanceof Selection.MultiCubeSelection;
     }
 
     /**

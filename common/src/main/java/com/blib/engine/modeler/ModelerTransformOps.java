@@ -485,6 +485,9 @@ public final class ModelerTransformOps {
         if (scene.selection instanceof Selection.CubeSelection cs) {
             return List.of(new SelectedCube(cs.owner(), cs.cube()));
         }
+        if (scene.selection instanceof Selection.FaceSelection fs) {
+            return List.of(new SelectedCube(fs.owner(), fs.cube()));
+        }
         if (scene.selection instanceof Selection.MultiCubeSelection ms) {
             var selected = new ArrayList<SelectedCube>(ms.cubes().size());
             for (var cs : ms.cubes()) {

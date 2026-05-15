@@ -372,6 +372,8 @@ public final class ModelerOutlinerPanel implements Panel {
         ModelerBone start = null;
         if (sel instanceof Selection.CubeSelection cs) {
             start = cs.owner();
+        } else if (sel instanceof Selection.FaceSelection fs) {
+            start = fs.owner();
         } else if (sel instanceof Selection.BoneSelection bs) {
             start = bs.bone().parent;
         }
@@ -397,6 +399,8 @@ public final class ModelerOutlinerPanel implements Panel {
         ModelerBone targetBone = null;
         if (sel instanceof Selection.CubeSelection cs) {
             targetCube = cs.cube();
+        } else if (sel instanceof Selection.FaceSelection fs) {
+            targetCube = fs.cube();
         } else if (sel instanceof Selection.MultiCubeSelection ms) {
             targetCube = ms.primary().cube();
         } else if (sel instanceof Selection.BoneSelection bs) {
@@ -436,6 +440,9 @@ public final class ModelerOutlinerPanel implements Panel {
         }
         if (sel instanceof Selection.CubeSelection cs) {
             return row.cube != null && row.cube == cs.cube();
+        }
+        if (sel instanceof Selection.FaceSelection fs) {
+            return row.cube != null && row.cube == fs.cube();
         }
         if (sel instanceof Selection.MultiCubeSelection ms) {
             // Every cube in the multi-selection lights up its row. Bone rows aren't highlighted by a multi-cube

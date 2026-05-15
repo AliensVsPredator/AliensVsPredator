@@ -6,8 +6,8 @@ import java.util.List;
 
 /**
  * Sealed type representing what's currently selected in the modeler — a {@link ModelerBone}, a single
- * {@link ModelerCube}, or a multi-cube selection (e.g. from the UV map's marquee). Empty (no selection) is represented
- * by {@code null} on the scene; this type is non-null when something is selected.
+ * {@link ModelerCube}, a cube face, or a multi-cube selection (e.g. from the UV map's marquee). Empty (no selection)
+ * is represented by {@code null} on the scene; this type is non-null when something is selected.
  */
 @ApiStatus.Internal
 public sealed interface Selection {
@@ -17,6 +17,17 @@ public sealed interface Selection {
     record CubeSelection(
         ModelerBone owner,
         ModelerCube cube
+    ) implements Selection {}
+
+    /**
+     * A single cube face selected from either the 3D viewport or UV map. Tools that do not have face-level behavior
+     * should treat this as a cube selection for {@link #cube}; face-aware panels can use {@link #face} to show or edit
+     * the exact UV island.
+     */
+    record FaceSelection(
+        ModelerBone owner,
+        ModelerCube cube,
+        ModelerCube.Face face
     ) implements Selection {}
 
     /**
