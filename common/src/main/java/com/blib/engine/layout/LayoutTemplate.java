@@ -98,7 +98,8 @@ public enum LayoutTemplate {
 
     /**
      * Body shape for the MODELER template. Left rail stacks UV map over the texture list; center is the viewport;
-     * right rail stacks inspector over outliner. Side rails stay fixed-width while the viewport flexes.
+     * right rail stacks inspector over outliner with a 40/60 split. Side rails stay fixed-width while the viewport
+     * flexes.
      */
     private static BodyNode modelerBody() {
         var leftColumn = new BodyNode.Split(
@@ -111,7 +112,7 @@ public enum LayoutTemplate {
             Orientation.VERTICAL.name(),
             new BodyNode.Leaf(List.of(PanelRegistry.MODELER_INSPECTOR), 0),
             new BodyNode.Leaf(List.of(PanelRegistry.MODELER_OUTLINER), 0),
-            new SizingDoc.SecondFixed(LayoutDefaults.CONTENT_BROWSER_HEIGHT)
+            new SizingDoc.Ratio(0.4f)
         );
         var centerAndRight = new BodyNode.Split(
             Orientation.HORIZONTAL.name(),
