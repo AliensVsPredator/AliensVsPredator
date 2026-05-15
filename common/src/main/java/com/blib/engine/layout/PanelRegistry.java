@@ -73,7 +73,7 @@ public final class PanelRegistry {
         PROJECT("Project & Data"),
         JIGSAW("Jigsaw"),
         FACTION("Factions & Territory"),
-        AI_DEBUG("AI & Debug"),
+        AI_DEBUG("AI & Pathfinding"),
         MODELER("Modeler"),
         TEXTURE("Textures"),
         HISTORY("History");
