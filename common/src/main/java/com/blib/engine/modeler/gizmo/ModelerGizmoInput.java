@@ -729,14 +729,14 @@ public final class ModelerGizmoInput {
      * Bone PIVOT translate — moves {@code bone.pivot} while compensating {@code bone.position} to keep the rendered
      * body stationary. Two differences from {@link #applyPivotTranslate}:
      * <ol>
-     * <li><b>Pivot shift direction</b>: bone {@code pivot} (like {@code position}) lives in the parent's frame, NOT
-     * inside the bone's rotation. So to move the world pivot along the visible (post-rotation) axis by {@code δ}, we
-     * shift {@code pivot} by {@code R_bone · (δ along local axis)} — same shape as {@link #applyBoneTranslate}'s
-     * LOCAL-frame delta.</li>
+     * <li><b>Pivot shift direction</b>: after compensation, the visible pivot point moves by {@code R·S·Δpivot}, not by
+     * raw {@code Δpivot}, because {@code Δposition = (R·S - I)·Δpivot} contributes to the pivot's world position too.
+     * LOCAL drags therefore store the unrotated axis delta in {@code bone.pivot}; GLOBAL drags inverse-transform the
+     * desired parent-frame world shift through {@code R·S}.</li>
      * <li><b>Body compensation includes scale</b>: the bone has a non-trivial scale field. The body transform is
      * {@code T(pos)·T(pivot)·R·S·T(-pivot)}; shifting pivot by {@code Δp} moves the body by {@code (I - R·S)·Δp}, so to
-     * cancel we set {@code Δpos = (R·S - I)·Δp}. Cubes don't have a scale, which is why the cube version uses just
-     * {@code R}.</li>
+     * cancel we set {@code Δpos = (R·S - I)·Δp}. Cubes compensate {@code origin} instead of {@code position}, so their
+     * pivot point is not affected by the compensation term.</li>
      * </ol>
      */
     private static void applyBonePivotTranslate(ModelerGizmoState.DragState drag, double cx, double cy, int w, int h) {
@@ -756,19 +756,27 @@ public final class ModelerGizmoInput {
             .rotateY((float) Math.toRadians(startRot.y))
             .rotateX((float) Math.toRadians(startRot.x));
 
-        // Δp in parent frame. LOCAL: rotate cube-local δ by R_bone. GLOBAL: inverse-transform world δ through parent.
+        var startScale = baseline.scale();
+        var rs = new Matrix3f(rbone).scale((float) startScale.x, (float) startScale.y, (float) startScale.z);
+
+        // Δpivot is the stored field delta. Because position compensation also moves the actual pivot point, solve
+        // against actual pivot motion: desiredParentShift = R*S*Δpivot.
         var dPivot = new Vector3f(0, 0, 0);
-        dPivot.setComponent(drag.axis(), delta);
         if (s.frame() == ModelerGizmoFrame.LOCAL) {
-            rbone.transform(dPivot);
+            dPivot.setComponent(drag.axis(), delta);
         } else {
             var parentInv = new Matrix3f(s.boneChainRotation()).transpose();
-            parentInv.transform(dPivot);
+            var desiredParentShift = new Vector3f(0, 0, 0);
+            desiredParentShift.setComponent(drag.axis(), delta);
+            parentInv.transform(desiredParentShift);
+            if (Math.abs(rs.determinant()) < 1.0e-6f) {
+                return;
+            }
+            dPivot.set(desiredParentShift);
+            new Matrix3f(rs).invert().transform(dPivot);
         }
 
         // Body compensation: Δpos = (R*S - I) * Δp. Build R*S explicitly so non-unit bone scale stays correct.
-        var startScale = baseline.scale();
-        var rs = new Matrix3f(rbone).scale((float) startScale.x, (float) startScale.y, (float) startScale.z);
         var rsDp = new Vector3f(dPivot);
         rs.transform(rsDp);
         var dPos = new Vector3f(rsDp).sub(dPivot);
