@@ -141,8 +141,8 @@ public final class PanelRegistry {
         register(MODELER_OUTLINER, ModelerOutlinerPanel.class, ctx -> new ModelerOutlinerPanel());
         register(MODELER_INSPECTOR, ModelerInspectorPanel.class, ctx -> new ModelerInspectorPanel());
         register(MODELER_UV_MAP, UvMapPanel.class, ctx -> new UvMapPanel());
-        register(TEXTURES, TexturesPanel.class, ctx -> new TexturesPanel());
-        registerAlias(MODELER_TEXTURES, ctx -> new TexturesPanel());
+        register(TEXTURES, TexturesPanel.class, ctx -> new TexturesPanel(ctx.panelMenuOpener()));
+        registerAlias(MODELER_TEXTURES, ctx -> new TexturesPanel(ctx.panelMenuOpener()));
         register(TEXTURE_VIEWPORT, TextureViewportPanel.class, ctx -> new TextureViewportPanel());
         register(TEXTURE_INSPECTOR, TextureInspectorPanel.class, ctx -> new TextureInspectorPanel());
     }

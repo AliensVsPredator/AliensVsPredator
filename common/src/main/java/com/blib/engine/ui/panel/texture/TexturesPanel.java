@@ -3,10 +3,15 @@ package com.blib.engine.ui.panel.texture;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.Util;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 
 import com.blib.engine.modeler.ModelerFilePicker;
 import com.blib.engine.modeler.ModelerScene;
@@ -17,6 +22,8 @@ import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.layout.ScrollViewport;
 import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.layout.UiText;
+import com.blib.engine.ui.popup.PanelMenuOpener;
+import com.blib.engine.ui.widget.DropdownMenu;
 
 /**
  * Lists the PNG textures the user has imported via the import button. Clicking a row sets
@@ -65,6 +72,8 @@ public final class TexturesPanel implements Panel {
 
     private final ScrollViewport scroll = new ScrollViewport();
 
+    private final @Nullable PanelMenuOpener panelMenuOpener;
+
     private @Nullable Component hoveredTooltip;
 
     private int panelX, panelY, panelWidth, panelHeight;
@@ -72,6 +81,14 @@ public final class TexturesPanel implements Panel {
     private int buttonX, buttonY, buttonWidth;
 
     private int rowsTopY, rowsLeftX, rowsViewportHeight, rowsContentWidth;
+
+    public TexturesPanel() {
+        this(null);
+    }
+
+    public TexturesPanel(@Nullable PanelMenuOpener panelMenuOpener) {
+        this.panelMenuOpener = panelMenuOpener;
+    }
 
     @Override
     public String title() {
@@ -159,10 +176,13 @@ public final class TexturesPanel implements Panel {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (button != 0) {
+        if (mouseX < panelX || mouseX >= panelX + panelWidth || mouseY < panelY || mouseY >= panelY + panelHeight) {
             return false;
         }
-        if (mouseX < panelX || mouseX >= panelX + panelWidth || mouseY < panelY || mouseY >= panelY + panelHeight) {
+        if (button == 1) {
+            return openTextureContextMenu(mouseX, mouseY);
+        }
+        if (button != 0) {
             return false;
         }
         if (mouseX >= buttonX && mouseX < buttonX + buttonWidth && mouseY >= buttonY && mouseY < buttonY + BUTTON_SIZE) {
@@ -179,11 +199,7 @@ public final class TexturesPanel implements Panel {
             return false;
         }
 
-        var contentY = (int) (mouseY - rowsTopY) + (int) scroll.scrollY();
-        if (contentY < 0) {
-            return false;
-        }
-        var idx = contentY / ROW_HEIGHT;
+        var idx = rowIndexAt(mouseX, mouseY);
         var scene = ModelerScene.get();
         if (idx < 0 || idx >= scene.textures.size()) {
             return false;
@@ -191,6 +207,50 @@ public final class TexturesPanel implements Panel {
         var clicked = scene.textures.get(idx);
         scene.activeTexture = scene.activeTexture == clicked ? null : clicked;
         return true;
+    }
+
+    private boolean openTextureContextMenu(double mouseX, double mouseY) {
+        var texture = textureAt(mouseX, mouseY);
+        if (texture == null) {
+            return false;
+        }
+        if (panelMenuOpener == null) {
+            return true;
+        }
+
+        var sourceDir = sourceDirectory(texture);
+        var openSource = new DropdownMenu.Item(
+            "Open in File Explorer",
+            () -> openTextureSourceFolder(texture),
+            sourceDir != null,
+            Component.literal("The source folder is no longer available.")
+        );
+        panelMenuOpener.open(new DropdownMenu((int) mouseX, (int) mouseY, List.of(openSource)));
+        return true;
+    }
+
+    private @Nullable LoadedTexture textureAt(double mouseX, double mouseY) {
+        var idx = rowIndexAt(mouseX, mouseY);
+        var textures = ModelerScene.get().textures;
+        if (idx < 0 || idx >= textures.size()) {
+            return null;
+        }
+        return textures.get(idx);
+    }
+
+    private int rowIndexAt(double mouseX, double mouseY) {
+        if (mouseY < rowsTopY || mouseY >= rowsTopY + rowsViewportHeight) {
+            return -1;
+        }
+        if (mouseX < rowsLeftX || mouseX >= rowsLeftX + rowsContentWidth) {
+            return -1;
+        }
+
+        var contentY = (int) (mouseY - rowsTopY) + scroll.scrollY();
+        if (contentY < 0) {
+            return -1;
+        }
+        return contentY / ROW_HEIGHT;
     }
 
     @Override
@@ -232,6 +292,24 @@ public final class TexturesPanel implements Panel {
         if (lastLoaded != null) {
             scene.activeTexture = lastLoaded;
         }
+    }
+
+    private static void openTextureSourceFolder(LoadedTexture texture) {
+        var sourceDir = sourceDirectory(texture);
+        if (sourceDir == null) {
+            LOGGER.warn("TexturesPanel: source folder is unavailable for {}", texture.sourcePath());
+            return;
+        }
+        Util.getPlatform().openUri(sourceDir.toUri());
+    }
+
+    private static @Nullable Path sourceDirectory(LoadedTexture texture) {
+        var source = texture.sourcePath().toAbsolutePath().normalize();
+        var dir = Files.isDirectory(source) ? source : source.getParent();
+        if (dir == null || !Files.isDirectory(dir)) {
+            return null;
+        }
+        return dir;
     }
 
     private static void drawPlusIcon(GuiGraphics graphics, int x, int y) {
