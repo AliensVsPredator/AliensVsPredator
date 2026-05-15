@@ -43,13 +43,13 @@ public final class TexturesPanel implements Panel {
 
     private static final int BG_COLOR = 0xFF18181C;
 
-    private static final int BUTTON_COLOR = 0xFF2A2A32;
+    private static final int MENU_BAR_BG_COLOR = 0xFF202024;
 
-    private static final int BUTTON_HOVER_COLOR = 0xFF3A3A48;
+    private static final int MENU_BAR_BORDER_COLOR = 0xFF101013;
 
-    private static final int BUTTON_BORDER_COLOR = 0xFF505058;
+    private static final int MENU_CHIP_BG_COLOR = 0xFF2C2C32;
 
-    private static final int BUTTON_ICON_COLOR = 0xFFD0D0D0;
+    private static final int MENU_CHIP_HOVER_BG_COLOR = 0xFF3C3C46;
 
     private static final int ROW_HOVER_COLOR = 0xFF24242A;
 
@@ -65,7 +65,13 @@ public final class TexturesPanel implements Panel {
 
     private static final int PADDING = 6;
 
-    private static final int BUTTON_SIZE = 16;
+    private static final int MENU_BAR_HEIGHT = 14;
+
+    private static final int MENU_CHIP_PADDING_X = 4;
+
+    private static final int MENU_EDGE_PADDING = 6;
+
+    private static final String MENU_FILE = "File";
 
     private static final int ROW_HEIGHT = 34;
 
@@ -81,7 +87,7 @@ public final class TexturesPanel implements Panel {
 
     private int panelX, panelY, panelWidth, panelHeight;
 
-    private int buttonX, buttonY, buttonWidth;
+    private int menuBarY, menuFileX, menuFileY, menuFileWidth, menuFileHeight;
 
     private int rowsTopY, rowsLeftX, rowsViewportHeight, rowsContentWidth;
 
@@ -115,22 +121,10 @@ public final class TexturesPanel implements Panel {
         var scene = ModelerScene.get();
         var font = EngineFont.get();
 
-        buttonX = x + PADDING;
-        buttonY = y + PADDING;
-        buttonWidth = BUTTON_SIZE;
-        var buttonHovered = mouseX >= buttonX && mouseX < buttonX + buttonWidth && mouseY >= buttonY && mouseY < buttonY + BUTTON_SIZE;
-        if (buttonHovered) {
-            hoveredTooltip = Component.literal("Load texture");
-        }
-        graphics.fill(buttonX, buttonY, buttonX + buttonWidth, buttonY + BUTTON_SIZE, buttonHovered ? BUTTON_HOVER_COLOR : BUTTON_COLOR);
-        graphics.fill(buttonX, buttonY, buttonX + buttonWidth, buttonY + 1, BUTTON_BORDER_COLOR);
-        graphics.fill(buttonX, buttonY + BUTTON_SIZE - 1, buttonX + buttonWidth, buttonY + BUTTON_SIZE, BUTTON_BORDER_COLOR);
-        graphics.fill(buttonX, buttonY, buttonX + 1, buttonY + BUTTON_SIZE, BUTTON_BORDER_COLOR);
-        graphics.fill(buttonX + buttonWidth - 1, buttonY, buttonX + buttonWidth, buttonY + BUTTON_SIZE, BUTTON_BORDER_COLOR);
-        drawPlusIcon(graphics, buttonX, buttonY);
+        renderMenuBar(graphics, x, y, width, mouseX, mouseY, font);
 
-        // Rows region: below the button (with one PADDING gap), extending to the bottom of the panel.
-        rowsTopY = buttonY + BUTTON_SIZE + PADDING;
+        // Rows region: below the File menu strip, extending to the bottom of the panel.
+        rowsTopY = y + MENU_BAR_HEIGHT + PADDING;
         rowsLeftX = x + PADDING;
         rowsViewportHeight = Math.max(0, (y + height) - rowsTopY - PADDING);
         var innerWidth = Math.max(0, width - 2 * PADDING);
@@ -178,6 +172,17 @@ public final class TexturesPanel implements Panel {
     }
 
     @Override
+    public boolean mouseClickedCapture(double mouseX, double mouseY, int button) {
+        if (button == 0 && mouseY >= menuBarY && mouseY < menuBarY + MENU_BAR_HEIGHT) {
+            if (isFileChip(mouseX, mouseY) && panelMenuOpener != null) {
+                panelMenuOpener.open(buildFileMenu());
+            }
+            return true;
+        }
+        return scroll.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (mouseX < panelX || mouseX >= panelX + panelWidth || mouseY < panelY || mouseY >= panelY + panelHeight) {
             return false;
@@ -187,10 +192,6 @@ public final class TexturesPanel implements Panel {
         }
         if (button != 0) {
             return false;
-        }
-        if (mouseX >= buttonX && mouseX < buttonX + buttonWidth && mouseY >= buttonY && mouseY < buttonY + BUTTON_SIZE) {
-            openTexturePicker();
-            return true;
         }
         if (scroll.mouseClicked(mouseX, mouseY, button)) {
             return true;
@@ -409,11 +410,39 @@ public final class TexturesPanel implements Panel {
         return dir;
     }
 
-    private static void drawPlusIcon(GuiGraphics graphics, int x, int y) {
-        var cx = x + BUTTON_SIZE / 2;
-        var cy = y + BUTTON_SIZE / 2;
-        graphics.fill(cx - 4, cy, cx + 5, cy + 1, BUTTON_ICON_COLOR);
-        graphics.fill(cx, cy - 4, cx + 1, cy + 5, BUTTON_ICON_COLOR);
+    private void renderMenuBar(GuiGraphics graphics, int x, int y, int width, int mouseX, int mouseY, Font font) {
+        menuBarY = y;
+        graphics.fill(x, y, x + width, y + MENU_BAR_HEIGHT, MENU_BAR_BG_COLOR);
+        graphics.fill(x, y + MENU_BAR_HEIGHT - 1, x + width, y + MENU_BAR_HEIGHT, MENU_BAR_BORDER_COLOR);
+
+        menuFileX = x + MENU_EDGE_PADDING;
+        menuFileY = y + 2;
+        menuFileWidth = font.width(MENU_FILE) + 2 * MENU_CHIP_PADDING_X;
+        menuFileHeight = MENU_BAR_HEIGHT - 4;
+
+        var hovered = isFileChip(mouseX, mouseY);
+        graphics.fill(
+            menuFileX,
+            menuFileY,
+            menuFileX + menuFileWidth,
+            menuFileY + menuFileHeight,
+            hovered ? MENU_CHIP_HOVER_BG_COLOR : MENU_CHIP_BG_COLOR
+        );
+        var textY = y + (MENU_BAR_HEIGHT - font.lineHeight + 2) / 2;
+        graphics.drawString(font, Component.literal(MENU_FILE), menuFileX + MENU_CHIP_PADDING_X, textY, TEXT_COLOR, false);
+    }
+
+    private boolean isFileChip(double mouseX, double mouseY) {
+        return mouseX >= menuFileX
+            && mouseX < menuFileX + menuFileWidth
+            && mouseY >= menuFileY
+            && mouseY < menuFileY + menuFileHeight;
+    }
+
+    private DropdownMenu buildFileMenu() {
+        var openItems = List.of(new DropdownMenu.Item("From File...", this::openTexturePicker));
+        var items = List.of(new DropdownMenu.Item("Open", () -> {}, openItems));
+        return new DropdownMenu(menuFileX, menuFileY + menuFileHeight + 1, items);
     }
 
     private static void drawTextureMeta(
