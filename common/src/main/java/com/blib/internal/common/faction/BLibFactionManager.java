@@ -37,7 +37,6 @@ import com.blib.internal.common.faction.io.FactionDataIO;
 import com.blib.internal.common.faction.io.FactionIO;
 import com.blib.internal.common.faction.io.FactionMembershipIO;
 import com.blib.internal.common.faction.serializer.FactionRelationshipTableSerializer;
-import com.blib.internal.common.util.BLibSaveTiming;
 import com.blib.internal.common.util.ShardManager;
 import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.S2CFactionDirectoryPayload;
@@ -288,16 +287,10 @@ public class BLibFactionManager implements FactionManager, EntityReferenceOwner 
     public void save(MinecraftServer server) {
         // Don't short-circuit on empty factions — pending deletion-shards still need to be rewritten if the last
         // faction was just removed. Save sub-methods no-op when there's nothing to do.
-        BLibSaveTiming.time(
-            LOGGER,
-            "faction manager total factions=" + factions.size(),
-            () -> {
-                saveMemberships(server);
-                saveData(server);
-                saveRelationshipTable(server);
-                shardManager.clearDirty();
-            }
-        );
+        saveMemberships(server);
+        saveData(server);
+        saveRelationshipTable(server);
+        shardManager.clearDirty();
     }
 
     public void clear(MinecraftServer minecraftServer) {
@@ -523,21 +516,12 @@ public class BLibFactionManager implements FactionManager, EntityReferenceOwner 
         }
 
         var dirtyShards = List.copyOf(shardManager.dirtyShards());
-        LOGGER.info(
-            "[BLib save timing] faction memberships factions={} dirtyShards={}",
-            factions.size(),
-            dirtyShards.size()
-        );
 
         for (var shardIndex : dirtyShards) {
             // A shard with no surviving entries is still rewritten — the resulting empty file (or its deletion via
             // FactionIO.writeCompressed's empty-tag branch) is the whole point of the dirty mark on deletion.
             var entriesInShard = shardToEntries.getOrDefault(shardIndex, List.of());
-            BLibSaveTiming.time(
-                LOGGER,
-                "faction membership shard=" + shardIndex + " entries=" + entriesInShard.size(),
-                () -> FactionMembershipIO.saveShard(server, entriesInShard, shardIndex)
-            );
+            FactionMembershipIO.saveShard(server, entriesInShard, shardIndex);
         }
 
         for (var faction : factions.values()) {
@@ -566,11 +550,6 @@ public class BLibFactionManager implements FactionManager, EntityReferenceOwner 
         }
 
         var dirtyShards = List.copyOf(shardManager.dirtyShards());
-        LOGGER.info(
-            "[BLib save timing] faction data factions={} dirtyShards={}",
-            factions.size(),
-            dirtyShards.size()
-        );
 
         for (var shardIndex : dirtyShards) {
             // Shards with no surviving factions in any namespace are effectively skipped — FactionDataIO writes one
@@ -578,11 +557,7 @@ public class BLibFactionManager implements FactionManager, EntityReferenceOwner 
             // for those, but the load filter (knownFactionIds from memberships) skips its entries, so they don't
             // resurrect.
             var factionIdsInShard = shardToFactionIds.getOrDefault(shardIndex, List.of());
-            BLibSaveTiming.time(
-                LOGGER,
-                "faction data shard=" + shardIndex + " entries=" + factionIdsInShard.size(),
-                () -> FactionDataIO.saveShard(server, factionIdsInShard, internalDataMap, typeIdMap, shardIndex)
-            );
+            FactionDataIO.saveShard(server, factionIdsInShard, internalDataMap, typeIdMap, shardIndex);
         }
 
         for (var faction : factions.values()) {
@@ -603,18 +578,11 @@ public class BLibFactionManager implements FactionManager, EntityReferenceOwner 
 
     private void saveRelationshipTable(MinecraftServer server) {
         if (!relationshipTable.isDirty()) {
-            LOGGER.info("[BLib save timing] faction relationship table dirty=false");
             return;
         }
 
-        BLibSaveTiming.time(
-            LOGGER,
-            "faction relationship table edges=" + relationshipTable.getAllEdges().size(),
-            () -> {
-                var tag = FactionRelationshipTableSerializer.serialize(relationshipTable);
-                FactionIO.writeCompressed(FactionIO.getRelationshipsPath(server), tag);
-            }
-        );
+        var tag = FactionRelationshipTableSerializer.serialize(relationshipTable);
+        FactionIO.writeCompressed(FactionIO.getRelationshipsPath(server), tag);
         relationshipTable.clearDirty();
     }
 }

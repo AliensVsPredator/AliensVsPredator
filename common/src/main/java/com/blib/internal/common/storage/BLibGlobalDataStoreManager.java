@@ -3,8 +3,6 @@ package com.blib.internal.common.storage;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import org.jetbrains.annotations.ApiStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,12 +12,9 @@ import java.util.Map;
 import com.blib.api.common.registry.v1.BLibHolder;
 import com.blib.api.common.storage.v1.DataStore;
 import com.blib.api.common.storage.v1.DataStoreType;
-import com.blib.internal.common.util.BLibSaveTiming;
 
 @ApiStatus.Internal
 class BLibGlobalDataStoreManager {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(BLibGlobalDataStoreManager.class);
 
     private static final String GLOBAL_FOLDER = "global";
 
@@ -33,17 +28,11 @@ class BLibGlobalDataStoreManager {
     }
 
     void save(MinecraftServer server) {
-        LOGGER.info("[BLib save timing] global data stores count={}", stores.size());
-
         for (var entry : stores.entrySet()) {
             var id = entry.getKey();
             var store = entry.getValue();
 
-            BLibSaveTiming.time(
-                LOGGER,
-                "global store " + id,
-                () -> DataStoreIO.saveStoreToFile(getStorePath(server, id), store)
-            );
+            DataStoreIO.saveStoreToFile(getStorePath(server, id), store);
         }
     }
 

@@ -7,8 +7,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.blib.internal.common.event.BLibGlobalEvents;
-import com.blib.internal.common.util.BLibSaveTiming;
-import com.blib.mod.BLib;
 
 @Mixin(MinecraftServer.class)
 public abstract class MixinMinecraftServer_SaveGlobalData {
@@ -23,14 +21,8 @@ public abstract class MixinMinecraftServer_SaveGlobalData {
 
         var self = MinecraftServer.class.cast(this);
 
-        BLibSaveTiming.time(
-            BLib.LOGGER,
-            "SERVER_SAVE event listeners=" + listeners.size() + " flush=" + flush + " forced=" + forced,
-            () -> {
-                for (var listener : listeners) {
-                    listener.invoke(self);
-                }
-            }
-        );
+        for (var listener : listeners) {
+            listener.invoke(self);
+        }
     }
 }

@@ -5,8 +5,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.ApiStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,12 +14,9 @@ import java.util.Map;
 import com.blib.api.common.registry.v1.BLibHolder;
 import com.blib.api.common.storage.v1.DataStore;
 import com.blib.api.common.storage.v1.DataStoreType;
-import com.blib.internal.common.util.BLibSaveTiming;
 
 @ApiStatus.Internal
 class BLibLevelDataStoreManager {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(BLibLevelDataStoreManager.class);
 
     private static final String LEVELS_FOLDER = "levels";
 
@@ -41,21 +36,14 @@ class BLibLevelDataStoreManager {
         var levelStores = stores.get(levelKey);
 
         if (levelStores == null || levelStores.isEmpty()) {
-            LOGGER.info("[BLib save timing] level data stores {} count=0", levelKey.location());
             return;
         }
-
-        LOGGER.info("[BLib save timing] level data stores {} count={}", levelKey.location(), levelStores.size());
 
         for (var entry : levelStores.entrySet()) {
             var id = entry.getKey();
             var store = entry.getValue();
 
-            BLibSaveTiming.time(
-                LOGGER,
-                "level store " + levelKey.location() + " " + id,
-                () -> DataStoreIO.saveStoreToFile(getStorePath(level, id), store)
-            );
+            DataStoreIO.saveStoreToFile(getStorePath(level, id), store);
         }
     }
 

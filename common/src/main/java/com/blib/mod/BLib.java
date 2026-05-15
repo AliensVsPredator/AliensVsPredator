@@ -39,7 +39,6 @@ import com.blib.internal.common.reputation.BLibReputationManager;
 import com.blib.internal.common.storage.BLibDataStoreManager;
 import com.blib.internal.common.storage.ProjectDraftStore;
 import com.blib.internal.common.territory.BLibTerritoryManager;
-import com.blib.internal.common.util.BLibSaveTiming;
 import com.blib.mod.common.gameplay.goap.GOAPDebugTracker;
 import com.blib.mod.common.gameplay.history.ActionHistory;
 import com.blib.mod.common.network.BLibPacketDirections;
@@ -133,55 +132,13 @@ public class BLib {
 
         BLib.MOD.events().onChunkSave().register(BLibDataStoreManager.INSTANCE::saveChunkData);
         BLib.MOD.events().onChunkUnload().register(BLibDataStoreManager.INSTANCE::onChunkUnload);
-        BLib.MOD.events()
-            .onServerSave()
-            .register(server -> BLibSaveTiming.time(
-                LOGGER,
-                "territory pending claim flush",
-                () -> BLibTerritoryManager.INSTANCE.flushPendingClaimStoreSavesWithTiming(server)
-            ));
-        BLib.MOD.events()
-            .onServerSave()
-            .register(server -> BLibSaveTiming.time(
-                LOGGER,
-                "global data stores",
-                () -> BLibDataStoreManager.INSTANCE.saveGlobalData(server)
-            ));
-        BLib.MOD.events()
-            .onServerSave()
-            .register(server -> BLibSaveTiming.time(
-                LOGGER,
-                "property containers",
-                () -> BLibPropertyContainerSaveHandler.INSTANCE.save(server)
-            ));
-        BLib.MOD.events()
-            .onLevelSave()
-            .register(level -> BLibSaveTiming.time(
-                LOGGER,
-                "level data stores " + level.dimension().location(),
-                () -> BLibDataStoreManager.INSTANCE.saveLevelData(level)
-            ));
-        BLib.MOD.events()
-            .onServerStopped()
-            .register(server -> BLibSaveTiming.time(
-                LOGGER,
-                "server stopped territory final claim flush",
-                () -> BLibTerritoryManager.INSTANCE.flushPendingClaimStoreSavesWithTiming(server)
-            ));
-        BLib.MOD.events()
-            .onServerStopped()
-            .register(server -> BLibSaveTiming.time(
-                LOGGER,
-                "server stopped data store clear",
-                () -> BLibDataStoreManager.INSTANCE.onServerStopped(server)
-            ));
-        BLib.MOD.events()
-            .onServerStopped()
-            .register(server -> BLibSaveTiming.time(
-                LOGGER,
-                "server stopped goap debug clear",
-                () -> GOAPDebugTracker.INSTANCE.clear(server)
-            ));
+        BLib.MOD.events().onServerSave().register(BLibTerritoryManager.INSTANCE::flushPendingClaimStoreSaves);
+        BLib.MOD.events().onServerSave().register(BLibDataStoreManager.INSTANCE::saveGlobalData);
+        BLib.MOD.events().onServerSave().register(BLibPropertyContainerSaveHandler.INSTANCE::save);
+        BLib.MOD.events().onLevelSave().register(BLibDataStoreManager.INSTANCE::saveLevelData);
+        BLib.MOD.events().onServerStopped().register(BLibTerritoryManager.INSTANCE::flushPendingClaimStoreSaves);
+        BLib.MOD.events().onServerStopped().register(BLibDataStoreManager.INSTANCE::onServerStopped);
+        BLib.MOD.events().onServerStopped().register(GOAPDebugTracker.INSTANCE::clear);
         // Unified ActionHistory: register the broadcast listener at server-start (so notify hooks have a
         // MinecraftServer
         // reference to send packets through), and clear stacks + drop the listener on shutdown.
@@ -190,35 +147,13 @@ public class BLib {
             .register(server -> ActionHistory.setChangeListener(() -> BLibServerListener.broadcastActionHistorySync(server)));
         BLib.MOD.events()
             .onServerStopped()
-            .register(server -> BLibSaveTiming.time(
-                LOGGER,
-                "server stopped action history clear",
-                () -> {
-                    ActionHistory.setChangeListener(null);
-                    ActionHistory.clear();
-                }
-            ));
-        BLib.MOD.events()
-            .onServerStopped()
-            .register(server -> BLibSaveTiming.time(
-                LOGGER,
-                "server stopped client territory cache clear",
-                () -> ClientTerritoryCache.INSTANCE.clear()
-            ));
-        BLib.MOD.events()
-            .onServerStopped()
-            .register(server -> BLibSaveTiming.time(
-                LOGGER,
-                "server stopped client faction cache clear",
-                () -> ClientFactionCache.INSTANCE.clear()
-            ));
-        BLib.MOD.events()
-            .onServerStopped()
-            .register(server -> BLibSaveTiming.time(
-                LOGGER,
-                "server stopped project draft store",
-                () -> ProjectDraftStore.INSTANCE.onServerStopped(server)
-            ));
+            .register(server -> {
+                ActionHistory.setChangeListener(null);
+                ActionHistory.clear();
+            });
+        BLib.MOD.events().onServerStopped().register(server -> ClientTerritoryCache.INSTANCE.clear());
+        BLib.MOD.events().onServerStopped().register(server -> ClientFactionCache.INSTANCE.clear());
+        BLib.MOD.events().onServerStopped().register(ProjectDraftStore.INSTANCE::onServerStopped);
 
         BLib.MOD.events()
             .onServerStarted()
@@ -229,35 +164,21 @@ public class BLib {
             });
         BLib.MOD.events()
             .onServerSave()
-            .register(server -> BLibSaveTiming.time(
-                LOGGER,
-                "faction reputation entity reference stores",
-                () -> {
-                    BLibFactionManager.INSTANCE.save(server);
-                    BLibReputationManager.INSTANCE.save(server);
-                    BLibEntityReferenceManager.INSTANCE.save(server);
-                }
-            ));
+            .register(server -> {
+                BLibFactionManager.INSTANCE.save(server);
+                BLibReputationManager.INSTANCE.save(server);
+                BLibEntityReferenceManager.INSTANCE.save(server);
+            });
         BLib.MOD.events()
             .onServerStopped()
-            .register(server -> BLibSaveTiming.time(
-                LOGGER,
-                "server stopped faction reputation entity reference clear",
-                () -> {
-                    BLibEntityReferenceManager.INSTANCE.clear(server);
-                    BLibFactionManager.INSTANCE.clear(server);
-                    BLibReputationManager.INSTANCE.clear(server);
-                }
-            ));
+            .register(server -> {
+                BLibEntityReferenceManager.INSTANCE.clear(server);
+                BLibFactionManager.INSTANCE.clear(server);
+                BLibReputationManager.INSTANCE.clear(server);
+            });
 
         BLib.MOD.events().onServerStarted().register(BLibTerritoryManager.INSTANCE::onServerStarted);
-        BLib.MOD.events()
-            .onServerStopped()
-            .register(server -> BLibSaveTiming.time(
-                LOGGER,
-                "server stopped territory manager clear",
-                () -> BLibTerritoryManager.INSTANCE.onServerStopped(server)
-            ));
+        BLib.MOD.events().onServerStopped().register(BLibTerritoryManager.INSTANCE::onServerStopped);
         BLib.MOD.events().onChunkLoad().register(BLibTerritoryManager.INSTANCE::onChunkLoaded);
         BLib.MOD.events().onChunkLoad().register(BLibEntityReferenceManager.INSTANCE::onChunkLoaded);
         BLib.MOD.events().onChunkUnload().register(BLibTerritoryManager.INSTANCE::onChunkUnloaded);

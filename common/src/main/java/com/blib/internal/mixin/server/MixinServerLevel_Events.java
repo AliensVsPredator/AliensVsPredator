@@ -9,9 +9,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.blib.internal.common.event.BLibGlobalEvents;
-import com.blib.internal.common.storage.BLibDataStoreManager;
-import com.blib.internal.common.util.BLibSaveTiming;
-import com.blib.mod.BLib;
 
 @Mixin(ServerLevel.class)
 public abstract class MixinServerLevel_Events {
@@ -29,17 +26,10 @@ public abstract class MixinServerLevel_Events {
         }
 
         var self = ServerLevel.class.cast(this);
-        BLibDataStoreManager.INSTANCE.logAndResetChunkEventTimings("after vanilla level save " + self.dimension().location());
 
-        BLibSaveTiming.time(
-            BLib.LOGGER,
-            "LEVEL_SAVE event " + self.dimension().location() + " listeners=" + listeners.size() + " flush=" + flush,
-            () -> {
-                for (var listener : listeners) {
-                    listener.invoke(self);
-                }
-            }
-        );
+        for (var listener : listeners) {
+            listener.invoke(self);
+        }
     }
 
     @Inject(at = @At("TAIL"), method = "unload")
