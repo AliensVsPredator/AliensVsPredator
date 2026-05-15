@@ -209,6 +209,7 @@ public final class ModelerScene {
                 return false;
             }
             parent.children.remove(index);
+            bone.parent = null;
             selection = null;
             ModelerActionHistory.push(
                 new ModelerAction.BoneRemoveAction(

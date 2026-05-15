@@ -17,6 +17,7 @@ import java.util.Set;
 import com.blib.api.client.registry.v1.AzItemRendererRegistry;
 import com.blib.api.client.render.v1.item.BLibGeoBoneItemRenderer;
 import com.blib.engine.modeler.ModelerBone;
+import com.blib.engine.modeler.ModelerClipboard;
 import com.blib.engine.modeler.ModelerCube;
 import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.Selection;
@@ -382,8 +383,21 @@ public final class ModelerOutlinerPanel implements Panel {
 
         var target = RenameTarget.from(row);
         var isRoot = row.owner.parent == null;
+        var canPaste = ModelerClipboard.hasCopiedBone();
         var items = List
             .of(
+                new DropdownMenu.Item(
+                    "Copy",
+                    () -> ModelerClipboard.copyBone(row.owner),
+                    !isRoot,
+                    Component.literal("The root group cannot be copied.")
+                ),
+                new DropdownMenu.Item(
+                    "Paste",
+                    () -> pasteCopiedBone(row.owner),
+                    canPaste,
+                    Component.literal("Copy a group first.")
+                ),
                 new DropdownMenu.Item("Rename", () -> beginRename(target)),
                 new DropdownMenu.Item(
                     "Delete",
@@ -394,6 +408,25 @@ public final class ModelerOutlinerPanel implements Panel {
             );
         menuOpener.open(new DropdownMenu((int) mouseX, (int) mouseY, items));
         return true;
+    }
+
+    private void pasteCopiedBone(ModelerBone parent) {
+        var copy = ModelerClipboard.copiedBoneForPaste();
+        if (copy == null) {
+            return;
+        }
+        insertBone(parent, copy, parent.children.size(), "bone_paste", "Paste bone " + copy.name);
+        collapsed.remove(parent);
+    }
+
+    private static void insertBone(ModelerBone parent, ModelerBone bone, int index, String typeId, String description) {
+        var target = Math.min(Math.max(0, index), parent.children.size());
+        parent.children.add(target, bone);
+        bone.parent = parent;
+        ModelerScene.get().selection = new Selection.BoneSelection(bone);
+        ModelerActionHistory.push(
+            new ModelerAction.BoneInsertAction(typeId, description, System.currentTimeMillis(), parent, bone, target)
+        );
     }
 
     private static void deleteBone(ModelerBone bone) {

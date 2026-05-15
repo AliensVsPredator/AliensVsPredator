@@ -32,7 +32,7 @@ import com.blib.mod.common.network.packet.ActionDescriptor;
  * still reference, so layered undo+redo across multiple actions stays coherent.
  */
 @ApiStatus.Internal
-public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, ModelerAction.BoneMementoAction, ModelerAction.CubeInsertAction, ModelerAction.CubeRemoveAction, ModelerAction.BoneRemoveAction, ModelerAction.ItemTransformMementoAction, ModelerAction.TexturePixelsAction, ModelerAction.TextureSelectionAction, ModelerAction.CompositeAction {
+public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, ModelerAction.BoneMementoAction, ModelerAction.CubeInsertAction, ModelerAction.CubeRemoveAction, ModelerAction.BoneInsertAction, ModelerAction.BoneRemoveAction, ModelerAction.ItemTransformMementoAction, ModelerAction.TexturePixelsAction, ModelerAction.TextureSelectionAction, ModelerAction.CompositeAction {
 
     String typeId();
 
@@ -268,6 +268,37 @@ public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, M
         return false;
     }
 
+    /** Bone insertion into a parent bone's child list. Undo removes the inserted subtree; redo restores it. */
+    record BoneInsertAction(
+        String typeId,
+        String description,
+        long timestamp,
+        ModelerBone parent,
+        ModelerBone bone,
+        int index
+    ) implements ModelerAction {
+
+        @Override
+        public void undo() {
+            parent.children.remove(bone);
+            bone.parent = null;
+            var sel = ModelerScene.get().selection;
+            if (selectionTargetsBoneTree(sel, bone)) {
+                ModelerScene.get().selection = null;
+            }
+        }
+
+        @Override
+        public void redo() {
+            if (!parent.children.contains(bone)) {
+                var target = Math.min(Math.max(0, index), parent.children.size());
+                parent.children.add(target, bone);
+                bone.parent = parent;
+            }
+            ModelerScene.get().selection = new Selection.BoneSelection(bone);
+        }
+    }
+
     /**
      * Bone removal from a parent bone's children list. The bone's own subtree (its child bones and cubes) stays intact
      * inside the bone object, so reinserting restores the whole subtree as it was at delete time.
@@ -294,11 +325,43 @@ public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, M
         @Override
         public void redo() {
             parent.children.remove(bone);
+            bone.parent = null;
             var sel = ModelerScene.get().selection;
-            if (sel instanceof Selection.BoneSelection bs && bs.bone() == bone) {
+            if (selectionTargetsBoneTree(sel, bone)) {
                 ModelerScene.get().selection = null;
             }
         }
+    }
+
+    private static boolean selectionTargetsBoneTree(@Nullable Selection selection, ModelerBone root) {
+        if (selection instanceof Selection.BoneSelection bs) {
+            return isBoneInSubtree(bs.bone(), root);
+        }
+        if (selection instanceof Selection.CubeSelection cs) {
+            return isBoneInSubtree(cs.owner(), root);
+        }
+        if (selection instanceof Selection.FaceSelection fs) {
+            return isBoneInSubtree(fs.owner(), root);
+        }
+        if (selection instanceof Selection.MultiCubeSelection ms) {
+            for (var cs : ms.cubes()) {
+                if (isBoneInSubtree(cs.owner(), root)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean isBoneInSubtree(ModelerBone bone, ModelerBone root) {
+        var current = bone;
+        while (current != null) {
+            if (current == root) {
+                return true;
+            }
+            current = current.parent;
+        }
+        return false;
     }
 
     /**
