@@ -203,11 +203,12 @@ public final class ModelerGizmoState {
         Vec3 size,
         Vec3 rotation,
         Vec3 pivot,
-        double inflate
+        double inflate,
+        boolean blockElementRescale
     ) {
 
         public static CubeBaseline of(ModelerCube cube) {
-            return new CubeBaseline(cube.origin, cube.size, cube.rotation, cube.pivot, cube.inflate);
+            return new CubeBaseline(cube.origin, cube.size, cube.rotation, cube.pivot, cube.inflate, cube.blockElementRescale);
         }
     }
 

@@ -56,6 +56,9 @@ public final class ModelerCube {
     /** Outward padding in pixels. Inflates the rendered geometry symmetrically without changing origin/size. */
     public double inflate;
 
+    /** Vanilla Java block-model rotation {@code rescale} flag. Ignored unless the scene is authored as a block model. */
+    public boolean blockElementRescale;
+
     /**
      * Box-UV origin U coordinate in texture pixels. The full six-face unwrap is derived from this point plus the cube's
      * size — see {@code AzBakedModelFactory.buildQuad} (Direction.WEST/EAST/...) for the canonical layout. Ignored when
@@ -93,6 +96,7 @@ public final class ModelerCube {
         this.rotation = rotation;
         this.pivot = pivot;
         this.inflate = inflate;
+        this.blockElementRescale = false;
         this.uvOriginU = 0.0;
         this.uvOriginV = 0.0;
         this.mirrorUv = false;

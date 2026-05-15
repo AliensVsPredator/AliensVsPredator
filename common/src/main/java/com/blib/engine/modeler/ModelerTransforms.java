@@ -32,6 +32,7 @@ public final class ModelerTransforms {
 
     public static void applyCube(PoseStack pose, ModelerCube cube) {
         pose.translate(cube.pivot.x, cube.pivot.y, cube.pivot.z);
+        applyBlockElementRescale(pose, cube.rotation, cube.blockElementRescale);
         pose.mulPose(Axis.ZP.rotationDegrees((float) cube.rotation.z));
         pose.mulPose(Axis.YP.rotationDegrees((float) cube.rotation.y));
         pose.mulPose(Axis.XP.rotationDegrees((float) cube.rotation.x));
@@ -51,6 +52,7 @@ public final class ModelerTransforms {
 
     public static void applyCube(Matrix4f m, ModelerCube cube) {
         m.translate((float) cube.pivot.x, (float) cube.pivot.y, (float) cube.pivot.z);
+        applyBlockElementRescale(m, cube.rotation, cube.blockElementRescale);
         m.rotateZ((float) Math.toRadians(cube.rotation.z));
         m.rotateY((float) Math.toRadians(cube.rotation.y));
         m.rotateX((float) Math.toRadians(cube.rotation.x));
@@ -74,9 +76,26 @@ public final class ModelerTransforms {
     /** Same shape as {@link #applyCube(PoseStack, ModelerCube)} but reads from a baseline snapshot. */
     public static void applyCube(PoseStack pose, ModelerGizmoState.CubeBaseline baseline) {
         pose.translate(baseline.pivot().x, baseline.pivot().y, baseline.pivot().z);
+        applyBlockElementRescale(pose, baseline.rotation(), baseline.blockElementRescale());
         pose.mulPose(Axis.ZP.rotationDegrees((float) baseline.rotation().z));
         pose.mulPose(Axis.YP.rotationDegrees((float) baseline.rotation().y));
         pose.mulPose(Axis.XP.rotationDegrees((float) baseline.rotation().x));
         pose.translate(-baseline.pivot().x, -baseline.pivot().y, -baseline.pivot().z);
+    }
+
+    private static void applyBlockElementRescale(PoseStack pose, net.minecraft.world.phys.Vec3 rotation, boolean rescale) {
+        if (!rescale) {
+            return;
+        }
+        var scale = ModelerBlockElementRotation.rescaleVector(rotation, true);
+        pose.scale((float) scale.x, (float) scale.y, (float) scale.z);
+    }
+
+    private static void applyBlockElementRescale(Matrix4f m, net.minecraft.world.phys.Vec3 rotation, boolean rescale) {
+        if (!rescale) {
+            return;
+        }
+        var scale = ModelerBlockElementRotation.rescaleVector(rotation, true);
+        m.scale((float) scale.x, (float) scale.y, (float) scale.z);
     }
 }

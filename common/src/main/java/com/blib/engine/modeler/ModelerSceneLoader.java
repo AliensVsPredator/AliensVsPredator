@@ -129,6 +129,9 @@ public final class ModelerSceneLoader {
 
         var scene = ModelerScene.get();
         scene.root = root;
+        scene.itemSession = null;
+        scene.sourceKind = ModelerScene.SourceKind.ENTITY;
+        scene.sourceId = null;
         // Carry texture_width/height from the model's description block into the scene so panels (the UV map in
         // particular) can render against the correct sheet bounds. The first geometry's properties win — Bedrock allows
         // multiple geometries per file but the modeler is single-geometry today.

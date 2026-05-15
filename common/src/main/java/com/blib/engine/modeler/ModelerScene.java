@@ -27,6 +27,12 @@ public final class ModelerScene {
 
     private static volatile ModelerScene instance;
 
+    public enum SourceKind {
+        ENTITY,
+        JAVA_BLOCK,
+        ITEM_CONFIG
+    }
+
     public static ModelerScene get() {
         var local = instance;
         if (local == null) {
@@ -50,6 +56,10 @@ public final class ModelerScene {
     }
 
     public ModelerBone root = new ModelerBone("root");
+
+    public SourceKind sourceKind = SourceKind.ENTITY;
+
+    public @Nullable ResourceLocation sourceId;
 
     /**
      * Texture sheet dimensions in pixels, sourced from {@code minecraft:geometry.description.texture_width} on load.
@@ -105,6 +115,10 @@ public final class ModelerScene {
      * and which fields the Inspector/Viewport currently target.
      */
     public @Nullable ModelerItemSession itemSession;
+
+    public boolean isJavaBlockModel() {
+        return sourceKind == SourceKind.JAVA_BLOCK;
+    }
 
     /**
      * Pair of {@code (owner-bone, selected-cube)} when a cube is selected. Used by the gizmo system to rebuild the bone
@@ -299,6 +313,8 @@ public final class ModelerScene {
         // doesn't see a stray cube in the background.
         this.root = new ModelerBone("root");
         this.itemSession = new ModelerItemSession(itemId);
+        this.sourceKind = SourceKind.ITEM_CONFIG;
+        this.sourceId = itemId;
     }
 
     /**
@@ -309,6 +325,8 @@ public final class ModelerScene {
     public void resetToEntity() {
         closeTextures();
         this.itemSession = null;
+        this.sourceKind = SourceKind.ENTITY;
+        this.sourceId = null;
         this.root = new ModelerBone("root");
         this.textureWidth = 64.0;
         this.textureHeight = 64.0;

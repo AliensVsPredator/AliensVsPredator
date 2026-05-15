@@ -60,6 +60,7 @@ public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, M
         Vec3 rotation,
         Vec3 pivot,
         double inflate,
+        boolean blockElementRescale,
         double uvOriginU,
         double uvOriginV,
         boolean mirrorUv,
@@ -75,6 +76,7 @@ public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, M
                 cube.rotation,
                 cube.pivot,
                 cube.inflate,
+                cube.blockElementRescale,
                 cube.uvOriginU,
                 cube.uvOriginV,
                 cube.mirrorUv,
@@ -90,6 +92,7 @@ public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, M
             cube.rotation = rotation;
             cube.pivot = pivot;
             cube.inflate = inflate;
+            cube.blockElementRescale = blockElementRescale;
             cube.uvOriginU = uvOriginU;
             cube.uvOriginV = uvOriginV;
             cube.mirrorUv = mirrorUv;
@@ -105,6 +108,7 @@ public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, M
                 || !rotation.equals(other.rotation)
                 || !pivot.equals(other.pivot)
                 || inflate != other.inflate
+                || blockElementRescale != other.blockElementRescale
                 || uvOriginU != other.uvOriginU
                 || uvOriginV != other.uvOriginV
                 || mirrorUv != other.mirrorUv

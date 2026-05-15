@@ -86,6 +86,8 @@ public final class ModelerBlockModelLoader {
         var scene = ModelerScene.get();
         scene.closeTextures();
         scene.itemSession = null;
+        scene.sourceKind = ModelerScene.SourceKind.JAVA_BLOCK;
+        scene.sourceId = blockId;
         scene.root = root;
         scene.textureWidth = BLOCK_TEXTURE_SIZE;
         scene.textureHeight = BLOCK_TEXTURE_SIZE;
@@ -134,12 +136,14 @@ public final class ModelerBlockModelLoader {
         var origin = new Vec3(minX - BLOCK_CENTER_OFFSET, minY, minZ - BLOCK_CENTER_OFFSET);
         var pivot = new Vec3(origin.x + size.x * 0.5, origin.y + size.y * 0.5, origin.z + size.z * 0.5);
         var rotation = Vec3.ZERO;
+        var rescale = false;
         if (element.has("rotation") && element.get("rotation").isJsonObject()) {
             var rot = element.getAsJsonObject("rotation");
             var rawPivot = readArray3(rot.get("origin"), new double[] { 8.0, 8.0, 8.0 });
             pivot = new Vec3(rawPivot[0] - BLOCK_CENTER_OFFSET, rawPivot[1], rawPivot[2] - BLOCK_CENTER_OFFSET);
             var angle = readDouble(rot.get("angle"), 0.0);
             var axis = readString(rot.get("axis"));
+            rescale = readBoolean(rot.get("rescale"), false);
             if ("x".equals(axis)) {
                 rotation = new Vec3(angle, 0.0, 0.0);
             } else if ("y".equals(axis)) {
@@ -150,6 +154,7 @@ public final class ModelerBlockModelLoader {
         }
 
         var cube = new ModelerCube(name, origin, size, rotation, pivot, 0.0);
+        cube.blockElementRescale = rescale;
         if (!element.has("faces") || !element.get("faces").isJsonObject()) {
             return cube;
         }
@@ -392,6 +397,17 @@ public final class ModelerBlockModelLoader {
         }
         try {
             return element.getAsDouble();
+        } catch (RuntimeException e) {
+            return fallback;
+        }
+    }
+
+    private static boolean readBoolean(@Nullable JsonElement element, boolean fallback) {
+        if (element == null || element.isJsonNull()) {
+            return fallback;
+        }
+        try {
+            return element.getAsBoolean();
         } catch (RuntimeException e) {
             return fallback;
         }
