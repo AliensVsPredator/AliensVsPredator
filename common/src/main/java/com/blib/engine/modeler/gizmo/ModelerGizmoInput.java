@@ -6,7 +6,9 @@ import org.joml.Matrix3f;
 import org.joml.Vector3f;
 
 import com.blib.engine.gizmo.GizmoMath;
+import com.blib.engine.modeler.ModelerBlockElementRotation;
 import com.blib.engine.modeler.ModelerCube;
+import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.render.modeler.ModelerGizmoRenderer;
 
 /**
@@ -448,6 +450,11 @@ public final class ModelerGizmoInput {
         float frameDeltaDegrees = (float) Math.toDegrees(frameDeltaRad) * signFactor;
         float newAccumulated = drag.accumulatedRotationDegrees() + frameDeltaDegrees;
 
+        if (ModelerScene.get().isJavaBlockModel()) {
+            applyBlockElementRotate(drag, currentAngle, newAccumulated);
+            return;
+        }
+
         // Visible-axis rotation: build the cube's rotation matrix at drag-start, post-multiply by R(accumulated)
         // around the cube-local axis_unit for the picked ring, then decompose the result back to Z-Y-X Euler so the
         // data stays in the Bedrock-friendly representation.
@@ -469,6 +476,29 @@ public final class ModelerGizmoInput {
 
         // Store back: previous-angle for the next frame's delta, accumulator so the cube rotation reads from a
         // single source of truth (mStart * R(accumulated, axis_unit), applied every frame).
+        ModelerGizmoState.setDrag(
+            new ModelerGizmoState.DragState(
+                drag.mode(),
+                drag.axis(),
+                drag.sign(),
+                drag.startCube(),
+                drag.startBone(),
+                drag.startCursorX(),
+                drag.startCursorY(),
+                drag.startSnapshot(),
+                currentAngle,
+                newAccumulated
+            )
+        );
+    }
+
+    private static void applyBlockElementRotate(ModelerGizmoState.DragState drag, double currentAngle, float newAccumulated) {
+        var s = drag.startSnapshot();
+        var startValue = ModelerBlockElementRotation.view(drag.startCube().rotation(), drag.axis());
+        var baseAngle = startValue.axis() == drag.axis() ? startValue.angle() : 0.0;
+        var snapped = ModelerBlockElementRotation.snapAngle(baseAngle + newAccumulated);
+        s.cube().rotation = ModelerBlockElementRotation.toRotation(drag.axis(), snapped);
+
         ModelerGizmoState.setDrag(
             new ModelerGizmoState.DragState(
                 drag.mode(),

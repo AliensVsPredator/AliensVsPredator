@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Locale;
 
 import com.blib.engine.modeler.ModelerBone;
+import com.blib.engine.modeler.ModelerBlockElementRotation;
 import com.blib.engine.modeler.ModelerCube;
 import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.Selection;
@@ -22,7 +23,9 @@ import com.blib.engine.ui.layout.ScrollViewport;
 import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.layout.UiText;
 import com.blib.engine.ui.layout.VerticalLayout;
+import com.blib.engine.ui.widget.Checkbox;
 import com.blib.engine.ui.widget.ScrollContainer;
+import com.blib.engine.ui.widget.SearchableSelect;
 import com.blib.engine.ui.widget.TextInput;
 
 /**
@@ -46,6 +49,8 @@ public final class ModelerInspectorPanel implements Panel {
     private static final int SECTION_HEADER_BG_COLOR = 0xFF26262C;
 
     private static final int SECTION_HEADER_TEXT_COLOR = 0xFFB8C0D0;
+
+    private static final int WARNING_COLOR = 0xFFE6C26B;
 
     /**
      * Axis tint colors painted as a small triangle in each input's top-right corner. Match the gizmo's red / green /
@@ -112,6 +117,22 @@ public final class ModelerInspectorPanel implements Panel {
 
     private final TextInput inflateInput = new TextInput("Inflate", this::commitInflate);
 
+    private final SearchableSelect<Integer> blockRotationAxisSelect = new SearchableSelect<>(
+        ModelerInspectorPanel::blockRotationAxisItems,
+        ModelerInspectorPanel::axisLabel,
+        0,
+        this::commitBlockRotationAxis
+    );
+
+    private final SearchableSelect<Double> blockRotationAngleSelect = new SearchableSelect<>(
+        ModelerInspectorPanel::blockRotationAngleItems,
+        ModelerInspectorPanel::angleLabel,
+        0.0,
+        this::commitBlockRotationAngle
+    );
+
+    private final Checkbox blockRotationRescale = new Checkbox(false, this::commitBlockRotationRescale);
+
     // === Bone-only inputs ===
 
     private final TextInput positionX = new TextInput("X", v -> commitVecAxis(VecField.POSITION, 0, v));
@@ -146,6 +167,8 @@ public final class ModelerInspectorPanel implements Panel {
      */
     private final List<TextInput> visibleInputs = new ArrayList<>();
 
+    private boolean blockRotationControlsVisible;
+
     private int panelX, panelY, panelWidth, panelHeight;
 
     @Override
@@ -161,6 +184,7 @@ public final class ModelerInspectorPanel implements Panel {
         panelHeight = height;
         graphics.fill(x, y, x + width, y + height, BG_COLOR);
         visibleInputs.clear();
+        blockRotationControlsVisible = false;
 
         var scene = ModelerScene.get();
         var measuredWidth = Math.max(0, width - ScrollContainer.SCROLLBAR_GUTTER);
@@ -215,18 +239,27 @@ public final class ModelerInspectorPanel implements Panel {
 
         // Sync inputs from the live cube state. Per-input skip-when-focused keeps the user's in-flight edit intact.
         // Size displays as whole numbers (no decimals) since the resize gizmo + commit path both snap to ints.
+        var blockMode = ModelerScene.get().isJavaBlockModel();
         syncVec(originX, originY, originZ, cube.origin);
         syncVecInt(sizeX, sizeY, sizeZ, cube.size);
-        syncVec(rotationX, rotationY, rotationZ, cube.rotation);
         syncVec(pivotX, pivotY, pivotZ, cube.pivot);
-        syncScalar(inflateInput, cube.inflate);
+        if (blockMode) {
+            syncBlockRotationControls(cube);
+        } else {
+            syncVec(rotationX, rotationY, rotationZ, cube.rotation);
+            syncScalar(inflateInput, cube.inflate);
+        }
 
         var rowY = y + HEADER_TOP_PADDING + font.lineHeight + HEADER_TO_SECTION_GAP;
         rowY = renderVecSection(graphics, font, x, rowY, width, "Position", originX, originY, originZ, mouseX, mouseY);
         rowY = renderVecSection(graphics, font, x, rowY, width, "Size", sizeX, sizeY, sizeZ, mouseX, mouseY);
         rowY = renderVecSection(graphics, font, x, rowY, width, "Pivot Point", pivotX, pivotY, pivotZ, mouseX, mouseY);
-        rowY = renderVecSection(graphics, font, x, rowY, width, "Rotation", rotationX, rotationY, rotationZ, mouseX, mouseY);
-        renderScalarSection(graphics, font, x, rowY, width, "Inflate", inflateInput, mouseX, mouseY);
+        if (blockMode) {
+            renderBlockRotationSection(graphics, font, x, rowY, width, cube, mouseX, mouseY);
+        } else {
+            rowY = renderVecSection(graphics, font, x, rowY, width, "Rotation", rotationX, rotationY, rotationZ, mouseX, mouseY);
+            renderScalarSection(graphics, font, x, rowY, width, "Inflate", inflateInput, mouseX, mouseY);
+        }
     }
 
     private void renderBone(GuiGraphics graphics, int x, int y, int width, ModelerBone bone, int mouseX, int mouseY) {
@@ -358,6 +391,89 @@ public final class ModelerInspectorPanel implements Panel {
         return rowY + TextInput.HEIGHT + ROW_GAP;
     }
 
+    private int renderBlockRotationSection(
+        GuiGraphics graphics,
+        Font font,
+        int x,
+        int y,
+        int width,
+        ModelerCube cube,
+        int mouseX,
+        int mouseY
+    ) {
+        blockRotationControlsVisible = true;
+        var rowY = drawSectionHeader(graphics, font, x, y, width, "Block Rotation");
+        rowY += CONTENT_PADDING / 2;
+
+        var innerX = x + CONTENT_PADDING;
+        var innerW = Math.max(0, width - 2 * CONTENT_PADDING);
+        var colW = Math.max(0, (innerW - INPUT_GAP) / 2);
+        renderLabeledSelect(graphics, font, innerX, rowY, colW, "Axis", blockRotationAxisSelect, mouseX, mouseY);
+        renderLabeledSelect(
+            graphics,
+            font,
+            innerX + colW + INPUT_GAP,
+            rowY,
+            Math.max(0, innerW - colW - INPUT_GAP),
+            "Angle",
+            blockRotationAngleSelect,
+            mouseX,
+            mouseY
+        );
+        rowY += SearchableSelect.HEIGHT + ROW_GAP;
+
+        blockRotationRescale.render(graphics, innerX, rowY + 1, mouseX, mouseY);
+        UiText.drawClipped(
+            graphics,
+            font,
+            "Rescale",
+            innerX + Checkbox.SIZE + INPUT_GAP,
+            rowY + (Checkbox.SIZE - font.lineHeight + 2) / 2,
+            Math.max(0, innerW - Checkbox.SIZE - INPUT_GAP),
+            LABEL_COLOR
+        );
+        rowY += Checkbox.SIZE + ROW_GAP;
+
+        if (!ModelerBlockElementRotation.isValid(cube.rotation)) {
+            UiText.drawClipped(
+                graphics,
+                font,
+                "Not valid for Java block JSON; adjust axis/angle to snap it.",
+                innerX,
+                rowY,
+                innerW,
+                WARNING_COLOR
+            );
+            rowY += font.lineHeight + ROW_GAP;
+        }
+
+        return rowY;
+    }
+
+    private static <T> void renderLabeledSelect(
+        GuiGraphics graphics,
+        Font font,
+        int x,
+        int y,
+        int width,
+        String label,
+        SearchableSelect<T> select,
+        int mouseX,
+        int mouseY
+    ) {
+        var labelW = Math.min(28, Math.max(0, width / 3));
+        UiText.drawClipped(
+            graphics,
+            font,
+            label,
+            x,
+            y + (SearchableSelect.HEIGHT - font.lineHeight + 2) / 2,
+            labelW,
+            LABEL_COLOR
+        );
+        select.render(graphics, x + labelW + INPUT_GAP, y, Math.max(0, width - labelW - INPUT_GAP), mouseX, mouseY);
+    }
+
     private static int drawSectionHeader(GuiGraphics graphics, Font font, int x, int y, int width, String label) {
         graphics.fill(x, y, x + width, y + SECTION_HEADER_HEIGHT, SECTION_HEADER_BG_COLOR);
         UiText.drawClipped(
@@ -407,6 +523,17 @@ public final class ModelerInspectorPanel implements Panel {
                 return true;
             }
         }
+        if (blockRotationControlsVisible) {
+            if (blockRotationAxisSelect.mouseClicked(mouseX, mouseY, button)) {
+                return true;
+            }
+            if (blockRotationAngleSelect.mouseClicked(mouseX, mouseY, button)) {
+                return true;
+            }
+            if (blockRotationRescale.mouseClicked(mouseX, mouseY, button)) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -440,11 +567,24 @@ public final class ModelerInspectorPanel implements Panel {
         if (scene.selection instanceof Selection.BoneSelection) {
             return CONTENT_PADDING + headerHeight + 2 * inspectorSectionHeight() + CONTENT_PADDING + font.lineHeight + CONTENT_PADDING;
         }
+        if (scene.isJavaBlockModel()) {
+            var cubeSel = primaryCubeSelection(scene.selection);
+            var warning = cubeSel != null && !ModelerBlockElementRotation.isValid(cubeSel.cube().rotation);
+            return CONTENT_PADDING + headerHeight + 3 * inspectorSectionHeight() + blockRotationSectionHeight(warning) + CONTENT_PADDING;
+        }
         return CONTENT_PADDING + headerHeight + 5 * inspectorSectionHeight() + CONTENT_PADDING;
     }
 
     private static int inspectorSectionHeight() {
         return SECTION_HEADER_HEIGHT + CONTENT_PADDING / 2 + TextInput.HEIGHT + ROW_GAP;
+    }
+
+    private static int blockRotationSectionHeight(boolean warning) {
+        var height = SECTION_HEADER_HEIGHT + CONTENT_PADDING / 2 + SearchableSelect.HEIGHT + ROW_GAP + Checkbox.SIZE + ROW_GAP;
+        if (warning) {
+            height += EngineFont.get().lineHeight + ROW_GAP;
+        }
+        return height;
     }
 
     // === Sync ===
@@ -466,6 +606,13 @@ public final class ModelerInspectorPanel implements Panel {
 
     private static void syncScalar(TextInput input, double value) {
         syncInput(input, formatDouble(value));
+    }
+
+    private void syncBlockRotationControls(ModelerCube cube) {
+        var value = ModelerBlockElementRotation.view(cube.rotation, blockRotationAxisSelect.currentValue());
+        blockRotationAxisSelect.setCurrentValue(value.axis());
+        blockRotationAngleSelect.setCurrentValue(value.angle());
+        blockRotationRescale.setChecked(cube.blockElementRescale);
     }
 
     /** Set the input's text to {@code value} unless the user is mid-edit — same focus guard as the volume inspector. */
@@ -508,7 +655,13 @@ public final class ModelerInspectorPanel implements Panel {
                     var sized = (double) Math.max(0L, Math.round(parsed));
                     cube.size = withAxis(cube.size, axis, sized);
                 }
-                case ROTATION -> cube.rotation = withAxis(cube.rotation, axis, parsed);
+                case ROTATION -> {
+                    if (ModelerScene.get().isJavaBlockModel()) {
+                        cube.rotation = ModelerBlockElementRotation.toRotation(axis, parsed);
+                    } else {
+                        cube.rotation = withAxis(cube.rotation, axis, parsed);
+                    }
+                }
                 case PIVOT -> cube.pivot = withAxis(cube.pivot, axis, parsed);
                 default -> {
                     /* not applicable to cube */
@@ -544,6 +697,43 @@ public final class ModelerInspectorPanel implements Panel {
             cube.inflate = parsed;
             pushCubeMemento(cube, before, "Edit cube " + cube.name + " (inflate)");
         }
+    }
+
+    private void commitBlockRotationAxis(int axis) {
+        var cubeSel = primaryCubeSelection(ModelerScene.get().selection);
+        if (cubeSel == null) {
+            return;
+        }
+        var cube = cubeSel.cube();
+        var before = ModelerAction.CubeMemento.of(cube);
+        var current = ModelerBlockElementRotation.view(cube.rotation, axis);
+        var angle = blockRotationAngleSelect.currentValue();
+        cube.rotation = ModelerBlockElementRotation.toRotation(axis, angle == null ? current.angle() : angle);
+        pushCubeMemento(cube, before, "Edit cube " + cube.name + " (block rotation)");
+    }
+
+    private void commitBlockRotationAngle(double angle) {
+        var cubeSel = primaryCubeSelection(ModelerScene.get().selection);
+        if (cubeSel == null) {
+            return;
+        }
+        var cube = cubeSel.cube();
+        var before = ModelerAction.CubeMemento.of(cube);
+        var current = ModelerBlockElementRotation.view(cube.rotation, blockRotationAxisSelect.currentValue());
+        var axis = blockRotationAxisSelect.currentValue();
+        cube.rotation = ModelerBlockElementRotation.toRotation(axis == null ? current.axis() : axis, angle);
+        pushCubeMemento(cube, before, "Edit cube " + cube.name + " (block rotation)");
+    }
+
+    private void commitBlockRotationRescale(boolean rescale) {
+        var cubeSel = primaryCubeSelection(ModelerScene.get().selection);
+        if (cubeSel == null) {
+            return;
+        }
+        var cube = cubeSel.cube();
+        var before = ModelerAction.CubeMemento.of(cube);
+        cube.blockElementRescale = rescale;
+        pushCubeMemento(cube, before, "Edit cube " + cube.name + " (block rotation rescale)");
     }
 
     /**
@@ -620,5 +810,41 @@ public final class ModelerInspectorPanel implements Panel {
         } catch (NumberFormatException e) {
             return null;
         }
+    }
+
+    private static List<SearchableSelect.Item<Integer>> blockRotationAxisItems() {
+        return List.of(
+            new SearchableSelect.Item<>(0, "X"),
+            new SearchableSelect.Item<>(1, "Y"),
+            new SearchableSelect.Item<>(2, "Z")
+        );
+    }
+
+    private static List<SearchableSelect.Item<Double>> blockRotationAngleItems() {
+        return List.of(
+            new SearchableSelect.Item<>(-45.0, "-45"),
+            new SearchableSelect.Item<>(-22.5, "-22.5"),
+            new SearchableSelect.Item<>(0.0, "0"),
+            new SearchableSelect.Item<>(22.5, "22.5"),
+            new SearchableSelect.Item<>(45.0, "45")
+        );
+    }
+
+    private static String axisLabel(Integer axis) {
+        return switch (axis) {
+            case 0 -> "X";
+            case 1 -> "Y";
+            default -> "Z";
+        };
+    }
+
+    private static String angleLabel(Double angle) {
+        if (angle == null) {
+            return "0";
+        }
+        if (Math.abs(angle - Math.rint(angle)) < 1.0e-4) {
+            return String.valueOf((int) Math.rint(angle));
+        }
+        return String.format(Locale.ROOT, "%.1f", angle);
     }
 }
