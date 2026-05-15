@@ -18,6 +18,7 @@ import java.util.List;
 import com.blib.engine.modeler.ModelerFilePicker;
 import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.texture.LoadedTexture;
+import com.blib.engine.modeler.texture.ModelerTextureUsage;
 import com.blib.engine.modeler.texture.TextureLoader;
 import com.blib.engine.modeler.texture.TextureResourceCatalog;
 import com.blib.engine.texture.TextureEditorState;
@@ -580,17 +581,25 @@ public final class TexturesPanel implements Panel {
     ) {
         var dims = textureDimensions(texture);
         var resolution = textureResolution(texture, scene);
+        var usageCount = ModelerTextureUsage.faceUsageCount(scene, texture);
+        var usage = usageCount > 0 ? usageCount + (usageCount == 1 ? " face" : " faces") : "";
         var gap = 8;
-        var resolutionWidth = font.width(resolution);
         var available = Math.max(0, width);
-        if (available <= resolutionWidth + gap) {
+        var resolutionWidth = font.width(resolution);
+        var usageWidth = usage.isEmpty() ? 0 : font.width(usage);
+        var reserved = resolutionWidth + (usage.isEmpty() ? 0 : gap + usageWidth);
+        if (available <= reserved + gap) {
             UiText.drawClipped(graphics, font, dims, x, y, available, META_TEXT_COLOR);
             return;
         }
 
-        var dimsWidth = Math.min(font.width(dims), available - resolutionWidth - gap);
+        var dimsWidth = Math.min(font.width(dims), available - reserved - gap);
         UiText.drawClipped(graphics, font, dims, x, y, dimsWidth, META_TEXT_COLOR);
-        UiText.drawClipped(graphics, font, resolution, x + dimsWidth + gap, y, resolutionWidth, RESOLUTION_TEXT_COLOR);
+        var resolutionX = x + dimsWidth + gap;
+        UiText.drawClipped(graphics, font, resolution, resolutionX, y, resolutionWidth, RESOLUTION_TEXT_COLOR);
+        if (!usage.isEmpty()) {
+            UiText.drawClipped(graphics, font, usage, resolutionX + resolutionWidth + gap, y, usageWidth, META_TEXT_COLOR);
+        }
     }
 
     private static String textureDimensions(LoadedTexture texture) {

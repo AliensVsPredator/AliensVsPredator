@@ -27,6 +27,8 @@ import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.Selection;
 import com.blib.engine.modeler.history.ModelerAction;
 import com.blib.engine.modeler.history.ModelerActionHistory;
+import com.blib.engine.modeler.texture.LoadedTexture;
+import com.blib.engine.modeler.texture.ModelerTextureUsage;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.widget.TextInput;
@@ -66,6 +68,8 @@ public final class UvMapPanel implements Panel {
     private static final int CUBE_SELECTED_FACE = 0x20E6C26B;
 
     private static final int CUBE_HOVER_OUTLINE = 0xFFFFFFFF;
+
+    private static final int IMPORTED_FACE_OUTLINE = 0x809A9AA4;
 
     private static final int MARQUEE_FILL_COLOR = 0x404F8FFF;
 
@@ -162,7 +166,7 @@ public final class UvMapPanel implements Panel {
 
     private double visibleMaxV;
 
-    /** Per-face-UV cube count accumulated during the draw walk, displayed in the header hint. */
+    /** Imported per-face UV count visible for the active texture, displayed in the header hint. */
     private int perFaceCount;
 
     /**
@@ -318,7 +322,7 @@ public final class UvMapPanel implements Panel {
 
         // Hover detection: only over the UV area, only on cubes inside the visible UV range.
         hoveredCube = inUvArea(mouseX, mouseY)
-            ? pickHover(scene.root, (mouseX - offsetXInt) / zoom, (mouseY - offsetYInt) / zoom)
+            ? pickHover(scene.root, (mouseX - offsetXInt) / zoom, (mouseY - offsetYInt) / zoom, scene.activeTexture)
             : null;
 
         renderGeometry(graphics, scene);
@@ -381,8 +385,8 @@ public final class UvMapPanel implements Panel {
         addRectOutline(buffer, m00, m11, m30, m31, tx0, ty0, tx1, ty1, TEXTURE_BORDER_COLOR);
 
         // Cubes (with culling).
-        perFaceCount = 0;
-        addCubes(buffer, m00, m11, m30, m31, scene.root);
+        perFaceCount = activeTexture == null ? 0 : ModelerTextureUsage.faceUsageCount(scene, activeTexture);
+        addCubes(buffer, m00, m11, m30, m31, scene.root, activeTexture);
 
         // Marquee rectangle on top of everything.
         if (dragState == DragState.MARQUEE) {
@@ -415,19 +419,8 @@ public final class UvMapPanel implements Panel {
         graphics.drawString(font, Component.literal(dims), rectX + rectWidth - dimsWidth - 4, rectY + 3, TEXT_COLOR, false);
 
         if (perFaceCount > 0) {
-            // Small hint for cubes that loaded with per-face UVs — they stack at the texture origin since v1 only edits
-            // box UVs. Drawn under the dim readout in the header strip; if the header is too short for two lines this
-            // would clip — accept that for v1.
-            var hint = "per-face UVs: " + perFaceCount;
-            var hintWidth = font.width(hint);
-            graphics.drawString(
-                font,
-                Component.literal(hint),
-                rectX + rectWidth - hintWidth - 4,
-                rectY + 3 + font.lineHeight + 1,
-                TEXT_MUTED_COLOR,
-                false
-            );
+            var hint = perFaceCount + (perFaceCount == 1 ? " face" : " faces");
+            graphics.drawString(font, Component.literal(hint), rectX + 4, rectY + 3, TEXT_MUTED_COLOR, false);
         }
     }
 
@@ -440,6 +433,14 @@ public final class UvMapPanel implements Panel {
         graphics.fill(rectX, footerY, rectX + rectWidth, rectY + rectHeight, BG_COLOR);
 
         var inputY = footerY + (FOOTER_HEIGHT - TextInput.HEIGHT) / 2;
+        if (!uvInputsEnabled()) {
+            if (primaryCube != null && primaryCube.hasPerFaceUv) {
+                var textY = inputY + (TextInput.HEIGHT - font.lineHeight + 2) / 2;
+                graphics.drawString(font, Component.literal("Per-face UV"), rectX + FOOTER_PADDING_X, textY, TEXT_MUTED_COLOR, false);
+            }
+            return;
+        }
+
         var labelWidth = font.width("U: ");
         var available = Math.max(0, rectWidth - 2 * FOOTER_PADDING_X - 2 * labelWidth - INPUT_GAP);
         var inputW = Math.max(24, available / 2);
@@ -457,10 +458,19 @@ public final class UvMapPanel implements Panel {
         vInput.render(graphics, inputXV, inputY, inputW, mouseX, mouseY);
     }
 
-    private void addCubes(BufferBuilder buffer, float m00, float m11, float m30, float m31, ModelerBone bone) {
+    private void addCubes(
+        BufferBuilder buffer,
+        float m00,
+        float m11,
+        float m30,
+        float m31,
+        ModelerBone bone,
+        @Nullable LoadedTexture activeTexture
+    ) {
         for (var cube : bone.cubes) {
             if (cube.hasPerFaceUv) {
-                perFaceCount++;
+                addPerFaceCubeUvs(buffer, m00, m11, m30, m31, cube, activeTexture);
+                continue;
             }
             var w = cube.size.x;
             var h = cube.size.y;
@@ -490,7 +500,47 @@ public final class UvMapPanel implements Panel {
             );
         }
         for (var child : bone.children) {
-            addCubes(buffer, m00, m11, m30, m31, child);
+            addCubes(buffer, m00, m11, m30, m31, child, activeTexture);
+        }
+    }
+
+    private void addPerFaceCubeUvs(
+        BufferBuilder buffer,
+        float m00,
+        float m11,
+        float m30,
+        float m31,
+        ModelerCube cube,
+        @Nullable LoadedTexture activeTexture
+    ) {
+        if (activeTexture == null || cube.faceUvs.isEmpty()) {
+            return;
+        }
+
+        var selected = selectedCubes.contains(cube);
+        var hovered = cube == hoveredCube;
+        for (var uv : cube.faceUvs.values()) {
+            if (!ModelerTextureUsage.usesTexture(activeTexture, uv)) {
+                continue;
+            }
+            var u0 = Math.min(uv.u(), uv.u() + uv.width());
+            var v0 = Math.min(uv.v(), uv.v() + uv.height());
+            var u1 = Math.max(uv.u(), uv.u() + uv.width());
+            var v1 = Math.max(uv.v(), uv.v() + uv.height());
+            if (u1 < visibleMinU || u0 > visibleMaxU || v1 < visibleMinV || v0 > visibleMaxV) {
+                continue;
+            }
+
+            var marqueePreview = dragState == DragState.MARQUEE && intersectsCurrentMarquee(u0, v0, u1, v1);
+            if (selected) {
+                addUvRect(buffer, m00, m11, m30, m31, u0, v0, u1 - u0, v1 - v0, CUBE_SELECTED_FACE);
+                addUvRectOutline(buffer, m00, m11, m30, m31, u0, v0, u1, v1, CUBE_SELECTED_OUTLINE);
+            } else {
+                addUvRectOutline(buffer, m00, m11, m30, m31, u0, v0, u1, v1, IMPORTED_FACE_OUTLINE);
+            }
+            if (hovered || marqueePreview) {
+                addUvRectOutline(buffer, m00, m11, m30, m31, u0, v0, u1, v1, CUBE_HOVER_OUTLINE);
+            }
         }
     }
 
@@ -612,6 +662,28 @@ public final class UvMapPanel implements Panel {
             return;
         }
         addQuad(buffer, m00, m11, m30, m31, x0, y0, x1, y1, color);
+    }
+
+    private void addUvRectOutline(
+        BufferBuilder buffer,
+        float m00,
+        float m11,
+        float m30,
+        float m31,
+        double u0,
+        double v0,
+        double u1,
+        double v1,
+        int color
+    ) {
+        var x0 = screenXi(u0);
+        var y0 = screenYi(v0);
+        var x1 = screenXi(u1);
+        var y1 = screenYi(v1);
+        if (x1 <= x0 || y1 <= y0) {
+            return;
+        }
+        addRectOutline(buffer, m00, m11, m30, m31, x0, y0, x1, y1, color);
     }
 
     private static void addRectOutline(
@@ -740,17 +812,24 @@ public final class UvMapPanel implements Panel {
     // ----- Inputs -----
 
     private void syncInputs() {
-        if (primaryCube == null) {
-            if (!uInput.isFocused() && !uInput.content().isEmpty()) {
+        if (!uvInputsEnabled()) {
+            if (uInput.isFocused() || vInput.isFocused()) {
+                TextInput.clearFocus();
+            }
+            if (!uInput.content().isEmpty()) {
                 uInput.setContent("");
             }
-            if (!vInput.isFocused() && !vInput.content().isEmpty()) {
+            if (!vInput.content().isEmpty()) {
                 vInput.setContent("");
             }
             return;
         }
         syncInput(uInput, formatInt(primaryCube.uvOriginU));
         syncInput(vInput, formatInt(primaryCube.uvOriginV));
+    }
+
+    private boolean uvInputsEnabled() {
+        return primaryCube != null && !primaryCube.hasPerFaceUv;
     }
 
     private static void syncInput(TextInput input, String value) {
@@ -769,7 +848,7 @@ public final class UvMapPanel implements Panel {
 
     private void commitU(String text) {
         var cube = primaryCube;
-        if (cube == null) {
+        if (cube == null || cube.hasPerFaceUv) {
             return;
         }
         try {
@@ -788,7 +867,7 @@ public final class UvMapPanel implements Panel {
 
     private void commitV(String text) {
         var cube = primaryCube;
-        if (cube == null) {
+        if (cube == null || cube.hasPerFaceUv) {
             return;
         }
         try {
@@ -821,11 +900,13 @@ public final class UvMapPanel implements Panel {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         // Footer inputs claim clicks within their rects regardless of which strip they're in. Forwarded first so a
         // click on an input rect doesn't fall through to the UV area's selection logic.
-        if (uInput.mouseClicked(mouseX, mouseY, button)) {
-            return true;
-        }
-        if (vInput.mouseClicked(mouseX, mouseY, button)) {
-            return true;
+        if (uvInputsEnabled()) {
+            if (uInput.mouseClicked(mouseX, mouseY, button)) {
+                return true;
+            }
+            if (vInput.mouseClicked(mouseX, mouseY, button)) {
+                return true;
+            }
         }
 
         if (!inUvArea(mouseX, mouseY)) {
@@ -848,7 +929,11 @@ public final class UvMapPanel implements Panel {
                 primaryOwner = hit.owner;
                 writeSceneSelection(scene);
 
-                startCubeDrag(mouseX, mouseY);
+                if (selectedCubesUseBoxUvsOnly()) {
+                    startCubeDrag(mouseX, mouseY);
+                } else {
+                    dragState = DragState.IDLE;
+                }
                 return true;
             }
             // Empty space — provisional marquee. We don't actually commit to MARQUEE state until the mouse moves; a
@@ -877,6 +962,18 @@ public final class UvMapPanel implements Panel {
             dragStartMementos.put(cube, ModelerAction.CubeMemento.of(cube));
         }
         dragState = DragState.DRAGGING_CUBE;
+    }
+
+    private boolean selectedCubesUseBoxUvsOnly() {
+        if (selectedCubes.isEmpty()) {
+            return false;
+        }
+        for (var cube : selectedCubes) {
+            if (cube.hasPerFaceUv) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -1034,12 +1131,13 @@ public final class UvMapPanel implements Panel {
 
         selectedCubes.clear();
         ownerByCube.clear();
-        collectMarqueeHits(ModelerScene.get().root, mu0, mv0, mu1, mv1);
+        var scene = ModelerScene.get();
+        collectMarqueeHits(scene.root, mu0, mv0, mu1, mv1, scene.activeTexture);
 
         if (selectedCubes.isEmpty()) {
             primaryCube = null;
             primaryOwner = null;
-            writeSceneSelection(ModelerScene.get());
+            writeSceneSelection(scene);
             return;
         }
         // Primary = last cube added during DFS walk (deepest in tree order = topmost in draw order).
@@ -1049,7 +1147,7 @@ public final class UvMapPanel implements Panel {
         }
         primaryCube = last;
         primaryOwner = ownerByCube.get(last);
-        writeSceneSelection(ModelerScene.get());
+        writeSceneSelection(scene);
     }
 
     private boolean intersectsCurrentMarquee(double u0, double v0, double u1, double v1) {
@@ -1060,8 +1158,22 @@ public final class UvMapPanel implements Panel {
         return intersects(u0, v0, u1, v1, mu0, mv0, mu1, mv1);
     }
 
-    private void collectMarqueeHits(ModelerBone bone, double mu0, double mv0, double mu1, double mv1) {
+    private void collectMarqueeHits(
+        ModelerBone bone,
+        double mu0,
+        double mv0,
+        double mu1,
+        double mv1,
+        @Nullable LoadedTexture activeTexture
+    ) {
         for (var cube : bone.cubes) {
+            if (cube.hasPerFaceUv) {
+                if (intersectsAnyFace(cube, mu0, mv0, mu1, mv1, activeTexture)) {
+                    selectedCubes.add(cube);
+                    ownerByCube.put(cube, bone);
+                }
+                continue;
+            }
             var w = cube.size.x;
             var h = cube.size.y;
             var d = cube.size.z;
@@ -1076,8 +1188,31 @@ public final class UvMapPanel implements Panel {
             }
         }
         for (var child : bone.children) {
-            collectMarqueeHits(child, mu0, mv0, mu1, mv1);
+            collectMarqueeHits(child, mu0, mv0, mu1, mv1, activeTexture);
         }
+    }
+
+    private static boolean intersectsAnyFace(
+        ModelerCube cube,
+        double mu0,
+        double mv0,
+        double mu1,
+        double mv1,
+        @Nullable LoadedTexture activeTexture
+    ) {
+        for (var uv : cube.faceUvs.values()) {
+            if (!ModelerTextureUsage.usesTexture(activeTexture, uv)) {
+                continue;
+            }
+            var u0 = Math.min(uv.u(), uv.u() + uv.width());
+            var v0 = Math.min(uv.v(), uv.v() + uv.height());
+            var u1 = Math.max(uv.u(), uv.u() + uv.width());
+            var v1 = Math.max(uv.v(), uv.v() + uv.height());
+            if (intersects(u0, v0, u1, v1, mu0, mv0, mu1, mv1)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static boolean intersects(double u0, double v0, double u1, double v1, double mu0, double mv0, double mu1, double mv1) {
@@ -1161,37 +1296,57 @@ public final class UvMapPanel implements Panel {
         }
         var uvX = uvAtScreenX(mx);
         var uvY = uvAtScreenY(my);
-        return pickInBoneReverse(scene.root, uvX, uvY);
+        return pickInBoneReverse(scene.root, uvX, uvY, scene.activeTexture);
     }
 
     /**
      * Hover-only variant of {@link #pickCubeWithOwnerAt} that returns just the cube. Called every frame during render,
      * so it stays out of the click/selection path to avoid mutating selection state.
      */
-    private @Nullable ModelerCube pickHover(ModelerBone bone, double uvX, double uvY) {
-        var hit = pickInBoneReverse(bone, uvX, uvY);
+    private @Nullable ModelerCube pickHover(ModelerBone bone, double uvX, double uvY, @Nullable LoadedTexture activeTexture) {
+        var hit = pickInBoneReverse(bone, uvX, uvY, activeTexture);
         return hit == null ? null : hit.cube;
     }
 
-    private @Nullable CubeWithOwner pickInBoneReverse(ModelerBone bone, double uvX, double uvY) {
+    private @Nullable CubeWithOwner pickInBoneReverse(
+        ModelerBone bone,
+        double uvX,
+        double uvY,
+        @Nullable LoadedTexture activeTexture
+    ) {
         // Walk children + cubes in reverse so later-drawn cubes win the hit-test (matches DFS draw order: cubes-of-self
         // first, then DFS into children — so deepest-last child is topmost).
         for (var i = bone.children.size() - 1; i >= 0; i--) {
-            var hit = pickInBoneReverse(bone.children.get(i), uvX, uvY);
+            var hit = pickInBoneReverse(bone.children.get(i), uvX, uvY, activeTexture);
             if (hit != null) {
                 return hit;
             }
         }
         for (var i = bone.cubes.size() - 1; i >= 0; i--) {
             var cube = bone.cubes.get(i);
-            if (boundingContains(cube, uvX, uvY)) {
+            if (boundingContains(cube, uvX, uvY, activeTexture)) {
                 return new CubeWithOwner(bone, cube);
             }
         }
         return null;
     }
 
-    private static boolean boundingContains(ModelerCube cube, double uvX, double uvY) {
+    private static boolean boundingContains(ModelerCube cube, double uvX, double uvY, @Nullable LoadedTexture activeTexture) {
+        if (cube.hasPerFaceUv) {
+            for (var uv : cube.faceUvs.values()) {
+                if (!ModelerTextureUsage.usesTexture(activeTexture, uv)) {
+                    continue;
+                }
+                var u0 = Math.min(uv.u(), uv.u() + uv.width());
+                var v0 = Math.min(uv.v(), uv.v() + uv.height());
+                var u1 = Math.max(uv.u(), uv.u() + uv.width());
+                var v1 = Math.max(uv.v(), uv.v() + uv.height());
+                if (uvX >= u0 && uvX < u1 && uvY >= v0 && uvY < v1) {
+                    return true;
+                }
+            }
+            return false;
+        }
         var w = cube.size.x;
         var h = cube.size.y;
         var d = cube.size.z;
