@@ -238,8 +238,8 @@ public final class ViewportPanel implements Panel {
         // (paused vs running) without having to look at the icon.
         hoveredTooltip = null;
         var transportHover = ViewportTransportToolbar.hitTest(mouseX, mouseY, x, y);
-        if (transportHover == ViewportTransportToolbar.Hit.PLAY) {
-            hoveredTooltip = Component.literal(EngineTickControl.isPaused() ? "Game paused" : "Game running");
+        if (transportHover != ViewportTransportToolbar.Hit.NONE) {
+            hoveredTooltip = transportTooltip(transportHover);
         }
 
         // Publish the rect in raw window-pixel space so the world-render hook (running in a different render pass)
@@ -284,6 +284,29 @@ public final class ViewportPanel implements Panel {
         } else {
             EngineHoverProbe.clear();
         }
+    }
+
+    private static @Nullable Component transportTooltip(ViewportTransportToolbar.Hit hit) {
+        var stepTicks = EngineTickControl.selectedStepTicks();
+        var speed = EngineTickControl.selectedFastForwardMultiplier();
+        return switch (hit) {
+            case PLAY -> Component.literal(EngineTickControl.isPaused() ? "Run game" : "Pause game");
+            case STEP -> Component.literal(
+                EngineTickControl.isPaused() ? "Step " + tickLabel(stepTicks) : "Pause game to step"
+            );
+            case STEP_SIZE -> Component.literal("Step size: " + tickLabel(stepTicks) + " per click");
+            case FAST_FORWARD -> Component.literal(
+                EngineTickControl.isFastForwarding()
+                    ? "Stop fast-forward (" + speed + "x)"
+                    : "Fast-forward (" + speed + "x)"
+            );
+            case FAST_FORWARD_SPEED -> Component.literal("Fast-forward speed: " + speed + "x");
+            case NONE -> null;
+        };
+    }
+
+    private static String tickLabel(int ticks) {
+        return ticks == 1 ? "1 tick" : ticks + " ticks";
     }
 
     /**
@@ -370,8 +393,8 @@ public final class ViewportPanel implements Panel {
             return false;
         }
 
-        // Transport toolbar (play/pause + step) lives in the top-left corner of the viewport — hit-test it first so a
-        // click on the button doesn't fall through to a gizmo pick or selection action behind it. Only LMB triggers.
+        // Transport toolbar lives in the top-left corner of the viewport — hit-test it first so a click on the button
+        // doesn't fall through to a gizmo pick or selection action behind it. Only LMB triggers.
         if (button == 0) {
             var transportHit = ViewportTransportToolbar.hitTest(mouseX, mouseY, rectX, rectY);
             if (transportHit == ViewportTransportToolbar.Hit.PLAY) {
@@ -379,7 +402,19 @@ public final class ViewportPanel implements Panel {
                 return true;
             }
             if (transportHit == ViewportTransportToolbar.Hit.STEP) {
-                EngineTickControl.step(ViewportTransportToolbar.STEP_TICKS);
+                EngineTickControl.step();
+                return true;
+            }
+            if (transportHit == ViewportTransportToolbar.Hit.STEP_SIZE) {
+                EngineTickControl.cycleStepTicks();
+                return true;
+            }
+            if (transportHit == ViewportTransportToolbar.Hit.FAST_FORWARD) {
+                EngineTickControl.toggleFastForward();
+                return true;
+            }
+            if (transportHit == ViewportTransportToolbar.Hit.FAST_FORWARD_SPEED) {
+                EngineTickControl.cycleFastForwardMultiplier();
                 return true;
             }
         }
