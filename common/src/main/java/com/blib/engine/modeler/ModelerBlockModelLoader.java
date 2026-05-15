@@ -173,7 +173,8 @@ public final class ModelerBlockModelLoader {
             if (texture != null) {
                 usedTextures.add(texture);
             }
-            cube.setFaceUv(face, new ModelerCube.FaceUv(uv[0], uv[1], uv[2] - uv[0], uv[3] - uv[1], texture));
+            var uvRotation = normalizeUvRotation((int) readDouble(faceJson.get("rotation"), 0.0));
+            cube.setFaceUv(face, new ModelerCube.FaceUv(uv[0], uv[1], uv[2] - uv[0], uv[3] - uv[1], uvRotation, texture));
         }
         return cube;
     }
@@ -393,6 +394,11 @@ public final class ModelerBlockModelLoader {
         } catch (RuntimeException e) {
             return fallback;
         }
+    }
+
+    private static int normalizeUvRotation(int rotation) {
+        var normalized = Math.floorMod(rotation, 360);
+        return normalized % 90 == 0 ? normalized : 0;
     }
 
     private static @Nullable String readString(@Nullable JsonElement element) {

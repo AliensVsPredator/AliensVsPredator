@@ -801,7 +801,7 @@ public final class ModelerCubeRenderer {
         if (uv == null) {
             return;
         }
-        emitTexturedFace(
+        emitImportedUvFace(
             buffer,
             matrix,
             vx0,
@@ -818,13 +818,67 @@ public final class ModelerCubeRenderer {
             vz3,
             (float) uv.u(),
             (float) uv.v(),
-            (float) uv.width(),
-            (float) uv.height(),
+            (float) (uv.u() + uv.width()),
+            (float) (uv.v() + uv.height()),
+            uv.rotation(),
             texW,
             texH,
-            true,
             shade
         );
+    }
+
+    private static void emitImportedUvFace(
+        BufferBuilder buffer,
+        Matrix4f matrix,
+        float vx0,
+        float vy0,
+        float vz0,
+        float vx1,
+        float vy1,
+        float vz1,
+        float vx2,
+        float vy2,
+        float vz2,
+        float vx3,
+        float vy3,
+        float vz3,
+        float u0,
+        float v0,
+        float u1,
+        float v1,
+        int rotation,
+        float texW,
+        float texH,
+        float shade
+    ) {
+        // Our geometry vertices correspond to BlockFaceUV corner indices 1, 0, 3, 2. Applying the same
+        // rotation-index shift as vanilla preserves 90/180/270-degree face UVs used by non-cube blocks like anvils.
+        addImportedUvVertex(buffer, matrix, vx0, vy0, vz0, u0, v0, u1, v1, rotation, 1, texW, texH, shade);
+        addImportedUvVertex(buffer, matrix, vx1, vy1, vz1, u0, v0, u1, v1, rotation, 0, texW, texH, shade);
+        addImportedUvVertex(buffer, matrix, vx2, vy2, vz2, u0, v0, u1, v1, rotation, 3, texW, texH, shade);
+        addImportedUvVertex(buffer, matrix, vx3, vy3, vz3, u0, v0, u1, v1, rotation, 2, texW, texH, shade);
+    }
+
+    private static void addImportedUvVertex(
+        BufferBuilder buffer,
+        Matrix4f matrix,
+        float vx,
+        float vy,
+        float vz,
+        float u0,
+        float v0,
+        float u1,
+        float v1,
+        int rotation,
+        int index,
+        float texW,
+        float texH,
+        float shade
+    ) {
+        var shifted = Math.floorMod(index + rotation / 90, 4);
+        var u = shifted == 0 || shifted == 1 ? u0 : u1;
+        var v = shifted == 0 || shifted == 3 ? v0 : v1;
+        buffer.addVertex(matrix, vx, vy, vz).setUv(u / texW, v / texH).setColor(shade, shade, shade, 1f);
     }
 
     private static void emitTexturedFace(

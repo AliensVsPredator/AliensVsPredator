@@ -28,10 +28,14 @@ public final class ModelerCube {
     }
 
     /** Texture-space rectangle for one imported per-face UV, expressed in texture pixels. */
-    public record FaceUv(double u, double v, double width, double height, @Nullable ResourceLocation textureSource) {
+    public record FaceUv(double u, double v, double width, double height, int rotation, @Nullable ResourceLocation textureSource) {
 
         public FaceUv(double u, double v, double width, double height) {
-            this(u, v, width, height, null);
+            this(u, v, width, height, 0, null);
+        }
+
+        public FaceUv(double u, double v, double width, double height, @Nullable ResourceLocation textureSource) {
+            this(u, v, width, height, 0, textureSource);
         }
     }
 
