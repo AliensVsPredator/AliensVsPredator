@@ -19,12 +19,15 @@ import com.blib.engine.modeler.ModelerBone;
 import com.blib.engine.modeler.ModelerCube;
 import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.Selection;
+import com.blib.engine.modeler.history.ModelerAction;
+import com.blib.engine.modeler.history.ModelerActionHistory;
 import com.blib.engine.modeler.item.ModelerItemSession;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.layout.ScrollViewport;
 import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.layout.UiText;
+import com.blib.engine.ui.widget.TextInput;
 
 /**
  * Hierarchical tree view of the modeler scene: root → bones → cubes. Each row is selectable; the click event sets
@@ -42,7 +45,9 @@ import com.blib.engine.ui.layout.UiText;
 @ApiStatus.Internal
 public final class ModelerOutlinerPanel implements Panel {
 
-    private static final int ROW_HEIGHT = 12;
+    private static final int ROW_HEIGHT = TextInput.HEIGHT + 1;
+
+    private static final long DOUBLE_CLICK_MS = 350L;
 
     private static final int INDENT_PX = 10;
 
@@ -77,6 +82,14 @@ public final class ModelerOutlinerPanel implements Panel {
     private final Set<ModelerBone> collapsed = new HashSet<>();
 
     private final ScrollViewport scroll = new ScrollViewport();
+
+    private final TextInput renameInput = new TextInput("Name", this::commitRename, this::cancelRename);
+
+    private @Nullable RenameTarget renameTarget;
+
+    private @Nullable RenameTarget lastClickedTarget;
+
+    private long lastClickMillis;
 
     /**
      * Tracks the scene root pointer so we can detect a new model being loaded and reset collapse / scroll state. Null
@@ -123,6 +136,7 @@ public final class ModelerOutlinerPanel implements Panel {
                 collectAllBones(child, collapsed);
             }
             scroll.reset();
+            cancelRename();
             lastSeenRoot = scene.root;
         }
 
@@ -136,6 +150,12 @@ public final class ModelerOutlinerPanel implements Panel {
 
         rows.clear();
         buildRows(scene.root, 0);
+        if (renameTarget != null && !hasRowFor(renameTarget)) {
+            cancelRename();
+        }
+        if (renameTarget != null && TextInput.getFocused() != renameInput) {
+            commitActiveRename();
+        }
 
         // Compute rows region — inset by PADDING_X on each side so the scrollbar sits inside the panel padding
         // instead of flush against the right edge. ScrollViewport reserves the gutter for row content.
@@ -219,6 +239,10 @@ public final class ModelerOutlinerPanel implements Panel {
                 } else {
                     labelColor = BONE_COLOR;
                 }
+                if (isRenaming(row)) {
+                    renameInput.render(graphics, labelX, rowTop, Math.max(0, visibleRight - labelX), mouseX, mouseY);
+                    continue;
+                }
                 UiText.drawClipped(
                     graphics,
                     font,
@@ -245,6 +269,12 @@ public final class ModelerOutlinerPanel implements Panel {
         if (scroll.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
+        if (renameTarget != null) {
+            if (renameInput.mouseClicked(mouseX, mouseY, button)) {
+                return true;
+            }
+            commitActiveRename();
+        }
         if (mouseY < rowsTopY || mouseY >= rowsTopY + rowsViewportHeight) {
             return false;
         }
@@ -264,12 +294,20 @@ public final class ModelerOutlinerPanel implements Panel {
 
         var row = rows.get(idx);
         var scene = ModelerScene.get();
+        var target = RenameTarget.from(row);
+        var labelHit = isLabelHit(row, mouseX);
+        var now = System.currentTimeMillis();
+        var doubleClick = labelHit
+            && lastClickedTarget != null
+            && lastClickedTarget.matches(target)
+            && now - lastClickMillis <= DOUBLE_CLICK_MS;
 
         // Caret-region click on a collapsible bone toggles collapse without altering the selection. Otherwise the
         // whole row selects the bone / cube.
         if (row.cube == null && isCollapsible(row.owner)) {
             var caretX = rowsContentX + row.depth * INDENT_PX;
             if (mouseX >= caretX && mouseX < caretX + CARET_WIDTH) {
+                rememberClick(null, 0L);
                 if (!collapsed.remove(row.owner)) {
                     collapsed.add(row.owner);
                 }
@@ -281,6 +319,12 @@ public final class ModelerOutlinerPanel implements Panel {
             scene.selection = new Selection.CubeSelection(row.owner, row.cube);
         } else {
             scene.selection = new Selection.BoneSelection(row.owner);
+        }
+        if (doubleClick) {
+            beginRename(target);
+            rememberClick(null, 0L);
+        } else {
+            rememberClick(target, now);
         }
         return true;
     }
@@ -317,6 +361,92 @@ public final class ModelerOutlinerPanel implements Panel {
             return ModelerScene.get().deleteSelection();
         }
         return false;
+    }
+
+    private void beginRename(RenameTarget target) {
+        renameTarget = target;
+        renameInput.setContent(target.currentName());
+        renameInput.focus();
+        renameInput.selectAll();
+    }
+
+    private void commitActiveRename() {
+        commitRename(renameInput.content());
+    }
+
+    private void commitRename(String text) {
+        var target = renameTarget;
+        if (target == null) {
+            return;
+        }
+        renameTarget = null;
+        lastClickedTarget = null;
+        if (text.isBlank() || text.equals(target.currentName())) {
+            return;
+        }
+        if (target.cube != null) {
+            var before = ModelerAction.CubeMemento.of(target.cube);
+            target.cube.name = text;
+            var after = ModelerAction.CubeMemento.of(target.cube);
+            if (after.differsFrom(before)) {
+                ModelerActionHistory.push(
+                    new ModelerAction.CubeMementoAction(
+                        "cube_rename",
+                        "Rename cube " + before.name() + " to " + after.name(),
+                        System.currentTimeMillis(),
+                        target.cube,
+                        before,
+                        after
+                    )
+                );
+            }
+            return;
+        }
+
+        var before = ModelerAction.BoneMemento.of(target.owner);
+        target.owner.name = text;
+        var after = ModelerAction.BoneMemento.of(target.owner);
+        if (after.differsFrom(before)) {
+            ModelerActionHistory.push(
+                new ModelerAction.BoneMementoAction(
+                    "bone_rename",
+                    "Rename bone " + before.name() + " to " + after.name(),
+                    System.currentTimeMillis(),
+                    target.owner,
+                    before,
+                    after
+                )
+            );
+        }
+    }
+
+    private void cancelRename() {
+        renameTarget = null;
+        lastClickedTarget = null;
+    }
+
+    private void rememberClick(@Nullable RenameTarget target, long clickMillis) {
+        lastClickedTarget = target;
+        lastClickMillis = clickMillis;
+    }
+
+    private boolean isRenaming(Row row) {
+        return renameTarget != null && renameTarget.matches(row);
+    }
+
+    private boolean hasRowFor(RenameTarget target) {
+        for (var row : rows) {
+            if (target.matches(row)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isLabelHit(Row row, double mouseX) {
+        var labelX = rowsContentX + row.depth * INDENT_PX + CARET_WIDTH;
+        var labelWidth = Math.max(24, EngineFont.get().width(row.label) + PADDING_X);
+        return mouseX >= labelX && mouseX < Math.min(rowsLeftX + rowsViewportWidth, labelX + labelWidth);
     }
 
     private void buildRows(ModelerBone bone, int depth) {
@@ -485,4 +615,26 @@ public final class ModelerOutlinerPanel implements Panel {
         ModelerBone owner,
         ModelerCube cube
     ) {}
+
+    private record RenameTarget(
+        ModelerBone owner,
+        @Nullable ModelerCube cube
+    ) {
+
+        static RenameTarget from(Row row) {
+            return new RenameTarget(row.owner, row.cube);
+        }
+
+        String currentName() {
+            return cube != null ? cube.name : owner.name;
+        }
+
+        boolean matches(Row row) {
+            return owner == row.owner && cube == row.cube;
+        }
+
+        boolean matches(RenameTarget other) {
+            return owner == other.owner && cube == other.cube;
+        }
+    }
 }

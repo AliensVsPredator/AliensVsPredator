@@ -108,6 +108,9 @@ public final class TextInput {
      */
     private final @Nullable Consumer<String> onCommit;
 
+    /** Optional callback fired when Escape cancels an active edit. */
+    private final @Nullable Runnable onCancel;
+
     private String content = "";
 
     private int caret;
@@ -145,8 +148,13 @@ public final class TextInput {
     }
 
     public TextInput(String placeholder, @Nullable Consumer<String> onCommit) {
+        this(placeholder, onCommit, null);
+    }
+
+    public TextInput(String placeholder, @Nullable Consumer<String> onCommit, @Nullable Runnable onCancel) {
         this.placeholder = placeholder;
         this.onCommit = onCommit;
+        this.onCancel = onCancel;
     }
 
     public String content() {
@@ -181,6 +189,12 @@ public final class TextInput {
         this.focusedFlag = true;
         this.caret = content.length();
         clearSelection();
+    }
+
+    public void selectAll() {
+        this.selectionAnchor = 0;
+        this.caret = content.length();
+        collapseSelectionIfDegenerate();
     }
 
     public void render(GuiGraphics graphics, int x, int y, int width, int mouseX, int mouseY) {
@@ -496,6 +510,9 @@ public final class TextInput {
                 return true;
             }
             case GLFW.GLFW_KEY_ESCAPE -> {
+                if (onCancel != null) {
+                    onCancel.run();
+                }
                 this.focusedFlag = false;
                 clearSelection();
                 if (focused == this) {
