@@ -398,6 +398,12 @@ public final class ModelerOutlinerPanel implements Panel {
                     canPaste,
                     Component.literal("Copy a group first.")
                 ),
+                new DropdownMenu.Item(
+                    "Duplicate",
+                    () -> duplicateBone(row.owner),
+                    !isRoot,
+                    Component.literal("The root group cannot be duplicated.")
+                ),
                 new DropdownMenu.Item("Rename", () -> beginRename(target)),
                 new DropdownMenu.Item(
                     "Delete",
@@ -417,6 +423,17 @@ public final class ModelerOutlinerPanel implements Panel {
         }
         insertBone(parent, copy, parent.children.size(), "bone_paste", "Paste bone " + copy.name);
         collapsed.remove(parent);
+    }
+
+    private static void duplicateBone(ModelerBone bone) {
+        var parent = bone.parent;
+        if (parent == null) {
+            return;
+        }
+        var copy = ModelerClipboard.copyBoneTree(bone);
+        var index = parent.children.indexOf(bone);
+        var targetIndex = index < 0 ? parent.children.size() : index + 1;
+        insertBone(parent, copy, targetIndex, "bone_duplicate", "Duplicate bone " + bone.name);
     }
 
     private static void insertBone(ModelerBone parent, ModelerBone bone, int index, String typeId, String description) {
