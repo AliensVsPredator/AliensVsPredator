@@ -1126,8 +1126,10 @@ public final class UvMapPanel implements Panel {
             var scene = ModelerScene.get();
             var faceCandidates = faceCandidatesAt(scene, mouseX, mouseY);
             if (!faceCandidates.isEmpty()) {
-                selectClickedFace(scene, faceCandidates, Screen.hasShiftDown());
-                if (!Screen.hasShiftDown()) {
+                var extendSelection = Screen.hasShiftDown();
+                var cycleOverlap = Screen.hasAltDown();
+                selectClickedFace(scene, faceCandidates, extendSelection, cycleOverlap);
+                if (!extendSelection && !cycleOverlap) {
                     startFaceDrag(mouseX, mouseY);
                 }
                 return true;
@@ -1181,8 +1183,8 @@ public final class UvMapPanel implements Panel {
         dragState = DragState.DRAGGING_CUBE;
     }
 
-    private void selectClickedFace(ModelerScene scene, List<FaceSelection> candidates, boolean extendSelection) {
-        var clicked = faceCandidateForClick(candidates);
+    private void selectClickedFace(ModelerScene scene, List<FaceSelection> candidates, boolean extendSelection, boolean cycleOverlap) {
+        var clicked = faceCandidateForClick(candidates, cycleOverlap);
         clearCubeSelection();
         if (extendSelection) {
             if (selectedFaces.remove(clicked)) {
@@ -1211,11 +1213,21 @@ public final class UvMapPanel implements Panel {
         writeSceneSelection(scene);
     }
 
-    private FaceSelection faceCandidateForClick(List<FaceSelection> candidates) {
-        if (primaryFace != null && candidates.size() > 1) {
+    private FaceSelection faceCandidateForClick(List<FaceSelection> candidates, boolean cycleOverlap) {
+        if (cycleOverlap && primaryFace != null && candidates.size() > 1) {
             var index = candidates.indexOf(primaryFace);
             if (index >= 0) {
                 return candidates.get((index + 1) % candidates.size());
+            }
+        }
+        if (!cycleOverlap) {
+            if (primaryFace != null && candidates.contains(primaryFace)) {
+                return primaryFace;
+            }
+            for (var candidate : candidates) {
+                if (selectedFaces.contains(candidate)) {
+                    return candidate;
+                }
             }
         }
         return candidates.get(0);
