@@ -152,6 +152,10 @@ public final class MenuBarController {
             return;
         }
         var item = openMenu.itemAt(idx);
+        if (!item.enabled()) {
+            closeSubmenu();
+            return;
+        }
         if (item.hasSubmenu()) {
             if (openSubmenuParentIndex == null || openSubmenuParentIndex != idx) {
                 openSubmenu = DropdownMenu.spawnSubmenu(openMenu, idx, item.children(), logicalWidth, logicalHeight);
@@ -206,6 +210,9 @@ public final class MenuBarController {
             var subIdx = openSubmenu.hitItemAt(logicalX, logicalY);
             if (subIdx >= 0) {
                 var subItem = openSubmenu.itemAt(subIdx);
+                if (!subItem.enabled()) {
+                    return ClickOutcome.CONSUMED;
+                }
                 setOpenMenu(null);
                 subItem.action().run();
                 return ClickOutcome.CONSUMED;
@@ -218,6 +225,9 @@ public final class MenuBarController {
                 var idx = openMenu.hitItemAt(logicalX, logicalY);
                 if (idx >= 0) {
                     var item = openMenu.itemAt(idx);
+                    if (!item.enabled()) {
+                        return ClickOutcome.CONSUMED;
+                    }
                     if (item.hasSubmenu()) {
                         // Submenus open on hover (see updateHoverSubmenu); a click on the parent item is a no-op that
                         // just keeps everything open. Defensive re-spawn in case hover never fired for this item.

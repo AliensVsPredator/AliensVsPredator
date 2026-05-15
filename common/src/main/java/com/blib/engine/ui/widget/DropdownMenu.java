@@ -20,11 +20,20 @@ public final class DropdownMenu {
     public record Item(
         String label,
         Runnable action,
-        List<Item> children
+        List<Item> children,
+        boolean enabled
     ) {
 
         public Item(String label, Runnable action) {
-            this(label, action, List.of());
+            this(label, action, List.of(), true);
+        }
+
+        public Item(String label, Runnable action, boolean enabled) {
+            this(label, action, List.of(), enabled);
+        }
+
+        public Item(String label, Runnable action, List<Item> children) {
+            this(label, action, children, true);
         }
 
         public boolean hasSubmenu() {
@@ -45,6 +54,8 @@ public final class DropdownMenu {
     private static final int ITEM_HOVER_BG_COLOR = 0xFF353540;
 
     private static final int ITEM_TEXT_COLOR = 0xFFD0D0D0;
+
+    private static final int ITEM_DISABLED_TEXT_COLOR = 0xFF777780;
 
     /** Right-pointing triangle drawn at the right edge of items that open a submenu. */
     private static final String SUBMENU_INDICATOR = "▸";
@@ -158,8 +169,13 @@ public final class DropdownMenu {
 
         var font = EngineFont.get();
         for (var i = 0; i < items.size(); i++) {
+            var item = items.get(i);
             var itemY = anchorY + BORDER_THICKNESS + i * ITEM_HEIGHT;
-            var hovered = mouseX >= anchorX && mouseX < anchorX + width && mouseY >= itemY && mouseY < itemY + ITEM_HEIGHT;
+            var hovered = item.enabled()
+                && mouseX >= anchorX
+                && mouseX < anchorX + width
+                && mouseY >= itemY
+                && mouseY < itemY + ITEM_HEIGHT;
             if (hovered) {
                 graphics.fill(
                     anchorX + BORDER_THICKNESS,
@@ -172,21 +188,21 @@ public final class DropdownMenu {
             var labelY = itemY + (ITEM_HEIGHT - font.lineHeight + 2) / 2;
             graphics.drawString(
                 font,
-                Component.literal(items.get(i).label()),
+                Component.literal(item.label()),
                 anchorX + PADDING_X,
                 // +2 compensates for MC font's descender padding so item labels visually center; see MenuBarPanel.
                 labelY,
-                ITEM_TEXT_COLOR,
+                item.enabled() ? ITEM_TEXT_COLOR : ITEM_DISABLED_TEXT_COLOR,
                 false
             );
-            if (items.get(i).hasSubmenu()) {
+            if (item.hasSubmenu()) {
                 var indWidth = font.width(SUBMENU_INDICATOR);
                 graphics.drawString(
                     font,
                     Component.literal(SUBMENU_INDICATOR),
                     anchorX + width - PADDING_X - indWidth,
                     labelY,
-                    ITEM_TEXT_COLOR,
+                    item.enabled() ? ITEM_TEXT_COLOR : ITEM_DISABLED_TEXT_COLOR,
                     false
                 );
             }

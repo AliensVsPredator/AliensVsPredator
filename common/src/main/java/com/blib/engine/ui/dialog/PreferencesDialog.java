@@ -709,7 +709,10 @@ public final class PreferencesDialog {
             if (profileMenu.isInside(mouseX, mouseY)) {
                 var idx = profileMenu.hitItemAt(mouseX, mouseY);
                 if (idx >= 0) {
-                    profileMenu.itemAt(idx).action().run();
+                    var item = profileMenu.itemAt(idx);
+                    if (item.enabled()) {
+                        item.action().run();
+                    }
                 }
                 profileMenu = null;
                 return true;
