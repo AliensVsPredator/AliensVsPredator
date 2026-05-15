@@ -27,6 +27,8 @@ import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.layout.ScrollViewport;
 import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.layout.UiText;
+import com.blib.engine.ui.popup.PanelMenuOpener;
+import com.blib.engine.ui.widget.DropdownMenu;
 import com.blib.engine.ui.widget.TextInput;
 
 /**
@@ -83,6 +85,8 @@ public final class ModelerOutlinerPanel implements Panel {
 
     private final ScrollViewport scroll = new ScrollViewport();
 
+    private final @Nullable PanelMenuOpener menuOpener;
+
     private final TextInput renameInput = new TextInput("Name", this::commitRename, this::cancelRename);
 
     private @Nullable RenameTarget renameTarget;
@@ -109,6 +113,14 @@ public final class ModelerOutlinerPanel implements Panel {
 
     /** Rows region captured during render for hit-tests. */
     private int rowsTopY, rowsLeftX, rowsViewportWidth, rowsViewportHeight, rowsContentX;
+
+    public ModelerOutlinerPanel() {
+        this(null);
+    }
+
+    public ModelerOutlinerPanel(@Nullable PanelMenuOpener menuOpener) {
+        this.menuOpener = menuOpener;
+    }
 
     @Override
     public String title() {
@@ -260,11 +272,17 @@ public final class ModelerOutlinerPanel implements Panel {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (button != 0) {
+        if (button != 0 && button != 1) {
             return false;
         }
         if (mouseX < panelX || mouseX >= panelX + panelWidth || mouseY < panelY || mouseY >= panelY + panelHeight) {
             return false;
+        }
+        if (button == 1) {
+            if (renameTarget != null) {
+                commitActiveRename();
+            }
+            return openBoneContextMenu(mouseX, mouseY);
         }
         if (scroll.mouseClicked(mouseX, mouseY, button)) {
             return true;
@@ -275,24 +293,11 @@ public final class ModelerOutlinerPanel implements Panel {
             }
             commitActiveRename();
         }
-        if (mouseY < rowsTopY || mouseY >= rowsTopY + rowsViewportHeight) {
-            return false;
-        }
-        if (mouseX < rowsLeftX || mouseX >= rowsLeftX + rowsViewportWidth) {
-            return false;
-        }
-
-        // Convert cursor Y to a row index using scroll offset so off-screen / scrolled rows pick correctly.
-        var contentY = (int) (mouseY - rowsTopY) + scroll.scrollY();
-        if (contentY < 0) {
-            return false;
-        }
-        var idx = contentY / ROW_HEIGHT;
-        if (idx < 0 || idx >= rows.size()) {
+        var row = rowAt(mouseX, mouseY);
+        if (row == null) {
             return false;
         }
 
-        var row = rows.get(idx);
         var scene = ModelerScene.get();
         var target = RenameTarget.from(row);
         var labelHit = isLabelHit(row, mouseX);
@@ -361,6 +366,23 @@ public final class ModelerOutlinerPanel implements Panel {
             return ModelerScene.get().deleteSelection();
         }
         return false;
+    }
+
+    private boolean openBoneContextMenu(double mouseX, double mouseY) {
+        var row = rowAt(mouseX, mouseY);
+        if (row == null || row.cube != null) {
+            return false;
+        }
+        ModelerScene.get().selection = new Selection.BoneSelection(row.owner);
+        lastClickedTarget = null;
+        if (menuOpener == null) {
+            return true;
+        }
+
+        var target = RenameTarget.from(row);
+        var items = List.of(new DropdownMenu.Item("Rename", () -> beginRename(target)));
+        menuOpener.open(new DropdownMenu((int) mouseX, (int) mouseY, items));
+        return true;
     }
 
     private void beginRename(RenameTarget target) {
@@ -447,6 +469,26 @@ public final class ModelerOutlinerPanel implements Panel {
         var labelX = rowsContentX + row.depth * INDENT_PX + CARET_WIDTH;
         var labelWidth = Math.max(24, EngineFont.get().width(row.label) + PADDING_X);
         return mouseX >= labelX && mouseX < Math.min(rowsLeftX + rowsViewportWidth, labelX + labelWidth);
+    }
+
+    private @Nullable Row rowAt(double mouseX, double mouseY) {
+        if (mouseY < rowsTopY || mouseY >= rowsTopY + rowsViewportHeight) {
+            return null;
+        }
+        if (mouseX < rowsLeftX || mouseX >= rowsLeftX + rowsViewportWidth) {
+            return null;
+        }
+
+        // Convert cursor Y to a row index using scroll offset so off-screen / scrolled rows pick correctly.
+        var contentY = (int) (mouseY - rowsTopY) + scroll.scrollY();
+        if (contentY < 0) {
+            return null;
+        }
+        var idx = contentY / ROW_HEIGHT;
+        if (idx < 0 || idx >= rows.size()) {
+            return null;
+        }
+        return rows.get(idx);
     }
 
     private void buildRows(ModelerBone bone, int depth) {

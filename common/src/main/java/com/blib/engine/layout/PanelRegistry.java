@@ -162,7 +162,7 @@ public final class PanelRegistry {
         register(GOAP_DETAILS, GOAPDetailsPanel.class, Domain.AI_DEBUG, ctx -> new GOAPDetailsPanel());
         register(PATHFINDING_DEBUG, PathfindingDebugPanel.class, Domain.AI_DEBUG, ctx -> new PathfindingDebugPanel());
         register(MODELER_VIEWPORT, ModelerViewportPanel.class, Domain.MODELER, ctx -> new ModelerViewportPanel(ctx.panelMenuOpener()));
-        register(MODELER_OUTLINER, ModelerOutlinerPanel.class, Domain.MODELER, ctx -> new ModelerOutlinerPanel());
+        register(MODELER_OUTLINER, ModelerOutlinerPanel.class, Domain.MODELER, ctx -> new ModelerOutlinerPanel(ctx.panelMenuOpener()));
         register(MODELER_INSPECTOR, ModelerInspectorPanel.class, Domain.MODELER, ctx -> new ModelerInspectorPanel());
         register(MODELER_UV_MAP, UvMapPanel.class, Domain.MODELER, ctx -> new UvMapPanel());
         register(TEXTURES, TexturesPanel.class, Domain.TEXTURE, ctx -> new TexturesPanel(ctx.panelMenuOpener()));
