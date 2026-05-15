@@ -284,7 +284,7 @@ public final class ModelerOutlinerPanel implements Panel {
             if (renameTarget != null) {
                 commitActiveRename();
             }
-            return openBoneContextMenu(mouseX, mouseY);
+            return openContextMenu(mouseX, mouseY);
         }
         if (scroll.mouseClicked(mouseX, mouseY, button)) {
             return true;
@@ -370,11 +370,18 @@ public final class ModelerOutlinerPanel implements Panel {
         return false;
     }
 
-    private boolean openBoneContextMenu(double mouseX, double mouseY) {
+    private boolean openContextMenu(double mouseX, double mouseY) {
         var row = rowAt(mouseX, mouseY);
-        if (row == null || row.cube != null) {
+        if (row == null) {
             return false;
         }
+        if (row.cube != null) {
+            return openCubeContextMenu(row, mouseX, mouseY);
+        }
+        return openBoneContextMenu(row, mouseX, mouseY);
+    }
+
+    private boolean openBoneContextMenu(Row row, double mouseX, double mouseY) {
         ModelerScene.get().selection = new Selection.BoneSelection(row.owner);
         lastClickedTarget = null;
         if (menuOpener == null) {
@@ -383,7 +390,7 @@ public final class ModelerOutlinerPanel implements Panel {
 
         var target = RenameTarget.from(row);
         var isRoot = row.owner.parent == null;
-        var canPaste = ModelerClipboard.hasCopiedBone();
+        var canPaste = ModelerClipboard.hasCopiedBone() || ModelerClipboard.hasCopiedCube();
         var items = List
             .of(
                 new DropdownMenu.Item(
@@ -394,9 +401,9 @@ public final class ModelerOutlinerPanel implements Panel {
                 ),
                 new DropdownMenu.Item(
                     "Paste",
-                    () -> pasteCopiedBone(row.owner),
+                    () -> pasteCopiedIntoBone(row.owner),
                     canPaste,
-                    Component.literal("Copy a group first.")
+                    Component.literal("Copy a group or cube first.")
                 ),
                 new DropdownMenu.Item(
                     "Duplicate",
@@ -416,13 +423,58 @@ public final class ModelerOutlinerPanel implements Panel {
         return true;
     }
 
-    private void pasteCopiedBone(ModelerBone parent) {
-        var copy = ModelerClipboard.copiedBoneForPaste();
+    private boolean openCubeContextMenu(Row row, double mouseX, double mouseY) {
+        var cube = row.cube;
+        if (cube == null) {
+            return false;
+        }
+        ModelerScene.get().selection = new Selection.CubeSelection(row.owner, cube);
+        lastClickedTarget = null;
+        if (menuOpener == null) {
+            return true;
+        }
+
+        var target = RenameTarget.from(row);
+        var canPaste = ModelerClipboard.hasCopiedCube();
+        var items = List
+            .of(
+                new DropdownMenu.Item("Copy", () -> ModelerClipboard.copyCube(cube)),
+                new DropdownMenu.Item(
+                    "Paste",
+                    () -> pasteCopiedCubeAfter(row.owner, cube),
+                    canPaste,
+                    Component.literal("Copy a cube first.")
+                ),
+                new DropdownMenu.Item("Duplicate", () -> duplicateCube(row.owner, cube)),
+                new DropdownMenu.Item("Rename", () -> beginRename(target)),
+                new DropdownMenu.Item("Delete", () -> deleteCube(row.owner, cube))
+            );
+        menuOpener.open(new DropdownMenu((int) mouseX, (int) mouseY, items));
+        return true;
+    }
+
+    private void pasteCopiedIntoBone(ModelerBone parent) {
+        var boneCopy = ModelerClipboard.copiedBoneForPaste();
+        if (boneCopy != null) {
+            insertBone(parent, boneCopy, parent.children.size(), "bone_paste", "Paste bone " + boneCopy.name);
+            collapsed.remove(parent);
+            return;
+        }
+        var cubeCopy = ModelerClipboard.copiedCubeForPaste();
+        if (cubeCopy != null) {
+            insertCube(parent, cubeCopy, parent.cubes.size(), "cube_paste", "Paste cube " + cubeCopy.name);
+            collapsed.remove(parent);
+        }
+    }
+
+    private static void pasteCopiedCubeAfter(ModelerBone owner, ModelerCube afterCube) {
+        var copy = ModelerClipboard.copiedCubeForPaste();
         if (copy == null) {
             return;
         }
-        insertBone(parent, copy, parent.children.size(), "bone_paste", "Paste bone " + copy.name);
-        collapsed.remove(parent);
+        var afterIndex = owner.cubes.indexOf(afterCube);
+        var targetIndex = afterIndex < 0 ? owner.cubes.size() : afterIndex + 1;
+        insertCube(owner, copy, targetIndex, "cube_paste", "Paste cube " + copy.name);
     }
 
     private static void duplicateBone(ModelerBone bone) {
@@ -436,6 +488,13 @@ public final class ModelerOutlinerPanel implements Panel {
         insertBone(parent, copy, targetIndex, "bone_duplicate", "Duplicate bone " + bone.name);
     }
 
+    private static void duplicateCube(ModelerBone owner, ModelerCube cube) {
+        var copy = ModelerClipboard.copyCubeSnapshot(cube);
+        var index = owner.cubes.indexOf(cube);
+        var targetIndex = index < 0 ? owner.cubes.size() : index + 1;
+        insertCube(owner, copy, targetIndex, "cube_duplicate", "Duplicate cube " + cube.name);
+    }
+
     private static void insertBone(ModelerBone parent, ModelerBone bone, int index, String typeId, String description) {
         var target = Math.min(Math.max(0, index), parent.children.size());
         parent.children.add(target, bone);
@@ -446,8 +505,22 @@ public final class ModelerOutlinerPanel implements Panel {
         );
     }
 
+    private static void insertCube(ModelerBone owner, ModelerCube cube, int index, String typeId, String description) {
+        var target = Math.min(Math.max(0, index), owner.cubes.size());
+        owner.cubes.add(target, cube);
+        ModelerScene.get().selection = new Selection.CubeSelection(owner, cube);
+        ModelerActionHistory.push(
+            new ModelerAction.CubeInsertAction(typeId, description, System.currentTimeMillis(), owner, cube, target)
+        );
+    }
+
     private static void deleteBone(ModelerBone bone) {
         ModelerScene.get().selection = new Selection.BoneSelection(bone);
+        ModelerScene.get().deleteSelection();
+    }
+
+    private static void deleteCube(ModelerBone owner, ModelerCube cube) {
+        ModelerScene.get().selection = new Selection.CubeSelection(owner, cube);
         ModelerScene.get().deleteSelection();
     }
 

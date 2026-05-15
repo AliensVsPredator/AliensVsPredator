@@ -18,10 +18,12 @@ public final class ModelerClipboard {
 
     public static void copyBone(ModelerBone bone) {
         copiedBone = copyBoneTree(bone);
+        copiedCube = null;
     }
 
     public static void copyCube(ModelerCube cube) {
         copiedCube = copyCubeSnapshot(cube);
+        copiedBone = null;
     }
 
     public static boolean hasCopiedBone() {
@@ -51,7 +53,7 @@ public final class ModelerClipboard {
         return copy;
     }
 
-    private static ModelerCube copyCubeSnapshot(ModelerCube source) {
+    public static ModelerCube copyCubeSnapshot(ModelerCube source) {
         var copy = new ModelerCube(source.name, source.origin, source.size, source.rotation, source.pivot, source.inflate);
         copy.blockElementRescale = source.blockElementRescale;
         copy.uvOriginU = source.uvOriginU;
