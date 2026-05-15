@@ -15,9 +15,10 @@ import com.blib.engine.modeler.history.ModelerActionHistory;
  * axis, mirroring across any axis plane, and centering the model along one or two axes. Every operation pushes a
  * {@link ModelerAction} onto the history so a single Ctrl+Z reverts the entire gesture.
  * <p>
- * Scope: operates on the entire scene tree rooted at {@link ModelerScene#root}. Bone-local transforms are kept intact
- * (no recursion into world-space recomputation), so the result is approximate for models with deeply rotated nested
- * bones — fine for v1 because most authored entity models keep bone hierarchies axis-aligned in their rest pose.
+ * Scope: cube selections operate on only those cubes; otherwise transforms operate on the entire scene tree rooted at
+ * {@link ModelerScene#root}. Bone-local transforms are kept intact (no recursion into world-space recomputation), so
+ * the result is approximate for models with deeply rotated nested bones — fine for v1 because most authored entity
+ * models keep bone hierarchies axis-aligned in their rest pose.
  * <p>
  * Implementation choices:
  * <ul>
@@ -44,11 +45,19 @@ public final class ModelerTransformOps {
     private ModelerTransformOps() {}
 
     /**
-     * Rotate the entire model {@code degrees} around the given world axis. Stored as a delta to the root bone's
-     * authored rotation Euler so subsequent edits stack additively without baking the rotation into per-cube data.
+     * Rotate selected cubes, or the entire model when no cubes are selected. Whole-model rotation is stored as a delta
+     * to the root bone's authored rotation Euler so subsequent edits stack additively without baking the rotation into
+     * per-cube data.
      */
     public static void rotate(Axis axis, int degrees) {
-        var root = ModelerScene.get().root;
+        var scene = ModelerScene.get();
+        var selected = selectedCubes(scene);
+        if (!selected.isEmpty()) {
+            rotateSelectedCubes(selected, axis, degrees);
+            return;
+        }
+
+        var root = scene.root;
         var before = ModelerAction.BoneMemento.of(root);
         root.rotation = switch (axis) {
             case X -> new Vec3(normalizeDegrees(root.rotation.x + degrees), root.rotation.y, root.rotation.z);
@@ -71,6 +80,12 @@ public final class ModelerTransformOps {
      * the cube ends up at its mirror location with its original dimensions.
      */
     public static void flip(Axis axis) {
+        var selected = selectedCubes(ModelerScene.get());
+        if (!selected.isEmpty()) {
+            flipSelectedCubes(selected, axis);
+            return;
+        }
+
         var children = new ArrayList<ModelerAction>();
         flipRecursive(ModelerScene.get().root, axis, children);
         if (children.isEmpty()) {
@@ -86,12 +101,19 @@ public final class ModelerTransformOps {
      * put). No-op when the model has no cubes — there's no bounds to center.
      */
     public static void center(Axis axis) {
-        var bounds = computeBounds(ModelerScene.get().root);
+        var scene = ModelerScene.get();
+        var selected = selectedCubes(scene);
+        if (!selected.isEmpty()) {
+            centerSelectedCubes(selected, axis);
+            return;
+        }
+
+        var bounds = computeBounds(scene.root);
         if (bounds == null) {
             return;
         }
         var center = bounds.center();
-        var root = ModelerScene.get().root;
+        var root = scene.root;
         var before = ModelerAction.BoneMemento.of(root);
         root.position = switch (axis) {
             case X -> new Vec3(root.position.x - center.x, root.position.y, root.position.z);
@@ -113,12 +135,19 @@ public final class ModelerTransformOps {
      * alongside the per-axis options.
      */
     public static void centerLateral() {
-        var bounds = computeBounds(ModelerScene.get().root);
+        var scene = ModelerScene.get();
+        var selected = selectedCubes(scene);
+        if (!selected.isEmpty()) {
+            centerSelectedCubesLateral(selected);
+            return;
+        }
+
+        var bounds = computeBounds(scene.root);
         if (bounds == null) {
             return;
         }
         var center = bounds.center();
-        var root = ModelerScene.get().root;
+        var root = scene.root;
         var before = ModelerAction.BoneMemento.of(root);
         root.position = new Vec3(root.position.x - center.x, root.position.y, root.position.z - center.z);
         var after = ModelerAction.BoneMemento.of(root);
@@ -136,6 +165,118 @@ public final class ModelerTransformOps {
                     after
                 )
             );
+    }
+
+    private static void rotateSelectedCubes(List<SelectedCube> selected, Axis axis, int degrees) {
+        var actions = new ArrayList<ModelerAction>();
+        for (var selectedCube : selected) {
+            var cube = selectedCube.cube();
+            var before = ModelerAction.CubeMemento.of(cube);
+            cube.rotation = switch (axis) {
+                case X -> new Vec3(normalizeDegrees(cube.rotation.x + degrees), cube.rotation.y, cube.rotation.z);
+                case Y -> new Vec3(cube.rotation.x, normalizeDegrees(cube.rotation.y + degrees), cube.rotation.z);
+                case Z -> new Vec3(cube.rotation.x, cube.rotation.y, normalizeDegrees(cube.rotation.z + degrees));
+            };
+            var after = ModelerAction.CubeMemento.of(cube);
+            if (after.differsFrom(before)) {
+                actions
+                    .add(
+                        new ModelerAction.CubeMementoAction(
+                            "transform_rotate_cube",
+                            "Rotate cube " + cube.name,
+                            System.currentTimeMillis(),
+                            cube,
+                            before,
+                            after
+                        )
+                    );
+            }
+        }
+        var sign = degrees > 0 ? "+" : "";
+        pushCubeActions(actions, "Rotate " + sign + degrees + "° around " + axis.name());
+    }
+
+    private static void flipSelectedCubes(List<SelectedCube> selected, Axis axis) {
+        var actions = new ArrayList<ModelerAction>();
+        for (var selectedCube : selected) {
+            var cube = selectedCube.cube();
+            var before = ModelerAction.CubeMemento.of(cube);
+            flipCube(cube, axis);
+            var after = ModelerAction.CubeMemento.of(cube);
+            if (after.differsFrom(before)) {
+                actions
+                    .add(
+                        new ModelerAction.CubeMementoAction(
+                            "transform_flip_cube",
+                            "Flip cube " + cube.name,
+                            System.currentTimeMillis(),
+                            cube,
+                            before,
+                            after
+                        )
+                    );
+            }
+        }
+        pushCubeActions(actions, "Flip across " + axis.name() + " axis");
+    }
+
+    private static void centerSelectedCubes(List<SelectedCube> selected, Axis axis) {
+        var bounds = computeBounds(selected);
+        if (bounds == null) {
+            return;
+        }
+        var center = bounds.center();
+        var delta = switch (axis) {
+            case X -> new Vec3(-center.x, 0, 0);
+            case Y -> new Vec3(0, -center.y, 0);
+            case Z -> new Vec3(0, 0, -center.z);
+        };
+        moveSelectedCubes(selected, delta, "Center selected cubes on " + axis.name());
+    }
+
+    private static void centerSelectedCubesLateral(List<SelectedCube> selected) {
+        var bounds = computeBounds(selected);
+        if (bounds == null) {
+            return;
+        }
+        var center = bounds.center();
+        moveSelectedCubes(selected, new Vec3(-center.x, 0, -center.z), "Center selected cubes laterally (X + Z)");
+    }
+
+    private static void moveSelectedCubes(List<SelectedCube> selected, Vec3 delta, String description) {
+        var actions = new ArrayList<ModelerAction>();
+        for (var selectedCube : selected) {
+            var cube = selectedCube.cube();
+            var before = ModelerAction.CubeMemento.of(cube);
+            cube.origin = cube.origin.add(delta);
+            var after = ModelerAction.CubeMemento.of(cube);
+            if (after.differsFrom(before)) {
+                actions
+                    .add(
+                        new ModelerAction.CubeMementoAction(
+                            "transform_center_cube",
+                            "Center cube " + cube.name,
+                            System.currentTimeMillis(),
+                            cube,
+                            before,
+                            after
+                        )
+                    );
+            }
+        }
+        pushCubeActions(actions, description);
+    }
+
+    private static void pushCubeActions(List<ModelerAction> actions, String description) {
+        if (actions.isEmpty()) {
+            return;
+        }
+        if (actions.size() == 1) {
+            ModelerActionHistory.push(actions.get(0));
+            return;
+        }
+        ModelerActionHistory
+            .push(new ModelerAction.CompositeAction("transform_cubes", description, System.currentTimeMillis(), List.copyOf(actions)));
     }
 
     /**
@@ -247,6 +388,28 @@ public final class ModelerTransformOps {
         return new Bounds(min[0], min[1], min[2], max[0], max[1], max[2]);
     }
 
+    private static @Nullable Bounds computeBounds(List<SelectedCube> selected) {
+        var min = new double[] { Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY };
+        var max = new double[] { Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY };
+        for (var selectedCube : selected) {
+            var ownerOffset = ownerPosition(selectedCube.owner());
+            var cube = selectedCube.cube();
+            var cubeMinX = ownerOffset.x + cube.origin.x;
+            var cubeMinY = ownerOffset.y + cube.origin.y;
+            var cubeMinZ = ownerOffset.z + cube.origin.z;
+            min[0] = Math.min(min[0], cubeMinX);
+            min[1] = Math.min(min[1], cubeMinY);
+            min[2] = Math.min(min[2], cubeMinZ);
+            max[0] = Math.max(max[0], cubeMinX + cube.size.x);
+            max[1] = Math.max(max[1], cubeMinY + cube.size.y);
+            max[2] = Math.max(max[2], cubeMinZ + cube.size.z);
+        }
+        if (min[0] == Double.POSITIVE_INFINITY) {
+            return null;
+        }
+        return new Bounds(min[0], min[1], min[2], max[0], max[1], max[2]);
+    }
+
     /**
      * Recursive bounds accumulator. {@code parentX/Y/Z} is the world-space origin of the parent bone (or {@code 0,0,0}
      * for the root). Each cube in the current bone gets its corners expressed at
@@ -273,6 +436,34 @@ public final class ModelerTransformOps {
         }
     }
 
+    private static Vec3 ownerPosition(ModelerBone owner) {
+        double x = 0.0;
+        double y = 0.0;
+        double z = 0.0;
+        var cursor = owner;
+        while (cursor != null) {
+            x += cursor.position.x;
+            y += cursor.position.y;
+            z += cursor.position.z;
+            cursor = cursor.parent;
+        }
+        return new Vec3(x, y, z);
+    }
+
+    private static List<SelectedCube> selectedCubes(ModelerScene scene) {
+        if (scene.selection instanceof Selection.CubeSelection cs) {
+            return List.of(new SelectedCube(cs.owner(), cs.cube()));
+        }
+        if (scene.selection instanceof Selection.MultiCubeSelection ms) {
+            var selected = new ArrayList<SelectedCube>(ms.cubes().size());
+            for (var cs : ms.cubes()) {
+                selected.add(new SelectedCube(cs.owner(), cs.cube()));
+            }
+            return selected;
+        }
+        return List.of();
+    }
+
     /** Normalize an Euler angle into {@code (-180, 180]} so repeated rotations don't drift toward huge values. */
     private static double normalizeDegrees(double deg) {
         var d = deg % 360.0;
@@ -297,4 +488,9 @@ public final class ModelerTransformOps {
             return new Vec3((minX + maxX) / 2.0, (minY + maxY) / 2.0, (minZ + maxZ) / 2.0);
         }
     }
+
+    private record SelectedCube(
+        ModelerBone owner,
+        ModelerCube cube
+    ) {}
 }
