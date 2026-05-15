@@ -18,6 +18,10 @@ public final class TextureResourceCatalog {
         return matchingTextures("textures/item", itemId);
     }
 
+    public static List<ResourceLocation> blockTextures(ResourceLocation blockId) {
+        return matchingTextures("textures/block", blockId);
+    }
+
     public static String displayName(ResourceLocation textureResource) {
         var path = textureResource.getPath();
         if (path.startsWith("textures/")) {
