@@ -3,6 +3,7 @@ package com.blib.engine.ui.panel.outliner;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -380,9 +381,24 @@ public final class ModelerOutlinerPanel implements Panel {
         }
 
         var target = RenameTarget.from(row);
-        var items = List.of(new DropdownMenu.Item("Rename", () -> beginRename(target)));
+        var isRoot = row.owner.parent == null;
+        var items = List
+            .of(
+                new DropdownMenu.Item("Rename", () -> beginRename(target)),
+                new DropdownMenu.Item(
+                    "Delete",
+                    () -> deleteBone(row.owner),
+                    !isRoot,
+                    Component.literal("The root group cannot be deleted.")
+                )
+            );
         menuOpener.open(new DropdownMenu((int) mouseX, (int) mouseY, items));
         return true;
+    }
+
+    private static void deleteBone(ModelerBone bone) {
+        ModelerScene.get().selection = new Selection.BoneSelection(bone);
+        ModelerScene.get().deleteSelection();
     }
 
     private void beginRename(RenameTarget target) {
