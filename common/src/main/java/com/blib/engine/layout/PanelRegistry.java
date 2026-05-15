@@ -71,11 +71,11 @@ public final class PanelRegistry {
     public enum Domain {
         WORLD("World"),
         PROJECT("Project & Data"),
-        JIGSAW("Jigsaw"),
+        JIGSAW("Structures"),
         FACTION("Factions & Territory"),
         AI_DEBUG("AI & Pathfinding"),
-        MODELER("Modeler"),
-        TEXTURE("Textures"),
+        MODELER("Modelling"),
+        TEXTURE("Texturing"),
         HISTORY("History");
 
         private final String label;
