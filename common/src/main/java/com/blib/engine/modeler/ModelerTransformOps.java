@@ -168,6 +168,35 @@ public final class ModelerTransformOps {
             );
     }
 
+    public static void toggleSelectedMirrorUv() {
+        var selected = selectedCubes(ModelerScene.get());
+        if (selected.isEmpty()) {
+            return;
+        }
+
+        var actions = new ArrayList<ModelerAction>();
+        for (var selectedCube : selected) {
+            var cube = selectedCube.cube();
+            var before = ModelerAction.CubeMemento.of(cube);
+            cube.mirrorUv = !cube.mirrorUv;
+            var after = ModelerAction.CubeMemento.of(cube);
+            if (after.differsFrom(before)) {
+                actions
+                    .add(
+                        new ModelerAction.CubeMementoAction(
+                            "transform_mirror_uv",
+                            "Mirror UV " + cube.name,
+                            System.currentTimeMillis(),
+                            cube,
+                            before,
+                            after
+                        )
+                    );
+            }
+        }
+        pushCubeActions(actions, "Mirror UV for selected cubes");
+    }
+
     private static void rotateSelectedCubes(List<SelectedCube> selected, Axis axis, int degrees) {
         var actions = new ArrayList<ModelerAction>();
         for (var selectedCube : selected) {

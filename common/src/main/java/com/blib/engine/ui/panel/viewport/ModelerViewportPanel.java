@@ -584,6 +584,7 @@ public final class ModelerViewportPanel implements Panel {
                 items.add(new DropdownMenu.Item("Rotate", () -> {}, buildRotateSubmenu()));
                 items.add(new DropdownMenu.Item("Flip", () -> {}, buildFlipSubmenu()));
                 items.add(new DropdownMenu.Item("Center", () -> {}, buildCenterSubmenu()));
+                items.add(new DropdownMenu.Item("Properties", () -> {}, buildPropertiesSubmenu()));
                 yield new DropdownMenu(anchorX, anchorY, items);
             }
             default -> null;
@@ -665,6 +666,10 @@ public final class ModelerViewportPanel implements Panel {
                 ),
                 new DropdownMenu.Item("Center laterally (X + Z)", ModelerTransformOps::centerLateral)
             );
+    }
+
+    private static List<DropdownMenu.Item> buildPropertiesSubmenu() {
+        return List.of(new DropdownMenu.Item("Mirror UV", ModelerTransformOps::toggleSelectedMirrorUv));
     }
 
     /**
