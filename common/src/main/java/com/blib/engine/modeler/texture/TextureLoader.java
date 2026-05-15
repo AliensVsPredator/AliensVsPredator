@@ -58,8 +58,7 @@ public final class TextureLoader {
         Minecraft.getInstance().getTextureManager().register(id, dynamic);
 
         var fileName = path.getFileName().toString();
-        var displayName = stripExtension(fileName);
-        return new LoadedTexture(displayName, path, id, dynamic);
+        return new LoadedTexture(fileName, path, id, dynamic);
     }
 
     /**
@@ -71,8 +70,4 @@ public final class TextureLoader {
         loaded.texture().close();
     }
 
-    private static String stripExtension(String fileName) {
-        var dot = fileName.lastIndexOf('.');
-        return dot < 0 ? fileName : fileName.substring(0, dot);
-    }
 }
