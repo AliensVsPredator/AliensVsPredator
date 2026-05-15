@@ -87,8 +87,8 @@ public enum LayoutTemplate {
             // Viewport with the Territory Map (two ways to look at the same world data); bottom slot holds the
             // Diplomacy Matrix; the right column stacks the Inspector (FactionSelectable) over the Members panel.
             case FACTION -> factionBody();
-            // Modeler layout: Blockbench-style three-column — outliner (left) | custom 3D viewport (center) | inspector
-            // (right). No bottom tab strip — modeler authoring is purely in the viewport.
+            // Modeler layout: Blockbench-style workspace — UV map/textures on the left, viewport in the center, and
+            // inspector over outliner on the right.
             case MODELER -> modelerBody();
             // Texture layout: paint.net-style workspace — texture list on the left, editable image surface in the
             // center, and tool / color / selection controls plus history on the right.
@@ -97,20 +97,26 @@ public enum LayoutTemplate {
     }
 
     /**
-     * Body shape for the MODELER template. Three columns side-by-side: outliner | viewport | inspector. The outliner
-     * and inspector are fixed-width rails like other layouts; the viewport flexes.
+     * Body shape for the MODELER template. Left rail stacks UV map over the texture list; center is the viewport;
+     * right rail stacks inspector over outliner. Side rails stay fixed-width while the viewport flexes.
      */
     private static BodyNode modelerBody() {
         var leftColumn = new BodyNode.Split(
             Orientation.VERTICAL.name(),
-            new BodyNode.Leaf(List.of(PanelRegistry.MODELER_UV_MAP, PanelRegistry.TEXTURES), 0),
-            new BodyNode.Leaf(List.of(PanelRegistry.MODELER_OUTLINER), 0),
+            new BodyNode.Leaf(List.of(PanelRegistry.MODELER_UV_MAP), 0),
+            new BodyNode.Leaf(List.of(PanelRegistry.TEXTURES), 0),
             new SizingDoc.FirstFixed(LayoutDefaults.UV_MAP_HEIGHT)
+        );
+        var rightColumn = new BodyNode.Split(
+            Orientation.VERTICAL.name(),
+            new BodyNode.Leaf(List.of(PanelRegistry.MODELER_INSPECTOR), 0),
+            new BodyNode.Leaf(List.of(PanelRegistry.MODELER_OUTLINER), 0),
+            new SizingDoc.SecondFixed(LayoutDefaults.CONTENT_BROWSER_HEIGHT)
         );
         var centerAndRight = new BodyNode.Split(
             Orientation.HORIZONTAL.name(),
             new BodyNode.Leaf(List.of(PanelRegistry.MODELER_VIEWPORT), 0),
-            new BodyNode.Leaf(List.of(PanelRegistry.MODELER_INSPECTOR), 0),
+            rightColumn,
             new SizingDoc.SecondFixed(LayoutDefaults.DETAILS_WIDTH)
         );
         return new BodyNode.Split(
