@@ -462,7 +462,8 @@ public final class TexturesPanel implements Panel {
             .of(
                 new DropdownMenu.Item("From File...", this::openTexturePicker),
                 new DropdownMenu.Item("From Item...", this::openItemTexturePicker),
-                new DropdownMenu.Item("From Block...", this::openBlockTexturePicker)
+                new DropdownMenu.Item("From Block...", this::openBlockTexturePicker),
+                new DropdownMenu.Item("From Entity...", this::openEntityTexturePicker)
             );
         var items = List.of(new DropdownMenu.Item("Open", () -> {}, openItems));
         return new DropdownMenu(menuFileX, menuFileY + menuFileHeight + 1, items);
@@ -524,6 +525,35 @@ public final class TexturesPanel implements Panel {
 
     private void loadBlockTextures(ResourceLocation blockId) {
         loadResourceTextures(TextureResourceCatalog.blockTextures(blockId), "block " + blockId);
+    }
+
+    private void openEntityTexturePicker() {
+        var ids = new java.util.ArrayList<ResourceLocation>();
+        for (var entityType : BuiltInRegistries.ENTITY_TYPE) {
+            ids.add(BuiltInRegistries.ENTITY_TYPE.getKey(entityType));
+        }
+        ids.sort((a, b) -> a.toString().compareToIgnoreCase(b.toString()));
+
+        var items = new java.util.ArrayList<SearchableSelect.Item<ResourceLocation>>(ids.size());
+        for (var id : ids) {
+            items.add(new SearchableSelect.Item<>(id, id.toString()));
+        }
+
+        SearchableSelect
+            .openPopupAt(
+                menuFileX,
+                menuFileY,
+                280,
+                menuFileHeight,
+                items,
+                ResourceLocation::toString,
+                null,
+                this::loadEntityTextures
+            );
+    }
+
+    private void loadEntityTextures(ResourceLocation entityTypeId) {
+        loadResourceTextures(TextureResourceCatalog.entityTextures(entityTypeId), "entity " + entityTypeId);
     }
 
     private static void loadResourceTextures(List<ResourceLocation> resources, String sourceDescription) {

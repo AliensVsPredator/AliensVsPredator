@@ -22,6 +22,10 @@ public final class TextureResourceCatalog {
         return matchingTextures("textures/block", blockId);
     }
 
+    public static List<ResourceLocation> entityTextures(ResourceLocation entityTypeId) {
+        return matchingEntityTextures(entityTypeId);
+    }
+
     public static String displayName(ResourceLocation textureResource) {
         var path = textureResource.getPath();
         if (path.startsWith("textures/")) {
@@ -63,8 +67,53 @@ public final class TextureResourceCatalog {
         return textureName.equals(ownerName) || textureName.startsWith(ownerName + "_");
     }
 
+    private static List<ResourceLocation> matchingEntityTextures(ResourceLocation entityTypeId) {
+        var root = "textures/entity";
+        var resources = Minecraft
+            .getInstance()
+            .getResourceManager()
+            .listResources(root, resource -> resource.getPath().endsWith(PNG_SUFFIX));
+        var out = new ArrayList<ResourceLocation>();
+        for (var texture : resources.keySet()) {
+            if (!texture.getNamespace().equals(entityTypeId.getNamespace())) {
+                continue;
+            }
+            if (matchesEntity(texture.getPath(), root, entityTypeId.getPath())) {
+                out.add(texture);
+            }
+        }
+        out.sort((a, b) -> a.toString().compareToIgnoreCase(b.toString()));
+        return out;
+    }
+
+    private static boolean matchesEntity(String texturePath, String root, String entityPath) {
+        var prefix = root + "/";
+        if (!texturePath.startsWith(prefix) || !texturePath.endsWith(PNG_SUFFIX)) {
+            return false;
+        }
+
+        var rel = texturePath.substring(prefix.length(), texturePath.length() - PNG_SUFFIX.length());
+        if (matchesOwner(texturePath, root, entityPath)) {
+            return true;
+        }
+
+        var normalizedEntity = normalize(entityPath);
+        var folder = firstSegment(rel);
+        var file = lastSegment(rel);
+        return normalize(folder).equals(normalizedEntity) || normalize(file).equals(normalizedEntity);
+    }
+
+    private static String firstSegment(String value) {
+        var slash = value.indexOf('/');
+        return slash < 0 ? value : value.substring(0, slash);
+    }
+
     private static String lastSegment(String value) {
         var slash = value.lastIndexOf('/');
         return slash < 0 ? value : value.substring(slash + 1);
+    }
+
+    private static String normalize(String value) {
+        return value.replace("_", "").replace("-", "");
     }
 }
