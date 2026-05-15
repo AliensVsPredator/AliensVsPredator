@@ -1,5 +1,6 @@
 package com.blib.engine.ui.panel.outliner;
 
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.BuiltInRegistries;
 import org.jetbrains.annotations.ApiStatus;
@@ -93,8 +94,8 @@ public final class ModelerOutlinerPanel implements Panel {
     /** Panel rect captured at render time so {@link #mouseClicked} can hit-test against the rows. */
     private int panelX, panelY, panelWidth, panelHeight;
 
-    /** Rows region (the entire panel content area). Captured during render for hit-tests. */
-    private int rowsTopY, rowsLeftX, rowsViewportHeight, rowsContentWidth;
+    /** Rows region captured during render for hit-tests. */
+    private int rowsTopY, rowsLeftX, rowsViewportWidth, rowsViewportHeight, rowsContentX;
 
     @Override
     public String title() {
@@ -142,13 +143,16 @@ public final class ModelerOutlinerPanel implements Panel {
         var rowsHeight = Math.max(0, (y + height) - rowsTop);
         var innerLeft = x + PADDING_X;
         var innerWidth = Math.max(0, width - 2 * PADDING_X);
-        rowsTopY = rowsTop;
-        rowsLeftX = innerLeft;
-        rowsViewportHeight = rowsHeight;
-
+        var font = EngineFont.get();
+        var contentWidth = measureRowsContentWidth(font);
         var contentHeight = rows.size() * ROW_HEIGHT + BOTTOM_SCROLL_PADDING;
-        var frame = scroll.begin(graphics, UiRect.of(innerLeft, rowsTop, innerWidth, rowsHeight), contentHeight);
-        rowsContentWidth = frame.contentWidth();
+        var frame = scroll.begin(graphics, UiRect.of(innerLeft, rowsTop, innerWidth, rowsHeight), contentWidth, contentHeight);
+        var visibleRows = frame.visibleContentRect();
+        rowsTopY = visibleRows.y();
+        rowsLeftX = visibleRows.x();
+        rowsViewportWidth = visibleRows.width();
+        rowsViewportHeight = visibleRows.height();
+        rowsContentX = frame.contentX();
 
         // Scroll-into-view: now that rows have been rebuilt with the ancestors un-collapsed, the selected row exists
         // in `rows` at a known index. If it's outside the viewport, nudge the scroll position so it lands at the
@@ -171,32 +175,36 @@ public final class ModelerOutlinerPanel implements Panel {
         // BLibGeoBoneItemRenderer (e.g. some other AzItemRenderer subclass).
         var itemBoneName = resolveItemBoneName(scene.itemSession);
 
-        var font = EngineFont.get();
-        var scrollY = scroll.scrollY();
+        var visibleLeft = visibleRows.x();
+        var visibleRight = visibleRows.right();
+        var visibleTop = visibleRows.y();
+        var visibleBottom = visibleRows.bottom();
+        var contentX = frame.contentX();
+        var contentY = frame.contentY();
 
         try {
             for (var i = 0; i < rows.size(); i++) {
                 var row = rows.get(i);
-                var rowTop = rowsTop - scrollY + i * ROW_HEIGHT;
+                var rowTop = contentY + i * ROW_HEIGHT;
                 var rowBottom = rowTop + ROW_HEIGHT;
-                if (rowBottom <= rowsTop || rowTop >= rowsTop + rowsHeight) {
+                if (rowBottom <= visibleTop || rowTop >= visibleBottom) {
                     // Off-screen vertically; skip rendering but keep iterating so indices stay aligned with the row
                     // list (the click handler uses content-Y to index directly).
                     continue;
                 }
 
                 var selected = isHighlighted(row, scene.selection, selectedSubtree);
-                var hovered = mouseX >= innerLeft
-                    && mouseX < innerLeft + rowsContentWidth
+                var hovered = mouseX >= visibleLeft
+                    && mouseX < visibleRight
                     && mouseY >= rowTop
                     && mouseY < rowBottom;
                 if (selected) {
-                    graphics.fill(innerLeft, rowTop, innerLeft + rowsContentWidth, rowBottom, ROW_SELECTED_COLOR);
+                    graphics.fill(visibleLeft, rowTop, visibleRight, rowBottom, ROW_SELECTED_COLOR);
                 } else if (hovered) {
-                    graphics.fill(innerLeft, rowTop, innerLeft + rowsContentWidth, rowBottom, ROW_HOVER_COLOR);
+                    graphics.fill(visibleLeft, rowTop, visibleRight, rowBottom, ROW_HOVER_COLOR);
                 }
 
-                var indentX = innerLeft + row.depth * INDENT_PX;
+                var indentX = contentX + row.depth * INDENT_PX;
                 var labelY = rowTop + (ROW_HEIGHT - font.lineHeight + 2) / 2;
                 if (row.cube == null && isCollapsible(row.owner)) {
                     var caret = collapsed.contains(row.owner) ? "▸" : "▾";
@@ -217,7 +225,7 @@ public final class ModelerOutlinerPanel implements Panel {
                     row.label,
                     labelX,
                     labelY,
-                    Math.max(0, innerLeft + rowsContentWidth - labelX),
+                    Math.max(0, visibleRight - labelX),
                     labelColor
                 );
             }
@@ -240,7 +248,7 @@ public final class ModelerOutlinerPanel implements Panel {
         if (mouseY < rowsTopY || mouseY >= rowsTopY + rowsViewportHeight) {
             return false;
         }
-        if (mouseX < rowsLeftX || mouseX >= rowsLeftX + rowsContentWidth) {
+        if (mouseX < rowsLeftX || mouseX >= rowsLeftX + rowsViewportWidth) {
             return false;
         }
 
@@ -260,7 +268,7 @@ public final class ModelerOutlinerPanel implements Panel {
         // Caret-region click on a collapsible bone toggles collapse without altering the selection. Otherwise the
         // whole row selects the bone / cube.
         if (row.cube == null && isCollapsible(row.owner)) {
-            var caretX = rowsLeftX + row.depth * INDENT_PX;
+            var caretX = rowsContentX + row.depth * INDENT_PX;
             if (mouseX >= caretX && mouseX < caretX + CARET_WIDTH) {
                 if (!collapsed.remove(row.owner)) {
                     collapsed.add(row.owner);
@@ -292,7 +300,7 @@ public final class ModelerOutlinerPanel implements Panel {
         if (mouseX < panelX || mouseX >= panelX + panelWidth || mouseY < panelY || mouseY >= panelY + panelHeight) {
             return false;
         }
-        return scroll.mouseScrolled(mouseX, mouseY, scrollY);
+        return scroll.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
 
     @Override
@@ -322,6 +330,15 @@ public final class ModelerOutlinerPanel implements Panel {
         for (var child : bone.children) {
             buildRows(child, depth + 1);
         }
+    }
+
+    private int measureRowsContentWidth(Font font) {
+        var max = 0;
+        for (var row : rows) {
+            var rowWidth = row.depth * INDENT_PX + CARET_WIDTH + font.width(row.label) + PADDING_X;
+            max = Math.max(max, rowWidth);
+        }
+        return max;
     }
 
     /** A bone is "collapsible" only if it has at least one descendant row to hide — child bones or cubes. */
