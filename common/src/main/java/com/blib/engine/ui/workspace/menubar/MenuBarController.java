@@ -295,7 +295,6 @@ public final class MenuBarController {
                 items.add(new DropdownMenu.Item(domain.label(), () -> {}, children));
             }
         }
-        items.add(new DropdownMenu.Item("Reset Layout", actions::resetLayout));
         return new DropdownMenu(anchorX, anchorY, items);
     }
 
