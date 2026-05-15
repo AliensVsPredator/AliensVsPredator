@@ -51,6 +51,7 @@ import com.blib.api.common.event.v1.BLibEntityLoadEvent;
 import com.blib.api.common.event.v1.BLibEntityRemoveEvent;
 import com.blib.api.common.event.v1.BLibEntityTickEvent;
 import com.blib.api.common.event.v1.BLibFactionRemoveEvent;
+import com.blib.api.common.event.v1.BLibFactionsLoadedEvent;
 import com.blib.api.common.event.v1.BLibLevelSaveEvent;
 import com.blib.api.common.event.v1.BLibLevelTickEvent;
 import com.blib.api.common.event.v1.BLibPlayerTrackingEntityEvent;
@@ -117,6 +118,8 @@ public class BLibFabricModContainer {
 
     private final BLibEventListenerHandle<BLibFactionRemoveEvent> onFactionRemove;
 
+    private final BLibEventListenerHandle<BLibFactionsLoadedEvent> onFactionsLoaded;
+
     private final BLibEventListenerHandle<BLibLevelSaveEvent> onLevelSave;
 
     private final BLibEventHandle<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity;
@@ -162,6 +165,7 @@ public class BLibFabricModContainer {
         this.onEntityRemove = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.ENTITY_REMOVE);
         this.onEntityTick = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.ENTITY_TICK);
         this.onFactionRemove = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.FACTION_REMOVE);
+        this.onFactionsLoaded = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.FACTIONS_LOADED);
         this.onLevelSave = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.LEVEL_SAVE);
         this.onPlayerStartTrackingEntity = BLibFabricPlayerTrackingEntityEvents.FACTORY.apply(mod);
         this.onServerSave = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.SERVER_SAVE);
@@ -218,6 +222,10 @@ public class BLibFabricModContainer {
 
     public BLibEventListenerHandle<BLibFactionRemoveEvent> onFactionRemove() {
         return onFactionRemove;
+    }
+
+    public BLibEventListenerHandle<BLibFactionsLoadedEvent> onFactionsLoaded() {
+        return onFactionsLoaded;
     }
 
     public BLibEventListenerHandle<BLibLevelSaveEvent> onLevelSave() {

@@ -14,6 +14,7 @@ import com.blib.api.common.event.v1.BLibEntityLoadEvent;
 import com.blib.api.common.event.v1.BLibEntityRemoveEvent;
 import com.blib.api.common.event.v1.BLibEntityTickEvent;
 import com.blib.api.common.event.v1.BLibFactionRemoveEvent;
+import com.blib.api.common.event.v1.BLibFactionsLoadedEvent;
 import com.blib.api.common.event.v1.BLibLevelSaveEvent;
 import com.blib.api.common.event.v1.BLibLevelTickEvent;
 import com.blib.api.common.event.v1.BLibPlayerTrackingEntityEvent;
@@ -86,6 +87,12 @@ public class BLibFabricEventServiceImpl implements BLibEventService {
     public BLibEventListenerHandle<BLibFactionRemoveEvent> onFactionRemove(BLibMod mod) {
         return BLibFabricModContainerLookup.INSTANCE.get(mod)
             .onFactionRemove();
+    }
+
+    @Override
+    public BLibEventListenerHandle<BLibFactionsLoadedEvent> onFactionsLoaded(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .onFactionsLoaded();
     }
 
     @Override

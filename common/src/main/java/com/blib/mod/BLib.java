@@ -33,6 +33,7 @@ import com.blib.internal.client.render.armor.compat.ShoulderSurfingCompat;
 import com.blib.internal.client.territory.ClientTerritoryCache;
 import com.blib.internal.client.territory.compat.XaeroWorldMapCompat;
 import com.blib.internal.common.entityreference.BLibEntityReferenceManager;
+import com.blib.internal.common.event.BLibGlobalEvents;
 import com.blib.internal.common.faction.BLibFactionManager;
 import com.blib.internal.common.property.BLibPropertyContainerSaveHandler;
 import com.blib.internal.common.reputation.BLibReputationManager;
@@ -159,6 +160,9 @@ public class BLib {
             .onServerStarted()
             .register(server -> {
                 BLibFactionManager.INSTANCE.load(server);
+                for (var listener : BLibGlobalEvents.FACTIONS_LOADED.listeners()) {
+                    listener.invoke(server);
+                }
                 BLibReputationManager.INSTANCE.load(server);
                 BLibEntityReferenceManager.INSTANCE.load(server);
             });
