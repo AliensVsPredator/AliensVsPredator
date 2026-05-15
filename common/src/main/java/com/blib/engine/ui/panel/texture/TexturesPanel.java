@@ -74,6 +74,8 @@ public final class TexturesPanel implements Panel {
 
     private final @Nullable PanelMenuOpener panelMenuOpener;
 
+    private static @Nullable Path copiedTexturePath;
+
     private @Nullable Component hoveredTooltip;
 
     private int panelX, panelY, panelWidth, panelHeight;
@@ -212,12 +214,13 @@ public final class TexturesPanel implements Panel {
     private boolean openTextureContextMenu(double mouseX, double mouseY) {
         var texture = textureAt(mouseX, mouseY);
         if (texture == null) {
-            return false;
+            return openEmptyTextureContextMenu(mouseX, mouseY);
         }
         if (panelMenuOpener == null) {
             return true;
         }
 
+        var copyTexture = new DropdownMenu.Item("Copy", () -> copyTexture(texture));
         var sourceDir = sourceDirectory(texture);
         var openSource = new DropdownMenu.Item(
             "Open in File Explorer",
@@ -225,7 +228,29 @@ public final class TexturesPanel implements Panel {
             sourceDir != null,
             Component.literal("The source folder is no longer available.")
         );
-        panelMenuOpener.open(new DropdownMenu((int) mouseX, (int) mouseY, List.of(openSource)));
+        panelMenuOpener.open(new DropdownMenu((int) mouseX, (int) mouseY, List.of(copyTexture, openSource)));
+        return true;
+    }
+
+    private boolean openEmptyTextureContextMenu(double mouseX, double mouseY) {
+        if (!isRowsArea(mouseX, mouseY)) {
+            return false;
+        }
+        if (panelMenuOpener == null) {
+            return true;
+        }
+
+        var pasteEnabled = copiedTexturePath != null && Files.isRegularFile(copiedTexturePath);
+        var disabledTooltip = copiedTexturePath == null
+            ? Component.literal("Copy a texture first.")
+            : Component.literal("The copied texture source file is no longer available.");
+        var pasteTexture = new DropdownMenu.Item(
+            "Paste",
+            TexturesPanel::pasteCopiedTexture,
+            pasteEnabled,
+            disabledTooltip
+        );
+        panelMenuOpener.open(new DropdownMenu((int) mouseX, (int) mouseY, List.of(pasteTexture)));
         return true;
     }
 
@@ -239,10 +264,7 @@ public final class TexturesPanel implements Panel {
     }
 
     private int rowIndexAt(double mouseX, double mouseY) {
-        if (mouseY < rowsTopY || mouseY >= rowsTopY + rowsViewportHeight) {
-            return -1;
-        }
-        if (mouseX < rowsLeftX || mouseX >= rowsLeftX + rowsContentWidth) {
+        if (!isRowsArea(mouseX, mouseY)) {
             return -1;
         }
 
@@ -251,6 +273,13 @@ public final class TexturesPanel implements Panel {
             return -1;
         }
         return contentY / ROW_HEIGHT;
+    }
+
+    private boolean isRowsArea(double mouseX, double mouseY) {
+        return mouseY >= rowsTopY
+            && mouseY < rowsTopY + rowsViewportHeight
+            && mouseX >= rowsLeftX
+            && mouseX < rowsLeftX + rowsContentWidth;
     }
 
     @Override
@@ -301,6 +330,28 @@ public final class TexturesPanel implements Panel {
             return;
         }
         Util.getPlatform().openUri(sourceDir.toUri());
+    }
+
+    private static void copyTexture(LoadedTexture texture) {
+        copiedTexturePath = texture.sourcePath().toAbsolutePath().normalize();
+    }
+
+    private static void pasteCopiedTexture() {
+        if (copiedTexturePath == null) {
+            return;
+        }
+        loadTextureFromPath(copiedTexturePath);
+    }
+
+    private static @Nullable LoadedTexture loadTextureFromPath(Path path) {
+        var loaded = TextureLoader.loadFromDisk(path);
+        if (loaded == null) {
+            return null;
+        }
+        var scene = ModelerScene.get();
+        scene.textures.add(loaded);
+        scene.activeTexture = loaded;
+        return loaded;
     }
 
     private static @Nullable Path sourceDirectory(LoadedTexture texture) {
