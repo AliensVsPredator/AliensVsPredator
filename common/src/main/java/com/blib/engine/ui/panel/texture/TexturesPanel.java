@@ -221,6 +221,7 @@ public final class TexturesPanel implements Panel {
         }
 
         var copyTexture = new DropdownMenu.Item("Copy", () -> copyTexture(texture));
+        var duplicateTexture = new DropdownMenu.Item("Duplicate", () -> duplicateTexture(texture));
         var sourceDir = sourceDirectory(texture);
         var openSource = new DropdownMenu.Item(
             "Open in File Explorer",
@@ -228,7 +229,7 @@ public final class TexturesPanel implements Panel {
             sourceDir != null,
             Component.literal("The source folder is no longer available.")
         );
-        panelMenuOpener.open(new DropdownMenu((int) mouseX, (int) mouseY, List.of(copyTexture, openSource)));
+        panelMenuOpener.open(new DropdownMenu((int) mouseX, (int) mouseY, List.of(copyTexture, duplicateTexture, openSource)));
         return true;
     }
 
@@ -348,10 +349,21 @@ public final class TexturesPanel implements Panel {
         if (loaded == null) {
             return null;
         }
+        addLoadedTexture(loaded);
+        return loaded;
+    }
+
+    private static void duplicateTexture(LoadedTexture texture) {
+        var duplicate = TextureLoader.duplicate(texture);
+        if (duplicate != null) {
+            addLoadedTexture(duplicate);
+        }
+    }
+
+    private static void addLoadedTexture(LoadedTexture loaded) {
         var scene = ModelerScene.get();
         scene.textures.add(loaded);
         scene.activeTexture = loaded;
-        return loaded;
     }
 
     private static @Nullable Path sourceDirectory(LoadedTexture texture) {

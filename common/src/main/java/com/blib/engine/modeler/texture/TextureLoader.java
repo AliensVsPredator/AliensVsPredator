@@ -50,15 +50,34 @@ public final class TextureLoader {
             return null;
         }
 
+        var fileName = path.getFileName().toString();
+        return register(fileName, path, image);
+    }
+
+    /**
+     * Create a second runtime texture from the current in-memory pixels of {@code source}. This preserves modeler paint
+     * edits that may not have been written back to disk.
+     */
+    public static @Nullable LoadedTexture duplicate(LoadedTexture source) {
+        var pixels = source.texture().getPixels();
+        if (pixels == null) {
+            LOGGER.warn("TextureLoader: cannot duplicate {} because its pixels are unavailable", source.displayName());
+            return null;
+        }
+
+        var copy = new NativeImage(pixels.getWidth(), pixels.getHeight(), false);
+        copy.copyFrom(pixels);
+        return register(source.displayName(), source.sourcePath(), copy);
+    }
+
+    private static LoadedTexture register(String displayName, Path sourcePath, NativeImage image) {
         var dynamic = new DynamicTexture(image);
         var id = ResourceLocation.fromNamespaceAndPath(
             NAMESPACE,
             PATH_PREFIX + UUID.randomUUID().toString().replace("-", "").substring(0, 16)
         );
         Minecraft.getInstance().getTextureManager().register(id, dynamic);
-
-        var fileName = path.getFileName().toString();
-        return new LoadedTexture(fileName, path, id, dynamic);
+        return new LoadedTexture(displayName, sourcePath, id, dynamic);
     }
 
     /**
