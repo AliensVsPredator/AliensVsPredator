@@ -282,13 +282,26 @@ public final class MenuBarController {
     }
 
     /**
-     * Build the WINDOW dropdown by iterating {@link PanelRegistry} — every body-eligible panel gets a
-     * {@code "Reopen <title>"} entry where the title comes from the panel's own {@link Panel#title()}. Renaming a
-     * panel's title automatically updates the menu label since both paths read the same string.
+     * Build the WINDOW dropdown from {@link PanelRegistry}'s domain metadata. Every body-eligible panel gets a
+     * {@code "Reopen <title>"} entry under its domain submenu, with the title coming from the panel's own
+     * {@link Panel#title()}. Renaming a panel's title automatically updates the menu label since both paths read the
+     * same string.
      */
     public DropdownMenu buildWindowMenu(int anchorX, int anchorY) {
         var items = new ArrayList<DropdownMenu.Item>();
-        for (var id : PanelRegistry.orderedIds()) {
+        for (var domain : PanelRegistry.orderedDomains()) {
+            var children = buildWindowDomainItems(domain);
+            if (!children.isEmpty()) {
+                items.add(new DropdownMenu.Item(domain.label(), () -> {}, children));
+            }
+        }
+        items.add(new DropdownMenu.Item("Reset Layout", actions::resetLayout));
+        return new DropdownMenu(anchorX, anchorY, items);
+    }
+
+    private ArrayList<DropdownMenu.Item> buildWindowDomainItems(PanelRegistry.Domain domain) {
+        var items = new ArrayList<DropdownMenu.Item>();
+        for (var id : PanelRegistry.orderedIds(domain)) {
             var sample = PanelRegistry.create(id, actions.panelCtx());
             if (sample == null) {
                 continue;
@@ -302,8 +315,7 @@ public final class MenuBarController {
                 )
             );
         }
-        items.add(new DropdownMenu.Item("Reset Layout", actions::resetLayout));
-        return new DropdownMenu(anchorX, anchorY, items);
+        return items;
     }
 
     public DropdownMenu buildLayoutMenu(int anchorX, int anchorY) {

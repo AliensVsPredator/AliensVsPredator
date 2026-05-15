@@ -3,6 +3,7 @@ package com.blib.engine.layout;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +68,27 @@ public final class PanelRegistry {
         Panel create(Context ctx);
     }
 
+    public enum Domain {
+        WORLD("World"),
+        PROJECT("Project & Data"),
+        JIGSAW("Jigsaw"),
+        FACTION("Factions & Territory"),
+        AI_DEBUG("AI & Debug"),
+        MODELER("Modeler"),
+        TEXTURE("Textures"),
+        HISTORY("History");
+
+        private final String label;
+
+        Domain(String label) {
+            this.label = label;
+        }
+
+        public String label() {
+            return label;
+        }
+    }
+
     public static final String VIEWPORT = "viewport";
 
     public static final String OUTLINER = "outliner";
@@ -117,45 +139,50 @@ public final class PanelRegistry {
 
     private static final Map<Class<? extends Panel>, String> IDS_BY_CLASS = new LinkedHashMap<>();
 
+    private static final Map<String, Domain> DOMAINS_BY_ID = new LinkedHashMap<>();
+
     static {
         register(
             VIEWPORT,
             ViewportPanel.class,
+            Domain.WORLD,
             ctx -> new ViewportPanel("Viewport", ctx.viewportRightClickHandler(), ctx.projectContentActionHandler())
         );
-        register(OUTLINER, OutlinerPanel.class, ctx -> new OutlinerPanel(ctx.entityContextMenuHandler()));
-        register(DETAILS, DetailsPanel.class, ctx -> new DetailsPanel(ctx.projectContentActionHandler()));
-        register(CONTENT_BROWSER, ContentBrowserPanel.class, ctx -> new ContentBrowserPanel(ctx.projectContentActionHandler()));
-        register(PIECE_PALETTE, PiecePalettePanel.class, ctx -> new PiecePalettePanel());
-        register(POOL_EDITOR, PoolEditorPanel.class, ctx -> new PoolEditorPanel());
-        register(GOAP_DETAILS, GOAPDetailsPanel.class, ctx -> new GOAPDetailsPanel());
-        register(PATHFINDING_DEBUG, PathfindingDebugPanel.class, ctx -> new PathfindingDebugPanel());
-        register(ENTITY_PALETTE, EntityPalettePanel.class, ctx -> new EntityPalettePanel());
-        register(FACTION_BROWSER, FactionBrowserPanel.class, ctx -> new FactionBrowserPanel(ctx.projectContentActionHandler()));
-        register(DIPLOMACY_MATRIX, DiplomacyMatrixPanel.class, ctx -> new DiplomacyMatrixPanel());
-        register(FACTION_MEMBERS, FactionMembersPanel.class, ctx -> new FactionMembersPanel(ctx.projectContentActionHandler()));
-        register(TERRITORY_MAP, TerritoryMapPanel.class, ctx -> new TerritoryMapPanel());
-        register(TAG_BROWSER, TagBrowserPanel.class, ctx -> new TagBrowserPanel());
-        register(ACTION_STACK, ActionStackPanel.class, ctx -> new ActionStackPanel());
-        register(MODELER_VIEWPORT, ModelerViewportPanel.class, ctx -> new ModelerViewportPanel(ctx.panelMenuOpener()));
-        register(MODELER_OUTLINER, ModelerOutlinerPanel.class, ctx -> new ModelerOutlinerPanel());
-        register(MODELER_INSPECTOR, ModelerInspectorPanel.class, ctx -> new ModelerInspectorPanel());
-        register(MODELER_UV_MAP, UvMapPanel.class, ctx -> new UvMapPanel());
-        register(TEXTURES, TexturesPanel.class, ctx -> new TexturesPanel(ctx.panelMenuOpener()));
-        registerAlias(MODELER_TEXTURES, ctx -> new TexturesPanel(ctx.panelMenuOpener()));
-        register(TEXTURE_VIEWPORT, TextureViewportPanel.class, ctx -> new TextureViewportPanel());
-        register(TEXTURE_INSPECTOR, TextureInspectorPanel.class, ctx -> new TextureInspectorPanel());
+        register(OUTLINER, OutlinerPanel.class, Domain.WORLD, ctx -> new OutlinerPanel(ctx.entityContextMenuHandler()));
+        register(DETAILS, DetailsPanel.class, Domain.WORLD, ctx -> new DetailsPanel(ctx.projectContentActionHandler()));
+        register(ENTITY_PALETTE, EntityPalettePanel.class, Domain.WORLD, ctx -> new EntityPalettePanel());
+        register(CONTENT_BROWSER, ContentBrowserPanel.class, Domain.PROJECT, ctx -> new ContentBrowserPanel(ctx.projectContentActionHandler()));
+        register(TAG_BROWSER, TagBrowserPanel.class, Domain.PROJECT, ctx -> new TagBrowserPanel());
+        register(PIECE_PALETTE, PiecePalettePanel.class, Domain.JIGSAW, ctx -> new PiecePalettePanel());
+        register(POOL_EDITOR, PoolEditorPanel.class, Domain.JIGSAW, ctx -> new PoolEditorPanel());
+        register(FACTION_BROWSER, FactionBrowserPanel.class, Domain.FACTION, ctx -> new FactionBrowserPanel(ctx.projectContentActionHandler()));
+        register(DIPLOMACY_MATRIX, DiplomacyMatrixPanel.class, Domain.FACTION, ctx -> new DiplomacyMatrixPanel());
+        register(FACTION_MEMBERS, FactionMembersPanel.class, Domain.FACTION, ctx -> new FactionMembersPanel(ctx.projectContentActionHandler()));
+        register(TERRITORY_MAP, TerritoryMapPanel.class, Domain.FACTION, ctx -> new TerritoryMapPanel());
+        register(GOAP_DETAILS, GOAPDetailsPanel.class, Domain.AI_DEBUG, ctx -> new GOAPDetailsPanel());
+        register(PATHFINDING_DEBUG, PathfindingDebugPanel.class, Domain.AI_DEBUG, ctx -> new PathfindingDebugPanel());
+        register(MODELER_VIEWPORT, ModelerViewportPanel.class, Domain.MODELER, ctx -> new ModelerViewportPanel(ctx.panelMenuOpener()));
+        register(MODELER_OUTLINER, ModelerOutlinerPanel.class, Domain.MODELER, ctx -> new ModelerOutlinerPanel());
+        register(MODELER_INSPECTOR, ModelerInspectorPanel.class, Domain.MODELER, ctx -> new ModelerInspectorPanel());
+        register(MODELER_UV_MAP, UvMapPanel.class, Domain.MODELER, ctx -> new UvMapPanel());
+        register(TEXTURES, TexturesPanel.class, Domain.TEXTURE, ctx -> new TexturesPanel(ctx.panelMenuOpener()));
+        registerAlias(MODELER_TEXTURES, Domain.TEXTURE, ctx -> new TexturesPanel(ctx.panelMenuOpener()));
+        register(TEXTURE_VIEWPORT, TextureViewportPanel.class, Domain.TEXTURE, ctx -> new TextureViewportPanel());
+        register(TEXTURE_INSPECTOR, TextureInspectorPanel.class, Domain.TEXTURE, ctx -> new TextureInspectorPanel());
+        register(ACTION_STACK, ActionStackPanel.class, Domain.HISTORY, ctx -> new ActionStackPanel());
     }
 
     private PanelRegistry() {}
 
-    private static void register(String id, Class<? extends Panel> panelClass, PanelFactory factory) {
+    private static void register(String id, Class<? extends Panel> panelClass, Domain domain, PanelFactory factory) {
         FACTORIES.put(id, factory);
         IDS_BY_CLASS.put(panelClass, id);
+        DOMAINS_BY_ID.put(id, domain);
     }
 
-    private static void registerAlias(String id, PanelFactory factory) {
+    private static void registerAlias(String id, Domain domain, PanelFactory factory) {
         FACTORIES.put(id, factory);
+        DOMAINS_BY_ID.put(id, domain);
     }
 
     /**
@@ -183,10 +210,37 @@ public final class PanelRegistry {
 
     /**
      * Registered ids in insertion order. Use this (rather than {@link #knownIds}) when stable iteration order matters —
-     * the Window menu builds its "Reopen X" entries by walking this list so the menu stays in lock-step with whatever
-     * panels are registered, in the order they were declared.
+     * layout capture and the Window menu both use this so their order stays in lock-step with panel registration.
      */
     public static List<String> orderedIds() {
         return List.copyOf(IDS_BY_CLASS.values());
+    }
+
+    public static List<Domain> orderedDomains() {
+        var domains = new ArrayList<Domain>();
+        var ids = orderedIds();
+        for (var domain : Domain.values()) {
+            for (var id : ids) {
+                if (domain == domainOf(id)) {
+                    domains.add(domain);
+                    break;
+                }
+            }
+        }
+        return List.copyOf(domains);
+    }
+
+    public static List<String> orderedIds(Domain domain) {
+        var ids = new ArrayList<String>();
+        for (var id : orderedIds()) {
+            if (domain == domainOf(id)) {
+                ids.add(id);
+            }
+        }
+        return List.copyOf(ids);
+    }
+
+    public static Domain domainOf(String id) {
+        return DOMAINS_BY_ID.getOrDefault(id, Domain.WORLD);
     }
 }
