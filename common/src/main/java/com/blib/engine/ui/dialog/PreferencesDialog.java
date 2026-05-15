@@ -24,6 +24,7 @@ import com.blib.engine.input.KeybindingProfile;
 import com.blib.engine.input.KeybindingProfileCatalog;
 import com.blib.engine.input.Keybindings;
 import com.blib.engine.ui.EngineFont;
+import com.blib.engine.ui.workspace.HoverOverlayRenderer;
 import com.blib.engine.ui.widget.DropdownMenu;
 import com.blib.engine.ui.widget.KeyCaptureWidget;
 import com.blib.engine.ui.widget.TextInput;
@@ -434,6 +435,10 @@ public final class PreferencesDialog {
         // Profile dropdown overlay (drawn last so it stacks over the rest).
         if (profileMenu != null) {
             profileMenu.render(graphics, mouseX, mouseY);
+            var disabledTooltip = profileMenu.disabledTooltipAt(mouseX, mouseY);
+            if (disabledTooltip != null) {
+                HoverOverlayRenderer.drawTooltipBox(graphics, disabledTooltip, mouseX, mouseY, screenWidth, screenHeight);
+            }
         }
 
         // Nested discard-confirm renders on top of everything.

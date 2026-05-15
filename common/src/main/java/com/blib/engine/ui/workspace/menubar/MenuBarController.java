@@ -15,6 +15,7 @@ import com.blib.engine.session.ProjectSession;
 import com.blib.engine.territory.ClaimPaintTool;
 import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.widget.DropdownMenu;
+import com.blib.engine.ui.workspace.HoverOverlayRenderer;
 
 /**
  * Owns the workspace's menu-bar dropdown state: which top-level chip is open, the optional cascading submenu, and the
@@ -166,12 +167,19 @@ public final class MenuBarController {
         }
     }
 
-    public void render(GuiGraphics graphics, int logicalMouseX, int logicalMouseY) {
+    public void render(GuiGraphics graphics, int logicalMouseX, int logicalMouseY, int logicalWidth, int logicalHeight) {
         if (openMenu != null) {
             openMenu.render(graphics, logicalMouseX, logicalMouseY);
         }
         if (openSubmenu != null) {
             openSubmenu.render(graphics, logicalMouseX, logicalMouseY);
+        }
+        var disabledTooltip = openSubmenu != null ? openSubmenu.disabledTooltipAt(logicalMouseX, logicalMouseY) : null;
+        if (disabledTooltip == null && openMenu != null) {
+            disabledTooltip = openMenu.disabledTooltipAt(logicalMouseX, logicalMouseY);
+        }
+        if (disabledTooltip != null) {
+            HoverOverlayRenderer.drawTooltipBox(graphics, disabledTooltip, logicalMouseX, logicalMouseY, logicalWidth, logicalHeight);
         }
     }
 

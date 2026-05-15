@@ -111,7 +111,7 @@ public final class HoverOverlayRenderer {
      * right edge. Manual rendering (rather than {@code GuiGraphics.renderTooltip}) so the styling matches the
      * workspace's flat dark theme and so we control sizing in workspace-logical pixels.
      */
-    private static void drawTooltipBox(
+    public static void drawTooltipBox(
         GuiGraphics graphics,
         Component text,
         int mouseX,

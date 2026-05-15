@@ -3,6 +3,7 @@ package com.blib.engine.ui.widget;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -21,19 +22,31 @@ public final class DropdownMenu {
         String label,
         Runnable action,
         List<Item> children,
-        boolean enabled
+        boolean enabled,
+        @Nullable Component disabledTooltip
     ) {
 
+        public Item {
+            children = List.copyOf(children);
+            if (!enabled && disabledTooltip == null) {
+                disabledTooltip = Component.literal("This action is unavailable right now.");
+            }
+        }
+
         public Item(String label, Runnable action) {
-            this(label, action, List.of(), true);
+            this(label, action, List.of(), true, null);
         }
 
         public Item(String label, Runnable action, boolean enabled) {
-            this(label, action, List.of(), enabled);
+            this(label, action, List.of(), enabled, null);
+        }
+
+        public Item(String label, Runnable action, boolean enabled, Component disabledTooltip) {
+            this(label, action, List.of(), enabled, disabledTooltip);
         }
 
         public Item(String label, Runnable action, List<Item> children) {
-            this(label, action, children, true);
+            this(label, action, children, true, null);
         }
 
         public boolean hasSubmenu() {
@@ -155,6 +168,15 @@ public final class DropdownMenu {
 
     public Item itemAt(int index) {
         return items.get(index);
+    }
+
+    public @Nullable Component disabledTooltipAt(double mouseX, double mouseY) {
+        var idx = hitItemAt(mouseX, mouseY);
+        if (idx < 0) {
+            return null;
+        }
+        var item = itemAt(idx);
+        return item.enabled() ? null : item.disabledTooltip();
     }
 
     public void render(GuiGraphics graphics, int mouseX, int mouseY) {

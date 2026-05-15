@@ -628,7 +628,7 @@ public final class EngineWorkspaceScreen extends Screen {
         );
         tabDrag.renderOverlay(graphics, panelMouseX, panelMouseY, root, logicalWidth, logicalHeight);
 
-        menuBar.render(graphics, logicalMouseX, logicalMouseY);
+        menuBar.render(graphics, logicalMouseX, logicalMouseY, logicalWidth, logicalHeight);
         // Modal dialogs render after panels in z-order so a child modal (e.g. a Delete-Profile confirm spawned from
         // Preferences) sits on top of its parent. Open/close lifecycle is managed by the dialog controller.
         dialogs.render(graphics, logicalWidth, logicalHeight, logicalMouseX, logicalMouseY);

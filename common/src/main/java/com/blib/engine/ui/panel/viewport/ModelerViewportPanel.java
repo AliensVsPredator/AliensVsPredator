@@ -669,7 +669,15 @@ public final class ModelerViewportPanel implements Panel {
     }
 
     private static List<DropdownMenu.Item> buildPropertiesSubmenu() {
-        return List.of(new DropdownMenu.Item("Mirror UV", ModelerTransformOps::toggleSelectedMirrorUv, hasCubeSelection()));
+        return List
+            .of(
+                new DropdownMenu.Item(
+                    "Mirror UV",
+                    ModelerTransformOps::toggleSelectedMirrorUv,
+                    hasCubeSelection(),
+                    Component.literal("Select one or more cubes to mirror their box UVs.")
+                )
+            );
     }
 
     private static boolean hasCubeSelection() {
