@@ -27,7 +27,8 @@ import com.blib.engine.modeler.history.ModelerActionHistory;
  * {@link #normalizeDegrees} helper.</li>
  * <li><b>Flip</b> bakes into every cube and bone in the tree: cube origin / size mirrors, pivots negate, rotations
  * around the two axes perpendicular to the flip axis negate (the third stays — that axis's rotation isn't affected by a
- * mirror through its perpendicular plane).</li>
+ * mirror through its perpendicular plane), and cube box-UV mirror state toggles to preserve texture orientation under
+ * the reflected geometry.</li>
  * <li><b>Center</b> mutates {@link ModelerScene#root}'s authored position. Bounds are computed in root-local coords by
  * walking every cube — same approximation as the wholesale flip.</li>
  * </ul>
@@ -333,6 +334,7 @@ public final class ModelerTransformOps {
         cube.origin = mirrorCubeOrigin(cube.origin, cube.size, axis);
         cube.pivot = negateComponent(cube.pivot, axis);
         cube.rotation = flipRotation(cube.rotation, axis);
+        cube.mirrorUv = !cube.mirrorUv;
     }
 
     private static Vec3 negateComponent(Vec3 v, Axis axis) {
