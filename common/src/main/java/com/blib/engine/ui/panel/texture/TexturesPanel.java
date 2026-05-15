@@ -2,7 +2,9 @@ package com.blib.engine.ui.panel.texture;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.Util;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -17,6 +19,7 @@ import com.blib.engine.modeler.ModelerFilePicker;
 import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.texture.LoadedTexture;
 import com.blib.engine.modeler.texture.TextureLoader;
+import com.blib.engine.modeler.texture.TextureResourceCatalog;
 import com.blib.engine.texture.TextureEditorState;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.dock.Panel;
@@ -24,6 +27,7 @@ import com.blib.engine.ui.layout.ScrollViewport;
 import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.layout.UiText;
 import com.blib.engine.ui.popup.PanelMenuOpener;
+import com.blib.engine.ui.widget.SearchableSelect;
 import com.blib.engine.ui.widget.DropdownMenu;
 
 /**
@@ -454,9 +458,55 @@ public final class TexturesPanel implements Panel {
     }
 
     private DropdownMenu buildFileMenu() {
-        var openItems = List.of(new DropdownMenu.Item("From File...", this::openTexturePicker));
+        var openItems = List
+            .of(
+                new DropdownMenu.Item("From File...", this::openTexturePicker),
+                new DropdownMenu.Item("From Item...", this::openItemTexturePicker)
+            );
         var items = List.of(new DropdownMenu.Item("Open", () -> {}, openItems));
         return new DropdownMenu(menuFileX, menuFileY + menuFileHeight + 1, items);
+    }
+
+    private void openItemTexturePicker() {
+        var ids = new java.util.ArrayList<ResourceLocation>();
+        for (var item : BuiltInRegistries.ITEM) {
+            ids.add(BuiltInRegistries.ITEM.getKey(item));
+        }
+        ids.sort((a, b) -> a.toString().compareToIgnoreCase(b.toString()));
+
+        var items = new java.util.ArrayList<SearchableSelect.Item<ResourceLocation>>(ids.size());
+        for (var id : ids) {
+            items.add(new SearchableSelect.Item<>(id, id.toString()));
+        }
+
+        SearchableSelect
+            .openPopupAt(
+                menuFileX,
+                menuFileY,
+                280,
+                menuFileHeight,
+                items,
+                ResourceLocation::toString,
+                null,
+                this::loadItemTextures
+            );
+    }
+
+    private void loadItemTextures(ResourceLocation itemId) {
+        loadResourceTextures(TextureResourceCatalog.itemTextures(itemId), "item " + itemId);
+    }
+
+    private static void loadResourceTextures(List<ResourceLocation> resources, String sourceDescription) {
+        if (resources.isEmpty()) {
+            LOGGER.warn("TexturesPanel: no texture resources found for {}", sourceDescription);
+            return;
+        }
+        for (var resource : resources) {
+            var loaded = TextureLoader.loadFromResource(resource, TextureResourceCatalog.displayName(resource));
+            if (loaded != null) {
+                addLoadedTexture(loaded);
+            }
+        }
     }
 
     private static void drawTextureMeta(
