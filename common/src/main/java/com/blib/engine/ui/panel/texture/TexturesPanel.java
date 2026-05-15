@@ -12,15 +12,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.blib.engine.modeler.ModelerFilePicker;
 import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.texture.LoadedTexture;
 import com.blib.engine.modeler.texture.ModelerTextureUsage;
+import com.blib.engine.modeler.texture.TextureRecentFiles;
 import com.blib.engine.modeler.texture.TextureLoader;
 import com.blib.engine.modeler.texture.TextureResourceCatalog;
+import com.blib.engine.session.ProjectSession;
 import com.blib.engine.texture.TextureEditorState;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.dock.Panel;
@@ -319,12 +323,13 @@ public final class TexturesPanel implements Panel {
     }
 
     private void openTexturePicker() {
-        var paths = ModelerFilePicker.pickImages();
+        var paths = ModelerFilePicker.pickImages(inferInitialTexturePickerDir());
         if (paths.isEmpty()) {
             return;
         }
         var scene = ModelerScene.get();
         LoadedTexture lastLoaded = null;
+        var project = ProjectSession.activeProjectName();
         for (var path : paths) {
             var loaded = TextureLoader.loadFromDisk(path);
             if (loaded == null) {
@@ -332,6 +337,9 @@ public final class TexturesPanel implements Panel {
             }
             scene.textures.add(loaded);
             lastLoaded = loaded;
+            if (!project.isEmpty()) {
+                TextureRecentFiles.recordExternalOpen(project, path.toString());
+            }
             LOGGER.info("TexturesPanel: loaded {} → {}", path, loaded.textureId());
         }
         // Auto-select the last successfully loaded texture so the user immediately sees something on the model and
@@ -466,8 +474,44 @@ public final class TexturesPanel implements Panel {
                 new DropdownMenu.Item("From Block...", this::openBlockTexturePicker),
                 new DropdownMenu.Item("From Entity...", this::openEntityTexturePicker)
             );
-        var items = List.of(new DropdownMenu.Item("Open", () -> {}, openItems));
+        var items = List
+            .of(
+                new DropdownMenu.Item("Recent", () -> {}, buildRecentTextureSubmenu()),
+                new DropdownMenu.Item("Open", () -> {}, openItems)
+            );
         return new DropdownMenu(menuFileX, menuFileY + menuFileHeight + 1, items);
+    }
+
+    private List<DropdownMenu.Item> buildRecentTextureSubmenu() {
+        var project = ProjectSession.activeProjectName();
+        if (project.isEmpty()) {
+            return List.of(new DropdownMenu.Item("(no project active)", () -> {}));
+        }
+        var recents = TextureRecentFiles.list(project);
+        if (recents.isEmpty()) {
+            return List.of(new DropdownMenu.Item("(no recent textures)", () -> {}));
+        }
+        var items = new ArrayList<DropdownMenu.Item>(recents.size());
+        for (var entry : recents) {
+            items.add(new DropdownMenu.Item(recentTextureLabel(entry), () -> openRecentTexture(entry)));
+        }
+        return items;
+    }
+
+    private static String recentTextureLabel(TextureRecentFiles.Entry entry) {
+        var name = entry.source() == TextureRecentFiles.Source.EXTERNAL
+            ? externalRecentName(entry.target())
+            : entry.target();
+        return name + " [" + entry.source().label() + "]";
+    }
+
+    private static String externalRecentName(String target) {
+        try {
+            var fileName = Path.of(target).getFileName();
+            return fileName != null ? fileName.toString() : target;
+        } catch (InvalidPathException ignored) {
+            return target;
+        }
     }
 
     private void openItemTexturePicker() {
@@ -496,7 +540,12 @@ public final class TexturesPanel implements Panel {
     }
 
     private void loadItemTextures(ResourceLocation itemId) {
-        loadResourceTextures(TextureResourceCatalog.itemTextures(itemId), "item " + itemId);
+        if (loadResourceTextures(TextureResourceCatalog.itemTextures(itemId), "item " + itemId) > 0) {
+            var project = ProjectSession.activeProjectName();
+            if (!project.isEmpty()) {
+                TextureRecentFiles.recordItemOpen(project, itemId.toString());
+            }
+        }
     }
 
     private void openBlockTexturePicker() {
@@ -525,7 +574,12 @@ public final class TexturesPanel implements Panel {
     }
 
     private void loadBlockTextures(ResourceLocation blockId) {
-        loadResourceTextures(TextureResourceCatalog.blockTextures(blockId), "block " + blockId);
+        if (loadResourceTextures(TextureResourceCatalog.blockTextures(blockId), "block " + blockId) > 0) {
+            var project = ProjectSession.activeProjectName();
+            if (!project.isEmpty()) {
+                TextureRecentFiles.recordBlockOpen(project, blockId.toString());
+            }
+        }
     }
 
     private void openEntityTexturePicker() {
@@ -554,20 +608,81 @@ public final class TexturesPanel implements Panel {
     }
 
     private void loadEntityTextures(ResourceLocation entityTypeId) {
-        loadResourceTextures(TextureResourceCatalog.entityTextures(entityTypeId), "entity " + entityTypeId);
+        if (loadResourceTextures(TextureResourceCatalog.entityTextures(entityTypeId), "entity " + entityTypeId) > 0) {
+            var project = ProjectSession.activeProjectName();
+            if (!project.isEmpty()) {
+                TextureRecentFiles.recordEntityOpen(project, entityTypeId.toString());
+            }
+        }
     }
 
-    private static void loadResourceTextures(List<ResourceLocation> resources, String sourceDescription) {
+    private static int loadResourceTextures(List<ResourceLocation> resources, String sourceDescription) {
         if (resources.isEmpty()) {
             LOGGER.warn("TexturesPanel: no texture resources found for {}", sourceDescription);
-            return;
+            return 0;
         }
+        var loadedCount = 0;
         for (var resource : resources) {
             var loaded = TextureLoader.loadFromResource(resource, TextureResourceCatalog.displayName(resource));
             if (loaded != null) {
                 addLoadedTexture(loaded);
+                loadedCount++;
             }
         }
+        return loadedCount;
+    }
+
+    private void openRecentTexture(TextureRecentFiles.Entry entry) {
+        switch (entry.source()) {
+            case EXTERNAL -> {
+                try {
+                    var loaded = loadTextureFromPath(Path.of(entry.target()));
+                    if (loaded != null) {
+                        var project = ProjectSession.activeProjectName();
+                        if (!project.isEmpty()) {
+                            TextureRecentFiles.recordExternalOpen(project, entry.target());
+                        }
+                    }
+                } catch (InvalidPathException ignored) {
+                    // Leave malformed legacy entries visible but inert.
+                }
+            }
+            case ITEM -> {
+                var id = ResourceLocation.tryParse(entry.target());
+                if (id != null) {
+                    loadItemTextures(id);
+                }
+            }
+            case BLOCK -> {
+                var id = ResourceLocation.tryParse(entry.target());
+                if (id != null) {
+                    loadBlockTextures(id);
+                }
+            }
+            case ENTITY -> {
+                var id = ResourceLocation.tryParse(entry.target());
+                if (id != null) {
+                    loadEntityTextures(id);
+                }
+            }
+        }
+    }
+
+    private static @Nullable Path inferInitialTexturePickerDir() {
+        var project = ProjectSession.activeProjectName();
+        if (project.isEmpty()) {
+            return null;
+        }
+        for (var recent : TextureRecentFiles.list(project)) {
+            if (recent.source() == TextureRecentFiles.Source.EXTERNAL) {
+                try {
+                    return Path.of(recent.target()).getParent();
+                } catch (InvalidPathException ignored) {
+                    // Skip malformed legacy entries and keep looking for a usable external path.
+                }
+            }
+        }
+        return null;
     }
 
     private static void drawTextureMeta(

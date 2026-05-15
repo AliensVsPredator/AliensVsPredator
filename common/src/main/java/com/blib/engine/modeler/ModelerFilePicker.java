@@ -91,14 +91,23 @@ public final class ModelerFilePicker {
      * here so callers get a clean list.
      */
     public static List<Path> pickImages() {
+        return pickImages(null);
+    }
+
+    public static List<Path> pickImages(@Nullable Path initialDir) {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             var filterPatterns = stack.mallocPointer(1);
             filterPatterns.put(stack.UTF8("*.png"));
             filterPatterns.flip();
 
+            var defaultPath = "";
+            if (initialDir != null && Files.isDirectory(initialDir)) {
+                defaultPath = initialDir.toAbsolutePath() + File.separator;
+            }
+
             var picked = TinyFileDialogs.tinyfd_openFileDialog(
                 "Open Texture",
-                "",
+                defaultPath,
                 filterPatterns,
                 "PNG Images (*.png)",
                 true
