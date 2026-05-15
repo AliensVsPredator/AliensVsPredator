@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.nio.file.Path;
+import java.nio.file.InvalidPathException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -746,26 +747,40 @@ public final class ModelerViewportPanel implements Panel {
     }
 
     /**
-     * "Recent" submenu — newest-first list of paths from {@link ModelerRecentFiles}, scoped to the active project. Each
-     * item, when clicked, loads its file and bumps it back to the head of the list. Falls back to a single
-     * disabled-looking placeholder when there's no project or no history yet — submitting an empty submenu would render
-     * a 0-row dropdown that looks broken.
+     * "Recent" submenu — newest-first list of modeler opens from {@link ModelerRecentFiles}, scoped to the active
+     * project. Entries carry their source kind so disk files, block models, and item configs can sit together without
+     * ambiguous labels.
      */
     private static List<DropdownMenu.Item> buildRecentSubmenu() {
         var project = ProjectSession.activeProjectName();
         if (project.isEmpty()) {
             return List.of(new DropdownMenu.Item("(no project active)", () -> {}));
         }
-        var paths = ModelerRecentFiles.list(project);
-        if (paths.isEmpty()) {
+        var recents = ModelerRecentFiles.list(project);
+        if (recents.isEmpty()) {
             return List.of(new DropdownMenu.Item("(no recent files)", () -> {}));
         }
-        var items = new ArrayList<DropdownMenu.Item>(paths.size());
-        for (var pathStr : paths) {
-            var label = Path.of(pathStr).getFileName().toString();
-            items.add(new DropdownMenu.Item(label, () -> openRecentFile(pathStr)));
+        var items = new ArrayList<DropdownMenu.Item>(recents.size());
+        for (var entry : recents) {
+            items.add(new DropdownMenu.Item(recentLabel(entry), () -> openRecent(entry)));
         }
         return items;
+    }
+
+    private static String recentLabel(ModelerRecentFiles.Entry entry) {
+        var name = entry.source() == ModelerRecentFiles.Source.EXTERNAL
+            ? externalRecentName(entry.target())
+            : entry.target();
+        return name + " [" + entry.source().label() + "]";
+    }
+
+    private static String externalRecentName(String target) {
+        try {
+            var fileName = Path.of(target).getFileName();
+            return fileName != null ? fileName.toString() : target;
+        } catch (InvalidPathException ignored) {
+            return target;
+        }
     }
 
     /** "New → Entity": replace the modeler scene with a fresh default-cube seed. */
@@ -791,7 +806,7 @@ public final class ModelerViewportPanel implements Panel {
         if (ModelerSceneLoader.loadFromFile(picked)) {
             var project = ProjectSession.activeProjectName();
             if (!project.isEmpty()) {
-                ModelerRecentFiles.recordOpen(project, picked.toString());
+                ModelerRecentFiles.recordExternalOpen(project, picked.toString());
             }
         }
     }
@@ -832,8 +847,16 @@ public final class ModelerViewportPanel implements Panel {
                 items,
                 ResourceLocation::toString,
                 null,
-                id -> ModelerScene.get().attachItemSession(id)
+                ModelerViewportPanel::openItemConfig
             );
+    }
+
+    private static void openItemConfig(ResourceLocation itemId) {
+        ModelerScene.get().attachItemSession(itemId);
+        var project = ProjectSession.activeProjectName();
+        if (!project.isEmpty()) {
+            ModelerRecentFiles.recordItemConfigOpen(project, itemId.toString());
+        }
     }
 
     /**
@@ -865,8 +888,18 @@ public final class ModelerViewportPanel implements Panel {
                 items,
                 ResourceLocation::toString,
                 null,
-                ModelerBlockModelLoader::load
+                ModelerViewportPanel::openBlockModel
             );
+    }
+
+    private static void openBlockModel(ResourceLocation blockId) {
+        if (!ModelerBlockModelLoader.load(blockId)) {
+            return;
+        }
+        var project = ProjectSession.activeProjectName();
+        if (!project.isEmpty()) {
+            ModelerRecentFiles.recordBlockOpen(project, blockId.toString());
+        }
     }
 
     /**
@@ -879,23 +912,48 @@ public final class ModelerViewportPanel implements Panel {
         if (project.isEmpty()) {
             return null;
         }
-        var recents = ModelerRecentFiles.list(project);
-        if (recents.isEmpty()) {
-            return null;
+        for (var recent : ModelerRecentFiles.list(project)) {
+            if (recent.source() == ModelerRecentFiles.Source.EXTERNAL) {
+                try {
+                    return Path.of(recent.target()).getParent();
+                } catch (InvalidPathException ignored) {
+                    // Skip malformed legacy entries and keep looking for a usable external path.
+                }
+            }
         }
-        return Path.of(recents.get(0)).getParent();
+        return null;
     }
 
     /**
-     * "Recent → &lt;file&gt;" — same load path as {@link #openGeoModelFromFile} but skips the file picker. Re-records
-     * the path so opening from Recent promotes the entry back to the top, which is the standard convention.
+     * "Recent → &lt;model&gt;" — same load paths as the Open submenu but skips the picker. Re-records the entry so
+     * opening from Recent promotes it back to the top, which is the standard convention.
      */
-    private static void openRecentFile(String pathStr) {
-        var path = Path.of(pathStr);
-        if (ModelerSceneLoader.loadFromFile(path)) {
-            var project = ProjectSession.activeProjectName();
-            if (!project.isEmpty()) {
-                ModelerRecentFiles.recordOpen(project, pathStr);
+    private static void openRecent(ModelerRecentFiles.Entry entry) {
+        switch (entry.source()) {
+            case EXTERNAL -> {
+                try {
+                    var path = Path.of(entry.target());
+                    if (ModelerSceneLoader.loadFromFile(path)) {
+                        var project = ProjectSession.activeProjectName();
+                        if (!project.isEmpty()) {
+                            ModelerRecentFiles.recordExternalOpen(project, entry.target());
+                        }
+                    }
+                } catch (InvalidPathException ignored) {
+                    // Leave malformed legacy entries visible but inert.
+                }
+            }
+            case BLOCK -> {
+                var id = ResourceLocation.tryParse(entry.target());
+                if (id != null) {
+                    openBlockModel(id);
+                }
+            }
+            case ITEM_CONFIG -> {
+                var id = ResourceLocation.tryParse(entry.target());
+                if (id != null) {
+                    openItemConfig(id);
+                }
             }
         }
     }
