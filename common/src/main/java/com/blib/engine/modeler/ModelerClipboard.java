@@ -12,24 +12,38 @@ public final class ModelerClipboard {
 
     private static @Nullable ModelerBone copiedBone;
 
+    private static @Nullable ModelerCube copiedCube;
+
     private ModelerClipboard() {}
 
     public static void copyBone(ModelerBone bone) {
         copiedBone = copyBoneTree(bone);
     }
 
+    public static void copyCube(ModelerCube cube) {
+        copiedCube = copyCubeSnapshot(cube);
+    }
+
     public static boolean hasCopiedBone() {
         return copiedBone != null;
+    }
+
+    public static boolean hasCopiedCube() {
+        return copiedCube != null;
     }
 
     public static @Nullable ModelerBone copiedBoneForPaste() {
         return copiedBone == null ? null : copyBoneTree(copiedBone);
     }
 
+    public static @Nullable ModelerCube copiedCubeForPaste() {
+        return copiedCube == null ? null : copyCubeSnapshot(copiedCube);
+    }
+
     public static ModelerBone copyBoneTree(ModelerBone source) {
         var copy = new ModelerBone(source.name, source.position, source.rotation, source.scale, source.pivot);
         for (var cube : source.cubes) {
-            copy.cubes.add(copyCube(cube));
+            copy.cubes.add(copyCubeSnapshot(cube));
         }
         for (var child : source.children) {
             copy.addChild(copyBoneTree(child));
@@ -37,7 +51,7 @@ public final class ModelerClipboard {
         return copy;
     }
 
-    private static ModelerCube copyCube(ModelerCube source) {
+    private static ModelerCube copyCubeSnapshot(ModelerCube source) {
         var copy = new ModelerCube(source.name, source.origin, source.size, source.rotation, source.pivot, source.inflate);
         copy.blockElementRescale = source.blockElementRescale;
         copy.uvOriginU = source.uvOriginU;
