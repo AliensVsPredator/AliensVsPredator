@@ -223,6 +223,13 @@ public final class TexturesPanel implements Panel {
 
         var copyTexture = new DropdownMenu.Item("Copy", () -> copyTexture(texture));
         var duplicateTexture = new DropdownMenu.Item("Duplicate", () -> duplicateTexture(texture));
+        var sourceFileAvailable = Files.isRegularFile(texture.sourcePath());
+        var refreshTexture = new DropdownMenu.Item(
+            "Refresh",
+            () -> refreshTexture(texture),
+            sourceFileAvailable,
+            Component.literal("The source file is no longer available.")
+        );
         var deleteTexture = new DropdownMenu.Item("Delete", () -> deleteTexture(texture));
         var sourceDir = sourceDirectory(texture);
         var openSource = new DropdownMenu.Item(
@@ -231,7 +238,9 @@ public final class TexturesPanel implements Panel {
             sourceDir != null,
             Component.literal("The source folder is no longer available.")
         );
-        panelMenuOpener.open(new DropdownMenu((int) mouseX, (int) mouseY, List.of(copyTexture, duplicateTexture, deleteTexture, openSource)));
+        panelMenuOpener.open(
+            new DropdownMenu((int) mouseX, (int) mouseY, List.of(copyTexture, duplicateTexture, refreshTexture, deleteTexture, openSource))
+        );
         return true;
     }
 
@@ -374,6 +383,15 @@ public final class TexturesPanel implements Panel {
             TextureEditorState.clearSelection();
         }
         TextureLoader.release(texture);
+    }
+
+    private static void refreshTexture(LoadedTexture texture) {
+        if (!TextureLoader.reloadFromDisk(texture)) {
+            return;
+        }
+        if (ModelerScene.get().activeTexture == texture) {
+            TextureEditorState.clearSelection();
+        }
     }
 
     private static void addLoadedTexture(LoadedTexture loaded) {

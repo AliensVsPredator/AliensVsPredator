@@ -38,9 +38,29 @@ public final class TextureLoader {
      * any IO or decode failure so the panel caller can keep going instead of crashing the engine.
      */
     public static @Nullable LoadedTexture loadFromDisk(Path path) {
-        NativeImage image;
+        var image = readImage(path);
+        if (image == null) {
+            return null;
+        }
+
+        var fileName = path.getFileName().toString();
+        return register(fileName, path, image);
+    }
+
+    /** Reload the pixels of an existing runtime texture from its original source path. */
+    public static boolean reloadFromDisk(LoadedTexture target) {
+        var image = readImage(target.sourcePath());
+        if (image == null) {
+            return false;
+        }
+        target.texture().setPixels(image);
+        target.texture().upload();
+        return true;
+    }
+
+    private static @Nullable NativeImage readImage(Path path) {
         try (InputStream in = Files.newInputStream(path)) {
-            image = NativeImage.read(in);
+            return NativeImage.read(in);
         } catch (IOException e) {
             LOGGER.warn("TextureLoader: failed to read {}: {}", path, e.getMessage());
             return null;
@@ -49,9 +69,6 @@ public final class TextureLoader {
             LOGGER.warn("TextureLoader: not a valid PNG at {}: {}", path, e.getMessage());
             return null;
         }
-
-        var fileName = path.getFileName().toString();
-        return register(fileName, path, image);
     }
 
     /**
