@@ -14,6 +14,7 @@ import java.util.Map;
 import com.blib.api.common.registry.v1.BLibHolder;
 import com.blib.api.common.storage.v1.DataStore;
 import com.blib.api.common.storage.v1.DataStoreType;
+import com.blib.internal.common.util.BLibSaveTiming;
 
 @ApiStatus.Internal
 class BLibGlobalDataStoreManager {
@@ -32,11 +33,17 @@ class BLibGlobalDataStoreManager {
     }
 
     void save(MinecraftServer server) {
+        LOGGER.info("[BLib save timing] global data stores count={}", stores.size());
+
         for (var entry : stores.entrySet()) {
             var id = entry.getKey();
             var store = entry.getValue();
 
-            DataStoreIO.saveStoreToFile(getStorePath(server, id), store);
+            BLibSaveTiming.time(
+                LOGGER,
+                "global store " + id,
+                () -> DataStoreIO.saveStoreToFile(getStorePath(server, id), store)
+            );
         }
     }
 

@@ -16,6 +16,7 @@ import java.util.Map;
 import com.blib.api.common.registry.v1.BLibHolder;
 import com.blib.api.common.storage.v1.DataStore;
 import com.blib.api.common.storage.v1.DataStoreType;
+import com.blib.internal.common.util.BLibSaveTiming;
 
 @ApiStatus.Internal
 class BLibLevelDataStoreManager {
@@ -40,14 +41,21 @@ class BLibLevelDataStoreManager {
         var levelStores = stores.get(levelKey);
 
         if (levelStores == null || levelStores.isEmpty()) {
+            LOGGER.info("[BLib save timing] level data stores {} count=0", levelKey.location());
             return;
         }
+
+        LOGGER.info("[BLib save timing] level data stores {} count={}", levelKey.location(), levelStores.size());
 
         for (var entry : levelStores.entrySet()) {
             var id = entry.getKey();
             var store = entry.getValue();
 
-            DataStoreIO.saveStoreToFile(getStorePath(level, id), store);
+            BLibSaveTiming.time(
+                LOGGER,
+                "level store " + levelKey.location() + " " + id,
+                () -> DataStoreIO.saveStoreToFile(getStorePath(level, id), store)
+            );
         }
     }
 

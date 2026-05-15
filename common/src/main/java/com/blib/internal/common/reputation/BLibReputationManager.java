@@ -18,6 +18,7 @@ import com.blib.api.common.reputation.v1.ReputationKey;
 import com.blib.api.common.reputation.v1.ReputationManager;
 import com.blib.internal.common.entityreference.EntityReferenceOwner;
 import com.blib.internal.common.reputation.io.ReputationDataIO;
+import com.blib.internal.common.util.BLibSaveTiming;
 import com.blib.internal.common.util.ShardManager;
 
 @ApiStatus.Internal
@@ -160,6 +161,10 @@ public class BLibReputationManager implements ReputationManager, EntityReference
     }
 
     public void save(MinecraftServer server) {
+        BLibSaveTiming.time(LOGGER, "reputation manager total entries=" + data.size(), () -> saveDirtyShards(server));
+    }
+
+    private void saveDirtyShards(MinecraftServer server) {
         // No empty short-circuit: a session that deleted every entry still needs to flush the deletion-dirty shards
         // so their files get rewritten (or removed via ReputationIO's empty-tag → delete path). Otherwise the next
         // load would resurrect everything from disk.
@@ -177,11 +182,22 @@ public class BLibReputationManager implements ReputationManager, EntityReference
             }
         }
 
-        for (var shardIndex : shardManager.dirtyShards()) {
+        var dirtyShards = List.copyOf(shardManager.dirtyShards());
+        LOGGER.info(
+            "[BLib save timing] reputation data entries={} dirtyShards={}",
+            data.size(),
+            dirtyShards.size()
+        );
+
+        for (var shardIndex : dirtyShards) {
             // Shards with no surviving entries still get written — saveShard produces an empty rootTag in that case
             // and ReputationIO.writeCompressed deletes the file, ensuring deleted entries don't survive on disk.
             var entriesInShard = shardToEntries.getOrDefault(shardIndex, List.of());
-            ReputationDataIO.saveShard(server, entriesInShard, shardIndex);
+            BLibSaveTiming.time(
+                LOGGER,
+                "reputation shard=" + shardIndex + " entries=" + entriesInShard.size(),
+                () -> ReputationDataIO.saveShard(server, entriesInShard, shardIndex)
+            );
         }
 
         for (var reputationData : data.values()) {

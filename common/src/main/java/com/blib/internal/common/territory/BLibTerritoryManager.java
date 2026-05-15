@@ -8,6 +8,8 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.LevelChunk;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,12 +23,15 @@ import com.blib.api.common.faction.v1.ClaimVisibility;
 import com.blib.api.common.faction.v1.RelationshipState;
 import com.blib.internal.common.faction.BLibFactionManager;
 import com.blib.internal.common.storage.BLibDataStoreManager;
+import com.blib.internal.common.util.BLibSaveTiming;
 import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.S2CChunkClaimsSyncPayload;
 import com.blib.mod.common.registry.init.BLibTerritoryDataStoreTypes;
 
 @ApiStatus.Internal
 public class BLibTerritoryManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(BLibTerritoryManager.class);
 
     public static final BLibTerritoryManager INSTANCE = new BLibTerritoryManager();
 
@@ -341,21 +346,52 @@ public class BLibTerritoryManager {
     }
 
     public void flushPendingClaimStoreSaves(MinecraftServer server) {
+        flushPendingClaimStoreSaves(server, false);
+    }
+
+    public void flushPendingClaimStoreSavesWithTiming(MinecraftServer server) {
+        flushPendingClaimStoreSaves(server, true);
+    }
+
+    private void flushPendingClaimStoreSaves(MinecraftServer server, boolean logTiming) {
         if (pendingClaimStoreSaves.isEmpty()) {
+            if (logTiming) {
+                LOGGER.info("[BLib save timing] territory pending claim flush levels=0 chunks=0");
+            }
             return;
         }
 
         var pending = new HashMap<ServerLevel, Set<ChunkPos>>();
+        var pendingChunks = 0;
 
         for (var entry : pendingClaimStoreSaves.entrySet()) {
-            pending.put(entry.getKey(), Set.copyOf(entry.getValue()));
+            var chunks = Set.copyOf(entry.getValue());
+            pending.put(entry.getKey(), chunks);
+            pendingChunks += chunks.size();
         }
 
+        if (logTiming) {
+            LOGGER.info(
+                "[BLib save timing] territory pending claim flush levels={} chunks={}",
+                pending.size(),
+                pendingChunks
+            );
+        }
         pendingClaimStoreSaves.clear();
 
         for (var entry : pending.entrySet()) {
-            if (!entry.getValue().isEmpty()) {
-                BLibDataStoreManager.INSTANCE.saveChunkData(entry.getKey(), entry.getValue());
+            var chunks = entry.getValue();
+
+            if (!chunks.isEmpty()) {
+                if (logTiming) {
+                    BLibSaveTiming.time(
+                        LOGGER,
+                        "territory claim chunk stores " + entry.getKey().dimension().location() + " chunks=" + chunks.size(),
+                        () -> BLibDataStoreManager.INSTANCE.saveChunkDataWithTiming(entry.getKey(), chunks)
+                    );
+                } else {
+                    BLibDataStoreManager.INSTANCE.saveChunkData(entry.getKey(), chunks);
+                }
             }
         }
     }

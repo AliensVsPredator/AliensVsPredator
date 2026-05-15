@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import com.blib.internal.common.util.BLibSaveTiming;
+
 @ApiStatus.Internal
 public final class BLibEntityReferenceManager {
 
@@ -72,10 +74,15 @@ public final class BLibEntityReferenceManager {
 
     public void save(MinecraftServer server) {
         if (!dirty) {
+            LOGGER.info("[BLib save timing] entity references dirty=false entries={}", lastSeenByUuid.size());
             return;
         }
 
-        EntityReferenceIO.save(server, snapshot());
+        BLibSaveTiming.time(
+            LOGGER,
+            "entity references entries=" + lastSeenByUuid.size(),
+            () -> EntityReferenceIO.save(server, snapshot())
+        );
         dirty = false;
     }
 
