@@ -202,11 +202,23 @@ public final class ModelerTransformOps {
         for (var selectedCube : selected) {
             var cube = selectedCube.cube();
             var before = ModelerAction.CubeMemento.of(cube);
-            cube.rotation = switch (axis) {
-                case X -> new Vec3(normalizeDegrees(cube.rotation.x + degrees), cube.rotation.y, cube.rotation.z);
-                case Y -> new Vec3(cube.rotation.x, normalizeDegrees(cube.rotation.y + degrees), cube.rotation.z);
-                case Z -> new Vec3(cube.rotation.x, cube.rotation.y, normalizeDegrees(cube.rotation.z + degrees));
-            };
+            if (ModelerScene.get().isJavaBlockModel()) {
+                var axisIndex = switch (axis) {
+                    case X -> 0;
+                    case Y -> 1;
+                    case Z -> 2;
+                };
+                var current = ModelerBlockElementRotation.view(cube.rotation, axisIndex);
+                var baseAngle = current.axis() == axisIndex ? current.angle() : 0.0;
+                ModelerBlockElementRotation
+                    .applyBakedRotation(cube, cube.origin, cube.size, cube.pivot, cube.hasPerFaceUv, cube.faceUvs, axisIndex, baseAngle + degrees);
+            } else {
+                cube.rotation = switch (axis) {
+                    case X -> new Vec3(normalizeDegrees(cube.rotation.x + degrees), cube.rotation.y, cube.rotation.z);
+                    case Y -> new Vec3(cube.rotation.x, normalizeDegrees(cube.rotation.y + degrees), cube.rotation.z);
+                    case Z -> new Vec3(cube.rotation.x, cube.rotation.y, normalizeDegrees(cube.rotation.z + degrees));
+                };
+            }
             var after = ModelerAction.CubeMemento.of(cube);
             if (after.differsFrom(before)) {
                 actions

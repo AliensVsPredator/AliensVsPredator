@@ -5,6 +5,8 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3f;
 
+import java.util.Map;
+
 import com.blib.engine.gizmo.GizmoGeometry;
 import com.blib.engine.modeler.ModelerBone;
 import com.blib.engine.modeler.ModelerCube;
@@ -204,11 +206,22 @@ public final class ModelerGizmoState {
         Vec3 rotation,
         Vec3 pivot,
         double inflate,
-        boolean blockElementRescale
+        boolean blockElementRescale,
+        boolean hasPerFaceUv,
+        Map<ModelerCube.Face, ModelerCube.FaceUv> faceUvs
     ) {
 
         public static CubeBaseline of(ModelerCube cube) {
-            return new CubeBaseline(cube.origin, cube.size, cube.rotation, cube.pivot, cube.inflate, cube.blockElementRescale);
+            return new CubeBaseline(
+                cube.origin,
+                cube.size,
+                cube.rotation,
+                cube.pivot,
+                cube.inflate,
+                cube.blockElementRescale,
+                cube.hasPerFaceUv,
+                Map.copyOf(cube.faceUvs)
+            );
         }
     }
 

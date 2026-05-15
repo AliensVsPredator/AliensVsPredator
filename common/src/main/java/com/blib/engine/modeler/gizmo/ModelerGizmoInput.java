@@ -494,10 +494,20 @@ public final class ModelerGizmoInput {
 
     private static void applyBlockElementRotate(ModelerGizmoState.DragState drag, double currentAngle, float newAccumulated) {
         var s = drag.startSnapshot();
-        var startValue = ModelerBlockElementRotation.view(drag.startCube().rotation(), drag.axis());
+        var baseline = drag.startCube();
+        var startValue = ModelerBlockElementRotation.view(baseline.rotation(), drag.axis());
         var baseAngle = startValue.axis() == drag.axis() ? startValue.angle() : 0.0;
-        var snapped = ModelerBlockElementRotation.snapAngle(baseAngle + newAccumulated);
-        s.cube().rotation = ModelerBlockElementRotation.toRotation(drag.axis(), snapped);
+        ModelerBlockElementRotation.applyBakedRotation(
+            s.cube(),
+            baseline.origin(),
+            baseline.size(),
+            baseline.pivot(),
+            baseline.hasPerFaceUv(),
+            baseline.faceUvs(),
+            drag.axis(),
+            baseAngle + newAccumulated
+        );
+        s.cube().blockElementRescale = baseline.blockElementRescale();
 
         ModelerGizmoState.setDrag(
             new ModelerGizmoState.DragState(

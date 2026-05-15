@@ -708,7 +708,8 @@ public final class ModelerInspectorPanel implements Panel {
         var before = ModelerAction.CubeMemento.of(cube);
         var current = ModelerBlockElementRotation.view(cube.rotation, axis);
         var angle = blockRotationAngleSelect.currentValue();
-        cube.rotation = ModelerBlockElementRotation.toRotation(axis, angle == null ? current.angle() : angle);
+        ModelerBlockElementRotation
+            .applyBakedRotation(cube, cube.origin, cube.size, cube.pivot, cube.hasPerFaceUv, cube.faceUvs, axis, angle == null ? current.angle() : angle);
         pushCubeMemento(cube, before, "Edit cube " + cube.name + " (block rotation)");
     }
 
@@ -721,7 +722,8 @@ public final class ModelerInspectorPanel implements Panel {
         var before = ModelerAction.CubeMemento.of(cube);
         var current = ModelerBlockElementRotation.view(cube.rotation, blockRotationAxisSelect.currentValue());
         var axis = blockRotationAxisSelect.currentValue();
-        cube.rotation = ModelerBlockElementRotation.toRotation(axis == null ? current.axis() : axis, angle);
+        ModelerBlockElementRotation
+            .applyBakedRotation(cube, cube.origin, cube.size, cube.pivot, cube.hasPerFaceUv, cube.faceUvs, axis == null ? current.axis() : axis, angle);
         pushCubeMemento(cube, before, "Edit cube " + cube.name + " (block rotation)");
     }
 
@@ -821,13 +823,11 @@ public final class ModelerInspectorPanel implements Panel {
     }
 
     private static List<SearchableSelect.Item<Double>> blockRotationAngleItems() {
-        return List.of(
-            new SearchableSelect.Item<>(-45.0, "-45"),
-            new SearchableSelect.Item<>(-22.5, "-22.5"),
-            new SearchableSelect.Item<>(0.0, "0"),
-            new SearchableSelect.Item<>(22.5, "22.5"),
-            new SearchableSelect.Item<>(45.0, "45")
-        );
+        var items = new ArrayList<SearchableSelect.Item<Double>>();
+        for (var angle = -180.0; angle <= 180.0 + 1.0e-4; angle += 22.5) {
+            items.add(new SearchableSelect.Item<>(angle, angleLabel(angle)));
+        }
+        return items;
     }
 
     private static String axisLabel(Integer axis) {
