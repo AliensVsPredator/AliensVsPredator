@@ -472,7 +472,22 @@ public final class UvMapPanel implements Panel {
             if (u1 < visibleMinU || u0 > visibleMaxU || v1 < visibleMinV || v0 > visibleMaxV) {
                 continue;
             }
-            addCubeCross(buffer, m00, m11, m30, m31, w, h, d, u0, v0, selectedCubes.contains(cube), cube == hoveredCube);
+            var marqueePreview = dragState == DragState.MARQUEE && intersectsCurrentMarquee(u0, v0, u1, v1);
+            addCubeCross(
+                buffer,
+                m00,
+                m11,
+                m30,
+                m31,
+                w,
+                h,
+                d,
+                u0,
+                v0,
+                selectedCubes.contains(cube),
+                cube == hoveredCube,
+                marqueePreview
+            );
         }
         for (var child : bone.children) {
             addCubes(buffer, m00, m11, m30, m31, child);
@@ -495,7 +510,8 @@ public final class UvMapPanel implements Panel {
         double u,
         double v,
         boolean selected,
-        boolean hovered
+        boolean hovered,
+        boolean marqueePreview
     ) {
         if (selected) {
             // Six face fills, in the same order as AzBakedModelFactory's per-direction layout.
@@ -507,11 +523,15 @@ public final class UvMapPanel implements Panel {
             addUvRect(buffer, m00, m11, m30, m31, u + 2 * d + w, v + d, w, h, CUBE_SELECTED_FACE); // south (back)
         }
 
-        if (!selected && !hovered) {
+        if (!selected && !hovered && !marqueePreview) {
             return;
         }
-        var outline = selected ? CUBE_SELECTED_OUTLINE : CUBE_HOVER_OUTLINE;
-        addUvCrossOutline(buffer, m00, m11, m30, m31, w, h, d, u, v, outline);
+        if (selected) {
+            addUvCrossOutline(buffer, m00, m11, m30, m31, w, h, d, u, v, CUBE_SELECTED_OUTLINE);
+        }
+        if (hovered || marqueePreview) {
+            addUvCrossOutline(buffer, m00, m11, m30, m31, w, h, d, u, v, CUBE_HOVER_OUTLINE);
+        }
     }
 
     /**
@@ -1032,6 +1052,14 @@ public final class UvMapPanel implements Panel {
         writeSceneSelection(ModelerScene.get());
     }
 
+    private boolean intersectsCurrentMarquee(double u0, double v0, double u1, double v1) {
+        var mu0 = Math.min(marqueeStartU, marqueeEndU);
+        var mv0 = Math.min(marqueeStartV, marqueeEndV);
+        var mu1 = Math.max(marqueeStartU, marqueeEndU);
+        var mv1 = Math.max(marqueeStartV, marqueeEndV);
+        return intersects(u0, v0, u1, v1, mu0, mv0, mu1, mv1);
+    }
+
     private void collectMarqueeHits(ModelerBone bone, double mu0, double mv0, double mu1, double mv1) {
         for (var cube : bone.cubes) {
             var w = cube.size.x;
@@ -1042,7 +1070,7 @@ public final class UvMapPanel implements Panel {
             var u1 = u0 + 2 * d + 2 * w;
             var v1 = v0 + d + h;
             // Rect-rect intersection test (any overlap counts — even a corner-touch).
-            if (u0 < mu1 && u1 > mu0 && v0 < mv1 && v1 > mv0) {
+            if (intersects(u0, v0, u1, v1, mu0, mv0, mu1, mv1)) {
                 selectedCubes.add(cube);
                 ownerByCube.put(cube, bone);
             }
@@ -1050,6 +1078,10 @@ public final class UvMapPanel implements Panel {
         for (var child : bone.children) {
             collectMarqueeHits(child, mu0, mv0, mu1, mv1);
         }
+    }
+
+    private static boolean intersects(double u0, double v0, double u1, double v1, double mu0, double mv0, double mu1, double mv1) {
+        return u0 < mu1 && u1 > mu0 && v0 < mv1 && v1 > mv0;
     }
 
     @Override
