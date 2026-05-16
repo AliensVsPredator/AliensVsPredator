@@ -43,6 +43,10 @@ public final class TabbedPanel extends DelegatingPanel {
 
     private static final int TAB_SCROLL_STEP = 48;
 
+    private static final int OVERFLOW_BUTTON_WIDTH = 14;
+
+    private static final String OVERFLOW_BUTTON_LABEL = "▾";
+
     private static final int STRIP_BG_COLOR = 0xFF161618;
 
     private static final int TAB_INACTIVE_BG_COLOR = 0xFF1F1F23;
@@ -56,6 +60,10 @@ public final class TabbedPanel extends DelegatingPanel {
     private static final int TAB_TEXT_ACTIVE_COLOR = 0xFFE0E0E0;
 
     private static final int TAB_SEPARATOR_COLOR = 0xFF101013;
+
+    private static final int OVERFLOW_BUTTON_BG_COLOR = 0xFF24242A;
+
+    private static final int OVERFLOW_BUTTON_HOVER_BG_COLOR = 0xFF353540;
 
     private static final int CLOSE_ICON_COLOR = 0xFF888892;
 
@@ -95,6 +103,12 @@ public final class TabbedPanel extends DelegatingPanel {
     private boolean revealActiveTab = true;
 
     private int lastTabViewportWidth = -1;
+
+    private boolean overflowButtonVisible;
+
+    private int overflowButtonX;
+
+    private int overflowButtonY;
 
     public TabbedPanel(Panel... initial) {
         Collections.addAll(this.tabs, initial);
@@ -237,7 +251,10 @@ public final class TabbedPanel extends DelegatingPanel {
 
         var font = EngineFont.get();
         tabContentWidth = computeTabContentWidth(font);
-        tabViewportWidth = Math.max(0, width);
+        overflowButtonVisible = tabContentWidth > width;
+        tabViewportWidth = Math.max(0, width - (overflowButtonVisible ? OVERFLOW_BUTTON_WIDTH : 0));
+        overflowButtonX = x + Math.max(0, width - OVERFLOW_BUTTON_WIDTH);
+        overflowButtonY = y;
         var viewportChanged = tabViewportWidth != lastTabViewportWidth;
         lastTabViewportWidth = tabViewportWidth;
         tabScrollX = clampTabScroll(tabScrollX);
@@ -279,6 +296,10 @@ public final class TabbedPanel extends DelegatingPanel {
             cursorX = tabRight + 1;
         }
         PanelScissor.disable(graphics);
+
+        if (overflowButtonVisible) {
+            renderOverflowButton(graphics, mouseX, mouseY);
+        }
     }
 
     /**
@@ -292,6 +313,20 @@ public final class TabbedPanel extends DelegatingPanel {
             graphics.fill(x0 + i, y0 + i, x0 + i + 1, y0 + i + 1, color);
             graphics.fill(x0 + i, y1 - 1 - i, x0 + i + 1, y1 - i, color);
         }
+    }
+
+    private void renderOverflowButton(GuiGraphics graphics, int mouseX, int mouseY) {
+        var hovered = hitOverflowButtonAt(mouseX, mouseY);
+        var bg = hovered ? OVERFLOW_BUTTON_HOVER_BG_COLOR : OVERFLOW_BUTTON_BG_COLOR;
+        var buttonWidth = overflowButtonWidth();
+        graphics.fill(overflowButtonX, overflowButtonY, overflowButtonX + buttonWidth, overflowButtonY + TAB_BAR_HEIGHT, bg);
+        graphics.fill(overflowButtonX, overflowButtonY, overflowButtonX + 1, overflowButtonY + TAB_BAR_HEIGHT, TAB_SEPARATOR_COLOR);
+
+        var font = EngineFont.get();
+        var labelWidth = font.width(OVERFLOW_BUTTON_LABEL);
+        var labelX = overflowButtonX + (buttonWidth - labelWidth) / 2;
+        var labelY = overflowButtonY + (TAB_BAR_HEIGHT - font.lineHeight + 2) / 2;
+        graphics.drawString(font, Component.literal(OVERFLOW_BUTTON_LABEL), labelX, labelY, TAB_TEXT_ACTIVE_COLOR, false);
     }
 
     public int rectX() {
@@ -333,9 +368,42 @@ public final class TabbedPanel extends DelegatingPanel {
         return true;
     }
 
+    public boolean hitOverflowButtonAt(double mouseX, double mouseY) {
+        return overflowButtonVisible
+            && mouseX >= overflowButtonX
+            && mouseX < overflowButtonX + overflowButtonWidth()
+            && mouseY >= overflowButtonY
+            && mouseY < overflowButtonY + TAB_BAR_HEIGHT;
+    }
+
+    public int overflowMenuAnchorX() {
+        return overflowButtonX;
+    }
+
+    public int overflowMenuAnchorY() {
+        return overflowButtonY + TAB_BAR_HEIGHT + 1;
+    }
+
+    public List<HiddenTab> hiddenTabs() {
+        if (!overflowButtonVisible || tabs.isEmpty()) {
+            return List.of();
+        }
+        var font = EngineFont.get();
+        var hidden = new ArrayList<HiddenTab>();
+        for (var i = 0; i < tabs.size(); i++) {
+            if (!isTabFullyVisible(font, i)) {
+                hidden.add(new HiddenTab(i, tabs.get(i).title(), i == activeIndex));
+            }
+        }
+        return hidden;
+    }
+
     /** Returns the tab index hit by {@code (mouseX, mouseY)} in the tab strip, or -1 if none. */
     public int hitTabAt(double mouseX, double mouseY) {
         if (!isInTabStrip(mouseX, mouseY)) {
+            return -1;
+        }
+        if (mouseX >= rectX + tabViewportWidth) {
             return -1;
         }
         for (var i = 0; i < tabRects.size(); i++) {
@@ -394,6 +462,12 @@ public final class TabbedPanel extends DelegatingPanel {
         int closeY1
     ) {}
 
+    public record HiddenTab(
+        int index,
+        String title,
+        boolean active
+    ) {}
+
     private int computeTabContentWidth(Font font) {
         var width = 0;
         for (var i = 0; i < tabs.size(); i++) {
@@ -419,8 +493,15 @@ public final class TabbedPanel extends DelegatingPanel {
         if (tabs.isEmpty() || tabViewportWidth <= 0) {
             return true;
         }
-        var left = tabLeft(font, activeIndex);
-        var right = left + tabWidth(font, activeIndex);
+        return isTabFullyVisible(font, activeIndex);
+    }
+
+    private boolean isTabFullyVisible(Font font, int index) {
+        if (index < 0 || index >= tabs.size() || tabViewportWidth <= 0) {
+            return false;
+        }
+        var left = tabLeft(font, index);
+        var right = left + tabWidth(font, index);
         return left >= tabScrollX && right <= tabScrollX + tabViewportWidth;
     }
 
@@ -445,5 +526,9 @@ public final class TabbedPanel extends DelegatingPanel {
 
     private int clampTabScroll(int value) {
         return Math.max(0, Math.min(maxTabScroll(), value));
+    }
+
+    private int overflowButtonWidth() {
+        return Math.min(OVERFLOW_BUTTON_WIDTH, Math.max(0, rectWidth));
     }
 }

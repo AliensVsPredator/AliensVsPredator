@@ -1112,6 +1112,10 @@ public final class EngineWorkspaceScreen extends Screen {
         if (button == 1) {
             var tabbed = findTabbedPanelAt((int) logicalX, (int) logicalY);
             if (tabbed != null && tabbed.isInTabStrip(logicalX, logicalY)) {
+                if (tabbed.hitOverflowButtonAt(logicalX, logicalY)) {
+                    menuBar.open(buildTabOverflowMenu(tabbed));
+                    return true;
+                }
                 var tabIdx = tabbed.hitTabAt(logicalX, logicalY);
                 if (tabIdx >= 0) {
                     menuBar.open(buildTabContextMenu(tabbed, tabIdx, (int) logicalX, (int) logicalY));
@@ -1165,6 +1169,10 @@ public final class EngineWorkspaceScreen extends Screen {
             // 4) Tab strip click: switch active, close, or arm a tab drag.
             var tabbed = findTabbedPanelAt((int) logicalX, (int) logicalY);
             if (tabbed != null && tabbed.isInTabStrip(logicalX, logicalY)) {
+                if (tabbed.hitOverflowButtonAt(logicalX, logicalY)) {
+                    menuBar.open(buildTabOverflowMenu(tabbed));
+                    return true;
+                }
                 var tabIdx = tabbed.hitTabAt(logicalX, logicalY);
                 if (tabIdx >= 0) {
                     if (tabbed.hitCloseAt(logicalX, logicalY, tabIdx)) {
@@ -1245,6 +1253,16 @@ public final class EngineWorkspaceScreen extends Screen {
         items.add(DropdownMenu.Item.divider());
         items.add(new DropdownMenu.Item("Reset Panel", () -> resetTabPanel(tabbed, tabIdx)));
         return new DropdownMenu(anchorX, anchorY, items);
+    }
+
+    private DropdownMenu buildTabOverflowMenu(TabbedPanel tabbed) {
+        var items = new ArrayList<DropdownMenu.Item>();
+        for (var hidden : tabbed.hiddenTabs()) {
+            var label = (hidden.active() ? "• " : "  ") + hidden.title();
+            var index = hidden.index();
+            items.add(new DropdownMenu.Item(label, () -> tabbed.setActiveIndex(index)));
+        }
+        return new DropdownMenu(tabbed.overflowMenuAnchorX(), tabbed.overflowMenuAnchorY(), items);
     }
 
     private void moveTabToSplit(TabbedPanel tabbed, int tabIdx, DockTreeMutator.SplitSide side) {
