@@ -156,7 +156,7 @@ public final class AnimationCollisionState {
         }
 
         var playhead = state.playheadSeconds();
-        if (Math.abs(playhead - currentSnapshotSeconds) > 1.0e-6) {
+        if (!Double.isFinite(currentSnapshotSeconds) || Math.abs(playhead - currentSnapshotSeconds) > 1.0e-6) {
             currentSnapshot = collisionSnapshot(root, state, playhead);
             currentSnapshotSeconds = playhead;
         }
@@ -322,7 +322,7 @@ public final class AnimationCollisionState {
             var a = boxes.get(i);
             for (var j = i + 1; j < boxes.size(); j++) {
                 var b = boxes.get(j);
-                if (a.owner() == b.owner()) {
+                if (isAllowedBonePair(a.owner(), b.owner())) {
                     continue;
                 }
                 if (intersects(a, b)) {
@@ -337,6 +337,10 @@ public final class AnimationCollisionState {
             return CollisionSnapshot.EMPTY;
         }
         return new CollisionSnapshot(Set.copyOf(cubes), Set.copyOf(boneNames));
+    }
+
+    private static boolean isAllowedBonePair(ModelerBone a, ModelerBone b) {
+        return a == b || a.parent == b || b.parent == a;
     }
 
     private void collectBoxes(
