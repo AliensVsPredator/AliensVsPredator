@@ -9,6 +9,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -28,6 +29,7 @@ import com.blib.engine.modeler.ModelerBone;
 import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.Selection;
 import com.blib.engine.session.ProjectSession;
+import com.blib.internal.client.animation.easing.AzEasingTypeLoader;
 import com.blib.internal.client.animation.primitive.AzBakedAnimations;
 import com.blib.internal.common.io.util.JsonUtil;
 import com.blib.internal.common.storage.EngineProjectIO;
@@ -80,6 +82,12 @@ public final class AnimationEditorState {
         TransformChannel channel,
         double timestamp,
         JsonObject keyframe
+    ) {}
+
+    public record PreviewBoneTransform(
+        @Nullable Vec3 position,
+        @Nullable Vec3 rotationDelta,
+        @Nullable Vec3 scale
     ) {}
 
     private @Nullable JsonObject draft;
@@ -386,6 +394,27 @@ public final class AnimationEditorState {
         playing = false;
         playheadSeconds = 0.0;
         lastPlaybackNanos = 0L;
+    }
+
+    public @Nullable PreviewBoneTransform previewTransformFor(ModelerBone bone) {
+        if (draft == null || selectedAnimationName == null || selectedAnimationObject() == null) {
+            return null;
+        }
+        if (ModelerScene.get().itemSession != null) {
+            return null;
+        }
+
+        var position = sampleChannel(bone.name, TransformChannel.POSITION, playheadSeconds);
+        var rotation = sampleChannel(bone.name, TransformChannel.ROTATION, playheadSeconds);
+        var scale = sampleChannel(bone.name, TransformChannel.SCALE, playheadSeconds);
+        if (position == null && rotation == null && scale == null) {
+            return null;
+        }
+        return new PreviewBoneTransform(
+            position == null ? null : toModelerSpace(TransformChannel.POSITION, position),
+            rotation == null ? null : toModelerSpace(TransformChannel.ROTATION, rotation),
+            scale
+        );
     }
 
     public void selectAnimation(@Nullable String name) {
@@ -745,6 +774,119 @@ public final class AnimationEditorState {
         var channelObj = normalizeChannelObject(animationName, boneName, channel, bone.get(channel.jsonName()));
         bone.add(channel.jsonName(), channelObj);
         return channelObj.remove(formatTimestamp(timestamp)) != null;
+    }
+
+    private @Nullable Vec3 sampleChannel(String boneName, TransformChannel channel, double timestamp) {
+        if (selectedAnimationName == null) {
+            return null;
+        }
+        var frames = keyframes(selectedAnimationName, boneName, channel);
+        if (frames.isEmpty()) {
+            return null;
+        }
+        if (frames.size() == 1 || timestamp <= frames.getFirst().timestamp()) {
+            return vectorFromFrame(frames.getFirst());
+        }
+
+        var previous = frames.getFirst();
+        for (var i = 1; i < frames.size(); i++) {
+            var next = frames.get(i);
+            if (timestamp <= next.timestamp()) {
+                var span = next.timestamp() - previous.timestamp();
+                if (span <= 1.0e-9) {
+                    return vectorFromFrame(next);
+                }
+                var t = Math.max(0.0, Math.min(1.0, (timestamp - previous.timestamp()) / span));
+                return lerp(vectorFromFrame(previous), vectorFromFrame(next), easeRatio(next.keyframe(), t));
+            }
+            previous = next;
+        }
+        return vectorFromFrame(frames.getLast());
+    }
+
+    private static Vec3 vectorFromFrame(KeyframeRef frame) {
+        var obj = frame.keyframe();
+        if (!obj.has("vector") || !obj.get("vector").isJsonArray()) {
+            return Vec3.ZERO;
+        }
+        var vector = obj.getAsJsonArray("vector");
+        return new Vec3(
+            numericVectorValue(vector, 0),
+            numericVectorValue(vector, 1),
+            numericVectorValue(vector, 2)
+        );
+    }
+
+    private static double numericVectorValue(JsonArray vector, int index) {
+        if (index >= vector.size()) {
+            return 0.0;
+        }
+        var element = vector.get(index);
+        try {
+            if (element != null && element.isJsonPrimitive()) {
+                var primitive = element.getAsJsonPrimitive();
+                if (primitive.isNumber()) {
+                    return primitive.getAsDouble();
+                }
+                if (primitive.isString() && NumberUtils.isCreatable(primitive.getAsString())) {
+                    return Double.parseDouble(primitive.getAsString());
+                }
+            }
+        } catch (RuntimeException ignored) {
+            return 0.0;
+        }
+        return 0.0;
+    }
+
+    private static Vec3 lerp(Vec3 from, Vec3 to, double t) {
+        return new Vec3(
+            from.x + (to.x - from.x) * t,
+            from.y + (to.y - from.y) * t,
+            from.z + (to.z - from.z) * t
+        );
+    }
+
+    private static double easeRatio(JsonObject keyframe, double linear) {
+        if (!keyframe.has("easing")) {
+            return linear;
+        }
+        try {
+            var easing = elementToText(keyframe.get("easing")).toLowerCase(Locale.ROOT);
+            var firstArg = firstEasingArg(keyframe.get("easingArgs"));
+            var eased = AzEasingTypeLoader.fromString(easing).buildTransformer(firstArg).apply(linear);
+            return Math.max(0.0, Math.min(1.0, eased));
+        } catch (RuntimeException ignored) {
+            return linear;
+        }
+    }
+
+    private static @Nullable Double firstEasingArg(@Nullable JsonElement element) {
+        if (element == null || !element.isJsonArray() || element.getAsJsonArray().isEmpty()) {
+            return null;
+        }
+        var first = element.getAsJsonArray().get(0);
+        try {
+            if (first.isJsonPrimitive()) {
+                var primitive = first.getAsJsonPrimitive();
+                if (primitive.isNumber()) {
+                    return primitive.getAsDouble();
+                }
+                if (primitive.isString() && NumberUtils.isCreatable(primitive.getAsString())) {
+                    return Double.parseDouble(primitive.getAsString());
+                }
+            }
+        } catch (RuntimeException ignored) {
+            return null;
+        }
+        return null;
+    }
+
+    private static Vec3 toModelerSpace(TransformChannel channel, Vec3 source) {
+        return switch (channel) {
+            case POSITION -> new Vec3(-source.x, source.y, source.z);
+            case ROTATION -> new Vec3(-source.x, -source.y, source.z);
+            case SCALE -> source;
+        };
     }
 
     private JsonObject normalizeChannelObject(

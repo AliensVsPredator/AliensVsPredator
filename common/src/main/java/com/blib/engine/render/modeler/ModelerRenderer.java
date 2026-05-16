@@ -16,6 +16,7 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL30;
 
 import com.blib.engine.modeler.ModelerScene;
+import com.blib.engine.modeler.animation.AnimationEditorState;
 
 /**
  * Owns the offscreen framebuffer the modeler viewport renders into. Render-to-texture pattern (cf.
@@ -193,6 +194,7 @@ public final class ModelerRenderer {
             } else {
                 // Entity-model edit mode — no item session attached.
                 scene.gizmoTargetSelection = null;
+                AnimationEditorState.get().updatePlaybackClock();
                 ModelerGridRenderer.render(pose);
                 ModelerCubeRenderer.render(pose, scene.root, scene.selection);
                 // Gizmo rendered last so its line strips overlay the cube faces / selection outline; the projection
