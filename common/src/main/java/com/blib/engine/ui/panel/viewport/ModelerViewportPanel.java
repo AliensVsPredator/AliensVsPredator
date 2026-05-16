@@ -282,10 +282,10 @@ public final class ModelerViewportPanel implements Panel {
         // the two strips stack instead of overlapping.
         ModelerMenuBar.render(graphics, x, y, width, mouseX, mouseY);
         int toolbarY = y + ModelerMenuBar.HEIGHT;
-        ModelerViewportToolbar.render(graphics, x, toolbarY);
+        ModelerViewportToolbar.render(graphics, x, toolbarY, mouseX, mouseY);
         // Navigation axis gizmo at the bottom-right — three labeled colored balls that follow the camera so the user
         // can read world orientation at a glance, and click an axis to snap the view orthogonally.
-        ModelerAxisGizmo.render(graphics, x, y, width, height, scene.camera);
+        ModelerAxisGizmo.render(graphics, x, y, width, height, scene.camera, mouseX, mouseY);
         renderBufferCacheIndicator(graphics, x, y, width, height);
 
         // Toolbar / axis-gizmo tooltips. Refresh after the overlays render so the hit-test is against the rects just

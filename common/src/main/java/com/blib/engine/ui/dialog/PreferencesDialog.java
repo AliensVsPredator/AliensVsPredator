@@ -24,10 +24,12 @@ import com.blib.engine.input.KeybindingProfile;
 import com.blib.engine.input.KeybindingProfileCatalog;
 import com.blib.engine.input.Keybindings;
 import com.blib.engine.ui.EngineFont;
+import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.workspace.HoverOverlayRenderer;
 import com.blib.engine.ui.widget.DropdownMenu;
 import com.blib.engine.ui.widget.KeyCaptureWidget;
 import com.blib.engine.ui.widget.TextInput;
+import com.blib.engine.ui.widget.UiButton;
 
 /**
  * Preferences modal — keybinding editor backed by named, persisted {@link KeybindingProfile}s. Apply/Cancel semantics:
@@ -82,6 +84,18 @@ public final class PreferencesDialog {
     private static final int BUTTON_TEXT = 0xFFD0D0D0;
 
     private static final int BUTTON_DISABLED_TEXT = 0xFF606068;
+
+    private static final UiButton.Style BUTTON_STYLE = new UiButton.Style(
+        BUTTON_BG,
+        BUTTON_BG_HOVER,
+        BUTTON_BG_HOVER,
+        0xFF3A3A44,
+        BUTTON_BG_DISABLED,
+        BUTTON_BORDER,
+        BUTTON_TEXT,
+        BUTTON_DISABLED_TEXT,
+        UiButton.ADDITIVE_CONTENT_COLOR
+    );
 
     private static final int BOX_WIDTH = 560;
 
@@ -1057,18 +1071,10 @@ public final class PreferencesDialog {
         int textColor,
         boolean enabled
     ) {
-        var hovered = mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
-        var bg = !enabled ? BUTTON_BG_DISABLED : (hovered ? BUTTON_BG_HOVER : BUTTON_BG);
-        graphics.fill(x, y, x + width, y + height, bg);
-        graphics.fill(x, y, x + width, y + 1, BUTTON_BORDER);
-        graphics.fill(x, y + height - 1, x + width, y + height, BUTTON_BORDER);
-        graphics.fill(x, y, x + 1, y + height, BUTTON_BORDER);
-        graphics.fill(x + width - 1, y, x + width, y + height, BUTTON_BORDER);
-
+        var uiRect = UiRect.of(x, y, width, height);
+        UiButton.drawFrame(graphics, uiRect, BUTTON_STYLE, false, enabled, mouseX, mouseY);
         var font = EngineFont.get();
-        var textX = x + (width - font.width(label)) / 2;
-        var textY = y + (height - font.lineHeight + 2) / 2;
-        graphics.drawString(font, Component.literal(label), textX, textY, textColor, false);
+        UiButton.drawCenteredLabel(graphics, font, label, uiRect, BUTTON_STYLE, textColor, enabled);
         return new Rect(x, y, width, height);
     }
 

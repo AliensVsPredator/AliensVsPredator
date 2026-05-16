@@ -5,7 +5,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.engine.ui.EngineTickControl;
+import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.panel.viewport.ViewportPanel;
+import com.blib.engine.ui.widget.UiButton;
 
 /**
  * Tiny transport overlay anchored at the top-left of the live-world {@link ViewportPanel}. Lives on the viewport
@@ -41,6 +43,22 @@ public final class ViewportTransportToolbar {
 
     private static final int LABEL_COLOR = 0xFFE0E0E0;
 
+    private static final UiButton.Style STYLE = new UiButton.Style(
+        BG_COLOR,
+        0xFF2A2A36,
+        0xFF3C3C46,
+        0xFF4A4A56,
+        0xFF101013,
+        BORDER_COLOR,
+        LABEL_COLOR,
+        ICON_DISABLED_COLOR,
+        UiButton.ADDITIVE_CONTENT_COLOR
+    );
+
+    private static final UiButton.Style PAUSED_STYLE = STYLE.withActiveColors(BG_PAUSED_COLOR, 0xFF5A4A22);
+
+    private static final UiButton.Style FAST_FORWARD_STYLE = STYLE.withActiveColors(BG_FAST_FORWARD_COLOR, 0xFF28645A);
+
     /** Result of a click against the toolbar. */
     public enum Hit {
         NONE,
@@ -53,7 +71,7 @@ public final class ViewportTransportToolbar {
 
     private ViewportTransportToolbar() {}
 
-    public static void render(GuiGraphics graphics, int panelX, int panelY) {
+    public static void render(GuiGraphics graphics, int panelX, int panelY, int mouseX, int mouseY) {
         // Transport controls act on the integrated server. With no world (menu-overlay mode pre-world-load) every
         // button is a no-op, so hide the toolbar entirely rather than show non-functional chrome.
         if (Minecraft.getInstance().getSingleplayerServer() == null) {
@@ -69,14 +87,14 @@ public final class ViewportTransportToolbar {
         var paused = EngineTickControl.isPaused();
         var fastForwarding = EngineTickControl.isFastForwarding();
 
-        drawButton(graphics, playX, btnY, paused ? BG_PAUSED_COLOR : BG_COLOR);
+        drawButton(graphics, playX, btnY, paused, PAUSED_STYLE, mouseX, mouseY);
         if (paused) {
             drawPlayIcon(graphics, playX, btnY);
         } else {
             drawPauseIcon(graphics, playX, btnY);
         }
 
-        drawButton(graphics, stepX, btnY, BG_COLOR);
+        drawButton(graphics, stepX, btnY, false, STYLE, mouseX, mouseY);
         // Step is a no-op when the world isn't paused (server's stepGameIfPaused only advances a frozen game), so we
         // dim the icon as a soft "this won't do anything" cue while still letting the click fall through harmlessly.
         drawStepIcon(graphics, stepX, btnY, paused ? ICON_COLOR : ICON_DISABLED_COLOR);
@@ -87,10 +105,13 @@ public final class ViewportTransportToolbar {
             btnY,
             STEP_SIZE_WIDTH,
             EngineTickControl.selectedStepTicks() + "t",
-            BG_COLOR
+            false,
+            STYLE,
+            mouseX,
+            mouseY
         );
 
-        drawButton(graphics, fastForwardX, btnY, fastForwarding ? BG_FAST_FORWARD_COLOR : BG_COLOR);
+        drawButton(graphics, fastForwardX, btnY, fastForwarding, FAST_FORWARD_STYLE, mouseX, mouseY);
         drawFastForwardIcon(graphics, fastForwardX, btnY, ICON_COLOR);
 
         drawLabelButton(
@@ -99,7 +120,10 @@ public final class ViewportTransportToolbar {
             btnY,
             SPEED_WIDTH,
             EngineTickControl.selectedFastForwardMultiplier() + "x",
-            fastForwarding ? BG_FAST_FORWARD_COLOR : BG_COLOR
+            fastForwarding,
+            FAST_FORWARD_STYLE,
+            mouseX,
+            mouseY
         );
     }
 
@@ -131,20 +155,26 @@ public final class ViewportTransportToolbar {
         return Hit.NONE;
     }
 
-    private static void drawButton(GuiGraphics graphics, int x, int y, int bgColor) {
-        drawButton(graphics, x, y, BUTTON_SIZE, bgColor);
+    private static void drawButton(GuiGraphics graphics, int x, int y, boolean active, UiButton.Style style, int mouseX, int mouseY) {
+        drawButton(graphics, x, y, BUTTON_SIZE, active, style, mouseX, mouseY);
     }
 
-    private static void drawButton(GuiGraphics graphics, int x, int y, int width, int bgColor) {
-        graphics.fill(x, y, x + width, y + BUTTON_SIZE, bgColor);
-        graphics.fill(x, y, x + width, y + 1, BORDER_COLOR);
-        graphics.fill(x, y + BUTTON_SIZE - 1, x + width, y + BUTTON_SIZE, BORDER_COLOR);
-        graphics.fill(x, y, x + 1, y + BUTTON_SIZE, BORDER_COLOR);
-        graphics.fill(x + width - 1, y, x + width, y + BUTTON_SIZE, BORDER_COLOR);
+    private static void drawButton(GuiGraphics graphics, int x, int y, int width, boolean active, UiButton.Style style, int mouseX, int mouseY) {
+        UiButton.drawFrame(graphics, UiRect.of(x, y, width, BUTTON_SIZE), style, active, true, mouseX, mouseY);
     }
 
-    private static void drawLabelButton(GuiGraphics graphics, int x, int y, int width, String label, int bgColor) {
-        drawButton(graphics, x, y, width, bgColor);
+    private static void drawLabelButton(
+        GuiGraphics graphics,
+        int x,
+        int y,
+        int width,
+        String label,
+        boolean active,
+        UiButton.Style style,
+        int mouseX,
+        int mouseY
+    ) {
+        drawButton(graphics, x, y, width, active, style, mouseX, mouseY);
         var font = Minecraft.getInstance().font;
         var textX = x + (width - font.width(label)) / 2;
         var textY = y + (BUTTON_SIZE - font.lineHeight) / 2 + 1;

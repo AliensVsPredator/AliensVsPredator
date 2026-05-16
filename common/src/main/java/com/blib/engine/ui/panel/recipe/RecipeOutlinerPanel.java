@@ -23,6 +23,7 @@ import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.layout.ScrollViewport;
 import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.layout.UiText;
+import com.blib.engine.ui.widget.UiCaret;
 import com.blib.engine.ui.widget.TextInput;
 
 @ApiStatus.Internal
@@ -163,7 +164,7 @@ public final class RecipeOutlinerPanel implements Panel {
         graphics.fill(x, y, x + width, y + HEADER_HEIGHT, hovered ? ROW_BG_HOVER_COLOR : HEADER_BG_COLOR);
 
         var font = EngineFont.get();
-        var arrow = collapsedTypes.contains(group.typeId()) ? ">" : "v";
+        var arrow = UiCaret.glyph(collapsedTypes.contains(group.typeId()));
         var label = arrow + " " + group.typeId();
         var count = Integer.toString(group.recipes().size());
         var countW = font.width(count);

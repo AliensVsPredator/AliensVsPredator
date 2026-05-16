@@ -26,9 +26,12 @@ import com.blib.engine.tag.TagStagingCache;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.PanelPlaceholder;
 import com.blib.engine.ui.dock.Panel;
+import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.widget.ScrollContainer;
 import com.blib.engine.ui.widget.SegmentedControl;
 import com.blib.engine.ui.widget.TextInput;
+import com.blib.engine.ui.widget.UiButton;
+import com.blib.engine.ui.widget.UiCaret;
 import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.C2SCreateTagPayload;
 import com.blib.mod.common.network.packet.C2SRequestTagCatalogPayload;
@@ -82,8 +85,6 @@ public final class TagBrowserPanel implements Panel {
     private static final int ROW_PROJECT_MODIFIED_TINT = 0xFF7CB6E0;
 
     private static final int EMPTY_TEXT_COLOR = 0xFF606068;
-
-    private static final int CREATE_BUTTON_COLOR = 0xFF80E080;
 
     private static final int POPUP_DIM_COLOR = 0xC0000000;
 
@@ -359,22 +360,17 @@ public final class TagBrowserPanel implements Panel {
         graphics.fill(x, y, x + 2, y + HEADER_HEIGHT, accentColor(registryKey));
 
         var font = EngineFont.get();
-        var caret = collapsed.contains(registryKey) ? "▸" : "▾";
+        var caret = UiCaret.glyph(collapsed.contains(registryKey));
         var textY = y + (HEADER_HEIGHT - font.lineHeight + 2) / 2;
         graphics.drawString(font, Component.literal(caret), x + 4, textY, HEADER_TEXT_COLOR, false);
         graphics.drawString(font, Component.literal(registryKey.toString()), x + 4 + CARET_WIDTH + 2, textY, HEADER_TEXT_COLOR, false);
 
         // Right side: count + create (+) button.
         var createX = rowRight - 4 - CREATE_BUTTON_WIDTH;
-        graphics.drawString(
-            font,
-            Component.literal("+"),
-            createX + (CREATE_BUTTON_WIDTH - font.width("+")) / 2,
-            textY,
-            CREATE_BUTTON_COLOR,
-            false
-        );
-        createHits.add(new CreateHit(new Rect(createX, y, CREATE_BUTTON_WIDTH, HEADER_HEIGHT), registryKey));
+        var createRect = UiRect.of(createX, y + 1, CREATE_BUTTON_WIDTH, HEADER_HEIGHT - 2);
+        UiButton.drawFrame(graphics, createRect, UiButton.DEFAULT, false, true, mouseX, mouseY);
+        UiButton.drawPlusIcon(graphics, createRect, UiButton.DEFAULT, true);
+        createHits.add(new CreateHit(new Rect(createRect.x(), createRect.y(), createRect.width(), createRect.height()), registryKey));
 
         var countLabel = "(" + count + ")";
         var countX = createX - 6 - font.width(countLabel);

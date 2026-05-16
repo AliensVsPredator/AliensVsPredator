@@ -28,6 +28,8 @@ import com.blib.engine.ui.layout.UiText;
 import com.blib.engine.ui.popup.PanelMenuOpener;
 import com.blib.engine.ui.widget.DropdownMenu;
 import com.blib.engine.ui.widget.TextInput;
+import com.blib.engine.ui.widget.UiButton;
+import com.blib.engine.ui.widget.UiCaret;
 
 @ApiStatus.Internal
 public final class AnimationTimelinePanel implements Panel {
@@ -81,6 +83,18 @@ public final class AnimationTimelinePanel implements Panel {
     private static final int ICON_DISABLED_COLOR = 0xFF606068;
 
     private static final int DIRTY_COLOR = 0xFFE6C26B;
+
+    private static final UiButton.Style BUTTON_STYLE = new UiButton.Style(
+        CHIP_BG_COLOR,
+        CHIP_HOVER_BG_COLOR,
+        CHIP_HOVER_BG_COLOR,
+        0xFF4A4A56,
+        0xFF101013,
+        BUTTON_BORDER_COLOR,
+        ICON_COLOR,
+        ICON_DISABLED_COLOR,
+        UiButton.ADDITIVE_CONTENT_COLOR
+    );
 
     private static final int PADDING = 6;
 
@@ -1147,22 +1161,11 @@ public final class AnimationTimelinePanel implements Panel {
     }
 
     private static void drawCaret(GuiGraphics graphics, int x, int y, boolean collapsed, int color) {
-        if (collapsed) {
-            for (var row = 0; row < 7; row++) {
-                var width = row <= 3 ? row + 1 : 7 - row;
-                graphics.fill(x, y + row, x + width, y + row + 1, color);
-            }
-            return;
-        }
-        for (var row = 0; row < 4; row++) {
-            graphics.fill(x + row, y + row + 1, x + 7 - row, y + row + 2, color);
-        }
+        UiCaret.drawPixel(graphics, x, y, collapsed, color);
     }
 
     private static void renderPlayButton(GuiGraphics graphics, int x, int y, boolean playing, boolean enabled, int mouseX, int mouseY) {
-        var hovered = enabled && buttonHit(mouseX, mouseY, x, y, BUTTON_SIZE, BUTTON_SIZE);
-        graphics.fill(x, y, x + BUTTON_SIZE, y + BUTTON_SIZE, hovered ? CHIP_HOVER_BG_COLOR : CHIP_BG_COLOR);
-        drawButtonBorder(graphics, x, y, BUTTON_SIZE, BUTTON_SIZE);
+        UiButton.drawFrame(graphics, UiRect.of(x, y, BUTTON_SIZE, BUTTON_SIZE), BUTTON_STYLE, false, enabled, mouseX, mouseY);
         if (playing) {
             drawPauseIcon(graphics, x, y, enabled ? ICON_COLOR : ICON_DISABLED_COLOR);
         } else {
@@ -1171,17 +1174,15 @@ public final class AnimationTimelinePanel implements Panel {
     }
 
     private static void renderAddButton(GuiGraphics graphics, int x, int y, boolean enabled, int mouseX, int mouseY) {
-        var hovered = enabled && buttonHit(mouseX, mouseY, x, y, ADD_BUTTON_SIZE, ADD_BUTTON_SIZE);
-        graphics.fill(x, y, x + ADD_BUTTON_SIZE, y + ADD_BUTTON_SIZE, hovered ? CHIP_HOVER_BG_COLOR : CHIP_BG_COLOR);
-        drawButtonBorder(graphics, x, y, ADD_BUTTON_SIZE, ADD_BUTTON_SIZE);
-        drawPlusIcon(graphics, x, y, enabled ? ICON_COLOR : ICON_DISABLED_COLOR);
+        var rect = UiRect.of(x, y, ADD_BUTTON_SIZE, ADD_BUTTON_SIZE);
+        UiButton.drawFrame(graphics, rect, BUTTON_STYLE, false, enabled, mouseX, mouseY);
+        UiButton.drawPlusIcon(graphics, rect, BUTTON_STYLE, enabled);
     }
 
     private static void renderMinusButton(GuiGraphics graphics, int x, int y, boolean enabled, int mouseX, int mouseY) {
-        var hovered = enabled && buttonHit(mouseX, mouseY, x, y, ADD_BUTTON_SIZE, ADD_BUTTON_SIZE);
-        graphics.fill(x, y, x + ADD_BUTTON_SIZE, y + ADD_BUTTON_SIZE, hovered ? CHIP_HOVER_BG_COLOR : CHIP_BG_COLOR);
-        drawButtonBorder(graphics, x, y, ADD_BUTTON_SIZE, ADD_BUTTON_SIZE);
-        drawMinusIcon(graphics, x, y, enabled ? ICON_COLOR : ICON_DISABLED_COLOR);
+        var rect = UiRect.of(x, y, ADD_BUTTON_SIZE, ADD_BUTTON_SIZE);
+        UiButton.drawFrame(graphics, rect, BUTTON_STYLE, false, enabled, mouseX, mouseY);
+        UiButton.drawMinusIcon(graphics, rect, BUTTON_STYLE, enabled);
     }
 
     private static void drawPlayIcon(GuiGraphics graphics, int btnX, int btnY, int color) {
@@ -1201,26 +1202,6 @@ public final class AnimationTimelinePanel implements Panel {
         var cy = btnY + BUTTON_SIZE / 2;
         graphics.fill(cx - 4, cy - 4, cx - 2, cy + 4, color);
         graphics.fill(cx + 2, cy - 4, cx + 4, cy + 4, color);
-    }
-
-    private static void drawPlusIcon(GuiGraphics graphics, int btnX, int btnY, int color) {
-        var cx = btnX + ADD_BUTTON_SIZE / 2;
-        var cy = btnY + ADD_BUTTON_SIZE / 2;
-        graphics.fill(cx - 3, cy, cx + 4, cy + 1, color);
-        graphics.fill(cx, cy - 3, cx + 1, cy + 4, color);
-    }
-
-    private static void drawMinusIcon(GuiGraphics graphics, int btnX, int btnY, int color) {
-        var cx = btnX + ADD_BUTTON_SIZE / 2;
-        var cy = btnY + ADD_BUTTON_SIZE / 2;
-        graphics.fill(cx - 3, cy, cx + 4, cy + 1, color);
-    }
-
-    private static void drawButtonBorder(GuiGraphics graphics, int x, int y, int width, int height) {
-        graphics.fill(x, y, x + width, y + 1, BUTTON_BORDER_COLOR);
-        graphics.fill(x, y + height - 1, x + width, y + height, BUTTON_BORDER_COLOR);
-        graphics.fill(x, y, x + 1, y + height, BUTTON_BORDER_COLOR);
-        graphics.fill(x + width - 1, y, x + width, y + height, BUTTON_BORDER_COLOR);
     }
 
     private static boolean buttonHit(double mouseX, double mouseY, int x, int y, int width, int height) {

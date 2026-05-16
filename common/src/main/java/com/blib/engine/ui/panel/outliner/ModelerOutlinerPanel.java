@@ -32,6 +32,7 @@ import com.blib.engine.ui.layout.UiText;
 import com.blib.engine.ui.popup.PanelMenuOpener;
 import com.blib.engine.ui.widget.DropdownMenu;
 import com.blib.engine.ui.widget.TextInput;
+import com.blib.engine.ui.widget.UiCaret;
 
 /**
  * Hierarchical tree view of the modeler scene: root → bones → cubes. Each row is selectable; the click event sets
@@ -684,16 +685,7 @@ public final class ModelerOutlinerPanel implements Panel {
     }
 
     private static void drawCaret(GuiGraphics graphics, int x, int y, boolean collapsed, int color) {
-        if (collapsed) {
-            for (var row = 0; row < 7; row++) {
-                var width = row <= 3 ? row + 1 : 7 - row;
-                graphics.fill(x, y + row, x + width, y + row + 1, color);
-            }
-            return;
-        }
-        for (var row = 0; row < 4; row++) {
-            graphics.fill(x + row, y + row + 1, x + 7 - row, y + row + 2, color);
-        }
+        UiCaret.drawPixel(graphics, x, y, collapsed, color);
     }
 
     /** Recursively collects {@code bone} and every descendant bone into {@code out}. */

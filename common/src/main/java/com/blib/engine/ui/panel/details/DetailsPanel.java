@@ -29,6 +29,7 @@ import com.blib.engine.ui.widget.ScrollContainer;
 import com.blib.engine.ui.widget.SearchableSelect;
 import com.blib.engine.ui.widget.SegmentedControl;
 import com.blib.engine.ui.widget.TextInput;
+import com.blib.engine.ui.widget.UiButton;
 
 /**
  * Right-side universal inspector. Reads {@link SelectionManager#current} each frame and dispatches to a per-type
@@ -666,7 +667,7 @@ public final class DetailsPanel implements Panel {
         int mouseY
     ) {
         var labelY = y + (SearchableSelect.HEIGHT - font.lineHeight + 2) / 2;
-        graphics.drawString(font, Component.literal(label), x + CONTENT_PADDING, labelY, LABEL_COLOR, false);
+        drawLeftLabel(graphics, font, label, x + CONTENT_PADDING, labelY, LABEL_COLOR);
         trackTextRight(font, x + CONTENT_PADDING, label);
         if (helpText != null) {
             var iconX = x + CONTENT_PADDING + font.width(label) + HELP_ICON_GAP;
@@ -680,6 +681,15 @@ public final class DetailsPanel implements Panel {
         select.render(graphics, ctrlX, y, ctrlW, mouseX, mouseY);
         trackControlContentRight(ctrlX);
         return y + SearchableSelect.HEIGHT + ROW_GAP;
+    }
+
+    private static void drawLeftLabel(GuiGraphics graphics, Font font, String label, int x, int y, int color) {
+        if (label.startsWith("+")) {
+            graphics.drawString(font, Component.literal("+"), x, y, UiButton.ADDITIVE_CONTENT_COLOR, false);
+            graphics.drawString(font, Component.literal(label.substring(1)), x + font.width("+"), y, color, false);
+            return;
+        }
+        graphics.drawString(font, Component.literal(label), x, y, color, false);
     }
 
     /** Empty-list placeholder note centred in a list area. Used by Tag + Block sections. */

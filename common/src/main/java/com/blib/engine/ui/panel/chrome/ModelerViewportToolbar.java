@@ -9,6 +9,8 @@ import com.blib.engine.modeler.gizmo.ModelerGizmoFrame;
 import com.blib.engine.modeler.gizmo.ModelerGizmoMode;
 import com.blib.engine.modeler.gizmo.ModelerGizmoState;
 import com.blib.engine.ui.EngineFont;
+import com.blib.engine.ui.layout.UiRect;
+import com.blib.engine.ui.widget.UiButton;
 
 /**
  * Tiny mode-switch overlay drawn on top of the modeler viewport (no FBO involvement — straight {@link GuiGraphics}
@@ -47,6 +49,18 @@ public final class ModelerViewportToolbar {
 
     private static final int LABEL_ACTIVE_COLOR = 0xFFFFCC33;
 
+    private static final UiButton.Style STYLE = new UiButton.Style(
+        BG_COLOR,
+        0xFF2A2A36,
+        BG_ACTIVE_COLOR,
+        0xFF565660,
+        0xFF101013,
+        BORDER_COLOR,
+        LABEL_COLOR,
+        0xFF606068,
+        UiButton.ADDITIVE_CONTENT_COLOR
+    );
+
     private static final ModelerGizmoMode[] MODES = {
         ModelerGizmoMode.OFF,
         ModelerGizmoMode.TRANSLATE,
@@ -57,7 +71,7 @@ public final class ModelerViewportToolbar {
 
     private ModelerViewportToolbar() {}
 
-    public static void render(GuiGraphics graphics, int panelX, int panelY) {
+    public static void render(GuiGraphics graphics, int panelX, int panelY, int mouseX, int mouseY) {
         var active = ModelerGizmoState.mode();
         var font = EngineFont.get();
 
@@ -66,12 +80,9 @@ public final class ModelerViewportToolbar {
             int by = panelY + INSET;
             var mode = MODES[i];
             boolean isActive = mode == active;
+            var rect = UiRect.of(bx, by, BUTTON_SIZE, BUTTON_SIZE);
 
-            graphics.fill(bx, by, bx + BUTTON_SIZE, by + BUTTON_SIZE, isActive ? BG_ACTIVE_COLOR : BG_COLOR);
-            graphics.fill(bx, by, bx + BUTTON_SIZE, by + 1, BORDER_COLOR);
-            graphics.fill(bx, by + BUTTON_SIZE - 1, bx + BUTTON_SIZE, by + BUTTON_SIZE, BORDER_COLOR);
-            graphics.fill(bx, by, bx + 1, by + BUTTON_SIZE, BORDER_COLOR);
-            graphics.fill(bx + BUTTON_SIZE - 1, by, bx + BUTTON_SIZE, by + BUTTON_SIZE, BORDER_COLOR);
+            UiButton.drawFrame(graphics, rect, STYLE, isActive, true, mouseX, mouseY);
 
             var label = label(mode);
             int labelW = font.width(label);
@@ -85,11 +96,8 @@ public final class ModelerViewportToolbar {
         // frame's display name. Click handling in hitTestFrame.
         var frameRect = frameButtonRect(panelX, panelY);
         var frame = ModelerGizmoState.frame();
-        graphics.fill(frameRect.x, frameRect.y, frameRect.x + frameRect.w, frameRect.y + frameRect.h, BG_COLOR);
-        graphics.fill(frameRect.x, frameRect.y, frameRect.x + frameRect.w, frameRect.y + 1, BORDER_COLOR);
-        graphics.fill(frameRect.x, frameRect.y + frameRect.h - 1, frameRect.x + frameRect.w, frameRect.y + frameRect.h, BORDER_COLOR);
-        graphics.fill(frameRect.x, frameRect.y, frameRect.x + 1, frameRect.y + frameRect.h, BORDER_COLOR);
-        graphics.fill(frameRect.x + frameRect.w - 1, frameRect.y, frameRect.x + frameRect.w, frameRect.y + frameRect.h, BORDER_COLOR);
+        var frameUiRect = UiRect.of(frameRect.x, frameRect.y, frameRect.w, frameRect.h);
+        UiButton.drawFrame(graphics, frameUiRect, STYLE, false, true, mouseX, mouseY);
         var frameLabel = Component.literal(frame.label());
         int frameLabelW = font.width(frameLabel);
         int frameLabelH = font.lineHeight;

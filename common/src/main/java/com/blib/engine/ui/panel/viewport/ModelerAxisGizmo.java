@@ -52,6 +52,8 @@ public final class ModelerAxisGizmo {
 
     private static final int LABEL_COLOR = 0xFF000000;
 
+    private static final int HOVER_OUTLINE_COLOR = 0xFFFFFFFF;
+
     /** Positive-axis fill colors. Match the modeler gizmo / Blender convention (X=red, Y=green, Z=blue). */
     private static final int COLOR_X = 0xFFFF3333;
 
@@ -81,9 +83,19 @@ public final class ModelerAxisGizmo {
         NEG_Z
     }
 
-    public static void render(GuiGraphics graphics, int panelX, int panelY, int panelWidth, int panelHeight, ModelerCamera camera) {
+    public static void render(
+        GuiGraphics graphics,
+        int panelX,
+        int panelY,
+        int panelWidth,
+        int panelHeight,
+        ModelerCamera camera,
+        int mouseX,
+        int mouseY
+    ) {
         var centerX = panelX + panelWidth - INSET - RADIUS;
         var centerY = panelY + panelHeight - INSET - RADIUS;
+        var hoveredAxis = hitTest(mouseX, mouseY, panelX, panelY, panelWidth, panelHeight, camera);
 
         // Build the six endpoint records up front so depth sort + draw can iterate one list. Each Endpoint carries
         // its screen-space position, depth (negative = in front of camera), color, and optional label glyph.
@@ -112,6 +124,9 @@ public final class ModelerAxisGizmo {
         // Balls + labels in depth order so the front endpoints occlude the back ones.
         for (var ep : endpoints) {
             var half = ep.primary ? BALL_HALF : NEG_BALL_HALF;
+            if (ep.which == hoveredAxis) {
+                graphics.fill(ep.screenX - half - 1, ep.screenY - half - 1, ep.screenX + half + 2, ep.screenY + half + 2, HOVER_OUTLINE_COLOR);
+            }
             graphics.fill(ep.screenX - half, ep.screenY - half, ep.screenX + half + 1, ep.screenY + half + 1, ep.color);
             if (ep.label != null) {
                 drawScaledLabel(graphics, ep.label, ep.screenX, ep.screenY);
@@ -300,7 +315,7 @@ public final class ModelerAxisGizmo {
             default -> null;
         } : null;
 
-        return new Endpoint(screenX, screenY, (float) depth, color, label, primary);
+        return new Endpoint(which, screenX, screenY, (float) depth, color, label, primary);
     }
 
     /**
@@ -334,6 +349,7 @@ public final class ModelerAxisGizmo {
     }
 
     private record Endpoint(
+        AxisHit which,
         int screenX,
         int screenY,
         float depth,

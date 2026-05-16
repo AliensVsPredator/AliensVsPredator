@@ -236,7 +236,7 @@ public final class ViewportPanel implements Panel {
         // No game-view drawing: the compositor has already painted the downsampled world+HUD into this exact rect on
         // the main render target before the workspace's panels render. Anything drawn here would obscure the live game
         // view — except the transport-control overlay, which is *meant* to sit on top of the corner.
-        ViewportTransportToolbar.render(graphics, x, y);
+        ViewportTransportToolbar.render(graphics, x, y, mouseX, mouseY);
 
         // Refresh the hover tooltip for the transport buttons each frame so the cursor reads the current world state
         // (paused vs running) without having to look at the icon.

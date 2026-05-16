@@ -16,8 +16,10 @@ import com.blib.engine.session.ProjectSession;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.EngineWorkspaceScreen;
 import com.blib.engine.ui.dialog.ConfirmDialog;
+import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.workspace.ProjectWorkspaceSession;
 import com.blib.engine.ui.widget.TextInput;
+import com.blib.engine.ui.widget.UiButton;
 import com.blib.internal.client.storage.ClientProjectResourcePacks;
 import com.blib.internal.common.storage.EngineProjectIO;
 import com.blib.internal.common.storage.ProjectInfo;
@@ -77,6 +79,18 @@ public final class ProjectPickerScreen extends Screen {
     private static final int BUTTON_TEXT = 0xFFD0D0D0;
 
     private static final int BUTTON_DELETE_TEXT = 0xFFE06868;
+
+    private static final UiButton.Style BUTTON_STYLE = new UiButton.Style(
+        BUTTON_BG,
+        BUTTON_BG_HOVER,
+        BUTTON_BG_HOVER,
+        0xFF3A3A44,
+        BUTTON_BG,
+        BUTTON_BORDER,
+        BUTTON_TEXT,
+        META_COLOR,
+        UiButton.ADDITIVE_CONTENT_COLOR
+    );
 
     private static final int CONTENT_PADDING = 16;
 
@@ -352,17 +366,10 @@ public final class ProjectPickerScreen extends Screen {
         int textColor,
         boolean enabled
     ) {
-        var hovered = enabled && rect.contains(mouseX, mouseY);
-        graphics.fill(rect.x, rect.y, rect.x + rect.w, rect.y + rect.h, hovered ? BUTTON_BG_HOVER : BUTTON_BG);
-        graphics.fill(rect.x, rect.y, rect.x + rect.w, rect.y + 1, BUTTON_BORDER);
-        graphics.fill(rect.x, rect.y + rect.h - 1, rect.x + rect.w, rect.y + rect.h, BUTTON_BORDER);
-        graphics.fill(rect.x, rect.y, rect.x + 1, rect.y + rect.h, BUTTON_BORDER);
-        graphics.fill(rect.x + rect.w - 1, rect.y, rect.x + rect.w, rect.y + rect.h, BUTTON_BORDER);
-
+        var uiRect = UiRect.of(rect.x, rect.y, rect.w, rect.h);
+        UiButton.drawFrame(graphics, uiRect, BUTTON_STYLE, false, enabled, mouseX, mouseY);
         var font = EngineFont.get();
-        var textX = rect.x + (rect.w - font.width(label)) / 2;
-        var textY = rect.y + (rect.h - font.lineHeight + 2) / 2;
-        graphics.drawString(font, Component.literal(label), textX, textY, enabled ? textColor : META_COLOR, false);
+        UiButton.drawCenteredLabel(graphics, font, label, uiRect, BUTTON_STYLE, textColor, enabled);
     }
 
     @Override

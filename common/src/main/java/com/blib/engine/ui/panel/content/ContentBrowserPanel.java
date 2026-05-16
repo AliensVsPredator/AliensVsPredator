@@ -23,6 +23,7 @@ import com.blib.engine.ui.layout.ScrollViewport;
 import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.layout.UiText;
 import com.blib.engine.ui.widget.TextInput;
+import com.blib.engine.ui.widget.UiCaret;
 import com.blib.mod.BLib;
 import com.blib.mod.common.network.packet.C2SDeleteCapturePayload;
 import com.blib.mod.common.network.packet.C2SDeletePoolPayload;
@@ -296,7 +297,7 @@ public final class ContentBrowserPanel implements Panel {
         graphics.fill(x, y, x + 2, y + HEADER_HEIGHT, section.accentColor);
 
         var font = EngineFont.get();
-        var caret = collapsed.contains(section) ? "▸" : "▾";
+        var caret = UiCaret.glyph(collapsed.contains(section));
         var textY = y + (HEADER_HEIGHT - font.lineHeight + 2) / 2;
 
         var countLabel = "(" + count + ")";

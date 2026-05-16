@@ -29,6 +29,7 @@ import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.layout.UiText;
 import com.blib.engine.ui.popup.EntityContextMenuHandler;
 import com.blib.engine.ui.widget.TextInput;
+import com.blib.engine.ui.widget.UiCaret;
 
 /**
  * Scene-graph view of every entity loaded around the engine camera. Entities are grouped into four collapsible
@@ -257,7 +258,7 @@ public final class OutlinerPanel implements Panel {
         graphics.fill(x, y, x + 2, y + HEADER_HEIGHT, cat.accentColor);
 
         var font = EngineFont.get();
-        var caret = collapsed.contains(cat) ? "▸" : "▾";
+        var caret = UiCaret.glyph(collapsed.contains(cat));
         var textY = y + (HEADER_HEIGHT - font.lineHeight + 2) / 2;
         var countLabel = "(" + count + ")";
         var countWidth = Math.min(font.width(countLabel), Math.max(0, rowRight - x - 4));
