@@ -265,6 +265,7 @@ public final class TabbedPanel extends DelegatingPanel {
 
         PanelScissor.enable(graphics, UiRect.of(x, y, tabViewportWidth, TAB_BAR_HEIGHT));
         var cursorX = x - tabScrollX;
+        var mouseInTabViewport = isInVisibleTabViewport(mouseX, mouseY);
 
         for (var i = 0; i < tabs.size(); i++) {
             var label = tabs.get(i).title();
@@ -272,7 +273,7 @@ public final class TabbedPanel extends DelegatingPanel {
             var tabWidth = tabWidth(font, i);
 
             var tabRight = cursorX + tabWidth;
-            var hovered = mouseX >= cursorX && mouseX < tabRight && mouseY >= y && mouseY < y + TAB_BAR_HEIGHT;
+            var hovered = mouseInTabViewport && mouseX >= cursorX && mouseX < tabRight;
             var bg = i == activeIndex ? TAB_ACTIVE_BG_COLOR : (hovered ? TAB_HOVER_BG_COLOR : TAB_INACTIVE_BG_COLOR);
             graphics.fill(cursorX, y, tabRight, y + TAB_BAR_HEIGHT, bg);
 
@@ -287,7 +288,7 @@ public final class TabbedPanel extends DelegatingPanel {
             var closeX1 = closeX0 + CLOSE_BUTTON_SIZE;
             var closeY1 = closeY0 + CLOSE_BUTTON_SIZE;
 
-            var closeHovered = mouseX >= closeX0 && mouseX < closeX1 && mouseY >= closeY0 && mouseY < closeY1;
+            var closeHovered = mouseInTabViewport && mouseX >= closeX0 && mouseX < closeX1 && mouseY >= closeY0 && mouseY < closeY1;
             drawCloseIcon(graphics, closeX0, closeY0, closeX1, closeY1, closeHovered ? CLOSE_ICON_HOVER_COLOR : CLOSE_ICON_COLOR);
 
             graphics.fill(tabRight, y, tabRight + 1, y + TAB_BAR_HEIGHT, TAB_SEPARATOR_COLOR);
@@ -403,7 +404,7 @@ public final class TabbedPanel extends DelegatingPanel {
         if (!isInTabStrip(mouseX, mouseY)) {
             return -1;
         }
-        if (mouseX >= rectX + tabViewportWidth) {
+        if (!isInVisibleTabViewport(mouseX, mouseY)) {
             return -1;
         }
         for (var i = 0; i < tabRects.size(); i++) {
@@ -417,6 +418,9 @@ public final class TabbedPanel extends DelegatingPanel {
 
     public boolean hitCloseAt(double mouseX, double mouseY, int tabIndex) {
         if (tabIndex < 0 || tabIndex >= tabRects.size()) {
+            return false;
+        }
+        if (!isInVisibleTabViewport(mouseX, mouseY)) {
             return false;
         }
         var r = tabRects.get(tabIndex);
@@ -526,6 +530,13 @@ public final class TabbedPanel extends DelegatingPanel {
 
     private int clampTabScroll(int value) {
         return Math.max(0, Math.min(maxTabScroll(), value));
+    }
+
+    private boolean isInVisibleTabViewport(double mouseX, double mouseY) {
+        return mouseX >= rectX
+            && mouseX < rectX + tabViewportWidth
+            && mouseY >= rectY
+            && mouseY < rectY + TAB_BAR_HEIGHT;
     }
 
     private int overflowButtonWidth() {
