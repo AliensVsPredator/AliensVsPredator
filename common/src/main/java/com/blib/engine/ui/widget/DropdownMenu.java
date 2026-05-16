@@ -84,6 +84,8 @@ public final class DropdownMenu {
 
     private static final int ITEM_DISABLED_TEXT_COLOR = 0xFF777780;
 
+    private static final int MENU_Z = 400;
+
     /** Right-pointing triangle drawn at the right edge of items that open a submenu. */
     private static final String SUBMENU_INDICATOR = "▸";
 
@@ -226,6 +228,17 @@ public final class DropdownMenu {
     }
 
     public void render(GuiGraphics graphics, int mouseX, int mouseY) {
+        var pose = graphics.pose();
+        pose.pushPose();
+        pose.translate(0.0F, 0.0F, MENU_Z);
+        try {
+            renderAtOverlayDepth(graphics, mouseX, mouseY);
+        } finally {
+            pose.popPose();
+        }
+    }
+
+    private void renderAtOverlayDepth(GuiGraphics graphics, int mouseX, int mouseY) {
         var height = height();
         graphics.fill(anchorX, anchorY, anchorX + width, anchorY + height, BACKGROUND_COLOR);
 
