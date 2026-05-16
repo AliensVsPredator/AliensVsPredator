@@ -50,6 +50,7 @@ import com.blib.engine.texture.TextureTool;
 import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.panel.chrome.ModelerMenuBar;
 import com.blib.engine.ui.panel.chrome.ModelerViewportToolbar;
+import com.blib.engine.ui.panel.texture.TextureTabIndicators;
 import com.blib.engine.ui.popup.PanelMenuOpener;
 import com.blib.engine.ui.widget.DropdownMenu;
 import com.blib.engine.ui.widget.SearchableSelect;
@@ -170,6 +171,11 @@ public final class ModelerViewportPanel implements Panel {
     @Override
     public @Nullable Component tooltipText() {
         return hoveredTooltip;
+    }
+
+    @Override
+    public @Nullable Panel.TabIndicator tabIndicator() {
+        return TextureTabIndicators.activeTextureDirty();
     }
 
     @Override

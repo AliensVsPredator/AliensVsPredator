@@ -105,6 +105,11 @@ public final class TextureViewportPanel implements Panel {
     }
 
     @Override
+    public @Nullable Panel.TabIndicator tabIndicator() {
+        return TextureTabIndicators.activeTextureDirty();
+    }
+
+    @Override
     public void render(GuiGraphics graphics, int x, int y, int width, int height, int mouseX, int mouseY, float partialTick) {
         panelX = x;
         panelY = y;

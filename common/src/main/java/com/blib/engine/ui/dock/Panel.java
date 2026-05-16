@@ -63,4 +63,17 @@ public interface Panel extends PanelInput {
         return null;
     }
 
+    /**
+     * Optional small status marker rendered in this panel's tab. Intended for state the user should notice while the
+     * panel is tabbed away, such as unsaved edits or background work.
+     */
+    default @Nullable TabIndicator tabIndicator() {
+        return null;
+    }
+
+    record TabIndicator(
+        int color,
+        @Nullable Component tooltip
+    ) {}
+
 }

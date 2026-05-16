@@ -13,6 +13,7 @@ import java.util.List;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.layout.PanelScissor;
 import com.blib.engine.ui.layout.UiRect;
+import com.blib.engine.ui.layout.UiText;
 import com.blib.engine.ui.panel.viewport.ViewportPanel;
 
 /**
@@ -40,6 +41,10 @@ public final class TabbedPanel extends DelegatingPanel {
     private static final int TAB_LABEL_TO_CLOSE_GAP = 4;
 
     private static final int CLOSE_BUTTON_SIZE = 6;
+
+    private static final int TAB_INDICATOR_SIZE = 3;
+
+    private static final int TAB_INDICATOR_GAP = 3;
 
     private static final int TAB_SCROLL_STEP = 48;
 
@@ -268,7 +273,10 @@ public final class TabbedPanel extends DelegatingPanel {
         var mouseInTabViewport = isInVisibleTabViewport(mouseX, mouseY);
 
         for (var i = 0; i < tabs.size(); i++) {
-            var label = tabs.get(i).title();
+            var tab = tabs.get(i);
+            var label = tab.title();
+            var indicator = tab.tabIndicator();
+            var indicatorWidth = indicator == null ? 0 : TAB_INDICATOR_SIZE + TAB_INDICATOR_GAP;
             var labelWidth = font.width(label);
             var tabWidth = tabWidth(font, i);
 
@@ -281,9 +289,24 @@ public final class TabbedPanel extends DelegatingPanel {
             // +2 compensates for MC font's descender padding so tab labels visually center; see MenuBarPanel for
             // details.
             var textY = y + (TAB_BAR_HEIGHT - font.lineHeight + 2) / 2;
-            graphics.drawString(font, Component.literal(label), cursorX + TAB_PADDING_X, textY, textColor, false);
+            var textX = cursorX + TAB_PADDING_X + indicatorWidth;
+            if (indicator != null) {
+                var indicatorX = cursorX + TAB_PADDING_X;
+                var indicatorY = y + (TAB_BAR_HEIGHT - TAB_INDICATOR_SIZE) / 2;
+                graphics.fill(
+                    indicatorX,
+                    indicatorY,
+                    indicatorX + TAB_INDICATOR_SIZE,
+                    indicatorY + TAB_INDICATOR_SIZE,
+                    indicator.color()
+                );
+                if (hovered && indicator.tooltip() != null) {
+                    UiText.setCapturedTruncatedTextTooltip(indicator.tooltip());
+                }
+            }
+            graphics.drawString(font, Component.literal(label), textX, textY, textColor, false);
 
-            var closeX0 = cursorX + TAB_PADDING_X + labelWidth + TAB_LABEL_TO_CLOSE_GAP;
+            var closeX0 = textX + labelWidth + TAB_LABEL_TO_CLOSE_GAP;
             var closeY0 = y + (TAB_BAR_HEIGHT - CLOSE_BUTTON_SIZE) / 2;
             var closeX1 = closeX0 + CLOSE_BUTTON_SIZE;
             var closeY1 = closeY0 + CLOSE_BUTTON_SIZE;
@@ -481,8 +504,10 @@ public final class TabbedPanel extends DelegatingPanel {
     }
 
     private int tabWidth(Font font, int index) {
-        var labelWidth = font.width(tabs.get(index).title());
-        return TAB_PADDING_X + labelWidth + TAB_LABEL_TO_CLOSE_GAP + CLOSE_BUTTON_SIZE + TAB_PADDING_X;
+        var tab = tabs.get(index);
+        var indicatorWidth = tab.tabIndicator() == null ? 0 : TAB_INDICATOR_SIZE + TAB_INDICATOR_GAP;
+        var labelWidth = font.width(tab.title());
+        return TAB_PADDING_X + indicatorWidth + labelWidth + TAB_LABEL_TO_CLOSE_GAP + CLOSE_BUTTON_SIZE + TAB_PADDING_X;
     }
 
     private int tabLeft(Font font, int index) {

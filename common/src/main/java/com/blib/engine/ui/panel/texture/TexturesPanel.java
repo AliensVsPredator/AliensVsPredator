@@ -120,6 +120,11 @@ public final class TexturesPanel implements Panel {
     }
 
     @Override
+    public @Nullable Panel.TabIndicator tabIndicator() {
+        return TextureTabIndicators.anyTextureDirty();
+    }
+
+    @Override
     public void render(GuiGraphics graphics, int x, int y, int width, int height, int mouseX, int mouseY, float partialTick) {
         hoveredTooltip = null;
         panelX = x;
