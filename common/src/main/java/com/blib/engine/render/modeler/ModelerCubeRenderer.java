@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,6 +26,9 @@ import com.blib.engine.modeler.ModelerTransforms;
 import com.blib.engine.modeler.Selection;
 import com.blib.engine.modeler.gizmo.ModelerGizmoMode;
 import com.blib.engine.modeler.gizmo.ModelerGizmoState;
+import com.blib.engine.modeler.texture.ModelerFaceTextureMapping;
+import com.blib.engine.texture.TextureEditorState;
+import com.blib.engine.texture.TextureTool;
 
 /**
  * Emits filled quads + selection outline for every cube in the scene. Walks the bone tree depth-first and applies the
@@ -49,6 +53,20 @@ public final class ModelerCubeRenderer {
 
     private static final int FACE_HOVER_FILL_COLOR = 0x40FFFFFF;
 
+    private static final int TEXTURE_PIXEL_GRID_COLOR = 0x884F8FFF;
+
+    private static final int TEXTURE_PIXEL_HOVER_COLOR = 0xEEFFCC33;
+
+    private static final float TEXTURE_PIXEL_GRID_OFFSET = 0.035f;
+
+    private static final float TEXTURE_PIXEL_HOVER_OFFSET = 0.065f;
+
+    private static final float TEXTURE_PIXEL_GRID_THICKNESS = 0.018f;
+
+    private static final float TEXTURE_PIXEL_HOVER_THICKNESS = 0.085f;
+
+    private static final float GRID_AXIS_EPSILON = 1.0e-6f;
+
     /** Per-face brightness multiplier in face order (+X, -X, +Y, -Y, +Z, -Z) — fakes a top-lit room. */
     private static final float[] FACE_SHADE = { 0.82f, 0.82f, 1.00f, 0.55f, 0.72f, 0.72f };
 
@@ -60,6 +78,9 @@ public final class ModelerCubeRenderer {
 
         // Filled quads first, outline passes on top.
         renderBoneFilled(pose, root);
+        if (shouldRenderTexturePixelGrid()) {
+            renderTexturePixelGrid(pose, root);
+        }
 
         // Selection targets: a CubeSelection outlines just that cube; a MultiCubeSelection outlines every cube in the
         // group so the viewport mirrors the UV map / outliner multi-highlight; a BoneSelection cascades to every cube
@@ -95,6 +116,10 @@ public final class ModelerCubeRenderer {
         }
         if (selectedFace != null) {
             renderFaceOverlay(pose, root, selectedFace, FACE_SELECTION_FILL_COLOR);
+        }
+        var hoveredTexturePixel = ModelerScene.get().hoveredTexturePixel;
+        if (hoveredTexturePixel != null) {
+            renderTexturePixelHover(pose, root, hoveredTexturePixel);
         }
 
         // Drag ghost pass — when a TRANSLATE / ROTATE / RESIZE drag is in flight, emit a second outline using the
@@ -378,6 +403,210 @@ public final class ModelerCubeRenderer {
         }
         var active = scene.activeTexture;
         return active != null ? active.textureId() : null;
+    }
+
+    private static boolean shouldRenderTexturePixelGrid() {
+        var tool = TextureEditorState.tool();
+        return tool == TextureTool.PENCIL || tool == TextureTool.BUCKET;
+    }
+
+    private static void renderTexturePixelGrid(PoseStack pose, ModelerBone root) {
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        var buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        emitTexturePixelGrid(buffer, pose, root, ModelerScene.get());
+        var built = buffer.build();
+        if (built != null) {
+            BufferUploader.drawWithShader(built);
+        }
+        RenderSystem.disableBlend();
+    }
+
+    private static void emitTexturePixelGrid(BufferBuilder buffer, PoseStack pose, ModelerBone bone, ModelerScene scene) {
+        pose.pushPose();
+        ModelerTransforms.applyBone(pose, bone);
+
+        for (var cube : bone.cubes) {
+            emitCubeTexturePixelGrid(buffer, pose, cube, scene);
+        }
+        for (var child : bone.children) {
+            emitTexturePixelGrid(buffer, pose, child, scene);
+        }
+
+        pose.popPose();
+    }
+
+    private static void emitCubeTexturePixelGrid(BufferBuilder buffer, PoseStack pose, ModelerCube cube, ModelerScene scene) {
+        pose.pushPose();
+        ModelerTransforms.applyCube(pose, cube);
+        var matrix = pose.last().pose();
+        var color = unpackColor(TEXTURE_PIXEL_GRID_COLOR);
+
+        for (var face : ModelerCube.Face.values()) {
+            var texture = ModelerFaceTextureMapping.textureForFace(scene, cube, face);
+            var uv = ModelerFaceTextureMapping.uvQuad(cube, face);
+            if (texture == null || uv == null) {
+                continue;
+            }
+            var geometry = ModelerFaceTextureMapping.faceGeometry(cube, face);
+            var aSteps = uv.cellsAlongA();
+            var bSteps = uv.cellsAlongB();
+            var aLength = geometry.aAxis().length();
+            var bLength = geometry.bAxis().length();
+            if (aLength < GRID_AXIS_EPSILON || bLength < GRID_AXIS_EPSILON) {
+                continue;
+            }
+            var halfA = (TEXTURE_PIXEL_GRID_THICKNESS * 0.5f) / aLength;
+            var halfB = (TEXTURE_PIXEL_GRID_THICKNESS * 0.5f) / bLength;
+            for (var i = 0; i <= aSteps; i++) {
+                emitGridStripAlongB(buffer, matrix, geometry, i / (float) aSteps, 0.0f, 1.0f, halfA, TEXTURE_PIXEL_GRID_OFFSET, color);
+            }
+            for (var i = 0; i <= bSteps; i++) {
+                emitGridStripAlongA(buffer, matrix, geometry, i / (float) bSteps, 0.0f, 1.0f, halfB, TEXTURE_PIXEL_GRID_OFFSET, color);
+            }
+        }
+        pose.popPose();
+    }
+
+    private static void renderTexturePixelHover(PoseStack pose, ModelerBone root, ModelerScene.TexturePixelHover hover) {
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        var buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        emitTexturePixelHover(buffer, pose, root, hover);
+        var built = buffer.build();
+        if (built != null) {
+            BufferUploader.drawWithShader(built);
+        }
+        RenderSystem.disableBlend();
+    }
+
+    private static void emitTexturePixelHover(
+        BufferBuilder buffer,
+        PoseStack pose,
+        ModelerBone bone,
+        ModelerScene.TexturePixelHover hover
+    ) {
+        pose.pushPose();
+        ModelerTransforms.applyBone(pose, bone);
+
+        if (bone == hover.owner()) {
+            for (var cube : bone.cubes) {
+                if (cube == hover.cube()) {
+                    emitTexturePixelHoverCell(buffer, pose, cube, hover.face(), hover.pixelX(), hover.pixelY());
+                    break;
+                }
+            }
+        }
+        for (var child : bone.children) {
+            emitTexturePixelHover(buffer, pose, child, hover);
+        }
+
+        pose.popPose();
+    }
+
+    private static void emitTexturePixelHoverCell(
+        BufferBuilder buffer,
+        PoseStack pose,
+        ModelerCube cube,
+        ModelerCube.Face face,
+        int pixelX,
+        int pixelY
+    ) {
+        var uv = ModelerFaceTextureMapping.uvQuad(cube, face);
+        if (uv == null) {
+            return;
+        }
+        var cell = uv.faceCellForPixel(new ModelerFaceTextureMapping.Pixel(pixelX, pixelY));
+        if (cell == null) {
+            return;
+        }
+
+        pose.pushPose();
+        ModelerTransforms.applyCube(pose, cube);
+        var matrix = pose.last().pose();
+        var geometry = ModelerFaceTextureMapping.faceGeometry(cube, face);
+        var aLength = geometry.aAxis().length();
+        var bLength = geometry.bAxis().length();
+        if (aLength < GRID_AXIS_EPSILON || bLength < GRID_AXIS_EPSILON) {
+            pose.popPose();
+            return;
+        }
+
+        var color = unpackColor(TEXTURE_PIXEL_HOVER_COLOR);
+        var halfA = (TEXTURE_PIXEL_HOVER_THICKNESS * 0.5f) / aLength;
+        var halfB = (TEXTURE_PIXEL_HOVER_THICKNESS * 0.5f) / bLength;
+        emitGridStripAlongB(buffer, matrix, geometry, cell.a0(), cell.b0(), cell.b1(), halfA, TEXTURE_PIXEL_HOVER_OFFSET, color);
+        emitGridStripAlongB(buffer, matrix, geometry, cell.a1(), cell.b0(), cell.b1(), halfA, TEXTURE_PIXEL_HOVER_OFFSET, color);
+        emitGridStripAlongA(buffer, matrix, geometry, cell.b0(), cell.a0(), cell.a1(), halfB, TEXTURE_PIXEL_HOVER_OFFSET, color);
+        emitGridStripAlongA(buffer, matrix, geometry, cell.b1(), cell.a0(), cell.a1(), halfB, TEXTURE_PIXEL_HOVER_OFFSET, color);
+        pose.popPose();
+    }
+
+    private static void emitGridStripAlongB(
+        BufferBuilder buffer,
+        Matrix4f matrix,
+        ModelerFaceTextureMapping.FaceGeometry geometry,
+        float a,
+        float b0,
+        float b1,
+        float halfA,
+        float offset,
+        float[] color
+    ) {
+        var a0 = clamp01(a - halfA);
+        var a1 = clamp01(a + halfA);
+        var stripB0 = clamp01(Math.min(b0, b1));
+        var stripB1 = clamp01(Math.max(b0, b1));
+        addQuadColor(
+            buffer,
+            matrix,
+            geometry.point(a0, stripB0, offset),
+            geometry.point(a0, stripB1, offset),
+            geometry.point(a1, stripB1, offset),
+            geometry.point(a1, stripB0, offset),
+            color
+        );
+    }
+
+    private static void emitGridStripAlongA(
+        BufferBuilder buffer,
+        Matrix4f matrix,
+        ModelerFaceTextureMapping.FaceGeometry geometry,
+        float b,
+        float a0,
+        float a1,
+        float halfB,
+        float offset,
+        float[] color
+    ) {
+        var b0 = clamp01(b - halfB);
+        var b1 = clamp01(b + halfB);
+        var stripA0 = clamp01(Math.min(a0, a1));
+        var stripA1 = clamp01(Math.max(a0, a1));
+        addQuadColor(
+            buffer,
+            matrix,
+            geometry.point(stripA0, b0, offset),
+            geometry.point(stripA0, b1, offset),
+            geometry.point(stripA1, b1, offset),
+            geometry.point(stripA1, b0, offset),
+            color
+        );
+    }
+
+    private static float[] unpackColor(int color) {
+        return new float[] {
+            ((color >> 16) & 0xFF) / 255f,
+            ((color >> 8) & 0xFF) / 255f,
+            (color & 0xFF) / 255f,
+            ((color >> 24) & 0xFF) / 255f
+        };
+    }
+
+    private static float clamp01(float value) {
+        return Math.max(0.0f, Math.min(1.0f, value));
     }
 
     private static void emitCubeFaces(BufferBuilder buffer, PoseStack pose, ModelerCube cube) {
@@ -1196,6 +1425,37 @@ public final class ModelerCubeRenderer {
         addQuadColor(buffer, matrix, xmin, ymin, zb, xmin, ymin, za, xmax, ymin, za, xmax, ymin, zb, r, g, b, a); // -Y
         addQuadColor(buffer, matrix, xmax, ymin, za, xmax, ymax, za, xmax, ymax, zb, xmax, ymin, zb, r, g, b, a); // +X
         addQuadColor(buffer, matrix, xmin, ymin, zb, xmin, ymax, zb, xmin, ymax, za, xmin, ymin, za, r, g, b, a); // -X
+    }
+
+    private static void addQuadColor(
+        BufferBuilder buffer,
+        Matrix4f matrix,
+        Vector3f v0,
+        Vector3f v1,
+        Vector3f v2,
+        Vector3f v3,
+        float[] color
+    ) {
+        addQuadColor(
+            buffer,
+            matrix,
+            v0.x,
+            v0.y,
+            v0.z,
+            v1.x,
+            v1.y,
+            v1.z,
+            v2.x,
+            v2.y,
+            v2.z,
+            v3.x,
+            v3.y,
+            v3.z,
+            color[0],
+            color[1],
+            color[2],
+            color[3]
+        );
     }
 
     private static void addQuadColor(

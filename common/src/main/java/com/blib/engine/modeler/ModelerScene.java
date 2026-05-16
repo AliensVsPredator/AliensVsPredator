@@ -97,6 +97,12 @@ public final class ModelerScene {
     public @Nullable Selection.FaceSelection hoveredFace;
 
     /**
+     * Exact texture pixel currently under the viewport cursor while a texture paint tool is active. The cube hover
+     * outline is suppressed in that mode; this drives a smaller surface-cell outline instead.
+     */
+    public @Nullable TexturePixelHover hoveredTexturePixel;
+
+    /**
      * PNG textures the user has loaded via the Textures panel. Insertion-ordered; the panel renders rows in the same
      * order and uses identity for "is this the active one". Cleared on {@link #resetToEntity}.
      */
@@ -127,6 +133,14 @@ public final class ModelerScene {
     public record CubeWithOwner(
         ModelerBone owner,
         ModelerCube cube
+    ) {}
+
+    public record TexturePixelHover(
+        ModelerBone owner,
+        ModelerCube cube,
+        ModelerCube.Face face,
+        int pixelX,
+        int pixelY
     ) {}
 
     /**
@@ -335,6 +349,7 @@ public final class ModelerScene {
         this.selection = null;
         this.hoveredCube = null;
         this.hoveredFace = null;
+        this.hoveredTexturePixel = null;
         ModelerActionHistory.clear();
     }
 
