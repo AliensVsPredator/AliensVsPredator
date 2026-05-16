@@ -56,12 +56,21 @@ public final class PanelScissor {
         var bottomRight = matrix.transformPosition((float) (x + width), (float) (y + height), 0f, new Vector3f());
 
         var window = Minecraft.getInstance().getWindow();
+        var winWidth = window.getWidth();
         var winHeight = window.getHeight();
         var guiScale = window.getGuiScale();
-        var leftRaw = (int) ((double) topLeft.x * guiScale);
-        var bottomRaw = (int) ((double) winHeight - (double) bottomRight.y * guiScale);
-        var widthRaw = Math.max(0, (int) ((double) (bottomRight.x - topLeft.x) * guiScale));
-        var heightRaw = Math.max(0, (int) ((double) (bottomRight.y - topLeft.y) * guiScale));
+
+        var minX = Math.min(topLeft.x, bottomRight.x) * guiScale;
+        var maxX = Math.max(topLeft.x, bottomRight.x) * guiScale;
+        var minY = Math.min(topLeft.y, bottomRight.y) * guiScale;
+        var maxY = Math.max(topLeft.y, bottomRight.y) * guiScale;
+
+        var leftRaw = Math.max(0, (int) Math.floor(minX));
+        var rightRaw = Math.min(winWidth, (int) Math.ceil(maxX));
+        var bottomRaw = Math.max(0, (int) Math.floor((double) winHeight - maxY));
+        var topRaw = Math.min(winHeight, (int) Math.ceil((double) winHeight - minY));
+        var widthRaw = Math.max(0, rightRaw - leftRaw);
+        var heightRaw = Math.max(0, topRaw - bottomRaw);
         return new RawScissor(leftRaw, bottomRaw, widthRaw, heightRaw);
     }
 

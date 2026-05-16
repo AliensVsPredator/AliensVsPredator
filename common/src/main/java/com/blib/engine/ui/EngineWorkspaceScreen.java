@@ -143,6 +143,8 @@ public final class EngineWorkspaceScreen extends Screen {
 
     private static final int TAB_DROP_TARGET_COLOR = 0x404F8FFF;
 
+    private static final int WORKSPACE_CLEAR_COLOR = 0xFF14141A;
+
     /**
      * Sentinel mouse coordinate used in place of the real one when the cursor is over an overlay (e.g. an open
      * dropdown) so panels rendered underneath universally fail their contains-point hover checks.
@@ -499,8 +501,8 @@ public final class EngineWorkspaceScreen extends Screen {
     }
 
     /**
-     * Suppress the default screen background so the workspace overlays the live world without dimming it. Panels that
-     * want a backdrop fill it themselves; the viewport panel hosts a downsampled blit of the world+HUD via
+     * Suppress the default screen background. {@link #render(GuiGraphics, int, int, float)} paints a deterministic
+     * workspace underlay before the viewport panel hosts a downsampled blit of the world+HUD via
      * {@link EngineWorkspaceCompositor}.
      */
     @Override
@@ -547,6 +549,12 @@ public final class EngineWorkspaceScreen extends Screen {
         }
 
         super.render(graphics, mouseX, mouseY, partialTick);
+
+        // Paint a deterministic underlay before any viewport blit or dock rendering. Panel contents are clipped to raw
+        // scissor rectangles, so a global clear keeps divider/tab overlays from leaving stale pixels in fractional-scale
+        // edge gaps between panels.
+        graphics.fill(0, 0, this.width, this.height, WORKSPACE_CLEAR_COLOR);
+        graphics.flush();
 
         // In-world path reads the main RT (which holds vanilla's world + HUD render). Menu-overlay path reads the
         // dedicated wrappedScreenRT instead. Both feed the same downsample → viewport-rect blit pattern.
