@@ -7,7 +7,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -1028,22 +1027,6 @@ public final class EngineWorkspaceScreen extends Screen {
         }
 
         return super.keyPressed(keyCode, scanCode, modifiers);
-    }
-
-    /**
-     * Delete a single inspected block by reusing the volume-delete packet with a degenerate one-block AABB. Avoids a
-     * parallel "delete one block" packet — the server's volume delete already special-cases tiny volumes, and routing
-     * through the same handler keeps op-gating + edit logging consistent. The
-     * {@link com.blib.engine.domain.selection.picking.BlockSelectable#isValid} check that prunes the now-air block from
-     * {@link SelectionManager} fires naturally on the next read, so no explicit clear is needed here.
-     */
-    private void deleteSingleBlock(BlockPos pos) {
-        var mc = Minecraft.getInstance();
-        if (mc.player == null) {
-            return;
-        }
-        var dim = mc.player.level().dimension().location();
-        commands.dispatch(new Command.DeleteBlockVolume(pos, pos, dim));
     }
 
     @Override
@@ -2110,10 +2093,6 @@ public final class EngineWorkspaceScreen extends Screen {
             return EngineWorkspaceScreen.this.layoutHasLocalHistoryPanel();
         }
 
-        @Override
-        public void deleteSingleBlock(BlockPos pos) {
-            EngineWorkspaceScreen.this.deleteSingleBlock(pos);
-        }
     }
 
     private final class ViewportContextMenuHostImpl implements ViewportContextMenuHandler.Host {

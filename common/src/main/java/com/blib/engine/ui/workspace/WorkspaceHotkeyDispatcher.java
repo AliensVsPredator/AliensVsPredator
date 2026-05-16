@@ -1,13 +1,10 @@
 package com.blib.engine.ui.workspace;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.engine.command.api.Command;
 import com.blib.engine.command.api.CommandBus;
 import com.blib.engine.domain.selection.entity.EntityGizmoMode;
-import com.blib.engine.domain.selection.picking.BlockSelectable;
 import com.blib.engine.domain.selection.picking.EntitySelectable;
 import com.blib.engine.domain.selection.picking.SelectionManager;
 import com.blib.engine.domain.selection.volume.BlockSelection;
@@ -45,11 +42,6 @@ public final class WorkspaceHotkeyDispatcher {
         boolean layoutHasModelerPanel();
 
         boolean layoutHasLocalHistoryPanel();
-
-        /**
-         * Single-block delete via degenerate one-block volume — kept on the host so the dim lookup stays consistent.
-         */
-        void deleteSingleBlock(BlockPos pos);
     }
 
     private final Host host;
@@ -182,19 +174,7 @@ public final class WorkspaceHotkeyDispatcher {
                 ModelerScene.get().deleteSelection();
                 return true;
             }
-            var deleteSel = SelectionManager.current().single();
-            if (deleteSel instanceof EntitySelectable es) {
-                var entity = es.entity();
-                if (entity != null && !(entity instanceof Player)) {
-                    host.commands().dispatch(new Command.RemoveEntity(entity.getId()));
-                }
-                return true;
-            }
-            if (deleteSel instanceof BlockSelectable bs) {
-                host.deleteSingleBlock(bs.pos());
-                return true;
-            }
-            BlockSelectionOps.delete();
+            ViewportSelectionDelete.deleteCurrentSelection(host.commands());
             return true;
         }
         return false;
