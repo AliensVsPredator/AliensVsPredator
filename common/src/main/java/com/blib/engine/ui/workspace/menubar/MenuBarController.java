@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 import com.blib.engine.layout.LayoutCatalog;
 import com.blib.engine.layout.LayoutTemplate;
 import com.blib.engine.layout.PanelRegistry;
+import com.blib.engine.modeler.animation.AnimationCollisionState;
 import com.blib.engine.session.ProjectSession;
 import com.blib.engine.territory.ClaimPaintTool;
 import com.blib.engine.ui.dock.Panel;
@@ -318,6 +319,13 @@ public final class MenuBarController {
             new DropdownMenu.Item(
                 (territoryOn ? "✓ " : "   ") + "Show Territory Claims",
                 ClaimPaintTool::toggleOverlayVisible
+            )
+        );
+        var collisionsOn = AnimationCollisionState.get().isEnabled();
+        items.add(
+            new DropdownMenu.Item(
+                (collisionsOn ? "✓ " : "   ") + "Animation Collision Detection",
+                AnimationCollisionState.get()::toggleEnabled
             )
         );
         return new DropdownMenu(anchorX, anchorY, items);
