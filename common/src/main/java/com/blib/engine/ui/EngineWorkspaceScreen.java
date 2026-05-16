@@ -22,8 +22,10 @@ import java.util.function.Supplier;
 import com.blib.engine.command.api.Command;
 import com.blib.engine.command.api.CommandBus;
 import com.blib.engine.domain.selection.picking.SelectionManager;
+import com.blib.engine.input.ActiveKeybindings;
 import com.blib.engine.input.KeybindingProfile;
 import com.blib.engine.input.KeybindingProfileCatalog;
+import com.blib.engine.input.Keybindings;
 import com.blib.engine.jigsaw.JigsawPieceLibrary;
 import com.blib.engine.jigsaw.JigsawPieceSelection;
 import com.blib.engine.jigsaw.JigsawPoolLibrary;
@@ -1127,6 +1129,18 @@ public final class EngineWorkspaceScreen extends Screen {
                     menuBar.open(buildTabContextMenu(tabbed, tabIdx, (int) logicalX, (int) logicalY));
                 }
                 // Right-click on empty tab-strip space is still owned by the tab strip.
+                return true;
+            }
+        }
+
+        if (ActiveKeybindings.matchesMouseButton(Keybindings.TAB_CLOSE, button)) {
+            var tabbed = findTabbedPanelAt((int) logicalX, (int) logicalY);
+            if (tabbed != null && tabbed.isInTabStrip(logicalX, logicalY)) {
+                var tabIdx = tabbed.hitTabAt(logicalX, logicalY);
+                if (tabIdx >= 0) {
+                    tabbed.removeTab(tabIdx);
+                    simplifyDockTree();
+                }
                 return true;
             }
         }

@@ -115,6 +115,10 @@ public final class Keybindings {
 
     public static final Keybinding PAINT_UNCLAIM = mouseDrag(1, "paint.unclaim", "Unclaim chunk");
 
+    // ----- Tabs -----
+
+    public static final Keybinding TAB_CLOSE = mouseButton(2, "tabs.close", "Close tab");
+
     private static final List<Keybinding> ALL_DEFAULTS = List.of(
         RELOAD_PROJECT,
         UNDO,
@@ -149,7 +153,8 @@ public final class Keybindings {
         TMAP_PAN,
         TMAP_ZOOM,
         PAINT_CLAIM,
-        PAINT_UNCLAIM
+        PAINT_UNCLAIM,
+        TAB_CLOSE
     );
 
     private Keybindings() {}
@@ -175,6 +180,7 @@ public final class Keybindings {
             case "viewport" -> "Viewport";
             case "tmap" -> "Territory Map";
             case "paint" -> "Paint";
+            case "tabs" -> "Tabs";
             default -> categoryKey;
         };
     }
