@@ -115,8 +115,6 @@ public final class AnimationTimelinePanel implements Panel {
 
     private @Nullable Selection lastSceneSelection;
 
-    private boolean suppressNextSceneSelectionScope;
-
     private int panelX, panelY, panelWidth, panelHeight;
 
     private int playX, playY, playW, playH;
@@ -327,13 +325,10 @@ public final class AnimationTimelinePanel implements Panel {
             timelineRootBone = null;
             lastSceneRoot = scene.root;
             lastSceneSelection = null;
-            suppressNextSceneSelectionScope = false;
         }
         if (scene.selection != lastSceneSelection) {
             lastSceneSelection = scene.selection;
-            if (suppressNextSceneSelectionScope) {
-                suppressNextSceneSelectionScope = false;
-            } else if (scene.selection instanceof Selection.BoneSelection bs) {
+            if (scene.selection instanceof Selection.BoneSelection bs) {
                 timelineRootBone = bs.bone();
                 state.selectBone(bs.bone().name);
             }
@@ -354,8 +349,9 @@ public final class AnimationTimelinePanel implements Panel {
     }
 
     private void selectBoneFromTimeline(ModelerBone bone) {
-        suppressNextSceneSelectionScope = true;
-        ModelerScene.get().selection = new Selection.BoneSelection(bone);
+        var selection = new Selection.BoneSelection(bone);
+        ModelerScene.get().selection = selection;
+        lastSceneSelection = selection;
     }
 
     private static @Nullable ModelerBone findBone(ModelerBone bone, String name) {
