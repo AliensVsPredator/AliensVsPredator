@@ -105,6 +105,12 @@ public final class AnimationTimelinePanel implements Panel {
 
     private @Nullable ModelerBone lastSceneRoot;
 
+    private @Nullable ModelerBone timelineRootBone;
+
+    private @Nullable Selection lastSceneSelection;
+
+    private boolean suppressNextSceneSelectionScope;
+
     private int panelX, panelY, panelWidth, panelHeight;
 
     private int playX, playY, playW, playH;
@@ -144,7 +150,7 @@ public final class AnimationTimelinePanel implements Panel {
         graphics.fill(x, y, x + width, y + height, BG_COLOR);
 
         var state = AnimationEditorState.get();
-        state.syncSelectedBoneFromScene();
+        syncTimelineScopeFromScene(state);
         state.updatePlaybackClock();
         timelineDuration = state.selectedAnimationLengthSeconds();
 
@@ -183,7 +189,7 @@ public final class AnimationTimelinePanel implements Panel {
         if (keyframe != null) {
             var row = channelRowAt(mouseY);
             if (row != null) {
-                ModelerScene.get().selection = new Selection.BoneSelection(row.bone());
+                selectBoneFromTimeline(row.bone());
             }
             state.selectKeyframe(keyframe.animationName(), keyframe.boneName(), keyframe.channel(), keyframe.timestamp());
             state.setPlayheadSeconds(keyframe.timestamp());
@@ -197,7 +203,7 @@ public final class AnimationTimelinePanel implements Panel {
                 }
                 return true;
             }
-            ModelerScene.get().selection = new Selection.BoneSelection(row.bone());
+            selectBoneFromTimeline(row.bone());
             state.selectBone(row.bone().name);
             if (!row.isBone()) {
                 state.selectChannel(row.channel());
@@ -274,11 +280,6 @@ public final class AnimationTimelinePanel implements Panel {
 
     private void rebuildTracks(AnimationEditorState state) {
         rows.clear();
-        var sceneRoot = ModelerScene.get().root;
-        if (sceneRoot != lastSceneRoot) {
-            collapsedBones.clear();
-            lastSceneRoot = sceneRoot;
-        }
         var animation = state.selectedAnimationName();
         var root = selectedTimelineRoot(state);
         if (!state.hasDraft() || animation == null || root == null) {
@@ -305,13 +306,42 @@ public final class AnimationTimelinePanel implements Panel {
         }
     }
 
-    private static @Nullable ModelerBone selectedTimelineRoot(AnimationEditorState state) {
+    private void syncTimelineScopeFromScene(AnimationEditorState state) {
         var scene = ModelerScene.get();
-        if (scene.selection instanceof Selection.BoneSelection bs) {
-            return bs.bone();
+        if (scene.root != lastSceneRoot) {
+            collapsedBones.clear();
+            timelineRootBone = null;
+            lastSceneRoot = scene.root;
+            lastSceneSelection = null;
+            suppressNextSceneSelectionScope = false;
         }
+        if (scene.selection != lastSceneSelection) {
+            lastSceneSelection = scene.selection;
+            if (suppressNextSceneSelectionScope) {
+                suppressNextSceneSelectionScope = false;
+            } else if (scene.selection instanceof Selection.BoneSelection bs) {
+                timelineRootBone = bs.bone();
+                state.selectBone(bs.bone().name);
+            }
+        }
+        if (timelineRootBone == null) {
+            var selectedName = state.selectedBoneName();
+            timelineRootBone = selectedName == null ? null : findBone(scene.root, selectedName);
+        }
+    }
+
+    private @Nullable ModelerBone selectedTimelineRoot(AnimationEditorState state) {
+        if (timelineRootBone != null) {
+            return timelineRootBone;
+        }
+        var scene = ModelerScene.get();
         var selectedName = state.selectedBoneName();
         return selectedName == null ? null : findBone(scene.root, selectedName);
+    }
+
+    private void selectBoneFromTimeline(ModelerBone bone) {
+        suppressNextSceneSelectionScope = true;
+        ModelerScene.get().selection = new Selection.BoneSelection(bone);
     }
 
     private static @Nullable ModelerBone findBone(ModelerBone bone, String name) {
@@ -525,7 +555,7 @@ public final class AnimationTimelinePanel implements Panel {
         if (keyframe != null) {
             var row = channelRowAt(mouseY);
             if (row != null) {
-                ModelerScene.get().selection = new Selection.BoneSelection(row.bone());
+                selectBoneFromTimeline(row.bone());
             }
             AnimationEditorState.get().selectKeyframe(keyframe.animationName(), keyframe.boneName(), keyframe.channel(), keyframe.timestamp());
             AnimationEditorState.get().setPlayheadSeconds(keyframe.timestamp());
