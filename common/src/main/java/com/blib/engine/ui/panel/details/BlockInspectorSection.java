@@ -423,6 +423,12 @@ public final class BlockInspectorSection implements InspectorSection<BlockSelect
             blockTagCatalogRequestedForProject = projectName;
         }
 
+        // Add-tag picker — only meaningful with an open project and a populated catalog. With no project, hide the
+        // picker entirely; with no catalog yet, hide and rely on the in-flight request to populate next frame.
+        if (projectName != null && blockTagPicker != null && !TagCatalogCache.all().isEmpty()) {
+            rowY = TagInspectorUi.renderAddTagPicker(graphics, x, rowY, width, blockTagPicker, mouseX, mouseY);
+        }
+
         var effective = effectiveBlockTags(blockId);
 
         if (effective.isEmpty()) {
@@ -435,20 +441,14 @@ public final class BlockInspectorSection implements InspectorSection<BlockSelect
                 false
             );
             rowY += InspectorStyle.LINE_HEIGHT + InspectorStyle.ROW_GAP;
-        } else {
-            var blockRegistry = Registries.BLOCK.location();
-            for (var tagId : effective) {
-                var pendingAdd = TagStagingCache.isEntryStagedAdd(blockRegistry, tagId, false, blockId);
-                rowY = renderBlockTagRow(graphics, font, x, rowY, width, mouseX, mouseY, blockRegistry, tagId, pendingAdd);
-            }
+            return rowY;
         }
 
-        // "+ Add tag" picker — only meaningful with an open project and a populated catalog. With no project, hide
-        // the picker entirely; with no catalog yet, hide and rely on the in-flight request to populate next frame.
-        if (projectName != null && blockTagPicker != null && !TagCatalogCache.all().isEmpty()) {
-            rowY = panel.drawSelectRow(graphics, font, x, rowY, width, "+ Add tag", null, blockTagPicker, mouseX, mouseY);
+        var blockRegistry = Registries.BLOCK.location();
+        for (var tagId : effective) {
+            var pendingAdd = TagStagingCache.isEntryStagedAdd(blockRegistry, tagId, false, blockId);
+            rowY = renderBlockTagRow(graphics, font, x, rowY, width, mouseX, mouseY, blockRegistry, tagId, pendingAdd);
         }
-
         return rowY;
     }
 
@@ -574,7 +574,7 @@ public final class BlockInspectorSection implements InspectorSection<BlockSelect
     }
 
     /**
-     * Build the items list for the "+ Add tag" picker: every block-registry catalog entry minus the tags the block is
+     * Build the items list for the add-tag picker: every block-registry catalog entry minus the tags the block is
      * already in. Called by the SearchableSelect's itemsProvider on popup open so it stays in sync with the catalog
      * cache and the live tag membership.
      */
@@ -688,8 +688,12 @@ public final class BlockInspectorSection implements InspectorSection<BlockSelect
                         new C2SAddTagEntryPayload(projectName, Registries.BLOCK.location(), picked, false, blockId, true)
                     );
                 TagStagingCache.markEntryAdded(Registries.BLOCK.location(), picked, false, blockId);
+                if (blockTagPicker != null) {
+                    blockTagPicker.setCurrentValue(null);
+                }
             }
         );
+        TagInspectorUi.configureAddTagPicker(blockTagPicker);
         for (var prop : state.getProperties()) {
             var name = prop.getName();
             if (prop instanceof BooleanProperty) {

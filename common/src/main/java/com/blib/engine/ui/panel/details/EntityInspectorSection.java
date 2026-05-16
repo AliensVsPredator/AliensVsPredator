@@ -225,6 +225,10 @@ public final class EntityInspectorSection implements InspectorSection<EntitySele
             entityTagCatalogRequestedForProject = projectName;
         }
 
+        if (projectName != null && entityTagPicker != null && !TagCatalogCache.all().isEmpty()) {
+            rowY = TagInspectorUi.renderAddTagPicker(graphics, x, rowY, width, entityTagPicker, mouseX, mouseY);
+        }
+
         var effective = effectiveEntityTags(entityTypeId);
         if (effective.isEmpty()) {
             graphics.drawString(
@@ -236,18 +240,14 @@ public final class EntityInspectorSection implements InspectorSection<EntitySele
                 false
             );
             rowY += InspectorStyle.LINE_HEIGHT + InspectorStyle.ROW_GAP;
-        } else {
-            var entityRegistry = Registries.ENTITY_TYPE.location();
-            for (var tagId : effective) {
-                var pendingAdd = TagStagingCache.isEntryStagedAdd(entityRegistry, tagId, false, entityTypeId);
-                rowY = renderEntityTagRow(graphics, font, x, rowY, width, mouseX, mouseY, entityRegistry, tagId, pendingAdd);
-            }
+            return rowY;
         }
 
-        if (projectName != null && entityTagPicker != null && !TagCatalogCache.all().isEmpty()) {
-            rowY = panel.drawSelectRow(graphics, font, x, rowY, width, "+ Add tag", null, entityTagPicker, mouseX, mouseY);
+        var entityRegistry = Registries.ENTITY_TYPE.location();
+        for (var tagId : effective) {
+            var pendingAdd = TagStagingCache.isEntryStagedAdd(entityRegistry, tagId, false, entityTypeId);
+            rowY = renderEntityTagRow(graphics, font, x, rowY, width, mouseX, mouseY, entityRegistry, tagId, pendingAdd);
         }
-
         return rowY;
     }
 
@@ -322,8 +322,12 @@ public final class EntityInspectorSection implements InspectorSection<EntitySele
                 BLib.MOD.networking()
                     .sendToServer(new C2SAddTagEntryPayload(projectName, entityRegistry, picked, false, entityTypeId, true));
                 TagStagingCache.markEntryAdded(entityRegistry, picked, false, entityTypeId);
+                if (entityTagPicker != null) {
+                    entityTagPicker.setCurrentValue(null);
+                }
             }
         );
+        TagInspectorUi.configureAddTagPicker(entityTagPicker);
     }
 
     /**
@@ -341,7 +345,7 @@ public final class EntityInspectorSection implements InspectorSection<EntitySele
     }
 
     /**
-     * Build the items list for the "+ Add tag" picker: every entity-type-registry catalog entry minus tags already
+     * Build the items list for the add-tag picker: every entity-type-registry catalog entry minus tags already
      * shown for this entity type.
      */
     private List<SearchableSelect.Item<ResourceLocation>> availableEntityTagItems(ResourceLocation entityTypeId) {

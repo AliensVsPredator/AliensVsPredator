@@ -116,6 +116,8 @@ public final class SearchableSelect<T> {
 
     private @Nullable T currentValue;
 
+    private String placeholderText = "(none)";
+
     private int rectX;
 
     private int rectY;
@@ -165,6 +167,10 @@ public final class SearchableSelect<T> {
         this.currentValue = value;
     }
 
+    public void setPlaceholderText(String placeholderText) {
+        this.placeholderText = placeholderText == null || placeholderText.isBlank() ? "(none)" : placeholderText;
+    }
+
     public void render(GuiGraphics graphics, int x, int y, int width, int mouseX, int mouseY) {
         this.rectX = x;
         this.rectY = y;
@@ -187,7 +193,7 @@ public final class SearchableSelect<T> {
         // +2 compensates for MC font's descender padding so labels visually center; see MenuBarPanel.
         var textY = y + (HEIGHT - font.lineHeight + 2) / 2;
 
-        var labelText = currentValue == null ? "(none)" : displayLabel.apply(currentValue);
+        var labelText = currentValue == null ? placeholderText : displayLabel.apply(currentValue);
         var labelColor = currentValue == null ? PLACEHOLDER_COLOR : TEXT_COLOR;
 
         // Reserve space for the arrow on the right; truncate the label so it never overlaps the arrow or leaks past
