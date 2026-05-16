@@ -81,6 +81,37 @@ public final class ModelerFilePicker {
         }
     }
 
+    public static @Nullable Path pickAnimationJson(@Nullable Path initialDir) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            var filterPatterns = stack.mallocPointer(2);
+            filterPatterns.put(stack.UTF8("*.animation.json"));
+            filterPatterns.put(stack.UTF8("*.json"));
+            filterPatterns.flip();
+
+            var defaultPath = "";
+            if (initialDir != null && Files.isDirectory(initialDir)) {
+                defaultPath = initialDir.toAbsolutePath() + File.separator;
+            }
+
+            var picked = TinyFileDialogs.tinyfd_openFileDialog(
+                "Open Animation JSON",
+                defaultPath,
+                filterPatterns,
+                "Bedrock Animations (*.animation.json, *.json)",
+                false
+            );
+
+            if (picked == null || picked.isBlank()) {
+                LOGGER.info("ModelerFilePicker: animation open-file dialog cancelled or unavailable");
+                return null;
+            }
+            return Path.of(picked);
+        } catch (RuntimeException e) {
+            LOGGER.warn("ModelerFilePicker: native animation dialog threw {}", e.getMessage());
+            return null;
+        }
+    }
+
     /**
      * Prompt the user to pick one or more PNG texture files via the OS-native open-file dialog. Returns the chosen
      * {@link Path}s in selection order, or an empty list if the user cancelled / the dialog couldn't be shown. PNG only
@@ -160,6 +191,59 @@ public final class ModelerFilePicker {
             return Path.of(picked);
         } catch (RuntimeException e) {
             LOGGER.warn("ModelerFilePicker: native image save dialog threw {}", e.getMessage());
+            return null;
+        }
+    }
+
+    public static @Nullable Path saveAnimationJson(String defaultFileName, @Nullable Path initialDir) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            var filterPatterns = stack.mallocPointer(2);
+            filterPatterns.put(stack.UTF8("*.animation.json"));
+            filterPatterns.put(stack.UTF8("*.json"));
+            filterPatterns.flip();
+
+            var safeName = defaultFileName == null || defaultFileName.isBlank() ? "animations.animation.json" : defaultFileName;
+            if (!safeName.toLowerCase(java.util.Locale.ROOT).endsWith(".json")) {
+                safeName += ".json";
+            }
+
+            var defaultPath = safeName;
+            if (initialDir != null && Files.isDirectory(initialDir)) {
+                defaultPath = initialDir.resolve(safeName).toAbsolutePath().toString();
+            }
+
+            var picked = TinyFileDialogs.tinyfd_saveFileDialog(
+                "Save Animation JSON As",
+                defaultPath,
+                filterPatterns,
+                "Bedrock Animations (*.animation.json, *.json)"
+            );
+
+            if (picked == null || picked.isBlank()) {
+                LOGGER.info("ModelerFilePicker: animation save-file dialog cancelled or unavailable");
+                return null;
+            }
+            return Path.of(picked);
+        } catch (RuntimeException e) {
+            LOGGER.warn("ModelerFilePicker: native animation save dialog threw {}", e.getMessage());
+            return null;
+        }
+    }
+
+    public static @Nullable String promptAnimationResourceId(String defaultValue) {
+        try {
+            var picked = TinyFileDialogs.tinyfd_inputBox(
+                "Save Animation Resource",
+                "Resource id, for example namespace:animations/entity.animation.json",
+                defaultValue == null ? "" : defaultValue
+            );
+            if (picked == null || picked.isBlank()) {
+                LOGGER.info("ModelerFilePicker: animation resource prompt cancelled or unavailable");
+                return null;
+            }
+            return picked.trim();
+        } catch (RuntimeException e) {
+            LOGGER.warn("ModelerFilePicker: native animation resource prompt threw {}", e.getMessage());
             return null;
         }
     }
