@@ -8,6 +8,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.blib.engine.modeler.ModelerBone;
+import com.blib.engine.modeler.ModelerScene;
+import com.blib.engine.modeler.Selection;
 import com.blib.engine.modeler.animation.AnimationEditorState;
 import com.blib.engine.modeler.animation.AnimationEditorState.KeyframeRef;
 import com.blib.engine.modeler.animation.AnimationEditorState.TransformChannel;
@@ -18,7 +21,6 @@ import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.layout.UiText;
 import com.blib.engine.ui.popup.PanelMenuOpener;
 import com.blib.engine.ui.widget.DropdownMenu;
-import com.blib.engine.ui.widget.SearchableSelect;
 
 @ApiStatus.Internal
 public final class AnimationTimelinePanel implements Panel {
@@ -63,8 +65,6 @@ public final class AnimationTimelinePanel implements Panel {
 
     private static final int CHIP_HOVER_BG_COLOR = 0xFF3C3C46;
 
-    private static final int CHIP_DISABLED_TEXT_COLOR = 0xFF777780;
-
     private static final int BUTTON_BORDER_COLOR = 0xFF3A3A40;
 
     private static final int ICON_COLOR = 0xFFE0E0E0;
@@ -83,7 +83,7 @@ public final class AnimationTimelinePanel implements Panel {
 
     private static final int TRACK_HEIGHT = 23;
 
-    private static final int TRACK_LABEL_WIDTH = 74;
+    private static final int TRACK_LABEL_WIDTH = 126;
 
     private static final int KEYFRAME_RADIUS = 4;
 
@@ -93,22 +93,11 @@ public final class AnimationTimelinePanel implements Panel {
 
     private final @Nullable PanelMenuOpener menuOpener;
 
-    private final SearchableSelect<TransformChannel> channelSelect = new SearchableSelect<>(
-        AnimationTimelinePanel::channelItems,
-        TransformChannel::jsonName,
-        TransformChannel.ROTATION,
-        channel -> AnimationEditorState.get().selectChannel(channel)
-    );
-
     private final List<TrackRow> tracks = new ArrayList<>();
 
     private int panelX, panelY, panelWidth, panelHeight;
 
     private int playX, playY, playW, playH;
-
-    private int addX, addY, addW, addH;
-
-    private int deleteX, deleteY, deleteW, deleteH;
 
     private int timelineViewportX, timelineViewportY, timelineViewportW, timelineViewportH;
 
@@ -147,7 +136,6 @@ public final class AnimationTimelinePanel implements Panel {
         var state = AnimationEditorState.get();
         state.syncSelectedBoneFromScene();
         state.updatePlaybackClock();
-        channelSelect.setCurrentValue(state.selectedChannel());
         timelineDuration = state.selectedAnimationLengthSeconds();
 
         var font = EngineFont.get();
@@ -174,28 +162,19 @@ public final class AnimationTimelinePanel implements Panel {
         }
 
         var state = AnimationEditorState.get();
-        if (channelSelect.mouseClicked(mouseX, mouseY, button)) {
-            return true;
-        }
         if (buttonHit(mouseX, mouseY, playX, playY, playW, playH)) {
             if (canPlay(state)) {
                 state.togglePlayback();
             }
             return true;
         }
-        if (buttonHit(mouseX, mouseY, addX, addY, addW, addH)) {
-            if (state.hasDraft()) {
-                addKeyframeAtPlayhead();
-            }
-            return true;
-        }
-        if (buttonHit(mouseX, mouseY, deleteX, deleteY, deleteW, deleteH)) {
-            state.deleteSelectedKeyframe();
-            return true;
-        }
 
         var keyframe = keyframeAt(mouseX, mouseY);
         if (keyframe != null) {
+            var row = trackAt(mouseY);
+            if (row != null) {
+                ModelerScene.get().selection = new Selection.BoneSelection(row.bone());
+            }
             state.selectKeyframe(keyframe.animationName(), keyframe.boneName(), keyframe.channel(), keyframe.timestamp());
             state.setPlayheadSeconds(keyframe.timestamp());
             return true;
@@ -266,37 +245,52 @@ public final class AnimationTimelinePanel implements Panel {
             timeWidth,
             TEXT_COLOR
         );
-        cursorX += timeWidth + 5;
-
-        var remainingForSelect = right - cursorX - 93;
-        var channelWidth = Math.min(104, Math.max(0, remainingForSelect));
-        channelSelect.render(graphics, cursorX, toolY, channelWidth, mouseX, mouseY);
-        cursorX += channelWidth + 5;
-
-        addX = cursorX;
-        addY = toolY;
-        addW = 36;
-        addH = SearchableSelect.HEIGHT;
-        renderButton(graphics, font, "Add", addX, addY, addW, state.hasDraft(), mouseX, mouseY);
-        cursorX += addW + 4;
-
-        deleteX = cursorX;
-        deleteY = toolY;
-        deleteW = 48;
-        deleteH = SearchableSelect.HEIGHT;
-        renderButton(graphics, font, "Delete", deleteX, deleteY, deleteW, state.selectedKeyframe() != null, mouseX, mouseY);
     }
 
     private void rebuildTracks(AnimationEditorState state) {
         tracks.clear();
         var animation = state.selectedAnimationName();
-        var bone = state.selectedBoneName();
-        if (!state.hasDraft() || animation == null || bone == null) {
+        var root = selectedTimelineRoot(state);
+        if (!state.hasDraft() || animation == null || root == null) {
             return;
         }
-        for (var channel : TransformChannel.values()) {
-            tracks.add(new TrackRow(channel, state.keyframes(animation, bone, channel)));
+        collectTracks(state, animation, root, 0);
+    }
+
+    private void collectTracks(AnimationEditorState state, String animation, ModelerBone bone, int depth) {
+        var position = state.keyframes(animation, bone.name, TransformChannel.POSITION);
+        var rotation = state.keyframes(animation, bone.name, TransformChannel.ROTATION);
+        var scale = state.keyframes(animation, bone.name, TransformChannel.SCALE);
+        if (!position.isEmpty() || !rotation.isEmpty() || !scale.isEmpty()) {
+            tracks.add(new TrackRow(bone, depth, TransformChannel.POSITION, position));
+            tracks.add(new TrackRow(bone, depth, TransformChannel.ROTATION, rotation));
+            tracks.add(new TrackRow(bone, depth, TransformChannel.SCALE, scale));
         }
+        for (var child : bone.children) {
+            collectTracks(state, animation, child, depth + 1);
+        }
+    }
+
+    private static @Nullable ModelerBone selectedTimelineRoot(AnimationEditorState state) {
+        var scene = ModelerScene.get();
+        if (scene.selection instanceof Selection.BoneSelection bs) {
+            return bs.bone();
+        }
+        var selectedName = state.selectedBoneName();
+        return selectedName == null ? null : findBone(scene.root, selectedName);
+    }
+
+    private static @Nullable ModelerBone findBone(ModelerBone bone, String name) {
+        if (bone.name.equals(name)) {
+            return bone;
+        }
+        for (var child : bone.children) {
+            var found = findBone(child, name);
+            if (found != null) {
+                return found;
+            }
+        }
+        return null;
     }
 
     private void renderTimeline(
@@ -399,11 +393,11 @@ public final class AnimationTimelinePanel implements Panel {
         UiText.drawClipped(
             graphics,
             font,
-            row.channel().jsonName(),
-            contentX + 4,
+            trackLabel(row),
+            contentX + 4 + row.depth() * 8,
             trackY + (TRACK_HEIGHT - font.lineHeight + 2) / 2,
-            Math.max(0, labelWidth - 8),
-            row.channel() == state.selectedChannel() ? TEXT_COLOR : META_TEXT_COLOR
+            Math.max(0, labelWidth - 8 - row.depth() * 8),
+            row.bone().name.equals(state.selectedBoneName()) && row.channel() == state.selectedChannel() ? TEXT_COLOR : META_TEXT_COLOR
         );
 
         var laneY = trackY + TRACK_HEIGHT / 2;
@@ -412,6 +406,7 @@ public final class AnimationTimelinePanel implements Panel {
             var keyX = timeToX(frame.timestamp(), timelineGraphX, timelineGraphWidth, timelineDuration);
             var selected = state.selectedTimestamp() != null
                 && frame.channel() == state.selectedChannel()
+                && frame.boneName().equals(state.selectedBoneName())
                 && Math.abs(frame.timestamp() - state.selectedTimestamp()) < 1.0e-6;
             drawKeyframe(graphics, keyX, laneY, selected ? KEY_SELECTED_COLOR : keyColor(row.channel()), selected);
         }
@@ -451,6 +446,10 @@ public final class AnimationTimelinePanel implements Panel {
         }
         var keyframe = keyframeAt(mouseX, mouseY);
         if (keyframe != null) {
+            var row = trackAt(mouseY);
+            if (row != null) {
+                ModelerScene.get().selection = new Selection.BoneSelection(row.bone());
+            }
             AnimationEditorState.get().selectKeyframe(keyframe.animationName(), keyframe.boneName(), keyframe.channel(), keyframe.timestamp());
             AnimationEditorState.get().setPlayheadSeconds(keyframe.timestamp());
         }
@@ -460,28 +459,11 @@ public final class AnimationTimelinePanel implements Panel {
                 (int) mouseX,
                 (int) mouseY,
                 List.of(
-                    new DropdownMenu.Item(state.isPlaying() ? "Pause" : "Play", state::togglePlayback, canPlay(state)),
-                    new DropdownMenu.Item("Add Keyframe", this::addKeyframeAtPlayhead, state.hasDraft()),
-                    new DropdownMenu.Item("Delete Keyframe", state::deleteSelectedKeyframe, state.selectedKeyframe() != null)
+                    new DropdownMenu.Item(state.isPlaying() ? "Pause" : "Play", state::togglePlayback, canPlay(state))
                 )
             )
         );
         return true;
-    }
-
-    private void addKeyframeAtPlayhead() {
-        var state = AnimationEditorState.get();
-        var animation = state.selectedAnimationName();
-        if (animation == null) {
-            animation = state.createAnimation(null);
-        }
-        var bone = state.selectedBoneName();
-        if (bone == null || bone.isBlank()) {
-            bone = "bone";
-        }
-        var timestamp = state.playheadSeconds();
-        state.selectKeyframe(animation, bone, state.selectedChannel(), timestamp);
-        state.createOrUpdateSelectedKeyframe();
     }
 
     private @Nullable KeyframeRef keyframeAt(double mouseX, double mouseY) {
@@ -547,7 +529,7 @@ public final class AnimationTimelinePanel implements Panel {
         if (state.selectedBoneName() == null) {
             return "(select a bone/group)";
         }
-        return "(no keyframes for this bone/group)";
+        return "(no keyframes for this bone/group subtree)";
     }
 
     private static int timeToX(double seconds, int graphX, int graphWidth, double duration) {
@@ -576,6 +558,10 @@ public final class AnimationTimelinePanel implements Panel {
             case ROTATION -> ROTATION_KEY_COLOR;
             case SCALE -> SCALE_KEY_COLOR;
         };
+    }
+
+    private static String trackLabel(TrackRow row) {
+        return row.bone().name + " / " + row.channel().jsonName();
     }
 
     private static void drawKeyframe(GuiGraphics graphics, int centerX, int centerY, int color, boolean selected) {
@@ -624,31 +610,6 @@ public final class AnimationTimelinePanel implements Panel {
         graphics.fill(cx + 2, cy - 4, cx + 4, cy + 4, color);
     }
 
-    private static void renderButton(
-        GuiGraphics graphics,
-        net.minecraft.client.gui.Font font,
-        String label,
-        int x,
-        int y,
-        int width,
-        boolean enabled,
-        int mouseX,
-        int mouseY
-    ) {
-        var hovered = enabled && buttonHit(mouseX, mouseY, x, y, width, SearchableSelect.HEIGHT);
-        graphics.fill(x, y, x + width, y + SearchableSelect.HEIGHT, hovered ? CHIP_HOVER_BG_COLOR : CHIP_BG_COLOR);
-        drawButtonBorder(graphics, x, y, width, SearchableSelect.HEIGHT);
-        UiText.drawClipped(
-            graphics,
-            font,
-            label,
-            x + 4,
-            y + (SearchableSelect.HEIGHT - font.lineHeight + 2) / 2,
-            Math.max(0, width - 8),
-            enabled ? TEXT_COLOR : CHIP_DISABLED_TEXT_COLOR
-        );
-    }
-
     private static void drawButtonBorder(GuiGraphics graphics, int x, int y, int width, int height) {
         graphics.fill(x, y, x + width, y + 1, BUTTON_BORDER_COLOR);
         graphics.fill(x, y + height - 1, x + width, y + height, BUTTON_BORDER_COLOR);
@@ -660,15 +621,9 @@ public final class AnimationTimelinePanel implements Panel {
         return width > 0 && height > 0 && mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
     }
 
-    private static List<SearchableSelect.Item<TransformChannel>> channelItems() {
-        return List.of(
-            new SearchableSelect.Item<>(TransformChannel.POSITION, "position"),
-            new SearchableSelect.Item<>(TransformChannel.ROTATION, "rotation"),
-            new SearchableSelect.Item<>(TransformChannel.SCALE, "scale")
-        );
-    }
-
     private record TrackRow(
+        ModelerBone bone,
+        int depth,
         TransformChannel channel,
         List<KeyframeRef> frames
     ) {}
