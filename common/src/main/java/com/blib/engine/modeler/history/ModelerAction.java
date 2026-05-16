@@ -19,6 +19,7 @@ import com.blib.engine.modeler.ModelerCube;
 import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.Selection;
 import com.blib.engine.modeler.texture.LoadedTexture;
+import com.blib.engine.modeler.texture.TextureSaveState;
 import com.blib.engine.texture.TextureEditorState;
 import com.blib.mod.common.network.packet.ActionDescriptor;
 
@@ -472,6 +473,7 @@ public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, M
                 }
             }
             texture.texture().upload();
+            TextureSaveState.markPossiblyDirty(texture);
         }
 
         public boolean differsFrom(TexturePixelsMemento other) {

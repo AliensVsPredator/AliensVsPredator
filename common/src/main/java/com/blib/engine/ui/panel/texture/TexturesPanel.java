@@ -24,6 +24,7 @@ import com.blib.engine.modeler.texture.ModelerTextureUsage;
 import com.blib.engine.modeler.texture.TextureRecentFiles;
 import com.blib.engine.modeler.texture.TextureLoader;
 import com.blib.engine.modeler.texture.TextureResourceCatalog;
+import com.blib.engine.modeler.texture.TextureSaveState;
 import com.blib.engine.session.ProjectSession;
 import com.blib.engine.texture.TextureEditorState;
 import com.blib.engine.ui.EngineFont;
@@ -170,7 +171,8 @@ public final class TexturesPanel implements Panel {
                 var labelX = thumbX + THUMB_SIZE + 6;
                 var labelY = rowTop + 5;
                 var nameMaxWidth = rowsLeftX + rowsContentWidth - labelX - 2;
-                UiText.drawClipped(graphics, font, row.displayName(), labelX, labelY, nameMaxWidth, TEXT_COLOR);
+                var displayName = TextureSaveState.isDirty(row) ? "* " + row.displayName() : row.displayName();
+                UiText.drawClipped(graphics, font, displayName, labelX, labelY, nameMaxWidth, TEXT_COLOR);
 
                 var metaY = labelY + font.lineHeight + 1;
                 drawTextureMeta(graphics, font, row, scene, labelX, metaY, nameMaxWidth);
@@ -698,6 +700,9 @@ public final class TexturesPanel implements Panel {
         var resolution = textureResolution(texture, scene);
         var usageCount = ModelerTextureUsage.faceUsageCount(scene, texture);
         var usage = usageCount > 0 ? usageCount + (usageCount == 1 ? " face" : " faces") : "";
+        if (TextureSaveState.isDirty(texture)) {
+            usage = usage.isEmpty() ? "unsaved" : usage + " unsaved";
+        }
         var gap = 8;
         var available = Math.max(0, width);
         var resolutionWidth = font.width(resolution);

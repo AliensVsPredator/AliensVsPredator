@@ -72,6 +72,7 @@ public final class TextureLoader {
         }
         target.texture().setPixels(image);
         target.texture().upload();
+        TextureSaveState.markClean(target);
         return true;
     }
 
@@ -140,7 +141,9 @@ public final class TextureLoader {
             PATH_PREFIX + UUID.randomUUID().toString().replace("-", "").substring(0, 16)
         );
         Minecraft.getInstance().getTextureManager().register(id, dynamic);
-        return new LoadedTexture(displayName, sourcePath, sourceResource, id, dynamic);
+        var loaded = new LoadedTexture(displayName, sourcePath, sourceResource, id, dynamic);
+        TextureSaveState.registerClean(loaded);
+        return loaded;
     }
 
     /**
@@ -148,6 +151,7 @@ public final class TextureLoader {
      * twice (the second {@code release}/{@code close} pair is a no-op in MC 1.21).
      */
     public static void release(LoadedTexture loaded) {
+        TextureSaveState.unregister(loaded);
         Minecraft.getInstance().getTextureManager().release(loaded.textureId());
         loaded.texture().close();
     }

@@ -8,6 +8,7 @@ import java.util.ArrayDeque;
 import com.blib.engine.modeler.history.ModelerAction;
 import com.blib.engine.modeler.history.ModelerActionHistory;
 import com.blib.engine.modeler.texture.LoadedTexture;
+import com.blib.engine.modeler.texture.TextureSaveState;
 
 @ApiStatus.Internal
 public final class TexturePaintOps {
@@ -35,9 +36,13 @@ public final class TexturePaintOps {
         var err = dx - dy;
         var x = x0;
         var y = y0;
+        var changed = false;
         while (true) {
             if (x >= 0 && x < pixels.getWidth() && y >= 0 && y < pixels.getHeight() && containsSelectedPixel(x, y, respectSelection)) {
-                pixels.setPixelRGBA(x, y, nativeColor);
+                if (pixels.getPixelRGBA(x, y) != nativeColor) {
+                    pixels.setPixelRGBA(x, y, nativeColor);
+                    changed = true;
+                }
             }
             if (x == x1 && y == y1) {
                 break;
@@ -52,7 +57,10 @@ public final class TexturePaintOps {
                 y += sy;
             }
         }
-        texture.texture().upload();
+        if (changed) {
+            texture.texture().upload();
+            TextureSaveState.markDirty(texture);
+        }
     }
 
     public static boolean bucketFill(LoadedTexture texture, NativeImage pixels, int startX, int startY) {
@@ -103,6 +111,7 @@ public final class TexturePaintOps {
         }
         if (changed) {
             texture.texture().upload();
+            TextureSaveState.markDirty(texture);
         }
         return changed;
     }
