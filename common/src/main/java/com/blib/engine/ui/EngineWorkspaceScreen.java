@@ -231,6 +231,16 @@ public final class EngineWorkspaceScreen extends Screen {
     private @Nullable Panel capturedPanel;
 
     /**
+     * RMB commonly opens a context menu over the thing that was being hovered. Keep panel tooltips suppressed until the
+     * cursor moves so the pre-click tooltip does not visually compete with the new menu.
+     */
+    private boolean suppressHoverTooltipsUntilMouseMove;
+
+    private int suppressHoverTooltipMouseX;
+
+    private int suppressHoverTooltipMouseY;
+
+    /**
      * Last {@link BodyNode} known to match what's persisted on disk for the active layout. Compared against a fresh
      * {@link LayoutSnapshot#capture} of the live dock tree at the end of every render — when they diverge, the new
      * snapshot is written and this cache is updated. This is the single source of truth for layout persistence: any
@@ -621,6 +631,12 @@ public final class EngineWorkspaceScreen extends Screen {
         int logicalHeight = logicalHeight();
         int logicalMouseX = (int) (mouseX / SCALE);
         int logicalMouseY = (int) (mouseY / SCALE);
+        if (
+            suppressHoverTooltipsUntilMouseMove
+                && (logicalMouseX != suppressHoverTooltipMouseX || logicalMouseY != suppressHoverTooltipMouseY)
+        ) {
+            suppressHoverTooltipsUntilMouseMove = false;
+        }
 
         // Hover-driven submenu spawning. Runs once per frame so the user can mouse over a parent-menu item and see
         // its submenu cascade without clicking. Must come BEFORE the "is cursor over a menu" panel-mouse-suppress
@@ -696,6 +712,7 @@ public final class EngineWorkspaceScreen extends Screen {
         var tooltipsAllowed = !menuBar.isInsideOpenMenu(logicalMouseX, logicalMouseY)
             && !dragController.isActive()
             && !tabDrag.isActive()
+            && !suppressHoverTooltipsUntilMouseMove
             && HslColorPickerPopup.getOpenPopup() == null
             && FactionManagePopup.getOpenPopup() == null;
         HoverOverlayRenderer.renderHoverTooltip(
@@ -1097,6 +1114,9 @@ public final class EngineWorkspaceScreen extends Screen {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         var logicalX = mouseX / SCALE;
         var logicalY = mouseY / SCALE;
+        if (button == 1) {
+            suppressHoverTooltipsForRightClick((int) logicalX, (int) logicalY);
+        }
 
         // Top-of-stack modal absorbs the click — sub-dialogs (Delete confirm spawned from Preferences, etc.) sit
         // above their parent in z-order, so the topmost gets first crack. Outside-clicks are still swallowed by
@@ -1275,6 +1295,13 @@ public final class EngineWorkspaceScreen extends Screen {
             return true;
         }
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    private void suppressHoverTooltipsForRightClick(int logicalX, int logicalY) {
+        suppressHoverTooltipsUntilMouseMove = true;
+        suppressHoverTooltipMouseX = logicalX;
+        suppressHoverTooltipMouseY = logicalY;
+        UiText.clearCapturedTruncatedTextTooltip();
     }
 
     private DropdownMenu buildTabContextMenu(TabbedPanel tabbed, int tabIdx, int anchorX, int anchorY) {
