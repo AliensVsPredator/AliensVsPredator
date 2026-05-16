@@ -31,12 +31,6 @@ public final class AnimationKeyframePanel implements Panel {
 
     private static final int SECTION_HEADER_TEXT_COLOR = 0xFFB8C0D0;
 
-    private static final int CHIP_BG_COLOR = 0xFF2C2C32;
-
-    private static final int CHIP_HOVER_BG_COLOR = 0xFF3C3C46;
-
-    private static final int CHIP_DISABLED_TEXT_COLOR = 0xFF777780;
-
     private static final int DIRTY_COLOR = 0xFFE6C26B;
 
     private static final int PADDING = 6;
@@ -77,10 +71,6 @@ public final class AnimationKeyframePanel implements Panel {
 
     private int panelX, panelY, panelWidth, panelHeight;
 
-    private int addX, addY, addW, addH;
-
-    private int deleteX, deleteY, deleteW, deleteH;
-
     @Override
     public String title() {
         return "Keyframe";
@@ -104,37 +94,20 @@ public final class AnimationKeyframePanel implements Panel {
         var state = AnimationEditorState.get();
         state.syncSelectedBoneFromScene();
         var frame = state.selectedKeyframe();
-        syncInputs(state, frame);
 
         var font = EngineFont.get();
-        var header = frame == null ? "No keyframe selected" : frame.boneName() + " / " + frame.channel().jsonName();
-        UiText.drawClipped(graphics, font, header, x + PADDING, y + PADDING, Math.max(0, width - 2 * PADDING), TEXT_COLOR);
-        if (!state.hasDraft()) {
-            UiText.drawClipped(
-                graphics,
-                font,
-                "Open or create an animation JSON first.",
-                x + PADDING,
-                y + PADDING + font.lineHeight + 6,
-                Math.max(0, width - 2 * PADDING),
-                LABEL_COLOR
-            );
+        if (frame == null) {
+            var message = state.hasDraft() ? "Select a keyframe to edit it." : "Open or create an animation JSON first.";
+            UiText.drawClipped(graphics, font, message, x + PADDING, y + PADDING, Math.max(0, width - 2 * PADDING), LABEL_COLOR);
             return;
         }
 
-        var buttonY = y + PADDING + font.lineHeight + 5;
-        addX = x + PADDING;
-        addY = buttonY;
-        addW = 42;
-        addH = SearchableSelect.HEIGHT;
-        deleteX = addX + addW + 4;
-        deleteY = buttonY;
-        deleteW = 52;
-        deleteH = SearchableSelect.HEIGHT;
-        renderButton(graphics, font, "New", addX, addY, addW, state.hasDraft(), mouseX, mouseY);
-        renderButton(graphics, font, "Delete", deleteX, deleteY, deleteW, frame != null, mouseX, mouseY);
+        syncInputs(state, frame);
 
-        var rowY = buttonY + SearchableSelect.HEIGHT + ROW_GAP;
+        var header = frame.boneName() + " / " + frame.channel().jsonName();
+        UiText.drawClipped(graphics, font, header, x + PADDING, y + PADDING, Math.max(0, width - 2 * PADDING), TEXT_COLOR);
+
+        var rowY = y + PADDING + font.lineHeight + 5;
         rowY = renderScalarSection(graphics, font, x, rowY, width, "Timestamp", timestampInput, mouseX, mouseY);
         rowY = renderScalarSection(graphics, font, x, rowY, width, "Bone / Group", boneInput, mouseX, mouseY);
         rowY = renderChannelSection(graphics, font, x, rowY, width, mouseX, mouseY);
@@ -151,15 +124,7 @@ public final class AnimationKeyframePanel implements Panel {
         if (mouseX < panelX || mouseX >= panelX + panelWidth || mouseY < panelY || mouseY >= panelY + panelHeight) {
             return false;
         }
-        if (!AnimationEditorState.get().hasDraft()) {
-            return false;
-        }
-        if (buttonHit(mouseX, mouseY, addX, addY, addW, addH)) {
-            AnimationEditorState.get().createOrUpdateSelectedKeyframe();
-            return true;
-        }
-        if (buttonHit(mouseX, mouseY, deleteX, deleteY, deleteW, deleteH)) {
-            AnimationEditorState.get().deleteSelectedKeyframe();
+        if (AnimationEditorState.get().selectedKeyframe() == null) {
             return true;
         }
         if (timestampInput.mouseClicked(mouseX, mouseY, button)) {
@@ -317,34 +282,6 @@ public final class AnimationKeyframePanel implements Panel {
             SECTION_HEADER_TEXT_COLOR
         );
         return y + SECTION_HEADER_HEIGHT;
-    }
-
-    private static void renderButton(
-        GuiGraphics graphics,
-        Font font,
-        String label,
-        int x,
-        int y,
-        int width,
-        boolean enabled,
-        int mouseX,
-        int mouseY
-    ) {
-        var hovered = enabled && buttonHit(mouseX, mouseY, x, y, width, SearchableSelect.HEIGHT);
-        graphics.fill(x, y, x + width, y + SearchableSelect.HEIGHT, hovered ? CHIP_HOVER_BG_COLOR : CHIP_BG_COLOR);
-        UiText.drawClipped(
-            graphics,
-            font,
-            label,
-            x + 4,
-            y + (SearchableSelect.HEIGHT - font.lineHeight + 2) / 2,
-            Math.max(0, width - 8),
-            enabled ? TEXT_COLOR : CHIP_DISABLED_TEXT_COLOR
-        );
-    }
-
-    private static boolean buttonHit(double mouseX, double mouseY, int x, int y, int width, int height) {
-        return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
     }
 
     private static List<SearchableSelect.Item<TransformChannel>> channelItems() {
