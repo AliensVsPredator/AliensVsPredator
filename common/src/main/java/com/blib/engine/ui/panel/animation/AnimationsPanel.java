@@ -2,7 +2,6 @@ package com.blib.engine.ui.panel.animation;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -278,25 +277,21 @@ public final class AnimationsPanel implements Panel {
         var state = AnimationEditorState.get();
         var items = List
             .of(
-                new DropdownMenu.Item("New File", state::newDraft),
-                new DropdownMenu.Item("Open From File...", this::openFromFile),
+                new DropdownMenu.Item("New", state::newDraft),
+                new DropdownMenu.Item("Open", () -> {}, buildOpenSubmenu()),
                 new DropdownMenu.Item(
                     "Save",
                     state::save,
                     state.canSave(),
                     Component.literal("No animation changes or save target available.")
                 ),
-                new DropdownMenu.Item("Save As File...", this::saveAsFile, state.hasDraft(), Component.literal("Open or create an animation file first.")),
-                new DropdownMenu.Item(
-                    "Save To Project...",
-                    this::saveToProject,
-                    state.hasDraft() && !ProjectSession.activeProjectName().isEmpty(),
-                    Component.literal("Open a BLib project first.")
-                ),
-                DropdownMenu.Item.divider(),
-                new DropdownMenu.Item("New Animation", this::newAnimation, state.hasDraft(), Component.literal("Open or create an animation file first."))
+                new DropdownMenu.Item("Save As...", this::saveAsFile, state.hasDraft(), Component.literal("Open or create an animation file first."))
             );
         return new DropdownMenu(menuFileX, menuFileY + menuFileHeight + 1, items);
+    }
+
+    private List<DropdownMenu.Item> buildOpenSubmenu() {
+        return List.of(new DropdownMenu.Item("From File...", this::openFromFile));
     }
 
     private boolean openContextMenu(double mouseX, double mouseY) {
@@ -344,19 +339,6 @@ public final class AnimationsPanel implements Panel {
         var picked = ModelerFilePicker.saveAnimationJson(defaultFileName(), initialSaveDirectory());
         if (picked != null) {
             AnimationEditorState.get().saveAsFile(picked);
-        }
-    }
-
-    private void saveToProject() {
-        var state = AnimationEditorState.get();
-        var suggested = state.projectResourceId() != null ? state.projectResourceId().toString() : suggestedProjectResourceId();
-        var value = ModelerFilePicker.promptAnimationResourceId(suggested);
-        if (value == null) {
-            return;
-        }
-        var id = ResourceLocation.tryParse(value);
-        if (id != null) {
-            state.saveAsProject(AnimationEditorState.normalizeAnimationResourceId(id));
         }
     }
 
@@ -439,12 +421,6 @@ public final class AnimationsPanel implements Panel {
         }
         var selected = state.selectedAnimationName();
         return sanitizeFileName(selected == null ? "animations" : selected) + ".animation.json";
-    }
-
-    private static String suggestedProjectResourceId() {
-        var project = ProjectSession.activeProjectName();
-        var namespace = project.isEmpty() ? "blib" : project;
-        return namespace + ":animations/" + sanitizeFileName(AnimationEditorState.get().selectedAnimationName()) + ".animation.json";
     }
 
     private static String sanitizeFileName(@Nullable String value) {
