@@ -96,7 +96,7 @@ public final class ViewportContextMenuHandler implements ViewportPanel.RightClic
                             new DropdownMenu.Item(label, () -> commands.dispatch(new Command.DismemberLimb(entityId, limbId)))
                         );
                     }
-                    items.add(new DropdownMenu.Item("Dismember…", () -> {}, limbItems));
+                    items.add(new DropdownMenu.Item("Dismember", () -> {}, limbItems));
                 }
             }
             items.add(new DropdownMenu.Item(ViewportSelectionDelete.LABEL, () -> ViewportSelectionDelete.deleteEntity(entity, commands)));
