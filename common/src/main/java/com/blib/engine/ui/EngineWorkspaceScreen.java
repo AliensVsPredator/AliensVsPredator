@@ -59,6 +59,7 @@ import com.blib.engine.ui.layout.PanelScissor;
 import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.layout.UiText;
 import com.blib.engine.ui.panel.chrome.MenuBarPanel;
+import com.blib.engine.ui.panel.animation.AnimationTimelinePanel;
 import com.blib.engine.ui.panel.viewport.ViewportPanel;
 import com.blib.engine.ui.popup.FactionManagePopup;
 import com.blib.engine.ui.popup.HslColorPickerPopup;
@@ -1500,6 +1501,10 @@ public final class EngineWorkspaceScreen extends Screen {
         return WorkspaceLayoutController.hasActivePanel(root, panelClass);
     }
 
+    public boolean layoutHasAnimationTimelinePanel() {
+        return layoutHasActivePanel(AnimationTimelinePanel.class);
+    }
+
     /**
      * Convenience for callers without a workspace reference (e.g. the action-stack panel). Delegates to the controller,
      * which checks the active screen.
@@ -2303,6 +2308,11 @@ public final class EngineWorkspaceScreen extends Screen {
         @Override
         public boolean layoutHasLocalHistoryPanel() {
             return EngineWorkspaceScreen.this.layoutHasLocalHistoryPanel();
+        }
+
+        @Override
+        public boolean layoutHasAnimationTimelinePanel() {
+            return EngineWorkspaceScreen.this.layoutHasAnimationTimelinePanel();
         }
 
     }

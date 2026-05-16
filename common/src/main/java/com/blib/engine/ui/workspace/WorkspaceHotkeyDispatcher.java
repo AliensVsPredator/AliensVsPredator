@@ -14,6 +14,7 @@ import com.blib.engine.input.Keybindings;
 import com.blib.engine.jigsaw.JigsawPieceSelection;
 import com.blib.engine.jigsaw.placement.JigsawTool;
 import com.blib.engine.modeler.ModelerScene;
+import com.blib.engine.modeler.animation.AnimationEditorState;
 import com.blib.engine.modeler.gizmo.ModelerGizmoMode;
 import com.blib.engine.modeler.gizmo.ModelerGizmoState;
 import com.blib.engine.modeler.history.ModelerActionHistory;
@@ -42,6 +43,8 @@ public final class WorkspaceHotkeyDispatcher {
         boolean layoutHasModelerPanel();
 
         boolean layoutHasLocalHistoryPanel();
+
+        boolean layoutHasAnimationTimelinePanel();
     }
 
     private final Host host;
@@ -84,8 +87,16 @@ public final class WorkspaceHotkeyDispatcher {
             return true;
         }
 
-        // Space = play / pause toggle.
+        // Space = play / pause toggle. Animation authoring owns this when its timeline is visible; otherwise keep the
+        // existing world/viewport transport behavior.
         if (ActiveKeybindings.matchesKey(Keybindings.VIEWPORT_PLAY_PAUSE, keyCode, modifiers)) {
+            if (host.layoutHasAnimationTimelinePanel()) {
+                var animationState = AnimationEditorState.get();
+                if (animationState.hasPlayableSelection()) {
+                    animationState.togglePlayback();
+                }
+                return true;
+            }
             EngineTickControl.toggle();
             return true;
         }
