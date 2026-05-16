@@ -17,6 +17,7 @@ import java.util.Set;
 
 import com.blib.engine.modeler.ModelerFilePicker;
 import com.blib.engine.modeler.animation.AnimationEditorState;
+import com.blib.engine.modeler.animation.AnimationEditorState.AnimationDocumentRef;
 import com.blib.engine.modeler.animation.AnimationEditorState.AnimationKey;
 import com.blib.engine.modeler.animation.AnimationRecentFiles;
 import com.blib.engine.session.ProjectSession;
@@ -77,6 +78,16 @@ public final class AnimationsPanel implements Panel {
 
     private final Set<Integer> collapsedDocuments = new HashSet<>();
 
+    private List<AnimationDocumentRef> cachedDocuments = List.of();
+
+    private long cachedRowsContentRevision = Long.MIN_VALUE;
+
+    private long cachedRowsCollapsedRevision = Long.MIN_VALUE;
+
+    private int cachedRowsDocumentSignature;
+
+    private long collapsedDocumentsRevision;
+
     private @Nullable AnimationKey renameTarget;
 
     private @Nullable AnimationKey lastClickedAnimation;
@@ -119,7 +130,7 @@ public final class AnimationsPanel implements Panel {
         renderMenuBar(graphics, x, y, width, mouseX, mouseY);
 
         var state = AnimationEditorState.get();
-        rebuildRows(state);
+        ensureRows(state);
         if (renameTarget != null && rows.stream().noneMatch(row -> row.matches(renameTarget))) {
             cancelRename();
         }
@@ -128,7 +139,7 @@ public final class AnimationsPanel implements Panel {
         }
 
         var metaY = y + MENU_BAR_HEIGHT + 4;
-        var documentCount = state.documents().size();
+        var documentCount = cachedDocuments.size();
         var meta = documentCount == 0
             ? "Open or create an animation JSON"
             : documentCount + (documentCount == 1 ? " animation file" : " animation files");
@@ -167,7 +178,7 @@ public final class AnimationsPanel implements Panel {
                 }
 
                 if (row.isFile()) {
-                    renderFileRow(graphics, font, state, row, rowTop);
+                    renderFileRow(graphics, font, row, rowTop);
                     continue;
                 }
 
@@ -325,9 +336,17 @@ public final class AnimationsPanel implements Panel {
             && mouseY < menuFileY + menuFileHeight;
     }
 
-    private void rebuildRows(AnimationEditorState state) {
+    private void ensureRows(AnimationEditorState state) {
+        var documents = state.documents();
+        var documentSignature = documentsSignature(documents);
+        if (state.contentRevision() == cachedRowsContentRevision
+            && collapsedDocumentsRevision == cachedRowsCollapsedRevision
+            && documentSignature == cachedRowsDocumentSignature) {
+            return;
+        }
+        cachedDocuments = List.copyOf(documents);
         rows.clear();
-        for (var document : state.documents()) {
+        for (var document : cachedDocuments) {
             rows.add(Row.file(document.id()));
             if (collapsedDocuments.contains(document.id())) {
                 continue;
@@ -336,19 +355,22 @@ public final class AnimationsPanel implements Panel {
                 rows.add(Row.animation(document.id(), animationName));
             }
         }
+        cachedRowsContentRevision = state.contentRevision();
+        cachedRowsCollapsedRevision = collapsedDocumentsRevision;
+        cachedRowsDocumentSignature = documentSignature;
     }
 
     private void renderFileRow(
         GuiGraphics graphics,
         net.minecraft.client.gui.Font font,
-        AnimationEditorState state,
         Row row,
         int rowTop
     ) {
         var collapsed = collapsedDocuments.contains(row.documentId());
         drawCaret(graphics, rowsLeftX + 6, rowTop + (ROW_HEIGHT - 7) / 2, collapsed, META_TEXT_COLOR);
-        var label = state.targetLabel(row.documentId());
-        if (state.documents().stream().anyMatch(document -> document.id() == row.documentId() && document.dirty())) {
+        var document = documentRef(row.documentId());
+        var label = document == null ? "(missing)" : document.label();
+        if (document != null && document.dirty()) {
             label = "* " + label;
         }
         UiText.drawClipped(
@@ -537,6 +559,26 @@ public final class AnimationsPanel implements Panel {
         if (!collapsedDocuments.remove(documentId)) {
             collapsedDocuments.add(documentId);
         }
+        collapsedDocumentsRevision++;
+    }
+
+    private @Nullable AnimationDocumentRef documentRef(int documentId) {
+        for (var document : cachedDocuments) {
+            if (document.id() == documentId) {
+                return document;
+            }
+        }
+        return null;
+    }
+
+    private static int documentsSignature(List<AnimationDocumentRef> documents) {
+        var hash = 1;
+        for (var document : documents) {
+            hash = 31 * hash + document.id();
+            hash = 31 * hash + document.label().hashCode();
+            hash = 31 * hash + (document.dirty() ? 1 : 0);
+        }
+        return hash;
     }
 
     private List<AnimationKey> visibleAnimationKeys() {
