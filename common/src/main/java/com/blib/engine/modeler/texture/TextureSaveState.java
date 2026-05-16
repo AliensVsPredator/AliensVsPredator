@@ -3,7 +3,11 @@ package com.blib.engine.modeler.texture;
 import com.mojang.blaze3d.platform.NativeImage;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.IdentityHashMap;
@@ -15,6 +19,8 @@ import java.util.IdentityHashMap;
  */
 @ApiStatus.Internal
 public final class TextureSaveState {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TextureSaveState.class);
 
     private static final IdentityHashMap<LoadedTexture, State> STATES = new IdentityHashMap<>();
 
@@ -52,6 +58,44 @@ public final class TextureSaveState {
         return stateFor(texture).savePath;
     }
 
+    public static synchronized boolean canSave(LoadedTexture texture) {
+        return savePath(texture) != null;
+    }
+
+    public static synchronized boolean save(LoadedTexture texture) {
+        var path = savePath(texture);
+        if (path == null) {
+            return false;
+        }
+        return saveAs(texture, path);
+    }
+
+    public static synchronized boolean saveAs(LoadedTexture texture, Path path) {
+        var pixels = texture.texture().getPixels();
+        if (pixels == null) {
+            LOGGER.warn("TextureSaveState: cannot save {} because pixels are unavailable", texture.displayName());
+            return false;
+        }
+        var target = ensurePngExtension(path).toAbsolutePath().normalize();
+        var parent = target.getParent();
+        try {
+            if (parent != null) {
+                Files.createDirectories(parent);
+            }
+            pixels.writeToFile(target);
+        } catch (IOException | RuntimeException e) {
+            LOGGER.warn("TextureSaveState: failed to save {} to {}: {}", texture.displayName(), target, e.getMessage());
+            return false;
+        }
+
+        var state = stateFor(texture);
+        state.savePath = target;
+        state.savedPixels = PixelSnapshot.of(pixels);
+        state.dirty = false;
+        LOGGER.info("TextureSaveState: saved {} to {}", texture.displayName(), target);
+        return true;
+    }
+
     private static State stateFor(LoadedTexture texture) {
         return STATES.computeIfAbsent(texture, key -> new State(key.sourcePath(), snapshot(key)));
     }
@@ -59,6 +103,11 @@ public final class TextureSaveState {
     private static @Nullable PixelSnapshot snapshot(LoadedTexture texture) {
         var pixels = texture.texture().getPixels();
         return pixels == null ? null : PixelSnapshot.of(pixels);
+    }
+
+    private static Path ensurePngExtension(Path path) {
+        var value = path.toString();
+        return value.toLowerCase(java.util.Locale.ROOT).endsWith(".png") ? path : Path.of(value + ".png");
     }
 
     private static final class State {

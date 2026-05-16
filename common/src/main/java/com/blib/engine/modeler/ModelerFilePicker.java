@@ -129,4 +129,38 @@ public final class ModelerFilePicker {
             return List.of();
         }
     }
+
+    public static @Nullable Path saveImage(String defaultFileName, @Nullable Path initialDir) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            var filterPatterns = stack.mallocPointer(1);
+            filterPatterns.put(stack.UTF8("*.png"));
+            filterPatterns.flip();
+
+            var safeName = defaultFileName == null || defaultFileName.isBlank() ? "texture.png" : defaultFileName;
+            if (!safeName.toLowerCase(java.util.Locale.ROOT).endsWith(".png")) {
+                safeName += ".png";
+            }
+
+            var defaultPath = safeName;
+            if (initialDir != null && Files.isDirectory(initialDir)) {
+                defaultPath = initialDir.resolve(safeName).toAbsolutePath().toString();
+            }
+
+            var picked = TinyFileDialogs.tinyfd_saveFileDialog(
+                "Save Texture As",
+                defaultPath,
+                filterPatterns,
+                "PNG Images (*.png)"
+            );
+
+            if (picked == null || picked.isBlank()) {
+                LOGGER.info("ModelerFilePicker: image save-file dialog cancelled or unavailable");
+                return null;
+            }
+            return Path.of(picked);
+        } catch (RuntimeException e) {
+            LOGGER.warn("ModelerFilePicker: native image save dialog threw {}", e.getMessage());
+            return null;
+        }
+    }
 }
