@@ -842,7 +842,11 @@ public final class AnimationEditorState {
     }
 
     public void selectBone(@Nullable String boneName) {
-        selectedBoneName = boneName == null || boneName.isBlank() ? null : boneName;
+        var nextBoneName = boneName == null || boneName.isBlank() ? null : boneName;
+        if (Objects.equals(selectedBoneName, nextBoneName)) {
+            return;
+        }
+        selectedBoneName = nextBoneName;
         selectedTimestamp = null;
     }
 
