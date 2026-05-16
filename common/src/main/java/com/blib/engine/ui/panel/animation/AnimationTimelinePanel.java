@@ -131,10 +131,6 @@ public final class AnimationTimelinePanel implements Panel {
 
     private @Nullable ModelerBone lastSceneRoot;
 
-    private @Nullable ModelerBone timelineRootBone;
-
-    private @Nullable Selection lastSceneSelection;
-
     private int panelX, panelY, panelWidth, panelHeight;
 
     private int playX, playY, playW, playH;
@@ -192,7 +188,7 @@ public final class AnimationTimelinePanel implements Panel {
         graphics.fill(x, y, x + width, y + height, BG_COLOR);
 
         var state = AnimationEditorState.get();
-        syncTimelineScopeFromScene(state);
+        syncTimelineSceneRoot();
         state.updatePlaybackClock();
         animationDuration = state.selectedAnimationLengthSeconds();
         timelineDuration = animationDuration + tailPaddingSeconds(animationDuration);
@@ -424,7 +420,7 @@ public final class AnimationTimelinePanel implements Panel {
     private void rebuildTracks(AnimationEditorState state) {
         rows.clear();
         var animations = timelineAnimationKeys(state);
-        var root = selectedTimelineRoot(state);
+        var root = ModelerScene.get().root;
         if (!state.hasDraft() || animations.isEmpty() || root == null) {
             return;
         }
@@ -482,53 +478,18 @@ public final class AnimationTimelinePanel implements Panel {
         return out;
     }
 
-    private void syncTimelineScopeFromScene(AnimationEditorState state) {
+    private void syncTimelineSceneRoot() {
         var scene = ModelerScene.get();
         if (scene.root != lastSceneRoot) {
             collapsedBones.clear();
-            timelineRootBone = null;
             lastSceneRoot = scene.root;
-            lastSceneSelection = null;
+            scroll.reset();
         }
-        if (scene.selection != lastSceneSelection) {
-            lastSceneSelection = scene.selection;
-            if (scene.selection instanceof Selection.BoneSelection bs) {
-                timelineRootBone = bs.bone();
-                state.selectBone(bs.bone().name);
-            }
-        }
-        if (timelineRootBone == null) {
-            var selectedName = state.selectedBoneName();
-            timelineRootBone = selectedName == null ? null : findBone(scene.root, selectedName);
-        }
-    }
-
-    private @Nullable ModelerBone selectedTimelineRoot(AnimationEditorState state) {
-        if (timelineRootBone != null) {
-            return timelineRootBone;
-        }
-        var scene = ModelerScene.get();
-        var selectedName = state.selectedBoneName();
-        return selectedName == null ? null : findBone(scene.root, selectedName);
     }
 
     private void selectBoneFromTimeline(ModelerBone bone) {
         var selection = new Selection.BoneSelection(bone);
         ModelerScene.get().selection = selection;
-        lastSceneSelection = selection;
-    }
-
-    private static @Nullable ModelerBone findBone(ModelerBone bone, String name) {
-        if (bone.name.equals(name)) {
-            return bone;
-        }
-        for (var child : bone.children) {
-            var found = findBone(child, name);
-            if (found != null) {
-                return found;
-            }
-        }
-        return null;
     }
 
     private void renderTimeline(
