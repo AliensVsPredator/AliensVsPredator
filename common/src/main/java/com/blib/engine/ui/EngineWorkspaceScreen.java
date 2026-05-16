@@ -192,6 +192,8 @@ public final class EngineWorkspaceScreen extends Screen {
 
     private final TabDragController tabDrag = new TabDragController();
 
+    private @Nullable TabbedPanel activeTabbedPanel;
+
     /**
      * Owns the workspace's menu-bar dropdown state — open menu, optional submenu, hover-driven cascade behaviour, and
      * the per-chip menu builders. The screen forwards every menu lifecycle call to this controller so adding a new menu
@@ -822,6 +824,7 @@ public final class EngineWorkspaceScreen extends Screen {
         }
         var tabbed = findTabbedPanelAt((int) logicalX, (int) logicalY);
         if (tabbed != null && tabbed.isInTabStrip(logicalX, logicalY) && tabbed.scrollTabStrip(scrollX, scrollY)) {
+            activeTabbedPanel = tabbed;
             return true;
         }
         var leaf = DockTreeHitTest.panelAt(root, 0, 0, logicalWidth(), logicalHeight(), logicalX, logicalY);
@@ -996,6 +999,10 @@ public final class EngineWorkspaceScreen extends Screen {
             return true;
         }
 
+        if (handleTabNavigationKey(keyCode, modifiers)) {
+            return true;
+        }
+
         // Wrapped-screen forward — in menu-overlay mode the wrapped screen owns Esc (TitleScreen ignores it,
         // PauseScreen closes itself, dialogs cancel, etc.). Also forwards non-Esc keys (Enter, Tab) so wrapped
         // widgets see them. Done after the focused-TextInput check so engine text editing keeps the keystrokes when
@@ -1116,6 +1123,8 @@ public final class EngineWorkspaceScreen extends Screen {
                 return true;
             }
         }
+
+        rememberTabbedPanelAt(logicalX, logicalY);
 
         if (button == 1) {
             var tabbed = findTabbedPanelAt((int) logicalX, (int) logicalY);
@@ -1478,6 +1487,64 @@ public final class EngineWorkspaceScreen extends Screen {
 
     private @Nullable TabbedPanel findTabbedPanelAt(int mouseX, int mouseY) {
         return DockTreeHitTest.findTabbedPanelAt(root, logicalWidth(), logicalHeight(), mouseX, mouseY);
+    }
+
+    private void rememberTabbedPanelAt(double logicalX, double logicalY) {
+        var tabbed = findTabbedPanelAt((int) logicalX, (int) logicalY);
+        if (tabbed != null) {
+            activeTabbedPanel = tabbed;
+        }
+    }
+
+    private boolean handleTabNavigationKey(int keyCode, int modifiers) {
+        if (ActiveKeybindings.matchesKey(Keybindings.TAB_NEXT, keyCode, modifiers)) {
+            return switchActiveTab(1);
+        }
+        if (ActiveKeybindings.matchesKey(Keybindings.TAB_PREVIOUS, keyCode, modifiers)) {
+            return switchActiveTab(-1);
+        }
+        return false;
+    }
+
+    private boolean switchActiveTab(int direction) {
+        var tabbed = tabNavigationTarget();
+        if (tabbed == null || tabbed.tabCount() <= 1) {
+            return false;
+        }
+        var nextIndex = Math.floorMod(tabbed.activeIndex() + direction, tabbed.tabCount());
+        tabbed.setActiveIndex(nextIndex);
+        activeTabbedPanel = tabbed;
+        return true;
+    }
+
+    private @Nullable TabbedPanel tabNavigationTarget() {
+        if (activeTabbedPanel != null && containsTabbedPanel(root, activeTabbedPanel) && activeTabbedPanel.tabCount() > 1) {
+            return activeTabbedPanel;
+        }
+        activeTabbedPanel = firstTabbedPanelWithMultipleTabs(root);
+        return activeTabbedPanel;
+    }
+
+    private static boolean containsTabbedPanel(DockNode node, TabbedPanel target) {
+        return switch (node) {
+            case DockNode.Leaf leaf -> leaf.panel() == target;
+            case DockNode.Split split -> containsTabbedPanel(split.first(), target) || containsTabbedPanel(split.second(), target);
+        };
+    }
+
+    private static @Nullable TabbedPanel firstTabbedPanelWithMultipleTabs(DockNode node) {
+        return switch (node) {
+            case DockNode.Leaf leaf -> {
+                if (leaf.panel() instanceof TabbedPanel tabbed && tabbed.tabCount() > 1) {
+                    yield tabbed;
+                }
+                yield null;
+            }
+            case DockNode.Split split -> {
+                var first = firstTabbedPanelWithMultipleTabs(split.first());
+                yield first != null ? first : firstTabbedPanelWithMultipleTabs(split.second());
+            }
+        };
     }
 
     /**

@@ -119,6 +119,15 @@ public final class Keybindings {
 
     public static final Keybinding TAB_CLOSE = mouseButton(2, "tabs.close", "Close tab");
 
+    public static final Keybinding TAB_NEXT = keyWithMods(GLFW.GLFW_KEY_TAB, Input.MOD_CTRL, "tabs.next", "Next tab");
+
+    public static final Keybinding TAB_PREVIOUS = keyWithMods(
+        GLFW.GLFW_KEY_TAB,
+        Input.MOD_CTRL | Input.MOD_SHIFT,
+        "tabs.previous",
+        "Previous tab"
+    );
+
     private static final List<Keybinding> ALL_DEFAULTS = List.of(
         RELOAD_PROJECT,
         UNDO,
@@ -154,7 +163,9 @@ public final class Keybindings {
         TMAP_ZOOM,
         PAINT_CLAIM,
         PAINT_UNCLAIM,
-        TAB_CLOSE
+        TAB_CLOSE,
+        TAB_NEXT,
+        TAB_PREVIOUS
     );
 
     private Keybindings() {}
@@ -191,6 +202,10 @@ public final class Keybindings {
 
     private static Keybinding ctrlKey(int keyCode, String id, String label) {
         return new Keybinding(id, label, new Input.Key(keyCode, Input.MOD_CTRL));
+    }
+
+    private static Keybinding keyWithMods(int keyCode, int mods, String id, String label) {
+        return new Keybinding(id, label, new Input.Key(keyCode, mods));
     }
 
     private static Keybinding mouseButton(int button, String id, String label) {
