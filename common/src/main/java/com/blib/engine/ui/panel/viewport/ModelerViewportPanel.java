@@ -250,7 +250,7 @@ public final class ModelerViewportPanel implements Panel {
             ModelerGizmoState.setHover(null);
         }
 
-        renderer.render(graphics, x, y, width, height);
+        renderer.render(graphics, x, y, width, height, gizmoDragActive || texturePaintActive);
         // Panel-local menu bar lives along the top edge of the viewport — modeler-only file/edit/etc. menus that
         // would clutter the global menu bar if they lived there. Toolbar is shifted down by the menu-bar height so
         // the two strips stack instead of overlapping.

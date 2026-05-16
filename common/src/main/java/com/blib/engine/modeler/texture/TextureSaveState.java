@@ -27,30 +27,41 @@ public final class TextureSaveState {
 
     private static final IdentityHashMap<LoadedTexture, State> STATES = new IdentityHashMap<>();
 
+    private static long revision;
+
     private TextureSaveState() {}
 
     public static synchronized void registerClean(LoadedTexture texture) {
         STATES.put(texture, new State(texture.sourcePath(), snapshot(texture)));
+        revision++;
     }
 
     public static synchronized void unregister(LoadedTexture texture) {
         STATES.remove(texture);
+        revision++;
     }
 
     public static synchronized void markClean(LoadedTexture texture) {
         var state = stateFor(texture);
         state.savedPixels = snapshot(texture);
         state.dirty = false;
+        revision++;
     }
 
     public static synchronized void markDirty(LoadedTexture texture) {
         stateFor(texture).dirty = true;
+        revision++;
     }
 
     public static synchronized void markPossiblyDirty(LoadedTexture texture) {
         var state = stateFor(texture);
         var current = snapshot(texture);
         state.dirty = state.savedPixels == null ? current != null : !state.savedPixels.matches(current);
+        revision++;
+    }
+
+    public static synchronized long revision() {
+        return revision;
     }
 
     public static synchronized boolean isDirty(LoadedTexture texture) {

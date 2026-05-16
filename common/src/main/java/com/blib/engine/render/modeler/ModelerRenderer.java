@@ -16,8 +16,13 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL30;
 
 import com.blib.engine.modeler.ModelerScene;
+import com.blib.engine.modeler.Selection;
+import com.blib.engine.modeler.animation.AnimationCollisionState;
 import com.blib.engine.modeler.animation.AnimationEditorState;
 import com.blib.engine.modeler.animation.AnimationFrameUpdate;
+import com.blib.engine.modeler.gizmo.ModelerGizmoState;
+import com.blib.engine.modeler.texture.LoadedTexture;
+import com.blib.engine.modeler.texture.TextureSaveState;
 
 /**
  * Owns the offscreen framebuffer the modeler viewport renders into. Render-to-texture pattern (cf.
@@ -44,11 +49,29 @@ public final class ModelerRenderer {
 
     private @Nullable TextureTarget target;
 
+    private @Nullable RenderCacheKey lastRenderKey;
+
+    private record RenderCacheKey(
+        int width,
+        int height,
+        long sceneRevision,
+        long cameraSignature,
+        long selectionSignature,
+        long hoverSignature,
+        long textureSignature,
+        long gizmoSignature,
+        long animationSignature
+    ) {}
+
     /**
      * Render the modeler scene into the panel at {@code (x, y, width, height)} in screen-logical pixels. The FBO is
      * sized to the underlying raw destination pixels (× {@link #SUPERSAMPLE}) so the blit downsamples cleanly.
      */
     public void render(GuiGraphics graphics, int x, int y, int width, int height) {
+        render(graphics, x, y, width, height, false);
+    }
+
+    public void render(GuiGraphics graphics, int x, int y, int width, int height, boolean forceRender) {
         if (width <= 0 || height <= 0) {
             return;
         }
@@ -73,23 +96,39 @@ public final class ModelerRenderer {
         var fboW = dstW * SUPERSAMPLE;
         var fboH = dstH * SUPERSAMPLE;
 
-        ensureTargetSize(fboW, fboH);
+        var resized = ensureTargetSize(fboW, fboH);
         if (target == null) {
             return;
         }
 
-        renderScene(fboW, fboH);
+        var scene = ModelerScene.get();
+        var animationState = AnimationEditorState.get();
+        if (scene.itemSession == null) {
+            AnimationFrameUpdate.update(scene.root, animationState);
+        }
+        var key = renderCacheKey(fboW, fboH, scene, animationState);
+        var cacheable = scene.itemSession == null && !forceRender;
+        if (!cacheable || resized || !key.equals(lastRenderKey)) {
+            renderScene(fboW, fboH);
+            lastRenderKey = cacheable ? key : null;
+        }
         blitToGui(graphics, target, dstX0, dstY0, dstX1, dstY1);
     }
 
-    private void ensureTargetSize(int width, int height) {
+    private boolean ensureTargetSize(int width, int height) {
         if (target == null) {
             target = new TextureTarget(width, height, true, Minecraft.ON_OSX);
             target.setClearColor(BG_R, BG_G, BG_B, 1f);
             target.setFilterMode(GL11.GL_LINEAR);
-        } else if (target.width != width || target.height != height) {
-            target.resize(width, height, Minecraft.ON_OSX);
+            lastRenderKey = null;
+            return true;
         }
+        if (target.width != width || target.height != height) {
+            target.resize(width, height, Minecraft.ON_OSX);
+            lastRenderKey = null;
+            return true;
+        }
+        return false;
     }
 
     private void renderScene(int width, int height) {
@@ -195,8 +234,6 @@ public final class ModelerRenderer {
             } else {
                 // Entity-model edit mode — no item session attached.
                 scene.gizmoTargetSelection = null;
-                var animationState = AnimationEditorState.get();
-                AnimationFrameUpdate.update(scene.root, animationState);
                 ModelerGridRenderer.render(pose);
                 ModelerCubeRenderer.render(pose, scene.root, scene.selection);
                 // Gizmo rendered last so its line strips overlay the cube faces / selection outline; the projection
@@ -217,6 +254,114 @@ public final class ModelerRenderer {
                 RenderSystem.enableScissor(savedScissorX, savedScissorY, savedScissorW, savedScissorH);
             }
         }
+    }
+
+    private static RenderCacheKey renderCacheKey(int width, int height, ModelerScene scene, AnimationEditorState animationState) {
+        return new RenderCacheKey(
+            width,
+            height,
+            scene.revision(),
+            scene.camera.signature(),
+            selectionSignature(scene.selection),
+            hoverSignature(scene),
+            textureSignature(scene),
+            gizmoSignature(),
+            animationSignature(animationState)
+        );
+    }
+
+    private static long selectionSignature(@Nullable Selection selection) {
+        if (selection == null) {
+            return 0L;
+        }
+        var hash = 0xcbf29ce484222325L;
+        if (selection instanceof Selection.BoneSelection bs) {
+            hash = mix(hash, 1);
+            return mix(hash, System.identityHashCode(bs.bone()));
+        }
+        if (selection instanceof Selection.CubeSelection cs) {
+            hash = mix(hash, 2);
+            hash = mix(hash, System.identityHashCode(cs.owner()));
+            return mix(hash, System.identityHashCode(cs.cube()));
+        }
+        if (selection instanceof Selection.FaceSelection fs) {
+            hash = mix(hash, 3);
+            hash = mix(hash, System.identityHashCode(fs.owner()));
+            hash = mix(hash, System.identityHashCode(fs.cube()));
+            return mix(hash, fs.face().ordinal());
+        }
+        if (selection instanceof Selection.MultiCubeSelection ms) {
+            hash = mix(hash, 4);
+            for (var cubeSelection : ms.cubes()) {
+                hash = mix(hash, System.identityHashCode(cubeSelection.owner()));
+                hash = mix(hash, System.identityHashCode(cubeSelection.cube()));
+            }
+            return hash;
+        }
+        return System.identityHashCode(selection);
+    }
+
+    private static long hoverSignature(ModelerScene scene) {
+        var hash = 0xcbf29ce484222325L;
+        hash = mix(hash, System.identityHashCode(scene.hoveredBone));
+        hash = mix(hash, System.identityHashCode(scene.hoveredCube));
+        var face = scene.hoveredFace;
+        if (face != null) {
+            hash = mix(hash, System.identityHashCode(face.owner()));
+            hash = mix(hash, System.identityHashCode(face.cube()));
+            hash = mix(hash, face.face().ordinal());
+        }
+        var pixel = scene.hoveredTexturePixel;
+        if (pixel != null) {
+            hash = mix(hash, System.identityHashCode(pixel.owner()));
+            hash = mix(hash, System.identityHashCode(pixel.cube()));
+            hash = mix(hash, pixel.face().ordinal());
+            hash = mix(hash, pixel.pixelX());
+            hash = mix(hash, pixel.pixelY());
+        }
+        return hash;
+    }
+
+    private static long textureSignature(ModelerScene scene) {
+        var hash = 0xcbf29ce484222325L;
+        hash = mix(hash, System.identityHashCode(scene.activeTexture));
+        hash = mix(hash, Double.doubleToLongBits(scene.textureWidth));
+        hash = mix(hash, Double.doubleToLongBits(scene.textureHeight));
+        hash = mix(hash, TextureSaveState.revision());
+        for (LoadedTexture texture : scene.textures) {
+            hash = mix(hash, System.identityHashCode(texture));
+        }
+        return hash;
+    }
+
+    private static long gizmoSignature() {
+        var hash = 0xcbf29ce484222325L;
+        hash = mix(hash, ModelerGizmoState.mode().ordinal());
+        hash = mix(hash, ModelerGizmoState.frame().ordinal());
+        var hover = ModelerGizmoState.hover();
+        if (hover != null) {
+            hash = mix(hash, hover.axis());
+            hash = mix(hash, hover.sign());
+        }
+        return hash;
+    }
+
+    private static long animationSignature(AnimationEditorState state) {
+        if (!com.blib.engine.ui.workspace.WorkspaceLayoutController.activeLayoutHasAnimationPanel()) {
+            return 0L;
+        }
+        var hash = 0xcbf29ce484222325L;
+        hash = mix(hash, state.contentRevision());
+        hash = mix(hash, state.animationSelectionRevision());
+        hash = mix(hash, Double.doubleToLongBits(state.playheadSeconds()));
+        hash = mix(hash, state.isPlaying() ? 1 : 0);
+        hash = mix(hash, AnimationCollisionState.get().isEnabled() ? 1 : 0);
+        return hash;
+    }
+
+    private static long mix(long hash, long value) {
+        hash ^= value;
+        return hash * 0x100000001b3L;
     }
 
     private static void blitToGui(GuiGraphics graphics, TextureTarget src, int dstX0, int dstY0, int dstX1, int dstY1) {
