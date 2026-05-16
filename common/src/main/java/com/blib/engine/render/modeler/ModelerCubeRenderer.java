@@ -449,9 +449,15 @@ public final class ModelerCubeRenderer {
             if (texture == null || uv == null) {
                 continue;
             }
+            var pixels = texture.texture().getPixels();
+            if (pixels == null) {
+                continue;
+            }
             var geometry = ModelerFaceTextureMapping.faceGeometry(cube, face);
-            var aSteps = uv.cellsAlongA();
-            var bSteps = uv.cellsAlongB();
+            var uvSheetWidth = scene.textureWidth > 0.0 ? scene.textureWidth : pixels.getWidth();
+            var uvSheetHeight = scene.textureHeight > 0.0 ? scene.textureHeight : pixels.getHeight();
+            var aSteps = uv.cellsAlongA(uvSheetWidth, uvSheetHeight, pixels.getWidth(), pixels.getHeight());
+            var bSteps = uv.cellsAlongB(uvSheetWidth, uvSheetHeight, pixels.getWidth(), pixels.getHeight());
             var aLength = geometry.aAxis().length();
             var bLength = geometry.bAxis().length();
             if (aLength < GRID_AXIS_EPSILON || bLength < GRID_AXIS_EPSILON) {
@@ -474,7 +480,7 @@ public final class ModelerCubeRenderer {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         var buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        emitTexturePixelHover(buffer, pose, root, hover);
+        emitTexturePixelHover(buffer, pose, root, hover, ModelerScene.get());
         var built = buffer.build();
         if (built != null) {
             BufferUploader.drawWithShader(built);
@@ -486,7 +492,8 @@ public final class ModelerCubeRenderer {
         BufferBuilder buffer,
         PoseStack pose,
         ModelerBone bone,
-        ModelerScene.TexturePixelHover hover
+        ModelerScene.TexturePixelHover hover,
+        ModelerScene scene
     ) {
         pose.pushPose();
         ModelerTransforms.applyBone(pose, bone);
@@ -494,13 +501,13 @@ public final class ModelerCubeRenderer {
         if (bone == hover.owner()) {
             for (var cube : bone.cubes) {
                 if (cube == hover.cube()) {
-                    emitTexturePixelHoverCell(buffer, pose, cube, hover.face(), hover.pixelX(), hover.pixelY());
+                    emitTexturePixelHoverCell(buffer, pose, cube, hover.face(), hover.pixelX(), hover.pixelY(), scene);
                     break;
                 }
             }
         }
         for (var child : bone.children) {
-            emitTexturePixelHover(buffer, pose, child, hover);
+            emitTexturePixelHover(buffer, pose, child, hover, scene);
         }
 
         pose.popPose();
@@ -512,13 +519,27 @@ public final class ModelerCubeRenderer {
         ModelerCube cube,
         ModelerCube.Face face,
         int pixelX,
-        int pixelY
+        int pixelY,
+        ModelerScene scene
     ) {
         var uv = ModelerFaceTextureMapping.uvQuad(cube, face);
         if (uv == null) {
             return;
         }
-        var cell = uv.faceCellForPixel(new ModelerFaceTextureMapping.Pixel(pixelX, pixelY));
+        var texture = ModelerFaceTextureMapping.textureForFace(scene, cube, face);
+        var pixels = texture == null ? null : texture.texture().getPixels();
+        if (pixels == null) {
+            return;
+        }
+        var uvSheetWidth = scene.textureWidth > 0.0 ? scene.textureWidth : pixels.getWidth();
+        var uvSheetHeight = scene.textureHeight > 0.0 ? scene.textureHeight : pixels.getHeight();
+        var cell = uv.faceCellForPixel(
+            new ModelerFaceTextureMapping.Pixel(pixelX, pixelY),
+            uvSheetWidth,
+            uvSheetHeight,
+            pixels.getWidth(),
+            pixels.getHeight()
+        );
         if (cell == null) {
             return;
         }

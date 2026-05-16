@@ -98,6 +98,18 @@ public final class ModelerFaceTextureMapping {
     }
 
     public static @Nullable Pixel pixelAt(ModelerCube cube, ModelerCube.Face face, Vec3 localPoint, int textureWidth, int textureHeight) {
+        return pixelAt(cube, face, localPoint, textureWidth, textureHeight, textureWidth, textureHeight);
+    }
+
+    public static @Nullable Pixel pixelAt(
+        ModelerCube cube,
+        ModelerCube.Face face,
+        Vec3 localPoint,
+        double uvSheetWidth,
+        double uvSheetHeight,
+        int imageWidth,
+        int imageHeight
+    ) {
         var uv = uvQuad(cube, face);
         if (uv == null) {
             return null;
@@ -106,7 +118,7 @@ public final class ModelerFaceTextureMapping {
         if (point == null) {
             return null;
         }
-        return uv.pixelAt(point.a(), point.b(), textureWidth, textureHeight);
+        return uv.pixelAt(point.a(), point.b(), uvSheetWidth, uvSheetHeight, imageWidth, imageHeight);
     }
 
     private static @Nullable FacePoint facePoint(FaceGeometry geometry, Vec3 localPoint) {
@@ -229,29 +241,96 @@ public final class ModelerFaceTextureMapping {
             return Math.max(1, Math.round(Math.max(Math.abs(u1 - u0), Math.abs(v1 - v0))));
         }
 
+        public int cellsAlongA(double uvSheetWidth, double uvSheetHeight, int imageWidth, int imageHeight) {
+            var scale = pixelScale(uvSheetWidth, uvSheetHeight, imageWidth, imageHeight);
+            if (scale == null) {
+                return cellsAlongA();
+            }
+            return Math.max(
+                1,
+                Math.round(Math.max(Math.abs(u3 - u0) * scale.x(), Math.abs(v3 - v0) * scale.y()))
+            );
+        }
+
+        public int cellsAlongB(double uvSheetWidth, double uvSheetHeight, int imageWidth, int imageHeight) {
+            var scale = pixelScale(uvSheetWidth, uvSheetHeight, imageWidth, imageHeight);
+            if (scale == null) {
+                return cellsAlongB();
+            }
+            return Math.max(
+                1,
+                Math.round(Math.max(Math.abs(u1 - u0) * scale.x(), Math.abs(v1 - v0) * scale.y()))
+            );
+        }
+
         public @Nullable Pixel pixelAt(float a, float b, int textureWidth, int textureHeight) {
+            return pixelAt(a, b, textureWidth, textureHeight, textureWidth, textureHeight);
+        }
+
+        public @Nullable Pixel pixelAt(
+            float a,
+            float b,
+            double uvSheetWidth,
+            double uvSheetHeight,
+            int imageWidth,
+            int imageHeight
+        ) {
+            var scale = pixelScale(uvSheetWidth, uvSheetHeight, imageWidth, imageHeight);
+            if (scale == null) {
+                return null;
+            }
             var u = uAt(a, b);
             var v = vAt(a, b);
             var minU = (int) Math.floor(Math.min(Math.min(u0, u1), Math.min(u2, u3)));
             var maxU = (int) Math.ceil(Math.max(Math.max(u0, u1), Math.max(u2, u3))) - 1;
             var minV = (int) Math.floor(Math.min(Math.min(v0, v1), Math.min(v2, v3)));
             var maxV = (int) Math.ceil(Math.max(Math.max(v0, v1), Math.max(v2, v3))) - 1;
-            if (maxU < minU || maxV < minV) {
+            var minX = (int) Math.floor(minU * scale.x());
+            var maxX = (int) Math.ceil((maxU + 1) * scale.x()) - 1;
+            var minY = (int) Math.floor(minV * scale.y());
+            var maxY = (int) Math.ceil((maxV + 1) * scale.y()) - 1;
+            if (maxX < minX || maxY < minY) {
                 return null;
             }
-            var x = clamp((int) Math.floor(u), minU, maxU);
-            var y = clamp((int) Math.floor(v), minV, maxV);
-            if (x < 0 || x >= textureWidth || y < 0 || y >= textureHeight) {
+            var x = clamp((int) Math.floor(u * scale.x()), minX, maxX);
+            var y = clamp((int) Math.floor(v * scale.y()), minY, maxY);
+            if (x < 0 || x >= imageWidth || y < 0 || y >= imageHeight) {
                 return null;
             }
             return new Pixel(x, y);
         }
 
         public @Nullable FaceCell faceCellForPixel(Pixel pixel) {
-            var p0 = facePointForUv(pixel.x(), pixel.y());
-            var p1 = facePointForUv(pixel.x() + 1.0f, pixel.y());
-            var p2 = facePointForUv(pixel.x() + 1.0f, pixel.y() + 1.0f);
-            var p3 = facePointForUv(pixel.x(), pixel.y() + 1.0f);
+            return faceCellForUvBounds(pixel.x(), pixel.y(), pixel.x() + 1.0f, pixel.y() + 1.0f);
+        }
+
+        public @Nullable FaceCell faceCellForPixel(
+            Pixel pixel,
+            double uvSheetWidth,
+            double uvSheetHeight,
+            int imageWidth,
+            int imageHeight
+        ) {
+            var scale = pixelScale(uvSheetWidth, uvSheetHeight, imageWidth, imageHeight);
+            if (scale == null
+                || pixel.x() < 0
+                || pixel.x() >= imageWidth
+                || pixel.y() < 0
+                || pixel.y() >= imageHeight) {
+                return null;
+            }
+            var u0 = (float) (pixel.x() / scale.x());
+            var v0 = (float) (pixel.y() / scale.y());
+            var u1 = (float) ((pixel.x() + 1.0) / scale.x());
+            var v1 = (float) ((pixel.y() + 1.0) / scale.y());
+            return faceCellForUvBounds(u0, v0, u1, v1);
+        }
+
+        private @Nullable FaceCell faceCellForUvBounds(float u0, float v0, float u1, float v1) {
+            var p0 = facePointForUv(u0, v0);
+            var p1 = facePointForUv(u1, v0);
+            var p2 = facePointForUv(u1, v1);
+            var p3 = facePointForUv(u0, v1);
             if (p0 == null || p1 == null || p2 == null || p3 == null) {
                 return null;
             }
@@ -288,6 +367,13 @@ public final class ModelerFaceTextureMapping {
         }
     }
 
+    private static @Nullable PixelScale pixelScale(double uvSheetWidth, double uvSheetHeight, int imageWidth, int imageHeight) {
+        if (uvSheetWidth <= EPSILON || uvSheetHeight <= EPSILON || imageWidth <= 0 || imageHeight <= 0) {
+            return null;
+        }
+        return new PixelScale(imageWidth / (float) uvSheetWidth, imageHeight / (float) uvSheetHeight);
+    }
+
     public record Pixel(
         int x,
         int y
@@ -308,5 +394,10 @@ public final class ModelerFaceTextureMapping {
     private record UvPoint(
         float u,
         float v
+    ) {}
+
+    private record PixelScale(
+        float x,
+        float y
     ) {}
 }

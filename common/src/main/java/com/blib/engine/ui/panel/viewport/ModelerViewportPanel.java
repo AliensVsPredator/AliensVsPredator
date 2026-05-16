@@ -672,7 +672,17 @@ public final class ModelerViewportPanel implements Panel {
         if (texture == null || pixels == null) {
             return null;
         }
-        var pixel = ModelerFaceTextureMapping.pixelAt(hit.cube(), hit.face(), hit.localPoint(), pixels.getWidth(), pixels.getHeight());
+        var uvSheetWidth = scene.textureWidth > 0.0 ? scene.textureWidth : pixels.getWidth();
+        var uvSheetHeight = scene.textureHeight > 0.0 ? scene.textureHeight : pixels.getHeight();
+        var pixel = ModelerFaceTextureMapping.pixelAt(
+            hit.cube(),
+            hit.face(),
+            hit.localPoint(),
+            uvSheetWidth,
+            uvSheetHeight,
+            pixels.getWidth(),
+            pixels.getHeight()
+        );
         if (pixel == null) {
             return null;
         }
