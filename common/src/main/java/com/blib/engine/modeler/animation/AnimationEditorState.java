@@ -453,6 +453,15 @@ public final class AnimationEditorState {
     public boolean canSave() {
         syncActiveDocument();
         var document = activeDocument();
+        return canSave(document);
+    }
+
+    public boolean canSave(int documentId) {
+        syncActiveDocument();
+        return canSave(document(documentId));
+    }
+
+    private static boolean canSave(@Nullable AnimationDocument document) {
         return document != null
             && document.dirty
             && (document.externalSavePath != null || (document.projectResourceId != null && !ProjectSession.activeProjectName().isEmpty()));
@@ -461,9 +470,22 @@ public final class AnimationEditorState {
     public boolean save() {
         syncActiveDocument();
         var document = activeDocument();
-        if (document == null || !canSave()) {
+        if (document == null || !canSave(document)) {
             return false;
         }
+        return save(document);
+    }
+
+    public boolean save(int documentId) {
+        syncActiveDocument();
+        var document = document(documentId);
+        if (document == null || !canSave(document)) {
+            return false;
+        }
+        return save(document);
+    }
+
+    private boolean save(AnimationDocument document) {
         if (!validateCompatibility(document)) {
             statusMessage = "Animation JSON is not compatible with the Az parser.";
             return false;
@@ -480,6 +502,15 @@ public final class AnimationEditorState {
     public boolean saveAsFile(Path path) {
         syncActiveDocument();
         var document = activeDocument();
+        return saveAsFile(document, path);
+    }
+
+    public boolean saveAsFile(int documentId, Path path) {
+        syncActiveDocument();
+        return saveAsFile(document(documentId), path);
+    }
+
+    private boolean saveAsFile(@Nullable AnimationDocument document, Path path) {
         if (document == null) {
             return false;
         }
@@ -493,7 +524,9 @@ public final class AnimationEditorState {
         }
         document.externalSavePath = target;
         document.projectResourceId = null;
-        activateDocument(document);
+        if (isActiveDocument(document.id)) {
+            activateDocument(document);
+        }
         return true;
     }
 
@@ -523,6 +556,54 @@ public final class AnimationEditorState {
             return false;
         }
         return validateCompatibility(document);
+    }
+
+    public boolean unloadDocument(int documentId) {
+        syncActiveDocument();
+        var document = document(documentId);
+        if (document == null) {
+            return false;
+        }
+
+        var label = document.targetLabel();
+        var removedIndex = documents.indexOf(document);
+        var removedActive = isActiveDocument(documentId);
+        documents.remove(document);
+        selectedAnimationKeys.removeIf(key -> key.documentId() == documentId);
+        selectedAnimationNames.clear();
+
+        if (removedActive) {
+            if (documents.isEmpty()) {
+                activeDocumentId = null;
+                draft = null;
+                externalSavePath = null;
+                projectResourceId = null;
+                lastSavedPath = null;
+                dirty = false;
+                selectedAnimationName = null;
+            } else {
+                var nextIndex = Math.max(0, Math.min(removedIndex, documents.size() - 1));
+                var nextDocument = documents.get(nextIndex);
+                activateDocument(nextDocument);
+                selectedAnimationName = firstSelectedAnimationName();
+                if (selectedAnimationName == null) {
+                    selectedAnimationName = firstAnimationName(nextDocument);
+                }
+            }
+        } else if (activeDocumentId != null && (selectedAnimationName == null || animationObject(activeDocumentId, selectedAnimationName) == null)) {
+            selectedAnimationName = firstSelectedAnimationName();
+            if (selectedAnimationName == null) {
+                selectedAnimationName = firstAnimationName(activeDocument());
+            }
+        }
+
+        syncSelectedAnimationNames();
+        selectedTimestamp = null;
+        stopPlayback();
+        statusMessage = "Unloaded " + label;
+        bumpContentRevision();
+        bumpAnimationSelectionRevision();
+        return true;
     }
 
     private boolean validateCompatibility(AnimationDocument document) {

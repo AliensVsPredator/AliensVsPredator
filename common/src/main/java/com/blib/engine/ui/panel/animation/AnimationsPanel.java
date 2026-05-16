@@ -464,12 +464,25 @@ public final class AnimationsPanel implements Panel {
             return true;
         }
         if (row != null && row.isFile()) {
-            state.selectDocument(row.documentId());
+            var documentId = row.documentId();
+            state.selectDocument(documentId);
             menuOpener.open(
                 new DropdownMenu(
                     (int) mouseX,
                     (int) mouseY,
-                    List.of(new DropdownMenu.Item("New Animation", this::newAnimation, state.hasDraft()))
+                    List.of(
+                        new DropdownMenu.Item(
+                            "Save",
+                            () -> state.save(documentId),
+                            state.canSave(documentId),
+                            Component.literal("No animation changes or save target available.")
+                        ),
+                        new DropdownMenu.Item("Save As...", () -> saveAsFile(documentId), documentRef(documentId) != null),
+                        DropdownMenu.Item.divider(),
+                        new DropdownMenu.Item("New Animation", this::newAnimation, state.hasDraft()),
+                        DropdownMenu.Item.divider(),
+                        new DropdownMenu.Item("Unload", () -> unloadDocument(documentId), documentRef(documentId) != null)
+                    )
                 )
             );
             return true;
@@ -498,6 +511,33 @@ public final class AnimationsPanel implements Panel {
         var picked = ModelerFilePicker.saveAnimationJson(defaultFileName(), initialSaveDirectory());
         if (picked != null) {
             AnimationEditorState.get().saveAsFile(picked);
+        }
+    }
+
+    private void saveAsFile(int documentId) {
+        var state = AnimationEditorState.get();
+        state.selectDocument(documentId);
+        var picked = ModelerFilePicker.saveAnimationJson(defaultFileName(), initialSaveDirectory());
+        if (picked != null) {
+            state.saveAsFile(documentId, picked);
+        }
+    }
+
+    private void unloadDocument(int documentId) {
+        var removedCollapsed = collapsedDocuments.remove(documentId);
+        if (AnimationEditorState.get().unloadDocument(documentId)) {
+            if (removedCollapsed) {
+                collapsedDocumentsRevision++;
+            }
+            if (renameTarget != null && renameTarget.documentId() == documentId) {
+                cancelRename();
+            }
+            if (selectionAnchorAnimation != null && selectionAnchorAnimation.documentId() == documentId) {
+                selectionAnchorAnimation = null;
+            }
+            if (lastClickedAnimation != null && lastClickedAnimation.documentId() == documentId) {
+                lastClickedAnimation = null;
+            }
         }
     }
 
