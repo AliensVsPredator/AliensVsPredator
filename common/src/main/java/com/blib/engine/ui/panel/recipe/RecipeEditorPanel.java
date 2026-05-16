@@ -63,9 +63,9 @@ public final class RecipeEditorPanel implements Panel {
 
     private static final long DOUBLE_CLICK_MS = 350L;
 
-    private static final int COUNT_EDITOR_WIDTH = 24;
+    private static final int COUNT_TEXT_PADDING_X = 1;
 
-    private static final int COUNT_STEPPER_WIDTH = 14;
+    private static final int COUNT_STEPPER_WIDTH = 9;
 
     private static final int COUNT_STEPPER_HEIGHT = 5;
 
@@ -123,6 +123,10 @@ public final class RecipeEditorPanel implements Panel {
 
     private @Nullable UiRect decrementCountRect;
 
+    private @Nullable UiRect inlineCountRect;
+
+    private @Nullable UiRect editingCountSlotRect;
+
     private @Nullable SlotRef editingCountSlot;
 
     private @Nullable SlotRef lastClickedSlot;
@@ -179,6 +183,8 @@ public final class RecipeEditorPanel implements Panel {
         typeRect = null;
         incrementCountRect = null;
         decrementCountRect = null;
+        inlineCountRect = null;
+        editingCountSlotRect = null;
 
         graphics.fill(x, y, x + width, y + height, BACKGROUND_COLOR);
         syncRecipeIdInput();
@@ -200,6 +206,9 @@ public final class RecipeEditorPanel implements Panel {
         var workbenchX = x + Math.max(CONTENT_PADDING, (width - GUI_WIDTH) / 2);
         var workbenchY = typeY + typeH + 10;
         renderRecipeSurface(graphics, workbenchX, workbenchY, mouseX, mouseY);
+        if (editingCountSlotRect != null) {
+            renderInlineCountEditor(graphics, editingCountSlotRect, mouseX, mouseY);
+        }
 
         var detailsY = workbenchY + GUI_HEIGHT + 12;
         renderSelectedSlotDetails(graphics, x + CONTENT_PADDING, detailsY, width - 2 * CONTENT_PADDING, mouseX, mouseY);
@@ -324,26 +333,24 @@ public final class RecipeEditorPanel implements Panel {
 
     private void renderSlot(GuiGraphics graphics, UiRect rect, DraftSlot slot, SlotRef ref, int mouseX, int mouseY) {
         var selected = ref.equals(RecipeAuthoringState.selectedSlot());
+        var renderedStack = false;
 
         if (!slot.isEmpty()) {
             var stack = slot.toStack();
             if (!stack.isEmpty()) {
                 graphics.renderItem(stack, rect.x(), rect.y());
+                renderedStack = true;
             }
             if (slot.isTag()) {
                 graphics.drawString(EngineFont.get(), Component.literal("#"), rect.x() + 1, rect.y(), MUTED_TEXT, false);
             }
             if (!stack.isEmpty() && !isEditingCount(ref)) {
                 graphics.renderItemDecorations(EngineFont.get(), stack, rect.x(), rect.y());
+                renderedStack = true;
             }
         }
-
-        if (selected) {
-            graphics.renderOutline(rect.x(), rect.y(), rect.width(), rect.height(), SLOT_SELECTED);
-        }
-
-        if (!slot.isEmpty() && isEditingCount(ref)) {
-            renderInlineCountEditor(graphics, rect, mouseX, mouseY);
+        if (renderedStack) {
+            graphics.flush();
         }
 
         if (rect.contains(mouseX, mouseY)) {
@@ -353,6 +360,14 @@ public final class RecipeEditorPanel implements Panel {
                     ? Component.literal(ref.kind() == RecipeAuthoringState.SlotKind.OUTPUT ? "Output slot" : "Ingredient slot")
                     : slotTooltip(slot);
             }
+        }
+
+        if (selected) {
+            graphics.renderOutline(rect.x(), rect.y(), rect.width(), rect.height(), SLOT_SELECTED);
+        }
+
+        if (!slot.isEmpty() && isEditingCount(ref)) {
+            editingCountSlotRect = rect;
         }
     }
 
@@ -409,9 +424,18 @@ public final class RecipeEditorPanel implements Panel {
     }
 
     private void renderInlineCountEditor(GuiGraphics graphics, UiRect slotRect, int mouseX, int mouseY) {
-        var inputX = Math.max(rectX + 2, Math.min(slotRect.right() - COUNT_EDITOR_WIDTH + 1, rectX + rectWidth - COUNT_EDITOR_WIDTH - 2));
-        var inputY = slotRect.y() + Math.max(0, (slotRect.height() - TextInput.HEIGHT) / 2);
-        var inputRect = UiRect.of(inputX, inputY, COUNT_EDITOR_WIDTH, TextInput.HEIGHT);
+        var font = EngineFont.get();
+        var countText = inlineCountInput.content().isBlank() ? "1" : inlineCountInput.content();
+        var textWidth = font.width(countText);
+        var textX = Math.max(slotRect.x() + 1, slotRect.right() - 1 - textWidth);
+        var textY = slotRect.bottom() - font.lineHeight;
+        var inputRect = UiRect.of(
+            textX - COUNT_TEXT_PADDING_X,
+            textY - 1,
+            textWidth + COUNT_TEXT_PADDING_X * 2,
+            font.lineHeight + 2
+        );
+        inlineCountRect = inputRect;
         incrementCountRect = UiRect.of(
             inputRect.x() + Math.max(0, (inputRect.width() - COUNT_STEPPER_WIDTH) / 2),
             inputRect.y() - COUNT_STEPPER_HEIGHT - 1,
@@ -425,7 +449,10 @@ public final class RecipeEditorPanel implements Panel {
             COUNT_STEPPER_HEIGHT
         );
 
-        inlineCountInput.render(graphics, inputRect.x(), inputRect.y(), inputRect.width(), mouseX, mouseY);
+        if (inlineCountInput.isFocused()) {
+            graphics.fill(inputRect.x(), inputRect.y(), inputRect.right(), inputRect.bottom(), 0x803F6FBF);
+        }
+        graphics.drawString(font, Component.literal(countText), textX, textY, 0xFFFFFFFF, true);
         renderCountStepper(graphics, incrementCountRect, true, mouseX, mouseY);
         renderCountStepper(graphics, decrementCountRect, false, mouseX, mouseY);
     }
@@ -521,7 +548,9 @@ public final class RecipeEditorPanel implements Panel {
             changeInlineCount(-1);
             return true;
         }
-        if (inlineCountInput.mouseClicked(mouseX, mouseY, button)) {
+        if (button == 0 && inlineCountRect != null && inlineCountRect.contains(mouseX, mouseY)) {
+            inlineCountInput.focus();
+            inlineCountInput.selectAll();
             return true;
         }
         finishInlineCountEdit();
@@ -741,6 +770,8 @@ public final class RecipeEditorPanel implements Panel {
         editingCountSlot = null;
         incrementCountRect = null;
         decrementCountRect = null;
+        inlineCountRect = null;
+        editingCountSlotRect = null;
         inlineCountInput.setContent("");
         if (inlineCountInput.isFocused()) {
             TextInput.clearFocus();

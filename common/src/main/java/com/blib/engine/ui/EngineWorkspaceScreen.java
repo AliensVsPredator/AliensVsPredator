@@ -678,6 +678,9 @@ public final class EngineWorkspaceScreen extends Screen {
 
         UiText.clearCapturedTruncatedTextTooltip();
         renderNode(graphics, root, 0, 0, logicalWidth, logicalHeight, panelMouseX, panelMouseY, partialTick);
+        // Item rendering is buffered separately from flat GUI primitives. Flush panel content before drawing overlays
+        // so context menus, modals, and hover affordances stay above item icons rendered by panels.
+        graphics.flush();
         // Use the OFFSCREEN-substituted coords so dividers and tab-drag indicators don't light up under an open modal.
         HoverOverlayRenderer.renderHoveredDivider(
             graphics,
