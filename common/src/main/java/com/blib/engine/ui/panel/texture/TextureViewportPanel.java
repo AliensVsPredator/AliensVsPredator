@@ -13,7 +13,6 @@ import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayDeque;
 import java.util.Objects;
 
 import com.blib.engine.modeler.ModelerScene;
@@ -21,6 +20,7 @@ import com.blib.engine.modeler.history.ModelerAction;
 import com.blib.engine.modeler.history.ModelerActionHistory;
 import com.blib.engine.modeler.texture.LoadedTexture;
 import com.blib.engine.texture.TextureEditorState;
+import com.blib.engine.texture.TexturePaintOps;
 import com.blib.engine.texture.TextureTool;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.dock.Panel;
@@ -168,7 +168,7 @@ public final class TextureViewportPanel implements Panel {
             case PAINT -> {
                 var pixel = pixelAt(mouseX, mouseY, pixels, false);
                 if (pixel != null) {
-                    paintLine(active, pixels, lastPaintX, lastPaintY, pixel.x(), pixel.y());
+                    TexturePaintOps.paintLine(active, pixels, lastPaintX, lastPaintY, pixel.x(), pixel.y());
                     lastPaintX = pixel.x();
                     lastPaintY = pixel.y();
                 }
@@ -264,14 +264,14 @@ public final class TextureViewportPanel implements Panel {
             paintBefore = ModelerAction.TexturePixelsMemento.of(pixels);
             lastPaintX = pixel.x();
             lastPaintY = pixel.y();
-            paintLine(active, pixels, pixel.x(), pixel.y(), pixel.x(), pixel.y());
+            TexturePaintOps.paintLine(active, pixels, pixel.x(), pixel.y(), pixel.x(), pixel.y());
             return true;
         }
         if (tool == TextureTool.BUCKET) {
             var before = ModelerAction.TexturePixelsMemento.of(pixels);
-            if (bucketFill(active, pixels, pixel.x(), pixel.y())) {
+            if (TexturePaintOps.bucketFill(active, pixels, pixel.x(), pixel.y())) {
                 var after = ModelerAction.TexturePixelsMemento.of(pixels);
-                pushTexturePixelsAction("texture_bucket", "Bucket Fill", active, before, after);
+                TexturePaintOps.pushTexturePixelsAction("texture_bucket", "Bucket Fill", active, before, after);
             }
             return true;
         }
@@ -464,83 +464,6 @@ public final class TextureViewportPanel implements Panel {
         TextureEditorState.setSelection(x0, y0, x1, y1);
     }
 
-    private void paintLine(LoadedTexture texture, NativeImage pixels, int x0, int y0, int x1, int y1) {
-        var nativeColor = TextureEditorState.argbToNative(TextureEditorState.primaryColor());
-        var dx = Math.abs(x1 - x0);
-        var dy = Math.abs(y1 - y0);
-        var sx = x0 < x1 ? 1 : -1;
-        var sy = y0 < y1 ? 1 : -1;
-        var err = dx - dy;
-        var x = x0;
-        var y = y0;
-        while (true) {
-            if (x >= 0 && x < pixels.getWidth() && y >= 0 && y < pixels.getHeight() && TextureEditorState.containsSelectedPixel(x, y)) {
-                pixels.setPixelRGBA(x, y, nativeColor);
-            }
-            if (x == x1 && y == y1) {
-                break;
-            }
-            var e2 = 2 * err;
-            if (e2 > -dy) {
-                err -= dy;
-                x += sx;
-            }
-            if (e2 < dx) {
-                err += dx;
-                y += sy;
-            }
-        }
-        texture.texture().upload();
-    }
-
-    private boolean bucketFill(LoadedTexture texture, NativeImage pixels, int startX, int startY) {
-        if (!TextureEditorState.containsSelectedPixel(startX, startY)) {
-            return false;
-        }
-        var replacement = TextureEditorState.argbToNative(TextureEditorState.primaryColor());
-        var target = pixels.getPixelRGBA(startX, startY);
-        if (target == replacement) {
-            return false;
-        }
-        var changed = false;
-        var width = pixels.getWidth();
-        var height = pixels.getHeight();
-        var visited = new boolean[width * height];
-        var queue = new ArrayDeque<Integer>();
-        queue.add(startY * width + startX);
-        while (!queue.isEmpty()) {
-            var packed = queue.removeFirst();
-            var x = packed % width;
-            var y = packed / width;
-            var idx = y * width + x;
-            if (visited[idx]) {
-                continue;
-            }
-            visited[idx] = true;
-            if (!TextureEditorState.containsSelectedPixel(x, y) || pixels.getPixelRGBA(x, y) != target) {
-                continue;
-            }
-            pixels.setPixelRGBA(x, y, replacement);
-            changed = true;
-            if (x > 0) {
-                queue.add(idx - 1);
-            }
-            if (x + 1 < width) {
-                queue.add(idx + 1);
-            }
-            if (y > 0) {
-                queue.add(idx - width);
-            }
-            if (y + 1 < height) {
-                queue.add(idx + width);
-            }
-        }
-        if (changed) {
-            texture.texture().upload();
-        }
-        return changed;
-    }
-
     private void pushPaintAction() {
         var texture = paintTexture;
         var before = paintBefore;
@@ -554,29 +477,7 @@ public final class TextureViewportPanel implements Panel {
             return;
         }
         var after = ModelerAction.TexturePixelsMemento.of(pixels);
-        pushTexturePixelsAction("texture_pencil", "Pencil Stroke", texture, before, after);
-    }
-
-    private static void pushTexturePixelsAction(
-        String typeId,
-        String description,
-        LoadedTexture texture,
-        ModelerAction.TexturePixelsMemento before,
-        ModelerAction.TexturePixelsMemento after
-    ) {
-        if (!before.differsFrom(after)) {
-            return;
-        }
-        ModelerActionHistory.push(
-            new ModelerAction.TexturePixelsAction(
-                typeId,
-                description + " " + texture.displayName(),
-                System.currentTimeMillis(),
-                texture,
-                before,
-                after
-            )
-        );
+        TexturePaintOps.pushTexturePixelsAction("texture_pencil", "Pencil Stroke", texture, before, after);
     }
 
     private static void pushSelectionAction(
