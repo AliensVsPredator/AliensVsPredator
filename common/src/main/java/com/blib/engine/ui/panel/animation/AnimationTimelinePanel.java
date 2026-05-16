@@ -98,7 +98,7 @@ public final class AnimationTimelinePanel implements Panel {
 
     private static final int RULER_HEIGHT = 17;
 
-    private static final int TRACK_HEIGHT = 23;
+    private static final int TRACK_HEIGHT = 20;
 
     private static final int TRACK_LABEL_WIDTH = 156;
 
