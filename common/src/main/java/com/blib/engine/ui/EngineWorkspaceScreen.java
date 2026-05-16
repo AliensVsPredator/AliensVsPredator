@@ -1408,6 +1408,10 @@ public final class EngineWorkspaceScreen extends Screen {
         if (openColorPopup != null && openColorPopup.mouseReleased(logicalX, logicalY, button)) {
             return true;
         }
+        var openChecklistPopup = ChecklistManagePopup.getOpenPopup();
+        if (openChecklistPopup != null && openChecklistPopup.mouseReleased(logicalX, logicalY, button)) {
+            return true;
+        }
 
         // End any text-input drag-select on LMB release. The input keeps its caret + selection; only the static
         // drag pointer clears so future drags don't keep extending its selection.
@@ -1485,6 +1489,10 @@ public final class EngineWorkspaceScreen extends Screen {
         // Color picker — drag in hue ring or S/L square continues to update the color.
         var openColorPopup = HslColorPickerPopup.getOpenPopup();
         if (openColorPopup != null && openColorPopup.mouseDragged(logicalX, logicalY, button, deltaX, deltaY)) {
+            return true;
+        }
+        var openChecklistPopup = ChecklistManagePopup.getOpenPopup();
+        if (openChecklistPopup != null && openChecklistPopup.mouseDragged(logicalX, logicalY, button, deltaX, deltaY)) {
             return true;
         }
 

@@ -55,6 +55,10 @@ public final class ChecklistManagePopup {
 
     private static final int SWATCH_GAP = 6;
 
+    private static final int SCROLLBAR_WIDTH = 6;
+
+    private static final int MIN_THUMB_HEIGHT = 10;
+
     private static final int POPUP_Z = 400;
 
     private static final int BG_COLOR = 0xF01A1A1F;
@@ -70,6 +74,12 @@ public final class ChecklistManagePopup {
     private static final int MUTED_TEXT_COLOR = 0xFF808088;
 
     private static final int CHECK_COLOR = 0xFFE6C26B;
+
+    private static final int SCROLLBAR_TRACK_COLOR = 0xFF14141A;
+
+    private static final int SCROLLBAR_THUMB_COLOR = 0xFF3D3D45;
+
+    private static final int SCROLLBAR_THUMB_HOVER_COLOR = 0xFF565660;
 
     private static @Nullable ChecklistManagePopup openPopup;
 
@@ -94,6 +104,16 @@ public final class ChecklistManagePopup {
     private int scrollOffset;
 
     private @Nullable UiRect closeRect;
+
+    private @Nullable UiRect scrollbarRect;
+
+    private @Nullable UiRect scrollbarThumbRect;
+
+    private boolean draggingScrollbar;
+
+    private int dragStartMouseY;
+
+    private int dragStartScrollOffset;
 
     private ChecklistManagePopup(int anchorX, int anchorY, String title, Supplier<List<Entry>> entriesProvider) {
         this.anchorX = anchorX;
@@ -149,6 +169,8 @@ public final class ChecklistManagePopup {
 
     private void renderAtOverlayDepth(GuiGraphics graphics, List<Entry> filtered, int mouseX, int mouseY) {
         rowHits.clear();
+        scrollbarRect = null;
+        scrollbarThumbRect = null;
         var height = contentHeight(filtered.size());
         graphics.fill(popupX, popupY, popupX + POPUP_WIDTH, popupY + height, BG_COLOR);
         graphics.fill(popupX, popupY, popupX + POPUP_WIDTH, popupY + BORDER_THICKNESS, BORDER_COLOR);
@@ -205,6 +227,8 @@ public final class ChecklistManagePopup {
         }
 
         var visible = Math.min(MAX_VISIBLE_ROWS, filtered.size());
+        var scrollable = filtered.size() > MAX_VISIBLE_ROWS;
+        var rowsRight = popupX + POPUP_WIDTH - BORDER_THICKNESS - (scrollable ? SCROLLBAR_WIDTH : 0);
         for (var i = 0; i < visible; i++) {
             var globalIdx = i + scrollOffset;
             if (globalIdx >= filtered.size()) {
@@ -214,14 +238,14 @@ public final class ChecklistManagePopup {
             var rowY = rowsTop + i * ROW_HEIGHT;
             var hovered = entry.enabled()
                 && mouseX >= popupX + BORDER_THICKNESS
-                && mouseX < popupX + POPUP_WIDTH - BORDER_THICKNESS
+                && mouseX < rowsRight
                 && mouseY >= rowY
                 && mouseY < rowY + ROW_HEIGHT;
             if (hovered) {
                 graphics.fill(
                     popupX + BORDER_THICKNESS,
                     rowY,
-                    popupX + POPUP_WIDTH - BORDER_THICKNESS,
+                    rowsRight,
                     rowY + ROW_HEIGHT,
                     ROW_HOVER_BG_COLOR
                 );
@@ -245,11 +269,35 @@ public final class ChecklistManagePopup {
                 entry.label(),
                 labelX,
                 textY,
-                Math.max(0, popupX + POPUP_WIDTH - PADDING_X - labelX),
+                Math.max(0, rowsRight - PADDING_X - labelX),
                 entry.enabled() ? TEXT_COLOR : MUTED_TEXT_COLOR
             );
-            rowHits.add(new RowHit(popupX + BORDER_THICKNESS, rowY, POPUP_WIDTH - 2 * BORDER_THICKNESS, ROW_HEIGHT, entry));
+            rowHits.add(new RowHit(popupX + BORDER_THICKNESS, rowY, rowsRight - popupX - BORDER_THICKNESS, ROW_HEIGHT, entry));
         }
+        if (scrollable) {
+            renderScrollbar(graphics, filtered.size(), visible, rowsTop, mouseX, mouseY);
+        }
+    }
+
+    private void renderScrollbar(GuiGraphics graphics, int entryCount, int visibleRows, int rowsTop, int mouseX, int mouseY) {
+        var trackX = popupX + POPUP_WIDTH - BORDER_THICKNESS - SCROLLBAR_WIDTH;
+        var trackH = visibleRows * ROW_HEIGHT;
+        scrollbarRect = UiRect.of(trackX, rowsTop, SCROLLBAR_WIDTH, trackH);
+        graphics.fill(trackX, rowsTop, trackX + SCROLLBAR_WIDTH, rowsTop + trackH, SCROLLBAR_TRACK_COLOR);
+
+        var thumbH = Math.max(MIN_THUMB_HEIGHT, trackH * visibleRows / entryCount);
+        var maxOffset = Math.max(1, entryCount - visibleRows);
+        var thumbTravel = Math.max(0, trackH - thumbH);
+        var thumbY = rowsTop + (thumbTravel * scrollOffset / maxOffset);
+        scrollbarThumbRect = UiRect.of(trackX, thumbY, SCROLLBAR_WIDTH, thumbH);
+        var hovered = scrollbarThumbRect.contains(mouseX, mouseY) || draggingScrollbar;
+        graphics.fill(
+            trackX + 1,
+            thumbY,
+            trackX + SCROLLBAR_WIDTH - 1,
+            thumbY + thumbH,
+            hovered ? SCROLLBAR_THUMB_HOVER_COLOR : SCROLLBAR_THUMB_COLOR
+        );
     }
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
@@ -263,6 +311,13 @@ public final class ChecklistManagePopup {
         if (searchInput.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
+        if (scrollbarRect != null && scrollbarRect.contains(mouseX, mouseY)) {
+            updateScrollFromMouse(mouseY);
+            draggingScrollbar = true;
+            dragStartMouseY = (int) mouseY;
+            dragStartScrollOffset = scrollOffset;
+            return true;
+        }
         for (var hit : rowHits) {
             if (hit.contains(mouseX, mouseY)) {
                 if (hit.entry().enabled()) {
@@ -272,6 +327,22 @@ public final class ChecklistManagePopup {
             }
         }
         return isInside(mouseX, mouseY);
+    }
+
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        if (!draggingScrollbar || button != 0) {
+            return false;
+        }
+        updateScrollFromDrag(mouseY);
+        return true;
+    }
+
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (!draggingScrollbar) {
+            return false;
+        }
+        draggingScrollbar = false;
+        return true;
     }
 
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollY) {
@@ -285,6 +356,43 @@ public final class ChecklistManagePopup {
         var max = filtered.size() - MAX_VISIBLE_ROWS;
         scrollOffset = Math.max(0, Math.min(max, scrollOffset - (int) Math.signum(scrollY)));
         return true;
+    }
+
+    private void updateScrollFromMouse(double mouseY) {
+        var filtered = filteredEntries();
+        var visibleRows = Math.min(MAX_VISIBLE_ROWS, filtered.size());
+        var scrollbar = scrollbarRect;
+        var thumb = scrollbarThumbRect;
+        if (scrollbar == null || thumb == null || visibleRows <= 0 || filtered.size() <= visibleRows) {
+            return;
+        }
+        var thumbCenter = thumb.height() / 2;
+        setScrollFromThumbTop((int) mouseY - thumbCenter, filtered.size(), visibleRows, scrollbar);
+    }
+
+    private void updateScrollFromDrag(double mouseY) {
+        var filtered = filteredEntries();
+        var visibleRows = Math.min(MAX_VISIBLE_ROWS, filtered.size());
+        var scrollbar = scrollbarRect;
+        var thumb = scrollbarThumbRect;
+        if (scrollbar == null || thumb == null || visibleRows <= 0 || filtered.size() <= visibleRows) {
+            return;
+        }
+        var delta = (int) mouseY - dragStartMouseY;
+        var maxOffset = filtered.size() - visibleRows;
+        var travel = Math.max(1, scrollbar.height() - thumb.height());
+        scrollOffset = Math.max(0, Math.min(maxOffset, dragStartScrollOffset + Math.round((float) delta * maxOffset / travel)));
+    }
+
+    private void setScrollFromThumbTop(int thumbTop, int entryCount, int visibleRows, UiRect scrollbar) {
+        var thumb = scrollbarThumbRect;
+        if (thumb == null) {
+            return;
+        }
+        var maxOffset = entryCount - visibleRows;
+        var travel = Math.max(1, scrollbar.height() - thumb.height());
+        var clampedTop = Math.max(scrollbar.y(), Math.min(scrollbar.bottom() - thumb.height(), thumbTop));
+        scrollOffset = Math.max(0, Math.min(maxOffset, Math.round((float) (clampedTop - scrollbar.y()) * maxOffset / travel)));
     }
 
     private List<Entry> filteredEntries() {
