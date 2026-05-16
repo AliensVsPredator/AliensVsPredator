@@ -6,6 +6,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 import com.blib.engine.ui.EngineFont;
 
@@ -24,7 +25,9 @@ public final class DropdownMenu {
         List<Item> children,
         boolean enabled,
         @Nullable Component disabledTooltip,
-        boolean separator
+        boolean separator,
+        @Nullable BooleanSupplier checked,
+        boolean keepOpenOnClick
     ) {
 
         public Item {
@@ -33,6 +36,8 @@ public final class DropdownMenu {
                 children = List.of();
                 enabled = false;
                 disabledTooltip = null;
+                checked = null;
+                keepOpenOnClick = false;
             } else {
                 children = List.copyOf(children);
             }
@@ -42,23 +47,48 @@ public final class DropdownMenu {
         }
 
         public Item(String label, Runnable action) {
-            this(label, action, List.of(), true, null, false);
+            this(label, action, List.of(), true, null, false, null, false);
         }
 
         public Item(String label, Runnable action, boolean enabled) {
-            this(label, action, List.of(), enabled, null, false);
+            this(label, action, List.of(), enabled, null, false, null, false);
         }
 
         public Item(String label, Runnable action, boolean enabled, Component disabledTooltip) {
-            this(label, action, List.of(), enabled, disabledTooltip, false);
+            this(label, action, List.of(), enabled, disabledTooltip, false, null, false);
         }
 
         public Item(String label, Runnable action, List<Item> children) {
-            this(label, action, children, true, null, false);
+            this(label, action, children, true, null, false, null, false);
+        }
+
+        public Item(
+            String label,
+            Runnable action,
+            List<Item> children,
+            boolean enabled,
+            @Nullable Component disabledTooltip,
+            boolean separator
+        ) {
+            this(label, action, children, enabled, disabledTooltip, separator, null, false);
+        }
+
+        public static Item checked(String label, BooleanSupplier checked, Runnable action) {
+            return checked(label, checked, action, true, null);
+        }
+
+        public static Item checked(
+            String label,
+            BooleanSupplier checked,
+            Runnable action,
+            boolean enabled,
+            @Nullable Component disabledTooltip
+        ) {
+            return new Item(label, action, List.of(), enabled, disabledTooltip, false, checked, true);
         }
 
         public static Item divider() {
-            return new Item("", () -> {}, List.of(), false, null, true);
+            return new Item("", () -> {}, List.of(), false, null, true, null, false);
         }
 
         public boolean hasSubmenu() {
@@ -89,8 +119,12 @@ public final class DropdownMenu {
     /** Right-pointing triangle drawn at the right edge of items that open a submenu. */
     private static final String SUBMENU_INDICATOR = "▸";
 
+    private static final String CHECK_INDICATOR = "✓";
+
     /** Gap (in logical px) between the longest label and the submenu indicator on its right. */
     private static final int SUBMENU_INDICATOR_GAP = 6;
+
+    private static final int CHECK_INDICATOR_GAP = 6;
 
     private int anchorX;
 
@@ -126,7 +160,7 @@ public final class DropdownMenu {
             }
         }
         var indicatorReserve = anySubmenu ? font.width(SUBMENU_INDICATOR) + SUBMENU_INDICATOR_GAP : 0;
-        return maxLabelWidth + 2 * PADDING_X + indicatorReserve;
+        return maxLabelWidth + 2 * PADDING_X + indicatorReserve + checkIndicatorReserve(items);
     }
 
     /**
@@ -249,6 +283,8 @@ public final class DropdownMenu {
         graphics.fill(anchorX + width - BORDER_THICKNESS, anchorY, anchorX + width, anchorY + height, BORDER_COLOR);
 
         var font = EngineFont.get();
+        var checkReserve = checkIndicatorReserve(items);
+        var labelX = anchorX + PADDING_X + checkReserve;
         var itemY = anchorY + BORDER_THICKNESS;
         for (var i = 0; i < items.size(); i++) {
             var item = items.get(i);
@@ -274,10 +310,20 @@ public final class DropdownMenu {
                 );
             }
             var labelY = itemY + (itemHeight - font.lineHeight + 2) / 2;
+            if (item.checked() != null && item.checked().getAsBoolean()) {
+                graphics.drawString(
+                    font,
+                    Component.literal(CHECK_INDICATOR),
+                    anchorX + PADDING_X,
+                    labelY,
+                    item.enabled() ? ITEM_TEXT_COLOR : ITEM_DISABLED_TEXT_COLOR,
+                    false
+                );
+            }
             graphics.drawString(
                 font,
                 Component.literal(item.label()),
-                anchorX + PADDING_X,
+                labelX,
                 // +2 compensates for MC font's descender padding so item labels visually center; see MenuBarPanel.
                 labelY,
                 item.enabled() ? ITEM_TEXT_COLOR : ITEM_DISABLED_TEXT_COLOR,
@@ -316,6 +362,15 @@ public final class DropdownMenu {
             y += itemHeight(items.get(i));
         }
         return y;
+    }
+
+    private static int checkIndicatorReserve(List<Item> items) {
+        for (var item : items) {
+            if (!item.separator() && item.checked() != null) {
+                return EngineFont.get().width(CHECK_INDICATOR) + CHECK_INDICATOR_GAP;
+            }
+        }
+        return 0;
     }
 
     private static int clamp(int value, int min, int max) {

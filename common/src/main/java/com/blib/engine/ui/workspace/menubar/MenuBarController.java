@@ -236,7 +236,9 @@ public final class MenuBarController {
                         ensureSubmenu(level, menu, idx, item, logicalWidth, logicalHeight);
                         return ClickOutcome.CONSUMED;
                     }
-                    setOpenMenu(null);
+                    if (!item.keepOpenOnClick()) {
+                        setOpenMenu(null);
+                    }
                     item.action().run();
                     return ClickOutcome.CONSUMED;
                 }

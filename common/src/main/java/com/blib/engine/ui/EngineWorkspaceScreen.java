@@ -64,7 +64,7 @@ import com.blib.engine.ui.panel.chrome.MenuBarPanel;
 import com.blib.engine.ui.panel.animation.AnimationTimelinePanel;
 import com.blib.engine.ui.panel.recipe.RecipeEditorPanel;
 import com.blib.engine.ui.panel.viewport.ViewportPanel;
-import com.blib.engine.ui.popup.FactionManagePopup;
+import com.blib.engine.ui.popup.ChecklistManagePopup;
 import com.blib.engine.ui.popup.HslColorPickerPopup;
 import com.blib.engine.ui.screen.ProjectPickerScreen;
 import com.blib.engine.ui.widget.DropdownMenu;
@@ -667,8 +667,8 @@ public final class EngineWorkspaceScreen extends Screen {
             panelMouseX = OFFSCREEN_MOUSE;
             panelMouseY = OFFSCREEN_MOUSE;
         }
-        var openFactionMgmtPopup = FactionManagePopup.getOpenPopup();
-        if (openFactionMgmtPopup != null && openFactionMgmtPopup.isInside(logicalMouseX, logicalMouseY)) {
+        var openChecklistPopup = ChecklistManagePopup.getOpenPopup();
+        if (openChecklistPopup != null && openChecklistPopup.isInside(logicalMouseX, logicalMouseY)) {
             panelMouseX = OFFSCREEN_MOUSE;
             panelMouseY = OFFSCREEN_MOUSE;
         }
@@ -707,9 +707,9 @@ public final class EngineWorkspaceScreen extends Screen {
         if (openColorPopup != null) {
             openColorPopup.render(graphics, logicalMouseX, logicalMouseY, logicalWidth, logicalHeight);
         }
-        var openFactionPopup = FactionManagePopup.getOpenPopup();
-        if (openFactionPopup != null) {
-            openFactionPopup.render(graphics, logicalMouseX, logicalMouseY, logicalWidth, logicalHeight);
+        openChecklistPopup = ChecklistManagePopup.getOpenPopup();
+        if (openChecklistPopup != null) {
+            openChecklistPopup.render(graphics, logicalMouseX, logicalMouseY, logicalWidth, logicalHeight);
         }
 
         // Tooltips are suppressed while any visible overlay (menu, popup, drag) is active so the box doesn't fight
@@ -719,7 +719,7 @@ public final class EngineWorkspaceScreen extends Screen {
             && !tabDrag.isActive()
             && !suppressHoverTooltipsUntilMouseMove
             && HslColorPickerPopup.getOpenPopup() == null
-            && FactionManagePopup.getOpenPopup() == null;
+            && ChecklistManagePopup.getOpenPopup() == null;
         HoverOverlayRenderer.renderHoverTooltip(
             graphics,
             root,
@@ -799,7 +799,7 @@ public final class EngineWorkspaceScreen extends Screen {
             || menuBar.isAnyMenuOpen()
             || SearchableSelect.getOpenPopup() != null
             || HslColorPickerPopup.getOpenPopup() != null
-            || FactionManagePopup.getOpenPopup() != null
+            || ChecklistManagePopup.getOpenPopup() != null
             || TextInput.getFocused() != null;
     }
 
@@ -830,7 +830,7 @@ public final class EngineWorkspaceScreen extends Screen {
         EngineWorkspaceCompositor.clear();
         SearchableSelect.closeOpenPopup();
         HslColorPickerPopup.closeOpenPopup();
-        FactionManagePopup.closeOpenPopup();
+        ChecklistManagePopup.closeOpenPopup();
         EngineCursor.reset();
 
         // Tear down the session — all session-scoped singletons (selection, gizmos, caches) register their cleanup
@@ -868,9 +868,9 @@ public final class EngineWorkspaceScreen extends Screen {
         if (openColorPopup != null && openColorPopup.mouseScrolled(logicalX, logicalY, scrollY)) {
             return true;
         }
-        // Faction-management popup: its row list scrolls vertically when the faction directory overflows.
-        var openFactionPopup = FactionManagePopup.getOpenPopup();
-        if (openFactionPopup != null && openFactionPopup.mouseScrolled(logicalX, logicalY, scrollY)) {
+        // Checklist management popup: its row list scrolls vertically when the entry list overflows.
+        var openChecklistPopup = ChecklistManagePopup.getOpenPopup();
+        if (openChecklistPopup != null && openChecklistPopup.mouseScrolled(logicalX, logicalY, scrollY)) {
             return true;
         }
         // Wrapped-screen forward — scrolls over the viewport rect reach the wrapped screen (e.g. world list scroll in
@@ -1053,9 +1053,9 @@ public final class EngineWorkspaceScreen extends Screen {
             HslColorPickerPopup.closeOpenPopup();
             return true;
         }
-        // Same for the faction-management popup.
-        if (keyCode == GLFW.GLFW_KEY_ESCAPE && FactionManagePopup.getOpenPopup() != null) {
-            FactionManagePopup.closeOpenPopup();
+        // Same for the checklist management popup.
+        if (keyCode == GLFW.GLFW_KEY_ESCAPE && ChecklistManagePopup.getOpenPopup() != null) {
+            ChecklistManagePopup.closeOpenPopup();
             return true;
         }
         var openSearchablePopup = SearchableSelect.getOpenPopup();
@@ -1163,14 +1163,14 @@ public final class EngineWorkspaceScreen extends Screen {
             }
             HslColorPickerPopup.closeOpenPopup();
         }
-        // 0c) Faction management popup — same outside-click-closes pattern.
-        var openFactionPopup = FactionManagePopup.getOpenPopup();
-        if (openFactionPopup != null) {
-            if (openFactionPopup.isInside(logicalX, logicalY)) {
-                openFactionPopup.mouseClicked(logicalX, logicalY, button);
+        // 0c) Checklist management popup — same outside-click-closes pattern.
+        var openChecklistPopup = ChecklistManagePopup.getOpenPopup();
+        if (openChecklistPopup != null) {
+            if (openChecklistPopup.isInside(logicalX, logicalY)) {
+                openChecklistPopup.mouseClicked(logicalX, logicalY, button);
                 return true;
             }
-            FactionManagePopup.closeOpenPopup();
+            ChecklistManagePopup.closeOpenPopup();
         }
 
         // 0d) Wrapped-screen (menu-overlay mode): clicks inside the viewport rect forward to the wrapped screen so
