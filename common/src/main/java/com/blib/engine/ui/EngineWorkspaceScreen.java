@@ -1491,6 +1491,13 @@ public final class EngineWorkspaceScreen extends Screen {
     }
 
     /**
+     * True when the active layout contains animation-authoring panels.
+     */
+    public boolean layoutHasAnimationPanel() {
+        return WorkspaceLayoutController.hasAnimationPanel(root);
+    }
+
+    /**
      * True when the active layout should use the client-local undo/redo history instead of server-synced world history.
      */
     public boolean layoutHasLocalHistoryPanel() {

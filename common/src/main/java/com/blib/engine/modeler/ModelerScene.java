@@ -87,6 +87,12 @@ public final class ModelerScene {
     public @Nullable Selection gizmoTargetSelection;
 
     /**
+     * Bone currently under the mouse cursor in animation-oriented viewport interactions. Null in normal model-editing
+     * hover, texture-paint hover, or while the cursor is outside the viewport.
+     */
+    public @Nullable ModelerBone hoveredBone;
+
+    /**
      * Cube currently under the mouse cursor in the viewport, refreshed each frame by
      * {@code ModelerViewportPanel.render}. Drives the hover outline the cube renderer draws so users can see what
      * they'd select before clicking. Null whenever the cursor isn't over a cube, isn't over the panel, or a gizmo drag
@@ -354,6 +360,7 @@ public final class ModelerScene {
         this.camera.reset();
         seed(this);
         this.selection = null;
+        this.hoveredBone = null;
         this.hoveredCube = null;
         this.hoveredFace = null;
         this.hoveredTexturePixel = null;

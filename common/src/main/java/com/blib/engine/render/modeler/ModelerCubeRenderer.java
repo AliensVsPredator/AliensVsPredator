@@ -103,10 +103,19 @@ public final class ModelerCubeRenderer {
             collectCubesInSubtree(bs.bone(), selectionTargets);
         }
 
-        // Hover pass — drawn before the selection pass and skipped when the hovered cube is already in the
-        // selection set so the selection's yellow always wins on the cube the user has actually picked.
+        // Hover pass — drawn before the selection pass so the selection's yellow wins on anything the user has
+        // actually picked. Animation-context hover targets whole bones; modeling hover targets individual cubes.
+        var hoveredBone = ModelerScene.get().hoveredBone;
+        if (hoveredBone != null) {
+            var hoverTargets = new HashSet<ModelerCube>();
+            collectCubesInSubtree(hoveredBone, hoverTargets);
+            hoverTargets.removeAll(selectionTargets);
+            if (!hoverTargets.isEmpty()) {
+                renderOutlines(pose, root, hoverTargets, HOVER_COLOR);
+            }
+        }
         var hovered = ModelerScene.get().hoveredCube;
-        if (hovered != null && !selectionTargets.contains(hovered)) {
+        if (hoveredBone == null && hovered != null && !selectionTargets.contains(hovered)) {
             renderOutlines(pose, root, Set.of(hovered), HOVER_COLOR);
         }
 

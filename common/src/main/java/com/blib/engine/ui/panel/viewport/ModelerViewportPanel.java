@@ -33,6 +33,7 @@ import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.ModelerSceneLoader;
 import com.blib.engine.modeler.ModelerTransformOps;
 import com.blib.engine.modeler.Selection;
+import com.blib.engine.modeler.animation.AnimationEditorState;
 import com.blib.engine.modeler.gizmo.ModelerGizmoInput;
 import com.blib.engine.modeler.gizmo.ModelerGizmoMode;
 import com.blib.engine.modeler.gizmo.ModelerGizmoState;
@@ -52,6 +53,7 @@ import com.blib.engine.ui.panel.chrome.ModelerMenuBar;
 import com.blib.engine.ui.panel.chrome.ModelerViewportToolbar;
 import com.blib.engine.ui.panel.texture.TextureTabIndicators;
 import com.blib.engine.ui.popup.PanelMenuOpener;
+import com.blib.engine.ui.workspace.WorkspaceLayoutController;
 import com.blib.engine.ui.widget.DropdownMenu;
 import com.blib.engine.ui.widget.SearchableSelect;
 
@@ -189,9 +191,11 @@ public final class ModelerViewportPanel implements Panel {
         // the cursor, and the gizmo renderer can brighten whichever handle is under the cursor. Suppressed while a
         // gizmo drag is in flight so the hover outline doesn't fight the drag-visual.
         var scene = ModelerScene.get();
+        var animationInteraction = isAnimationInteractionMode();
         if (cursorInsidePanel(mouseX, mouseY) && !gizmoDragActive) {
             if (isTexturePaintToolActive()) {
                 var target = texturePaintTargetAt(mouseX, mouseY);
+                scene.hoveredBone = null;
                 scene.hoveredCube = null;
                 scene.hoveredFace = null;
                 scene.hoveredTexturePixel = target == null
@@ -206,10 +210,16 @@ public final class ModelerViewportPanel implements Panel {
                 ModelerGizmoState.setHover(null);
             } else {
                 var hit = pickCubeAt(mouseX, mouseY);
-                if (hit != null) {
+                if (hit != null && animationInteraction) {
+                    scene.hoveredBone = hit.owner();
+                    scene.hoveredCube = null;
+                    scene.hoveredFace = null;
+                } else if (hit != null) {
+                    scene.hoveredBone = null;
                     scene.hoveredCube = hit.cube();
                     scene.hoveredFace = new Selection.FaceSelection(hit.owner(), hit.cube(), hit.face());
                 } else {
+                    scene.hoveredBone = null;
                     scene.hoveredCube = null;
                     scene.hoveredFace = null;
                 }
@@ -217,6 +227,7 @@ public final class ModelerViewportPanel implements Panel {
                 ModelerGizmoInput.updateHover(mouseX - panelX, mouseY - panelY, panelWidth, panelHeight);
             }
         } else {
+            scene.hoveredBone = null;
             scene.hoveredCube = null;
             scene.hoveredFace = null;
             scene.hoveredTexturePixel = null;
@@ -269,6 +280,16 @@ public final class ModelerViewportPanel implements Panel {
         // selection. A miss clears the selection (Blockbench convention — click empty space to deselect).
         var hit = pickCubeAt(mouseX, mouseY);
         var scene = ModelerScene.get();
+        if (isAnimationInteractionMode()) {
+            if (hit == null) {
+                scene.selection = null;
+                AnimationEditorState.get().selectBone(null);
+            } else {
+                scene.selection = new Selection.BoneSelection(hit.owner());
+                AnimationEditorState.get().selectBone(hit.owner().name);
+            }
+            return true;
+        }
         if (hit == null) {
             scene.selection = null;
         } else {
@@ -292,6 +313,10 @@ public final class ModelerViewportPanel implements Panel {
             return false;
         }
         return mouseX >= panelX && mouseX < panelX + panelWidth && mouseY >= panelY && mouseY < panelY + panelHeight;
+    }
+
+    private static boolean isAnimationInteractionMode() {
+        return WorkspaceLayoutController.activeLayoutHasAnimationPanel();
     }
 
     /**

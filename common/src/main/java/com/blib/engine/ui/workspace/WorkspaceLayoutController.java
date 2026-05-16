@@ -184,6 +184,14 @@ public final class WorkspaceLayoutController {
     }
 
     /**
+     * True when the dock root contains at least one animation-authoring panel. Used by shared modeler surfaces to
+     * switch to animation interaction semantics without tying behavior to a single built-in layout id.
+     */
+    public static boolean hasAnimationPanel(DockNode root) {
+        return panelTreeContainsDomain(root, PanelRegistry.Domain.ANIMATION);
+    }
+
+    /**
      * True when the dock root contains a panel whose edits are backed by the client-local history store rather than the
      * server-synced world history. Currently covers modeler and texture authoring panels.
      */
@@ -202,6 +210,14 @@ public final class WorkspaceLayoutController {
     public static boolean activeLayoutHasModelerPanel() {
         var mc = Minecraft.getInstance();
         return mc.screen instanceof EngineWorkspaceScreen ws && ws.layoutHasModelerPanel();
+    }
+
+    /**
+     * Convenience for shared modeler panels. True when the active workspace contains animation-authoring UI.
+     */
+    public static boolean activeLayoutHasAnimationPanel() {
+        var mc = Minecraft.getInstance();
+        return mc.screen instanceof EngineWorkspaceScreen ws && ws.layoutHasAnimationPanel();
     }
 
     /**
@@ -234,6 +250,13 @@ public final class WorkspaceLayoutController {
             case DockNode.Leaf leaf -> panelOrActiveTabMatches(leaf.panel(), panelClass);
             case DockNode.Split split -> panelTreeContainsActivePanel(split.first(), panelClass)
                 || panelTreeContainsActivePanel(split.second(), panelClass);
+        };
+    }
+
+    private static boolean panelTreeContainsDomain(DockNode node, PanelRegistry.Domain domain) {
+        return switch (node) {
+            case DockNode.Leaf leaf -> panelOrTabsContainsDomain(leaf.panel(), domain);
+            case DockNode.Split split -> panelTreeContainsDomain(split.first(), domain) || panelTreeContainsDomain(split.second(), domain);
         };
     }
 
@@ -272,6 +295,25 @@ public final class WorkspaceLayoutController {
             }
         }
         return false;
+    }
+
+    private static boolean panelOrTabsContainsDomain(Panel panel, PanelRegistry.Domain domain) {
+        if (panelInDomain(panel, domain)) {
+            return true;
+        }
+        if (panel instanceof TabbedPanel tp) {
+            for (var tab : tp.tabs()) {
+                if (panelInDomain(tab, domain)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean panelInDomain(Panel panel, PanelRegistry.Domain domain) {
+        var id = PanelRegistry.idOf(panel);
+        return id != null && PanelRegistry.domainOf(id) == domain;
     }
 
     private static boolean isModelerPanel(Panel panel) {

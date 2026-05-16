@@ -150,6 +150,7 @@ public final class ModelerSceneLoader {
             scene.textureHeight = 64.0;
         }
         scene.selection = null;
+        scene.hoveredBone = null;
         scene.hoveredCube = null;
         scene.hoveredFace = null;
         scene.hoveredTexturePixel = null;

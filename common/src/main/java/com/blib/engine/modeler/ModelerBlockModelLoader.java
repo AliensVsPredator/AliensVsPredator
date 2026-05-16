@@ -94,6 +94,7 @@ public final class ModelerBlockModelLoader {
         scene.textureHeight = BLOCK_TEXTURE_SIZE;
         scene.selection = null;
         scene.gizmoTargetSelection = null;
+        scene.hoveredBone = null;
         scene.hoveredCube = null;
         scene.hoveredFace = null;
         scene.hoveredTexturePixel = null;
