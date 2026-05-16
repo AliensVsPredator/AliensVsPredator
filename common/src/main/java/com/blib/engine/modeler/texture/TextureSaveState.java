@@ -65,8 +65,17 @@ public final class TextureSaveState {
         return stateFor(texture).savePath != null || hasProjectResourceSaveTarget(texture);
     }
 
+    public static synchronized boolean canSaveChanges(LoadedTexture texture) {
+        var state = stateFor(texture);
+        return state.dirty && (state.savePath != null || hasProjectResourceSaveTarget(texture));
+    }
+
     public static synchronized boolean save(LoadedTexture texture) {
-        var path = savePath(texture);
+        var state = stateFor(texture);
+        if (!state.dirty) {
+            return false;
+        }
+        var path = state.savePath;
         if (path == null) {
             path = resolveProjectResourceSavePath(texture);
             if (path == null) {

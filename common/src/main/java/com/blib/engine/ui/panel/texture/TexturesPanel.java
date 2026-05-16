@@ -236,7 +236,7 @@ public final class TexturesPanel implements Panel {
         var saveTexture = new DropdownMenu.Item(
             "Save",
             () -> saveTexture(texture),
-            TextureSaveState.canSave(texture),
+            TextureSaveState.canSaveChanges(texture),
             saveDisabledTooltip(texture)
         );
         var saveTextureAs = new DropdownMenu.Item("Save As...", () -> saveTextureAs(texture));
@@ -388,6 +388,9 @@ public final class TexturesPanel implements Panel {
     }
 
     private static Component saveDisabledTooltip(LoadedTexture texture) {
+        if (!TextureSaveState.isDirty(texture)) {
+            return Component.literal("No texture changes to save.");
+        }
         if (texture.sourceResource() != null && ProjectSession.activeProjectName().isEmpty()) {
             return Component.literal("Open a project to save resource textures into its resource pack.");
         }
