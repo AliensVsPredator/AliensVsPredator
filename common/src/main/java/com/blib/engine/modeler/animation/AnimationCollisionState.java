@@ -356,7 +356,8 @@ public final class AnimationCollisionState {
 
     private Set<BonePair> buildBaselineIgnoredBonePairs(ModelerBone root, AnimationEditorState state) {
         var boxes = new ArrayList<CollisionBox>();
-        collectBoxes(root, state, 0.0, new Matrix4f(), boxes, START_POSE_ADJACENCY_TOLERANCE);
+        var baselineSeconds = firstAuthoredKeyframeSeconds(root, state);
+        collectBoxes(root, state, baselineSeconds, new Matrix4f(), boxes, START_POSE_ADJACENCY_TOLERANCE);
         if (boxes.size() < 2) {
             return Set.of();
         }
@@ -368,6 +369,12 @@ public final class AnimationCollisionState {
             }
         });
         return Set.copyOf(ignored);
+    }
+
+    private double firstAuthoredKeyframeSeconds(ModelerBone root, AnimationEditorState state) {
+        var times = new TreeSet<Double>();
+        collectKeyframeTimes(root, state, animationKeys(state), Double.POSITIVE_INFINITY, times);
+        return times.isEmpty() ? 0.0 : times.getFirst();
     }
 
     private CollisionSnapshot collisionSnapshot(ModelerBone root, AnimationEditorState state, double seconds) {
