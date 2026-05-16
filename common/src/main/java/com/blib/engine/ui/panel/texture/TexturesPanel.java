@@ -254,7 +254,7 @@ public final class TexturesPanel implements Panel {
             sourceAvailable,
             Component.literal("The source texture is no longer available.")
         );
-        var deleteTexture = new DropdownMenu.Item("Delete", () -> deleteTexture(texture));
+        var unloadTexture = new DropdownMenu.Item("Unload", () -> unloadTexture(texture));
         var sourceDir = sourceDirectory(texture);
         var openSource = new DropdownMenu.Item(
             "Open in File Explorer",
@@ -266,7 +266,7 @@ public final class TexturesPanel implements Panel {
             new DropdownMenu(
                 (int) mouseX,
                 (int) mouseY,
-                List.of(saveTexture, saveTextureAs, copyTexture, duplicateTexture, refreshTexture, deleteTexture, openSource)
+                List.of(saveTexture, saveTextureAs, copyTexture, duplicateTexture, refreshTexture, unloadTexture, openSource)
             )
         );
         return true;
@@ -430,7 +430,7 @@ public final class TexturesPanel implements Panel {
         }
     }
 
-    private static void deleteTexture(LoadedTexture texture) {
+    private static void unloadTexture(LoadedTexture texture) {
         var scene = ModelerScene.get();
         var idx = scene.textures.indexOf(texture);
         if (idx < 0) {
