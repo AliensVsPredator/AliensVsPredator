@@ -1203,6 +1203,7 @@ public final class BLibServerListener {
             return;
         }
         replyOpResult(serverPlayer, ProjectOp.OPEN, payload.name(), true, "");
+        pushCatalog(serverPlayer, payload.name());
     }
 
     /** "Reload Project" — make on-disk edits live in the registry. Op-gated. */
