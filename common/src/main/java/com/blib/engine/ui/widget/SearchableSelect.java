@@ -5,6 +5,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.layout.PanelScissor;
 import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.layout.UiText;
+import com.blib.engine.ui.panel.base.ListKeyboardNavigation;
 
 /**
  * Generic searchable select widget. The inline element is a button-like row showing the current selection's label plus
@@ -252,6 +254,8 @@ public final class SearchableSelect<T> {
 
         private static final int ROW_HOVER_BG = 0xFF353540;
 
+        private static final int ROW_SELECTED_BG = 0xFF3A3A48;
+
         private static final int ROW_TEXT_COLOR = 0xFFD0D0D0;
 
         private static final int EMPTY_NOTE_COLOR = 0xFF606068;
@@ -279,6 +283,8 @@ public final class SearchableSelect<T> {
         private List<Item<T>> filteredItems;
 
         private @Nullable String lastSearchQuery;
+
+        private int highlightedIndex = -1;
 
         // Layout — set by openAt() and updated each render once the popup height is known.
         private int popupX;
@@ -321,6 +327,7 @@ public final class SearchableSelect<T> {
             this.scroll = new ScrollContainer();
             this.filteredItems = items;
             this.lastSearchQuery = "";
+            this.highlightedIndex = items.isEmpty() ? -1 : indexOfCurrentValue();
         }
 
         /**
@@ -374,6 +381,7 @@ public final class SearchableSelect<T> {
                     filteredItems = filtered;
                 }
                 scroll.reset();
+                highlightedIndex = filteredItems.isEmpty() ? -1 : Math.max(0, Math.min(indexOfCurrentValue(), filteredItems.size() - 1));
             }
 
             // 2) Compute popup height from filtered count, then clamp position to viewport.
@@ -455,6 +463,14 @@ public final class SearchableSelect<T> {
                             rowY + ROW_HEIGHT,
                             ROW_HOVER_BG
                         );
+                    } else if (i == highlightedIndex) {
+                        graphics.fill(
+                            listAreaX,
+                            rowY,
+                            listAreaX + listAreaWidth - ScrollContainer.SCROLLBAR_GUTTER + 2,
+                            rowY + ROW_HEIGHT,
+                            ROW_SELECTED_BG
+                        );
                     }
                     var item = filteredItems.get(i);
                     if (hasIcons) {
@@ -509,6 +525,25 @@ public final class SearchableSelect<T> {
             return false;
         }
 
+        public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+            var direction = ListKeyboardNavigation.directionForKey(keyCode, modifiers);
+            if (direction != 0) {
+                moveHighlight(direction);
+                return true;
+            }
+            if (
+                modifiers == 0
+                    && freeTextParser == null
+                    && (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER)
+                    && highlightedIndex >= 0
+                    && highlightedIndex < filteredItems.size()
+            ) {
+                owner.selectItemFromPopup(filteredItems.get(highlightedIndex).value());
+                return true;
+            }
+            return false;
+        }
+
         public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
             return scroll.mouseDragged(mouseX, mouseY, button);
         }
@@ -524,6 +559,39 @@ public final class SearchableSelect<T> {
                 return false;
             }
             return scroll.mouseScrolled(scrollDy);
+        }
+
+        private void moveHighlight(int direction) {
+            if (filteredItems.isEmpty()) {
+                highlightedIndex = -1;
+                return;
+            }
+            highlightedIndex = ListKeyboardNavigation.moveIndex(highlightedIndex, filteredItems.size(), direction);
+            ensureHighlightedVisible();
+        }
+
+        private void ensureHighlightedVisible() {
+            if (highlightedIndex < 0) {
+                return;
+            }
+            ListKeyboardNavigation.scrollRangeIntoView(
+                scroll,
+                highlightedIndex * ROW_HEIGHT,
+                highlightedIndex * ROW_HEIGHT + ROW_HEIGHT,
+                listAreaHeight
+            );
+        }
+
+        private int indexOfCurrentValue() {
+            if (owner.currentValue == null) {
+                return 0;
+            }
+            for (var i = 0; i < filteredItems.size(); i++) {
+                if (owner.currentValue.equals(filteredItems.get(i).value())) {
+                    return i;
+                }
+            }
+            return 0;
         }
     }
 }

@@ -20,6 +20,7 @@ import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.layout.ScrollViewport;
 import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.layout.UiText;
+import com.blib.engine.ui.panel.base.ListKeyboardNavigation;
 import com.blib.engine.ui.widget.TextInput;
 import com.blib.internal.client.faction.ClientFactionDirectoryCache;
 import com.blib.mod.BLib;
@@ -99,6 +100,8 @@ public final class FactionBrowserPanel implements Panel {
 
     private int rectHeight;
 
+    private int listViewportHeight;
+
     /** True until the first directory payload arrives, so the panel can show a loading state. */
     private boolean requestedAtLeastOnce;
 
@@ -156,6 +159,7 @@ public final class FactionBrowserPanel implements Panel {
         var listY = topRowY + HEADER_BUTTON_HEIGHT + SEARCH_GAP_BELOW;
         var listW = width - 2 * CONTENT_PADDING;
         var listH = Math.max(0, height - (listY - y) - CONTENT_PADDING);
+        listViewportHeight = listH;
         if (listH <= 0) {
             scroll.clear();
             return;
@@ -362,6 +366,35 @@ public final class FactionBrowserPanel implements Panel {
             return false;
         }
         return scroll.mouseScrolled(mouseX, mouseY, scrollY);
+    }
+
+    @Override
+    public boolean listNavigationKeyPressed(int keyCode, int scanCode, int modifiers) {
+        var direction = ListKeyboardNavigation.directionForKey(keyCode, modifiers);
+        if (direction == 0) {
+            return false;
+        }
+        var rows = filter(searchInput.content().toLowerCase(Locale.ROOT).trim());
+        if (rows.isEmpty()) {
+            return false;
+        }
+        var selected = currentSelectedFactionId();
+        var currentIndex = -1;
+        if (selected != null) {
+            for (var i = 0; i < rows.size(); i++) {
+                if (rows.get(i).id().equals(selected)) {
+                    currentIndex = i;
+                    break;
+                }
+            }
+        }
+        var nextIndex = ListKeyboardNavigation.moveIndex(currentIndex, rows.size(), direction);
+        if (nextIndex < 0) {
+            return false;
+        }
+        SelectionManager.selectSingle(new FactionSelectable(rows.get(nextIndex).id()));
+        ListKeyboardNavigation.scrollRowIntoView(scroll, nextIndex, ROW_HEIGHT, listViewportHeight);
+        return true;
     }
 
     private record Rect(

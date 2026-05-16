@@ -32,6 +32,7 @@ import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.layout.ScrollViewport;
 import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.layout.UiText;
+import com.blib.engine.ui.panel.base.ListKeyboardNavigation;
 import com.blib.engine.ui.popup.PanelMenuOpener;
 import com.blib.engine.ui.widget.SearchableSelect;
 import com.blib.engine.ui.widget.DropdownMenu;
@@ -338,6 +339,23 @@ public final class TexturesPanel implements Panel {
             return false;
         }
         return scroll.mouseScrolled(mouseX, mouseY, scrollY);
+    }
+
+    @Override
+    public boolean listNavigationKeyPressed(int keyCode, int scanCode, int modifiers) {
+        var direction = ListKeyboardNavigation.directionForKey(keyCode, modifiers);
+        var scene = ModelerScene.get();
+        if (direction == 0 || scene.textures.isEmpty()) {
+            return false;
+        }
+        var currentIndex = scene.activeTexture == null ? -1 : scene.textures.indexOf(scene.activeTexture);
+        var nextIndex = ListKeyboardNavigation.moveIndex(currentIndex, scene.textures.size(), direction);
+        if (nextIndex < 0) {
+            return false;
+        }
+        scene.activeTexture = scene.textures.get(nextIndex);
+        ListKeyboardNavigation.scrollRowIntoView(scroll, nextIndex, ROW_HEIGHT, rowsViewportHeight);
+        return true;
     }
 
     private void openTexturePicker() {

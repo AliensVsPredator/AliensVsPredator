@@ -27,6 +27,7 @@ import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.layout.ScrollViewport;
 import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.layout.UiText;
+import com.blib.engine.ui.panel.base.ListKeyboardNavigation;
 import com.blib.engine.ui.popup.PanelMenuOpener;
 import com.blib.engine.ui.widget.DropdownMenu;
 import com.blib.engine.ui.widget.TextInput;
@@ -303,6 +304,25 @@ public final class AnimationsPanel implements Panel {
             return false;
         }
         return scroll.mouseScrolled(mouseX, mouseY, scrollY);
+    }
+
+    @Override
+    public boolean listNavigationKeyPressed(int keyCode, int scanCode, int modifiers) {
+        if (renameTarget != null) {
+            return false;
+        }
+        var direction = ListKeyboardNavigation.directionForKey(keyCode, modifiers);
+        if (direction == 0 || rows.isEmpty()) {
+            return false;
+        }
+        var state = AnimationEditorState.get();
+        var nextIndex = ListKeyboardNavigation.moveIndex(indexOfSelection(state), rows.size(), direction);
+        if (nextIndex < 0) {
+            return false;
+        }
+        selectRow(rows.get(nextIndex), state);
+        ListKeyboardNavigation.scrollRowIntoView(scroll, nextIndex, ROW_HEIGHT, rowsViewportHeight);
+        return true;
     }
 
     private void renderMenuBar(GuiGraphics graphics, int x, int y, int width, int mouseX, int mouseY) {
@@ -653,6 +673,39 @@ public final class AnimationsPanel implements Panel {
             }
         }
         return out;
+    }
+
+    private int indexOfSelection(AnimationEditorState state) {
+        var selectedAnimation = selectedAnimationKey(state);
+        if (selectedAnimation != null) {
+            for (var i = 0; i < rows.size(); i++) {
+                if (rows.get(i).matches(selectedAnimation)) {
+                    return i;
+                }
+            }
+        }
+        if (state.selectedDocumentId() != null) {
+            for (var i = 0; i < rows.size(); i++) {
+                var row = rows.get(i);
+                if (row.isFile() && row.documentId() == state.selectedDocumentId()) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
+
+    private void selectRow(Row row, AnimationEditorState state) {
+        if (row.isFile()) {
+            state.selectDocument(row.documentId());
+            selectionAnchorAnimation = null;
+            lastClickedAnimation = null;
+            return;
+        }
+        var key = row.key();
+        state.selectAnimation(key.documentId(), key.animationName());
+        selectionAnchorAnimation = key;
+        lastClickedAnimation = null;
     }
 
     private static @Nullable AnimationKey selectedAnimationKey(AnimationEditorState state) {

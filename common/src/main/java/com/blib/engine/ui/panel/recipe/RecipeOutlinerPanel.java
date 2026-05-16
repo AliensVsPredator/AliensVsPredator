@@ -27,6 +27,7 @@ import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.layout.ScrollViewport;
 import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.layout.UiText;
+import com.blib.engine.ui.panel.base.ListKeyboardNavigation;
 import com.blib.engine.ui.widget.SegmentedControl;
 import com.blib.engine.ui.widget.UiCaret;
 import com.blib.engine.ui.widget.TextInput;
@@ -90,6 +91,8 @@ public final class RecipeOutlinerPanel implements Panel {
 
     private String lastProjectName = "";
 
+    private int listViewportHeight;
+
     @Override
     public String title() {
         return "Recipe Outliner";
@@ -137,6 +140,7 @@ public final class RecipeOutlinerPanel implements Panel {
         var listY = searchY + TextInput.HEIGHT + SEARCH_GAP_BELOW;
         var listW = width - 2 * CONTENT_PADDING;
         var listH = Math.max(0, height - (listY - y) - CONTENT_PADDING);
+        listViewportHeight = listH;
         if (listH <= 0) {
             scroll.clear();
             return;
@@ -317,17 +321,41 @@ public final class RecipeOutlinerPanel implements Panel {
         }
         for (var row : rowHits) {
             if (row.contains(mouseX, mouseY)) {
-                var recipe = row.recipe();
-                if ((recipe.staged() || recipe.liveRecipe() == null) && recipe.inProject() && RecipeAuthoringState.loadProjectRecipe(recipe.id())) {
-                    return true;
-                }
-                if (recipe.liveRecipe() != null) {
-                    RecipeAuthoringState.loadRecipe(recipe.liveRecipe());
-                }
+                selectRecipe(row.recipe());
                 return true;
             }
         }
         return isInside(mouseX, mouseY);
+    }
+
+    @Override
+    public boolean listNavigationKeyPressed(int keyCode, int scanCode, int modifiers) {
+        var direction = ListKeyboardNavigation.directionForKey(keyCode, modifiers);
+        if (direction == 0) {
+            return false;
+        }
+        var rows = navigationRows();
+        if (rows.isEmpty()) {
+            return false;
+        }
+        var selected = RecipeAuthoringState.selectedRecipeId();
+        var currentIndex = -1;
+        if (selected != null) {
+            for (var i = 0; i < rows.size(); i++) {
+                if (rows.get(i).row().id().equals(selected)) {
+                    currentIndex = i;
+                    break;
+                }
+            }
+        }
+        var nextIndex = ListKeyboardNavigation.moveIndex(currentIndex, rows.size(), direction);
+        if (nextIndex < 0) {
+            return false;
+        }
+        var target = rows.get(nextIndex);
+        selectRecipe(target.row());
+        ListKeyboardNavigation.scrollRangeIntoView(scroll, target.top(), target.top() + ROW_HEIGHT, listViewportHeight);
+        return true;
     }
 
     @Override
@@ -352,6 +380,32 @@ public final class RecipeOutlinerPanel implements Panel {
         return mouseX >= rectX && mouseX < rectX + rectWidth && mouseY >= rectY && mouseY < rectY + rectHeight;
     }
 
+    private void selectRecipe(RecipeRow recipe) {
+        if ((recipe.staged() || recipe.liveRecipe() == null) && recipe.inProject() && RecipeAuthoringState.loadProjectRecipe(recipe.id())) {
+            return;
+        }
+        if (recipe.liveRecipe() != null) {
+            RecipeAuthoringState.loadRecipe(recipe.liveRecipe());
+        }
+    }
+
+    private List<NavigationRow> navigationRows() {
+        var groups = groupedRecipes(searchInput.content(), projectToggle.selectedIndex() == 1);
+        var out = new ArrayList<NavigationRow>();
+        var top = 0;
+        for (var group : groups) {
+            top += HEADER_HEIGHT;
+            if (collapsedTypes.contains(group.typeId())) {
+                continue;
+            }
+            for (var row : group.recipes()) {
+                out.add(new NavigationRow(row, top));
+                top += ROW_HEIGHT;
+            }
+        }
+        return out;
+    }
+
     private record RecipeGroup(String typeId, List<RecipeRow> recipes) {}
 
     private record RecipeRow(
@@ -361,6 +415,8 @@ public final class RecipeOutlinerPanel implements Panel {
         boolean inProject,
         boolean staged
     ) {}
+
+    private record NavigationRow(RecipeRow row, int top) {}
 
     private record HeaderHit(int x, int y, int w, int h, String typeId) {
 

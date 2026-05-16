@@ -27,6 +27,7 @@ import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.layout.ScrollViewport;
 import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.layout.UiText;
+import com.blib.engine.ui.panel.base.ListKeyboardNavigation;
 import com.blib.engine.ui.popup.EntityContextMenuHandler;
 import com.blib.engine.ui.widget.TextInput;
 import com.blib.engine.ui.widget.UiCaret;
@@ -139,6 +140,8 @@ public final class OutlinerPanel implements Panel {
 
     private int rectHeight;
 
+    private int listViewportHeight;
+
     private @Nullable Component hoveredTooltip;
 
     @Override
@@ -182,6 +185,7 @@ public final class OutlinerPanel implements Panel {
 
         var listY = searchY + TextInput.HEIGHT + SEARCH_GAP_BELOW;
         var listH = Math.max(0, height - (listY - y) - CONTENT_PADDING);
+        listViewportHeight = listH;
         if (listH <= 0) {
             return;
         }
@@ -473,6 +477,59 @@ public final class OutlinerPanel implements Panel {
         return scroll.mouseScrolled(mouseX, mouseY, scrollY);
     }
 
+    @Override
+    public boolean listNavigationKeyPressed(int keyCode, int scanCode, int modifiers) {
+        var direction = ListKeyboardNavigation.directionForKey(keyCode, modifiers);
+        if (direction == 0) {
+            return false;
+        }
+        var rows = navigationRows();
+        if (rows.isEmpty()) {
+            return false;
+        }
+        var selected = currentSelectedEntity();
+        var currentIndex = -1;
+        if (selected != null) {
+            for (var i = 0; i < rows.size(); i++) {
+                if (rows.get(i).entity() == selected) {
+                    currentIndex = i;
+                    break;
+                }
+            }
+        }
+        var nextIndex = ListKeyboardNavigation.moveIndex(currentIndex, rows.size(), direction);
+        if (nextIndex < 0) {
+            return false;
+        }
+        var target = rows.get(nextIndex);
+        SelectionManager.selectSingle(new EntitySelectable(target.entity()));
+        ListKeyboardNavigation.scrollRangeIntoView(scroll, target.top(), target.top() + ROW_HEIGHT, listViewportHeight);
+        return true;
+    }
+
+    private List<NavigationRow> navigationRows() {
+        var grouped = snapshot();
+        var out = new ArrayList<NavigationRow>();
+        var top = 0;
+        for (var cat : Category.values()) {
+            var rows = grouped.get(cat);
+            if (rows == null || rows.isEmpty()) {
+                continue;
+            }
+            top += HEADER_HEIGHT;
+            if (collapsed.contains(cat)) {
+                continue;
+            }
+            for (var entry : rows) {
+                if (entry.selectable() && entry.entity() instanceof LivingEntity living) {
+                    out.add(new NavigationRow(living, top));
+                }
+                top += ROW_HEIGHT;
+            }
+        }
+        return out;
+    }
+
     private record EntityEntry(
         Entity entity,
         Category cat,
@@ -498,4 +555,6 @@ public final class OutlinerPanel implements Panel {
         int h,
         Category category
     ) {}
+
+    private record NavigationRow(LivingEntity entity, int top) {}
 }

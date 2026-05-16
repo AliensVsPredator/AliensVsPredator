@@ -23,6 +23,7 @@ import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.layout.ScrollViewport;
 import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.layout.UiText;
+import com.blib.engine.ui.panel.base.ListKeyboardNavigation;
 import com.blib.engine.ui.popup.PanelMenuOpener;
 import com.blib.engine.ui.widget.DropdownMenu;
 import com.blib.engine.ui.widget.TextInput;
@@ -267,6 +268,24 @@ public final class AnimationsOutlinerPanel implements Panel {
         return scroll.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
 
+    @Override
+    public boolean listNavigationKeyPressed(int keyCode, int scanCode, int modifiers) {
+        if (renameTarget != null) {
+            return false;
+        }
+        var direction = ListKeyboardNavigation.directionForKey(keyCode, modifiers);
+        if (direction == 0 || rows.isEmpty()) {
+            return false;
+        }
+        var nextIndex = ListKeyboardNavigation.moveIndex(indexOfSelection(), rows.size(), direction);
+        if (nextIndex < 0) {
+            return false;
+        }
+        selectBone(rows.get(nextIndex).bone());
+        ListKeyboardNavigation.scrollRowIntoView(scroll, nextIndex, ROW_HEIGHT, rowsViewportHeight);
+        return true;
+    }
+
     private boolean openContextMenu(double mouseX, double mouseY) {
         var row = rowAt(mouseX, mouseY);
         if (row == null) {
@@ -277,6 +296,19 @@ public final class AnimationsOutlinerPanel implements Panel {
             menuOpener.open(new DropdownMenu((int) mouseX, (int) mouseY, List.of(new DropdownMenu.Item("Rename", () -> beginRename(row.bone)))));
         }
         return true;
+    }
+
+    private int indexOfSelection() {
+        var selection = ModelerScene.get().selection;
+        if (!(selection instanceof Selection.BoneSelection bs)) {
+            return -1;
+        }
+        for (var i = 0; i < rows.size(); i++) {
+            if (rows.get(i).bone() == bs.bone()) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     private void selectBone(ModelerBone bone) {

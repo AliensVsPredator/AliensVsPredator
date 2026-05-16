@@ -22,6 +22,7 @@ import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.layout.ScrollViewport;
 import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.layout.UiText;
+import com.blib.engine.ui.panel.base.ListKeyboardNavigation;
 import com.blib.engine.ui.widget.TextInput;
 
 /**
@@ -110,6 +111,8 @@ public final class EntityPalettePanel implements Panel {
 
     private int rectHeight;
 
+    private int listViewportHeight;
+
     private @Nullable Component hoveredTooltip;
 
     @Override
@@ -154,6 +157,7 @@ public final class EntityPalettePanel implements Panel {
         var listY = searchY + TextInput.HEIGHT + SEARCH_GAP_BELOW;
         var listW = width - 2 * CONTENT_PADDING;
         var listH = Math.max(0, height - (listY - y) - CONTENT_PADDING);
+        listViewportHeight = listH;
         if (listH <= 0) {
             scroll.clear();
             return;
@@ -338,6 +342,43 @@ public final class EntityPalettePanel implements Panel {
             return false;
         }
         return scroll.mouseScrolled(mouseX, mouseY, scrollY);
+    }
+
+    @Override
+    public boolean listNavigationKeyPressed(int keyCode, int scanCode, int modifiers) {
+        var direction = ListKeyboardNavigation.directionForKey(keyCode, modifiers);
+        if (direction == 0 || filtered.isEmpty()) {
+            return false;
+        }
+        var selectedId = EntitySpawnSelection.selectedTypeId();
+        var currentIndex = -1;
+        if (selectedId != null) {
+            for (var i = 0; i < filtered.size(); i++) {
+                if (filtered.get(i).id().equals(selectedId)) {
+                    currentIndex = i;
+                    break;
+                }
+            }
+        }
+        var nextIndex = nextNavigableIndex(currentIndex, direction);
+        if (nextIndex < 0) {
+            return false;
+        }
+        EntitySpawnSelection.select(filtered.get(nextIndex).id());
+        ListKeyboardNavigation.scrollRowIntoView(scroll, nextIndex, ROW_HEIGHT, listViewportHeight);
+        return true;
+    }
+
+    private int nextNavigableIndex(int currentIndex, int direction) {
+        var index = ListKeyboardNavigation.moveIndex(currentIndex, filtered.size(), direction);
+        while (index >= 0 && index < filtered.size()) {
+            var entry = filtered.get(index);
+            if (!(isPeaceful() && entry.category() == MobCategory.MONSTER)) {
+                return index;
+            }
+            index += direction;
+        }
+        return -1;
     }
 
     private record Entry(

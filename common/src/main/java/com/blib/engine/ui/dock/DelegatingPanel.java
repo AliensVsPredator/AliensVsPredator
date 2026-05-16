@@ -84,6 +84,12 @@ public abstract class DelegatingPanel implements Panel {
     }
 
     @Override
+    public final boolean listNavigationKeyPressed(int keyCode, int scanCode, int modifiers) {
+        var child = activeChild();
+        return child != null && child.listNavigationKeyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
     public final @Nullable Component tooltipText() {
         var child = activeChild();
         return child != null ? child.tooltipText() : null;

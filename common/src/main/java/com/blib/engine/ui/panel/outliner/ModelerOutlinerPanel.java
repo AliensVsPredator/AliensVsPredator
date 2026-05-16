@@ -29,6 +29,7 @@ import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.layout.ScrollViewport;
 import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.layout.UiText;
+import com.blib.engine.ui.panel.base.ListKeyboardNavigation;
 import com.blib.engine.ui.popup.PanelMenuOpener;
 import com.blib.engine.ui.widget.DropdownMenu;
 import com.blib.engine.ui.widget.TextInput;
@@ -382,6 +383,25 @@ public final class ModelerOutlinerPanel implements Panel {
         return false;
     }
 
+    @Override
+    public boolean listNavigationKeyPressed(int keyCode, int scanCode, int modifiers) {
+        if (renameTarget != null) {
+            return false;
+        }
+        var direction = ListKeyboardNavigation.directionForKey(keyCode, modifiers);
+        if (direction == 0 || rows.isEmpty()) {
+            return false;
+        }
+        var scene = ModelerScene.get();
+        var nextIndex = ListKeyboardNavigation.moveIndex(indexOfSelection(scene.selection), rows.size(), direction);
+        if (nextIndex < 0) {
+            return false;
+        }
+        selectRow(rows.get(nextIndex));
+        ListKeyboardNavigation.scrollRowIntoView(scroll, nextIndex, ROW_HEIGHT, rowsViewportHeight);
+        return true;
+    }
+
     private boolean openContextMenu(double mouseX, double mouseY) {
         var row = rowAt(mouseX, mouseY);
         if (row == null) {
@@ -640,6 +660,33 @@ public final class ModelerOutlinerPanel implements Panel {
             return null;
         }
         return rows.get(idx);
+    }
+
+    private int indexOfSelection(@Nullable Selection selection) {
+        if (selection == null) {
+            return -1;
+        }
+        for (var i = 0; i < rows.size(); i++) {
+            var row = rows.get(i);
+            if (selection instanceof Selection.CubeSelection cs && row.cube == cs.cube()) {
+                return i;
+            }
+            if (selection instanceof Selection.FaceSelection fs && row.cube == fs.cube()) {
+                return i;
+            }
+            if (selection instanceof Selection.MultiCubeSelection ms && row.cube != null && ms.contains(row.cube)) {
+                return i;
+            }
+            if (selection instanceof Selection.BoneSelection bs && row.cube == null && row.owner == bs.bone()) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private static void selectRow(Row row) {
+        var scene = ModelerScene.get();
+        scene.selection = row.cube == null ? new Selection.BoneSelection(row.owner) : new Selection.CubeSelection(row.owner, row.cube);
     }
 
     private void buildRows(ModelerBone bone, int depth) {

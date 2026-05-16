@@ -51,4 +51,12 @@ public interface PanelInput {
     default boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         return false;
     }
+
+    /**
+     * Focused-list navigation hook. The workspace routes plain Up / Down keys here before global hotkeys so list
+     * panels can move their current row selection without enabling every panel's broader {@link #keyPressed} handler.
+     */
+    default boolean listNavigationKeyPressed(int keyCode, int scanCode, int modifiers) {
+        return false;
+    }
 }

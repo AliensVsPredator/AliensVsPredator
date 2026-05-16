@@ -28,6 +28,7 @@ import com.blib.engine.ui.PanelPlaceholder;
 import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.layout.UiText;
+import com.blib.engine.ui.panel.base.ListKeyboardNavigation;
 import com.blib.engine.ui.widget.ScrollContainer;
 import com.blib.engine.ui.widget.SegmentedControl;
 import com.blib.engine.ui.widget.TextInput;
@@ -156,6 +157,8 @@ public final class TagBrowserPanel implements Panel {
 
     private int rectHeight;
 
+    private int listViewportHeight;
+
     private @Nullable String lastFetchedProject;
 
     /** When non-null, an inline Create-tag popup is being shown for the captured registry. Modal within the panel. */
@@ -219,6 +222,7 @@ public final class TagBrowserPanel implements Panel {
         var listY = topRowY + TOP_ROW_HEIGHT + SEARCH_GAP_BELOW;
         var listW = width - 2 * CONTENT_PADDING;
         var listH = Math.max(0, height - (listY - y) - CONTENT_PADDING);
+        listViewportHeight = listH;
         if (listH <= 0) {
             return;
         }
@@ -487,6 +491,45 @@ public final class TagBrowserPanel implements Panel {
         return single instanceof TagSelectable ts ? ts : null;
     }
 
+    private static void selectTag(ResourceLocation registryKey, ResourceLocation tagId) {
+        SelectionManager.selectSingle(new TagSelectable(registryKey, tagId));
+    }
+
+    private List<NavigationRow> navigationRows() {
+        var query = searchInput.content().toLowerCase(Locale.ROOT).trim();
+        var nsQuery = namespaceInput.content().toLowerCase(Locale.ROOT).trim();
+        var projectOnly = projectToggle.selectedIndex() == 1;
+        var out = new ArrayList<NavigationRow>();
+        var top = 0;
+        for (var entry : TagCatalogCache.groupedByRegistry().entrySet()) {
+            var matched = new ArrayList<TagCatalogEntry>();
+            for (var ce : entry.getValue()) {
+                if (projectOnly && !ce.inProject()) {
+                    continue;
+                }
+                if (!query.isEmpty() && !ce.tagId().toString().toLowerCase(Locale.ROOT).contains(query)) {
+                    continue;
+                }
+                if (!nsQuery.isEmpty() && !ce.tagId().getNamespace().toLowerCase(Locale.ROOT).startsWith(nsQuery)) {
+                    continue;
+                }
+                matched.add(ce);
+            }
+            if (matched.isEmpty()) {
+                continue;
+            }
+            top += HEADER_HEIGHT;
+            if (collapsed.contains(entry.getKey())) {
+                continue;
+            }
+            for (var ce : matched) {
+                out.add(new NavigationRow(ce.registryKey(), ce.tagId(), top));
+                top += ROW_HEIGHT;
+            }
+        }
+        return out;
+    }
+
     private static void requestCatalog(String projectName) {
         BLib.MOD.networking().sendToServer(new C2SRequestTagCatalogPayload(projectName));
     }
@@ -529,7 +572,7 @@ public final class TagBrowserPanel implements Panel {
         }
         for (var rh : rowHits) {
             if (mouseX >= rh.x && mouseX < rh.x + rh.w && mouseY >= rh.y && mouseY < rh.y + rh.h && rh.registryKey.equals(ITEM_REGISTRY)) {
-                SelectionManager.selectSingle(new TagSelectable(rh.registryKey, rh.tagId));
+                selectTag(rh.registryKey, rh.tagId);
                 RecipeAuthoringState.beginTagDrag(rh.tagId);
                 return true;
             }
@@ -569,7 +612,7 @@ public final class TagBrowserPanel implements Panel {
         // Row click → select (full-row click target; no per-row buttons).
         for (var rh : rowHits) {
             if (mouseX >= rh.x && mouseX < rh.x + rh.w && mouseY >= rh.y && mouseY < rh.y + rh.h) {
-                SelectionManager.selectSingle(new TagSelectable(rh.registryKey, rh.tagId));
+                selectTag(rh.registryKey, rh.tagId);
                 return true;
             }
         }
@@ -611,6 +654,40 @@ public final class TagBrowserPanel implements Panel {
             return false;
         }
         return scroll.mouseScrolled(scrollY);
+    }
+
+    @Override
+    public boolean listNavigationKeyPressed(int keyCode, int scanCode, int modifiers) {
+        if (createPopup != null) {
+            return false;
+        }
+        var direction = ListKeyboardNavigation.directionForKey(keyCode, modifiers);
+        if (direction == 0) {
+            return false;
+        }
+        var rows = navigationRows();
+        if (rows.isEmpty()) {
+            return false;
+        }
+        var selected = currentlySelectedTag();
+        var currentIndex = -1;
+        if (selected != null) {
+            for (var i = 0; i < rows.size(); i++) {
+                var row = rows.get(i);
+                if (row.registryKey().equals(selected.registryKey()) && row.tagId().equals(selected.tagId())) {
+                    currentIndex = i;
+                    break;
+                }
+            }
+        }
+        var nextIndex = ListKeyboardNavigation.moveIndex(currentIndex, rows.size(), direction);
+        if (nextIndex < 0) {
+            return false;
+        }
+        var target = rows.get(nextIndex);
+        selectTag(target.registryKey(), target.tagId());
+        ListKeyboardNavigation.scrollRangeIntoView(scroll, target.top(), target.top() + ROW_HEIGHT, listViewportHeight);
+        return true;
     }
 
     private static void applyRawScissor(GuiGraphics graphics, int x, int y, int w, int h) {
@@ -681,6 +758,12 @@ public final class TagBrowserPanel implements Panel {
     private record CreateHit(
         Rect rect,
         ResourceLocation registryKey
+    ) {}
+
+    private record NavigationRow(
+        ResourceLocation registryKey,
+        ResourceLocation tagId,
+        int top
     ) {}
 
     /** Inline modal-within-panel state for the Create-tag popup. */

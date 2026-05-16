@@ -1058,9 +1058,17 @@ public final class EngineWorkspaceScreen extends Screen {
             FactionManagePopup.closeOpenPopup();
             return true;
         }
+        var openSearchablePopup = SearchableSelect.getOpenPopup();
+        if (openSearchablePopup != null && openSearchablePopup.keyPressed(keyCode, scanCode, modifiers)) {
+            return true;
+        }
 
         var focused = TextInput.getFocused();
         if (focused != null && focused.keyPressed(keyCode, scanCode, modifiers)) {
+            return true;
+        }
+
+        if (handleListNavigationKey(keyCode, scanCode, modifiers)) {
             return true;
         }
 
@@ -1594,6 +1602,19 @@ public final class EngineWorkspaceScreen extends Screen {
             return switchActiveTab(-1);
         }
         return false;
+    }
+
+    private boolean handleListNavigationKey(int keyCode, int scanCode, int modifiers) {
+        if (modifiers != 0 || (keyCode != GLFW.GLFW_KEY_UP && keyCode != GLFW.GLFW_KEY_DOWN)) {
+            return false;
+        }
+        if (menuBar.isAnyMenuOpen()) {
+            return false;
+        }
+        if (activeTabbedPanel == null || !containsTabbedPanel(root, activeTabbedPanel)) {
+            return false;
+        }
+        return activeTabbedPanel.listNavigationKeyPressed(keyCode, scanCode, modifiers);
     }
 
     private boolean switchActiveTab(int direction) {
