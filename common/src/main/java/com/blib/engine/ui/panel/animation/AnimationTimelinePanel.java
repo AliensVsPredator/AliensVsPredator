@@ -187,12 +187,15 @@ public final class AnimationTimelinePanel implements Panel {
 
         var keyframe = keyframeAt(mouseX, mouseY);
         if (keyframe != null) {
+            var alreadySelected = isSelectedKeyframe(state, keyframe);
             var row = channelRowAt(mouseY);
             if (row != null) {
                 selectBoneFromTimeline(row.bone());
             }
             state.selectKeyframe(keyframe.animationName(), keyframe.boneName(), keyframe.channel(), keyframe.timestamp());
-            state.setPlayheadSeconds(keyframe.timestamp());
+            if (alreadySelected) {
+                state.setPlayheadSeconds(keyframe.timestamp());
+            }
             return true;
         }
         var row = rowAt(mouseY);
@@ -558,7 +561,6 @@ public final class AnimationTimelinePanel implements Panel {
                 selectBoneFromTimeline(row.bone());
             }
             AnimationEditorState.get().selectKeyframe(keyframe.animationName(), keyframe.boneName(), keyframe.channel(), keyframe.timestamp());
-            AnimationEditorState.get().setPlayheadSeconds(keyframe.timestamp());
         }
         var state = AnimationEditorState.get();
         menuOpener.open(
@@ -571,6 +573,14 @@ public final class AnimationTimelinePanel implements Panel {
             )
         );
         return true;
+    }
+
+    private static boolean isSelectedKeyframe(AnimationEditorState state, KeyframeRef keyframe) {
+        return state.selectedTimestamp() != null
+            && keyframe.animationName().equals(state.selectedAnimationName())
+            && keyframe.boneName().equals(state.selectedBoneName())
+            && keyframe.channel() == state.selectedChannel()
+            && Math.abs(keyframe.timestamp() - state.selectedTimestamp()) < 1.0e-6;
     }
 
     private @Nullable KeyframeRef keyframeAt(double mouseX, double mouseY) {
