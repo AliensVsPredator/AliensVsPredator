@@ -16,6 +16,7 @@ import com.blib.engine.session.ProjectSession;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.EngineWorkspaceScreen;
 import com.blib.engine.ui.dialog.ConfirmDialog;
+import com.blib.engine.ui.workspace.ProjectWorkspaceSession;
 import com.blib.engine.ui.widget.TextInput;
 import com.blib.internal.client.storage.ClientProjectResourcePacks;
 import com.blib.internal.common.storage.EngineProjectIO;
@@ -93,6 +94,8 @@ public final class ProjectPickerScreen extends Screen {
 
     private static final int OPEN_BUTTON_WIDTH = 44;
 
+    private static final int RESUME_BUTTON_WIDTH = 54;
+
     private static final int DELETE_BUTTON_WIDTH = 44;
 
     private static final int TOOLBAR_HEIGHT = 22;
@@ -118,6 +121,8 @@ public final class ProjectPickerScreen extends Screen {
     private @Nullable ProjectOp pendingOp;
 
     private @Nullable String pendingProjectName;
+
+    private boolean pendingResume;
 
     /** Cached during render so click handlers can hit-test without recomputing layout. */
     private final List<CardRect> cardRects = new ArrayList<>();
@@ -255,19 +260,23 @@ public final class ProjectPickerScreen extends Screen {
 
         var font = EngineFont.get();
         var openX = x + width - CARD_PADDING_X - OPEN_BUTTON_WIDTH;
-        var deleteX = openX - BUTTON_GAP - DELETE_BUTTON_WIDTH;
+        var resumeX = openX - BUTTON_GAP - RESUME_BUTTON_WIDTH;
+        var deleteX = resumeX - BUTTON_GAP - DELETE_BUTTON_WIDTH;
         var buttonY = y + (CARD_HEIGHT - BUTTON_HEIGHT) / 2;
 
         var openRect = new Rect(openX, buttonY, OPEN_BUTTON_WIDTH, BUTTON_HEIGHT);
+        var resumeRect = new Rect(resumeX, buttonY, RESUME_BUTTON_WIDTH, BUTTON_HEIGHT);
         var deleteRect = new Rect(deleteX, buttonY, DELETE_BUTTON_WIDTH, BUTTON_HEIGHT);
+        var resumeAvailable = ProjectWorkspaceSession.hasSnapshot(project.name());
         renderButton(graphics, openRect, "Open", mouseX, mouseY, BUTTON_TEXT);
+        renderButton(graphics, resumeRect, "Resume", mouseX, mouseY, BUTTON_TEXT, resumeAvailable);
         renderButton(graphics, deleteRect, "Delete", mouseX, mouseY, BUTTON_DELETE_TEXT);
-        cardRects.add(new CardRect(project, openRect, deleteRect));
+        cardRects.add(new CardRect(project, openRect, resumeRect, resumeAvailable, deleteRect));
 
         var nameY = y + CARD_PADDING_Y;
         graphics.drawString(font, Component.literal(project.name()), x + CARD_PADDING_X, nameY, VALUE_COLOR, false);
 
-        var descMaxW = deleteX - (x + CARD_PADDING_X) - 8;
+        var descMaxW = Math.max(0, deleteX - (x + CARD_PADDING_X) - 8);
         var descText = project.description().isEmpty() ? "(no description)" : project.description();
         var descTrunc = font.plainSubstrByWidth(descText, descMaxW);
         var descY = nameY + font.lineHeight + 1;
@@ -331,7 +340,19 @@ public final class ProjectPickerScreen extends Screen {
     }
 
     private static void renderButton(GuiGraphics graphics, Rect rect, String label, int mouseX, int mouseY, int textColor) {
-        var hovered = rect.contains(mouseX, mouseY);
+        renderButton(graphics, rect, label, mouseX, mouseY, textColor, true);
+    }
+
+    private static void renderButton(
+        GuiGraphics graphics,
+        Rect rect,
+        String label,
+        int mouseX,
+        int mouseY,
+        int textColor,
+        boolean enabled
+    ) {
+        var hovered = enabled && rect.contains(mouseX, mouseY);
         graphics.fill(rect.x, rect.y, rect.x + rect.w, rect.y + rect.h, hovered ? BUTTON_BG_HOVER : BUTTON_BG);
         graphics.fill(rect.x, rect.y, rect.x + rect.w, rect.y + 1, BUTTON_BORDER);
         graphics.fill(rect.x, rect.y + rect.h - 1, rect.x + rect.w, rect.y + rect.h, BUTTON_BORDER);
@@ -341,7 +362,7 @@ public final class ProjectPickerScreen extends Screen {
         var font = EngineFont.get();
         var textX = rect.x + (rect.w - font.width(label)) / 2;
         var textY = rect.y + (rect.h - font.lineHeight + 2) / 2;
-        graphics.drawString(font, Component.literal(label), textX, textY, textColor, false);
+        graphics.drawString(font, Component.literal(label), textX, textY, enabled ? textColor : META_COLOR, false);
     }
 
     @Override
@@ -369,7 +390,13 @@ public final class ProjectPickerScreen extends Screen {
             }
             for (var card : cardRects) {
                 if (card.openRect.contains(mouseX, mouseY)) {
-                    sendOpen(card.project.name());
+                    sendOpen(card.project.name(), false);
+                    return true;
+                }
+                if (card.resumeRect.contains(mouseX, mouseY)) {
+                    if (card.resumeAvailable) {
+                        sendOpen(card.project.name(), true);
+                    }
                     return true;
                 }
                 if (card.deleteRect.contains(mouseX, mouseY)) {
@@ -527,12 +554,13 @@ public final class ProjectPickerScreen extends Screen {
         }
     }
 
-    private void sendOpen(String name) {
+    private void sendOpen(String name, boolean resume) {
         if (pendingOp != null) {
             return;
         }
         pendingOp = ProjectOp.OPEN;
         pendingProjectName = name;
+        pendingResume = resume;
         validationMessage = null;
         var result = BLib.MOD.networking().sendToServer(new C2SOpenProjectPayload(name));
         if (result.isErr()) {
@@ -545,6 +573,8 @@ public final class ProjectPickerScreen extends Screen {
             ClientProjectResourcePacks.applyProject(name, false);
             pendingOp = null;
             pendingProjectName = null;
+            pendingResume = false;
+            ProjectSession.setResumeWorkspaceOnOpen(resume);
             onConfirmedOpen.run();
         }
     }
@@ -584,8 +614,10 @@ public final class ProjectPickerScreen extends Screen {
         }
         var op = pendingOp;
         var projectName = pendingProjectName;
+        var resume = pendingResume;
         pendingOp = null;
         pendingProjectName = null;
+        pendingResume = false;
 
         if (!result.success()) {
             validationMessage = result.errorMessage().isEmpty() ? "Operation failed" : result.errorMessage();
@@ -597,6 +629,7 @@ public final class ProjectPickerScreen extends Screen {
                 if (matched != null) {
                     ProjectSession.setActiveProject(matched);
                 }
+                ProjectSession.setResumeWorkspaceOnOpen(resume);
                 onConfirmedOpen.run();
             }
             case CREATE -> {
@@ -635,6 +668,8 @@ public final class ProjectPickerScreen extends Screen {
     private record CardRect(
         ProjectInfo project,
         Rect openRect,
+        Rect resumeRect,
+        boolean resumeAvailable,
         Rect deleteRect
     ) {}
 
