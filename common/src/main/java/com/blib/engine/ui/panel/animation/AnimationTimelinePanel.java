@@ -155,11 +155,6 @@ public final class AnimationTimelinePanel implements Panel {
         timelineDuration = state.selectedAnimationLengthSeconds();
 
         var font = EngineFont.get();
-        var header = state.selectedAnimationName() == null
-            ? "No animation selected"
-            : state.selectedAnimationName() + " / " + (state.selectedBoneName() == null ? "(no bone)" : state.selectedBoneName());
-        UiText.drawClipped(graphics, font, header, x + PADDING, y + PADDING, Math.max(0, width - 2 * PADDING), TEXT_COLOR);
-
         renderToolbar(graphics, font, x, y, width, state, mouseX, mouseY);
         rebuildTracks(state);
         renderTimeline(graphics, font, x, y, width, height, state, mouseX, mouseY);
@@ -257,7 +252,7 @@ public final class AnimationTimelinePanel implements Panel {
         int mouseX,
         int mouseY
     ) {
-        var toolY = y + PADDING + font.lineHeight + 5;
+        var toolY = y + PADDING;
         var cursorX = x + PADDING;
         playX = cursorX;
         playY = toolY;
@@ -372,7 +367,7 @@ public final class AnimationTimelinePanel implements Panel {
         int mouseY
     ) {
         timelineViewportX = x + PADDING;
-        timelineViewportY = y + PADDING + font.lineHeight + 5 + TOOL_ROW_HEIGHT + 5;
+        timelineViewportY = y + PADDING + TOOL_ROW_HEIGHT + 5;
         timelineViewportW = Math.max(0, width - 2 * PADDING);
         timelineViewportH = Math.max(0, y + height - timelineViewportY - PADDING);
         timelineContentHeight = RULER_HEIGHT + Math.max(1, rows.size()) * TRACK_HEIGHT;
