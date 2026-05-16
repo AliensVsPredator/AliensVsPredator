@@ -91,6 +91,12 @@ public final class AnimationTimelinePanel implements Panel {
 
     private static final int CARET_WIDTH = 10;
 
+    private static final int PIXELS_PER_SECOND = 96;
+
+    private static final int END_LABEL_PADDING_PX = 48;
+
+    private static final int TICK_LABEL_WIDTH = 42;
+
     private static final int KEYFRAME_RADIUS = 4;
 
     private static final int KEYFRAME_HIT_PX = 6;
@@ -119,7 +125,13 @@ public final class AnimationTimelinePanel implements Panel {
 
     private int timelineContentY, timelineContentHeight;
 
-    private int timelineGraphX, timelineGraphWidth;
+    private int timelineLabelX, timelineLabelWidth;
+
+    private int timelineGraphX, timelineGraphWidth, timelineGraphContentWidth;
+
+    private int timelineGraphVisibleX, timelineGraphVisibleWidth;
+
+    private double animationDuration = 1.0;
 
     private double timelineDuration = 1.0;
 
@@ -152,7 +164,8 @@ public final class AnimationTimelinePanel implements Panel {
         var state = AnimationEditorState.get();
         syncTimelineScopeFromScene(state);
         state.updatePlaybackClock();
-        timelineDuration = state.selectedAnimationLengthSeconds();
+        animationDuration = state.selectedAnimationLengthSeconds();
+        timelineDuration = animationDuration + tailPaddingSeconds(animationDuration);
 
         var font = EngineFont.get();
         renderToolbar(graphics, font, x, y, width, state, mouseX, mouseY);
@@ -194,7 +207,7 @@ public final class AnimationTimelinePanel implements Panel {
             return true;
         }
         var row = rowAt(mouseY);
-        if (row != null && mouseX >= timelineViewportX && mouseX < timelineGraphX) {
+        if (row != null && mouseX >= timelineLabelX && mouseX < timelineGraphVisibleX) {
             if (row.isBone() && caretHit(row, mouseX)) {
                 if (!collapsedBones.remove(row.bone())) {
                     collapsedBones.add(row.bone());
@@ -264,7 +277,7 @@ public final class AnimationTimelinePanel implements Panel {
         var right = x + width - PADDING;
         var timeWidth = Math.min(92, Math.max(48, right - cursorX));
         var timeText = AnimationEditorState.formatTimestamp(state.playheadSeconds()) + " / "
-            + AnimationEditorState.formatTimestamp(timelineDuration) + "s";
+            + AnimationEditorState.formatTimestamp(animationDuration) + "s";
         UiText.drawClipped(
             graphics,
             font,
@@ -371,21 +384,33 @@ public final class AnimationTimelinePanel implements Panel {
         timelineViewportW = Math.max(0, width - 2 * PADDING);
         timelineViewportH = Math.max(0, y + height - timelineViewportY - PADDING);
         timelineContentHeight = RULER_HEIGHT + Math.max(1, rows.size()) * TRACK_HEIGHT;
+        var estimatedLabelWidth = timelineLabelWidth(timelineViewportW);
+        var estimatedGraphVisibleWidth = Math.max(1, timelineViewportW - estimatedLabelWidth - 2);
+        var graphContentWidth = timelineGraphContentWidth(estimatedGraphVisibleWidth, timelineDuration);
+        var contentWidth = estimatedLabelWidth + graphContentWidth + 2;
 
-        var frame = scroll.begin(graphics, UiRect.of(timelineViewportX, timelineViewportY, timelineViewportW, timelineViewportH), timelineContentHeight);
-        var contentX = frame.contentX();
+        var frame = scroll.begin(
+            graphics,
+            UiRect.of(timelineViewportX, timelineViewportY, timelineViewportW, timelineViewportH),
+            contentWidth,
+            timelineContentHeight
+        );
+        var viewport = frame.contentViewport();
         timelineContentY = frame.contentY();
-        var contentWidth = frame.contentWidth();
-        var labelWidth = Math.min(contentWidth, Math.min(TRACK_LABEL_WIDTH, Math.max(42, contentWidth / 3)));
-        timelineGraphX = contentX + labelWidth;
-        timelineGraphWidth = Math.max(1, contentWidth - labelWidth - 2);
+        timelineLabelX = viewport.x();
+        timelineLabelWidth = timelineLabelWidth(viewport.width());
+        timelineGraphVisibleX = timelineLabelX + timelineLabelWidth;
+        timelineGraphVisibleWidth = Math.max(1, viewport.right() - timelineGraphVisibleX);
+        timelineGraphContentWidth = Math.max(1, frame.contentWidth() - timelineLabelWidth - 2);
+        timelineGraphWidth = Math.max(1, timelineGraphContentWidth - END_LABEL_PADDING_PX);
+        timelineGraphX = timelineGraphVisibleX - frame.scrollX();
         try {
-            renderRuler(graphics, font, contentX, timelineContentY, labelWidth, timelineGraphX, timelineGraphWidth, timelineDuration);
+            renderRuler(graphics, font, timelineLabelX, timelineContentY, timelineLabelWidth, timelineGraphX, timelineGraphWidth, timelineGraphContentWidth, timelineDuration);
             if (rows.isEmpty()) {
-                renderEmptyTimeline(graphics, font, state, contentX, timelineContentY + RULER_HEIGHT, contentWidth);
+                renderEmptyTimeline(graphics, font, state, timelineLabelX, timelineContentY + RULER_HEIGHT, viewport.width());
             } else {
                 for (var i = 0; i < rows.size(); i++) {
-                    renderRow(graphics, font, rows.get(i), i, contentX, labelWidth, mouseX, mouseY, state);
+                    renderRow(graphics, font, rows.get(i), i, timelineLabelX, timelineLabelWidth, mouseX, mouseY, state);
                 }
             }
             renderPlayhead(graphics, timelineContentY, timelineContentHeight, timelineGraphX, timelineGraphWidth, state.playheadSeconds(), timelineDuration);
@@ -397,35 +422,30 @@ public final class AnimationTimelinePanel implements Panel {
     private void renderRuler(
         GuiGraphics graphics,
         net.minecraft.client.gui.Font font,
-        int contentX,
+        int labelX,
         int rulerY,
         int labelWidth,
         int graphX,
         int graphWidth,
+        int graphContentWidth,
         double duration
     ) {
-        graphics.fill(contentX, rulerY, graphX + graphWidth, rulerY + RULER_HEIGHT, RULER_BG_COLOR);
-        graphics.fill(contentX, rulerY + RULER_HEIGHT - 1, graphX + graphWidth, rulerY + RULER_HEIGHT, TRACK_BORDER_COLOR);
-        UiText.drawClipped(graphics, font, "track", contentX + 4, rulerY + 4, Math.max(0, labelWidth - 8), META_TEXT_COLOR);
-        graphics.fill(graphX, rulerY, graphX + 1, rulerY + RULER_HEIGHT, TRACK_BORDER_COLOR);
+        graphics.fill(graphX, rulerY, graphX + graphContentWidth, rulerY + RULER_HEIGHT, RULER_BG_COLOR);
 
         var step = tickStep(duration, graphWidth);
+        var lastTick = Double.NaN;
         for (var t = 0.0; t <= duration + 1.0e-6; t += step) {
-            var tickX = timeToX(t, graphX, graphWidth, duration);
-            var major = Math.abs(t - Math.rint(t)) < 1.0e-6 || t == 0.0 || Math.abs(t - duration) < 1.0e-6;
-            graphics.fill(tickX, rulerY + (major ? 2 : 8), tickX + 1, rulerY + RULER_HEIGHT, major ? TICK_MAJOR_COLOR : TICK_MINOR_COLOR);
-            if (major) {
-                UiText.drawClipped(
-                    graphics,
-                    font,
-                    AnimationEditorState.formatTimestamp(t),
-                    tickX + 3,
-                    rulerY + 2,
-                    34,
-                    META_TEXT_COLOR
-                );
-            }
+            renderRulerTick(graphics, font, graphX, graphWidth, rulerY, duration, t);
+            lastTick = t;
         }
+        if (!Double.isFinite(lastTick) || Math.abs(lastTick - duration) > 1.0e-6) {
+            renderRulerTick(graphics, font, graphX, graphWidth, rulerY, duration, duration);
+        }
+
+        graphics.fill(labelX, rulerY, labelX + labelWidth, rulerY + RULER_HEIGHT, RULER_BG_COLOR);
+        graphics.fill(labelX + labelWidth, rulerY, labelX + labelWidth + 1, rulerY + RULER_HEIGHT, TRACK_BORDER_COLOR);
+        graphics.fill(labelX, rulerY + RULER_HEIGHT - 1, graphX + graphContentWidth, rulerY + RULER_HEIGHT, TRACK_BORDER_COLOR);
+        UiText.drawClipped(graphics, font, "track", labelX + 4, rulerY + 4, Math.max(0, labelWidth - 8), META_TEXT_COLOR);
     }
 
     private void renderRow(
@@ -433,7 +453,7 @@ public final class AnimationTimelinePanel implements Panel {
         net.minecraft.client.gui.Font font,
         TimelineRow row,
         int index,
-        int contentX,
+        int labelX,
         int labelWidth,
         int mouseX,
         int mouseY,
@@ -446,31 +466,34 @@ public final class AnimationTimelinePanel implements Panel {
         }
         var hovered = mouseY >= trackY
             && mouseY < trackBottom
-            && mouseX >= timelineGraphX
-            && mouseX < timelineGraphX + timelineGraphWidth;
+            && mouseX >= timelineGraphVisibleX
+            && mouseX < timelineGraphVisibleX + timelineGraphVisibleWidth;
         var bg = hovered ? TRACK_HOVER_COLOR : (index % 2 == 0 ? TRACK_BG_COLOR : TRACK_ALT_BG_COLOR);
-        graphics.fill(contentX, trackY, timelineGraphX + timelineGraphWidth, trackBottom, bg);
-        graphics.fill(contentX, trackY, contentX + labelWidth, trackBottom, TRACK_LABEL_BG_COLOR);
-        graphics.fill(timelineGraphX, trackY, timelineGraphX + 1, trackBottom, TRACK_BORDER_COLOR);
-        graphics.fill(contentX, trackBottom - 1, timelineGraphX + timelineGraphWidth, trackBottom, TRACK_BORDER_COLOR);
+        graphics.fill(timelineGraphX, trackY, timelineGraphX + timelineGraphContentWidth, trackBottom, bg);
 
-        if (row.isBone()) {
-            renderBoneLabel(graphics, font, row, contentX, trackY, labelWidth, state);
-            return;
+        if (!row.isBone()) {
+            var laneY = trackY + TRACK_HEIGHT / 2;
+            graphics.fill(timelineGraphX, laneY, timelineGraphX + timelineGraphContentWidth, laneY + 1, LANE_LINE_COLOR);
+            for (var frame : row.frames()) {
+                var keyX = timeToX(frame.timestamp(), timelineGraphX, timelineGraphWidth, timelineDuration);
+                var selected = state.selectedTimestamp() != null
+                    && state.selectedDocumentId() != null
+                    && frame.documentId() == state.selectedDocumentId()
+                    && frame.channel() == state.selectedChannel()
+                    && frame.boneName().equals(state.selectedBoneName())
+                    && Math.abs(frame.timestamp() - state.selectedTimestamp()) < 1.0e-6;
+                drawKeyframe(graphics, keyX, laneY, selected ? KEY_SELECTED_COLOR : keyColor(row.channel()), selected);
+            }
         }
 
-        renderChannelLabel(graphics, font, row, contentX, trackY, labelWidth, state);
-        var laneY = trackY + TRACK_HEIGHT / 2;
-        graphics.fill(timelineGraphX, laneY, timelineGraphX + timelineGraphWidth, laneY + 1, LANE_LINE_COLOR);
-        for (var frame : row.frames()) {
-            var keyX = timeToX(frame.timestamp(), timelineGraphX, timelineGraphWidth, timelineDuration);
-            var selected = state.selectedTimestamp() != null
-                && state.selectedDocumentId() != null
-                && frame.documentId() == state.selectedDocumentId()
-                && frame.channel() == state.selectedChannel()
-                && frame.boneName().equals(state.selectedBoneName())
-                && Math.abs(frame.timestamp() - state.selectedTimestamp()) < 1.0e-6;
-            drawKeyframe(graphics, keyX, laneY, selected ? KEY_SELECTED_COLOR : keyColor(row.channel()), selected);
+        graphics.fill(labelX, trackY, labelX + labelWidth, trackBottom, TRACK_LABEL_BG_COLOR);
+        graphics.fill(labelX + labelWidth, trackY, labelX + labelWidth + 1, trackBottom, TRACK_BORDER_COLOR);
+        graphics.fill(labelX, trackBottom - 1, timelineGraphX + timelineGraphContentWidth, trackBottom, TRACK_BORDER_COLOR);
+
+        if (row.isBone()) {
+            renderBoneLabel(graphics, font, row, labelX, trackY, labelWidth, state);
+        } else {
+            renderChannelLabel(graphics, font, row, labelX, trackY, labelWidth, state);
         }
     }
 
@@ -591,7 +614,7 @@ public final class AnimationTimelinePanel implements Panel {
         if (track.isBone()) {
             return null;
         }
-        if (mouseX < timelineGraphX - KEYFRAME_HIT_PX || mouseX >= timelineGraphX + timelineGraphWidth + KEYFRAME_HIT_PX) {
+        if (mouseX < timelineGraphVisibleX - KEYFRAME_HIT_PX || mouseX >= timelineGraphVisibleX + timelineGraphVisibleWidth + KEYFRAME_HIT_PX) {
             return null;
         }
         var laneY = timelineContentY + RULER_HEIGHT + index * TRACK_HEIGHT + TRACK_HEIGHT / 2;
@@ -631,13 +654,13 @@ public final class AnimationTimelinePanel implements Panel {
     }
 
     private boolean caretHit(TimelineRow row, double mouseX) {
-        var caretX = timelineViewportX + 4 + row.depth() * INDENT_PX;
+        var caretX = timelineLabelX + 4 + row.depth() * INDENT_PX;
         return mouseX >= caretX && mouseX < caretX + CARET_WIDTH;
     }
 
     private boolean timelineGraphHit(double mouseX, double mouseY) {
-        return mouseX >= timelineGraphX
-            && mouseX < timelineGraphX + timelineGraphWidth
+        return mouseX >= timelineGraphVisibleX
+            && mouseX < timelineGraphVisibleX + timelineGraphVisibleWidth
             && mouseY >= timelineViewportY
             && mouseY < timelineViewportY + timelineViewportH;
     }
@@ -666,6 +689,43 @@ public final class AnimationTimelinePanel implements Panel {
         return "(no keyframes for this bone/group subtree)";
     }
 
+    private static int timelineLabelWidth(int contentWidth) {
+        return Math.min(contentWidth, Math.min(TRACK_LABEL_WIDTH, Math.max(42, contentWidth / 3)));
+    }
+
+    private static int timelineGraphContentWidth(int visibleGraphWidth, double duration) {
+        var scaledWidth = (int) Math.ceil(Math.max(1.0, duration) * PIXELS_PER_SECOND);
+        var graphWidth = Math.max(Math.max(1, visibleGraphWidth - END_LABEL_PADDING_PX), scaledWidth);
+        return graphWidth + END_LABEL_PADDING_PX;
+    }
+
+    private static double tailPaddingSeconds(double duration) {
+        return Math.max(0.25, Math.min(2.0, Math.max(1.0, duration) * 0.1));
+    }
+
+    private static void renderRulerTick(
+        GuiGraphics graphics,
+        net.minecraft.client.gui.Font font,
+        int graphX,
+        int graphWidth,
+        int rulerY,
+        double duration,
+        double seconds
+    ) {
+        var tickX = timeToX(seconds, graphX, graphWidth, duration);
+        var major = Math.abs(seconds - Math.rint(seconds)) < 1.0e-6 || seconds == 0.0 || Math.abs(seconds - duration) < 1.0e-6;
+        graphics.fill(tickX, rulerY + (major ? 2 : 7), tickX + 1, rulerY + RULER_HEIGHT, major ? TICK_MAJOR_COLOR : TICK_MINOR_COLOR);
+        UiText.drawClipped(
+            graphics,
+            font,
+            AnimationEditorState.formatTimestamp(seconds),
+            tickX + 3,
+            rulerY + 2,
+            TICK_LABEL_WIDTH,
+            META_TEXT_COLOR
+        );
+    }
+
     private static int timeToX(double seconds, int graphX, int graphWidth, double duration) {
         var ratio = duration <= 0.0 ? 0.0 : Math.max(0.0, Math.min(1.0, seconds / duration));
         return graphX + (int) Math.round(ratio * Math.max(1, graphWidth - 1));
@@ -675,7 +735,7 @@ public final class AnimationTimelinePanel implements Panel {
         if (duration <= 0.5 || graphWidth <= 0) {
             return 0.1;
         }
-        var targetTicks = Math.max(2.0, graphWidth / 58.0);
+        var targetTicks = Math.max(2.0, graphWidth / 72.0);
         var rough = duration / targetTicks;
         var choices = new double[] { 0.1, 0.25, 0.5, 1.0, 2.0, 5.0, 10.0, 30.0 };
         for (var choice : choices) {
