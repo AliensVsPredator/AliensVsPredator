@@ -284,33 +284,25 @@ public final class AnimationTimelinePanel implements Panel {
         if (!state.hasDraft() || animation == null || root == null) {
             return;
         }
-        collectRows(state, animation, root, 0, rows);
+        collectRows(state, animation, root, rows);
     }
 
-    private boolean collectRows(AnimationEditorState state, String animation, ModelerBone bone, int depth, List<TimelineRow> out) {
+    private void collectRows(AnimationEditorState state, String animation, ModelerBone bone, List<TimelineRow> out) {
         var position = state.keyframes(animation, bone.name, TransformChannel.POSITION);
         var rotation = state.keyframes(animation, bone.name, TransformChannel.ROTATION);
         var scale = state.keyframes(animation, bone.name, TransformChannel.SCALE);
         var hasOwnKeyframes = !position.isEmpty() || !rotation.isEmpty() || !scale.isEmpty();
-        var childRows = new ArrayList<TimelineRow>();
-        var hasChildKeyframes = false;
-        for (var child : bone.children) {
-            hasChildKeyframes |= collectRows(state, animation, child, depth + 1, childRows);
-        }
-        if (!hasOwnKeyframes && !hasChildKeyframes) {
-            return false;
-        }
-
-        out.add(TimelineRow.bone(bone, depth));
-        if (!collapsedBones.contains(bone)) {
-            if (hasOwnKeyframes) {
-                out.add(TimelineRow.channel(bone, depth + 1, TransformChannel.POSITION, position));
-                out.add(TimelineRow.channel(bone, depth + 1, TransformChannel.ROTATION, rotation));
-                out.add(TimelineRow.channel(bone, depth + 1, TransformChannel.SCALE, scale));
+        if (hasOwnKeyframes) {
+            out.add(TimelineRow.bone(bone, 0));
+            if (!collapsedBones.contains(bone)) {
+                out.add(TimelineRow.channel(bone, 1, TransformChannel.ROTATION, rotation));
+                out.add(TimelineRow.channel(bone, 1, TransformChannel.POSITION, position));
+                out.add(TimelineRow.channel(bone, 1, TransformChannel.SCALE, scale));
             }
-            out.addAll(childRows);
         }
-        return true;
+        for (var child : bone.children) {
+            collectRows(state, animation, child, out);
+        }
     }
 
     private static @Nullable ModelerBone selectedTimelineRoot(AnimationEditorState state) {
