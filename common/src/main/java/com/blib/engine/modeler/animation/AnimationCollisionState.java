@@ -385,7 +385,7 @@ public final class AnimationCollisionState {
                 continue;
             }
             forEachCandidatePair(boxes, (a, b) -> {
-                if (a.owner() != b.owner() && collisionDepth(a, b) > 0.0) {
+                if (!isBenignStructuralPair(a.owner(), b.owner()) && collisionDepth(a, b) > 0.0) {
                     ignored.add(BonePair.of(a.owner(), b.owner()));
                 }
             });
@@ -425,7 +425,7 @@ public final class AnimationCollisionState {
         var bones = new HashSet<ModelerBone>();
         var partnersByBone = new HashMap<ModelerBone, List<CollisionPartner>>();
         forEachCandidatePair(boxes, (a, b) -> {
-            if (a.owner() == b.owner() || ignoredBonePairs.contains(BonePair.of(a.owner(), b.owner()))) {
+            if (isBenignStructuralPair(a.owner(), b.owner()) || ignoredBonePairs.contains(BonePair.of(a.owner(), b.owner()))) {
                 return;
             }
             var depth = collisionDepth(a, b);
@@ -442,6 +442,10 @@ public final class AnimationCollisionState {
             return CollisionSnapshot.EMPTY;
         }
         return new CollisionSnapshot(Set.copyOf(cubes), Set.copyOf(bones), freezePartners(partnersByBone));
+    }
+
+    private static boolean isBenignStructuralPair(ModelerBone a, ModelerBone b) {
+        return a == b || a.parent == b || b.parent == a;
     }
 
     private static void addCollisionPartner(
