@@ -49,7 +49,13 @@ public final class AnimationCollisionState {
         Vec axisZ,
         double halfX,
         double halfY,
-        double halfZ
+        double halfZ,
+        double minX,
+        double minY,
+        double minZ,
+        double maxX,
+        double maxY,
+        double maxZ
     ) {
 
         Vec axis(int index) {
@@ -66,6 +72,29 @@ public final class AnimationCollisionState {
                 case 1 -> halfY;
                 default -> halfZ;
             };
+        }
+    }
+
+    private record CubePair(ModelerCube a, ModelerCube b) {
+
+        static CubePair of(ModelerCube a, ModelerCube b) {
+            return new CubePair(a, b);
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (this == other) {
+                return true;
+            }
+            if (!(other instanceof CubePair pair)) {
+                return false;
+            }
+            return (a == pair.a && b == pair.b) || (a == pair.b && b == pair.a);
+        }
+
+        @Override
+        public int hashCode() {
+            return System.identityHashCode(a) ^ System.identityHashCode(b);
         }
     }
 
@@ -109,6 +138,10 @@ public final class AnimationCollisionState {
 
     private static final double SAT_EPSILON = 1.0e-6;
 
+    private static final double BASELINE_ADJACENCY_TOLERANCE = 0.05;
+
+    private static final double RUNTIME_PENETRATION_THRESHOLD = 0.02;
+
     private boolean enabled;
 
     private long reportFingerprint = Long.MIN_VALUE;
@@ -118,6 +151,8 @@ public final class AnimationCollisionState {
     private CollisionReport report = CollisionReport.EMPTY;
 
     private CollisionSnapshot currentSnapshot = CollisionSnapshot.EMPTY;
+
+    private Set<CubePair> baselineIgnoredPairs = Set.of();
 
     private AnimationCollisionState() {}
 
@@ -149,7 +184,8 @@ public final class AnimationCollisionState {
 
         var fingerprint = fingerprint(root, state);
         if (fingerprint != reportFingerprint) {
-            report = buildReport(root, state);
+            baselineIgnoredPairs = buildBaselineIgnoredPairs(root);
+            report = buildReport(root, state, baselineIgnoredPairs);
             reportFingerprint = fingerprint;
             currentSnapshot = CollisionSnapshot.EMPTY;
             currentSnapshotSeconds = Double.NaN;
@@ -178,9 +214,10 @@ public final class AnimationCollisionState {
         currentSnapshotSeconds = Double.NaN;
         report = CollisionReport.EMPTY;
         currentSnapshot = CollisionSnapshot.EMPTY;
+        baselineIgnoredPairs = Set.of();
     }
 
-    private CollisionReport buildReport(ModelerBone root, AnimationEditorState state) {
+    private CollisionReport buildReport(ModelerBone root, AnimationEditorState state, Set<CubePair> ignoredPairs) {
         var duration = Math.max(0.0, state.selectedAnimationLengthSeconds());
         if (duration <= 0.0) {
             return CollisionReport.EMPTY;
@@ -198,12 +235,12 @@ public final class AnimationCollisionState {
         var first = true;
 
         for (var time : times) {
-            var current = collisionSnapshot(root, state, time).boneNames();
+            var current = collisionSnapshot(root, state, time, ignoredPairs).boneNames();
             for (var boneName : current) {
                 if (!activeStarts.containsKey(boneName)) {
                     var start = first || previous.contains(boneName)
                         ? time
-                        : refineBoundary(root, state, boneName, previousTime, time, true);
+                        : refineBoundary(root, state, ignoredPairs, boneName, previousTime, time, true);
                     activeStarts.put(boneName, start);
                 }
             }
@@ -213,7 +250,7 @@ public final class AnimationCollisionState {
                 if (!current.contains(entry.getKey())) {
                     var end = first || !previous.contains(entry.getKey())
                         ? time
-                        : refineBoundary(root, state, entry.getKey(), previousTime, time, false);
+                        : refineBoundary(root, state, ignoredPairs, entry.getKey(), previousTime, time, false);
                     addSpan(spansByBone, entry.getKey(), entry.getValue(), end);
                     closed.add(entry.getKey());
                 }
@@ -246,6 +283,7 @@ public final class AnimationCollisionState {
     private double refineBoundary(
         ModelerBone root,
         AnimationEditorState state,
+        Set<CubePair> ignoredPairs,
         String boneName,
         double from,
         double to,
@@ -255,7 +293,7 @@ public final class AnimationCollisionState {
         var high = Math.max(from, to);
         for (var i = 0; i < BOUNDARY_REFINEMENT_STEPS; i++) {
             var mid = (low + high) * 0.5;
-            var colliding = collisionSnapshot(root, state, mid).boneNames().contains(boneName);
+            var colliding = collisionSnapshot(root, state, mid, ignoredPairs).boneNames().contains(boneName);
             if (colliding == collidingAtUpper) {
                 high = mid;
             } else {
@@ -309,7 +347,27 @@ public final class AnimationCollisionState {
         }
     }
 
+    private Set<CubePair> buildBaselineIgnoredPairs(ModelerBone root) {
+        var boxes = new ArrayList<CollisionBox>();
+        collectRestBoxes(root, new Matrix4f(), boxes);
+        if (boxes.size() < 2) {
+            return Set.of();
+        }
+
+        var ignored = new HashSet<CubePair>();
+        forEachCandidatePair(boxes, (a, b) -> {
+            if (a.owner() != b.owner() && collisionDepth(a, b) > 0.0) {
+                ignored.add(CubePair.of(a.cube(), b.cube()));
+            }
+        });
+        return Set.copyOf(ignored);
+    }
+
     private CollisionSnapshot collisionSnapshot(ModelerBone root, AnimationEditorState state, double seconds) {
+        return collisionSnapshot(root, state, seconds, baselineIgnoredPairs);
+    }
+
+    private CollisionSnapshot collisionSnapshot(ModelerBone root, AnimationEditorState state, double seconds, Set<CubePair> ignoredPairs) {
         var boxes = new ArrayList<CollisionBox>();
         collectBoxes(root, state, seconds, new Matrix4f(), boxes);
         if (boxes.size() < 2) {
@@ -318,29 +376,44 @@ public final class AnimationCollisionState {
 
         var cubes = new HashSet<ModelerCube>();
         var boneNames = new HashSet<String>();
-        for (var i = 0; i < boxes.size(); i++) {
-            var a = boxes.get(i);
-            for (var j = i + 1; j < boxes.size(); j++) {
-                var b = boxes.get(j);
-                if (isAllowedBonePair(a.owner(), b.owner())) {
-                    continue;
-                }
-                if (intersects(a, b)) {
-                    cubes.add(a.cube());
-                    cubes.add(b.cube());
-                    boneNames.add(a.owner().name);
-                    boneNames.add(b.owner().name);
-                }
+        forEachCandidatePair(boxes, (a, b) -> {
+            if (a.owner() == b.owner() || ignoredPairs.contains(CubePair.of(a.cube(), b.cube()))) {
+                return;
             }
-        }
+            if (collisionDepth(a, b) > RUNTIME_PENETRATION_THRESHOLD) {
+                cubes.add(a.cube());
+                cubes.add(b.cube());
+                boneNames.add(a.owner().name);
+                boneNames.add(b.owner().name);
+            }
+        });
         if (cubes.isEmpty()) {
             return CollisionSnapshot.EMPTY;
         }
         return new CollisionSnapshot(Set.copyOf(cubes), Set.copyOf(boneNames));
     }
 
-    private static boolean isAllowedBonePair(ModelerBone a, ModelerBone b) {
-        return a == b || a.parent == b || b.parent == a;
+    private static void forEachCandidatePair(List<CollisionBox> boxes, CollisionPairConsumer consumer) {
+        boxes.sort(Comparator.comparingDouble(CollisionBox::minX));
+        for (var i = 0; i < boxes.size(); i++) {
+            var a = boxes.get(i);
+            for (var j = i + 1; j < boxes.size(); j++) {
+                var b = boxes.get(j);
+                if (b.minX() > a.maxX()) {
+                    break;
+                }
+                if (a.maxY() < b.minY() || b.maxY() < a.minY() || a.maxZ() < b.minZ() || b.maxZ() < a.minZ()) {
+                    continue;
+                }
+                consumer.accept(a, b);
+            }
+        }
+    }
+
+    @FunctionalInterface
+    private interface CollisionPairConsumer {
+
+        void accept(CollisionBox a, CollisionBox b);
     }
 
     private void collectBoxes(
@@ -381,12 +454,22 @@ public final class AnimationCollisionState {
     }
 
     private static @Nullable CollisionBox collisionBox(ModelerBone owner, ModelerCube cube, Matrix4f matrix) {
-        var x0 = Math.min(cube.origin.x, cube.origin.x + cube.size.x) - cube.inflate;
-        var y0 = Math.min(cube.origin.y, cube.origin.y + cube.size.y) - cube.inflate;
-        var z0 = Math.min(cube.origin.z, cube.origin.z + cube.size.z) - cube.inflate;
-        var x1 = Math.max(cube.origin.x, cube.origin.x + cube.size.x) + cube.inflate;
-        var y1 = Math.max(cube.origin.y, cube.origin.y + cube.size.y) + cube.inflate;
-        var z1 = Math.max(cube.origin.z, cube.origin.z + cube.size.z) + cube.inflate;
+        return collisionBox(owner, cube, matrix, 0.0);
+    }
+
+    private static @Nullable CollisionBox collisionBox(
+        ModelerBone owner,
+        ModelerCube cube,
+        Matrix4f matrix,
+        double extraInflate
+    ) {
+        var inflate = cube.inflate + extraInflate;
+        var x0 = Math.min(cube.origin.x, cube.origin.x + cube.size.x) - inflate;
+        var y0 = Math.min(cube.origin.y, cube.origin.y + cube.size.y) - inflate;
+        var z0 = Math.min(cube.origin.z, cube.origin.z + cube.size.z) - inflate;
+        var x1 = Math.max(cube.origin.x, cube.origin.x + cube.size.x) + inflate;
+        var y1 = Math.max(cube.origin.y, cube.origin.y + cube.size.y) + inflate;
+        var z1 = Math.max(cube.origin.z, cube.origin.z + cube.size.z) + inflate;
 
         var p000 = transform(matrix, x0, y0, z0);
         var p100 = transform(matrix, x1, y0, z0);
@@ -410,7 +493,52 @@ public final class AnimationCollisionState {
             return null;
         }
         var center = p000.add(edgeX.scale(0.5)).add(edgeY.scale(0.5)).add(edgeZ.scale(0.5));
-        return new CollisionBox(owner, cube, center, axisX, axisY, axisZ, halfX, halfY, halfZ);
+        var aabbHalfX = Math.abs(axisX.x()) * halfX + Math.abs(axisY.x()) * halfY + Math.abs(axisZ.x()) * halfZ;
+        var aabbHalfY = Math.abs(axisX.y()) * halfX + Math.abs(axisY.y()) * halfY + Math.abs(axisZ.y()) * halfZ;
+        var aabbHalfZ = Math.abs(axisX.z()) * halfX + Math.abs(axisY.z()) * halfY + Math.abs(axisZ.z()) * halfZ;
+        return new CollisionBox(
+            owner,
+            cube,
+            center,
+            axisX,
+            axisY,
+            axisZ,
+            halfX,
+            halfY,
+            halfZ,
+            center.x() - aabbHalfX,
+            center.y() - aabbHalfY,
+            center.z() - aabbHalfZ,
+            center.x() + aabbHalfX,
+            center.y() + aabbHalfY,
+            center.z() + aabbHalfZ
+        );
+    }
+
+    private void collectRestBoxes(ModelerBone bone, Matrix4f parentMatrix, List<CollisionBox> out) {
+        var boneMatrix = new Matrix4f(parentMatrix);
+        applyRestBoneTransform(boneMatrix, bone);
+        for (var cube : bone.cubes) {
+            var cubeMatrix = new Matrix4f(boneMatrix);
+            ModelerTransforms.applyCube(cubeMatrix, cube);
+            var box = collisionBox(bone, cube, cubeMatrix, BASELINE_ADJACENCY_TOLERANCE);
+            if (box != null) {
+                out.add(box);
+            }
+        }
+        for (var child : bone.children) {
+            collectRestBoxes(child, boneMatrix, out);
+        }
+    }
+
+    private static void applyRestBoneTransform(Matrix4f matrix, ModelerBone bone) {
+        matrix.translate((float) bone.position.x, (float) bone.position.y, (float) bone.position.z);
+        matrix.translate((float) bone.pivot.x, (float) bone.pivot.y, (float) bone.pivot.z);
+        matrix.rotateZ((float) Math.toRadians(bone.rotation.z));
+        matrix.rotateY((float) Math.toRadians(bone.rotation.y));
+        matrix.rotateX((float) Math.toRadians(bone.rotation.x));
+        matrix.scale((float) bone.scale.x, (float) bone.scale.y, (float) bone.scale.z);
+        matrix.translate((float) -bone.pivot.x, (float) -bone.pivot.y, (float) -bone.pivot.z);
     }
 
     private static Vec transform(Matrix4f matrix, double x, double y, double z) {
@@ -418,7 +546,7 @@ public final class AnimationCollisionState {
         return new Vec(out.x, out.y, out.z);
     }
 
-    private static boolean intersects(CollisionBox a, CollisionBox b) {
+    private static double collisionDepth(CollisionBox a, CollisionBox b) {
         var r = new double[3][3];
         var absR = new double[3][3];
         for (var i = 0; i < 3; i++) {
@@ -434,39 +562,50 @@ public final class AnimationCollisionState {
             delta.dot(a.axis(1)),
             delta.dot(a.axis(2))
         };
+        var minOverlap = Double.POSITIVE_INFINITY;
 
         for (var i = 0; i < 3; i++) {
             var ra = a.half(i);
             var rb = b.half(0) * absR[i][0] + b.half(1) * absR[i][1] + b.half(2) * absR[i][2];
-            if (Math.abs(t[i]) > ra + rb) {
-                return false;
+            var overlap = ra + rb - Math.abs(t[i]);
+            if (overlap <= 0.0) {
+                return -1.0;
             }
+            minOverlap = Math.min(minOverlap, overlap);
         }
 
         for (var j = 0; j < 3; j++) {
             var ra = a.half(0) * absR[0][j] + a.half(1) * absR[1][j] + a.half(2) * absR[2][j];
             var rb = b.half(j);
             var projected = Math.abs(t[0] * r[0][j] + t[1] * r[1][j] + t[2] * r[2][j]);
-            if (projected > ra + rb) {
-                return false;
+            var overlap = ra + rb - projected;
+            if (overlap <= 0.0) {
+                return -1.0;
             }
+            minOverlap = Math.min(minOverlap, overlap);
         }
 
         for (var i = 0; i < 3; i++) {
             var i1 = (i + 1) % 3;
             var i2 = (i + 2) % 3;
             for (var j = 0; j < 3; j++) {
+                var axisLength = Math.sqrt(Math.max(0.0, 1.0 - r[i][j] * r[i][j]));
+                if (axisLength <= AXIS_EPSILON) {
+                    continue;
+                }
                 var j1 = (j + 1) % 3;
                 var j2 = (j + 2) % 3;
                 var ra = a.half(i1) * absR[i2][j] + a.half(i2) * absR[i1][j];
                 var rb = b.half(j1) * absR[i][j2] + b.half(j2) * absR[i][j1];
                 var projected = Math.abs(t[i2] * r[i1][j] - t[i1] * r[i2][j]);
-                if (projected > ra + rb) {
-                    return false;
+                var overlap = ra + rb - projected;
+                if (overlap <= 0.0) {
+                    return -1.0;
                 }
+                minOverlap = Math.min(minOverlap, overlap / axisLength);
             }
         }
-        return true;
+        return minOverlap;
     }
 
     private long fingerprint(ModelerBone root, AnimationEditorState state) {
