@@ -150,12 +150,27 @@ public final class ModelerViewportPanel implements Panel {
     /** Panel rect captured at render time so click handlers can convert workspace coords → viewport-relative. */
     private int panelX, panelY, panelWidth, panelHeight;
 
+    private @Nullable PickCacheKey pickCacheKey;
+
+    private @Nullable ModelerPicker.Hit pickCacheHit;
+
     /**
      * Latest toolbar tooltip — refreshed each frame from {@link ModelerViewportToolbar}'s hit-test. The workspace's
      * tooltip pipeline calls {@link #tooltipText()} and renders the result near the cursor, so the panel just has to
      * keep this field current.
      */
     private @Nullable Component hoveredTooltip;
+
+    private record PickCacheKey(
+        double mouseX,
+        double mouseY,
+        int panelX,
+        int panelY,
+        int panelWidth,
+        int panelHeight,
+        long sceneRevision,
+        long cameraSignature
+    ) {}
 
     /** Tests / direct callers can construct without a workspace-bound menu opener; chip clicks no-op in that case. */
     public ModelerViewportPanel() {
@@ -370,16 +385,33 @@ public final class ModelerViewportPanel implements Panel {
      * hover refresh and the click handler so the two stay aligned with the renderer's transform stack.
      */
     private @Nullable ModelerPicker.Hit pickCubeAt(double mouseX, double mouseY) {
+        var scene = ModelerScene.get();
+        var camera = scene.camera;
+        var key = new PickCacheKey(
+            mouseX,
+            mouseY,
+            panelX,
+            panelY,
+            panelWidth,
+            panelHeight,
+            scene.revision(),
+            camera.signature()
+        );
+        if (key.equals(pickCacheKey)) {
+            return pickCacheHit;
+        }
+
         var relX = (float) ((mouseX - panelX) / (double) panelWidth);
         var relY = (float) ((mouseY - panelY) / (double) panelHeight);
         var aspect = (float) panelWidth / (float) panelHeight;
 
-        var scene = ModelerScene.get();
-        var camera = scene.camera;
         var rayDir = camera.unprojectCursor(relX, relY, aspect);
         var camPos = camera.position();
         var rayOrigin = new Vec3(camPos.x, camPos.y, camPos.z);
-        return ModelerPicker.pick(scene, rayOrigin, rayDir);
+        var hit = ModelerPicker.pick(scene, rayOrigin, rayDir);
+        pickCacheKey = key;
+        pickCacheHit = hit;
+        return hit;
     }
 
     private static boolean selectTextureForFace(ModelerScene scene, ModelerCube.FaceUv uv) {

@@ -36,6 +36,17 @@ public final class ModelerCamera {
     /** Vertical field of view in degrees. */
     public float fovDegrees = 60f;
 
+    public long signature() {
+        var hash = 0xcbf29ce484222325L;
+        hash = mix(hash, Float.floatToIntBits(yaw));
+        hash = mix(hash, Float.floatToIntBits(pitch));
+        hash = mix(hash, Float.floatToIntBits(distance));
+        hash = mix(hash, Double.doubleToLongBits(focusPoint.x));
+        hash = mix(hash, Double.doubleToLongBits(focusPoint.y));
+        hash = mix(hash, Double.doubleToLongBits(focusPoint.z));
+        return mix(hash, Float.floatToIntBits(fovDegrees));
+    }
+
     public void reset() {
         yaw = 315f;
         pitch = 30f;
@@ -101,5 +112,10 @@ public final class ModelerCamera {
             distance = 1f;
         if (distance > 1024f)
             distance = 1024f;
+    }
+
+    private static long mix(long hash, long value) {
+        hash ^= value;
+        return hash * 0x100000001b3L;
     }
 }
