@@ -154,6 +154,8 @@ public final class ModelerViewportPanel implements Panel {
 
     private @Nullable ModelerPicker.Hit pickCacheHit;
 
+    private @Nullable GizmoHoverCacheKey gizmoHoverCacheKey;
+
     /**
      * Latest toolbar tooltip — refreshed each frame from {@link ModelerViewportToolbar}'s hit-test. The workspace's
      * tooltip pipeline calls {@link #tooltipText()} and renders the result near the cursor, so the panel just has to
@@ -170,6 +172,20 @@ public final class ModelerViewportPanel implements Panel {
         int panelHeight,
         long sceneRevision,
         long cameraSignature
+    ) {}
+
+    private record GizmoHoverCacheKey(
+        double panelMouseX,
+        double panelMouseY,
+        int panelWidth,
+        int panelHeight,
+        long sceneRevision,
+        long cameraSignature,
+        long selectionSignature,
+        long targetSelectionSignature,
+        int modeOrdinal,
+        int frameOrdinal,
+        int lastRenderIdentity
     ) {}
 
     /** Tests / direct callers can construct without a workspace-bound menu opener; chip clicks no-op in that case. */
@@ -224,6 +240,7 @@ public final class ModelerViewportPanel implements Panel {
                         target.pixel().y()
                     );
                 ModelerGizmoState.setHover(null);
+                gizmoHoverCacheKey = null;
             } else {
                 var hit = pickCubeAt(mouseX, mouseY);
                 if (hit != null && animationInteraction) {
@@ -240,7 +257,7 @@ public final class ModelerViewportPanel implements Panel {
                     scene.hoveredFace = null;
                 }
                 scene.hoveredTexturePixel = null;
-                ModelerGizmoInput.updateHover(mouseX - panelX, mouseY - panelY, panelWidth, panelHeight);
+                updateGizmoHover(mouseX, mouseY, scene);
             }
         } else {
             scene.hoveredBone = null;
@@ -248,6 +265,7 @@ public final class ModelerViewportPanel implements Panel {
             scene.hoveredFace = null;
             scene.hoveredTexturePixel = null;
             ModelerGizmoState.setHover(null);
+            gizmoHoverCacheKey = null;
         }
 
         renderer.render(graphics, x, y, width, height, gizmoDragActive || texturePaintActive);
@@ -412,6 +430,64 @@ public final class ModelerViewportPanel implements Panel {
         pickCacheKey = key;
         pickCacheHit = hit;
         return hit;
+    }
+
+    private void updateGizmoHover(double mouseX, double mouseY, ModelerScene scene) {
+        var lastRender = ModelerGizmoState.lastRender();
+        var key = new GizmoHoverCacheKey(
+            mouseX - panelX,
+            mouseY - panelY,
+            panelWidth,
+            panelHeight,
+            scene.revision(),
+            scene.camera.signature(),
+            selectionSignature(scene.selection),
+            selectionSignature(scene.gizmoTargetSelection),
+            ModelerGizmoState.mode().ordinal(),
+            ModelerGizmoState.frame().ordinal(),
+            System.identityHashCode(lastRender)
+        );
+        if (key.equals(gizmoHoverCacheKey)) {
+            return;
+        }
+        ModelerGizmoInput.updateHover(mouseX - panelX, mouseY - panelY, panelWidth, panelHeight);
+        gizmoHoverCacheKey = key;
+    }
+
+    private static long selectionSignature(@Nullable Selection selection) {
+        if (selection == null) {
+            return 0L;
+        }
+        var hash = 0xcbf29ce484222325L;
+        if (selection instanceof Selection.BoneSelection bs) {
+            hash = mix(hash, 1);
+            return mix(hash, System.identityHashCode(bs.bone()));
+        }
+        if (selection instanceof Selection.CubeSelection cs) {
+            hash = mix(hash, 2);
+            hash = mix(hash, System.identityHashCode(cs.owner()));
+            return mix(hash, System.identityHashCode(cs.cube()));
+        }
+        if (selection instanceof Selection.FaceSelection fs) {
+            hash = mix(hash, 3);
+            hash = mix(hash, System.identityHashCode(fs.owner()));
+            hash = mix(hash, System.identityHashCode(fs.cube()));
+            return mix(hash, fs.face().ordinal());
+        }
+        if (selection instanceof Selection.MultiCubeSelection ms) {
+            hash = mix(hash, 4);
+            for (var cubeSelection : ms.cubes()) {
+                hash = mix(hash, System.identityHashCode(cubeSelection.owner()));
+                hash = mix(hash, System.identityHashCode(cubeSelection.cube()));
+            }
+            return hash;
+        }
+        return System.identityHashCode(selection);
+    }
+
+    private static long mix(long hash, long value) {
+        hash ^= value;
+        return hash * 0x100000001b3L;
     }
 
     private static boolean selectTextureForFace(ModelerScene scene, ModelerCube.FaceUv uv) {
