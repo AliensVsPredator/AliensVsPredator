@@ -32,6 +32,7 @@ import com.blib.engine.modeler.ModelerBone;
 import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.Selection;
 import com.blib.engine.session.ProjectSession;
+import com.blib.engine.ui.workspace.WorkspaceLayoutController;
 import com.blib.internal.client.animation.easing.AzEasingTypeRegistry;
 import com.blib.internal.client.animation.easing.AzEasingTypeLoader;
 import com.blib.internal.client.animation.easing.AzEasingTypes;
@@ -556,6 +557,9 @@ public final class AnimationEditorState {
     }
 
     public void updatePlaybackClock() {
+        if (!WorkspaceLayoutController.activeLayoutHasAnimationPanel()) {
+            return;
+        }
         if (!playing) {
             return;
         }
@@ -782,6 +786,9 @@ public final class AnimationEditorState {
     }
 
     public @Nullable PreviewBoneTransform previewTransformFor(ModelerBone bone, double timestamp) {
+        if (!WorkspaceLayoutController.activeLayoutHasAnimationPanel()) {
+            return null;
+        }
         if (documents.isEmpty()) {
             return null;
         }

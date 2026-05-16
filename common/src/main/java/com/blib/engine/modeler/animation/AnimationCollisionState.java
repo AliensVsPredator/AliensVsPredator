@@ -20,6 +20,7 @@ import com.blib.engine.modeler.ModelerCube;
 import com.blib.engine.modeler.ModelerTransforms;
 import com.blib.engine.modeler.animation.AnimationEditorState.AnimationKey;
 import com.blib.engine.modeler.animation.AnimationEditorState.TransformChannel;
+import com.blib.engine.ui.workspace.WorkspaceLayoutController;
 
 /**
  * Optional animation collision analysis for the modeler. It is intentionally inert while disabled because collision
@@ -230,7 +231,7 @@ public final class AnimationCollisionState {
     }
 
     public void refresh(ModelerBone root, AnimationEditorState state) {
-        if (!enabled || root == null || !state.hasPlayableSelection()) {
+        if (!enabled || !WorkspaceLayoutController.activeLayoutHasAnimationPanel() || root == null || !state.hasPlayableSelection()) {
             clearCache();
             return;
         }
@@ -252,18 +253,21 @@ public final class AnimationCollisionState {
     }
 
     public Set<ModelerCube> currentCollisionCubes() {
+        if (!WorkspaceLayoutController.activeLayoutHasAnimationPanel()) {
+            return Set.of();
+        }
         return currentSnapshot.cubes();
     }
 
     public List<CollisionPartner> currentCollisionPartners(ModelerBone bone) {
-        if (!enabled || bone == null) {
+        if (!enabled || bone == null || !WorkspaceLayoutController.activeLayoutHasAnimationPanel()) {
             return List.of();
         }
         return currentSnapshot.partnersByBone().getOrDefault(bone, List.of());
     }
 
     public List<CollisionSpan> spansForBone(ModelerBone bone) {
-        if (!enabled || bone == null) {
+        if (!enabled || bone == null || !WorkspaceLayoutController.activeLayoutHasAnimationPanel()) {
             return List.of();
         }
         return report.spansByBone().getOrDefault(bone, List.of());
