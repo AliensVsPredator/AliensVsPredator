@@ -143,6 +143,8 @@ public final class AnimationTimelinePanel implements Panel {
 
     private @Nullable KeyframeClick lastKeyframeClick;
 
+    private @Nullable KeyframeDrag keyframeDrag;
+
     public AnimationTimelinePanel(@Nullable PanelMenuOpener menuOpener) {
         this.menuOpener = menuOpener;
     }
@@ -206,6 +208,7 @@ public final class AnimationTimelinePanel implements Panel {
         if (keyframe != null) {
             var alreadySelected = isSelectedKeyframe(state, keyframe);
             var doubleClicked = recordKeyframeClick(keyframe);
+            keyframeDrag = KeyframeDrag.start(keyframe, keyframe.timestamp() - mouseToTimelineSeconds(mouseX));
             var row = channelRowAt(mouseY);
             if (row != null) {
                 selectBoneFromTimeline(row.bone());
@@ -242,6 +245,10 @@ public final class AnimationTimelinePanel implements Panel {
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        if (keyframeDrag != null && button == 0) {
+            dragKeyframe(mouseX);
+            return true;
+        }
         if (draggingPlayhead && button == 0) {
             setPlayheadFromMouse(mouseX);
             return true;
@@ -251,6 +258,10 @@ public final class AnimationTimelinePanel implements Panel {
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (keyframeDrag != null && button == 0) {
+            keyframeDrag = null;
+            return true;
+        }
         if (draggingPlayhead && button == 0) {
             draggingPlayhead = false;
             return true;
@@ -726,10 +737,37 @@ public final class AnimationTimelinePanel implements Panel {
 
     private void setPlayheadFromMouse(double mouseX) {
         var state = AnimationEditorState.get();
+        state.setPlayheadSeconds(mouseToTimelineSeconds(mouseX));
+    }
+
+    private void dragKeyframe(double mouseX) {
+        var drag = keyframeDrag;
+        if (drag == null) {
+            return;
+        }
+        var timestamp = canonicalTimestamp(Math.max(0.0, mouseToTimelineSeconds(mouseX) + drag.mouseOffsetSeconds()));
+        if (Math.abs(timestamp - drag.currentTimestamp()) < 1.0e-6) {
+            return;
+        }
+        var state = AnimationEditorState.get();
+        state.selectKeyframe(drag.documentId(), drag.animationName(), drag.boneName(), drag.channel(), drag.currentTimestamp());
+        state.moveSelectedKeyframe(drag.boneName(), drag.channel(), timestamp);
+        keyframeDrag = drag.withCurrentTimestamp(timestamp);
+    }
+
+    private double mouseToTimelineSeconds(double mouseX) {
         var startInset = Math.min(START_KEYFRAME_PADDING_PX, Math.max(0, timelineGraphWidth - 1));
-        var ratio = (mouseX - timelineGraphX - startInset) / Math.max(1.0, timelineGraphWidth - startInset);
+        var ratio = (mouseX - timelineGraphX - startInset) / Math.max(1.0, timelineGraphWidth - startInset - 1);
         ratio = Math.max(0.0, Math.min(1.0, ratio));
-        state.setPlayheadSeconds(ratio * timelineDuration);
+        return ratio * timelineDuration;
+    }
+
+    private static double canonicalTimestamp(double seconds) {
+        try {
+            return Double.parseDouble(AnimationEditorState.formatTimestamp(seconds));
+        } catch (NumberFormatException ignored) {
+            return Math.max(0.0, seconds);
+        }
     }
 
     private static boolean canPlay(AnimationEditorState state) {
@@ -920,6 +958,31 @@ public final class AnimationTimelinePanel implements Panel {
                 && boneName.equals(keyframe.boneName())
                 && channel == keyframe.channel()
                 && Math.abs(timestamp - keyframe.timestamp()) < 1.0e-6;
+        }
+    }
+
+    private record KeyframeDrag(
+        int documentId,
+        String animationName,
+        String boneName,
+        TransformChannel channel,
+        double currentTimestamp,
+        double mouseOffsetSeconds
+    ) {
+
+        static KeyframeDrag start(KeyframeRef keyframe, double mouseOffsetSeconds) {
+            return new KeyframeDrag(
+                keyframe.documentId(),
+                keyframe.animationName(),
+                keyframe.boneName(),
+                keyframe.channel(),
+                keyframe.timestamp(),
+                mouseOffsetSeconds
+            );
+        }
+
+        KeyframeDrag withCurrentTimestamp(double timestamp) {
+            return new KeyframeDrag(documentId, animationName, boneName, channel, timestamp, mouseOffsetSeconds);
         }
     }
 }
