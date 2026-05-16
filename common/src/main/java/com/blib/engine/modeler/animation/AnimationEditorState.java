@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -587,6 +588,168 @@ public final class AnimationEditorState {
         playing = false;
         playheadSeconds = 0.0;
         lastPlaybackNanos = 0L;
+    }
+
+    public void resetSession() {
+        syncActiveDocument();
+        draft = null;
+        externalSavePath = null;
+        projectResourceId = null;
+        lastSavedPath = null;
+        selectedAnimationName = null;
+        selectedAnimationNames.clear();
+        selectedAnimationKeys.clear();
+        documents.clear();
+        nextDocumentId = 1;
+        activeDocumentId = null;
+        selectedBoneName = null;
+        selectedChannel = TransformChannel.ROTATION;
+        selectedTimestamp = null;
+        playing = false;
+        playheadSeconds = 0.0;
+        lastPlaybackNanos = 0L;
+        dirty = false;
+        statusMessage = null;
+    }
+
+    public JsonObject sessionSnapshotJson() {
+        syncActiveDocument();
+        var root = new JsonObject();
+        var docs = new JsonArray();
+        var documentIndexById = new HashMap<Integer, Integer>();
+        for (var document : documents) {
+            var path = restorablePath(document);
+            if (path == null) {
+                continue;
+            }
+            var index = docs.size();
+            documentIndexById.put(document.id, index);
+            var obj = new JsonObject();
+            obj.addProperty("path", path.toString());
+            obj.addProperty("active", isActiveDocument(document.id));
+            docs.add(obj);
+        }
+        root.add("documents", docs);
+
+        if (activeDocumentId != null && documentIndexById.containsKey(activeDocumentId)) {
+            root.addProperty("activeDocumentIndex", documentIndexById.get(activeDocumentId));
+        }
+        if (selectedAnimationName != null) {
+            root.addProperty("selectedAnimationName", selectedAnimationName);
+        }
+
+        var selectedAnimations = new JsonArray();
+        for (var key : selectedAnimationKeys()) {
+            var documentIndex = documentIndexById.get(key.documentId());
+            if (documentIndex == null) {
+                continue;
+            }
+            var obj = new JsonObject();
+            obj.addProperty("documentIndex", documentIndex);
+            obj.addProperty("name", key.animationName());
+            selectedAnimations.add(obj);
+        }
+        root.add("selectedAnimations", selectedAnimations);
+
+        if (selectedBoneName != null) {
+            root.addProperty("selectedBoneName", selectedBoneName);
+        }
+        root.addProperty("selectedChannel", selectedChannel.jsonName());
+        if (selectedTimestamp != null) {
+            root.addProperty("selectedTimestamp", selectedTimestamp);
+        }
+        root.addProperty("playheadSeconds", playheadSeconds);
+        root.addProperty("playing", playing);
+        return root;
+    }
+
+    public void restoreSessionJson(@Nullable JsonObject snapshot) {
+        resetSession();
+        if (snapshot == null) {
+            return;
+        }
+
+        var restoredDocumentIds = new ArrayList<Integer>();
+        var docs = snapshot.getAsJsonArray("documents");
+        if (docs != null) {
+            for (var el : docs) {
+                if (!el.isJsonObject()) {
+                    restoredDocumentIds.add(null);
+                    continue;
+                }
+                var pathText = jsonString(el.getAsJsonObject(), "path");
+                if (pathText == null || pathText.isBlank()) {
+                    restoredDocumentIds.add(null);
+                    continue;
+                }
+                try {
+                    var path = Path.of(pathText);
+                    if (openFromFile(path)) {
+                        restoredDocumentIds.add(selectedDocumentId());
+                    } else {
+                        restoredDocumentIds.add(null);
+                    }
+                } catch (RuntimeException ignored) {
+                    restoredDocumentIds.add(null);
+                }
+            }
+        }
+
+        selectedAnimationName = null;
+        selectedAnimationNames.clear();
+        selectedAnimationKeys.clear();
+
+        var activeIndex = jsonInt(snapshot, "activeDocumentIndex", -1);
+        if (activeIndex >= 0 && activeIndex < restoredDocumentIds.size()) {
+            var documentId = restoredDocumentIds.get(activeIndex);
+            if (documentId != null) {
+                var document = document(documentId);
+                if (document != null) {
+                    activateDocument(document);
+                }
+            }
+        }
+
+        var selectedAnimations = snapshot.getAsJsonArray("selectedAnimations");
+        if (selectedAnimations != null) {
+            for (var el : selectedAnimations) {
+                if (!el.isJsonObject()) {
+                    continue;
+                }
+                var obj = el.getAsJsonObject();
+                var documentIndex = jsonInt(obj, "documentIndex", -1);
+                var animationName = jsonString(obj, "name");
+                if (documentIndex < 0 || documentIndex >= restoredDocumentIds.size() || animationName == null) {
+                    continue;
+                }
+                var documentId = restoredDocumentIds.get(documentIndex);
+                if (documentId != null && animationObject(documentId, animationName) != null) {
+                    selectedAnimationKeys.add(new AnimationKey(documentId, animationName));
+                }
+            }
+        }
+
+        var restoredActiveName = jsonString(snapshot, "selectedAnimationName");
+        if (activeDocumentId != null && restoredActiveName != null && animationObject(activeDocumentId, restoredActiveName) != null) {
+            selectedAnimationName = restoredActiveName;
+            selectedAnimationKeys.add(new AnimationKey(activeDocumentId, restoredActiveName));
+        } else {
+            selectedAnimationName = firstSelectedAnimationName();
+            if (selectedAnimationName == null && activeDocumentId != null) {
+                selectedAnimationName = firstAnimationName(activeDocument());
+            }
+        }
+        syncSelectedAnimationNames();
+
+        selectedBoneName = jsonString(snapshot, "selectedBoneName");
+        selectedChannel = TransformChannel.fromJsonName(jsonString(snapshot, "selectedChannel"));
+        selectedTimestamp = snapshot.has("selectedTimestamp") ? jsonDouble(snapshot, "selectedTimestamp", 0.0) : null;
+        playheadSeconds = jsonDouble(snapshot, "playheadSeconds", 0.0);
+        playing = false;
+        lastPlaybackNanos = 0L;
+        setPlayheadSeconds(playheadSeconds);
+        setPlaying(jsonBoolean(snapshot, "playing", false));
+        statusMessage = restoredDocumentIds.isEmpty() ? null : "Restored animation workspace";
     }
 
     public @Nullable PreviewBoneTransform previewTransformFor(ModelerBone bone) {
@@ -1471,6 +1634,71 @@ public final class AnimationEditorState {
             frame.add("vector", defaultVector());
         }
         return frame.getAsJsonArray("vector");
+    }
+
+    private @Nullable Path restorablePath(AnimationDocument document) {
+        if (document.externalSavePath != null) {
+            return document.externalSavePath;
+        }
+        if (document.lastSavedPath != null) {
+            return document.lastSavedPath;
+        }
+        if (document.projectResourceId == null) {
+            return null;
+        }
+        var project = ProjectSession.activeProjectName();
+        if (project.isEmpty()) {
+            return null;
+        }
+        return EngineProjectIO
+            .resourcepackRoot(project)
+            .resolve("assets")
+            .resolve(document.projectResourceId.getNamespace())
+            .resolve(document.projectResourceId.getPath());
+    }
+
+    private static @Nullable String jsonString(JsonObject obj, String field) {
+        if (obj == null || !obj.has(field) || !obj.get(field).isJsonPrimitive()) {
+            return null;
+        }
+        try {
+            return obj.get(field).getAsString();
+        } catch (RuntimeException ignored) {
+            return null;
+        }
+    }
+
+    private static int jsonInt(JsonObject obj, String field, int fallback) {
+        if (obj == null || !obj.has(field) || !obj.get(field).isJsonPrimitive()) {
+            return fallback;
+        }
+        try {
+            return obj.get(field).getAsInt();
+        } catch (RuntimeException ignored) {
+            return fallback;
+        }
+    }
+
+    private static double jsonDouble(JsonObject obj, String field, double fallback) {
+        if (obj == null || !obj.has(field) || !obj.get(field).isJsonPrimitive()) {
+            return fallback;
+        }
+        try {
+            return obj.get(field).getAsDouble();
+        } catch (RuntimeException ignored) {
+            return fallback;
+        }
+    }
+
+    private static boolean jsonBoolean(JsonObject obj, String field, boolean fallback) {
+        if (obj == null || !obj.has(field) || !obj.get(field).isJsonPrimitive()) {
+            return fallback;
+        }
+        try {
+            return obj.get(field).getAsBoolean();
+        } catch (RuntimeException ignored) {
+            return fallback;
+        }
     }
 
     private @Nullable AnimationDocument activeDocument() {

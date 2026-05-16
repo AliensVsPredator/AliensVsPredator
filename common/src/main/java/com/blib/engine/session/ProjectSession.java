@@ -26,6 +26,12 @@ public final class ProjectSession {
     private static List<ProjectInfo> availableProjects = List.of();
 
     /**
+     * One-shot intent set by the project picker before opening a workspace. A regular Open clears editor state; a
+     * Resume open asks the workspace to hydrate the saved project workspace snapshot after the layout is built.
+     */
+    private static @Nullable Boolean resumeWorkspaceOnOpen;
+
+    /**
      * Callback the {@code ProjectPickerScreen} sets while it's the active screen, so {@code BLibClientListener} can
      * forward {@link S2CProjectOpResultPayload} instances to it without holding a hard reference. Cleared by the picker
      * on {@code removed()} so a stray late-arriving op result doesn't drive UI on a screen that no longer exists.
@@ -44,6 +50,16 @@ public final class ProjectSession {
 
     public static void setActiveProject(@Nullable ProjectInfo project) {
         activeProject = project;
+    }
+
+    public static void setResumeWorkspaceOnOpen(boolean resume) {
+        resumeWorkspaceOnOpen = resume;
+    }
+
+    public static @Nullable Boolean consumeResumeWorkspaceOnOpen() {
+        var value = resumeWorkspaceOnOpen;
+        resumeWorkspaceOnOpen = null;
+        return value;
     }
 
     public static List<ProjectInfo> availableProjects() {
@@ -70,5 +86,6 @@ public final class ProjectSession {
         activeProject = null;
         availableProjects = List.of();
         opResultCallback = null;
+        resumeWorkspaceOnOpen = null;
     }
 }

@@ -93,6 +93,14 @@ public final class UvMapPanel implements Panel {
     /** Pan-drag multiplier — 1px of cursor movement translates to PAN_SENSITIVITY px of view shift. */
     private static final double PAN_SENSITIVITY = 1.5;
 
+    private static @Nullable ViewState pendingSessionViewState;
+
+    public record ViewState(
+        double zoom,
+        double panOffsetX,
+        double panOffsetY
+    ) {}
+
     /** Pixels reserved at the top of the panel for the texture-dim readout. */
     private static final int HEADER_HEIGHT = 14;
 
@@ -241,6 +249,14 @@ public final class UvMapPanel implements Panel {
         return "UV Map";
     }
 
+    public ViewState sessionViewState() {
+        return new ViewState(zoom, panOffsetX, panOffsetY);
+    }
+
+    public static void restoreSessionView(@Nullable ViewState state) {
+        pendingSessionViewState = state;
+    }
+
     @Override
     public void render(GuiGraphics graphics, int x, int y, int width, int height, int mouseX, int mouseY, float partialTick) {
         this.rectX = x;
@@ -279,6 +295,16 @@ public final class UvMapPanel implements Panel {
             panOffsetY = 0;
             lastFitZoom = zoom;
             viewInitialized = true;
+        }
+
+        if (pendingSessionViewState != null && viewInitialized) {
+            var fitZoom = computeMinZoom(scene);
+            var maxZoom = Math.max(fitZoom, MAX_ABSOLUTE_ZOOM);
+            zoom = clamp(pendingSessionViewState.zoom(), fitZoom, maxZoom);
+            panOffsetX = pendingSessionViewState.panOffsetX();
+            panOffsetY = pendingSessionViewState.panOffsetY();
+            lastFitZoom = fitZoom;
+            pendingSessionViewState = null;
         }
 
         // When the fit zoom changes (panel resize or model load with different texture dimensions), scale the current

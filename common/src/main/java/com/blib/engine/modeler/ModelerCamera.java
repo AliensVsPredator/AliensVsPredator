@@ -36,6 +36,14 @@ public final class ModelerCamera {
     /** Vertical field of view in degrees. */
     public float fovDegrees = 60f;
 
+    public void reset() {
+        yaw = 315f;
+        pitch = 30f;
+        distance = 64f;
+        focusPoint = new Vec3(0, 8, 0);
+        fovDegrees = 60f;
+    }
+
     public Matrix4f viewMatrix() {
         var pos = position();
         var center = new Vector3f((float) focusPoint.x, (float) focusPoint.y, (float) focusPoint.z);

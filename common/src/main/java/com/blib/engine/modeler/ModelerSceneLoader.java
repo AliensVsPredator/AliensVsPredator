@@ -64,7 +64,7 @@ public final class ModelerSceneLoader {
             return false;
         }
 
-        return applyModel(model, "root[" + resourceLocation + "]");
+        return applyModel(model, "root[" + resourceLocation + "]", ModelerScene.SourceKind.ENTITY, null);
     }
 
     /**
@@ -92,7 +92,7 @@ public final class ModelerSceneLoader {
             return false;
         }
 
-        return applyModel(model, "root[" + path.getFileName() + "]");
+        return applyModel(model, "root[" + path.getFileName() + "]", ModelerScene.SourceKind.EXTERNAL_GEO, path.toAbsolutePath().normalize());
     }
 
     /**
@@ -115,7 +115,12 @@ public final class ModelerSceneLoader {
      * Shared tail of both loader paths — convert the parsed {@link Model} into a fresh {@link ModelerBone} tree and
      * replace the active scene's root. Selection is cleared so any in-flight gizmo state resets cleanly.
      */
-    private static boolean applyModel(Model model, String rootLabel) {
+    private static boolean applyModel(
+        Model model,
+        String rootLabel,
+        ModelerScene.SourceKind sourceKind,
+        @Nullable Path sourcePath
+    ) {
         if (model.minecraftGeometry() == null || model.minecraftGeometry().length == 0) {
             LOGGER.warn("ModelerSceneLoader: model has no minecraft:geometry entries");
             return false;
@@ -130,8 +135,9 @@ public final class ModelerSceneLoader {
         var scene = ModelerScene.get();
         scene.root = root;
         scene.itemSession = null;
-        scene.sourceKind = ModelerScene.SourceKind.ENTITY;
+        scene.sourceKind = sourceKind;
         scene.sourceId = null;
+        scene.sourcePath = sourcePath;
         // Carry texture_width/height from the model's description block into the scene so panels (the UV map in
         // particular) can render against the correct sheet bounds. The first geometry's properties win — Bedrock allows
         // multiple geometries per file but the modeler is single-geometry today.

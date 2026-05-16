@@ -88,6 +88,7 @@ public final class ModelerBlockModelLoader {
         scene.itemSession = null;
         scene.sourceKind = ModelerScene.SourceKind.JAVA_BLOCK;
         scene.sourceId = blockId;
+        scene.sourcePath = null;
         scene.root = root;
         scene.textureWidth = BLOCK_TEXTURE_SIZE;
         scene.textureHeight = BLOCK_TEXTURE_SIZE;

@@ -56,6 +56,14 @@ public final class TextureViewportPanel implements Panel {
 
     private static final double MAX_ZOOM = 48.0;
 
+    private static @Nullable ViewState pendingSessionViewState;
+
+    public record ViewState(
+        double zoom,
+        double panX,
+        double panY
+    ) {}
+
     private int panelX, panelY, panelWidth, panelHeight;
 
     private int canvasX, canvasY, canvasW, canvasH;
@@ -107,6 +115,14 @@ public final class TextureViewportPanel implements Panel {
     @Override
     public @Nullable Panel.TabIndicator tabIndicator() {
         return TextureTabIndicators.activeTextureDirty();
+    }
+
+    public ViewState sessionViewState() {
+        return new ViewState(zoom, panX, panY);
+    }
+
+    public static void restoreSessionView(@Nullable ViewState state) {
+        pendingSessionViewState = state;
     }
 
     @Override
@@ -440,6 +456,12 @@ public final class TextureViewportPanel implements Panel {
         zoom = Math.min(zoom, 8.0);
         panX = 0;
         panY = 0;
+        if (pendingSessionViewState != null) {
+            zoom = clamp(pendingSessionViewState.zoom(), minZoom(pixels), MAX_ZOOM);
+            panX = pendingSessionViewState.panX();
+            panY = pendingSessionViewState.panY();
+            pendingSessionViewState = null;
+        }
         dragMode = DragMode.NONE;
         paintTexture = null;
         paintBefore = null;

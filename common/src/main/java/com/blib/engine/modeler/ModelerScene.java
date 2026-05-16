@@ -5,6 +5,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +30,7 @@ public final class ModelerScene {
 
     public enum SourceKind {
         ENTITY,
+        EXTERNAL_GEO,
         JAVA_BLOCK,
         ITEM_CONFIG
     }
@@ -60,6 +62,8 @@ public final class ModelerScene {
     public SourceKind sourceKind = SourceKind.ENTITY;
 
     public @Nullable ResourceLocation sourceId;
+
+    public @Nullable Path sourcePath;
 
     /**
      * Texture sheet dimensions in pixels, sourced from {@code minecraft:geometry.description.texture_width} on load.
@@ -330,6 +334,7 @@ public final class ModelerScene {
         this.itemSession = new ModelerItemSession(itemId);
         this.sourceKind = SourceKind.ITEM_CONFIG;
         this.sourceId = itemId;
+        this.sourcePath = null;
     }
 
     /**
@@ -342,9 +347,11 @@ public final class ModelerScene {
         this.itemSession = null;
         this.sourceKind = SourceKind.ENTITY;
         this.sourceId = null;
+        this.sourcePath = null;
         this.root = new ModelerBone("root");
         this.textureWidth = 64.0;
         this.textureHeight = 64.0;
+        this.camera.reset();
         seed(this);
         this.selection = null;
         this.hoveredCube = null;

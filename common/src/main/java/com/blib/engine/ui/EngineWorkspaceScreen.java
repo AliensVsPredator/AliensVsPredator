@@ -67,6 +67,7 @@ import com.blib.engine.ui.widget.DropdownMenu;
 import com.blib.engine.ui.widget.SearchableSelect;
 import com.blib.engine.ui.widget.TextInput;
 import com.blib.engine.ui.workspace.HoverOverlayRenderer;
+import com.blib.engine.ui.workspace.ProjectWorkspaceSession;
 import com.blib.engine.ui.workspace.ViewportContextMenuHandler;
 import com.blib.engine.ui.workspace.WorkspaceDialogController;
 import com.blib.engine.ui.workspace.WorkspaceHotkeyDispatcher;
@@ -285,6 +286,7 @@ public final class EngineWorkspaceScreen extends Screen {
             // layout choice persists untouched across game state transitions.
             var bodyRoot = loadActiveLayoutBody();
             this.root = WorkspaceLayoutController.buildOuterLayout(bodyRoot);
+            applyProjectOpenIntent();
             return;
         }
 
@@ -324,6 +326,7 @@ public final class EngineWorkspaceScreen extends Screen {
 
         var bodyRoot = loadActiveLayoutBody();
         this.root = WorkspaceLayoutController.buildOuterLayout(bodyRoot);
+        applyProjectOpenIntent();
     }
 
     /**
@@ -333,6 +336,21 @@ public final class EngineWorkspaceScreen extends Screen {
      */
     private DockNode loadActiveLayoutBody() {
         return WorkspaceLayoutController.loadActiveLayoutBody(panelCtx());
+    }
+
+    private void applyProjectOpenIntent() {
+        if (ProjectSession.activeProject() == null) {
+            return;
+        }
+        var resume = ProjectSession.consumeResumeWorkspaceOnOpen();
+        if (resume == null) {
+            return;
+        }
+        if (resume) {
+            ProjectWorkspaceSession.restoreCurrentProject();
+        } else {
+            ProjectWorkspaceSession.resetRuntimeState();
+        }
     }
 
     private PanelRegistry.Context panelCtx() {
@@ -768,6 +786,7 @@ public final class EngineWorkspaceScreen extends Screen {
         WorkspaceLayoutPersistence.persistActiveSelection(
             WorkspaceLayoutController.activeLayoutId()
         );
+        ProjectWorkspaceSession.saveCurrent(this.root);
 
         // Workspace-screen-scoped UI state (compositor, popups, cursor) — not session-scoped, so it stays here.
         EngineWorkspaceCompositor.clear();
