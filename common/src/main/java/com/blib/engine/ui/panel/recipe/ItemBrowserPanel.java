@@ -64,7 +64,7 @@ public final class ItemBrowserPanel implements Panel {
 
     private final TextInput searchInput = new TextInput("Search items...");
 
-    private final SegmentedControl modeToggle = new SegmentedControl(List.of("List", "Icons"), 0);
+    private final SegmentedControl modeToggle = new SegmentedControl(List.of("List", "Icons"), 1);
 
     private final ScrollViewport scroll = new ScrollViewport();
 
