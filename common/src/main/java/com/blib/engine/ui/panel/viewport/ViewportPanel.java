@@ -68,8 +68,7 @@ import com.blib.mod.common.network.packet.C2STranslateEntityPayload;
  * on LMB / RMB; camera control lives on MMB so users can frame the shot regardless of what tool they're holding:
  * <ul>
  * <li>LMB click → place piece (if a jigsaw piece is held) else select entity via ray-cast.</li>
- * <li>RMB click → undo last placement (if a piece is held) else fire {@link RightClickHandler} (entity context menu).
- * </li>
+ * <li>RMB click → undo last placement (if a piece is held) else fire {@link RightClickHandler} (context menu).</li>
  * <li>MMB drag → orbit around the pivot computed at press time.</li>
  * <li>Shift+MMB drag → screen-plane pan.</li>
  * <li>Ctrl+MMB drag → dolly zoom toward / away from the pivot.</li>
@@ -86,6 +85,11 @@ public final class ViewportPanel implements Panel {
     public interface RightClickHandler {
 
         void onRightClick(@Nullable LivingEntity entity, double cursorX, double cursorY);
+
+        /**
+         * RMB hit on a block. Default is no-op so existing handlers don't have to change.
+         */
+        default void onRightClickBlock(BlockPos pos, double cursorX, double cursorY) {}
 
         /**
          * RMB hit on the block-volume selection's AABB. Distinct from {@link #onRightClick} so the host can open a
@@ -699,8 +703,11 @@ public final class ViewportPanel implements Panel {
                     rightClickHandler.onRightClick(et.entity(), mouseX, mouseY);
                     return true;
                 }
-                // Block or no hit — no block context menu today, so this dismisses any open menu (the handler treats
-                // a null entity as "close").
+                if (hover instanceof EngineHoverProbe.Target.Block bt) {
+                    rightClickHandler.onRightClickBlock(bt.pos(), mouseX, mouseY);
+                    return true;
+                }
+                // No hit — dismiss any open menu (the handler treats a null entity as "close").
                 rightClickHandler.onRightClick(null, mouseX, mouseY);
             }
             return true;

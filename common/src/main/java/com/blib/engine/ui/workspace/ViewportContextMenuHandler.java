@@ -1,5 +1,6 @@
 package com.blib.engine.ui.workspace;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.ApiStatus;
@@ -22,9 +23,9 @@ import com.blib.engine.ui.popup.FactionManagePopup;
 import com.blib.engine.ui.widget.DropdownMenu;
 
 /**
- * Builds the right-click context menus shown over the engine's viewport. Three trigger points — entity, block-volume,
- * placed-jigsaw-piece — each open a different menu but they share the same overlay surface (the workspace's open-menu
- * slot) and the same close-on-outside-click absorber.
+ * Builds the right-click context menus shown over the engine's viewport. Entity, block, block-volume, and
+ * placed-jigsaw-piece triggers each open a different menu but share the same overlay surface (the workspace's open-menu
+ * slot), close-on-outside-click absorber, and deletion route.
  * <p>
  * Implements both {@link ViewportPanel.RightClickHandler} (used by the viewport panel) and
  * {@link EntityContextMenuHandler} (used by panels like the outliner that need the same entity menu without holding a
@@ -98,10 +99,17 @@ public final class ViewportContextMenuHandler implements ViewportPanel.RightClic
                     items.add(new DropdownMenu.Item("Dismember…", () -> {}, limbItems));
                 }
             }
-            items.add(new DropdownMenu.Item("Delete Entity", () -> commands.dispatch(new Command.RemoveEntity(entityId))));
+            items.add(new DropdownMenu.Item(ViewportSelectionDelete.LABEL, () -> ViewportSelectionDelete.deleteEntity(entity, commands)));
         }
 
         host.openMenu(new DropdownMenu(menuX, menuY, items));
+    }
+
+    @Override
+    public void onRightClickBlock(BlockPos pos, double cursorX, double cursorY) {
+        var items = new ArrayList<DropdownMenu.Item>();
+        items.add(new DropdownMenu.Item(ViewportSelectionDelete.LABEL, () -> ViewportSelectionDelete.deleteBlock(pos, commands)));
+        host.openMenu(new DropdownMenu((int) cursorX, (int) cursorY, items));
     }
 
     /**
@@ -116,7 +124,7 @@ public final class ViewportContextMenuHandler implements ViewportPanel.RightClic
         items.add(new DropdownMenu.Item("Cut", () -> BlockSelectionOps.copy(true)));
         items.add(new DropdownMenu.Item("Copy", () -> BlockSelectionOps.copy(false)));
         items.add(new DropdownMenu.Item("Paste", BlockSelectionOps::paste));
-        items.add(new DropdownMenu.Item("Delete", BlockSelectionOps::delete));
+        items.add(new DropdownMenu.Item(ViewportSelectionDelete.LABEL, ViewportSelectionDelete::deleteBlockVolume));
         host.openMenu(new DropdownMenu((int) cursorX, (int) cursorY, items));
     }
 
@@ -146,7 +154,7 @@ public final class ViewportContextMenuHandler implements ViewportPanel.RightClic
             new DropdownMenu.Item("Cut", () -> {
                 PlacedJigsawPieceSelectable.promoteToVolume(pieceId, null);
                 BlockSelectionOps.copy(false);
-                commands.dispatch(new Command.DeletePlacedPiece(pieceId));
+                ViewportSelectionDelete.deletePiece(pieceId, commands);
             })
         );
         items.add(
@@ -155,7 +163,7 @@ public final class ViewportContextMenuHandler implements ViewportPanel.RightClic
                 BlockSelectionOps.copy(false);
             })
         );
-        items.add(new DropdownMenu.Item("Delete", () -> commands.dispatch(new Command.DeletePlacedPiece(pieceId))));
+        items.add(new DropdownMenu.Item(ViewportSelectionDelete.LABEL, () -> ViewportSelectionDelete.deletePiece(pieceId, commands)));
         host.openMenu(new DropdownMenu((int) cursorX, (int) cursorY, items));
     }
 
