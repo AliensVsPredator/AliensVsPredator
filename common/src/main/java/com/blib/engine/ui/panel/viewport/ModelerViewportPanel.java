@@ -594,7 +594,6 @@ public final class ModelerViewportPanel implements Panel {
 
         var scene = ModelerScene.get();
         scene.activeTexture = target.texture();
-        scene.selection = new Selection.FaceSelection(target.owner(), target.cube(), target.face());
 
         if (tool == TextureTool.PENCIL) {
             texturePaintActive = true;
