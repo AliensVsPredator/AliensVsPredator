@@ -19,7 +19,7 @@ public final class Keybindings {
 
     // ----- File -----
 
-    public static final Keybinding RELOAD_PROJECT = key(GLFW.GLFW_KEY_F5, "file.reload_project", "Reload Project");
+    public static final Keybinding RELOAD_PROJECT = ctrlKey(GLFW.GLFW_KEY_R, "file.reload_project", "Reload Project");
 
     // ----- Edit -----
 

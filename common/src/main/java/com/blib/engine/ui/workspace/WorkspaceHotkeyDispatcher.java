@@ -78,7 +78,7 @@ public final class WorkspaceHotkeyDispatcher {
             return true;
         }
 
-        // F5 = Reload Project. Wipes the tag-staging overlay since reload catches the runtime registry up to disk.
+        // Reload Project. Wipes the tag-staging overlay since reload catches the runtime registry up to disk.
         if (ActiveKeybindings.matchesKey(Keybindings.RELOAD_PROJECT, keyCode, modifiers)) {
             if (ProjectSession.activeProject() != null) {
                 host.commands().dispatch(new Command.ReloadProject(ProjectSession.activeProjectName()));
