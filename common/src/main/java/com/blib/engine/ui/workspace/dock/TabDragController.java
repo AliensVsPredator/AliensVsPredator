@@ -7,9 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.dock.DockNode;
-import com.blib.engine.ui.dock.Orientation;
 import com.blib.engine.ui.dock.Panel;
-import com.blib.engine.ui.dock.Sizing;
 import com.blib.engine.ui.dock.TabbedPanel;
 
 /**
@@ -164,8 +162,7 @@ public final class TabDragController {
             return root;
         }
 
-        d.source.removeTab(d.sourceIndex);
-        return splitPanel(root, target, d.tab, zone);
+        return DockTreeMutator.moveTabToSplit(root, d.source, d.sourceIndex, target, splitSide(zone));
     }
 
     private static void mergeTab(Drag drag, TabbedPanel target, double logicalX) {
@@ -186,40 +183,14 @@ public final class TabDragController {
         }
     }
 
-    /**
-     * Replace {@code target}'s leaf in the dock tree with a fresh {@link DockNode.Split} containing two leaves: the
-     * original target panel on one side, and a new {@link TabbedPanel} holding {@code droppedTab} on the other. Side
-     * determined by {@code zone}; default 50/50 ratio.
-     */
-    private static DockNode splitPanel(DockNode root, TabbedPanel target, Panel droppedTab, DropZone zone) {
-        var existingLeaf = new DockNode.Leaf(target);
-        var newLeaf = new DockNode.Leaf(new TabbedPanel(droppedTab));
-        var sizing = new Sizing.Ratio(0.5f);
-
-        var newSplit = switch (zone) {
-            case TOP -> new DockNode.Split(Orientation.VERTICAL, newLeaf, existingLeaf, sizing);
-            case BOTTOM -> new DockNode.Split(Orientation.VERTICAL, existingLeaf, newLeaf, sizing);
-            case LEFT -> new DockNode.Split(Orientation.HORIZONTAL, newLeaf, existingLeaf, sizing);
-            case RIGHT -> new DockNode.Split(Orientation.HORIZONTAL, existingLeaf, newLeaf, sizing);
+    private static DockTreeMutator.SplitSide splitSide(DropZone zone) {
+        return switch (zone) {
+            case TOP -> DockTreeMutator.SplitSide.ABOVE;
+            case BOTTOM -> DockTreeMutator.SplitSide.BELOW;
+            case LEFT -> DockTreeMutator.SplitSide.LEFT;
+            case RIGHT -> DockTreeMutator.SplitSide.RIGHT;
             case CENTER -> throw new IllegalStateException("CENTER is not a split zone");
         };
-
-        return replaceTabbedPanel(root, target, newSplit);
-    }
-
-    private static DockNode replaceTabbedPanel(DockNode node, TabbedPanel target, DockNode replacement) {
-        if (node instanceof DockNode.Leaf leaf && leaf.panel() == target) {
-            return replacement;
-        }
-        if (node instanceof DockNode.Split split) {
-            var first = replaceTabbedPanel(split.first(), target, replacement);
-            var second = replaceTabbedPanel(split.second(), target, replacement);
-            if (first == split.first() && second == split.second()) {
-                return split;
-            }
-            return new DockNode.Split(split.orientation(), first, second, split.sizing());
-        }
-        return node;
     }
 
     /**

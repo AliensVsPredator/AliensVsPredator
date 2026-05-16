@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 import com.blib.engine.command.api.Command;
@@ -1195,6 +1196,7 @@ public final class EngineWorkspaceScreen extends Screen {
     private DropdownMenu buildTabContextMenu(TabbedPanel tabbed, int tabIdx, int anchorX, int anchorY) {
         var canCloseOthers = tabbed.tabCount() > 1;
         var canCloseRight = tabIdx < tabbed.tabCount() - 1;
+        var canMoveToSplit = tabbed.tabCount() > 1;
         var items = new ArrayList<DropdownMenu.Item>();
         items.add(new DropdownMenu.Item("Close", () -> {
             tabbed.removeTab(tabIdx);
@@ -1220,7 +1222,28 @@ public final class EngineWorkspaceScreen extends Screen {
                 canCloseRight
             )
         );
+        items.add(DropdownMenu.Item.divider());
+        items.add(
+            new DropdownMenu.Item(
+                "Move to Split",
+                () -> {},
+                List.of(
+                    new DropdownMenu.Item("Left", () -> moveTabToSplit(tabbed, tabIdx, DockTreeMutator.SplitSide.LEFT)),
+                    new DropdownMenu.Item("Right", () -> moveTabToSplit(tabbed, tabIdx, DockTreeMutator.SplitSide.RIGHT)),
+                    new DropdownMenu.Item("Above", () -> moveTabToSplit(tabbed, tabIdx, DockTreeMutator.SplitSide.ABOVE)),
+                    new DropdownMenu.Item("Below", () -> moveTabToSplit(tabbed, tabIdx, DockTreeMutator.SplitSide.BELOW))
+                ),
+                canMoveToSplit,
+                Component.literal("A split needs another tab to leave behind."),
+                false
+            )
+        );
         return new DropdownMenu(anchorX, anchorY, items);
+    }
+
+    private void moveTabToSplit(TabbedPanel tabbed, int tabIdx, DockTreeMutator.SplitSide side) {
+        this.root = DockTreeMutator.moveTabToSplit(this.root, tabbed, tabIdx, tabbed, side);
+        simplifyDockTree();
     }
 
     @Override
