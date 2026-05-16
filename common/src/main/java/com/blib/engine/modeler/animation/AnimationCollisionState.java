@@ -355,26 +355,32 @@ public final class AnimationCollisionState {
     }
 
     private Set<BonePair> buildBaselineIgnoredBonePairs(ModelerBone root, AnimationEditorState state) {
-        var boxes = new ArrayList<CollisionBox>();
-        var baselineSeconds = firstAuthoredKeyframeSeconds(root, state);
-        collectBoxes(root, state, baselineSeconds, new Matrix4f(), boxes, START_POSE_ADJACENCY_TOLERANCE);
-        if (boxes.size() < 2) {
-            return Set.of();
-        }
-
         var ignored = new HashSet<BonePair>();
-        forEachCandidatePair(boxes, (a, b) -> {
-            if (a.owner() != b.owner() && collisionDepth(a, b) > 0.0) {
-                ignored.add(BonePair.of(a.owner(), b.owner()));
+        for (var baselineSeconds : baselineKeyframeSeconds(root, state)) {
+            var boxes = new ArrayList<CollisionBox>();
+            collectBoxes(root, state, baselineSeconds, new Matrix4f(), boxes, START_POSE_ADJACENCY_TOLERANCE);
+            if (boxes.size() < 2) {
+                continue;
             }
-        });
+            forEachCandidatePair(boxes, (a, b) -> {
+                if (a.owner() != b.owner() && collisionDepth(a, b) > 0.0) {
+                    ignored.add(BonePair.of(a.owner(), b.owner()));
+                }
+            });
+        }
         return Set.copyOf(ignored);
     }
 
-    private double firstAuthoredKeyframeSeconds(ModelerBone root, AnimationEditorState state) {
+    private List<Double> baselineKeyframeSeconds(ModelerBone root, AnimationEditorState state) {
         var times = new TreeSet<Double>();
-        collectKeyframeTimes(root, state, animationKeys(state), Double.POSITIVE_INFINITY, times);
-        return times.isEmpty() ? 0.0 : times.getFirst();
+        for (var animation : animationKeys(state)) {
+            var animationTimes = new TreeSet<Double>();
+            collectKeyframeTimes(root, state, List.of(animation), Double.POSITIVE_INFINITY, animationTimes);
+            if (!animationTimes.isEmpty()) {
+                times.add(animationTimes.getFirst());
+            }
+        }
+        return times.isEmpty() ? List.of(0.0) : new ArrayList<>(times);
     }
 
     private CollisionSnapshot collisionSnapshot(ModelerBone root, AnimationEditorState state, double seconds) {
