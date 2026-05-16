@@ -75,10 +75,10 @@ public final class AnimationCollisionState {
         }
     }
 
-    private record CubePair(ModelerCube a, ModelerCube b) {
+    private record BonePair(ModelerBone a, ModelerBone b) {
 
-        static CubePair of(ModelerCube a, ModelerCube b) {
-            return new CubePair(a, b);
+        static BonePair of(ModelerBone a, ModelerBone b) {
+            return new BonePair(a, b);
         }
 
         @Override
@@ -86,7 +86,7 @@ public final class AnimationCollisionState {
             if (this == other) {
                 return true;
             }
-            if (!(other instanceof CubePair pair)) {
+            if (!(other instanceof BonePair pair)) {
                 return false;
             }
             return (a == pair.a && b == pair.b) || (a == pair.b && b == pair.a);
@@ -152,7 +152,7 @@ public final class AnimationCollisionState {
 
     private CollisionSnapshot currentSnapshot = CollisionSnapshot.EMPTY;
 
-    private Set<CubePair> baselineIgnoredPairs = Set.of();
+    private Set<BonePair> baselineIgnoredBonePairs = Set.of();
 
     private AnimationCollisionState() {}
 
@@ -184,8 +184,8 @@ public final class AnimationCollisionState {
 
         var fingerprint = fingerprint(root, state);
         if (fingerprint != reportFingerprint) {
-            baselineIgnoredPairs = buildBaselineIgnoredPairs(root, state);
-            report = buildReport(root, state, baselineIgnoredPairs);
+            baselineIgnoredBonePairs = buildBaselineIgnoredBonePairs(root, state);
+            report = buildReport(root, state, baselineIgnoredBonePairs);
             reportFingerprint = fingerprint;
             currentSnapshot = CollisionSnapshot.EMPTY;
             currentSnapshotSeconds = Double.NaN;
@@ -214,10 +214,10 @@ public final class AnimationCollisionState {
         currentSnapshotSeconds = Double.NaN;
         report = CollisionReport.EMPTY;
         currentSnapshot = CollisionSnapshot.EMPTY;
-        baselineIgnoredPairs = Set.of();
+        baselineIgnoredBonePairs = Set.of();
     }
 
-    private CollisionReport buildReport(ModelerBone root, AnimationEditorState state, Set<CubePair> ignoredPairs) {
+    private CollisionReport buildReport(ModelerBone root, AnimationEditorState state, Set<BonePair> ignoredBonePairs) {
         var duration = Math.max(0.0, state.selectedAnimationLengthSeconds());
         if (duration <= 0.0) {
             return CollisionReport.EMPTY;
@@ -235,12 +235,12 @@ public final class AnimationCollisionState {
         var first = true;
 
         for (var time : times) {
-            var current = collisionSnapshot(root, state, time, ignoredPairs).boneNames();
+            var current = collisionSnapshot(root, state, time, ignoredBonePairs).boneNames();
             for (var boneName : current) {
                 if (!activeStarts.containsKey(boneName)) {
                     var start = first || previous.contains(boneName)
                         ? time
-                        : refineBoundary(root, state, ignoredPairs, boneName, previousTime, time, true);
+                        : refineBoundary(root, state, ignoredBonePairs, boneName, previousTime, time, true);
                     activeStarts.put(boneName, start);
                 }
             }
@@ -250,7 +250,7 @@ public final class AnimationCollisionState {
                 if (!current.contains(entry.getKey())) {
                     var end = first || !previous.contains(entry.getKey())
                         ? time
-                        : refineBoundary(root, state, ignoredPairs, entry.getKey(), previousTime, time, false);
+                        : refineBoundary(root, state, ignoredBonePairs, entry.getKey(), previousTime, time, false);
                     addSpan(spansByBone, entry.getKey(), entry.getValue(), end);
                     closed.add(entry.getKey());
                 }
@@ -283,7 +283,7 @@ public final class AnimationCollisionState {
     private double refineBoundary(
         ModelerBone root,
         AnimationEditorState state,
-        Set<CubePair> ignoredPairs,
+        Set<BonePair> ignoredBonePairs,
         String boneName,
         double from,
         double to,
@@ -293,7 +293,7 @@ public final class AnimationCollisionState {
         var high = Math.max(from, to);
         for (var i = 0; i < BOUNDARY_REFINEMENT_STEPS; i++) {
             var mid = (low + high) * 0.5;
-            var colliding = collisionSnapshot(root, state, mid, ignoredPairs).boneNames().contains(boneName);
+            var colliding = collisionSnapshot(root, state, mid, ignoredBonePairs).boneNames().contains(boneName);
             if (colliding == collidingAtUpper) {
                 high = mid;
             } else {
@@ -347,27 +347,32 @@ public final class AnimationCollisionState {
         }
     }
 
-    private Set<CubePair> buildBaselineIgnoredPairs(ModelerBone root, AnimationEditorState state) {
+    private Set<BonePair> buildBaselineIgnoredBonePairs(ModelerBone root, AnimationEditorState state) {
         var boxes = new ArrayList<CollisionBox>();
         collectBoxes(root, state, 0.0, new Matrix4f(), boxes, START_POSE_ADJACENCY_TOLERANCE);
         if (boxes.size() < 2) {
             return Set.of();
         }
 
-        var ignored = new HashSet<CubePair>();
+        var ignored = new HashSet<BonePair>();
         forEachCandidatePair(boxes, (a, b) -> {
             if (a.owner() != b.owner() && collisionDepth(a, b) > 0.0) {
-                ignored.add(CubePair.of(a.cube(), b.cube()));
+                ignored.add(BonePair.of(a.owner(), b.owner()));
             }
         });
         return Set.copyOf(ignored);
     }
 
     private CollisionSnapshot collisionSnapshot(ModelerBone root, AnimationEditorState state, double seconds) {
-        return collisionSnapshot(root, state, seconds, baselineIgnoredPairs);
+        return collisionSnapshot(root, state, seconds, baselineIgnoredBonePairs);
     }
 
-    private CollisionSnapshot collisionSnapshot(ModelerBone root, AnimationEditorState state, double seconds, Set<CubePair> ignoredPairs) {
+    private CollisionSnapshot collisionSnapshot(
+        ModelerBone root,
+        AnimationEditorState state,
+        double seconds,
+        Set<BonePair> ignoredBonePairs
+    ) {
         var boxes = new ArrayList<CollisionBox>();
         collectBoxes(root, state, seconds, new Matrix4f(), boxes);
         if (boxes.size() < 2) {
@@ -377,7 +382,7 @@ public final class AnimationCollisionState {
         var cubes = new HashSet<ModelerCube>();
         var boneNames = new HashSet<String>();
         forEachCandidatePair(boxes, (a, b) -> {
-            if (a.owner() == b.owner() || ignoredPairs.contains(CubePair.of(a.cube(), b.cube()))) {
+            if (a.owner() == b.owner() || ignoredBonePairs.contains(BonePair.of(a.owner(), b.owner()))) {
                 return;
             }
             if (collisionDepth(a, b) > RUNTIME_PENETRATION_THRESHOLD) {
