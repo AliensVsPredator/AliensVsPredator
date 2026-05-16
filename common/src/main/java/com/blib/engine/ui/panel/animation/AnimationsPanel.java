@@ -3,6 +3,7 @@ package com.blib.engine.ui.panel.animation;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.Util;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -465,7 +466,8 @@ public final class AnimationsPanel implements Panel {
         }
         if (row != null && row.isFile()) {
             var documentId = row.documentId();
-            state.selectDocument(documentId);
+            var document = documentRef(documentId);
+            var documentFolder = documentFolder(documentId);
             menuOpener.open(
                 new DropdownMenu(
                     (int) mouseX,
@@ -477,11 +479,17 @@ public final class AnimationsPanel implements Panel {
                             state.canSave(documentId),
                             Component.literal("No animation changes or save target available.")
                         ),
-                        new DropdownMenu.Item("Save As...", () -> saveAsFile(documentId), documentRef(documentId) != null),
+                        new DropdownMenu.Item("Save As...", () -> saveAsFile(documentId), document != null),
+                        new DropdownMenu.Item(
+                            "Open in File Explorer",
+                            () -> openDocumentFolder(documentId),
+                            documentFolder != null,
+                            Component.literal("This animation file does not have an available folder.")
+                        ),
                         DropdownMenu.Item.divider(),
                         new DropdownMenu.Item("New Animation", this::newAnimation, state.hasDraft()),
                         DropdownMenu.Item.divider(),
-                        new DropdownMenu.Item("Unload", () -> unloadDocument(documentId), documentRef(documentId) != null)
+                        new DropdownMenu.Item("Unload", () -> unloadDocument(documentId), document != null)
                     )
                 )
             );
@@ -516,11 +524,26 @@ public final class AnimationsPanel implements Panel {
 
     private void saveAsFile(int documentId) {
         var state = AnimationEditorState.get();
-        state.selectDocument(documentId);
-        var picked = ModelerFilePicker.saveAnimationJson(defaultFileName(), initialSaveDirectory());
+        var picked = ModelerFilePicker.saveAnimationJson(defaultFileName(documentId), initialSaveDirectory(documentId));
         if (picked != null) {
             state.saveAsFile(documentId, picked);
         }
+    }
+
+    private static void openDocumentFolder(int documentId) {
+        var folder = documentFolder(documentId);
+        if (folder != null) {
+            Util.getPlatform().openUri(folder.toUri());
+        }
+    }
+
+    private static @Nullable Path documentFolder(int documentId) {
+        var path = AnimationEditorState.get().documentPath(documentId);
+        if (path == null) {
+            return null;
+        }
+        var folder = Files.isDirectory(path) ? path : path.getParent();
+        return folder != null && Files.isDirectory(folder) ? folder : null;
     }
 
     private void unloadDocument(int documentId) {
@@ -689,6 +712,14 @@ public final class AnimationsPanel implements Panel {
         return initialProjectAnimationDirectory();
     }
 
+    private static @Nullable Path initialSaveDirectory(int documentId) {
+        var path = AnimationEditorState.get().documentPath(documentId);
+        if (path != null && path.getParent() != null) {
+            return path.getParent();
+        }
+        return initialProjectAnimationDirectory();
+    }
+
     private static @Nullable Path initialProjectAnimationDirectory() {
         var project = ProjectSession.activeProjectName();
         if (project.isEmpty()) {
@@ -704,6 +735,14 @@ public final class AnimationsPanel implements Panel {
         }
         var selected = state.selectedAnimationName();
         return sanitizeFileName(selected == null ? "animations" : selected) + ".animation.json";
+    }
+
+    private static String defaultFileName(int documentId) {
+        var path = AnimationEditorState.get().documentPath(documentId);
+        if (path != null && path.getFileName() != null) {
+            return path.getFileName().toString();
+        }
+        return "animations.animation.json";
     }
 
     private static String sanitizeFileName(@Nullable String value) {

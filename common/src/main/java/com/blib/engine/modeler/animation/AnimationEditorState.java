@@ -382,6 +382,12 @@ public final class AnimationEditorState {
         return document == null ? "(missing)" : document.targetLabel();
     }
 
+    public @Nullable Path documentPath(int documentId) {
+        syncActiveDocument();
+        var document = document(documentId);
+        return document == null ? null : restorablePath(document);
+    }
+
     public void newDraft() {
         syncActiveDocument();
         var root = new JsonObject();
