@@ -232,12 +232,16 @@ public final class RecipeAuthoringState {
             return new DragStack(null, tagId, 1);
         }
 
+        public static DragStack of(DraftSlot slot) {
+            return new DragStack(slot.itemId(), slot.tagId(), slot.count());
+        }
+
         public boolean isTag() {
             return tagId != null;
         }
 
         public DraftSlot toDraftSlot() {
-            return tagId != null ? DraftSlot.tag(tagId) : DraftSlot.item(itemId, count);
+            return tagId != null ? new DraftSlot(null, tagId, count).normalized() : DraftSlot.item(itemId, count);
         }
 
         public ItemStack toStack() {
@@ -258,6 +262,8 @@ public final class RecipeAuthoringState {
     private static @Nullable SlotRef selectedSlot;
 
     private static @Nullable DragStack draggedStack;
+
+    private static @Nullable SlotRef draggedSourceSlot;
 
     private static RecipeDraftType recipeType = RecipeDraftType.CRAFTING_SHAPED;
 
@@ -376,6 +382,7 @@ public final class RecipeAuthoringState {
         output = DraftSlot.EMPTY;
         selectedRecipeId = null;
         selectedSlot = null;
+        clearDrag();
         recipeIdManuallyEdited = false;
         experience = 0.0F;
         cookingTime = defaultCookingTime(recipeType);
@@ -393,6 +400,7 @@ public final class RecipeAuthoringState {
         lastSuggestedRecipeIdText = recipeIdText;
         recipeIdManuallyEdited = true;
         selectedSlot = null;
+        clearDrag();
         experience = 0.0F;
         cookingTime = defaultCookingTime(recipeType);
 
@@ -466,11 +474,7 @@ public final class RecipeAuthoringState {
             selectedSlot = ref;
             return;
         }
-        if (ref.kind() == SlotKind.OUTPUT) {
-            output = normalized;
-        } else {
-            GRID[ref.index()] = normalized;
-        }
+        setSlotContents(ref, normalized);
         selectedSlot = ref;
         refreshSuggestedRecipeId();
         dirty = true;
@@ -520,13 +524,28 @@ public final class RecipeAuthoringState {
         var id = BuiltInRegistries.ITEM.getKey(item);
         if (id == null || item == Items.AIR) {
             draggedStack = null;
+            draggedSourceSlot = null;
             return;
         }
         draggedStack = DragStack.item(id, 1);
+        draggedSourceSlot = null;
     }
 
     public static void beginTagDrag(ResourceLocation tagId) {
         draggedStack = tagId == null ? null : DragStack.tag(tagId);
+        draggedSourceSlot = null;
+    }
+
+    public static void beginSlotDrag(SlotRef ref) {
+        var slot = slot(ref);
+        if (slot.isEmpty()) {
+            draggedStack = null;
+            draggedSourceSlot = null;
+            return;
+        }
+        selectedSlot = ref;
+        draggedStack = DragStack.of(slot);
+        draggedSourceSlot = ref;
     }
 
     public static boolean hasDrag() {
@@ -539,6 +558,7 @@ public final class RecipeAuthoringState {
 
     public static void clearDrag() {
         draggedStack = null;
+        draggedSourceSlot = null;
     }
 
     public static boolean dropDraggedAt(double mouseX, double mouseY) {
@@ -550,13 +570,32 @@ public final class RecipeAuthoringState {
         if (target == null) {
             return false;
         }
-        if (target.kind() == SlotKind.OUTPUT && drag.isTag()) {
+        var dropped = drag.toDraftSlot();
+        if (target.equals(draggedSourceSlot)) {
+            selectedSlot = target;
+            return true;
+        }
+        if (target.kind() == SlotKind.OUTPUT && dropped.isTag()) {
             status = "Output slots require a concrete item.";
             selectedSlot = target;
             return false;
         }
-        setSlot(target, drag.toDraftSlot());
+        setSlotContents(target, dropped);
+        if (draggedSourceSlot != null) {
+            setSlotContents(draggedSourceSlot, DraftSlot.EMPTY);
+        }
+        selectedSlot = target;
+        refreshSuggestedRecipeId();
+        dirty = true;
         return true;
+    }
+
+    private static void setSlotContents(SlotRef ref, DraftSlot slot) {
+        if (ref.kind() == SlotKind.OUTPUT) {
+            output = slot;
+        } else {
+            GRID[ref.index()] = slot;
+        }
     }
 
     public static @Nullable Path saveToProject(String recipeIdInput) throws IOException {

@@ -601,9 +601,13 @@ public final class RecipeEditorPanel implements Panel {
                 RecipeAuthoringState.clearDrag();
             } else {
                 RecipeAuthoringState.selectSlot(target);
-                if (isSlotDoubleClick(target) && !RecipeAuthoringState.slot(target).isEmpty()) {
+                var slot = RecipeAuthoringState.slot(target);
+                if (isSlotDoubleClick(target) && !slot.isEmpty()) {
                     beginInlineCountEdit(target);
                     return true;
+                }
+                if (!slot.isEmpty()) {
+                    RecipeAuthoringState.beginSlotDrag(target);
                 }
             }
             resetInlineCountInput();
