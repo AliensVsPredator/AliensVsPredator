@@ -2,6 +2,7 @@ package com.blib.engine.ui.panel.recipe;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,19 +23,7 @@ public final class RecipeEditorPanel implements Panel {
 
     private static final int BACKGROUND_COLOR = 0xFF18181C;
 
-    private static final int WORKBENCH_BG = 0xFFC6C6C6;
-
-    private static final int WORKBENCH_SHADOW = 0xFF555555;
-
-    private static final int WORKBENCH_HIGHLIGHT = 0xFFFFFFFF;
-
-    private static final int SLOT_BG = 0xFF8B8B8B;
-
-    private static final int SLOT_INNER = 0xFFCFCFCF;
-
     private static final int SLOT_SELECTED = 0xFFE6C26B;
-
-    private static final int ARROW_COLOR = 0xFF6D6D6D;
 
     private static final int BUTTON_BG = 0xFF25252C;
 
@@ -60,9 +49,16 @@ public final class RecipeEditorPanel implements Panel {
 
     private static final int GUI_WIDTH = 176;
 
-    private static final int GUI_HEIGHT = 96;
+    private static final int GUI_HEIGHT = 83;
 
     private static final int SLOT_SIZE = 18;
+
+    private static final int VANILLA_TEXTURE_SIZE = 256;
+
+    private static final ResourceLocation CRAFTING_TABLE_TEXTURE = ResourceLocation.fromNamespaceAndPath(
+        "minecraft",
+        "textures/gui/container/crafting_table.png"
+    );
 
     private final TextInput recipeIdInput = new TextInput("namespace:path");
 
@@ -144,14 +140,10 @@ public final class RecipeEditorPanel implements Panel {
     }
 
     private void renderWorkbench(GuiGraphics graphics, int x, int y, int mouseX, int mouseY) {
-        graphics.fill(x, y, x + GUI_WIDTH, y + GUI_HEIGHT, WORKBENCH_BG);
-        graphics.fill(x, y, x + GUI_WIDTH, y + 1, WORKBENCH_HIGHLIGHT);
-        graphics.fill(x, y, x + 1, y + GUI_HEIGHT, WORKBENCH_HIGHLIGHT);
-        graphics.fill(x, y + GUI_HEIGHT - 1, x + GUI_WIDTH, y + GUI_HEIGHT, WORKBENCH_SHADOW);
-        graphics.fill(x + GUI_WIDTH - 1, y, x + GUI_WIDTH, y + GUI_HEIGHT, WORKBENCH_SHADOW);
+        graphics.blit(CRAFTING_TABLE_TEXTURE, x, y, 0.0F, 0.0F, GUI_WIDTH, GUI_HEIGHT, VANILLA_TEXTURE_SIZE, VANILLA_TEXTURE_SIZE);
 
         var gridX = x + 30;
-        var gridY = y + 20;
+        var gridY = y + 17;
         for (var row = 0; row < 3; row++) {
             for (var col = 0; col < 3; col++) {
                 var index = row * 3 + col;
@@ -161,21 +153,21 @@ public final class RecipeEditorPanel implements Panel {
             }
         }
 
-        renderArrow(graphics, x + 92, y + 41);
-
-        outputRect = UiRect.of(x + 124, y + 38, SLOT_SIZE, SLOT_SIZE);
+        outputRect = UiRect.of(x + 124, y + 35, SLOT_SIZE, SLOT_SIZE);
         renderSlot(graphics, outputRect, RecipeAuthoringState.outputSlot(), SlotRef.output(), mouseX, mouseY);
     }
 
     private void renderSlot(GuiGraphics graphics, UiRect rect, DraftSlot slot, SlotRef ref, int mouseX, int mouseY) {
         var selected = ref.equals(RecipeAuthoringState.selectedSlot());
-        graphics.fill(rect.x(), rect.y(), rect.right(), rect.bottom(), selected ? SLOT_SELECTED : SLOT_BG);
-        graphics.fill(rect.x() + 1, rect.y() + 1, rect.right() - 1, rect.bottom() - 1, SLOT_INNER);
 
         if (!slot.isEmpty()) {
             var stack = slot.toStack();
             graphics.renderItem(stack, rect.x() + 1, rect.y() + 1);
             graphics.renderItemDecorations(EngineFont.get(), stack, rect.x() + 1, rect.y() + 1);
+        }
+
+        if (selected) {
+            graphics.renderOutline(rect.x(), rect.y(), rect.width(), rect.height(), SLOT_SELECTED);
         }
 
         if (rect.contains(mouseX, mouseY)) {
@@ -184,12 +176,6 @@ public final class RecipeEditorPanel implements Panel {
                 ? Component.literal(ref.kind() == RecipeAuthoringState.SlotKind.OUTPUT ? "Output slot" : "Ingredient slot")
                 : Component.literal(slot.toStack().getHoverName().getString() + "\nID: " + slot.itemId() + "\nCount: " + slot.count());
         }
-    }
-
-    private static void renderArrow(GuiGraphics graphics, int x, int y) {
-        graphics.fill(x, y + 4, x + 24, y + 8, ARROW_COLOR);
-        graphics.fill(x + 18, y, x + 22, y + 12, ARROW_COLOR);
-        graphics.fill(x + 22, y + 2, x + 26, y + 10, ARROW_COLOR);
     }
 
     private void renderSelectedSlotDetails(GuiGraphics graphics, int x, int y, int width, int mouseX, int mouseY) {
