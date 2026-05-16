@@ -138,7 +138,7 @@ public final class AnimationCollisionState {
 
     private static final double SAT_EPSILON = 1.0e-6;
 
-    private static final double BASELINE_ADJACENCY_TOLERANCE = 0.05;
+    private static final double START_POSE_ADJACENCY_TOLERANCE = 0.05;
 
     private static final double RUNTIME_PENETRATION_THRESHOLD = 0.02;
 
@@ -184,7 +184,7 @@ public final class AnimationCollisionState {
 
         var fingerprint = fingerprint(root, state);
         if (fingerprint != reportFingerprint) {
-            baselineIgnoredPairs = buildBaselineIgnoredPairs(root);
+            baselineIgnoredPairs = buildBaselineIgnoredPairs(root, state);
             report = buildReport(root, state, baselineIgnoredPairs);
             reportFingerprint = fingerprint;
             currentSnapshot = CollisionSnapshot.EMPTY;
@@ -347,9 +347,9 @@ public final class AnimationCollisionState {
         }
     }
 
-    private Set<CubePair> buildBaselineIgnoredPairs(ModelerBone root) {
+    private Set<CubePair> buildBaselineIgnoredPairs(ModelerBone root, AnimationEditorState state) {
         var boxes = new ArrayList<CollisionBox>();
-        collectRestBoxes(root, new Matrix4f(), boxes);
+        collectBoxes(root, state, 0.0, new Matrix4f(), boxes, START_POSE_ADJACENCY_TOLERANCE);
         if (boxes.size() < 2) {
             return Set.of();
         }
@@ -423,18 +423,29 @@ public final class AnimationCollisionState {
         Matrix4f parentMatrix,
         List<CollisionBox> out
     ) {
+        collectBoxes(bone, state, seconds, parentMatrix, out, 0.0);
+    }
+
+    private void collectBoxes(
+        ModelerBone bone,
+        AnimationEditorState state,
+        double seconds,
+        Matrix4f parentMatrix,
+        List<CollisionBox> out,
+        double extraInflate
+    ) {
         var boneMatrix = new Matrix4f(parentMatrix);
         applyBoneTransform(boneMatrix, bone, state, seconds);
         for (var cube : bone.cubes) {
             var cubeMatrix = new Matrix4f(boneMatrix);
             ModelerTransforms.applyCube(cubeMatrix, cube);
-            var box = collisionBox(bone, cube, cubeMatrix);
+            var box = collisionBox(bone, cube, cubeMatrix, extraInflate);
             if (box != null) {
                 out.add(box);
             }
         }
         for (var child : bone.children) {
-            collectBoxes(child, state, seconds, boneMatrix, out);
+            collectBoxes(child, state, seconds, boneMatrix, out, extraInflate);
         }
     }
 
@@ -513,32 +524,6 @@ public final class AnimationCollisionState {
             center.y() + aabbHalfY,
             center.z() + aabbHalfZ
         );
-    }
-
-    private void collectRestBoxes(ModelerBone bone, Matrix4f parentMatrix, List<CollisionBox> out) {
-        var boneMatrix = new Matrix4f(parentMatrix);
-        applyRestBoneTransform(boneMatrix, bone);
-        for (var cube : bone.cubes) {
-            var cubeMatrix = new Matrix4f(boneMatrix);
-            ModelerTransforms.applyCube(cubeMatrix, cube);
-            var box = collisionBox(bone, cube, cubeMatrix, BASELINE_ADJACENCY_TOLERANCE);
-            if (box != null) {
-                out.add(box);
-            }
-        }
-        for (var child : bone.children) {
-            collectRestBoxes(child, boneMatrix, out);
-        }
-    }
-
-    private static void applyRestBoneTransform(Matrix4f matrix, ModelerBone bone) {
-        matrix.translate((float) bone.position.x, (float) bone.position.y, (float) bone.position.z);
-        matrix.translate((float) bone.pivot.x, (float) bone.pivot.y, (float) bone.pivot.z);
-        matrix.rotateZ((float) Math.toRadians(bone.rotation.z));
-        matrix.rotateY((float) Math.toRadians(bone.rotation.y));
-        matrix.rotateX((float) Math.toRadians(bone.rotation.x));
-        matrix.scale((float) bone.scale.x, (float) bone.scale.y, (float) bone.scale.z);
-        matrix.translate((float) -bone.pivot.x, (float) -bone.pivot.y, (float) -bone.pivot.z);
     }
 
     private static Vec transform(Matrix4f matrix, double x, double y, double z) {
