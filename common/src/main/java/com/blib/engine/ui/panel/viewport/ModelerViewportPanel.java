@@ -1,5 +1,6 @@
 package com.blib.engine.ui.panel.viewport;
 
+import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -37,10 +38,15 @@ import com.blib.engine.modeler.gizmo.ModelerGizmoMode;
 import com.blib.engine.modeler.gizmo.ModelerGizmoState;
 import com.blib.engine.modeler.history.ModelerAction;
 import com.blib.engine.modeler.history.ModelerActionHistory;
+import com.blib.engine.modeler.texture.LoadedTexture;
+import com.blib.engine.modeler.texture.ModelerFaceTextureMapping;
 import com.blib.engine.modeler.texture.ModelerTextureUsage;
 import com.blib.engine.render.modeler.ModelerRenderer;
 import com.blib.engine.session.EngineCameraBasis;
 import com.blib.engine.session.ProjectSession;
+import com.blib.engine.texture.TextureEditorState;
+import com.blib.engine.texture.TexturePaintOps;
+import com.blib.engine.texture.TextureTool;
 import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.panel.chrome.ModelerMenuBar;
 import com.blib.engine.ui.panel.chrome.ModelerViewportToolbar;
@@ -125,6 +131,18 @@ public final class ModelerViewportPanel implements Panel {
 
     private boolean gizmoDragItemWallFixed;
 
+    private boolean texturePaintActive;
+
+    private @Nullable LoadedTexture texturePaintTexture;
+
+    private @Nullable ModelerAction.TexturePixelsMemento texturePaintBefore;
+
+    private int lastTexturePaintX;
+
+    private int lastTexturePaintY;
+
+    private @Nullable TexturePaintSurface lastTexturePaintSurface;
+
     /** Panel rect captured at render time so click handlers can convert workspace coords → viewport-relative. */
     private int panelX, panelY, panelWidth, panelHeight;
 
@@ -166,18 +184,36 @@ public final class ModelerViewportPanel implements Panel {
         // gizmo drag is in flight so the hover outline doesn't fight the drag-visual.
         var scene = ModelerScene.get();
         if (cursorInsidePanel(mouseX, mouseY) && !gizmoDragActive) {
-            var hit = pickCubeAt(mouseX, mouseY);
-            if (hit != null) {
-                scene.hoveredCube = hit.cube();
-                scene.hoveredFace = new Selection.FaceSelection(hit.owner(), hit.cube(), hit.face());
-            } else {
+            if (isTexturePaintToolActive()) {
+                var target = texturePaintTargetAt(mouseX, mouseY);
                 scene.hoveredCube = null;
                 scene.hoveredFace = null;
+                scene.hoveredTexturePixel = target == null
+                    ? null
+                    : new ModelerScene.TexturePixelHover(
+                        target.owner(),
+                        target.cube(),
+                        target.face(),
+                        target.pixel().x(),
+                        target.pixel().y()
+                    );
+                ModelerGizmoState.setHover(null);
+            } else {
+                var hit = pickCubeAt(mouseX, mouseY);
+                if (hit != null) {
+                    scene.hoveredCube = hit.cube();
+                    scene.hoveredFace = new Selection.FaceSelection(hit.owner(), hit.cube(), hit.face());
+                } else {
+                    scene.hoveredCube = null;
+                    scene.hoveredFace = null;
+                }
+                scene.hoveredTexturePixel = null;
+                ModelerGizmoInput.updateHover(mouseX - panelX, mouseY - panelY, panelWidth, panelHeight);
             }
-            ModelerGizmoInput.updateHover(mouseX - panelX, mouseY - panelY, panelWidth, panelHeight);
         } else {
             scene.hoveredCube = null;
             scene.hoveredFace = null;
+            scene.hoveredTexturePixel = null;
             ModelerGizmoState.setHover(null);
         }
 
@@ -218,6 +254,9 @@ public final class ModelerViewportPanel implements Panel {
         }
         if (!cursorInsidePanel(mouseX, mouseY)) {
             return false;
+        }
+        if (isTexturePaintToolActive()) {
+            return beginTexturePaint(mouseX, mouseY);
         }
 
         // Build a world-space ray from the camera through the cursor, hand it to ModelerPicker, and update the
@@ -326,6 +365,9 @@ public final class ModelerViewportPanel implements Panel {
                 ModelerAxisGizmo.snapCamera(ModelerScene.get().camera, axisHit);
                 return true;
             }
+            if (isTexturePaintToolActive()) {
+                return beginTexturePaint(mouseX, mouseY);
+            }
 
             // Gizmo handle drag — pickHandle in panel-relative coords and threshold against the captured snapshot.
             var panelRelX = mouseX - panelX;
@@ -379,6 +421,10 @@ public final class ModelerViewportPanel implements Panel {
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        if (button == 0 && texturePaintActive) {
+            continueTexturePaint(mouseX, mouseY);
+            return true;
+        }
         if (button == 0 && gizmoDragActive) {
             var panelRelX = mouseX - panelX;
             var panelRelY = mouseY - panelY;
@@ -419,6 +465,10 @@ public final class ModelerViewportPanel implements Panel {
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (button == 0 && texturePaintActive) {
+            finishTexturePaint();
+            return true;
+        }
         if (button == 0 && gizmoDragActive) {
             ModelerGizmoInput.endDrag();
             gizmoDragActive = false;
@@ -535,6 +585,113 @@ public final class ModelerViewportPanel implements Panel {
         return false;
     }
 
+    private boolean beginTexturePaint(double mouseX, double mouseY) {
+        var tool = TextureEditorState.tool();
+        var target = texturePaintTargetAt(mouseX, mouseY);
+        if (target == null) {
+            return true;
+        }
+
+        var scene = ModelerScene.get();
+        scene.activeTexture = target.texture();
+        scene.selection = new Selection.FaceSelection(target.owner(), target.cube(), target.face());
+
+        if (tool == TextureTool.PENCIL) {
+            texturePaintActive = true;
+            texturePaintTexture = target.texture();
+            texturePaintBefore = ModelerAction.TexturePixelsMemento.of(target.pixels());
+            lastTexturePaintX = target.pixel().x();
+            lastTexturePaintY = target.pixel().y();
+            lastTexturePaintSurface = target.surface();
+            TexturePaintOps.paintLine(
+                target.texture(),
+                target.pixels(),
+                target.pixel().x(),
+                target.pixel().y(),
+                target.pixel().x(),
+                target.pixel().y(),
+                false
+            );
+            return true;
+        }
+        if (tool == TextureTool.BUCKET) {
+            var before = ModelerAction.TexturePixelsMemento.of(target.pixels());
+            if (TexturePaintOps.bucketFill(target.texture(), target.pixels(), target.pixel().x(), target.pixel().y(), false)) {
+                var after = ModelerAction.TexturePixelsMemento.of(target.pixels());
+                TexturePaintOps.pushTexturePixelsAction("texture_model_bucket", "Model Bucket Fill", target.texture(), before, after);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private void continueTexturePaint(double mouseX, double mouseY) {
+        var target = texturePaintTargetAt(mouseX, mouseY);
+        var texture = texturePaintTexture;
+        if (target == null || texture == null || target.texture() != texture) {
+            return;
+        }
+        var nextX = target.pixel().x();
+        var nextY = target.pixel().y();
+        if (target.surface().equals(lastTexturePaintSurface)) {
+            TexturePaintOps.paintLine(texture, target.pixels(), lastTexturePaintX, lastTexturePaintY, nextX, nextY, false);
+        } else {
+            TexturePaintOps.paintLine(texture, target.pixels(), nextX, nextY, nextX, nextY, false);
+        }
+        lastTexturePaintX = nextX;
+        lastTexturePaintY = nextY;
+        lastTexturePaintSurface = target.surface();
+    }
+
+    private void finishTexturePaint() {
+        var texture = texturePaintTexture;
+        var before = texturePaintBefore;
+        texturePaintActive = false;
+        texturePaintTexture = null;
+        texturePaintBefore = null;
+        lastTexturePaintSurface = null;
+        if (texture == null || before == null) {
+            return;
+        }
+        var pixels = texture.texture().getPixels();
+        if (pixels == null) {
+            return;
+        }
+        var after = ModelerAction.TexturePixelsMemento.of(pixels);
+        TexturePaintOps.pushTexturePixelsAction("texture_model_pencil", "Model Pencil Stroke", texture, before, after);
+    }
+
+    private @Nullable TexturePaintTarget texturePaintTargetAt(double mouseX, double mouseY) {
+        var hit = pickCubeAt(mouseX, mouseY);
+        if (hit == null) {
+            return null;
+        }
+        var scene = ModelerScene.get();
+        var texture = ModelerFaceTextureMapping.textureForFace(scene, hit.cube(), hit.face());
+        var pixels = texture == null ? null : texture.texture().getPixels();
+        if (texture == null || pixels == null) {
+            return null;
+        }
+        var pixel = ModelerFaceTextureMapping.pixelAt(hit.cube(), hit.face(), hit.localPoint(), pixels.getWidth(), pixels.getHeight());
+        if (pixel == null) {
+            return null;
+        }
+        return new TexturePaintTarget(
+            texture,
+            pixels,
+            hit.owner(),
+            hit.cube(),
+            hit.face(),
+            pixel,
+            new TexturePaintSurface(hit.owner(), hit.cube(), hit.face())
+        );
+    }
+
+    private static boolean isTexturePaintToolActive() {
+        var tool = TextureEditorState.tool();
+        return tool == TextureTool.PENCIL || tool == TextureTool.BUCKET;
+    }
+
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         var camera = ModelerScene.get().camera;
@@ -592,6 +749,22 @@ public final class ModelerViewportPanel implements Panel {
     private record MmbDrag(
         boolean shift,
         boolean ctrl
+    ) {}
+
+    private record TexturePaintTarget(
+        LoadedTexture texture,
+        NativeImage pixels,
+        ModelerBone owner,
+        ModelerCube cube,
+        ModelerCube.Face face,
+        ModelerFaceTextureMapping.Pixel pixel,
+        TexturePaintSurface surface
+    ) {}
+
+    private record TexturePaintSurface(
+        ModelerBone owner,
+        ModelerCube cube,
+        ModelerCube.Face face
     ) {}
 
     /**
