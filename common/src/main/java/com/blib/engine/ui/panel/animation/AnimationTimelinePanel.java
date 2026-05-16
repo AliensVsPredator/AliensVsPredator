@@ -192,6 +192,9 @@ public final class AnimationTimelinePanel implements Panel {
             }
             return true;
         }
+        if (scroll.mouseClicked(mouseX, mouseY, button)) {
+            return true;
+        }
 
         var keyframe = keyframeAt(mouseX, mouseY);
         if (keyframe != null) {
@@ -226,7 +229,7 @@ public final class AnimationTimelinePanel implements Panel {
             setPlayheadFromMouse(mouseX);
             return true;
         }
-        return scroll.mouseClicked(mouseX, mouseY, button);
+        return false;
     }
 
     @Override
