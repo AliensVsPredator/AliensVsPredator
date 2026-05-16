@@ -262,20 +262,20 @@ public final class AnimationTimelinePanel implements Panel {
         if (!state.hasDraft() || animation == null || root == null) {
             return;
         }
-        collectTracks(state, animation, root, 0);
+        collectTracks(state, animation, root);
     }
 
-    private void collectTracks(AnimationEditorState state, String animation, ModelerBone bone, int depth) {
+    private void collectTracks(AnimationEditorState state, String animation, ModelerBone bone) {
         var position = state.keyframes(animation, bone.name, TransformChannel.POSITION);
         var rotation = state.keyframes(animation, bone.name, TransformChannel.ROTATION);
         var scale = state.keyframes(animation, bone.name, TransformChannel.SCALE);
         if (!position.isEmpty() || !rotation.isEmpty() || !scale.isEmpty()) {
-            tracks.add(new TrackRow(bone, depth, TransformChannel.POSITION, position));
-            tracks.add(new TrackRow(bone, depth, TransformChannel.ROTATION, rotation));
-            tracks.add(new TrackRow(bone, depth, TransformChannel.SCALE, scale));
+            tracks.add(new TrackRow(bone, TransformChannel.POSITION, position));
+            tracks.add(new TrackRow(bone, TransformChannel.ROTATION, rotation));
+            tracks.add(new TrackRow(bone, TransformChannel.SCALE, scale));
         }
         for (var child : bone.children) {
-            collectTracks(state, animation, child, depth + 1);
+            collectTracks(state, animation, child);
         }
     }
 
@@ -456,14 +456,13 @@ public final class AnimationTimelinePanel implements Panel {
             graphics.fill(contentX + boneLabelWidth - 1, top, contentX + boneLabelWidth, bottom, TRACK_BORDER_COLOR);
             graphics.fill(contentX, bottom - 1, contentX + boneLabelWidth, bottom, TRACK_BORDER_COLOR);
 
-            var indent = row.depth() * 8;
             UiText.drawClipped(
                 graphics,
                 font,
                 row.bone().name,
-                contentX + 4 + indent,
+                contentX + 4,
                 top + (rows * TRACK_HEIGHT - font.lineHeight + 2) / 2,
-                Math.max(0, boneLabelWidth - 8 - indent),
+                Math.max(0, boneLabelWidth - 8),
                 row.bone().name.equals(state.selectedBoneName()) ? TEXT_COLOR : META_TEXT_COLOR
             );
             i += rows;
@@ -693,7 +692,6 @@ public final class AnimationTimelinePanel implements Panel {
 
     private record TrackRow(
         ModelerBone bone,
-        int depth,
         TransformChannel channel,
         List<KeyframeRef> frames
     ) {}
