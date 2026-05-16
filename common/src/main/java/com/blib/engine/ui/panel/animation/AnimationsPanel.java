@@ -171,17 +171,6 @@ public final class AnimationsPanel implements Panel {
             var note = state.hasDraft() ? "(no animations)" : "(no file open)";
             UiText.drawClipped(graphics, font, note, rowsLeftX + 4, rowsTopY + 4, Math.max(0, rowsContentWidth - 8), META_TEXT_COLOR);
         }
-        if (state.statusMessage() != null) {
-            UiText.drawClipped(
-                graphics,
-                font,
-                state.statusMessage(),
-                x + PADDING,
-                Math.max(y + MENU_BAR_HEIGHT, y + height - font.lineHeight - 4),
-                Math.max(0, width - 2 * PADDING),
-                META_TEXT_COLOR
-            );
-        }
     }
 
     @Override
