@@ -26,6 +26,7 @@ import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.layout.UiText;
 import com.blib.engine.ui.popup.PanelMenuOpener;
 import com.blib.engine.ui.widget.DropdownMenu;
+import com.blib.engine.ui.widget.TextInput;
 
 @ApiStatus.Internal
 public final class AnimationTimelinePanel implements Panel {
@@ -90,6 +91,10 @@ public final class AnimationTimelinePanel implements Panel {
 
     private static final int TOOL_ROW_HEIGHT = BUTTON_SIZE;
 
+    private static final int SPEED_INPUT_WIDTH = 48;
+
+    private static final int SPEED_CONTROL_GAP = 4;
+
     private static final int RULER_HEIGHT = 17;
 
     private static final int TRACK_HEIGHT = 23;
@@ -117,6 +122,8 @@ public final class AnimationTimelinePanel implements Panel {
     private final ScrollViewport scroll = new ScrollViewport();
 
     private final @Nullable PanelMenuOpener menuOpener;
+
+    private final TextInput speedInput = new TextInput("100", this::commitPlaybackSpeed, this::resetPlaybackSpeedInput);
 
     private final List<TimelineRow> rows = new ArrayList<>();
 
@@ -214,6 +221,9 @@ public final class AnimationTimelinePanel implements Panel {
             if (canPlay(state)) {
                 state.togglePlayback();
             }
+            return true;
+        }
+        if (speedInput.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
         if (scroll.mouseClicked(mouseX, mouseY, button)) {
@@ -317,8 +327,15 @@ public final class AnimationTimelinePanel implements Panel {
         renderPlayButton(graphics, playX, playY, state.isPlaying(), canPlay(state), mouseX, mouseY);
         cursorX += BUTTON_SIZE + 5;
 
+        syncPlaybackSpeedInput(state);
+
         var right = x + width - PADDING;
-        var timeWidth = Math.min(92, Math.max(48, right - cursorX));
+        var speedLabel = "Speed";
+        var percentLabel = "%";
+        var speedControlWidth = font.width(speedLabel) + SPEED_CONTROL_GAP + SPEED_INPUT_WIDTH + SPEED_CONTROL_GAP + font.width(percentLabel);
+        var showSpeedControl = right - cursorX >= speedControlWidth + 56;
+        var timeRight = showSpeedControl ? right - speedControlWidth - 8 : right;
+        var timeWidth = Math.min(92, Math.max(48, timeRight - cursorX));
         var timeText = AnimationEditorState.formatTimestamp(state.playheadSeconds()) + " / "
             + AnimationEditorState.formatTimestamp(animationDuration) + "s";
         UiText.drawClipped(
@@ -330,6 +347,78 @@ public final class AnimationTimelinePanel implements Panel {
             timeWidth,
             TEXT_COLOR
         );
+        if (showSpeedControl) {
+            var speedLabelX = right - speedControlWidth;
+            var speedLabelY = toolY + (BUTTON_SIZE - font.lineHeight + 2) / 2;
+            graphics.drawString(font, Component.literal(speedLabel), speedLabelX, speedLabelY, META_TEXT_COLOR, false);
+            var inputX = speedLabelX + font.width(speedLabel) + SPEED_CONTROL_GAP;
+            var inputY = toolY + (BUTTON_SIZE - TextInput.HEIGHT) / 2;
+            speedInput.render(graphics, inputX, inputY, SPEED_INPUT_WIDTH, mouseX, mouseY);
+            graphics.drawString(
+                font,
+                Component.literal(percentLabel),
+                inputX + SPEED_INPUT_WIDTH + SPEED_CONTROL_GAP,
+                speedLabelY,
+                META_TEXT_COLOR,
+                false
+            );
+        } else {
+            speedInput.render(graphics, right, toolY, 0, mouseX, mouseY);
+        }
+    }
+
+    private void syncPlaybackSpeedInput() {
+        syncPlaybackSpeedInput(AnimationEditorState.get());
+    }
+
+    private void syncPlaybackSpeedInput(AnimationEditorState state) {
+        if (speedInput.isFocused()) {
+            var parsed = parsePlaybackSpeedPercent(speedInput.content());
+            if (parsed != null) {
+                state.setPlaybackSpeedPercent(parsed);
+            }
+            return;
+        }
+        var value = formatPlaybackSpeedPercent(state.playbackSpeedPercent());
+        if (!value.equals(speedInput.content())) {
+            speedInput.setContent(value);
+        }
+    }
+
+    private void commitPlaybackSpeed(String text) {
+        var state = AnimationEditorState.get();
+        var parsed = parsePlaybackSpeedPercent(text);
+        if (parsed != null) {
+            state.setPlaybackSpeedPercent(parsed);
+        }
+        speedInput.setContent(formatPlaybackSpeedPercent(state.playbackSpeedPercent()));
+    }
+
+    private void resetPlaybackSpeedInput() {
+        speedInput.setContent(formatPlaybackSpeedPercent(AnimationEditorState.get().playbackSpeedPercent()));
+    }
+
+    private static @Nullable Double parsePlaybackSpeedPercent(String text) {
+        if (text == null) {
+            return null;
+        }
+        var clean = text.trim();
+        if (clean.endsWith("%")) {
+            clean = clean.substring(0, clean.length() - 1).trim();
+        }
+        if (clean.isEmpty()) {
+            return null;
+        }
+        try {
+            var value = Double.parseDouble(clean);
+            return Double.isFinite(value) ? value : null;
+        } catch (NumberFormatException ignored) {
+            return null;
+        }
+    }
+
+    private static String formatPlaybackSpeedPercent(double value) {
+        return AnimationEditorState.formatTimestamp(value);
     }
 
     private void rebuildTracks(AnimationEditorState state) {

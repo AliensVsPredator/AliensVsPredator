@@ -53,6 +53,8 @@ public final class AnimationEditorState {
 
     private static final AnimationEditorState INSTANCE = new AnimationEditorState();
 
+    private static final double DEFAULT_PLAYBACK_SPEED_PERCENT = 100.0;
+
     public enum TransformChannel {
         POSITION("position"),
         ROTATION("rotation"),
@@ -169,6 +171,8 @@ public final class AnimationEditorState {
     private boolean playing;
 
     private double playheadSeconds;
+
+    private double playbackSpeedPercent = DEFAULT_PLAYBACK_SPEED_PERCENT;
 
     private long lastPlaybackNanos;
 
@@ -288,6 +292,18 @@ public final class AnimationEditorState {
 
     public boolean isPlaying() {
         return playing;
+    }
+
+    public double playbackSpeedPercent() {
+        return playbackSpeedPercent;
+    }
+
+    public void setPlaybackSpeedPercent(double playbackSpeedPercent) {
+        if (!Double.isFinite(playbackSpeedPercent)) {
+            this.playbackSpeedPercent = DEFAULT_PLAYBACK_SPEED_PERCENT;
+            return;
+        }
+        this.playbackSpeedPercent = Math.max(0.0, playbackSpeedPercent);
     }
 
     public double playheadSeconds() {
@@ -557,8 +573,12 @@ public final class AnimationEditorState {
         if (elapsed <= 0.0) {
             return;
         }
+        var speedMultiplier = playbackSpeedPercent / DEFAULT_PLAYBACK_SPEED_PERCENT;
+        if (speedMultiplier <= 0.0) {
+            return;
+        }
         var duration = selectedAnimationLengthSeconds();
-        playheadSeconds += Math.min(elapsed, 0.25);
+        playheadSeconds += Math.min(elapsed, 0.25) * speedMultiplier;
         if (playheadSeconds > duration) {
             playheadSeconds = duration <= 0.0 ? 0.0 : playheadSeconds % duration;
         }
@@ -609,6 +629,7 @@ public final class AnimationEditorState {
         selectedTimestamp = null;
         playing = false;
         playheadSeconds = 0.0;
+        playbackSpeedPercent = DEFAULT_PLAYBACK_SPEED_PERCENT;
         lastPlaybackNanos = 0L;
         dirty = false;
         statusMessage = null;
@@ -661,6 +682,7 @@ public final class AnimationEditorState {
             root.addProperty("selectedTimestamp", selectedTimestamp);
         }
         root.addProperty("playheadSeconds", playheadSeconds);
+        root.addProperty("playbackSpeedPercent", playbackSpeedPercent);
         root.addProperty("playing", playing);
         return root;
     }
@@ -747,6 +769,7 @@ public final class AnimationEditorState {
         selectedChannel = TransformChannel.fromJsonName(jsonString(snapshot, "selectedChannel"));
         selectedTimestamp = snapshot.has("selectedTimestamp") ? jsonDouble(snapshot, "selectedTimestamp", 0.0) : null;
         playheadSeconds = jsonDouble(snapshot, "playheadSeconds", 0.0);
+        setPlaybackSpeedPercent(jsonDouble(snapshot, "playbackSpeedPercent", DEFAULT_PLAYBACK_SPEED_PERCENT));
         playing = false;
         lastPlaybackNanos = 0L;
         setPlayheadSeconds(playheadSeconds);
