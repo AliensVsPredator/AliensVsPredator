@@ -24,6 +24,7 @@ import com.blib.engine.modeler.ModelerCube;
 import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.ModelerTransforms;
 import com.blib.engine.modeler.Selection;
+import com.blib.engine.modeler.animation.AnimationCollisionState;
 import com.blib.engine.modeler.gizmo.ModelerGizmoMode;
 import com.blib.engine.modeler.gizmo.ModelerGizmoState;
 import com.blib.engine.modeler.texture.ModelerFaceTextureMapping;
@@ -45,6 +46,8 @@ public final class ModelerCubeRenderer {
     private static final int CUBE_COLOR = 0xFFB8B8C0;
 
     private static final int SELECTION_COLOR = 0xFFFFCC33;
+
+    private static final int COLLISION_COLOR = 0xFFFF3030;
 
     private static final int FACE_SELECTION_FILL_COLOR = 0x66FFCC33;
 
@@ -109,6 +112,10 @@ public final class ModelerCubeRenderer {
 
         if (!selectionTargets.isEmpty()) {
             renderOutlines(pose, root, selectionTargets, SELECTION_COLOR);
+        }
+        var collisionTargets = AnimationCollisionState.get().currentCollisionCubes();
+        if (!collisionTargets.isEmpty()) {
+            renderOutlines(pose, root, collisionTargets, COLLISION_COLOR);
         }
         var hoveredFace = ModelerScene.get().hoveredFace;
         if (hoveredFace != null && !sameFace(hoveredFace, selectedFace)) {

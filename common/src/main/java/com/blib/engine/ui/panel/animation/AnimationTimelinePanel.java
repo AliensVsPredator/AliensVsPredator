@@ -14,6 +14,7 @@ import java.util.Set;
 import com.blib.engine.modeler.ModelerBone;
 import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.Selection;
+import com.blib.engine.modeler.animation.AnimationCollisionState;
 import com.blib.engine.modeler.animation.AnimationEditorState;
 import com.blib.engine.modeler.animation.AnimationEditorState.AnimationKey;
 import com.blib.engine.modeler.animation.AnimationEditorState.KeyframeRef;
@@ -52,6 +53,8 @@ public final class AnimationTimelinePanel implements Panel {
     private static final int PLAYHEAD_COLOR = 0xFFFFC857;
 
     private static final int PLAYHEAD_HANDLE_COLOR = 0xFFFFD983;
+
+    private static final int COLLISION_COLOR = 0xFFFF3030;
 
     private static final int POSITION_KEY_COLOR = 0xFFE06C75;
 
@@ -178,6 +181,7 @@ public final class AnimationTimelinePanel implements Panel {
         state.updatePlaybackClock();
         animationDuration = state.selectedAnimationLengthSeconds();
         timelineDuration = animationDuration + tailPaddingSeconds(animationDuration);
+        AnimationCollisionState.get().refresh(ModelerScene.get().root, state);
 
         var font = EngineFont.get();
         renderToolbar(graphics, font, x, y, width, state, mouseX, mouseY);
@@ -547,6 +551,8 @@ public final class AnimationTimelinePanel implements Panel {
                     && Math.abs(frame.timestamp() - state.selectedTimestamp()) < 1.0e-6;
                 drawKeyframe(graphics, keyX, laneY, selected ? KEY_SELECTED_COLOR : keyColor(row.channel()), selected);
             }
+        } else {
+            renderCollisionSpans(graphics, row, trackY);
         }
 
         graphics.fill(labelX, trackY, labelX + labelWidth, trackBottom, TRACK_LABEL_BG_COLOR);
@@ -637,6 +643,27 @@ public final class AnimationTimelinePanel implements Panel {
         graphics.fill(x - 3, contentY + 1, x + 4, contentY + 3, PLAYHEAD_HANDLE_COLOR);
         graphics.fill(x - 2, contentY + 3, x + 3, contentY + 5, PLAYHEAD_HANDLE_COLOR);
         graphics.fill(x - 1, contentY + 5, x + 2, contentY + 7, PLAYHEAD_HANDLE_COLOR);
+    }
+
+    private void renderCollisionSpans(GuiGraphics graphics, TimelineRow row, int trackY) {
+        var spans = AnimationCollisionState.get().spansForBone(row.bone().name);
+        if (spans.isEmpty()) {
+            return;
+        }
+        var y = trackY + TRACK_HEIGHT / 2;
+        for (var span : spans) {
+            var startX = timeToX(span.startSeconds(), timelineGraphX, timelineGraphWidth, timelineDuration);
+            var endX = timeToX(span.endSeconds(), timelineGraphX, timelineGraphWidth, timelineDuration);
+            if (endX < timelineGraphVisibleX || startX > timelineGraphVisibleX + timelineGraphVisibleWidth) {
+                continue;
+            }
+            var lineStart = Math.max(startX, timelineGraphVisibleX);
+            var lineEnd = Math.min(Math.max(startX + 1, endX), timelineGraphVisibleX + timelineGraphVisibleWidth);
+            graphics.fill(lineStart, y, lineEnd, y + 2, COLLISION_COLOR);
+            if (startX >= timelineGraphVisibleX && startX <= timelineGraphVisibleX + timelineGraphVisibleWidth) {
+                drawCollisionX(graphics, startX, y);
+            }
+        }
     }
 
     private boolean openContextMenu(double mouseX, double mouseY) {
@@ -905,6 +932,13 @@ public final class AnimationTimelinePanel implements Panel {
             drawDiamond(graphics, centerX, centerY, KEYFRAME_RADIUS + 1, color);
         } else {
             drawDiamond(graphics, centerX, centerY, KEYFRAME_RADIUS, color);
+        }
+    }
+
+    private static void drawCollisionX(GuiGraphics graphics, int centerX, int centerY) {
+        for (var i = -4; i <= 4; i++) {
+            graphics.fill(centerX + i, centerY + i, centerX + i + 1, centerY + i + 1, COLLISION_COLOR);
+            graphics.fill(centerX + i, centerY - i, centerX + i + 1, centerY - i + 1, COLLISION_COLOR);
         }
     }
 
