@@ -35,9 +35,9 @@ public final class AnimationCollisionState {
         private static final CollisionReport EMPTY = new CollisionReport(Map.of());
     }
 
-    private record CollisionSnapshot(Set<ModelerCube> cubes, Set<String> boneNames) {
+    private record CollisionSnapshot(Set<ModelerCube> cubes, Set<String> boneNames, Map<ModelerBone, List<String>> partnersByBone) {
 
-        private static final CollisionSnapshot EMPTY = new CollisionSnapshot(Set.of(), Set.of());
+        private static final CollisionSnapshot EMPTY = new CollisionSnapshot(Set.of(), Set.of(), Map.of());
     }
 
     private record CollisionBox(
@@ -200,6 +200,13 @@ public final class AnimationCollisionState {
 
     public Set<ModelerCube> currentCollisionCubes() {
         return currentSnapshot.cubes();
+    }
+
+    public List<String> currentCollisionPartners(ModelerBone bone) {
+        if (!enabled || bone == null) {
+            return List.of();
+        }
+        return currentSnapshot.partnersByBone().getOrDefault(bone, List.of());
     }
 
     public List<CollisionSpan> spansForBone(String boneName) {
@@ -381,6 +388,7 @@ public final class AnimationCollisionState {
 
         var cubes = new HashSet<ModelerCube>();
         var boneNames = new HashSet<String>();
+        var partnersByBone = new HashMap<ModelerBone, Set<String>>();
         forEachCandidatePair(boxes, (a, b) -> {
             if (a.owner() == b.owner() || ignoredBonePairs.contains(BonePair.of(a.owner(), b.owner()))) {
                 return;
@@ -390,12 +398,26 @@ public final class AnimationCollisionState {
                 cubes.add(b.cube());
                 boneNames.add(a.owner().name);
                 boneNames.add(b.owner().name);
+                addCollisionPartner(partnersByBone, a.owner(), b.owner().name);
+                addCollisionPartner(partnersByBone, b.owner(), a.owner().name);
             }
         });
         if (cubes.isEmpty()) {
             return CollisionSnapshot.EMPTY;
         }
-        return new CollisionSnapshot(Set.copyOf(cubes), Set.copyOf(boneNames));
+        return new CollisionSnapshot(Set.copyOf(cubes), Set.copyOf(boneNames), freezePartners(partnersByBone));
+    }
+
+    private static void addCollisionPartner(Map<ModelerBone, Set<String>> partnersByBone, ModelerBone bone, String partnerName) {
+        partnersByBone.computeIfAbsent(bone, ignored -> new TreeSet<>()).add(partnerName);
+    }
+
+    private static Map<ModelerBone, List<String>> freezePartners(Map<ModelerBone, Set<String>> partnersByBone) {
+        var frozen = new HashMap<ModelerBone, List<String>>();
+        for (var entry : partnersByBone.entrySet()) {
+            frozen.put(entry.getKey(), List.copyOf(entry.getValue()));
+        }
+        return Collections.unmodifiableMap(frozen);
     }
 
     private static void forEachCandidatePair(List<CollisionBox> boxes, CollisionPairConsumer consumer) {

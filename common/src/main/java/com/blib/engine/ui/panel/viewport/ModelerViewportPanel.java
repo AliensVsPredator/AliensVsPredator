@@ -33,6 +33,7 @@ import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.ModelerSceneLoader;
 import com.blib.engine.modeler.ModelerTransformOps;
 import com.blib.engine.modeler.Selection;
+import com.blib.engine.modeler.animation.AnimationCollisionState;
 import com.blib.engine.modeler.animation.AnimationEditorState;
 import com.blib.engine.modeler.gizmo.ModelerGizmoInput;
 import com.blib.engine.modeler.gizmo.ModelerGizmoMode;
@@ -246,8 +247,9 @@ public final class ModelerViewportPanel implements Panel {
         ModelerAxisGizmo.render(graphics, x, y, width, height, scene.camera);
 
         // Toolbar / axis-gizmo tooltips. Refresh after the overlays render so the hit-test is against the rects just
-        // drawn this frame (panel resize / layout changes are picked up on the same frame). Suppressed during gizmo
-        // drag — the user is busy manipulating, not exploring controls.
+        // drawn this frame (panel resize / layout changes are picked up on the same frame). Collision tooltips are
+        // lower priority than viewport chrome. Suppressed during gizmo drag — the user is busy manipulating, not
+        // exploring controls.
         hoveredTooltip = null;
         if (!gizmoDragActive) {
             var modeHover = ModelerViewportToolbar.hitTestMode(mouseX, mouseY, x, toolbarY);
@@ -260,6 +262,9 @@ public final class ModelerViewportPanel implements Panel {
                 if (axisHover != null) {
                     hoveredTooltip = ModelerAxisGizmo.tooltipFor(axisHover);
                 }
+            }
+            if (hoveredTooltip == null && animationInteraction) {
+                hoveredTooltip = collisionTooltip(scene.hoveredBone);
             }
         }
     }
@@ -317,6 +322,17 @@ public final class ModelerViewportPanel implements Panel {
 
     private static boolean isAnimationInteractionMode() {
         return WorkspaceLayoutController.activeLayoutHasAnimationPanel();
+    }
+
+    private static @Nullable Component collisionTooltip(@Nullable ModelerBone hoveredBone) {
+        if (hoveredBone == null) {
+            return null;
+        }
+        var partners = AnimationCollisionState.get().currentCollisionPartners(hoveredBone);
+        if (partners.isEmpty()) {
+            return null;
+        }
+        return Component.literal("Colliding with " + String.join(", ", partners));
     }
 
     /**
