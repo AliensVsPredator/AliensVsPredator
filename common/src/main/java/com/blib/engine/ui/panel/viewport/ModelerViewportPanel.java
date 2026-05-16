@@ -49,7 +49,9 @@ import com.blib.engine.session.ProjectSession;
 import com.blib.engine.texture.TextureEditorState;
 import com.blib.engine.texture.TexturePaintOps;
 import com.blib.engine.texture.TextureTool;
+import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.dock.Panel;
+import com.blib.engine.ui.layout.UiText;
 import com.blib.engine.ui.panel.chrome.ModelerMenuBar;
 import com.blib.engine.ui.panel.chrome.ModelerViewportToolbar;
 import com.blib.engine.ui.panel.texture.TextureTabIndicators;
@@ -82,6 +84,12 @@ public final class ModelerViewportPanel implements Panel {
     private static final float DOLLY_SENSITIVITY = 0.01f;
 
     private static final float ZOOM_FACTOR_PER_NOTCH = 0.1f;
+
+    private static final int CACHE_BADGE_BACKGROUND = 0xB0181D1A;
+
+    private static final int CACHE_BADGE_BORDER = 0xFF4AA56B;
+
+    private static final int CACHE_BADGE_TEXT = 0xFFE1F2E5;
 
     private final ModelerRenderer renderer = new ModelerRenderer();
 
@@ -278,6 +286,7 @@ public final class ModelerViewportPanel implements Panel {
         // Navigation axis gizmo at the bottom-right — three labeled colored balls that follow the camera so the user
         // can read world orientation at a glance, and click an axis to snap the view orthogonally.
         ModelerAxisGizmo.render(graphics, x, y, width, height, scene.camera);
+        renderBufferCacheIndicator(graphics, x, y, width, height);
 
         // Toolbar / axis-gizmo tooltips. Refresh after the overlays render so the hit-test is against the rects just
         // drawn this frame (panel resize / layout changes are picked up on the same frame). Collision tooltips are
@@ -300,6 +309,38 @@ public final class ModelerViewportPanel implements Panel {
                 hoveredTooltip = collisionTooltip(scene.hoveredBone);
             }
         }
+    }
+
+    private void renderBufferCacheIndicator(GuiGraphics graphics, int x, int y, int width, int height) {
+        if (!renderer.lastFrameUsedCachedBuffer() || width < 64 || height < 32) {
+            return;
+        }
+        var font = EngineFont.get();
+        var label = "buffer cached";
+        var badgeHeight = font.lineHeight + 6;
+        var badgeWidth = Math.min(width - 16, font.width(label) + 20);
+        if (badgeWidth <= 18) {
+            return;
+        }
+        var badgeX = x + 8;
+        var badgeY = y + height - badgeHeight - 8;
+        graphics.fill(badgeX, badgeY, badgeX + badgeWidth, badgeY + badgeHeight, CACHE_BADGE_BACKGROUND);
+        graphics.fill(badgeX, badgeY, badgeX + badgeWidth, badgeY + 1, CACHE_BADGE_BORDER);
+        graphics.fill(badgeX, badgeY + badgeHeight - 1, badgeX + badgeWidth, badgeY + badgeHeight, CACHE_BADGE_BORDER);
+        graphics.fill(badgeX, badgeY, badgeX + 1, badgeY + badgeHeight, CACHE_BADGE_BORDER);
+        graphics.fill(badgeX + badgeWidth - 1, badgeY, badgeX + badgeWidth, badgeY + badgeHeight, CACHE_BADGE_BORDER);
+
+        var dotY = badgeY + badgeHeight / 2 - 2;
+        graphics.fill(badgeX + 5, dotY, badgeX + 9, dotY + 4, CACHE_BADGE_BORDER);
+        UiText.drawClipped(
+            graphics,
+            font,
+            label,
+            badgeX + 13,
+            badgeY + (badgeHeight - font.lineHeight + 2) / 2,
+            Math.max(0, badgeWidth - 17),
+            CACHE_BADGE_TEXT
+        );
     }
 
     @Override

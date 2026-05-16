@@ -51,6 +51,8 @@ public final class ModelerRenderer {
 
     private @Nullable RenderCacheKey lastRenderKey;
 
+    private boolean lastFrameUsedCachedBuffer;
+
     private record RenderCacheKey(
         int width,
         int height,
@@ -72,6 +74,7 @@ public final class ModelerRenderer {
     }
 
     public void render(GuiGraphics graphics, int x, int y, int width, int height, boolean forceRender) {
+        lastFrameUsedCachedBuffer = false;
         if (width <= 0 || height <= 0) {
             return;
         }
@@ -108,11 +111,18 @@ public final class ModelerRenderer {
         }
         var key = renderCacheKey(fboW, fboH, scene, animationState);
         var cacheable = scene.itemSession == null && !forceRender;
-        if (!cacheable || resized || !key.equals(lastRenderKey)) {
+        var usedCachedBuffer = cacheable && !resized && key.equals(lastRenderKey);
+        if (usedCachedBuffer) {
+            lastFrameUsedCachedBuffer = true;
+        } else {
             renderScene(fboW, fboH);
             lastRenderKey = cacheable ? key : null;
         }
         blitToGui(graphics, target, dstX0, dstY0, dstX1, dstY1);
+    }
+
+    public boolean lastFrameUsedCachedBuffer() {
+        return lastFrameUsedCachedBuffer;
     }
 
     private boolean ensureTargetSize(int width, int height) {
