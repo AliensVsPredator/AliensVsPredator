@@ -7,6 +7,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,6 +18,7 @@ import java.util.Set;
 import com.blib.engine.modeler.ModelerFilePicker;
 import com.blib.engine.modeler.animation.AnimationEditorState;
 import com.blib.engine.modeler.animation.AnimationEditorState.AnimationKey;
+import com.blib.engine.modeler.animation.AnimationRecentFiles;
 import com.blib.engine.session.ProjectSession;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.dock.Panel;
@@ -365,6 +367,7 @@ public final class AnimationsPanel implements Panel {
         var items = List
             .of(
                 new DropdownMenu.Item("New", state::newDraft),
+                new DropdownMenu.Item("Recent", () -> {}, buildRecentSubmenu()),
                 new DropdownMenu.Item("Open", () -> {}, buildOpenSubmenu()),
                 new DropdownMenu.Item(
                     "Save",
@@ -379,6 +382,38 @@ public final class AnimationsPanel implements Panel {
 
     private List<DropdownMenu.Item> buildOpenSubmenu() {
         return List.of(new DropdownMenu.Item("From File...", this::openFromFile));
+    }
+
+    private List<DropdownMenu.Item> buildRecentSubmenu() {
+        var project = ProjectSession.activeProjectName();
+        if (project.isEmpty()) {
+            return List.of(new DropdownMenu.Item("(no project active)", () -> {}));
+        }
+        var recents = AnimationRecentFiles.list(project);
+        if (recents.isEmpty()) {
+            return List.of(new DropdownMenu.Item("(no recent files)", () -> {}));
+        }
+        var items = new ArrayList<DropdownMenu.Item>(recents.size());
+        for (var entry : recents) {
+            items.add(new DropdownMenu.Item(recentLabel(entry), () -> openRecent(entry)));
+        }
+        return items;
+    }
+
+    private static String recentLabel(AnimationRecentFiles.Entry entry) {
+        var name = entry.source() == AnimationRecentFiles.Source.EXTERNAL
+            ? externalRecentName(entry.target())
+            : entry.target();
+        return name + " [" + entry.source().label() + "]";
+    }
+
+    private static String externalRecentName(String target) {
+        try {
+            var fileName = Path.of(target).getFileName();
+            return fileName != null ? fileName.toString() : target;
+        } catch (InvalidPathException ignored) {
+            return target;
+        }
     }
 
     private boolean openContextMenu(double mouseX, double mouseY) {
@@ -433,7 +468,7 @@ public final class AnimationsPanel implements Panel {
     private void openFromFile() {
         var picked = ModelerFilePicker.pickAnimationJson(initialOpenDirectory());
         if (picked != null) {
-            AnimationEditorState.get().openFromFile(picked);
+            openAnimationPath(picked, picked.toString());
         }
     }
 
@@ -441,6 +476,26 @@ public final class AnimationsPanel implements Panel {
         var picked = ModelerFilePicker.saveAnimationJson(defaultFileName(), initialSaveDirectory());
         if (picked != null) {
             AnimationEditorState.get().saveAsFile(picked);
+        }
+    }
+
+    private static void openRecent(AnimationRecentFiles.Entry entry) {
+        if (entry.source() != AnimationRecentFiles.Source.EXTERNAL) {
+            return;
+        }
+        try {
+            openAnimationPath(Path.of(entry.target()), entry.target());
+        } catch (InvalidPathException ignored) {
+            // Malformed legacy entries stay visible but do not open.
+        }
+    }
+
+    private static void openAnimationPath(Path path, String recentTarget) {
+        if (AnimationEditorState.get().openFromFile(path)) {
+            var project = ProjectSession.activeProjectName();
+            if (!project.isEmpty()) {
+                AnimationRecentFiles.recordExternalOpen(project, recentTarget);
+            }
         }
     }
 
@@ -513,6 +568,10 @@ public final class AnimationsPanel implements Panel {
     }
 
     private static @Nullable Path initialOpenDirectory() {
+        var recentParent = recentExternalParentDirectory();
+        if (recentParent != null) {
+            return recentParent;
+        }
         var state = AnimationEditorState.get();
         if (state.externalSavePath() != null) {
             var parent = state.externalSavePath().getParent();
@@ -521,6 +580,23 @@ public final class AnimationsPanel implements Panel {
             }
         }
         return initialProjectAnimationDirectory();
+    }
+
+    private static @Nullable Path recentExternalParentDirectory() {
+        var project = ProjectSession.activeProjectName();
+        if (project.isEmpty()) {
+            return null;
+        }
+        for (var recent : AnimationRecentFiles.list(project)) {
+            if (recent.source() == AnimationRecentFiles.Source.EXTERNAL) {
+                try {
+                    return Path.of(recent.target()).getParent();
+                } catch (InvalidPathException ignored) {
+                    // Skip malformed legacy entries and keep looking for a usable external path.
+                }
+            }
+        }
+        return null;
     }
 
     private static @Nullable Path initialSaveDirectory() {
