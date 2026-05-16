@@ -131,6 +131,7 @@ public final class MenuBarController {
      * Cursor in the gap between cascades leaves state untouched so users can move diagonally between menus.
      */
     public void updateHoverSubmenu(int mouseX, int mouseY, int logicalWidth, int logicalHeight) {
+        fitOpenMenuToViewport(logicalWidth, logicalHeight);
         if (openMenu == null) {
             closeSubmenu();
             return;
@@ -162,6 +163,7 @@ public final class MenuBarController {
     }
 
     public void render(GuiGraphics graphics, int logicalMouseX, int logicalMouseY, int logicalWidth, int logicalHeight) {
+        fitOpenMenuToViewport(logicalWidth, logicalHeight);
         if (openMenu != null) {
             openMenu.render(graphics, logicalMouseX, logicalMouseY);
         }
@@ -210,6 +212,7 @@ public final class MenuBarController {
      * the screen to consider re-handling for the same-chip-different-menu case).
      */
     public ClickOutcome handleClick(double logicalX, double logicalY, int button, int logicalWidth, int logicalHeight) {
+        fitOpenMenuToViewport(logicalWidth, logicalHeight);
         if (openMenu != null) {
             if (button == 0) {
                 var level = menuLevelAt(logicalX, logicalY);
@@ -242,6 +245,12 @@ public final class MenuBarController {
             return ClickOutcome.CLOSED_TRY_CHIP_REOPEN;
         }
         return ClickOutcome.NO_MENU_OPEN;
+    }
+
+    private void fitOpenMenuToViewport(int logicalWidth, int logicalHeight) {
+        if (openMenu != null && openMenu.fitRootToViewport(logicalWidth, logicalHeight)) {
+            closeSubmenu();
+        }
     }
 
     private int menuLevelAt(double mouseX, double mouseY) {

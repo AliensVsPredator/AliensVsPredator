@@ -90,9 +90,9 @@ public final class DropdownMenu {
     /** Gap (in logical px) between the longest label and the submenu indicator on its right. */
     private static final int SUBMENU_INDICATOR_GAP = 6;
 
-    private final int anchorX;
+    private int anchorX;
 
-    private final int anchorY;
+    private int anchorY;
 
     private final List<Item> items;
 
@@ -145,13 +145,12 @@ public final class DropdownMenu {
         if (x + width > viewportWidth) {
             x = parent.anchorX - width;
         }
+        x = clamp(x, 0, Math.max(0, viewportWidth - width));
         var y = parent.anchorY + BORDER_THICKNESS + itemOffset(parent.items, parentItemIndex);
         if (y + height > viewportHeight) {
             y = viewportHeight - height;
         }
-        if (y < 0) {
-            y = 0;
-        }
+        y = Math.max(0, y);
         return new DropdownMenu(x, y, items);
     }
 
@@ -161,6 +160,32 @@ public final class DropdownMenu {
 
     public int height() {
         return computeHeight(items);
+    }
+
+    /**
+     * Keep a top-level menu inside the visible workspace. Horizontal overflow flips the menu left of its anchor first,
+     * then clamps if the menu is wider than the available space; vertical overflow shifts upward.
+     *
+     * @return {@code true} when the menu moved.
+     */
+    public boolean fitRootToViewport(int viewportWidth, int viewportHeight) {
+        var fittedX = anchorX;
+        if (fittedX + width > viewportWidth) {
+            fittedX = anchorX - width;
+        }
+        fittedX = clamp(fittedX, 0, Math.max(0, viewportWidth - width));
+
+        var menuHeight = height();
+        var fittedY = anchorY;
+        if (fittedY + menuHeight > viewportHeight) {
+            fittedY = viewportHeight - menuHeight;
+        }
+        fittedY = Math.max(0, fittedY);
+
+        var moved = fittedX != anchorX || fittedY != anchorY;
+        anchorX = fittedX;
+        anchorY = fittedY;
+        return moved;
     }
 
     public boolean isInside(double mouseX, double mouseY) {
@@ -278,5 +303,9 @@ public final class DropdownMenu {
             y += itemHeight(items.get(i));
         }
         return y;
+    }
+
+    private static int clamp(int value, int min, int max) {
+        return Math.max(min, Math.min(max, value));
     }
 }
