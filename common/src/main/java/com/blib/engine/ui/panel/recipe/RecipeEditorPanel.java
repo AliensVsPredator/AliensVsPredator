@@ -162,8 +162,8 @@ public final class RecipeEditorPanel implements Panel {
 
         if (!slot.isEmpty()) {
             var stack = slot.toStack();
-            graphics.renderItem(stack, rect.x() + 1, rect.y() + 1);
-            graphics.renderItemDecorations(EngineFont.get(), stack, rect.x() + 1, rect.y() + 1);
+            graphics.renderItem(stack, rect.x(), rect.y());
+            graphics.renderItemDecorations(EngineFont.get(), stack, rect.x(), rect.y());
         }
 
         if (selected) {
