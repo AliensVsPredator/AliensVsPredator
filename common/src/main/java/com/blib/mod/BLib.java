@@ -38,12 +38,9 @@ import com.blib.internal.common.faction.BLibFactionManager;
 import com.blib.internal.common.property.BLibPropertyContainerSaveHandler;
 import com.blib.internal.common.reputation.BLibReputationManager;
 import com.blib.internal.common.storage.BLibDataStoreManager;
-import com.blib.internal.common.storage.ProjectDraftStore;
 import com.blib.internal.common.territory.BLibTerritoryManager;
 import com.blib.mod.common.gameplay.goap.GOAPDebugTracker;
-import com.blib.mod.common.gameplay.history.ActionHistory;
 import com.blib.mod.common.network.BLibPacketDirections;
-import com.blib.mod.common.network.BLibServerListener;
 import com.blib.mod.common.network.BLibServerPacketHandlers;
 import com.blib.mod.common.network.packet.S2CLimbDefinitionsSyncPayload;
 import com.blib.mod.common.property.BLibModPropertyAccess;
@@ -55,7 +52,6 @@ import com.blib.mod.common.registry.init.BLibDataStoreTypes;
 import com.blib.mod.common.registry.init.BLibDataSyncKeys;
 import com.blib.mod.common.registry.init.BLibEntityTypes;
 import com.blib.mod.common.registry.init.BLibFactionDataTypes;
-import com.blib.mod.common.registry.init.BLibJigsawDataStoreTypes;
 import com.blib.mod.common.registry.init.BLibLootItemConditionTypes;
 import com.blib.mod.common.registry.init.BLibPropertyContainerTypes;
 import com.blib.mod.common.registry.init.BLibReloadListeners;
@@ -90,7 +86,6 @@ public class BLib {
         BLibDataStoreTypes.initialize();
         BLibEntityTypes.initialize();
         BLibFactionDataTypes.initialize();
-        BLibJigsawDataStoreTypes.initialize();
         BLibLootItemConditionTypes.initialize();
         BLibTerritoryDataStoreTypes.initialize();
         BLibPacketDirections.initialize();
@@ -119,14 +114,9 @@ public class BLib {
             }
         });
 
-        // Faction directory + members live-update: every mutation path (C2S handler, mod-side BLibFactionAccess, undo/
-        // redo, internal API) flips a dirty flag inside BLibFactionManager. End of the overworld tick flushes those
-        // flags by broadcasting fresh snapshots. Catches the mod-creation path (e.g. AVP-Alien queens) that bypasses
-        // the C2S handler — that path used to leave clients stale until they hit Refresh.
         BLib.MOD.events().postLevelTick().register(level -> {
             if (!level.isClientSide && level.dimension() == Level.OVERWORLD) {
                 BLibEntityReferenceManager.INSTANCE.tick(level.getServer());
-                BLibFactionManager.INSTANCE.flushPendingPushes(level.getServer());
                 BLibTerritoryManager.INSTANCE.flushPendingClaimStoreSaves(level.getServer());
             }
         });
@@ -140,21 +130,8 @@ public class BLib {
         BLib.MOD.events().onServerStopped().register(BLibTerritoryManager.INSTANCE::flushPendingClaimStoreSaves);
         BLib.MOD.events().onServerStopped().register(BLibDataStoreManager.INSTANCE::onServerStopped);
         BLib.MOD.events().onServerStopped().register(GOAPDebugTracker.INSTANCE::clear);
-        // Unified ActionHistory: register the broadcast listener at server-start (so notify hooks have a
-        // MinecraftServer
-        // reference to send packets through), and clear stacks + drop the listener on shutdown.
-        BLib.MOD.events()
-            .onServerStarted()
-            .register(server -> ActionHistory.setChangeListener(() -> BLibServerListener.broadcastActionHistorySync(server)));
-        BLib.MOD.events()
-            .onServerStopped()
-            .register(server -> {
-                ActionHistory.setChangeListener(null);
-                ActionHistory.clear();
-            });
         BLib.MOD.events().onServerStopped().register(server -> ClientTerritoryCache.INSTANCE.clear());
         BLib.MOD.events().onServerStopped().register(server -> ClientFactionCache.INSTANCE.clear());
-        BLib.MOD.events().onServerStopped().register(ProjectDraftStore.INSTANCE::onServerStopped);
 
         BLib.MOD.events()
             .onServerStarted()

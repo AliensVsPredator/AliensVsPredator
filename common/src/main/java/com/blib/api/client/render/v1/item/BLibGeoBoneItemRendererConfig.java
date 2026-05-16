@@ -9,7 +9,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import com.blib.api.client.render.v1.BLibTransform;
-import com.blib.engine.gizmo.BLibTunableItemTransforms;
 import com.blib.internal.client.render.item.config.BLibItemRendererConfigs;
 
 /**
@@ -67,7 +66,7 @@ public record BLibGeoBoneItemRendererConfig(
      * Build a config whose transforms come from a JSON asset entry rather than Java code. The asset (already loaded by
      * {@code BLibItemRendererConfigLoader} on resource reload) supplies geo model id, texture, bone name, and both
      * transform sets. Transform reads consult the live registry every frame via
-     * {@link com.blib.engine.gizmo.BLibTunableItemTransforms#wrapDynamic}, so resource-pack reloads (and inspector
+     * {@link BLibTunableItemTransforms#wrapDynamic}, so resource-pack reloads (and inspector
      * edits written into the per-project resource pack) propagate without re-instantiating the renderer.
      * <p>
      * The {@code itemId} is the {@link net.minecraft.world.item.Item}'s registry id; it's needed at construction time

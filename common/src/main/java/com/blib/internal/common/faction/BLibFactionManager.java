@@ -40,9 +40,6 @@ import com.blib.internal.common.faction.io.FactionMembershipIO;
 import com.blib.internal.common.faction.serializer.FactionRelationshipTableSerializer;
 import com.blib.internal.common.util.ShardManager;
 import com.blib.mod.BLib;
-import com.blib.mod.common.network.packet.S2CFactionDirectoryPayload;
-import com.blib.mod.common.network.packet.S2CFactionInspectionPayload;
-import com.blib.mod.common.network.packet.S2CFactionMembersPayload;
 import com.blib.mod.common.network.packet.S2CFactionMetadataSyncPayload;
 
 @ApiStatus.Internal
@@ -62,64 +59,11 @@ public class BLibFactionManager implements FactionManager, EntityReferenceOwner 
 
     private final ShardManager<ResourceLocation> shardManager;
 
-    /**
-     * Set by every mutation that changes what the directory snapshot would carry — create / remove / relationship
-     * change / member add or remove (member count is in the directory). Flushed by {@link #flushPendingPushes} on the
-     * next server tick, which broadcasts the fresh snapshot and clears the flag. This is the catch-all for live updates
-     * regardless of which code path triggered the mutation: C2S handler, mod-side {@code BLibFactionAccess}, undo/redo
-     * via {@link com.blib.mod.common.gameplay.history.FactionEdit}, or anything else that goes through this class.
-     */
-    private volatile boolean directoryDirty;
-
-    /**
-     * Per-faction set of member rosters that need a fresh broadcast. Mutations to {@code FactionMembership.members}
-     * route through {@link #onMemberChanged}, which adds the affected id here; the tick flush pushes a members snapshot
-     * for each entry and clears the set.
-     */
-    private final Set<ResourceLocation> pendingMemberPushes = new HashSet<>();
-
     private BLibFactionManager() {
         this.factions = new HashMap<>();
         this.memberIndex = new FactionMemberIndex();
         this.relationshipTable = new FactionRelationshipTable();
         this.shardManager = new ShardManager<>(SHARD_SIZE);
-    }
-
-    /** Set the directory-dirty flag. Tick flush will see this and broadcast next tick. */
-    public void markDirectoryDirty() {
-        directoryDirty = true;
-    }
-
-    /**
-     * Mark this faction's members roster as needing a broadcast. Also flips the directory-dirty flag because the member
-     * count surfaces in the directory entry — clients reading either the Browser or the Members panel get a fresh view
-     * in one tick.
-     */
-    public void markMembersDirty(ResourceLocation factionId) {
-        pendingMemberPushes.add(factionId);
-        directoryDirty = true;
-    }
-
-    /**
-     * End-of-server-tick coalesced broadcast. Wired into the per-tick lifecycle by the BLib bootstrap. Skips when no
-     * one's connected — building a snapshot only to drop it is wasted work. Members pushes pop the id out before the
-     * push so a re-mark mid-broadcast just queues for the next tick.
-     */
-    public void flushPendingPushes(MinecraftServer server) {
-        if (server == null || server.getPlayerCount() == 0) {
-            return;
-        }
-        if (directoryDirty) {
-            directoryDirty = false;
-            pushDirectoryToAllClients(server);
-        }
-        if (!pendingMemberPushes.isEmpty()) {
-            var ids = new ArrayList<>(pendingMemberPushes);
-            pendingMemberPushes.clear();
-            for (var id : ids) {
-                pushMembersToAllClients(server, id);
-            }
-        }
     }
 
     @Override
@@ -146,7 +90,6 @@ public class BLibFactionManager implements FactionManager, EntityReferenceOwner 
         @SuppressWarnings("unchecked")
         var faction = (Faction<T>) new Faction<>(id, typeId, relationships, internalData);
         factions.put(id, faction);
-        markDirectoryDirty();
 
         return faction;
     }
@@ -175,7 +118,6 @@ public class BLibFactionManager implements FactionManager, EntityReferenceOwner 
 
         var faction = new Faction<>(id, typeId, relationships, internalData);
         factions.put(id, faction);
-        markDirectoryDirty();
 
         return faction;
     }
@@ -207,7 +149,6 @@ public class BLibFactionManager implements FactionManager, EntityReferenceOwner 
     @Override
     public void setRelationship(ResourceLocation factionA, ResourceLocation factionB, RelationshipState state) {
         relationshipTable.setRelationship(factionA, factionB, state);
-        markDirectoryDirty();
     }
 
     @Override
@@ -234,7 +175,6 @@ public class BLibFactionManager implements FactionManager, EntityReferenceOwner 
             listener.invoke(id);
         }
 
-        markDirectoryDirty();
         return true;
     }
 
@@ -313,105 +253,6 @@ public class BLibFactionManager implements FactionManager, EntityReferenceOwner 
         BLib.MOD.networking().sendToAllClients(server, payload);
     }
 
-    /**
-     * Build the workspace directory snapshot — every faction's id/name/color/memberCount/typeId plus the full pairwise
-     * relationship table. Consumed by {@code ClientFactionDirectoryCache} to drive the Faction Browser and Diplomacy
-     * Matrix.
-     */
-    public S2CFactionDirectoryPayload buildDirectorySnapshot() {
-        var entries = new ArrayList<S2CFactionDirectoryPayload.FactionEntry>(factions.size());
-        for (var faction : factions.values()) {
-            entries.add(
-                new S2CFactionDirectoryPayload.FactionEntry(
-                    faction.id(),
-                    faction.name(),
-                    faction.color(),
-                    faction.membership().getMembers().size(),
-                    faction.typeId()
-                )
-            );
-        }
-        var relEntries = new ArrayList<S2CFactionDirectoryPayload.RelationshipEntry>();
-        for (var entry : relationshipTable.getAllEdges().entrySet()) {
-            relEntries.add(
-                new S2CFactionDirectoryPayload.RelationshipEntry(
-                    entry.getKey().first(),
-                    entry.getKey().second(),
-                    entry.getValue().ordinal()
-                )
-            );
-        }
-        return new S2CFactionDirectoryPayload(entries, relEntries);
-    }
-
-    /**
-     * Build the inspector snapshot for one faction — every editable scalar. Returns {@code null} if the faction id
-     * doesn't resolve.
-     */
-    public @Nullable S2CFactionInspectionPayload buildInspectionSnapshot(ResourceLocation factionId) {
-        var faction = factions.get(factionId);
-        if (faction == null) {
-            return null;
-        }
-        return new S2CFactionInspectionPayload(
-            faction.id(),
-            faction.name(),
-            faction.color(),
-            faction.typeId(),
-            faction.claimVisibility(),
-            faction.blockBreakProtection(),
-            faction.blockInteractProtection(),
-            faction.entityInteractProtection(),
-            faction.nonLivingEntityAttackProtection(),
-            faction.allowPvp(),
-            faction.allowExplosions(),
-            faction.allowMobGriefing()
-        );
-    }
-
-    /**
-     * Build the member roster for one faction. Player display names are resolved from the live {@code PlayerList};
-     * non-player entities surface as empty-string display names (the client renders the UUID prefix instead). Returns
-     * {@code null} when the faction id doesn't resolve.
-     */
-    public @Nullable S2CFactionMembersPayload buildMembersSnapshot(MinecraftServer server, ResourceLocation factionId) {
-        var faction = factions.get(factionId);
-        if (faction == null) {
-            return null;
-        }
-        var entries = new ArrayList<S2CFactionMembersPayload.MemberEntry>();
-        for (var member : faction.membership().getMembers()) {
-            if (member instanceof FactionMember.Entity entityMember) {
-                var uuid = entityMember.uuid();
-                var displayName = "";
-                var player = server.getPlayerList().getPlayer(uuid);
-                if (player != null) {
-                    displayName = player.getName().getString();
-                }
-                entries.add(new S2CFactionMembersPayload.MemberEntry(uuid, displayName));
-            }
-        }
-        return new S2CFactionMembersPayload(factionId, entries);
-    }
-
-    public void pushDirectoryToAllClients(MinecraftServer server) {
-        BLib.MOD.networking().sendToAllClients(server, buildDirectorySnapshot());
-    }
-
-    public void pushInspectionToAllClients(MinecraftServer server, ResourceLocation factionId) {
-        var snapshot = buildInspectionSnapshot(factionId);
-        if (snapshot != null) {
-            BLib.MOD.networking().sendToAllClients(server, snapshot);
-        }
-    }
-
-    public void pushMembersToAllClients(MinecraftServer server, ResourceLocation factionId) {
-        var snapshot = buildMembersSnapshot(server, factionId);
-        if (snapshot != null) {
-            BLib.MOD.networking().sendToAllClients(server, snapshot);
-        }
-    }
-
     public @Nullable FactionData getRawModData(ResourceLocation factionId) {
         var faction = factions.get(factionId);
 
@@ -480,7 +321,6 @@ public class BLibFactionManager implements FactionManager, EntityReferenceOwner 
             BLibEntityReferenceManager.INSTANCE.onEntityReferenceRemoved(entityMember.uuid());
         }
 
-        markMembersDirty(factionId);
     }
 
     public void onEntityMemberAdded(
@@ -497,7 +337,6 @@ public class BLibFactionManager implements FactionManager, EntityReferenceOwner 
             faction.data().onMemberAdded(member, entity);
         }
 
-        markMembersDirty(factionId);
     }
 
     private void saveMemberships(MinecraftServer server) {

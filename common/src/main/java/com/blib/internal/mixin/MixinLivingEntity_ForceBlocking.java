@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.blib.engine.gizmo.BLibItemTransformOverrides;
+import com.blib.api.client.render.v1.item.BLibItemTransformOverrides;
 
 /**
  * Routes "is the local player using their main-hand item?" queries to the {@code force-blocking} debug toggle. When the

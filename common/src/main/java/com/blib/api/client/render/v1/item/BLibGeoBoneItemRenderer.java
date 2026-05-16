@@ -12,8 +12,6 @@ import com.blib.api.client.render.v1.BLibTransform;
 import com.blib.api.client.render.v1.item.model.BLibGeoBoneItemModelRenderer;
 import com.blib.api.client.render.v1.item.pipeline.AzItemRendererPipeline;
 import com.blib.api.client.render.v1.item.pipeline.AzItemRendererPipelineContext;
-import com.blib.engine.gizmo.BLibItemTransformOverrides;
-
 /**
  * Renders a single named bone subtree of an existing geo model as an item — designed for cases where you want to reuse
  * a mob's geo head (or arm, or some other subtree) as a held item without forking the JSON.

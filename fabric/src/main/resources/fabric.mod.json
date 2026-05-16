@@ -29,7 +29,6 @@
 	"mixins": [
 		"${mod_id}.mixins.json",
 		"${mod_id}.compat.mixins.json",
-		"${mod_id}.engine.mixins.json",
 		"${mod_id}.fabric.mixins.json"
 	],
 	"depends": {

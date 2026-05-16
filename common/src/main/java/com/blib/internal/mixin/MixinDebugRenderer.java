@@ -1,7 +1,6 @@
 package com.blib.internal.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.debug.DebugRenderer;
 import net.minecraft.client.renderer.debug.GoalSelectorDebugRenderer;
@@ -14,11 +13,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.blib.engine.render.pipeline.EngineWorldPasses;
-import com.blib.engine.render.pipeline.WorldRenderFrame;
-import com.blib.engine.ui.EngineWorkspaceScreen;
-import com.blib.engine.ui.panel.pathfinding.PathfindingDebugPanel;
-import com.blib.mod.client.render.debug.PathfindingSearchDebugRenderer;
 import com.blib.mod.common.property.BLibModProperties;
 import com.blib.mod.common.property.BLibModPropertyAccess;
 
@@ -82,18 +76,6 @@ public class MixinDebugRenderer {
         double camZ,
         CallbackInfo ci
     ) {
-        // Engine world-render pipeline. Pass order, gating, and per-pass implementations live in
-        // {@link EngineWorldPasses}; this mixin entry is purely a dispatch site. Adding a new render stage is now a
-        // single-line registration in {@code EngineWorldPasses.buildPipeline()} rather than search-and-edit here.
-        EngineWorldPasses.pipeline().render(new WorldRenderFrame(poseStack, bufferSource, camX, camY, camZ));
-
-        if (
-            Minecraft.getInstance().screen instanceof EngineWorkspaceScreen workspace
-                && workspace.layoutHasActivePanel(PathfindingDebugPanel.class)
-        ) {
-            PathfindingSearchDebugRenderer.INSTANCE.render(poseStack, bufferSource, camX, camY, camZ);
-        }
-
         var access = BLibModPropertyAccess.INSTANCE;
 
         if (!access.get(BLibModProperties.Debug.Render.ENABLED)) {
