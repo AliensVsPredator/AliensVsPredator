@@ -7,10 +7,13 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import com.blib.engine.recipe.RecipeAuthoringState;
 import com.blib.engine.recipe.RecipeAuthoringState.DraftSlot;
+import com.blib.engine.recipe.RecipeAuthoringState.RecipeDraftType;
 import com.blib.engine.recipe.RecipeAuthoringState.SlotRef;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.dock.Panel;
@@ -47,6 +50,10 @@ public final class RecipeEditorPanel implements Panel {
 
     private static final int BUTTON_HEIGHT = TextInput.HEIGHT;
 
+    private static final int TYPE_BUTTON_HEIGHT = 16;
+
+    private static final int TYPE_BUTTON_GAP = 4;
+
     private static final int GUI_WIDTH = 176;
 
     private static final int GUI_HEIGHT = 83;
@@ -60,11 +67,42 @@ public final class RecipeEditorPanel implements Panel {
         "textures/gui/container/crafting_table.png"
     );
 
+    private static final ResourceLocation FURNACE_TEXTURE = ResourceLocation.fromNamespaceAndPath(
+        "minecraft",
+        "textures/gui/container/furnace.png"
+    );
+
+    private static final ResourceLocation BLAST_FURNACE_TEXTURE = ResourceLocation.fromNamespaceAndPath(
+        "minecraft",
+        "textures/gui/container/blast_furnace.png"
+    );
+
+    private static final ResourceLocation SMOKER_TEXTURE = ResourceLocation.fromNamespaceAndPath(
+        "minecraft",
+        "textures/gui/container/smoker.png"
+    );
+
+    private static final ResourceLocation STONECUTTER_TEXTURE = ResourceLocation.fromNamespaceAndPath(
+        "minecraft",
+        "textures/gui/container/stonecutter.png"
+    );
+
+    private static final ResourceLocation SMITHING_TEXTURE = ResourceLocation.fromNamespaceAndPath(
+        "minecraft",
+        "textures/gui/container/smithing.png"
+    );
+
     private final TextInput recipeIdInput = new TextInput("namespace:path");
 
     private final TextInput countInput = new TextInput("Count", this::commitCount, this::resetCountInput);
 
+    private final TextInput experienceInput = new TextInput("XP", this::commitExperience, this::resetMetaInputs);
+
+    private final TextInput cookingTimeInput = new TextInput("Ticks", this::commitCookingTime, this::resetMetaInputs);
+
     private final UiRect[] gridRects = new UiRect[9];
+
+    private final List<TypeHit> typeHits = new ArrayList<>();
 
     private @Nullable UiRect outputRect;
 
@@ -105,6 +143,7 @@ public final class RecipeEditorPanel implements Panel {
         this.rectWidth = width;
         this.rectHeight = height;
         this.hoveredTooltip = null;
+        typeHits.clear();
         Arrays.fill(gridRects, null);
         outputRect = null;
 
@@ -122,9 +161,12 @@ public final class RecipeEditorPanel implements Panel {
         renderButton(graphics, newRect, "New", mouseX, mouseY, BUTTON_TEXT, true);
         renderButton(graphics, saveRect, RecipeAuthoringState.dirty() ? "Save*" : "Save", mouseX, mouseY, BUTTON_TEXT, true);
 
+        var typeY = topY + TextInput.HEIGHT + 6;
+        var typeH = renderTypeButtons(graphics, x + CONTENT_PADDING, typeY, width - 2 * CONTENT_PADDING, mouseX, mouseY);
+
         var workbenchX = x + Math.max(CONTENT_PADDING, (width - GUI_WIDTH) / 2);
-        var workbenchY = topY + TextInput.HEIGHT + 18;
-        renderWorkbench(graphics, workbenchX, workbenchY, mouseX, mouseY);
+        var workbenchY = typeY + typeH + 10;
+        renderRecipeSurface(graphics, workbenchX, workbenchY, mouseX, mouseY);
 
         var detailsY = workbenchY + GUI_HEIGHT + 12;
         renderSelectedSlotDetails(graphics, x + CONTENT_PADDING, detailsY, width - 2 * CONTENT_PADDING, mouseX, mouseY);
@@ -137,6 +179,36 @@ public final class RecipeEditorPanel implements Panel {
 
         RecipeAuthoringState.publishEditorSlots(gridRects, outputRect == null ? UiRect.of(0, 0, 0, 0) : outputRect);
         renderDraggedStack(graphics, mouseX, mouseY);
+    }
+
+    private int renderTypeButtons(GuiGraphics graphics, int x, int y, int width, int mouseX, int mouseY) {
+        var font = EngineFont.get();
+        var cursorX = x;
+        var cursorY = y;
+        var maxRight = x + width;
+        for (var type : RecipeDraftType.authorableTypes()) {
+            var buttonW = Math.max(42, font.width(type.label()) + 12);
+            if (cursorX > x && cursorX + buttonW > maxRight) {
+                cursorX = x;
+                cursorY += TYPE_BUTTON_HEIGHT + TYPE_BUTTON_GAP;
+            }
+            var rect = UiRect.of(cursorX, cursorY, Math.min(buttonW, Math.max(0, maxRight - cursorX)), TYPE_BUTTON_HEIGHT);
+            renderButton(graphics, rect, type.label(), mouseX, mouseY, BUTTON_TEXT, true, type == RecipeAuthoringState.recipeType());
+            typeHits.add(new TypeHit(rect, type));
+            cursorX += buttonW + TYPE_BUTTON_GAP;
+        }
+        return cursorY - y + TYPE_BUTTON_HEIGHT;
+    }
+
+    private void renderRecipeSurface(GuiGraphics graphics, int x, int y, int mouseX, int mouseY) {
+        switch (RecipeAuthoringState.recipeType()) {
+            case CRAFTING_SHAPED, CRAFTING_SHAPELESS -> renderWorkbench(graphics, x, y, mouseX, mouseY);
+            case SMELTING, BLASTING, SMOKING -> renderCooking(graphics, x, y, cookingTexture(), mouseX, mouseY);
+            case CAMPFIRE_COOKING -> renderCampfireCooking(graphics, x, y, mouseX, mouseY);
+            case STONECUTTING -> renderStonecutting(graphics, x, y, mouseX, mouseY);
+            case SMITHING_TRANSFORM, SMITHING_TRIM -> renderSmithing(graphics, x, y, mouseX, mouseY);
+            case UNSUPPORTED -> renderUnsupported(graphics, x, y);
+        }
     }
 
     private void renderWorkbench(GuiGraphics graphics, int x, int y, int mouseX, int mouseY) {
@@ -155,6 +227,75 @@ public final class RecipeEditorPanel implements Panel {
 
         outputRect = UiRect.of(x + 124, y + 35, SLOT_SIZE, SLOT_SIZE);
         renderSlot(graphics, outputRect, RecipeAuthoringState.outputSlot(), SlotRef.output(), mouseX, mouseY);
+    }
+
+    private void renderCooking(GuiGraphics graphics, int x, int y, ResourceLocation texture, int mouseX, int mouseY) {
+        graphics.blit(texture, x, y, 0, 0, GUI_WIDTH, GUI_HEIGHT);
+        var inputRect = UiRect.of(x + 56, y + 17, SLOT_SIZE, SLOT_SIZE);
+        gridRects[0] = inputRect;
+        renderSlot(graphics, inputRect, RecipeAuthoringState.gridSlot(0), SlotRef.input(0), mouseX, mouseY);
+        outputRect = UiRect.of(x + 116, y + 35, SLOT_SIZE, SLOT_SIZE);
+        renderSlot(graphics, outputRect, RecipeAuthoringState.outputSlot(), SlotRef.output(), mouseX, mouseY);
+    }
+
+    private void renderCampfireCooking(GuiGraphics graphics, int x, int y, int mouseX, int mouseY) {
+        renderPlainRecipeSurface(graphics, x, y, "Campfire Cooking");
+        var inputRect = UiRect.of(x + 46, y + 32, SLOT_SIZE, SLOT_SIZE);
+        gridRects[0] = inputRect;
+        renderSlotFrame(graphics, inputRect);
+        renderSlot(graphics, inputRect, RecipeAuthoringState.gridSlot(0), SlotRef.input(0), mouseX, mouseY);
+        renderArrow(graphics, x + 78, y + 37);
+        outputRect = UiRect.of(x + 112, y + 32, SLOT_SIZE, SLOT_SIZE);
+        renderSlotFrame(graphics, outputRect);
+        renderSlot(graphics, outputRect, RecipeAuthoringState.outputSlot(), SlotRef.output(), mouseX, mouseY);
+    }
+
+    private void renderStonecutting(GuiGraphics graphics, int x, int y, int mouseX, int mouseY) {
+        graphics.blit(STONECUTTER_TEXTURE, x, y, 0, 0, GUI_WIDTH, GUI_HEIGHT);
+        var inputRect = UiRect.of(x + 20, y + 33, SLOT_SIZE, SLOT_SIZE);
+        gridRects[0] = inputRect;
+        renderSlot(graphics, inputRect, RecipeAuthoringState.gridSlot(0), SlotRef.input(0), mouseX, mouseY);
+        outputRect = UiRect.of(x + 143, y + 33, SLOT_SIZE, SLOT_SIZE);
+        renderSlot(graphics, outputRect, RecipeAuthoringState.outputSlot(), SlotRef.output(), mouseX, mouseY);
+    }
+
+    private void renderSmithing(GuiGraphics graphics, int x, int y, int mouseX, int mouseY) {
+        graphics.blit(SMITHING_TEXTURE, x, y, 0, 0, GUI_WIDTH, GUI_HEIGHT);
+        var template = UiRect.of(x + 8, y + 48, SLOT_SIZE, SLOT_SIZE);
+        var base = UiRect.of(x + 26, y + 48, SLOT_SIZE, SLOT_SIZE);
+        var addition = UiRect.of(x + 44, y + 48, SLOT_SIZE, SLOT_SIZE);
+        gridRects[0] = template;
+        gridRects[1] = base;
+        gridRects[2] = addition;
+        renderSlot(graphics, template, RecipeAuthoringState.gridSlot(0), SlotRef.input(0), mouseX, mouseY);
+        renderSlot(graphics, base, RecipeAuthoringState.gridSlot(1), SlotRef.input(1), mouseX, mouseY);
+        renderSlot(graphics, addition, RecipeAuthoringState.gridSlot(2), SlotRef.input(2), mouseX, mouseY);
+        if (RecipeAuthoringState.recipeType() == RecipeDraftType.SMITHING_TRANSFORM) {
+            outputRect = UiRect.of(x + 98, y + 48, SLOT_SIZE, SLOT_SIZE);
+            renderSlot(graphics, outputRect, RecipeAuthoringState.outputSlot(), SlotRef.output(), mouseX, mouseY);
+        } else {
+            outputRect = null;
+        }
+    }
+
+    private void renderUnsupported(GuiGraphics graphics, int x, int y) {
+        renderPlainRecipeSurface(graphics, x, y, "Read-only recipe");
+        var font = EngineFont.get();
+        UiText.drawWrappedCentered(
+            graphics,
+            font,
+            "This recipe serializer is not editable yet.",
+            UiRect.of(x + 12, y + 28, GUI_WIDTH - 24, 34),
+            MUTED_TEXT
+        );
+    }
+
+    private static ResourceLocation cookingTexture() {
+        return switch (RecipeAuthoringState.recipeType()) {
+            case BLASTING -> BLAST_FURNACE_TEXTURE;
+            case SMOKING -> SMOKER_TEXTURE;
+            default -> FURNACE_TEXTURE;
+        };
     }
 
     private void renderSlot(GuiGraphics graphics, UiRect rect, DraftSlot slot, SlotRef ref, int mouseX, int mouseY) {
@@ -178,8 +319,39 @@ public final class RecipeEditorPanel implements Panel {
         }
     }
 
+    private static void renderPlainRecipeSurface(GuiGraphics graphics, int x, int y, String title) {
+        graphics.fill(x, y, x + GUI_WIDTH, y + GUI_HEIGHT, 0xFFC6C6C6);
+        graphics.fill(x, y, x + GUI_WIDTH, y + 1, 0xFFFFFFFF);
+        graphics.fill(x, y, x + 1, y + GUI_HEIGHT, 0xFFFFFFFF);
+        graphics.fill(x, y + GUI_HEIGHT - 1, x + GUI_WIDTH, y + GUI_HEIGHT, 0xFF555555);
+        graphics.fill(x + GUI_WIDTH - 1, y, x + GUI_WIDTH, y + GUI_HEIGHT, 0xFF555555);
+        UiText.drawClipped(graphics, EngineFont.get(), title, x + 8, y + 7, GUI_WIDTH - 16, 0xFF404040);
+    }
+
+    private static void renderSlotFrame(GuiGraphics graphics, UiRect rect) {
+        graphics.fill(rect.x(), rect.y(), rect.right(), rect.bottom(), 0xFF8B8B8B);
+        graphics.fill(rect.x() + 1, rect.y() + 1, rect.right() - 1, rect.bottom() - 1, 0xFFCFCFCF);
+    }
+
+    private static void renderArrow(GuiGraphics graphics, int x, int y) {
+        graphics.fill(x, y + 4, x + 24, y + 8, 0xFF6D6D6D);
+        graphics.fill(x + 18, y, x + 22, y + 12, 0xFF6D6D6D);
+        graphics.fill(x + 22, y + 2, x + 26, y + 10, 0xFF6D6D6D);
+    }
+
     private void renderSelectedSlotDetails(GuiGraphics graphics, int x, int y, int width, int mouseX, int mouseY) {
         var font = EngineFont.get();
+        if (isCookingType()) {
+            var timeW = Math.min(74, Math.max(44, width / 4));
+            var xpW = Math.min(74, Math.max(44, width / 4));
+            UiText.drawClipped(graphics, font, "XP", x, y + (TextInput.HEIGHT - font.lineHeight + 2) / 2, 18, MUTED_TEXT);
+            experienceInput.render(graphics, x + 22, y, xpW, mouseX, mouseY);
+            var timeX = x + 22 + xpW + 10;
+            UiText.drawClipped(graphics, font, "Ticks", timeX, y + (TextInput.HEIGHT - font.lineHeight + 2) / 2, 34, MUTED_TEXT);
+            cookingTimeInput.render(graphics, timeX + 38, y, timeW, mouseX, mouseY);
+            y += TextInput.HEIGHT + 8;
+        }
+
         var ref = RecipeAuthoringState.selectedSlot();
         if (ref == null) {
             UiText.drawClipped(graphics, font, "Select a slot to edit its count.", x, y, width, MUTED_TEXT);
@@ -187,7 +359,7 @@ public final class RecipeEditorPanel implements Panel {
         }
 
         var slot = RecipeAuthoringState.slot(ref);
-        var label = ref.kind() == RecipeAuthoringState.SlotKind.OUTPUT ? "Output" : "Ingredient " + (ref.index() + 1);
+        var label = RecipeAuthoringState.slotLabel(ref);
         UiText.drawClipped(graphics, font, label, x, y, width, TEXT_COLOR);
         y += font.lineHeight + 5;
 
@@ -205,12 +377,26 @@ public final class RecipeEditorPanel implements Panel {
     }
 
     private static void renderButton(GuiGraphics graphics, UiRect rect, String label, int mouseX, int mouseY, int textColor, boolean enabled) {
+        renderButton(graphics, rect, label, mouseX, mouseY, textColor, enabled, false);
+    }
+
+    private static void renderButton(
+        GuiGraphics graphics,
+        UiRect rect,
+        String label,
+        int mouseX,
+        int mouseY,
+        int textColor,
+        boolean enabled,
+        boolean active
+    ) {
         var hovered = enabled && rect.contains(mouseX, mouseY);
-        graphics.fill(rect.x(), rect.y(), rect.right(), rect.bottom(), hovered ? BUTTON_BG_HOVER : BUTTON_BG);
-        graphics.fill(rect.x(), rect.y(), rect.right(), rect.y() + 1, BUTTON_BORDER);
-        graphics.fill(rect.x(), rect.bottom() - 1, rect.right(), rect.bottom(), BUTTON_BORDER);
-        graphics.fill(rect.x(), rect.y(), rect.x() + 1, rect.bottom(), BUTTON_BORDER);
-        graphics.fill(rect.right() - 1, rect.y(), rect.right(), rect.bottom(), BUTTON_BORDER);
+        graphics.fill(rect.x(), rect.y(), rect.right(), rect.bottom(), active ? 0xFF3C3C46 : (hovered ? BUTTON_BG_HOVER : BUTTON_BG));
+        var border = active ? SLOT_SELECTED : BUTTON_BORDER;
+        graphics.fill(rect.x(), rect.y(), rect.right(), rect.y() + 1, border);
+        graphics.fill(rect.x(), rect.bottom() - 1, rect.right(), rect.bottom(), border);
+        graphics.fill(rect.x(), rect.y(), rect.x() + 1, rect.bottom(), border);
+        graphics.fill(rect.right() - 1, rect.y(), rect.right(), rect.bottom(), border);
         UiText.drawCentered(graphics, EngineFont.get(), label, rect.inset(0, 2, 0, 2), enabled ? textColor : BUTTON_DISABLED_TEXT);
     }
 
@@ -235,10 +421,30 @@ public final class RecipeEditorPanel implements Panel {
         if (countInput.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
+        if (experienceInput.mouseClicked(mouseX, mouseY, button)) {
+            return true;
+        }
+        if (cookingTimeInput.mouseClicked(mouseX, mouseY, button)) {
+            return true;
+        }
+        if (button == 0) {
+            for (var hit : typeHits) {
+                if (hit.rect().contains(mouseX, mouseY)) {
+                    if (hit.type() != RecipeAuthoringState.recipeType()) {
+                        RecipeAuthoringState.newDraft(hit.type());
+                        syncRecipeIdInput();
+                        resetCountInput();
+                        resetMetaInputs();
+                    }
+                    return true;
+                }
+            }
+        }
         if (button == 0 && newRect != null && newRect.contains(mouseX, mouseY)) {
             RecipeAuthoringState.newDraft();
             syncRecipeIdInput();
             resetCountInput();
+            resetMetaInputs();
             return true;
         }
         if (button == 0 && saveRect != null && saveRect.contains(mouseX, mouseY)) {
@@ -298,6 +504,10 @@ public final class RecipeEditorPanel implements Panel {
 
     private void commitVisibleInputs() {
         RecipeAuthoringState.setRecipeIdText(recipeIdInput.content());
+        if (isCookingType()) {
+            commitExperience(experienceInput.content());
+            commitCookingTime(cookingTimeInput.content());
+        }
         var ref = RecipeAuthoringState.selectedSlot();
         if (ref != null) {
             commitCount(countInput.content());
@@ -316,6 +526,22 @@ public final class RecipeEditorPanel implements Panel {
         }
     }
 
+    private void commitExperience(String value) {
+        try {
+            RecipeAuthoringState.setExperience(Float.parseFloat(value.trim()));
+        } catch (NumberFormatException ignored) {
+            resetMetaInputs();
+        }
+    }
+
+    private void commitCookingTime(String value) {
+        try {
+            RecipeAuthoringState.setCookingTime(Integer.parseInt(value.trim()));
+        } catch (NumberFormatException ignored) {
+            resetMetaInputs();
+        }
+    }
+
     private void resetCountInput() {
         var ref = RecipeAuthoringState.selectedSlot();
         if (ref == null || RecipeAuthoringState.slot(ref).isEmpty()) {
@@ -323,6 +549,11 @@ public final class RecipeEditorPanel implements Panel {
             return;
         }
         countInput.setContent(Integer.toString(RecipeAuthoringState.slot(ref).count()));
+    }
+
+    private void resetMetaInputs() {
+        experienceInput.setContent(trimFloat(RecipeAuthoringState.experience()));
+        cookingTimeInput.setContent(Integer.toString(RecipeAuthoringState.cookingTime()));
     }
 
     private void syncRecipeIdInput() {
@@ -335,9 +566,28 @@ public final class RecipeEditorPanel implements Panel {
         if (!countInput.isFocused()) {
             resetCountInput();
         }
+        if (!experienceInput.isFocused() && !cookingTimeInput.isFocused()) {
+            resetMetaInputs();
+        }
     }
 
     private boolean isInside(double mouseX, double mouseY) {
         return mouseX >= rectX && mouseX < rectX + rectWidth && mouseY >= rectY && mouseY < rectY + rectHeight;
     }
+
+    private static boolean isCookingType() {
+        return switch (RecipeAuthoringState.recipeType()) {
+            case SMELTING, BLASTING, SMOKING, CAMPFIRE_COOKING -> true;
+            default -> false;
+        };
+    }
+
+    private static String trimFloat(float value) {
+        if (value == (int) value) {
+            return Integer.toString((int) value);
+        }
+        return Float.toString(value);
+    }
+
+    private record TypeHit(UiRect rect, RecipeDraftType type) {}
 }

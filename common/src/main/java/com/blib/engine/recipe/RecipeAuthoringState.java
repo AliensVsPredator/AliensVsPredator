@@ -8,15 +8,21 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.SingleItemRecipe;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -34,6 +40,84 @@ public final class RecipeAuthoringState {
     public enum SlotKind {
         INPUT,
         OUTPUT
+    }
+
+    public enum RecipeDraftType {
+        CRAFTING_SHAPED("minecraft:crafting_shaped", "Shaped", true),
+        CRAFTING_SHAPELESS("minecraft:crafting_shapeless", "Shapeless", true),
+        SMELTING("minecraft:smelting", "Smelt", true),
+        BLASTING("minecraft:blasting", "Blast", true),
+        SMOKING("minecraft:smoking", "Smoke", true),
+        CAMPFIRE_COOKING("minecraft:campfire_cooking", "Campfire", true),
+        STONECUTTING("minecraft:stonecutting", "Stonecut", true),
+        SMITHING_TRANSFORM("minecraft:smithing_transform", "Smithing", true),
+        SMITHING_TRIM("minecraft:smithing_trim", "Trim", true),
+        UNSUPPORTED("", "Read-only", false);
+
+        private static final List<RecipeDraftType> AUTHORABLE = Arrays
+            .stream(values())
+            .filter(RecipeDraftType::authorable)
+            .toList();
+
+        private final String typeId;
+
+        private final String label;
+
+        private final boolean authorable;
+
+        RecipeDraftType(String typeId, String label, boolean authorable) {
+            this.typeId = typeId;
+            this.label = label;
+            this.authorable = authorable;
+        }
+
+        public String typeId() {
+            return typeId;
+        }
+
+        public String label() {
+            return label;
+        }
+
+        public boolean authorable() {
+            return authorable;
+        }
+
+        public static List<RecipeDraftType> authorableTypes() {
+            return AUTHORABLE;
+        }
+
+        public static RecipeDraftType fromRecipe(RecipeHolder<?> holder) {
+            var serializer = holder.value().getSerializer();
+            if (serializer == RecipeSerializer.SHAPED_RECIPE) {
+                return CRAFTING_SHAPED;
+            }
+            if (serializer == RecipeSerializer.SHAPELESS_RECIPE) {
+                return CRAFTING_SHAPELESS;
+            }
+            if (serializer == RecipeSerializer.SMELTING_RECIPE) {
+                return SMELTING;
+            }
+            if (serializer == RecipeSerializer.BLASTING_RECIPE) {
+                return BLASTING;
+            }
+            if (serializer == RecipeSerializer.SMOKING_RECIPE) {
+                return SMOKING;
+            }
+            if (serializer == RecipeSerializer.CAMPFIRE_COOKING_RECIPE) {
+                return CAMPFIRE_COOKING;
+            }
+            if (serializer == RecipeSerializer.STONECUTTER) {
+                return STONECUTTING;
+            }
+            if (serializer == RecipeSerializer.SMITHING_TRANSFORM) {
+                return SMITHING_TRANSFORM;
+            }
+            if (serializer == RecipeSerializer.SMITHING_TRIM) {
+                return SMITHING_TRIM;
+            }
+            return UNSUPPORTED;
+        }
     }
 
     public record SlotRef(SlotKind kind, int index) {
@@ -133,9 +217,15 @@ public final class RecipeAuthoringState {
 
     private static @Nullable DragStack draggedStack;
 
+    private static RecipeDraftType recipeType = RecipeDraftType.CRAFTING_SHAPED;
+
     private static String recipeIdText = "";
 
     private static String status = "Create a recipe or select one from the outliner.";
+
+    private static float experience;
+
+    private static int cookingTime = defaultCookingTime(recipeType);
 
     private static boolean dirty;
 
@@ -153,8 +243,47 @@ public final class RecipeAuthoringState {
         return output;
     }
 
+    public static RecipeDraftType recipeType() {
+        return recipeType;
+    }
+
+    public static float experience() {
+        return experience;
+    }
+
+    public static void setExperience(float nextExperience) {
+        experience = Math.max(0.0F, nextExperience);
+        dirty = true;
+    }
+
+    public static int cookingTime() {
+        return cookingTime;
+    }
+
+    public static void setCookingTime(int nextCookingTime) {
+        cookingTime = Math.max(1, nextCookingTime);
+        dirty = true;
+    }
+
     public static DraftSlot slot(SlotRef ref) {
         return ref.kind() == SlotKind.OUTPUT ? output : gridSlot(ref.index());
+    }
+
+    public static String slotLabel(SlotRef ref) {
+        if (ref.kind() == SlotKind.OUTPUT) {
+            return "Output";
+        }
+        return switch (recipeType) {
+            case SMELTING, BLASTING, SMOKING, CAMPFIRE_COOKING -> "Ingredient";
+            case STONECUTTING -> "Input";
+            case SMITHING_TRANSFORM, SMITHING_TRIM -> switch (ref.index()) {
+                case 0 -> "Template";
+                case 1 -> "Base";
+                case 2 -> "Addition";
+                default -> "Input";
+            };
+            default -> "Ingredient " + (ref.index() + 1);
+        };
     }
 
     public static @Nullable SlotRef selectedSlot() {
@@ -191,21 +320,31 @@ public final class RecipeAuthoringState {
     }
 
     public static void newDraft() {
+        newDraft(recipeType);
+    }
+
+    public static void newDraft(RecipeDraftType type) {
+        recipeType = type == null || type == RecipeDraftType.UNSUPPORTED ? RecipeDraftType.CRAFTING_SHAPED : type;
         clearGrid();
         output = DraftSlot.EMPTY;
         selectedRecipeId = null;
         selectedSlot = null;
         recipeIdText = defaultNamespace() + ":new_recipe";
-        status = "New recipe draft.";
+        experience = 0.0F;
+        cookingTime = defaultCookingTime(recipeType);
+        status = "New " + recipeType.label().toLowerCase(Locale.ROOT) + " recipe draft.";
         dirty = false;
     }
 
     public static void loadRecipe(RecipeHolder<?> holder) {
+        recipeType = RecipeDraftType.fromRecipe(holder);
         clearGrid();
         output = DraftSlot.EMPTY;
         selectedRecipeId = holder.id();
         recipeIdText = holder.id().toString();
         selectedSlot = null;
+        experience = 0.0F;
+        cookingTime = defaultCookingTime(recipeType);
 
         var recipe = holder.value();
         var level = Minecraft.getInstance().level;
@@ -213,25 +352,60 @@ public final class RecipeAuthoringState {
             output = DraftSlot.of(recipe.getResultItem(level.registryAccess()));
         }
 
-        var ingredients = recipe.getIngredients();
-        if (recipe instanceof ShapedRecipe shaped) {
-            var width = Math.min(3, shaped.getWidth());
-            var height = Math.min(3, shaped.getHeight());
-            for (var row = 0; row < height; row++) {
-                for (var col = 0; col < width; col++) {
-                    var ingredientIndex = row * shaped.getWidth() + col;
-                    if (ingredientIndex >= 0 && ingredientIndex < ingredients.size()) {
-                        GRID[row * 3 + col] = firstStack(ingredients.get(ingredientIndex));
+        switch (recipeType) {
+            case CRAFTING_SHAPED -> {
+                var ingredients = recipe.getIngredients();
+                if (recipe instanceof ShapedRecipe shaped) {
+                    var width = Math.min(3, shaped.getWidth());
+                    var height = Math.min(3, shaped.getHeight());
+                    for (var row = 0; row < height; row++) {
+                        for (var col = 0; col < width; col++) {
+                            var ingredientIndex = row * shaped.getWidth() + col;
+                            if (ingredientIndex >= 0 && ingredientIndex < ingredients.size()) {
+                                GRID[row * 3 + col] = firstStack(ingredients.get(ingredientIndex));
+                            }
+                        }
                     }
                 }
             }
-        } else {
-            for (var i = 0; i < Math.min(9, ingredients.size()); i++) {
-                GRID[i] = firstStack(ingredients.get(i));
+            case CRAFTING_SHAPELESS -> {
+                var ingredients = recipe.getIngredients();
+                for (var i = 0; i < Math.min(9, ingredients.size()); i++) {
+                    GRID[i] = firstStack(ingredients.get(i));
+                }
+            }
+            case SMELTING, BLASTING, SMOKING, CAMPFIRE_COOKING -> {
+                if (recipe instanceof AbstractCookingRecipe cooking) {
+                    var ingredients = cooking.getIngredients();
+                    if (!ingredients.isEmpty()) {
+                        GRID[0] = firstStack(ingredients.getFirst());
+                    }
+                    experience = cooking.getExperience();
+                    cookingTime = cooking.getCookingTime();
+                }
+            }
+            case STONECUTTING -> {
+                if (recipe instanceof SingleItemRecipe single) {
+                    var ingredients = single.getIngredients();
+                    if (!ingredients.isEmpty()) {
+                        GRID[0] = firstStack(ingredients.getFirst());
+                    }
+                }
+            }
+            case SMITHING_TRANSFORM, SMITHING_TRIM -> {
+                GRID[0] = firstStack(readIngredientField(recipe, "template"));
+                GRID[1] = firstStack(readIngredientField(recipe, "base"));
+                GRID[2] = firstStack(readIngredientField(recipe, "addition"));
+            }
+            case UNSUPPORTED -> {
+                // Unsupported/custom recipes intentionally stay read-only; do not project their ingredients into a
+                // wrong editor surface.
             }
         }
 
-        status = "Loaded " + holder.id() + ".";
+        status = recipeType == RecipeDraftType.UNSUPPORTED
+            ? "Loaded " + holder.id() + " as read-only. This serializer is not editable yet."
+            : "Loaded " + holder.id() + ".";
         dirty = false;
     }
 
@@ -326,22 +500,30 @@ public final class RecipeAuthoringState {
             status = "Open a project before saving recipes.";
             return null;
         }
+        if (!recipeType.authorable()) {
+            status = "This recipe type is read-only.";
+            return null;
+        }
 
         var id = ResourceLocation.tryParse(recipeIdText);
         if (id == null) {
             status = "Invalid recipe id.";
             return null;
         }
-        if (output.isEmpty()) {
-            status = "Choose an output item before saving.";
-            return null;
-        }
-        if (!hasAnyIngredient()) {
-            status = "Add at least one crafting ingredient before saving.";
+
+        var json = switch (recipeType) {
+            case CRAFTING_SHAPED -> buildShapedRecipeJson();
+            case CRAFTING_SHAPELESS -> buildShapelessRecipeJson();
+            case SMELTING, BLASTING, SMOKING, CAMPFIRE_COOKING -> buildCookingRecipeJson();
+            case STONECUTTING -> buildStonecuttingRecipeJson();
+            case SMITHING_TRANSFORM -> buildSmithingTransformRecipeJson();
+            case SMITHING_TRIM -> buildSmithingTrimRecipeJson();
+            case UNSUPPORTED -> null;
+        };
+        if (json == null) {
             return null;
         }
 
-        var json = buildShapedRecipeJson();
         var relPath = "data/" + id.getNamespace() + "/recipe/" + id.getPath() + ".json";
         var saved = EngineProjectIO.writeDataJson(project, relPath, json);
         selectedRecipeId = id;
@@ -353,6 +535,15 @@ public final class RecipeAuthoringState {
     }
 
     private static JsonObject buildShapedRecipeJson() {
+        if (output.isEmpty()) {
+            status = "Choose an output item before saving.";
+            return null;
+        }
+        if (!hasAnyIngredient()) {
+            status = "Add at least one crafting ingredient before saving.";
+            return null;
+        }
+
         var bounds = ingredientBounds();
         var minRow = bounds[0];
         var maxRow = bounds[1];
@@ -378,24 +569,126 @@ public final class RecipeAuthoringState {
 
         var keyObj = new JsonObject();
         for (Map.Entry<ResourceLocation, Character> entry : keys.entrySet()) {
-            var ingredient = new JsonObject();
-            ingredient.addProperty("item", entry.getKey().toString());
-            keyObj.add(String.valueOf(entry.getValue()), ingredient);
-        }
-
-        var result = new JsonObject();
-        result.addProperty("id", output.itemId().toString());
-        if (output.count() != 1) {
-            result.addProperty("count", output.count());
+            keyObj.add(String.valueOf(entry.getValue()), ingredientJson(entry.getKey()));
         }
 
         var json = new JsonObject();
-        json.addProperty("type", "minecraft:crafting_shaped");
+        json.addProperty("type", recipeType.typeId());
         json.addProperty("category", "misc");
         json.add("pattern", pattern);
         json.add("key", keyObj);
-        json.add("result", result);
+        json.add("result", resultJson(output));
         return json;
+    }
+
+    private static JsonObject buildShapelessRecipeJson() {
+        if (output.isEmpty()) {
+            status = "Choose an output item before saving.";
+            return null;
+        }
+        if (!hasAnyIngredient()) {
+            status = "Add at least one crafting ingredient before saving.";
+            return null;
+        }
+
+        var ingredients = new JsonArray();
+        for (var slot : GRID) {
+            if (!slot.isEmpty()) {
+                ingredients.add(ingredientJson(slot.itemId()));
+            }
+        }
+
+        var json = new JsonObject();
+        json.addProperty("type", recipeType.typeId());
+        json.addProperty("category", "misc");
+        json.add("ingredients", ingredients);
+        json.add("result", resultJson(output));
+        return json;
+    }
+
+    private static JsonObject buildCookingRecipeJson() {
+        if (!requireSlot(0, "ingredient") || !requireOutput()) {
+            return null;
+        }
+
+        var json = new JsonObject();
+        json.addProperty("type", recipeType.typeId());
+        json.addProperty("category", "misc");
+        json.add("ingredient", ingredientJson(GRID[0].itemId()));
+        json.add("result", resultJson(output));
+        json.addProperty("experience", experience);
+        json.addProperty("cookingtime", cookingTime);
+        return json;
+    }
+
+    private static JsonObject buildStonecuttingRecipeJson() {
+        if (!requireSlot(0, "input") || !requireOutput()) {
+            return null;
+        }
+
+        var json = new JsonObject();
+        json.addProperty("type", recipeType.typeId());
+        json.add("ingredient", ingredientJson(GRID[0].itemId()));
+        json.add("result", resultJson(output));
+        return json;
+    }
+
+    private static JsonObject buildSmithingTransformRecipeJson() {
+        if (!requireSlot(0, "template") || !requireSlot(1, "base") || !requireSlot(2, "addition") || !requireOutput()) {
+            return null;
+        }
+
+        var json = new JsonObject();
+        json.addProperty("type", recipeType.typeId());
+        json.add("template", ingredientJson(GRID[0].itemId()));
+        json.add("base", ingredientJson(GRID[1].itemId()));
+        json.add("addition", ingredientJson(GRID[2].itemId()));
+        json.add("result", resultJson(output));
+        return json;
+    }
+
+    private static JsonObject buildSmithingTrimRecipeJson() {
+        if (!requireSlot(0, "template") || !requireSlot(1, "base") || !requireSlot(2, "addition")) {
+            return null;
+        }
+
+        var json = new JsonObject();
+        json.addProperty("type", recipeType.typeId());
+        json.add("template", ingredientJson(GRID[0].itemId()));
+        json.add("base", ingredientJson(GRID[1].itemId()));
+        json.add("addition", ingredientJson(GRID[2].itemId()));
+        return json;
+    }
+
+    private static boolean requireSlot(int index, String label) {
+        if (GRID[index].isEmpty()) {
+            status = "Choose a " + label + " item before saving.";
+            return false;
+        }
+        return true;
+    }
+
+    private static boolean requireOutput() {
+        if (output.isEmpty()) {
+            status = "Choose an output item before saving.";
+            return false;
+        }
+        return true;
+    }
+
+    private static JsonObject ingredientJson(ResourceLocation itemId) {
+        var ingredient = new JsonObject();
+        ingredient.addProperty("item", itemId.toString());
+        return ingredient;
+    }
+
+    private static JsonObject resultJson(DraftSlot slot) {
+        var result = new JsonObject();
+        result.addProperty("id", slot.itemId().toString());
+        if (slot.count() != 1) {
+            result.addProperty("count", slot.count());
+        }
+        return result;
     }
 
     private static int[] ingredientBounds() {
@@ -447,6 +740,24 @@ public final class RecipeAuthoringState {
         return DraftSlot.EMPTY;
     }
 
+    private static Ingredient readIngredientField(Object recipe, String fieldName) {
+        var type = recipe.getClass();
+        while (type != null) {
+            try {
+                Field field = type.getDeclaredField(fieldName);
+                field.setAccessible(true);
+                var value = field.get(recipe);
+                if (value instanceof Ingredient ingredient) {
+                    return ingredient;
+                }
+            } catch (ReflectiveOperationException ignored) {
+                // Try the superclass; smithing recipe ingredient fields are not exposed by public accessors.
+            }
+            type = type.getSuperclass();
+        }
+        return Ingredient.EMPTY;
+    }
+
     private static void clearGrid() {
         for (var i = 0; i < GRID.length; i++) {
             GRID[i] = DraftSlot.EMPTY;
@@ -458,5 +769,13 @@ public final class RecipeAuthoringState {
         var raw = project.isEmpty() ? "blib" : project.toLowerCase(Locale.ROOT);
         var normalized = raw.replaceAll("[^a-z0-9_.-]", "_");
         return ResourceLocation.isValidNamespace(normalized) ? normalized : "blib";
+    }
+
+    private static int defaultCookingTime(RecipeDraftType type) {
+        return switch (type) {
+            case BLASTING, SMOKING -> 100;
+            case CAMPFIRE_COOKING -> 600;
+            default -> 200;
+        };
     }
 }
