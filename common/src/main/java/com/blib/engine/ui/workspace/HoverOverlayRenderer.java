@@ -28,6 +28,8 @@ public final class HoverOverlayRenderer {
 
     private static final int TOOLTIP_TEXT_COLOR = 0xFFD0D0D0;
 
+    private static final int TOOLTIP_Z = 400;
+
     /**
      * Maximum tooltip body width before {@link Font#split} wraps. Picked so multi-sentence help text breaks across 3-4
      * lines at typical workspace logical-pixel sizes — wide enough to avoid awkward 1-2 word lines, narrow enough that
@@ -144,18 +146,25 @@ public final class HoverOverlayRenderer {
         if (tipY + boxH > logicalHeight) {
             tipY = mouseY - 4 - boxH;
         }
-        graphics.fill(tipX, tipY, tipX + boxW, tipY + boxH, TOOLTIP_BG_COLOR);
-        graphics.fill(tipX, tipY, tipX + boxW, tipY + 1, TOOLTIP_BORDER_COLOR);
-        graphics.fill(tipX, tipY + boxH - 1, tipX + boxW, tipY + boxH, TOOLTIP_BORDER_COLOR);
-        graphics.fill(tipX, tipY, tipX + 1, tipY + boxH, TOOLTIP_BORDER_COLOR);
-        graphics.fill(tipX + boxW - 1, tipY, tipX + boxW, tipY + boxH, TOOLTIP_BORDER_COLOR);
+        var pose = graphics.pose();
+        pose.pushPose();
+        pose.translate(0.0F, 0.0F, TOOLTIP_Z);
+        try {
+            graphics.fill(tipX, tipY, tipX + boxW, tipY + boxH, TOOLTIP_BG_COLOR);
+            graphics.fill(tipX, tipY, tipX + boxW, tipY + 1, TOOLTIP_BORDER_COLOR);
+            graphics.fill(tipX, tipY + boxH - 1, tipX + boxW, tipY + boxH, TOOLTIP_BORDER_COLOR);
+            graphics.fill(tipX, tipY, tipX + 1, tipY + boxH, TOOLTIP_BORDER_COLOR);
+            graphics.fill(tipX + boxW - 1, tipY, tipX + boxW, tipY + boxH, TOOLTIP_BORDER_COLOR);
 
-        // Top-anchored layout: first line at tipY + paddingY (+1 for descender padding so the glyph sits visually
-        // centered on its baseline), subsequent lines stacked by lineHeight.
-        var lineY = tipY + paddingY + 1;
-        for (var line : lines) {
-            graphics.drawString(font, line, tipX + paddingX, lineY, TOOLTIP_TEXT_COLOR, false);
-            lineY += lineHeight;
+            // Top-anchored layout: first line at tipY + paddingY (+1 for descender padding so the glyph sits visually
+            // centered on its baseline), subsequent lines stacked by lineHeight.
+            var lineY = tipY + paddingY + 1;
+            for (var line : lines) {
+                graphics.drawString(font, line, tipX + paddingX, lineY, TOOLTIP_TEXT_COLOR, false);
+                lineY += lineHeight;
+            }
+        } finally {
+            pose.popPose();
         }
     }
 }
