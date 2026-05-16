@@ -3,11 +3,10 @@ package com.blib.engine.ui.workspace;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -55,8 +54,6 @@ import com.blib.mod.common.network.packet.S2CFactionDirectoryPayload;
 @ApiStatus.Internal
 public final class ViewportContextMenuHandler implements ViewportPanel.RightClickHandler, EntityContextMenuHandler {
 
-    private static final int INLINE_CHECKLIST_LIMIT = 12;
-
     /** Workspace-side operations the menus invoke. Implemented by {@code EngineWorkspaceScreen}. */
     public interface Host {
 
@@ -98,10 +95,10 @@ public final class ViewportContextMenuHandler implements ViewportPanel.RightClic
         var menuY = (int) cursorY;
         var items = new ArrayList<DropdownMenu.Item>();
         ClientEntityFactionsCache.ensureRequested(entityUuid);
-        items.add(new DropdownMenu.Item("Manage Factions", () -> {}, buildFactionChecklistMenu(entityUuid, entityDisplayName, menuX, menuY)));
+        items.add(new DropdownMenu.Item("Manage All Factions...", () -> openFactionChecklistPopup(menuX, menuY, entityUuid, entityDisplayName)));
         var entityTypeId = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
         if (entityTypeId != null) {
-            items.add(new DropdownMenu.Item("Manage Tags", () -> {}, buildEntityTagChecklistMenu(entityTypeId, menuX, menuY)));
+            items.add(new DropdownMenu.Item("Manage All Tags...", () -> openEntityTagChecklistPopup(menuX, menuY, entityTypeId)));
         }
         if (!(entity instanceof Player)) {
             if (entity instanceof Dismemberable) {
@@ -125,59 +122,6 @@ public final class ViewportContextMenuHandler implements ViewportPanel.RightClic
         }
 
         host.openMenu(new DropdownMenu(menuX, menuY, items));
-    }
-
-    private List<DropdownMenu.Item> buildFactionChecklistMenu(UUID entityUuid, String entityDisplayName, int menuX, int menuY) {
-        var factions = ClientFactionDirectoryCache.entries();
-        if (factions.isEmpty()) {
-            return List.of(new DropdownMenu.Item("(no factions)", () -> {}, false));
-        }
-        var memberships = ClientEntityFactionsCache.get(entityUuid);
-        if (memberships == null) {
-            return List.of(
-                new DropdownMenu.Item("(loading memberships)", () -> {}, false),
-                new DropdownMenu.Item("Manage All Factions...", () -> openFactionChecklistPopup(menuX, menuY, entityUuid, entityDisplayName))
-            );
-        }
-
-        var current = new HashSet<>(memberships);
-        var shownFactionIds = new HashSet<ResourceLocation>();
-        var items = new ArrayList<DropdownMenu.Item>();
-        addFactionRows(items, shownFactionIds, entityUuid, current, true);
-        if (!items.isEmpty() && shownFactionIds.size() < Math.min(INLINE_CHECKLIST_LIMIT, factions.size())) {
-            items.add(DropdownMenu.Item.divider());
-        }
-        addFactionRows(items, shownFactionIds, entityUuid, current, false);
-        if (shownFactionIds.size() < factions.size()) {
-            items.add(DropdownMenu.Item.divider());
-            items.add(new DropdownMenu.Item("Manage All Factions...", () -> openFactionChecklistPopup(menuX, menuY, entityUuid, entityDisplayName)));
-        }
-        return items.isEmpty() ? List.of(new DropdownMenu.Item("(no factions)", () -> {}, false)) : items;
-    }
-
-    private void addFactionRows(
-        List<DropdownMenu.Item> items,
-        Set<ResourceLocation> shownFactionIds,
-        UUID entityUuid,
-        Set<ResourceLocation> current,
-        boolean checkedRows
-    ) {
-        for (var entry : ClientFactionDirectoryCache.entries()) {
-            if (shownFactionIds.size() >= INLINE_CHECKLIST_LIMIT) {
-                return;
-            }
-            if (current.contains(entry.id()) != checkedRows) {
-                continue;
-            }
-            shownFactionIds.add(entry.id());
-            items.add(
-                DropdownMenu.Item.checked(
-                    entry.name(),
-                    () -> isFactionMember(entityUuid, entry.id()),
-                    () -> toggleFactionMembership(entityUuid, entry.id())
-                )
-            );
-        }
     }
 
     private void openFactionChecklistPopup(int menuX, int menuY, UUID entityUuid, String entityDisplayName) {
@@ -221,70 +165,6 @@ public final class ViewportContextMenuHandler implements ViewportPanel.RightClic
         ClientEntityFactionsCache.setMembership(entityUuid, factionId, nextMember);
     }
 
-    private List<DropdownMenu.Item> buildEntityTagChecklistMenu(ResourceLocation entityTypeId, int menuX, int menuY) {
-        var projectName = ProjectSession.activeProjectName();
-        if (projectName == null) {
-            return List.of(
-                new DropdownMenu.Item(
-                    "(open a project to edit tags)",
-                    () -> {},
-                    false,
-                    Component.literal("Tag edits need an active project datapack.")
-                )
-            );
-        }
-        ensureTagCatalogRequested(projectName);
-        var catalog = entityTagCatalogEntries();
-        if (catalog.isEmpty()) {
-            return List.of(new DropdownMenu.Item("(loading tags)", () -> {}, false));
-        }
-
-        var current = effectiveEntityTagSet(entityTypeId);
-        var shownTagIds = new HashSet<ResourceLocation>();
-        var items = new ArrayList<DropdownMenu.Item>();
-        addEntityTagRows(items, shownTagIds, entityTypeId, current, true);
-        if (!items.isEmpty() && shownTagIds.size() < Math.min(INLINE_CHECKLIST_LIMIT, catalog.size())) {
-            items.add(DropdownMenu.Item.divider());
-        }
-        addEntityTagRows(items, shownTagIds, entityTypeId, current, false);
-        if (shownTagIds.size() < catalog.size()) {
-            items.add(DropdownMenu.Item.divider());
-            items.add(new DropdownMenu.Item("Manage All Tags...", () -> openEntityTagChecklistPopup(menuX, menuY, entityTypeId)));
-        }
-        return items.isEmpty() ? List.of(new DropdownMenu.Item("(no entity tags)", () -> {}, false)) : items;
-    }
-
-    private void addEntityTagRows(
-        List<DropdownMenu.Item> items,
-        Set<ResourceLocation> shownTagIds,
-        ResourceLocation entityTypeId,
-        Set<ResourceLocation> current,
-        boolean checkedRows
-    ) {
-        for (var tagId : entityTagCatalogEntries()) {
-            if (shownTagIds.size() >= INLINE_CHECKLIST_LIMIT) {
-                return;
-            }
-            if (current.contains(tagId) != checkedRows) {
-                continue;
-            }
-            shownTagIds.add(tagId);
-            var enabled = canToggleEntityTag(entityTypeId, tagId);
-            var disabledTooltip = enabled
-                ? null
-                : Component.literal("This tag comes from upstream data and cannot be removed from here.");
-            items.add(
-                DropdownMenu.Item.checked(
-                    "#" + tagId,
-                    () -> isEntityInTag(entityTypeId, tagId),
-                    () -> toggleEntityTagMembership(entityTypeId, tagId),
-                    enabled,
-                    disabledTooltip
-                )
-            );
-        }
-    }
-
     private void openEntityTagChecklistPopup(int menuX, int menuY, ResourceLocation entityTypeId) {
         ChecklistManagePopup.openAt(menuX, menuY, "Tags: " + entityTypeId, () -> buildEntityTagPopupEntries(entityTypeId));
     }
@@ -295,6 +175,9 @@ public final class ViewportContextMenuHandler implements ViewportPanel.RightClic
             ensureTagCatalogRequested(projectName);
         }
         var tagIds = new ArrayList<>(entityTagCatalogEntries());
+        if (projectName != null && tagIds.isEmpty()) {
+            return List.of(new ChecklistManagePopup.Entry("(loading tags)", null, () -> false, () -> {}, false));
+        }
         tagIds.sort(
             Comparator.comparing((ResourceLocation tagId) -> !isEntityInTag(entityTypeId, tagId))
                 .thenComparing(ResourceLocation::toString)
