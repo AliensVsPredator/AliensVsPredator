@@ -332,7 +332,7 @@ public final class ModelerViewportPanel implements Panel {
         if (partners.isEmpty()) {
             return null;
         }
-        return Component.literal("Colliding with " + String.join(", ", partners));
+        return Component.literal("Bone: " + hoveredBone.name + "\nColliding with " + String.join(", ", partners));
     }
 
     /**
