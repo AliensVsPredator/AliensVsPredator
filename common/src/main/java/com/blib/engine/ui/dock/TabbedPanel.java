@@ -1,6 +1,7 @@
 package com.blib.engine.ui.dock;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -10,6 +11,8 @@ import java.util.Collections;
 import java.util.List;
 
 import com.blib.engine.ui.EngineFont;
+import com.blib.engine.ui.layout.PanelScissor;
+import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.panel.viewport.ViewportPanel;
 
 /**
@@ -37,6 +40,8 @@ public final class TabbedPanel extends DelegatingPanel {
     private static final int TAB_LABEL_TO_CLOSE_GAP = 4;
 
     private static final int CLOSE_BUTTON_SIZE = 6;
+
+    private static final int TAB_SCROLL_STEP = 48;
 
     private static final int STRIP_BG_COLOR = 0xFF161618;
 
@@ -81,6 +86,16 @@ public final class TabbedPanel extends DelegatingPanel {
     /** Per-frame tab geometry, keyed by tab index, used for hit testing. Rebuilt on every render. */
     private final List<TabRect> tabRects = new ArrayList<>();
 
+    private int tabScrollX;
+
+    private int tabContentWidth;
+
+    private int tabViewportWidth;
+
+    private boolean revealActiveTab = true;
+
+    private int lastTabViewportWidth = -1;
+
     public TabbedPanel(Panel... initial) {
         Collections.addAll(this.tabs, initial);
         // Fire onShown for the initially-active tab so panels with "freshly-opened" state (e.g. scroll positions to
@@ -111,6 +126,7 @@ public final class TabbedPanel extends DelegatingPanel {
         if (index >= 0 && index < tabs.size()) {
             var changed = this.activeIndex != index;
             this.activeIndex = index;
+            revealActiveTab = true;
             if (changed) {
                 tabs.get(index).onShown();
             }
@@ -126,13 +142,16 @@ public final class TabbedPanel extends DelegatingPanel {
         tabs.remove(index);
         if (tabs.isEmpty()) {
             activeIndex = 0;
+            tabScrollX = 0;
             return;
         }
         if (previousActive != null && previousActive != removed && tabs.contains(previousActive)) {
             activeIndex = tabs.indexOf(previousActive);
+            revealActiveTab = true;
             return;
         }
         activeIndex = Math.min(index, tabs.size() - 1);
+        revealActiveTab = true;
         tabs.get(activeIndex).onShown();
     }
 
@@ -145,6 +164,8 @@ public final class TabbedPanel extends DelegatingPanel {
         tabs.clear();
         tabs.add(kept);
         activeIndex = 0;
+        tabScrollX = 0;
+        revealActiveTab = true;
         if (changedActive) {
             kept.onShown();
         }
@@ -158,9 +179,11 @@ public final class TabbedPanel extends DelegatingPanel {
         tabs.subList(index + 1, tabs.size()).clear();
         if (previousActive != null && tabs.contains(previousActive)) {
             activeIndex = tabs.indexOf(previousActive);
+            revealActiveTab = true;
             return;
         }
         activeIndex = Math.min(index, tabs.size() - 1);
+        revealActiveTab = true;
         tabs.get(activeIndex).onShown();
     }
 
@@ -168,6 +191,7 @@ public final class TabbedPanel extends DelegatingPanel {
         var clamped = Math.max(0, Math.min(tabs.size(), index));
         tabs.add(clamped, tab);
         activeIndex = clamped;
+        revealActiveTab = true;
         // Newly-inserted tab becomes active immediately — give it the same onShown notification a setActiveIndex would.
         tab.onShown();
     }
@@ -212,12 +236,23 @@ public final class TabbedPanel extends DelegatingPanel {
         tabRects.clear();
 
         var font = EngineFont.get();
-        var cursorX = x;
+        tabContentWidth = computeTabContentWidth(font);
+        tabViewportWidth = Math.max(0, width);
+        var viewportChanged = tabViewportWidth != lastTabViewportWidth;
+        lastTabViewportWidth = tabViewportWidth;
+        tabScrollX = clampTabScroll(tabScrollX);
+        if (revealActiveTab || (viewportChanged && !isActiveTabVisible(font))) {
+            revealActiveTab(font);
+            revealActiveTab = false;
+        }
+
+        PanelScissor.enable(graphics, UiRect.of(x, y, tabViewportWidth, TAB_BAR_HEIGHT));
+        var cursorX = x - tabScrollX;
 
         for (var i = 0; i < tabs.size(); i++) {
             var label = tabs.get(i).title();
             var labelWidth = font.width(label);
-            var tabWidth = TAB_PADDING_X + labelWidth + TAB_LABEL_TO_CLOSE_GAP + CLOSE_BUTTON_SIZE + TAB_PADDING_X;
+            var tabWidth = tabWidth(font, i);
 
             var tabRight = cursorX + tabWidth;
             var hovered = mouseX >= cursorX && mouseX < tabRight && mouseY >= y && mouseY < y + TAB_BAR_HEIGHT;
@@ -243,6 +278,7 @@ public final class TabbedPanel extends DelegatingPanel {
             tabRects.add(new TabRect(cursorX, tabRight, closeX0, closeY0, closeX1, closeY1));
             cursorX = tabRight + 1;
         }
+        PanelScissor.disable(graphics);
     }
 
     /**
@@ -276,6 +312,25 @@ public final class TabbedPanel extends DelegatingPanel {
 
     public boolean isInTabStrip(double mouseX, double mouseY) {
         return mouseX >= rectX && mouseX < rectX + rectWidth && mouseY >= rectY && mouseY < rectY + TAB_BAR_HEIGHT;
+    }
+
+    public boolean scrollTabStrip(double scrollX, double scrollY) {
+        var maxScroll = maxTabScroll();
+        if (maxScroll <= 0) {
+            return false;
+        }
+        var delta = 0;
+        if (scrollX != 0.0) {
+            delta += (int) Math.round(scrollX * TAB_SCROLL_STEP);
+        }
+        if (scrollY != 0.0) {
+            delta -= (int) Math.round(scrollY * TAB_SCROLL_STEP);
+        }
+        if (delta != 0) {
+            tabScrollX = clampTabScroll(tabScrollX + delta);
+            revealActiveTab = false;
+        }
+        return true;
     }
 
     /** Returns the tab index hit by {@code (mouseX, mouseY)} in the tab strip, or -1 if none. */
@@ -338,4 +393,57 @@ public final class TabbedPanel extends DelegatingPanel {
         int closeX1,
         int closeY1
     ) {}
+
+    private int computeTabContentWidth(Font font) {
+        var width = 0;
+        for (var i = 0; i < tabs.size(); i++) {
+            width += tabWidth(font, i) + 1;
+        }
+        return width;
+    }
+
+    private int tabWidth(Font font, int index) {
+        var labelWidth = font.width(tabs.get(index).title());
+        return TAB_PADDING_X + labelWidth + TAB_LABEL_TO_CLOSE_GAP + CLOSE_BUTTON_SIZE + TAB_PADDING_X;
+    }
+
+    private int tabLeft(Font font, int index) {
+        var left = 0;
+        for (var i = 0; i < index && i < tabs.size(); i++) {
+            left += tabWidth(font, i) + 1;
+        }
+        return left;
+    }
+
+    private boolean isActiveTabVisible(Font font) {
+        if (tabs.isEmpty() || tabViewportWidth <= 0) {
+            return true;
+        }
+        var left = tabLeft(font, activeIndex);
+        var right = left + tabWidth(font, activeIndex);
+        return left >= tabScrollX && right <= tabScrollX + tabViewportWidth;
+    }
+
+    private void revealActiveTab(Font font) {
+        if (tabs.isEmpty() || tabViewportWidth <= 0) {
+            tabScrollX = 0;
+            return;
+        }
+        var left = tabLeft(font, activeIndex);
+        var right = left + tabWidth(font, activeIndex);
+        if (left < tabScrollX) {
+            tabScrollX = left;
+        } else if (right > tabScrollX + tabViewportWidth) {
+            tabScrollX = right - tabViewportWidth;
+        }
+        tabScrollX = clampTabScroll(tabScrollX);
+    }
+
+    private int maxTabScroll() {
+        return Math.max(0, tabContentWidth - tabViewportWidth);
+    }
+
+    private int clampTabScroll(int value) {
+        return Math.max(0, Math.min(maxTabScroll(), value));
+    }
 }

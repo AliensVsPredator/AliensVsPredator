@@ -817,6 +817,10 @@ public final class EngineWorkspaceScreen extends Screen {
         if (menuBar.isInsideOpenMenu(logicalX, logicalY)) {
             return true;
         }
+        var tabbed = findTabbedPanelAt((int) logicalX, (int) logicalY);
+        if (tabbed != null && tabbed.isInTabStrip(logicalX, logicalY) && tabbed.scrollTabStrip(scrollX, scrollY)) {
+            return true;
+        }
         var leaf = DockTreeHitTest.panelAt(root, 0, 0, logicalWidth(), logicalHeight(), logicalX, logicalY);
         if (leaf != null && leaf.mouseScrolled(logicalX, logicalY, scrollX, scrollY)) {
             return true;
