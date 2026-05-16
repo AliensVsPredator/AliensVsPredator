@@ -69,6 +69,8 @@ public final class RecipeEditorPanel implements Panel {
 
     private static final int COUNT_STEPPER_HEIGHT = 5;
 
+    private static final int COUNT_EDITOR_Z = 400;
+
     private static final ResourceLocation CRAFTING_TABLE_TEXTURE = ResourceLocation.fromNamespaceAndPath(
         "minecraft",
         "textures/gui/container/crafting_table.png"
@@ -424,6 +426,17 @@ public final class RecipeEditorPanel implements Panel {
     }
 
     private void renderInlineCountEditor(GuiGraphics graphics, UiRect slotRect, int mouseX, int mouseY) {
+        var pose = graphics.pose();
+        pose.pushPose();
+        pose.translate(0.0F, 0.0F, COUNT_EDITOR_Z);
+        try {
+            renderInlineCountEditorAtOverlayDepth(graphics, slotRect, mouseX, mouseY);
+        } finally {
+            pose.popPose();
+        }
+    }
+
+    private void renderInlineCountEditorAtOverlayDepth(GuiGraphics graphics, UiRect slotRect, int mouseX, int mouseY) {
         var font = EngineFont.get();
         var countText = inlineCountInput.content().isBlank() ? "1" : inlineCountInput.content();
         var textWidth = font.width(countText);
