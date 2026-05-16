@@ -7,9 +7,11 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.function.Supplier;
 
 import com.blib.engine.layout.LayoutCatalog;
+import com.blib.engine.layout.LayoutDoc;
 import com.blib.engine.layout.LayoutTemplate;
 import com.blib.engine.layout.PanelRegistry;
 import com.blib.engine.modeler.animation.AnimationCollisionState;
@@ -345,7 +347,9 @@ public final class MenuBarController {
      */
     public DropdownMenu buildWindowMenu(int anchorX, int anchorY) {
         var items = new ArrayList<DropdownMenu.Item>();
-        for (var domain : PanelRegistry.orderedDomains()) {
+        var domains = new ArrayList<>(PanelRegistry.orderedDomains());
+        domains.sort(Comparator.comparing(PanelRegistry.Domain::label, String.CASE_INSENSITIVE_ORDER));
+        for (var domain : domains) {
             var children = buildWindowDomainItems(domain);
             if (!children.isEmpty()) {
                 items.add(new DropdownMenu.Item(domain.label(), () -> {}, children));
@@ -370,6 +374,7 @@ public final class MenuBarController {
                 )
             );
         }
+        items.sort(Comparator.comparing(DropdownMenu.Item::label, String.CASE_INSENSITIVE_ORDER));
         return items;
     }
 
@@ -377,7 +382,9 @@ public final class MenuBarController {
         var items = new ArrayList<DropdownMenu.Item>();
         var templateItems = new ArrayList<DropdownMenu.Item>();
         var activeId = actions.activeLayoutId();
-        for (var doc : LayoutCatalog.listAll()) {
+        var layoutDocs = new ArrayList<>(LayoutCatalog.listAll());
+        layoutDocs.sort(Comparator.comparing(LayoutDoc::displayName, String.CASE_INSENSITIVE_ORDER));
+        for (var doc : layoutDocs) {
             var prefix = doc.id().equals(activeId) ? "• " : "  ";
             var target = LayoutCatalog.isTemplateId(doc.id()) ? templateItems : items;
             target.add(new DropdownMenu.Item(prefix + doc.displayName(), () -> actions.switchLayout(doc.id())));
