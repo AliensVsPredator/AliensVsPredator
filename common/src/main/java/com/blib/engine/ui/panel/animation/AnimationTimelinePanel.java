@@ -101,6 +101,8 @@ public final class AnimationTimelinePanel implements Panel {
 
     private static final int KEYFRAME_RADIUS = 4;
 
+    private static final int START_KEYFRAME_PADDING_PX = KEYFRAME_RADIUS + 2;
+
     private static final int KEYFRAME_HIT_PX = 6;
 
     private final ScrollViewport scroll = new ScrollViewport();
@@ -702,7 +704,8 @@ public final class AnimationTimelinePanel implements Panel {
 
     private void setPlayheadFromMouse(double mouseX) {
         var state = AnimationEditorState.get();
-        var ratio = (mouseX - timelineGraphX) / Math.max(1.0, timelineGraphWidth - 1.0);
+        var startInset = Math.min(START_KEYFRAME_PADDING_PX, Math.max(0, timelineGraphWidth - 1));
+        var ratio = (mouseX - timelineGraphX - startInset) / Math.max(1.0, timelineGraphWidth - startInset);
         ratio = Math.max(0.0, Math.min(1.0, ratio));
         state.setPlayheadSeconds(ratio * timelineDuration);
     }
@@ -763,7 +766,8 @@ public final class AnimationTimelinePanel implements Panel {
 
     private static int timeToX(double seconds, int graphX, int graphWidth, double duration) {
         var ratio = duration <= 0.0 ? 0.0 : Math.max(0.0, Math.min(1.0, seconds / duration));
-        return graphX + (int) Math.round(ratio * Math.max(1, graphWidth - 1));
+        var startInset = Math.min(START_KEYFRAME_PADDING_PX, Math.max(0, graphWidth - 1));
+        return graphX + startInset + (int) Math.round(ratio * Math.max(1, graphWidth - startInset - 1));
     }
 
     private static double tickStep(double duration, int graphWidth) {
