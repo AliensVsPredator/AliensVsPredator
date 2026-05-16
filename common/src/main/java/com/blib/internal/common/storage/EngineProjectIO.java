@@ -309,6 +309,44 @@ public final class EngineProjectIO {
             throw new IOException("Project '" + projectName + "' does not exist");
         }
 
+        var filePath = prepareAssetPath(projectRoot, relPath);
+        Files.writeString(filePath, GSON.toJson(json));
+        return filePath;
+    }
+
+    /**
+     * Prepare a writable path inside {@code projectName}'s resource pack without writing file contents. Binary asset
+     * writers use this to share the same resource-pack validation and lazy {@code pack.mcmeta} creation as
+     * {@link #writeAssetJson}.
+     */
+    public static Path prepareAssetPath(String projectName, String relPath) throws IOException {
+        var projectRoot = projectRoot(projectName);
+        if (!isBLibProject(projectRoot)) {
+            throw new IOException("Project '" + projectName + "' does not exist");
+        }
+        return prepareAssetPath(projectRoot, relPath);
+    }
+
+    private static Path prepareAssetPath(Path projectRoot, String relPath) throws IOException {
+        if (relPath == null || relPath.isBlank()) {
+            throw new IOException("Asset path is empty");
+        }
+
+        var resourcepackRoot = ensureResourcepackRoot(projectRoot).toAbsolutePath().normalize();
+        var filePath = resourcepackRoot.resolve(relPath).normalize();
+        if (!filePath.startsWith(resourcepackRoot)) {
+            throw new IOException("Refusing to write asset path outside project resource pack: " + relPath);
+        }
+
+        var parent = filePath.getParent();
+        if (parent == null) {
+            throw new IOException("Asset path has no parent directory: " + relPath);
+        }
+        Files.createDirectories(parent);
+        return filePath;
+    }
+
+    private static Path ensureResourcepackRoot(Path projectRoot) throws IOException {
         var resourcepackRoot = projectRoot.resolve(RESOURCEPACK_SUBDIR);
 
         if (!Files.isRegularFile(resourcepackRoot.resolve("pack.mcmeta"))) {
@@ -324,10 +362,7 @@ public final class EngineProjectIO {
             }
         }
 
-        var filePath = resourcepackRoot.resolve(relPath);
-        Files.createDirectories(filePath.getParent());
-        Files.writeString(filePath, GSON.toJson(json));
-        return filePath;
+        return resourcepackRoot;
     }
 
     /**

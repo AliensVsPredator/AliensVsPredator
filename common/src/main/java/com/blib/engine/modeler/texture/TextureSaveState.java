@@ -12,6 +12,9 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.IdentityHashMap;
 
+import com.blib.engine.session.ProjectSession;
+import com.blib.internal.common.storage.EngineProjectIO;
+
 /**
  * Client-side save baseline for runtime textures. Textures are heap objects, so identity is the only stable key while
  * the modeler is open; each entry remembers the last-saved pixel snapshot and whether the current in-memory pixels have
@@ -59,13 +62,16 @@ public final class TextureSaveState {
     }
 
     public static synchronized boolean canSave(LoadedTexture texture) {
-        return savePath(texture) != null;
+        return stateFor(texture).savePath != null || hasProjectResourceSaveTarget(texture);
     }
 
     public static synchronized boolean save(LoadedTexture texture) {
         var path = savePath(texture);
         if (path == null) {
-            return false;
+            path = resolveProjectResourceSavePath(texture);
+            if (path == null) {
+                return false;
+            }
         }
         return saveAs(texture, path);
     }
@@ -96,6 +102,10 @@ public final class TextureSaveState {
         return true;
     }
 
+    public static boolean hasProjectResourceSaveTarget(LoadedTexture texture) {
+        return texture.sourceResource() != null && !ProjectSession.activeProjectName().isEmpty();
+    }
+
     private static State stateFor(LoadedTexture texture) {
         return STATES.computeIfAbsent(texture, key -> new State(key.sourcePath(), snapshot(key)));
     }
@@ -108,6 +118,27 @@ public final class TextureSaveState {
     private static Path ensurePngExtension(Path path) {
         var value = path.toString();
         return value.toLowerCase(java.util.Locale.ROOT).endsWith(".png") ? path : Path.of(value + ".png");
+    }
+
+    private static @Nullable Path resolveProjectResourceSavePath(LoadedTexture texture) {
+        var resource = texture.sourceResource();
+        var project = ProjectSession.activeProjectName();
+        if (resource == null || project.isEmpty()) {
+            return null;
+        }
+
+        var relPath = "assets/" + resource.getNamespace() + "/" + resource.getPath();
+        try {
+            return EngineProjectIO.prepareAssetPath(project, relPath);
+        } catch (IOException e) {
+            LOGGER.warn(
+                "TextureSaveState: failed to prepare project resource-pack path for {} in project '{}': {}",
+                resource,
+                project,
+                e.getMessage()
+            );
+            return null;
+        }
     }
 
     private static final class State {

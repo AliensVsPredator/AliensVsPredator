@@ -237,7 +237,7 @@ public final class TexturesPanel implements Panel {
             "Save",
             () -> saveTexture(texture),
             TextureSaveState.canSave(texture),
-            Component.literal("Use Save As... to choose a file first.")
+            saveDisabledTooltip(texture)
         );
         var saveTextureAs = new DropdownMenu.Item("Save As...", () -> saveTextureAs(texture));
         var copyTexture = new DropdownMenu.Item("Copy", () -> copyTexture(texture));
@@ -385,6 +385,13 @@ public final class TexturesPanel implements Panel {
         if (!TextureSaveState.saveAs(texture, picked)) {
             LOGGER.warn("TexturesPanel: failed to save {} as {}", texture.displayName(), picked);
         }
+    }
+
+    private static Component saveDisabledTooltip(LoadedTexture texture) {
+        if (texture.sourceResource() != null && ProjectSession.activeProjectName().isEmpty()) {
+            return Component.literal("Open a project to save resource textures into its resource pack.");
+        }
+        return Component.literal("Use Save As... to choose a file first.");
     }
 
     private static void copyTexture(LoadedTexture texture) {
