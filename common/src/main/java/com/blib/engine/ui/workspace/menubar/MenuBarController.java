@@ -315,10 +315,9 @@ public final class MenuBarController {
     }
 
     /**
-     * Build the WINDOW dropdown from {@link PanelRegistry}'s domain metadata. Every body-eligible panel gets a
-     * {@code "Reopen <title>"} entry under its domain submenu, with the title coming from the panel's own
-     * {@link Panel#title()}. Renaming a panel's title automatically updates the menu label since both paths read the
-     * same string.
+     * Build the WINDOW dropdown from {@link PanelRegistry}'s domain metadata. Every body-eligible panel gets an entry
+     * under its domain submenu, with the title coming from the panel's own {@link Panel#title()}. Renaming a panel's
+     * title automatically updates the menu label since both paths read the same string.
      */
     public DropdownMenu buildWindowMenu(int anchorX, int anchorY) {
         var items = new ArrayList<DropdownMenu.Item>();
@@ -342,7 +341,7 @@ public final class MenuBarController {
             var panelClass = sample.getClass();
             items.add(
                 new DropdownMenu.Item(
-                    "Reopen " + displayName,
+                    displayName,
                     () -> actions.reopenPanel(panelClass, () -> PanelRegistry.create(id, actions.panelCtx()))
                 )
             );
