@@ -232,7 +232,9 @@ public final class DetailsPanel implements Panel {
                 font,
                 frame.contentX(),
                 frame.contentY(),
-                frame.contentWidth(),
+                // Use the current layout width for wrapping. frame.contentWidth() is the scrollable width and can stay
+                // wide after a resize, which would make wrapped notes keep their expanded single-line layout.
+                baseContentWidth,
                 single,
                 contentMouseX,
                 contentMouseY
