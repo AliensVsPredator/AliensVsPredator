@@ -328,6 +328,13 @@ public final class MenuBarController {
                 AnimationCollisionState.get()::toggleEnabled
             )
         );
+        var collisionDebugTooltipsOn = AnimationCollisionState.get().isDebugTooltipsEnabled();
+        items.add(
+            new DropdownMenu.Item(
+                (collisionDebugTooltipsOn ? "✓ " : "   ") + "Animation Collision Debug Tooltips",
+                AnimationCollisionState.get()::toggleDebugTooltipsEnabled
+            )
+        );
         return new DropdownMenu(anchorX, anchorY, items);
     }
 

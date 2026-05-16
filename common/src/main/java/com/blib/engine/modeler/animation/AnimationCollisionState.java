@@ -187,6 +187,8 @@ public final class AnimationCollisionState {
 
     private boolean enabled;
 
+    private boolean debugTooltipsEnabled;
+
     private long reportFingerprint = Long.MIN_VALUE;
 
     private double currentSnapshotSeconds = Double.NaN;
@@ -217,6 +219,14 @@ public final class AnimationCollisionState {
         }
         this.enabled = enabled;
         clearCache();
+    }
+
+    public boolean isDebugTooltipsEnabled() {
+        return debugTooltipsEnabled;
+    }
+
+    public void toggleDebugTooltipsEnabled() {
+        debugTooltipsEnabled = !debugTooltipsEnabled;
     }
 
     public void refresh(ModelerBone root, AnimationEditorState state) {

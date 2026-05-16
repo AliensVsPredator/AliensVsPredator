@@ -332,6 +332,13 @@ public final class ModelerViewportPanel implements Panel {
         if (partners.isEmpty()) {
             return null;
         }
+        if (!AnimationCollisionState.get().isDebugTooltipsEnabled()) {
+            var partnerNames = new java.util.TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+            for (var partner : partners) {
+                partnerNames.add(collisionPartnerName(partner.bonePath()));
+            }
+            return Component.literal("Bone: " + hoveredBone.name + "\nColliding with " + String.join(", ", partnerNames));
+        }
         var lines = new ArrayList<String>();
         lines.add("Bone: " + AnimationCollisionState.bonePath(hoveredBone));
         lines.add("Colliding with:");
@@ -348,6 +355,14 @@ public final class ModelerViewportPanel implements Panel {
             lines.add("+" + (partners.size() - limit) + " more");
         }
         return Component.literal(String.join("\n", lines));
+    }
+
+    private static String collisionPartnerName(String bonePath) {
+        if (bonePath == null || bonePath.isBlank()) {
+            return "";
+        }
+        var slash = bonePath.lastIndexOf('/');
+        return slash >= 0 && slash + 1 < bonePath.length() ? bonePath.substring(slash + 1) : bonePath;
     }
 
     /**
