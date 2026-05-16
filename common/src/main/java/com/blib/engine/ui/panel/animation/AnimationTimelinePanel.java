@@ -152,6 +152,8 @@ public final class AnimationTimelinePanel implements Panel {
 
     private @Nullable KeyframeDrag keyframeDrag;
 
+    private @Nullable Component hoveredTooltip;
+
     public AnimationTimelinePanel(@Nullable PanelMenuOpener menuOpener) {
         this.menuOpener = menuOpener;
     }
@@ -169,11 +171,17 @@ public final class AnimationTimelinePanel implements Panel {
     }
 
     @Override
+    public @Nullable Component tooltipText() {
+        return hoveredTooltip;
+    }
+
+    @Override
     public void render(GuiGraphics graphics, int x, int y, int width, int height, int mouseX, int mouseY, float partialTick) {
         panelX = x;
         panelY = y;
         panelWidth = width;
         panelHeight = height;
+        hoveredTooltip = null;
         graphics.fill(x, y, x + width, y + height, BG_COLOR);
 
         var state = AnimationEditorState.get();
@@ -606,6 +614,9 @@ public final class AnimationTimelinePanel implements Panel {
         var buttonY = trackY + (TRACK_HEIGHT - ADD_BUTTON_SIZE) / 2;
         var enabled = canAddKeyframe(state);
         renderAddButton(graphics, buttonX, buttonY, enabled, mouseX, mouseY);
+        if (buttonHit(mouseX, mouseY, buttonX, buttonY, ADD_BUTTON_SIZE, ADD_BUTTON_SIZE)) {
+            hoveredTooltip = addKeyframeTooltip(row, state, enabled);
+        }
         UiText.drawClipped(
             graphics,
             font,
@@ -615,6 +626,14 @@ public final class AnimationTimelinePanel implements Panel {
             Math.max(0, buttonX - textX - 4),
             row.bone().name.equals(state.selectedBoneName()) && row.channel() == state.selectedChannel() ? TEXT_COLOR : META_TEXT_COLOR
         );
+    }
+
+    private static Component addKeyframeTooltip(TimelineRow row, AnimationEditorState state, boolean enabled) {
+        if (!enabled) {
+            return Component.literal("Select an animation to add keyframes.");
+        }
+        var timestamp = AnimationEditorState.formatTimestamp(canonicalTimestamp(state.playheadSeconds()));
+        return Component.literal("Add " + row.channel().jsonName() + " keyframe for " + row.bone().name + " at " + timestamp + "s.");
     }
 
     private void renderEmptyTimeline(
