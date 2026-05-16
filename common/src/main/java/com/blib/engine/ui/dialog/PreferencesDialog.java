@@ -434,6 +434,7 @@ public final class PreferencesDialog {
 
         // Profile dropdown overlay (drawn last so it stacks over the rest).
         if (profileMenu != null) {
+            profileMenu.fitRootToViewport(screenWidth, screenHeight);
             profileMenu.render(graphics, mouseX, mouseY);
             var disabledTooltip = profileMenu.disabledTooltipAt(mouseX, mouseY);
             if (disabledTooltip != null) {
