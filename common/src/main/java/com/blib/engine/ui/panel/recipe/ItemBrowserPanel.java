@@ -1,0 +1,279 @@
+package com.blib.engine.ui.panel.recipe;
+
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+
+import com.blib.engine.recipe.RecipeAuthoringState;
+import com.blib.engine.ui.EngineFont;
+import com.blib.engine.ui.dock.Panel;
+import com.blib.engine.ui.layout.ScrollViewport;
+import com.blib.engine.ui.layout.UiRect;
+import com.blib.engine.ui.layout.UiText;
+import com.blib.engine.ui.widget.TextInput;
+
+@ApiStatus.Internal
+public final class ItemBrowserPanel implements Panel {
+
+    private static final int BACKGROUND_COLOR = 0xFF14141A;
+
+    private static final int ROW_BG_HOVER_COLOR = 0xFF1F1F26;
+
+    private static final int ROW_TEXT_COLOR = 0xFFD0D0D0;
+
+    private static final int ROW_TEXT_HOVER_COLOR = 0xFFFFFFFF;
+
+    private static final int META_TEXT_COLOR = 0xFF8C8C96;
+
+    private static final int EMPTY_TEXT_COLOR = 0xFF606068;
+
+    private static final int CONTENT_PADDING = 6;
+
+    private static final int SEARCH_GAP_BELOW = 4;
+
+    private static final int ROW_HEIGHT = 20;
+
+    private static final int ICON_SIZE = 16;
+
+    private static final int ICON_TEXT_GAP = 5;
+
+    private final TextInput searchInput = new TextInput("Search items...");
+
+    private final ScrollViewport scroll = new ScrollViewport();
+
+    private final List<RowHit> rowHits = new ArrayList<>();
+
+    private List<Entry> filtered = List.of();
+
+    private String lastQuery = "\u0000";
+
+    private int rectX;
+
+    private int rectY;
+
+    private int rectWidth;
+
+    private int rectHeight;
+
+    private @Nullable Component hoveredTooltip;
+
+    @Override
+    public String title() {
+        return "Item Browser";
+    }
+
+    @Override
+    public void onShown() {
+        scroll.reset();
+    }
+
+    @Override
+    public @Nullable Component tooltipText() {
+        return hoveredTooltip;
+    }
+
+    @Override
+    public void render(GuiGraphics graphics, int x, int y, int width, int height, int mouseX, int mouseY, float partialTick) {
+        this.rectX = x;
+        this.rectY = y;
+        this.rectWidth = width;
+        this.rectHeight = height;
+        this.hoveredTooltip = null;
+        rowHits.clear();
+
+        graphics.fill(x, y, x + width, y + height, BACKGROUND_COLOR);
+
+        var query = searchInput.content();
+        if (!query.equals(lastQuery)) {
+            filtered = filter(query);
+            lastQuery = query;
+            scroll.reset();
+        }
+
+        var searchY = y + CONTENT_PADDING;
+        searchInput.render(graphics, x + CONTENT_PADDING, searchY, width - 2 * CONTENT_PADDING, mouseX, mouseY);
+
+        var listX = x + CONTENT_PADDING;
+        var listY = searchY + TextInput.HEIGHT + SEARCH_GAP_BELOW;
+        var listW = width - 2 * CONTENT_PADDING;
+        var listH = Math.max(0, height - (listY - y) - CONTENT_PADDING);
+        if (listH <= 0) {
+            scroll.clear();
+            renderDraggedStack(graphics, mouseX, mouseY);
+            return;
+        }
+
+        if (filtered.isEmpty()) {
+            scroll.clear();
+            UiText.drawClipped(
+                graphics,
+                EngineFont.get(),
+                query.isBlank() ? "(no items)" : "(no matches)",
+                listX,
+                listY,
+                listW,
+                EMPTY_TEXT_COLOR
+            );
+            renderDraggedStack(graphics, mouseX, mouseY);
+            return;
+        }
+
+        var contentHeight = filtered.size() * ROW_HEIGHT;
+        var frame = scroll.begin(graphics, UiRect.of(listX, listY, listW, listH), contentHeight);
+        try {
+            var firstVisibleRow = Math.max(0, frame.scrollY() / ROW_HEIGHT);
+            var lastVisibleRow = Math.min(filtered.size() - 1, (frame.scrollY() + listH) / ROW_HEIGHT);
+            for (var i = firstVisibleRow; i <= lastVisibleRow; i++) {
+                var rowY = listY + i * ROW_HEIGHT - frame.scrollY();
+                renderRow(graphics, frame.contentX(), rowY, frame.contentWidth(), filtered.get(i), mouseX, mouseY);
+            }
+        } finally {
+            scroll.end(graphics, mouseX, mouseY);
+        }
+
+        renderDraggedStack(graphics, mouseX, mouseY);
+    }
+
+    private void renderRow(GuiGraphics graphics, int x, int y, int width, Entry entry, int mouseX, int mouseY) {
+        var hovered = mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + ROW_HEIGHT;
+        if (hovered) {
+            graphics.fill(x, y, x + width, y + ROW_HEIGHT, ROW_BG_HOVER_COLOR);
+        }
+
+        var stack = new ItemStack(entry.item());
+        var iconX = x + 3;
+        var iconY = y + (ROW_HEIGHT - ICON_SIZE) / 2;
+        graphics.renderItem(stack, iconX, iconY);
+
+        var font = EngineFont.get();
+        var textY = y + (ROW_HEIGHT - font.lineHeight + 2) / 2;
+        var meta = Integer.toString(stack.getMaxStackSize());
+        var metaW = font.width(meta);
+        var textX = iconX + ICON_SIZE + ICON_TEXT_GAP;
+        UiText.drawClipped(
+            graphics,
+            font,
+            entry.id().toString(),
+            textX,
+            textY,
+            Math.max(0, width - (textX - x) - metaW - 8),
+            hovered ? ROW_TEXT_HOVER_COLOR : ROW_TEXT_COLOR
+        );
+        UiText.drawRight(graphics, font, meta, UiRect.of(x, y, width - 4, ROW_HEIGHT), META_TEXT_COLOR);
+        rowHits.add(new RowHit(x, y, width, ROW_HEIGHT, entry.item()));
+
+        if (hovered) {
+            hoveredTooltip = Component.literal(stack.getHoverName().getString() + "\nID: " + entry.id() + "\nMax stack: " + stack.getMaxStackSize());
+        }
+    }
+
+    private static List<Entry> filter(String query) {
+        var needle = query == null ? "" : query.toLowerCase(Locale.ROOT).trim();
+        var entries = new ArrayList<Entry>();
+        for (var item : BuiltInRegistries.ITEM) {
+            if (item == Items.AIR) {
+                continue;
+            }
+            var id = BuiltInRegistries.ITEM.getKey(item);
+            if (id == null) {
+                continue;
+            }
+            var name = new ItemStack(item).getHoverName().getString();
+            if (!needle.isEmpty()) {
+                var hay = (id + " " + name).toLowerCase(Locale.ROOT);
+                if (!hay.contains(needle)) {
+                    continue;
+                }
+            }
+            entries.add(new Entry(id, item));
+        }
+        entries.sort(Comparator.comparing(entry -> entry.id().toString(), String.CASE_INSENSITIVE_ORDER));
+        return entries;
+    }
+
+    private static void renderDraggedStack(GuiGraphics graphics, int mouseX, int mouseY) {
+        var drag = RecipeAuthoringState.draggedStack();
+        if (drag == null) {
+            return;
+        }
+        var stack = drag.toStack();
+        if (stack.isEmpty()) {
+            return;
+        }
+        var font = EngineFont.get();
+        graphics.renderItem(stack, mouseX + 8, mouseY + 8);
+        graphics.renderItemDecorations(font, stack, mouseX + 8, mouseY + 8);
+    }
+
+    @Override
+    public boolean mouseClickedCapture(double mouseX, double mouseY, int button) {
+        if (scroll.mouseClicked(mouseX, mouseY, button)) {
+            return true;
+        }
+        if (button != 0) {
+            return false;
+        }
+        for (var row : rowHits) {
+            if (row.contains(mouseX, mouseY)) {
+                RecipeAuthoringState.beginDrag(row.item());
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        return searchInput.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        if (RecipeAuthoringState.hasDrag()) {
+            return true;
+        }
+        return scroll.mouseDragged(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (button == 0 && RecipeAuthoringState.hasDrag()) {
+            RecipeAuthoringState.dropDraggedAt(mouseX, mouseY);
+            RecipeAuthoringState.clearDrag();
+            return true;
+        }
+        return scroll.mouseReleased(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (!isInside(mouseX, mouseY)) {
+            return false;
+        }
+        return scroll.mouseScrolled(mouseX, mouseY, scrollY);
+    }
+
+    private boolean isInside(double mouseX, double mouseY) {
+        return mouseX >= rectX && mouseX < rectX + rectWidth && mouseY >= rectY && mouseY < rectY + rectHeight;
+    }
+
+    private record Entry(ResourceLocation id, Item item) {}
+
+    private record RowHit(int x, int y, int w, int h, Item item) {
+
+        boolean contains(double mouseX, double mouseY) {
+            return mouseX >= x && mouseX < x + w && mouseY >= y && mouseY < y + h;
+        }
+    }
+}

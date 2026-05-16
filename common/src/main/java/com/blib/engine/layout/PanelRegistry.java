@@ -30,6 +30,9 @@ import com.blib.engine.ui.panel.jigsaw.PoolEditorPanel;
 import com.blib.engine.ui.panel.outliner.ModelerOutlinerPanel;
 import com.blib.engine.ui.panel.outliner.OutlinerPanel;
 import com.blib.engine.ui.panel.pathfinding.PathfindingDebugPanel;
+import com.blib.engine.ui.panel.recipe.ItemBrowserPanel;
+import com.blib.engine.ui.panel.recipe.RecipeEditorPanel;
+import com.blib.engine.ui.panel.recipe.RecipeOutlinerPanel;
 import com.blib.engine.ui.panel.tag.TagBrowserPanel;
 import com.blib.engine.ui.panel.territory.TerritoryMapPanel;
 import com.blib.engine.ui.panel.texture.TextureInspectorPanel;
@@ -81,6 +84,7 @@ public final class PanelRegistry {
         AI_DEBUG("AI & Pathfinding"),
         MODELER("Modeling"),
         ANIMATION("Animation"),
+        RECIPE("Recipes"),
         TEXTURE("Texturing"),
         HISTORY("History");
 
@@ -141,6 +145,12 @@ public final class PanelRegistry {
 
     public static final String ANIMATIONS_OUTLINER = "animations_outliner";
 
+    public static final String RECIPE_OUTLINER = "recipe_outliner";
+
+    public static final String RECIPE_EDITOR = "recipe_editor";
+
+    public static final String ITEM_BROWSER = "item_browser";
+
     public static final String MODELER_UV_MAP = "modeler_uv_map";
 
     public static final String TEXTURES = "textures";
@@ -190,6 +200,9 @@ public final class PanelRegistry {
             Domain.ANIMATION,
             ctx -> new AnimationModelerInspectorPanel()
         );
+        register(RECIPE_OUTLINER, RecipeOutlinerPanel.class, Domain.RECIPE, ctx -> new RecipeOutlinerPanel());
+        register(RECIPE_EDITOR, RecipeEditorPanel.class, Domain.RECIPE, ctx -> new RecipeEditorPanel());
+        register(ITEM_BROWSER, ItemBrowserPanel.class, Domain.RECIPE, ctx -> new ItemBrowserPanel());
         register(MODELER_UV_MAP, UvMapPanel.class, Domain.MODELER, ctx -> new UvMapPanel());
         register(TEXTURES, TexturesPanel.class, Domain.TEXTURE, ctx -> new TexturesPanel(ctx.panelMenuOpener()));
         registerAlias(MODELER_TEXTURES, Domain.TEXTURE, ctx -> new TexturesPanel(ctx.panelMenuOpener()));
