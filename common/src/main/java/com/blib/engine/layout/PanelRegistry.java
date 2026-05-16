@@ -201,7 +201,7 @@ public final class PanelRegistry {
             ctx -> new AnimationModelerInspectorPanel()
         );
         register(RECIPE_OUTLINER, RecipeOutlinerPanel.class, Domain.RECIPE, ctx -> new RecipeOutlinerPanel());
-        register(RECIPE_EDITOR, RecipeEditorPanel.class, Domain.RECIPE, ctx -> new RecipeEditorPanel());
+        register(RECIPE_EDITOR, RecipeEditorPanel.class, Domain.RECIPE, ctx -> new RecipeEditorPanel(ctx.panelMenuOpener()));
         register(ITEM_BROWSER, ItemBrowserPanel.class, Domain.RECIPE, ctx -> new ItemBrowserPanel());
         register(MODELER_UV_MAP, UvMapPanel.class, Domain.MODELER, ctx -> new UvMapPanel());
         register(TEXTURES, TexturesPanel.class, Domain.TEXTURE, ctx -> new TexturesPanel(ctx.panelMenuOpener()));

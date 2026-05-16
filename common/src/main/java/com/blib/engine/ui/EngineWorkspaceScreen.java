@@ -60,6 +60,7 @@ import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.layout.UiText;
 import com.blib.engine.ui.panel.chrome.MenuBarPanel;
 import com.blib.engine.ui.panel.animation.AnimationTimelinePanel;
+import com.blib.engine.ui.panel.recipe.RecipeEditorPanel;
 import com.blib.engine.ui.panel.viewport.ViewportPanel;
 import com.blib.engine.ui.popup.FactionManagePopup;
 import com.blib.engine.ui.popup.HslColorPickerPopup;
@@ -1526,6 +1527,10 @@ public final class EngineWorkspaceScreen extends Screen {
         return layoutHasActivePanel(AnimationTimelinePanel.class);
     }
 
+    public boolean layoutHasRecipeEditorPanel() {
+        return layoutHasActivePanel(RecipeEditorPanel.class);
+    }
+
     /**
      * Convenience for callers without a workspace reference (e.g. the action-stack panel). Delegates to the controller,
      * which checks the active screen.
@@ -2334,6 +2339,11 @@ public final class EngineWorkspaceScreen extends Screen {
         @Override
         public boolean layoutHasAnimationTimelinePanel() {
             return EngineWorkspaceScreen.this.layoutHasAnimationTimelinePanel();
+        }
+
+        @Override
+        public boolean layoutHasRecipeEditorPanel() {
+            return EngineWorkspaceScreen.this.layoutHasRecipeEditorPanel();
         }
 
     }

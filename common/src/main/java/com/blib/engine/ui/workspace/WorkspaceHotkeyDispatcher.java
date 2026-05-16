@@ -18,6 +18,7 @@ import com.blib.engine.modeler.animation.AnimationEditorState;
 import com.blib.engine.modeler.gizmo.ModelerGizmoMode;
 import com.blib.engine.modeler.gizmo.ModelerGizmoState;
 import com.blib.engine.modeler.history.ModelerActionHistory;
+import com.blib.engine.recipe.RecipeAuthoringState;
 import com.blib.engine.session.ProjectSession;
 import com.blib.engine.tag.TagStagingCache;
 import com.blib.engine.ui.EngineTickControl;
@@ -45,6 +46,8 @@ public final class WorkspaceHotkeyDispatcher {
         boolean layoutHasLocalHistoryPanel();
 
         boolean layoutHasAnimationTimelinePanel();
+
+        boolean layoutHasRecipeEditorPanel();
     }
 
     private final Host host;
@@ -180,6 +183,13 @@ public final class WorkspaceHotkeyDispatcher {
             }
         }
         if (TextInput.getFocused() == null && ActiveKeybindings.matchesKey(Keybindings.DELETE, keyCode, modifiers)) {
+            if (host.layoutHasRecipeEditorPanel()) {
+                var selectedSlot = RecipeAuthoringState.selectedSlot();
+                if (selectedSlot != null && !RecipeAuthoringState.slot(selectedSlot).isEmpty()) {
+                    RecipeAuthoringState.clearSlot(selectedSlot);
+                    return true;
+                }
+            }
             // Modeler-layout delete takes priority and always consumes the key.
             if (host.layoutHasModelerPanel()) {
                 ModelerScene.get().deleteSelection();

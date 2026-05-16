@@ -5,6 +5,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,6 +20,8 @@ import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.layout.UiText;
+import com.blib.engine.ui.popup.PanelMenuOpener;
+import com.blib.engine.ui.widget.DropdownMenu;
 import com.blib.engine.ui.widget.TextInput;
 
 @ApiStatus.Internal
@@ -62,6 +65,14 @@ public final class RecipeEditorPanel implements Panel {
 
     private static final int VANILLA_TEXTURE_SIZE = 256;
 
+    private static final long DOUBLE_CLICK_MS = 350L;
+
+    private static final int COUNT_EDITOR_WIDTH = 24;
+
+    private static final int COUNT_STEPPER_WIDTH = 14;
+
+    private static final int COUNT_STEPPER_HEIGHT = 5;
+
     private static final ResourceLocation CRAFTING_TABLE_TEXTURE = ResourceLocation.fromNamespaceAndPath(
         "minecraft",
         "textures/gui/container/crafting_table.png"
@@ -94,11 +105,13 @@ public final class RecipeEditorPanel implements Panel {
 
     private final TextInput recipeIdInput = new TextInput("namespace:path");
 
-    private final TextInput countInput = new TextInput("Count", this::commitCount, this::resetCountInput);
+    private final TextInput inlineCountInput = new TextInput("Count", this::commitInlineCount, this::cancelInlineCountEdit);
 
     private final TextInput experienceInput = new TextInput("XP", this::commitExperience, this::resetMetaInputs);
 
     private final TextInput cookingTimeInput = new TextInput("Ticks", this::commitCookingTime, this::resetMetaInputs);
+
+    private final @Nullable PanelMenuOpener panelMenuOpener;
 
     private final UiRect[] gridRects = new UiRect[9];
 
@@ -110,7 +123,17 @@ public final class RecipeEditorPanel implements Panel {
 
     private @Nullable UiRect saveRect;
 
+    private @Nullable UiRect incrementCountRect;
+
+    private @Nullable UiRect decrementCountRect;
+
+    private @Nullable SlotRef editingCountSlot;
+
+    private @Nullable SlotRef lastClickedSlot;
+
     private @Nullable Component hoveredTooltip;
+
+    private long lastSlotClickMs;
 
     private int rectX;
 
@@ -119,6 +142,14 @@ public final class RecipeEditorPanel implements Panel {
     private int rectWidth;
 
     private int rectHeight;
+
+    public RecipeEditorPanel() {
+        this(null);
+    }
+
+    public RecipeEditorPanel(@Nullable PanelMenuOpener panelMenuOpener) {
+        this.panelMenuOpener = panelMenuOpener;
+    }
 
     @Override
     public String title() {
@@ -133,7 +164,7 @@ public final class RecipeEditorPanel implements Panel {
     @Override
     public void onShown() {
         syncRecipeIdInput();
-        resetCountInput();
+        resetInlineCountInput();
     }
 
     @Override
@@ -146,10 +177,12 @@ public final class RecipeEditorPanel implements Panel {
         typeHits.clear();
         Arrays.fill(gridRects, null);
         outputRect = null;
+        incrementCountRect = null;
+        decrementCountRect = null;
 
         graphics.fill(x, y, x + width, y + height, BACKGROUND_COLOR);
         syncRecipeIdInput();
-        syncCountInput();
+        syncInlineCountInput();
 
         var font = EngineFont.get();
         var topY = y + CONTENT_PADDING;
@@ -304,11 +337,17 @@ public final class RecipeEditorPanel implements Panel {
         if (!slot.isEmpty()) {
             var stack = slot.toStack();
             graphics.renderItem(stack, rect.x(), rect.y());
-            graphics.renderItemDecorations(EngineFont.get(), stack, rect.x(), rect.y());
+            if (!isEditingCount(ref)) {
+                graphics.renderItemDecorations(EngineFont.get(), stack, rect.x(), rect.y());
+            }
         }
 
         if (selected) {
             graphics.renderOutline(rect.x(), rect.y(), rect.width(), rect.height(), SLOT_SELECTED);
+        }
+
+        if (!slot.isEmpty() && isEditingCount(ref)) {
+            renderInlineCountEditor(graphics, rect, mouseX, mouseY);
         }
 
         if (rect.contains(mouseX, mouseY)) {
@@ -354,7 +393,7 @@ public final class RecipeEditorPanel implements Panel {
 
         var ref = RecipeAuthoringState.selectedSlot();
         if (ref == null) {
-            UiText.drawClipped(graphics, font, "Select a slot to edit its count.", x, y, width, MUTED_TEXT);
+            UiText.drawClipped(graphics, font, "Select a slot.", x, y, width, MUTED_TEXT);
             return;
         }
 
@@ -368,12 +407,55 @@ public final class RecipeEditorPanel implements Panel {
             return;
         }
 
-        var countW = Math.min(74, Math.max(44, width / 4));
-        var labelW = Math.min(48, Math.max(0, width - countW - 6));
-        UiText.drawClipped(graphics, font, "Count", x, y + (TextInput.HEIGHT - font.lineHeight + 2) / 2, labelW, MUTED_TEXT);
-        countInput.render(graphics, x + labelW + 6, y, countW, mouseX, mouseY);
-        var itemX = x + labelW + countW + 14;
-        UiText.drawClipped(graphics, font, slot.itemId().toString(), itemX, y + (TextInput.HEIGHT - font.lineHeight + 2) / 2, Math.max(0, x + width - itemX), MUTED_TEXT);
+        UiText.drawClipped(graphics, font, slot.itemId().toString(), x, y, width, MUTED_TEXT);
+    }
+
+    private void renderInlineCountEditor(GuiGraphics graphics, UiRect slotRect, int mouseX, int mouseY) {
+        var inputX = Math.max(rectX + 2, Math.min(slotRect.right() - COUNT_EDITOR_WIDTH + 1, rectX + rectWidth - COUNT_EDITOR_WIDTH - 2));
+        var inputY = slotRect.y() + Math.max(0, (slotRect.height() - TextInput.HEIGHT) / 2);
+        var inputRect = UiRect.of(inputX, inputY, COUNT_EDITOR_WIDTH, TextInput.HEIGHT);
+        incrementCountRect = UiRect.of(
+            inputRect.x() + Math.max(0, (inputRect.width() - COUNT_STEPPER_WIDTH) / 2),
+            inputRect.y() - COUNT_STEPPER_HEIGHT - 1,
+            COUNT_STEPPER_WIDTH,
+            COUNT_STEPPER_HEIGHT
+        );
+        decrementCountRect = UiRect.of(
+            inputRect.x() + Math.max(0, (inputRect.width() - COUNT_STEPPER_WIDTH) / 2),
+            inputRect.bottom() + 1,
+            COUNT_STEPPER_WIDTH,
+            COUNT_STEPPER_HEIGHT
+        );
+
+        inlineCountInput.render(graphics, inputRect.x(), inputRect.y(), inputRect.width(), mouseX, mouseY);
+        renderCountStepper(graphics, incrementCountRect, true, mouseX, mouseY);
+        renderCountStepper(graphics, decrementCountRect, false, mouseX, mouseY);
+    }
+
+    private static void renderCountStepper(GuiGraphics graphics, UiRect rect, boolean up, int mouseX, int mouseY) {
+        var hovered = rect.contains(mouseX, mouseY);
+        graphics.fill(rect.x(), rect.y(), rect.right(), rect.bottom(), hovered ? BUTTON_BG_HOVER : BUTTON_BG);
+        graphics.fill(rect.x(), rect.y(), rect.right(), rect.y() + 1, BUTTON_BORDER);
+        graphics.fill(rect.x(), rect.bottom() - 1, rect.right(), rect.bottom(), BUTTON_BORDER);
+        graphics.fill(rect.x(), rect.y(), rect.x() + 1, rect.bottom(), BUTTON_BORDER);
+        graphics.fill(rect.right() - 1, rect.y(), rect.right(), rect.bottom(), BUTTON_BORDER);
+        drawArrowHead(graphics, rect, up);
+    }
+
+    private static void drawArrowHead(GuiGraphics graphics, UiRect rect, boolean up) {
+        var color = BUTTON_TEXT;
+        var cx = rect.x() + rect.width() / 2;
+        if (up) {
+            var baseY = rect.y() + rect.height() - 2;
+            graphics.fill(cx, rect.y() + 1, cx + 1, rect.y() + 2, color);
+            graphics.fill(cx - 1, rect.y() + 2, cx + 2, rect.y() + 3, color);
+            graphics.fill(cx - 2, baseY - 1, cx + 3, baseY, color);
+        } else {
+            var topY = rect.y() + 1;
+            graphics.fill(cx - 2, topY, cx + 3, topY + 1, color);
+            graphics.fill(cx - 1, topY + 1, cx + 2, topY + 2, color);
+            graphics.fill(cx, rect.bottom() - 2, cx + 1, rect.bottom() - 1, color);
+        }
     }
 
     private static void renderButton(GuiGraphics graphics, UiRect rect, String label, int mouseX, int mouseY, int textColor, boolean enabled) {
@@ -415,10 +497,20 @@ public final class RecipeEditorPanel implements Panel {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (recipeIdInput.mouseClicked(mouseX, mouseY, button)) {
+        if (button == 0 && incrementCountRect != null && incrementCountRect.contains(mouseX, mouseY)) {
+            changeInlineCount(1);
             return true;
         }
-        if (countInput.mouseClicked(mouseX, mouseY, button)) {
+        if (button == 0 && decrementCountRect != null && decrementCountRect.contains(mouseX, mouseY)) {
+            changeInlineCount(-1);
+            return true;
+        }
+        if (inlineCountInput.mouseClicked(mouseX, mouseY, button)) {
+            return true;
+        }
+        finishInlineCountEdit();
+
+        if (recipeIdInput.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
         if (experienceInput.mouseClicked(mouseX, mouseY, button)) {
@@ -433,7 +525,7 @@ public final class RecipeEditorPanel implements Panel {
                     if (hit.type() != RecipeAuthoringState.recipeType()) {
                         RecipeAuthoringState.newDraft(hit.type());
                         syncRecipeIdInput();
-                        resetCountInput();
+                        resetInlineCountInput();
                         resetMetaInputs();
                     }
                     return true;
@@ -443,7 +535,7 @@ public final class RecipeEditorPanel implements Panel {
         if (button == 0 && newRect != null && newRect.contains(mouseX, mouseY)) {
             RecipeAuthoringState.newDraft();
             syncRecipeIdInput();
-            resetCountInput();
+            resetInlineCountInput();
             resetMetaInputs();
             return true;
         }
@@ -463,8 +555,8 @@ public final class RecipeEditorPanel implements Panel {
         }
 
         if (button == 1) {
-            RecipeAuthoringState.clearSlot(target);
-            resetCountInput();
+            RecipeAuthoringState.selectSlot(target);
+            openSlotContextMenu(mouseX, mouseY, target);
             return true;
         }
         if (button == 0) {
@@ -473,8 +565,12 @@ public final class RecipeEditorPanel implements Panel {
                 RecipeAuthoringState.clearDrag();
             } else {
                 RecipeAuthoringState.selectSlot(target);
+                if (isSlotDoubleClick(target) && !RecipeAuthoringState.slot(target).isEmpty()) {
+                    beginInlineCountEdit(target);
+                    return true;
+                }
             }
-            resetCountInput();
+            resetInlineCountInput();
             return true;
         }
         return false;
@@ -485,7 +581,7 @@ public final class RecipeEditorPanel implements Panel {
         if (button == 0 && RecipeAuthoringState.hasDrag()) {
             RecipeAuthoringState.dropDraggedAt(mouseX, mouseY);
             RecipeAuthoringState.clearDrag();
-            resetCountInput();
+            resetInlineCountInput();
             return true;
         }
         return false;
@@ -498,32 +594,46 @@ public final class RecipeEditorPanel implements Panel {
             return false;
         }
         RecipeAuthoringState.changeCount(target, scrollY > 0.0D ? 1 : -1);
-        resetCountInput();
+        if (isEditingCount(target)) {
+            resetInlineCountInput();
+        }
+        return true;
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (keyCode != GLFW.GLFW_KEY_DELETE) {
+            return false;
+        }
+        var selected = RecipeAuthoringState.selectedSlot();
+        if (selected == null || RecipeAuthoringState.slot(selected).isEmpty()) {
+            return false;
+        }
+        RecipeAuthoringState.clearSlot(selected);
+        cancelInlineCountEdit();
         return true;
     }
 
     private void commitVisibleInputs() {
         RecipeAuthoringState.setRecipeIdText(recipeIdInput.content());
+        commitInlineCountIfEditing();
         if (isCookingType()) {
             commitExperience(experienceInput.content());
             commitCookingTime(cookingTimeInput.content());
         }
-        var ref = RecipeAuthoringState.selectedSlot();
-        if (ref != null) {
-            commitCount(countInput.content());
-        }
     }
 
-    private void commitCount(String value) {
-        var ref = RecipeAuthoringState.selectedSlot();
+    private void commitInlineCount(String value) {
+        var ref = editingCountSlot;
         if (ref == null) {
             return;
         }
         try {
             RecipeAuthoringState.setCount(ref, Integer.parseInt(value.trim()));
         } catch (NumberFormatException ignored) {
-            resetCountInput();
+            resetInlineCountInput();
         }
+        cancelInlineCountEdit();
     }
 
     private void commitExperience(String value) {
@@ -542,13 +652,13 @@ public final class RecipeEditorPanel implements Panel {
         }
     }
 
-    private void resetCountInput() {
-        var ref = RecipeAuthoringState.selectedSlot();
+    private void resetInlineCountInput() {
+        var ref = editingCountSlot;
         if (ref == null || RecipeAuthoringState.slot(ref).isEmpty()) {
-            countInput.setContent("");
+            inlineCountInput.setContent("");
             return;
         }
-        countInput.setContent(Integer.toString(RecipeAuthoringState.slot(ref).count()));
+        inlineCountInput.setContent(Integer.toString(RecipeAuthoringState.slot(ref).count()));
     }
 
     private void resetMetaInputs() {
@@ -562,13 +672,90 @@ public final class RecipeEditorPanel implements Panel {
         }
     }
 
-    private void syncCountInput() {
-        if (!countInput.isFocused()) {
-            resetCountInput();
+    private void syncInlineCountInput() {
+        if (editingCountSlot != null && RecipeAuthoringState.slot(editingCountSlot).isEmpty()) {
+            cancelInlineCountEdit();
+        } else if (!inlineCountInput.isFocused()) {
+            resetInlineCountInput();
         }
         if (!experienceInput.isFocused() && !cookingTimeInput.isFocused()) {
             resetMetaInputs();
         }
+    }
+
+    private boolean isEditingCount(SlotRef ref) {
+        return ref.equals(editingCountSlot);
+    }
+
+    private void beginInlineCountEdit(SlotRef ref) {
+        if (RecipeAuthoringState.slot(ref).isEmpty()) {
+            cancelInlineCountEdit();
+            return;
+        }
+        editingCountSlot = ref;
+        resetInlineCountInput();
+        inlineCountInput.focus();
+        inlineCountInput.selectAll();
+    }
+
+    private void finishInlineCountEdit() {
+        if (editingCountSlot == null) {
+            return;
+        }
+        commitInlineCountIfEditing();
+        cancelInlineCountEdit();
+    }
+
+    private void cancelInlineCountEdit() {
+        editingCountSlot = null;
+        incrementCountRect = null;
+        decrementCountRect = null;
+        inlineCountInput.setContent("");
+        if (inlineCountInput.isFocused()) {
+            TextInput.clearFocus();
+        }
+    }
+
+    private void commitInlineCountIfEditing() {
+        if (editingCountSlot != null) {
+            commitInlineCount(inlineCountInput.content());
+        }
+    }
+
+    private void changeInlineCount(int delta) {
+        var ref = editingCountSlot;
+        if (ref == null) {
+            return;
+        }
+        RecipeAuthoringState.changeCount(ref, delta);
+        resetInlineCountInput();
+        inlineCountInput.focus();
+        inlineCountInput.selectAll();
+    }
+
+    private boolean isSlotDoubleClick(SlotRef target) {
+        var now = System.currentTimeMillis();
+        var doubleClick = target.equals(lastClickedSlot) && now - lastSlotClickMs <= DOUBLE_CLICK_MS;
+        lastClickedSlot = target;
+        lastSlotClickMs = now;
+        return doubleClick;
+    }
+
+    private void openSlotContextMenu(double mouseX, double mouseY, SlotRef target) {
+        if (panelMenuOpener == null) {
+            return;
+        }
+        var hasItem = !RecipeAuthoringState.slot(target).isEmpty();
+        var delete = new DropdownMenu.Item(
+            "Delete",
+            () -> {
+                RecipeAuthoringState.clearSlot(target);
+                cancelInlineCountEdit();
+            },
+            hasItem,
+            Component.literal("This slot is empty.")
+        );
+        panelMenuOpener.open(new DropdownMenu((int) mouseX, (int) mouseY, List.of(delete)));
     }
 
     private boolean isInside(double mouseX, double mouseY) {
