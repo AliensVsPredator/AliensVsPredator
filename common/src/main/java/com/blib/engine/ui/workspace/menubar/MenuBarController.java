@@ -2,6 +2,7 @@ package com.blib.engine.ui.workspace.menubar;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,7 +19,7 @@ import com.blib.engine.ui.widget.DropdownMenu;
 import com.blib.engine.ui.workspace.HoverOverlayRenderer;
 
 /**
- * Owns the workspace's menu-bar dropdown state: which top-level chip is open, the optional cascading submenu, and the
+ * Owns the workspace's menu-bar dropdown state: which top-level chip is open, any cascading submenus, and the
  * builders that turn each chip click into a fresh {@link DropdownMenu}. The hosting screen delegates every menu-related
  * lifecycle hook (open / close / hover-update / render / hit-test) to this controller, so it never has to know about
  * the cascade rules or the per-menu item lists.
@@ -82,18 +83,11 @@ public final class MenuBarController {
 
     private @Nullable DropdownMenu openMenu;
 
-    /**
-     * One-level cascading submenu of {@link #openMenu} (e.g. Dismember… → limb list). Always cleared in lock-step with
-     * {@link #openMenu} so a stale child can't outlive its parent.
-     */
-    private @Nullable DropdownMenu openSubmenu;
+    /** Cascading submenus, ordered from the child of {@link #openMenu} to the deepest visible submenu. */
+    private final ArrayList<DropdownMenu> openSubmenus = new ArrayList<>();
 
-    /**
-     * Index of the {@link #openMenu} item that {@link #openSubmenu} was spawned from. Tracked so hover-driven submenu
-     * opening doesn't re-spawn the same submenu every frame, and so moving the cursor onto a different parent-menu item
-     * swaps which submenu is shown. {@code null} whenever {@link #openSubmenu} is null.
-     */
-    private @Nullable Integer openSubmenuParentIndex;
+    /** Parent item index for each entry in {@link #openSubmenus}; index 0 belongs to {@link #openMenu}. */
+    private final ArrayList<Integer> openSubmenuParentIndices = new ArrayList<>();
 
     public MenuBarController(Actions actions) {
         this.actions = actions;
@@ -104,7 +98,7 @@ public final class MenuBarController {
     }
 
     public @Nullable DropdownMenu openSubmenu() {
-        return openSubmenu;
+        return openSubmenus.isEmpty() ? null : openSubmenus.get(0);
     }
 
     public boolean isAnyMenuOpen() {
@@ -127,43 +121,43 @@ public final class MenuBarController {
     }
 
     private void closeSubmenu() {
-        this.openSubmenu = null;
-        this.openSubmenuParentIndex = null;
+        openSubmenus.clear();
+        openSubmenuParentIndices.clear();
     }
 
     /**
-     * Hover-driven cascading-submenu opener. Runs once per frame: when the cursor sits on a parent-menu item with
-     * children, spawn (or keep) the submenu for that item; when it sits on a leaf item, close any open submenu. Cursor
-     * over the submenu itself or in the gap leaves state untouched so users can move diagonally from parent → submenu
-     * without flicker.
+     * Hover-driven cascading-submenu opener. Runs once per frame: when the cursor sits on a menu item with children,
+     * spawn (or keep) the next-level submenu for that item; when it sits on a leaf item, close that item's descendants.
+     * Cursor in the gap between cascades leaves state untouched so users can move diagonally between menus.
      */
     public void updateHoverSubmenu(int mouseX, int mouseY, int logicalWidth, int logicalHeight) {
         if (openMenu == null) {
             closeSubmenu();
             return;
         }
-        if (openSubmenu != null && openSubmenu.isInside(mouseX, mouseY)) {
+
+        var level = menuLevelAt(mouseX, mouseY);
+        if (level < 0) {
             return;
         }
-        if (!openMenu.isInside(mouseX, mouseY)) {
+        var menu = menuAtLevel(level);
+        if (menu == null) {
             return;
         }
-        var idx = openMenu.hitItemAt(mouseX, mouseY);
+
+        var idx = menu.hitItemAt(mouseX, mouseY);
         if (idx < 0) {
             return;
         }
-        var item = openMenu.itemAt(idx);
+        var item = menu.itemAt(idx);
         if (!item.enabled()) {
-            closeSubmenu();
+            trimSubmenusFromLevel(level + 1);
             return;
         }
         if (item.hasSubmenu()) {
-            if (openSubmenuParentIndex == null || openSubmenuParentIndex != idx) {
-                openSubmenu = DropdownMenu.spawnSubmenu(openMenu, idx, item.children(), logicalWidth, logicalHeight);
-                openSubmenuParentIndex = idx;
-            }
+            ensureSubmenu(level, menu, idx, item, logicalWidth, logicalHeight);
         } else {
-            closeSubmenu();
+            trimSubmenusFromLevel(level + 1);
         }
     }
 
@@ -171,10 +165,13 @@ public final class MenuBarController {
         if (openMenu != null) {
             openMenu.render(graphics, logicalMouseX, logicalMouseY);
         }
-        if (openSubmenu != null) {
-            openSubmenu.render(graphics, logicalMouseX, logicalMouseY);
+        for (var submenu : openSubmenus) {
+            submenu.render(graphics, logicalMouseX, logicalMouseY);
         }
-        var disabledTooltip = openSubmenu != null ? openSubmenu.disabledTooltipAt(logicalMouseX, logicalMouseY) : null;
+        Component disabledTooltip = null;
+        for (var i = openSubmenus.size() - 1; i >= 0 && disabledTooltip == null; i--) {
+            disabledTooltip = openSubmenus.get(i).disabledTooltipAt(logicalMouseX, logicalMouseY);
+        }
         if (disabledTooltip == null && openMenu != null) {
             disabledTooltip = openMenu.disabledTooltipAt(logicalMouseX, logicalMouseY);
         }
@@ -185,8 +182,7 @@ public final class MenuBarController {
 
     /** Whether {@code (mouseX, mouseY)} is inside the open menu or its submenu. */
     public boolean isInsideOpenMenu(double mouseX, double mouseY) {
-        return (openMenu != null && openMenu.isInside(mouseX, mouseY))
-            || (openSubmenu != null && openSubmenu.isInside(mouseX, mouseY));
+        return menuLevelAt(mouseX, mouseY) >= 0;
     }
 
     /**
@@ -214,39 +210,31 @@ public final class MenuBarController {
      * the screen to consider re-handling for the same-chip-different-menu case).
      */
     public ClickOutcome handleClick(double logicalX, double logicalY, int button, int logicalWidth, int logicalHeight) {
-        if (openSubmenu != null && button == 0 && openSubmenu.isInside(logicalX, logicalY)) {
-            var subIdx = openSubmenu.hitItemAt(logicalX, logicalY);
-            if (subIdx >= 0) {
-                var subItem = openSubmenu.itemAt(subIdx);
-                if (!subItem.enabled()) {
-                    return ClickOutcome.CONSUMED;
-                }
-                setOpenMenu(null);
-                subItem.action().run();
-                return ClickOutcome.CONSUMED;
-            }
-            // Inside submenu but on a border / dead row: consume and keep both menus open.
-            return ClickOutcome.CONSUMED;
-        }
         if (openMenu != null) {
             if (button == 0) {
-                var idx = openMenu.hitItemAt(logicalX, logicalY);
+                var level = menuLevelAt(logicalX, logicalY);
+                var menu = menuAtLevel(level);
+                if (menu == null) {
+                    setOpenMenu(null);
+                    return ClickOutcome.CLOSED_TRY_CHIP_REOPEN;
+                }
+                var idx = menu.hitItemAt(logicalX, logicalY);
                 if (idx >= 0) {
-                    var item = openMenu.itemAt(idx);
+                    var item = menu.itemAt(idx);
                     if (!item.enabled()) {
                         return ClickOutcome.CONSUMED;
                     }
                     if (item.hasSubmenu()) {
                         // Submenus open on hover (see updateHoverSubmenu); a click on the parent item is a no-op that
                         // just keeps everything open. Defensive re-spawn in case hover never fired for this item.
-                        if (openSubmenuParentIndex == null || openSubmenuParentIndex != idx) {
-                            openSubmenu = DropdownMenu.spawnSubmenu(openMenu, idx, item.children(), logicalWidth, logicalHeight);
-                            openSubmenuParentIndex = idx;
-                        }
+                        ensureSubmenu(level, menu, idx, item, logicalWidth, logicalHeight);
                         return ClickOutcome.CONSUMED;
                     }
                     setOpenMenu(null);
                     item.action().run();
+                    return ClickOutcome.CONSUMED;
+                }
+                if (level >= 0) {
                     return ClickOutcome.CONSUMED;
                 }
             }
@@ -254,6 +242,51 @@ public final class MenuBarController {
             return ClickOutcome.CLOSED_TRY_CHIP_REOPEN;
         }
         return ClickOutcome.NO_MENU_OPEN;
+    }
+
+    private int menuLevelAt(double mouseX, double mouseY) {
+        for (var level = openSubmenus.size(); level >= 1; level--) {
+            if (openSubmenus.get(level - 1).isInside(mouseX, mouseY)) {
+                return level;
+            }
+        }
+        return openMenu != null && openMenu.isInside(mouseX, mouseY) ? 0 : -1;
+    }
+
+    private @Nullable DropdownMenu menuAtLevel(int level) {
+        if (level == 0) {
+            return openMenu;
+        }
+        var submenuIndex = level - 1;
+        return submenuIndex >= 0 && submenuIndex < openSubmenus.size() ? openSubmenus.get(submenuIndex) : null;
+    }
+
+    private void ensureSubmenu(
+        int parentLevel,
+        DropdownMenu parent,
+        int parentItemIndex,
+        DropdownMenu.Item item,
+        int logicalWidth,
+        int logicalHeight
+    ) {
+        var childLevel = parentLevel + 1;
+        var childIndex = childLevel - 1;
+        if (childIndex < openSubmenuParentIndices.size() && openSubmenuParentIndices.get(childIndex) == parentItemIndex) {
+            trimSubmenusFromLevel(childLevel + 1);
+            return;
+        }
+
+        trimSubmenusFromLevel(childLevel);
+        openSubmenus.add(DropdownMenu.spawnSubmenu(parent, parentItemIndex, item.children(), logicalWidth, logicalHeight));
+        openSubmenuParentIndices.add(parentItemIndex);
+    }
+
+    private void trimSubmenusFromLevel(int childLevel) {
+        var firstSubmenuIndex = childLevel - 1;
+        while (openSubmenus.size() > firstSubmenuIndex && firstSubmenuIndex >= 0) {
+            openSubmenus.remove(openSubmenus.size() - 1);
+            openSubmenuParentIndices.remove(openSubmenuParentIndices.size() - 1);
+        }
     }
 
     public DropdownMenu buildEditMenu(int anchorX, int anchorY) {
@@ -340,13 +373,25 @@ public final class MenuBarController {
             items.add(new DropdownMenu.Item("Reset to Template", actions::resetLayout));
         }
         items.add(DropdownMenu.Item.divider());
-        for (var t : LayoutTemplate.all()) {
-            items.add(new DropdownMenu.Item("New from " + t.displayName() + "…", () -> actions.openNewFromTemplateDialog(t)));
-        }
+        items.add(new DropdownMenu.Item("New", () -> {}, buildLayoutNewItems()));
         items.add(DropdownMenu.Item.divider());
         items.add(new DropdownMenu.Item("Manage Layouts…", actions::openManageLayoutsDialog));
         items.add(new DropdownMenu.Item("Show Layouts Folder", actions::openLayoutsFolder));
         return new DropdownMenu(anchorX, anchorY, items);
+    }
+
+    private ArrayList<DropdownMenu.Item> buildLayoutNewItems() {
+        var items = new ArrayList<DropdownMenu.Item>();
+        items.add(new DropdownMenu.Item("From Template", () -> {}, buildLayoutNewFromTemplateItems()));
+        return items;
+    }
+
+    private ArrayList<DropdownMenu.Item> buildLayoutNewFromTemplateItems() {
+        var items = new ArrayList<DropdownMenu.Item>();
+        for (var template : LayoutTemplate.all()) {
+            items.add(new DropdownMenu.Item(template.displayName() + "…", () -> actions.openNewFromTemplateDialog(template)));
+        }
+        return items;
     }
 
     public DropdownMenu buildProjectMenu(int anchorX, int anchorY) {
