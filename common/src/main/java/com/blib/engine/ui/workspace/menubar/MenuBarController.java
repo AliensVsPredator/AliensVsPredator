@@ -319,11 +319,15 @@ public final class MenuBarController {
 
     public DropdownMenu buildLayoutMenu(int anchorX, int anchorY) {
         var items = new ArrayList<DropdownMenu.Item>();
+        var templateItems = new ArrayList<DropdownMenu.Item>();
         var activeId = actions.activeLayoutId();
         for (var doc : LayoutCatalog.listAll()) {
             var prefix = doc.id().equals(activeId) ? "• " : "  ";
-            var suffix = LayoutCatalog.isTemplateId(doc.id()) ? "  (template)" : "";
-            items.add(new DropdownMenu.Item(prefix + doc.displayName() + suffix, () -> actions.switchLayout(doc.id())));
+            var target = LayoutCatalog.isTemplateId(doc.id()) ? templateItems : items;
+            target.add(new DropdownMenu.Item(prefix + doc.displayName(), () -> actions.switchLayout(doc.id())));
+        }
+        if (!templateItems.isEmpty()) {
+            items.add(new DropdownMenu.Item("Templates", () -> {}, templateItems));
         }
         items.add(DropdownMenu.Item.divider());
         items.add(new DropdownMenu.Item("Save As New…", actions::openSaveAsDialog));
