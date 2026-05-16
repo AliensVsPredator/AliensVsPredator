@@ -9,11 +9,14 @@ import org.jetbrains.annotations.Nullable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import com.blib.engine.modeler.ModelerFilePicker;
 import com.blib.engine.modeler.animation.AnimationEditorState;
+import com.blib.engine.modeler.animation.AnimationEditorState.AnimationKey;
 import com.blib.engine.session.ProjectSession;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.dock.Panel;
@@ -68,13 +71,15 @@ public final class AnimationsPanel implements Panel {
 
     private final TextInput renameInput = new TextInput("Name", this::commitRename, this::cancelRename);
 
-    private final List<String> rows = new ArrayList<>();
+    private final List<Row> rows = new ArrayList<>();
 
-    private @Nullable String renameTarget;
+    private final Set<Integer> collapsedDocuments = new HashSet<>();
 
-    private @Nullable String lastClickedAnimation;
+    private @Nullable AnimationKey renameTarget;
 
-    private @Nullable String selectionAnchorAnimation;
+    private @Nullable AnimationKey lastClickedAnimation;
+
+    private @Nullable AnimationKey selectionAnchorAnimation;
 
     private long lastClickMillis;
 
@@ -112,9 +117,8 @@ public final class AnimationsPanel implements Panel {
         renderMenuBar(graphics, x, y, width, mouseX, mouseY);
 
         var state = AnimationEditorState.get();
-        rows.clear();
-        rows.addAll(state.animationNames());
-        if (renameTarget != null && !rows.contains(renameTarget)) {
+        rebuildRows(state);
+        if (renameTarget != null && rows.stream().noneMatch(row -> row.matches(renameTarget))) {
             cancelRename();
         }
         if (renameTarget != null && TextInput.getFocused() != renameInput) {
@@ -122,9 +126,10 @@ public final class AnimationsPanel implements Panel {
         }
 
         var metaY = y + MENU_BAR_HEIGHT + 4;
-        var meta = state.hasDraft()
-            ? (state.isDirty() ? "* " : "") + state.targetLabel()
-            : "Open or create an animation JSON";
+        var documentCount = state.documents().size();
+        var meta = documentCount == 0
+            ? "Open or create an animation JSON"
+            : documentCount + (documentCount == 1 ? " animation file" : " animation files");
         UiText.drawClipped(graphics, font, meta, x + PADDING, metaY, Math.max(0, width - 2 * PADDING), state.isDirty() ? DIRTY_COLOR : META_TEXT_COLOR);
 
         rowsTopY = metaY + font.lineHeight + 5;
@@ -138,32 +143,43 @@ public final class AnimationsPanel implements Panel {
             var visibleTop = rowsTopY;
             var visibleBottom = rowsTopY + rowsViewportHeight;
             for (var i = 0; i < rows.size(); i++) {
-                var name = rows.get(i);
+                var row = rows.get(i);
                 var rowTop = contentY + i * ROW_HEIGHT;
                 var rowBottom = rowTop + ROW_HEIGHT;
                 if (rowBottom <= visibleTop || rowTop >= visibleBottom) {
                     continue;
                 }
-                var active = name.equals(state.selectedAnimationName());
-                var selected = state.isAnimationSelected(name);
+                var active = row.isAnimation()
+                    && state.selectedDocumentId() != null
+                    && row.documentId() == state.selectedDocumentId()
+                    && row.animationName().equals(state.selectedAnimationName());
+                var selected = row.isAnimation() && state.isAnimationSelected(row.documentId(), row.animationName());
+                var activeDocument = row.isFile() && state.selectedDocumentId() != null && row.documentId() == state.selectedDocumentId();
                 var hovered = mouseX >= rowsLeftX && mouseX < rowsLeftX + rowsContentWidth && mouseY >= rowTop && mouseY < rowBottom;
                 if (selected) {
                     graphics.fill(rowsLeftX, rowTop, rowsLeftX + rowsContentWidth, rowBottom, active ? ROW_SELECTED_COLOR : ROW_MULTI_SELECTED_COLOR);
+                } else if (activeDocument) {
+                    graphics.fill(rowsLeftX, rowTop, rowsLeftX + rowsContentWidth, rowBottom, ROW_MULTI_SELECTED_COLOR);
                 } else if (hovered) {
                     graphics.fill(rowsLeftX, rowTop, rowsLeftX + rowsContentWidth, rowBottom, ROW_HOVER_COLOR);
                 }
 
-                var textX = rowsLeftX + 4;
-                if (name.equals(renameTarget)) {
+                if (row.isFile()) {
+                    renderFileRow(graphics, font, state, row, rowTop);
+                    continue;
+                }
+
+                var textX = rowsLeftX + 18;
+                if (row.matches(renameTarget)) {
                     renameInput.render(graphics, textX, rowTop + 1, Math.max(0, rowsContentWidth - 6), mouseX, mouseY);
                 } else {
                     UiText.drawClipped(
                         graphics,
                         font,
-                        name,
+                        row.animationName(),
                         textX,
                         rowTop + (ROW_HEIGHT - font.lineHeight + 2) / 2,
-                        Math.max(0, rowsContentWidth - 8),
+                        Math.max(0, rowsContentWidth - 22),
                         TEXT_COLOR
                     );
                 }
@@ -214,32 +230,43 @@ public final class AnimationsPanel implements Panel {
         if (idx < 0 || idx >= rows.size()) {
             return false;
         }
-        var name = rows.get(idx);
+        var row = rows.get(idx);
         var state = AnimationEditorState.get();
+        if (row.isFile()) {
+            state.selectDocument(row.documentId());
+            if (mouseX < rowsLeftX + 18) {
+                toggleDocument(row.documentId());
+            }
+            selectionAnchorAnimation = null;
+            lastClickedAnimation = null;
+            return true;
+        }
+
+        var key = row.key();
         var shiftSelection = Screen.hasShiftDown();
         var toggleSelection = Screen.hasControlDown();
         if (shiftSelection) {
-            var anchor = selectionAnchorAnimation != null ? selectionAnchorAnimation : state.selectedAnimationName();
-            state.selectAnimationRange(rows, anchor, name);
+            var anchor = selectionAnchorAnimation != null ? selectionAnchorAnimation : selectedAnimationKey(state);
+            state.selectAnimationRange(visibleAnimationKeys(), anchor, key);
             selectionAnchorAnimation = anchor;
             lastClickedAnimation = null;
         } else if (toggleSelection) {
-            state.toggleAnimationSelection(name);
-            selectionAnchorAnimation = name;
+            state.toggleAnimationSelection(key.documentId(), key.animationName());
+            selectionAnchorAnimation = key;
             lastClickedAnimation = null;
         } else {
             var now = System.currentTimeMillis();
-            var doubleClick = name.equals(lastClickedAnimation) && now - lastClickMillis <= DOUBLE_CLICK_MS;
-            state.selectAnimation(name);
-            selectionAnchorAnimation = name;
+            var doubleClick = key.equals(lastClickedAnimation) && now - lastClickMillis <= DOUBLE_CLICK_MS;
+            state.selectAnimation(key.documentId(), key.animationName());
+            selectionAnchorAnimation = key;
             if (!doubleClick) {
-                lastClickedAnimation = name;
+                lastClickedAnimation = key;
                 lastClickMillis = now;
             }
             if (!doubleClick) {
                 return true;
             }
-            beginRename(name);
+            beginRename(key);
             lastClickedAnimation = null;
         }
         return true;
@@ -296,6 +323,43 @@ public final class AnimationsPanel implements Panel {
             && mouseY < menuFileY + menuFileHeight;
     }
 
+    private void rebuildRows(AnimationEditorState state) {
+        rows.clear();
+        for (var document : state.documents()) {
+            rows.add(Row.file(document.id()));
+            if (collapsedDocuments.contains(document.id())) {
+                continue;
+            }
+            for (var animationName : state.animationNames(document.id())) {
+                rows.add(Row.animation(document.id(), animationName));
+            }
+        }
+    }
+
+    private void renderFileRow(
+        GuiGraphics graphics,
+        net.minecraft.client.gui.Font font,
+        AnimationEditorState state,
+        Row row,
+        int rowTop
+    ) {
+        var collapsed = collapsedDocuments.contains(row.documentId());
+        drawCaret(graphics, rowsLeftX + 6, rowTop + (ROW_HEIGHT - 7) / 2, collapsed, META_TEXT_COLOR);
+        var label = state.targetLabel(row.documentId());
+        if (state.documents().stream().anyMatch(document -> document.id() == row.documentId() && document.dirty())) {
+            label = "* " + label;
+        }
+        UiText.drawClipped(
+            graphics,
+            font,
+            label,
+            rowsLeftX + 18,
+            rowTop + (ROW_HEIGHT - font.lineHeight + 2) / 2,
+            Math.max(0, rowsContentWidth - 22),
+            label.startsWith("* ") ? DIRTY_COLOR : TEXT_COLOR
+        );
+    }
+
     private DropdownMenu buildFileMenu() {
         var state = AnimationEditorState.get();
         var items = List
@@ -322,21 +386,33 @@ public final class AnimationsPanel implements Panel {
             return true;
         }
         var state = AnimationEditorState.get();
-        var row = animationAt(mouseX, mouseY);
-        if (row != null) {
-            if (!state.isAnimationSelected(row)) {
-                state.selectAnimation(row);
-                selectionAnchorAnimation = row;
+        var row = rowAt(mouseX, mouseY);
+        if (row != null && row.isAnimation()) {
+            var key = row.key();
+            if (!state.isAnimationSelected(key.documentId(), key.animationName())) {
+                state.selectAnimation(key.documentId(), key.animationName());
+                selectionAnchorAnimation = key;
             }
             menuOpener.open(
                 new DropdownMenu(
                     (int) mouseX,
                     (int) mouseY,
                     List.of(
-                        new DropdownMenu.Item("Rename", () -> beginRename(row)),
-                        new DropdownMenu.Item("Duplicate", () -> state.duplicateAnimation(row)),
-                        new DropdownMenu.Item("Delete", () -> state.deleteAnimation(row))
+                        new DropdownMenu.Item("Rename", () -> beginRename(key)),
+                        new DropdownMenu.Item("Duplicate", () -> state.duplicateAnimation(key.documentId(), key.animationName())),
+                        new DropdownMenu.Item("Delete", () -> state.deleteAnimation(key.documentId(), key.animationName()))
                     )
+                )
+            );
+            return true;
+        }
+        if (row != null && row.isFile()) {
+            state.selectDocument(row.documentId());
+            menuOpener.open(
+                new DropdownMenu(
+                    (int) mouseX,
+                    (int) mouseY,
+                    List.of(new DropdownMenu.Item("New Animation", this::newAnimation, state.hasDraft()))
                 )
             );
             return true;
@@ -372,9 +448,9 @@ public final class AnimationsPanel implements Panel {
         AnimationEditorState.get().createAnimation(null);
     }
 
-    private void beginRename(String animationName) {
-        renameTarget = animationName;
-        renameInput.setContent(animationName);
+    private void beginRename(AnimationKey animationKey) {
+        renameTarget = animationKey;
+        renameInput.setContent(animationKey.animationName());
         renameInput.focus();
         renameInput.selectAll();
     }
@@ -388,7 +464,7 @@ public final class AnimationsPanel implements Panel {
         renameTarget = null;
         lastClickedAnimation = null;
         if (target != null) {
-            AnimationEditorState.get().renameAnimation(target, text);
+            AnimationEditorState.get().renameAnimation(target.documentId(), target.animationName(), text);
         }
     }
 
@@ -397,9 +473,32 @@ public final class AnimationsPanel implements Panel {
         lastClickedAnimation = null;
     }
 
-    private @Nullable String animationAt(double mouseX, double mouseY) {
+    private @Nullable Row rowAt(double mouseX, double mouseY) {
         var idx = rowIndexAt(mouseX, mouseY);
         return idx >= 0 && idx < rows.size() ? rows.get(idx) : null;
+    }
+
+    private void toggleDocument(int documentId) {
+        if (!collapsedDocuments.remove(documentId)) {
+            collapsedDocuments.add(documentId);
+        }
+    }
+
+    private List<AnimationKey> visibleAnimationKeys() {
+        var out = new ArrayList<AnimationKey>();
+        for (var row : rows) {
+            if (row.isAnimation()) {
+                out.add(row.key());
+            }
+        }
+        return out;
+    }
+
+    private static @Nullable AnimationKey selectedAnimationKey(AnimationEditorState state) {
+        if (state.selectedDocumentId() == null || state.selectedAnimationName() == null) {
+            return null;
+        }
+        return new AnimationKey(state.selectedDocumentId(), state.selectedAnimationName());
     }
 
     private int rowIndexAt(double mouseX, double mouseY) {
@@ -452,5 +551,48 @@ public final class AnimationsPanel implements Panel {
     private static String sanitizeFileName(@Nullable String value) {
         var raw = value == null || value.isBlank() ? "animations" : value.toLowerCase(Locale.ROOT);
         return raw.replaceAll("[^a-z0-9_./-]", "_").replace(':', '_');
+    }
+
+    private static void drawCaret(GuiGraphics graphics, int x, int y, boolean collapsed, int color) {
+        if (collapsed) {
+            for (var row = 0; row < 7; row++) {
+                var width = row <= 3 ? row + 1 : 7 - row;
+                graphics.fill(x, y + row, x + width, y + row + 1, color);
+            }
+            return;
+        }
+        for (var row = 0; row < 4; row++) {
+            graphics.fill(x + row, y + row + 1, x + 7 - row, y + row + 2, color);
+        }
+    }
+
+    private record Row(
+        int documentId,
+        @Nullable String animationName
+    ) {
+
+        static Row file(int documentId) {
+            return new Row(documentId, null);
+        }
+
+        static Row animation(int documentId, String animationName) {
+            return new Row(documentId, animationName);
+        }
+
+        boolean isFile() {
+            return animationName == null;
+        }
+
+        boolean isAnimation() {
+            return animationName != null;
+        }
+
+        AnimationKey key() {
+            return new AnimationKey(documentId, animationName == null ? "" : animationName);
+        }
+
+        boolean matches(@Nullable AnimationKey key) {
+            return key != null && animationName != null && documentId == key.documentId() && animationName.equals(key.animationName());
+        }
     }
 }

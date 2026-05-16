@@ -25,6 +25,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import com.blib.engine.modeler.ModelerBone;
 import com.blib.engine.modeler.ModelerScene;
@@ -78,6 +79,7 @@ public final class AnimationEditorState {
     }
 
     public record KeyframeRef(
+        int documentId,
         String animationName,
         String boneName,
         TransformChannel channel,
@@ -85,11 +87,53 @@ public final class AnimationEditorState {
         JsonObject keyframe
     ) {}
 
+    public record AnimationDocumentRef(
+        int id,
+        String label,
+        boolean dirty,
+        boolean active
+    ) {}
+
+    public record AnimationKey(
+        int documentId,
+        String animationName
+    ) {}
+
     public record PreviewBoneTransform(
         @Nullable Vec3 position,
         @Nullable Vec3 rotationDelta,
         @Nullable Vec3 scale
     ) {}
+
+    private static final class AnimationDocument {
+        private final int id;
+
+        private JsonObject draft;
+
+        private @Nullable Path externalSavePath;
+
+        private @Nullable ResourceLocation projectResourceId;
+
+        private @Nullable Path lastSavedPath;
+
+        private boolean dirty;
+
+        private AnimationDocument(int id, JsonObject draft) {
+            this.id = id;
+            this.draft = draft;
+        }
+
+        private String targetLabel() {
+            if (projectResourceId != null) {
+                return projectResourceId.toString();
+            }
+            if (externalSavePath != null) {
+                var name = externalSavePath.getFileName();
+                return name == null ? externalSavePath.toString() : name.toString();
+            }
+            return "(unsaved)";
+        }
+    }
 
     private @Nullable JsonObject draft;
 
@@ -104,6 +148,14 @@ public final class AnimationEditorState {
     private @Nullable String selectedAnimationName;
 
     private final LinkedHashSet<String> selectedAnimationNames = new LinkedHashSet<>();
+
+    private final LinkedHashSet<AnimationKey> selectedAnimationKeys = new LinkedHashSet<>();
+
+    private final List<AnimationDocument> documents = new ArrayList<>();
+
+    private int nextDocumentId = 1;
+
+    private @Nullable Integer activeDocumentId;
 
     private @Nullable String selectedBoneName;
 
@@ -127,16 +179,52 @@ public final class AnimationEditorState {
         return INSTANCE;
     }
 
+    public List<AnimationDocumentRef> documents() {
+        syncActiveDocument();
+        var out = new ArrayList<AnimationDocumentRef>();
+        for (var document : documents) {
+            out.add(new AnimationDocumentRef(document.id, document.targetLabel(), document.dirty, isActiveDocument(document.id)));
+        }
+        return out;
+    }
+
+    public @Nullable Integer selectedDocumentId() {
+        return activeDocumentId;
+    }
+
+    public void selectDocument(int documentId) {
+        var document = document(documentId);
+        if (document == null) {
+            return;
+        }
+        var changedDocument = activeDocumentId == null || activeDocumentId != documentId;
+        syncActiveDocument();
+        activateDocument(document);
+        if (selectedAnimationName == null || animationObject(documentId, selectedAnimationName) == null) {
+            selectedAnimationName = firstAnimationName(document);
+        }
+        syncSelectedAnimationNames();
+        if (changedDocument) {
+            selectedTimestamp = null;
+        }
+    }
+
     public @Nullable JsonObject draft() {
         return draft;
     }
 
     public boolean hasDraft() {
-        return draft != null;
+        return activeDocument() != null;
     }
 
     public boolean isDirty() {
-        return dirty;
+        syncActiveDocument();
+        for (var document : documents) {
+            if (document.dirty) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public @Nullable String statusMessage() {
@@ -148,6 +236,7 @@ public final class AnimationEditorState {
     }
 
     public List<String> selectedAnimationNames() {
+        syncSelectedAnimationNames();
         if (selectedAnimationNames.isEmpty()) {
             return List.of();
         }
@@ -161,11 +250,25 @@ public final class AnimationEditorState {
     }
 
     public boolean isAnimationSelected(@Nullable String name) {
-        return name != null && selectedAnimationNames.contains(name);
+        return name != null && activeDocumentId != null && isAnimationSelected(activeDocumentId, name);
+    }
+
+    public boolean isAnimationSelected(int documentId, @Nullable String name) {
+        return name != null && selectedAnimationKeys.contains(new AnimationKey(documentId, name));
+    }
+
+    public List<AnimationKey> selectedAnimationKeys() {
+        var out = new ArrayList<AnimationKey>();
+        for (var key : selectedAnimationKeys) {
+            if (animationObject(key.documentId(), key.animationName()) != null) {
+                out.add(key);
+            }
+        }
+        return out;
     }
 
     public boolean hasPlayableSelection() {
-        return !playbackAnimationNames().isEmpty();
+        return !playbackAnimationKeys().isEmpty();
     }
 
     public @Nullable String selectedBoneName() {
@@ -201,6 +304,10 @@ public final class AnimationEditorState {
     }
 
     public String targetLabel() {
+        var document = activeDocument();
+        if (document != null) {
+            return document.targetLabel();
+        }
         if (projectResourceId != null) {
             return projectResourceId.toString();
         }
@@ -211,22 +318,40 @@ public final class AnimationEditorState {
         return "(unsaved)";
     }
 
+    public String targetLabel(int documentId) {
+        var document = document(documentId);
+        return document == null ? "(missing)" : document.targetLabel();
+    }
+
     public void newDraft() {
+        syncActiveDocument();
         var root = new JsonObject();
         root.add("animations", new JsonObject());
-        draft = root;
-        externalSavePath = null;
-        projectResourceId = null;
-        lastSavedPath = null;
+        var document = new AnimationDocument(nextDocumentId++, root);
+        document.dirty = true;
+        documents.add(document);
+        activateDocument(document);
         selectSingleAnimation(null);
         selectedTimestamp = null;
         stopPlayback();
-        dirty = true;
         statusMessage = "New animation file";
     }
 
     public boolean openFromFile(Path path) {
         try {
+            syncActiveDocument();
+            var normalizedPath = path.toAbsolutePath().normalize();
+            for (var document : documents) {
+                if (Objects.equals(document.lastSavedPath, normalizedPath) || Objects.equals(document.externalSavePath, normalizedPath)) {
+                    activateDocument(document);
+                    selectSingleAnimation(resolveAnimationName(selectedAnimationName));
+                    selectedTimestamp = null;
+                    stopPlayback();
+                    statusMessage = "Opened " + targetLabel();
+                    return true;
+                }
+            }
+
             var parsed = JsonParser.parseString(Files.readString(path));
             if (!parsed.isJsonObject()) {
                 statusMessage = "Animation file root must be a JSON object.";
@@ -234,23 +359,25 @@ public final class AnimationEditorState {
             }
             var root = parsed.getAsJsonObject();
             ensureAnimationsObject(root);
-            draft = root;
-            dirty = false;
-            selectSingleAnimation(firstAnimationName());
-            selectedTimestamp = null;
-            stopPlayback();
-            lastSavedPath = path.toAbsolutePath().normalize();
+            var document = new AnimationDocument(nextDocumentId++, root);
+            document.dirty = false;
+            document.lastSavedPath = normalizedPath;
 
             var projectResource = inferProjectResourceId(path);
             if (projectResource != null) {
-                projectResourceId = projectResource;
-                externalSavePath = null;
+                document.projectResourceId = projectResource;
+                document.externalSavePath = null;
             } else {
-                projectResourceId = null;
-                externalSavePath = lastSavedPath;
+                document.projectResourceId = null;
+                document.externalSavePath = normalizedPath;
             }
+            documents.add(document);
+            activateDocument(document);
+            selectSingleAnimation(firstAnimationName(document));
+            selectedTimestamp = null;
+            stopPlayback();
 
-            var valid = validateCompatibility();
+            var valid = validateCompatibility(document);
             statusMessage = valid
                 ? "Opened " + targetLabel()
                 : "Opened " + targetLabel() + "; Az validation failed.";
@@ -263,68 +390,83 @@ public final class AnimationEditorState {
     }
 
     public boolean canSave() {
-        return draft != null
-            && dirty
-            && (externalSavePath != null || (projectResourceId != null && !ProjectSession.activeProjectName().isEmpty()));
+        syncActiveDocument();
+        var document = activeDocument();
+        return document != null
+            && document.dirty
+            && (document.externalSavePath != null || (document.projectResourceId != null && !ProjectSession.activeProjectName().isEmpty()));
     }
 
     public boolean save() {
-        if (draft == null || !canSave()) {
+        syncActiveDocument();
+        var document = activeDocument();
+        if (document == null || !canSave()) {
             return false;
         }
-        if (!validateCompatibility()) {
+        if (!validateCompatibility(document)) {
             statusMessage = "Animation JSON is not compatible with the Az parser.";
             return false;
         }
-        if (projectResourceId != null) {
-            return writeProject(projectResourceId);
+        if (document.projectResourceId != null) {
+            return writeProject(document, document.projectResourceId);
         }
-        if (externalSavePath != null) {
-            return writeFile(externalSavePath);
+        if (document.externalSavePath != null) {
+            return writeFile(document, document.externalSavePath);
         }
         return false;
     }
 
     public boolean saveAsFile(Path path) {
-        if (draft == null) {
+        syncActiveDocument();
+        var document = activeDocument();
+        if (document == null) {
             return false;
         }
-        if (!validateCompatibility()) {
+        if (!validateCompatibility(document)) {
             statusMessage = "Animation JSON is not compatible with the Az parser.";
             return false;
         }
         var target = ensureJsonExtension(path).toAbsolutePath().normalize();
-        if (!writeFile(target)) {
+        if (!writeFile(document, target)) {
             return false;
         }
-        externalSavePath = target;
-        projectResourceId = null;
+        document.externalSavePath = target;
+        document.projectResourceId = null;
+        activateDocument(document);
         return true;
     }
 
     public boolean saveAsProject(ResourceLocation resourceId) {
-        if (draft == null) {
+        syncActiveDocument();
+        var document = activeDocument();
+        if (document == null) {
             return false;
         }
-        if (!validateCompatibility()) {
+        if (!validateCompatibility(document)) {
             statusMessage = "Animation JSON is not compatible with the Az parser.";
             return false;
         }
         var normalized = normalizeAnimationResourceId(resourceId);
-        if (!writeProject(normalized)) {
+        if (!writeProject(document, normalized)) {
             return false;
         }
-        projectResourceId = normalized;
-        externalSavePath = null;
+        document.projectResourceId = normalized;
+        document.externalSavePath = null;
+        activateDocument(document);
         return true;
     }
 
     public boolean validateCompatibility() {
-        if (draft == null) {
+        var document = activeDocument();
+        if (document == null) {
             return false;
         }
+        return validateCompatibility(document);
+    }
+
+    private boolean validateCompatibility(AnimationDocument document) {
         try {
-            JsonUtil.GEO_GSON.fromJson(draft, AzBakedAnimations.class);
+            JsonUtil.GEO_GSON.fromJson(document.draft, AzBakedAnimations.class);
             return true;
         } catch (RuntimeException e) {
             LOGGER.warn("AnimationEditorState: Az validation failed: {}", e.getMessage());
@@ -334,6 +476,15 @@ public final class AnimationEditorState {
 
     public List<String> animationNames() {
         var animations = animationsObjectOrNull();
+        return sortedAnimationNames(animations);
+    }
+
+    public List<String> animationNames(int documentId) {
+        var document = document(documentId);
+        return document == null ? List.of() : sortedAnimationNames(animationsObjectOrNull(document));
+    }
+
+    private static List<String> sortedAnimationNames(@Nullable JsonObject animations) {
         if (animations == null) {
             return List.of();
         }
@@ -346,11 +497,21 @@ public final class AnimationEditorState {
     }
 
     public @Nullable JsonObject selectedAnimationObject() {
-        return animationObject(selectedAnimationName);
+        return activeDocumentId == null || selectedAnimationName == null
+            ? null
+            : animationObject(activeDocumentId, selectedAnimationName);
     }
 
     public @Nullable JsonObject animationObject(@Nullable String name) {
-        var animations = animationsObjectOrNull();
+        if (activeDocumentId == null) {
+            return null;
+        }
+        return animationObject(activeDocumentId, name);
+    }
+
+    public @Nullable JsonObject animationObject(int documentId, @Nullable String name) {
+        var document = document(documentId);
+        var animations = document == null ? null : animationsObjectOrNull(document);
         if (animations == null || name == null || !animations.has(name) || !animations.get(name).isJsonObject()) {
             return null;
         }
@@ -358,18 +519,18 @@ public final class AnimationEditorState {
     }
 
     public double selectedAnimationLengthSeconds() {
-        var animationNames = playbackAnimationNames();
-        if (animationNames.isEmpty()) {
+        var animationKeys = playbackAnimationKeys();
+        if (animationKeys.isEmpty()) {
             return 1.0;
         }
         var length = 1.0;
-        for (var animationName : animationNames) {
-            var animation = animationObject(animationName);
+        for (var animationKey : animationKeys) {
+            var animation = animationObject(animationKey.documentId(), animationKey.animationName());
             if (animation == null) {
                 continue;
             }
             var animationLength = readAnimationLength(animation);
-            animationLength = Math.max(animationLength, maxKeyframeTimestamp(animationName, animation));
+            animationLength = Math.max(animationLength, maxKeyframeTimestamp(animationKey.documentId(), animationKey.animationName(), animation));
             length = Math.max(length, animationLength);
         }
         return Math.max(1.0, length);
@@ -379,7 +540,7 @@ public final class AnimationEditorState {
         if (!playing) {
             return;
         }
-        if (playbackAnimationNames().isEmpty()) {
+        if (playbackAnimationKeys().isEmpty()) {
             stopPlayback();
             return;
         }
@@ -405,7 +566,7 @@ public final class AnimationEditorState {
     }
 
     public void setPlaying(boolean playing) {
-        if (!playing || playbackAnimationNames().isEmpty()) {
+        if (!playing || playbackAnimationKeys().isEmpty()) {
             this.playing = false;
             lastPlaybackNanos = 0L;
             return;
@@ -429,7 +590,7 @@ public final class AnimationEditorState {
     }
 
     public @Nullable PreviewBoneTransform previewTransformFor(ModelerBone bone) {
-        if (draft == null) {
+        if (documents.isEmpty()) {
             return null;
         }
         if (ModelerScene.get().itemSession != null) {
@@ -439,17 +600,17 @@ public final class AnimationEditorState {
         Vec3 position = null;
         Vec3 rotation = null;
         Vec3 scale = null;
-        for (var animationName : playbackAnimationNames()) {
-            var sampledPosition = sampleChannel(animationName, bone.name, TransformChannel.POSITION, playheadSeconds);
+        for (var animationKey : playbackAnimationKeys()) {
+            var sampledPosition = sampleChannel(animationKey.documentId(), animationKey.animationName(), bone.name, TransformChannel.POSITION, playheadSeconds);
             if (sampledPosition != null) {
                 position = toModelerSpace(TransformChannel.POSITION, sampledPosition);
             }
-            var sampledRotation = sampleChannel(animationName, bone.name, TransformChannel.ROTATION, playheadSeconds);
+            var sampledRotation = sampleChannel(animationKey.documentId(), animationKey.animationName(), bone.name, TransformChannel.ROTATION, playheadSeconds);
             if (sampledRotation != null) {
                 var modelerRotation = toModelerSpace(TransformChannel.ROTATION, sampledRotation);
                 rotation = rotation == null ? modelerRotation : rotation.add(modelerRotation);
             }
-            var sampledScale = sampleChannel(animationName, bone.name, TransformChannel.SCALE, playheadSeconds);
+            var sampledScale = sampleChannel(animationKey.documentId(), animationKey.animationName(), bone.name, TransformChannel.SCALE, playheadSeconds);
             if (sampledScale != null) {
                 scale = sampledScale;
             }
@@ -466,53 +627,103 @@ public final class AnimationEditorState {
         stopPlayback();
     }
 
-    public void toggleAnimationSelection(String name) {
-        if (animationObject(name) == null) {
+    public void selectAnimation(int documentId, @Nullable String name) {
+        var document = document(documentId);
+        if (document == null) {
             return;
         }
-        if (selectedAnimationNames.contains(name)) {
-            selectedAnimationNames.remove(name);
-            if (name.equals(selectedAnimationName)) {
+        syncActiveDocument();
+        activateDocument(document);
+        selectSingleAnimation(resolveAnimationName(documentId, name));
+        selectedTimestamp = null;
+        stopPlayback();
+    }
+
+    public void toggleAnimationSelection(String name) {
+        if (activeDocumentId == null) {
+            return;
+        }
+        toggleAnimationSelection(activeDocumentId, name);
+    }
+
+    public void toggleAnimationSelection(int documentId, String name) {
+        if (animationObject(documentId, name) == null) {
+            return;
+        }
+        syncActiveDocument();
+        var document = document(documentId);
+        if (document != null) {
+            activateDocument(document);
+        }
+        var key = new AnimationKey(documentId, name);
+        if (selectedAnimationKeys.contains(key)) {
+            selectedAnimationKeys.remove(key);
+            if (documentId == activeDocumentId && name.equals(selectedAnimationName)) {
                 selectedAnimationName = firstSelectedAnimationName();
             }
         } else {
-            selectedAnimationNames.add(name);
+            selectedAnimationKeys.add(key);
             selectedAnimationName = name;
         }
+        syncSelectedAnimationNames();
         selectedTimestamp = null;
         stopPlayback();
     }
 
     public void selectAnimationRange(List<String> orderedNames, @Nullable String anchorName, String targetName) {
-        if (animationObject(targetName) == null || orderedNames.isEmpty()) {
+        if (activeDocumentId == null) {
             return;
         }
-        var anchorIndex = orderedNames.indexOf(anchorName);
+        var orderedKeys = new ArrayList<AnimationKey>();
+        for (var name : orderedNames) {
+            orderedKeys.add(new AnimationKey(activeDocumentId, name));
+        }
+        var anchorKey = anchorName == null ? null : new AnimationKey(activeDocumentId, anchorName);
+        selectAnimationRange(orderedKeys, anchorKey, new AnimationKey(activeDocumentId, targetName));
+    }
+
+    public void selectAnimationRange(List<AnimationKey> orderedKeys, @Nullable AnimationKey anchorKey, AnimationKey targetKey) {
+        if (animationObject(targetKey.documentId(), targetKey.animationName()) == null || orderedKeys.isEmpty()) {
+            return;
+        }
+        var fallbackAnchor = selectedAnimationName == null || activeDocumentId == null
+            ? null
+            : new AnimationKey(activeDocumentId, selectedAnimationName);
+        syncActiveDocument();
+        var targetDocument = document(targetKey.documentId());
+        if (targetDocument != null) {
+            activateDocument(targetDocument);
+        }
+        var anchorIndex = orderedKeys.indexOf(anchorKey);
         if (anchorIndex < 0) {
-            anchorIndex = selectedAnimationName == null ? -1 : orderedNames.indexOf(selectedAnimationName);
+            anchorIndex = orderedKeys.indexOf(fallbackAnchor);
         }
         if (anchorIndex < 0) {
-            anchorIndex = orderedNames.indexOf(targetName);
+            anchorIndex = orderedKeys.indexOf(targetKey);
         }
-        var targetIndex = orderedNames.indexOf(targetName);
+        var targetIndex = orderedKeys.indexOf(targetKey);
         if (targetIndex < 0) {
             return;
         }
         var from = Math.min(anchorIndex, targetIndex);
         var to = Math.max(anchorIndex, targetIndex);
-        selectedAnimationNames.clear();
+        selectedAnimationKeys.clear();
         for (var i = from; i <= to; i++) {
-            var name = orderedNames.get(i);
-            if (animationObject(name) != null) {
-                selectedAnimationNames.add(name);
+            var key = orderedKeys.get(i);
+            if (animationObject(key.documentId(), key.animationName()) != null) {
+                selectedAnimationKeys.add(key);
             }
         }
-        selectedAnimationName = targetName;
+        selectedAnimationName = targetKey.animationName();
+        syncSelectedAnimationNames();
         selectedTimestamp = null;
         stopPlayback();
     }
 
     public String createAnimation(@Nullable String requestedName) {
+        if (activeDocument() == null) {
+            newDraft();
+        }
         var animations = ensureAnimationsObject();
         var base = requestedName == null || requestedName.isBlank() ? "animation.new" : requestedName.trim();
         var name = uniqueName(base);
@@ -528,10 +739,20 @@ public final class AnimationEditorState {
     }
 
     public boolean renameAnimation(String oldName, String newName) {
-        var animations = animationsObjectOrNull();
+        if (activeDocumentId == null) {
+            return false;
+        }
+        return renameAnimation(activeDocumentId, oldName, newName);
+    }
+
+    public boolean renameAnimation(int documentId, String oldName, String newName) {
+        var document = document(documentId);
+        var animations = document == null ? null : animationsObjectOrNull(document);
         if (animations == null || oldName == null || newName == null || newName.isBlank() || !animations.has(oldName)) {
             return false;
         }
+        syncActiveDocument();
+        activateDocument(document);
         var clean = newName.trim();
         if (oldName.equals(clean)) {
             return false;
@@ -551,23 +772,35 @@ public final class AnimationEditorState {
                 rebuilt.add(entry.getKey(), entry.getValue());
             }
         }
-        draft.add("animations", rebuilt);
+        document.draft.add("animations", rebuilt);
         selectedAnimationName = clean;
-        if (selectedAnimationNames.remove(oldName)) {
-            selectedAnimationNames.add(clean);
+        var oldKey = new AnimationKey(documentId, oldName);
+        if (selectedAnimationKeys.remove(oldKey)) {
+            selectedAnimationKeys.add(new AnimationKey(documentId, clean));
         }
-        selectedAnimationNames.add(clean);
+        selectedAnimationKeys.add(new AnimationKey(documentId, clean));
+        syncSelectedAnimationNames();
         markDirty("Renamed " + oldName + " to " + clean);
         return true;
     }
 
     public @Nullable String duplicateAnimation(@Nullable String sourceName) {
-        var source = animationObject(sourceName);
+        if (activeDocumentId == null) {
+            return null;
+        }
+        return duplicateAnimation(activeDocumentId, sourceName);
+    }
+
+    public @Nullable String duplicateAnimation(int documentId, @Nullable String sourceName) {
+        var source = animationObject(documentId, sourceName);
         if (source == null) {
             return null;
         }
-        var animations = ensureAnimationsObject();
-        var name = uniqueName(sourceName + "_copy");
+        var document = document(documentId);
+        syncActiveDocument();
+        activateDocument(document);
+        var animations = ensureAnimationsObject(document);
+        var name = uniqueName(document, sourceName + "_copy");
         animations.add(name, source.deepCopy());
         selectSingleAnimation(name);
         selectedTimestamp = null;
@@ -577,22 +810,33 @@ public final class AnimationEditorState {
     }
 
     public boolean deleteAnimation(@Nullable String name) {
-        var animations = animationsObjectOrNull();
+        if (activeDocumentId == null) {
+            return false;
+        }
+        return deleteAnimation(activeDocumentId, name);
+    }
+
+    public boolean deleteAnimation(int documentId, @Nullable String name) {
+        var document = document(documentId);
+        var animations = document == null ? null : animationsObjectOrNull(document);
         if (animations == null || name == null || !animations.has(name)) {
             return false;
         }
+        syncActiveDocument();
+        activateDocument(document);
         animations.remove(name);
-        var removedSelected = selectedAnimationNames.remove(name);
+        var removedSelected = selectedAnimationKeys.remove(new AnimationKey(documentId, name));
         if (name.equals(selectedAnimationName)) {
             selectedAnimationName = firstSelectedAnimationName();
             if (selectedAnimationName == null) {
-                selectSingleAnimation(firstAnimationName());
+                selectSingleAnimation(firstAnimationName(document));
             }
             selectedTimestamp = null;
             stopPlayback();
         } else if (removedSelected) {
             stopPlayback();
         }
+        syncSelectedAnimationNames();
         markDirty("Deleted " + name);
         return true;
     }
@@ -625,10 +869,24 @@ public final class AnimationEditorState {
     }
 
     public void selectKeyframe(String animationName, String boneName, TransformChannel channel, double timestamp) {
-        selectedAnimationName = animationName;
-        if (animationObject(animationName) != null) {
-            selectedAnimationNames.add(animationName);
+        if (activeDocumentId == null) {
+            return;
         }
+        selectKeyframe(activeDocumentId, animationName, boneName, channel, timestamp);
+    }
+
+    public void selectKeyframe(int documentId, String animationName, String boneName, TransformChannel channel, double timestamp) {
+        var document = document(documentId);
+        if (document == null) {
+            return;
+        }
+        syncActiveDocument();
+        activateDocument(document);
+        selectedAnimationName = animationName;
+        if (animationObject(documentId, animationName) != null) {
+            selectedAnimationKeys.add(new AnimationKey(documentId, animationName));
+        }
+        syncSelectedAnimationNames();
         selectedBoneName = boneName;
         selectedChannel = channel;
         selectedTimestamp = timestamp;
@@ -642,11 +900,18 @@ public final class AnimationEditorState {
     }
 
     public List<KeyframeRef> keyframes(String animationName, String boneName, TransformChannel channel) {
-        var boneObj = boneAnimationObject(animationName, boneName);
+        if (activeDocumentId == null) {
+            return List.of();
+        }
+        return keyframes(activeDocumentId, animationName, boneName, channel);
+    }
+
+    public List<KeyframeRef> keyframes(int documentId, String animationName, String boneName, TransformChannel channel) {
+        var boneObj = boneAnimationObject(documentId, animationName, boneName);
         if (boneObj == null || !boneObj.has(channel.jsonName())) {
             return List.of();
         }
-        var refs = readKeyframes(animationName, boneName, channel, boneObj.get(channel.jsonName()));
+        var refs = readKeyframes(documentId, animationName, boneName, channel, boneObj.get(channel.jsonName()));
         refs.sort(Comparator.comparingDouble(KeyframeRef::timestamp));
         return refs;
     }
@@ -664,24 +929,29 @@ public final class AnimationEditorState {
     }
 
     public KeyframeRef createOrUpdateSelectedKeyframe() {
+        if (activeDocument() == null) {
+            newDraft();
+        }
         var animation = selectedAnimationName != null ? selectedAnimationName : createAnimation(null);
+        var documentId = activeDocumentId == null ? 0 : activeDocumentId;
         var bone = selectedBoneName;
         if (bone == null || bone.isBlank()) {
             bone = "bone";
             selectedBoneName = bone;
         }
         var timestamp = selectedTimestamp != null ? selectedTimestamp : 0.0;
-        var frame = ensureKeyframe(animation, bone, selectedChannel, timestamp);
+        var frame = ensureKeyframe(documentId, animation, bone, selectedChannel, timestamp);
         selectedTimestamp = timestamp;
         markDirty("Edited keyframe");
-        return new KeyframeRef(animation, bone, selectedChannel, timestamp, frame);
+        return new KeyframeRef(documentId, animation, bone, selectedChannel, timestamp, frame);
     }
 
     public boolean deleteSelectedKeyframe() {
         if (selectedAnimationName == null || selectedBoneName == null || selectedTimestamp == null) {
             return false;
         }
-        var deleted = deleteKeyframe(selectedAnimationName, selectedBoneName, selectedChannel, selectedTimestamp);
+        var deleted = activeDocumentId != null
+            && deleteKeyframe(activeDocumentId, selectedAnimationName, selectedBoneName, selectedChannel, selectedTimestamp);
         if (deleted) {
             selectedTimestamp = null;
             markDirty("Deleted keyframe");
@@ -700,9 +970,9 @@ public final class AnimationEditorState {
         }
 
         var copy = current.keyframe().deepCopy();
-        deleteKeyframe(current.animationName(), current.boneName(), current.channel(), current.timestamp());
+        deleteKeyframe(current.documentId(), current.animationName(), current.boneName(), current.channel(), current.timestamp());
         var normalizedTimestamp = Math.max(0.0, newTimestamp);
-        putKeyframe(current.animationName(), newBoneName, newChannel, normalizedTimestamp, copy);
+        putKeyframe(current.documentId(), current.animationName(), newBoneName, newChannel, normalizedTimestamp, copy);
         selectedBoneName = newBoneName;
         selectedChannel = newChannel;
         selectedTimestamp = normalizedTimestamp;
@@ -744,7 +1014,14 @@ public final class AnimationEditorState {
     }
 
     private @Nullable JsonObject boneAnimationObject(String animationName, String boneName) {
-        var animation = animationObject(animationName);
+        if (activeDocumentId == null) {
+            return null;
+        }
+        return boneAnimationObject(activeDocumentId, animationName, boneName);
+    }
+
+    private @Nullable JsonObject boneAnimationObject(int documentId, String animationName, String boneName) {
+        var animation = animationObject(documentId, animationName);
         if (animation == null || !animation.has("bones") || !animation.get("bones").isJsonObject()) {
             return null;
         }
@@ -756,13 +1033,27 @@ public final class AnimationEditorState {
     }
 
     private JsonObject ensureBoneAnimationObject(String animationName, String boneName) {
-        var animation = animationObject(animationName);
+        if (activeDocumentId == null) {
+            newDraft();
+        }
+        return ensureBoneAnimationObject(activeDocumentId == null ? 0 : activeDocumentId, animationName, boneName);
+    }
+
+    private JsonObject ensureBoneAnimationObject(int documentId, String animationName, String boneName) {
+        var document = document(documentId);
+        if (document == null) {
+            newDraft();
+            documentId = activeDocumentId == null ? 0 : activeDocumentId;
+            document = activeDocument();
+        }
+        var animation = animationObject(documentId, animationName);
         if (animation == null) {
             animation = new JsonObject();
             animation.add("bones", new JsonObject());
-            ensureAnimationsObject().add(animationName, animation);
+            ensureAnimationsObject(document).add(animationName, animation);
             selectedAnimationName = animationName;
-            selectedAnimationNames.add(animationName);
+            selectedAnimationKeys.add(new AnimationKey(documentId, animationName));
+            syncSelectedAnimationNames();
         }
         if (!animation.has("bones") || !animation.get("bones").isJsonObject()) {
             animation.add("bones", new JsonObject());
@@ -775,9 +1066,16 @@ public final class AnimationEditorState {
     }
 
     private JsonObject ensureKeyframe(String animationName, String boneName, TransformChannel channel, double timestamp) {
-        var bone = ensureBoneAnimationObject(animationName, boneName);
-        ensureAnimationLength(animationName, timestamp);
-        var channelObj = normalizeChannelObject(animationName, boneName, channel, bone.get(channel.jsonName()));
+        if (activeDocumentId == null) {
+            newDraft();
+        }
+        return ensureKeyframe(activeDocumentId == null ? 0 : activeDocumentId, animationName, boneName, channel, timestamp);
+    }
+
+    private JsonObject ensureKeyframe(int documentId, String animationName, String boneName, TransformChannel channel, double timestamp) {
+        var bone = ensureBoneAnimationObject(documentId, animationName, boneName);
+        ensureAnimationLength(documentId, animationName, timestamp);
+        var channelObj = normalizeChannelObject(documentId, animationName, boneName, channel, bone.get(channel.jsonName()));
         bone.add(channel.jsonName(), channelObj);
         var key = formatTimestamp(timestamp);
         if (!channelObj.has(key) || !channelObj.get(key).isJsonObject()) {
@@ -793,21 +1091,29 @@ public final class AnimationEditorState {
     }
 
     private void putKeyframe(
+        int documentId,
         String animationName,
         String boneName,
         TransformChannel channel,
         double timestamp,
         JsonObject frame
     ) {
-        var bone = ensureBoneAnimationObject(animationName, boneName);
-        ensureAnimationLength(animationName, timestamp);
-        var channelObj = normalizeChannelObject(animationName, boneName, channel, bone.get(channel.jsonName()));
+        var bone = ensureBoneAnimationObject(documentId, animationName, boneName);
+        ensureAnimationLength(documentId, animationName, timestamp);
+        var channelObj = normalizeChannelObject(documentId, animationName, boneName, channel, bone.get(channel.jsonName()));
         bone.add(channel.jsonName(), channelObj);
         channelObj.add(formatTimestamp(timestamp), frame);
     }
 
     private void ensureAnimationLength(String animationName, double timestamp) {
-        var animation = animationObject(animationName);
+        if (activeDocumentId == null) {
+            return;
+        }
+        ensureAnimationLength(activeDocumentId, animationName, timestamp);
+    }
+
+    private void ensureAnimationLength(int documentId, String animationName, double timestamp) {
+        var animation = animationObject(documentId, animationName);
         if (animation == null || timestamp <= 0.0) {
             return;
         }
@@ -843,7 +1149,7 @@ public final class AnimationEditorState {
         }
     }
 
-    private static double maxKeyframeTimestamp(@Nullable String animationName, JsonObject animation) {
+    private static double maxKeyframeTimestamp(int documentId, @Nullable String animationName, JsonObject animation) {
         if (animationName == null || !animation.has("bones") || !animation.get("bones").isJsonObject()) {
             return 0.0;
         }
@@ -857,7 +1163,7 @@ public final class AnimationEditorState {
                 if (!bone.has(channel.jsonName())) {
                     continue;
                 }
-                for (var ref : readKeyframes(animationName, boneEntry.getKey(), channel, bone.get(channel.jsonName()))) {
+                for (var ref : readKeyframes(documentId, animationName, boneEntry.getKey(), channel, bone.get(channel.jsonName()))) {
                     max = Math.max(max, ref.timestamp());
                 }
             }
@@ -866,20 +1172,40 @@ public final class AnimationEditorState {
     }
 
     private boolean deleteKeyframe(String animationName, String boneName, TransformChannel channel, double timestamp) {
-        var bone = boneAnimationObject(animationName, boneName);
+        if (activeDocumentId == null) {
+            return false;
+        }
+        return deleteKeyframe(activeDocumentId, animationName, boneName, channel, timestamp);
+    }
+
+    private boolean deleteKeyframe(int documentId, String animationName, String boneName, TransformChannel channel, double timestamp) {
+        var bone = boneAnimationObject(documentId, animationName, boneName);
         if (bone == null || !bone.has(channel.jsonName())) {
             return false;
         }
-        var channelObj = normalizeChannelObject(animationName, boneName, channel, bone.get(channel.jsonName()));
+        var channelObj = normalizeChannelObject(documentId, animationName, boneName, channel, bone.get(channel.jsonName()));
         bone.add(channel.jsonName(), channelObj);
         return channelObj.remove(formatTimestamp(timestamp)) != null;
     }
 
     private @Nullable Vec3 sampleChannel(String animationName, String boneName, TransformChannel channel, double timestamp) {
-        if (animationObject(animationName) == null) {
+        if (activeDocumentId == null) {
             return null;
         }
-        var frames = keyframes(animationName, boneName, channel);
+        return sampleChannel(activeDocumentId, animationName, boneName, channel, timestamp);
+    }
+
+    private @Nullable Vec3 sampleChannel(
+        int documentId,
+        String animationName,
+        String boneName,
+        TransformChannel channel,
+        double timestamp
+    ) {
+        if (animationObject(documentId, animationName) == null) {
+            return null;
+        }
+        var frames = keyframes(documentId, animationName, boneName, channel);
         if (frames.isEmpty()) {
             return null;
         }
@@ -989,6 +1315,7 @@ public final class AnimationEditorState {
     }
 
     private JsonObject normalizeChannelObject(
+        int documentId,
         String animationName,
         String boneName,
         TransformChannel channel,
@@ -998,13 +1325,14 @@ public final class AnimationEditorState {
         if (existing == null || existing.isJsonNull()) {
             return out;
         }
-        for (var ref : readKeyframes(animationName, boneName, channel, existing)) {
+        for (var ref : readKeyframes(documentId, animationName, boneName, channel, existing)) {
             out.add(formatTimestamp(ref.timestamp()), ref.keyframe().deepCopy());
         }
         return out;
     }
 
     private static List<KeyframeRef> readKeyframes(
+        int documentId,
         String animationName,
         String boneName,
         TransformChannel channel,
@@ -1015,11 +1343,11 @@ public final class AnimationEditorState {
         }
         var out = new ArrayList<KeyframeRef>();
         if (element.isJsonPrimitive()) {
-            out.add(new KeyframeRef(animationName, boneName, channel, 0.0, frame(vectorFromPrimitive(element.getAsJsonPrimitive()))));
+            out.add(new KeyframeRef(documentId, animationName, boneName, channel, 0.0, frame(vectorFromPrimitive(element.getAsJsonPrimitive()))));
             return out;
         }
         if (element.isJsonArray()) {
-            out.add(new KeyframeRef(animationName, boneName, channel, 0.0, frame(copyVector(element.getAsJsonArray()))));
+            out.add(new KeyframeRef(documentId, animationName, boneName, channel, 0.0, frame(copyVector(element.getAsJsonArray()))));
             return out;
         }
         if (!element.isJsonObject()) {
@@ -1027,7 +1355,7 @@ public final class AnimationEditorState {
         }
         var obj = element.getAsJsonObject();
         if (obj.has("vector")) {
-            out.add(new KeyframeRef(animationName, boneName, channel, 0.0, normalizeFrameObject(obj)));
+            out.add(new KeyframeRef(documentId, animationName, boneName, channel, 0.0, normalizeFrameObject(obj)));
             return out;
         }
         for (var entry : obj.entrySet()) {
@@ -1037,7 +1365,7 @@ public final class AnimationEditorState {
             var timestamp = Double.parseDouble(entry.getKey());
             var normalized = normalizeTimestampEntry(entry.getValue());
             if (normalized != null) {
-                out.add(new KeyframeRef(animationName, boneName, channel, timestamp, normalized));
+                out.add(new KeyframeRef(documentId, animationName, boneName, channel, timestamp, normalized));
             }
         }
         return out;
@@ -1141,50 +1469,139 @@ public final class AnimationEditorState {
         return frame.getAsJsonArray("vector");
     }
 
+    private @Nullable AnimationDocument activeDocument() {
+        if (activeDocumentId == null) {
+            return null;
+        }
+        return document(activeDocumentId);
+    }
+
+    private @Nullable AnimationDocument document(int documentId) {
+        for (var document : documents) {
+            if (document.id == documentId) {
+                return document;
+            }
+        }
+        return null;
+    }
+
+    private boolean isActiveDocument(int documentId) {
+        return activeDocumentId != null && activeDocumentId == documentId;
+    }
+
+    private void syncActiveDocument() {
+        var document = activeDocument();
+        if (document == null) {
+            return;
+        }
+        document.draft = draft;
+        document.externalSavePath = externalSavePath;
+        document.projectResourceId = projectResourceId;
+        document.lastSavedPath = lastSavedPath;
+        document.dirty = dirty;
+    }
+
+    private void activateDocument(AnimationDocument document) {
+        if (document == null) {
+            return;
+        }
+        activeDocumentId = document.id;
+        draft = document.draft;
+        externalSavePath = document.externalSavePath;
+        projectResourceId = document.projectResourceId;
+        lastSavedPath = document.lastSavedPath;
+        dirty = document.dirty;
+    }
+
+    private void syncSelectedAnimationNames() {
+        selectedAnimationNames.clear();
+        if (activeDocumentId == null) {
+            return;
+        }
+        for (var key : selectedAnimationKeys) {
+            if (key.documentId() == activeDocumentId && animationObject(key.documentId(), key.animationName()) != null) {
+                selectedAnimationNames.add(key.animationName());
+            }
+        }
+        if (selectedAnimationName != null && !selectedAnimationNames.contains(selectedAnimationName)) {
+            if (animationObject(activeDocumentId, selectedAnimationName) != null) {
+                selectedAnimationNames.add(selectedAnimationName);
+            }
+        }
+    }
+
     private @Nullable String resolveAnimationName(@Nullable String name) {
-        return name != null && animationObject(name) != null ? name : firstAnimationName();
+        if (activeDocumentId == null) {
+            return null;
+        }
+        return resolveAnimationName(activeDocumentId, name);
+    }
+
+    private @Nullable String resolveAnimationName(int documentId, @Nullable String name) {
+        var document = document(documentId);
+        return name != null && animationObject(documentId, name) != null ? name : firstAnimationName(document);
     }
 
     private void selectSingleAnimation(@Nullable String name) {
         selectedAnimationNames.clear();
+        selectedAnimationKeys.clear();
         selectedAnimationName = name;
-        if (name != null && animationObject(name) != null) {
+        if (name != null && activeDocumentId != null && animationObject(activeDocumentId, name) != null) {
             selectedAnimationNames.add(name);
+            selectedAnimationKeys.add(new AnimationKey(activeDocumentId, name));
         }
     }
 
-    private List<String> playbackAnimationNames() {
-        var selected = selectedAnimationNames();
+    private List<AnimationKey> playbackAnimationKeys() {
+        var selected = selectedAnimationKeys();
         if (!selected.isEmpty()) {
             return selected;
         }
-        return selectedAnimationName != null && animationObject(selectedAnimationName) != null
-            ? List.of(selectedAnimationName)
+        return selectedAnimationName != null && activeDocumentId != null && animationObject(activeDocumentId, selectedAnimationName) != null
+            ? List.of(new AnimationKey(activeDocumentId, selectedAnimationName))
             : List.of();
     }
 
     private @Nullable String firstSelectedAnimationName() {
-        for (var name : animationNames()) {
-            if (selectedAnimationNames.contains(name)) {
-                return name;
+        if (activeDocumentId == null) {
+            return null;
+        }
+        for (var key : selectedAnimationKeys) {
+            if (key.documentId() == activeDocumentId && animationObject(key.documentId(), key.animationName()) != null) {
+                return key.animationName();
             }
         }
         return null;
     }
 
     private @Nullable JsonObject animationsObjectOrNull() {
-        if (draft == null || !draft.has("animations") || !draft.get("animations").isJsonObject()) {
+        var document = activeDocument();
+        return document == null ? null : animationsObjectOrNull(document);
+    }
+
+    private static @Nullable JsonObject animationsObjectOrNull(@Nullable AnimationDocument document) {
+        if (document == null || document.draft == null || !document.draft.has("animations") || !document.draft.get("animations").isJsonObject()) {
             return null;
         }
-        return draft.getAsJsonObject("animations");
+        return document.draft.getAsJsonObject("animations");
     }
 
     private JsonObject ensureAnimationsObject() {
-        if (draft == null) {
+        if (activeDocument() == null) {
             newDraft();
         }
-        ensureAnimationsObject(draft);
-        return draft.getAsJsonObject("animations");
+        var document = activeDocument();
+        ensureAnimationsObject(document);
+        return document.draft.getAsJsonObject("animations");
+    }
+
+    private JsonObject ensureAnimationsObject(@Nullable AnimationDocument document) {
+        if (document == null) {
+            newDraft();
+            document = activeDocument();
+        }
+        ensureAnimationsObject(document.draft);
+        return document.draft.getAsJsonObject("animations");
     }
 
     private static void ensureAnimationsObject(JsonObject root) {
@@ -1194,7 +1611,11 @@ public final class AnimationEditorState {
     }
 
     private @Nullable String firstAnimationName() {
-        var animations = animationsObjectOrNull();
+        return firstAnimationName(activeDocument());
+    }
+
+    private @Nullable String firstAnimationName(@Nullable AnimationDocument document) {
+        var animations = animationsObjectOrNull(document);
         if (animations == null) {
             return null;
         }
@@ -1205,7 +1626,11 @@ public final class AnimationEditorState {
     }
 
     private String uniqueName(String base) {
-        var animations = ensureAnimationsObject();
+        return uniqueName(activeDocument(), base);
+    }
+
+    private String uniqueName(@Nullable AnimationDocument document, String base) {
+        var animations = ensureAnimationsObject(document);
         var cleanBase = base == null || base.isBlank() ? "animation.new" : base.trim();
         if (!animations.has(cleanBase)) {
             return cleanBase;
@@ -1221,11 +1646,15 @@ public final class AnimationEditorState {
 
     private void markDirty(String message) {
         dirty = true;
+        var document = activeDocument();
+        if (document != null) {
+            document.dirty = true;
+        }
         statusMessage = message;
     }
 
-    private boolean writeFile(Path path) {
-        if (draft == null) {
+    private boolean writeFile(AnimationDocument document, Path path) {
+        if (document == null || document.draft == null) {
             return false;
         }
         try {
@@ -1233,9 +1662,13 @@ public final class AnimationEditorState {
             if (parent != null) {
                 Files.createDirectories(parent);
             }
-            Files.writeString(path, GSON.toJson(draft));
-            lastSavedPath = path;
-            dirty = false;
+            Files.writeString(path, GSON.toJson(document.draft));
+            document.lastSavedPath = path;
+            document.dirty = false;
+            if (isActiveDocument(document.id)) {
+                lastSavedPath = path;
+                dirty = false;
+            }
             statusMessage = "Saved " + path.getFileName();
             return true;
         } catch (IOException | RuntimeException e) {
@@ -1245,8 +1678,8 @@ public final class AnimationEditorState {
         }
     }
 
-    private boolean writeProject(ResourceLocation resourceId) {
-        if (draft == null) {
+    private boolean writeProject(AnimationDocument document, ResourceLocation resourceId) {
+        if (document == null || document.draft == null) {
             return false;
         }
         var project = ProjectSession.activeProjectName();
@@ -1257,9 +1690,13 @@ public final class AnimationEditorState {
         var relPath = "assets/" + resourceId.getNamespace() + "/" + resourceId.getPath();
         try {
             var path = EngineProjectIO.prepareAssetPath(project, relPath);
-            Files.writeString(path, GSON.toJson(draft));
-            lastSavedPath = path;
-            dirty = false;
+            Files.writeString(path, GSON.toJson(document.draft));
+            document.lastSavedPath = path;
+            document.dirty = false;
+            if (isActiveDocument(document.id)) {
+                lastSavedPath = path;
+                dirty = false;
+            }
             statusMessage = "Saved " + resourceId;
             return true;
         } catch (IOException | RuntimeException e) {

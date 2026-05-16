@@ -192,7 +192,7 @@ public final class AnimationTimelinePanel implements Panel {
             if (row != null) {
                 selectBoneFromTimeline(row.bone());
             }
-            state.selectKeyframe(keyframe.animationName(), keyframe.boneName(), keyframe.channel(), keyframe.timestamp());
+            state.selectKeyframe(keyframe.documentId(), keyframe.animationName(), keyframe.boneName(), keyframe.channel(), keyframe.timestamp());
             if (alreadySelected) {
                 state.setPlayheadSeconds(keyframe.timestamp());
             }
@@ -470,6 +470,8 @@ public final class AnimationTimelinePanel implements Panel {
         for (var frame : row.frames()) {
             var keyX = timeToX(frame.timestamp(), timelineGraphX, timelineGraphWidth, timelineDuration);
             var selected = state.selectedTimestamp() != null
+                && state.selectedDocumentId() != null
+                && frame.documentId() == state.selectedDocumentId()
                 && frame.channel() == state.selectedChannel()
                 && frame.boneName().equals(state.selectedBoneName())
                 && Math.abs(frame.timestamp() - state.selectedTimestamp()) < 1.0e-6;
@@ -560,7 +562,7 @@ public final class AnimationTimelinePanel implements Panel {
             if (row != null) {
                 selectBoneFromTimeline(row.bone());
             }
-            AnimationEditorState.get().selectKeyframe(keyframe.animationName(), keyframe.boneName(), keyframe.channel(), keyframe.timestamp());
+            AnimationEditorState.get().selectKeyframe(keyframe.documentId(), keyframe.animationName(), keyframe.boneName(), keyframe.channel(), keyframe.timestamp());
         }
         var state = AnimationEditorState.get();
         menuOpener.open(
@@ -577,6 +579,8 @@ public final class AnimationTimelinePanel implements Panel {
 
     private static boolean isSelectedKeyframe(AnimationEditorState state, KeyframeRef keyframe) {
         return state.selectedTimestamp() != null
+            && state.selectedDocumentId() != null
+            && keyframe.documentId() == state.selectedDocumentId()
             && keyframe.animationName().equals(state.selectedAnimationName())
             && keyframe.boneName().equals(state.selectedBoneName())
             && keyframe.channel() == state.selectedChannel()
