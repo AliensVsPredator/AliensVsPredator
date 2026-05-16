@@ -17,6 +17,7 @@ import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.EngineWorkspaceScreen;
 import com.blib.engine.ui.dialog.ConfirmDialog;
 import com.blib.engine.ui.widget.TextInput;
+import com.blib.internal.client.storage.ClientProjectResourcePacks;
 import com.blib.internal.common.storage.EngineProjectIO;
 import com.blib.internal.common.storage.ProjectInfo;
 import com.blib.mod.BLib;
@@ -541,6 +542,7 @@ public final class ProjectPickerScreen extends Screen {
             if (matched != null) {
                 ProjectSession.setActiveProject(matched);
             }
+            ClientProjectResourcePacks.applyProject(name, false);
             pendingOp = null;
             pendingProjectName = null;
             onConfirmedOpen.run();
