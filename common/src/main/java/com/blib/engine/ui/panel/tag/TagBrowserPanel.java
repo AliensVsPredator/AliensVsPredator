@@ -27,6 +27,7 @@ import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.PanelPlaceholder;
 import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.layout.UiRect;
+import com.blib.engine.ui.layout.UiText;
 import com.blib.engine.ui.widget.ScrollContainer;
 import com.blib.engine.ui.widget.SegmentedControl;
 import com.blib.engine.ui.widget.TextInput;
@@ -362,8 +363,6 @@ public final class TagBrowserPanel implements Panel {
         var font = EngineFont.get();
         var caret = UiCaret.glyph(collapsed.contains(registryKey));
         var textY = y + (HEADER_HEIGHT - font.lineHeight + 2) / 2;
-        graphics.drawString(font, Component.literal(caret), x + 4, textY, HEADER_TEXT_COLOR, false);
-        graphics.drawString(font, Component.literal(registryKey.toString()), x + 4 + CARET_WIDTH + 2, textY, HEADER_TEXT_COLOR, false);
 
         // Right side: count + create (+) button.
         var createX = rowRight - 4 - CREATE_BUTTON_WIDTH;
@@ -375,6 +374,19 @@ public final class TagBrowserPanel implements Panel {
         var countLabel = "(" + count + ")";
         var countX = createX - 6 - font.width(countLabel);
         graphics.drawString(font, Component.literal(countLabel), countX, textY, HEADER_COUNT_COLOR, false);
+
+        var caretX = x + 4;
+        var labelX = caretX + CARET_WIDTH + 2;
+        graphics.drawString(font, Component.literal(caret), caretX, textY, HEADER_TEXT_COLOR, false);
+        UiText.drawClipped(
+            graphics,
+            font,
+            registryKey.toString(),
+            labelX,
+            textY,
+            Math.max(0, countX - labelX - 4),
+            HEADER_TEXT_COLOR
+        );
 
         headerHits.add(new HeaderHit(x, y, rowRight - x, HEADER_HEIGHT, registryKey));
     }
