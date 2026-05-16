@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.function.Supplier;
 
 import com.blib.engine.command.api.Command;
@@ -1103,6 +1104,18 @@ public final class EngineWorkspaceScreen extends Screen {
             }
         }
 
+        if (button == 1) {
+            var tabbed = findTabbedPanelAt((int) logicalX, (int) logicalY);
+            if (tabbed != null && tabbed.isInTabStrip(logicalX, logicalY)) {
+                var tabIdx = tabbed.hitTabAt(logicalX, logicalY);
+                if (tabIdx >= 0) {
+                    menuBar.open(buildTabContextMenu(tabbed, tabIdx, (int) logicalX, (int) logicalY));
+                }
+                // Right-click on empty tab-strip space is still owned by the tab strip.
+                return true;
+            }
+        }
+
         if (button == 0) {
             // 1) Menu-bar chip click: open dropdown.
             var underCursor = DockTreeHitTest.panelAt(root, 0, 0, logicalWidth(), logicalHeight(), logicalX, logicalY);
@@ -1177,6 +1190,37 @@ public final class EngineWorkspaceScreen extends Screen {
             return true;
         }
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    private DropdownMenu buildTabContextMenu(TabbedPanel tabbed, int tabIdx, int anchorX, int anchorY) {
+        var canCloseOthers = tabbed.tabCount() > 1;
+        var canCloseRight = tabIdx < tabbed.tabCount() - 1;
+        var items = new ArrayList<DropdownMenu.Item>();
+        items.add(new DropdownMenu.Item("Close", () -> {
+            tabbed.removeTab(tabIdx);
+            simplifyDockTree();
+        }));
+        items.add(
+            new DropdownMenu.Item(
+                "Close Others",
+                () -> {
+                    tabbed.removeTabsExcept(tabIdx);
+                    simplifyDockTree();
+                },
+                canCloseOthers
+            )
+        );
+        items.add(
+            new DropdownMenu.Item(
+                "Close Tabs to the Right",
+                () -> {
+                    tabbed.removeTabsAfter(tabIdx);
+                    simplifyDockTree();
+                },
+                canCloseRight
+            )
+        );
+        return new DropdownMenu(anchorX, anchorY, items);
     }
 
     @Override

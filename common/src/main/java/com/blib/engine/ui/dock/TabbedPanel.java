@@ -121,10 +121,47 @@ public final class TabbedPanel extends DelegatingPanel {
         if (index < 0 || index >= tabs.size()) {
             return;
         }
+        var removed = tabs.get(index);
+        var previousActive = activeTab();
         tabs.remove(index);
-        if (activeIndex >= tabs.size()) {
-            activeIndex = Math.max(0, tabs.size() - 1);
+        if (tabs.isEmpty()) {
+            activeIndex = 0;
+            return;
         }
+        if (previousActive != null && previousActive != removed && tabs.contains(previousActive)) {
+            activeIndex = tabs.indexOf(previousActive);
+            return;
+        }
+        activeIndex = Math.min(index, tabs.size() - 1);
+        tabs.get(activeIndex).onShown();
+    }
+
+    public void removeTabsExcept(int index) {
+        if (index < 0 || index >= tabs.size()) {
+            return;
+        }
+        var kept = tabs.get(index);
+        var changedActive = activeTab() != kept;
+        tabs.clear();
+        tabs.add(kept);
+        activeIndex = 0;
+        if (changedActive) {
+            kept.onShown();
+        }
+    }
+
+    public void removeTabsAfter(int index) {
+        if (index < 0 || index >= tabs.size() - 1) {
+            return;
+        }
+        var previousActive = activeTab();
+        tabs.subList(index + 1, tabs.size()).clear();
+        if (previousActive != null && tabs.contains(previousActive)) {
+            activeIndex = tabs.indexOf(previousActive);
+            return;
+        }
+        activeIndex = Math.min(index, tabs.size() - 1);
+        tabs.get(activeIndex).onShown();
     }
 
     public void insertTab(int index, Panel tab) {
