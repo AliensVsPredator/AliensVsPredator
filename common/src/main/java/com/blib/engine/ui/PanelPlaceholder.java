@@ -1,8 +1,10 @@
 package com.blib.engine.ui;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
+
+import com.blib.engine.ui.layout.UiRect;
+import com.blib.engine.ui.layout.UiText;
 
 /**
  * Centered dim-text helper for panels that can't show their content (no world, no project, no server data). Standard
@@ -24,9 +26,6 @@ public final class PanelPlaceholder {
     /** Center {@code message} inside the panel rect, vertically and horizontally, in dim grey. */
     public static void drawCentered(GuiGraphics graphics, int x, int y, int width, int height, String message) {
         var font = EngineFont.get();
-        var textWidth = font.width(message);
-        var textX = x + (width - textWidth) / 2;
-        var textY = y + (height - font.lineHeight) / 2;
-        graphics.drawString(font, Component.literal(message), textX, textY, TEXT_COLOR, false);
+        UiText.drawWrappedCentered(graphics, font, message, UiRect.of(x, y, width, height), TEXT_COLOR);
     }
 }

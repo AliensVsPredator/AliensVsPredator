@@ -25,6 +25,8 @@ import com.blib.engine.session.ProjectSession;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.PanelPlaceholder;
 import com.blib.engine.ui.dock.Panel;
+import com.blib.engine.ui.layout.UiRect;
+import com.blib.engine.ui.layout.UiText;
 import com.blib.engine.ui.panel.details.GOAPDetailsPanel;
 import com.blib.engine.ui.widget.ScrollContainer;
 import com.blib.engine.ui.widget.SearchableSelect;
@@ -522,10 +524,7 @@ public final class PoolEditorPanel implements Panel {
 
     private static void drawCenteredNote(GuiGraphics graphics, int x, int y, int width, int height, String text) {
         var font = EngineFont.get();
-        var textWidth = font.width(text);
-        var noteX = x + (width - textWidth) / 2;
-        var noteY = y + (height - font.lineHeight + 2) / 2;
-        graphics.drawString(font, Component.literal(text), noteX, noteY, EMPTY_NOTE_COLOR, false);
+        UiText.drawWrappedCentered(graphics, font, text, UiRect.of(x, y, width, height), EMPTY_NOTE_COLOR);
     }
 
     @Override

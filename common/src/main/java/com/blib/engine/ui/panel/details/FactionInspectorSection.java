@@ -160,7 +160,7 @@ public final class FactionInspectorSection implements InspectorSection<FactionSe
         if (inspection == null || !inspection.id().equals(factionId)) {
             rowY = DetailsPanel.drawSectionHeader(graphics, font, x, rowY, width, "Faction");
             rowY += InspectorStyle.CONTENT_PADDING / 2;
-            return DetailsPanel.drawNote(graphics, font, x, rowY, "(loading…)");
+            return DetailsPanel.drawNote(graphics, font, x, rowY, width, "(loading…)");
         }
 
         syncFactionInputsFromInspection(inspection, force);

@@ -82,7 +82,7 @@ public final class PlacedJigsawPieceInspectorSection implements InspectorSection
     ) {
         var piece = ClientPlacedPieceRegistry.get(selectable.id());
         if (piece == null) {
-            return DetailsPanel.drawNote(graphics, font, x, y, "Piece is no longer present.");
+            return DetailsPanel.drawNote(graphics, font, x, y, width, "Piece is no longer present.");
         }
 
         var rowY = y;
@@ -134,7 +134,7 @@ public final class PlacedJigsawPieceInspectorSection implements InspectorSection
         var sx = aabb.maxX() - aabb.minX() + 1;
         var sy = aabb.maxY() - aabb.minY() + 1;
         var sz = aabb.maxZ() - aabb.minZ() + 1;
-        rowY = DetailsPanel.drawNote(graphics, font, x, rowY, "= " + ((long) sx * sy * sz) + " blocks");
+        rowY = DetailsPanel.drawNote(graphics, font, x, rowY, width, "= " + ((long) sx * sy * sz) + " blocks");
         rowY += InspectorStyle.CONTENT_PADDING / 2;
 
         rowY = DetailsPanel.drawSectionHeader(graphics, font, x, rowY, width, "Piece");

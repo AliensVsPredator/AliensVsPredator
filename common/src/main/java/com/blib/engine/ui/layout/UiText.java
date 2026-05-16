@@ -3,9 +3,11 @@ package com.blib.engine.ui.layout;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -16,6 +18,8 @@ import java.util.function.Consumer;
 public final class UiText {
 
     public static final String ELLIPSIS = "...";
+
+    public static final int DEFAULT_WRAP_LINE_GAP = 2;
 
     private static final ThreadLocal<TooltipCapture> TOOLTIP_CAPTURE = new ThreadLocal<>();
 
@@ -96,6 +100,116 @@ public final class UiText {
         captureTooltipIfTruncated(font, text, rect);
     }
 
+    public static int measureWrappedHeight(Font font, @Nullable String text, int maxWidth) {
+        return measureWrappedHeight(font, literalOrEmpty(text), maxWidth, DEFAULT_WRAP_LINE_GAP);
+    }
+
+    public static int measureWrappedHeight(Font font, @Nullable String text, int maxWidth, int lineGap) {
+        return measureWrappedHeight(font, literalOrEmpty(text), maxWidth, lineGap);
+    }
+
+    public static int measureWrappedHeight(Font font, @Nullable Component text, int maxWidth) {
+        return measureWrappedHeight(font, text, maxWidth, DEFAULT_WRAP_LINE_GAP);
+    }
+
+    public static int measureWrappedHeight(Font font, @Nullable Component text, int maxWidth, int lineGap) {
+        return wrappedHeight(font, splitWrapped(font, text, maxWidth).size(), lineGap);
+    }
+
+    public static int drawWrapped(
+        GuiGraphics graphics,
+        Font font,
+        @Nullable String text,
+        int x,
+        int y,
+        int maxWidth,
+        int color
+    ) {
+        return drawWrapped(graphics, font, literalOrEmpty(text), x, y, maxWidth, color, DEFAULT_WRAP_LINE_GAP);
+    }
+
+    public static int drawWrapped(
+        GuiGraphics graphics,
+        Font font,
+        @Nullable String text,
+        int x,
+        int y,
+        int maxWidth,
+        int color,
+        int lineGap
+    ) {
+        return drawWrapped(graphics, font, literalOrEmpty(text), x, y, maxWidth, color, lineGap);
+    }
+
+    public static int drawWrapped(
+        GuiGraphics graphics,
+        Font font,
+        @Nullable Component text,
+        int x,
+        int y,
+        int maxWidth,
+        int color
+    ) {
+        return drawWrapped(graphics, font, text, x, y, maxWidth, color, DEFAULT_WRAP_LINE_GAP);
+    }
+
+    public static int drawWrapped(
+        GuiGraphics graphics,
+        Font font,
+        @Nullable Component text,
+        int x,
+        int y,
+        int maxWidth,
+        int color,
+        int lineGap
+    ) {
+        var lines = splitWrapped(font, text, maxWidth);
+        var cursorY = y;
+        for (var line : lines) {
+            graphics.drawString(font, line, x, cursorY, color, false);
+            cursorY += font.lineHeight + Math.max(0, lineGap);
+        }
+        return wrappedHeight(font, lines.size(), lineGap);
+    }
+
+    public static int drawWrappedCentered(GuiGraphics graphics, Font font, @Nullable String text, UiRect rect, int color) {
+        return drawWrappedCentered(graphics, font, literalOrEmpty(text), rect, color, DEFAULT_WRAP_LINE_GAP);
+    }
+
+    public static int drawWrappedCentered(
+        GuiGraphics graphics,
+        Font font,
+        @Nullable String text,
+        UiRect rect,
+        int color,
+        int lineGap
+    ) {
+        return drawWrappedCentered(graphics, font, literalOrEmpty(text), rect, color, lineGap);
+    }
+
+    public static int drawWrappedCentered(GuiGraphics graphics, Font font, @Nullable Component text, UiRect rect, int color) {
+        return drawWrappedCentered(graphics, font, text, rect, color, DEFAULT_WRAP_LINE_GAP);
+    }
+
+    public static int drawWrappedCentered(
+        GuiGraphics graphics,
+        Font font,
+        @Nullable Component text,
+        UiRect rect,
+        int color,
+        int lineGap
+    ) {
+        var lines = splitWrapped(font, text, rect.width());
+        var blockHeight = wrappedHeight(font, lines.size(), lineGap);
+        var cursorY = rect.y() + Math.max(0, (rect.height() - blockHeight + 2) / 2);
+        for (var line : lines) {
+            var lineX = rect.x() + Math.max(0, (rect.width() - font.width(line)) / 2);
+            graphics.drawString(font, line, lineX, cursorY, color, false);
+            cursorY += font.lineHeight + Math.max(0, lineGap);
+        }
+        return blockHeight;
+    }
+
     public static void drawLabelValue(
         GuiGraphics graphics,
         Font font,
@@ -114,6 +228,24 @@ public final class UiText {
         var valueX = row.x() + safeLabelWidth + gap;
         var valueW = Math.max(0, row.right() - valueX);
         drawClipped(graphics, font, value, valueX, textY, valueW, valueColor);
+    }
+
+    private static Component literalOrEmpty(@Nullable String text) {
+        return Component.literal(text == null ? "" : text);
+    }
+
+    private static List<FormattedCharSequence> splitWrapped(Font font, @Nullable Component text, int maxWidth) {
+        if (text == null || text.getString().isEmpty() || maxWidth <= 0) {
+            return List.of();
+        }
+        return font.split(text, maxWidth);
+    }
+
+    private static int wrappedHeight(Font font, int lineCount, int lineGap) {
+        if (lineCount <= 0) {
+            return 0;
+        }
+        return lineCount * font.lineHeight + (lineCount - 1) * Math.max(0, lineGap);
     }
 
     private static void captureTooltipIfTruncated(Font font, @Nullable String text, UiRect rect) {

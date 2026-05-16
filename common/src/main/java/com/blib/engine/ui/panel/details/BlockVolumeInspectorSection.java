@@ -103,7 +103,7 @@ public final class BlockVolumeInspectorSection implements InspectorSection<Block
             var sx = (long) (box.maxX - box.minX);
             var sy = (long) (box.maxY - box.minY);
             var sz = (long) (box.maxZ - box.minZ);
-            rowY = DetailsPanel.drawNote(graphics, font, x, rowY, "= " + (sx * sy * sz) + " blocks");
+            rowY = DetailsPanel.drawNote(graphics, font, x, rowY, width, "= " + (sx * sy * sz) + " blocks");
         }
         return rowY;
     }

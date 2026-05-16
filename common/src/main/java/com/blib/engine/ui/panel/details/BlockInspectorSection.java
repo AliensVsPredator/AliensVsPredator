@@ -265,7 +265,7 @@ public final class BlockInspectorSection implements InspectorSection<BlockSelect
             blockTagRowHits.clear();
             genericBlockCachedPos = null;
             genericBlockCachedBlock = null;
-            return DetailsPanel.drawNote(graphics, font, x, y, "Block is no longer loaded.");
+            return DetailsPanel.drawNote(graphics, font, x, y, width, "Block is no longer loaded.");
         }
 
         var pos = bs.pos();

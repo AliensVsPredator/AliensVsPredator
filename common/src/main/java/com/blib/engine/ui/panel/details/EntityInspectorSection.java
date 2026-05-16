@@ -118,7 +118,7 @@ public final class EntityInspectorSection implements InspectorSection<EntitySele
             entityTagRowHits.clear();
             rowY = DetailsPanel.drawSectionHeader(graphics, font, x, rowY, width, "Entity");
             rowY += InspectorStyle.CONTENT_PADDING / 2;
-            return DetailsPanel.drawNote(graphics, font, x, rowY, "(unloaded)");
+            return DetailsPanel.drawNote(graphics, font, x, rowY, width, "(unloaded)");
         }
 
         rowY = DetailsPanel.drawSectionHeader(graphics, font, x, rowY, width, "Tool");

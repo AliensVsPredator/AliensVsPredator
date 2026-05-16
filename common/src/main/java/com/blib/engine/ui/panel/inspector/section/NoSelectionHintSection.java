@@ -1,11 +1,12 @@
 package com.blib.engine.ui.panel.inspector.section;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.engine.domain.selection.picking.Selectable;
 import com.blib.engine.ui.EngineFont;
+import com.blib.engine.ui.layout.UiRect;
+import com.blib.engine.ui.layout.UiText;
 import com.blib.engine.ui.panel.base.InspectorSection;
 
 /**
@@ -47,10 +48,17 @@ public final class NoSelectionHintSection implements InspectorSection<Selectable
     @Override
     public int render(GuiGraphics graphics, int x, int y, int width, Selectable target, int mouseX, int mouseY) {
         var font = EngineFont.get();
-        var hintWidth = font.width(HINT);
-        var hintX = x + Math.max(CONTENT_PADDING, (width - hintWidth) / 2);
+        var hintX = x + CONTENT_PADDING;
         var hintY = y + LINE_HEIGHT;
-        graphics.drawString(font, Component.literal(HINT), hintX, hintY, LABEL_COLOR, false);
-        return hintY + LINE_HEIGHT;
+        var hintWidth = Math.max(0, width - 2 * CONTENT_PADDING);
+        var hintHeight = UiText.measureWrappedHeight(font, HINT, hintWidth);
+        var drawnHeight = UiText.drawWrappedCentered(
+            graphics,
+            font,
+            HINT,
+            UiRect.of(hintX, hintY, hintWidth, hintHeight),
+            LABEL_COLOR
+        );
+        return hintY + Math.max(LINE_HEIGHT, drawnHeight);
     }
 }

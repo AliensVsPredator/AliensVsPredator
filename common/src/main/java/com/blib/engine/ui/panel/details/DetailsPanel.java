@@ -403,12 +403,14 @@ public final class DetailsPanel implements Panel {
      */
     public int internalRenderToolStateView(GuiGraphics graphics, Font font, int x, int y, int width, int mouseX, int mouseY) {
         var hint = "Pick an entity, block, faction, or tag to inspect its details.";
-        var hintWidth = font.width(hint);
-        var hintX = x + Math.max(CONTENT_PADDING, (width - hintWidth) / 2);
+        var hintX = x + CONTENT_PADDING;
         var hintY = y + LINE_HEIGHT;
-        graphics.drawString(font, Component.literal(hint), hintX, hintY, LABEL_COLOR, false);
-        trackTextRight(font, x + CONTENT_PADDING, hint);
-        return hintY + LINE_HEIGHT;
+        var hintWidth = Math.max(0, width - 2 * CONTENT_PADDING);
+        var hintHeight = UiText.measureWrappedHeight(font, hint, hintWidth);
+        var bounds = UiRect.of(hintX, hintY, hintWidth, hintHeight);
+        var drawnHeight = UiText.drawWrappedCentered(graphics, font, hint, bounds, LABEL_COLOR);
+        trackContentRight(x + width);
+        return hintY + Math.max(LINE_HEIGHT, drawnHeight);
     }
 
     /**
@@ -517,10 +519,12 @@ public final class DetailsPanel implements Panel {
         return y + LINE_HEIGHT;
     }
 
-    static int drawNote(GuiGraphics graphics, Font font, int x, int y, String text) {
-        graphics.drawString(font, Component.literal(text), x + CONTENT_PADDING, y, LABEL_COLOR, false);
-        trackTextRight(font, x + CONTENT_PADDING, text);
-        return y + LINE_HEIGHT;
+    static int drawNote(GuiGraphics graphics, Font font, int x, int y, int width, String text) {
+        var noteX = x + CONTENT_PADDING;
+        var noteWidth = Math.max(0, width - 2 * CONTENT_PADDING);
+        var drawnHeight = UiText.drawWrapped(graphics, font, text, noteX, y, noteWidth, LABEL_COLOR);
+        trackContentRight(x + width);
+        return y + Math.max(LINE_HEIGHT, drawnHeight);
     }
 
     /**
@@ -678,11 +682,8 @@ public final class DetailsPanel implements Panel {
 
     /** Empty-list placeholder note centred in a list area. Used by Tag + Block sections. */
     static void drawCenteredNote(GuiGraphics graphics, Font font, int x, int y, int width, int height, String text) {
-        var textWidth = font.width(text);
-        var noteX = x + (width - textWidth) / 2;
-        var noteY = y + (height - font.lineHeight + 2) / 2;
-        graphics.drawString(font, Component.literal(text), noteX, noteY, 0xFF606068, false);
-        trackTextRight(font, x + CONTENT_PADDING, text);
+        UiText.drawWrappedCentered(graphics, font, text, UiRect.of(x, y, width, height), 0xFF606068);
+        trackContentRight(x + width);
     }
 
     @Override
