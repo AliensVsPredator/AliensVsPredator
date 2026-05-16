@@ -486,6 +486,14 @@ public final class EngineProjectIO {
     }
 
     /**
+     * List the project's authored recipes — every {@code data/<ns>/recipe/<path>.json} under the datapack tree.
+     * Recipes use the singular {@code recipe} folder in 1.21 datapacks.
+     */
+    public static List<ResourceLocation> listProjectRecipes(String projectName) {
+        return listProjectAssets(projectName, "recipe", ".json");
+    }
+
+    /**
      * Generic datapack-asset enumerator. Walks {@code data/<ns>/<categoryPath>/<...>/<file>.<extension>} under the
      * project's datapack root and returns each match as a {@code ResourceLocation(ns, relativePathWithoutExtension)}.
      * The recursive descent is bounded to the {@code categoryPath} subtree per namespace; we don't traverse upward so a
@@ -559,6 +567,25 @@ public final class EngineProjectIO {
      */
     public static String tagJsonRelPath(ResourceKey<? extends Registry<?>> registryKey, ResourceLocation tagId) {
         return "data/" + tagId.getNamespace() + "/" + Registries.tagsDirPath(registryKey) + "/" + tagId.getPath() + ".json";
+    }
+
+    /** Pack-relative path for a recipe JSON: {@code data/<namespace>/recipe/<path>.json}. */
+    public static String recipeJsonRelPath(ResourceLocation recipeId) {
+        return "data/" + recipeId.getNamespace() + "/recipe/" + recipeId.getPath() + ".json";
+    }
+
+    /** Read one project-authored recipe JSON, if present. */
+    public static Optional<JsonElement> readRecipeJson(String projectName, ResourceLocation recipeId) {
+        var path = datapackRoot(projectName).resolve(recipeJsonRelPath(recipeId));
+        if (!Files.isRegularFile(path)) {
+            return Optional.empty();
+        }
+        try {
+            return Optional.of(JsonParser.parseString(Files.readString(path)));
+        } catch (IOException e) {
+            LOGGER.warn("[BLib] readRecipeJson: failed to read {}", path, e);
+            return Optional.empty();
+        }
     }
 
     /**

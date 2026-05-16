@@ -19,6 +19,8 @@ import com.blib.engine.modeler.gizmo.ModelerGizmoMode;
 import com.blib.engine.modeler.gizmo.ModelerGizmoState;
 import com.blib.engine.modeler.history.ModelerActionHistory;
 import com.blib.engine.recipe.RecipeAuthoringState;
+import com.blib.engine.recipe.RecipeProjectCache;
+import com.blib.engine.recipe.RecipeStagingCache;
 import com.blib.engine.session.ProjectSession;
 import com.blib.engine.tag.TagStagingCache;
 import com.blib.engine.ui.EngineTickControl;
@@ -81,11 +83,13 @@ public final class WorkspaceHotkeyDispatcher {
             return true;
         }
 
-        // Reload Project. Wipes the tag-staging overlay since reload catches the runtime registry up to disk.
+        // Reload Project. Wipes staging overlays since reload catches the runtime registries up to disk.
         if (ActiveKeybindings.matchesKey(Keybindings.RELOAD_PROJECT, keyCode, modifiers)) {
             if (ProjectSession.activeProject() != null) {
                 host.commands().dispatch(new Command.ReloadProject(ProjectSession.activeProjectName()));
                 TagStagingCache.clear();
+                RecipeStagingCache.clear();
+                RecipeProjectCache.refresh(ProjectSession.activeProjectName());
             }
             return true;
         }

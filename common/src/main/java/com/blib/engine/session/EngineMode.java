@@ -30,6 +30,8 @@ import com.blib.engine.modeler.gizmo.ModelerGizmoState;
 import com.blib.engine.net.BlockVolumeNetAdapter;
 import com.blib.engine.net.GOAPSelectionNetAdapter;
 import com.blib.engine.projectcontents.ProjectContents;
+import com.blib.engine.recipe.RecipeProjectCache;
+import com.blib.engine.recipe.RecipeStagingCache;
 import com.blib.engine.runtime.EngineSessionHolder;
 import com.blib.engine.runtime.EventBus;
 import com.blib.engine.runtime.tool.ToolStateMachine;
@@ -170,6 +172,8 @@ public final class EngineMode {
 
         // Session-scoped client caches that mirror server-authoritative state.
         scope.onClose(TagStagingCache::clear);
+        scope.onClose(RecipeStagingCache::clear);
+        scope.onClose(RecipeProjectCache::clear);
         scope.onClose(ClientPlacedPieceRegistry::clear);
         scope.onClose(ClientActionHistory.INSTANCE::clear);
         scope.onClose(TagDraftCache::clear);

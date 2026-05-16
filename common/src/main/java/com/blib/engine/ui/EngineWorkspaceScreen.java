@@ -39,6 +39,8 @@ import com.blib.engine.layout.LayoutTemplate;
 import com.blib.engine.layout.PanelRegistry;
 import com.blib.engine.modeler.history.ModelerActionHistory;
 import com.blib.engine.platform.spi.EngineRenderState;
+import com.blib.engine.recipe.RecipeProjectCache;
+import com.blib.engine.recipe.RecipeStagingCache;
 import com.blib.engine.session.EngineMode;
 import com.blib.engine.session.NavigationMode;
 import com.blib.engine.session.ProjectSession;
@@ -1741,9 +1743,11 @@ public final class EngineWorkspaceScreen extends Screen {
         @Override
         public void reloadProject() {
             commands.dispatch(new Command.ReloadProject(ProjectSession.activeProjectName()));
-            // Wipe the tag-staging overlay — reload makes the runtime registry catch up to disk, so the red staging
-            // tint is no longer meaningful (rows settle into green / blue based on committed state).
+            // Wipe staging overlays — reload makes the runtime registries catch up to disk, so the red staging tint is
+            // no longer meaningful.
             TagStagingCache.clear();
+            RecipeStagingCache.clear();
+            RecipeProjectCache.refresh(ProjectSession.activeProjectName());
         }
 
         @Override

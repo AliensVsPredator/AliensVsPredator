@@ -7,6 +7,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -17,12 +18,16 @@ import java.util.Locale;
 import java.util.Set;
 
 import com.blib.engine.recipe.RecipeAuthoringState;
+import com.blib.engine.recipe.RecipeProjectCache;
+import com.blib.engine.recipe.RecipeStagingCache;
+import com.blib.engine.session.ProjectSession;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.PanelPlaceholder;
 import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.layout.ScrollViewport;
 import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.layout.UiText;
+import com.blib.engine.ui.widget.SegmentedControl;
 import com.blib.engine.ui.widget.UiCaret;
 import com.blib.engine.ui.widget.TextInput;
 
@@ -43,6 +48,10 @@ public final class RecipeOutlinerPanel implements Panel {
 
     private static final int ROW_TEXT_HOVER_COLOR = 0xFFFFFFFF;
 
+    private static final int ROW_PROJECT_TINT = 0xFF80E080;
+
+    private static final int ROW_PROJECT_STAGED_TINT = 0xFFE08080;
+
     private static final int META_TEXT_COLOR = 0xFF8C8C96;
 
     private static final int EMPTY_TEXT_COLOR = 0xFF606068;
@@ -55,7 +64,13 @@ public final class RecipeOutlinerPanel implements Panel {
 
     private static final int ROW_HEIGHT = 15;
 
+    private static final int PROJECT_TOGGLE_WIDTH = 78;
+
+    private static final List<String> PROJECT_TOGGLE_LABELS = List.of("All", "Project");
+
     private final TextInput searchInput = new TextInput("Filter recipes...");
+
+    private final SegmentedControl projectToggle = new SegmentedControl(PROJECT_TOGGLE_LABELS, 0);
 
     private final ScrollViewport scroll = new ScrollViewport();
 
@@ -73,6 +88,8 @@ public final class RecipeOutlinerPanel implements Panel {
 
     private int rectHeight;
 
+    private String lastProjectName = "";
+
     @Override
     public String title() {
         return "Recipe Outliner";
@@ -81,6 +98,8 @@ public final class RecipeOutlinerPanel implements Panel {
     @Override
     public void onShown() {
         scroll.reset();
+        lastProjectName = ProjectSession.activeProjectName();
+        RecipeProjectCache.refresh(lastProjectName);
     }
 
     @Override
@@ -100,8 +119,19 @@ public final class RecipeOutlinerPanel implements Panel {
             return;
         }
 
+        var projectName = ProjectSession.activeProjectName();
+        if (!projectName.equals(lastProjectName)) {
+            lastProjectName = projectName;
+            RecipeProjectCache.refresh(projectName);
+        } else {
+            RecipeProjectCache.refreshIfProjectChanged(projectName);
+        }
+
         var searchY = y + CONTENT_PADDING;
-        searchInput.render(graphics, x + CONTENT_PADDING, searchY, width - 2 * CONTENT_PADDING, mouseX, mouseY);
+        var toggleX = x + width - CONTENT_PADDING - PROJECT_TOGGLE_WIDTH;
+        var searchW = Math.max(0, toggleX - (x + CONTENT_PADDING) - 4);
+        searchInput.render(graphics, x + CONTENT_PADDING, searchY, searchW, mouseX, mouseY);
+        projectToggle.render(graphics, toggleX, searchY, PROJECT_TOGGLE_WIDTH, mouseX, mouseY);
 
         var listX = x + CONTENT_PADDING;
         var listY = searchY + TextInput.HEIGHT + SEARCH_GAP_BELOW;
@@ -112,7 +142,14 @@ public final class RecipeOutlinerPanel implements Panel {
             return;
         }
 
-        var groups = groupedRecipes(searchInput.content());
+        var projectOnly = projectToggle.selectedIndex() == 1;
+        if (projectOnly && projectName.isEmpty()) {
+            scroll.clear();
+            UiText.drawClipped(graphics, EngineFont.get(), "(no project open)", listX, listY, listW, EMPTY_TEXT_COLOR);
+            return;
+        }
+
+        var groups = groupedRecipes(searchInput.content(), projectOnly);
         if (groups.isEmpty()) {
             scroll.clear();
             UiText.drawClipped(
@@ -179,8 +216,8 @@ public final class RecipeOutlinerPanel implements Panel {
         int x,
         int y,
         int width,
-        RecipeHolder<?> recipe,
-        ResourceLocation selected,
+        RecipeRow recipe,
+        @Nullable ResourceLocation selected,
         int mouseX,
         int mouseY
     ) {
@@ -201,28 +238,47 @@ public final class RecipeOutlinerPanel implements Panel {
             x + 14,
             textY,
             Math.max(0, width - 18),
-            hovered || isSelected ? ROW_TEXT_HOVER_COLOR : ROW_TEXT_COLOR
+            recipe.staged()
+                ? ROW_PROJECT_STAGED_TINT
+                : recipe.inProject()
+                    ? ROW_PROJECT_TINT
+                    : hovered || isSelected ? ROW_TEXT_HOVER_COLOR : ROW_TEXT_COLOR
         );
         rowHits.add(new RowHit(x, y, width, ROW_HEIGHT, recipe));
     }
 
-    private static List<RecipeGroup> groupedRecipes(String query) {
+    private static List<RecipeGroup> groupedRecipes(String query, boolean projectOnly) {
         var level = Minecraft.getInstance().level;
         if (level == null) {
             return List.of();
         }
 
         var needle = query == null ? "" : query.toLowerCase(Locale.ROOT).trim();
-        var grouped = new LinkedHashMap<String, List<RecipeHolder<?>>>();
+        var rowsById = new LinkedHashMap<ResourceLocation, RecipeRow>();
         for (var holder : level.getRecipeManager().getRecipes()) {
             var id = holder.id();
             var typeKey = BuiltInRegistries.RECIPE_TYPE.getKey(holder.value().getType());
             var typeId = typeKey == null ? holder.value().getType().toString() : typeKey.toString();
-            var hay = (id + " " + typeId).toLowerCase(Locale.ROOT);
+            rowsById.put(id, new RecipeRow(id, typeId, holder, RecipeProjectCache.contains(id), RecipeStagingCache.isRecipeStaged(id)));
+        }
+
+        for (var entry : RecipeProjectCache.entries()) {
+            var existing = rowsById.get(entry.id());
+            var staged = RecipeStagingCache.isRecipeStaged(entry.id());
+            var typeId = "unknown".equals(entry.typeId()) && existing != null ? existing.typeId() : entry.typeId();
+            rowsById.put(entry.id(), new RecipeRow(entry.id(), typeId, existing == null ? null : existing.liveRecipe(), true, staged));
+        }
+
+        var grouped = new LinkedHashMap<String, List<RecipeRow>>();
+        for (var row : rowsById.values()) {
+            if (projectOnly && !row.inProject()) {
+                continue;
+            }
+            var hay = (row.id() + " " + row.typeId()).toLowerCase(Locale.ROOT);
             if (!needle.isEmpty() && !hay.contains(needle)) {
                 continue;
             }
-            grouped.computeIfAbsent(typeId, ignored -> new ArrayList<>()).add(holder);
+            grouped.computeIfAbsent(row.typeId(), ignored -> new ArrayList<>()).add(row);
         }
 
         var groups = new ArrayList<RecipeGroup>();
@@ -245,6 +301,9 @@ public final class RecipeOutlinerPanel implements Panel {
         if (searchInput.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
+        if (projectToggle.mouseClicked(mouseX, mouseY, button)) {
+            return true;
+        }
         if (button != 0) {
             return false;
         }
@@ -258,7 +317,13 @@ public final class RecipeOutlinerPanel implements Panel {
         }
         for (var row : rowHits) {
             if (row.contains(mouseX, mouseY)) {
-                RecipeAuthoringState.loadRecipe(row.recipe());
+                var recipe = row.recipe();
+                if ((recipe.staged() || recipe.liveRecipe() == null) && recipe.inProject() && RecipeAuthoringState.loadProjectRecipe(recipe.id())) {
+                    return true;
+                }
+                if (recipe.liveRecipe() != null) {
+                    RecipeAuthoringState.loadRecipe(recipe.liveRecipe());
+                }
                 return true;
             }
         }
@@ -287,7 +352,15 @@ public final class RecipeOutlinerPanel implements Panel {
         return mouseX >= rectX && mouseX < rectX + rectWidth && mouseY >= rectY && mouseY < rectY + rectHeight;
     }
 
-    private record RecipeGroup(String typeId, List<RecipeHolder<?>> recipes) {}
+    private record RecipeGroup(String typeId, List<RecipeRow> recipes) {}
+
+    private record RecipeRow(
+        ResourceLocation id,
+        String typeId,
+        @Nullable RecipeHolder<?> liveRecipe,
+        boolean inProject,
+        boolean staged
+    ) {}
 
     private record HeaderHit(int x, int y, int w, int h, String typeId) {
 
@@ -296,7 +369,7 @@ public final class RecipeOutlinerPanel implements Panel {
         }
     }
 
-    private record RowHit(int x, int y, int w, int h, RecipeHolder<?> recipe) {
+    private record RowHit(int x, int y, int w, int h, RecipeRow recipe) {
 
         boolean contains(double mouseX, double mouseY) {
             return mouseX >= x && mouseX < x + w && mouseY >= y && mouseY < y + h;

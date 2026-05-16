@@ -1,6 +1,7 @@
 package com.blib.engine.recipe;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -118,6 +119,18 @@ public final class RecipeAuthoringState {
             }
             if (serializer == RecipeSerializer.SMITHING_TRIM) {
                 return SMITHING_TRIM;
+            }
+            return UNSUPPORTED;
+        }
+
+        public static RecipeDraftType fromTypeId(String typeId) {
+            if (typeId == null || typeId.isBlank()) {
+                return UNSUPPORTED;
+            }
+            for (var type : values()) {
+                if (type.typeId().equals(typeId)) {
+                    return type;
+                }
             }
             return UNSUPPORTED;
         }
@@ -467,6 +480,51 @@ public final class RecipeAuthoringState {
         dirty = false;
     }
 
+    public static boolean loadProjectRecipe(ResourceLocation recipeId) {
+        var project = ProjectSession.activeProjectName();
+        if (project.isEmpty()) {
+            status = "Open a project before loading project recipes.";
+            return false;
+        }
+
+        var jsonElement = EngineProjectIO.readRecipeJson(project, recipeId).orElse(null);
+        if (jsonElement == null || !jsonElement.isJsonObject()) {
+            status = "Project recipe JSON not found for " + recipeId + ".";
+            return false;
+        }
+
+        var json = jsonElement.getAsJsonObject();
+        recipeType = RecipeDraftType.fromTypeId(jsonString(json, "type", ""));
+        clearGrid();
+        output = DraftSlot.EMPTY;
+        selectedRecipeId = recipeId;
+        recipeIdText = recipeId.toString();
+        lastSuggestedRecipeIdText = recipeIdText;
+        recipeIdManuallyEdited = true;
+        selectedSlot = null;
+        clearDrag();
+        experience = 0.0F;
+        cookingTime = defaultCookingTime(recipeType);
+
+        switch (recipeType) {
+            case CRAFTING_SHAPED -> loadShapedRecipeJson(json);
+            case CRAFTING_SHAPELESS -> loadShapelessRecipeJson(json);
+            case SMELTING, BLASTING, SMOKING, CAMPFIRE_COOKING -> loadCookingRecipeJson(json);
+            case STONECUTTING -> loadStonecuttingRecipeJson(json);
+            case SMITHING_TRANSFORM -> loadSmithingTransformRecipeJson(json);
+            case SMITHING_TRIM -> loadSmithingTrimRecipeJson(json);
+            case UNSUPPORTED -> {
+                // Keep the id/type visible but do not project unknown JSON into the wrong authoring surface.
+            }
+        }
+
+        status = recipeType == RecipeDraftType.UNSUPPORTED
+            ? "Loaded " + recipeId + " as read-only. This serializer is not editable yet."
+            : "Loaded " + recipeId + ".";
+        dirty = false;
+        return true;
+    }
+
     public static void setSlot(SlotRef ref, DraftSlot slot) {
         var normalized = slot == null ? DraftSlot.EMPTY : slot.normalized();
         if (ref.kind() == SlotKind.OUTPUT && normalized.isTag()) {
@@ -629,14 +687,75 @@ public final class RecipeAuthoringState {
             return null;
         }
 
-        var relPath = "data/" + id.getNamespace() + "/recipe/" + id.getPath() + ".json";
+        var relPath = EngineProjectIO.recipeJsonRelPath(id);
         var saved = EngineProjectIO.writeDataJson(project, relPath, json);
+        RecipeProjectCache.markPresent(project, id, recipeType.typeId());
+        RecipeStagingCache.markRecipeSaved(id);
         selectedRecipeId = id;
         dirty = false;
         status = hasInputCountOverOne()
             ? "Saved " + relPath + ". Input slot counts are editor-only for vanilla crafting recipes."
             : "Saved " + relPath + ".";
         return saved;
+    }
+
+    private static void loadShapedRecipeJson(JsonObject json) {
+        output = resultFromJson(json.get("result"), 1);
+        if (!json.has("pattern") || !json.get("pattern").isJsonArray() || !json.has("key") || !json.get("key").isJsonObject()) {
+            return;
+        }
+        var pattern = json.getAsJsonArray("pattern");
+        var key = json.getAsJsonObject("key");
+        for (var row = 0; row < Math.min(3, pattern.size()); row++) {
+            var element = pattern.get(row);
+            if (!element.isJsonPrimitive()) {
+                continue;
+            }
+            var line = element.getAsString();
+            for (var col = 0; col < Math.min(3, line.length()); col++) {
+                var symbol = line.charAt(col);
+                if (symbol == ' ') {
+                    continue;
+                }
+                GRID[row * 3 + col] = ingredientFromJson(key.get(String.valueOf(symbol)));
+            }
+        }
+    }
+
+    private static void loadShapelessRecipeJson(JsonObject json) {
+        output = resultFromJson(json.get("result"), 1);
+        if (!json.has("ingredients") || !json.get("ingredients").isJsonArray()) {
+            return;
+        }
+        var ingredients = json.getAsJsonArray("ingredients");
+        for (var i = 0; i < Math.min(9, ingredients.size()); i++) {
+            GRID[i] = ingredientFromJson(ingredients.get(i));
+        }
+    }
+
+    private static void loadCookingRecipeJson(JsonObject json) {
+        GRID[0] = ingredientFromJson(json.get("ingredient"));
+        output = resultFromJson(json.get("result"), 1);
+        experience = jsonFloat(json, "experience", 0.0F);
+        cookingTime = jsonInt(json, "cookingtime", defaultCookingTime(recipeType));
+    }
+
+    private static void loadStonecuttingRecipeJson(JsonObject json) {
+        GRID[0] = ingredientFromJson(json.get("ingredient"));
+        output = resultFromJson(json.get("result"), jsonInt(json, "count", 1));
+    }
+
+    private static void loadSmithingTransformRecipeJson(JsonObject json) {
+        GRID[0] = ingredientFromJson(json.get("template"));
+        GRID[1] = ingredientFromJson(json.get("base"));
+        GRID[2] = ingredientFromJson(json.get("addition"));
+        output = resultFromJson(json.get("result"), 1);
+    }
+
+    private static void loadSmithingTrimRecipeJson(JsonObject json) {
+        GRID[0] = ingredientFromJson(json.get("template"));
+        GRID[1] = ingredientFromJson(json.get("base"));
+        GRID[2] = ingredientFromJson(json.get("addition"));
     }
 
     private static JsonObject buildShapedRecipeJson() {
@@ -854,6 +973,98 @@ public final class RecipeAuthoringState {
             }
         }
         return DraftSlot.EMPTY;
+    }
+
+    private static DraftSlot ingredientFromJson(@Nullable JsonElement element) {
+        if (element == null || element.isJsonNull()) {
+            return DraftSlot.EMPTY;
+        }
+        if (element.isJsonArray()) {
+            for (var choice : element.getAsJsonArray()) {
+                var slot = ingredientFromJson(choice);
+                if (!slot.isEmpty()) {
+                    return slot;
+                }
+            }
+            return DraftSlot.EMPTY;
+        }
+        if (element.isJsonPrimitive()) {
+            var id = ResourceLocation.tryParse(element.getAsString());
+            return id == null ? DraftSlot.EMPTY : DraftSlot.item(id, 1);
+        }
+        if (!element.isJsonObject()) {
+            return DraftSlot.EMPTY;
+        }
+
+        var obj = element.getAsJsonObject();
+        var tag = jsonString(obj, "tag", null);
+        if (tag != null) {
+            var id = ResourceLocation.tryParse(tag);
+            return id == null ? DraftSlot.EMPTY : DraftSlot.tag(id);
+        }
+        var item = jsonString(obj, "item", null);
+        if (item != null) {
+            var id = ResourceLocation.tryParse(item);
+            return id == null ? DraftSlot.EMPTY : DraftSlot.item(id, 1);
+        }
+        return DraftSlot.EMPTY;
+    }
+
+    private static DraftSlot resultFromJson(@Nullable JsonElement element, int fallbackCount) {
+        if (element == null || element.isJsonNull()) {
+            return DraftSlot.EMPTY;
+        }
+        if (element.isJsonPrimitive()) {
+            var id = ResourceLocation.tryParse(element.getAsString());
+            return id == null ? DraftSlot.EMPTY : DraftSlot.item(id, fallbackCount);
+        }
+        if (!element.isJsonObject()) {
+            return DraftSlot.EMPTY;
+        }
+
+        var obj = element.getAsJsonObject();
+        var item = jsonString(obj, "id", null);
+        if (item == null) {
+            item = jsonString(obj, "item", null);
+        }
+        var id = item == null ? null : ResourceLocation.tryParse(item);
+        if (id == null) {
+            return DraftSlot.EMPTY;
+        }
+        return DraftSlot.item(id, jsonInt(obj, "count", fallbackCount));
+    }
+
+    private static String jsonString(JsonObject obj, String name, @Nullable String fallback) {
+        if (obj == null || !obj.has(name) || !obj.get(name).isJsonPrimitive()) {
+            return fallback;
+        }
+        try {
+            return obj.get(name).getAsString();
+        } catch (ClassCastException | IllegalStateException ignored) {
+            return fallback;
+        }
+    }
+
+    private static int jsonInt(JsonObject obj, String name, int fallback) {
+        if (obj == null || !obj.has(name) || !obj.get(name).isJsonPrimitive()) {
+            return fallback;
+        }
+        try {
+            return obj.get(name).getAsInt();
+        } catch (NumberFormatException | ClassCastException | IllegalStateException ignored) {
+            return fallback;
+        }
+    }
+
+    private static float jsonFloat(JsonObject obj, String name, float fallback) {
+        if (obj == null || !obj.has(name) || !obj.get(name).isJsonPrimitive()) {
+            return fallback;
+        }
+        try {
+            return obj.get(name).getAsFloat();
+        } catch (NumberFormatException | ClassCastException | IllegalStateException ignored) {
+            return fallback;
+        }
     }
 
     private static Ingredient readIngredientField(Object recipe, String fieldName) {
