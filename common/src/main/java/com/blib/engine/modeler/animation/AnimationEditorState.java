@@ -111,6 +111,13 @@ public final class AnimationEditorState {
         @Nullable Vec3 scale
     ) {}
 
+    private record KeyframeCacheKey(
+        int documentId,
+        String animationName,
+        String boneName,
+        TransformChannel channel
+    ) {}
+
     private static final class AnimationDocument {
         private final int id;
 
@@ -159,6 +166,8 @@ public final class AnimationEditorState {
 
     private final List<AnimationDocument> documents = new ArrayList<>();
 
+    private final Map<KeyframeCacheKey, List<KeyframeRef>> keyframeCache = new HashMap<>();
+
     private int nextDocumentId = 1;
 
     private @Nullable Integer activeDocumentId;
@@ -181,6 +190,10 @@ public final class AnimationEditorState {
 
     private @Nullable String statusMessage;
 
+    private long contentRevision;
+
+    private long selectionRevision;
+
     private AnimationEditorState() {}
 
     public static AnimationEditorState get() {
@@ -200,20 +213,30 @@ public final class AnimationEditorState {
         return activeDocumentId;
     }
 
+    public long contentRevision() {
+        return contentRevision;
+    }
+
+    public long selectionRevision() {
+        return selectionRevision;
+    }
+
     public void selectDocument(int documentId) {
         var document = document(documentId);
         if (document == null) {
             return;
         }
         var changedDocument = activeDocumentId == null || activeDocumentId != documentId;
+        var previousAnimationName = selectedAnimationName;
         syncActiveDocument();
         activateDocument(document);
         if (selectedAnimationName == null || animationObject(documentId, selectedAnimationName) == null) {
             selectedAnimationName = firstAnimationName(document);
         }
         syncSelectedAnimationNames();
-        if (changedDocument) {
+        if (changedDocument || !Objects.equals(previousAnimationName, selectedAnimationName)) {
             selectedTimestamp = null;
+            bumpSelectionRevision();
         }
     }
 
@@ -355,6 +378,7 @@ public final class AnimationEditorState {
         selectedTimestamp = null;
         stopPlayback();
         statusMessage = "New animation file";
+        bumpContentRevision();
     }
 
     public boolean openFromFile(Path path) {
@@ -396,6 +420,7 @@ public final class AnimationEditorState {
             selectSingleAnimation(firstAnimationName(document));
             selectedTimestamp = null;
             stopPlayback();
+            bumpContentRevision();
 
             var valid = validateCompatibility(document);
             statusMessage = valid
@@ -637,6 +662,8 @@ public final class AnimationEditorState {
         lastPlaybackNanos = 0L;
         dirty = false;
         statusMessage = null;
+        bumpContentRevision();
+        bumpSelectionRevision();
     }
 
     public JsonObject sessionSnapshotJson() {
@@ -779,6 +806,8 @@ public final class AnimationEditorState {
         setPlayheadSeconds(playheadSeconds);
         setPlaying(jsonBoolean(snapshot, "playing", false));
         statusMessage = restoredDocumentIds.isEmpty() ? null : "Restored animation workspace";
+        bumpContentRevision();
+        bumpSelectionRevision();
     }
 
     public @Nullable PreviewBoneTransform previewTransformFor(ModelerBone bone) {
@@ -823,6 +852,7 @@ public final class AnimationEditorState {
     public void selectAnimation(@Nullable String name) {
         selectSingleAnimation(resolveAnimationName(name));
         selectedTimestamp = null;
+        bumpSelectionRevision();
         stopPlayback();
     }
 
@@ -835,6 +865,7 @@ public final class AnimationEditorState {
         activateDocument(document);
         selectSingleAnimation(resolveAnimationName(documentId, name));
         selectedTimestamp = null;
+        bumpSelectionRevision();
         stopPlayback();
     }
 
@@ -866,6 +897,7 @@ public final class AnimationEditorState {
         }
         syncSelectedAnimationNames();
         selectedTimestamp = null;
+        bumpSelectionRevision();
         stopPlayback();
     }
 
@@ -916,6 +948,7 @@ public final class AnimationEditorState {
         selectedAnimationName = targetKey.animationName();
         syncSelectedAnimationNames();
         selectedTimestamp = null;
+        bumpSelectionRevision();
         stopPlayback();
     }
 
@@ -932,6 +965,7 @@ public final class AnimationEditorState {
         animations.add(name, obj);
         selectSingleAnimation(name);
         selectedTimestamp = null;
+        bumpSelectionRevision();
         stopPlayback();
         markDirty("Created " + name);
         return name;
@@ -979,6 +1013,7 @@ public final class AnimationEditorState {
         }
         selectedAnimationKeys.add(new AnimationKey(documentId, clean));
         syncSelectedAnimationNames();
+        bumpSelectionRevision();
         markDirty("Renamed " + oldName + " to " + clean);
         return true;
     }
@@ -1003,6 +1038,7 @@ public final class AnimationEditorState {
         animations.add(name, source.deepCopy());
         selectSingleAnimation(name);
         selectedTimestamp = null;
+        bumpSelectionRevision();
         stopPlayback();
         markDirty("Duplicated " + sourceName);
         return name;
@@ -1036,6 +1072,7 @@ public final class AnimationEditorState {
             stopPlayback();
         }
         syncSelectedAnimationNames();
+        bumpSelectionRevision();
         markDirty("Deleted " + name);
         return true;
     }
@@ -1047,6 +1084,7 @@ public final class AnimationEditorState {
         }
         selectedBoneName = nextBoneName;
         selectedTimestamp = null;
+        bumpSelectionRevision();
     }
 
     public void syncSelectedBoneFromScene() {
@@ -1056,6 +1094,7 @@ public final class AnimationEditorState {
             if (!nextBoneName.equals(selectedBoneName)) {
                 selectedBoneName = nextBoneName;
                 selectedTimestamp = null;
+                bumpSelectionRevision();
             }
         }
     }
@@ -1063,12 +1102,14 @@ public final class AnimationEditorState {
     public void onBoneRenamed(ModelerBone bone, String oldName, String newName) {
         if (selectedBoneName != null && selectedBoneName.equals(oldName)) {
             selectedBoneName = newName;
+            bumpSelectionRevision();
         }
     }
 
     public void selectChannel(TransformChannel channel) {
         selectedChannel = channel == null ? TransformChannel.ROTATION : channel;
         selectedTimestamp = null;
+        bumpSelectionRevision();
     }
 
     public void selectKeyframe(String animationName, String boneName, TransformChannel channel, double timestamp) {
@@ -1093,6 +1134,7 @@ public final class AnimationEditorState {
         selectedBoneName = boneName;
         selectedChannel = channel;
         selectedTimestamp = timestamp;
+        bumpSelectionRevision();
     }
 
     public List<KeyframeRef> selectedKeyframes() {
@@ -1110,13 +1152,24 @@ public final class AnimationEditorState {
     }
 
     public List<KeyframeRef> keyframes(int documentId, String animationName, String boneName, TransformChannel channel) {
-        var boneObj = boneAnimationObject(documentId, animationName, boneName);
-        if (boneObj == null || !boneObj.has(channel.jsonName())) {
+        var key = new KeyframeCacheKey(documentId, animationName, boneName, channel);
+        return keyframeCache.computeIfAbsent(key, this::readCachedKeyframes);
+    }
+
+    private List<KeyframeRef> readCachedKeyframes(KeyframeCacheKey key) {
+        var boneObj = boneAnimationObject(key.documentId(), key.animationName(), key.boneName());
+        if (boneObj == null || !boneObj.has(key.channel().jsonName())) {
             return List.of();
         }
-        var refs = readKeyframes(documentId, animationName, boneName, channel, boneObj.get(channel.jsonName()));
+        var refs = readKeyframes(
+            key.documentId(),
+            key.animationName(),
+            key.boneName(),
+            key.channel(),
+            boneObj.get(key.channel().jsonName())
+        );
         refs.sort(Comparator.comparingDouble(KeyframeRef::timestamp));
-        return refs;
+        return List.copyOf(refs);
     }
 
     public @Nullable KeyframeRef selectedKeyframe() {
@@ -1145,6 +1198,7 @@ public final class AnimationEditorState {
         var timestamp = selectedTimestamp != null ? selectedTimestamp : 0.0;
         var frame = ensureKeyframe(documentId, animation, bone, selectedChannel, timestamp);
         selectedTimestamp = timestamp;
+        bumpSelectionRevision();
         markDirty("Edited keyframe");
         return new KeyframeRef(documentId, animation, bone, selectedChannel, timestamp, frame);
     }
@@ -1157,6 +1211,7 @@ public final class AnimationEditorState {
             && deleteKeyframe(activeDocumentId, selectedAnimationName, selectedBoneName, selectedChannel, selectedTimestamp);
         if (deleted) {
             selectedTimestamp = null;
+            bumpSelectionRevision();
             markDirty("Deleted keyframe");
         }
         return deleted;
@@ -1168,6 +1223,7 @@ public final class AnimationEditorState {
             selectedBoneName = newBoneName;
             selectedChannel = newChannel;
             selectedTimestamp = newTimestamp;
+            bumpSelectionRevision();
             createOrUpdateSelectedKeyframe();
             return;
         }
@@ -1179,6 +1235,7 @@ public final class AnimationEditorState {
         selectedBoneName = newBoneName;
         selectedChannel = newChannel;
         selectedTimestamp = normalizedTimestamp;
+        bumpSelectionRevision();
         markDirty("Moved keyframe");
     }
 
@@ -1353,7 +1410,7 @@ public final class AnimationEditorState {
         }
     }
 
-    private static double maxKeyframeTimestamp(int documentId, @Nullable String animationName, JsonObject animation) {
+    private double maxKeyframeTimestamp(int documentId, @Nullable String animationName, JsonObject animation) {
         if (animationName == null || !animation.has("bones") || !animation.get("bones").isJsonObject()) {
             return 0.0;
         }
@@ -1367,7 +1424,7 @@ public final class AnimationEditorState {
                 if (!bone.has(channel.jsonName())) {
                     continue;
                 }
-                for (var ref : readKeyframes(documentId, animationName, boneEntry.getKey(), channel, bone.get(channel.jsonName()))) {
+                for (var ref : keyframes(documentId, animationName, boneEntry.getKey(), channel)) {
                     max = Math.max(max, ref.timestamp());
                 }
             }
@@ -1819,6 +1876,7 @@ public final class AnimationEditorState {
             selectedAnimationNames.add(name);
             selectedAnimationKeys.add(new AnimationKey(activeDocumentId, name));
         }
+        bumpSelectionRevision();
     }
 
     private List<AnimationKey> playbackAnimationKeys() {
@@ -1920,6 +1978,16 @@ public final class AnimationEditorState {
             document.dirty = true;
         }
         statusMessage = message;
+        bumpContentRevision();
+    }
+
+    private void bumpContentRevision() {
+        contentRevision++;
+        keyframeCache.clear();
+    }
+
+    private void bumpSelectionRevision() {
+        selectionRevision++;
     }
 
     private boolean writeFile(AnimationDocument document, Path path) {
