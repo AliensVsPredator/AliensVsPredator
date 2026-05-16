@@ -259,6 +259,11 @@ public final class AnimationTimelinePanel implements Panel {
             addKeyframeForRow(state, addRow);
             return true;
         }
+        var deleteRow = boneDeleteButtonRowAt(mouseX, mouseY);
+        if (deleteRow != null) {
+            deleteBoneKeyframesForRow(state, deleteRow);
+            return true;
+        }
         var row = rowAt(mouseY);
         if (row != null && mouseX >= timelineLabelX && mouseX < timelineGraphVisibleX) {
             if (row.isBone() && caretHit(row, mouseX)) {
@@ -657,7 +662,7 @@ public final class AnimationTimelinePanel implements Panel {
         graphics.fill(labelX, trackBottom - 1, timelineGraphX + timelineGraphContentWidth, trackBottom, TRACK_BORDER_COLOR);
 
         if (row.isBone()) {
-            renderBoneLabel(graphics, font, row, labelX, trackY, labelWidth, state);
+            renderBoneLabel(graphics, font, row, labelX, trackY, labelWidth, mouseX, mouseY, state);
         } else {
             renderChannelLabel(graphics, font, row, labelX, trackY, labelWidth, mouseX, mouseY, state);
         }
@@ -670,19 +675,28 @@ public final class AnimationTimelinePanel implements Panel {
         int contentX,
         int trackY,
         int labelWidth,
+        int mouseX,
+        int mouseY,
         AnimationEditorState state
     ) {
         var labelY = trackY + (TRACK_HEIGHT - font.lineHeight + 2) / 2;
         var caretX = contentX + 4 + row.depth() * INDENT_PX;
         drawCaret(graphics, caretX + 2, trackY + (TRACK_HEIGHT - 7) / 2, collapsedBones.contains(row.bone()), META_TEXT_COLOR);
         var textX = caretX + CARET_WIDTH;
+        var buttonX = boneDeleteButtonX(contentX, labelWidth);
+        var buttonY = trackY + (TRACK_HEIGHT - ADD_BUTTON_SIZE) / 2;
+        var enabled = canDeleteBoneKeyframes(state);
+        renderMinusButton(graphics, buttonX, buttonY, enabled, mouseX, mouseY);
+        if (buttonHit(mouseX, mouseY, buttonX, buttonY, ADD_BUTTON_SIZE, ADD_BUTTON_SIZE)) {
+            hoveredTooltip = deleteBoneKeyframesTooltip(row, state, enabled);
+        }
         UiText.drawClipped(
             graphics,
             font,
             row.bone().name,
             textX,
             labelY,
-            Math.max(0, contentX + labelWidth - textX - 4),
+            Math.max(0, buttonX - textX - 4),
             row.bone().name.equals(state.selectedBoneName()) ? TEXT_COLOR : META_TEXT_COLOR
         );
     }
@@ -723,6 +737,13 @@ public final class AnimationTimelinePanel implements Panel {
         }
         var timestamp = AnimationEditorState.formatTimestamp(canonicalTimestamp(state.playheadSeconds()));
         return Component.literal("Add " + row.channel().jsonName() + " keyframe for " + row.bone().name + " at " + timestamp + "s.");
+    }
+
+    private static Component deleteBoneKeyframesTooltip(TimelineRow row, AnimationEditorState state, boolean enabled) {
+        if (!enabled) {
+            return Component.literal("Select an animation to delete bone keyframes.");
+        }
+        return Component.literal("Delete keyframes for " + row.bone().name + " from the displayed animation(s).");
     }
 
     private void renderEmptyTimeline(
@@ -879,6 +900,20 @@ public final class AnimationTimelinePanel implements Panel {
         return buttonHit(mouseX, mouseY, buttonX, buttonY, ADD_BUTTON_SIZE, ADD_BUTTON_SIZE) ? row : null;
     }
 
+    private @Nullable TimelineRow boneDeleteButtonRowAt(double mouseX, double mouseY) {
+        var index = rowIndexAt(mouseY);
+        if (index < 0 || index >= rows.size()) {
+            return null;
+        }
+        var row = rows.get(index);
+        if (!row.isBone()) {
+            return null;
+        }
+        var buttonX = boneDeleteButtonX(timelineLabelX, timelineLabelWidth);
+        var buttonY = timelineContentY + RULER_HEIGHT + index * TRACK_HEIGHT + (TRACK_HEIGHT - ADD_BUTTON_SIZE) / 2;
+        return buttonHit(mouseX, mouseY, buttonX, buttonY, ADD_BUTTON_SIZE, ADD_BUTTON_SIZE) ? row : null;
+    }
+
     private void addKeyframeForRow(AnimationEditorState state, TimelineRow row) {
         if (!canAddKeyframe(state) || row.channel() == null) {
             return;
@@ -886,6 +921,14 @@ public final class AnimationTimelinePanel implements Panel {
         selectBoneFromTimeline(row.bone());
         state.selectKeyframe(state.selectedDocumentId(), state.selectedAnimationName(), row.bone().name, row.channel(), canonicalTimestamp(state.playheadSeconds()));
         state.createOrUpdateSelectedKeyframe();
+    }
+
+    private void deleteBoneKeyframesForRow(AnimationEditorState state, TimelineRow row) {
+        var animations = timelineAnimationKeys(state);
+        if (animations.isEmpty()) {
+            return;
+        }
+        state.deleteBoneKeyframes(animations, row.bone().name);
     }
 
     private int rowIndexAt(double mouseY) {
@@ -951,6 +994,10 @@ public final class AnimationTimelinePanel implements Panel {
         return state.hasDraft() && state.selectedDocumentId() != null && state.selectedAnimationName() != null;
     }
 
+    private static boolean canDeleteBoneKeyframes(AnimationEditorState state) {
+        return state.hasDraft() && !timelineAnimationKeys(state).isEmpty();
+    }
+
     private static String emptyNote(AnimationEditorState state) {
         if (!state.hasDraft()) {
             return "(no animation file open)";
@@ -975,6 +1022,10 @@ public final class AnimationTimelinePanel implements Panel {
     }
 
     private static int channelAddButtonX(int labelX, int labelWidth) {
+        return labelX + labelWidth - ADD_BUTTON_MARGIN - ADD_BUTTON_SIZE;
+    }
+
+    private static int boneDeleteButtonX(int labelX, int labelWidth) {
         return labelX + labelWidth - ADD_BUTTON_MARGIN - ADD_BUTTON_SIZE;
     }
 
@@ -1088,6 +1139,13 @@ public final class AnimationTimelinePanel implements Panel {
         drawPlusIcon(graphics, x, y, enabled ? ICON_COLOR : ICON_DISABLED_COLOR);
     }
 
+    private static void renderMinusButton(GuiGraphics graphics, int x, int y, boolean enabled, int mouseX, int mouseY) {
+        var hovered = enabled && buttonHit(mouseX, mouseY, x, y, ADD_BUTTON_SIZE, ADD_BUTTON_SIZE);
+        graphics.fill(x, y, x + ADD_BUTTON_SIZE, y + ADD_BUTTON_SIZE, hovered ? CHIP_HOVER_BG_COLOR : CHIP_BG_COLOR);
+        drawButtonBorder(graphics, x, y, ADD_BUTTON_SIZE, ADD_BUTTON_SIZE);
+        drawMinusIcon(graphics, x, y, enabled ? ICON_COLOR : ICON_DISABLED_COLOR);
+    }
+
     private static void drawPlayIcon(GuiGraphics graphics, int btnX, int btnY, int color) {
         var rows = 7;
         var halfHeight = (rows - 1) / 2;
@@ -1112,6 +1170,12 @@ public final class AnimationTimelinePanel implements Panel {
         var cy = btnY + ADD_BUTTON_SIZE / 2;
         graphics.fill(cx - 3, cy, cx + 4, cy + 1, color);
         graphics.fill(cx, cy - 3, cx + 1, cy + 4, color);
+    }
+
+    private static void drawMinusIcon(GuiGraphics graphics, int btnX, int btnY, int color) {
+        var cx = btnX + ADD_BUTTON_SIZE / 2;
+        var cy = btnY + ADD_BUTTON_SIZE / 2;
+        graphics.fill(cx - 3, cy, cx + 4, cy + 1, color);
     }
 
     private static void drawButtonBorder(GuiGraphics graphics, int x, int y, int width, int height) {

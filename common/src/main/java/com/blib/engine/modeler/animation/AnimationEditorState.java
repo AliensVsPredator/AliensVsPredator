@@ -1194,6 +1194,54 @@ public final class AnimationEditorState {
         return true;
     }
 
+    public boolean deleteBoneKeyframes(List<AnimationKey> animationKeys, String boneName) {
+        if (animationKeys == null || animationKeys.isEmpty() || boneName == null || boneName.isBlank()) {
+            return false;
+        }
+        syncActiveDocument();
+
+        var changed = false;
+        for (var key : animationKeys) {
+            var document = document(key.documentId());
+            var animation = animationObject(key.documentId(), key.animationName());
+            if (document == null || animation == null || !animation.has("bones") || !animation.get("bones").isJsonObject()) {
+                continue;
+            }
+            var bones = animation.getAsJsonObject("bones");
+            if (!bones.has(boneName) || !bones.get(boneName).isJsonObject()) {
+                continue;
+            }
+
+            var bone = bones.getAsJsonObject(boneName);
+            var removed = false;
+            for (var channel : TransformChannel.values()) {
+                removed |= bone.remove(channel.jsonName()) != null;
+            }
+            if (!removed) {
+                continue;
+            }
+
+            if (bone.entrySet().isEmpty()) {
+                bones.remove(boneName);
+            }
+            document.dirty = true;
+            if (isActiveDocument(document.id)) {
+                dirty = true;
+            }
+            changed = true;
+        }
+
+        if (changed) {
+            if (boneName.equals(selectedBoneName)) {
+                selectedTimestamp = null;
+            }
+            statusMessage = "Deleted keyframes for " + boneName;
+            bumpContentRevision();
+            bumpSelectionRevision();
+        }
+        return changed;
+    }
+
     public void selectBone(@Nullable String boneName) {
         var nextBoneName = boneName == null || boneName.isBlank() ? null : boneName;
         if (Objects.equals(selectedBoneName, nextBoneName)) {
