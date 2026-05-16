@@ -30,6 +30,7 @@ public enum LayoutTemplate {
     FACTION("faction", "Faction"),
     MODELER("modeler", "Modeler"),
     ANIMATION("animation", "Animation"),
+    RECIPE("recipe", "Recipe"),
     TEXTURE("texture", "Texture");
 
     private final String id;
@@ -94,6 +95,8 @@ public enum LayoutTemplate {
             // Animation layout: model viewport plus bone-only tree, transform timeline, animation list, keyframe
             // editor, and a restricted modeler inspector for pivot edits.
             case ANIMATION -> animationBody();
+            // Recipe layout: grouped recipe browser, crafting-table editor, and draggable item browser.
+            case RECIPE -> recipeBody();
             // Texture layout: paint.net-style workspace — texture list on the left, editable image surface in the
             // center, and tool / color / selection controls plus history on the right.
             case TEXTURE -> textureBody();
@@ -181,6 +184,21 @@ public enum LayoutTemplate {
         return new BodyNode.Split(
             Orientation.HORIZONTAL.name(),
             new BodyNode.Leaf(List.of(PanelRegistry.ANIMATIONS_OUTLINER), 0),
+            centerAndRight,
+            new SizingDoc.FirstFixed(LayoutDefaults.OUTLINER_WIDTH)
+        );
+    }
+
+    private static BodyNode recipeBody() {
+        var centerAndRight = new BodyNode.Split(
+            Orientation.HORIZONTAL.name(),
+            new BodyNode.Leaf(List.of(PanelRegistry.RECIPE_EDITOR), 0),
+            new BodyNode.Leaf(List.of(PanelRegistry.ITEM_BROWSER), 0),
+            new SizingDoc.SecondFixed(LayoutDefaults.DETAILS_WIDTH)
+        );
+        return new BodyNode.Split(
+            Orientation.HORIZONTAL.name(),
+            new BodyNode.Leaf(List.of(PanelRegistry.RECIPE_OUTLINER), 0),
             centerAndRight,
             new SizingDoc.FirstFixed(LayoutDefaults.OUTLINER_WIDTH)
         );
