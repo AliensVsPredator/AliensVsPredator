@@ -252,8 +252,7 @@ public final class ModelerOutlinerPanel implements Panel {
                 var indentX = contentX + row.depth * INDENT_PX;
                 var labelY = rowTop + (ROW_HEIGHT - font.lineHeight + 2) / 2;
                 if (row.cube == null && isCollapsible(row.owner)) {
-                    var caret = collapsed.contains(row.owner) ? "▸" : "▾";
-                    UiText.drawClipped(graphics, font, caret, indentX, labelY, CARET_WIDTH, CARET_COLOR);
+                    drawCaret(graphics, indentX, rowTop + (ROW_HEIGHT - 7) / 2, collapsed.contains(row.owner), CARET_COLOR);
                 }
                 var labelX = indentX + CARET_WIDTH;
                 int labelColor;
@@ -682,6 +681,19 @@ public final class ModelerOutlinerPanel implements Panel {
     /** A bone is "collapsible" only if it has at least one descendant row to hide — child bones or cubes. */
     private static boolean isCollapsible(ModelerBone bone) {
         return !bone.children.isEmpty() || !bone.cubes.isEmpty();
+    }
+
+    private static void drawCaret(GuiGraphics graphics, int x, int y, boolean collapsed, int color) {
+        if (collapsed) {
+            for (var row = 0; row < 7; row++) {
+                var width = row <= 3 ? row + 1 : 7 - row;
+                graphics.fill(x, y + row, x + width, y + row + 1, color);
+            }
+            return;
+        }
+        for (var row = 0; row < 4; row++) {
+            graphics.fill(x + row, y + row + 1, x + 7 - row, y + row + 2, color);
+        }
     }
 
     /** Recursively collects {@code bone} and every descendant bone into {@code out}. */

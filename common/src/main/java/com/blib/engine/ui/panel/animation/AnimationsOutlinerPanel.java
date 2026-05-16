@@ -186,15 +186,7 @@ public final class AnimationsOutlinerPanel implements Panel {
                 var indentX = frame.contentX() + row.depth * INDENT_PX;
                 var labelY = rowTop + (ROW_HEIGHT - font.lineHeight + 2) / 2;
                 if (isCollapsible(row.bone)) {
-                    UiText.drawClipped(
-                        graphics,
-                        font,
-                        collapsed.contains(row.bone) ? ">" : "v",
-                        indentX,
-                        labelY,
-                        CARET_WIDTH,
-                        CARET_COLOR
-                    );
+                    drawCaret(graphics, indentX, rowTop + (ROW_HEIGHT - 7) / 2, collapsed.contains(row.bone), CARET_COLOR);
                 }
                 var labelX = indentX + CARET_WIDTH;
                 if (row.bone == renameTarget) {
@@ -431,6 +423,19 @@ public final class AnimationsOutlinerPanel implements Panel {
 
     private static boolean isCollapsible(ModelerBone bone) {
         return !bone.children.isEmpty();
+    }
+
+    private static void drawCaret(GuiGraphics graphics, int x, int y, boolean collapsed, int color) {
+        if (collapsed) {
+            for (var row = 0; row < 7; row++) {
+                var width = row <= 3 ? row + 1 : 7 - row;
+                graphics.fill(x, y + row, x + width, y + row + 1, color);
+            }
+            return;
+        }
+        for (var row = 0; row < 4; row++) {
+            graphics.fill(x + row, y + row + 1, x + 7 - row, y + row + 2, color);
+        }
     }
 
     private static void collectAllBones(ModelerBone bone, Set<ModelerBone> out) {

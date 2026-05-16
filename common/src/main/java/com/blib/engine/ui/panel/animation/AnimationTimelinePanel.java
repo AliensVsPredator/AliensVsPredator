@@ -164,6 +164,8 @@ public final class AnimationTimelinePanel implements Panel {
 
     private long cachedRowsAnimationSelectionRevision = Long.MIN_VALUE;
 
+    private long cachedRowsSelectionRevision = Long.MIN_VALUE;
+
     private long cachedRowsCollapsedRevision = Long.MIN_VALUE;
 
     private long collapsedRevision;
@@ -442,6 +444,7 @@ public final class AnimationTimelinePanel implements Panel {
         var sceneRevision = scene.revision();
         var contentRevision = state.contentRevision();
         var animationSelectionRevision = state.animationSelectionRevision();
+        var selectionRevision = state.selectionRevision();
         if (!state.hasDraft() || animations.isEmpty() || root == null) {
             if (!rows.isEmpty()) {
                 rows.clear();
@@ -450,6 +453,7 @@ public final class AnimationTimelinePanel implements Panel {
             cachedRowsSceneRevision = sceneRevision;
             cachedRowsContentRevision = contentRevision;
             cachedRowsAnimationSelectionRevision = animationSelectionRevision;
+            cachedRowsSelectionRevision = selectionRevision;
             cachedRowsCollapsedRevision = collapsedRevision;
             return;
         }
@@ -457,24 +461,34 @@ public final class AnimationTimelinePanel implements Panel {
             && sceneRevision == cachedRowsSceneRevision
             && contentRevision == cachedRowsContentRevision
             && animationSelectionRevision == cachedRowsAnimationSelectionRevision
+            && selectionRevision == cachedRowsSelectionRevision
             && collapsedRevision == cachedRowsCollapsedRevision) {
             return;
         }
         rows.clear();
-        collectRows(state, animations, root, rows);
+        var selectedBone = selectedTimelineBone(scene, state);
+        collectRows(state, animations, root, selectedBone, rows);
         cachedRowsRoot = root;
         cachedRowsSceneRevision = sceneRevision;
         cachedRowsContentRevision = contentRevision;
         cachedRowsAnimationSelectionRevision = animationSelectionRevision;
+        cachedRowsSelectionRevision = selectionRevision;
         cachedRowsCollapsedRevision = collapsedRevision;
     }
 
-    private void collectRows(AnimationEditorState state, List<AnimationKey> animations, ModelerBone bone, List<TimelineRow> out) {
+    private void collectRows(
+        AnimationEditorState state,
+        List<AnimationKey> animations,
+        ModelerBone bone,
+        @Nullable ModelerBone selectedBone,
+        List<TimelineRow> out
+    ) {
         var position = mergedKeyframes(state, animations, bone.name, TransformChannel.POSITION);
         var rotation = mergedKeyframes(state, animations, bone.name, TransformChannel.ROTATION);
         var scale = mergedKeyframes(state, animations, bone.name, TransformChannel.SCALE);
         var hasOwnKeyframes = !position.isEmpty() || !rotation.isEmpty() || !scale.isEmpty();
-        if (hasOwnKeyframes) {
+        var includeEmptySelectedBone = bone == selectedBone;
+        if (hasOwnKeyframes || includeEmptySelectedBone) {
             out.add(TimelineRow.bone(bone, 0));
             if (!collapsedBones.contains(bone)) {
                 out.add(TimelineRow.channel(bone, 1, TransformChannel.ROTATION, rotation));
@@ -483,8 +497,32 @@ public final class AnimationTimelinePanel implements Panel {
             }
         }
         for (var child : bone.children) {
-            collectRows(state, animations, child, out);
+            collectRows(state, animations, child, selectedBone, out);
         }
+    }
+
+    private static @Nullable ModelerBone selectedTimelineBone(ModelerScene scene, AnimationEditorState state) {
+        if (scene.selection instanceof Selection.BoneSelection bs) {
+            return bs.bone();
+        }
+        var selectedName = state.selectedBoneName();
+        return selectedName == null ? null : findBoneByName(scene.root, selectedName);
+    }
+
+    private static @Nullable ModelerBone findBoneByName(@Nullable ModelerBone bone, String name) {
+        if (bone == null) {
+            return null;
+        }
+        if (name.equals(bone.name)) {
+            return bone;
+        }
+        for (var child : bone.children) {
+            var found = findBoneByName(child, name);
+            if (found != null) {
+                return found;
+            }
+        }
+        return null;
     }
 
     private static List<AnimationKey> timelineAnimationKeys(AnimationEditorState state) {
