@@ -22,7 +22,9 @@ import com.blib.api.common.data_sync.v1.DataContainer;
 import com.blib.api.common.data_sync.v1.model.DataUser;
 import com.blib.api.common.dismemberment.v1.builtin.BuiltInLimbDrops;
 import com.blib.api.common.dismemberment.v1.builtin.BuiltInSpawnFunctions;
+import com.blib.api.common.event.v1.BLibFactionDataChangedEvent;
 import com.blib.api.common.faction.v1.Faction;
+import com.blib.api.common.faction.v1.FactionMember;
 import com.blib.api.common.faction.v1.ProtectionMode;
 import com.blib.api.common.faction.v1.RelationshipState;
 import com.blib.api.common.mod.v1.BLibMod;
@@ -218,6 +220,28 @@ public class BLib {
         BLib.MOD.events()
             .onFactionRemove()
             .register(BLibTerritoryManager.INSTANCE::onFactionRemoved);
+
+        BLib.MOD.events()
+            .onFactionDataChanged()
+            .register((factionId, kind) -> {
+                if (kind == BLibFactionDataChangedEvent.Kind.CLAIM_VISIBILITY) {
+                    BLibTerritoryManager.INSTANCE.syncClaimsForFactionToAllPlayers(factionId);
+                }
+            });
+
+        BLib.MOD.events()
+            .onFactionRelationshipChanged()
+            .register((factionA, factionB, oldState, newState) -> {
+                BLibTerritoryManager.INSTANCE.syncClaimsForFactionPairToAllPlayers(factionA, factionB);
+            });
+
+        BLib.MOD.events()
+            .onFactionMemberChanged()
+            .register((factionId, member, added) -> {
+                if (member instanceof FactionMember.Entity entityMember) {
+                    BLibTerritoryManager.INSTANCE.syncClaimsAffectedByMembershipChange(factionId, entityMember.uuid());
+                }
+            });
 
         BLib.MOD.events()
             .onEntityLoad()

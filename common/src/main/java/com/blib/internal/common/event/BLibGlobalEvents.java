@@ -10,6 +10,10 @@ import com.blib.api.common.event.v1.BLibChunkUnloadEvent;
 import com.blib.api.common.event.v1.BLibEntityLoadEvent;
 import com.blib.api.common.event.v1.BLibEntityRemoveEvent;
 import com.blib.api.common.event.v1.BLibEntityTickEvent;
+import com.blib.api.common.event.v1.BLibFactionCreatedEvent;
+import com.blib.api.common.event.v1.BLibFactionDataChangedEvent;
+import com.blib.api.common.event.v1.BLibFactionMemberChangedEvent;
+import com.blib.api.common.event.v1.BLibFactionRelationshipChangedEvent;
 import com.blib.api.common.event.v1.BLibFactionRemoveEvent;
 import com.blib.api.common.event.v1.BLibFactionsLoadedEvent;
 import com.blib.api.common.event.v1.BLibLevelSaveEvent;
@@ -34,6 +38,15 @@ public final class BLibGlobalEvents {
     public static final BLibGlobalEventHandle<BLibEntityRemoveEvent> ENTITY_REMOVE = new BLibGlobalEventHandle<>();
 
     public static final BLibGlobalEventHandle<BLibEntityTickEvent> ENTITY_TICK = new BLibGlobalEventHandle<>();
+
+    public static final BLibGlobalEventHandle<BLibFactionCreatedEvent> FACTION_CREATED = new BLibGlobalEventHandle<>();
+
+    public static final BLibGlobalEventHandle<BLibFactionDataChangedEvent> FACTION_DATA_CHANGED = new BLibGlobalEventHandle<>();
+
+    public static final BLibGlobalEventHandle<BLibFactionMemberChangedEvent> FACTION_MEMBER_CHANGED = new BLibGlobalEventHandle<>();
+
+    public static final BLibGlobalEventHandle<BLibFactionRelationshipChangedEvent> FACTION_RELATIONSHIP_CHANGED =
+        new BLibGlobalEventHandle<>();
 
     public static final BLibGlobalEventHandle<BLibFactionRemoveEvent> FACTION_REMOVE = new BLibGlobalEventHandle<>();
 

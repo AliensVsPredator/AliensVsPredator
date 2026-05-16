@@ -90,6 +90,7 @@ public class BLibFactionManager implements FactionManager, EntityReferenceOwner 
         @SuppressWarnings("unchecked")
         var faction = (Faction<T>) new Faction<>(id, typeId, relationships, internalData);
         factions.put(id, faction);
+        fireFactionCreated(id);
 
         return faction;
     }
@@ -118,6 +119,7 @@ public class BLibFactionManager implements FactionManager, EntityReferenceOwner 
 
         var faction = new Faction<>(id, typeId, relationships, internalData);
         factions.put(id, faction);
+        fireFactionCreated(id);
 
         return faction;
     }
@@ -148,7 +150,13 @@ public class BLibFactionManager implements FactionManager, EntityReferenceOwner 
 
     @Override
     public void setRelationship(ResourceLocation factionA, ResourceLocation factionB, RelationshipState state) {
+        var oldState = relationshipTable.getRelationship(factionA, factionB);
         relationshipTable.setRelationship(factionA, factionB, state);
+        if (oldState != state) {
+            for (var listener : BLibGlobalEvents.FACTION_RELATIONSHIP_CHANGED.listeners()) {
+                listener.invoke(factionA, factionB, oldState, state);
+            }
+        }
     }
 
     @Override
@@ -321,6 +329,7 @@ public class BLibFactionManager implements FactionManager, EntityReferenceOwner 
             BLibEntityReferenceManager.INSTANCE.onEntityReferenceRemoved(entityMember.uuid());
         }
 
+        fireFactionMemberChanged(factionId, member, added);
     }
 
     public void onEntityMemberAdded(
@@ -337,6 +346,19 @@ public class BLibFactionManager implements FactionManager, EntityReferenceOwner 
             faction.data().onMemberAdded(member, entity);
         }
 
+        fireFactionMemberChanged(factionId, member, true);
+    }
+
+    private void fireFactionCreated(ResourceLocation factionId) {
+        for (var listener : BLibGlobalEvents.FACTION_CREATED.listeners()) {
+            listener.invoke(factionId);
+        }
+    }
+
+    private void fireFactionMemberChanged(ResourceLocation factionId, FactionMember member, boolean added) {
+        for (var listener : BLibGlobalEvents.FACTION_MEMBER_CHANGED.listeners()) {
+            listener.invoke(factionId, member, added);
+        }
     }
 
     private void saveMemberships(MinecraftServer server) {

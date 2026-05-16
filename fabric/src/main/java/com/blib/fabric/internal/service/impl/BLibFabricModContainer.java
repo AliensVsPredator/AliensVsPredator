@@ -50,6 +50,10 @@ import com.blib.api.common.event.v1.BLibCommonSetupEvent;
 import com.blib.api.common.event.v1.BLibEntityLoadEvent;
 import com.blib.api.common.event.v1.BLibEntityRemoveEvent;
 import com.blib.api.common.event.v1.BLibEntityTickEvent;
+import com.blib.api.common.event.v1.BLibFactionCreatedEvent;
+import com.blib.api.common.event.v1.BLibFactionDataChangedEvent;
+import com.blib.api.common.event.v1.BLibFactionMemberChangedEvent;
+import com.blib.api.common.event.v1.BLibFactionRelationshipChangedEvent;
 import com.blib.api.common.event.v1.BLibFactionRemoveEvent;
 import com.blib.api.common.event.v1.BLibFactionsLoadedEvent;
 import com.blib.api.common.event.v1.BLibLevelSaveEvent;
@@ -116,6 +120,14 @@ public class BLibFabricModContainer {
 
     private final BLibEventListenerHandle<BLibEntityTickEvent> onEntityTick;
 
+    private final BLibEventListenerHandle<BLibFactionCreatedEvent> onFactionCreated;
+
+    private final BLibEventListenerHandle<BLibFactionDataChangedEvent> onFactionDataChanged;
+
+    private final BLibEventListenerHandle<BLibFactionMemberChangedEvent> onFactionMemberChanged;
+
+    private final BLibEventListenerHandle<BLibFactionRelationshipChangedEvent> onFactionRelationshipChanged;
+
     private final BLibEventListenerHandle<BLibFactionRemoveEvent> onFactionRemove;
 
     private final BLibEventListenerHandle<BLibFactionsLoadedEvent> onFactionsLoaded;
@@ -164,6 +176,10 @@ public class BLibFabricModContainer {
         this.onEntityLoad = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.ENTITY_LOAD);
         this.onEntityRemove = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.ENTITY_REMOVE);
         this.onEntityTick = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.ENTITY_TICK);
+        this.onFactionCreated = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.FACTION_CREATED);
+        this.onFactionDataChanged = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.FACTION_DATA_CHANGED);
+        this.onFactionMemberChanged = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.FACTION_MEMBER_CHANGED);
+        this.onFactionRelationshipChanged = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.FACTION_RELATIONSHIP_CHANGED);
         this.onFactionRemove = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.FACTION_REMOVE);
         this.onFactionsLoaded = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.FACTIONS_LOADED);
         this.onLevelSave = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.LEVEL_SAVE);
@@ -218,6 +234,22 @@ public class BLibFabricModContainer {
 
     public BLibEventListenerHandle<BLibEntityTickEvent> onEntityTick() {
         return onEntityTick;
+    }
+
+    public BLibEventListenerHandle<BLibFactionCreatedEvent> onFactionCreated() {
+        return onFactionCreated;
+    }
+
+    public BLibEventListenerHandle<BLibFactionDataChangedEvent> onFactionDataChanged() {
+        return onFactionDataChanged;
+    }
+
+    public BLibEventListenerHandle<BLibFactionMemberChangedEvent> onFactionMemberChanged() {
+        return onFactionMemberChanged;
+    }
+
+    public BLibEventListenerHandle<BLibFactionRelationshipChangedEvent> onFactionRelationshipChanged() {
+        return onFactionRelationshipChanged;
     }
 
     public BLibEventListenerHandle<BLibFactionRemoveEvent> onFactionRemove() {

@@ -10,12 +10,14 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import com.blib.api.common.faction.v1.ClaimVisibility;
 import com.blib.api.common.faction.v1.RelationshipState;
@@ -219,6 +221,60 @@ public class BLibTerritoryManager {
         }
     }
 
+    public void syncClaimsForFactionToAllPlayers(ResourceLocation factionId) {
+        syncClaimsForFactionsToAllPlayers(Set.of(factionId));
+    }
+
+    public void syncClaimsForFactionPairToAllPlayers(ResourceLocation factionA, ResourceLocation factionB) {
+        var factionIds = new HashSet<ResourceLocation>();
+        factionIds.add(factionA);
+        factionIds.add(factionB);
+        syncClaimsForFactionsToAllPlayers(factionIds);
+    }
+
+    public void syncClaimsForFactionsToAllPlayers(Collection<ResourceLocation> factionIds) {
+        if (server == null || server.getPlayerCount() == 0 || factionIds.isEmpty()) {
+            return;
+        }
+
+        for (var level : server.getAllLevels()) {
+            var chunks = getChunksClaimedByAny(level, factionIds);
+
+            if (chunks.isEmpty()) {
+                continue;
+            }
+
+            for (var player : server.getPlayerList().getPlayers()) {
+                if (player.connection != null) {
+                    syncClaimChunksToPlayer(level, chunks, player, true);
+                }
+            }
+        }
+    }
+
+    public void syncClaimsAffectedByMembershipChange(ResourceLocation factionId, UUID entityUuid) {
+        if (server == null) {
+            return;
+        }
+
+        var player = server.getPlayerList().getPlayer(entityUuid);
+        if (player == null || player.connection == null) {
+            return;
+        }
+
+        var affectedFactionIds = new HashSet<ResourceLocation>();
+        affectedFactionIds.add(factionId);
+        affectedFactionIds.addAll(BLibFactionManager.INSTANCE.getFactionsWithState(factionId, RelationshipState.ALLIED));
+
+        for (var level : server.getAllLevels()) {
+            var chunks = getChunksClaimedByAny(level, affectedFactionIds);
+
+            if (!chunks.isEmpty()) {
+                syncClaimChunksToPlayer(level, chunks, player, true);
+            }
+        }
+    }
+
     public S2CChunkClaimsSyncPayload buildSyncPayload(ServerLevel level, ChunkPos pos) {
         var claimants = getClaimants(level, pos);
 
@@ -270,6 +326,15 @@ public class BLibTerritoryManager {
     }
 
     public void syncClaimChunksToPlayer(ServerLevel level, Iterable<ChunkPos> chunks, ServerPlayer player) {
+        syncClaimChunksToPlayer(level, chunks, player, false);
+    }
+
+    private void syncClaimChunksToPlayer(
+        ServerLevel level,
+        Iterable<ChunkPos> chunks,
+        ServerPlayer player,
+        boolean includeEmptyEntries
+    ) {
         var entries = new ArrayList<S2CChunkClaimsSyncPayload.Entry>(SYNC_BATCH_SIZE);
 
         for (var pos : chunks) {
@@ -278,7 +343,7 @@ public class BLibTerritoryManager {
                 .filter(factionId -> isFactionVisibleToPlayer(factionId, player))
                 .toList();
 
-            if (visibleFactions.isEmpty()) {
+            if (visibleFactions.isEmpty() && !includeEmptyEntries) {
                 continue;
             }
 
@@ -405,6 +470,20 @@ public class BLibTerritoryManager {
 
     private boolean isPlayerInFaction(ServerPlayer player, ResourceLocation factionId) {
         return BLibFactionManager.INSTANCE.getFactionIds(player.getUUID()).contains(factionId);
+    }
+
+    private Set<ChunkPos> getChunksClaimedByAny(ServerLevel level, Collection<ResourceLocation> factionIds) {
+        var index = indexes.get(level);
+
+        if (index == null) {
+            return Set.of();
+        }
+
+        var chunks = new HashSet<ChunkPos>();
+        for (var factionId : factionIds) {
+            chunks.addAll(index.getChunks(factionId));
+        }
+        return chunks;
     }
 
     private BLibTerritoryIndex getOrCreateIndex(ServerLevel level) {

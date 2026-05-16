@@ -13,6 +13,10 @@ import com.blib.api.common.event.v1.BLibCommonSetupEvent;
 import com.blib.api.common.event.v1.BLibEntityLoadEvent;
 import com.blib.api.common.event.v1.BLibEntityRemoveEvent;
 import com.blib.api.common.event.v1.BLibEntityTickEvent;
+import com.blib.api.common.event.v1.BLibFactionCreatedEvent;
+import com.blib.api.common.event.v1.BLibFactionDataChangedEvent;
+import com.blib.api.common.event.v1.BLibFactionMemberChangedEvent;
+import com.blib.api.common.event.v1.BLibFactionRelationshipChangedEvent;
 import com.blib.api.common.event.v1.BLibFactionRemoveEvent;
 import com.blib.api.common.event.v1.BLibFactionsLoadedEvent;
 import com.blib.api.common.event.v1.BLibLevelSaveEvent;
@@ -45,6 +49,14 @@ public interface BLibEventService {
     BLibEventListenerHandle<BLibEntityRemoveEvent> onEntityRemove(BLibMod mod);
 
     BLibEventListenerHandle<BLibEntityTickEvent> onEntityTick(BLibMod mod);
+
+    BLibEventListenerHandle<BLibFactionCreatedEvent> onFactionCreated(BLibMod mod);
+
+    BLibEventListenerHandle<BLibFactionDataChangedEvent> onFactionDataChanged(BLibMod mod);
+
+    BLibEventListenerHandle<BLibFactionMemberChangedEvent> onFactionMemberChanged(BLibMod mod);
+
+    BLibEventListenerHandle<BLibFactionRelationshipChangedEvent> onFactionRelationshipChanged(BLibMod mod);
 
     BLibEventListenerHandle<BLibFactionRemoveEvent> onFactionRemove(BLibMod mod);
 
