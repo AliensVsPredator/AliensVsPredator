@@ -325,7 +325,7 @@ public final class MenuBarController {
             var suffix = LayoutCatalog.isTemplateId(doc.id()) ? "  (template)" : "";
             items.add(new DropdownMenu.Item(prefix + doc.displayName() + suffix, () -> actions.switchLayout(doc.id())));
         }
-        items.add(new DropdownMenu.Item("────────────", () -> {}));
+        items.add(DropdownMenu.Item.divider());
         items.add(new DropdownMenu.Item("Save As New…", actions::openSaveAsDialog));
         items.add(new DropdownMenu.Item("Rename…", actions::openRenameDialog));
         items.add(new DropdownMenu.Item("Duplicate…", actions::openDuplicateDialog));
@@ -335,11 +335,11 @@ public final class MenuBarController {
         if (canReset) {
             items.add(new DropdownMenu.Item("Reset to Template", actions::resetLayout));
         }
-        items.add(new DropdownMenu.Item("────────────", () -> {}));
+        items.add(DropdownMenu.Item.divider());
         for (var t : LayoutTemplate.all()) {
             items.add(new DropdownMenu.Item("New from " + t.displayName() + "…", () -> actions.openNewFromTemplateDialog(t)));
         }
-        items.add(new DropdownMenu.Item("────────────", () -> {}));
+        items.add(DropdownMenu.Item.divider());
         items.add(new DropdownMenu.Item("Manage Layouts…", actions::openManageLayoutsDialog));
         items.add(new DropdownMenu.Item("Show Layouts Folder", actions::openLayoutsFolder));
         return new DropdownMenu(anchorX, anchorY, items);

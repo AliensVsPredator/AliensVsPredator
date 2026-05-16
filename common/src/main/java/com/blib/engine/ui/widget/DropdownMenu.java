@@ -23,38 +23,52 @@ public final class DropdownMenu {
         Runnable action,
         List<Item> children,
         boolean enabled,
-        @Nullable Component disabledTooltip
+        @Nullable Component disabledTooltip,
+        boolean separator
     ) {
 
         public Item {
-            children = List.copyOf(children);
-            if (!enabled && disabledTooltip == null) {
+            if (separator) {
+                label = "";
+                children = List.of();
+                enabled = false;
+                disabledTooltip = null;
+            } else {
+                children = List.copyOf(children);
+            }
+            if (!enabled && disabledTooltip == null && !separator) {
                 disabledTooltip = Component.literal("This action is unavailable right now.");
             }
         }
 
         public Item(String label, Runnable action) {
-            this(label, action, List.of(), true, null);
+            this(label, action, List.of(), true, null, false);
         }
 
         public Item(String label, Runnable action, boolean enabled) {
-            this(label, action, List.of(), enabled, null);
+            this(label, action, List.of(), enabled, null, false);
         }
 
         public Item(String label, Runnable action, boolean enabled, Component disabledTooltip) {
-            this(label, action, List.of(), enabled, disabledTooltip);
+            this(label, action, List.of(), enabled, disabledTooltip, false);
         }
 
         public Item(String label, Runnable action, List<Item> children) {
-            this(label, action, children, true, null);
+            this(label, action, children, true, null, false);
+        }
+
+        public static Item divider() {
+            return new Item("", () -> {}, List.of(), false, null, true);
         }
 
         public boolean hasSubmenu() {
-            return !children.isEmpty();
+            return !separator && !children.isEmpty();
         }
     }
 
     public static final int ITEM_HEIGHT = 14;
+
+    private static final int DIVIDER_HEIGHT = 7;
 
     private static final int PADDING_X = 8;
 
@@ -101,6 +115,9 @@ public final class DropdownMenu {
         var maxLabelWidth = 0;
         var anySubmenu = false;
         for (var item : items) {
+            if (item.separator()) {
+                continue;
+            }
             maxLabelWidth = Math.max(maxLabelWidth, font.width(item.label()));
             if (item.hasSubmenu()) {
                 anySubmenu = true;
@@ -123,12 +140,12 @@ public final class DropdownMenu {
         int viewportHeight
     ) {
         var width = computeWidth(items);
-        var height = items.size() * ITEM_HEIGHT + 2 * BORDER_THICKNESS;
+        var height = computeHeight(items);
         var x = parent.anchorX + parent.width;
         if (x + width > viewportWidth) {
             x = parent.anchorX - width;
         }
-        var y = parent.anchorY + BORDER_THICKNESS + parentItemIndex * ITEM_HEIGHT;
+        var y = parent.anchorY + BORDER_THICKNESS + itemOffset(parent.items, parentItemIndex);
         if (y + height > viewportHeight) {
             y = viewportHeight - height;
         }
@@ -143,7 +160,7 @@ public final class DropdownMenu {
     }
 
     public int height() {
-        return items.size() * ITEM_HEIGHT + 2 * BORDER_THICKNESS;
+        return computeHeight(items);
     }
 
     public boolean isInside(double mouseX, double mouseY) {
@@ -159,11 +176,15 @@ public final class DropdownMenu {
             return -1;
         }
         var localY = (int) (mouseY - anchorY - BORDER_THICKNESS);
-        var idx = localY / ITEM_HEIGHT;
-        if (idx < 0 || idx >= items.size()) {
-            return -1;
+        var y = 0;
+        for (var i = 0; i < items.size(); i++) {
+            var itemHeight = itemHeight(items.get(i));
+            if (localY >= y && localY < y + itemHeight) {
+                return i;
+            }
+            y += itemHeight;
         }
-        return idx;
+        return -1;
     }
 
     public Item itemAt(int index) {
@@ -176,7 +197,7 @@ public final class DropdownMenu {
             return null;
         }
         var item = itemAt(idx);
-        return item.enabled() ? null : item.disabledTooltip();
+        return item.enabled() || item.separator() ? null : item.disabledTooltip();
     }
 
     public void render(GuiGraphics graphics, int mouseX, int mouseY) {
@@ -190,24 +211,31 @@ public final class DropdownMenu {
         graphics.fill(anchorX + width - BORDER_THICKNESS, anchorY, anchorX + width, anchorY + height, BORDER_COLOR);
 
         var font = EngineFont.get();
+        var itemY = anchorY + BORDER_THICKNESS;
         for (var i = 0; i < items.size(); i++) {
             var item = items.get(i);
-            var itemY = anchorY + BORDER_THICKNESS + i * ITEM_HEIGHT;
+            var itemHeight = itemHeight(item);
+            if (item.separator()) {
+                var lineY = itemY + itemHeight / 2;
+                graphics.fill(anchorX + PADDING_X, lineY, anchorX + width - PADDING_X, lineY + 1, BORDER_COLOR);
+                itemY += itemHeight;
+                continue;
+            }
             var hovered = item.enabled()
                 && mouseX >= anchorX
                 && mouseX < anchorX + width
                 && mouseY >= itemY
-                && mouseY < itemY + ITEM_HEIGHT;
+                && mouseY < itemY + itemHeight;
             if (hovered) {
                 graphics.fill(
                     anchorX + BORDER_THICKNESS,
                     itemY,
                     anchorX + width - BORDER_THICKNESS,
-                    itemY + ITEM_HEIGHT,
+                    itemY + itemHeight,
                     ITEM_HOVER_BG_COLOR
                 );
             }
-            var labelY = itemY + (ITEM_HEIGHT - font.lineHeight + 2) / 2;
+            var labelY = itemY + (itemHeight - font.lineHeight + 2) / 2;
             graphics.drawString(
                 font,
                 Component.literal(item.label()),
@@ -228,6 +256,27 @@ public final class DropdownMenu {
                     false
                 );
             }
+            itemY += itemHeight;
         }
+    }
+
+    private static int computeHeight(List<Item> items) {
+        var height = 2 * BORDER_THICKNESS;
+        for (var item : items) {
+            height += itemHeight(item);
+        }
+        return height;
+    }
+
+    private static int itemHeight(Item item) {
+        return item.separator() ? DIVIDER_HEIGHT : ITEM_HEIGHT;
+    }
+
+    private static int itemOffset(List<Item> items, int targetIndex) {
+        var y = 0;
+        for (var i = 0; i < targetIndex && i < items.size(); i++) {
+            y += itemHeight(items.get(i));
+        }
+        return y;
     }
 }
