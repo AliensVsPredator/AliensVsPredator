@@ -115,6 +115,7 @@ public final class ModelerBlockModelLoader {
             LOGGER.warn("ModelerBlockModelLoader: imported {} without any loadable textures", blockId);
         }
         ModelerActionHistory.clear();
+        scene.bumpRevision();
     }
 
     private static @Nullable ModelerCube convertElement(

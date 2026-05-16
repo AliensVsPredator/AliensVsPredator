@@ -8,6 +8,7 @@ import java.util.Deque;
 import java.util.List;
 
 import com.blib.engine.history.api.HistoryService;
+import com.blib.engine.modeler.ModelerScene;
 import com.blib.mod.common.network.packet.ActionDescriptor;
 
 /**
@@ -39,6 +40,7 @@ public final class ModelerActionHistory {
         while (undoStack.size() > MAX_ENTRIES) {
             undoStack.removeLast();
         }
+        bumpSceneRevision(action);
     }
 
     /** Pop the most recent undo entry, invoke its undo(), and stash it on the redo stack. */
@@ -49,6 +51,7 @@ public final class ModelerActionHistory {
         }
         action.undo();
         redoStack.addFirst(action);
+        bumpSceneRevision(action);
         return true;
     }
 
@@ -60,6 +63,7 @@ public final class ModelerActionHistory {
         }
         action.redo();
         undoStack.addFirst(action);
+        bumpSceneRevision(action);
         return true;
     }
 
@@ -116,4 +120,10 @@ public final class ModelerActionHistory {
             return ModelerActionHistory.undoCursor();
         }
     };
+
+    private static void bumpSceneRevision(ModelerAction action) {
+        if (action.affectsModelScene()) {
+            ModelerScene.get().bumpRevision();
+        }
+    }
 }

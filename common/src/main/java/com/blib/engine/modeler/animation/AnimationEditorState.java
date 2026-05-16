@@ -194,6 +194,8 @@ public final class AnimationEditorState {
 
     private long selectionRevision;
 
+    private long animationSelectionRevision;
+
     private AnimationEditorState() {}
 
     public static AnimationEditorState get() {
@@ -221,6 +223,10 @@ public final class AnimationEditorState {
         return selectionRevision;
     }
 
+    public long animationSelectionRevision() {
+        return animationSelectionRevision;
+    }
+
     public void selectDocument(int documentId) {
         var document = document(documentId);
         if (document == null) {
@@ -236,7 +242,7 @@ public final class AnimationEditorState {
         syncSelectedAnimationNames();
         if (changedDocument || !Objects.equals(previousAnimationName, selectedAnimationName)) {
             selectedTimestamp = null;
-            bumpSelectionRevision();
+            bumpAnimationSelectionRevision();
         }
     }
 
@@ -663,7 +669,7 @@ public final class AnimationEditorState {
         dirty = false;
         statusMessage = null;
         bumpContentRevision();
-        bumpSelectionRevision();
+        bumpAnimationSelectionRevision();
     }
 
     public JsonObject sessionSnapshotJson() {
@@ -807,7 +813,7 @@ public final class AnimationEditorState {
         setPlaying(jsonBoolean(snapshot, "playing", false));
         statusMessage = restoredDocumentIds.isEmpty() ? null : "Restored animation workspace";
         bumpContentRevision();
-        bumpSelectionRevision();
+        bumpAnimationSelectionRevision();
     }
 
     public @Nullable PreviewBoneTransform previewTransformFor(ModelerBone bone) {
@@ -852,7 +858,6 @@ public final class AnimationEditorState {
     public void selectAnimation(@Nullable String name) {
         selectSingleAnimation(resolveAnimationName(name));
         selectedTimestamp = null;
-        bumpSelectionRevision();
         stopPlayback();
     }
 
@@ -865,7 +870,6 @@ public final class AnimationEditorState {
         activateDocument(document);
         selectSingleAnimation(resolveAnimationName(documentId, name));
         selectedTimestamp = null;
-        bumpSelectionRevision();
         stopPlayback();
     }
 
@@ -897,7 +901,7 @@ public final class AnimationEditorState {
         }
         syncSelectedAnimationNames();
         selectedTimestamp = null;
-        bumpSelectionRevision();
+        bumpAnimationSelectionRevision();
         stopPlayback();
     }
 
@@ -948,7 +952,7 @@ public final class AnimationEditorState {
         selectedAnimationName = targetKey.animationName();
         syncSelectedAnimationNames();
         selectedTimestamp = null;
-        bumpSelectionRevision();
+        bumpAnimationSelectionRevision();
         stopPlayback();
     }
 
@@ -965,7 +969,6 @@ public final class AnimationEditorState {
         animations.add(name, obj);
         selectSingleAnimation(name);
         selectedTimestamp = null;
-        bumpSelectionRevision();
         stopPlayback();
         markDirty("Created " + name);
         return name;
@@ -1013,7 +1016,7 @@ public final class AnimationEditorState {
         }
         selectedAnimationKeys.add(new AnimationKey(documentId, clean));
         syncSelectedAnimationNames();
-        bumpSelectionRevision();
+        bumpAnimationSelectionRevision();
         markDirty("Renamed " + oldName + " to " + clean);
         return true;
     }
@@ -1038,7 +1041,6 @@ public final class AnimationEditorState {
         animations.add(name, source.deepCopy());
         selectSingleAnimation(name);
         selectedTimestamp = null;
-        bumpSelectionRevision();
         stopPlayback();
         markDirty("Duplicated " + sourceName);
         return name;
@@ -1072,7 +1074,7 @@ public final class AnimationEditorState {
             stopPlayback();
         }
         syncSelectedAnimationNames();
-        bumpSelectionRevision();
+        bumpAnimationSelectionRevision();
         markDirty("Deleted " + name);
         return true;
     }
@@ -1124,17 +1126,23 @@ public final class AnimationEditorState {
         if (document == null) {
             return;
         }
+        var changedDocument = activeDocumentId == null || activeDocumentId != documentId;
         syncActiveDocument();
         activateDocument(document);
         selectedAnimationName = animationName;
+        var addedAnimationSelection = false;
         if (animationObject(documentId, animationName) != null) {
-            selectedAnimationKeys.add(new AnimationKey(documentId, animationName));
+            addedAnimationSelection = selectedAnimationKeys.add(new AnimationKey(documentId, animationName));
         }
         syncSelectedAnimationNames();
         selectedBoneName = boneName;
         selectedChannel = channel;
         selectedTimestamp = timestamp;
-        bumpSelectionRevision();
+        if (changedDocument || addedAnimationSelection) {
+            bumpAnimationSelectionRevision();
+        } else {
+            bumpSelectionRevision();
+        }
     }
 
     public List<KeyframeRef> selectedKeyframes() {
@@ -1876,7 +1884,7 @@ public final class AnimationEditorState {
             selectedAnimationNames.add(name);
             selectedAnimationKeys.add(new AnimationKey(activeDocumentId, name));
         }
-        bumpSelectionRevision();
+        bumpAnimationSelectionRevision();
     }
 
     private List<AnimationKey> playbackAnimationKeys() {
@@ -1988,6 +1996,11 @@ public final class AnimationEditorState {
 
     private void bumpSelectionRevision() {
         selectionRevision++;
+    }
+
+    private void bumpAnimationSelectionRevision() {
+        animationSelectionRevision++;
+        bumpSelectionRevision();
     }
 
     private boolean writeFile(AnimationDocument document, Path path) {

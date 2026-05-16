@@ -45,6 +45,10 @@ public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, M
 
     void redo();
 
+    default boolean affectsModelScene() {
+        return true;
+    }
+
     default ActionDescriptor toDescriptor() {
         return new ActionDescriptor(typeId(), description(), timestamp(), null, null);
     }
@@ -437,6 +441,11 @@ public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, M
                 BLibItemTransformOverrides.set(itemId, mode, context, transform);
             }
         }
+
+        @Override
+        public boolean affectsModelScene() {
+            return false;
+        }
     }
 
     /**
@@ -508,6 +517,11 @@ public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, M
         public void redo() {
             after.apply(target);
         }
+
+        @Override
+        public boolean affectsModelScene() {
+            return false;
+        }
     }
 
     /** Region-selection edit for the texture viewport. Selection state is part of the editable texture workflow. */
@@ -536,6 +550,11 @@ public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, M
                 TextureEditorState.setSelection(selection.x0(), selection.y0(), selection.x1Exclusive(), selection.y1Exclusive());
             }
         }
+
+        @Override
+        public boolean affectsModelScene() {
+            return false;
+        }
     }
 
     /**
@@ -563,6 +582,16 @@ public sealed interface ModelerAction permits ModelerAction.CubeMementoAction, M
             for (var child : children) {
                 child.redo();
             }
+        }
+
+        @Override
+        public boolean affectsModelScene() {
+            for (var child : children) {
+                if (child.affectsModelScene()) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

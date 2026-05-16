@@ -155,6 +155,18 @@ public final class AnimationTimelinePanel implements Panel {
 
     private @Nullable KeyframeDrag keyframeDrag;
 
+    private @Nullable ModelerBone cachedRowsRoot;
+
+    private long cachedRowsSceneRevision = Long.MIN_VALUE;
+
+    private long cachedRowsContentRevision = Long.MIN_VALUE;
+
+    private long cachedRowsAnimationSelectionRevision = Long.MIN_VALUE;
+
+    private long cachedRowsCollapsedRevision = Long.MIN_VALUE;
+
+    private long collapsedRevision;
+
     private @Nullable Component hoveredTooltip;
 
     public AnimationTimelinePanel(@Nullable PanelMenuOpener menuOpener) {
@@ -253,6 +265,7 @@ public final class AnimationTimelinePanel implements Panel {
                 if (!collapsedBones.remove(row.bone())) {
                     collapsedBones.add(row.bone());
                 }
+                collapsedRevision++;
                 return true;
             }
             selectBoneFromTimeline(row.bone());
@@ -418,13 +431,37 @@ public final class AnimationTimelinePanel implements Panel {
     }
 
     private void rebuildTracks(AnimationEditorState state) {
-        rows.clear();
+        var scene = ModelerScene.get();
         var animations = timelineAnimationKeys(state);
-        var root = ModelerScene.get().root;
+        var root = scene.root;
+        var sceneRevision = scene.revision();
+        var contentRevision = state.contentRevision();
+        var animationSelectionRevision = state.animationSelectionRevision();
         if (!state.hasDraft() || animations.isEmpty() || root == null) {
+            if (!rows.isEmpty()) {
+                rows.clear();
+            }
+            cachedRowsRoot = root;
+            cachedRowsSceneRevision = sceneRevision;
+            cachedRowsContentRevision = contentRevision;
+            cachedRowsAnimationSelectionRevision = animationSelectionRevision;
+            cachedRowsCollapsedRevision = collapsedRevision;
             return;
         }
+        if (root == cachedRowsRoot
+            && sceneRevision == cachedRowsSceneRevision
+            && contentRevision == cachedRowsContentRevision
+            && animationSelectionRevision == cachedRowsAnimationSelectionRevision
+            && collapsedRevision == cachedRowsCollapsedRevision) {
+            return;
+        }
+        rows.clear();
         collectRows(state, animations, root, rows);
+        cachedRowsRoot = root;
+        cachedRowsSceneRevision = sceneRevision;
+        cachedRowsContentRevision = contentRevision;
+        cachedRowsAnimationSelectionRevision = animationSelectionRevision;
+        cachedRowsCollapsedRevision = collapsedRevision;
     }
 
     private void collectRows(AnimationEditorState state, List<AnimationKey> animations, ModelerBone bone, List<TimelineRow> out) {
@@ -482,6 +519,8 @@ public final class AnimationTimelinePanel implements Panel {
         var scene = ModelerScene.get();
         if (scene.root != lastSceneRoot) {
             collapsedBones.clear();
+            collapsedRevision++;
+            cachedRowsRoot = null;
             lastSceneRoot = scene.root;
             scroll.reset();
         }

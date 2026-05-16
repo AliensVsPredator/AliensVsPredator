@@ -53,11 +53,14 @@ public final class ModelerScene {
     /** Replace the singleton — used by the load-model path to drop the previous scene wholesale. */
     public static void replace(ModelerScene next) {
         synchronized (ModelerScene.class) {
+            next.bumpRevision();
             instance = next;
         }
     }
 
     public ModelerBone root = new ModelerBone("root");
+
+    private long revision;
 
     public SourceKind sourceKind = SourceKind.ENTITY;
 
@@ -131,6 +134,14 @@ public final class ModelerScene {
      * and which fields the Inspector/Viewport currently target.
      */
     public @Nullable ModelerItemSession itemSession;
+
+    public long revision() {
+        return revision;
+    }
+
+    public void bumpRevision() {
+        revision++;
+    }
 
     public boolean isJavaBlockModel() {
         return sourceKind == SourceKind.JAVA_BLOCK;
@@ -341,6 +352,7 @@ public final class ModelerScene {
         this.sourceKind = SourceKind.ITEM_CONFIG;
         this.sourceId = itemId;
         this.sourcePath = null;
+        bumpRevision();
     }
 
     /**
@@ -365,6 +377,7 @@ public final class ModelerScene {
         this.hoveredFace = null;
         this.hoveredTexturePixel = null;
         ModelerActionHistory.clear();
+        bumpRevision();
     }
 
     /**

@@ -158,6 +158,7 @@ public final class ModelerSceneLoader {
         // reachable any more, so applying their undo() would mutate detached objects. Wipe history on load so the
         // first action in the new scene starts a fresh stack.
         ModelerActionHistory.clear();
+        scene.bumpRevision();
         return true;
     }
 
