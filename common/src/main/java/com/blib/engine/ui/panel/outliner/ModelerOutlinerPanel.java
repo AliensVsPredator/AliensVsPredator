@@ -87,6 +87,16 @@ public final class ModelerOutlinerPanel implements Panel {
 
     private final ScrollViewport scroll = new ScrollViewport();
 
+    private @Nullable ModelerBone cachedRowsRoot;
+
+    private long cachedRowsSceneRevision = Long.MIN_VALUE;
+
+    private long cachedRowsCollapsedRevision = Long.MIN_VALUE;
+
+    private long collapsedRevision;
+
+    private int cachedRowsContentWidth;
+
     private final @Nullable PanelMenuOpener menuOpener;
 
     private final TextInput renameInput = new TextInput("Name", this::commitRename, this::cancelRename);
@@ -152,6 +162,8 @@ public final class ModelerOutlinerPanel implements Panel {
             scroll.reset();
             cancelRename();
             lastSeenRoot = scene.root;
+            collapsedRevision++;
+            cachedRowsRoot = null;
         }
 
         // Selection change → walk the ancestor chain of the new selection and remove each ancestor from `collapsed`
@@ -162,8 +174,8 @@ public final class ModelerOutlinerPanel implements Panel {
             expandAncestorsOf(scene.selection);
         }
 
-        rows.clear();
-        buildRows(scene.root, 0);
+        var font = EngineFont.get();
+        ensureRows(scene, font);
         if (renameTarget != null && !hasRowFor(renameTarget)) {
             cancelRename();
         }
@@ -177,8 +189,7 @@ public final class ModelerOutlinerPanel implements Panel {
         var rowsHeight = Math.max(0, (y + height) - rowsTop);
         var innerLeft = x + PADDING_X;
         var innerWidth = Math.max(0, width - 2 * PADDING_X);
-        var font = EngineFont.get();
-        var contentWidth = measureRowsContentWidth(font);
+        var contentWidth = cachedRowsContentWidth;
         var contentHeight = rows.size() * ROW_HEIGHT + BOTTOM_SCROLL_PADDING;
         var frame = scroll.begin(graphics, UiRect.of(innerLeft, rowsTop, innerWidth, rowsHeight), contentWidth, contentHeight);
         var visibleRows = frame.visibleContentRect();
@@ -318,6 +329,7 @@ public final class ModelerOutlinerPanel implements Panel {
                 if (!collapsed.remove(row.owner)) {
                     collapsed.add(row.owner);
                 }
+                collapsedRevision++;
                 return true;
             }
         }
@@ -643,6 +655,21 @@ public final class ModelerOutlinerPanel implements Panel {
         }
     }
 
+    private void ensureRows(ModelerScene scene, Font font) {
+        var sceneRevision = scene.revision();
+        if (scene.root == cachedRowsRoot
+            && sceneRevision == cachedRowsSceneRevision
+            && collapsedRevision == cachedRowsCollapsedRevision) {
+            return;
+        }
+        rows.clear();
+        buildRows(scene.root, 0);
+        cachedRowsContentWidth = measureRowsContentWidth(font);
+        cachedRowsRoot = scene.root;
+        cachedRowsSceneRevision = sceneRevision;
+        cachedRowsCollapsedRevision = collapsedRevision;
+    }
+
     private int measureRowsContentWidth(Font font) {
         var max = 0;
         for (var row : rows) {
@@ -692,9 +719,13 @@ public final class ModelerOutlinerPanel implements Panel {
     }
 
     private void expandAncestorChainFrom(@Nullable ModelerBone start) {
+        var changed = false;
         while (start != null) {
-            collapsed.remove(start);
+            changed |= collapsed.remove(start);
             start = start.parent;
+        }
+        if (changed) {
+            collapsedRevision++;
         }
     }
 
