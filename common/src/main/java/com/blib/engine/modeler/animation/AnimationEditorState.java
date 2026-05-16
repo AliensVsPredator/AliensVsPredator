@@ -755,6 +755,10 @@ public final class AnimationEditorState {
     }
 
     public @Nullable PreviewBoneTransform previewTransformFor(ModelerBone bone) {
+        return previewTransformFor(bone, playheadSeconds);
+    }
+
+    public @Nullable PreviewBoneTransform previewTransformFor(ModelerBone bone, double timestamp) {
         if (documents.isEmpty()) {
             return null;
         }
@@ -766,16 +770,16 @@ public final class AnimationEditorState {
         Vec3 rotation = null;
         Vec3 scale = null;
         for (var animationKey : playbackAnimationKeys()) {
-            var sampledPosition = sampleChannel(animationKey.documentId(), animationKey.animationName(), bone.name, TransformChannel.POSITION, playheadSeconds);
+            var sampledPosition = sampleChannel(animationKey.documentId(), animationKey.animationName(), bone.name, TransformChannel.POSITION, timestamp);
             if (sampledPosition != null) {
                 position = toModelerSpace(TransformChannel.POSITION, sampledPosition);
             }
-            var sampledRotation = sampleChannel(animationKey.documentId(), animationKey.animationName(), bone.name, TransformChannel.ROTATION, playheadSeconds);
+            var sampledRotation = sampleChannel(animationKey.documentId(), animationKey.animationName(), bone.name, TransformChannel.ROTATION, timestamp);
             if (sampledRotation != null) {
                 var modelerRotation = toModelerSpace(TransformChannel.ROTATION, sampledRotation);
                 rotation = rotation == null ? modelerRotation : rotation.add(modelerRotation);
             }
-            var sampledScale = sampleChannel(animationKey.documentId(), animationKey.animationName(), bone.name, TransformChannel.SCALE, playheadSeconds);
+            var sampledScale = sampleChannel(animationKey.documentId(), animationKey.animationName(), bone.name, TransformChannel.SCALE, timestamp);
             if (sampledScale != null) {
                 scale = sampledScale;
             }
