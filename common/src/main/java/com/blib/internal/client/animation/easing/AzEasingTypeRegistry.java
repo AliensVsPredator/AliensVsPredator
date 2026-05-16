@@ -53,4 +53,8 @@ public class AzEasingTypeRegistry {
     public static Collection<AzEasingType> getValues() {
         return Collections.unmodifiableCollection(EASING_TYPES.values());
     }
+
+    public static Collection<String> getNames() {
+        return Collections.unmodifiableSet(EASING_TYPES.keySet());
+    }
 }

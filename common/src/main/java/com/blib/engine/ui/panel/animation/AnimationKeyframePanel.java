@@ -7,6 +7,7 @@ import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.blib.engine.modeler.animation.AnimationEditorState;
@@ -56,8 +57,6 @@ public final class AnimationKeyframePanel implements Panel {
 
     private final TextInput zInput = new TextInput("Z", value -> commitVectorAxis(2, value));
 
-    private final TextInput easingInput = new TextInput("Easing", this::commitEasing);
-
     private final TextInput easingArgsInput = new TextInput("Args", this::commitEasingArgs);
 
     private final SearchableSelect<TransformChannel> channelSelect = new SearchableSelect<>(
@@ -65,6 +64,15 @@ public final class AnimationKeyframePanel implements Panel {
         TransformChannel::jsonName,
         TransformChannel.ROTATION,
         this::commitChannel
+    );
+
+    private final SearchableSelect<String> easingSelect = new SearchableSelect<>(
+        AnimationKeyframePanel::easingItems,
+        AnimationKeyframePanel::easingLabel,
+        null,
+        AnimationKeyframePanel::parseEasingText,
+        "",
+        this::commitEasing
     );
 
     private int panelX, panelY, panelWidth, panelHeight;
@@ -131,7 +139,7 @@ public final class AnimationKeyframePanel implements Panel {
         rowY = renderScalarSection(graphics, font, x, rowY, width, "Bone / Group", boneInput, mouseX, mouseY);
         rowY = renderChannelSection(graphics, font, x, rowY, width, mouseX, mouseY);
         rowY = renderVecSection(graphics, font, x, rowY, width, "Vector", mouseX, mouseY);
-        rowY = renderScalarSection(graphics, font, x, rowY, width, "Easing", easingInput, mouseX, mouseY);
+        rowY = renderEasingSection(graphics, font, x, rowY, width, mouseX, mouseY);
         renderScalarSection(graphics, font, x, rowY, width, "Easing Args", easingArgsInput, mouseX, mouseY);
     }
 
@@ -172,7 +180,7 @@ public final class AnimationKeyframePanel implements Panel {
         if (zInput.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
-        if (easingInput.mouseClicked(mouseX, mouseY, button)) {
+        if (easingSelect.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
         return easingArgsInput.mouseClicked(mouseX, mouseY, button);
@@ -190,7 +198,7 @@ public final class AnimationKeyframePanel implements Panel {
         syncInput(xInput, vector != null && vector.size() > 0 ? AnimationEditorState.elementToText(vector.get(0)) : "0");
         syncInput(yInput, vector != null && vector.size() > 1 ? AnimationEditorState.elementToText(vector.get(1)) : "0");
         syncInput(zInput, vector != null && vector.size() > 2 ? AnimationEditorState.elementToText(vector.get(2)) : "0");
-        syncInput(easingInput, frame != null && frame.keyframe().has("easing") ? AnimationEditorState.elementToText(frame.keyframe().get("easing")) : "");
+        easingSelect.setCurrentValue(frame != null && frame.keyframe().has("easing") ? AnimationEditorState.elementToText(frame.keyframe().get("easing")) : "");
         syncInput(easingArgsInput, frame != null ? AnimationEditorState.easingArgsToText(frame.keyframe().get("easingArgs")) : "");
     }
 
@@ -278,6 +286,13 @@ public final class AnimationKeyframePanel implements Panel {
         return rowY + SearchableSelect.HEIGHT + ROW_GAP;
     }
 
+    private int renderEasingSection(GuiGraphics graphics, Font font, int x, int y, int width, int mouseX, int mouseY) {
+        var rowY = drawSectionHeader(graphics, font, x, y, width, "Easing");
+        rowY += PADDING / 2;
+        easingSelect.render(graphics, x + PADDING, rowY, Math.max(0, width - 2 * PADDING), mouseX, mouseY);
+        return rowY + SearchableSelect.HEIGHT + ROW_GAP;
+    }
+
     private int renderVecSection(GuiGraphics graphics, Font font, int x, int y, int width, String label, int mouseX, int mouseY) {
         var rowY = drawSectionHeader(graphics, font, x, y, width, label);
         rowY += PADDING / 2;
@@ -338,5 +353,22 @@ public final class AnimationKeyframePanel implements Panel {
             new SearchableSelect.Item<>(TransformChannel.ROTATION, "rotation"),
             new SearchableSelect.Item<>(TransformChannel.SCALE, "scale")
         );
+    }
+
+    private static List<SearchableSelect.Item<String>> easingItems() {
+        var items = new ArrayList<SearchableSelect.Item<String>>();
+        items.add(new SearchableSelect.Item<>("", "(unset)"));
+        for (var name : AnimationEditorState.easingNames()) {
+            items.add(new SearchableSelect.Item<>(name, name));
+        }
+        return items;
+    }
+
+    private static String easingLabel(@Nullable String easing) {
+        return easing == null || easing.isBlank() ? "(unset)" : easing;
+    }
+
+    private static String parseEasingText(String text) {
+        return AnimationEditorState.normalizeEasingName(text);
     }
 }

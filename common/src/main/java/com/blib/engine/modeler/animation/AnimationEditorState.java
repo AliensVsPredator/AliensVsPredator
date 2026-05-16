@@ -32,7 +32,9 @@ import com.blib.engine.modeler.ModelerBone;
 import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.Selection;
 import com.blib.engine.session.ProjectSession;
+import com.blib.internal.client.animation.easing.AzEasingTypeRegistry;
 import com.blib.internal.client.animation.easing.AzEasingTypeLoader;
+import com.blib.internal.client.animation.easing.AzEasingTypes;
 import com.blib.internal.client.animation.primitive.AzBakedAnimations;
 import com.blib.internal.common.io.util.JsonUtil;
 import com.blib.internal.common.storage.EngineProjectIO;
@@ -1158,10 +1160,11 @@ public final class AnimationEditorState {
 
     public void setSelectedEasing(@Nullable String easing) {
         var frame = createOrUpdateSelectedKeyframe();
-        if (easing == null || easing.isBlank()) {
+        var normalized = normalizeEasingName(easing);
+        if (normalized.isEmpty()) {
             frame.keyframe().remove("easing");
         } else {
-            frame.keyframe().addProperty("easing", easing.trim());
+            frame.keyframe().addProperty("easing", normalized);
         }
         markDirty("Edited keyframe easing");
     }
@@ -2042,6 +2045,22 @@ public final class AnimationEditorState {
             }
         }
         return out;
+    }
+
+    public static List<String> easingNames() {
+        AzEasingTypes.LINEAR.name();
+        var out = new ArrayList<String>();
+        for (var name : AzEasingTypeRegistry.getNames()) {
+            if (name != null && !name.isBlank() && !out.contains(name)) {
+                out.add(name);
+            }
+        }
+        out.sort(String.CASE_INSENSITIVE_ORDER);
+        return out;
+    }
+
+    public static String normalizeEasingName(@Nullable String text) {
+        return text == null ? "" : text.trim().toLowerCase(Locale.ROOT);
     }
 
     public static String easingArgsToText(@Nullable JsonElement element) {
