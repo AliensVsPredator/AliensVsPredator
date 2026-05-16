@@ -81,6 +81,43 @@ public final class AnimationCollisionState {
         }
     }
 
+    private static final class BoneCollisionGroup {
+
+        private final ModelerBone owner;
+
+        private final List<CollisionBox> boxes = new ArrayList<>();
+
+        private double minX = Double.POSITIVE_INFINITY;
+
+        private double minY = Double.POSITIVE_INFINITY;
+
+        private double minZ = Double.POSITIVE_INFINITY;
+
+        private double maxX = Double.NEGATIVE_INFINITY;
+
+        private double maxY = Double.NEGATIVE_INFINITY;
+
+        private double maxZ = Double.NEGATIVE_INFINITY;
+
+        private BoneCollisionGroup(ModelerBone owner) {
+            this.owner = owner;
+        }
+
+        private void add(CollisionBox box) {
+            boxes.add(box);
+            minX = Math.min(minX, box.minX());
+            minY = Math.min(minY, box.minY());
+            minZ = Math.min(minZ, box.minZ());
+            maxX = Math.max(maxX, box.maxX());
+            maxY = Math.max(maxY, box.maxY());
+            maxZ = Math.max(maxZ, box.maxZ());
+        }
+
+        private void sortBoxes() {
+            boxes.sort(Comparator.comparingDouble(CollisionBox::minX));
+        }
+    }
+
     private record BonePair(ModelerBone a, ModelerBone b) {
 
         static BonePair of(ModelerBone a, ModelerBone b) {
@@ -259,17 +296,18 @@ public final class AnimationCollisionState {
 
         var spansByBone = new HashMap<ModelerBone, List<CollisionSpan>>();
         var activeStarts = new HashMap<ModelerBone, Double>();
+        var snapshotCache = new HashMap<Double, CollisionSnapshot>();
         Set<ModelerBone> previous = Set.of();
         var previousTime = times.getFirst();
         var first = true;
 
         for (var time : times) {
-            var current = collisionSnapshot(root, state, time, ignoredBonePairs).bones();
+            var current = collisionSnapshot(snapshotCache, root, state, time, ignoredBonePairs).bones();
             for (var bone : current) {
                 if (!activeStarts.containsKey(bone)) {
                     var start = first || previous.contains(bone)
                         ? time
-                        : refineBoundary(root, state, ignoredBonePairs, bone, previousTime, time, true);
+                        : refineBoundary(snapshotCache, root, state, ignoredBonePairs, bone, previousTime, time, true);
                     activeStarts.put(bone, start);
                 }
             }
@@ -279,7 +317,7 @@ public final class AnimationCollisionState {
                 if (!current.contains(entry.getKey())) {
                     var end = first || !previous.contains(entry.getKey())
                         ? time
-                        : refineBoundary(root, state, ignoredBonePairs, entry.getKey(), previousTime, time, false);
+                        : refineBoundary(snapshotCache, root, state, ignoredBonePairs, entry.getKey(), previousTime, time, false);
                     addSpan(spansByBone, entry.getKey(), entry.getValue(), end);
                     closed.add(entry.getKey());
                 }
@@ -310,6 +348,7 @@ public final class AnimationCollisionState {
     }
 
     private double refineBoundary(
+        Map<Double, CollisionSnapshot> snapshotCache,
         ModelerBone root,
         AnimationEditorState state,
         Set<BonePair> ignoredBonePairs,
@@ -322,7 +361,7 @@ public final class AnimationCollisionState {
         var high = Math.max(from, to);
         for (var i = 0; i < BOUNDARY_REFINEMENT_STEPS; i++) {
             var mid = (low + high) * 0.5;
-            var colliding = collisionSnapshot(root, state, mid, ignoredBonePairs).bones().contains(bone);
+            var colliding = collisionSnapshot(snapshotCache, root, state, mid, ignoredBonePairs).bones().contains(bone);
             if (colliding == collidingAtUpper) {
                 high = mid;
             } else {
@@ -384,10 +423,15 @@ public final class AnimationCollisionState {
             if (boxes.size() < 2) {
                 continue;
             }
-            forEachCandidatePair(boxes, (a, b) -> {
-                if (!isBenignStructuralPair(a.owner(), b.owner()) && collisionDepth(a, b) > 0.0) {
-                    ignored.add(BonePair.of(a.owner(), b.owner()));
+            forEachCandidateBonePair(boxes, (a, b) -> {
+                if (isBenignStructuralPair(a.owner, b.owner)) {
+                    return;
                 }
+                forEachCandidateCubePair(a, b, (boxA, boxB) -> {
+                    if (collisionDepth(boxA, boxB) > 0.0) {
+                        ignored.add(BonePair.of(boxA.owner(), boxB.owner()));
+                    }
+                });
             });
         }
         return Set.copyOf(ignored);
@@ -410,6 +454,16 @@ public final class AnimationCollisionState {
     }
 
     private CollisionSnapshot collisionSnapshot(
+        Map<Double, CollisionSnapshot> snapshotCache,
+        ModelerBone root,
+        AnimationEditorState state,
+        double seconds,
+        Set<BonePair> ignoredBonePairs
+    ) {
+        return snapshotCache.computeIfAbsent(seconds, key -> collisionSnapshot(root, state, key, ignoredBonePairs));
+    }
+
+    private CollisionSnapshot collisionSnapshot(
         ModelerBone root,
         AnimationEditorState state,
         double seconds,
@@ -424,19 +478,21 @@ public final class AnimationCollisionState {
         var cubes = new HashSet<ModelerCube>();
         var bones = new HashSet<ModelerBone>();
         var partnersByBone = new HashMap<ModelerBone, List<CollisionPartner>>();
-        forEachCandidatePair(boxes, (a, b) -> {
-            if (isBenignStructuralPair(a.owner(), b.owner()) || ignoredBonePairs.contains(BonePair.of(a.owner(), b.owner()))) {
+        forEachCandidateBonePair(boxes, (a, b) -> {
+            if (isBenignStructuralPair(a.owner, b.owner) || ignoredBonePairs.contains(BonePair.of(a.owner, b.owner))) {
                 return;
             }
-            var depth = collisionDepth(a, b);
-            if (depth > RUNTIME_PENETRATION_THRESHOLD) {
-                cubes.add(a.cube());
-                cubes.add(b.cube());
-                bones.add(a.owner());
-                bones.add(b.owner());
-                addCollisionPartner(partnersByBone, a.owner(), a.cube(), b.owner(), b.cube(), depth);
-                addCollisionPartner(partnersByBone, b.owner(), b.cube(), a.owner(), a.cube(), depth);
-            }
+            forEachCandidateCubePair(a, b, (boxA, boxB) -> {
+                var depth = collisionDepth(boxA, boxB);
+                if (depth > RUNTIME_PENETRATION_THRESHOLD) {
+                    cubes.add(boxA.cube());
+                    cubes.add(boxB.cube());
+                    bones.add(boxA.owner());
+                    bones.add(boxB.owner());
+                    addCollisionPartner(partnersByBone, boxA.owner(), boxA.cube(), boxB.owner(), boxB.cube(), depth);
+                    addCollisionPartner(partnersByBone, boxB.owner(), boxB.cube(), boxA.owner(), boxA.cube(), depth);
+                }
+            });
         });
         if (cubes.isEmpty()) {
             return CollisionSnapshot.EMPTY;
@@ -483,21 +539,58 @@ public final class AnimationCollisionState {
         return Collections.unmodifiableMap(frozen);
     }
 
-    private static void forEachCandidatePair(List<CollisionBox> boxes, CollisionPairConsumer consumer) {
-        boxes.sort(Comparator.comparingDouble(CollisionBox::minX));
-        for (var i = 0; i < boxes.size(); i++) {
-            var a = boxes.get(i);
-            for (var j = i + 1; j < boxes.size(); j++) {
-                var b = boxes.get(j);
-                if (b.minX() > a.maxX()) {
+    private static void forEachCandidateBonePair(List<CollisionBox> boxes, CollisionGroupConsumer consumer) {
+        var groups = collisionGroups(boxes);
+        groups.sort(Comparator.comparingDouble(group -> group.minX));
+        for (var i = 0; i < groups.size(); i++) {
+            var a = groups.get(i);
+            for (var j = i + 1; j < groups.size(); j++) {
+                var b = groups.get(j);
+                if (b.minX > a.maxX) {
                     break;
                 }
-                if (a.maxY() < b.minY() || b.maxY() < a.minY() || a.maxZ() < b.minZ() || b.maxZ() < a.minZ()) {
+                if (a.maxY < b.minY || b.maxY < a.minY || a.maxZ < b.minZ || b.maxZ < a.minZ) {
                     continue;
                 }
                 consumer.accept(a, b);
             }
         }
+    }
+
+    private static List<BoneCollisionGroup> collisionGroups(List<CollisionBox> boxes) {
+        var byBone = new HashMap<ModelerBone, BoneCollisionGroup>();
+        for (var box : boxes) {
+            byBone.computeIfAbsent(box.owner(), BoneCollisionGroup::new).add(box);
+        }
+        var groups = new ArrayList<>(byBone.values());
+        for (var group : groups) {
+            group.sortBoxes();
+        }
+        return groups;
+    }
+
+    private static void forEachCandidateCubePair(BoneCollisionGroup a, BoneCollisionGroup b, CollisionPairConsumer consumer) {
+        for (var boxA : a.boxes) {
+            for (var boxB : b.boxes) {
+                if (boxB.minX() > boxA.maxX()) {
+                    break;
+                }
+                if (boxB.maxX() < boxA.minX()
+                    || boxA.maxY() < boxB.minY()
+                    || boxB.maxY() < boxA.minY()
+                    || boxA.maxZ() < boxB.minZ()
+                    || boxB.maxZ() < boxA.minZ()) {
+                    continue;
+                }
+                consumer.accept(boxA, boxB);
+            }
+        }
+    }
+
+    @FunctionalInterface
+    private interface CollisionGroupConsumer {
+
+        void accept(BoneCollisionGroup a, BoneCollisionGroup b);
     }
 
     @FunctionalInterface
