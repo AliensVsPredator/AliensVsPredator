@@ -17,6 +17,7 @@ import java.util.TreeSet;
 
 import com.blib.engine.modeler.ModelerBone;
 import com.blib.engine.modeler.ModelerCube;
+import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.ModelerTransforms;
 import com.blib.engine.modeler.animation.AnimationEditorState.AnimationKey;
 import com.blib.engine.modeler.animation.AnimationEditorState.TransformChannel;
@@ -32,6 +33,13 @@ public final class AnimationCollisionState {
     public record CollisionSpan(ModelerBone bone, double startSeconds, double endSeconds) {}
 
     public record CollisionPartner(String bonePath, String cubeName, String partnerCubeName, double depth) {}
+
+    private record ReportCacheKey(
+        ModelerBone root,
+        long sceneRevision,
+        long animationContentRevision,
+        long animationSelectionRevision
+    ) {}
 
     private record CollisionReport(Map<ModelerBone, List<CollisionSpan>> spansByBone) {
 
@@ -190,7 +198,7 @@ public final class AnimationCollisionState {
 
     private boolean debugTooltipsEnabled;
 
-    private long reportFingerprint = Long.MIN_VALUE;
+    private @Nullable ReportCacheKey reportCacheKey;
 
     private double currentSnapshotSeconds = Double.NaN;
 
@@ -236,11 +244,16 @@ public final class AnimationCollisionState {
             return;
         }
 
-        var fingerprint = fingerprint(root, state);
-        if (fingerprint != reportFingerprint) {
+        var cacheKey = new ReportCacheKey(
+            root,
+            ModelerScene.get().revision(),
+            state.contentRevision(),
+            state.animationSelectionRevision()
+        );
+        if (!cacheKey.equals(reportCacheKey)) {
             baselineIgnoredBonePairs = buildBaselineIgnoredBonePairs(root, state);
             report = buildReport(root, state, baselineIgnoredBonePairs);
-            reportFingerprint = fingerprint;
+            reportCacheKey = cacheKey;
             currentSnapshot = CollisionSnapshot.EMPTY;
             currentSnapshotSeconds = Double.NaN;
         }
@@ -290,7 +303,7 @@ public final class AnimationCollisionState {
     }
 
     private void clearCache() {
-        reportFingerprint = Long.MIN_VALUE;
+        reportCacheKey = null;
         currentSnapshotSeconds = Double.NaN;
         report = CollisionReport.EMPTY;
         currentSnapshot = CollisionSnapshot.EMPTY;
@@ -790,18 +803,6 @@ public final class AnimationCollisionState {
         return minOverlap;
     }
 
-    private long fingerprint(ModelerBone root, AnimationEditorState state) {
-        var animations = animationKeys(state);
-        var hash = 0xcbf29ce484222325L;
-        hash = mix(hash, System.identityHashCode(root));
-        hash = mix(hash, Double.doubleToLongBits(state.selectedAnimationLengthSeconds()));
-        for (var key : animations) {
-            hash = mix(hash, key.documentId());
-            hash = mix(hash, key.animationName().hashCode());
-        }
-        return fingerprintBone(hash, root, state, animations);
-    }
-
     private static List<AnimationKey> animationKeys(AnimationEditorState state) {
         var selected = state.selectedAnimationKeys();
         if (!selected.isEmpty()) {
@@ -813,48 +814,5 @@ public final class AnimationCollisionState {
             return List.of(new AnimationKey(documentId, animationName));
         }
         return List.of();
-    }
-
-    private long fingerprintBone(long hash, ModelerBone bone, AnimationEditorState state, List<AnimationKey> animations) {
-        hash = mix(hash, bone.name.hashCode());
-        hash = mixVec(hash, bone.position);
-        hash = mixVec(hash, bone.rotation);
-        hash = mixVec(hash, bone.scale);
-        hash = mixVec(hash, bone.pivot);
-        for (var cube : bone.cubes) {
-            hash = mix(hash, cube.name.hashCode());
-            hash = mixVec(hash, cube.origin);
-            hash = mixVec(hash, cube.size);
-            hash = mixVec(hash, cube.rotation);
-            hash = mixVec(hash, cube.pivot);
-            hash = mix(hash, Double.doubleToLongBits(cube.inflate));
-            hash = mix(hash, cube.blockElementRescale ? 1 : 0);
-        }
-        for (var animation : animations) {
-            hash = mix(hash, animation.documentId());
-            hash = mix(hash, animation.animationName().hashCode());
-            for (var channel : TransformChannel.values()) {
-                for (var frame : state.keyframes(animation.documentId(), animation.animationName(), bone.name, channel)) {
-                    hash = mix(hash, channel.ordinal());
-                    hash = mix(hash, Double.doubleToLongBits(frame.timestamp()));
-                    hash = mix(hash, frame.keyframe().toString().hashCode());
-                }
-            }
-        }
-        for (var child : bone.children) {
-            hash = fingerprintBone(hash, child, state, animations);
-        }
-        return hash;
-    }
-
-    private static long mixVec(long hash, net.minecraft.world.phys.Vec3 value) {
-        hash = mix(hash, Double.doubleToLongBits(value.x));
-        hash = mix(hash, Double.doubleToLongBits(value.y));
-        return mix(hash, Double.doubleToLongBits(value.z));
-    }
-
-    private static long mix(long hash, long value) {
-        hash ^= value;
-        return hash * 0x100000001b3L;
     }
 }
