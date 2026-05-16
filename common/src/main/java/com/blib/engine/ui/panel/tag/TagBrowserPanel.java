@@ -3,6 +3,7 @@ package com.blib.engine.ui.panel.tag;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
@@ -18,6 +19,7 @@ import java.util.Set;
 
 import com.blib.engine.domain.selection.picking.SelectionManager;
 import com.blib.engine.domain.selection.picking.TagSelectable;
+import com.blib.engine.recipe.RecipeAuthoringState;
 import com.blib.engine.session.ProjectSession;
 import com.blib.engine.tag.TagCatalogCache;
 import com.blib.engine.tag.TagStagingCache;
@@ -112,6 +114,8 @@ public final class TagBrowserPanel implements Panel {
     private static final int PROJECT_TOGGLE_WIDTH = 78;
 
     private static final List<String> PROJECT_TOGGLE_LABELS = List.of("All", "Project");
+
+    private static final ResourceLocation ITEM_REGISTRY = Registries.ITEM.location();
 
     /** Palette used to color section accents. Hash registry id → modulo into this for a stable per-registry color. */
     private static final int[] ACCENT_PALETTE = {
@@ -334,6 +338,7 @@ public final class TagBrowserPanel implements Panel {
         if (createPopup != null) {
             renderCreatePopup(graphics, x, y, width, height, mouseX, mouseY);
         }
+        renderDraggedStack(graphics, mouseX, mouseY);
     }
 
     private void renderSection(
@@ -508,7 +513,20 @@ public final class TagBrowserPanel implements Panel {
 
     @Override
     public boolean mouseClickedCapture(double mouseX, double mouseY, int button) {
-        return scroll.mouseClicked(mouseX, mouseY, button);
+        if (scroll.mouseClicked(mouseX, mouseY, button)) {
+            return true;
+        }
+        if (button != 0) {
+            return false;
+        }
+        for (var rh : rowHits) {
+            if (mouseX >= rh.x && mouseX < rh.x + rh.w && mouseY >= rh.y && mouseY < rh.y + rh.h && rh.registryKey.equals(ITEM_REGISTRY)) {
+                SelectionManager.selectSingle(new TagSelectable(rh.registryKey, rh.tagId));
+                RecipeAuthoringState.beginTagDrag(rh.tagId);
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -563,11 +581,19 @@ public final class TagBrowserPanel implements Panel {
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        if (RecipeAuthoringState.hasDrag()) {
+            return true;
+        }
         return scroll.mouseDragged(mouseX, mouseY, button);
     }
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (button == 0 && RecipeAuthoringState.hasDrag()) {
+            RecipeAuthoringState.dropDraggedAt(mouseX, mouseY);
+            RecipeAuthoringState.clearDrag();
+            return true;
+        }
         return scroll.mouseReleased(mouseX, mouseY, button);
     }
 
@@ -598,6 +624,21 @@ public final class TagBrowserPanel implements Panel {
         var widthRaw = Math.max(0, (int) ((double) (bottomRight.x - topLeft.x) * guiScale));
         var heightRaw = Math.max(0, (int) ((double) (bottomRight.y - topLeft.y) * guiScale));
         RenderSystem.enableScissor(leftRaw, bottomRaw, widthRaw, heightRaw);
+    }
+
+    private static void renderDraggedStack(GuiGraphics graphics, int mouseX, int mouseY) {
+        var drag = RecipeAuthoringState.draggedStack();
+        if (drag == null) {
+            return;
+        }
+        var font = EngineFont.get();
+        var stack = drag.toStack();
+        if (!stack.isEmpty()) {
+            graphics.renderItem(stack, mouseX - 8, mouseY - 8);
+            graphics.renderItemDecorations(font, stack, mouseX - 8, mouseY - 8);
+        } else if (drag.isTag()) {
+            graphics.drawString(font, Component.literal("#"), mouseX - 3, mouseY - 4, ROW_TEXT_HOVER_COLOR, false);
+        }
     }
 
     private record Rect(

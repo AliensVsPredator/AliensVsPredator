@@ -2,6 +2,7 @@ package com.blib.engine.ui.panel.recipe;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -12,10 +13,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import com.blib.engine.recipe.RecipeAuthoringState;
+import com.blib.engine.tag.TagCatalogCache;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.layout.ScrollViewport;
@@ -55,6 +59,8 @@ public final class ItemBrowserPanel implements Panel {
     private static final int ICON_CELL_SIZE = 24;
 
     private static final int ICON_TEXT_GAP = 5;
+
+    private static final ResourceLocation ITEM_REGISTRY = Registries.ITEM.location();
 
     private final TextInput searchInput = new TextInput("Search items...");
 
@@ -185,14 +191,19 @@ public final class ItemBrowserPanel implements Panel {
             graphics.fill(x, y, x + ICON_CELL_SIZE, y + ICON_CELL_SIZE, ROW_BG_HOVER_COLOR);
         }
 
-        var stack = new ItemStack(entry.item());
+        var stack = displayStack(entry);
         var iconX = x + (ICON_CELL_SIZE - ICON_SIZE) / 2;
         var iconY = y + (ICON_CELL_SIZE - ICON_SIZE) / 2;
-        graphics.renderItem(stack, iconX, iconY);
-        rowHits.add(new RowHit(x, y, ICON_CELL_SIZE, ICON_CELL_SIZE, entry.item()));
+        if (!stack.isEmpty()) {
+            graphics.renderItem(stack, iconX, iconY);
+        }
+        if (entry.tag()) {
+            graphics.drawString(EngineFont.get(), Component.literal("#"), x + 2, y + 1, META_TEXT_COLOR, false);
+        }
+        rowHits.add(new RowHit(x, y, ICON_CELL_SIZE, ICON_CELL_SIZE, entry));
 
-        if (hovered) {
-            hoveredTooltip = Component.literal(stack.getHoverName().getString() + "\nID: " + entry.id() + "\nMax stack: " + stack.getMaxStackSize());
+        if (hovered && !RecipeAuthoringState.hasDrag()) {
+            hoveredTooltip = entryTooltip(entry, stack);
         }
     }
 
@@ -202,30 +213,32 @@ public final class ItemBrowserPanel implements Panel {
             graphics.fill(x, y, x + width, y + ROW_HEIGHT, ROW_BG_HOVER_COLOR);
         }
 
-        var stack = new ItemStack(entry.item());
+        var stack = displayStack(entry);
         var iconX = x + 3;
         var iconY = y + (ROW_HEIGHT - ICON_SIZE) / 2;
-        graphics.renderItem(stack, iconX, iconY);
+        if (!stack.isEmpty()) {
+            graphics.renderItem(stack, iconX, iconY);
+        }
 
         var font = EngineFont.get();
         var textY = y + (ROW_HEIGHT - font.lineHeight + 2) / 2;
-        var meta = Integer.toString(stack.getMaxStackSize());
+        var meta = entry.tag() ? "#" : Integer.toString(stack.getMaxStackSize());
         var metaW = font.width(meta);
         var textX = iconX + ICON_SIZE + ICON_TEXT_GAP;
         UiText.drawClipped(
             graphics,
             font,
-            entry.id().toString(),
+            entryLabel(entry),
             textX,
             textY,
             Math.max(0, width - (textX - x) - metaW - 8),
             hovered ? ROW_TEXT_HOVER_COLOR : ROW_TEXT_COLOR
         );
         UiText.drawRight(graphics, font, meta, UiRect.of(x, y, width - 4, ROW_HEIGHT), META_TEXT_COLOR);
-        rowHits.add(new RowHit(x, y, width, ROW_HEIGHT, entry.item()));
+        rowHits.add(new RowHit(x, y, width, ROW_HEIGHT, entry));
 
-        if (hovered) {
-            hoveredTooltip = Component.literal(stack.getHoverName().getString() + "\nID: " + entry.id() + "\nMax stack: " + stack.getMaxStackSize());
+        if (hovered && !RecipeAuthoringState.hasDrag()) {
+            hoveredTooltip = entryTooltip(entry, stack);
         }
     }
 
@@ -247,10 +260,46 @@ public final class ItemBrowserPanel implements Panel {
                     continue;
                 }
             }
-            entries.add(new Entry(id, item));
+            entries.add(new Entry(id, item, false));
         }
-        entries.sort(Comparator.comparing(entry -> entry.id().toString(), String.CASE_INSENSITIVE_ORDER));
+        for (var tagId : itemTagIds()) {
+            var label = "#" + tagId;
+            if (!needle.isEmpty() && !label.toLowerCase(Locale.ROOT).contains(needle)) {
+                continue;
+            }
+            entries.add(new Entry(tagId, null, true));
+        }
+        entries.sort(Comparator.comparing(ItemBrowserPanel::entryLabel, String.CASE_INSENSITIVE_ORDER));
         return entries;
+    }
+
+    private static Set<ResourceLocation> itemTagIds() {
+        var tagIds = new HashSet<ResourceLocation>();
+        BuiltInRegistries.ITEM.getTagNames().forEach(tag -> tagIds.add(tag.location()));
+        for (var entry : TagCatalogCache.all()) {
+            if (entry.registryKey().equals(ITEM_REGISTRY)) {
+                tagIds.add(entry.tagId());
+            }
+        }
+        return tagIds;
+    }
+
+    private static String entryLabel(Entry entry) {
+        return entry.tag() ? "#" + entry.id() : entry.id().toString();
+    }
+
+    private static ItemStack displayStack(Entry entry) {
+        if (entry.tag()) {
+            return RecipeAuthoringState.DraftSlot.tag(entry.id()).toStack();
+        }
+        return entry.item() == null ? ItemStack.EMPTY : new ItemStack(entry.item());
+    }
+
+    private static Component entryTooltip(Entry entry, ItemStack stack) {
+        if (entry.tag()) {
+            return Component.literal("Tag: #" + entry.id());
+        }
+        return Component.literal(stack.getHoverName().getString() + "\nID: " + entry.id() + "\nMax stack: " + stack.getMaxStackSize());
     }
 
     private int contentHeight(int width) {
@@ -278,12 +327,13 @@ public final class ItemBrowserPanel implements Panel {
             return;
         }
         var stack = drag.toStack();
-        if (stack.isEmpty()) {
-            return;
-        }
         var font = EngineFont.get();
-        graphics.renderItem(stack, mouseX + 8, mouseY + 8);
-        graphics.renderItemDecorations(font, stack, mouseX + 8, mouseY + 8);
+        if (!stack.isEmpty()) {
+            graphics.renderItem(stack, mouseX - 8, mouseY - 8);
+            graphics.renderItemDecorations(font, stack, mouseX - 8, mouseY - 8);
+        } else if (drag.isTag()) {
+            graphics.drawString(font, Component.literal("#"), mouseX - 3, mouseY - 4, ROW_TEXT_HOVER_COLOR, false);
+        }
     }
 
     @Override
@@ -296,7 +346,11 @@ public final class ItemBrowserPanel implements Panel {
         }
         for (var row : rowHits) {
             if (row.contains(mouseX, mouseY)) {
-                RecipeAuthoringState.beginDrag(row.item());
+                if (row.entry().tag()) {
+                    RecipeAuthoringState.beginTagDrag(row.entry().id());
+                } else if (row.entry().item() != null) {
+                    RecipeAuthoringState.beginDrag(row.entry().item());
+                }
                 return true;
             }
         }
@@ -348,9 +402,9 @@ public final class ItemBrowserPanel implements Panel {
         return mouseX >= rectX && mouseX < rectX + rectWidth && mouseY >= rectY && mouseY < rectY + rectHeight;
     }
 
-    private record Entry(ResourceLocation id, Item item) {}
+    private record Entry(ResourceLocation id, @Nullable Item item, boolean tag) {}
 
-    private record RowHit(int x, int y, int w, int h, Item item) {
+    private record RowHit(int x, int y, int w, int h, Entry entry) {
 
         boolean contains(double mouseX, double mouseY) {
             return mouseX >= x && mouseX < x + w && mouseY >= y && mouseY < y + h;

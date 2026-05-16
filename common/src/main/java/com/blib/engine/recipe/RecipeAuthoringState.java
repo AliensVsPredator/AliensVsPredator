@@ -4,7 +4,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -20,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -131,16 +134,24 @@ public final class RecipeAuthoringState {
         }
     }
 
-    public record DraftSlot(@Nullable ResourceLocation itemId, int count) {
+    public record DraftSlot(@Nullable ResourceLocation itemId, @Nullable ResourceLocation tagId, int count) {
 
-        public static final DraftSlot EMPTY = new DraftSlot(null, 0);
+        public static final DraftSlot EMPTY = new DraftSlot(null, null, 0);
 
         public static DraftSlot of(Item item, int count) {
             var id = BuiltInRegistries.ITEM.getKey(item);
             if (id == null || item == Items.AIR) {
                 return EMPTY;
             }
-            return new DraftSlot(id, count).normalized();
+            return item(id, count);
+        }
+
+        public static DraftSlot item(ResourceLocation itemId, int count) {
+            return new DraftSlot(itemId, null, count).normalized();
+        }
+
+        public static DraftSlot tag(ResourceLocation tagId) {
+            return new DraftSlot(null, tagId, 1).normalized();
         }
 
         public static DraftSlot of(ItemStack stack) {
@@ -151,7 +162,14 @@ public final class RecipeAuthoringState {
         }
 
         public boolean isEmpty() {
+            if (tagId != null) {
+                return false;
+            }
             return itemId == null || item() == Items.AIR;
+        }
+
+        public boolean isTag() {
+            return tagId != null;
         }
 
         public Item item() {
@@ -162,24 +180,36 @@ public final class RecipeAuthoringState {
             if (isEmpty()) {
                 return 0;
             }
-            return new ItemStack(item()).getMaxStackSize();
+            var stack = toStack();
+            return stack.isEmpty() ? 64 : stack.getMaxStackSize();
         }
 
         public DraftSlot withCount(int nextCount) {
             if (isEmpty()) {
                 return EMPTY;
             }
-            return new DraftSlot(itemId, nextCount).normalized();
+            return new DraftSlot(itemId, tagId, nextCount).normalized();
         }
 
         public ItemStack toStack() {
             if (isEmpty()) {
                 return ItemStack.EMPTY;
             }
+            if (tagId != null) {
+                var members = tagItems(tagId);
+                if (members.isEmpty()) {
+                    return ItemStack.EMPTY;
+                }
+                var index = (int) ((System.currentTimeMillis() / 1000L) % members.size());
+                return new ItemStack(members.get(index), Math.max(1, count));
+            }
             return new ItemStack(item(), count);
         }
 
         private DraftSlot normalized() {
+            if (tagId != null) {
+                return new DraftSlot(null, tagId, Math.max(1, Math.min(64, count)));
+            }
             if (itemId == null) {
                 return EMPTY;
             }
@@ -188,14 +218,26 @@ public final class RecipeAuthoringState {
                 return EMPTY;
             }
             var max = Math.max(1, new ItemStack(item).getMaxStackSize());
-            return new DraftSlot(itemId, Math.max(1, Math.min(max, count)));
+            return new DraftSlot(itemId, null, Math.max(1, Math.min(max, count)));
         }
     }
 
-    public record DragStack(ResourceLocation itemId, int count) {
+    public record DragStack(@Nullable ResourceLocation itemId, @Nullable ResourceLocation tagId, int count) {
+
+        public static DragStack item(ResourceLocation itemId, int count) {
+            return new DragStack(itemId, null, count);
+        }
+
+        public static DragStack tag(ResourceLocation tagId) {
+            return new DragStack(null, tagId, 1);
+        }
+
+        public boolean isTag() {
+            return tagId != null;
+        }
 
         public DraftSlot toDraftSlot() {
-            return new DraftSlot(itemId, count).normalized();
+            return tagId != null ? DraftSlot.tag(tagId) : DraftSlot.item(itemId, count);
         }
 
         public ItemStack toStack() {
@@ -220,6 +262,10 @@ public final class RecipeAuthoringState {
     private static RecipeDraftType recipeType = RecipeDraftType.CRAFTING_SHAPED;
 
     private static String recipeIdText = "";
+
+    private static String lastSuggestedRecipeIdText = "";
+
+    private static boolean recipeIdManuallyEdited;
 
     private static String status = "Create a recipe or select one from the outliner.";
 
@@ -304,6 +350,7 @@ public final class RecipeAuthoringState {
 
     public static void setRecipeIdText(String text) {
         recipeIdText = text == null ? "" : text.trim();
+        recipeIdManuallyEdited = !recipeIdText.isEmpty() && !recipeIdText.equals(lastSuggestedRecipeIdText);
         dirty = true;
     }
 
@@ -329,9 +376,10 @@ public final class RecipeAuthoringState {
         output = DraftSlot.EMPTY;
         selectedRecipeId = null;
         selectedSlot = null;
-        recipeIdText = defaultNamespace() + ":new_recipe";
+        recipeIdManuallyEdited = false;
         experience = 0.0F;
         cookingTime = defaultCookingTime(recipeType);
+        refreshSuggestedRecipeId();
         status = "New " + recipeType.label().toLowerCase(Locale.ROOT) + " recipe draft.";
         dirty = false;
     }
@@ -342,6 +390,8 @@ public final class RecipeAuthoringState {
         output = DraftSlot.EMPTY;
         selectedRecipeId = holder.id();
         recipeIdText = holder.id().toString();
+        lastSuggestedRecipeIdText = recipeIdText;
+        recipeIdManuallyEdited = true;
         selectedSlot = null;
         experience = 0.0F;
         cookingTime = defaultCookingTime(recipeType);
@@ -410,12 +460,19 @@ public final class RecipeAuthoringState {
     }
 
     public static void setSlot(SlotRef ref, DraftSlot slot) {
+        var normalized = slot == null ? DraftSlot.EMPTY : slot.normalized();
+        if (ref.kind() == SlotKind.OUTPUT && normalized.isTag()) {
+            status = "Output slots require a concrete item.";
+            selectedSlot = ref;
+            return;
+        }
         if (ref.kind() == SlotKind.OUTPUT) {
-            output = slot == null ? DraftSlot.EMPTY : slot.normalized();
+            output = normalized;
         } else {
-            GRID[ref.index()] = slot == null ? DraftSlot.EMPTY : slot.normalized();
+            GRID[ref.index()] = normalized;
         }
         selectedSlot = ref;
+        refreshSuggestedRecipeId();
         dirty = true;
     }
 
@@ -465,7 +522,11 @@ public final class RecipeAuthoringState {
             draggedStack = null;
             return;
         }
-        draggedStack = new DragStack(id, 1);
+        draggedStack = DragStack.item(id, 1);
+    }
+
+    public static void beginTagDrag(ResourceLocation tagId) {
+        draggedStack = tagId == null ? null : DragStack.tag(tagId);
     }
 
     public static boolean hasDrag() {
@@ -487,6 +548,11 @@ public final class RecipeAuthoringState {
         }
         var target = slotAt(mouseX, mouseY);
         if (target == null) {
+            return false;
+        }
+        if (target.kind() == SlotKind.OUTPUT && drag.isTag()) {
+            status = "Output slots require a concrete item.";
+            selectedSlot = target;
             return false;
         }
         setSlot(target, drag.toDraftSlot());
@@ -551,7 +617,7 @@ public final class RecipeAuthoringState {
         var maxCol = bounds[3];
 
         var symbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        var keys = new LinkedHashMap<ResourceLocation, Character>();
+        var keys = new LinkedHashMap<IngredientKey, Character>();
         var pattern = new JsonArray();
         for (var row = minRow; row <= maxRow; row++) {
             var line = new StringBuilder();
@@ -561,14 +627,14 @@ public final class RecipeAuthoringState {
                     line.append(' ');
                     continue;
                 }
-                var symbol = keys.computeIfAbsent(slot.itemId(), ignored -> symbols.charAt(keys.size()));
+                var symbol = keys.computeIfAbsent(IngredientKey.of(slot), ignored -> symbols.charAt(keys.size()));
                 line.append(symbol);
             }
             pattern.add(line.toString());
         }
 
         var keyObj = new JsonObject();
-        for (Map.Entry<ResourceLocation, Character> entry : keys.entrySet()) {
+        for (Map.Entry<IngredientKey, Character> entry : keys.entrySet()) {
             keyObj.add(String.valueOf(entry.getValue()), ingredientJson(entry.getKey()));
         }
 
@@ -594,7 +660,7 @@ public final class RecipeAuthoringState {
         var ingredients = new JsonArray();
         for (var slot : GRID) {
             if (!slot.isEmpty()) {
-                ingredients.add(ingredientJson(slot.itemId()));
+                ingredients.add(ingredientJson(slot));
             }
         }
 
@@ -614,7 +680,7 @@ public final class RecipeAuthoringState {
         var json = new JsonObject();
         json.addProperty("type", recipeType.typeId());
         json.addProperty("category", "misc");
-        json.add("ingredient", ingredientJson(GRID[0].itemId()));
+        json.add("ingredient", ingredientJson(GRID[0]));
         json.add("result", resultJson(output));
         json.addProperty("experience", experience);
         json.addProperty("cookingtime", cookingTime);
@@ -628,7 +694,7 @@ public final class RecipeAuthoringState {
 
         var json = new JsonObject();
         json.addProperty("type", recipeType.typeId());
-        json.add("ingredient", ingredientJson(GRID[0].itemId()));
+        json.add("ingredient", ingredientJson(GRID[0]));
         json.add("result", resultJson(output));
         return json;
     }
@@ -640,9 +706,9 @@ public final class RecipeAuthoringState {
 
         var json = new JsonObject();
         json.addProperty("type", recipeType.typeId());
-        json.add("template", ingredientJson(GRID[0].itemId()));
-        json.add("base", ingredientJson(GRID[1].itemId()));
-        json.add("addition", ingredientJson(GRID[2].itemId()));
+        json.add("template", ingredientJson(GRID[0]));
+        json.add("base", ingredientJson(GRID[1]));
+        json.add("addition", ingredientJson(GRID[2]));
         json.add("result", resultJson(output));
         return json;
     }
@@ -654,9 +720,9 @@ public final class RecipeAuthoringState {
 
         var json = new JsonObject();
         json.addProperty("type", recipeType.typeId());
-        json.add("template", ingredientJson(GRID[0].itemId()));
-        json.add("base", ingredientJson(GRID[1].itemId()));
-        json.add("addition", ingredientJson(GRID[2].itemId()));
+        json.add("template", ingredientJson(GRID[0]));
+        json.add("base", ingredientJson(GRID[1]));
+        json.add("addition", ingredientJson(GRID[2]));
         return json;
     }
 
@@ -676,9 +742,13 @@ public final class RecipeAuthoringState {
         return true;
     }
 
-    private static JsonObject ingredientJson(ResourceLocation itemId) {
+    private static JsonObject ingredientJson(DraftSlot slot) {
+        return ingredientJson(IngredientKey.of(slot));
+    }
+
+    private static JsonObject ingredientJson(IngredientKey key) {
         var ingredient = new JsonObject();
-        ingredient.addProperty("item", itemId.toString());
+        ingredient.addProperty(key.tag() ? "tag" : "item", key.id().toString());
         return ingredient;
     }
 
@@ -689,6 +759,13 @@ public final class RecipeAuthoringState {
             result.addProperty("count", slot.count());
         }
         return result;
+    }
+
+    private record IngredientKey(boolean tag, ResourceLocation id) {
+
+        static IngredientKey of(DraftSlot slot) {
+            return new IngredientKey(slot.isTag(), slot.isTag() ? slot.tagId() : slot.itemId());
+        }
     }
 
     private static int[] ingredientBounds() {
@@ -756,6 +833,76 @@ public final class RecipeAuthoringState {
             type = type.getSuperclass();
         }
         return Ingredient.EMPTY;
+    }
+
+    private static void refreshSuggestedRecipeId() {
+        var suggested = defaultNamespace() + ":" + suggestedRecipePath();
+        lastSuggestedRecipeIdText = suggested;
+        if (!recipeIdManuallyEdited) {
+            recipeIdText = suggested;
+        }
+    }
+
+    private static String suggestedRecipePath() {
+        var outputPath = output.isEmpty() ? "" : recipeNamePart(output.itemId());
+        var primaryInput = primaryInputNamePart();
+        if (recipeType == RecipeDraftType.SMITHING_TRIM) {
+            return primaryInput.isEmpty() ? "smithing_trim" : primaryInput + "_smithing_trim";
+        }
+        if (outputPath.isEmpty()) {
+            return "new_recipe";
+        }
+        return switch (recipeType) {
+            case SMELTING -> outputPath + "_from_smelting" + suffix(primaryInput);
+            case BLASTING -> outputPath + "_from_blasting" + suffix(primaryInput);
+            case SMOKING -> outputPath + "_from_smoking";
+            case CAMPFIRE_COOKING -> outputPath + "_from_campfire_cooking";
+            case STONECUTTING -> outputPath + (primaryInput.isEmpty() ? "" : "_from_" + primaryInput) + "_stonecutting";
+            case SMITHING_TRANSFORM -> outputPath + "_smithing";
+            default -> outputPath;
+        };
+    }
+
+    private static String suffix(String input) {
+        return input.isEmpty() ? "" : "_" + input;
+    }
+
+    private static String primaryInputNamePart() {
+        for (var slot : GRID) {
+            if (!slot.isEmpty()) {
+                return recipeNamePart(slot.isTag() ? slot.tagId() : slot.itemId());
+            }
+        }
+        return "";
+    }
+
+    private static String recipeNamePart(@Nullable ResourceLocation id) {
+        if (id == null) {
+            return "";
+        }
+        var path = id.getPath().replace('/', '_');
+        if (!"minecraft".equals(id.getNamespace())) {
+            path = id.getNamespace() + "_" + path;
+        }
+        return path.replaceAll("[^a-z0-9_./-]", "_");
+    }
+
+    private static List<Item> tagItems(ResourceLocation tagId) {
+        if (tagId == null) {
+            return List.of();
+        }
+        var holderSet = BuiltInRegistries.ITEM.getTag(TagKey.create(Registries.ITEM, tagId)).orElse(null);
+        if (holderSet == null) {
+            return List.of();
+        }
+        var items = new ArrayList<Item>();
+        for (var holder : holderSet) {
+            var item = holder.value();
+            if (item != Items.AIR) {
+                items.add(item);
+            }
+        }
+        return items;
     }
 
     private static void clearGrid() {
