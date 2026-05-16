@@ -46,7 +46,7 @@ import com.blib.mod.common.network.packet.C2STranslateEntityPayload;
  * Inspector section for {@link EntitySelectable}. Tool toolbar picks the gizmo mode, position XYZ inputs commit
  * teleport packets on Enter, Scale drives {@code Attributes.SCALE}. A read-only Info section follows with type / UUID /
  * health, then a Factions section listing every faction the entity belongs to (populated from
- * {@link ClientEntityFactionsCache}; mutations happen elsewhere in the right-click "Manage Factions" popup).
+ * {@link ClientEntityFactionsCache}; mutations happen from the entity right-click "Manage Factions" checklist).
  */
 @ApiStatus.Internal
 public final class EntityInspectorSection implements InspectorSection<EntitySelectable> {

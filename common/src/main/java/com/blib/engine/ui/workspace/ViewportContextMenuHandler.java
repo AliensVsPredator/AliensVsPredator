@@ -1,12 +1,21 @@
 package com.blib.engine.ui.workspace;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import com.blib.api.common.dismemberment.v1.Dismemberable;
@@ -17,10 +26,22 @@ import com.blib.engine.domain.selection.picking.PlacedJigsawPieceSelectable;
 import com.blib.engine.domain.selection.picking.SelectionManager;
 import com.blib.engine.domain.selection.volume.BlockSelection;
 import com.blib.engine.domain.selection.volume.BlockSelectionOps;
+import com.blib.engine.session.ProjectSession;
+import com.blib.engine.tag.TagCatalogCache;
+import com.blib.engine.tag.TagStagingCache;
 import com.blib.engine.ui.panel.viewport.ViewportPanel;
+import com.blib.engine.ui.popup.ChecklistManagePopup;
 import com.blib.engine.ui.popup.EntityContextMenuHandler;
-import com.blib.engine.ui.popup.FactionManagePopup;
 import com.blib.engine.ui.widget.DropdownMenu;
+import com.blib.internal.client.faction.ClientEntityFactionsCache;
+import com.blib.internal.client.faction.ClientFactionDirectoryCache;
+import com.blib.mod.BLib;
+import com.blib.mod.common.network.packet.C2SAddFactionMemberPayload;
+import com.blib.mod.common.network.packet.C2SAddTagEntryPayload;
+import com.blib.mod.common.network.packet.C2SRemoveBlockTagPayload;
+import com.blib.mod.common.network.packet.C2SRemoveFactionMemberPayload;
+import com.blib.mod.common.network.packet.C2SRequestTagCatalogPayload;
+import com.blib.mod.common.network.packet.S2CFactionDirectoryPayload;
 
 /**
  * Builds the right-click context menus shown over the engine's viewport. Entity, block, block-volume, and
@@ -33,6 +54,8 @@ import com.blib.engine.ui.widget.DropdownMenu;
  */
 @ApiStatus.Internal
 public final class ViewportContextMenuHandler implements ViewportPanel.RightClickHandler, EntityContextMenuHandler {
+
+    private static final int INLINE_CHECKLIST_LIMIT = 12;
 
     /** Workspace-side operations the menus invoke. Implemented by {@code EngineWorkspaceScreen}. */
     public interface Host {
@@ -74,13 +97,12 @@ public final class ViewportContextMenuHandler implements ViewportPanel.RightClic
         var menuX = (int) cursorX;
         var menuY = (int) cursorY;
         var items = new ArrayList<DropdownMenu.Item>();
-        items.add(
-            new DropdownMenu.Item("Manage Factions", () -> {
-                // Anchor the popup at the original right-click point — by the time the menu item fires, the menu
-                // itself has been dismissed, but the user expects the popup to land where their click was.
-                FactionManagePopup.openAt(menuX, menuY, entityUuid, entityDisplayName);
-            })
-        );
+        ClientEntityFactionsCache.ensureRequested(entityUuid);
+        items.add(new DropdownMenu.Item("Manage Factions", () -> {}, buildFactionChecklistMenu(entityUuid, entityDisplayName, menuX, menuY)));
+        var entityTypeId = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
+        if (entityTypeId != null) {
+            items.add(new DropdownMenu.Item("Manage Tags", () -> {}, buildEntityTagChecklistMenu(entityTypeId, menuX, menuY)));
+        }
         if (!(entity instanceof Player)) {
             if (entity instanceof Dismemberable) {
                 var remaining = LimbDismemberer.getRemainingDefinitions(entity);
@@ -103,6 +125,258 @@ public final class ViewportContextMenuHandler implements ViewportPanel.RightClic
         }
 
         host.openMenu(new DropdownMenu(menuX, menuY, items));
+    }
+
+    private List<DropdownMenu.Item> buildFactionChecklistMenu(UUID entityUuid, String entityDisplayName, int menuX, int menuY) {
+        var factions = ClientFactionDirectoryCache.entries();
+        if (factions.isEmpty()) {
+            return List.of(new DropdownMenu.Item("(no factions)", () -> {}, false));
+        }
+        var memberships = ClientEntityFactionsCache.get(entityUuid);
+        if (memberships == null) {
+            return List.of(
+                new DropdownMenu.Item("(loading memberships)", () -> {}, false),
+                new DropdownMenu.Item("Manage All Factions...", () -> openFactionChecklistPopup(menuX, menuY, entityUuid, entityDisplayName))
+            );
+        }
+
+        var current = new HashSet<>(memberships);
+        var shownFactionIds = new HashSet<ResourceLocation>();
+        var items = new ArrayList<DropdownMenu.Item>();
+        addFactionRows(items, shownFactionIds, entityUuid, current, true);
+        if (!items.isEmpty() && shownFactionIds.size() < Math.min(INLINE_CHECKLIST_LIMIT, factions.size())) {
+            items.add(DropdownMenu.Item.divider());
+        }
+        addFactionRows(items, shownFactionIds, entityUuid, current, false);
+        if (shownFactionIds.size() < factions.size()) {
+            items.add(DropdownMenu.Item.divider());
+            items.add(new DropdownMenu.Item("Manage All Factions...", () -> openFactionChecklistPopup(menuX, menuY, entityUuid, entityDisplayName)));
+        }
+        return items.isEmpty() ? List.of(new DropdownMenu.Item("(no factions)", () -> {}, false)) : items;
+    }
+
+    private void addFactionRows(
+        List<DropdownMenu.Item> items,
+        Set<ResourceLocation> shownFactionIds,
+        UUID entityUuid,
+        Set<ResourceLocation> current,
+        boolean checkedRows
+    ) {
+        for (var entry : ClientFactionDirectoryCache.entries()) {
+            if (shownFactionIds.size() >= INLINE_CHECKLIST_LIMIT) {
+                return;
+            }
+            if (current.contains(entry.id()) != checkedRows) {
+                continue;
+            }
+            shownFactionIds.add(entry.id());
+            items.add(
+                DropdownMenu.Item.checked(
+                    entry.name(),
+                    () -> isFactionMember(entityUuid, entry.id()),
+                    () -> toggleFactionMembership(entityUuid, entry.id())
+                )
+            );
+        }
+    }
+
+    private void openFactionChecklistPopup(int menuX, int menuY, UUID entityUuid, String entityDisplayName) {
+        ChecklistManagePopup.openAt(menuX, menuY, "Factions: " + entityDisplayName, () -> buildFactionPopupEntries(entityUuid));
+    }
+
+    private List<ChecklistManagePopup.Entry> buildFactionPopupEntries(UUID entityUuid) {
+        ClientEntityFactionsCache.ensureRequested(entityUuid);
+        var entries = new ArrayList<>(ClientFactionDirectoryCache.entries());
+        entries.sort(
+            Comparator.comparing((S2CFactionDirectoryPayload.FactionEntry e) -> !isFactionMember(entityUuid, e.id()))
+                .thenComparing(e -> e.name(), String.CASE_INSENSITIVE_ORDER)
+        );
+        var out = new ArrayList<ChecklistManagePopup.Entry>(entries.size());
+        for (var entry : entries) {
+            out.add(
+                new ChecklistManagePopup.Entry(
+                    entry.name(),
+                    entry.color(),
+                    () -> isFactionMember(entityUuid, entry.id()),
+                    () -> toggleFactionMembership(entityUuid, entry.id()),
+                    true
+                )
+            );
+        }
+        return out;
+    }
+
+    private boolean isFactionMember(UUID entityUuid, ResourceLocation factionId) {
+        var memberships = ClientEntityFactionsCache.get(entityUuid);
+        return memberships != null && memberships.contains(factionId);
+    }
+
+    private void toggleFactionMembership(UUID entityUuid, ResourceLocation factionId) {
+        var nextMember = !isFactionMember(entityUuid, factionId);
+        if (nextMember) {
+            BLib.MOD.networking().sendToServer(new C2SAddFactionMemberPayload(factionId, entityUuid));
+        } else {
+            BLib.MOD.networking().sendToServer(new C2SRemoveFactionMemberPayload(factionId, entityUuid));
+        }
+        ClientEntityFactionsCache.setMembership(entityUuid, factionId, nextMember);
+    }
+
+    private List<DropdownMenu.Item> buildEntityTagChecklistMenu(ResourceLocation entityTypeId, int menuX, int menuY) {
+        var projectName = ProjectSession.activeProjectName();
+        if (projectName == null) {
+            return List.of(
+                new DropdownMenu.Item(
+                    "(open a project to edit tags)",
+                    () -> {},
+                    false,
+                    Component.literal("Tag edits need an active project datapack.")
+                )
+            );
+        }
+        ensureTagCatalogRequested(projectName);
+        var catalog = entityTagCatalogEntries();
+        if (catalog.isEmpty()) {
+            return List.of(new DropdownMenu.Item("(loading tags)", () -> {}, false));
+        }
+
+        var current = effectiveEntityTagSet(entityTypeId);
+        var shownTagIds = new HashSet<ResourceLocation>();
+        var items = new ArrayList<DropdownMenu.Item>();
+        addEntityTagRows(items, shownTagIds, entityTypeId, current, true);
+        if (!items.isEmpty() && shownTagIds.size() < Math.min(INLINE_CHECKLIST_LIMIT, catalog.size())) {
+            items.add(DropdownMenu.Item.divider());
+        }
+        addEntityTagRows(items, shownTagIds, entityTypeId, current, false);
+        if (shownTagIds.size() < catalog.size()) {
+            items.add(DropdownMenu.Item.divider());
+            items.add(new DropdownMenu.Item("Manage All Tags...", () -> openEntityTagChecklistPopup(menuX, menuY, entityTypeId)));
+        }
+        return items.isEmpty() ? List.of(new DropdownMenu.Item("(no entity tags)", () -> {}, false)) : items;
+    }
+
+    private void addEntityTagRows(
+        List<DropdownMenu.Item> items,
+        Set<ResourceLocation> shownTagIds,
+        ResourceLocation entityTypeId,
+        Set<ResourceLocation> current,
+        boolean checkedRows
+    ) {
+        for (var tagId : entityTagCatalogEntries()) {
+            if (shownTagIds.size() >= INLINE_CHECKLIST_LIMIT) {
+                return;
+            }
+            if (current.contains(tagId) != checkedRows) {
+                continue;
+            }
+            shownTagIds.add(tagId);
+            var enabled = canToggleEntityTag(entityTypeId, tagId);
+            var disabledTooltip = enabled
+                ? null
+                : Component.literal("This tag comes from upstream data and cannot be removed from here.");
+            items.add(
+                DropdownMenu.Item.checked(
+                    "#" + tagId,
+                    () -> isEntityInTag(entityTypeId, tagId),
+                    () -> toggleEntityTagMembership(entityTypeId, tagId),
+                    enabled,
+                    disabledTooltip
+                )
+            );
+        }
+    }
+
+    private void openEntityTagChecklistPopup(int menuX, int menuY, ResourceLocation entityTypeId) {
+        ChecklistManagePopup.openAt(menuX, menuY, "Tags: " + entityTypeId, () -> buildEntityTagPopupEntries(entityTypeId));
+    }
+
+    private List<ChecklistManagePopup.Entry> buildEntityTagPopupEntries(ResourceLocation entityTypeId) {
+        var projectName = ProjectSession.activeProjectName();
+        if (projectName != null) {
+            ensureTagCatalogRequested(projectName);
+        }
+        var tagIds = new ArrayList<>(entityTagCatalogEntries());
+        tagIds.sort(
+            Comparator.comparing((ResourceLocation tagId) -> !isEntityInTag(entityTypeId, tagId))
+                .thenComparing(ResourceLocation::toString)
+        );
+        var out = new ArrayList<ChecklistManagePopup.Entry>(tagIds.size());
+        for (var tagId : tagIds) {
+            out.add(
+                new ChecklistManagePopup.Entry(
+                    "#" + tagId,
+                    null,
+                    () -> isEntityInTag(entityTypeId, tagId),
+                    () -> toggleEntityTagMembership(entityTypeId, tagId),
+                    projectName != null && canToggleEntityTag(entityTypeId, tagId)
+                )
+            );
+        }
+        return out;
+    }
+
+    private void toggleEntityTagMembership(ResourceLocation entityTypeId, ResourceLocation tagId) {
+        var projectName = ProjectSession.activeProjectName();
+        if (projectName == null) {
+            return;
+        }
+        var entityRegistry = Registries.ENTITY_TYPE.location();
+        if (isEntityInTag(entityTypeId, tagId)) {
+            BLib.MOD.networking().sendToServer(new C2SRemoveBlockTagPayload(projectName, entityRegistry, tagId, entityTypeId));
+            TagStagingCache.markEntryRemoved(entityRegistry, tagId, false, entityTypeId);
+        } else {
+            BLib.MOD.networking()
+                .sendToServer(new C2SAddTagEntryPayload(projectName, entityRegistry, tagId, false, entityTypeId, true));
+            TagStagingCache.markEntryAdded(entityRegistry, tagId, false, entityTypeId);
+        }
+    }
+
+    private boolean canToggleEntityTag(ResourceLocation entityTypeId, ResourceLocation tagId) {
+        if (!isEntityInTag(entityTypeId, tagId)) {
+            return true;
+        }
+        var entityRegistry = Registries.ENTITY_TYPE.location();
+        return isTagInProject(entityRegistry, tagId) || TagStagingCache.isEntryStagedAdd(entityRegistry, tagId, false, entityTypeId);
+    }
+
+    private boolean isEntityInTag(ResourceLocation entityTypeId, ResourceLocation tagId) {
+        return effectiveEntityTagSet(entityTypeId).contains(tagId);
+    }
+
+    private Set<ResourceLocation> effectiveEntityTagSet(ResourceLocation entityTypeId) {
+        var entityRegistry = Registries.ENTITY_TYPE.location();
+        var set = new HashSet<ResourceLocation>();
+        BuiltInRegistries.ENTITY_TYPE.getHolder(entityTypeId)
+            .ifPresent(holder -> holder.tags().map(TagKey::location).forEach(set::add));
+        set.addAll(TagStagingCache.stagedDirectAddsFor(entityRegistry, entityTypeId));
+        TagStagingCache.stagedDirectRemovesFor(entityRegistry, entityTypeId).forEach(set::remove);
+        return set;
+    }
+
+    private List<ResourceLocation> entityTagCatalogEntries() {
+        var entityRegistry = Registries.ENTITY_TYPE.location();
+        var out = new ArrayList<ResourceLocation>();
+        for (var entry : TagCatalogCache.all()) {
+            if (entry.registryKey().equals(entityRegistry)) {
+                out.add(entry.tagId());
+            }
+        }
+        out.sort(Comparator.comparing(ResourceLocation::toString));
+        return out;
+    }
+
+    private static boolean isTagInProject(ResourceLocation registryKey, ResourceLocation tagId) {
+        for (var entry : TagCatalogCache.all()) {
+            if (entry.registryKey().equals(registryKey) && entry.tagId().equals(tagId)) {
+                return entry.inProject();
+            }
+        }
+        return false;
+    }
+
+    private static void ensureTagCatalogRequested(String projectName) {
+        if (TagCatalogCache.all().isEmpty()) {
+            BLib.MOD.networking().sendToServer(new C2SRequestTagCatalogPayload(projectName));
+        }
     }
 
     @Override

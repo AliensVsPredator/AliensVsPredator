@@ -4,6 +4,8 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,8 +25,8 @@ import com.blib.mod.common.network.packet.S2CEntityFactionsPayload;
  * Two consumers in the engine workspace:
  * <ul>
  * <li>{@code DetailsPanel}'s Inspector "Factions" section — renders the cached list, or "(loading…)" if absent.</li>
- * <li>{@code FactionManagePopup} — uses the cached list to draw check marks next to factions the entity already belongs
- * to.</li>
+ * <li>Entity context-menu checklist — uses the cached list to draw check marks next to factions the entity already
+ * belongs to.</li>
  * </ul>
  * Both call {@link #ensureRequested(UUID)} before rendering so the first frame after a fresh entity selection kicks off
  * the request, and an internal {@code REQUESTED} set keeps subsequent renders from re-sending. Workspace close clears
@@ -62,6 +64,20 @@ public final class ClientEntityFactionsCache {
         // Cache hit guaranteed for future ensureRequested calls; keep the UUID in REQUESTED so we never re-send
         // unless explicitly invalidated.
         REQUESTED.add(payload.memberUuid());
+    }
+
+    public static void setMembership(UUID entityUuid, ResourceLocation factionId, boolean member) {
+        var current = new ArrayList<>(ENTRIES.getOrDefault(entityUuid, List.of()));
+        if (member) {
+            if (!current.contains(factionId)) {
+                current.add(factionId);
+                current.sort(Comparator.comparing(ResourceLocation::toString));
+            }
+        } else {
+            current.remove(factionId);
+        }
+        ENTRIES.put(entityUuid, List.copyOf(current));
+        REQUESTED.add(entityUuid);
     }
 
     public static void clear() {
