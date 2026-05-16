@@ -21,6 +21,7 @@ public final class ModelerPicker {
         ModelerBone owner,
         ModelerCube cube,
         ModelerCube.Face face,
+        Vec3 localPoint,
         double t
     ) {}
 
@@ -58,6 +59,8 @@ public final class ModelerPicker {
                 state.bestBone = bone;
                 state.bestCube = cube;
                 state.bestFace = hit.face();
+                var point = new Vector3f(localOrigin).add(new Vector3f(localDir).mul((float) hit.t()));
+                state.bestLocalPoint = new Vec3(point.x, point.y, point.z);
             }
         }
 
@@ -187,6 +190,8 @@ public final class ModelerPicker {
 
         ModelerCube.Face bestFace;
 
+        Vec3 bestLocalPoint;
+
         State(Vector3f origin, Vector3f dir) {
             this.worldOrigin = origin;
             this.worldDir = dir;
@@ -194,7 +199,9 @@ public final class ModelerPicker {
 
         @Nullable
         Hit toHit() {
-            return bestCube == null || bestFace == null ? null : new Hit(bestBone, bestCube, bestFace, bestT);
+            return bestCube == null || bestFace == null || bestLocalPoint == null
+                ? null
+                : new Hit(bestBone, bestCube, bestFace, bestLocalPoint, bestT);
         }
     }
 }
