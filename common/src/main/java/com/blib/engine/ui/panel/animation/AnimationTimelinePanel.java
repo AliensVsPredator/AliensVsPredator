@@ -573,7 +573,7 @@ public final class AnimationTimelinePanel implements Panel {
     }
 
     private static boolean canPlay(AnimationEditorState state) {
-        return state.hasDraft() && state.selectedAnimationName() != null;
+        return state.hasDraft() && state.hasPlayableSelection();
     }
 
     private static String emptyNote(AnimationEditorState state) {

@@ -1,6 +1,7 @@
 package com.blib.engine.ui.panel.animation;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -41,6 +42,8 @@ public final class AnimationsPanel implements Panel {
 
     private static final int ROW_SELECTED_COLOR = 0xFF3A3A48;
 
+    private static final int ROW_MULTI_SELECTED_COLOR = 0xFF30303A;
+
     private static final int TEXT_COLOR = 0xFFD0D0D0;
 
     private static final int META_TEXT_COLOR = 0xFF808088;
@@ -70,6 +73,8 @@ public final class AnimationsPanel implements Panel {
     private @Nullable String renameTarget;
 
     private @Nullable String lastClickedAnimation;
+
+    private @Nullable String selectionAnchorAnimation;
 
     private long lastClickMillis;
 
@@ -139,10 +144,11 @@ public final class AnimationsPanel implements Panel {
                 if (rowBottom <= visibleTop || rowTop >= visibleBottom) {
                     continue;
                 }
-                var selected = name.equals(state.selectedAnimationName());
+                var active = name.equals(state.selectedAnimationName());
+                var selected = state.isAnimationSelected(name);
                 var hovered = mouseX >= rowsLeftX && mouseX < rowsLeftX + rowsContentWidth && mouseY >= rowTop && mouseY < rowBottom;
                 if (selected) {
-                    graphics.fill(rowsLeftX, rowTop, rowsLeftX + rowsContentWidth, rowBottom, ROW_SELECTED_COLOR);
+                    graphics.fill(rowsLeftX, rowTop, rowsLeftX + rowsContentWidth, rowBottom, active ? ROW_SELECTED_COLOR : ROW_MULTI_SELECTED_COLOR);
                 } else if (hovered) {
                     graphics.fill(rowsLeftX, rowTop, rowsLeftX + rowsContentWidth, rowBottom, ROW_HOVER_COLOR);
                 }
@@ -209,15 +215,32 @@ public final class AnimationsPanel implements Panel {
             return false;
         }
         var name = rows.get(idx);
-        var now = System.currentTimeMillis();
-        var doubleClick = name.equals(lastClickedAnimation) && now - lastClickMillis <= DOUBLE_CLICK_MS;
-        AnimationEditorState.get().selectAnimation(name);
-        if (doubleClick) {
-            beginRename(name);
+        var state = AnimationEditorState.get();
+        var shiftSelection = Screen.hasShiftDown();
+        var toggleSelection = Screen.hasControlDown();
+        if (shiftSelection) {
+            var anchor = selectionAnchorAnimation != null ? selectionAnchorAnimation : state.selectedAnimationName();
+            state.selectAnimationRange(rows, anchor, name);
+            selectionAnchorAnimation = anchor;
+            lastClickedAnimation = null;
+        } else if (toggleSelection) {
+            state.toggleAnimationSelection(name);
+            selectionAnchorAnimation = name;
             lastClickedAnimation = null;
         } else {
-            lastClickedAnimation = name;
-            lastClickMillis = now;
+            var now = System.currentTimeMillis();
+            var doubleClick = name.equals(lastClickedAnimation) && now - lastClickMillis <= DOUBLE_CLICK_MS;
+            state.selectAnimation(name);
+            selectionAnchorAnimation = name;
+            if (!doubleClick) {
+                lastClickedAnimation = name;
+                lastClickMillis = now;
+            }
+            if (!doubleClick) {
+                return true;
+            }
+            beginRename(name);
+            lastClickedAnimation = null;
         }
         return true;
     }
@@ -301,7 +324,10 @@ public final class AnimationsPanel implements Panel {
         var state = AnimationEditorState.get();
         var row = animationAt(mouseX, mouseY);
         if (row != null) {
-            state.selectAnimation(row);
+            if (!state.isAnimationSelected(row)) {
+                state.selectAnimation(row);
+                selectionAnchorAnimation = row;
+            }
             menuOpener.open(
                 new DropdownMenu(
                     (int) mouseX,

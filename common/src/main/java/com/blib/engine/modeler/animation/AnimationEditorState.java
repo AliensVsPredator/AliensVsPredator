@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -102,6 +103,8 @@ public final class AnimationEditorState {
 
     private @Nullable String selectedAnimationName;
 
+    private final LinkedHashSet<String> selectedAnimationNames = new LinkedHashSet<>();
+
     private @Nullable String selectedBoneName;
 
     private TransformChannel selectedChannel = TransformChannel.ROTATION;
@@ -142,6 +145,27 @@ public final class AnimationEditorState {
 
     public @Nullable String selectedAnimationName() {
         return selectedAnimationName;
+    }
+
+    public List<String> selectedAnimationNames() {
+        if (selectedAnimationNames.isEmpty()) {
+            return List.of();
+        }
+        var out = new ArrayList<String>();
+        for (var name : selectedAnimationNames) {
+            if (animationObject(name) != null) {
+                out.add(name);
+            }
+        }
+        return out;
+    }
+
+    public boolean isAnimationSelected(@Nullable String name) {
+        return name != null && selectedAnimationNames.contains(name);
+    }
+
+    public boolean hasPlayableSelection() {
+        return !playbackAnimationNames().isEmpty();
     }
 
     public @Nullable String selectedBoneName() {
@@ -194,7 +218,7 @@ public final class AnimationEditorState {
         externalSavePath = null;
         projectResourceId = null;
         lastSavedPath = null;
-        selectedAnimationName = null;
+        selectSingleAnimation(null);
         selectedTimestamp = null;
         stopPlayback();
         dirty = true;
@@ -212,7 +236,7 @@ public final class AnimationEditorState {
             ensureAnimationsObject(root);
             draft = root;
             dirty = false;
-            selectedAnimationName = firstAnimationName();
+            selectSingleAnimation(firstAnimationName());
             selectedTimestamp = null;
             stopPlayback();
             lastSavedPath = path.toAbsolutePath().normalize();
@@ -334,12 +358,20 @@ public final class AnimationEditorState {
     }
 
     public double selectedAnimationLengthSeconds() {
-        var animation = selectedAnimationObject();
-        if (animation == null) {
+        var animationNames = playbackAnimationNames();
+        if (animationNames.isEmpty()) {
             return 1.0;
         }
-        var length = readAnimationLength(animation);
-        length = Math.max(length, maxKeyframeTimestamp(selectedAnimationName, animation));
+        var length = 1.0;
+        for (var animationName : animationNames) {
+            var animation = animationObject(animationName);
+            if (animation == null) {
+                continue;
+            }
+            var animationLength = readAnimationLength(animation);
+            animationLength = Math.max(animationLength, maxKeyframeTimestamp(animationName, animation));
+            length = Math.max(length, animationLength);
+        }
         return Math.max(1.0, length);
     }
 
@@ -347,7 +379,7 @@ public final class AnimationEditorState {
         if (!playing) {
             return;
         }
-        if (selectedAnimationName == null || selectedAnimationObject() == null) {
+        if (playbackAnimationNames().isEmpty()) {
             stopPlayback();
             return;
         }
@@ -373,7 +405,7 @@ public final class AnimationEditorState {
     }
 
     public void setPlaying(boolean playing) {
-        if (!playing || selectedAnimationName == null || selectedAnimationObject() == null) {
+        if (!playing || playbackAnimationNames().isEmpty()) {
             this.playing = false;
             lastPlaybackNanos = 0L;
             return;
@@ -397,32 +429,85 @@ public final class AnimationEditorState {
     }
 
     public @Nullable PreviewBoneTransform previewTransformFor(ModelerBone bone) {
-        if (draft == null || selectedAnimationName == null || selectedAnimationObject() == null) {
+        if (draft == null) {
             return null;
         }
         if (ModelerScene.get().itemSession != null) {
             return null;
         }
 
-        var position = sampleChannel(bone.name, TransformChannel.POSITION, playheadSeconds);
-        var rotation = sampleChannel(bone.name, TransformChannel.ROTATION, playheadSeconds);
-        var scale = sampleChannel(bone.name, TransformChannel.SCALE, playheadSeconds);
+        Vec3 position = null;
+        Vec3 rotation = null;
+        Vec3 scale = null;
+        for (var animationName : playbackAnimationNames()) {
+            var sampledPosition = sampleChannel(animationName, bone.name, TransformChannel.POSITION, playheadSeconds);
+            if (sampledPosition != null) {
+                position = toModelerSpace(TransformChannel.POSITION, sampledPosition);
+            }
+            var sampledRotation = sampleChannel(animationName, bone.name, TransformChannel.ROTATION, playheadSeconds);
+            if (sampledRotation != null) {
+                var modelerRotation = toModelerSpace(TransformChannel.ROTATION, sampledRotation);
+                rotation = rotation == null ? modelerRotation : rotation.add(modelerRotation);
+            }
+            var sampledScale = sampleChannel(animationName, bone.name, TransformChannel.SCALE, playheadSeconds);
+            if (sampledScale != null) {
+                scale = sampledScale;
+            }
+        }
         if (position == null && rotation == null && scale == null) {
             return null;
         }
-        return new PreviewBoneTransform(
-            position == null ? null : toModelerSpace(TransformChannel.POSITION, position),
-            rotation == null ? null : toModelerSpace(TransformChannel.ROTATION, rotation),
-            scale
-        );
+        return new PreviewBoneTransform(position, rotation, scale);
     }
 
     public void selectAnimation(@Nullable String name) {
-        if (name == null || animationObject(name) == null) {
-            selectedAnimationName = firstAnimationName();
+        selectSingleAnimation(resolveAnimationName(name));
+        selectedTimestamp = null;
+        stopPlayback();
+    }
+
+    public void toggleAnimationSelection(String name) {
+        if (animationObject(name) == null) {
+            return;
+        }
+        if (selectedAnimationNames.contains(name)) {
+            selectedAnimationNames.remove(name);
+            if (name.equals(selectedAnimationName)) {
+                selectedAnimationName = firstSelectedAnimationName();
+            }
         } else {
+            selectedAnimationNames.add(name);
             selectedAnimationName = name;
         }
+        selectedTimestamp = null;
+        stopPlayback();
+    }
+
+    public void selectAnimationRange(List<String> orderedNames, @Nullable String anchorName, String targetName) {
+        if (animationObject(targetName) == null || orderedNames.isEmpty()) {
+            return;
+        }
+        var anchorIndex = orderedNames.indexOf(anchorName);
+        if (anchorIndex < 0) {
+            anchorIndex = selectedAnimationName == null ? -1 : orderedNames.indexOf(selectedAnimationName);
+        }
+        if (anchorIndex < 0) {
+            anchorIndex = orderedNames.indexOf(targetName);
+        }
+        var targetIndex = orderedNames.indexOf(targetName);
+        if (targetIndex < 0) {
+            return;
+        }
+        var from = Math.min(anchorIndex, targetIndex);
+        var to = Math.max(anchorIndex, targetIndex);
+        selectedAnimationNames.clear();
+        for (var i = from; i <= to; i++) {
+            var name = orderedNames.get(i);
+            if (animationObject(name) != null) {
+                selectedAnimationNames.add(name);
+            }
+        }
+        selectedAnimationName = targetName;
         selectedTimestamp = null;
         stopPlayback();
     }
@@ -435,7 +520,7 @@ public final class AnimationEditorState {
         obj.addProperty("animation_length", 1.0);
         obj.add("bones", new JsonObject());
         animations.add(name, obj);
-        selectedAnimationName = name;
+        selectSingleAnimation(name);
         selectedTimestamp = null;
         stopPlayback();
         markDirty("Created " + name);
@@ -468,6 +553,10 @@ public final class AnimationEditorState {
         }
         draft.add("animations", rebuilt);
         selectedAnimationName = clean;
+        if (selectedAnimationNames.remove(oldName)) {
+            selectedAnimationNames.add(clean);
+        }
+        selectedAnimationNames.add(clean);
         markDirty("Renamed " + oldName + " to " + clean);
         return true;
     }
@@ -480,7 +569,7 @@ public final class AnimationEditorState {
         var animations = ensureAnimationsObject();
         var name = uniqueName(sourceName + "_copy");
         animations.add(name, source.deepCopy());
-        selectedAnimationName = name;
+        selectSingleAnimation(name);
         selectedTimestamp = null;
         stopPlayback();
         markDirty("Duplicated " + sourceName);
@@ -493,9 +582,15 @@ public final class AnimationEditorState {
             return false;
         }
         animations.remove(name);
+        var removedSelected = selectedAnimationNames.remove(name);
         if (name.equals(selectedAnimationName)) {
-            selectedAnimationName = firstAnimationName();
+            selectedAnimationName = firstSelectedAnimationName();
+            if (selectedAnimationName == null) {
+                selectSingleAnimation(firstAnimationName());
+            }
             selectedTimestamp = null;
+            stopPlayback();
+        } else if (removedSelected) {
             stopPlayback();
         }
         markDirty("Deleted " + name);
@@ -531,6 +626,9 @@ public final class AnimationEditorState {
 
     public void selectKeyframe(String animationName, String boneName, TransformChannel channel, double timestamp) {
         selectedAnimationName = animationName;
+        if (animationObject(animationName) != null) {
+            selectedAnimationNames.add(animationName);
+        }
         selectedBoneName = boneName;
         selectedChannel = channel;
         selectedTimestamp = timestamp;
@@ -664,6 +762,7 @@ public final class AnimationEditorState {
             animation.add("bones", new JsonObject());
             ensureAnimationsObject().add(animationName, animation);
             selectedAnimationName = animationName;
+            selectedAnimationNames.add(animationName);
         }
         if (!animation.has("bones") || !animation.get("bones").isJsonObject()) {
             animation.add("bones", new JsonObject());
@@ -776,11 +875,11 @@ public final class AnimationEditorState {
         return channelObj.remove(formatTimestamp(timestamp)) != null;
     }
 
-    private @Nullable Vec3 sampleChannel(String boneName, TransformChannel channel, double timestamp) {
-        if (selectedAnimationName == null) {
+    private @Nullable Vec3 sampleChannel(String animationName, String boneName, TransformChannel channel, double timestamp) {
+        if (animationObject(animationName) == null) {
             return null;
         }
-        var frames = keyframes(selectedAnimationName, boneName, channel);
+        var frames = keyframes(animationName, boneName, channel);
         if (frames.isEmpty()) {
             return null;
         }
@@ -1040,6 +1139,37 @@ public final class AnimationEditorState {
             frame.add("vector", defaultVector());
         }
         return frame.getAsJsonArray("vector");
+    }
+
+    private @Nullable String resolveAnimationName(@Nullable String name) {
+        return name != null && animationObject(name) != null ? name : firstAnimationName();
+    }
+
+    private void selectSingleAnimation(@Nullable String name) {
+        selectedAnimationNames.clear();
+        selectedAnimationName = name;
+        if (name != null && animationObject(name) != null) {
+            selectedAnimationNames.add(name);
+        }
+    }
+
+    private List<String> playbackAnimationNames() {
+        var selected = selectedAnimationNames();
+        if (!selected.isEmpty()) {
+            return selected;
+        }
+        return selectedAnimationName != null && animationObject(selectedAnimationName) != null
+            ? List.of(selectedAnimationName)
+            : List.of();
+    }
+
+    private @Nullable String firstSelectedAnimationName() {
+        for (var name : animationNames()) {
+            if (selectedAnimationNames.contains(name)) {
+                return name;
+            }
+        }
+        return null;
     }
 
     private @Nullable JsonObject animationsObjectOrNull() {
