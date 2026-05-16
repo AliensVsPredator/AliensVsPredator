@@ -81,6 +81,10 @@ public final class AnimationTimelinePanel implements Panel {
 
     private static final int BUTTON_SIZE = 16;
 
+    private static final int ADD_BUTTON_SIZE = 13;
+
+    private static final int ADD_BUTTON_MARGIN = 4;
+
     private static final int TOOL_ROW_HEIGHT = BUTTON_SIZE;
 
     private static final int RULER_HEIGHT = 17;
@@ -220,6 +224,11 @@ public final class AnimationTimelinePanel implements Panel {
             return true;
         }
         lastKeyframeClick = null;
+        var addRow = channelAddButtonRowAt(mouseX, mouseY);
+        if (addRow != null) {
+            addKeyframeForRow(state, addRow);
+            return true;
+        }
         var row = rowAt(mouseY);
         if (row != null && mouseX >= timelineLabelX && mouseX < timelineGraphVisibleX) {
             if (row.isBone() && caretHit(row, mouseX)) {
@@ -547,7 +556,7 @@ public final class AnimationTimelinePanel implements Panel {
         if (row.isBone()) {
             renderBoneLabel(graphics, font, row, labelX, trackY, labelWidth, state);
         } else {
-            renderChannelLabel(graphics, font, row, labelX, trackY, labelWidth, state);
+            renderChannelLabel(graphics, font, row, labelX, trackY, labelWidth, mouseX, mouseY, state);
         }
     }
 
@@ -582,16 +591,22 @@ public final class AnimationTimelinePanel implements Panel {
         int contentX,
         int trackY,
         int labelWidth,
+        int mouseX,
+        int mouseY,
         AnimationEditorState state
     ) {
         var textX = contentX + 4 + row.depth() * INDENT_PX + CARET_WIDTH;
+        var buttonX = channelAddButtonX(contentX, labelWidth);
+        var buttonY = trackY + (TRACK_HEIGHT - ADD_BUTTON_SIZE) / 2;
+        var enabled = canAddKeyframe(state);
+        renderAddButton(graphics, buttonX, buttonY, enabled, mouseX, mouseY);
         UiText.drawClipped(
             graphics,
             font,
             row.channel().jsonName(),
             textX,
             trackY + (TRACK_HEIGHT - font.lineHeight + 2) / 2,
-            Math.max(0, contentX + labelWidth - textX - 4),
+            Math.max(0, buttonX - textX - 4),
             row.bone().name.equals(state.selectedBoneName()) && row.channel() == state.selectedChannel() ? TEXT_COLOR : META_TEXT_COLOR
         );
     }
@@ -715,6 +730,29 @@ public final class AnimationTimelinePanel implements Panel {
         return row == null || row.isBone() ? null : row;
     }
 
+    private @Nullable TimelineRow channelAddButtonRowAt(double mouseX, double mouseY) {
+        var index = rowIndexAt(mouseY);
+        if (index < 0 || index >= rows.size()) {
+            return null;
+        }
+        var row = rows.get(index);
+        if (row.isBone()) {
+            return null;
+        }
+        var buttonX = channelAddButtonX(timelineLabelX, timelineLabelWidth);
+        var buttonY = timelineContentY + RULER_HEIGHT + index * TRACK_HEIGHT + (TRACK_HEIGHT - ADD_BUTTON_SIZE) / 2;
+        return buttonHit(mouseX, mouseY, buttonX, buttonY, ADD_BUTTON_SIZE, ADD_BUTTON_SIZE) ? row : null;
+    }
+
+    private void addKeyframeForRow(AnimationEditorState state, TimelineRow row) {
+        if (!canAddKeyframe(state) || row.channel() == null) {
+            return;
+        }
+        selectBoneFromTimeline(row.bone());
+        state.selectKeyframe(state.selectedDocumentId(), state.selectedAnimationName(), row.bone().name, row.channel(), canonicalTimestamp(state.playheadSeconds()));
+        state.createOrUpdateSelectedKeyframe();
+    }
+
     private int rowIndexAt(double mouseY) {
         var localY = mouseY - timelineContentY - RULER_HEIGHT;
         if (localY < 0.0) {
@@ -774,6 +812,10 @@ public final class AnimationTimelinePanel implements Panel {
         return state.hasDraft() && state.hasPlayableSelection();
     }
 
+    private static boolean canAddKeyframe(AnimationEditorState state) {
+        return state.hasDraft() && state.selectedDocumentId() != null && state.selectedAnimationName() != null;
+    }
+
     private static String emptyNote(AnimationEditorState state) {
         if (!state.hasDraft()) {
             return "(no animation file open)";
@@ -795,6 +837,10 @@ public final class AnimationTimelinePanel implements Panel {
         var scaledWidth = (int) Math.ceil(Math.max(1.0, duration) * PIXELS_PER_SECOND);
         var graphWidth = Math.max(Math.max(1, visibleGraphWidth - END_LABEL_PADDING_PX), scaledWidth);
         return graphWidth + END_LABEL_PADDING_PX;
+    }
+
+    private static int channelAddButtonX(int labelX, int labelWidth) {
+        return labelX + labelWidth - ADD_BUTTON_MARGIN - ADD_BUTTON_SIZE;
     }
 
     private static double tailPaddingSeconds(double duration) {
@@ -893,6 +939,13 @@ public final class AnimationTimelinePanel implements Panel {
         }
     }
 
+    private static void renderAddButton(GuiGraphics graphics, int x, int y, boolean enabled, int mouseX, int mouseY) {
+        var hovered = enabled && buttonHit(mouseX, mouseY, x, y, ADD_BUTTON_SIZE, ADD_BUTTON_SIZE);
+        graphics.fill(x, y, x + ADD_BUTTON_SIZE, y + ADD_BUTTON_SIZE, hovered ? CHIP_HOVER_BG_COLOR : CHIP_BG_COLOR);
+        drawButtonBorder(graphics, x, y, ADD_BUTTON_SIZE, ADD_BUTTON_SIZE);
+        drawPlusIcon(graphics, x, y, enabled ? ICON_COLOR : ICON_DISABLED_COLOR);
+    }
+
     private static void drawPlayIcon(GuiGraphics graphics, int btnX, int btnY, int color) {
         var rows = 7;
         var halfHeight = (rows - 1) / 2;
@@ -910,6 +963,13 @@ public final class AnimationTimelinePanel implements Panel {
         var cy = btnY + BUTTON_SIZE / 2;
         graphics.fill(cx - 4, cy - 4, cx - 2, cy + 4, color);
         graphics.fill(cx + 2, cy - 4, cx + 4, cy + 4, color);
+    }
+
+    private static void drawPlusIcon(GuiGraphics graphics, int btnX, int btnY, int color) {
+        var cx = btnX + ADD_BUTTON_SIZE / 2;
+        var cy = btnY + ADD_BUTTON_SIZE / 2;
+        graphics.fill(cx - 3, cy, cx + 4, cy + 1, color);
+        graphics.fill(cx, cy - 3, cx + 1, cy + 4, color);
     }
 
     private static void drawButtonBorder(GuiGraphics graphics, int x, int y, int width, int height) {
