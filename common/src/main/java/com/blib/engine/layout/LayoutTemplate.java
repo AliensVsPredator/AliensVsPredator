@@ -29,6 +29,7 @@ public enum LayoutTemplate {
     JIGSAW("jigsaw", "Jigsaw"),
     FACTION("faction", "Faction"),
     MODELER("modeler", "Modeler"),
+    ANIMATION("animation", "Animation"),
     TEXTURE("texture", "Texture");
 
     private final String id;
@@ -90,6 +91,9 @@ public enum LayoutTemplate {
             // Modeler layout: Blockbench-style workspace — UV map/textures on the left, viewport in the center, and
             // inspector over outliner on the right.
             case MODELER -> modelerBody();
+            // Animation layout: model viewport plus bone-only tree, transform timeline, animation list, keyframe
+            // editor, and a restricted modeler inspector for pivot edits.
+            case ANIMATION -> animationBody();
             // Texture layout: paint.net-style workspace — texture list on the left, editable image surface in the
             // center, and tool / color / selection controls plus history on the right.
             case TEXTURE -> textureBody();
@@ -144,6 +148,39 @@ public enum LayoutTemplate {
         return new BodyNode.Split(
             Orientation.HORIZONTAL.name(),
             new BodyNode.Leaf(List.of(PanelRegistry.TEXTURES), 0),
+            centerAndRight,
+            new SizingDoc.FirstFixed(LayoutDefaults.OUTLINER_WIDTH)
+        );
+    }
+
+    private static BodyNode animationBody() {
+        var viewportColumn = new BodyNode.Split(
+            Orientation.VERTICAL.name(),
+            new BodyNode.Leaf(List.of(PanelRegistry.MODELER_VIEWPORT), 0),
+            new BodyNode.Leaf(List.of(PanelRegistry.ANIMATION_TIMELINE), 0),
+            new SizingDoc.SecondFixed(LayoutDefaults.CONTENT_BROWSER_HEIGHT)
+        );
+        var keyframeAndInspector = new BodyNode.Split(
+            Orientation.VERTICAL.name(),
+            new BodyNode.Leaf(List.of(PanelRegistry.ANIMATION_KEYFRAME), 0),
+            new BodyNode.Leaf(List.of(PanelRegistry.ANIMATION_MODELER_INSPECTOR), 0),
+            new SizingDoc.Ratio(0.6f)
+        );
+        var rightColumn = new BodyNode.Split(
+            Orientation.VERTICAL.name(),
+            new BodyNode.Leaf(List.of(PanelRegistry.ANIMATIONS), 0),
+            keyframeAndInspector,
+            new SizingDoc.FirstFixed(LayoutDefaults.CONTENT_BROWSER_HEIGHT)
+        );
+        var centerAndRight = new BodyNode.Split(
+            Orientation.HORIZONTAL.name(),
+            viewportColumn,
+            rightColumn,
+            new SizingDoc.SecondFixed(LayoutDefaults.DETAILS_WIDTH)
+        );
+        return new BodyNode.Split(
+            Orientation.HORIZONTAL.name(),
+            new BodyNode.Leaf(List.of(PanelRegistry.ANIMATIONS_OUTLINER), 0),
             centerAndRight,
             new SizingDoc.FirstFixed(LayoutDefaults.OUTLINER_WIDTH)
         );

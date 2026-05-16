@@ -93,6 +93,13 @@ public final class ModelerInspectorPanel implements Panel {
 
     private final ScrollViewport scroll = new ScrollViewport();
 
+    public enum Mode {
+        FULL,
+        ANIMATION_BONES
+    }
+
+    private final Mode mode;
+
     /** Which Vec3 field on the selected cube or bone an input commits into. */
     private enum VecField {
         ORIGIN,
@@ -173,6 +180,14 @@ public final class ModelerInspectorPanel implements Panel {
 
     private int panelX, panelY, panelWidth, panelHeight;
 
+    public ModelerInspectorPanel() {
+        this(Mode.FULL);
+    }
+
+    public ModelerInspectorPanel(Mode mode) {
+        this.mode = mode == null ? Mode.FULL : mode;
+    }
+
     @Override
     public String title() {
         return "Modeler Inspector";
@@ -197,10 +212,10 @@ public final class ModelerInspectorPanel implements Panel {
         var contentW = frame.contentWidth();
 
         try {
-            // Item-config mode is mutually exclusive with entity-model editing: when a session is attached, only the
-            // Item Config section is shown; the cube/bone inspector below would be referencing a scene the user isn't
-            // editing anyway.
-            if (scene.itemSession != null) {
+            // Item-config mode is mutually exclusive with entity-model editing in the full modeler inspector. The
+            // Animation layout intentionally keeps this inspector restricted to bone pivots, so it does not expose item
+            // configuration even if the modeler scene currently has an item session attached.
+            if (mode == Mode.FULL && scene.itemSession != null) {
                 itemConfig.render(graphics, contentX, contentY, contentW, mouseX, mouseY);
                 return;
             }
@@ -208,6 +223,15 @@ public final class ModelerInspectorPanel implements Panel {
             var selection = scene.selection;
             if (selection == null) {
                 drawHeader(graphics, contentX, contentY, contentW, "Nothing selected");
+                return;
+            }
+
+            if (mode == Mode.ANIMATION_BONES) {
+                if (selection instanceof Selection.BoneSelection bs) {
+                    renderAnimationBone(graphics, contentX, contentY, contentW, bs.bone(), mouseX, mouseY);
+                } else {
+                    drawHeader(graphics, contentX, contentY, contentW, "Select a bone/group");
+                }
                 return;
             }
 
@@ -292,6 +316,15 @@ public final class ModelerInspectorPanel implements Panel {
         rowY = renderVecSection(graphics, font, x, rowY, width, "Pivot Point", pivotX, pivotY, pivotZ, mouseX, mouseY);
         rowY = renderVecSection(graphics, font, x, rowY, width, "Rotation", rotationX, rotationY, rotationZ, mouseX, mouseY);
         drawCountRow(graphics, font, x, rowY + CONTENT_PADDING, width, "Children", bone.children.size(), "Cubes", bone.cubes.size());
+    }
+
+    private void renderAnimationBone(GuiGraphics graphics, int x, int y, int width, ModelerBone bone, int mouseX, int mouseY) {
+        var font = EngineFont.get();
+        drawHeader(graphics, x, y, width, "Bone: " + bone.name);
+        syncVec(pivotX, pivotY, pivotZ, bone.pivot);
+
+        var rowY = y + HEADER_TOP_PADDING + font.lineHeight + HEADER_TO_SECTION_GAP;
+        renderVecSection(graphics, font, x, rowY, width, "Pivot Point", pivotX, pivotY, pivotZ, mouseX, mouseY);
     }
 
     private void drawHeader(GuiGraphics graphics, int x, int y, int width, String text) {
@@ -530,7 +563,7 @@ public final class ModelerInspectorPanel implements Panel {
         }
         // Item-config widgets first — its pickers, mode toggle, dump button, pivot-viz checkbox, and 12 transform
         // inputs all belong to the section.
-        if (itemConfig.mouseClicked(mouseX, mouseY, button)) {
+        if (mode == Mode.FULL && itemConfig.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
         // Then forward to selection-inspector inputs that were actually rendered this frame; stale rects from the
@@ -574,12 +607,17 @@ public final class ModelerInspectorPanel implements Panel {
 
     private int measureContentHeight(ModelerScene scene, int width) {
         var font = EngineFont.get();
-        if (scene.itemSession != null) {
+        if (mode == Mode.FULL && scene.itemSession != null) {
             return CONTENT_PADDING + itemConfig.measureHeight(width) + CONTENT_PADDING;
         }
         var headerHeight = HEADER_TOP_PADDING + font.lineHeight + HEADER_TO_SECTION_GAP;
         if (scene.selection == null) {
             return CONTENT_PADDING + headerHeight + CONTENT_PADDING;
+        }
+        if (mode == Mode.ANIMATION_BONES) {
+            return scene.selection instanceof Selection.BoneSelection
+                ? CONTENT_PADDING + headerHeight + inspectorSectionHeight() + CONTENT_PADDING
+                : CONTENT_PADDING + headerHeight + CONTENT_PADDING;
         }
         if (scene.selection instanceof Selection.BoneSelection) {
             if (scene.isJavaBlockModel()) {
@@ -689,15 +727,27 @@ public final class ModelerInspectorPanel implements Panel {
             }
             pushCubeMemento(cube, before, cubeMementoDescription(field, cube.name));
         } else if (sel instanceof Selection.BoneSelection bs) {
-            if (ModelerScene.get().isJavaBlockModel()) {
+            if (ModelerScene.get().isJavaBlockModel() && mode == Mode.FULL) {
                 return;
             }
             var bone = bs.bone();
             var before = ModelerAction.BoneMemento.of(bone);
             switch (field) {
-                case POSITION -> bone.position = withAxis(bone.position, axis, parsed);
-                case ROTATION -> bone.rotation = withAxis(bone.rotation, axis, parsed);
-                case SCALE -> bone.scale = withAxis(bone.scale, axis, parsed);
+                case POSITION -> {
+                    if (mode == Mode.FULL) {
+                        bone.position = withAxis(bone.position, axis, parsed);
+                    }
+                }
+                case ROTATION -> {
+                    if (mode == Mode.FULL) {
+                        bone.rotation = withAxis(bone.rotation, axis, parsed);
+                    }
+                }
+                case SCALE -> {
+                    if (mode == Mode.FULL) {
+                        bone.scale = withAxis(bone.scale, axis, parsed);
+                    }
+                }
                 case PIVOT -> bone.pivot = withAxis(bone.pivot, axis, parsed);
                 default -> {
                     /* not applicable to bone */

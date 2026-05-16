@@ -12,7 +12,12 @@ import java.util.Set;
 import com.blib.engine.ui.ProjectContentActionHandler;
 import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.panel.action.ActionStackPanel;
+import com.blib.engine.ui.panel.animation.AnimationKeyframePanel;
+import com.blib.engine.ui.panel.animation.AnimationTimelinePanel;
+import com.blib.engine.ui.panel.animation.AnimationsOutlinerPanel;
+import com.blib.engine.ui.panel.animation.AnimationsPanel;
 import com.blib.engine.ui.panel.content.ContentBrowserPanel;
+import com.blib.engine.ui.panel.details.AnimationModelerInspectorPanel;
 import com.blib.engine.ui.panel.details.DetailsPanel;
 import com.blib.engine.ui.panel.details.GOAPDetailsPanel;
 import com.blib.engine.ui.panel.details.ModelerInspectorPanel;
@@ -75,6 +80,7 @@ public final class PanelRegistry {
         FACTION("Factions & Territory"),
         AI_DEBUG("AI & Pathfinding"),
         MODELER("Modeling"),
+        ANIMATION("Animation"),
         TEXTURE("Texturing"),
         HISTORY("History");
 
@@ -125,6 +131,16 @@ public final class PanelRegistry {
 
     public static final String MODELER_INSPECTOR = "modeler_inspector";
 
+    public static final String ANIMATION_MODELER_INSPECTOR = "animation_modeler_inspector";
+
+    public static final String ANIMATIONS = "animations";
+
+    public static final String ANIMATION_TIMELINE = "animation_timeline";
+
+    public static final String ANIMATION_KEYFRAME = "animation_keyframe";
+
+    public static final String ANIMATIONS_OUTLINER = "animations_outliner";
+
     public static final String MODELER_UV_MAP = "modeler_uv_map";
 
     public static final String TEXTURES = "textures";
@@ -164,6 +180,16 @@ public final class PanelRegistry {
         register(MODELER_VIEWPORT, ModelerViewportPanel.class, Domain.MODELER, ctx -> new ModelerViewportPanel(ctx.panelMenuOpener()));
         register(MODELER_OUTLINER, ModelerOutlinerPanel.class, Domain.MODELER, ctx -> new ModelerOutlinerPanel(ctx.panelMenuOpener()));
         register(MODELER_INSPECTOR, ModelerInspectorPanel.class, Domain.MODELER, ctx -> new ModelerInspectorPanel());
+        register(ANIMATIONS, AnimationsPanel.class, Domain.ANIMATION, ctx -> new AnimationsPanel(ctx.panelMenuOpener()));
+        register(ANIMATION_TIMELINE, AnimationTimelinePanel.class, Domain.ANIMATION, ctx -> new AnimationTimelinePanel(ctx.panelMenuOpener()));
+        register(ANIMATION_KEYFRAME, AnimationKeyframePanel.class, Domain.ANIMATION, ctx -> new AnimationKeyframePanel());
+        register(ANIMATIONS_OUTLINER, AnimationsOutlinerPanel.class, Domain.ANIMATION, ctx -> new AnimationsOutlinerPanel(ctx.panelMenuOpener()));
+        register(
+            ANIMATION_MODELER_INSPECTOR,
+            AnimationModelerInspectorPanel.class,
+            Domain.ANIMATION,
+            ctx -> new AnimationModelerInspectorPanel()
+        );
         register(MODELER_UV_MAP, UvMapPanel.class, Domain.MODELER, ctx -> new UvMapPanel());
         register(TEXTURES, TexturesPanel.class, Domain.TEXTURE, ctx -> new TexturesPanel(ctx.panelMenuOpener()));
         registerAlias(MODELER_TEXTURES, Domain.TEXTURE, ctx -> new TexturesPanel(ctx.panelMenuOpener()));
