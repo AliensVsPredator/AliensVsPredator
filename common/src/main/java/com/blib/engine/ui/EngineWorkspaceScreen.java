@@ -567,6 +567,21 @@ public final class EngineWorkspaceScreen extends Screen {
             }
         }
 
+        // In-world viewports sample the main RT, which still contains the live world at this point. Capture that
+        // before the workspace underlay clear below; otherwise the compositor would downsample the clear color.
+        var viewportRect = findViewportRect(root, 0, 0, logicalWidth(), logicalHeight());
+        var capturedWorldViewport = false;
+        if (viewportRect != null && wrappedScreen == null) {
+            graphics.flush();
+            capturedWorldViewport = EngineWorkspaceCompositor.captureWorldIntoLogicalRect(
+                viewportRect.x(),
+                viewportRect.y(),
+                viewportRect.width(),
+                viewportRect.height(),
+                SCALE
+            );
+        }
+
         super.render(graphics, mouseX, mouseY, partialTick);
 
         // Paint a deterministic underlay before any viewport blit or dock rendering. Panel contents are clipped to raw
@@ -575,9 +590,8 @@ public final class EngineWorkspaceScreen extends Screen {
         graphics.fill(0, 0, this.width, this.height, WORKSPACE_CLEAR_COLOR);
         graphics.flush();
 
-        // In-world path reads the main RT (which holds vanilla's world + HUD render). Menu-overlay path reads the
-        // dedicated wrappedScreenRT instead. Both feed the same downsample → viewport-rect blit pattern.
-        var viewportRect = findViewportRect(root, 0, 0, logicalWidth(), logicalHeight());
+        // In-world path reuses the pre-clear capture above. Menu-overlay path reads the dedicated wrappedScreenRT
+        // instead. Both feed the same downsample → viewport-rect blit pattern.
         if (viewportRect != null) {
             if (wrappedScreen != null) {
                 EngineWorkspaceCompositor.compositWrappedIntoLogicalRect(
@@ -587,8 +601,8 @@ public final class EngineWorkspaceScreen extends Screen {
                     viewportRect.height(),
                     SCALE
                 );
-            } else {
-                EngineWorkspaceCompositor.compositWorldIntoLogicalRect(
+            } else if (capturedWorldViewport) {
+                EngineWorkspaceCompositor.blitCapturedWorldIntoLogicalRect(
                     viewportRect.x(),
                     viewportRect.y(),
                     viewportRect.width(),

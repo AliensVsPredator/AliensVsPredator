@@ -48,61 +48,9 @@ public final class EngineWorkspaceCompositor {
      * matching {@code RenderSystem.viewport} args.
      */
     public static void composit(int viewportX, int viewportY, int viewportWidth, int viewportHeight) {
-        if (viewportWidth <= 0 || viewportHeight <= 0) {
-            return;
+        if (captureWorldIntoRawViewport(viewportWidth, viewportHeight)) {
+            blitCapturedIntoRawViewport(viewportX, viewportY, viewportWidth, viewportHeight);
         }
-
-        var mc = Minecraft.getInstance();
-        var mainRT = mc.getMainRenderTarget();
-        var fbWidth = mainRT.viewWidth;
-        var fbHeight = mainRT.viewHeight;
-
-        if (fbWidth <= 0 || fbHeight <= 0) {
-            return;
-        }
-
-        if (intermediate == null) {
-            intermediate = new TextureTarget(viewportWidth, viewportHeight, false, Minecraft.ON_OSX);
-            intermediate.setClearColor(0f, 0f, 0f, 0f);
-        } else if (intermediate.viewWidth != viewportWidth || intermediate.viewHeight != viewportHeight) {
-            intermediate.resize(viewportWidth, viewportHeight, Minecraft.ON_OSX);
-        }
-
-        // Step 1: read = main, draw = intermediate. Linear filter for smooth downsample.
-        GlStateManager._glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, mainRT.frameBufferId);
-        GlStateManager._glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, intermediate.frameBufferId);
-        GlStateManager._glBlitFrameBuffer(
-            0,
-            0,
-            fbWidth,
-            fbHeight,
-            0,
-            0,
-            viewportWidth,
-            viewportHeight,
-            GL30.GL_COLOR_BUFFER_BIT,
-            GL30.GL_LINEAR
-        );
-
-        // Step 2: read = intermediate, draw = main. 1:1 copy at viewport rect (bottom-origin).
-        GlStateManager._glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, intermediate.frameBufferId);
-        GlStateManager._glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, mainRT.frameBufferId);
-        GlStateManager._glBlitFrameBuffer(
-            0,
-            0,
-            viewportWidth,
-            viewportHeight,
-            viewportX,
-            viewportY,
-            viewportX + viewportWidth,
-            viewportY + viewportHeight,
-            GL30.GL_COLOR_BUFFER_BIT,
-            GL30.GL_NEAREST
-        );
-
-        // Restore main RT as the active draw target so subsequent screen rendering goes there as expected. This also
-        // resets RenderSystem.viewport to the main RT's full extent.
-        mainRT.bindWrite(true);
     }
 
     /**
@@ -200,6 +148,23 @@ public final class EngineWorkspaceCompositor {
     }
 
     /**
+     * Capture the live main RT into the viewport-sized intermediate target without painting it back yet. This is used by
+     * the workspace render path so the world can be sampled before the workspace underlay clears the main RT.
+     */
+    public static boolean captureWorldIntoLogicalRect(int rectX, int rectY, int rectW, int rectH, float logicalScale) {
+        var raw = logicalRectToRawFramebuffer(rectX, rectY, rectW, rectH, logicalScale);
+        return captureWorldIntoRawViewport(raw[2], raw[3]);
+    }
+
+    /**
+     * Paint the most recent {@link #captureWorldIntoLogicalRect} result into the given viewport rect.
+     */
+    public static void blitCapturedWorldIntoLogicalRect(int rectX, int rectY, int rectW, int rectH, float logicalScale) {
+        var raw = logicalRectToRawFramebuffer(rectX, rectY, rectW, rectH, logicalScale);
+        blitCapturedIntoRawViewport(raw[0], raw[1], raw[2], raw[3]);
+    }
+
+    /**
      * Same conversion as {@link #compositWorldIntoLogicalRect} but sourcing pixels from the wrapped-screen offscreen RT
      * rather than the main RT.
      */
@@ -224,5 +189,78 @@ public final class EngineWorkspaceCompositor {
         var rawW = (int) Math.round(screenW * guiScale);
         var rawH = (int) Math.round(screenH * guiScale);
         return new int[] { rawX, rawY, rawW, rawH };
+    }
+
+    private static boolean captureWorldIntoRawViewport(int viewportWidth, int viewportHeight) {
+        if (viewportWidth <= 0 || viewportHeight <= 0) {
+            return false;
+        }
+
+        var mc = Minecraft.getInstance();
+        var mainRT = mc.getMainRenderTarget();
+        var fbWidth = mainRT.viewWidth;
+        var fbHeight = mainRT.viewHeight;
+
+        if (fbWidth <= 0 || fbHeight <= 0) {
+            return false;
+        }
+
+        ensureIntermediate(viewportWidth, viewportHeight);
+
+        // Read = main, draw = intermediate. Linear filter for smooth downsample.
+        GlStateManager._glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, mainRT.frameBufferId);
+        GlStateManager._glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, intermediate.frameBufferId);
+        GlStateManager._glBlitFrameBuffer(
+            0,
+            0,
+            fbWidth,
+            fbHeight,
+            0,
+            0,
+            viewportWidth,
+            viewportHeight,
+            GL30.GL_COLOR_BUFFER_BIT,
+            GL30.GL_LINEAR
+        );
+
+        mainRT.bindWrite(true);
+        return true;
+    }
+
+    private static void blitCapturedIntoRawViewport(int viewportX, int viewportY, int viewportWidth, int viewportHeight) {
+        if (viewportWidth <= 0 || viewportHeight <= 0 || intermediate == null) {
+            return;
+        }
+        var mc = Minecraft.getInstance();
+        var mainRT = mc.getMainRenderTarget();
+
+        // Read = intermediate, draw = main. 1:1 copy at viewport rect (bottom-origin).
+        GlStateManager._glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, intermediate.frameBufferId);
+        GlStateManager._glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, mainRT.frameBufferId);
+        GlStateManager._glBlitFrameBuffer(
+            0,
+            0,
+            viewportWidth,
+            viewportHeight,
+            viewportX,
+            viewportY,
+            viewportX + viewportWidth,
+            viewportY + viewportHeight,
+            GL30.GL_COLOR_BUFFER_BIT,
+            GL30.GL_NEAREST
+        );
+
+        // Restore main RT as the active draw target so subsequent screen rendering goes there as expected. This also
+        // resets RenderSystem.viewport to the main RT's full extent.
+        mainRT.bindWrite(true);
+    }
+
+    private static void ensureIntermediate(int viewportWidth, int viewportHeight) {
+        if (intermediate == null) {
+            intermediate = new TextureTarget(viewportWidth, viewportHeight, false, Minecraft.ON_OSX);
+            intermediate.setClearColor(0f, 0f, 0f, 0f);
+        } else if (intermediate.viewWidth != viewportWidth || intermediate.viewHeight != viewportHeight) {
+            intermediate.resize(viewportWidth, viewportHeight, Minecraft.ON_OSX);
+        }
     }
 }
