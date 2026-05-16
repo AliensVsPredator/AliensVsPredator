@@ -233,6 +233,13 @@ public final class TexturesPanel implements Panel {
             return true;
         }
 
+        var saveTexture = new DropdownMenu.Item(
+            "Save",
+            () -> saveTexture(texture),
+            TextureSaveState.canSave(texture),
+            Component.literal("Use Save As... to choose a file first.")
+        );
+        var saveTextureAs = new DropdownMenu.Item("Save As...", () -> saveTextureAs(texture));
         var copyTexture = new DropdownMenu.Item("Copy", () -> copyTexture(texture));
         var duplicateTexture = new DropdownMenu.Item("Duplicate", () -> duplicateTexture(texture));
         var sourceAvailable = TextureLoader.canReload(texture);
@@ -251,7 +258,11 @@ public final class TexturesPanel implements Panel {
             Component.literal("The source folder is no longer available.")
         );
         panelMenuOpener.open(
-            new DropdownMenu((int) mouseX, (int) mouseY, List.of(copyTexture, duplicateTexture, refreshTexture, deleteTexture, openSource))
+            new DropdownMenu(
+                (int) mouseX,
+                (int) mouseY,
+                List.of(saveTexture, saveTextureAs, copyTexture, duplicateTexture, refreshTexture, deleteTexture, openSource)
+            )
         );
         return true;
     }
@@ -360,6 +371,22 @@ public final class TexturesPanel implements Panel {
         Util.getPlatform().openUri(sourceDir.toUri());
     }
 
+    private static void saveTexture(LoadedTexture texture) {
+        if (!TextureSaveState.save(texture)) {
+            LOGGER.warn("TexturesPanel: failed to save {}", texture.displayName());
+        }
+    }
+
+    private static void saveTextureAs(LoadedTexture texture) {
+        var picked = ModelerFilePicker.saveImage(suggestedSaveName(texture), initialSaveDirectory(texture));
+        if (picked == null) {
+            return;
+        }
+        if (!TextureSaveState.saveAs(texture, picked)) {
+            LOGGER.warn("TexturesPanel: failed to save {} as {}", texture.displayName(), picked);
+        }
+    }
+
     private static void copyTexture(LoadedTexture texture) {
         copiedTexture = TextureClipboard.of(texture);
     }
@@ -418,10 +445,11 @@ public final class TexturesPanel implements Panel {
     }
 
     private static @Nullable Path sourceDirectory(LoadedTexture texture) {
-        if (texture.sourcePath() == null) {
+        var sourcePath = TextureSaveState.savePath(texture);
+        if (sourcePath == null) {
             return null;
         }
-        var source = texture.sourcePath().toAbsolutePath().normalize();
+        var source = sourcePath.toAbsolutePath().normalize();
         var dir = Files.isDirectory(source) ? source : source.getParent();
         if (dir == null || !Files.isDirectory(dir)) {
             return null;
@@ -430,13 +458,41 @@ public final class TexturesPanel implements Panel {
     }
 
     private static String sourceDescription(LoadedTexture texture) {
-        if (texture.sourcePath() != null) {
-            return texture.sourcePath().toString();
+        var savePath = TextureSaveState.savePath(texture);
+        if (savePath != null) {
+            return savePath.toString();
         }
         if (texture.sourceResource() != null) {
             return texture.sourceResource().toString();
         }
         return texture.displayName();
+    }
+
+    private static @Nullable Path initialSaveDirectory(LoadedTexture texture) {
+        var savePath = TextureSaveState.savePath(texture);
+        if (savePath != null) {
+            var parent = savePath.toAbsolutePath().normalize().getParent();
+            if (parent != null && Files.isDirectory(parent)) {
+                return parent;
+            }
+        }
+        return inferInitialTexturePickerDir();
+    }
+
+    private static String suggestedSaveName(LoadedTexture texture) {
+        var savePath = TextureSaveState.savePath(texture);
+        if (savePath != null && savePath.getFileName() != null) {
+            return savePath.getFileName().toString();
+        }
+        if (texture.sourcePath() != null && texture.sourcePath().getFileName() != null) {
+            return texture.sourcePath().getFileName().toString();
+        }
+        if (texture.sourceResource() != null) {
+            var path = texture.sourceResource().getPath();
+            var slash = path.lastIndexOf('/');
+            return slash >= 0 ? path.substring(slash + 1) : path;
+        }
+        return texture.displayName().replace(':', '_').replace('/', '_').replace('\\', '_');
     }
 
     private void renderMenuBar(GuiGraphics graphics, int x, int y, int width, int mouseX, int mouseY, Font font) {
