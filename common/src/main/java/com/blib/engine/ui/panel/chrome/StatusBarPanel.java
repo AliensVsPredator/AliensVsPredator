@@ -9,9 +9,12 @@ import org.jetbrains.annotations.ApiStatus;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.blib.engine.domain.selection.picking.BlockSelectable;
 import com.blib.engine.domain.selection.picking.BlockVolumeSelectable;
 import com.blib.engine.domain.selection.picking.EntitySelectable;
 import com.blib.engine.domain.selection.picking.FactionSelectable;
+import com.blib.engine.domain.selection.picking.PlacedJigsawPieceSelectable;
+import com.blib.engine.domain.selection.picking.Selectable;
 import com.blib.engine.domain.selection.picking.SelectionManager;
 import com.blib.engine.domain.selection.volume.BlockSelection;
 import com.blib.engine.input.ActiveKeybindings;
@@ -29,6 +32,7 @@ import com.blib.engine.territory.ClaimPaintTool;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.EngineWorkspaceScreen;
 import com.blib.engine.ui.dock.Panel;
+import com.blib.engine.ui.workspace.ViewportSelectionDelete;
 
 /**
  * Bottom-of-screen status bar — full-bleed (no chrome). Two regions:
@@ -230,7 +234,7 @@ public final class StatusBarPanel implements Panel {
             hints.add(ActiveKeybindings.resolve(Keybindings.GIZMO_SCALE));
             hints.add(ActiveKeybindings.resolve(Keybindings.GIZMO_SNAP_INT));
             hints.add(ActiveKeybindings.resolve(Keybindings.COPY));
-            hints.add(ActiveKeybindings.resolve(Keybindings.DELETE));
+            addDeleteHintIfAvailable(hints, single);
             return hints;
         }
         if (single instanceof BlockVolumeSelectable) {
@@ -240,7 +244,13 @@ public final class StatusBarPanel implements Panel {
             hints.add(ActiveKeybindings.resolve(Keybindings.COPY));
             hints.add(ActiveKeybindings.resolve(Keybindings.CUT));
             hints.add(ActiveKeybindings.resolve(Keybindings.PASTE));
+            addDeleteHintIfAvailable(hints, single);
             hints.add(ActiveKeybindings.resolve(Keybindings.CANCEL.withLabel("Clear")));
+            return hints;
+        }
+        if (single instanceof BlockSelectable || single instanceof PlacedJigsawPieceSelectable) {
+            defaultViewportHints(hints);
+            addDeleteHintIfAvailable(hints, single);
             return hints;
         }
         if (single instanceof FactionSelectable) {
@@ -250,6 +260,12 @@ public final class StatusBarPanel implements Panel {
         }
 
         return defaultViewportHints(hints);
+    }
+
+    private static void addDeleteHintIfAvailable(ArrayList<Keybinding> hints, Selectable selectable) {
+        if (ViewportSelectionDelete.canDelete(selectable)) {
+            hints.add(ActiveKeybindings.resolve(Keybindings.DELETE));
+        }
     }
 
     private List<Keybinding> defaultViewportHints(ArrayList<Keybinding> hints) {

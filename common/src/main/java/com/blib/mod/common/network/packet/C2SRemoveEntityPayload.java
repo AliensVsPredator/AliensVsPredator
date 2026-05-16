@@ -10,8 +10,8 @@ import org.jetbrains.annotations.NotNull;
 import com.blib.mod.BLib;
 
 /**
- * Client → server: ask the server to remove {@code entityId} from the world (used by the engine workspace's right-
- * click → "Delete Entity" action). The server validates that the sender has operator permissions, that the target
+ * Client → server: ask the server to remove {@code entityId} from the world (used by the engine workspace's Delete
+ * action). The server validates that the sender has operator permissions, that the target
  * exists, that it isn't a player, and then discards it. Editor convenience for cleaning up test mobs without typing
  * {@code /kill}.
  */
