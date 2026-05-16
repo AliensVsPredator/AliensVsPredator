@@ -6,6 +6,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,6 +15,7 @@ import com.blib.engine.modeler.ModelerBone;
 import com.blib.engine.modeler.ModelerScene;
 import com.blib.engine.modeler.Selection;
 import com.blib.engine.modeler.animation.AnimationEditorState;
+import com.blib.engine.modeler.animation.AnimationEditorState.AnimationKey;
 import com.blib.engine.modeler.animation.AnimationEditorState.KeyframeRef;
 import com.blib.engine.modeler.animation.AnimationEditorState.TransformChannel;
 import com.blib.engine.ui.EngineFont;
@@ -292,18 +294,18 @@ public final class AnimationTimelinePanel implements Panel {
 
     private void rebuildTracks(AnimationEditorState state) {
         rows.clear();
-        var animation = state.selectedAnimationName();
+        var animations = timelineAnimationKeys(state);
         var root = selectedTimelineRoot(state);
-        if (!state.hasDraft() || animation == null || root == null) {
+        if (!state.hasDraft() || animations.isEmpty() || root == null) {
             return;
         }
-        collectRows(state, animation, root, rows);
+        collectRows(state, animations, root, rows);
     }
 
-    private void collectRows(AnimationEditorState state, String animation, ModelerBone bone, List<TimelineRow> out) {
-        var position = state.keyframes(animation, bone.name, TransformChannel.POSITION);
-        var rotation = state.keyframes(animation, bone.name, TransformChannel.ROTATION);
-        var scale = state.keyframes(animation, bone.name, TransformChannel.SCALE);
+    private void collectRows(AnimationEditorState state, List<AnimationKey> animations, ModelerBone bone, List<TimelineRow> out) {
+        var position = mergedKeyframes(state, animations, bone.name, TransformChannel.POSITION);
+        var rotation = mergedKeyframes(state, animations, bone.name, TransformChannel.ROTATION);
+        var scale = mergedKeyframes(state, animations, bone.name, TransformChannel.SCALE);
         var hasOwnKeyframes = !position.isEmpty() || !rotation.isEmpty() || !scale.isEmpty();
         if (hasOwnKeyframes) {
             out.add(TimelineRow.bone(bone, 0));
@@ -314,8 +316,41 @@ public final class AnimationTimelinePanel implements Panel {
             }
         }
         for (var child : bone.children) {
-            collectRows(state, animation, child, out);
+            collectRows(state, animations, child, out);
         }
+    }
+
+    private static List<AnimationKey> timelineAnimationKeys(AnimationEditorState state) {
+        var selected = state.selectedAnimationKeys();
+        if (!selected.isEmpty()) {
+            return selected;
+        }
+        if (state.selectedDocumentId() == null || state.selectedAnimationName() == null) {
+            return List.of();
+        }
+        if (state.animationObject(state.selectedDocumentId(), state.selectedAnimationName()) == null) {
+            return List.of();
+        }
+        return List.of(new AnimationKey(state.selectedDocumentId(), state.selectedAnimationName()));
+    }
+
+    private static List<KeyframeRef> mergedKeyframes(
+        AnimationEditorState state,
+        List<AnimationKey> animations,
+        String boneName,
+        TransformChannel channel
+    ) {
+        var out = new ArrayList<KeyframeRef>();
+        for (var animation : animations) {
+            out.addAll(state.keyframes(animation.documentId(), animation.animationName(), boneName, channel));
+        }
+        out.sort(
+            Comparator
+                .comparingDouble(KeyframeRef::timestamp)
+                .thenComparing(KeyframeRef::animationName, String.CASE_INSENSITIVE_ORDER)
+                .thenComparingInt(KeyframeRef::documentId)
+        );
+        return out;
     }
 
     private void syncTimelineScopeFromScene(AnimationEditorState state) {
@@ -478,6 +513,7 @@ public final class AnimationTimelinePanel implements Panel {
                 var selected = state.selectedTimestamp() != null
                     && state.selectedDocumentId() != null
                     && frame.documentId() == state.selectedDocumentId()
+                    && frame.animationName().equals(state.selectedAnimationName())
                     && frame.channel() == state.selectedChannel()
                     && frame.boneName().equals(state.selectedBoneName())
                     && Math.abs(frame.timestamp() - state.selectedTimestamp()) < 1.0e-6;
