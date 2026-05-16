@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import com.blib.engine.modeler.ModelerBone;
 import com.blib.engine.modeler.ModelerScene;
@@ -118,6 +119,13 @@ public final class AnimationEditorState {
         TransformChannel channel
     ) {}
 
+    private record PreviewTransformCacheKey(
+        ModelerBone bone,
+        long timestampBits,
+        long contentRevision,
+        long animationSelectionRevision
+    ) {}
+
     private static final class AnimationDocument {
         private final int id;
 
@@ -167,6 +175,8 @@ public final class AnimationEditorState {
     private final List<AnimationDocument> documents = new ArrayList<>();
 
     private final Map<KeyframeCacheKey, List<KeyframeRef>> keyframeCache = new HashMap<>();
+
+    private final Map<PreviewTransformCacheKey, Optional<PreviewBoneTransform>> previewTransformCache = new HashMap<>();
 
     private int nextDocumentId = 1;
 
@@ -613,10 +623,11 @@ public final class AnimationEditorState {
             return;
         }
         var duration = selectedAnimationLengthSeconds();
-        playheadSeconds += Math.min(elapsed, 0.25) * speedMultiplier;
-        if (playheadSeconds > duration) {
-            playheadSeconds = duration <= 0.0 ? 0.0 : playheadSeconds % duration;
+        var nextPlayhead = playheadSeconds + Math.min(elapsed, 0.25) * speedMultiplier;
+        if (nextPlayhead > duration) {
+            nextPlayhead = duration <= 0.0 ? 0.0 : nextPlayhead % duration;
         }
+        setPlayheadSecondsRaw(nextPlayhead);
     }
 
     public void togglePlayback() {
@@ -631,11 +642,11 @@ public final class AnimationEditorState {
         }
         this.playing = true;
         lastPlaybackNanos = System.nanoTime();
-        playheadSeconds = clampPlayhead(playheadSeconds);
+        setPlayheadSecondsRaw(clampPlayhead(playheadSeconds));
     }
 
     public void setPlayheadSeconds(double seconds) {
-        playheadSeconds = clampPlayhead(seconds);
+        setPlayheadSecondsRaw(clampPlayhead(seconds));
         if (playing) {
             lastPlaybackNanos = System.nanoTime();
         }
@@ -643,7 +654,7 @@ public final class AnimationEditorState {
 
     public void stopPlayback() {
         playing = false;
-        playheadSeconds = 0.0;
+        setPlayheadSecondsRaw(0.0);
         lastPlaybackNanos = 0L;
     }
 
@@ -831,6 +842,25 @@ public final class AnimationEditorState {
             return null;
         }
 
+        if (shouldCachePreviewTransform(timestamp)) {
+            var key = new PreviewTransformCacheKey(
+                bone,
+                Double.doubleToLongBits(timestamp),
+                contentRevision,
+                animationSelectionRevision
+            );
+            var cached = previewTransformCache.get(key);
+            if (cached != null) {
+                return cached.orElse(null);
+            }
+            var result = computePreviewTransformFor(bone, timestamp);
+            previewTransformCache.put(key, Optional.ofNullable(result));
+            return result;
+        }
+        return computePreviewTransformFor(bone, timestamp);
+    }
+
+    private @Nullable PreviewBoneTransform computePreviewTransformFor(ModelerBone bone, double timestamp) {
         Vec3 position = null;
         Vec3 rotation = null;
         Vec3 scale = null;
@@ -853,6 +883,10 @@ public final class AnimationEditorState {
             return null;
         }
         return new PreviewBoneTransform(position, rotation, scale);
+    }
+
+    private boolean shouldCachePreviewTransform(double timestamp) {
+        return Math.abs(timestamp - playheadSeconds) <= 1.0e-9;
     }
 
     public void selectAnimation(@Nullable String name) {
@@ -1397,7 +1431,7 @@ public final class AnimationEditorState {
         if (timestamp > current) {
             animation.addProperty("animation_length", timestamp);
         }
-        playheadSeconds = clampPlayhead(playheadSeconds);
+        setPlayheadSecondsRaw(clampPlayhead(playheadSeconds));
     }
 
     private double clampPlayhead(double seconds) {
@@ -1992,6 +2026,7 @@ public final class AnimationEditorState {
     private void bumpContentRevision() {
         contentRevision++;
         keyframeCache.clear();
+        clearPreviewTransformCache();
     }
 
     private void bumpSelectionRevision() {
@@ -2001,6 +2036,19 @@ public final class AnimationEditorState {
     private void bumpAnimationSelectionRevision() {
         animationSelectionRevision++;
         bumpSelectionRevision();
+        clearPreviewTransformCache();
+    }
+
+    private void setPlayheadSecondsRaw(double seconds) {
+        if (Double.doubleToLongBits(playheadSeconds) == Double.doubleToLongBits(seconds)) {
+            return;
+        }
+        playheadSeconds = seconds;
+        clearPreviewTransformCache();
+    }
+
+    private void clearPreviewTransformCache() {
+        previewTransformCache.clear();
     }
 
     private boolean writeFile(AnimationDocument document, Path path) {
