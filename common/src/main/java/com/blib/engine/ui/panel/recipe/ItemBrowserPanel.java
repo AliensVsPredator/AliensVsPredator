@@ -21,6 +21,8 @@ import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.layout.ScrollViewport;
 import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.layout.UiText;
+import com.blib.engine.ui.widget.SegmentedControl;
+import com.blib.engine.ui.widget.ScrollContainer;
 import com.blib.engine.ui.widget.TextInput;
 
 @ApiStatus.Internal
@@ -44,11 +46,19 @@ public final class ItemBrowserPanel implements Panel {
 
     private static final int ROW_HEIGHT = 20;
 
+    private static final int MODE_TOGGLE_WIDTH = 76;
+
+    private static final int MODE_TOGGLE_GAP = 4;
+
     private static final int ICON_SIZE = 16;
+
+    private static final int ICON_CELL_SIZE = 24;
 
     private static final int ICON_TEXT_GAP = 5;
 
     private final TextInput searchInput = new TextInput("Search items...");
+
+    private final SegmentedControl modeToggle = new SegmentedControl(List.of("List", "Icons"), 0);
 
     private final ScrollViewport scroll = new ScrollViewport();
 
@@ -102,7 +112,10 @@ public final class ItemBrowserPanel implements Panel {
         }
 
         var searchY = y + CONTENT_PADDING;
-        searchInput.render(graphics, x + CONTENT_PADDING, searchY, width - 2 * CONTENT_PADDING, mouseX, mouseY);
+        var toggleX = x + width - CONTENT_PADDING - MODE_TOGGLE_WIDTH;
+        var searchW = Math.max(0, toggleX - (x + CONTENT_PADDING) - MODE_TOGGLE_GAP);
+        searchInput.render(graphics, x + CONTENT_PADDING, searchY, searchW, mouseX, mouseY);
+        modeToggle.render(graphics, toggleX, searchY, MODE_TOGGLE_WIDTH, mouseX, mouseY);
 
         var listX = x + CONTENT_PADDING;
         var listY = searchY + TextInput.HEIGHT + SEARCH_GAP_BELOW;
@@ -129,20 +142,58 @@ public final class ItemBrowserPanel implements Panel {
             return;
         }
 
-        var contentHeight = filtered.size() * ROW_HEIGHT;
+        var contentHeight = contentHeight(Math.max(0, listW - ScrollContainer.SCROLLBAR_GUTTER));
         var frame = scroll.begin(graphics, UiRect.of(listX, listY, listW, listH), contentHeight);
         try {
-            var firstVisibleRow = Math.max(0, frame.scrollY() / ROW_HEIGHT);
-            var lastVisibleRow = Math.min(filtered.size() - 1, (frame.scrollY() + listH) / ROW_HEIGHT);
-            for (var i = firstVisibleRow; i <= lastVisibleRow; i++) {
-                var rowY = listY + i * ROW_HEIGHT - frame.scrollY();
-                renderRow(graphics, frame.contentX(), rowY, frame.contentWidth(), filtered.get(i), mouseX, mouseY);
+            if (isIconMode()) {
+                renderIconGrid(graphics, frame, listY, listH, mouseX, mouseY);
+            } else {
+                var firstVisibleRow = Math.max(0, frame.scrollY() / ROW_HEIGHT);
+                var lastVisibleRow = Math.min(filtered.size() - 1, (frame.scrollY() + listH) / ROW_HEIGHT);
+                for (var i = firstVisibleRow; i <= lastVisibleRow; i++) {
+                    var rowY = listY + i * ROW_HEIGHT - frame.scrollY();
+                    renderRow(graphics, frame.contentX(), rowY, frame.contentWidth(), filtered.get(i), mouseX, mouseY);
+                }
             }
         } finally {
             scroll.end(graphics, mouseX, mouseY);
         }
 
         renderDraggedStack(graphics, mouseX, mouseY);
+    }
+
+    private void renderIconGrid(GuiGraphics graphics, ScrollViewport.Frame frame, int listY, int listH, int mouseX, int mouseY) {
+        var columns = columnsForWidth(frame.contentWidth());
+        var firstVisibleRow = Math.max(0, frame.scrollY() / ICON_CELL_SIZE);
+        var lastVisibleRow = Math.min(rowCount(columns) - 1, (frame.scrollY() + listH) / ICON_CELL_SIZE);
+        for (var row = firstVisibleRow; row <= lastVisibleRow; row++) {
+            var cellY = listY + row * ICON_CELL_SIZE - frame.scrollY();
+            for (var col = 0; col < columns; col++) {
+                var index = row * columns + col;
+                if (index >= filtered.size()) {
+                    return;
+                }
+                var cellX = frame.contentX() + col * ICON_CELL_SIZE;
+                renderIconCell(graphics, cellX, cellY, filtered.get(index), mouseX, mouseY);
+            }
+        }
+    }
+
+    private void renderIconCell(GuiGraphics graphics, int x, int y, Entry entry, int mouseX, int mouseY) {
+        var hovered = mouseX >= x && mouseX < x + ICON_CELL_SIZE && mouseY >= y && mouseY < y + ICON_CELL_SIZE;
+        if (hovered) {
+            graphics.fill(x, y, x + ICON_CELL_SIZE, y + ICON_CELL_SIZE, ROW_BG_HOVER_COLOR);
+        }
+
+        var stack = new ItemStack(entry.item());
+        var iconX = x + (ICON_CELL_SIZE - ICON_SIZE) / 2;
+        var iconY = y + (ICON_CELL_SIZE - ICON_SIZE) / 2;
+        graphics.renderItem(stack, iconX, iconY);
+        rowHits.add(new RowHit(x, y, ICON_CELL_SIZE, ICON_CELL_SIZE, entry.item()));
+
+        if (hovered) {
+            hoveredTooltip = Component.literal(stack.getHoverName().getString() + "\nID: " + entry.id() + "\nMax stack: " + stack.getMaxStackSize());
+        }
     }
 
     private void renderRow(GuiGraphics graphics, int x, int y, int width, Entry entry, int mouseX, int mouseY) {
@@ -202,6 +253,25 @@ public final class ItemBrowserPanel implements Panel {
         return entries;
     }
 
+    private int contentHeight(int width) {
+        if (!isIconMode()) {
+            return filtered.size() * ROW_HEIGHT;
+        }
+        return rowCount(columnsForWidth(width)) * ICON_CELL_SIZE;
+    }
+
+    private int rowCount(int columns) {
+        return (filtered.size() + Math.max(1, columns) - 1) / Math.max(1, columns);
+    }
+
+    private static int columnsForWidth(int width) {
+        return Math.max(1, width / ICON_CELL_SIZE);
+    }
+
+    private boolean isIconMode() {
+        return modeToggle.selectedIndex() == 1;
+    }
+
     private static void renderDraggedStack(GuiGraphics graphics, int mouseX, int mouseY) {
         var drag = RecipeAuthoringState.draggedStack();
         if (drag == null) {
@@ -235,7 +305,17 @@ public final class ItemBrowserPanel implements Panel {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return searchInput.mouseClicked(mouseX, mouseY, button);
+        if (searchInput.mouseClicked(mouseX, mouseY, button)) {
+            return true;
+        }
+        var previousMode = modeToggle.selectedIndex();
+        if (modeToggle.mouseClicked(mouseX, mouseY, button)) {
+            if (modeToggle.selectedIndex() != previousMode) {
+                scroll.reset();
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
