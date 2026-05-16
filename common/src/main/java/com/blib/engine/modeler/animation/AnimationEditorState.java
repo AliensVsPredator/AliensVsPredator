@@ -100,6 +100,12 @@ public final class AnimationEditorState {
 
     private @Nullable Double selectedTimestamp;
 
+    private boolean playing;
+
+    private double playheadSeconds;
+
+    private long lastPlaybackNanos;
+
     private boolean dirty;
 
     private @Nullable String statusMessage;
@@ -142,6 +148,14 @@ public final class AnimationEditorState {
         return selectedTimestamp;
     }
 
+    public boolean isPlaying() {
+        return playing;
+    }
+
+    public double playheadSeconds() {
+        return playheadSeconds;
+    }
+
     public @Nullable ResourceLocation projectResourceId() {
         return projectResourceId;
     }
@@ -174,6 +188,7 @@ public final class AnimationEditorState {
         lastSavedPath = null;
         selectedAnimationName = null;
         selectedTimestamp = null;
+        stopPlayback();
         dirty = true;
         statusMessage = "New animation file";
     }
@@ -191,6 +206,7 @@ public final class AnimationEditorState {
             dirty = false;
             selectedAnimationName = firstAnimationName();
             selectedTimestamp = null;
+            stopPlayback();
             lastSavedPath = path.toAbsolutePath().normalize();
 
             var projectResource = inferProjectResourceId(path);
@@ -309,6 +325,69 @@ public final class AnimationEditorState {
         return animations.getAsJsonObject(name);
     }
 
+    public double selectedAnimationLengthSeconds() {
+        var animation = selectedAnimationObject();
+        if (animation == null) {
+            return 1.0;
+        }
+        var length = readAnimationLength(animation);
+        length = Math.max(length, maxKeyframeTimestamp(selectedAnimationName, animation));
+        return Math.max(1.0, length);
+    }
+
+    public void updatePlaybackClock() {
+        if (!playing) {
+            return;
+        }
+        if (selectedAnimationName == null || selectedAnimationObject() == null) {
+            stopPlayback();
+            return;
+        }
+        var now = System.nanoTime();
+        if (lastPlaybackNanos == 0L) {
+            lastPlaybackNanos = now;
+            return;
+        }
+        var elapsed = Math.max(0.0, (now - lastPlaybackNanos) / 1_000_000_000.0);
+        lastPlaybackNanos = now;
+        if (elapsed <= 0.0) {
+            return;
+        }
+        var duration = selectedAnimationLengthSeconds();
+        playheadSeconds += Math.min(elapsed, 0.25);
+        if (playheadSeconds > duration) {
+            playheadSeconds = duration <= 0.0 ? 0.0 : playheadSeconds % duration;
+        }
+    }
+
+    public void togglePlayback() {
+        setPlaying(!playing);
+    }
+
+    public void setPlaying(boolean playing) {
+        if (!playing || selectedAnimationName == null || selectedAnimationObject() == null) {
+            this.playing = false;
+            lastPlaybackNanos = 0L;
+            return;
+        }
+        this.playing = true;
+        lastPlaybackNanos = System.nanoTime();
+        playheadSeconds = clampPlayhead(playheadSeconds);
+    }
+
+    public void setPlayheadSeconds(double seconds) {
+        playheadSeconds = clampPlayhead(seconds);
+        if (playing) {
+            lastPlaybackNanos = System.nanoTime();
+        }
+    }
+
+    public void stopPlayback() {
+        playing = false;
+        playheadSeconds = 0.0;
+        lastPlaybackNanos = 0L;
+    }
+
     public void selectAnimation(@Nullable String name) {
         if (name == null || animationObject(name) == null) {
             selectedAnimationName = firstAnimationName();
@@ -316,6 +395,7 @@ public final class AnimationEditorState {
             selectedAnimationName = name;
         }
         selectedTimestamp = null;
+        stopPlayback();
     }
 
     public String createAnimation(@Nullable String requestedName) {
@@ -328,6 +408,7 @@ public final class AnimationEditorState {
         animations.add(name, obj);
         selectedAnimationName = name;
         selectedTimestamp = null;
+        stopPlayback();
         markDirty("Created " + name);
         return name;
     }
@@ -372,6 +453,7 @@ public final class AnimationEditorState {
         animations.add(name, source.deepCopy());
         selectedAnimationName = name;
         selectedTimestamp = null;
+        stopPlayback();
         markDirty("Duplicated " + sourceName);
         return name;
     }
@@ -385,6 +467,7 @@ public final class AnimationEditorState {
         if (name.equals(selectedAnimationName)) {
             selectedAnimationName = firstAnimationName();
             selectedTimestamp = null;
+            stopPlayback();
         }
         markDirty("Deleted " + name);
         return true;
@@ -398,7 +481,11 @@ public final class AnimationEditorState {
     public void syncSelectedBoneFromScene() {
         var selection = ModelerScene.get().selection;
         if (selection instanceof Selection.BoneSelection bs) {
-            selectedBoneName = bs.bone().name;
+            var nextBoneName = bs.bone().name;
+            if (!nextBoneName.equals(selectedBoneName)) {
+                selectedBoneName = nextBoneName;
+                selectedTimestamp = null;
+            }
         }
     }
 
@@ -607,6 +694,47 @@ public final class AnimationEditorState {
         if (timestamp > current) {
             animation.addProperty("animation_length", timestamp);
         }
+        playheadSeconds = clampPlayhead(playheadSeconds);
+    }
+
+    private double clampPlayhead(double seconds) {
+        if (!Double.isFinite(seconds)) {
+            return 0.0;
+        }
+        return Math.max(0.0, Math.min(selectedAnimationLengthSeconds(), seconds));
+    }
+
+    private static double readAnimationLength(JsonObject animation) {
+        if (!animation.has("animation_length") || !animation.get("animation_length").isJsonPrimitive()) {
+            return 0.0;
+        }
+        try {
+            return Math.max(0.0, animation.get("animation_length").getAsDouble());
+        } catch (RuntimeException ignored) {
+            return 0.0;
+        }
+    }
+
+    private static double maxKeyframeTimestamp(@Nullable String animationName, JsonObject animation) {
+        if (animationName == null || !animation.has("bones") || !animation.get("bones").isJsonObject()) {
+            return 0.0;
+        }
+        var max = 0.0;
+        for (var boneEntry : animation.getAsJsonObject("bones").entrySet()) {
+            if (!boneEntry.getValue().isJsonObject()) {
+                continue;
+            }
+            var bone = boneEntry.getValue().getAsJsonObject();
+            for (var channel : TransformChannel.values()) {
+                if (!bone.has(channel.jsonName())) {
+                    continue;
+                }
+                for (var ref : readKeyframes(animationName, boneEntry.getKey(), channel, bone.get(channel.jsonName()))) {
+                    max = Math.max(max, ref.timestamp());
+                }
+            }
+        }
+        return max;
     }
 
     private boolean deleteKeyframe(String animationName, String boneName, TransformChannel channel, double timestamp) {
