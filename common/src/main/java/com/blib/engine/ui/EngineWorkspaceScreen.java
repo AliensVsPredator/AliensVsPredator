@@ -1238,12 +1238,21 @@ public final class EngineWorkspaceScreen extends Screen {
                 false
             )
         );
+        items.add(DropdownMenu.Item.divider());
+        items.add(new DropdownMenu.Item("Reset Panel", () -> resetTabPanel(tabbed, tabIdx)));
         return new DropdownMenu(anchorX, anchorY, items);
     }
 
     private void moveTabToSplit(TabbedPanel tabbed, int tabIdx, DockTreeMutator.SplitSide side) {
         this.root = DockTreeMutator.moveTabToSplit(this.root, tabbed, tabIdx, tabbed, side);
         simplifyDockTree();
+    }
+
+    private void resetTabPanel(TabbedPanel tabbed, int tabIdx) {
+        if (tabIdx < 0 || tabIdx >= tabbed.tabCount()) {
+            return;
+        }
+        tabbed.tabs().get(tabIdx).resetPanel();
     }
 
     @Override

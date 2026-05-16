@@ -46,6 +46,15 @@ public interface Panel extends PanelInput {
     default void onShown() {}
 
     /**
+     * Reset transient panel UI state on request from container chrome, such as the tab context menu. The default
+     * mirrors {@link #onShown()} because most existing panels already put scroll/filter refresh behavior there.
+     * Panels with heavier reset semantics can override this without changing tab-menu plumbing.
+     */
+    default void resetPanel() {
+        onShown();
+    }
+
+    /**
      * Returns the tooltip text to display for the cursor's last-rendered position, or {@code null} if no tooltip
      * applies. Panels compute and cache this during {@link #render} (which already receives mouse coordinates), and the
      * workspace queries it after the render pass to draw a tooltip near the cursor.
