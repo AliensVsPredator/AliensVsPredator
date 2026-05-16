@@ -105,6 +105,8 @@ public final class AnimationTimelinePanel implements Panel {
 
     private static final int KEYFRAME_HIT_PX = 6;
 
+    private static final long KEYFRAME_DOUBLE_CLICK_NANOS = 350_000_000L;
+
     private final ScrollViewport scroll = new ScrollViewport();
 
     private final @Nullable PanelMenuOpener menuOpener;
@@ -138,6 +140,8 @@ public final class AnimationTimelinePanel implements Panel {
     private double timelineDuration = 1.0;
 
     private boolean draggingPlayhead;
+
+    private @Nullable KeyframeClick lastKeyframeClick;
 
     public AnimationTimelinePanel(@Nullable PanelMenuOpener menuOpener) {
         this.menuOpener = menuOpener;
@@ -201,16 +205,18 @@ public final class AnimationTimelinePanel implements Panel {
         var keyframe = keyframeAt(mouseX, mouseY);
         if (keyframe != null) {
             var alreadySelected = isSelectedKeyframe(state, keyframe);
+            var doubleClicked = recordKeyframeClick(keyframe);
             var row = channelRowAt(mouseY);
             if (row != null) {
                 selectBoneFromTimeline(row.bone());
             }
             state.selectKeyframe(keyframe.documentId(), keyframe.animationName(), keyframe.boneName(), keyframe.channel(), keyframe.timestamp());
-            if (alreadySelected) {
+            if (alreadySelected && doubleClicked) {
                 state.setPlayheadSeconds(keyframe.timestamp());
             }
             return true;
         }
+        lastKeyframeClick = null;
         var row = rowAt(mouseY);
         if (row != null && mouseX >= timelineLabelX && mouseX < timelineGraphVisibleX) {
             if (row.isBone() && caretHit(row, mouseX)) {
@@ -642,6 +648,22 @@ public final class AnimationTimelinePanel implements Panel {
             && Math.abs(keyframe.timestamp() - state.selectedTimestamp()) < 1.0e-6;
     }
 
+    private boolean recordKeyframeClick(KeyframeRef keyframe) {
+        var now = System.nanoTime();
+        var previous = lastKeyframeClick;
+        var current = new KeyframeClick(
+            keyframe.documentId(),
+            keyframe.animationName(),
+            keyframe.boneName(),
+            keyframe.channel(),
+            keyframe.timestamp(),
+            now
+        );
+        var doubleClicked = previous != null && previous.matches(keyframe) && now - previous.clickNanos() <= KEYFRAME_DOUBLE_CLICK_NANOS;
+        lastKeyframeClick = doubleClicked ? null : current;
+        return doubleClicked;
+    }
+
     private @Nullable KeyframeRef keyframeAt(double mouseX, double mouseY) {
         var index = rowIndexAt(mouseY);
         if (index < 0 || index >= rows.size()) {
@@ -880,6 +902,24 @@ public final class AnimationTimelinePanel implements Panel {
 
         boolean isBone() {
             return channel == null;
+        }
+    }
+
+    private record KeyframeClick(
+        int documentId,
+        String animationName,
+        String boneName,
+        TransformChannel channel,
+        double timestamp,
+        long clickNanos
+    ) {
+
+        boolean matches(KeyframeRef keyframe) {
+            return documentId == keyframe.documentId()
+                && animationName.equals(keyframe.animationName())
+                && boneName.equals(keyframe.boneName())
+                && channel == keyframe.channel()
+                && Math.abs(timestamp - keyframe.timestamp()) < 1.0e-6;
         }
     }
 }
