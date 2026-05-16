@@ -260,11 +260,12 @@ public final class OutlinerPanel implements Panel {
         var caret = collapsed.contains(cat) ? "▸" : "▾";
         var textY = y + (HEADER_HEIGHT - font.lineHeight + 2) / 2;
         var countLabel = "(" + count + ")";
-        var countX = rowRight - 4 - font.width(countLabel);
+        var countWidth = Math.min(font.width(countLabel), Math.max(0, rowRight - x - 4));
+        var countX = Math.max(x, rowRight - 4 - countWidth);
         UiText.drawClipped(graphics, font, caret, x + 4, textY, CARET_WIDTH, HEADER_TEXT_COLOR);
         var labelX = x + 4 + CARET_WIDTH + 2;
         UiText.drawClipped(graphics, font, cat.displayName, labelX, textY, Math.max(0, countX - labelX - 4), HEADER_TEXT_COLOR);
-        UiText.drawClipped(graphics, font, countLabel, countX, textY, Math.max(0, rowRight - countX - 4), HEADER_COUNT_COLOR);
+        UiText.drawClipped(graphics, font, countLabel, countX, textY, countWidth, HEADER_COUNT_COLOR);
 
         headerHits.add(new HeaderHit(x, y, rowRight - x, HEADER_HEIGHT, cat));
     }
@@ -294,8 +295,8 @@ public final class OutlinerPanel implements Panel {
         // Distance label is right-aligned and drawn first so we know how much room is left for the name (long names
         // would otherwise crowd the right edge and overlap the distance).
         var distLabel = formatDistance(entry.distance);
-        var distWidth = font.width(distLabel);
-        var distX = rowRight - distWidth - 4;
+        var distWidth = Math.min(font.width(distLabel), Math.max(0, rowRight - x - 4));
+        var distX = Math.max(x, rowRight - distWidth - 4);
         UiText.drawClipped(graphics, font, distLabel, distX, textY, distWidth, DISTANCE_TEXT_COLOR);
 
         var nameX = x + ROW_INDENT_X;

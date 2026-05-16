@@ -53,6 +53,7 @@ import com.blib.engine.ui.dock.Orientation;
 import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.dock.PanelChrome;
 import com.blib.engine.ui.dock.TabbedPanel;
+import com.blib.engine.ui.layout.PanelScissor;
 import com.blib.engine.ui.layout.UiRect;
 import com.blib.engine.ui.layout.UiText;
 import com.blib.engine.ui.panel.chrome.MenuBarPanel;
@@ -924,7 +925,12 @@ public final class EngineWorkspaceScreen extends Screen {
                 UiText::setCapturedTruncatedTextTooltip
             )
         ) {
-            panel.render(graphics, x, y, width, height, mouseX, mouseY, partialTick);
+            PanelScissor.enable(graphics, x, y, width, height);
+            try {
+                panel.render(graphics, x, y, width, height, mouseX, mouseY, partialTick);
+            } finally {
+                PanelScissor.disable(graphics);
+            }
         }
     }
 
