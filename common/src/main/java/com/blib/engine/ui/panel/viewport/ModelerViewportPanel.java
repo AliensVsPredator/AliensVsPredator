@@ -332,7 +332,22 @@ public final class ModelerViewportPanel implements Panel {
         if (partners.isEmpty()) {
             return null;
         }
-        return Component.literal("Bone: " + hoveredBone.name + "\nColliding with " + String.join(", ", partners));
+        var lines = new ArrayList<String>();
+        lines.add("Bone: " + AnimationCollisionState.bonePath(hoveredBone));
+        lines.add("Colliding with:");
+        var limit = Math.min(4, partners.size());
+        for (var i = 0; i < limit; i++) {
+            var partner = partners.get(i);
+            lines.add(
+                "- " + partner.bonePath()
+                    + " (" + partner.cubeName() + " <-> " + partner.partnerCubeName()
+                    + ", depth " + String.format(Locale.ROOT, "%.3f", partner.depth()) + ")"
+            );
+        }
+        if (partners.size() > limit) {
+            lines.add("+" + (partners.size() - limit) + " more");
+        }
+        return Component.literal(String.join("\n", lines));
     }
 
     /**

@@ -646,7 +646,7 @@ public final class AnimationTimelinePanel implements Panel {
     }
 
     private void renderCollisionSpans(GuiGraphics graphics, TimelineRow row, int trackY) {
-        var spans = AnimationCollisionState.get().spansForBone(row.bone().name);
+        var spans = AnimationCollisionState.get().spansForBone(row.bone());
         if (spans.isEmpty()) {
             return;
         }

@@ -28,14 +28,20 @@ import com.blib.engine.modeler.animation.AnimationEditorState.TransformChannel;
 @ApiStatus.Internal
 public final class AnimationCollisionState {
 
-    public record CollisionSpan(String boneName, double startSeconds, double endSeconds) {}
+    public record CollisionSpan(ModelerBone bone, double startSeconds, double endSeconds) {}
 
-    private record CollisionReport(Map<String, List<CollisionSpan>> spansByBone) {
+    public record CollisionPartner(String bonePath, String cubeName, String partnerCubeName, double depth) {}
+
+    private record CollisionReport(Map<ModelerBone, List<CollisionSpan>> spansByBone) {
 
         private static final CollisionReport EMPTY = new CollisionReport(Map.of());
     }
 
-    private record CollisionSnapshot(Set<ModelerCube> cubes, Set<String> boneNames, Map<ModelerBone, List<String>> partnersByBone) {
+    private record CollisionSnapshot(
+        Set<ModelerCube> cubes,
+        Set<ModelerBone> bones,
+        Map<ModelerBone, List<CollisionPartner>> partnersByBone
+    ) {
 
         private static final CollisionSnapshot EMPTY = new CollisionSnapshot(Set.of(), Set.of(), Map.of());
     }
@@ -202,18 +208,34 @@ public final class AnimationCollisionState {
         return currentSnapshot.cubes();
     }
 
-    public List<String> currentCollisionPartners(ModelerBone bone) {
+    public List<CollisionPartner> currentCollisionPartners(ModelerBone bone) {
         if (!enabled || bone == null) {
             return List.of();
         }
         return currentSnapshot.partnersByBone().getOrDefault(bone, List.of());
     }
 
-    public List<CollisionSpan> spansForBone(String boneName) {
-        if (!enabled || boneName == null || boneName.isBlank()) {
+    public List<CollisionSpan> spansForBone(ModelerBone bone) {
+        if (!enabled || bone == null) {
             return List.of();
         }
-        return report.spansByBone().getOrDefault(boneName, List.of());
+        return report.spansByBone().getOrDefault(bone, List.of());
+    }
+
+    public static String bonePath(ModelerBone bone) {
+        if (bone == null) {
+            return "";
+        }
+        var names = new ArrayList<String>();
+        var cursor = bone;
+        while (cursor != null) {
+            if (cursor.name != null && !cursor.name.isBlank()) {
+                names.add(cursor.name);
+            }
+            cursor = cursor.parent;
+        }
+        Collections.reverse(names);
+        return names.isEmpty() ? bone.name : String.join("/", names);
     }
 
     private void clearCache() {
@@ -235,24 +257,24 @@ public final class AnimationCollisionState {
             return CollisionReport.EMPTY;
         }
 
-        var spansByBone = new HashMap<String, List<CollisionSpan>>();
-        var activeStarts = new HashMap<String, Double>();
-        Set<String> previous = Set.of();
+        var spansByBone = new HashMap<ModelerBone, List<CollisionSpan>>();
+        var activeStarts = new HashMap<ModelerBone, Double>();
+        Set<ModelerBone> previous = Set.of();
         var previousTime = times.getFirst();
         var first = true;
 
         for (var time : times) {
-            var current = collisionSnapshot(root, state, time, ignoredBonePairs).boneNames();
-            for (var boneName : current) {
-                if (!activeStarts.containsKey(boneName)) {
-                    var start = first || previous.contains(boneName)
+            var current = collisionSnapshot(root, state, time, ignoredBonePairs).bones();
+            for (var bone : current) {
+                if (!activeStarts.containsKey(bone)) {
+                    var start = first || previous.contains(bone)
                         ? time
-                        : refineBoundary(root, state, ignoredBonePairs, boneName, previousTime, time, true);
-                    activeStarts.put(boneName, start);
+                        : refineBoundary(root, state, ignoredBonePairs, bone, previousTime, time, true);
+                    activeStarts.put(bone, start);
                 }
             }
 
-            var closed = new ArrayList<String>();
+            var closed = new ArrayList<ModelerBone>();
             for (var entry : activeStarts.entrySet()) {
                 if (!current.contains(entry.getKey())) {
                     var end = first || !previous.contains(entry.getKey())
@@ -262,8 +284,8 @@ public final class AnimationCollisionState {
                     closed.add(entry.getKey());
                 }
             }
-            for (var boneName : closed) {
-                activeStarts.remove(boneName);
+            for (var bone : closed) {
+                activeStarts.remove(bone);
             }
 
             previous = current;
@@ -280,18 +302,18 @@ public final class AnimationCollisionState {
         return new CollisionReport(Collections.unmodifiableMap(spansByBone));
     }
 
-    private static void addSpan(Map<String, List<CollisionSpan>> spansByBone, String boneName, double start, double end) {
+    private static void addSpan(Map<ModelerBone, List<CollisionSpan>> spansByBone, ModelerBone bone, double start, double end) {
         var normalizedStart = Math.max(0.0, Math.min(start, end));
         var normalizedEnd = Math.max(normalizedStart, end);
-        spansByBone.computeIfAbsent(boneName, ignored -> new ArrayList<>())
-            .add(new CollisionSpan(boneName, normalizedStart, normalizedEnd));
+        spansByBone.computeIfAbsent(bone, ignored -> new ArrayList<>())
+            .add(new CollisionSpan(bone, normalizedStart, normalizedEnd));
     }
 
     private double refineBoundary(
         ModelerBone root,
         AnimationEditorState state,
         Set<BonePair> ignoredBonePairs,
-        String boneName,
+        ModelerBone bone,
         double from,
         double to,
         boolean collidingAtUpper
@@ -300,7 +322,7 @@ public final class AnimationCollisionState {
         var high = Math.max(from, to);
         for (var i = 0; i < BOUNDARY_REFINEMENT_STEPS; i++) {
             var mid = (low + high) * 0.5;
-            var colliding = collisionSnapshot(root, state, mid, ignoredBonePairs).boneNames().contains(boneName);
+            var colliding = collisionSnapshot(root, state, mid, ignoredBonePairs).bones().contains(bone);
             if (colliding == collidingAtUpper) {
                 high = mid;
             } else {
@@ -400,35 +422,59 @@ public final class AnimationCollisionState {
         }
 
         var cubes = new HashSet<ModelerCube>();
-        var boneNames = new HashSet<String>();
-        var partnersByBone = new HashMap<ModelerBone, Set<String>>();
+        var bones = new HashSet<ModelerBone>();
+        var partnersByBone = new HashMap<ModelerBone, List<CollisionPartner>>();
         forEachCandidatePair(boxes, (a, b) -> {
             if (a.owner() == b.owner() || ignoredBonePairs.contains(BonePair.of(a.owner(), b.owner()))) {
                 return;
             }
-            if (collisionDepth(a, b) > RUNTIME_PENETRATION_THRESHOLD) {
+            var depth = collisionDepth(a, b);
+            if (depth > RUNTIME_PENETRATION_THRESHOLD) {
                 cubes.add(a.cube());
                 cubes.add(b.cube());
-                boneNames.add(a.owner().name);
-                boneNames.add(b.owner().name);
-                addCollisionPartner(partnersByBone, a.owner(), b.owner().name);
-                addCollisionPartner(partnersByBone, b.owner(), a.owner().name);
+                bones.add(a.owner());
+                bones.add(b.owner());
+                addCollisionPartner(partnersByBone, a.owner(), a.cube(), b.owner(), b.cube(), depth);
+                addCollisionPartner(partnersByBone, b.owner(), b.cube(), a.owner(), a.cube(), depth);
             }
         });
         if (cubes.isEmpty()) {
             return CollisionSnapshot.EMPTY;
         }
-        return new CollisionSnapshot(Set.copyOf(cubes), Set.copyOf(boneNames), freezePartners(partnersByBone));
+        return new CollisionSnapshot(Set.copyOf(cubes), Set.copyOf(bones), freezePartners(partnersByBone));
     }
 
-    private static void addCollisionPartner(Map<ModelerBone, Set<String>> partnersByBone, ModelerBone bone, String partnerName) {
-        partnersByBone.computeIfAbsent(bone, ignored -> new TreeSet<>()).add(partnerName);
+    private static void addCollisionPartner(
+        Map<ModelerBone, List<CollisionPartner>> partnersByBone,
+        ModelerBone bone,
+        ModelerCube cube,
+        ModelerBone partner,
+        ModelerCube partnerCube,
+        double depth
+    ) {
+        var collisionPartner = new CollisionPartner(bonePath(partner), cube.name, partnerCube.name, depth);
+        var partners = partnersByBone.computeIfAbsent(bone, ignored -> new ArrayList<>());
+        for (var existing : partners) {
+            if (existing.bonePath().equals(collisionPartner.bonePath())
+                && existing.cubeName().equals(collisionPartner.cubeName())
+                && existing.partnerCubeName().equals(collisionPartner.partnerCubeName())) {
+                return;
+            }
+        }
+        partners.add(collisionPartner);
     }
 
-    private static Map<ModelerBone, List<String>> freezePartners(Map<ModelerBone, Set<String>> partnersByBone) {
-        var frozen = new HashMap<ModelerBone, List<String>>();
+    private static Map<ModelerBone, List<CollisionPartner>> freezePartners(Map<ModelerBone, List<CollisionPartner>> partnersByBone) {
+        var frozen = new HashMap<ModelerBone, List<CollisionPartner>>();
         for (var entry : partnersByBone.entrySet()) {
-            frozen.put(entry.getKey(), List.copyOf(entry.getValue()));
+            var partners = new ArrayList<>(entry.getValue());
+            partners.sort(
+                Comparator
+                    .comparing(CollisionPartner::bonePath, String.CASE_INSENSITIVE_ORDER)
+                    .thenComparing(CollisionPartner::cubeName, String.CASE_INSENSITIVE_ORDER)
+                    .thenComparing(CollisionPartner::partnerCubeName, String.CASE_INSENSITIVE_ORDER)
+            );
+            frozen.put(entry.getKey(), List.copyOf(partners));
         }
         return Collections.unmodifiableMap(frozen);
     }
