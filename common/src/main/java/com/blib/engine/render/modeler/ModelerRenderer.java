@@ -16,8 +16,8 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL30;
 
 import com.blib.engine.modeler.ModelerScene;
-import com.blib.engine.modeler.animation.AnimationCollisionState;
 import com.blib.engine.modeler.animation.AnimationEditorState;
+import com.blib.engine.modeler.animation.AnimationFrameUpdate;
 
 /**
  * Owns the offscreen framebuffer the modeler viewport renders into. Render-to-texture pattern (cf.
@@ -196,8 +196,7 @@ public final class ModelerRenderer {
                 // Entity-model edit mode — no item session attached.
                 scene.gizmoTargetSelection = null;
                 var animationState = AnimationEditorState.get();
-                animationState.updatePlaybackClock();
-                AnimationCollisionState.get().refresh(scene.root, animationState);
+                AnimationFrameUpdate.update(scene.root, animationState);
                 ModelerGridRenderer.render(pose);
                 ModelerCubeRenderer.render(pose, scene.root, scene.selection);
                 // Gizmo rendered last so its line strips overlay the cube faces / selection outline; the projection

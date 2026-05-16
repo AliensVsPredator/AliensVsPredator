@@ -19,6 +19,7 @@ import com.blib.engine.modeler.animation.AnimationEditorState;
 import com.blib.engine.modeler.animation.AnimationEditorState.AnimationKey;
 import com.blib.engine.modeler.animation.AnimationEditorState.KeyframeRef;
 import com.blib.engine.modeler.animation.AnimationEditorState.TransformChannel;
+import com.blib.engine.modeler.animation.AnimationFrameUpdate;
 import com.blib.engine.ui.EngineFont;
 import com.blib.engine.ui.dock.Panel;
 import com.blib.engine.ui.layout.ScrollViewport;
@@ -201,10 +202,9 @@ public final class AnimationTimelinePanel implements Panel {
 
         var state = AnimationEditorState.get();
         syncTimelineSceneRoot();
-        state.updatePlaybackClock();
+        AnimationFrameUpdate.update(ModelerScene.get().root, state);
         animationDuration = state.selectedAnimationLengthSeconds();
         timelineDuration = animationDuration + tailPaddingSeconds(animationDuration);
-        AnimationCollisionState.get().refresh(ModelerScene.get().root, state);
 
         var font = EngineFont.get();
         renderToolbar(graphics, font, x, y, width, state, mouseX, mouseY);
