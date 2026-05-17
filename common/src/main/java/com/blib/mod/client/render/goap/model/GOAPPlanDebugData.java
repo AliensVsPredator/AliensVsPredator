@@ -14,7 +14,11 @@ public record GOAPPlanDebugData(
     int currentActionIndex,
     List<String> actionNames,
     Map<String, String> actionBlackboard,
-    Map<String, String> planBlackboard
+    Map<String, String> planBlackboard,
+    int planTick,
+    int actionTick,
+    float remainingCost,
+    String currentActionName
 ) {
 
     public static final StreamCodec<GOAPPlanDebugData> CODEC = RecordStreamCodec.of(
@@ -32,6 +36,14 @@ public record GOAPPlanDebugData(
         GOAPPlanDebugData::actionBlackboard,
         StreamCodec.unboundedMap(StreamCodecs.STRING_UTF8, StreamCodecs.STRING_UTF8),
         GOAPPlanDebugData::planBlackboard,
+        StreamCodecs.INT,
+        GOAPPlanDebugData::planTick,
+        StreamCodecs.INT,
+        GOAPPlanDebugData::actionTick,
+        StreamCodecs.FLOAT,
+        GOAPPlanDebugData::remainingCost,
+        StreamCodecs.STRING_UTF8,
+        GOAPPlanDebugData::currentActionName,
         GOAPPlanDebugData::new
     );
 }
