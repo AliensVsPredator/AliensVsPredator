@@ -66,8 +66,8 @@ public record BLibGeoBoneItemRendererConfig(
      * Build a config whose transforms come from a JSON asset entry rather than Java code. The asset (already loaded by
      * {@code BLibItemRendererConfigLoader} on resource reload) supplies geo model id, texture, bone name, and both
      * transform sets. Transform reads consult the live registry every frame via
-     * {@link BLibTunableItemTransforms#wrapDynamic}, so resource-pack reloads (and inspector
-     * edits written into the per-project resource pack) propagate without re-instantiating the renderer.
+     * {@link BLibTunableItemTransforms#wrapDynamic}, so resource-pack reloads (and inspector edits written into the
+     * per-project resource pack) propagate without re-instantiating the renderer.
      * <p>
      * The {@code itemId} is the {@link net.minecraft.world.item.Item}'s registry id; it's needed at construction time
      * because {@code BLibTunableItemTransforms} keys overrides and bases by item id. The renderer's structural fields
