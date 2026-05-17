@@ -58,6 +58,7 @@ import com.blib.api.common.event.v1.BLibFactionRemoveEvent;
 import com.blib.api.common.event.v1.BLibFactionsLoadedEvent;
 import com.blib.api.common.event.v1.BLibLevelSaveEvent;
 import com.blib.api.common.event.v1.BLibLevelTickEvent;
+import com.blib.api.common.event.v1.BLibPlayerAdvancementAwardEvent;
 import com.blib.api.common.event.v1.BLibPlayerTrackingEntityEvent;
 import com.blib.api.common.event.v1.BLibServerLifecycleEvent;
 import com.blib.api.common.event.v1.BLibServerSaveEvent;
@@ -134,6 +135,8 @@ public class BLibFabricModContainer {
 
     private final BLibEventListenerHandle<BLibLevelSaveEvent> onLevelSave;
 
+    private final BLibEventListenerHandle<BLibPlayerAdvancementAwardEvent> onPlayerAdvancementAward;
+
     private final BLibEventHandle<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity;
 
     private final BLibEventListenerHandle<BLibServerSaveEvent> onServerSave;
@@ -183,6 +186,7 @@ public class BLibFabricModContainer {
         this.onFactionRemove = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.FACTION_REMOVE);
         this.onFactionsLoaded = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.FACTIONS_LOADED);
         this.onLevelSave = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.LEVEL_SAVE);
+        this.onPlayerAdvancementAward = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.PLAYER_ADVANCEMENT_AWARD);
         this.onPlayerStartTrackingEntity = BLibFabricPlayerTrackingEntityEvents.FACTORY.apply(mod);
         this.onServerSave = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.SERVER_SAVE);
         this.onTagsUpdated = BLibFabricTagsUpdatedEvents.FACTORY.apply(mod);
@@ -262,6 +266,10 @@ public class BLibFabricModContainer {
 
     public BLibEventListenerHandle<BLibLevelSaveEvent> onLevelSave() {
         return onLevelSave;
+    }
+
+    public BLibEventListenerHandle<BLibPlayerAdvancementAwardEvent> onPlayerAdvancementAward() {
+        return onPlayerAdvancementAward;
     }
 
     public BLibEventHandle<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity() {

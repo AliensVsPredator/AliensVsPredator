@@ -17,6 +17,7 @@ import com.blib.api.common.event.v1.BLibFactionRelationshipChangedEvent;
 import com.blib.api.common.event.v1.BLibFactionRemoveEvent;
 import com.blib.api.common.event.v1.BLibFactionsLoadedEvent;
 import com.blib.api.common.event.v1.BLibLevelSaveEvent;
+import com.blib.api.common.event.v1.BLibPlayerAdvancementAwardEvent;
 import com.blib.api.common.event.v1.BLibServerSaveEvent;
 import com.blib.api.common.event.v1.handle.BLibGlobalEventHandle;
 
@@ -53,6 +54,9 @@ public final class BLibGlobalEvents {
     public static final BLibGlobalEventHandle<BLibFactionsLoadedEvent> FACTIONS_LOADED = new BLibGlobalEventHandle<>();
 
     public static final BLibGlobalEventHandle<BLibLevelSaveEvent> LEVEL_SAVE = new BLibGlobalEventHandle<>();
+
+    public static final BLibGlobalEventHandle<BLibPlayerAdvancementAwardEvent> PLAYER_ADVANCEMENT_AWARD =
+        new BLibGlobalEventHandle<>();
 
     public static final BLibGlobalEventHandle<BLibServerSaveEvent> SERVER_SAVE = new BLibGlobalEventHandle<>();
 

@@ -21,6 +21,7 @@ import com.blib.api.common.event.v1.BLibFactionRemoveEvent;
 import com.blib.api.common.event.v1.BLibFactionsLoadedEvent;
 import com.blib.api.common.event.v1.BLibLevelSaveEvent;
 import com.blib.api.common.event.v1.BLibLevelTickEvent;
+import com.blib.api.common.event.v1.BLibPlayerAdvancementAwardEvent;
 import com.blib.api.common.event.v1.BLibPlayerTrackingEntityEvent;
 import com.blib.api.common.event.v1.BLibServerLifecycleEvent;
 import com.blib.api.common.event.v1.BLibServerSaveEvent;
@@ -63,6 +64,8 @@ public interface BLibEventService {
     BLibEventListenerHandle<BLibFactionsLoadedEvent> onFactionsLoaded(BLibMod mod);
 
     BLibEventListenerHandle<BLibLevelSaveEvent> onLevelSave(BLibMod mod);
+
+    BLibEventListenerHandle<BLibPlayerAdvancementAwardEvent> onPlayerAdvancementAward(BLibMod mod);
 
     BLibEventHandle<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity(BLibMod mod);
 

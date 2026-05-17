@@ -21,6 +21,7 @@ import com.blib.api.common.event.v1.BLibFactionRemoveEvent;
 import com.blib.api.common.event.v1.BLibFactionsLoadedEvent;
 import com.blib.api.common.event.v1.BLibLevelSaveEvent;
 import com.blib.api.common.event.v1.BLibLevelTickEvent;
+import com.blib.api.common.event.v1.BLibPlayerAdvancementAwardEvent;
 import com.blib.api.common.event.v1.BLibPlayerTrackingEntityEvent;
 import com.blib.api.common.event.v1.BLibServerLifecycleEvent;
 import com.blib.api.common.event.v1.BLibServerSaveEvent;
@@ -127,6 +128,12 @@ public class BLibNeoForgeEventServiceImpl implements BLibEventService {
     public BLibEventListenerHandle<BLibLevelSaveEvent> onLevelSave(BLibMod mod) {
         return BLibNeoForgeModContainerLookup.INSTANCE.get(mod)
             .onLevelSave();
+    }
+
+    @Override
+    public BLibEventListenerHandle<BLibPlayerAdvancementAwardEvent> onPlayerAdvancementAward(BLibMod mod) {
+        return BLibNeoForgeModContainerLookup.INSTANCE.get(mod)
+            .onPlayerAdvancementAward();
     }
 
     @Override
