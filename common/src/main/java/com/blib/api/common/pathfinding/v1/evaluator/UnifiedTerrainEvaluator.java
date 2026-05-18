@@ -294,22 +294,54 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             var adjX = cardinalCache[xIdx];
             var adjZ = cardinalCache[zIdx];
 
-            if (
-                adjX == null || adjX.getTerrainType() == TerrainType.BREAKABLE
-                    || adjZ == null || adjZ.getTerrainType() == TerrainType.BREAKABLE
-            ) {
-                reject(PathRejectionReason.DIAGONAL_BLOCKED, node.getX() + offset[0], node.getY(), node.getZ() + offset[1]);
+            var hasSameLevelAccess = adjX != null && adjX.getTerrainType() != TerrainType.BREAKABLE
+                && adjZ != null && adjZ.getTerrainType() != TerrainType.BREAKABLE;
+
+            if (hasSameLevelAccess) {
+                var neighbor = tryCreateNode(node, node.getX() + offset[0], node.getY(), node.getZ() + offset[1]);
+
+                if (neighbor != null && neighbor.getTerrainType() != TerrainType.BREAKABLE) {
+                    neighbors[count++] = neighbor;
+                    continue;
+                }
+            }
+
+            var newCount = addDiagonalStepDownNeighbor(node, offset[0], offset[1], neighbors, count);
+            if (newCount > count) {
+                count = newCount;
                 continue;
             }
 
-            var neighbor = tryCreateNode(node, node.getX() + offset[0], node.getY(), node.getZ() + offset[1]);
-
-            if (neighbor != null && neighbor.getTerrainType() != TerrainType.BREAKABLE) {
-                neighbors[count++] = neighbor;
+            if (!hasSameLevelAccess) {
+                reject(PathRejectionReason.DIAGONAL_BLOCKED, node.getX() + offset[0], node.getY(), node.getZ() + offset[1]);
             }
         }
 
         return count;
+    }
+
+    private int addDiagonalStepDownNeighbor(PathNode from, int dx, int dz, PathNode[] neighbors, int count) {
+        for (int stepDown = 1; stepDown <= config.getMaxFallDistance() && count < neighbors.length; stepDown++) {
+            if (!hasDiagonalDescentClearance(from, dx, dz, stepDown)) {
+                reject(PathRejectionReason.DIAGONAL_BLOCKED, from.getX() + dx, from.getY() - stepDown, from.getZ() + dz);
+                break;
+            }
+
+            var steppedDown = tryCreateNode(from, from.getX() + dx, from.getY() - stepDown, from.getZ() + dz);
+
+            if (steppedDown != null && steppedDown.getTerrainType() != TerrainType.BREAKABLE) {
+                neighbors[count++] = steppedDown;
+                break;
+            }
+        }
+
+        return count;
+    }
+
+    private boolean hasDiagonalDescentClearance(PathNode from, int dx, int dz, int stepDown) {
+        return hasDescentClearance(from.getX() + dx, from.getY(), from.getZ(), stepDown)
+            && hasDescentClearance(from.getX(), from.getY(), from.getZ() + dz, stepDown)
+            && hasDescentClearance(from.getX() + dx, from.getY(), from.getZ() + dz, stepDown);
     }
 
     private int addGroundNeighborsForDirection(
@@ -358,9 +390,8 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
         if (sameLevel == null) {
             for (int stepDown = 1; stepDown <= config.getMaxFallDistance(); stepDown++) {
-                var checkState = blockAccessor.getBlockState(baseX, baseY - stepDown, baseZ);
-
-                if (blockAccessor.isSolid(checkState)) {
+                if (!hasDescentClearance(baseX, baseY, baseZ, stepDown)) {
+                    reject(PathRejectionReason.FALL_BLOCKED, baseX, baseY - stepDown, baseZ);
                     break;
                 }
 
@@ -802,9 +833,21 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             && y < requirement.y() + requirement.height();
     }
 
-    private boolean hasEntityClearance(int x, int y, int z, TerrainType terrainType) {
-        var height = config.getEntityHeight();
+    private boolean hasDescentClearance(int x, int fromY, int z, int stepDown) {
+        return hasEntityClearance(
+            x,
+            fromY - stepDown,
+            z,
+            TerrainType.GROUND,
+            config.getEntityHeight() + stepDown
+        );
+    }
 
+    private boolean hasEntityClearance(int x, int y, int z, TerrainType terrainType) {
+        return hasEntityClearance(x, y, z, terrainType, config.getEntityHeight());
+    }
+
+    private boolean hasEntityClearance(int x, int y, int z, TerrainType terrainType, int height) {
         for (int dx = 0; dx < footprintSize(); dx++) {
             for (int dz = 0; dz < footprintSize(); dz++) {
                 for (int dy = 0; dy < height; dy++) {
