@@ -5,6 +5,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.blib.mod.common.network.packet.S2CPathfindingNavDebugPayload;
 import com.blib.mod.common.network.packet.S2CPathfindingSearchDebugPayload;
@@ -19,6 +21,8 @@ public final class PathfindingDebugState {
     private @Nullable S2CPathfindingNavDebugPayload latestPayload;
 
     private @Nullable S2CPathfindingSearchDebugPayload latestSearchPayload;
+
+    private final Map<Integer, S2CPathfindingSearchDebugPayload> searchPayloadsByEntityId = new ConcurrentHashMap<>();
 
     private final long[] timingHistoryNanos = new long[TIMING_HISTORY_SIZE];
 
@@ -58,10 +62,19 @@ public final class PathfindingDebugState {
 
     public void updateSearch(S2CPathfindingSearchDebugPayload payload) {
         latestSearchPayload = payload;
+        if (payload.nodes().isEmpty() && payload.corridorKeys().isEmpty()) {
+            searchPayloadsByEntityId.remove(payload.entityId());
+        } else {
+            searchPayloadsByEntityId.put(payload.entityId(), payload);
+        }
     }
 
     public @Nullable S2CPathfindingSearchDebugPayload latestSearchPayload() {
         return latestSearchPayload;
+    }
+
+    public List<S2CPathfindingSearchDebugPayload> searchPayloads() {
+        return List.copyOf(searchPayloadsByEntityId.values());
     }
 
     public List<Long> timingHistoryNanos() {
@@ -80,6 +93,7 @@ public final class PathfindingDebugState {
     public void clear() {
         latestPayload = null;
         latestSearchPayload = null;
+        searchPayloadsByEntityId.clear();
         lastEntityId = -1;
         clearTiming();
     }

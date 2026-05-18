@@ -15,7 +15,6 @@ import com.blib.api.common.dismemberment.v1.SpawnFunctionRegistry;
 import com.blib.internal.client.faction.ClientFactionCache;
 import com.blib.internal.client.territory.ClientTerritoryCache;
 import com.blib.mod.client.render.debug.PathfindingDebugState;
-import com.blib.mod.client.render.debug.PathfindingSearchDebugRenderer;
 import com.blib.mod.client.render.goap.GOAPDebugState;
 import com.blib.mod.common.network.packet.S2CChunkClaimsSyncPayload;
 import com.blib.mod.common.network.packet.S2CEntityDataSyncPayload;
@@ -86,7 +85,6 @@ public final class BLibClientListener {
 
     public static void handlePathfindingSearchDebug(S2CPathfindingSearchDebugPayload payload, Player player) {
         PathfindingDebugState.INSTANCE.updateSearch(payload);
-        PathfindingSearchDebugRenderer.INSTANCE.update(payload);
     }
 
     public static void handlePathfindingNavDebug(S2CPathfindingNavDebugPayload payload, Player player) {
