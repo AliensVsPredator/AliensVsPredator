@@ -47,6 +47,8 @@ public final class PathNavigator {
 
     private boolean waitingForBlockBreak;
 
+    private int breakRequirementIndex;
+
     private int lastPathComputeTick;
 
     private int lastProgressTick;
@@ -105,6 +107,8 @@ public final class PathNavigator {
 
         this.targetPos = target;
         this.lastComputedTargetPos = target;
+        this.waitingForBlockBreak = false;
+        this.breakRequirementIndex = 0;
 
         pathFinder.setExcludedTerrains(excludedTerrains);
 
@@ -147,6 +151,8 @@ public final class PathNavigator {
 
         this.targetPos = target;
         this.lastComputedTargetPos = target;
+        this.waitingForBlockBreak = false;
+        this.breakRequirementIndex = 0;
         pathFinder.setExcludedTerrains(excludedTerrains);
 
         this.asyncStartNanos = System.nanoTime();
@@ -169,6 +175,8 @@ public final class PathNavigator {
         pendingPath = null;
 
         this.currentPath = path;
+        this.waitingForBlockBreak = false;
+        this.breakRequirementIndex = 0;
         this.lastPathComputeNanos = System.nanoTime() - asyncStartNanos;
         this.lastPathComputeTick = tickCount;
         this.lastProgressTick = tickCount;
@@ -268,6 +276,7 @@ public final class PathNavigator {
         this.targetPos = null;
         this.currentTerrain = null;
         this.waitingForBlockBreak = false;
+        this.breakRequirementIndex = 0;
         this.needsRepath = false;
 
         if (planner != null) {
@@ -355,15 +364,15 @@ public final class PathNavigator {
     }
 
     /**
-     * Returns true if the navigator is paused at a BREAKABLE node, waiting for the consuming code to break the block
-     * and call {@link #confirmBlockBroken()}.
+     * Returns true if the navigator is paused at a node with break requirements and waiting for the consuming code to
+     * clear the current requirement and call {@link #confirmBlockBroken()}.
      */
     public boolean isWaitingForBlockBreak() {
         return waitingForBlockBreak;
     }
 
     /**
-     * Returns the position of the block that needs to be broken, or null if not waiting.
+     * Returns the origin of the current break requirement, or null if not waiting.
      */
     public @Nullable BlockPos getBlockToBreak() {
         if (!waitingForBlockBreak || currentPath == null || currentPath.isDone()) {
@@ -371,15 +380,33 @@ public final class PathNavigator {
         }
 
         var node = currentPath.getCurrentNode();
+        if (breakRequirementIndex < 0 || breakRequirementIndex >= node.getBreakRequirementCount()) {
+            return null;
+        }
+        var requirement = node.getBreakRequirement(breakRequirementIndex);
 
-        return new BlockPos(node.getX(), node.getY(), node.getZ());
+        return new BlockPos(requirement.x(), requirement.y(), requirement.z());
     }
 
     /**
-     * Signals that the block at the current BREAKABLE node has been broken. The navigator resumes path following.
+     * Signals that the current break requirement has been cleared. Movement resumes after all requirements on the
+     * current node are cleared.
      */
     public void confirmBlockBroken() {
+        if (currentPath == null || currentPath.isDone()) {
+            this.waitingForBlockBreak = false;
+            this.breakRequirementIndex = 0;
+            return;
+        }
+
+        var node = currentPath.getCurrentNode();
+        if (breakRequirementIndex + 1 < node.getBreakRequirementCount()) {
+            breakRequirementIndex++;
+            return;
+        }
+
         this.waitingForBlockBreak = false;
+        this.breakRequirementIndex = 0;
     }
 
     public @Nullable BlockPos getTargetPos() {
@@ -495,8 +522,9 @@ public final class PathNavigator {
                 var nextNode = currentPath.getCurrentNode();
                 var newTerrain = nextNode.getTerrainType();
 
-                if (newTerrain == TerrainType.BREAKABLE) {
+                if (nextNode.hasBreakRequirements()) {
                     waitingForBlockBreak = true;
+                    breakRequirementIndex = 0;
                     currentTerrain = newTerrain;
                     fireTransitionHandlers(previousTerrain, newTerrain);
                     break;
@@ -629,6 +657,8 @@ public final class PathNavigator {
 
         pathFinder.setExcludedTerrains(excludedTerrains);
         this.currentPath = planner.computeNextSegment(level, entityPos);
+        this.waitingForBlockBreak = false;
+        this.breakRequirementIndex = 0;
         this.lastPathComputeNanos = System.nanoTime() - startNanos;
         this.lastPathComputeTick = tickCount;
         this.lastProgressTick = tickCount;

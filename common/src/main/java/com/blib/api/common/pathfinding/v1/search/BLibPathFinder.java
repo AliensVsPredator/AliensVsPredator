@@ -373,7 +373,7 @@ public final class BLibPathFinder {
                 }
 
                 var edgeCost = current.distanceTo(neighbor) * evaluator.getTerrainCost(neighbor.getTerrainType())
-                    + neighbor.getCostMalus();
+                    + neighbor.getPendingCostMalus();
                 var tentativeG = current.getGCost() + edgeCost;
 
                 if (neighbor.getGCost() > 0 && tentativeG >= neighbor.getGCost() - MIN_IMPROVEMENT) {
@@ -382,6 +382,7 @@ public final class BLibPathFinder {
                 }
 
                 neighbor.setParent(current);
+                neighbor.commitPendingTraversal();
                 neighbor.setGCost(tentativeG);
                 neighbor.setHCost(heuristic(neighbor, goalNode));
                 openSet.add(neighbor);

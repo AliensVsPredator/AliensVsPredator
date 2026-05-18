@@ -1,5 +1,6 @@
 package com.blib.api.common.pathfinding.v1.node;
 
+import java.util.List;
 import java.util.Objects;
 
 import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
@@ -24,6 +25,8 @@ public final class PathNode implements Comparable<PathNode> {
 
     private float costMalus;
 
+    private float pendingCostMalus;
+
     private PathNode parent;
 
     private boolean closed;
@@ -35,6 +38,10 @@ public final class PathNode implements Comparable<PathNode> {
     private int stableGroundY;
 
     private int stableGroundZ;
+
+    private List<PathBreakRequirement> breakRequirements = List.of();
+
+    private List<PathBreakRequirement> pendingBreakRequirements = List.of();
 
     public PathNode(int x, int y, int z, TerrainType terrainType) {
         this.x = x;
@@ -103,6 +110,24 @@ public final class PathNode implements Comparable<PathNode> {
         this.costMalus = costMalus;
     }
 
+    public float getPendingCostMalus() {
+        return pendingCostMalus;
+    }
+
+    public void setPendingTraversal(float costMalus, List<PathBreakRequirement> breakRequirements) {
+        this.pendingCostMalus = costMalus;
+        this.pendingBreakRequirements = List.copyOf(breakRequirements);
+    }
+
+    public List<PathBreakRequirement> getPendingBreakRequirements() {
+        return pendingBreakRequirements;
+    }
+
+    public void commitPendingTraversal() {
+        this.costMalus = pendingCostMalus;
+        this.breakRequirements = pendingBreakRequirements;
+    }
+
     public PathNode getParent() {
         return parent;
     }
@@ -142,6 +167,31 @@ public final class PathNode implements Comparable<PathNode> {
         this.stableGroundZ = z;
     }
 
+    public void copyStableGroundFrom(PathNode node) {
+        if (!node.hasStableGround()) {
+            this.hasStableGround = false;
+            return;
+        }
+
+        setStableGround(node.getStableGroundX(), node.getStableGroundY(), node.getStableGroundZ());
+    }
+
+    public boolean hasBreakRequirements() {
+        return !breakRequirements.isEmpty();
+    }
+
+    public int getBreakRequirementCount() {
+        return breakRequirements.size();
+    }
+
+    public PathBreakRequirement getBreakRequirement(int index) {
+        return breakRequirements.get(index);
+    }
+
+    public List<PathBreakRequirement> getBreakRequirements() {
+        return breakRequirements;
+    }
+
     @Override
     public int compareTo(PathNode other) {
         return Float.compare(totalCost(), other.totalCost());
@@ -151,9 +201,12 @@ public final class PathNode implements Comparable<PathNode> {
         this.gCost = 0;
         this.hCost = 0;
         this.costMalus = 0;
+        this.pendingCostMalus = 0;
         this.parent = null;
         this.closed = false;
         this.hasStableGround = false;
+        this.breakRequirements = List.of();
+        this.pendingBreakRequirements = List.of();
     }
 
     @Override
