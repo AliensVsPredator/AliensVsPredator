@@ -119,8 +119,12 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     private PathNode getOrCreateNode(int x, int y, int z, TerrainType terrainType) {
         var node = nodePool.getOrCreate(x, y, z, terrainType);
 
-        if (terrainType == TerrainType.GROUND && hasStableSupport(x, y, z, null)) {
-            setStableGround(node, x, y, z);
+        if (terrainType == TerrainType.GROUND) {
+            var support = findStableSupport(x, y, z, null);
+
+            if (support != null) {
+                setStableGround(node, support);
+            }
         }
 
         return prepareNode(node);
@@ -339,9 +343,9 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     }
 
     private boolean hasDiagonalDescentClearance(PathNode from, int dx, int dz, int stepDown) {
-        return hasDescentClearance(from.getX() + dx, from.getY(), from.getZ(), stepDown)
-            && hasDescentClearance(from.getX(), from.getY(), from.getZ() + dz, stepDown)
-            && hasDescentClearance(from.getX() + dx, from.getY(), from.getZ() + dz, stepDown);
+        return hasDescentClearance(from, from.getX() + dx, from.getY(), from.getZ(), stepDown)
+            && hasDescentClearance(from, from.getX(), from.getY(), from.getZ() + dz, stepDown)
+            && hasDescentClearance(from, from.getX() + dx, from.getY(), from.getZ() + dz, stepDown);
     }
 
     private int addGroundNeighborsForDirection(
@@ -390,7 +394,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
         if (sameLevel == null) {
             for (int stepDown = 1; stepDown <= config.getMaxFallDistance(); stepDown++) {
-                if (!hasDescentClearance(baseX, baseY, baseZ, stepDown)) {
+                if (!hasDescentClearance(from, baseX, baseY, baseZ, stepDown)) {
                     reject(PathRejectionReason.FALL_BLOCKED, baseX, baseY - stepDown, baseZ);
                     break;
                 }
@@ -479,7 +483,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                     var by = from.getY() + height + dy;
                     var state = blockAccessor.getBlockState(bx, by, bz);
 
-                    if (!blockAccessor.isSolid(state)) {
+                    if (!blockAccessor.isSolid(state) || isClearedByPath(from, bx, by, bz)) {
                         continue;
                     }
 
@@ -602,20 +606,24 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         mutablePos.set(x, y, z);
         var terrainType = classifyTerrain(mutablePos);
 
+        var support = snapshotCosts.containsKey(TerrainType.GROUND)
+            ? findStableSupport(x, y, z, from)
+            : null;
+
+        if (support != null && hasEntityClearance(x, y, z, TerrainType.GROUND, from)) {
+            var node = nodePool.getOrCreate(x, y, z, TerrainType.GROUND);
+            setStableGround(node, support);
+
+            return prepareNode(node);
+        }
+
         if (terrainType != null && snapshotCosts.containsKey(terrainType)) {
-            if (terrainType == TerrainType.GROUND) {
-                if (!hasStableSupport(x, y, z, from)) {
-                    reject(PathRejectionReason.UNSTABLE_SUPPORT, x, y, z);
-                    return null;
-                }
+            if (terrainType == TerrainType.GROUND && support == null) {
+                reject(PathRejectionReason.UNSTABLE_SUPPORT, x, y, z);
+                return null;
+            }
 
-                if (hasEntityClearance(x, y, z, terrainType)) {
-                    var node = nodePool.getOrCreate(x, y, z, terrainType);
-                    setStableGround(node, x, y, z);
-
-                    return prepareNode(node);
-                }
-            } else if (hasEntityClearance(x, y, z, terrainType)) {
+            if (terrainType != TerrainType.GROUND && hasEntityClearance(x, y, z, terrainType, from)) {
                 return prepareNode(nodePool.getOrCreate(x, y, z, terrainType));
             }
 
@@ -649,7 +657,9 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             return null;
         }
 
-        if (!hasStableSupport(pos.getX(), pos.getY(), pos.getZ(), from)) {
+        var support = findStableSupport(pos.getX(), pos.getY(), pos.getZ(), from);
+
+        if (support == null) {
             reject(PathRejectionReason.UNSTABLE_SUPPORT, pos);
             return null;
         }
@@ -669,7 +679,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                     var by = pos.getY() + dy;
                     var checkState = blockAccessor.getBlockState(bx, by, bz);
 
-                    if (!blockAccessor.isSolid(checkState)) {
+                    if (!blockAccessor.isSolid(checkState) || isClearedByPath(from, bx, by, bz)) {
                         continue;
                     }
 
@@ -697,7 +707,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
 
         var node = nodePool.getOrCreate(pos.getX(), pos.getY(), pos.getZ(), TerrainType.BREAKABLE);
-        setStableGround(node, pos.getX(), pos.getY(), pos.getZ());
+        setStableGround(node, support);
 
         return prepareNode(
             node,
@@ -716,7 +726,9 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
         var targetY = from.getY() - drop;
 
-        if (!hasStableSupport(from.getX(), targetY, from.getZ(), from)) {
+        var support = findStableSupport(from.getX(), targetY, from.getZ(), from);
+
+        if (support == null) {
             reject(PathRejectionReason.UNSTABLE_SUPPORT, from.getX(), targetY, from.getZ());
             return null;
         }
@@ -735,7 +747,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                     var by = targetY + dy;
                     var checkState = blockAccessor.getBlockState(bx, by, bz);
 
-                    if (!blockAccessor.isSolid(checkState)) {
+                    if (!blockAccessor.isSolid(checkState) || isClearedByPath(from, bx, by, bz)) {
                         continue;
                     }
 
@@ -769,7 +781,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
 
         var node = nodePool.getOrCreate(from.getX(), targetY, from.getZ(), TerrainType.BREAKABLE);
-        setStableGround(node, from.getX(), targetY, from.getZ());
+        setStableGround(node, support);
 
         return prepareNode(
             node,
@@ -788,20 +800,46 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
     }
 
-    private boolean hasStableSupport(int x, int y, int z, @Nullable PathNode from) {
+    private @Nullable SupportFootprint findStableSupport(int x, int y, int z, @Nullable PathNode from) {
         var supportY = y - 1;
+        var size = footprintSize();
 
-        for (int dx = 0; dx < footprintSize(); dx++) {
-            for (int dz = 0; dz < footprintSize(); dz++) {
-                var supportX = x + dx;
-                var supportZ = z + dz;
-                var supportState = blockAccessor.getBlockState(supportX, supportY, supportZ);
+        if (hasStableSupportRectangle(x, supportY, z, size, size, from)) {
+            return new SupportFootprint(x, supportY, z, size, size);
+        }
 
-                if (!blockAccessor.isSolid(supportState) || blockAccessor.isLiquid(supportState)) {
-                    return false;
-                }
+        var supportDepth = supportDepth(size);
 
-                if (isClearedByPath(from, supportX, supportY, supportZ)) {
+        if (supportDepth >= size) {
+            return null;
+        }
+
+        for (int dz = 0; dz <= size - supportDepth; dz++) {
+            if (hasStableSupportRectangle(x, supportY, z + dz, size, supportDepth, from)) {
+                return new SupportFootprint(x, supportY, z + dz, size, supportDepth);
+            }
+        }
+
+        for (int dx = 0; dx <= size - supportDepth; dx++) {
+            if (hasStableSupportRectangle(x + dx, supportY, z, supportDepth, size, from)) {
+                return new SupportFootprint(x + dx, supportY, z, supportDepth, size);
+            }
+        }
+
+        return null;
+    }
+
+    private boolean hasStableSupportRectangle(
+        int x,
+        int y,
+        int z,
+        int xSize,
+        int zSize,
+        @Nullable PathNode from
+    ) {
+        for (int dx = 0; dx < xSize; dx++) {
+            for (int dz = 0; dz < zSize; dz++) {
+                if (!hasStableSupportBlock(x + dx, y, z + dz, from)) {
                     return false;
                 }
             }
@@ -809,6 +847,26 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
         return true;
     }
+
+    private boolean hasStableSupportBlock(int x, int y, int z, @Nullable PathNode from) {
+        var supportState = blockAccessor.getBlockState(x, y, z);
+
+        return blockAccessor.isSolid(supportState)
+            && !blockAccessor.isLiquid(supportState)
+            && !isClearedByPath(from, x, y, z);
+    }
+
+    private int supportDepth(int footprintSize) {
+        return Math.max(1, (footprintSize + 1) / 2);
+    }
+
+    private record SupportFootprint(
+        int x,
+        int y,
+        int z,
+        int xSize,
+        int zSize
+    ) {}
 
     private boolean isClearedByPath(@Nullable PathNode from, int x, int y, int z) {
         var current = from;
@@ -833,27 +891,52 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             && y < requirement.y() + requirement.height();
     }
 
-    private boolean hasDescentClearance(int x, int fromY, int z, int stepDown) {
+    private boolean hasDescentClearance(PathNode from, int x, int fromY, int z, int stepDown) {
         return hasEntityClearance(
             x,
             fromY - stepDown,
             z,
             TerrainType.GROUND,
-            config.getEntityHeight() + stepDown
+            config.getEntityHeight() + stepDown,
+            from
         );
     }
 
     private boolean hasEntityClearance(int x, int y, int z, TerrainType terrainType) {
-        return hasEntityClearance(x, y, z, terrainType, config.getEntityHeight());
+        return hasEntityClearance(x, y, z, terrainType, null);
+    }
+
+    private boolean hasEntityClearance(
+        int x,
+        int y,
+        int z,
+        TerrainType terrainType,
+        @Nullable PathNode from
+    ) {
+        return hasEntityClearance(x, y, z, terrainType, config.getEntityHeight(), from);
     }
 
     private boolean hasEntityClearance(int x, int y, int z, TerrainType terrainType, int height) {
+        return hasEntityClearance(x, y, z, terrainType, height, null);
+    }
+
+    private boolean hasEntityClearance(
+        int x,
+        int y,
+        int z,
+        TerrainType terrainType,
+        int height,
+        @Nullable PathNode from
+    ) {
         for (int dx = 0; dx < footprintSize(); dx++) {
             for (int dz = 0; dz < footprintSize(); dz++) {
                 for (int dy = 0; dy < height; dy++) {
-                    var state = blockAccessor.getBlockState(x + dx, y + dy, z + dz);
+                    var checkX = x + dx;
+                    var checkY = y + dy;
+                    var checkZ = z + dz;
+                    var state = blockAccessor.getBlockState(checkX, checkY, checkZ);
 
-                    if (blockAccessor.isSolid(state)) {
+                    if (blockAccessor.isSolid(state) && !isClearedByPath(from, checkX, checkY, checkZ)) {
                         return false;
                     }
 
@@ -867,9 +950,8 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         return true;
     }
 
-    private void setStableGround(PathNode node, int x, int y, int z) {
-        var size = footprintSize();
-        node.setStableGround(x, y - 1, z, size, size);
+    private void setStableGround(PathNode node, SupportFootprint support) {
+        node.setStableGround(support.x(), support.y(), support.z(), support.xSize(), support.zSize());
     }
 
     private int footprintSize() {
