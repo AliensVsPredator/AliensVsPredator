@@ -311,7 +311,13 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             var steppedUp = tryCreateNode(from, baseX, baseY + stepUp, baseZ);
 
             if (steppedUp != null) {
-                neighbors[count++] = steppedUp;
+                var clearance = evaluateStepUpClearance(from, stepUp);
+
+                if (!clearance.clear()) {
+                    break;
+                }
+
+                neighbors[count++] = clearance.breakNode() != null ? clearance.breakNode() : steppedUp;
                 break;
             }
         }
@@ -340,6 +346,66 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     private int getBreakableNeighbors(PathNode node, PathNode[] neighbors) {
         return getGroundNeighbors(node, neighbors);
+    }
+
+    private StepUpClearance evaluateStepUpClearance(PathNode from, int stepUp) {
+        var breakabilityEvaluator = config.getBreakabilityEvaluator();
+        var width = config.getEntityWidth();
+        var height = config.getEntityHeight();
+        var halfWidth = width / 2;
+        var totalCost = 0.0f;
+        var hasBreakableBlock = false;
+
+        for (int dx = -halfWidth; dx <= halfWidth; dx++) {
+            for (int dz = -halfWidth; dz <= halfWidth; dz++) {
+                for (int dy = 0; dy < stepUp; dy++) {
+                    var bx = from.getX() + dx;
+                    var by = from.getY() + height + dy;
+                    var bz = from.getZ() + dz;
+                    var state = blockAccessor.getBlockState(bx, by, bz);
+
+                    if (!blockAccessor.isSolid(state)) {
+                        continue;
+                    }
+
+                    clearancePos.set(bx, by, bz);
+
+                    if (breakabilityEvaluator == null || !snapshotCosts.containsKey(TerrainType.BREAKABLE)) {
+                        reject(PathRejectionReason.BREAKING_DISABLED, clearancePos);
+                        return StepUpClearance.BLOCKED;
+                    }
+
+                    var result = breakabilityEvaluator.evaluate(level, clearancePos, state);
+
+                    if (!result.canBreak()) {
+                        reject(PathRejectionReason.UNBREAKABLE_BLOCK, clearancePos);
+                        return StepUpClearance.BLOCKED;
+                    }
+
+                    totalCost += result.cost();
+                    hasBreakableBlock = true;
+                }
+            }
+        }
+
+        if (!hasBreakableBlock) {
+            return StepUpClearance.CLEAR;
+        }
+
+        var node = nodePool.getOrCreate(from.getX(), from.getY() + stepUp, from.getZ(), TerrainType.BREAKABLE);
+        node.setCostMalus(totalCost);
+
+        return new StepUpClearance(true, node);
+    }
+
+    private record StepUpClearance(
+        boolean clear,
+        @Nullable PathNode breakNode
+    ) {
+
+        private static final StepUpClearance CLEAR = new StepUpClearance(true, null);
+
+        private static final StepUpClearance BLOCKED = new StepUpClearance(false, null);
     }
 
     // --- WATER neighbor generation ---
