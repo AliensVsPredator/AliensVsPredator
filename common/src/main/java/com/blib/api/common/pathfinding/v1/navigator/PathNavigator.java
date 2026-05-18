@@ -83,6 +83,10 @@ public final class PathNavigator {
 
     private static final long NANOS_PER_TICK = 50_000_000L;
 
+    private static final double WIDE_FOOTPRINT_REACH_XZ = 0.45;
+
+    private static final double WAYPOINT_REACH_Y = 0.45;
+
     private @Nullable Set<TerrainType> excludedTerrains;
 
     private boolean needsRepath;
@@ -568,8 +572,9 @@ public final class PathNavigator {
         float entityWidth,
         float entityHeight
     ) {
-        var reachXZ = entityWidth > 0.75f ? entityWidth / 2.0 : 0.75 - entityWidth / 2.0;
-        var reachY = Math.max(1.0, entityHeight > 0.75f ? entityHeight / 2.0 : 0.75 - entityHeight / 2.0);
+        var reachXZ = waypointReachXZ(entityWidth);
+        var reachY = waypointReachY(entityHeight);
+
         while (!currentPath.isDone()) {
             var waypoint = currentPath.getCurrentNode();
             var waypointCenter = nodeCenter(waypoint);
@@ -611,11 +616,26 @@ public final class PathNavigator {
         }
     }
 
+    private double waypointReachXZ(float entityWidth) {
+        var reach = entityWidth > 0.75f ? entityWidth / 2.0 : 0.75 - entityWidth / 2.0;
+
+        if (config.getEvaluatorConfig().getEntityWidth() > 1) {
+            return Math.min(reach, WIDE_FOOTPRINT_REACH_XZ);
+        }
+
+        return reach;
+    }
+
+    private double waypointReachY(float entityHeight) {
+        var reach = Math.max(1.0, entityHeight > 0.75f ? entityHeight / 2.0 : 0.75 - entityHeight / 2.0);
+
+        return Math.min(reach, WAYPOINT_REACH_Y);
+    }
+
     /**
-     * Checks whether the entity has already passed the current node and should skip ahead to the next one. Uses the
-     * same approach as vanilla Minecraft's {@code shouldTargetNextNodeInDirection}: if the entity is closer to the next
-     * node than the current one and the dot product of the direction vectors is negative (meaning the current node is
-     * behind the entity), the current node is skipped.
+     * Checks whether the entity has already passed the current node and should skip ahead to the next one. Skip-ahead is
+     * intentionally limited to straight, same-height runs. Corners and vertical transitions are real navigation
+     * waypoints, especially for wide entities on stairs.
      */
     private boolean shouldSkipToNextNode(
         double entityX,
@@ -629,6 +649,12 @@ public final class PathNavigator {
         }
 
         var currentNode = currentPath.getCurrentNode();
+        var nextNode = currentPath.getNode(nextIndex);
+
+        if (currentNode.getY() != nextNode.getY() || isCornerWaypoint(currentPath.getCurrentNodeIndex(), nextIndex)) {
+            return false;
+        }
+
         var currentCenter = nodeCenter(currentNode);
 
         var toCurrentX = currentCenter.x - entityX;
@@ -640,7 +666,6 @@ public final class PathNavigator {
             return false;
         }
 
-        var nextNode = currentPath.getNode(nextIndex);
         var nextCenter = nodeCenter(nextNode);
 
         var toNextX = nextCenter.x - entityX;
@@ -659,6 +684,27 @@ public final class PathNavigator {
         var dot = toNextX * toCurrentX + toNextY * toCurrentY + toNextZ * toCurrentZ;
 
         return dot < 0.0;
+    }
+
+    private boolean isCornerWaypoint(int currentIndex, int nextIndex) {
+        if (currentIndex <= 0) {
+            return false;
+        }
+
+        var previousNode = currentPath.getNode(currentIndex - 1);
+        var currentNode = currentPath.getNode(currentIndex);
+        var nextNode = currentPath.getNode(nextIndex);
+
+        if (previousNode.getY() != currentNode.getY() || currentNode.getY() != nextNode.getY()) {
+            return true;
+        }
+
+        var previousDx = Integer.compare(currentNode.getX(), previousNode.getX());
+        var previousDz = Integer.compare(currentNode.getZ(), previousNode.getZ());
+        var nextDx = Integer.compare(nextNode.getX(), currentNode.getX());
+        var nextDz = Integer.compare(nextNode.getZ(), currentNode.getZ());
+
+        return previousDx != nextDx || previousDz != nextDz;
     }
 
     private void detectStuck(BlockPos entityPos) {
