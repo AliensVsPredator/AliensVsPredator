@@ -1,6 +1,7 @@
 package com.blib.api.common.pathfinding.v1.navigator;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import org.jetbrains.annotations.Nullable;
 
@@ -68,11 +69,15 @@ public final class PathNavigator {
 
     private int failureCooldownTicks;
 
-    private int lastFailureTick;
+    private long lastFailureTick;
+
+    private final long createdNanos = System.nanoTime();
 
     private static final int BASE_FAILURE_COOLDOWN = 10;
 
     private static final int MAX_FAILURE_COOLDOWN = 200;
+
+    private static final long NANOS_PER_TICK = 50_000_000L;
 
     private @Nullable Set<TerrainType> excludedTerrains;
 
@@ -443,7 +448,7 @@ public final class PathNavigator {
             return 0;
         }
 
-        return Math.max(0, failureCooldownTicks - (tickCount - lastFailureTick));
+        return (int) Math.max(0, failureCooldownTicks - (cooldownClock() - lastFailureTick));
     }
 
     public void setDebugCaptureEnabled(boolean debugCaptureEnabled) {
@@ -471,18 +476,26 @@ public final class PathNavigator {
             return false;
         }
 
-        return tickCount - lastFailureTick < failureCooldownTicks;
+        return cooldownClock() - lastFailureTick < failureCooldownTicks;
     }
 
     private void recordFailure() {
         consecutiveFailures++;
-        lastFailureTick = tickCount;
+        lastFailureTick = cooldownClock();
         failureCooldownTicks = Math.min(BASE_FAILURE_COOLDOWN * (1 << (consecutiveFailures - 1)), MAX_FAILURE_COOLDOWN);
     }
 
     private void resetFailureCooldown() {
         consecutiveFailures = 0;
         failureCooldownTicks = 0;
+    }
+
+    private long cooldownClock() {
+        if (level instanceof Level concreteLevel) {
+            return concreteLevel.getGameTime();
+        }
+
+        return (System.nanoTime() - createdNanos) / NANOS_PER_TICK;
     }
 
     private void advanceWaypoints(
