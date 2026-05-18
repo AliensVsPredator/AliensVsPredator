@@ -6,6 +6,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -13,6 +14,7 @@ import java.util.concurrent.CompletableFuture;
 import com.blib.api.common.pathfinding.v1.cache.TerrainClassificationCache;
 import com.blib.api.common.pathfinding.v1.debug.PathSearchSnapshot;
 import com.blib.api.common.pathfinding.v1.evaluator.UnifiedTerrainEvaluator;
+import com.blib.api.common.pathfinding.v1.node.PathBreakRequirement;
 import com.blib.api.common.pathfinding.v1.node.PathNode;
 import com.blib.api.common.pathfinding.v1.path.BLibPath;
 import com.blib.api.common.pathfinding.v1.search.BLibPathFinder;
@@ -413,6 +415,19 @@ public final class PathNavigator {
      * Returns the origin of the current break requirement, or null if not waiting.
      */
     public @Nullable BlockPos getBlockToBreak() {
+        var requirement = getCurrentBreakRequirement();
+
+        if (requirement == null) {
+            return null;
+        }
+
+        return new BlockPos(requirement.x(), requirement.y(), requirement.z());
+    }
+
+    /**
+     * Returns the current block column that must be cleared before movement can resume, or null if not waiting.
+     */
+    public @Nullable PathBreakRequirement getCurrentBreakRequirement() {
         if (!waitingForBlockBreak || currentPath == null || currentPath.isDone()) {
             return null;
         }
@@ -421,9 +436,24 @@ public final class PathNavigator {
         if (breakRequirementIndex < 0 || breakRequirementIndex >= node.getBreakRequirementCount()) {
             return null;
         }
-        var requirement = node.getBreakRequirement(breakRequirementIndex);
 
-        return new BlockPos(requirement.x(), requirement.y(), requirement.z());
+        return node.getBreakRequirement(breakRequirementIndex);
+    }
+
+    /**
+     * Returns the remaining block columns for the current path node, beginning with the current requirement.
+     */
+    public List<PathBreakRequirement> getRemainingBreakRequirements() {
+        if (!waitingForBlockBreak || currentPath == null || currentPath.isDone()) {
+            return List.of();
+        }
+
+        var node = currentPath.getCurrentNode();
+        if (breakRequirementIndex < 0 || breakRequirementIndex >= node.getBreakRequirementCount()) {
+            return List.of();
+        }
+
+        return List.copyOf(node.getBreakRequirements().subList(breakRequirementIndex, node.getBreakRequirementCount()));
     }
 
     /**
