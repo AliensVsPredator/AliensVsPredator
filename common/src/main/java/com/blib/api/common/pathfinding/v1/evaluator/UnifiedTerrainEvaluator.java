@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -287,27 +288,12 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     }
 
     private int addGroundDiagonalNeighborsCached(PathNode node, PathNode[] neighbors, int count) {
-        // DIAGONAL_OFFSETS: (-1,-1), (-1,+1), (+1,-1), (+1,+1)
-        // cardinalCache: 0=west(-1,0), 1=east(+1,0), 2=north(0,-1), 3=south(0,+1)
-        // For diagonal (dx,dz): need cardinal at (dx,0) and (0,dz).
-        // dx=-1 -> index 0 (west), dx=+1 -> index 1 (east)
-        // dz=-1 -> index 2 (north), dz=+1 -> index 3 (south)
         for (var offset : DIAGONAL_OFFSETS) {
-            var xIdx = offset[0] == -1 ? 0 : 1;
-            var zIdx = offset[1] == -1 ? 2 : 3;
-            var adjX = cardinalCache[xIdx];
-            var adjZ = cardinalCache[zIdx];
+            var neighbor = tryCreateNode(node, node.getX() + offset[0], node.getY(), node.getZ() + offset[1]);
 
-            var hasSameLevelAccess = adjX != null && adjX.getTerrainType() != TerrainType.BREAKABLE
-                && adjZ != null && adjZ.getTerrainType() != TerrainType.BREAKABLE;
-
-            if (hasSameLevelAccess) {
-                var neighbor = tryCreateNode(node, node.getX() + offset[0], node.getY(), node.getZ() + offset[1]);
-
-                if (neighbor != null && neighbor.getTerrainType() != TerrainType.BREAKABLE) {
-                    neighbors[count++] = neighbor;
-                    continue;
-                }
+            if (neighbor != null && neighbor.getTerrainType() != TerrainType.BREAKABLE) {
+                neighbors[count++] = neighbor;
+                continue;
             }
 
             var newCount = addDiagonalStepDownNeighbor(node, offset[0], offset[1], neighbors, count);
@@ -316,9 +302,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                 continue;
             }
 
-            if (!hasSameLevelAccess) {
-                reject(PathRejectionReason.DIAGONAL_BLOCKED, node.getX() + offset[0], node.getY(), node.getZ() + offset[1]);
-            }
+            reject(PathRejectionReason.DIAGONAL_BLOCKED, node.getX() + offset[0], node.getY(), node.getZ() + offset[1]);
         }
 
         return count;
@@ -326,11 +310,6 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     private int addDiagonalStepDownNeighbor(PathNode from, int dx, int dz, PathNode[] neighbors, int count) {
         for (int stepDown = 1; stepDown <= config.getMaxFallDistance() && count < neighbors.length; stepDown++) {
-            if (!hasDiagonalDescentClearance(from, dx, dz, stepDown)) {
-                reject(PathRejectionReason.DIAGONAL_BLOCKED, from.getX() + dx, from.getY() - stepDown, from.getZ() + dz);
-                break;
-            }
-
             var steppedDown = tryCreateNode(from, from.getX() + dx, from.getY() - stepDown, from.getZ() + dz);
 
             if (steppedDown != null && steppedDown.getTerrainType() != TerrainType.BREAKABLE) {
@@ -340,12 +319,6 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
 
         return count;
-    }
-
-    private boolean hasDiagonalDescentClearance(PathNode from, int dx, int dz, int stepDown) {
-        return hasDescentClearance(from, from.getX() + dx, from.getY(), from.getZ(), stepDown)
-            && hasDescentClearance(from, from.getX(), from.getY(), from.getZ() + dz, stepDown)
-            && hasDescentClearance(from, from.getX() + dx, from.getY(), from.getZ() + dz, stepDown);
     }
 
     private int addGroundNeighborsForDirection(
@@ -376,13 +349,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             var steppedUp = tryCreateNode(from, baseX, baseY + stepUp, baseZ);
 
             if (steppedUp != null) {
-                var clearance = evaluateStepUpClearance(from, stepUp);
-
-                if (!clearance.clear()) {
-                    break;
-                }
-
-                neighbors[count++] = applyStepUpClearance(steppedUp, clearance);
+                neighbors[count++] = steppedUp;
                 addedStepUp = true;
                 break;
             }
@@ -394,11 +361,6 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
         if (sameLevel == null) {
             for (int stepDown = 1; stepDown <= config.getMaxFallDistance(); stepDown++) {
-                if (!hasDescentClearance(from, baseX, baseY, baseZ, stepDown)) {
-                    reject(PathRejectionReason.FALL_BLOCKED, baseX, baseY - stepDown, baseZ);
-                    break;
-                }
-
                 var steppedDown = tryCreateNode(from, baseX, baseY - stepDown, baseZ);
 
                 if (steppedDown != null && steppedDown.getTerrainType() != TerrainType.BREAKABLE) {
@@ -425,13 +387,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                 continue;
             }
 
-            var clearance = evaluateStepUpClearance(from, stepUp);
-
-            if (!clearance.clear()) {
-                break;
-            }
-
-            neighbors[count++] = applyStepUpClearance(steppedUp, clearance);
+            neighbors[count++] = steppedUp;
             break;
         }
 
@@ -442,90 +398,6 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     private int getBreakableNeighbors(PathNode node, PathNode[] neighbors) {
         return getGroundNeighbors(node, neighbors);
-    }
-
-    private PathNode applyStepUpClearance(PathNode steppedUp, StepUpClearance clearance) {
-        if (clearance.breakRequirements().isEmpty()) {
-            return steppedUp;
-        }
-
-        var breakRequirements = new ArrayList<PathBreakRequirement>(
-            steppedUp.getPendingBreakRequirements().size() + clearance.breakRequirements().size()
-        );
-        breakRequirements.addAll(steppedUp.getPendingBreakRequirements());
-        breakRequirements.addAll(clearance.breakRequirements());
-
-        var costMalus = steppedUp.getPendingCostMalus() + clearance.costMalus();
-
-        if (steppedUp.getTerrainType() == TerrainType.BREAKABLE) {
-            return prepareNode(steppedUp, costMalus, breakRequirements);
-        }
-
-        var node = nodePool.getOrCreate(steppedUp.getX(), steppedUp.getY(), steppedUp.getZ(), TerrainType.BREAKABLE);
-        node.copyStableGroundFrom(steppedUp);
-
-        return prepareNode(node, costMalus, breakRequirements);
-    }
-
-    private StepUpClearance evaluateStepUpClearance(PathNode from, int stepUp) {
-        var breakabilityEvaluator = config.getBreakabilityEvaluator();
-        var height = config.getEntityHeight();
-        var totalCost = 0.0f;
-        var breakRequirements = new ArrayList<PathBreakRequirement>();
-
-        for (int dx = 0; dx < footprintSize(); dx++) {
-            for (int dz = 0; dz < footprintSize(); dz++) {
-                var requirementAdded = false;
-                var bx = from.getX() + dx;
-                var bz = from.getZ() + dz;
-
-                for (int dy = 0; dy < stepUp; dy++) {
-                    var by = from.getY() + height + dy;
-                    var state = blockAccessor.getBlockState(bx, by, bz);
-
-                    if (!blockAccessor.isSolid(state) || isClearedByPath(from, bx, by, bz)) {
-                        continue;
-                    }
-
-                    clearancePos.set(bx, by, bz);
-
-                    if (breakabilityEvaluator == null || !snapshotCosts.containsKey(TerrainType.BREAKABLE)) {
-                        reject(PathRejectionReason.BREAKING_DISABLED, clearancePos);
-                        return StepUpClearance.BLOCKED;
-                    }
-
-                    var result = breakabilityEvaluator.evaluate(level, clearancePos, state);
-
-                    if (!result.canBreak()) {
-                        reject(PathRejectionReason.UNBREAKABLE_BLOCK, clearancePos);
-                        return StepUpClearance.BLOCKED;
-                    }
-
-                    totalCost += result.cost();
-                    if (!requirementAdded) {
-                        breakRequirements.add(new PathBreakRequirement(bx, from.getY() + height, bz, stepUp));
-                        requirementAdded = true;
-                    }
-                }
-            }
-        }
-
-        if (breakRequirements.isEmpty()) {
-            return StepUpClearance.CLEAR;
-        }
-
-        return new StepUpClearance(true, totalCost, List.copyOf(breakRequirements));
-    }
-
-    private record StepUpClearance(
-        boolean clear,
-        float costMalus,
-        List<PathBreakRequirement> breakRequirements
-    ) {
-
-        private static final StepUpClearance CLEAR = new StepUpClearance(true, 0.0f, List.of());
-
-        private static final StepUpClearance BLOCKED = new StepUpClearance(false, 0.0f, List.of());
     }
 
     // --- WATER neighbor generation ---
@@ -611,10 +483,16 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             : null;
 
         if (support != null && hasEntityClearance(x, y, z, TerrainType.GROUND, from)) {
+            var traversal = evaluateTraversalClearance(from, x, y, z, PathBreakOrder.BOTTOM_UP, false);
+
+            if (!traversal.clear()) {
+                return null;
+            }
+
             var node = nodePool.getOrCreate(x, y, z, TerrainType.GROUND);
             setStableGround(node, support);
 
-            return prepareNode(node);
+            return prepareNode(node, traversal.costMalus(), traversal.breakRequirements());
         }
 
         if (terrainType != null && snapshotCosts.containsKey(terrainType)) {
@@ -624,7 +502,17 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             }
 
             if (terrainType != TerrainType.GROUND && hasEntityClearance(x, y, z, terrainType, from)) {
-                return prepareNode(nodePool.getOrCreate(x, y, z, terrainType));
+                var traversal = evaluateTraversalClearance(from, x, y, z, PathBreakOrder.BOTTOM_UP, false);
+
+                if (!traversal.clear()) {
+                    return null;
+                }
+
+                return prepareNode(
+                    nodePool.getOrCreate(x, y, z, terrainType),
+                    traversal.costMalus(),
+                    traversal.breakRequirements()
+                );
             }
 
             var breakable = tryCreateBreakableNode(from, mutablePos.immutable());
@@ -702,6 +590,16 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             }
         }
 
+        var traversal = evaluateTraversalClearance(from, pos.getX(), pos.getY(), pos.getZ(), breakOrder, true);
+
+        if (!traversal.clear()) {
+            return null;
+        }
+
+        totalCost += traversal.costMalus();
+        hasBreakableBlock = hasBreakableBlock || !traversal.breakRequirements().isEmpty();
+        breakRequirements.addAll(traversal.breakRequirements());
+
         if (!hasBreakableBlock) {
             return null;
         }
@@ -776,6 +674,23 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             }
         }
 
+        var traversal = evaluateTraversalClearance(
+            from,
+            from.getX(),
+            targetY,
+            from.getZ(),
+            PathBreakOrder.TOP_DOWN,
+            true
+        );
+
+        if (!traversal.clear()) {
+            return null;
+        }
+
+        totalCost += traversal.costMalus();
+        hasBreakableBlock = hasBreakableBlock || !traversal.breakRequirements().isEmpty();
+        breakRequirements.addAll(traversal.breakRequirements());
+
         if (!hasBreakableBlock) {
             return null;
         }
@@ -788,6 +703,164 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             totalCost,
             List.copyOf(breakRequirements)
         );
+    }
+
+    private TraversalClearance evaluateTraversalClearance(
+        @Nullable PathNode from,
+        int toX,
+        int toY,
+        int toZ,
+        PathBreakOrder breakOrder,
+        boolean skipTargetBody
+    ) {
+        if (from == null) {
+            return TraversalClearance.CLEAR;
+        }
+
+        var height = config.getEntityHeight();
+        var size = footprintSize();
+        var minX = Math.min(from.getX(), toX);
+        var maxX = Math.max(from.getX(), toX) + size - 1;
+        var minY = Math.min(from.getY(), toY);
+        var maxY = Math.max(from.getY(), toY) + height - 1;
+        var minZ = Math.min(from.getZ(), toZ);
+        var maxZ = Math.max(from.getZ(), toZ) + size - 1;
+        var breakabilityEvaluator = config.getBreakabilityEvaluator();
+        var totalCost = 0.0f;
+        var columns = new LinkedHashMap<Long, MutableBreakColumn>();
+
+        for (int bx = minX; bx <= maxX; bx++) {
+            for (int bz = minZ; bz <= maxZ; bz++) {
+                for (int by = minY; by <= maxY; by++) {
+                    if (isInsideBody(from.getX(), from.getY(), from.getZ(), bx, by, bz, height, size)) {
+                        continue;
+                    }
+
+                    if (skipTargetBody && isInsideBody(toX, toY, toZ, bx, by, bz, height, size)) {
+                        continue;
+                    }
+
+                    if (isStableDestinationSupport(toX, toY, toZ, bx, by, bz, size, from)) {
+                        continue;
+                    }
+
+                    if (isClearedByPath(from, bx, by, bz)) {
+                        continue;
+                    }
+
+                    var state = blockAccessor.getBlockState(bx, by, bz);
+
+                    if (!blockAccessor.isSolid(state)) {
+                        continue;
+                    }
+
+                    clearancePos.set(bx, by, bz);
+
+                    if (breakabilityEvaluator == null || !snapshotCosts.containsKey(TerrainType.BREAKABLE)) {
+                        reject(PathRejectionReason.BREAKING_DISABLED, clearancePos);
+                        return TraversalClearance.BLOCKED;
+                    }
+
+                    var result = breakabilityEvaluator.evaluate(level, clearancePos, state);
+
+                    if (!result.canBreak()) {
+                        reject(PathRejectionReason.UNBREAKABLE_BLOCK, clearancePos);
+                        return TraversalClearance.BLOCKED;
+                    }
+
+                    totalCost += result.cost();
+                    var columnX = bx;
+                    var columnZ = bz;
+                    columns.computeIfAbsent(
+                        packColumnKey(columnX, columnZ),
+                        ignored -> new MutableBreakColumn(columnX, columnZ)
+                    ).include(by);
+                }
+            }
+        }
+
+        if (columns.isEmpty()) {
+            return TraversalClearance.CLEAR;
+        }
+
+        var breakRequirements = new ArrayList<PathBreakRequirement>(columns.size());
+
+        for (var column : columns.values()) {
+            breakRequirements.add(column.toRequirement(breakOrder));
+        }
+
+        return new TraversalClearance(true, totalCost, List.copyOf(breakRequirements));
+    }
+
+    private boolean isInsideBody(
+        int bodyX,
+        int bodyY,
+        int bodyZ,
+        int x,
+        int y,
+        int z,
+        int height,
+        int size
+    ) {
+        return x >= bodyX && x < bodyX + size
+            && y >= bodyY && y < bodyY + height
+            && z >= bodyZ && z < bodyZ + size;
+    }
+
+    private boolean isStableDestinationSupport(
+        int toX,
+        int toY,
+        int toZ,
+        int x,
+        int y,
+        int z,
+        int size,
+        PathNode from
+    ) {
+        return y == toY - 1
+            && x >= toX && x < toX + size
+            && z >= toZ && z < toZ + size
+            && hasStableSupportBlock(x, y, z, from);
+    }
+
+    private long packColumnKey(int x, int z) {
+        return ((long) x << 32) ^ (z & 0xFFFFFFFFL);
+    }
+
+    private record TraversalClearance(
+        boolean clear,
+        float costMalus,
+        List<PathBreakRequirement> breakRequirements
+    ) {
+
+        private static final TraversalClearance CLEAR = new TraversalClearance(true, 0.0f, List.of());
+
+        private static final TraversalClearance BLOCKED = new TraversalClearance(false, 0.0f, List.of());
+    }
+
+    private static final class MutableBreakColumn {
+
+        private final int x;
+
+        private final int z;
+
+        private int minY = Integer.MAX_VALUE;
+
+        private int maxY = Integer.MIN_VALUE;
+
+        private MutableBreakColumn(int x, int z) {
+            this.x = x;
+            this.z = z;
+        }
+
+        private void include(int y) {
+            minY = Math.min(minY, y);
+            maxY = Math.max(maxY, y);
+        }
+
+        private PathBreakRequirement toRequirement(PathBreakOrder order) {
+            return new PathBreakRequirement(x, minY, z, maxY - minY + 1, order);
+        }
     }
 
     private void reject(PathRejectionReason reason, BlockPos pos) {
@@ -889,17 +962,6 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             && z == requirement.z()
             && y >= requirement.y()
             && y < requirement.y() + requirement.height();
-    }
-
-    private boolean hasDescentClearance(PathNode from, int x, int fromY, int z, int stepDown) {
-        return hasEntityClearance(
-            x,
-            fromY - stepDown,
-            z,
-            TerrainType.GROUND,
-            config.getEntityHeight() + stepDown,
-            from
-        );
     }
 
     private boolean hasEntityClearance(int x, int y, int z, TerrainType terrainType) {
