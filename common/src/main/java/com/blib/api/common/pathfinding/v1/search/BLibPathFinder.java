@@ -503,8 +503,16 @@ public final class BLibPathFinder {
                 continue;
             }
 
-            var pos = new PathDebugBlockPos(node.getStableGroundX(), node.getStableGroundY(), node.getStableGroundZ());
-            stableGround.putIfAbsent(pos, new StableGroundDebugEntry(pos.x(), pos.y(), pos.z(), i));
+            for (int dx = 0; dx < node.getStableGroundXSize(); dx++) {
+                for (int dz = 0; dz < node.getStableGroundZSize(); dz++) {
+                    var pos = new PathDebugBlockPos(
+                        node.getStableGroundX() + dx,
+                        node.getStableGroundY(),
+                        node.getStableGroundZ() + dz
+                    );
+                    stableGround.putIfAbsent(pos, new StableGroundDebugEntry(pos.x(), pos.y(), pos.z(), i));
+                }
+            }
         }
 
         return List.copyOf(stableGround.values());

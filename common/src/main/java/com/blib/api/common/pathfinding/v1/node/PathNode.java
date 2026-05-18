@@ -39,6 +39,10 @@ public final class PathNode implements Comparable<PathNode> {
 
     private int stableGroundZ;
 
+    private int stableGroundXSize;
+
+    private int stableGroundZSize;
+
     private List<PathBreakRequirement> breakRequirements = List.of();
 
     private List<PathBreakRequirement> pendingBreakRequirements = List.of();
@@ -160,20 +164,42 @@ public final class PathNode implements Comparable<PathNode> {
         return stableGroundZ;
     }
 
+    public int getStableGroundXSize() {
+        return stableGroundXSize;
+    }
+
+    public int getStableGroundZSize() {
+        return stableGroundZSize;
+    }
+
     public void setStableGround(int x, int y, int z) {
+        setStableGround(x, y, z, 1, 1);
+    }
+
+    public void setStableGround(int x, int y, int z, int xSize, int zSize) {
         this.hasStableGround = true;
         this.stableGroundX = x;
         this.stableGroundY = y;
         this.stableGroundZ = z;
+        this.stableGroundXSize = Math.max(1, xSize);
+        this.stableGroundZSize = Math.max(1, zSize);
     }
 
     public void copyStableGroundFrom(PathNode node) {
         if (!node.hasStableGround()) {
             this.hasStableGround = false;
+            this.stableGroundXSize = 0;
+            this.stableGroundZSize = 0;
             return;
         }
 
-        setStableGround(node.getStableGroundX(), node.getStableGroundY(), node.getStableGroundZ());
+        setStableGround(
+            node.getStableGroundX(),
+            node.getStableGroundY(),
+            node.getStableGroundZ(),
+            node.getStableGroundXSize(),
+            node.getStableGroundZSize()
+        );
     }
 
     public boolean hasBreakRequirements() {
@@ -205,6 +231,8 @@ public final class PathNode implements Comparable<PathNode> {
         this.parent = null;
         this.closed = false;
         this.hasStableGround = false;
+        this.stableGroundXSize = 0;
+        this.stableGroundZSize = 0;
         this.breakRequirements = List.of();
         this.pendingBreakRequirements = List.of();
     }

@@ -1,7 +1,7 @@
 package com.blib.api.common.pathfinding.v1.node;
 
 /**
- * A block volume that must be cleared before occupying a path node.
+ * A vertical block column that must be cleared before occupying a path node.
  *
  * @param x      volume origin x
  * @param y      volume origin y

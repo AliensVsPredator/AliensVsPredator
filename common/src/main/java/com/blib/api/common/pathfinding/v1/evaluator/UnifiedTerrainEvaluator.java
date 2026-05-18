@@ -119,7 +119,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         var node = nodePool.getOrCreate(x, y, z, terrainType);
 
         if (terrainType == TerrainType.GROUND && hasStableSupport(x, y, z, null)) {
-            node.setStableGround(x, y - 1, z);
+            setStableGround(node, x, y, z);
         }
 
         return prepareNode(node);
@@ -398,20 +398,18 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     private StepUpClearance evaluateStepUpClearance(PathNode from, int stepUp) {
         var breakabilityEvaluator = config.getBreakabilityEvaluator();
-        var width = config.getEntityWidth();
         var height = config.getEntityHeight();
-        var halfWidth = width / 2;
         var totalCost = 0.0f;
         var breakRequirements = new ArrayList<PathBreakRequirement>();
 
-        for (int dx = -halfWidth; dx <= halfWidth; dx++) {
-            for (int dz = -halfWidth; dz <= halfWidth; dz++) {
+        for (int dx = 0; dx < footprintSize(); dx++) {
+            for (int dz = 0; dz < footprintSize(); dz++) {
                 var requirementAdded = false;
+                var bx = from.getX() + dx;
+                var bz = from.getZ() + dz;
 
                 for (int dy = 0; dy < stepUp; dy++) {
-                    var bx = from.getX() + dx;
                     var by = from.getY() + height + dy;
-                    var bz = from.getZ() + dz;
                     var state = blockAccessor.getBlockState(bx, by, bz);
 
                     if (!blockAccessor.isSolid(state)) {
@@ -434,7 +432,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
                     totalCost += result.cost();
                     if (!requirementAdded) {
-                        breakRequirements.add(new PathBreakRequirement(from.getX() + dx, from.getY() + height, from.getZ() + dz, stepUp));
+                        breakRequirements.add(new PathBreakRequirement(bx, from.getY() + height, bz, stepUp));
                         requirementAdded = true;
                     }
                 }
@@ -546,7 +544,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
                 if (hasEntityClearance(x, y, z, terrainType)) {
                     var node = nodePool.getOrCreate(x, y, z, terrainType);
-                    node.setStableGround(x, y - 1, z);
+                    setStableGround(node, x, y, z);
 
                     return prepareNode(node);
                 }
@@ -581,18 +579,19 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             return null;
         }
 
-        var width = config.getEntityWidth();
         var height = config.getEntityHeight();
-        var halfWidth = width / 2;
         var totalCost = 0.0f;
         var hasBreakableBlock = false;
+        var breakRequirements = new ArrayList<PathBreakRequirement>();
 
-        for (int dx = -halfWidth; dx <= halfWidth; dx++) {
-            for (int dz = -halfWidth; dz <= halfWidth; dz++) {
+        for (int dx = 0; dx < footprintSize(); dx++) {
+            for (int dz = 0; dz < footprintSize(); dz++) {
+                var hasBreakableColumn = false;
+                var bx = pos.getX() + dx;
+                var bz = pos.getZ() + dz;
+
                 for (int dy = 0; dy < height; dy++) {
-                    var bx = pos.getX() + dx;
                     var by = pos.getY() + dy;
-                    var bz = pos.getZ() + dz;
                     var checkState = blockAccessor.getBlockState(bx, by, bz);
 
                     if (!blockAccessor.isSolid(checkState)) {
@@ -609,6 +608,11 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
                     totalCost += result.cost();
                     hasBreakableBlock = true;
+                    hasBreakableColumn = true;
+                }
+
+                if (hasBreakableColumn) {
+                    breakRequirements.add(new PathBreakRequirement(bx, pos.getY(), bz, height));
                 }
             }
         }
@@ -618,12 +622,12 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
 
         var node = nodePool.getOrCreate(pos.getX(), pos.getY(), pos.getZ(), TerrainType.BREAKABLE);
-        node.setStableGround(pos.getX(), pos.getY() - 1, pos.getZ());
+        setStableGround(node, pos.getX(), pos.getY(), pos.getZ());
 
         return prepareNode(
             node,
             totalCost,
-            List.of(new PathBreakRequirement(pos.getX(), pos.getY(), pos.getZ(), config.getEntityHeight()))
+            List.copyOf(breakRequirements)
         );
     }
 
@@ -639,13 +643,24 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     private boolean hasStableSupport(int x, int y, int z, @Nullable PathNode from) {
         var supportY = y - 1;
-        var supportState = blockAccessor.getBlockState(x, supportY, z);
 
-        if (!blockAccessor.isSolid(supportState) || blockAccessor.isLiquid(supportState)) {
-            return false;
+        for (int dx = 0; dx < footprintSize(); dx++) {
+            for (int dz = 0; dz < footprintSize(); dz++) {
+                var supportX = x + dx;
+                var supportZ = z + dz;
+                var supportState = blockAccessor.getBlockState(supportX, supportY, supportZ);
+
+                if (!blockAccessor.isSolid(supportState) || blockAccessor.isLiquid(supportState)) {
+                    return false;
+                }
+
+                if (isClearedByPath(from, supportX, supportY, supportZ)) {
+                    return false;
+                }
+            }
         }
 
-        return !isClearedByPath(from, x, supportY, z);
+        return true;
     }
 
     private boolean isClearedByPath(@Nullable PathNode from, int x, int y, int z) {
@@ -665,23 +680,17 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     }
 
     private boolean isInsideBreakRequirement(PathBreakRequirement requirement, int x, int y, int z) {
-        var halfWidth = config.getEntityWidth() / 2;
-
-        return x >= requirement.x() - halfWidth
-            && x <= requirement.x() + halfWidth
-            && z >= requirement.z() - halfWidth
-            && z <= requirement.z() + halfWidth
+        return x == requirement.x()
+            && z == requirement.z()
             && y >= requirement.y()
             && y < requirement.y() + requirement.height();
     }
 
     private boolean hasEntityClearance(int x, int y, int z, TerrainType terrainType) {
-        var width = config.getEntityWidth();
         var height = config.getEntityHeight();
-        var halfWidth = width / 2;
 
-        for (int dx = -halfWidth; dx <= halfWidth; dx++) {
-            for (int dz = -halfWidth; dz <= halfWidth; dz++) {
+        for (int dx = 0; dx < footprintSize(); dx++) {
+            for (int dz = 0; dz < footprintSize(); dz++) {
                 for (int dy = 0; dy < height; dy++) {
                     var state = blockAccessor.getBlockState(x + dx, y + dy, z + dz);
 
@@ -697,6 +706,15 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
 
         return true;
+    }
+
+    private void setStableGround(PathNode node, int x, int y, int z) {
+        var size = footprintSize();
+        node.setStableGround(x, y - 1, z, size, size);
+    }
+
+    private int footprintSize() {
+        return Math.max(1, config.getEntityWidth());
     }
 
     // --- Position resolution ---
