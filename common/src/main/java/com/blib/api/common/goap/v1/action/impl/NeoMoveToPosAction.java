@@ -51,7 +51,6 @@ public final class NeoMoveToPosAction {
         }
 
         var navigator = navigatorUser.getPathNavigator();
-        var entityPos = actor.blockPosition();
         var targetBlockPos = BlockPos.containing(targetPos);
 
         if (actor instanceof Mob mob) {
@@ -61,7 +60,7 @@ public final class NeoMoveToPosAction {
         }
 
         if (!navigator.isNavigating()) {
-            var found = navigator.navigateTo(entityPos, targetBlockPos);
+            var found = navigator.navigateTo(actor.getX(), actor.getY(), actor.getZ(), targetBlockPos);
 
             if (!found) {
                 return Result.NO_PATH;
@@ -91,17 +90,17 @@ public final class NeoMoveToPosAction {
             return Result.WAITING_FOR_BLOCK_BREAK;
         }
 
-        var waypointPos = navigator.getCurrentTargetPos();
+        var waypointCenter = navigator.getCurrentTargetCenter();
 
-        if (waypointPos == null) {
+        if (waypointCenter == null) {
             return Result.NO_PATH;
         }
 
         actor.getMoveControl()
             .setWantedPosition(
-                waypointPos.getX() + 0.5,
-                waypointPos.getY(),
-                waypointPos.getZ() + 0.5,
+                waypointCenter.x,
+                waypointCenter.y,
+                waypointCenter.z,
                 speedMultiplier
             );
 

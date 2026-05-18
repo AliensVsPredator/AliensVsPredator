@@ -3,6 +3,7 @@ package com.blib.api.common.pathfinding.v1.navigator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -25,7 +26,8 @@ import com.blib.api.common.pathfinding.v1.transition.TerrainTransition;
  * <p>
  * The consuming code calls {@link #tick(double, double, double, float, float)} each tick with the entity's exact
  * position and bounding box dimensions. The navigator advances along the path and provides the next waypoint via
- * {@link #getCurrentTargetPos()}. The calling code is responsible for actually moving the entity toward the waypoint.
+ * {@link #getCurrentTargetCenter()}. The calling code is responsible for actually moving the entity toward the
+ * waypoint.
  * </p>
  */
 public final class PathNavigator {
@@ -144,6 +146,16 @@ public final class PathNavigator {
     }
 
     /**
+     * Plans a path from the entity's current center position. Wide entities are converted to the nearest footprint
+     * anchor before search.
+     *
+     * @return true if a path was found
+     */
+    public boolean navigateTo(double entityX, double entityY, double entityZ, BlockPos target) {
+        return navigateTo(entityAnchorPos(entityX, entityY, entityZ), target);
+    }
+
+    /**
      * Asynchronously plans a path to the target position. Chunk data is snapshotted and the terrain cache is
      * pre-populated on the calling thread, then the A* search runs on a background thread. Call
      * {@link #isPathPending()} to check if an async computation is in progress. The path is automatically applied on
@@ -162,6 +174,14 @@ public final class PathNavigator {
 
         this.asyncStartNanos = System.nanoTime();
         this.pendingPath = pathFinder.findPathAsync(level, entityPos, target);
+    }
+
+    /**
+     * Asynchronously plans a path from the entity's current center position. Wide entities are converted to the nearest
+     * footprint anchor before search.
+     */
+    public void navigateToAsync(double entityX, double entityY, double entityZ, BlockPos target) {
+        navigateToAsync(entityAnchorPos(entityX, entityY, entityZ), target);
     }
 
     /**
@@ -222,7 +242,7 @@ public final class PathNavigator {
             needsRepath = false;
 
             if (targetPos != null) {
-                navigateTo(BlockPos.containing(entityX, entityY, entityZ), targetPos);
+                navigateTo(entityX, entityY, entityZ, targetPos);
             }
         }
 
@@ -246,6 +266,7 @@ public final class PathNavigator {
         advanceWaypoints(entityX, entityY, entityZ, entityWidth, entityHeight);
 
         var entityBlockPos = BlockPos.containing(entityX, entityY, entityZ);
+        var entityAnchorPos = entityAnchorPos(entityX, entityY, entityZ);
 
         // After waypoint advancement, check again for segment transition.
         if (currentPath != null && currentPath.isDone() && planner != null && planner.hasActiveRoute()) {
@@ -265,7 +286,7 @@ public final class PathNavigator {
         }
 
         detectStuck(entityBlockPos);
-        checkRecalculate(entityBlockPos, entityX, entityY, entityZ, entityWidth, entityHeight);
+        checkRecalculate(entityAnchorPos, entityX, entityY, entityZ, entityWidth, entityHeight);
     }
 
     /**
@@ -340,7 +361,8 @@ public final class PathNavigator {
     }
 
     /**
-     * Returns the position the entity should move toward, or null if not navigating.
+     * Returns the footprint-anchor position of the current path node, or null if not navigating. Movement code should
+     * use {@link #getCurrentTargetCenter()} instead.
      */
     public @Nullable BlockPos getCurrentTargetPos() {
         if (currentPath == null || currentPath.isDone()) {
@@ -350,6 +372,17 @@ public final class PathNavigator {
         var node = currentPath.getCurrentNode();
 
         return new BlockPos(node.getX(), node.getY(), node.getZ());
+    }
+
+    /**
+     * Returns the world-space center the entity should move toward for the current path node, or null if not navigating.
+     */
+    public @Nullable Vec3 getCurrentTargetCenter() {
+        if (currentPath == null || currentPath.isDone()) {
+            return null;
+        }
+
+        return nodeCenter(currentPath.getCurrentNode());
     }
 
     public boolean isNavigating() {
@@ -507,21 +540,17 @@ public final class PathNavigator {
     ) {
         var reachXZ = entityWidth > 0.75f ? entityWidth / 2.0 : 0.75 - entityWidth / 2.0;
         var reachY = Math.max(1.0, entityHeight > 0.75f ? entityHeight / 2.0 : 0.75 - entityHeight / 2.0);
-        var nodeCenterOffset = (int) (entityWidth + 1.0f) * 0.5;
-
         while (!currentPath.isDone()) {
             var waypoint = currentPath.getCurrentNode();
+            var waypointCenter = nodeCenter(waypoint);
 
-            var waypointCenterX = waypoint.getX() + nodeCenterOffset;
-            var waypointCenterZ = waypoint.getZ() + nodeCenterOffset;
-
-            var dx = Math.abs(waypointCenterX - entityX);
-            var dy = Math.abs(waypoint.getY() - entityY);
-            var dz = Math.abs(waypointCenterZ - entityZ);
+            var dx = Math.abs(waypointCenter.x - entityX);
+            var dy = Math.abs(waypointCenter.y - entityY);
+            var dz = Math.abs(waypointCenter.z - entityZ);
 
             var withinReach = dx <= reachXZ && dy <= reachY && dz <= reachXZ;
 
-            if (!withinReach && !shouldSkipToNextNode(entityX, entityY, entityZ, nodeCenterOffset)) {
+            if (!withinReach && !shouldSkipToNextNode(entityX, entityY, entityZ)) {
                 break;
             }
 
@@ -561,8 +590,7 @@ public final class PathNavigator {
     private boolean shouldSkipToNextNode(
         double entityX,
         double entityY,
-        double entityZ,
-        double nodeCenterOffset
+        double entityZ
     ) {
         var nextIndex = currentPath.getCurrentNodeIndex() + 1;
 
@@ -571,13 +599,11 @@ public final class PathNavigator {
         }
 
         var currentNode = currentPath.getCurrentNode();
-        var currentCenterX = currentNode.getX() + nodeCenterOffset;
-        var currentCenterY = (double) currentNode.getY();
-        var currentCenterZ = currentNode.getZ() + nodeCenterOffset;
+        var currentCenter = nodeCenter(currentNode);
 
-        var toCurrentX = currentCenterX - entityX;
-        var toCurrentY = currentCenterY - entityY;
-        var toCurrentZ = currentCenterZ - entityZ;
+        var toCurrentX = currentCenter.x - entityX;
+        var toCurrentY = currentCenter.y - entityY;
+        var toCurrentZ = currentCenter.z - entityZ;
         var distToCurrentSq = toCurrentX * toCurrentX + toCurrentY * toCurrentY + toCurrentZ * toCurrentZ;
 
         if (distToCurrentSq > 4.0) {
@@ -585,13 +611,11 @@ public final class PathNavigator {
         }
 
         var nextNode = currentPath.getNode(nextIndex);
-        var nextCenterX = nextNode.getX() + nodeCenterOffset;
-        var nextCenterY = (double) nextNode.getY();
-        var nextCenterZ = nextNode.getZ() + nodeCenterOffset;
+        var nextCenter = nodeCenter(nextNode);
 
-        var toNextX = nextCenterX - entityX;
-        var toNextY = nextCenterY - entityY;
-        var toNextZ = nextCenterZ - entityZ;
+        var toNextX = nextCenter.x - entityX;
+        var toNextY = nextCenter.y - entityY;
+        var toNextZ = nextCenter.z - entityZ;
         var distToNextSq = toNextX * toNextX + toNextY * toNextY + toNextZ * toNextZ;
 
         var closerToNext = distToNextSq < distToCurrentSq;
@@ -665,7 +689,7 @@ public final class PathNavigator {
     }
 
     private void advanceToNextSegment(double entityX, double entityY, double entityZ) {
-        var entityPos = BlockPos.containing(entityX, entityY, entityZ);
+        var entityPos = entityAnchorPos(entityX, entityY, entityZ);
         var startNanos = System.nanoTime();
 
         pathFinder.setExcludedTerrains(excludedTerrains);
@@ -693,6 +717,22 @@ public final class PathNavigator {
         for (var handler : handlers) {
             handler.onTransition(transition, currentPath);
         }
+    }
+
+    private BlockPos entityAnchorPos(double entityX, double entityY, double entityZ) {
+        var centerOffset = nodeCenterOffset();
+
+        return BlockPos.containing(entityX - centerOffset + 0.5, entityY, entityZ - centerOffset + 0.5);
+    }
+
+    private Vec3 nodeCenter(PathNode node) {
+        var centerOffset = nodeCenterOffset();
+
+        return new Vec3(node.getX() + centerOffset, node.getY(), node.getZ() + centerOffset);
+    }
+
+    private double nodeCenterOffset() {
+        return Math.max(1, config.getEvaluatorConfig().getEntityWidth()) / 2.0;
     }
 
 }
