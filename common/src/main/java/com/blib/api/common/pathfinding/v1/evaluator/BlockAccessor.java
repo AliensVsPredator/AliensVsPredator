@@ -1,12 +1,17 @@
 package com.blib.api.common.pathfinding.v1.evaluator;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.EmptyBlockGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -132,6 +137,18 @@ public final class BlockAccessor {
         var id = Block.BLOCK_STATE_REGISTRY.getId(state);
         ensurePropertyCached(state, id);
         return passableCache[id];
+    }
+
+    public VoxelShape getCollisionShape(BlockState state, int x, int y, int z) {
+        return state.getCollisionShape(blockGetter(), new BlockPos(x, y, z), CollisionContext.empty());
+    }
+
+    public boolean isCollisionShapeFullBlock(BlockState state, int x, int y, int z) {
+        return Block.isShapeFullBlock(getCollisionShape(state, x, y, z));
+    }
+
+    private BlockGetter blockGetter() {
+        return level != null ? level : EmptyBlockGetter.INSTANCE;
     }
 
     private void resetChunkCache() {

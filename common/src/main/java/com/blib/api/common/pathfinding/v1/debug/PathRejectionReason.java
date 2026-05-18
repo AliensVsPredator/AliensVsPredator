@@ -11,7 +11,8 @@ public enum PathRejectionReason {
     NOT_BETTER,
     UNSUPPORTED_TERRAIN,
     NO_CLEARANCE,
-    UNSTABLE_SUPPORT;
+    UNSTABLE_SUPPORT,
+    DIAGONAL_CORNER_BLOCKED;
 
     public static final StreamCodec<PathRejectionReason> CODEC = PathDebugCodecs.enumCodec(values());
 }

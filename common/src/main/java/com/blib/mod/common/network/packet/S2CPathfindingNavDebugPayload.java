@@ -61,7 +61,16 @@ public record S2CPathfindingNavDebugPayload(
     int pathRecalculateIntervalTicks,
     int pathfindingFeatureMask,
     int pathfindingProfileOrdinal,
-    int pathfindingFeatureRevision
+    int pathfindingFeatureRevision,
+    int maxSearchNodes,
+    float heuristicWeight,
+    int maxPathLength,
+    float elevationWeight,
+    int corridorDistanceThreshold,
+    int sectionSearchNodeBudget,
+    int corridorBufferRadius,
+    int asyncChunkMargin,
+    float minImprovement
 ) implements CustomPacketPayload {
 
     public static final ResourceLocation PAYLOAD_ID = BLib.MOD.resources().createLocation("pathfinding_nav_debug");
@@ -121,7 +130,16 @@ public record S2CPathfindingNavDebugPayload(
                     StreamCodecs.INT.decode(schema, buf),
                     StreamCodecs.INT.decode(schema, buf),
                     StreamCodecs.INT.decode(schema, buf),
-                    StreamCodecs.INT.decode(schema, buf)
+                    StreamCodecs.INT.decode(schema, buf),
+                    StreamCodecs.INT.decode(schema, buf),
+                    StreamCodecs.FLOAT.decode(schema, buf),
+                    StreamCodecs.INT.decode(schema, buf),
+                    StreamCodecs.FLOAT.decode(schema, buf),
+                    StreamCodecs.INT.decode(schema, buf),
+                    StreamCodecs.INT.decode(schema, buf),
+                    StreamCodecs.INT.decode(schema, buf),
+                    StreamCodecs.INT.decode(schema, buf),
+                    StreamCodecs.FLOAT.decode(schema, buf)
                 );
             }
         },
@@ -176,6 +194,15 @@ public record S2CPathfindingNavDebugPayload(
                 StreamCodecs.INT.encode(schema, buf, value.pathfindingFeatureMask);
                 StreamCodecs.INT.encode(schema, buf, value.pathfindingProfileOrdinal);
                 StreamCodecs.INT.encode(schema, buf, value.pathfindingFeatureRevision);
+                StreamCodecs.INT.encode(schema, buf, value.maxSearchNodes);
+                StreamCodecs.FLOAT.encode(schema, buf, value.heuristicWeight);
+                StreamCodecs.INT.encode(schema, buf, value.maxPathLength);
+                StreamCodecs.FLOAT.encode(schema, buf, value.elevationWeight);
+                StreamCodecs.INT.encode(schema, buf, value.corridorDistanceThreshold);
+                StreamCodecs.INT.encode(schema, buf, value.sectionSearchNodeBudget);
+                StreamCodecs.INT.encode(schema, buf, value.corridorBufferRadius);
+                StreamCodecs.INT.encode(schema, buf, value.asyncChunkMargin);
+                StreamCodecs.FLOAT.encode(schema, buf, value.minImprovement);
             }
         }
     );

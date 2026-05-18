@@ -11,7 +11,17 @@ public enum PathfindingFeature {
     STEP_DOWN(1 << 3, "Step Down"),
     VERTICAL_TARGET_RESOLUTION(1 << 4, "Vertical Target"),
     PATH_SKIP_AHEAD(1 << 5, "Skip Ahead"),
-    STUCK_REPLAN(1 << 6, "Stuck Replan");
+    STUCK_REPLAN(1 << 6, "Stuck Replan"),
+    SECTION_CORRIDOR(1 << 7, "Section Corridor"),
+    SEGMENTED_PATH_PLANNING(1 << 8, "Segmented Planning"),
+    PARTIAL_PATH_RESULTS(1 << 9, "Partial Paths"),
+    DOOR_OPENING(1 << 10, "Door Opening"),
+    ASYNC_PATHFINDING(1 << 11, "Async Search"),
+    COLLISION_SHAPE_WAYPOINTS(1 << 12, "Shape Waypoints"),
+    DIAGONAL_CORNER_CLEARANCE(1 << 13, "Diagonal Clearance"),
+    FOOTPRINT_CLEARANCE(1 << 14, "Footprint Clearance"),
+    ANY_ANGLE_SMOOTHING(1 << 15, "Any-Angle Smoothing"),
+    STEPPED_FOOTPRINT_SUPPORT(1 << 16, "Stepped Footprint");
 
     private final int mask;
 

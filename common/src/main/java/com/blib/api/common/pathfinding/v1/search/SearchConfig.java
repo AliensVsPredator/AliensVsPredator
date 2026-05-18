@@ -32,6 +32,13 @@ public record SearchConfig(
         DEFAULT_ELEVATION_WEIGHT
     );
 
+    public SearchConfig {
+        maxSearchNodes = Math.max(1, maxSearchNodes);
+        heuristicWeight = finitePositiveOrDefault(heuristicWeight, DEFAULT_HEURISTIC_WEIGHT);
+        maxPathLength = Math.max(1, maxPathLength);
+        elevationWeight = finitePositiveOrDefault(elevationWeight, DEFAULT_ELEVATION_WEIGHT);
+    }
+
     /**
      * Creates a SearchConfig scaled to the entity's follow range. maxSearchNodes = followRange * 16, matching vanilla
      * Minecraft's budget scaling.
@@ -47,5 +54,9 @@ public record SearchConfig(
      */
     public SearchConfig withElevationWeight(float weight) {
         return new SearchConfig(maxSearchNodes, heuristicWeight, maxPathLength, weight);
+    }
+
+    private static float finitePositiveOrDefault(float value, float fallback) {
+        return Float.isFinite(value) && value > 0.0f ? value : fallback;
     }
 }

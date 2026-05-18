@@ -8,6 +8,7 @@ import java.util.Map;
 import com.blib.api.common.pathfinding.v1.evaluator.TerrainEvaluatorConfig;
 import com.blib.api.common.pathfinding.v1.feature.PathfindingFeatures;
 import com.blib.api.common.pathfinding.v1.feature.PathfindingProfile;
+import com.blib.api.common.pathfinding.v1.search.PathfindingTuning;
 import com.blib.api.common.pathfinding.v1.search.SearchConfig;
 import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
 import com.blib.api.common.pathfinding.v1.transition.TerrainTransitionHandler;
@@ -20,6 +21,8 @@ public final class PathNavigatorConfig {
     private final TerrainEvaluatorConfig evaluatorConfig;
 
     private final SearchConfig searchConfig;
+
+    private final PathfindingTuning pathfindingTuning;
 
     private final Map<TransitionKey, List<TerrainTransitionHandler>> transitionHandlers;
 
@@ -34,6 +37,7 @@ public final class PathNavigatorConfig {
     private PathNavigatorConfig(
         TerrainEvaluatorConfig evaluatorConfig,
         SearchConfig searchConfig,
+        PathfindingTuning pathfindingTuning,
         Map<TransitionKey, List<TerrainTransitionHandler>> transitionHandlers,
         float waypointReachDistance,
         int stuckTimeoutInTicks,
@@ -42,6 +46,7 @@ public final class PathNavigatorConfig {
     ) {
         this.evaluatorConfig = evaluatorConfig;
         this.searchConfig = searchConfig;
+        this.pathfindingTuning = pathfindingTuning;
         this.transitionHandlers = Map.copyOf(transitionHandlers);
         this.waypointReachDistance = waypointReachDistance;
         this.stuckTimeoutInTicks = stuckTimeoutInTicks;
@@ -59,6 +64,10 @@ public final class PathNavigatorConfig {
 
     public SearchConfig getSearchConfig() {
         return searchConfig;
+    }
+
+    public PathfindingTuning getPathfindingTuning() {
+        return pathfindingTuning;
     }
 
     public List<TerrainTransitionHandler> getTransitionHandlers(TerrainType from, TerrainType to) {
@@ -100,6 +109,8 @@ public final class PathNavigatorConfig {
 
         private SearchConfig searchConfig;
 
+        private PathfindingTuning pathfindingTuning;
+
         private float waypointReachDistance;
 
         private int stuckTimeoutInTicks;
@@ -112,6 +123,7 @@ public final class PathNavigatorConfig {
             this.evaluatorConfig = evaluatorConfig;
             this.transitionHandlers = new HashMap<>();
             this.searchConfig = SearchConfig.DEFAULT;
+            this.pathfindingTuning = PathfindingTuning.DEFAULT;
             this.waypointReachDistance = DEFAULT_WAYPOINT_REACH_DISTANCE;
             this.stuckTimeoutInTicks = DEFAULT_STUCK_TIMEOUT_IN_TICKS;
             this.pathRecalculateIntervalInTicks = DEFAULT_PATH_RECALCULATE_INTERVAL_IN_TICKS;
@@ -120,6 +132,11 @@ public final class PathNavigatorConfig {
 
         public Builder withSearchConfig(SearchConfig config) {
             this.searchConfig = config;
+            return this;
+        }
+
+        public Builder withPathfindingTuning(PathfindingTuning tuning) {
+            this.pathfindingTuning = tuning;
             return this;
         }
 
@@ -157,6 +174,7 @@ public final class PathNavigatorConfig {
             return new PathNavigatorConfig(
                 evaluatorConfig,
                 searchConfig,
+                pathfindingTuning,
                 transitionHandlers,
                 waypointReachDistance,
                 stuckTimeoutInTicks,

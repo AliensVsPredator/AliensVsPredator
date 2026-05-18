@@ -17,8 +17,6 @@ import com.blib.api.common.pathfinding.v1.path.BLibPath;
  */
 public final class SegmentedPathPlanner {
 
-    private static final int SHORT_DISTANCE_THRESHOLD = 48;
-
     private final BLibPathFinder pathFinder;
 
     // --- Route state ---
@@ -42,7 +40,7 @@ public final class SegmentedPathPlanner {
         clear();
         this.finalTarget = target;
 
-        if (start.distManhattan(target) <= SHORT_DISTANCE_THRESHOLD) {
+        if (start.distManhattan(target) <= pathFinder.getTuning().corridorDistanceThreshold()) {
             return computeDirectSegment(level, start);
         }
 
@@ -107,7 +105,7 @@ public final class SegmentedPathPlanner {
         }
 
         var dist = from.distManhattan(finalTarget);
-        var useCorridor = dist > SHORT_DISTANCE_THRESHOLD;
+        var useCorridor = dist > pathFinder.getTuning().corridorDistanceThreshold();
         var corridor = useCorridor ? activeRoute.corridor() : null;
 
         return pathFinder.findPathInCorridor(level, from, finalTarget, corridor);

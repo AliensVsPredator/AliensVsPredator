@@ -3,9 +3,14 @@ package com.blib.api.common.pathfinding.v1.navigator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -19,6 +24,8 @@ import com.blib.api.common.pathfinding.v1.feature.PathfindingProfile;
 import com.blib.api.common.pathfinding.v1.node.PathNode;
 import com.blib.api.common.pathfinding.v1.path.BLibPath;
 import com.blib.api.common.pathfinding.v1.search.BLibPathFinder;
+import com.blib.api.common.pathfinding.v1.search.PathfindingTuning;
+import com.blib.api.common.pathfinding.v1.search.SearchConfig;
 import com.blib.api.common.pathfinding.v1.search.SegmentedPathPlanner;
 import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
 import com.blib.api.common.pathfinding.v1.transition.TerrainTransition;
@@ -88,7 +95,23 @@ public final class PathNavigator {
 
     private static final double WAYPOINT_REACH_Y = 0.45;
 
+    private static final double SHAPE_WAYPOINT_SAMPLE_STEP = 0.05;
+
+    private static final int ANY_ANGLE_SMOOTHING_MAX_LOOKAHEAD_NODES = 16;
+
+    private static final double ANY_ANGLE_SMOOTHING_SAMPLE_INTERVAL = 0.25;
+
+    private static final double COLLISION_EPSILON = 1.0E-7;
+
     private @Nullable Set<TerrainType> excludedTerrains;
+
+    private SearchConfig searchConfig;
+
+    private PathfindingTuning pathfindingTuning;
+
+    private int stuckTimeoutInTicks;
+
+    private int pathRecalculateIntervalInTicks;
 
     private boolean needsRepath;
 
@@ -102,6 +125,10 @@ public final class PathNavigator {
 
     private int pendingFeaturesRevision;
 
+    private float lastEntityWidth = 1.0f;
+
+    private float lastEntityHeight = 2.0f;
+
     private static final double PROGRESS_DISTANCE_EPSILON_SQUARED = 0.25;
 
     public PathNavigator(LevelReader level, PathNavigatorConfig config) {
@@ -111,11 +138,16 @@ public final class PathNavigator {
     public PathNavigator(LevelReader level, PathNavigatorConfig config, @Nullable TerrainClassificationCache classificationCache) {
         this.level = level;
         this.config = config;
+        this.searchConfig = config.getSearchConfig();
+        this.pathfindingTuning = config.getPathfindingTuning();
+        this.stuckTimeoutInTicks = config.getStuckTimeoutInTicks();
+        this.pathRecalculateIntervalInTicks = config.getPathRecalculateIntervalInTicks();
         this.pathFinder = new BLibPathFinder(
             new UnifiedTerrainEvaluator(config.getEvaluatorConfig(), classificationCache),
-            config.getSearchConfig(),
+            searchConfig,
             classificationCache
         );
+        this.pathFinder.setTuning(pathfindingTuning);
         this.planner = classificationCache != null
             ? new SegmentedPathPlanner(pathFinder)
             : null;
@@ -149,7 +181,7 @@ public final class PathNavigator {
 
         var startNanos = System.nanoTime();
 
-        if (planner != null) {
+        if (shouldUsePlanner()) {
             this.currentPath = planner.findPath(level, entityPos, target);
         } else {
             this.currentPath = pathFinder.findPath(level, entityPos, target);
@@ -211,6 +243,11 @@ public final class PathNavigator {
      * the next {@link #tick} call after the computation completes.
      */
     public void navigateToAsync(BlockPos entityPos, BlockPos target) {
+        if (!features.asyncPathfinding()) {
+            navigateTo(entityPos, target);
+            return;
+        }
+
         if (isInFailureCooldown(target)) {
             return;
         }
@@ -308,6 +345,8 @@ public final class PathNavigator {
         float entityHeight
     ) {
         tickCount++;
+        lastEntityWidth = entityWidth;
+        lastEntityHeight = entityHeight;
         checkPendingPath();
 
         if (needsRepath) {
@@ -319,7 +358,7 @@ public final class PathNavigator {
         }
 
         // Advance to next segment if current path is done but route hasn't reached the final target.
-        if (currentPath != null && currentPath.isDone() && planner != null && planner.hasActiveRoute()) {
+        if (currentPath != null && currentPath.isDone() && shouldUsePlanner() && planner.hasActiveRoute()) {
             if (currentPath.isReached()) {
                 planner.clear();
             } else {
@@ -336,7 +375,7 @@ public final class PathNavigator {
         advanceWaypoints(entityX, entityY, entityZ, entityWidth, entityHeight);
 
         // After waypoint advancement, check again for segment transition.
-        if (currentPath != null && currentPath.isDone() && planner != null && planner.hasActiveRoute()) {
+        if (currentPath != null && currentPath.isDone() && shouldUsePlanner() && planner.hasActiveRoute()) {
             if (currentPath.isReached()) {
                 planner.clear();
             } else {
@@ -348,7 +387,7 @@ public final class PathNavigator {
             return;
         }
 
-        detectStuck(entityAnchorPos, entityX, entityY, entityZ);
+        detectStuck(entityAnchorPos, entityX, entityY, entityZ, entityWidth, entityHeight);
         checkRecalculate(entityAnchorPos, entityX, entityY, entityZ, entityWidth, entityHeight);
     }
 
@@ -375,6 +414,68 @@ public final class PathNavigator {
 
     public PathNavigatorConfig getConfig() {
         return config;
+    }
+
+    public SearchConfig getSearchConfig() {
+        return searchConfig;
+    }
+
+    public PathfindingTuning getPathfindingTuning() {
+        return pathfindingTuning;
+    }
+
+    public int getStuckTimeoutInTicks() {
+        return stuckTimeoutInTicks;
+    }
+
+    public int getPathRecalculateIntervalInTicks() {
+        return pathRecalculateIntervalInTicks;
+    }
+
+    public void setSearchConfig(SearchConfig searchConfig) {
+        setPathfindingRuntimeConfig(searchConfig, pathfindingTuning, stuckTimeoutInTicks, pathRecalculateIntervalInTicks);
+    }
+
+    public void setPathfindingTuning(PathfindingTuning pathfindingTuning) {
+        setPathfindingRuntimeConfig(searchConfig, pathfindingTuning, stuckTimeoutInTicks, pathRecalculateIntervalInTicks);
+    }
+
+    public void setStuckTimeoutInTicks(int stuckTimeoutInTicks) {
+        setPathfindingRuntimeConfig(searchConfig, pathfindingTuning, stuckTimeoutInTicks, pathRecalculateIntervalInTicks);
+    }
+
+    public void setPathRecalculateIntervalInTicks(int pathRecalculateIntervalInTicks) {
+        setPathfindingRuntimeConfig(searchConfig, pathfindingTuning, stuckTimeoutInTicks, pathRecalculateIntervalInTicks);
+    }
+
+    public void setPathfindingRuntimeConfig(
+        SearchConfig searchConfig,
+        PathfindingTuning pathfindingTuning,
+        int stuckTimeoutInTicks,
+        int pathRecalculateIntervalInTicks
+    ) {
+        Objects.requireNonNull(searchConfig, "searchConfig");
+        Objects.requireNonNull(pathfindingTuning, "pathfindingTuning");
+
+        var nextStuckTimeout = Math.max(1, stuckTimeoutInTicks);
+        var nextPathRecalculateInterval = Math.max(1, pathRecalculateIntervalInTicks);
+
+        if (
+            this.searchConfig.equals(searchConfig)
+                && this.pathfindingTuning.equals(pathfindingTuning)
+                && this.stuckTimeoutInTicks == nextStuckTimeout
+                && this.pathRecalculateIntervalInTicks == nextPathRecalculateInterval
+        ) {
+            return;
+        }
+
+        this.searchConfig = searchConfig;
+        this.pathfindingTuning = pathfindingTuning;
+        this.stuckTimeoutInTicks = nextStuckTimeout;
+        this.pathRecalculateIntervalInTicks = nextPathRecalculateInterval;
+        pathFinder.setSearchConfig(searchConfig);
+        pathFinder.setTuning(pathfindingTuning);
+        invalidateActivePathForReplan();
     }
 
     /**
@@ -445,7 +546,7 @@ public final class PathNavigator {
             return null;
         }
 
-        return nodeCenter(currentPath.getCurrentNode());
+        return nodeTargetCenter(currentPath.getCurrentNode(), lastEntityWidth, lastEntityHeight);
     }
 
     public boolean isNavigating() {
@@ -462,6 +563,10 @@ public final class PathNavigator {
 
     public @Nullable TerrainType getCurrentTerrain() {
         return currentTerrain;
+    }
+
+    public boolean canOpenDoors() {
+        return features.doorOpening() && config.getEvaluatorConfig().canOpenDoors();
     }
 
     public @Nullable BlockPos getTargetPos() {
@@ -627,15 +732,17 @@ public final class PathNavigator {
 
         while (!currentPath.isDone()) {
             var waypoint = currentPath.getCurrentNode();
-            var waypointCenter = nodeCenter(waypoint);
+            var waypointCenter = nodeTargetCenter(waypoint, entityWidth, entityHeight);
 
             var dx = Math.abs(waypointCenter.x - entityX);
             var dy = Math.abs(waypointCenter.y - entityY);
             var dz = Math.abs(waypointCenter.z - entityZ);
 
-            var withinReach = dx <= reachXZ && dy <= reachY && dz <= reachXZ;
+            var withinVerticalReach = dy <= reachY
+                || isDescendingSteppedFootprintWaypointWithinReach(currentPath.getCurrentNodeIndex(), entityY, reachY);
+            var withinReach = dx <= reachXZ && withinVerticalReach && dz <= reachXZ;
             var shouldAdvance = withinReach
-                || (features.pathSkipAhead() && shouldSkipToNextNode(entityX, entityY, entityZ));
+                || (features.pathSkipAhead() && shouldSkipToNextNode(entityX, entityY, entityZ, entityWidth, entityHeight));
 
             if (!shouldAdvance) {
                 break;
@@ -657,6 +764,128 @@ public final class PathNavigator {
                 }
             }
         }
+
+        smoothAnyAngleWaypoint(entityX, entityY, entityZ, entityWidth, entityHeight);
+    }
+
+    private void smoothAnyAngleWaypoint(
+        double entityX,
+        double entityY,
+        double entityZ,
+        float entityWidth,
+        float entityHeight
+    ) {
+        if (!features.anyAngleSmoothing() || currentPath == null || currentPath.isDone()) {
+            return;
+        }
+
+        var currentIndex = currentPath.getCurrentNodeIndex();
+        var targetIndex = findAnyAngleSmoothingTargetIndex(entityX, entityY, entityZ, entityWidth, entityHeight);
+
+        if (targetIndex <= currentIndex) {
+            return;
+        }
+
+        var previousTerrain = currentTerrain;
+
+        while (currentPath.getCurrentNodeIndex() < targetIndex && !currentPath.isDone()) {
+            currentPath.advance();
+        }
+
+        markProgress();
+
+        if (!currentPath.isDone()) {
+            var newTerrain = currentPath.getCurrentNode().getTerrainType();
+
+            if (newTerrain != previousTerrain) {
+                fireTransitionHandlers(previousTerrain, newTerrain);
+                currentTerrain = newTerrain;
+            }
+        }
+    }
+
+    private int findAnyAngleSmoothingTargetIndex(
+        double entityX,
+        double entityY,
+        double entityZ,
+        float entityWidth,
+        float entityHeight
+    ) {
+        var currentIndex = currentPath.getCurrentNodeIndex();
+        var maxIndex = Math.min(
+            currentPath.getNodeCount() - 1,
+            currentIndex + ANY_ANGLE_SMOOTHING_MAX_LOOKAHEAD_NODES
+        );
+
+        for (var targetIndex = maxIndex; targetIndex > currentIndex; targetIndex--) {
+            if (!isSmoothableNodeRange(currentIndex, targetIndex)) {
+                continue;
+            }
+
+            var targetCenter = nodeTargetCenter(currentPath.getNode(targetIndex), entityWidth, entityHeight);
+            var terrain = currentPath.getNode(currentIndex).getTerrainType();
+
+            if (canTraverseDirectly(entityX, entityY, entityZ, targetCenter, entityWidth, entityHeight, terrain)) {
+                return targetIndex;
+            }
+        }
+
+        return currentIndex;
+    }
+
+    private boolean isSmoothableNodeRange(int fromIndex, int toIndex) {
+        var from = currentPath.getNode(fromIndex);
+        var y = from.getY();
+        var terrain = from.getTerrainType();
+
+        for (var index = fromIndex + 1; index <= toIndex; index++) {
+            var node = currentPath.getNode(index);
+
+            if (node.getY() != y || node.getTerrainType() != terrain) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean canTraverseDirectly(
+        double entityX,
+        double entityY,
+        double entityZ,
+        Vec3 targetCenter,
+        float entityWidth,
+        float entityHeight,
+        TerrainType terrain
+    ) {
+        if (entityWidth <= 0.0f || entityHeight <= 0.0f) {
+            return false;
+        }
+
+        var dx = targetCenter.x - entityX;
+        var dy = targetCenter.y - entityY;
+        var dz = targetCenter.z - entityZ;
+        var distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+        var sampleCount = Math.max(1, (int) Math.ceil(distance / ANY_ANGLE_SMOOTHING_SAMPLE_INTERVAL));
+
+        for (var i = 1; i <= sampleCount; i++) {
+            var progress = i / (double) sampleCount;
+            var feetCenter = new Vec3(
+                entityX + dx * progress,
+                entityY + dy * progress,
+                entityZ + dz * progress
+            );
+
+            if (
+                !isEntityBoxClear(feetCenter, entityWidth, entityHeight)
+                    || !hasEntitySupport(feetCenter, entityWidth)
+                    || !hasExpectedTerrain(feetCenter, entityWidth, terrain)
+            ) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private double waypointReachXZ(float entityWidth) {
@@ -675,6 +904,38 @@ public final class PathNavigator {
         return Math.min(reach, WAYPOINT_REACH_Y);
     }
 
+    private boolean isDescendingSteppedFootprintWaypointWithinReach(int nodeIndex, double entityY, double reachY) {
+        if (!usesSteppedFootprintSupport() || currentPath == null || nodeIndex <= 0) {
+            return false;
+        }
+
+        var previousNode = currentPath.getNode(nodeIndex - 1);
+        var node = currentPath.getNode(nodeIndex);
+        var stepDown = previousNode.getY() - node.getY();
+
+        if (stepDown <= 0 || stepDown > config.getEvaluatorConfig().getMaxStepHeight()) {
+            return false;
+        }
+
+        var dx = Math.abs(previousNode.getX() - node.getX());
+        var dz = Math.abs(previousNode.getZ() - node.getZ());
+
+        if (dx > 1 || dz > 1) {
+            return false;
+        }
+
+        return entityY >= node.getY() - reachY && entityY <= previousNode.getY() + reachY;
+    }
+
+    private boolean usesSteppedFootprintSupport() {
+        var evaluatorConfig = config.getEvaluatorConfig();
+
+        return features.footprintClearance()
+            && features.steppedFootprintSupport()
+            && evaluatorConfig.getEntityWidth() > 1
+            && evaluatorConfig.getMaxStepHeight() > 0;
+    }
+
     /**
      * Checks whether the entity has already passed the current node and should skip ahead to the next one. Skip-ahead is
      * intentionally limited to straight, same-height runs. Corners and vertical transitions are real navigation
@@ -683,7 +944,9 @@ public final class PathNavigator {
     private boolean shouldSkipToNextNode(
         double entityX,
         double entityY,
-        double entityZ
+        double entityZ,
+        float entityWidth,
+        float entityHeight
     ) {
         var nextIndex = currentPath.getCurrentNodeIndex() + 1;
 
@@ -698,7 +961,7 @@ public final class PathNavigator {
             return false;
         }
 
-        var currentCenter = nodeCenter(currentNode);
+        var currentCenter = nodeTargetCenter(currentNode, entityWidth, entityHeight);
 
         var toCurrentX = currentCenter.x - entityX;
         var toCurrentY = currentCenter.y - entityY;
@@ -709,7 +972,7 @@ public final class PathNavigator {
             return false;
         }
 
-        var nextCenter = nodeCenter(nextNode);
+        var nextCenter = nodeTargetCenter(nextNode, entityWidth, entityHeight);
 
         var toNextX = nextCenter.x - entityX;
         var toNextY = nextCenter.y - entityY;
@@ -750,27 +1013,46 @@ public final class PathNavigator {
         return previousDx != nextDx || previousDz != nextDz;
     }
 
-    private void detectStuck(BlockPos entityAnchorPos, double entityX, double entityY, double entityZ) {
+    private void detectStuck(
+        BlockPos entityAnchorPos,
+        double entityX,
+        double entityY,
+        double entityZ,
+        float entityWidth,
+        float entityHeight
+    ) {
         if (targetPos == null || currentPath == null || currentPath.isDone()) {
             return;
         }
 
-        var progressed = observePathProgress(entityAnchorPos, entityX, entityY, entityZ);
+        var progressed = observePathProgress(entityAnchorPos, entityX, entityY, entityZ, entityWidth, entityHeight);
         var ticksSinceProgress = tickCount - lastProgressTick;
 
-        if (!progressed && ticksSinceProgress >= config.getStuckTimeoutInTicks()) {
+        if (!progressed && ticksSinceProgress >= stuckTimeoutInTicks) {
             handleStuckEdge(entityAnchorPos);
         }
     }
 
-    private boolean observePathProgress(BlockPos entityAnchorPos, double entityX, double entityY, double entityZ) {
+    private boolean observePathProgress(
+        BlockPos entityAnchorPos,
+        double entityX,
+        double entityY,
+        double entityZ,
+        float entityWidth,
+        float entityHeight
+    ) {
         var currentIndex = currentPath.getCurrentNodeIndex();
-        var currentCenter = nodeCenter(currentPath.getCurrentNode());
+        var currentCenter = nodeTargetCenter(currentPath.getCurrentNode(), entityWidth, entityHeight);
         var distanceToCurrent = distanceSquared(entityX, entityY, entityZ, currentCenter);
         var distanceToNext = Double.MAX_VALUE;
 
         if (currentIndex + 1 < currentPath.getNodeCount()) {
-            distanceToNext = distanceSquared(entityX, entityY, entityZ, nodeCenter(currentPath.getNode(currentIndex + 1)));
+            distanceToNext = distanceSquared(
+                entityX,
+                entityY,
+                entityZ,
+                nodeTargetCenter(currentPath.getNode(currentIndex + 1), entityWidth, entityHeight)
+            );
         }
 
         var progressed = currentIndex != lastObservedNodeIndex
@@ -835,7 +1117,7 @@ public final class PathNavigator {
             return;
         }
 
-        if (tickCount - lastPathComputeTick < config.getPathRecalculateIntervalInTicks()) {
+        if (tickCount - lastPathComputeTick < pathRecalculateIntervalInTicks) {
             return;
         }
 
@@ -885,12 +1167,16 @@ public final class PathNavigator {
         return path != null
             && (path.isReached()
                 || path.getNodeCount() > 1
-                || (planner != null && planner.hasActiveRoute()));
+                || (shouldUsePlanner() && planner.hasActiveRoute()));
     }
 
     private void preparePathFinder() {
         pathFinder.setFeatures(features);
         pathFinder.setExcludedTerrains(excludedTerrains);
+    }
+
+    private boolean shouldUsePlanner() {
+        return features.segmentedPathPlanning() && planner != null;
     }
 
     private void markProgress() {
@@ -937,6 +1223,250 @@ public final class PathNavigator {
 
         return new Vec3(node.getX() + centerOffset, node.getY(), node.getZ() + centerOffset);
     }
+
+    private Vec3 nodeTargetCenter(PathNode node, float entityWidth, float entityHeight) {
+        var center = nodeCenter(node);
+
+        if (!features.collisionShapeWaypoints()) {
+            return center;
+        }
+
+        // Multi-cell footprint nodes use a different anchor model; keep those on the stable footprint center.
+        if (config.getEvaluatorConfig().getEntityWidth() != 1) {
+            return center;
+        }
+
+        var adjusted = shapeAwareNodeCenter(node, entityWidth, entityHeight);
+
+        return adjusted != null ? adjusted : center;
+    }
+
+    private @Nullable Vec3 shapeAwareNodeCenter(PathNode node, float entityWidth, float entityHeight) {
+        if (entityWidth <= 0.0f || entityHeight <= 0.0f || entityWidth > 1.0f) {
+            return null;
+        }
+
+        var center = nodeCenter(node);
+
+        if (isEntityBoxClear(center, entityWidth, entityHeight)) {
+            return center;
+        }
+
+        for (var candidate : shapeWaypointCandidates(entityWidth)) {
+            var candidateCenter = new Vec3(node.getX() + candidate.localX(), node.getY(), node.getZ() + candidate.localZ());
+
+            if (isEntityBoxClear(candidateCenter, entityWidth, entityHeight)) {
+                return candidateCenter;
+            }
+        }
+
+        return null;
+    }
+
+    private boolean isEntityBoxClear(Vec3 feetCenter, float entityWidth, float entityHeight) {
+        var halfWidth = entityWidth / 2.0d;
+        var entityBox = new AABB(
+            feetCenter.x - halfWidth,
+            feetCenter.y,
+            feetCenter.z - halfWidth,
+            feetCenter.x + halfWidth,
+            feetCenter.y + entityHeight,
+            feetCenter.z + halfWidth
+        ).deflate(COLLISION_EPSILON, 0.0, COLLISION_EPSILON);
+
+        var minX = (int) Math.floor(entityBox.minX);
+        var minY = (int) Math.floor(entityBox.minY);
+        var minZ = (int) Math.floor(entityBox.minZ);
+        var maxX = (int) Math.floor(entityBox.maxX - COLLISION_EPSILON);
+        var maxY = (int) Math.floor(entityBox.maxY - COLLISION_EPSILON);
+        var maxZ = (int) Math.floor(entityBox.maxZ - COLLISION_EPSILON);
+        var cursor = new BlockPos.MutableBlockPos();
+
+        for (var x = minX; x <= maxX; x++) {
+            for (var y = minY; y <= maxY; y++) {
+                for (var z = minZ; z <= maxZ; z++) {
+                    cursor.set(x, y, z);
+
+                    var state = level.getBlockState(cursor);
+
+                    if (state.liquid()) {
+                        return false;
+                    }
+
+                    var shape = state.getCollisionShape(level, cursor, CollisionContext.empty());
+
+                    if (shape.isEmpty()) {
+                        continue;
+                    }
+
+                    for (var blockBox : shape.toAabbs()) {
+                        if (blockBox.move(cursor).intersects(entityBox)) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private boolean hasEntitySupport(Vec3 feetCenter, float entityWidth) {
+        var halfWidth = entityWidth / 2.0d;
+        var minX = (int) Math.floor(feetCenter.x - halfWidth + COLLISION_EPSILON);
+        var minZ = (int) Math.floor(feetCenter.z - halfWidth + COLLISION_EPSILON);
+        var maxX = (int) Math.floor(feetCenter.x + halfWidth - COLLISION_EPSILON);
+        var maxZ = (int) Math.floor(feetCenter.z + halfWidth - COLLISION_EPSILON);
+
+        for (var x = minX; x <= maxX; x++) {
+            for (var z = minZ; z <= maxZ; z++) {
+                if (!hasSupportAt(x, feetCenter.y, z)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private boolean hasExpectedTerrain(Vec3 feetCenter, float entityWidth, TerrainType expectedTerrain) {
+        var halfWidth = entityWidth / 2.0d;
+        var minX = (int) Math.floor(feetCenter.x - halfWidth + COLLISION_EPSILON);
+        var minZ = (int) Math.floor(feetCenter.z - halfWidth + COLLISION_EPSILON);
+        var maxX = (int) Math.floor(feetCenter.x + halfWidth - COLLISION_EPSILON);
+        var maxZ = (int) Math.floor(feetCenter.z + halfWidth - COLLISION_EPSILON);
+        var y = (int) Math.floor(feetCenter.y);
+        var cursor = new BlockPos.MutableBlockPos();
+        var supportedTerrains = config.getEvaluatorConfig().getSupportedTerrains();
+        var terrainClassifier = config.getEvaluatorConfig().getTerrainClassifier();
+
+        for (var x = minX; x <= maxX; x++) {
+            for (var z = minZ; z <= maxZ; z++) {
+                cursor.set(x, y, z);
+
+                var terrain = terrainClassifier.classify(level, cursor);
+
+                if (
+                    terrain != expectedTerrain
+                        || !supportedTerrains.contains(terrain)
+                        || (excludedTerrains != null && excludedTerrains.contains(terrain))
+                ) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private boolean hasSupportAt(int x, double feetY, int z) {
+        var supportY = (int) Math.floor(feetY) - 1;
+        var cursor = new BlockPos.MutableBlockPos(x, supportY, z);
+        var state = level.getBlockState(cursor);
+
+        if (state.liquid()) {
+            return false;
+        }
+
+        var shape = state.getCollisionShape(level, cursor, CollisionContext.empty());
+
+        if (shape.isEmpty()) {
+            return false;
+        }
+
+        var supportProbe = new AABB(
+            x + COLLISION_EPSILON,
+            feetY - COLLISION_EPSILON,
+            z + COLLISION_EPSILON,
+            x + 1.0d - COLLISION_EPSILON,
+            feetY + COLLISION_EPSILON,
+            z + 1.0d - COLLISION_EPSILON
+        );
+
+        for (var blockBox : shape.toAabbs()) {
+            if (blockBox.move(cursor).intersects(supportProbe)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static List<WaypointCandidate> shapeWaypointCandidates(float entityWidth) {
+        var halfWidth = entityWidth / 2.0d;
+        var minLocal = halfWidth;
+        var maxLocal = 1.0d - halfWidth;
+
+        if (minLocal > maxLocal + COLLISION_EPSILON) {
+            return List.of();
+        }
+
+        var axisSamples = shapeWaypointAxisSamples(minLocal, maxLocal);
+        var candidates = new ArrayList<WaypointCandidate>();
+
+        for (var localX : axisSamples) {
+            for (var localZ : axisSamples) {
+                if (Math.abs(localX - 0.5d) <= COLLISION_EPSILON && Math.abs(localZ - 0.5d) <= COLLISION_EPSILON) {
+                    continue;
+                }
+
+                var dx = localX - 0.5d;
+                var dz = localZ - 0.5d;
+                candidates.add(new WaypointCandidate(localX, localZ, dx * dx + dz * dz));
+            }
+        }
+
+        candidates.sort(
+            Comparator.comparingDouble(WaypointCandidate::distanceSquared)
+                .thenComparingDouble(WaypointCandidate::localX)
+                .thenComparingDouble(WaypointCandidate::localZ)
+        );
+
+        return candidates;
+    }
+
+    private static List<Double> shapeWaypointAxisSamples(double minLocal, double maxLocal) {
+        var samples = new ArrayList<Double>();
+        addShapeWaypointAxisSample(samples, 0.5d, minLocal, maxLocal);
+
+        var sampleCount = (int) Math.ceil(0.5d / SHAPE_WAYPOINT_SAMPLE_STEP);
+
+        for (var i = 1; i <= sampleCount; i++) {
+            var offset = i * SHAPE_WAYPOINT_SAMPLE_STEP;
+
+            addShapeWaypointAxisSample(samples, 0.5d - offset, minLocal, maxLocal);
+            addShapeWaypointAxisSample(samples, 0.5d + offset, minLocal, maxLocal);
+        }
+
+        addShapeWaypointAxisSample(samples, minLocal, minLocal, maxLocal);
+        addShapeWaypointAxisSample(samples, maxLocal, minLocal, maxLocal);
+
+        samples.sort(Comparator.comparingDouble(sample -> Math.abs(sample - 0.5d)));
+
+        return samples;
+    }
+
+    private static void addShapeWaypointAxisSample(List<Double> samples, double sample, double minLocal, double maxLocal) {
+        if (sample < minLocal - COLLISION_EPSILON || sample > maxLocal + COLLISION_EPSILON) {
+            return;
+        }
+
+        var clamped = Math.max(minLocal, Math.min(maxLocal, sample));
+
+        for (var existing : samples) {
+            if (Math.abs(existing - clamped) <= COLLISION_EPSILON) {
+                return;
+            }
+        }
+
+        samples.add(clamped);
+    }
+
+    private record WaypointCandidate(
+        double localX,
+        double localZ,
+        double distanceSquared
+    ) {}
 
     private double distanceSquared(double x, double y, double z, Vec3 target) {
         var dx = target.x - x;

@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import com.blib.api.common.pathfinding.v1.cache.TerrainClassificationCache;
 import com.blib.api.common.pathfinding.v1.evaluator.TerrainEvaluator;
@@ -23,8 +24,6 @@ import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
  * internally connected and meets at shared face boundaries.
  */
 public final class SectionCorridorFinder {
-
-    private static final int MAX_SECTION_SEARCH_NODES = 128;
 
     // Face indices (must match TerrainCacheSection constants).
     private static final int FACE_WEST = 0;
@@ -43,9 +42,20 @@ public final class SectionCorridorFinder {
 
     private final TerrainEvaluator evaluator;
 
+    private final Supplier<PathfindingTuning> tuningSupplier;
+
     public SectionCorridorFinder(TerrainClassificationCache classificationCache, TerrainEvaluator evaluator) {
+        this(classificationCache, evaluator, () -> PathfindingTuning.DEFAULT);
+    }
+
+    public SectionCorridorFinder(
+        TerrainClassificationCache classificationCache,
+        TerrainEvaluator evaluator,
+        Supplier<PathfindingTuning> tuningSupplier
+    ) {
         this.classificationCache = classificationCache;
         this.evaluator = evaluator;
+        this.tuningSupplier = tuningSupplier;
     }
 
     private record RegionNode(
@@ -64,6 +74,7 @@ public final class SectionCorridorFinder {
      * containing the buffered corridor set and ordered section waypoints, or null if the target is unreachable.
      */
     public @Nullable CorridorResult findCorridor(LevelReader level, BlockPos startPos, BlockPos targetPos) {
+        var tuning = tuningSupplier.get();
         var startSX = startPos.getX() >> 4;
         var startSY = startPos.getY() >> 4;
         var startSZ = startPos.getZ() >> 4;
@@ -93,7 +104,7 @@ public final class SectionCorridorFinder {
         RegionNode bestEntry = null;
         var visitedCount = 0;
 
-        while (!openSet.isEmpty() && visitedCount < MAX_SECTION_SEARCH_NODES) {
+        while (!openSet.isEmpty() && visitedCount < tuning.sectionSearchNodeBudget()) {
             var current = openSet.poll();
 
             if (closedSet.contains(current.key())) {
@@ -213,13 +224,14 @@ public final class SectionCorridorFinder {
 
         var waypoints = new ArrayList<BlockPos>(sectionCoords.size());
         var corridor = new HashSet<Long>();
+        var bufferRadius = tuning.corridorBufferRadius();
 
         for (var coords : sectionCoords) {
             waypoints.add(new BlockPos(coords[0] * 16 + 8, coords[1] * 16 + 8, coords[2] * 16 + 8));
 
-            for (int bufDx = -1; bufDx <= 1; bufDx++) {
-                for (int bufDy = -1; bufDy <= 1; bufDy++) {
-                    for (int bufDz = -1; bufDz <= 1; bufDz++) {
+            for (int bufDx = -bufferRadius; bufDx <= bufferRadius; bufDx++) {
+                for (int bufDy = -bufferRadius; bufDy <= bufferRadius; bufDy++) {
+                    for (int bufDz = -bufferRadius; bufDz <= bufferRadius; bufDz++) {
                         corridor.add(packSectionKey(coords[0] + bufDx, coords[1] + bufDy, coords[2] + bufDz));
                     }
                 }

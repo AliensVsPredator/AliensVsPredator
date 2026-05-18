@@ -169,7 +169,7 @@ public final class PathDebugUtil {
             resolvedGoal,
             resolvedGoal,
             nodes.size(),
-            navigator.getConfig().getSearchConfig().maxSearchNodes(),
+            navigator.getSearchConfig().maxSearchNodes(),
             path.getNodeCount(),
             reached,
             false,
@@ -182,7 +182,7 @@ public final class PathDebugUtil {
             collectStableGroundEntries(path),
             List.of(),
             nodes.size(),
-            navigator.getConfig().getSearchConfig().maxSearchNodes(),
+            navigator.getSearchConfig().maxSearchNodes(),
             diagnostics
         );
     }
@@ -301,11 +301,20 @@ public final class PathDebugUtil {
             targetPos != null ? targetPos.getZ() : 0,
             navigator.getConsecutiveFailures(),
             navigator.getFailureCooldownRemainingTicks(),
-            navigator.getConfig().getStuckTimeoutInTicks(),
-            navigator.getConfig().getPathRecalculateIntervalInTicks(),
+            navigator.getStuckTimeoutInTicks(),
+            navigator.getPathRecalculateIntervalInTicks(),
             navigator.getPathfindingFeatures().toMask(),
             pathfindingProfile != null ? pathfindingProfile.ordinal() : -1,
-            navigator.getPathfindingFeaturesRevision()
+            navigator.getPathfindingFeaturesRevision(),
+            navigator.getSearchConfig().maxSearchNodes(),
+            navigator.getSearchConfig().heuristicWeight(),
+            navigator.getSearchConfig().maxPathLength(),
+            navigator.getSearchConfig().elevationWeight(),
+            navigator.getPathfindingTuning().corridorDistanceThreshold(),
+            navigator.getPathfindingTuning().sectionSearchNodeBudget(),
+            navigator.getPathfindingTuning().corridorBufferRadius(),
+            navigator.getPathfindingTuning().asyncChunkMargin(),
+            navigator.getPathfindingTuning().minImprovement()
         );
     }
 

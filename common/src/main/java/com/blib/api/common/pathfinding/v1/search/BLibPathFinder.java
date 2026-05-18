@@ -36,19 +36,14 @@ import com.blib.api.common.pathfinding.v1.path.BLibPath;
 import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
 
 /**
- * A* pathfinding with optional two-level hierarchical search. When a {@link TerrainClassificationCache} is provided,
- * the pathfinder first runs a fast section-level A* via {@link SectionCorridorFinder} to identify a corridor of
- * 16x16x16 sections, then runs the block-level A* restricted to that corridor.
+ * A* pathfinding with optional two-level hierarchical search. When the section-corridor feature is enabled and a
+ * {@link TerrainClassificationCache} is provided, the pathfinder first runs a fast section-level A* via
+ * {@link SectionCorridorFinder} to identify a corridor of 16x16x16 sections, then runs the block-level A* restricted
+ * to that corridor.
  */
 public final class BLibPathFinder {
 
     private static final int MAX_NEIGHBORS = 40;
-
-    private static final int CORRIDOR_DISTANCE_THRESHOLD = 48;
-
-    private static final float MIN_IMPROVEMENT = 0.01f;
-
-    private static final int ASYNC_CHUNK_MARGIN = 2;
 
     private static final ExecutorService PATHFINDING_EXECUTOR = Executors.newFixedThreadPool(
         Math.max(1, Runtime.getRuntime().availableProcessors() / 2),
@@ -61,7 +56,9 @@ public final class BLibPathFinder {
 
     private final TerrainEvaluator evaluator;
 
-    private final SearchConfig config;
+    private SearchConfig config;
+
+    private PathfindingTuning tuning = PathfindingTuning.DEFAULT;
 
     private final @Nullable TerrainClassificationCache classificationCache;
 
@@ -90,10 +87,10 @@ public final class BLibPathFinder {
 
     public BLibPathFinder(TerrainEvaluator evaluator, SearchConfig config, @Nullable TerrainClassificationCache classificationCache) {
         this.evaluator = evaluator;
-        this.config = config;
+        this.config = java.util.Objects.requireNonNull(config, "config");
         this.classificationCache = classificationCache;
         this.corridorFinder = classificationCache != null
-            ? new SectionCorridorFinder(classificationCache, evaluator)
+            ? new SectionCorridorFinder(classificationCache, evaluator, this::getTuning)
             : null;
     }
 
@@ -103,6 +100,22 @@ public final class BLibPathFinder {
 
     public void setFeatures(PathfindingFeatures features) {
         this.features = features;
+    }
+
+    public SearchConfig getSearchConfig() {
+        return config;
+    }
+
+    public void setSearchConfig(SearchConfig config) {
+        this.config = java.util.Objects.requireNonNull(config, "config");
+    }
+
+    public PathfindingTuning getTuning() {
+        return tuning;
+    }
+
+    public void setTuning(PathfindingTuning tuning) {
+        this.tuning = java.util.Objects.requireNonNull(tuning, "tuning");
     }
 
     public void setDebugCaptureEnabled(boolean debugCaptureEnabled) {
@@ -148,7 +161,7 @@ public final class BLibPathFinder {
      * @return a future that completes with the path (or null if no path found)
      */
     public CompletableFuture<@Nullable BLibPath> findPathAsync(LevelReader level, BlockPos startPos, BlockPos targetPos) {
-        if (!(evaluator instanceof UnifiedTerrainEvaluator unifiedEvaluator)) {
+        if (!features.asyncPathfinding() || !(evaluator instanceof UnifiedTerrainEvaluator unifiedEvaluator)) {
             return CompletableFuture.completedFuture(findPath(level, startPos, targetPos));
         }
 
@@ -165,14 +178,16 @@ public final class BLibPathFinder {
         applyFeatures();
         applyExcludedTerrains();
 
-        for (int cx = minCX - ASYNC_CHUNK_MARGIN; cx <= maxCX + ASYNC_CHUNK_MARGIN; cx++) {
-            for (int cz = minCZ - ASYNC_CHUNK_MARGIN; cz <= maxCZ + ASYNC_CHUNK_MARGIN; cz++) {
+        var asyncChunkMargin = tuning.asyncChunkMargin();
+
+        for (int cx = minCX - asyncChunkMargin; cx <= maxCX + asyncChunkMargin; cx++) {
+            for (int cz = minCZ - asyncChunkMargin; cz <= maxCZ + asyncChunkMargin; cz++) {
                 unifiedEvaluator.preloadChunk(cx, cz, level.getChunk(cx, cz));
             }
         }
 
-        if (classificationCache != null) {
-            var margin = ASYNC_CHUNK_MARGIN * 16;
+        if (shouldUseCorridor(startPos, targetPos)) {
+            var margin = asyncChunkMargin * 16;
             classificationCache.prePopulateArea(
                 level,
                 Math.min(startPos.getX(), targetPos.getX()) - margin,
@@ -220,7 +235,7 @@ public final class BLibPathFinder {
      * terrain cost queries return correct values during the corridor search.
      */
     public @Nullable CorridorResult computeCorridor(LevelReader level, BlockPos startPos, BlockPos targetPos) {
-        if (corridorFinder == null) {
+        if (!features.sectionCorridor() || corridorFinder == null) {
             return null;
         }
 
@@ -270,7 +285,14 @@ public final class BLibPathFinder {
         applyExcludedTerrains();
 
         try {
-            return searchBlocks(startPos, targetPos, corridor, corridor != null ? PathSearchMode.CORRIDOR : PathSearchMode.DIRECT);
+            var activeCorridor = features.sectionCorridor() ? corridor : null;
+
+            return searchBlocks(
+                startPos,
+                targetPos,
+                activeCorridor,
+                activeCorridor != null ? PathSearchMode.CORRIDOR : PathSearchMode.DIRECT
+            );
         } finally {
             evaluator.cleanup();
         }
@@ -289,7 +311,9 @@ public final class BLibPathFinder {
     }
 
     private boolean shouldUseCorridor(BlockPos startPos, BlockPos targetPos) {
-        return corridorFinder != null && startPos.distManhattan(targetPos) > CORRIDOR_DISTANCE_THRESHOLD;
+        return features.sectionCorridor()
+            && corridorFinder != null
+            && startPos.distManhattan(targetPos) > tuning.corridorDistanceThreshold();
     }
 
     private @Nullable BLibPath searchBlocks(
@@ -299,10 +323,12 @@ public final class BLibPathFinder {
         PathSearchMode mode
     ) {
         var recorder = debugEnabled ? new PathSearchDebugRecorder() : null;
+        var searchConfig = config;
+        var activeTuning = tuning;
         setEvaluatorDebugRecorder(recorder);
 
         try {
-            return searchBlocksWithDiagnostics(startPos, targetPos, corridor, mode, recorder);
+            return searchBlocksWithDiagnostics(startPos, targetPos, corridor, mode, recorder, searchConfig, activeTuning);
         } finally {
             setEvaluatorDebugRecorder(null);
         }
@@ -319,13 +345,15 @@ public final class BLibPathFinder {
         BlockPos targetPos,
         @Nullable Set<Long> corridor,
         PathSearchMode mode,
-        @Nullable PathSearchDebugRecorder recorder
+        @Nullable PathSearchDebugRecorder recorder,
+        SearchConfig searchConfig,
+        PathfindingTuning activeTuning
     ) {
         var startNode = evaluator.getStartNode(startPos);
         var goalNode = evaluator.getGoalNode(targetPos);
 
         startNode.setGCost(0);
-        startNode.setHCost(heuristic(startNode, goalNode));
+        startNode.setHCost(heuristic(startNode, goalNode, searchConfig));
 
         openSet.clear();
         closedNodes.clear();
@@ -334,7 +362,7 @@ public final class BLibPathFinder {
         var visitedCount = 0;
         PathNode bestNode = startNode;
 
-        while (!openSet.isEmpty() && visitedCount < config.maxSearchNodes()) {
+        while (!openSet.isEmpty() && visitedCount < searchConfig.maxSearchNodes()) {
             var current = openSet.poll();
 
             if (current.isClosed()) {
@@ -351,7 +379,7 @@ public final class BLibPathFinder {
             visitedCount++;
 
             if (current.equals(goalNode)) {
-                var path = buildPath(current, true);
+                var path = buildPath(current, true, searchConfig);
                 lastSearchSnapshot = debugEnabled
                     ? buildSnapshot(
                         closedNodes,
@@ -365,7 +393,8 @@ public final class BLibPathFinder {
                         current,
                         mode,
                         PathSearchTermination.GOAL_REACHED,
-                        recorder
+                        recorder,
+                        searchConfig
                     )
                     : null;
 
@@ -395,7 +424,7 @@ public final class BLibPathFinder {
                     + neighbor.getPendingCostMalus();
                 var tentativeG = current.getGCost() + edgeCost;
 
-                if (neighbor.getGCost() > 0 && tentativeG >= neighbor.getGCost() - MIN_IMPROVEMENT) {
+                if (neighbor.getGCost() > 0 && tentativeG >= neighbor.getGCost() - activeTuning.minImprovement()) {
                     reject(recorder, PathRejectionReason.NOT_BETTER, neighbor);
                     continue;
                 }
@@ -403,18 +432,18 @@ public final class BLibPathFinder {
                 neighbor.setParent(current);
                 neighbor.commitPendingTraversal();
                 neighbor.setGCost(tentativeG);
-                neighbor.setHCost(heuristic(neighbor, goalNode));
+                neighbor.setHCost(heuristic(neighbor, goalNode, searchConfig));
                 openSet.add(neighbor);
             }
         }
 
         BLibPath path = null;
 
-        if (bestNode != startNode) {
-            path = buildPath(bestNode, false);
+        if (features.partialPathResults() && bestNode != startNode) {
+            path = buildPath(bestNode, false, searchConfig);
         }
 
-        var termination = visitedCount >= config.maxSearchNodes()
+        var termination = visitedCount >= searchConfig.maxSearchNodes()
             ? PathSearchTermination.BUDGET_EXHAUSTED
             : PathSearchTermination.OPEN_SET_EXHAUSTED;
         if (path == null && bestNode == startNode) {
@@ -434,7 +463,8 @@ public final class BLibPathFinder {
                 bestNode,
                 mode,
                 termination,
-                recorder
+                recorder,
+                searchConfig
             )
             : null;
 
@@ -453,7 +483,8 @@ public final class BLibPathFinder {
         PathNode bestNode,
         PathSearchMode mode,
         PathSearchTermination termination,
-        @Nullable PathSearchDebugRecorder recorder
+        @Nullable PathSearchDebugRecorder recorder,
+        SearchConfig searchConfig
     ) {
         var pathIndexByNode = new HashMap<PathNode, Integer>();
 
@@ -491,7 +522,7 @@ public final class BLibPathFinder {
             new PathDebugBlockPos(goalNode.getX(), goalNode.getY(), goalNode.getZ()),
             new PathDebugBlockPos(bestNode.getX(), bestNode.getY(), bestNode.getZ()),
             visitedCount,
-            config.maxSearchNodes(),
+            searchConfig.maxSearchNodes(),
             path != null ? path.getNodeCount() : 0,
             reached,
             corridor != null,
@@ -504,7 +535,7 @@ public final class BLibPathFinder {
             collectStableGroundEntries(path),
             corridor != null ? List.copyOf(corridor) : List.<Long>of(),
             visitedCount,
-            config.maxSearchNodes(),
+            searchConfig.maxSearchNodes(),
             diagnostics
         );
     }
@@ -561,27 +592,27 @@ public final class BLibPathFinder {
         }
     }
 
-    private float heuristic(PathNode from, PathNode to) {
+    private float heuristic(PathNode from, PathNode to, SearchConfig searchConfig) {
         var dx = (float) (to.getX() - from.getX());
-        var dy = (float) (to.getY() - from.getY()) * config.elevationWeight();
+        var dy = (float) (to.getY() - from.getY()) * searchConfig.elevationWeight();
         var dz = (float) (to.getZ() - from.getZ());
 
-        return (float) Math.sqrt(dx * dx + dy * dy + dz * dz) * config.heuristicWeight();
+        return (float) Math.sqrt(dx * dx + dy * dy + dz * dz) * searchConfig.heuristicWeight();
     }
 
     // --- Path post-processing pipeline ---
 
-    private BLibPath buildPath(PathNode endNode, boolean reached) {
-        var nodes = reconstructNodes(endNode);
+    private BLibPath buildPath(PathNode endNode, boolean reached, SearchConfig searchConfig) {
+        var nodes = reconstructNodes(endNode, searchConfig);
 
         return new BLibPath(nodes, reached);
     }
 
-    private List<PathNode> reconstructNodes(PathNode endNode) {
+    private List<PathNode> reconstructNodes(PathNode endNode, SearchConfig searchConfig) {
         var nodes = new ArrayList<PathNode>();
         var current = endNode;
 
-        while (current != null && nodes.size() < config.maxPathLength()) {
+        while (current != null && nodes.size() < searchConfig.maxPathLength()) {
             nodes.add(current);
             current = current.getParent();
         }
