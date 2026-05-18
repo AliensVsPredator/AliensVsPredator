@@ -236,14 +236,14 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     // --- GROUND neighbor generation ---
 
-    // Reusable cardinal result cache for diagonal validation (#4).
+    // Reusable cardinal result cache for cardinal step-up/down fallback.
     // Index: 0=west(-1,0), 1=east(+1,0), 2=north(0,-1), 3=south(0,+1)
     private final PathNode[] cardinalCache = new PathNode[4];
 
     private int getGroundNeighbors(PathNode node, PathNode[] neighbors) {
         var count = 0;
 
-        // Evaluate cardinals and cache results for diagonal reuse.
+        // Evaluate cardinals once so step-up/down fallback can reuse same-level candidates.
         for (int i = 0; i < HORIZONTAL_OFFSETS.length; i++) {
             cardinalCache[i] = tryCreateNode(
                 node,
@@ -254,7 +254,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
 
         count = addGroundCardinalNeighbors(node, neighbors, count);
-        count = addGroundDiagonalNeighborsCached(node, neighbors, count);
+        count = addGroundDiagonalNeighbors(node, neighbors, count);
         count = addVerticalBreakableNeighbors(node, neighbors, count);
 
         return count;
@@ -287,7 +287,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         return count;
     }
 
-    private int addGroundDiagonalNeighborsCached(PathNode node, PathNode[] neighbors, int count) {
+    private int addGroundDiagonalNeighbors(PathNode node, PathNode[] neighbors, int count) {
         for (var offset : DIAGONAL_OFFSETS) {
             var neighbor = tryCreateNode(node, node.getX() + offset[0], node.getY(), node.getZ() + offset[1]);
 
@@ -310,8 +310,6 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                 count = newCount;
                 continue;
             }
-
-            reject(PathRejectionReason.DIAGONAL_BLOCKED, node.getX() + offset[0], node.getY(), node.getZ() + offset[1]);
         }
 
         return count;
