@@ -291,18 +291,40 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         for (var offset : DIAGONAL_OFFSETS) {
             var neighbor = tryCreateNode(node, node.getX() + offset[0], node.getY(), node.getZ() + offset[1]);
 
-            if (neighbor != null && neighbor.getTerrainType() != TerrainType.BREAKABLE) {
+            if (neighbor != null) {
                 neighbors[count++] = neighbor;
+
+                if (neighbor.getTerrainType() != TerrainType.BREAKABLE) {
+                    continue;
+                }
+            }
+
+            var newCount = addDiagonalStepUpNeighbor(node, offset[0], offset[1], neighbors, count);
+            if (newCount > count) {
+                count = newCount;
                 continue;
             }
 
-            var newCount = addDiagonalStepDownNeighbor(node, offset[0], offset[1], neighbors, count);
+            newCount = addDiagonalStepDownNeighbor(node, offset[0], offset[1], neighbors, count);
             if (newCount > count) {
                 count = newCount;
                 continue;
             }
 
             reject(PathRejectionReason.DIAGONAL_BLOCKED, node.getX() + offset[0], node.getY(), node.getZ() + offset[1]);
+        }
+
+        return count;
+    }
+
+    private int addDiagonalStepUpNeighbor(PathNode from, int dx, int dz, PathNode[] neighbors, int count) {
+        for (int stepUp = 1; stepUp <= config.getMaxStepHeight() && count < neighbors.length; stepUp++) {
+            var steppedUp = tryCreateNode(from, from.getX() + dx, from.getY() + stepUp, from.getZ() + dz);
+
+            if (steppedUp != null) {
+                neighbors[count++] = steppedUp;
+                break;
+            }
         }
 
         return count;
