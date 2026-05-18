@@ -332,6 +332,8 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             }
         }
 
+        var addedStepUp = false;
+
         for (int stepUp = 1; stepUp <= config.getMaxStepHeight(); stepUp++) {
             var steppedUp = tryCreateNode(from, baseX, baseY + stepUp, baseZ);
 
@@ -343,8 +345,13 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                 }
 
                 neighbors[count++] = applyStepUpClearance(steppedUp, clearance);
+                addedStepUp = true;
                 break;
             }
+        }
+
+        if (!addedStepUp && footprintSize() > 1) {
+            count = addFootprintStepUpNeighbor(from, dx, dz, neighbors, count);
         }
 
         if (sameLevel == null) {
@@ -362,6 +369,33 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                     break;
                 }
             }
+        }
+
+        return count;
+    }
+
+    private int addFootprintStepUpNeighbor(PathNode from, int dx, int dz, PathNode[] neighbors, int count) {
+        var footprint = footprintSize();
+        // Wide entities need a full new landing; a one-block step overlaps support with the previous body cavity.
+        var baseX = from.getX() + dx * footprint;
+        var baseY = from.getY();
+        var baseZ = from.getZ() + dz * footprint;
+
+        for (int stepUp = 1; stepUp <= config.getMaxStepHeight(); stepUp++) {
+            var steppedUp = tryCreateNode(from, baseX, baseY + stepUp, baseZ);
+
+            if (steppedUp == null) {
+                continue;
+            }
+
+            var clearance = evaluateStepUpClearance(from, stepUp);
+
+            if (!clearance.clear()) {
+                break;
+            }
+
+            neighbors[count++] = applyStepUpClearance(steppedUp, clearance);
+            break;
         }
 
         return count;
