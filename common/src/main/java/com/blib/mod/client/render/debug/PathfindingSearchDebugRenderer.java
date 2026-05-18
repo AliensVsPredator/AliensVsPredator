@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.blib.api.common.pathfinding.v1.debug.DebugNodeEntry;
+import com.blib.api.common.pathfinding.v1.debug.PathDebugBlockPos;
+import com.blib.api.common.pathfinding.v1.debug.PathSearchOutcome;
 import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
 import com.blib.mod.common.network.packet.S2CPathfindingSearchDebugPayload;
 
@@ -42,6 +44,10 @@ public final class PathfindingSearchDebugRenderer {
     private static final float[] PREVIOUS_NODE_COLOR = { 1.0f, 0.5f, 0.0f };
 
     private static final float[] PATH_LINE_COLOR = { 1.0f, 1.0f, 0.0f };
+
+    private static final float[] BEST_NODE_COLOR = { 1.0f, 0.2f, 0.2f };
+
+    private static final float[] REJECTION_SAMPLE_COLOR = { 1.0f, 0.35f, 0.0f };
 
     private final Map<Integer, S2CPathfindingSearchDebugPayload> snapshots = new ConcurrentHashMap<>();
 
@@ -85,8 +91,10 @@ public final class PathfindingSearchDebugRenderer {
         S2CPathfindingSearchDebugPayload payload
     ) {
         renderCorridorSections(poseStack, bufferSource, cameraX, cameraY, cameraZ, payload);
+        renderRejectionSamples(poseStack, bufferSource, cameraX, cameraY, cameraZ, payload);
         renderNodes(poseStack, bufferSource, cameraX, cameraY, cameraZ, payload);
         renderPathLines(poseStack, bufferSource, cameraX, cameraY, cameraZ, payload);
+        renderBestNode(poseStack, bufferSource, cameraX, cameraY, cameraZ, payload);
     }
 
     private void renderNodes(
@@ -336,6 +344,74 @@ public final class PathfindingSearchDebugRenderer {
 
             poseStack.popPose();
         }
+    }
+
+    private void renderBestNode(
+        PoseStack poseStack,
+        MultiBufferSource.BufferSource bufferSource,
+        double cameraX,
+        double cameraY,
+        double cameraZ,
+        S2CPathfindingSearchDebugPayload payload
+    ) {
+        var diagnostics = payload.diagnostics();
+        if (diagnostics.outcome() == PathSearchOutcome.COMPLETE || !diagnostics.bestNode().present()) {
+            return;
+        }
+
+        renderMarkerBox(poseStack, bufferSource, cameraX, cameraY, cameraZ, diagnostics.bestNode(), 0.55f, BEST_NODE_COLOR, 1.0f);
+    }
+
+    private void renderRejectionSamples(
+        PoseStack poseStack,
+        MultiBufferSource.BufferSource bufferSource,
+        double cameraX,
+        double cameraY,
+        double cameraZ,
+        S2CPathfindingSearchDebugPayload payload
+    ) {
+        for (var rejection : payload.diagnostics().rejections()) {
+            for (var sample : rejection.samples()) {
+                renderMarkerBox(poseStack, bufferSource, cameraX, cameraY, cameraZ, sample, 0.28f, REJECTION_SAMPLE_COLOR, 0.75f);
+            }
+        }
+    }
+
+    private void renderMarkerBox(
+        PoseStack poseStack,
+        MultiBufferSource.BufferSource bufferSource,
+        double cameraX,
+        double cameraY,
+        double cameraZ,
+        PathDebugBlockPos pos,
+        float size,
+        float[] color,
+        float alpha
+    ) {
+        if (!pos.present()) {
+            return;
+        }
+
+        var half = size / 2.0f;
+        poseStack.pushPose();
+        poseStack.translate(pos.x() + 0.5 - cameraX, pos.y() + 0.5 - cameraY, pos.z() + 0.5 - cameraZ);
+
+        LevelRenderer.renderLineBox(
+            poseStack,
+            bufferSource.getBuffer(RenderType.lines()),
+            -half,
+            -half,
+            -half,
+            half,
+            half,
+            half,
+            color[0],
+            color[1],
+            color[2],
+            alpha
+        );
+
+        poseStack.popPose();
     }
 
     private static float[] getTerrainColor(int terrainTypeOrdinal) {
