@@ -33,21 +33,19 @@ public final class PathfindingSearchDebugRenderer {
 
     private static final int SECTION_SIZE = 16;
 
-    private static final float[] DEFAULT_PATH_COLOR = { 1.0f, 1.0f, 1.0f };
+    private static final float[] PATH_PLANNED_COLOR = { 0.56f, 0.58f, 0.64f };
 
-    private static final float[] TARGET_NODE_COLOR = { 1.0f, 0.85f, 0.0f };
+    private static final float[] PATH_COMPLETED_COLOR = { 0.35f, 0.78f, 0.48f };
 
-    private static final float[] CURRENT_NODE_COLOR = { 0.0f, 1.0f, 1.0f };
+    private static final float[] PATH_IN_PROGRESS_COLOR = { 0.90f, 0.76f, 0.42f };
 
-    private static final float[] NEXT_NODE_COLOR = { 1.0f, 0.3f, 1.0f };
+    private static final float[] PATH_OUTPUT_COLOR = { 0.43f, 0.55f, 1.0f };
 
-    private static final float[] PREVIOUS_NODE_COLOR = { 1.0f, 0.5f, 0.0f };
+    private static final float[] PATH_LINE_COLOR = PATH_IN_PROGRESS_COLOR;
 
-    private static final float[] PATH_LINE_COLOR = { 1.0f, 1.0f, 0.0f };
+    private static final float[] BEST_NODE_COLOR = PATH_IN_PROGRESS_COLOR;
 
-    private static final float[] BEST_NODE_COLOR = { 1.0f, 0.2f, 0.2f };
-
-    private static final float[] REJECTION_SAMPLE_COLOR = { 1.0f, 0.35f, 0.0f };
+    private static final float[] REJECTION_SAMPLE_COLOR = { 0.88f, 0.55f, 0.36f };
 
     private final Map<Integer, S2CPathfindingSearchDebugPayload> snapshots = new ConcurrentHashMap<>();
 
@@ -282,29 +280,29 @@ public final class PathfindingSearchDebugRenderer {
         var navPayload = PathfindingDebugState.INSTANCE.latestPayload();
 
         if (navPayload == null || navPayload.entityId() != entityId) {
-            return DEFAULT_PATH_COLOR;
+            return PATH_PLANNED_COLOR;
         }
 
         var totalNodes = navPayload.totalNodes();
         var currentIndex = navPayload.currentNodeIndex();
 
-        if (totalNodes > 0 && pathIndex == totalNodes - 1) {
-            return TARGET_NODE_COLOR;
+        if (navPayload.reached() && pathIndex <= Math.max(currentIndex, totalNodes - 1)) {
+            return PATH_COMPLETED_COLOR;
         }
 
         if (pathIndex == currentIndex) {
-            return CURRENT_NODE_COLOR;
+            return PATH_IN_PROGRESS_COLOR;
         }
 
-        if (pathIndex == currentIndex + 1) {
-            return NEXT_NODE_COLOR;
+        if (pathIndex < currentIndex) {
+            return PATH_COMPLETED_COLOR;
         }
 
-        if (pathIndex == currentIndex - 1) {
-            return PREVIOUS_NODE_COLOR;
+        if (totalNodes > 0 && pathIndex == totalNodes - 1) {
+            return PATH_OUTPUT_COLOR;
         }
 
-        return DEFAULT_PATH_COLOR;
+        return PATH_PLANNED_COLOR;
     }
 
     private void renderCorridorSections(
