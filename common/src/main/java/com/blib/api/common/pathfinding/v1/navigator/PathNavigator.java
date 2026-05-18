@@ -584,8 +584,11 @@ public final class PathNavigator {
             var dz = Math.abs(waypointCenter.z - entityZ);
 
             var withinReach = dx <= reachXZ && dy <= reachY && dz <= reachXZ;
+            var shouldAdvance = withinReach
+                || shouldSkipToNextNode(entityX, entityY, entityZ)
+                || shouldAdvanceToNextBreakableNode(entityX, entityY, entityZ, entityWidth, entityHeight, reachXZ, reachY);
 
-            if (!withinReach && !shouldSkipToNextNode(entityX, entityY, entityZ)) {
+            if (!shouldAdvance) {
                 break;
             }
 
@@ -614,6 +617,47 @@ public final class PathNavigator {
                 }
             }
         }
+    }
+
+    private boolean shouldAdvanceToNextBreakableNode(
+        double entityX,
+        double entityY,
+        double entityZ,
+        float entityWidth,
+        float entityHeight,
+        double waypointReachXZ,
+        double waypointReachY
+    ) {
+        var nextIndex = currentPath.getCurrentNodeIndex() + 1;
+
+        if (nextIndex >= currentPath.getNodeCount()) {
+            return false;
+        }
+
+        var nextNode = currentPath.getNode(nextIndex);
+        if (!nextNode.hasBreakRequirements()) {
+            return false;
+        }
+
+        // A breakable next node can physically block a wide mob before it reaches the current anchor center.
+        var currentCenter = nodeCenter(currentPath.getCurrentNode());
+        var dx = Math.abs(currentCenter.x - entityX);
+        var dy = Math.abs(currentCenter.y - entityY);
+        var dz = Math.abs(currentCenter.z - entityZ);
+
+        return dx <= breakableEdgeReachXZ(entityWidth, waypointReachXZ)
+            && dy <= breakableEdgeReachY(entityHeight, waypointReachY)
+            && dz <= breakableEdgeReachXZ(entityWidth, waypointReachXZ);
+    }
+
+    private double breakableEdgeReachXZ(float entityWidth, double waypointReachXZ) {
+        var entityBlocks = Math.max(entityWidth, config.getEvaluatorConfig().getEntityWidth());
+
+        return Math.max(waypointReachXZ, Math.max(0.75, entityBlocks / 2.0));
+    }
+
+    private double breakableEdgeReachY(float entityHeight, double waypointReachY) {
+        return Math.max(waypointReachY, Math.min(1.0, Math.max(0.5, entityHeight / 2.0)));
     }
 
     private double waypointReachXZ(float entityWidth) {
