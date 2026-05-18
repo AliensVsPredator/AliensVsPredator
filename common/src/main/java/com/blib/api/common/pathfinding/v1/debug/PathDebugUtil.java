@@ -85,6 +85,7 @@ public final class PathDebugUtil {
         var payload = new S2CPathfindingSearchDebugPayload(
             mob.getId(),
             snapshot.nodes(),
+            snapshot.stableGround(),
             snapshot.corridorKeys(),
             snapshot.visitedCount(),
             snapshot.maxSearchNodes(),

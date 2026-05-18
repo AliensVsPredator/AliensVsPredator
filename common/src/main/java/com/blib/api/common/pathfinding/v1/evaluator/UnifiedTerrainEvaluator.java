@@ -112,12 +112,22 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
     }
 
+    private PathNode getOrCreateNode(int x, int y, int z, TerrainType terrainType) {
+        var node = nodePool.getOrCreate(x, y, z, terrainType);
+
+        if (terrainType == TerrainType.GROUND && hasStableSupport(x, y, z, null)) {
+            node.setStableGround(x, y - 1, z);
+        }
+
+        return node;
+    }
+
     @Override
     public PathNode getStartNode(BlockPos entityPos) {
         var classified = classifyTerrain(entityPos);
 
         if (classified != null && snapshotCosts.containsKey(classified)) {
-            return nodePool.getOrCreate(entityPos.getX(), entityPos.getY(), entityPos.getZ(), classified);
+            return getOrCreateNode(entityPos.getX(), entityPos.getY(), entityPos.getZ(), classified);
         }
 
         // Entity might be on the edge/corner of an adjacent block (blockPosition floors to air).
@@ -131,7 +141,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                 var neighborClassified = classifyTerrain(neighborPos);
 
                 if (neighborClassified != null && snapshotCosts.containsKey(neighborClassified)) {
-                    return nodePool.getOrCreate(
+                    return getOrCreateNode(
                         neighborPos.getX(),
                         neighborPos.getY(),
                         neighborPos.getZ(),
@@ -144,7 +154,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         var resolvedPos = findStandablePosition(entityPos);
         var terrainType = classifyOrDefault(resolvedPos);
 
-        return nodePool.getOrCreate(resolvedPos.getX(), resolvedPos.getY(), resolvedPos.getZ(), terrainType);
+        return getOrCreateNode(resolvedPos.getX(), resolvedPos.getY(), resolvedPos.getZ(), terrainType);
     }
 
     @Override
@@ -152,7 +162,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         var classified = classifyTerrain(targetPos);
 
         if (classified != null && snapshotCosts.containsKey(classified)) {
-            return nodePool.getOrCreate(targetPos.getX(), targetPos.getY(), targetPos.getZ(), classified);
+            return getOrCreateNode(targetPos.getX(), targetPos.getY(), targetPos.getZ(), classified);
         }
 
         // Target might be on the edge/corner of an adjacent block (blockPosition floors to air).
@@ -166,7 +176,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                 var neighborClassified = classifyTerrain(neighborPos);
 
                 if (neighborClassified != null && snapshotCosts.containsKey(neighborClassified)) {
-                    return nodePool.getOrCreate(
+                    return getOrCreateNode(
                         neighborPos.getX(),
                         neighborPos.getY(),
                         neighborPos.getZ(),
@@ -179,7 +189,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         var resolvedPos = findStandablePosition(targetPos);
         var terrainType = classifyOrDefault(resolvedPos);
 
-        return nodePool.getOrCreate(resolvedPos.getX(), resolvedPos.getY(), resolvedPos.getZ(), terrainType);
+        return getOrCreateNode(resolvedPos.getX(), resolvedPos.getY(), resolvedPos.getZ(), terrainType);
     }
 
     @Override
@@ -487,12 +497,19 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         var terrainType = classifyTerrain(mutablePos);
 
         if (terrainType != null && snapshotCosts.containsKey(terrainType)) {
-            if (terrainType == TerrainType.GROUND && !hasStableSupport(x, y, z, from)) {
-                reject(PathRejectionReason.UNSTABLE_SUPPORT, x, y, z);
-                return null;
-            }
+            if (terrainType == TerrainType.GROUND) {
+                if (!hasStableSupport(x, y, z, from)) {
+                    reject(PathRejectionReason.UNSTABLE_SUPPORT, x, y, z);
+                    return null;
+                }
 
-            if (hasEntityClearance(x, y, z, terrainType)) {
+                if (hasEntityClearance(x, y, z, terrainType)) {
+                    var node = nodePool.getOrCreate(x, y, z, terrainType);
+                    node.setStableGround(x, y - 1, z);
+
+                    return node;
+                }
+            } else if (hasEntityClearance(x, y, z, terrainType)) {
                 return nodePool.getOrCreate(x, y, z, terrainType);
             }
 
@@ -561,6 +578,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
         var node = nodePool.getOrCreate(pos.getX(), pos.getY(), pos.getZ(), TerrainType.BREAKABLE);
         node.setCostMalus(totalCost);
+        node.setStableGround(pos.getX(), pos.getY() - 1, pos.getZ());
 
         return node;
     }

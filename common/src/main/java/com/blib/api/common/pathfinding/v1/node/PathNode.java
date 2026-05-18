@@ -28,6 +28,14 @@ public final class PathNode implements Comparable<PathNode> {
 
     private boolean closed;
 
+    private boolean hasStableGround;
+
+    private int stableGroundX;
+
+    private int stableGroundY;
+
+    private int stableGroundZ;
+
     public PathNode(int x, int y, int z, TerrainType terrainType) {
         this.x = x;
         this.y = y;
@@ -111,6 +119,29 @@ public final class PathNode implements Comparable<PathNode> {
         this.closed = closed;
     }
 
+    public boolean hasStableGround() {
+        return hasStableGround;
+    }
+
+    public int getStableGroundX() {
+        return stableGroundX;
+    }
+
+    public int getStableGroundY() {
+        return stableGroundY;
+    }
+
+    public int getStableGroundZ() {
+        return stableGroundZ;
+    }
+
+    public void setStableGround(int x, int y, int z) {
+        this.hasStableGround = true;
+        this.stableGroundX = x;
+        this.stableGroundY = y;
+        this.stableGroundZ = z;
+    }
+
     @Override
     public int compareTo(PathNode other) {
         return Float.compare(totalCost(), other.totalCost());
@@ -122,6 +153,7 @@ public final class PathNode implements Comparable<PathNode> {
         this.costMalus = 0;
         this.parent = null;
         this.closed = false;
+        this.hasStableGround = false;
     }
 
     @Override

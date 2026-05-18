@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
@@ -25,6 +26,7 @@ import com.blib.api.common.pathfinding.v1.debug.PathSearchMode;
 import com.blib.api.common.pathfinding.v1.debug.PathSearchOutcome;
 import com.blib.api.common.pathfinding.v1.debug.PathSearchSnapshot;
 import com.blib.api.common.pathfinding.v1.debug.PathSearchTermination;
+import com.blib.api.common.pathfinding.v1.debug.StableGroundDebugEntry;
 import com.blib.api.common.pathfinding.v1.evaluator.TerrainEvaluator;
 import com.blib.api.common.pathfinding.v1.evaluator.UnifiedTerrainEvaluator;
 import com.blib.api.common.pathfinding.v1.node.PathNode;
@@ -479,11 +481,32 @@ public final class BLibPathFinder {
 
         return new PathSearchSnapshot(
             entries,
+            collectStableGroundEntries(path),
             corridor != null ? List.copyOf(corridor) : List.<Long>of(),
             visitedCount,
             config.maxSearchNodes(),
             diagnostics
         );
+    }
+
+    private static List<StableGroundDebugEntry> collectStableGroundEntries(@Nullable BLibPath path) {
+        if (path == null) {
+            return List.of();
+        }
+
+        var stableGround = new LinkedHashMap<PathDebugBlockPos, StableGroundDebugEntry>();
+
+        for (int i = 0; i < path.getNodeCount(); i++) {
+            var node = path.getNode(i);
+            if (!node.hasStableGround()) {
+                continue;
+            }
+
+            var pos = new PathDebugBlockPos(node.getStableGroundX(), node.getStableGroundY(), node.getStableGroundZ());
+            stableGround.putIfAbsent(pos, new StableGroundDebugEntry(pos.x(), pos.y(), pos.z(), i));
+        }
+
+        return List.copyOf(stableGround.values());
     }
 
     private static DebugNodeEntry toDebugEntry(PathNode node, int pathIndex, int expansionOrder) {

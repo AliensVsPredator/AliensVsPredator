@@ -11,6 +11,7 @@ import java.util.List;
 
 import com.blib.api.common.pathfinding.v1.debug.DebugNodeEntry;
 import com.blib.api.common.pathfinding.v1.debug.PathSearchDebugData;
+import com.blib.api.common.pathfinding.v1.debug.StableGroundDebugEntry;
 import com.blib.mod.BLib;
 
 /**
@@ -19,6 +20,7 @@ import com.blib.mod.BLib;
 public record S2CPathfindingSearchDebugPayload(
     int entityId,
     List<DebugNodeEntry> nodes,
+    List<StableGroundDebugEntry> stableGround,
     List<Long> corridorKeys,
     int visitedCount,
     int maxSearchNodes,
@@ -34,6 +36,8 @@ public record S2CPathfindingSearchDebugPayload(
         S2CPathfindingSearchDebugPayload::entityId,
         DebugNodeEntry.CODEC.asList(),
         S2CPathfindingSearchDebugPayload::nodes,
+        StableGroundDebugEntry.CODEC.asList(),
+        S2CPathfindingSearchDebugPayload::stableGround,
         StreamCodecs.LONG.asList(),
         S2CPathfindingSearchDebugPayload::corridorKeys,
         StreamCodecs.INT,
