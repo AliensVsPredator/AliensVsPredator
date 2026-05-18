@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -29,6 +30,7 @@ import com.blib.api.common.pathfinding.v1.debug.PathSearchTermination;
 import com.blib.api.common.pathfinding.v1.debug.StableGroundDebugEntry;
 import com.blib.api.common.pathfinding.v1.evaluator.TerrainEvaluator;
 import com.blib.api.common.pathfinding.v1.evaluator.UnifiedTerrainEvaluator;
+import com.blib.api.common.pathfinding.v1.feature.PathfindingFeature;
 import com.blib.api.common.pathfinding.v1.feature.PathfindingFeatures;
 import com.blib.api.common.pathfinding.v1.feature.PathfindingProfile;
 import com.blib.api.common.pathfinding.v1.node.PathNode;
@@ -66,6 +68,8 @@ public final class BLibPathFinder {
 
     private @Nullable PathSearchSnapshot lastSearchSnapshot;
 
+    private int lastFeatureUsageMask;
+
     // --- Pooled search data structures ---
     private final PriorityQueue<PathNode> openSet = new PriorityQueue<>();
 
@@ -87,7 +91,7 @@ public final class BLibPathFinder {
 
     public BLibPathFinder(TerrainEvaluator evaluator, SearchConfig config, @Nullable TerrainClassificationCache classificationCache) {
         this.evaluator = evaluator;
-        this.config = java.util.Objects.requireNonNull(config, "config");
+        this.config = Objects.requireNonNull(config, "config");
         this.classificationCache = classificationCache;
         this.corridorFinder = classificationCache != null
             ? new SectionCorridorFinder(classificationCache, evaluator, this::getTuning)
@@ -107,7 +111,7 @@ public final class BLibPathFinder {
     }
 
     public void setSearchConfig(SearchConfig config) {
-        this.config = java.util.Objects.requireNonNull(config, "config");
+        this.config = Objects.requireNonNull(config, "config");
     }
 
     public PathfindingTuning getTuning() {
@@ -115,7 +119,7 @@ public final class BLibPathFinder {
     }
 
     public void setTuning(PathfindingTuning tuning) {
-        this.tuning = java.util.Objects.requireNonNull(tuning, "tuning");
+        this.tuning = Objects.requireNonNull(tuning, "tuning");
     }
 
     public void setDebugCaptureEnabled(boolean debugCaptureEnabled) {
@@ -124,6 +128,13 @@ public final class BLibPathFinder {
 
     public @Nullable PathSearchSnapshot getLastSearchSnapshot() {
         return lastSearchSnapshot;
+    }
+
+    public int consumeFeatureUsageMask() {
+        var mask = lastFeatureUsageMask;
+        lastFeatureUsageMask = 0;
+
+        return mask;
     }
 
     public @Nullable BLibPath findPath(LevelReader level, BlockPos startPos, BlockPos targetPos) {
@@ -322,13 +333,21 @@ public final class BLibPathFinder {
         @Nullable Set<Long> corridor,
         PathSearchMode mode
     ) {
+        lastFeatureUsageMask = 0;
         var recorder = debugEnabled ? new PathSearchDebugRecorder() : null;
         var searchConfig = config;
         var activeTuning = tuning;
         setEvaluatorDebugRecorder(recorder);
 
         try {
-            return searchBlocksWithDiagnostics(startPos, targetPos, corridor, mode, recorder, searchConfig, activeTuning);
+            if (corridor != null) {
+                markFeatureUsed(recorder, PathfindingFeature.SECTION_CORRIDOR);
+            }
+
+            var path = searchBlocksWithDiagnostics(startPos, targetPos, corridor, mode, recorder, searchConfig, activeTuning);
+            lastFeatureUsageMask = recorder != null ? recorder.featureUsageMask() : 0;
+
+            return path;
         } finally {
             setEvaluatorDebugRecorder(null);
         }
@@ -350,7 +369,8 @@ public final class BLibPathFinder {
         PathfindingTuning activeTuning
     ) {
         var startNode = evaluator.getStartNode(startPos);
-        var goalNode = evaluator.getGoalNode(targetPos);
+        var resolvedStartPos = new BlockPos(startNode.getX(), startNode.getY(), startNode.getZ());
+        var goalNode = evaluator.getGoalNode(resolvedStartPos, targetPos);
 
         startNode.setGCost(0);
         startNode.setHCost(heuristic(startNode, goalNode, searchConfig));
@@ -440,6 +460,7 @@ public final class BLibPathFinder {
         BLibPath path = null;
 
         if (features.partialPathResults() && bestNode != startNode) {
+            markFeatureUsed(recorder, PathfindingFeature.PARTIAL_PATH_RESULTS);
             path = buildPath(bestNode, false, searchConfig);
         }
 
@@ -589,6 +610,12 @@ public final class BLibPathFinder {
     private static void reject(@Nullable PathSearchDebugRecorder recorder, PathRejectionReason reason, PathNode node) {
         if (recorder != null) {
             recorder.reject(reason, node.getX(), node.getY(), node.getZ());
+        }
+    }
+
+    private static void markFeatureUsed(@Nullable PathSearchDebugRecorder recorder, PathfindingFeature feature) {
+        if (recorder != null) {
+            recorder.markFeatureUsed(feature);
         }
     }
 

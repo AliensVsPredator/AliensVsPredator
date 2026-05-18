@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
+import com.blib.api.common.pathfinding.v1.feature.PathfindingFeature;
+
 /**
  * Collects lightweight path search diagnostics while debug capture is enabled.
  */
@@ -14,6 +16,12 @@ public final class PathSearchDebugRecorder {
     private static final int MAX_SAMPLES_PER_REASON = 6;
 
     private final EnumMap<PathRejectionReason, MutableSummary> rejections = new EnumMap<>(PathRejectionReason.class);
+
+    private int featureUsageMask;
+
+    public void markFeatureUsed(PathfindingFeature feature) {
+        featureUsageMask |= feature.mask();
+    }
 
     public void reject(PathRejectionReason reason, BlockPos pos) {
         reject(reason, pos.getX(), pos.getY(), pos.getZ());
@@ -38,6 +46,10 @@ public final class PathSearchDebugRecorder {
             out.add(new PathRejectionDebugData(entry.getKey(), entry.getValue().count, entry.getValue().samples));
         }
         return out;
+    }
+
+    public int featureUsageMask() {
+        return featureUsageMask;
     }
 
     private static final class MutableSummary {

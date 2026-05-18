@@ -28,6 +28,14 @@ public interface TerrainEvaluator {
     PathNode getGoalNode(BlockPos targetPos);
 
     /**
+     * Returns the goal node for the target position, with access to the resolved search start. Implementations can use
+     * the start position to avoid resolving upward requests to lower standable surfaces.
+     */
+    default PathNode getGoalNode(BlockPos startPos, BlockPos targetPos) {
+        return getGoalNode(targetPos);
+    }
+
+    /**
      * Populates the neighbors array with valid neighbors of the given node. Returns the number of neighbors added.
      */
     int getNeighbors(PathNode node, PathNode[] neighbors);

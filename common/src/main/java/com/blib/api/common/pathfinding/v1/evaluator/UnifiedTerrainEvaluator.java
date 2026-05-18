@@ -15,6 +15,7 @@ import java.util.Set;
 import com.blib.api.common.pathfinding.v1.cache.TerrainClassificationCache;
 import com.blib.api.common.pathfinding.v1.debug.PathRejectionReason;
 import com.blib.api.common.pathfinding.v1.debug.PathSearchDebugRecorder;
+import com.blib.api.common.pathfinding.v1.feature.PathfindingFeature;
 import com.blib.api.common.pathfinding.v1.feature.PathfindingFeatures;
 import com.blib.api.common.pathfinding.v1.feature.PathfindingProfile;
 import com.blib.api.common.pathfinding.v1.node.PathNode;
@@ -128,7 +129,15 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     @Override
     public PathNode getGoalNode(BlockPos targetPos) {
-        var resolvedPos = findStandablePosition(targetPos, config.getMaxStepHeight());
+        var resolvedPos = findStandablePosition(targetPos, 0);
+
+        return getOrCreateGroundNode(resolvedPos.getX(), resolvedPos.getY(), resolvedPos.getZ());
+    }
+
+    @Override
+    public PathNode getGoalNode(BlockPos startPos, BlockPos targetPos) {
+        var maxStepDown = targetPos.getY() < startPos.getY() ? config.getMaxFallDistance() : 0;
+        var resolvedPos = findStandablePosition(targetPos, maxStepDown);
 
         return getOrCreateGroundNode(resolvedPos.getX(), resolvedPos.getY(), resolvedPos.getZ());
     }
@@ -179,7 +188,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         if (features.sameLevelMovement()) {
             var sameLevel = tryCreateGroundNode(x, from.getY(), z);
             if (sameLevel != null && hasMovementClearance(from, sameLevel, dx, dz)) {
-                return sameLevel;
+                return markMovementFeatureUsed(sameLevel, dx, dz, PathfindingFeature.SAME_LEVEL_MOVEMENT);
             }
         }
 
@@ -188,7 +197,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                 var steppedUp = tryCreateGroundNode(x, from.getY() + stepUp, z);
 
                 if (steppedUp != null && hasMovementClearance(from, steppedUp, dx, dz)) {
-                    return steppedUp;
+                    return markMovementFeatureUsed(steppedUp, dx, dz, PathfindingFeature.STEP_UP);
                 }
             }
         }
@@ -197,8 +206,21 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             for (int stepDown = 1; stepDown <= config.getMaxFallDistance(); stepDown++) {
                 var steppedDown = tryCreateGroundNode(x, from.getY() - stepDown, z);
 
-                if (steppedDown != null && hasMovementClearance(from, steppedDown, dx, dz)) {
-                    return steppedDown;
+                if (steppedDown == null) {
+                    continue;
+                }
+
+                if (features.dropDownOpenings() && requiresDropOpening(from, steppedDown)) {
+                    if (hasDropDownTransitionClearance(from, steppedDown, dx, dz)) {
+                        markFeatureUsed(PathfindingFeature.DROP_DOWN_OPENINGS);
+                        return markMovementFeatureUsed(steppedDown, dx, dz, PathfindingFeature.STEP_DOWN);
+                    }
+
+                    continue;
+                }
+
+                if (hasMovementClearance(from, steppedDown, dx, dz)) {
+                    return markMovementFeatureUsed(steppedDown, dx, dz, PathfindingFeature.STEP_DOWN);
                 }
             }
         }
@@ -206,8 +228,67 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         return null;
     }
 
+    private PathNode markMovementFeatureUsed(PathNode node, int dx, int dz, PathfindingFeature feature) {
+        markFeatureUsed(feature);
+
+        if (dx != 0 && dz != 0) {
+            markFeatureUsed(PathfindingFeature.DIAGONAL_MOVEMENT);
+        }
+
+        return node;
+    }
+
+    private boolean requiresDropOpening(PathNode from, PathNode to) {
+        return from.getY() - to.getY() > config.getMaxStepHeight();
+    }
+
+    private boolean hasDropDownTransitionClearance(PathNode from, PathNode to, int dx, int dz) {
+        if (!isDropOpeningClear(to.getX(), from.getY(), to.getZ(), to.getY())) {
+            reject(PathRejectionReason.DROP_OPENING_BLOCKED, to.getX(), to.getY(), to.getZ());
+            return false;
+        }
+
+        return hasMovementClearance(from, to, dx, dz);
+    }
+
+    private boolean isDropOpeningClear(int x, int topY, int z, int landingY) {
+        for (var y = topY; y > landingY; y--) {
+            if (!hasDropVolumeClearance(x, y, z) || hasDropSupportAt(x, y, z)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean hasDropVolumeClearance(int x, int y, int z) {
+        if (!usesFootprintClearance()) {
+            return isFeetOpen(x, y, z);
+        }
+
+        markFeatureUsed(PathfindingFeature.FOOTPRINT_CLEARANCE);
+
+        return isEntityBoxClear(nodeCenterX(x), y, nodeCenterZ(z), entityWidth(), entityHeight());
+    }
+
+    private boolean hasDropSupportAt(int x, int supportTopY, int z) {
+        var supportSize = usesFootprintClearance() ? footprintCellWidth() : 1;
+
+        for (var supportX = x; supportX < x + supportSize; supportX++) {
+            for (var supportZ = z; supportZ < z + supportSize; supportZ++) {
+                if (hasSupportAtTop(supportX, supportTopY, supportZ)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     private boolean hasMovementClearance(PathNode from, PathNode to, int dx, int dz) {
         if (features.diagonalCornerClearance() && dx != 0 && dz != 0) {
+            markFeatureUsed(PathfindingFeature.DIAGONAL_CORNER_CLEARANCE);
+
             if (hasFullBlockDiagonalCorner(from, to, dx, dz) || hasSameLevelSweptDiagonalCollision(from, to)) {
                 reject(PathRejectionReason.DIAGONAL_CORNER_BLOCKED, to.getX(), to.getY(), to.getZ());
                 return false;
@@ -257,6 +338,8 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         if (verticalDistance == 0 || verticalDistance > config.getMaxStepHeight()) {
             return true;
         }
+
+        markFeatureUsed(PathfindingFeature.STEPPED_FOOTPRINT_SUPPORT);
 
         return isSteppedFootprintTransitionClear(from, to);
     }
@@ -441,6 +524,8 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             return isFeetOpen(x, y, z);
         }
 
+        markFeatureUsed(PathfindingFeature.FOOTPRINT_CLEARANCE);
+
         return isEntityBoxClear(nodeCenterX(x), y, nodeCenterZ(z), entityWidth(), entityHeight());
     }
 
@@ -455,8 +540,20 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     }
 
     private boolean isDoorPassable(BlockState state) {
-        return state.getBlock() instanceof DoorBlock
-            && (state.getValue(DoorBlock.OPEN) || canOpenDoors());
+        if (!(state.getBlock() instanceof DoorBlock)) {
+            return false;
+        }
+
+        if (state.getValue(DoorBlock.OPEN)) {
+            return true;
+        }
+
+        if (canOpenDoors()) {
+            markFeatureUsed(PathfindingFeature.DOOR_OPENING);
+            return true;
+        }
+
+        return false;
     }
 
     private boolean canOpenDoors() {
@@ -474,7 +571,10 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             return hasGroundSupport(x, y, z);
         }
 
+        markFeatureUsed(PathfindingFeature.FOOTPRINT_CLEARANCE);
+
         if (usesSteppedFootprintSupport()) {
+            markFeatureUsed(PathfindingFeature.STEPPED_FOOTPRINT_SUPPORT);
             return hasSteppedFootprintSupport(nodeCenterX(x), y, nodeCenterZ(z), true);
         }
 
@@ -596,6 +696,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             var y = pos.getY() + stepUp;
 
             if (isGroundStandable(pos.getX(), y, pos.getZ())) {
+                markFeatureUsed(PathfindingFeature.VERTICAL_TARGET_RESOLUTION);
                 return new BlockPos(pos.getX(), y, pos.getZ());
             }
         }
@@ -604,6 +705,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             var y = pos.getY() - stepDown;
 
             if (isGroundStandable(pos.getX(), y, pos.getZ())) {
+                markFeatureUsed(PathfindingFeature.VERTICAL_TARGET_RESOLUTION);
                 return new BlockPos(pos.getX(), y, pos.getZ());
             }
         }
@@ -618,6 +720,12 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     private void reject(PathRejectionReason reason, int x, int y, int z) {
         if (debugRecorder != null) {
             debugRecorder.reject(reason, x, y, z);
+        }
+    }
+
+    private void markFeatureUsed(PathfindingFeature feature) {
+        if (debugRecorder != null) {
+            debugRecorder.markFeatureUsed(feature);
         }
     }
 }

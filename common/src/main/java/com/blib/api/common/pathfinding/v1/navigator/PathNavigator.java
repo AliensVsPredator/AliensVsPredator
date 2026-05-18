@@ -125,6 +125,8 @@ public final class PathNavigator {
 
     private int pendingFeaturesRevision;
 
+    private int pathfindingFeatureUsageMask;
+
     private float lastEntityWidth = 1.0f;
 
     private float lastEntityHeight = 2.0f;
@@ -182,10 +184,12 @@ public final class PathNavigator {
         var startNanos = System.nanoTime();
 
         if (shouldUsePlanner()) {
+            markFeatureUsed(PathfindingFeature.SEGMENTED_PATH_PLANNING);
             this.currentPath = planner.findPath(level, entityPos, target);
         } else {
             this.currentPath = pathFinder.findPath(level, entityPos, target);
         }
+        markFeatureUsage(pathFinder.consumeFeatureUsageMask());
 
         this.lastPathComputeNanos = System.nanoTime() - startNanos;
 
@@ -256,6 +260,7 @@ public final class PathNavigator {
         this.lastComputedTargetPos = target;
         this.lastStuckReplannedEdge = null;
         preparePathFinder();
+        markFeatureUsed(PathfindingFeature.ASYNC_PATHFINDING);
 
         this.asyncStartNanos = System.nanoTime();
         this.pendingFeaturesRevision = featuresRevision;
@@ -302,12 +307,16 @@ public final class PathNavigator {
         var path = pendingPath.join();
         pendingPath = null;
 
+        var searchFeatureUsage = pathFinder.consumeFeatureUsageMask();
+
         if (pendingFeaturesRevision != featuresRevision) {
             if (targetPos != null) {
                 needsRepath = true;
             }
             return;
         }
+
+        markFeatureUsage(searchFeatureUsage);
 
         this.currentPath = path;
         this.lastPathComputeNanos = System.nanoTime() - asyncStartNanos;
@@ -620,6 +629,13 @@ public final class PathNavigator {
         return featuresRevision;
     }
 
+    public int consumePathfindingFeatureUsageMask() {
+        var mask = pathfindingFeatureUsageMask;
+        pathfindingFeatureUsageMask = 0;
+
+        return mask;
+    }
+
     public void setPathfindingProfile(PathfindingProfile profile) {
         if (this.profile == profile && features.equals(profile.features())) {
             return;
@@ -738,11 +754,22 @@ public final class PathNavigator {
             var dy = Math.abs(waypointCenter.y - entityY);
             var dz = Math.abs(waypointCenter.z - entityZ);
 
-            var withinVerticalReach = dy <= reachY
-                || isDescendingSteppedFootprintWaypointWithinReach(currentPath.getCurrentNodeIndex(), entityY, reachY);
+            var withinVerticalReach = dy <= reachY;
+            if (!withinVerticalReach && isDescendingSteppedFootprintWaypointWithinReach(currentPath.getCurrentNodeIndex(), entityY, reachY)) {
+                withinVerticalReach = true;
+                markFeatureUsed(PathfindingFeature.STEPPED_FOOTPRINT_SUPPORT);
+            }
+
             var withinReach = dx <= reachXZ && withinVerticalReach && dz <= reachXZ;
-            var shouldAdvance = withinReach
-                || (features.pathSkipAhead() && shouldSkipToNextNode(entityX, entityY, entityZ, entityWidth, entityHeight));
+            var skippedAhead = !withinReach
+                && features.pathSkipAhead()
+                && shouldSkipToNextNode(entityX, entityY, entityZ, entityWidth, entityHeight);
+
+            if (skippedAhead) {
+                markFeatureUsed(PathfindingFeature.PATH_SKIP_AHEAD);
+            }
+
+            var shouldAdvance = withinReach || skippedAhead;
 
             if (!shouldAdvance) {
                 break;
@@ -785,6 +812,8 @@ public final class PathNavigator {
         if (targetIndex <= currentIndex) {
             return;
         }
+
+        markFeatureUsed(PathfindingFeature.ANY_ANGLE_SMOOTHING);
 
         var previousTerrain = currentTerrain;
 
@@ -1096,6 +1125,8 @@ public final class PathNavigator {
             return;
         }
 
+        markFeatureUsed(PathfindingFeature.STUCK_REPLAN);
+
         if (planner != null) {
             planner.clear();
         }
@@ -1144,7 +1175,9 @@ public final class PathNavigator {
         var startNanos = System.nanoTime();
 
         preparePathFinder();
+        markFeatureUsed(PathfindingFeature.SEGMENTED_PATH_PLANNING);
         this.currentPath = planner.computeNextSegment(level, entityPos);
+        markFeatureUsage(pathFinder.consumeFeatureUsageMask());
         this.lastPathComputeNanos = System.nanoTime() - startNanos;
         this.lastPathComputeTick = tickCount;
         resetProgressTracking();
@@ -1237,6 +1270,10 @@ public final class PathNavigator {
         }
 
         var adjusted = shapeAwareNodeCenter(node, entityWidth, entityHeight);
+
+        if (adjusted != null && !samePosition(adjusted, center)) {
+            markFeatureUsed(PathfindingFeature.COLLISION_SHAPE_WAYPOINTS);
+        }
 
         return adjusted != null ? adjusted : center;
     }
@@ -1474,6 +1511,20 @@ public final class PathNavigator {
         var dz = target.z - z;
 
         return dx * dx + dy * dy + dz * dz;
+    }
+
+    private boolean samePosition(Vec3 left, Vec3 right) {
+        return Math.abs(left.x - right.x) <= COLLISION_EPSILON
+            && Math.abs(left.y - right.y) <= COLLISION_EPSILON
+            && Math.abs(left.z - right.z) <= COLLISION_EPSILON;
+    }
+
+    private void markFeatureUsed(PathfindingFeature feature) {
+        markFeatureUsage(feature.mask());
+    }
+
+    private void markFeatureUsage(int mask) {
+        pathfindingFeatureUsageMask |= mask;
     }
 
     private double nodeCenterOffset() {

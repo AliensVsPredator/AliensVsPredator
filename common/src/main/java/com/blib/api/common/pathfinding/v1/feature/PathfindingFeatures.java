@@ -21,7 +21,8 @@ public record PathfindingFeatures(
     boolean diagonalCornerClearance,
     boolean footprintClearance,
     boolean anyAngleSmoothing,
-    boolean steppedFootprintSupport
+    boolean steppedFootprintSupport,
+    boolean dropDownOpenings
 ) {
 
     public PathfindingFeatures(
@@ -72,6 +73,7 @@ public record PathfindingFeatures(
             true,
             true,
             true,
+            true,
             true
         );
     }
@@ -93,7 +95,8 @@ public record PathfindingFeatures(
         true,
         true,
         true,
-        true
+        true,
+        false
     );
 
     public static final PathfindingFeatures STAIRS_ONLY = new PathfindingFeatures(
@@ -105,6 +108,7 @@ public record PathfindingFeatures(
         false,
         true,
         false,
+        true,
         true,
         true,
         true,
@@ -133,10 +137,12 @@ public record PathfindingFeatures(
         true,
         true,
         true,
+        true,
         true
     );
 
     public static final PathfindingFeatures LEGACY_PERMISSIVE = new PathfindingFeatures(
+        true,
         true,
         true,
         true,
@@ -187,6 +193,7 @@ public record PathfindingFeatures(
             case FOOTPRINT_CLEARANCE -> footprintClearance;
             case ANY_ANGLE_SMOOTHING -> anyAngleSmoothing;
             case STEPPED_FOOTPRINT_SUPPORT -> steppedFootprintSupport;
+            case DROP_DOWN_OPENINGS -> dropDownOpenings;
         };
     }
 
@@ -209,7 +216,8 @@ public record PathfindingFeatures(
                 diagonalCornerClearance,
                 footprintClearance,
                 anyAngleSmoothing,
-                steppedFootprintSupport
+                steppedFootprintSupport,
+                dropDownOpenings
             );
             case DIAGONAL_MOVEMENT -> new PathfindingFeatures(
                 sameLevelMovement,
@@ -228,7 +236,8 @@ public record PathfindingFeatures(
                 diagonalCornerClearance,
                 footprintClearance,
                 anyAngleSmoothing,
-                steppedFootprintSupport
+                steppedFootprintSupport,
+                dropDownOpenings
             );
             case STEP_UP -> new PathfindingFeatures(
                 sameLevelMovement,
@@ -247,7 +256,8 @@ public record PathfindingFeatures(
                 diagonalCornerClearance,
                 footprintClearance,
                 anyAngleSmoothing,
-                steppedFootprintSupport
+                steppedFootprintSupport,
+                dropDownOpenings
             );
             case STEP_DOWN -> new PathfindingFeatures(
                 sameLevelMovement,
@@ -266,7 +276,8 @@ public record PathfindingFeatures(
                 diagonalCornerClearance,
                 footprintClearance,
                 anyAngleSmoothing,
-                steppedFootprintSupport
+                steppedFootprintSupport,
+                dropDownOpenings
             );
             case VERTICAL_TARGET_RESOLUTION -> new PathfindingFeatures(
                 sameLevelMovement,
@@ -285,7 +296,8 @@ public record PathfindingFeatures(
                 diagonalCornerClearance,
                 footprintClearance,
                 anyAngleSmoothing,
-                steppedFootprintSupport
+                steppedFootprintSupport,
+                dropDownOpenings
             );
             case PATH_SKIP_AHEAD -> new PathfindingFeatures(
                 sameLevelMovement,
@@ -304,7 +316,8 @@ public record PathfindingFeatures(
                 diagonalCornerClearance,
                 footprintClearance,
                 anyAngleSmoothing,
-                steppedFootprintSupport
+                steppedFootprintSupport,
+                dropDownOpenings
             );
             case STUCK_REPLAN -> new PathfindingFeatures(
                 sameLevelMovement,
@@ -323,7 +336,8 @@ public record PathfindingFeatures(
                 diagonalCornerClearance,
                 footprintClearance,
                 anyAngleSmoothing,
-                steppedFootprintSupport
+                steppedFootprintSupport,
+                dropDownOpenings
             );
             case SECTION_CORRIDOR -> new PathfindingFeatures(
                 sameLevelMovement,
@@ -342,7 +356,8 @@ public record PathfindingFeatures(
                 diagonalCornerClearance,
                 footprintClearance,
                 anyAngleSmoothing,
-                steppedFootprintSupport
+                steppedFootprintSupport,
+                dropDownOpenings
             );
             case SEGMENTED_PATH_PLANNING -> new PathfindingFeatures(
                 sameLevelMovement,
@@ -361,7 +376,8 @@ public record PathfindingFeatures(
                 diagonalCornerClearance,
                 footprintClearance,
                 anyAngleSmoothing,
-                steppedFootprintSupport
+                steppedFootprintSupport,
+                dropDownOpenings
             );
             case PARTIAL_PATH_RESULTS -> new PathfindingFeatures(
                 sameLevelMovement,
@@ -380,7 +396,8 @@ public record PathfindingFeatures(
                 diagonalCornerClearance,
                 footprintClearance,
                 anyAngleSmoothing,
-                steppedFootprintSupport
+                steppedFootprintSupport,
+                dropDownOpenings
             );
             case DOOR_OPENING -> new PathfindingFeatures(
                 sameLevelMovement,
@@ -399,7 +416,8 @@ public record PathfindingFeatures(
                 diagonalCornerClearance,
                 footprintClearance,
                 anyAngleSmoothing,
-                steppedFootprintSupport
+                steppedFootprintSupport,
+                dropDownOpenings
             );
             case ASYNC_PATHFINDING -> new PathfindingFeatures(
                 sameLevelMovement,
@@ -418,7 +436,8 @@ public record PathfindingFeatures(
                 diagonalCornerClearance,
                 footprintClearance,
                 anyAngleSmoothing,
-                steppedFootprintSupport
+                steppedFootprintSupport,
+                dropDownOpenings
             );
             case COLLISION_SHAPE_WAYPOINTS -> new PathfindingFeatures(
                 sameLevelMovement,
@@ -437,7 +456,8 @@ public record PathfindingFeatures(
                 diagonalCornerClearance,
                 footprintClearance,
                 anyAngleSmoothing,
-                steppedFootprintSupport
+                steppedFootprintSupport,
+                dropDownOpenings
             );
             case DIAGONAL_CORNER_CLEARANCE -> new PathfindingFeatures(
                 sameLevelMovement,
@@ -456,7 +476,8 @@ public record PathfindingFeatures(
                 enabled,
                 footprintClearance,
                 anyAngleSmoothing,
-                steppedFootprintSupport
+                steppedFootprintSupport,
+                dropDownOpenings
             );
             case FOOTPRINT_CLEARANCE -> new PathfindingFeatures(
                 sameLevelMovement,
@@ -475,7 +496,8 @@ public record PathfindingFeatures(
                 diagonalCornerClearance,
                 enabled,
                 anyAngleSmoothing,
-                steppedFootprintSupport
+                steppedFootprintSupport,
+                dropDownOpenings
             );
             case ANY_ANGLE_SMOOTHING -> new PathfindingFeatures(
                 sameLevelMovement,
@@ -494,7 +516,8 @@ public record PathfindingFeatures(
                 diagonalCornerClearance,
                 footprintClearance,
                 enabled,
-                steppedFootprintSupport
+                steppedFootprintSupport,
+                dropDownOpenings
             );
             case STEPPED_FOOTPRINT_SUPPORT -> new PathfindingFeatures(
                 sameLevelMovement,
@@ -513,6 +536,27 @@ public record PathfindingFeatures(
                 diagonalCornerClearance,
                 footprintClearance,
                 anyAngleSmoothing,
+                enabled,
+                dropDownOpenings
+            );
+            case DROP_DOWN_OPENINGS -> new PathfindingFeatures(
+                sameLevelMovement,
+                diagonalMovement,
+                stepUp,
+                stepDown,
+                verticalTargetResolution,
+                pathSkipAhead,
+                stuckReplan,
+                sectionCorridor,
+                segmentedPathPlanning,
+                partialPathResults,
+                doorOpening,
+                asyncPathfinding,
+                collisionShapeWaypoints,
+                diagonalCornerClearance,
+                footprintClearance,
+                anyAngleSmoothing,
+                steppedFootprintSupport,
                 enabled
             );
         };
@@ -536,7 +580,8 @@ public record PathfindingFeatures(
             enabled(mask, PathfindingFeature.DIAGONAL_CORNER_CLEARANCE),
             enabled(mask, PathfindingFeature.FOOTPRINT_CLEARANCE),
             enabled(mask, PathfindingFeature.ANY_ANGLE_SMOOTHING),
-            enabled(mask, PathfindingFeature.STEPPED_FOOTPRINT_SUPPORT)
+            enabled(mask, PathfindingFeature.STEPPED_FOOTPRINT_SUPPORT),
+            enabled(mask, PathfindingFeature.DROP_DOWN_OPENINGS)
         );
     }
 

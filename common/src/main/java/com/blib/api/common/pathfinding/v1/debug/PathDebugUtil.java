@@ -304,6 +304,7 @@ public final class PathDebugUtil {
             navigator.getStuckTimeoutInTicks(),
             navigator.getPathRecalculateIntervalInTicks(),
             navigator.getPathfindingFeatures().toMask(),
+            navigator.consumePathfindingFeatureUsageMask(),
             pathfindingProfile != null ? pathfindingProfile.ordinal() : -1,
             navigator.getPathfindingFeaturesRevision(),
             navigator.getSearchConfig().maxSearchNodes(),
