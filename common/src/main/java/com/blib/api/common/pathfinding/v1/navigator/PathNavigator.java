@@ -13,6 +13,9 @@ import java.util.concurrent.CompletableFuture;
 import com.blib.api.common.pathfinding.v1.cache.TerrainClassificationCache;
 import com.blib.api.common.pathfinding.v1.debug.PathSearchSnapshot;
 import com.blib.api.common.pathfinding.v1.evaluator.UnifiedTerrainEvaluator;
+import com.blib.api.common.pathfinding.v1.feature.PathfindingFeature;
+import com.blib.api.common.pathfinding.v1.feature.PathfindingFeatures;
+import com.blib.api.common.pathfinding.v1.feature.PathfindingProfile;
 import com.blib.api.common.pathfinding.v1.node.PathNode;
 import com.blib.api.common.pathfinding.v1.path.BLibPath;
 import com.blib.api.common.pathfinding.v1.search.BLibPathFinder;
@@ -91,6 +94,14 @@ public final class PathNavigator {
 
     private @Nullable PathEdgeKey lastStuckReplannedEdge;
 
+    private PathfindingFeatures features;
+
+    private @Nullable PathfindingProfile profile;
+
+    private int featuresRevision;
+
+    private int pendingFeaturesRevision;
+
     private static final double PROGRESS_DISTANCE_EPSILON_SQUARED = 0.25;
 
     public PathNavigator(LevelReader level, PathNavigatorConfig config) {
@@ -108,6 +119,9 @@ public final class PathNavigator {
         this.planner = classificationCache != null
             ? new SegmentedPathPlanner(pathFinder)
             : null;
+        this.features = config.getDefaultFeatures();
+        this.profile = PathfindingProfile.matching(features).orElse(null);
+        this.pathFinder.setFeatures(features);
     }
 
     /**
@@ -131,7 +145,7 @@ public final class PathNavigator {
             this.lastStuckReplannedEdge = null;
         }
 
-        pathFinder.setExcludedTerrains(excludedTerrains);
+        preparePathFinder();
 
         var startNanos = System.nanoTime();
 
@@ -204,9 +218,10 @@ public final class PathNavigator {
         this.targetPos = target;
         this.lastComputedTargetPos = target;
         this.lastStuckReplannedEdge = null;
-        pathFinder.setExcludedTerrains(excludedTerrains);
+        preparePathFinder();
 
         this.asyncStartNanos = System.nanoTime();
+        this.pendingFeaturesRevision = featuresRevision;
         this.pendingPath = pathFinder.findPathAsync(level, entityPos, target);
     }
 
@@ -249,6 +264,13 @@ public final class PathNavigator {
 
         var path = pendingPath.join();
         pendingPath = null;
+
+        if (pendingFeaturesRevision != featuresRevision) {
+            if (targetPos != null) {
+                needsRepath = true;
+            }
+            return;
+        }
 
         this.currentPath = path;
         this.lastPathComputeNanos = System.nanoTime() - asyncStartNanos;
@@ -448,7 +470,7 @@ public final class PathNavigator {
 
     /**
      * Sets terrain types to exclude from the next pathfinding search. Excluded terrains are treated as impassable.
-     * Useful for restricting behavior — e.g., wandering entities should not consider WATER paths.
+     * Useful for restricting behavior without rebuilding the navigator.
      * <p>
      * Pass {@code null} to clear exclusions.
      * </p>
@@ -457,9 +479,7 @@ public final class PathNavigator {
         if (!Objects.equals(this.excludedTerrains, excludedTerrains)) {
             this.excludedTerrains = excludedTerrains;
 
-            if (isNavigating()) {
-                needsRepath = true;
-            }
+            invalidateActivePathForReplan();
         }
     }
 
@@ -483,6 +503,35 @@ public final class PathNavigator {
         pathFinder.setDebugCaptureEnabled(debugCaptureEnabled);
     }
 
+    public PathfindingFeatures getPathfindingFeatures() {
+        return features;
+    }
+
+    public @Nullable PathfindingProfile getPathfindingProfile() {
+        return profile;
+    }
+
+    public int getPathfindingFeaturesRevision() {
+        return featuresRevision;
+    }
+
+    public void setPathfindingProfile(PathfindingProfile profile) {
+        if (this.profile == profile && features.equals(profile.features())) {
+            return;
+        }
+
+        this.profile = profile;
+        setPathfindingFeaturesInternal(profile.features(), profile);
+    }
+
+    public void setPathfindingFeatures(PathfindingFeatures features) {
+        setPathfindingFeaturesInternal(features, PathfindingProfile.matching(features).orElse(null));
+    }
+
+    public void setPathfindingFeature(PathfindingFeature feature, boolean enabled) {
+        setPathfindingFeatures(features.with(feature, enabled));
+    }
+
     /**
      * Updates the destination without forcing an immediate path recomputation. The navigator will recompute the path on
      * its next recalculation cycle using this updated target.
@@ -496,6 +545,38 @@ public final class PathNavigator {
      */
     public void updateTarget(double targetX, double targetY, double targetZ) {
         this.targetPos = targetAnchorPos(targetX, targetY, targetZ);
+    }
+
+    private void setPathfindingFeaturesInternal(PathfindingFeatures features, @Nullable PathfindingProfile profile) {
+        if (this.features.equals(features) && Objects.equals(this.profile, profile)) {
+            return;
+        }
+
+        this.features = features;
+        this.profile = profile;
+        this.featuresRevision++;
+        pathFinder.setFeatures(features);
+        invalidateActivePathForReplan();
+    }
+
+    private void invalidateActivePathForReplan() {
+        if (pendingPath != null) {
+            pendingPath.cancel(false);
+            pendingPath = null;
+        }
+
+        if (planner != null) {
+            planner.clear();
+        }
+
+        currentPath = null;
+        currentTerrain = null;
+        lastStuckReplannedEdge = null;
+        resetProgressTracking();
+
+        if (targetPos != null) {
+            needsRepath = true;
+        }
     }
 
     // --- Failure backoff ---
@@ -554,7 +635,7 @@ public final class PathNavigator {
 
             var withinReach = dx <= reachXZ && dy <= reachY && dz <= reachXZ;
             var shouldAdvance = withinReach
-                || shouldSkipToNextNode(entityX, entityY, entityZ);
+                || (features.pathSkipAhead() && shouldSkipToNextNode(entityX, entityY, entityZ));
 
             if (!shouldAdvance) {
                 break;
@@ -712,6 +793,12 @@ public final class PathNavigator {
     }
 
     private void handleStuckEdge(BlockPos entityAnchorPos) {
+        if (!features.stuckReplan()) {
+            recordFailure();
+            stop();
+            return;
+        }
+
         var edge = currentEdgeKey(entityAnchorPos);
 
         if (edge != null && edge.equals(lastStuckReplannedEdge)) {
@@ -774,7 +861,7 @@ public final class PathNavigator {
         var entityPos = entityAnchorPos(entityX, entityY, entityZ);
         var startNanos = System.nanoTime();
 
-        pathFinder.setExcludedTerrains(excludedTerrains);
+        preparePathFinder();
         this.currentPath = planner.computeNextSegment(level, entityPos);
         this.lastPathComputeNanos = System.nanoTime() - startNanos;
         this.lastPathComputeTick = tickCount;
@@ -799,6 +886,11 @@ public final class PathNavigator {
             && (path.isReached()
                 || path.getNodeCount() > 1
                 || (planner != null && planner.hasActiveRoute()));
+    }
+
+    private void preparePathFinder() {
+        pathFinder.setFeatures(features);
+        pathFinder.setExcludedTerrains(excludedTerrains);
     }
 
     private void markProgress() {

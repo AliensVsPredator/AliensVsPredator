@@ -261,6 +261,7 @@ public final class PathDebugUtil {
     ) {
         var currentTerrain = navigator.getCurrentTerrain();
         var targetPos = navigator.getTargetPos();
+        var pathfindingProfile = navigator.getPathfindingProfile();
         return new S2CPathfindingNavDebugPayload(
             mob.getId(),
             mob.getName().getString(),
@@ -301,7 +302,10 @@ public final class PathDebugUtil {
             navigator.getConsecutiveFailures(),
             navigator.getFailureCooldownRemainingTicks(),
             navigator.getConfig().getStuckTimeoutInTicks(),
-            navigator.getConfig().getPathRecalculateIntervalInTicks()
+            navigator.getConfig().getPathRecalculateIntervalInTicks(),
+            navigator.getPathfindingFeatures().toMask(),
+            pathfindingProfile != null ? pathfindingProfile.ordinal() : -1,
+            navigator.getPathfindingFeaturesRevision()
         );
     }
 

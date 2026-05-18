@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.blib.api.common.pathfinding.v1.evaluator.TerrainEvaluatorConfig;
+import com.blib.api.common.pathfinding.v1.feature.PathfindingFeatures;
+import com.blib.api.common.pathfinding.v1.feature.PathfindingProfile;
 import com.blib.api.common.pathfinding.v1.search.SearchConfig;
 import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
 import com.blib.api.common.pathfinding.v1.transition.TerrainTransitionHandler;
@@ -27,13 +29,16 @@ public final class PathNavigatorConfig {
 
     private final int pathRecalculateIntervalInTicks;
 
+    private final PathfindingFeatures defaultFeatures;
+
     private PathNavigatorConfig(
         TerrainEvaluatorConfig evaluatorConfig,
         SearchConfig searchConfig,
         Map<TransitionKey, List<TerrainTransitionHandler>> transitionHandlers,
         float waypointReachDistance,
         int stuckTimeoutInTicks,
-        int pathRecalculateIntervalInTicks
+        int pathRecalculateIntervalInTicks,
+        PathfindingFeatures defaultFeatures
     ) {
         this.evaluatorConfig = evaluatorConfig;
         this.searchConfig = searchConfig;
@@ -41,6 +46,7 @@ public final class PathNavigatorConfig {
         this.waypointReachDistance = waypointReachDistance;
         this.stuckTimeoutInTicks = stuckTimeoutInTicks;
         this.pathRecalculateIntervalInTicks = pathRecalculateIntervalInTicks;
+        this.defaultFeatures = defaultFeatures;
     }
 
     public static Builder builder(TerrainEvaluatorConfig evaluatorConfig) {
@@ -71,6 +77,10 @@ public final class PathNavigatorConfig {
         return pathRecalculateIntervalInTicks;
     }
 
+    public PathfindingFeatures getDefaultFeatures() {
+        return defaultFeatures;
+    }
+
     private record TransitionKey(
         TerrainType from,
         TerrainType to
@@ -96,6 +106,8 @@ public final class PathNavigatorConfig {
 
         private int pathRecalculateIntervalInTicks;
 
+        private PathfindingFeatures defaultFeatures;
+
         private Builder(TerrainEvaluatorConfig evaluatorConfig) {
             this.evaluatorConfig = evaluatorConfig;
             this.transitionHandlers = new HashMap<>();
@@ -103,6 +115,7 @@ public final class PathNavigatorConfig {
             this.waypointReachDistance = DEFAULT_WAYPOINT_REACH_DISTANCE;
             this.stuckTimeoutInTicks = DEFAULT_STUCK_TIMEOUT_IN_TICKS;
             this.pathRecalculateIntervalInTicks = DEFAULT_PATH_RECALCULATE_INTERVAL_IN_TICKS;
+            this.defaultFeatures = PathfindingProfile.LEGACY_PERMISSIVE.features();
         }
 
         public Builder withSearchConfig(SearchConfig config) {
@@ -130,6 +143,16 @@ public final class PathNavigatorConfig {
             return this;
         }
 
+        public Builder withPathfindingFeatures(PathfindingFeatures features) {
+            this.defaultFeatures = features;
+            return this;
+        }
+
+        public Builder withPathfindingProfile(PathfindingProfile profile) {
+            this.defaultFeatures = profile.features();
+            return this;
+        }
+
         public PathNavigatorConfig build() {
             return new PathNavigatorConfig(
                 evaluatorConfig,
@@ -137,7 +160,8 @@ public final class PathNavigatorConfig {
                 transitionHandlers,
                 waypointReachDistance,
                 stuckTimeoutInTicks,
-                pathRecalculateIntervalInTicks
+                pathRecalculateIntervalInTicks,
+                defaultFeatures
             );
         }
     }

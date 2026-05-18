@@ -9,19 +9,22 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.blib.api.common.pathfinding.v1.cache.TerrainClassificationCache;
 import com.blib.api.common.pathfinding.v1.debug.PathRejectionReason;
 import com.blib.api.common.pathfinding.v1.debug.PathSearchDebugRecorder;
-import com.blib.api.common.pathfinding.v1.cache.TerrainClassificationCache;
+import com.blib.api.common.pathfinding.v1.feature.PathfindingFeatures;
+import com.blib.api.common.pathfinding.v1.feature.PathfindingProfile;
 import com.blib.api.common.pathfinding.v1.node.PathNode;
 import com.blib.api.common.pathfinding.v1.node.PathNodePool;
 import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
 
 /**
- * Core terrain evaluator. Generates ground and water neighbors for A* search.
+ * Minimal ground-only terrain evaluator. A ground node is valid when the feet cell is open and the block below it is
+ * solid. Neighbor generation scans adjacent columns for same-level, step-up, and step-down/fall positions.
  */
 public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
-    private static final int[][] HORIZONTAL_OFFSETS = {
+    private static final int[][] CARDINAL_OFFSETS = {
         { -1, 0 },
         { 1, 0 },
         { 0, -1 },
@@ -41,15 +44,11 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     private final Map<TerrainType, Float> snapshotCosts;
 
-    private final @Nullable TerrainClassificationCache classificationCache;
-
     private final BlockAccessor blockAccessor;
 
-    private final BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
-
-    private LevelReader level;
-
     private @Nullable PathSearchDebugRecorder debugRecorder;
+
+    private PathfindingFeatures features = PathfindingProfile.LEGACY_PERMISSIVE.features();
 
     public UnifiedTerrainEvaluator(TerrainEvaluatorConfig config) {
         this(config, null);
@@ -59,13 +58,11 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         this.config = config;
         this.nodePool = new PathNodePool();
         this.snapshotCosts = new EnumMap<>(TerrainType.class);
-        this.classificationCache = classificationCache;
         this.blockAccessor = new BlockAccessor();
     }
 
     @Override
     public void prepare(LevelReader level) {
-        this.level = level;
         blockAccessor.prepare(level);
         prepareCommon();
     }
@@ -75,7 +72,6 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
      * {@link #preloadChunk(int, int, ChunkAccess)} before the search starts. Block reads that miss the map return AIR.
      */
     public void prepareAsync() {
-        this.level = null;
         blockAccessor.prepareAsync();
         prepareCommon();
     }
@@ -101,6 +97,10 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         this.debugRecorder = debugRecorder;
     }
 
+    public void setFeatures(PathfindingFeatures features) {
+        this.features = features;
+    }
+
     private void prepareCommon() {
         nodePool.reset();
         snapshotCosts.clear();
@@ -110,109 +110,35 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
     }
 
-    private PathNode getOrCreateNode(int x, int y, int z, TerrainType terrainType) {
-        var node = nodePool.getOrCreate(x, y, z, terrainType);
-
-        if (terrainType == TerrainType.GROUND) {
-            var support = findStableSupport(x, y, z, null);
-
-            if (support != null) {
-                setStableGround(node, support);
-            }
-        }
-
-        return prepareNode(node);
-    }
-
-    private static PathNode prepareNode(PathNode node) {
-        node.setPendingTraversal(0.0f);
-
-        return node;
-    }
-
-    private static PathNode prepareNode(PathNode node, float costMalus) {
-        node.setPendingTraversal(costMalus);
-
-        return node;
-    }
-
     @Override
     public PathNode getStartNode(BlockPos entityPos) {
-        var classified = classifyTerrain(entityPos);
-
-        if (classified != null && snapshotCosts.containsKey(classified)) {
-            return getOrCreateNode(entityPos.getX(), entityPos.getY(), entityPos.getZ(), classified);
-        }
-
-        // Entity might be on the edge/corner of an adjacent block (blockPosition floors to air).
-        for (int dx = -1; dx <= 1; dx++) {
-            for (int dz = -1; dz <= 1; dz++) {
-                if (dx == 0 && dz == 0) {
-                    continue;
-                }
-
-                var neighborPos = entityPos.offset(dx, 0, dz);
-                var neighborClassified = classifyTerrain(neighborPos);
-
-                if (neighborClassified != null && snapshotCosts.containsKey(neighborClassified)) {
-                    return getOrCreateNode(
-                        neighborPos.getX(),
-                        neighborPos.getY(),
-                        neighborPos.getZ(),
-                        neighborClassified
-                    );
-                }
-            }
-        }
-
         var resolvedPos = findStandablePosition(entityPos);
-        var terrainType = classifyOrDefault(resolvedPos);
 
-        return getOrCreateNode(resolvedPos.getX(), resolvedPos.getY(), resolvedPos.getZ(), terrainType);
+        return getOrCreateGroundNode(resolvedPos.getX(), resolvedPos.getY(), resolvedPos.getZ());
     }
 
     @Override
     public PathNode getGoalNode(BlockPos targetPos) {
-        var classified = classifyTerrain(targetPos);
-
-        if (classified != null && snapshotCosts.containsKey(classified)) {
-            return getOrCreateNode(targetPos.getX(), targetPos.getY(), targetPos.getZ(), classified);
-        }
-
-        // Target might be on the edge/corner of an adjacent block (blockPosition floors to air).
-        for (int dx = -1; dx <= 1; dx++) {
-            for (int dz = -1; dz <= 1; dz++) {
-                if (dx == 0 && dz == 0) {
-                    continue;
-                }
-
-                var neighborPos = targetPos.offset(dx, 0, dz);
-                var neighborClassified = classifyTerrain(neighborPos);
-
-                if (neighborClassified != null && snapshotCosts.containsKey(neighborClassified)) {
-                    return getOrCreateNode(
-                        neighborPos.getX(),
-                        neighborPos.getY(),
-                        neighborPos.getZ(),
-                        neighborClassified
-                    );
-                }
-            }
-        }
-
         var resolvedPos = findStandablePosition(targetPos);
-        var terrainType = classifyOrDefault(resolvedPos);
 
-        return getOrCreateNode(resolvedPos.getX(), resolvedPos.getY(), resolvedPos.getZ(), terrainType);
+        return getOrCreateGroundNode(resolvedPos.getX(), resolvedPos.getY(), resolvedPos.getZ());
     }
 
     @Override
     public int getNeighbors(PathNode node, PathNode[] neighbors) {
-        return switch (node.getTerrainType()) {
-            case GROUND -> getGroundNeighbors(node, neighbors);
-            case WATER -> getWaterNeighbors(node, neighbors);
-            default -> 0;
-        };
+        if (node.getTerrainType() != TerrainType.GROUND || !snapshotCosts.containsKey(TerrainType.GROUND)) {
+            return 0;
+        }
+
+        var count = 0;
+
+        count = appendGroundNeighbors(node, neighbors, count, CARDINAL_OFFSETS);
+
+        if (features.diagonalMovement()) {
+            count = appendGroundNeighbors(node, neighbors, count, DIAGONAL_OFFSETS);
+        }
+
+        return count;
     }
 
     @Override
@@ -222,480 +148,129 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     @Override
     public void cleanup() {
-        this.level = null;
         blockAccessor.cleanup();
     }
 
-    // --- GROUND neighbor generation ---
-
-    // Reusable cardinal result cache for cardinal step-up/down fallback.
-    // Index: 0=west(-1,0), 1=east(+1,0), 2=north(0,-1), 3=south(0,+1)
-    private final PathNode[] cardinalCache = new PathNode[4];
-
-    private int getGroundNeighbors(PathNode node, PathNode[] neighbors) {
-        var count = 0;
-
-        // Evaluate cardinals once so step-up/down fallback can reuse same-level candidates.
-        for (int i = 0; i < HORIZONTAL_OFFSETS.length; i++) {
-            cardinalCache[i] = tryCreateNode(
-                node,
-                node.getX() + HORIZONTAL_OFFSETS[i][0],
-                node.getY(),
-                node.getZ() + HORIZONTAL_OFFSETS[i][1]
-            );
-        }
-
-        count = addGroundCardinalNeighbors(node, neighbors, count);
-        count = addGroundDiagonalNeighbors(node, neighbors, count);
-
-        return count;
-    }
-
-    private int addGroundCardinalNeighbors(PathNode node, PathNode[] neighbors, int count) {
-        for (int i = 0; i < HORIZONTAL_OFFSETS.length; i++) {
-            count = addGroundNeighborsForDirection(
-                node,
-                HORIZONTAL_OFFSETS[i][0],
-                HORIZONTAL_OFFSETS[i][1],
-                cardinalCache[i],
-                neighbors,
-                count
-            );
-        }
-
-        return count;
-    }
-
-    private int addGroundDiagonalNeighbors(PathNode node, PathNode[] neighbors, int count) {
-        for (var offset : DIAGONAL_OFFSETS) {
-            var neighbor = tryCreateNode(node, node.getX() + offset[0], node.getY(), node.getZ() + offset[1]);
+    private int appendGroundNeighbors(PathNode node, PathNode[] neighbors, int count, int[][] offsets) {
+        for (var offset : offsets) {
+            var neighbor = findGroundNeighbor(node, offset[0], offset[1]);
 
             if (neighbor != null) {
                 neighbors[count++] = neighbor;
-                continue;
-            }
-
-            var newCount = addDiagonalStepUpNeighbor(node, offset[0], offset[1], neighbors, count);
-            if (newCount > count) {
-                count = newCount;
-                continue;
-            }
-
-            newCount = addDiagonalStepDownNeighbor(node, offset[0], offset[1], neighbors, count);
-            if (newCount > count) {
-                count = newCount;
-                continue;
             }
         }
 
         return count;
     }
 
-    private int addDiagonalStepUpNeighbor(PathNode from, int dx, int dz, PathNode[] neighbors, int count) {
-        for (int stepUp = 1; stepUp <= config.getMaxStepHeight() && count < neighbors.length; stepUp++) {
-            var steppedUp = tryCreateNode(from, from.getX() + dx, from.getY() + stepUp, from.getZ() + dz);
-
-            if (steppedUp != null) {
-                neighbors[count++] = steppedUp;
-                break;
-            }
-        }
-
-        return count;
-    }
-
-    private int addDiagonalStepDownNeighbor(PathNode from, int dx, int dz, PathNode[] neighbors, int count) {
-        for (int stepDown = 1; stepDown <= config.getMaxFallDistance() && count < neighbors.length; stepDown++) {
-            var steppedDown = tryCreateNode(from, from.getX() + dx, from.getY() - stepDown, from.getZ() + dz);
-
-            if (steppedDown != null) {
-                neighbors[count++] = steppedDown;
-                break;
-            }
-        }
-
-        return count;
-    }
-
-    private int addGroundNeighborsForDirection(
-        PathNode from,
-        int dx,
-        int dz,
-        @Nullable PathNode cachedSameLevel,
-        PathNode[] neighbors,
-        int count
-    ) {
-        var baseX = from.getX() + dx;
-        var baseY = from.getY();
-        var baseZ = from.getZ() + dz;
-
-        var sameLevel = cachedSameLevel;
-
-        if (sameLevel != null) {
-            neighbors[count++] = sameLevel;
-            return count;
-        }
-
-        var addedStepUp = false;
-
-        for (int stepUp = 1; stepUp <= config.getMaxStepHeight(); stepUp++) {
-            var steppedUp = tryCreateNode(from, baseX, baseY + stepUp, baseZ);
-
-            if (steppedUp != null) {
-                neighbors[count++] = steppedUp;
-                addedStepUp = true;
-                break;
-            }
-        }
-
-        if (sameLevel == null) {
-            for (int stepDown = 1; stepDown <= config.getMaxFallDistance(); stepDown++) {
-                var steppedDown = tryCreateNode(from, baseX, baseY - stepDown, baseZ);
-
-                if (steppedDown != null) {
-                    neighbors[count++] = steppedDown;
-                    break;
-                }
-            }
-        }
-
-        return count;
-    }
-
-    // --- WATER neighbor generation ---
-
-    private int getWaterNeighbors(PathNode node, PathNode[] neighbors) {
-        var count = 0;
-
-        for (var offset : HORIZONTAL_OFFSETS) {
-            count = addWaterNeighborsForDirection(node, offset[0], offset[1], neighbors, count);
-        }
-
-        count = addWaterDiagonalNeighbors(node, neighbors, count);
-
-        var above = tryCreateNode(node, node.getX(), node.getY() + 1, node.getZ());
-
-        if (above != null) {
-            neighbors[count++] = above;
-        }
-
-        var below = tryCreateNode(node, node.getX(), node.getY() - 1, node.getZ());
-
-        if (below != null) {
-            neighbors[count++] = below;
-        }
-
-        return count;
-    }
-
-    private int addWaterDiagonalNeighbors(PathNode node, PathNode[] neighbors, int count) {
-        for (var offset : DIAGONAL_OFFSETS) {
-            var adjacentX = tryCreateNode(node, node.getX() + offset[0], node.getY(), node.getZ());
-            var adjacentZ = tryCreateNode(node, node.getX(), node.getY(), node.getZ() + offset[1]);
-
-            if (adjacentX == null || adjacentZ == null) {
-                continue;
-            }
-
-            var diagonal = tryCreateNode(node, node.getX() + offset[0], node.getY(), node.getZ() + offset[1]);
-
-            if (diagonal != null) {
-                neighbors[count++] = diagonal;
-            }
-        }
-
-        return count;
-    }
-
-    private int addWaterNeighborsForDirection(PathNode from, int dx, int dz, PathNode[] neighbors, int count) {
+    private @Nullable PathNode findGroundNeighbor(PathNode from, int dx, int dz) {
         var x = from.getX() + dx;
-        var y = from.getY();
         var z = from.getZ() + dz;
 
-        var directNode = tryCreateNode(from, x, y, z);
-
-        if (directNode != null) {
-            neighbors[count++] = directNode;
-            return count;
-        }
-
-        for (int stepUp = 1; stepUp <= config.getMaxStepHeight() + 1; stepUp++) {
-            var steppedUp = tryCreateNode(from, x, y + stepUp, z);
-
-            if (steppedUp != null) {
-                neighbors[count++] = steppedUp;
-                break;
+        if (features.sameLevelMovement()) {
+            var sameLevel = tryCreateGroundNode(x, from.getY(), z);
+            if (sameLevel != null) {
+                return sameLevel;
             }
         }
 
-        return count;
-    }
+        if (features.stepUp()) {
+            for (int stepUp = 1; stepUp <= config.getMaxStepHeight(); stepUp++) {
+                var steppedUp = tryCreateGroundNode(x, from.getY() + stepUp, z);
 
-    // --- Shared node creation ---
-
-    private @Nullable PathNode tryCreateNode(@Nullable PathNode from, int x, int y, int z) {
-        mutablePos.set(x, y, z);
-        var terrainType = classifyTerrain(mutablePos);
-        var support = snapshotCosts.containsKey(TerrainType.GROUND)
-            ? findStableSupport(x, y, z, from)
-            : null;
-
-        if (support != null && hasEntityClearance(x, y, z, TerrainType.GROUND) && hasTraversalClearance(from, x, y, z)) {
-            var node = nodePool.getOrCreate(x, y, z, TerrainType.GROUND);
-            setStableGround(node, support);
-
-            return prepareNode(node);
-        }
-
-        if (terrainType == null) {
-            reject(PathRejectionReason.UNCLASSIFIED_TERRAIN, x, y, z);
-            return null;
-        }
-
-        if (!snapshotCosts.containsKey(terrainType)) {
-            reject(PathRejectionReason.UNSUPPORTED_TERRAIN, x, y, z);
-            return null;
-        }
-
-        if (terrainType == TerrainType.GROUND) {
-            reject(support == null ? PathRejectionReason.UNSTABLE_SUPPORT : PathRejectionReason.NO_CLEARANCE, x, y, z);
-            return null;
-        }
-
-        if (!hasEntityClearance(x, y, z, terrainType) || !hasTraversalClearance(from, x, y, z)) {
-            reject(PathRejectionReason.NO_CLEARANCE, x, y, z);
-            return null;
-        }
-
-        return prepareNode(nodePool.getOrCreate(x, y, z, terrainType));
-    }
-
-    private boolean hasTraversalClearance(@Nullable PathNode from, int toX, int toY, int toZ) {
-        if (from == null) {
-            return true;
-        }
-
-        var height = config.getEntityHeight();
-        var size = footprintSize();
-        var minX = Math.min(from.getX(), toX);
-        var maxX = Math.max(from.getX(), toX) + size - 1;
-        var minY = Math.min(from.getY(), toY);
-        var maxY = Math.max(from.getY(), toY) + height - 1;
-        var minZ = Math.min(from.getZ(), toZ);
-        var maxZ = Math.max(from.getZ(), toZ) + size - 1;
-
-        for (int bx = minX; bx <= maxX; bx++) {
-            for (int bz = minZ; bz <= maxZ; bz++) {
-                for (int by = minY; by <= maxY; by++) {
-                    if (isInsideBody(from.getX(), from.getY(), from.getZ(), bx, by, bz, height, size)) {
-                        continue;
-                    }
-
-                    if (isInsideBody(toX, toY, toZ, bx, by, bz, height, size)) {
-                        continue;
-                    }
-
-                    if (isStableDestinationSupport(toX, toY, toZ, bx, by, bz, size, from)) {
-                        continue;
-                    }
-
-                    if (!blockAccessor.isSolid(blockAccessor.getBlockState(bx, by, bz))) {
-                        continue;
-                    }
-
-                    reject(blockedTraversalReason(from, toX, toZ, bx, bz, size), bx, by, bz);
-                    return false;
+                if (steppedUp != null) {
+                    return steppedUp;
                 }
             }
         }
 
-        return true;
-    }
+        if (features.stepDown()) {
+            for (int stepDown = 1; stepDown <= config.getMaxFallDistance(); stepDown++) {
+                var steppedDown = tryCreateGroundNode(x, from.getY() - stepDown, z);
 
-    private boolean isInsideBody(
-        int bodyX,
-        int bodyY,
-        int bodyZ,
-        int x,
-        int y,
-        int z,
-        int height,
-        int size
-    ) {
-        return x >= bodyX && x < bodyX + size
-            && y >= bodyY && y < bodyY + height
-            && z >= bodyZ && z < bodyZ + size;
-    }
-
-    private PathRejectionReason blockedTraversalReason(PathNode from, int toX, int toZ, int x, int z, int size) {
-        return isDiagonalCornerClearanceCell(from, toX, toZ, x, z, size)
-            ? PathRejectionReason.DIAGONAL_BLOCKED
-            : PathRejectionReason.NO_CLEARANCE;
-    }
-
-    private boolean isDiagonalCornerClearanceCell(PathNode from, int toX, int toZ, int x, int z, int size) {
-        if (Math.abs(toX - from.getX()) != 1 || Math.abs(toZ - from.getZ()) != 1) {
-            return false;
-        }
-
-        return !isInsideFootprint(from.getX(), from.getZ(), x, z, size)
-            && !isInsideFootprint(toX, toZ, x, z, size);
-    }
-
-    private boolean isInsideFootprint(int footprintX, int footprintZ, int x, int z, int size) {
-        return x >= footprintX && x < footprintX + size
-            && z >= footprintZ && z < footprintZ + size;
-    }
-
-    private boolean isStableDestinationSupport(
-        int toX,
-        int toY,
-        int toZ,
-        int x,
-        int y,
-        int z,
-        int size,
-        PathNode from
-    ) {
-        return y == toY - 1
-            && x >= toX && x < toX + size
-            && z >= toZ && z < toZ + size
-            && hasStableSupportBlock(x, y, z, from);
-    }
-
-    private void reject(PathRejectionReason reason, BlockPos pos) {
-        reject(reason, pos.getX(), pos.getY(), pos.getZ());
-    }
-
-    private void reject(PathRejectionReason reason, int x, int y, int z) {
-        if (debugRecorder != null) {
-            debugRecorder.reject(reason, x, y, z);
-        }
-    }
-
-    private @Nullable SupportFootprint findStableSupport(int x, int y, int z, @Nullable PathNode from) {
-        var supportY = y - 1;
-        var size = footprintSize();
-
-        if (hasStableSupportRectangle(x, supportY, z, size, size, from)) {
-            return new SupportFootprint(x, supportY, z, size, size);
+                if (steppedDown != null) {
+                    return steppedDown;
+                }
+            }
         }
 
         return null;
     }
 
-    private boolean hasStableSupportRectangle(
-        int x,
-        int y,
-        int z,
-        int xSize,
-        int zSize,
-        @Nullable PathNode from
-    ) {
-        for (int dx = 0; dx < xSize; dx++) {
-            for (int dz = 0; dz < zSize; dz++) {
-                if (!hasStableSupportBlock(x + dx, y, z + dz, from)) {
-                    return false;
-                }
-            }
+    private @Nullable PathNode tryCreateGroundNode(int x, int y, int z) {
+        if (!snapshotCosts.containsKey(TerrainType.GROUND)) {
+            reject(PathRejectionReason.UNSUPPORTED_TERRAIN, x, y, z);
+            return null;
         }
 
-        return true;
-    }
-
-    private boolean hasStableSupportBlock(int x, int y, int z, @Nullable PathNode from) {
-        var supportState = blockAccessor.getBlockState(x, y, z);
-
-        return blockAccessor.isSolid(supportState)
-            && !blockAccessor.isLiquid(supportState);
-    }
-
-    private record SupportFootprint(
-        int x,
-        int y,
-        int z,
-        int xSize,
-        int zSize
-    ) {}
-
-    private boolean hasEntityClearance(int x, int y, int z, TerrainType terrainType) {
-        return hasEntityClearance(x, y, z, terrainType, config.getEntityHeight());
-    }
-
-    private boolean hasEntityClearance(int x, int y, int z, TerrainType terrainType, int height) {
-        for (int dx = 0; dx < footprintSize(); dx++) {
-            for (int dz = 0; dz < footprintSize(); dz++) {
-                for (int dy = 0; dy < height; dy++) {
-                    var checkX = x + dx;
-                    var checkY = y + dy;
-                    var checkZ = z + dz;
-                    var state = blockAccessor.getBlockState(checkX, checkY, checkZ);
-
-                    if (blockAccessor.isSolid(state)) {
-                        return false;
-                    }
-
-                    if (terrainType == TerrainType.GROUND && blockAccessor.isLiquid(state)) {
-                        return false;
-                    }
-                }
-            }
+        if (!isFeetOpen(x, y, z)) {
+            reject(PathRejectionReason.NO_CLEARANCE, x, y, z);
+            return null;
         }
 
-        return true;
+        if (!hasGroundSupport(x, y, z)) {
+            reject(PathRejectionReason.UNSTABLE_SUPPORT, x, y, z);
+            return null;
+        }
+
+        return getOrCreateGroundNode(x, y, z);
     }
 
-    private void setStableGround(PathNode node, SupportFootprint support) {
-        node.setStableGround(support.x(), support.y(), support.z(), support.xSize(), support.zSize());
+    private PathNode getOrCreateGroundNode(int x, int y, int z) {
+        var node = nodePool.getOrCreate(x, y, z, TerrainType.GROUND);
+        node.setPendingTraversal(0.0f);
+        node.setStableGround(x, y - 1, z, 1, 1);
+
+        return node;
     }
 
-    private int footprintSize() {
-        return Math.max(1, config.getEntityWidth());
+    private boolean isFeetOpen(int x, int y, int z) {
+        var state = blockAccessor.getBlockState(x, y, z);
+
+        return !blockAccessor.isSolid(state) && !blockAccessor.isLiquid(state);
     }
 
-    // --- Position resolution ---
+    private boolean hasGroundSupport(int x, int y, int z) {
+        var state = blockAccessor.getBlockState(x, y - 1, z);
+
+        return blockAccessor.isSolid(state) && !blockAccessor.isLiquid(state);
+    }
 
     private BlockPos findStandablePosition(BlockPos pos) {
-        var classified = classifyTerrain(pos);
-
-        if (classified != null && snapshotCosts.containsKey(classified)) {
+        if (!features.verticalTargetResolution()) {
             return pos;
         }
 
-        var mutablePos = pos.mutable();
+        if (isGroundStandable(pos.getX(), pos.getY(), pos.getZ())) {
+            return pos;
+        }
 
-        for (int dy = 1; dy <= config.getMaxFallDistance(); dy++) {
-            mutablePos.setY(pos.getY() - dy);
-            var classifiedBelow = classifyTerrain(mutablePos);
+        for (int stepUp = 1; stepUp <= config.getMaxStepHeight(); stepUp++) {
+            var y = pos.getY() + stepUp;
 
-            if (classifiedBelow != null && snapshotCosts.containsKey(classifiedBelow)) {
-                return mutablePos.immutable();
+            if (isGroundStandable(pos.getX(), y, pos.getZ())) {
+                return new BlockPos(pos.getX(), y, pos.getZ());
+            }
+        }
+
+        for (int stepDown = 1; stepDown <= config.getMaxFallDistance(); stepDown++) {
+            var y = pos.getY() - stepDown;
+
+            if (isGroundStandable(pos.getX(), y, pos.getZ())) {
+                return new BlockPos(pos.getX(), y, pos.getZ());
             }
         }
 
         return pos;
     }
 
-    private TerrainType classifyOrDefault(BlockPos pos) {
-        var classified = classifyTerrain(pos);
-
-        return classified != null ? classified : TerrainType.GROUND;
+    private boolean isGroundStandable(int x, int y, int z) {
+        return isFeetOpen(x, y, z) && hasGroundSupport(x, y, z);
     }
 
-    private @Nullable TerrainType classifyTerrain(BlockPos pos) {
-        if (classificationCache != null) {
-            // In async mode (level == null), only read pre-populated cache entries.
-            if (level == null) {
-                return classificationCache.getClassificationIfCached(pos);
-            }
-
-            return classificationCache.getClassification(level, pos);
+    private void reject(PathRejectionReason reason, int x, int y, int z) {
+        if (debugRecorder != null) {
+            debugRecorder.reject(reason, x, y, z);
         }
-
-        if (level == null) {
-            return null;
-        }
-
-        return config.getTerrainClassifier().classify(level, pos);
     }
 }

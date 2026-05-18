@@ -29,6 +29,8 @@ import com.blib.api.common.pathfinding.v1.debug.PathSearchTermination;
 import com.blib.api.common.pathfinding.v1.debug.StableGroundDebugEntry;
 import com.blib.api.common.pathfinding.v1.evaluator.TerrainEvaluator;
 import com.blib.api.common.pathfinding.v1.evaluator.UnifiedTerrainEvaluator;
+import com.blib.api.common.pathfinding.v1.feature.PathfindingFeatures;
+import com.blib.api.common.pathfinding.v1.feature.PathfindingProfile;
 import com.blib.api.common.pathfinding.v1.node.PathNode;
 import com.blib.api.common.pathfinding.v1.path.BLibPath;
 import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
@@ -80,6 +82,8 @@ public final class BLibPathFinder {
 
     private @Nullable Set<TerrainType> excludedTerrains;
 
+    private PathfindingFeatures features = PathfindingProfile.LEGACY_PERMISSIVE.features();
+
     public BLibPathFinder(TerrainEvaluator evaluator, SearchConfig config) {
         this(evaluator, config, null);
     }
@@ -97,6 +101,10 @@ public final class BLibPathFinder {
         this.excludedTerrains = excludedTerrains;
     }
 
+    public void setFeatures(PathfindingFeatures features) {
+        this.features = features;
+    }
+
     public void setDebugCaptureEnabled(boolean debugCaptureEnabled) {
         this.debugCaptureEnabled = debugCaptureEnabled;
     }
@@ -109,6 +117,7 @@ public final class BLibPathFinder {
         debugEnabled = debugCaptureEnabled;
 
         evaluator.prepare(level);
+        applyFeatures();
         applyExcludedTerrains();
 
         try {
@@ -153,6 +162,7 @@ public final class BLibPathFinder {
         var maxCZ = Math.max(startPos.getZ(), targetPos.getZ()) >> 4;
 
         unifiedEvaluator.prepareAsync();
+        applyFeatures();
         applyExcludedTerrains();
 
         for (int cx = minCX - ASYNC_CHUNK_MARGIN; cx <= maxCX + ASYNC_CHUNK_MARGIN; cx++) {
@@ -215,6 +225,7 @@ public final class BLibPathFinder {
         }
 
         evaluator.prepare(level);
+        applyFeatures();
         applyExcludedTerrains();
 
         try {
@@ -232,6 +243,7 @@ public final class BLibPathFinder {
         debugEnabled = debugCaptureEnabled;
 
         evaluator.prepare(level);
+        applyFeatures();
         applyExcludedTerrains();
 
         try {
@@ -254,6 +266,7 @@ public final class BLibPathFinder {
         debugEnabled = debugCaptureEnabled;
 
         evaluator.prepare(level);
+        applyFeatures();
         applyExcludedTerrains();
 
         try {
@@ -266,6 +279,12 @@ public final class BLibPathFinder {
     private void applyExcludedTerrains() {
         if (excludedTerrains != null && !excludedTerrains.isEmpty() && evaluator instanceof UnifiedTerrainEvaluator unified) {
             unified.excludeTerrains(excludedTerrains);
+        }
+    }
+
+    private void applyFeatures() {
+        if (evaluator instanceof UnifiedTerrainEvaluator unified) {
+            unified.setFeatures(features);
         }
     }
 

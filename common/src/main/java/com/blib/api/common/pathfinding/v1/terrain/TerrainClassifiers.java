@@ -15,23 +15,7 @@ public final class TerrainClassifiers {
      */
     public static final TerrainClassifier GROUND_ONLY = TerrainClassifiers::classifyGroundOnly;
 
-    /**
-     * Classifies positions for ground and water pathfinding. Checks WATER first (fluid blocks), then GROUND (passable
-     * above solid).
-     */
-    public static final TerrainClassifier GROUND_AND_WATER = TerrainClassifiers::classifyGroundAndWater;
-
     private static @Nullable TerrainType classifyGroundOnly(LevelReader level, BlockPos pos) {
-        return classifyAsGround(level, pos);
-    }
-
-    private static @Nullable TerrainType classifyGroundAndWater(LevelReader level, BlockPos pos) {
-        var waterResult = classifyAsWater(level, pos);
-
-        if (waterResult != null) {
-            return waterResult;
-        }
-
         return classifyAsGround(level, pos);
     }
 
@@ -41,16 +25,6 @@ public final class TerrainClassifiers {
 
         if (!stateAtFeet.isSolid() && !stateAtFeet.liquid() && stateBelow.isSolid() && !stateBelow.liquid()) {
             return TerrainType.GROUND;
-        }
-
-        return null;
-    }
-
-    private static @Nullable TerrainType classifyAsWater(LevelReader level, BlockPos pos) {
-        var fluidState = level.getFluidState(pos);
-
-        if (!fluidState.isEmpty()) {
-            return TerrainType.WATER;
         }
 
         return null;

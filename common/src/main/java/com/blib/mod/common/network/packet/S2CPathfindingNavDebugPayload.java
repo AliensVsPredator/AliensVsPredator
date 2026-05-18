@@ -58,7 +58,10 @@ public record S2CPathfindingNavDebugPayload(
     int consecutiveFailures,
     int failureCooldownRemainingTicks,
     int stuckTimeoutTicks,
-    int pathRecalculateIntervalTicks
+    int pathRecalculateIntervalTicks,
+    int pathfindingFeatureMask,
+    int pathfindingProfileOrdinal,
+    int pathfindingFeatureRevision
 ) implements CustomPacketPayload {
 
     public static final ResourceLocation PAYLOAD_ID = BLib.MOD.resources().createLocation("pathfinding_nav_debug");
@@ -109,6 +112,9 @@ public record S2CPathfindingNavDebugPayload(
                     StreamCodecs.BOOLEAN.decode(schema, buf),
                     StreamCodecs.INT.decode(schema, buf),
                     StreamCodecs.BOOLEAN.decode(schema, buf),
+                    StreamCodecs.INT.decode(schema, buf),
+                    StreamCodecs.INT.decode(schema, buf),
+                    StreamCodecs.INT.decode(schema, buf),
                     StreamCodecs.INT.decode(schema, buf),
                     StreamCodecs.INT.decode(schema, buf),
                     StreamCodecs.INT.decode(schema, buf),
@@ -167,6 +173,9 @@ public record S2CPathfindingNavDebugPayload(
                 StreamCodecs.INT.encode(schema, buf, value.failureCooldownRemainingTicks);
                 StreamCodecs.INT.encode(schema, buf, value.stuckTimeoutTicks);
                 StreamCodecs.INT.encode(schema, buf, value.pathRecalculateIntervalTicks);
+                StreamCodecs.INT.encode(schema, buf, value.pathfindingFeatureMask);
+                StreamCodecs.INT.encode(schema, buf, value.pathfindingProfileOrdinal);
+                StreamCodecs.INT.encode(schema, buf, value.pathfindingFeatureRevision);
             }
         }
     );
