@@ -237,11 +237,11 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             neighbors[count++] = below;
         }
 
-        var above = tryCreateNode(node, node.getX(), node.getY() + 1, node.getZ());
+        var above = tryCreateNode(node, node.getX(), node.getY() + 1, node.getZ(), false);
 
         if (above == null) {
             mutablePos.set(node.getX(), node.getY() + 1, node.getZ());
-            above = tryCreateBreakableNode(node, mutablePos.immutable());
+            above = tryCreateBreakableNode(node, mutablePos.immutable(), false);
         }
 
         if (above != null) {
@@ -367,7 +367,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             }
         }
 
-        var above = tryCreateNode(node, node.getX(), node.getY() + 1, node.getZ());
+        var above = tryCreateNode(node, node.getX(), node.getY() + 1, node.getZ(), false);
 
         if (above != null) {
             neighbors[count++] = above;
@@ -457,6 +457,10 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     // --- Shared node creation ---
 
     private @Nullable PathNode tryCreateNode(@Nullable PathNode from, int x, int y, int z) {
+        return tryCreateNode(from, x, y, z, true);
+    }
+
+    private @Nullable PathNode tryCreateNode(@Nullable PathNode from, int x, int y, int z, boolean requireBreakableSupport) {
         mutablePos.set(x, y, z);
         var terrainType = classifyTerrain(mutablePos);
 
@@ -470,14 +474,14 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                 return nodePool.getOrCreate(x, y, z, terrainType);
             }
 
-            var breakable = tryCreateBreakableNode(from, mutablePos.immutable());
+            var breakable = tryCreateBreakableNode(from, mutablePos.immutable(), requireBreakableSupport);
             if (breakable == null) {
                 reject(PathRejectionReason.NO_CLEARANCE, x, y, z);
             }
             return breakable;
         }
 
-        var breakable = tryCreateBreakableNode(from, mutablePos.immutable());
+        var breakable = tryCreateBreakableNode(from, mutablePos.immutable(), requireBreakableSupport);
         if (breakable == null) {
             reject(terrainType == null ? PathRejectionReason.UNCLASSIFIED_TERRAIN : PathRejectionReason.UNSUPPORTED_TERRAIN, x, y, z);
         }
@@ -485,6 +489,10 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     }
 
     private @Nullable PathNode tryCreateBreakableNode(@Nullable PathNode from, BlockPos pos) {
+        return tryCreateBreakableNode(from, pos, true);
+    }
+
+    private @Nullable PathNode tryCreateBreakableNode(@Nullable PathNode from, BlockPos pos, boolean requireStableSupport) {
         var breakabilityEvaluator = config.getBreakabilityEvaluator();
 
         if (breakabilityEvaluator == null || !snapshotCosts.containsKey(TerrainType.BREAKABLE)) {
@@ -492,7 +500,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             return null;
         }
 
-        if (!hasStableSupport(pos.getX(), pos.getY(), pos.getZ(), from)) {
+        if (requireStableSupport && !hasStableSupport(pos.getX(), pos.getY(), pos.getZ(), from)) {
             reject(PathRejectionReason.UNSTABLE_SUPPORT, pos);
             return null;
         }
