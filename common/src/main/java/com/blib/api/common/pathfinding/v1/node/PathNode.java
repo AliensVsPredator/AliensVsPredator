@@ -1,6 +1,5 @@
 package com.blib.api.common.pathfinding.v1.node;
 
-import java.util.List;
 import java.util.Objects;
 
 import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
@@ -42,10 +41,6 @@ public final class PathNode implements Comparable<PathNode> {
     private int stableGroundXSize;
 
     private int stableGroundZSize;
-
-    private List<PathBreakRequirement> breakRequirements = List.of();
-
-    private List<PathBreakRequirement> pendingBreakRequirements = List.of();
 
     public PathNode(int x, int y, int z, TerrainType terrainType) {
         this.x = x;
@@ -118,18 +113,12 @@ public final class PathNode implements Comparable<PathNode> {
         return pendingCostMalus;
     }
 
-    public void setPendingTraversal(float costMalus, List<PathBreakRequirement> breakRequirements) {
+    public void setPendingTraversal(float costMalus) {
         this.pendingCostMalus = costMalus;
-        this.pendingBreakRequirements = List.copyOf(breakRequirements);
-    }
-
-    public List<PathBreakRequirement> getPendingBreakRequirements() {
-        return pendingBreakRequirements;
     }
 
     public void commitPendingTraversal() {
         this.costMalus = pendingCostMalus;
-        this.breakRequirements = pendingBreakRequirements;
     }
 
     public PathNode getParent() {
@@ -202,22 +191,6 @@ public final class PathNode implements Comparable<PathNode> {
         );
     }
 
-    public boolean hasBreakRequirements() {
-        return !breakRequirements.isEmpty();
-    }
-
-    public int getBreakRequirementCount() {
-        return breakRequirements.size();
-    }
-
-    public PathBreakRequirement getBreakRequirement(int index) {
-        return breakRequirements.get(index);
-    }
-
-    public List<PathBreakRequirement> getBreakRequirements() {
-        return breakRequirements;
-    }
-
     @Override
     public int compareTo(PathNode other) {
         return Float.compare(totalCost(), other.totalCost());
@@ -233,8 +206,6 @@ public final class PathNode implements Comparable<PathNode> {
         this.hasStableGround = false;
         this.stableGroundXSize = 0;
         this.stableGroundZSize = 0;
-        this.breakRequirements = List.of();
-        this.pendingBreakRequirements = List.of();
     }
 
     @Override

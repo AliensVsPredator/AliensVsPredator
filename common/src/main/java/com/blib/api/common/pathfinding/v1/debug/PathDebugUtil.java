@@ -11,6 +11,7 @@ import net.minecraft.world.level.pathfinder.Path;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.blib.api.common.pathfinding.v1.navigator.PathNavigator;
@@ -68,7 +69,7 @@ public final class PathDebugUtil {
     }
 
     /**
-     * Sends the last A* search snapshot to players currently tracking this GOAP entity in the engine.
+     * Sends the last A* search snapshot, or a current-path snapshot fallback, to players tracking this GOAP entity.
      */
     public static void sendDebugSearchSnapshot(Mob mob, PathNavigator navigator) {
         var players = debugWatchers(mob);
@@ -76,7 +77,7 @@ public final class PathDebugUtil {
             return;
         }
 
-        var snapshot = navigator.getLastSearchSnapshot();
+        var snapshot = currentSearchSnapshot(navigator);
 
         if (snapshot == null) {
             return;
@@ -97,6 +98,119 @@ public final class PathDebugUtil {
         }
     }
 
+    /**
+     * Sends the current pathfinding debug state to one player. Used when a player starts tracking an entity that may
+     * already be mid-action, before the next GOAP movement tick has a chance to stream fresh data.
+     */
+    public static void sendDebugState(ServerPlayer player, Mob mob, PathNavigator navigator) {
+        sendDebugSearchSnapshot(player, mob, navigator);
+        sendDebugNavState(player, mob, navigator);
+    }
+
+    private static void sendDebugSearchSnapshot(ServerPlayer player, Mob mob, PathNavigator navigator) {
+        var snapshot = currentSearchSnapshot(navigator);
+
+        if (snapshot == null) {
+            return;
+        }
+
+        var payload = new S2CPathfindingSearchDebugPayload(
+            mob.getId(),
+            snapshot.nodes(),
+            snapshot.stableGround(),
+            snapshot.corridorKeys(),
+            snapshot.visitedCount(),
+            snapshot.maxSearchNodes(),
+            snapshot.diagnostics()
+        );
+
+        BLib.MOD.networking().sendToClient(player, payload);
+    }
+
+    private static @Nullable PathSearchSnapshot currentSearchSnapshot(PathNavigator navigator) {
+        var snapshot = navigator.getLastSearchSnapshot();
+
+        if (snapshot != null) {
+            return snapshot;
+        }
+
+        return currentPathSnapshot(navigator);
+    }
+
+    private static @Nullable PathSearchSnapshot currentPathSnapshot(PathNavigator navigator) {
+        var path = navigator.getCurrentPath();
+
+        if (path == null || path.getNodeCount() == 0) {
+            return null;
+        }
+
+        var nodes = new ArrayList<DebugNodeEntry>(path.getNodeCount());
+        for (int i = 0; i < path.getNodeCount(); i++) {
+            nodes.add(toDebugEntry(path.getNode(i), i));
+        }
+
+        var firstNode = path.getNode(0);
+        var lastNode = path.getNode(path.getNodeCount() - 1);
+        var start = new PathDebugBlockPos(firstNode.getX(), firstNode.getY(), firstNode.getZ());
+        var targetPos = navigator.getTargetPos();
+        var requestedTarget = targetPos != null ? PathDebugBlockPos.of(targetPos) : new PathDebugBlockPos(
+            lastNode.getX(),
+            lastNode.getY(),
+            lastNode.getZ()
+        );
+        var resolvedGoal = new PathDebugBlockPos(lastNode.getX(), lastNode.getY(), lastNode.getZ());
+        var reached = path.isReached();
+        var diagnostics = new PathSearchDebugData(
+            PathSearchMode.DIRECT,
+            reached ? PathSearchOutcome.COMPLETE : PathSearchOutcome.PARTIAL,
+            reached ? PathSearchTermination.GOAL_REACHED : PathSearchTermination.OPEN_SET_EXHAUSTED,
+            start,
+            requestedTarget,
+            resolvedGoal,
+            resolvedGoal,
+            nodes.size(),
+            navigator.getConfig().getSearchConfig().maxSearchNodes(),
+            path.getNodeCount(),
+            reached,
+            false,
+            0,
+            List.of()
+        );
+
+        return new PathSearchSnapshot(
+            nodes,
+            collectStableGroundEntries(path),
+            List.of(),
+            nodes.size(),
+            navigator.getConfig().getSearchConfig().maxSearchNodes(),
+            diagnostics
+        );
+    }
+
+    private static List<StableGroundDebugEntry> collectStableGroundEntries(BLibPath path) {
+        var stableGround = new LinkedHashMap<PathDebugBlockPos, StableGroundDebugEntry>();
+
+        for (int i = 0; i < path.getNodeCount(); i++) {
+            var node = path.getNode(i);
+            if (!node.hasStableGround()) {
+                continue;
+            }
+
+            for (int dx = 0; dx < node.getStableGroundXSize(); dx++) {
+                for (int dz = 0; dz < node.getStableGroundZSize(); dz++) {
+                    var pos = new PathDebugBlockPos(
+                        node.getStableGroundX() + dx,
+                        node.getStableGroundY(),
+                        node.getStableGroundZ() + dz
+                    );
+                    stableGround.putIfAbsent(pos, new StableGroundDebugEntry(pos.x(), pos.y(), pos.z(), i));
+                }
+            }
+        }
+
+        return List.copyOf(stableGround.values());
+    }
+
     private static final int NAV_WINDOW_RADIUS = 2;
 
     /**
@@ -108,30 +222,15 @@ public final class PathDebugUtil {
             return;
         }
 
-        var pathSnapshot = collectPathSnapshot(mob, navigator);
-        var move = collectMoveSnapshot(mob);
-        var surfaceBitmap = computeSurfaceBitmap(mob);
-        var pathAge = navigator.getTickCount() - navigator.getLastPathComputeTick();
-        var ticksOnNode = navigator.getTickCount() - navigator.getLastProgressTick();
-        var delta = mob.getDeltaMovement();
-        var payload = buildPayload(
-            mob,
-            delta.x,
-            delta.y,
-            delta.z,
-            pathSnapshot,
-            move,
-            surfaceBitmap,
-            pathAge,
-            ticksOnNode,
-            navigator.getLastPathComputeNanos(),
-            navigator.getLastPathComputeTick(),
-            navigator
-        );
+        var payload = buildNavPayload(mob, navigator);
 
         for (var player : players) {
             BLib.MOD.networking().sendToClient(player, payload);
         }
+    }
+
+    private static void sendDebugNavState(ServerPlayer player, Mob mob, PathNavigator navigator) {
+        BLib.MOD.networking().sendToClient(player, buildNavPayload(mob, navigator));
     }
 
     public static boolean hasDebugWatchers(Mob mob) {
@@ -162,7 +261,6 @@ public final class PathDebugUtil {
     ) {
         var currentTerrain = navigator.getCurrentTerrain();
         var targetPos = navigator.getTargetPos();
-        var blockToBreak = navigator.getBlockToBreak();
         return new S2CPathfindingNavDebugPayload(
             mob.getId(),
             mob.getName().getString(),
@@ -181,7 +279,6 @@ public final class PathDebugUtil {
             path.totalNodes(),
             path.reached(),
             path.navigating(),
-            path.waitingForBlockBreak(),
             path.windowNodes(),
             path.windowStart(),
             mob.getYRot(),
@@ -201,10 +298,6 @@ public final class PathDebugUtil {
             targetPos != null ? targetPos.getX() : 0,
             targetPos != null ? targetPos.getY() : 0,
             targetPos != null ? targetPos.getZ() : 0,
-            blockToBreak != null,
-            blockToBreak != null ? blockToBreak.getX() : 0,
-            blockToBreak != null ? blockToBreak.getY() : 0,
-            blockToBreak != null ? blockToBreak.getZ() : 0,
             navigator.getConsecutiveFailures(),
             navigator.getFailureCooldownRemainingTicks(),
             navigator.getConfig().getStuckTimeoutInTicks(),
@@ -212,14 +305,36 @@ public final class PathDebugUtil {
         );
     }
 
+    private static S2CPathfindingNavDebugPayload buildNavPayload(Mob mob, PathNavigator navigator) {
+        var pathSnapshot = collectPathSnapshot(mob, navigator);
+        var move = collectMoveSnapshot(mob);
+        var surfaceBitmap = computeSurfaceBitmap(mob);
+        var pathAge = navigator.getTickCount() - navigator.getLastPathComputeTick();
+        var ticksOnNode = navigator.getTickCount() - navigator.getLastProgressTick();
+        var delta = mob.getDeltaMovement();
+        return buildPayload(
+            mob,
+            delta.x,
+            delta.y,
+            delta.z,
+            pathSnapshot,
+            move,
+            surfaceBitmap,
+            pathAge,
+            ticksOnNode,
+            navigator.getLastPathComputeNanos(),
+            navigator.getLastPathComputeTick(),
+            navigator
+        );
+    }
+
     private static PathSnapshot collectPathSnapshot(Mob mob, PathNavigator navigator) {
         var path = navigator.getCurrentPath();
         var windowNodes = new ArrayList<DebugNodeEntry>();
         var navigating = navigator.isNavigating();
-        var waitingForBlockBreak = navigator.isWaitingForBlockBreak();
 
         if (path == null) {
-            return new PathSnapshot(windowNodes, 0, 0, 0, false, navigating, waitingForBlockBreak, 0.0f, 0.0f);
+            return new PathSnapshot(windowNodes, 0, 0, 0, false, navigating, 0.0f, 0.0f);
         }
 
         var currentIndex = path.getCurrentNodeIndex();
@@ -242,7 +357,6 @@ public final class PathDebugUtil {
             totalNodes,
             reached,
             navigating,
-            waitingForBlockBreak,
             distToCurrent,
             distToTarget
         );
@@ -293,7 +407,6 @@ public final class PathDebugUtil {
         int totalNodes,
         boolean reached,
         boolean navigating,
-        boolean waitingForBlockBreak,
         float distanceToCurrentNode,
         float distanceToTarget
     ) {}

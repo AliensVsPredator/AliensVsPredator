@@ -135,30 +135,24 @@ public final class SectionCorridorFinder {
                         var nz = current.z() + dz;
 
                         // Check if current region can exit through the shared face.
-                        if (
-                            !classificationCache.isRegionConnected(
-                                level,
-                                current.x(),
-                                current.y(),
-                                current.z(),
-                                current.regionRoot(),
-                                dx,
-                                dy,
-                                dz
-                            )
-                        ) {
-                            // If breakable terrain is supported, the entity can break through even without a
-                            // natural connection.
-                            if (evaluator.getTerrainCost(TerrainType.BREAKABLE) >= Float.MAX_VALUE) {
-                                continue;
-                            }
+                        if (!classificationCache.isRegionConnected(
+                            level,
+                            current.x(),
+                            current.y(),
+                            current.z(),
+                            current.regionRoot(),
+                            dx,
+                            dy,
+                            dz
+                        )) {
+                            continue;
                         }
 
                         // Find which regions in the neighbor section are reachable from the shared face.
                         var toFace = getEntryFace(dx, dy, dz);
                         var neighborRegionCount = classificationCache.getFaceRegionCount(level, nx, ny, nz, toFace);
 
-                        if (neighborRegionCount == 0 && evaluator.getTerrainCost(TerrainType.BREAKABLE) >= Float.MAX_VALUE) {
+                        if (neighborRegionCount == 0) {
                             continue;
                         }
 
@@ -174,14 +168,6 @@ public final class SectionCorridorFinder {
                             }
                         }
 
-                        if (evaluator.getTerrainCost(TerrainType.BREAKABLE) < Float.MAX_VALUE) {
-                            var breakableCost = evaluator.getTerrainCost(TerrainType.BREAKABLE);
-
-                            if (breakableCost < cheapestCost) {
-                                cheapestCost = breakableCost;
-                            }
-                        }
-
                         if (cheapestCost == Float.MAX_VALUE) {
                             continue;
                         }
@@ -190,29 +176,19 @@ public final class SectionCorridorFinder {
                         var h = sectionDistance(nx, ny, nz, goalSX, goalSY, goalSZ);
 
                         // Add an entry for each reachable region in the neighbor section.
-                        if (neighborRegionCount > 0) {
-                            for (int i = 0; i < neighborRegionCount; i++) {
-                                var neighborRoot = classificationCache.getFaceRegionRoot(
-                                    level,
-                                    nx,
-                                    ny,
-                                    nz,
-                                    toFace,
-                                    i
-                                );
-                                var nKey = packRegionNodeKey(nx, ny, nz, neighborRoot);
-
-                                if (!closedSet.contains(nKey)) {
-                                    openSet.add(new RegionNode(nKey, nx, ny, nz, neighborRoot, g, g + h, current));
-                                }
-                            }
-                        } else {
-                            // No natural regions on the entry face — breakable-only transition.
-                            // Use a sentinel region root (the face index) to distinguish from real regions.
-                            var nKey = packRegionNodeKey(nx, ny, nz, 4096 + toFace);
+                        for (int i = 0; i < neighborRegionCount; i++) {
+                            var neighborRoot = classificationCache.getFaceRegionRoot(
+                                level,
+                                nx,
+                                ny,
+                                nz,
+                                toFace,
+                                i
+                            );
+                            var nKey = packRegionNodeKey(nx, ny, nz, neighborRoot);
 
                             if (!closedSet.contains(nKey)) {
-                                openSet.add(new RegionNode(nKey, nx, ny, nz, 4096 + toFace, g, g + h, current));
+                                openSet.add(new RegionNode(nKey, nx, ny, nz, neighborRoot, g, g + h, current));
                             }
                         }
                     }

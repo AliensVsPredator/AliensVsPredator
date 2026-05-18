@@ -5,6 +5,12 @@ import com.just.ai.goap.StateKey;
 import com.just.ai.goap.action.Action;
 import com.just.ai.goap.condition.Condition;
 import com.just.ai.goap.condition.ConditionContainer;
+import com.just.ai.goap.debug.AgentDiagnosticsSnapshot;
+import com.just.ai.goap.debug.DiagnosticDetail;
+import com.just.ai.goap.debug.PlanExecutionEvent;
+import com.just.ai.goap.debug.PlanSearchActionAttempt;
+import com.just.ai.goap.debug.PlanSearchResult;
+import com.just.ai.goap.debug.PlanSearchStep;
 import com.just.ai.goap.effect.Effect;
 import com.just.ai.goap.goal.Goal;
 import com.just.ai.goap.graph.Graph;
@@ -37,10 +43,16 @@ import java.util.UUID;
 import com.blib.api.common.goap.v1.GOAPUser;
 import com.blib.mod.BLib;
 import com.blib.mod.client.render.goap.model.GOAPAgentDebugData;
+import com.blib.mod.client.render.goap.model.GOAPDiagnosticDetailData;
+import com.blib.mod.client.render.goap.model.GOAPDiagnosticEventData;
+import com.blib.mod.client.render.goap.model.GOAPDiagnosticsDebugData;
 import com.blib.mod.client.render.goap.model.GOAPGraphDebugData;
 import com.blib.mod.client.render.goap.model.GOAPGraphEdgeDebugData;
 import com.blib.mod.client.render.goap.model.GOAPGraphNodeDebugData;
 import com.blib.mod.client.render.goap.model.GOAPPlanDebugData;
+import com.blib.mod.client.render.goap.model.GOAPPlanSearchActionAttemptData;
+import com.blib.mod.client.render.goap.model.GOAPPlanSearchResultData;
+import com.blib.mod.client.render.goap.model.GOAPPlanSearchStepData;
 import com.blib.mod.common.network.packet.S2CGOAPDebugPayload;
 
 @ApiStatus.Internal
@@ -111,9 +123,10 @@ final class GOAPDebugPayloadBuilder {
         }
 
         var worldState = debugWorldState == null ? Map.<String, String>of() : snapshotWorldState(debugWorldState);
+        var diagnostics = buildDiagnosticsData(agent);
         var graphDebug = graph == null
-            ? GOAPGraphDebugData.EMPTY
-            : buildGraphData(livingEntity, agent, graph, debugWorldState);
+            ? new GOAPGraphDebugData(List.of(), List.of(), List.of(), diagnostics)
+            : withAgentDiagnostics(buildGraphData(livingEntity, agent, graph, debugWorldState), diagnostics);
         var pos = livingEntity.blockPosition();
 
         return new GOAPAgentDebugData(
@@ -134,6 +147,100 @@ final class GOAPDebugPayloadBuilder {
             snapshotBlackboard(agent.getGraphBlackboard()),
             graphDebug
         );
+    }
+
+    private static GOAPGraphDebugData withAgentDiagnostics(GOAPGraphDebugData graph, GOAPDiagnosticsDebugData diagnostics) {
+        return new GOAPGraphDebugData(graph.nodes(), graph.edges(), graph.diagnostics(), diagnostics);
+    }
+
+    private static GOAPDiagnosticsDebugData buildDiagnosticsData(Agent<LivingEntity> agent) {
+        var diagnostics = agent.getDebug().getDiagnostics();
+        if (!diagnostics.isEnabled()) {
+            return GOAPDiagnosticsDebugData.EMPTY;
+        }
+        return buildDiagnosticsData(diagnostics.snapshot(agent.getTick()));
+    }
+
+    private static GOAPDiagnosticsDebugData buildDiagnosticsData(AgentDiagnosticsSnapshot snapshot) {
+        return new GOAPDiagnosticsDebugData(
+            snapshot.tick(),
+            true,
+            snapshot.planSearches()
+                .stream()
+                .map(GOAPDebugPayloadBuilder::buildPlanSearchData)
+                .toList(),
+            snapshot.events()
+                .stream()
+                .map(GOAPDebugPayloadBuilder::buildDiagnosticEventData)
+                .toList()
+        );
+    }
+
+    private static GOAPPlanSearchResultData buildPlanSearchData(PlanSearchResult search) {
+        return new GOAPPlanSearchResultData(
+            search.tick(),
+            truncate(search.goalName()),
+            search.goalPreconditionsSatisfied(),
+            search.desiredConditionsSatisfied(),
+            truncateList(search.rootUnsatisfiedConditions()),
+            search.status().name(),
+            truncateList(search.selectedActions()),
+            search.cost(),
+            search.truncated(),
+            search.steps()
+                .stream()
+                .map(GOAPDebugPayloadBuilder::buildPlanSearchStepData)
+                .toList()
+        );
+    }
+
+    private static GOAPPlanSearchStepData buildPlanSearchStepData(PlanSearchStep step) {
+        return new GOAPPlanSearchStepData(
+            truncateDetail(step.condition()),
+            truncateList(step.candidateActions()),
+            step.attempts()
+                .stream()
+                .map(GOAPDebugPayloadBuilder::buildPlanSearchAttemptData)
+                .toList()
+        );
+    }
+
+    private static GOAPPlanSearchActionAttemptData buildPlanSearchAttemptData(PlanSearchActionAttempt attempt) {
+        return new GOAPPlanSearchActionAttemptData(
+            truncate(attempt.actionName()),
+            truncateList(attempt.resultingUnsatisfiedConditions()),
+            attempt.actionCost(),
+            attempt.heuristicCost()
+        );
+    }
+
+    private static GOAPDiagnosticEventData buildDiagnosticEventData(PlanExecutionEvent event) {
+        var plan = event.plan();
+        return new GOAPDiagnosticEventData(
+            event.tick(),
+            event.kind().name(),
+            plan.id(),
+            truncate(plan.goalName()),
+            truncateList(plan.actions()),
+            plan.initialCost(),
+            event.actionIndex(),
+            truncate(event.actionName()),
+            event.details()
+                .stream()
+                .map(GOAPDebugPayloadBuilder::buildDiagnosticDetailData)
+                .toList()
+        );
+    }
+
+    private static GOAPDiagnosticDetailData buildDiagnosticDetailData(DiagnosticDetail<?> detail) {
+        return new GOAPDiagnosticDetailData(
+            truncate(detail.key().id()),
+            truncateDetail(detail.displayValue())
+        );
+    }
+
+    private static List<String> truncateList(List<String> values) {
+        return values.stream().map(GOAPDebugPayloadBuilder::truncateDetail).toList();
     }
 
     private static List<GOAPPlanDebugData> buildPlanData(
@@ -216,7 +323,7 @@ final class GOAPDebugPayloadBuilder {
 
         addDiagnostic(diagnostics, "payload nodes=%d edges=%d".formatted(nodes.size(), edges.size()));
 
-        return new GOAPGraphDebugData(nodes, edges, diagnostics);
+        return new GOAPGraphDebugData(nodes, edges, diagnostics, GOAPDiagnosticsDebugData.EMPTY);
     }
 
     private static void buildSensorNodes(

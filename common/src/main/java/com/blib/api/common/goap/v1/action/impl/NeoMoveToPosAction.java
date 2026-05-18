@@ -1,7 +1,6 @@
 package com.blib.api.common.goap.v1.action.impl;
 
 import com.just.ai.goap.action.Action;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.phys.Vec3;
@@ -26,8 +25,7 @@ public final class NeoMoveToPosAction {
     public enum Result {
         FINISHED,
         MOVING,
-        NO_PATH,
-        WAITING_FOR_BLOCK_BREAK
+        NO_PATH
     }
 
     /**
@@ -51,7 +49,6 @@ public final class NeoMoveToPosAction {
         }
 
         var navigator = navigatorUser.getPathNavigator();
-        var targetBlockPos = BlockPos.containing(targetPos);
 
         if (actor instanceof Mob mob) {
             navigator.setDebugCaptureEnabled(PathDebugUtil.hasDebugWatchers(mob));
@@ -60,13 +57,20 @@ public final class NeoMoveToPosAction {
         }
 
         if (!navigator.isNavigating()) {
-            var found = navigator.navigateTo(actor.getX(), actor.getY(), actor.getZ(), targetBlockPos);
+            var found = navigator.navigateTo(
+                actor.getX(),
+                actor.getY(),
+                actor.getZ(),
+                targetPos.x,
+                targetPos.y,
+                targetPos.z
+            );
 
             if (!found) {
                 return Result.NO_PATH;
             }
         } else {
-            navigator.updateTarget(targetBlockPos);
+            navigator.updateTarget(targetPos.x, targetPos.y, targetPos.z);
         }
 
         navigator.tick(
@@ -84,10 +88,6 @@ public final class NeoMoveToPosAction {
 
         if (navigator.isDone()) {
             return Result.FINISHED;
-        }
-
-        if (navigator.isWaitingForBlockBreak()) {
-            return Result.WAITING_FOR_BLOCK_BREAK;
         }
 
         var waypointCenter = navigator.getCurrentTargetCenter();

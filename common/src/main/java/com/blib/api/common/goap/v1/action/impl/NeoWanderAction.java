@@ -52,7 +52,6 @@ public final class NeoWanderAction {
                 yield Action.Signal.CONTINUE;
             }
             case MOVING -> Action.Signal.CONTINUE;
-            case WAITING_FOR_BLOCK_BREAK -> Action.Signal.CONTINUE;
             case NO_PATH -> Action.Signal.ABORT;
         };
     }

@@ -6,7 +6,6 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -14,7 +13,6 @@ import java.util.concurrent.CompletableFuture;
 import com.blib.api.common.pathfinding.v1.cache.TerrainClassificationCache;
 import com.blib.api.common.pathfinding.v1.debug.PathSearchSnapshot;
 import com.blib.api.common.pathfinding.v1.evaluator.UnifiedTerrainEvaluator;
-import com.blib.api.common.pathfinding.v1.node.PathBreakRequirement;
 import com.blib.api.common.pathfinding.v1.node.PathNode;
 import com.blib.api.common.pathfinding.v1.path.BLibPath;
 import com.blib.api.common.pathfinding.v1.search.BLibPathFinder;
@@ -50,17 +48,17 @@ public final class PathNavigator {
 
     private @Nullable TerrainType currentTerrain;
 
-    private boolean waitingForBlockBreak;
-
-    private int breakRequirementIndex;
-
     private int lastPathComputeTick;
 
     private int lastProgressTick;
 
     private long lastPathComputeNanos;
 
-    private double lastDistanceToTarget;
+    private double lastDistanceToCurrentNode;
+
+    private double lastDistanceToNextNode;
+
+    private int lastObservedNodeIndex = -1;
 
     private int tickCount;
 
@@ -91,6 +89,10 @@ public final class PathNavigator {
 
     private boolean needsRepath;
 
+    private @Nullable PathEdgeKey lastStuckReplannedEdge;
+
+    private static final double PROGRESS_DISTANCE_EPSILON_SQUARED = 0.25;
+
     public PathNavigator(LevelReader level, PathNavigatorConfig config) {
         this(level, config, null);
     }
@@ -114,14 +116,20 @@ public final class PathNavigator {
      * @return true if a path was found
      */
     public boolean navigateTo(BlockPos entityPos, BlockPos target) {
-        if (isInFailureCooldown(target)) {
+        return navigateTo(entityPos, target, false);
+    }
+
+    private boolean navigateTo(BlockPos entityPos, BlockPos target, boolean stuckReplan) {
+        if (!stuckReplan && isInFailureCooldown(target)) {
             return false;
         }
 
         this.targetPos = target;
         this.lastComputedTargetPos = target;
-        this.waitingForBlockBreak = false;
-        this.breakRequirementIndex = 0;
+
+        if (!stuckReplan) {
+            this.lastStuckReplannedEdge = null;
+        }
 
         pathFinder.setExcludedTerrains(excludedTerrains);
 
@@ -136,15 +144,16 @@ public final class PathNavigator {
         this.lastPathComputeNanos = System.nanoTime() - startNanos;
 
         this.lastPathComputeTick = tickCount;
-        this.lastProgressTick = tickCount;
-        this.lastDistanceToTarget = Double.MAX_VALUE;
+        resetProgressTracking();
 
-        if (currentPath != null && (currentPath.isReached() || (planner != null && planner.hasActiveRoute()))) {
+        if (isUsablePath(currentPath)) {
             var startNode = currentPath.getCurrentNode();
 
             this.currentTerrain = startNode.getTerrainType();
             resetFailureCooldown();
         } else {
+            this.currentPath = null;
+            this.currentTerrain = null;
             recordFailure();
         }
 
@@ -162,6 +171,26 @@ public final class PathNavigator {
     }
 
     /**
+     * Plans a path from the entity's current center position to an exact target center position. Both positions are
+     * converted to footprint anchors with the same entity-width semantics.
+     *
+     * @return true if a path was found
+     */
+    public boolean navigateTo(
+        double entityX,
+        double entityY,
+        double entityZ,
+        double targetX,
+        double targetY,
+        double targetZ
+    ) {
+        return navigateTo(
+            entityAnchorPos(entityX, entityY, entityZ),
+            targetAnchorPos(targetX, targetY, targetZ)
+        );
+    }
+
+    /**
      * Asynchronously plans a path to the target position. Chunk data is snapshotted and the terrain cache is
      * pre-populated on the calling thread, then the A* search runs on a background thread. Call
      * {@link #isPathPending()} to check if an async computation is in progress. The path is automatically applied on
@@ -174,8 +203,7 @@ public final class PathNavigator {
 
         this.targetPos = target;
         this.lastComputedTargetPos = target;
-        this.waitingForBlockBreak = false;
-        this.breakRequirementIndex = 0;
+        this.lastStuckReplannedEdge = null;
         pathFinder.setExcludedTerrains(excludedTerrains);
 
         this.asyncStartNanos = System.nanoTime();
@@ -188,6 +216,23 @@ public final class PathNavigator {
      */
     public void navigateToAsync(double entityX, double entityY, double entityZ, BlockPos target) {
         navigateToAsync(entityAnchorPos(entityX, entityY, entityZ), target);
+    }
+
+    /**
+     * Asynchronously plans a path from the entity's current center position to an exact target center position.
+     */
+    public void navigateToAsync(
+        double entityX,
+        double entityY,
+        double entityZ,
+        double targetX,
+        double targetY,
+        double targetZ
+    ) {
+        navigateToAsync(
+            entityAnchorPos(entityX, entityY, entityZ),
+            targetAnchorPos(targetX, targetY, targetZ)
+        );
     }
 
     /**
@@ -206,19 +251,18 @@ public final class PathNavigator {
         pendingPath = null;
 
         this.currentPath = path;
-        this.waitingForBlockBreak = false;
-        this.breakRequirementIndex = 0;
         this.lastPathComputeNanos = System.nanoTime() - asyncStartNanos;
         this.lastPathComputeTick = tickCount;
-        this.lastProgressTick = tickCount;
-        this.lastDistanceToTarget = Double.MAX_VALUE;
+        resetProgressTracking();
 
-        if (currentPath != null && currentPath.isReached()) {
+        if (isUsablePath(currentPath)) {
             var startNode = currentPath.getCurrentNode();
 
             this.currentTerrain = startNode.getTerrainType();
             resetFailureCooldown();
         } else {
+            this.currentPath = null;
+            this.currentTerrain = null;
             recordFailure();
         }
     }
@@ -248,7 +292,7 @@ public final class PathNavigator {
             needsRepath = false;
 
             if (targetPos != null) {
-                navigateTo(entityX, entityY, entityZ, targetPos);
+                navigateTo(entityAnchorPos(entityX, entityY, entityZ), targetPos);
             }
         }
 
@@ -265,14 +309,9 @@ public final class PathNavigator {
             return;
         }
 
-        if (waitingForBlockBreak) {
-            return;
-        }
+        var entityAnchorPos = entityAnchorPos(entityX, entityY, entityZ);
 
         advanceWaypoints(entityX, entityY, entityZ, entityWidth, entityHeight);
-
-        var entityBlockPos = BlockPos.containing(entityX, entityY, entityZ);
-        var entityAnchorPos = entityAnchorPos(entityX, entityY, entityZ);
 
         // After waypoint advancement, check again for segment transition.
         if (currentPath != null && currentPath.isDone() && planner != null && planner.hasActiveRoute()) {
@@ -287,11 +326,7 @@ public final class PathNavigator {
             return;
         }
 
-        if (waitingForBlockBreak) {
-            return;
-        }
-
-        detectStuck(entityBlockPos);
+        detectStuck(entityAnchorPos, entityX, entityY, entityZ);
         checkRecalculate(entityAnchorPos, entityX, entityY, entityZ, entityWidth, entityHeight);
     }
 
@@ -307,9 +342,9 @@ public final class PathNavigator {
         this.currentPath = null;
         this.targetPos = null;
         this.currentTerrain = null;
-        this.waitingForBlockBreak = false;
-        this.breakRequirementIndex = 0;
         this.needsRepath = false;
+        this.lastStuckReplannedEdge = null;
+        resetProgressTracking();
 
         if (planner != null) {
             planner.clear();
@@ -407,87 +442,13 @@ public final class PathNavigator {
         return currentTerrain;
     }
 
-    /**
-     * Returns true if the navigator is paused at a node with break requirements and waiting for the consuming code to
-     * clear the current requirement and call {@link #confirmBlockBroken()}.
-     */
-    public boolean isWaitingForBlockBreak() {
-        return waitingForBlockBreak;
-    }
-
-    /**
-     * Returns the origin of the current break requirement, or null if not waiting.
-     */
-    public @Nullable BlockPos getBlockToBreak() {
-        var requirement = getCurrentBreakRequirement();
-
-        if (requirement == null) {
-            return null;
-        }
-
-        return new BlockPos(requirement.x(), requirement.y(), requirement.z());
-    }
-
-    /**
-     * Returns the current block column that must be cleared before movement can resume, or null if not waiting.
-     */
-    public @Nullable PathBreakRequirement getCurrentBreakRequirement() {
-        if (!waitingForBlockBreak || currentPath == null || currentPath.isDone()) {
-            return null;
-        }
-
-        var node = currentPath.getCurrentNode();
-        if (breakRequirementIndex < 0 || breakRequirementIndex >= node.getBreakRequirementCount()) {
-            return null;
-        }
-
-        return node.getBreakRequirement(breakRequirementIndex);
-    }
-
-    /**
-     * Returns the remaining block columns for the current path node, beginning with the current requirement.
-     */
-    public List<PathBreakRequirement> getRemainingBreakRequirements() {
-        if (!waitingForBlockBreak || currentPath == null || currentPath.isDone()) {
-            return List.of();
-        }
-
-        var node = currentPath.getCurrentNode();
-        if (breakRequirementIndex < 0 || breakRequirementIndex >= node.getBreakRequirementCount()) {
-            return List.of();
-        }
-
-        return List.copyOf(node.getBreakRequirements().subList(breakRequirementIndex, node.getBreakRequirementCount()));
-    }
-
-    /**
-     * Signals that the current break requirement has been cleared. Movement resumes after all requirements on the
-     * current node are cleared.
-     */
-    public void confirmBlockBroken() {
-        if (currentPath == null || currentPath.isDone()) {
-            this.waitingForBlockBreak = false;
-            this.breakRequirementIndex = 0;
-            return;
-        }
-
-        var node = currentPath.getCurrentNode();
-        if (breakRequirementIndex + 1 < node.getBreakRequirementCount()) {
-            breakRequirementIndex++;
-            return;
-        }
-
-        this.waitingForBlockBreak = false;
-        this.breakRequirementIndex = 0;
-    }
-
     public @Nullable BlockPos getTargetPos() {
         return targetPos;
     }
 
     /**
      * Sets terrain types to exclude from the next pathfinding search. Excluded terrains are treated as impassable.
-     * Useful for restricting behavior — e.g., wandering entities should not consider BREAKABLE paths.
+     * Useful for restricting behavior — e.g., wandering entities should not consider WATER paths.
      * <p>
      * Pass {@code null} to clear exclusions.
      * </p>
@@ -530,6 +491,13 @@ public final class PathNavigator {
         this.targetPos = newTarget;
     }
 
+    /**
+     * Updates the destination to an exact target center position without forcing an immediate path recomputation.
+     */
+    public void updateTarget(double targetX, double targetY, double targetZ) {
+        this.targetPos = targetAnchorPos(targetX, targetY, targetZ);
+    }
+
     // --- Failure backoff ---
 
     private boolean isInFailureCooldown(BlockPos target) {
@@ -549,7 +517,8 @@ public final class PathNavigator {
     private void recordFailure() {
         consecutiveFailures++;
         lastFailureTick = cooldownClock();
-        failureCooldownTicks = Math.min(BASE_FAILURE_COOLDOWN * (1 << (consecutiveFailures - 1)), MAX_FAILURE_COOLDOWN);
+        var shift = Math.min(consecutiveFailures - 1, 30);
+        failureCooldownTicks = Math.min(BASE_FAILURE_COOLDOWN * (1 << shift), MAX_FAILURE_COOLDOWN);
     }
 
     private void resetFailureCooldown() {
@@ -585,8 +554,7 @@ public final class PathNavigator {
 
             var withinReach = dx <= reachXZ && dy <= reachY && dz <= reachXZ;
             var shouldAdvance = withinReach
-                || shouldSkipToNextNode(entityX, entityY, entityZ)
-                || shouldAdvanceToNextBreakableNode(entityX, entityY, entityZ, entityWidth, entityHeight, reachXZ, reachY);
+                || shouldSkipToNextNode(entityX, entityY, entityZ);
 
             if (!shouldAdvance) {
                 break;
@@ -595,20 +563,11 @@ public final class PathNavigator {
             var previousTerrain = currentTerrain;
 
             currentPath.advance();
-            lastProgressTick = tickCount;
-            lastDistanceToTarget = Double.MAX_VALUE;
+            markProgress();
 
             if (!currentPath.isDone()) {
                 var nextNode = currentPath.getCurrentNode();
                 var newTerrain = nextNode.getTerrainType();
-
-                if (nextNode.hasBreakRequirements()) {
-                    waitingForBlockBreak = true;
-                    breakRequirementIndex = 0;
-                    currentTerrain = newTerrain;
-                    fireTransitionHandlers(previousTerrain, newTerrain);
-                    break;
-                }
 
                 if (newTerrain != previousTerrain) {
                     fireTransitionHandlers(previousTerrain, newTerrain);
@@ -617,47 +576,6 @@ public final class PathNavigator {
                 }
             }
         }
-    }
-
-    private boolean shouldAdvanceToNextBreakableNode(
-        double entityX,
-        double entityY,
-        double entityZ,
-        float entityWidth,
-        float entityHeight,
-        double waypointReachXZ,
-        double waypointReachY
-    ) {
-        var nextIndex = currentPath.getCurrentNodeIndex() + 1;
-
-        if (nextIndex >= currentPath.getNodeCount()) {
-            return false;
-        }
-
-        var nextNode = currentPath.getNode(nextIndex);
-        if (!nextNode.hasBreakRequirements()) {
-            return false;
-        }
-
-        // A breakable next node can physically block a wide mob before it reaches the current anchor center.
-        var currentCenter = nodeCenter(currentPath.getCurrentNode());
-        var dx = Math.abs(currentCenter.x - entityX);
-        var dy = Math.abs(currentCenter.y - entityY);
-        var dz = Math.abs(currentCenter.z - entityZ);
-
-        return dx <= breakableEdgeReachXZ(entityWidth, waypointReachXZ)
-            && dy <= breakableEdgeReachY(entityHeight, waypointReachY)
-            && dz <= breakableEdgeReachXZ(entityWidth, waypointReachXZ);
-    }
-
-    private double breakableEdgeReachXZ(float entityWidth, double waypointReachXZ) {
-        var entityBlocks = Math.max(entityWidth, config.getEvaluatorConfig().getEntityWidth());
-
-        return Math.max(waypointReachXZ, Math.max(0.75, entityBlocks / 2.0));
-    }
-
-    private double breakableEdgeReachY(float entityHeight, double waypointReachY) {
-        return Math.max(waypointReachY, Math.min(1.0, Math.max(0.5, entityHeight / 2.0)));
     }
 
     private double waypointReachXZ(float entityWidth) {
@@ -751,25 +669,69 @@ public final class PathNavigator {
         return previousDx != nextDx || previousDz != nextDz;
     }
 
-    private void detectStuck(BlockPos entityPos) {
-        if (targetPos == null) {
+    private void detectStuck(BlockPos entityAnchorPos, double entityX, double entityY, double entityZ) {
+        if (targetPos == null || currentPath == null || currentPath.isDone()) {
             return;
         }
 
-        var currentDistance = entityPos.distSqr(targetPos);
-
-        if (currentDistance < lastDistanceToTarget - 0.5) {
-            lastDistanceToTarget = currentDistance;
-            lastProgressTick = tickCount;
-            return;
-        }
-
+        var progressed = observePathProgress(entityAnchorPos, entityX, entityY, entityZ);
         var ticksSinceProgress = tickCount - lastProgressTick;
 
-        if (ticksSinceProgress >= config.getStuckTimeoutInTicks()) {
+        if (!progressed && ticksSinceProgress >= config.getStuckTimeoutInTicks()) {
+            handleStuckEdge(entityAnchorPos);
+        }
+    }
+
+    private boolean observePathProgress(BlockPos entityAnchorPos, double entityX, double entityY, double entityZ) {
+        var currentIndex = currentPath.getCurrentNodeIndex();
+        var currentCenter = nodeCenter(currentPath.getCurrentNode());
+        var distanceToCurrent = distanceSquared(entityX, entityY, entityZ, currentCenter);
+        var distanceToNext = Double.MAX_VALUE;
+
+        if (currentIndex + 1 < currentPath.getNodeCount()) {
+            distanceToNext = distanceSquared(entityX, entityY, entityZ, nodeCenter(currentPath.getNode(currentIndex + 1)));
+        }
+
+        var progressed = currentIndex != lastObservedNodeIndex
+            || distanceToCurrent < lastDistanceToCurrentNode - PROGRESS_DISTANCE_EPSILON_SQUARED
+            || distanceToNext < lastDistanceToNextNode - PROGRESS_DISTANCE_EPSILON_SQUARED;
+
+        if (progressed) {
+            lastProgressTick = tickCount;
+            lastObservedNodeIndex = currentIndex;
+            lastDistanceToCurrentNode = distanceToCurrent;
+            lastDistanceToNextNode = distanceToNext;
+
+            var edge = currentEdgeKey(entityAnchorPos);
+            if (lastStuckReplannedEdge != null && edge != null && !lastStuckReplannedEdge.equals(edge)) {
+                lastStuckReplannedEdge = null;
+            }
+        }
+
+        return progressed;
+    }
+
+    private void handleStuckEdge(BlockPos entityAnchorPos) {
+        var edge = currentEdgeKey(entityAnchorPos);
+
+        if (edge != null && edge.equals(lastStuckReplannedEdge)) {
             recordFailure();
             stop();
+            return;
         }
+
+        lastStuckReplannedEdge = edge;
+
+        if (targetPos == null) {
+            stop();
+            return;
+        }
+
+        if (planner != null) {
+            planner.clear();
+        }
+
+        navigateTo(entityAnchorPos, targetPos, true);
     }
 
     private static final double MIN_TARGET_MOVE_DISTANCE_SQUARED = 9.0;
@@ -814,16 +776,43 @@ public final class PathNavigator {
 
         pathFinder.setExcludedTerrains(excludedTerrains);
         this.currentPath = planner.computeNextSegment(level, entityPos);
-        this.waitingForBlockBreak = false;
-        this.breakRequirementIndex = 0;
         this.lastPathComputeNanos = System.nanoTime() - startNanos;
         this.lastPathComputeTick = tickCount;
-        this.lastProgressTick = tickCount;
-        this.lastDistanceToTarget = Double.MAX_VALUE;
+        resetProgressTracking();
 
-        if (currentPath != null) {
+        if (isUsablePath(currentPath)) {
             this.currentTerrain = currentPath.getCurrentNode().getTerrainType();
+            resetFailureCooldown();
+        } else {
+            this.currentPath = null;
+            this.currentTerrain = null;
+            recordFailure();
+
+            if (planner != null) {
+                planner.clear();
+            }
         }
+    }
+
+    private boolean isUsablePath(@Nullable BLibPath path) {
+        return path != null
+            && (path.isReached()
+                || path.getNodeCount() > 1
+                || (planner != null && planner.hasActiveRoute()));
+    }
+
+    private void markProgress() {
+        lastProgressTick = tickCount;
+        lastDistanceToCurrentNode = Double.MAX_VALUE;
+        lastDistanceToNextNode = Double.MAX_VALUE;
+        lastObservedNodeIndex = currentPath != null ? currentPath.getCurrentNodeIndex() : -1;
+    }
+
+    private void resetProgressTracking() {
+        lastProgressTick = tickCount;
+        lastDistanceToCurrentNode = Double.MAX_VALUE;
+        lastDistanceToNextNode = Double.MAX_VALUE;
+        lastObservedNodeIndex = -1;
     }
 
     private void fireTransitionHandlers(@Nullable TerrainType from, TerrainType to) {
@@ -845,14 +834,65 @@ public final class PathNavigator {
         return BlockPos.containing(entityX - centerOffset + 0.5, entityY, entityZ - centerOffset + 0.5);
     }
 
+    private BlockPos targetAnchorPos(double targetX, double targetY, double targetZ) {
+        var centerOffset = nodeCenterOffset();
+
+        return BlockPos.containing(targetX - centerOffset + 0.5, targetY, targetZ - centerOffset + 0.5);
+    }
+
     private Vec3 nodeCenter(PathNode node) {
         var centerOffset = nodeCenterOffset();
 
         return new Vec3(node.getX() + centerOffset, node.getY(), node.getZ() + centerOffset);
     }
 
+    private double distanceSquared(double x, double y, double z, Vec3 target) {
+        var dx = target.x - x;
+        var dy = target.y - y;
+        var dz = target.z - z;
+
+        return dx * dx + dy * dy + dz * dz;
+    }
+
     private double nodeCenterOffset() {
         return Math.max(1, config.getEvaluatorConfig().getEntityWidth()) / 2.0;
     }
+
+    private @Nullable PathEdgeKey currentEdgeKey(BlockPos entityAnchorPos) {
+        if (currentPath == null || currentPath.isDone() || targetPos == null) {
+            return null;
+        }
+
+        var currentIndex = currentPath.getCurrentNodeIndex();
+        var to = currentPath.getCurrentNode();
+        var from = currentIndex > 0 ? currentPath.getNode(currentIndex - 1) : null;
+        var fromX = from != null ? from.getX() : entityAnchorPos.getX();
+        var fromY = from != null ? from.getY() : entityAnchorPos.getY();
+        var fromZ = from != null ? from.getZ() : entityAnchorPos.getZ();
+
+        return new PathEdgeKey(
+            fromX,
+            fromY,
+            fromZ,
+            to.getX(),
+            to.getY(),
+            to.getZ(),
+            targetPos.getX(),
+            targetPos.getY(),
+            targetPos.getZ()
+        );
+    }
+
+    private record PathEdgeKey(
+        int fromX,
+        int fromY,
+        int fromZ,
+        int toX,
+        int toY,
+        int toZ,
+        int targetX,
+        int targetY,
+        int targetZ
+    ) {}
 
 }

@@ -36,7 +36,6 @@ public record S2CPathfindingNavDebugPayload(
     int totalNodes,
     boolean reached,
     boolean navigating,
-    boolean waitingForBlockBreak,
     List<DebugNodeEntry> windowNodes,
     int windowStartIndex,
     float entityYRot,
@@ -56,10 +55,6 @@ public record S2CPathfindingNavDebugPayload(
     int targetX,
     int targetY,
     int targetZ,
-    boolean hasBlockToBreak,
-    int blockToBreakX,
-    int blockToBreakY,
-    int blockToBreakZ,
     int consecutiveFailures,
     int failureCooldownRemainingTicks,
     int stuckTimeoutTicks,
@@ -98,7 +93,6 @@ public record S2CPathfindingNavDebugPayload(
                     StreamCodecs.INT.decode(schema, buf),
                     StreamCodecs.BOOLEAN.decode(schema, buf),
                     StreamCodecs.BOOLEAN.decode(schema, buf),
-                    StreamCodecs.BOOLEAN.decode(schema, buf),
                     NODE_LIST_CODEC.decode(schema, buf),
                     StreamCodecs.INT.decode(schema, buf),
                     StreamCodecs.FLOAT.decode(schema, buf),
@@ -113,10 +107,6 @@ public record S2CPathfindingNavDebugPayload(
                     StreamCodecs.LONG.decode(schema, buf),
                     StreamCodecs.INT.decode(schema, buf),
                     StreamCodecs.BOOLEAN.decode(schema, buf),
-                    StreamCodecs.INT.decode(schema, buf),
-                    StreamCodecs.BOOLEAN.decode(schema, buf),
-                    StreamCodecs.INT.decode(schema, buf),
-                    StreamCodecs.INT.decode(schema, buf),
                     StreamCodecs.INT.decode(schema, buf),
                     StreamCodecs.BOOLEAN.decode(schema, buf),
                     StreamCodecs.INT.decode(schema, buf),
@@ -154,7 +144,6 @@ public record S2CPathfindingNavDebugPayload(
                 StreamCodecs.INT.encode(schema, buf, value.totalNodes);
                 StreamCodecs.BOOLEAN.encode(schema, buf, value.reached);
                 StreamCodecs.BOOLEAN.encode(schema, buf, value.navigating);
-                StreamCodecs.BOOLEAN.encode(schema, buf, value.waitingForBlockBreak);
                 NODE_LIST_CODEC.encode(schema, buf, value.windowNodes);
                 StreamCodecs.INT.encode(schema, buf, value.windowStartIndex);
                 StreamCodecs.FLOAT.encode(schema, buf, value.entityYRot);
@@ -174,10 +163,6 @@ public record S2CPathfindingNavDebugPayload(
                 StreamCodecs.INT.encode(schema, buf, value.targetX);
                 StreamCodecs.INT.encode(schema, buf, value.targetY);
                 StreamCodecs.INT.encode(schema, buf, value.targetZ);
-                StreamCodecs.BOOLEAN.encode(schema, buf, value.hasBlockToBreak);
-                StreamCodecs.INT.encode(schema, buf, value.blockToBreakX);
-                StreamCodecs.INT.encode(schema, buf, value.blockToBreakY);
-                StreamCodecs.INT.encode(schema, buf, value.blockToBreakZ);
                 StreamCodecs.INT.encode(schema, buf, value.consecutiveFailures);
                 StreamCodecs.INT.encode(schema, buf, value.failureCooldownRemainingTicks);
                 StreamCodecs.INT.encode(schema, buf, value.stuckTimeoutTicks);
