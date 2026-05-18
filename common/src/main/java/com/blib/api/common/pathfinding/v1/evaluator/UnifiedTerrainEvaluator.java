@@ -9,6 +9,8 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.blib.api.common.pathfinding.v1.debug.PathRejectionReason;
+import com.blib.api.common.pathfinding.v1.debug.PathSearchDebugRecorder;
 import com.blib.api.common.pathfinding.v1.cache.TerrainClassificationCache;
 import com.blib.api.common.pathfinding.v1.node.PathNode;
 import com.blib.api.common.pathfinding.v1.node.PathNodePool;
@@ -48,6 +50,8 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     private final BlockPos.MutableBlockPos clearancePos = new BlockPos.MutableBlockPos();
 
     private LevelReader level;
+
+    private @Nullable PathSearchDebugRecorder debugRecorder;
 
     public UnifiedTerrainEvaluator(TerrainEvaluatorConfig config) {
         this(config, null);
@@ -93,6 +97,10 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
      */
     public void preloadChunk(int chunkX, int chunkZ, ChunkAccess chunk) {
         blockAccessor.preloadChunk(chunkX, chunkZ, chunk);
+    }
+
+    public void setDebugRecorder(@Nullable PathSearchDebugRecorder debugRecorder) {
+        this.debugRecorder = debugRecorder;
     }
 
     private void prepareCommon() {
@@ -273,6 +281,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                 adjX == null || adjX.getTerrainType() == TerrainType.BREAKABLE
                     || adjZ == null || adjZ.getTerrainType() == TerrainType.BREAKABLE
             ) {
+                reject(PathRejectionReason.DIAGONAL_BLOCKED, node.getX() + offset[0], node.getY(), node.getZ() + offset[1]);
                 continue;
             }
 
@@ -451,20 +460,29 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         var terrainType = classifyTerrain(mutablePos);
 
         if (terrainType != null && snapshotCosts.containsKey(terrainType)) {
-            if (!hasEntityClearance(x, y, z, terrainType)) {
-                return null;
+            if (hasEntityClearance(x, y, z, terrainType)) {
+                return nodePool.getOrCreate(x, y, z, terrainType);
             }
 
-            return nodePool.getOrCreate(x, y, z, terrainType);
+            var breakable = tryCreateBreakableNode(mutablePos.immutable());
+            if (breakable == null) {
+                reject(PathRejectionReason.NO_CLEARANCE, x, y, z);
+            }
+            return breakable;
         }
 
-        return tryCreateBreakableNode(mutablePos.immutable());
+        var breakable = tryCreateBreakableNode(mutablePos.immutable());
+        if (breakable == null) {
+            reject(terrainType == null ? PathRejectionReason.UNCLASSIFIED_TERRAIN : PathRejectionReason.UNSUPPORTED_TERRAIN, x, y, z);
+        }
+        return breakable;
     }
 
     private @Nullable PathNode tryCreateBreakableNode(BlockPos pos) {
         var breakabilityEvaluator = config.getBreakabilityEvaluator();
 
         if (breakabilityEvaluator == null || !snapshotCosts.containsKey(TerrainType.BREAKABLE)) {
+            reject(PathRejectionReason.BREAKING_DISABLED, pos);
             return null;
         }
 
@@ -490,6 +508,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                     var result = breakabilityEvaluator.evaluate(level, clearancePos, checkState);
 
                     if (!result.canBreak()) {
+                        reject(PathRejectionReason.UNBREAKABLE_BLOCK, clearancePos);
                         return null;
                     }
 
@@ -507,6 +526,16 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         node.setCostMalus(totalCost);
 
         return node;
+    }
+
+    private void reject(PathRejectionReason reason, BlockPos pos) {
+        reject(reason, pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    private void reject(PathRejectionReason reason, int x, int y, int z) {
+        if (debugRecorder != null) {
+            debugRecorder.reject(reason, x, y, z);
+        }
     }
 
     private boolean hasEntityClearance(int x, int y, int z, TerrainType terrainType) {

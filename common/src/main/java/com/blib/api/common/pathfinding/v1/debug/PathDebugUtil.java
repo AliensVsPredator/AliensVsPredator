@@ -87,7 +87,8 @@ public final class PathDebugUtil {
             snapshot.nodes(),
             snapshot.corridorKeys(),
             snapshot.visitedCount(),
-            snapshot.maxSearchNodes()
+            snapshot.maxSearchNodes(),
+            snapshot.diagnostics()
         );
 
         for (var player : players) {
@@ -123,7 +124,8 @@ public final class PathDebugUtil {
             pathAge,
             ticksOnNode,
             navigator.getLastPathComputeNanos(),
-            navigator.getLastPathComputeTick()
+            navigator.getLastPathComputeTick(),
+            navigator
         );
 
         for (var player : players) {
@@ -154,8 +156,12 @@ public final class PathDebugUtil {
         int pathAgeTicks,
         int ticksOnCurrentNode,
         long lastPathComputeNanos,
-        int lastPathComputeTick
+        int lastPathComputeTick,
+        PathNavigator navigator
     ) {
+        var currentTerrain = navigator.getCurrentTerrain();
+        var targetPos = navigator.getTargetPos();
+        var blockToBreak = navigator.getBlockToBreak();
         return new S2CPathfindingNavDebugPayload(
             mob.getId(),
             mob.getName().getString(),
@@ -187,7 +193,21 @@ public final class PathDebugUtil {
             move.resolvedSpeed(),
             surfaceBitmap,
             lastPathComputeNanos,
-            lastPathComputeTick
+            lastPathComputeTick,
+            navigator.isPathPending(),
+            currentTerrain != null ? currentTerrain.ordinal() : -1,
+            targetPos != null,
+            targetPos != null ? targetPos.getX() : 0,
+            targetPos != null ? targetPos.getY() : 0,
+            targetPos != null ? targetPos.getZ() : 0,
+            blockToBreak != null,
+            blockToBreak != null ? blockToBreak.getX() : 0,
+            blockToBreak != null ? blockToBreak.getY() : 0,
+            blockToBreak != null ? blockToBreak.getZ() : 0,
+            navigator.getConsecutiveFailures(),
+            navigator.getFailureCooldownRemainingTicks(),
+            navigator.getConfig().getStuckTimeoutInTicks(),
+            navigator.getConfig().getPathRecalculateIntervalInTicks()
         );
     }
 
@@ -286,12 +306,20 @@ public final class PathDebugUtil {
     ) {}
 
     private static DebugNodeEntry toDebugEntry(PathNode node, int pathIndex) {
+        var parent = node.getParent() != null
+            ? new PathDebugBlockPos(node.getParent().getX(), node.getParent().getY(), node.getParent().getZ())
+            : PathDebugBlockPos.NONE;
         return new DebugNodeEntry(
             node.getX(),
             node.getY(),
             node.getZ(),
             node.getTerrainType().ordinal(),
-            pathIndex
+            pathIndex,
+            node.getGCost(),
+            node.getHCost(),
+            node.getCostMalus(),
+            -1,
+            parent
         );
     }
 

@@ -407,6 +407,18 @@ public final class PathNavigator {
         return excludedTerrains;
     }
 
+    public int getConsecutiveFailures() {
+        return consecutiveFailures;
+    }
+
+    public int getFailureCooldownRemainingTicks() {
+        if (consecutiveFailures == 0) {
+            return 0;
+        }
+
+        return Math.max(0, failureCooldownTicks - (tickCount - lastFailureTick));
+    }
+
     public void setDebugCaptureEnabled(boolean debugCaptureEnabled) {
         pathFinder.setDebugCaptureEnabled(debugCaptureEnabled);
     }

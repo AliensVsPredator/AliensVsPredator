@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.blib.mod.common.network.packet.S2CPathfindingNavDebugPayload;
+import com.blib.mod.common.network.packet.S2CPathfindingSearchDebugPayload;
 
 @ApiStatus.Internal
 public final class PathfindingDebugState {
@@ -16,6 +17,8 @@ public final class PathfindingDebugState {
     private static final int TIMING_HISTORY_SIZE = 5;
 
     private @Nullable S2CPathfindingNavDebugPayload latestPayload;
+
+    private @Nullable S2CPathfindingSearchDebugPayload latestSearchPayload;
 
     private final long[] timingHistoryNanos = new long[TIMING_HISTORY_SIZE];
 
@@ -53,6 +56,14 @@ public final class PathfindingDebugState {
         return latestPayload;
     }
 
+    public void updateSearch(S2CPathfindingSearchDebugPayload payload) {
+        latestSearchPayload = payload;
+    }
+
+    public @Nullable S2CPathfindingSearchDebugPayload latestSearchPayload() {
+        return latestSearchPayload;
+    }
+
     public List<Long> timingHistoryNanos() {
         if (timingCount == 0) {
             return List.of();
@@ -68,6 +79,7 @@ public final class PathfindingDebugState {
 
     public void clear() {
         latestPayload = null;
+        latestSearchPayload = null;
         lastEntityId = -1;
         clearTiming();
     }

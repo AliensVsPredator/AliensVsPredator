@@ -9,12 +9,14 @@ import java.util.List;
  * @param corridorKeys   packed section keys forming the hierarchical corridor, empty if no corridor was used
  * @param visitedCount   number of nodes the search visited before completing or exhausting budget
  * @param maxSearchNodes the node budget for this search
+ * @param diagnostics    structured search summary and rejection diagnostics
  */
 public record PathSearchSnapshot(
     List<DebugNodeEntry> nodes,
     List<Long> corridorKeys,
     int visitedCount,
-    int maxSearchNodes
+    int maxSearchNodes,
+    PathSearchDebugData diagnostics
 ) {
 
     public PathSearchSnapshot {

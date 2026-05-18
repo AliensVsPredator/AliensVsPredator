@@ -26,6 +26,8 @@ public final class SegmentedPathPlanner {
 
     private @Nullable BlockPos finalTarget;
 
+    private boolean directRoute;
+
     public SegmentedPathPlanner(BLibPathFinder pathFinder) {
         this.pathFinder = pathFinder;
     }
@@ -40,15 +42,25 @@ public final class SegmentedPathPlanner {
         clear();
         this.finalTarget = target;
 
+        if (start.distManhattan(target) <= SHORT_DISTANCE_THRESHOLD) {
+            return computeDirectSegment(level, start);
+        }
+
         var result = pathFinder.computeCorridor(level, start, target);
 
         if (result == null) {
-            return pathFinder.findPath(level, start, target);
+            return computeDirectSegment(level, start);
         }
 
         this.activeRoute = result;
 
-        return computeSegment(level, start);
+        var path = computeSegment(level, start);
+
+        if (path == null) {
+            clear();
+        }
+
+        return path;
     }
 
     /**
@@ -58,7 +70,7 @@ public final class SegmentedPathPlanner {
      * @return the next path segment, or null if computation failed
      */
     public @Nullable BLibPath computeNextSegment(LevelReader level, BlockPos entityPos) {
-        if (activeRoute == null || finalTarget == null) {
+        if (finalTarget == null || (activeRoute == null && !directRoute)) {
             return null;
         }
 
@@ -70,7 +82,7 @@ public final class SegmentedPathPlanner {
      * to decide if more segments are needed.
      */
     public boolean hasActiveRoute() {
-        return activeRoute != null;
+        return activeRoute != null || directRoute;
     }
 
     /**
@@ -86,13 +98,26 @@ public final class SegmentedPathPlanner {
     public void clear() {
         activeRoute = null;
         finalTarget = null;
+        directRoute = false;
     }
 
     private @Nullable BLibPath computeSegment(LevelReader level, BlockPos from) {
+        if (directRoute) {
+            return computeDirectSegment(level, from);
+        }
+
         var dist = from.distManhattan(finalTarget);
         var useCorridor = dist > SHORT_DISTANCE_THRESHOLD;
         var corridor = useCorridor ? activeRoute.corridor() : null;
 
         return pathFinder.findPathInCorridor(level, from, finalTarget, corridor);
+    }
+
+    private @Nullable BLibPath computeDirectSegment(LevelReader level, BlockPos from) {
+        var path = pathFinder.findPathDirect(level, from, finalTarget);
+
+        directRoute = path != null && !path.isReached();
+
+        return path;
     }
 }

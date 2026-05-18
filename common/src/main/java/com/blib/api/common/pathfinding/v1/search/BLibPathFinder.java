@@ -17,7 +17,14 @@ import java.util.concurrent.Executors;
 
 import com.blib.api.common.pathfinding.v1.cache.TerrainClassificationCache;
 import com.blib.api.common.pathfinding.v1.debug.DebugNodeEntry;
+import com.blib.api.common.pathfinding.v1.debug.PathDebugBlockPos;
+import com.blib.api.common.pathfinding.v1.debug.PathRejectionReason;
+import com.blib.api.common.pathfinding.v1.debug.PathSearchDebugData;
+import com.blib.api.common.pathfinding.v1.debug.PathSearchDebugRecorder;
+import com.blib.api.common.pathfinding.v1.debug.PathSearchMode;
+import com.blib.api.common.pathfinding.v1.debug.PathSearchOutcome;
 import com.blib.api.common.pathfinding.v1.debug.PathSearchSnapshot;
+import com.blib.api.common.pathfinding.v1.debug.PathSearchTermination;
 import com.blib.api.common.pathfinding.v1.evaluator.TerrainEvaluator;
 import com.blib.api.common.pathfinding.v1.evaluator.UnifiedTerrainEvaluator;
 import com.blib.api.common.pathfinding.v1.node.PathNode;
@@ -104,26 +111,20 @@ public final class BLibPathFinder {
 
         try {
             Set<Long> corridor = null;
+            var mode = PathSearchMode.DIRECT;
 
-            if (corridorFinder != null) {
+            if (shouldUseCorridor(startPos, targetPos)) {
                 var result = corridorFinder.findCorridor(level, startPos, targetPos);
 
-                // Section search couldn't reach the goal — target is unreachable.
-                if (result == null) {
-                    lastSearchSnapshot = null;
-                    return null;
-                }
-
-                corridor = result.corridor();
-
-                // For short distances, skip the corridor constraint (let block search expand freely)
-                // but still benefit from the reachability check above.
-                if (startPos.distManhattan(targetPos) <= CORRIDOR_DISTANCE_THRESHOLD) {
-                    corridor = null;
+                if (result != null) {
+                    corridor = result.corridor();
+                    mode = PathSearchMode.CORRIDOR;
+                } else {
+                    mode = PathSearchMode.DIRECT_FALLBACK;
                 }
             }
 
-            return searchBlocks(startPos, targetPos, corridor);
+            return searchBlocks(startPos, targetPos, corridor, mode);
         } finally {
             evaluator.cleanup();
         }
@@ -174,29 +175,27 @@ public final class BLibPathFinder {
         // --- Main thread: reachability check + corridor ---
 
         Set<Long> corridor = null;
+        var mode = PathSearchMode.DIRECT;
 
-        if (corridorFinder != null) {
+        if (shouldUseCorridor(startPos, targetPos)) {
             var result = corridorFinder.findCorridor(level, startPos, targetPos);
 
-            if (result == null) {
-                unifiedEvaluator.cleanup();
-                return CompletableFuture.completedFuture(null);
-            }
-
-            corridor = result.corridor();
-
-            if (startPos.distManhattan(targetPos) <= CORRIDOR_DISTANCE_THRESHOLD) {
-                corridor = null;
+            if (result != null) {
+                corridor = result.corridor();
+                mode = PathSearchMode.CORRIDOR;
+            } else {
+                mode = PathSearchMode.DIRECT_FALLBACK;
             }
         }
 
         // --- Background thread: run the search ---
 
         var capturedCorridor = corridor;
+        var capturedMode = mode;
 
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return searchBlocks(startPos, targetPos, capturedCorridor);
+                return searchBlocks(startPos, targetPos, capturedCorridor, capturedMode);
             } finally {
                 unifiedEvaluator.cleanup();
             }
@@ -224,6 +223,23 @@ public final class BLibPathFinder {
     }
 
     /**
+     * Runs block-level A* directly without a section corridor gate. Use this as a fallback when the section-level route is
+     * unavailable or when nearby targets need exact block-level digging/clearance decisions.
+     */
+    public @Nullable BLibPath findPathDirect(LevelReader level, BlockPos startPos, BlockPos targetPos) {
+        debugEnabled = debugCaptureEnabled;
+
+        evaluator.prepare(level);
+        applyExcludedTerrains();
+
+        try {
+            return searchBlocks(startPos, targetPos, null, PathSearchMode.DIRECT);
+        } finally {
+            evaluator.cleanup();
+        }
+    }
+
+    /**
      * Runs a block-level A* search using a pre-computed corridor constraint. Use this with corridors obtained from
      * {@link #computeCorridor} for segmented long-distance pathfinding.
      */
@@ -239,7 +255,7 @@ public final class BLibPathFinder {
         applyExcludedTerrains();
 
         try {
-            return searchBlocks(startPos, targetPos, corridor);
+            return searchBlocks(startPos, targetPos, corridor, corridor != null ? PathSearchMode.CORRIDOR : PathSearchMode.DIRECT);
         } finally {
             evaluator.cleanup();
         }
@@ -251,7 +267,39 @@ public final class BLibPathFinder {
         }
     }
 
-    private @Nullable BLibPath searchBlocks(BlockPos startPos, BlockPos targetPos, @Nullable Set<Long> corridor) {
+    private boolean shouldUseCorridor(BlockPos startPos, BlockPos targetPos) {
+        return corridorFinder != null && startPos.distManhattan(targetPos) > CORRIDOR_DISTANCE_THRESHOLD;
+    }
+
+    private @Nullable BLibPath searchBlocks(
+        BlockPos startPos,
+        BlockPos targetPos,
+        @Nullable Set<Long> corridor,
+        PathSearchMode mode
+    ) {
+        var recorder = debugEnabled ? new PathSearchDebugRecorder() : null;
+        setEvaluatorDebugRecorder(recorder);
+
+        try {
+            return searchBlocksWithDiagnostics(startPos, targetPos, corridor, mode, recorder);
+        } finally {
+            setEvaluatorDebugRecorder(null);
+        }
+    }
+
+    private void setEvaluatorDebugRecorder(@Nullable PathSearchDebugRecorder recorder) {
+        if (evaluator instanceof UnifiedTerrainEvaluator unified) {
+            unified.setDebugRecorder(recorder);
+        }
+    }
+
+    private @Nullable BLibPath searchBlocksWithDiagnostics(
+        BlockPos startPos,
+        BlockPos targetPos,
+        @Nullable Set<Long> corridor,
+        PathSearchMode mode,
+        @Nullable PathSearchDebugRecorder recorder
+    ) {
         var startNode = evaluator.getStartNode(startPos);
         var goalNode = evaluator.getGoalNode(targetPos);
 
@@ -269,6 +317,7 @@ public final class BLibPathFinder {
             var current = openSet.poll();
 
             if (current.isClosed()) {
+                reject(recorder, PathRejectionReason.ALREADY_CLOSED, current);
                 continue;
             }
 
@@ -282,7 +331,22 @@ public final class BLibPathFinder {
 
             if (current.equals(goalNode)) {
                 var path = buildPath(current, true);
-                lastSearchSnapshot = debugEnabled ? buildSnapshot(closedNodes, path, corridor, visitedCount) : null;
+                lastSearchSnapshot = debugEnabled
+                    ? buildSnapshot(
+                        closedNodes,
+                        path,
+                        corridor,
+                        visitedCount,
+                        startPos,
+                        targetPos,
+                        startNode,
+                        goalNode,
+                        current,
+                        mode,
+                        PathSearchTermination.GOAL_REACHED,
+                        recorder
+                    )
+                    : null;
 
                 return path;
             }
@@ -297,10 +361,12 @@ public final class BLibPathFinder {
                 var neighbor = neighborBuffer[i];
 
                 if (neighbor.isClosed()) {
+                    reject(recorder, PathRejectionReason.ALREADY_CLOSED, neighbor);
                     continue;
                 }
 
                 if (corridor != null && !SectionCorridorFinder.isInCorridor(neighbor, corridor)) {
+                    reject(recorder, PathRejectionReason.OUTSIDE_CORRIDOR, neighbor);
                     continue;
                 }
 
@@ -309,6 +375,7 @@ public final class BLibPathFinder {
                 var tentativeG = current.getGCost() + edgeCost;
 
                 if (neighbor.getGCost() > 0 && tentativeG >= neighbor.getGCost() - MIN_IMPROVEMENT) {
+                    reject(recorder, PathRejectionReason.NOT_BETTER, neighbor);
                     continue;
                 }
 
@@ -325,7 +392,29 @@ public final class BLibPathFinder {
             path = buildPath(bestNode, false);
         }
 
-        lastSearchSnapshot = debugEnabled ? buildSnapshot(closedNodes, path, corridor, visitedCount) : null;
+        var termination = visitedCount >= config.maxSearchNodes()
+            ? PathSearchTermination.BUDGET_EXHAUSTED
+            : PathSearchTermination.OPEN_SET_EXHAUSTED;
+        if (path == null && bestNode == startNode) {
+            termination = PathSearchTermination.START_ONLY;
+        }
+
+        lastSearchSnapshot = debugEnabled
+            ? buildSnapshot(
+                closedNodes,
+                path,
+                corridor,
+                visitedCount,
+                startPos,
+                targetPos,
+                startNode,
+                goalNode,
+                bestNode,
+                mode,
+                termination,
+                recorder
+            )
+            : null;
 
         return path;
     }
@@ -334,7 +423,15 @@ public final class BLibPathFinder {
         List<PathNode> closedNodes,
         @Nullable BLibPath path,
         @Nullable Set<Long> corridor,
-        int visitedCount
+        int visitedCount,
+        BlockPos startPos,
+        BlockPos targetPos,
+        PathNode startNode,
+        PathNode goalNode,
+        PathNode bestNode,
+        PathSearchMode mode,
+        PathSearchTermination termination,
+        @Nullable PathSearchDebugRecorder recorder
     ) {
         var pathIndexByNode = new HashMap<PathNode, Integer>();
 
@@ -347,16 +444,9 @@ public final class BLibPathFinder {
         var entries = new ArrayList<DebugNodeEntry>(closedNodes.size());
         var closedNodeSet = new HashSet<>(closedNodes);
 
-        for (var node : closedNodes) {
-            entries.add(
-                new DebugNodeEntry(
-                    node.getX(),
-                    node.getY(),
-                    node.getZ(),
-                    node.getTerrainType().ordinal(),
-                    pathIndexByNode.getOrDefault(node, -1)
-                )
-            );
+        for (var i = 0; i < closedNodes.size(); i++) {
+            var node = closedNodes.get(i);
+            entries.add(toDebugEntry(node, pathIndexByNode.getOrDefault(node, -1), i));
         }
 
         if (path != null) {
@@ -364,25 +454,60 @@ public final class BLibPathFinder {
                 var node = path.getNode(i);
 
                 if (!closedNodeSet.contains(node)) {
-                    entries.add(
-                        new DebugNodeEntry(
-                            node.getX(),
-                            node.getY(),
-                            node.getZ(),
-                            node.getTerrainType().ordinal(),
-                            i
-                        )
-                    );
+                    entries.add(toDebugEntry(node, i, -1));
                 }
             }
         }
+
+        var reached = path != null && path.isReached();
+        var diagnostics = new PathSearchDebugData(
+            mode,
+            path == null ? PathSearchOutcome.FAILED : reached ? PathSearchOutcome.COMPLETE : PathSearchOutcome.PARTIAL,
+            termination,
+            PathDebugBlockPos.of(startPos),
+            PathDebugBlockPos.of(targetPos),
+            new PathDebugBlockPos(goalNode.getX(), goalNode.getY(), goalNode.getZ()),
+            new PathDebugBlockPos(bestNode.getX(), bestNode.getY(), bestNode.getZ()),
+            visitedCount,
+            config.maxSearchNodes(),
+            path != null ? path.getNodeCount() : 0,
+            reached,
+            corridor != null,
+            corridor != null ? corridor.size() : 0,
+            recorder != null ? recorder.rejectionSummary() : List.of()
+        );
 
         return new PathSearchSnapshot(
             entries,
             corridor != null ? List.copyOf(corridor) : List.<Long>of(),
             visitedCount,
-            config.maxSearchNodes()
+            config.maxSearchNodes(),
+            diagnostics
         );
+    }
+
+    private static DebugNodeEntry toDebugEntry(PathNode node, int pathIndex, int expansionOrder) {
+        var parent = node.getParent() != null
+            ? new PathDebugBlockPos(node.getParent().getX(), node.getParent().getY(), node.getParent().getZ())
+            : PathDebugBlockPos.NONE;
+        return new DebugNodeEntry(
+            node.getX(),
+            node.getY(),
+            node.getZ(),
+            node.getTerrainType().ordinal(),
+            pathIndex,
+            node.getGCost(),
+            node.getHCost(),
+            node.getCostMalus(),
+            expansionOrder,
+            parent
+        );
+    }
+
+    private static void reject(@Nullable PathSearchDebugRecorder recorder, PathRejectionReason reason, PathNode node) {
+        if (recorder != null) {
+            recorder.reject(reason, node.getX(), node.getY(), node.getZ());
+        }
     }
 
     private float heuristic(PathNode from, PathNode to) {

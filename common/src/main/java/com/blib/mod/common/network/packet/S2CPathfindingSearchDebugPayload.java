@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import com.blib.api.common.pathfinding.v1.debug.DebugNodeEntry;
+import com.blib.api.common.pathfinding.v1.debug.PathSearchDebugData;
 import com.blib.mod.BLib;
 
 /**
@@ -20,7 +21,8 @@ public record S2CPathfindingSearchDebugPayload(
     List<DebugNodeEntry> nodes,
     List<Long> corridorKeys,
     int visitedCount,
-    int maxSearchNodes
+    int maxSearchNodes,
+    PathSearchDebugData diagnostics
 ) implements CustomPacketPayload {
 
     public static final ResourceLocation PAYLOAD_ID = BLib.MOD.resources().createLocation("pathfinding_search_debug");
@@ -38,6 +40,8 @@ public record S2CPathfindingSearchDebugPayload(
         S2CPathfindingSearchDebugPayload::visitedCount,
         StreamCodecs.INT,
         S2CPathfindingSearchDebugPayload::maxSearchNodes,
+        PathSearchDebugData.CODEC,
+        S2CPathfindingSearchDebugPayload::diagnostics,
         S2CPathfindingSearchDebugPayload::new
     );
 

@@ -49,7 +49,21 @@ public record S2CPathfindingNavDebugPayload(
     float resolvedSpeed,
     int surfaceSolidBitmap,
     long lastPathComputeNanos,
-    int lastPathComputeTick
+    int lastPathComputeTick,
+    boolean pathPending,
+    int currentTerrainType,
+    boolean hasTarget,
+    int targetX,
+    int targetY,
+    int targetZ,
+    boolean hasBlockToBreak,
+    int blockToBreakX,
+    int blockToBreakY,
+    int blockToBreakZ,
+    int consecutiveFailures,
+    int failureCooldownRemainingTicks,
+    int stuckTimeoutTicks,
+    int pathRecalculateIntervalTicks
 ) implements CustomPacketPayload {
 
     public static final ResourceLocation PAYLOAD_ID = BLib.MOD.resources().createLocation("pathfinding_nav_debug");
@@ -97,6 +111,20 @@ public record S2CPathfindingNavDebugPayload(
                     StreamCodecs.FLOAT.decode(schema, buf),
                     StreamCodecs.INT.decode(schema, buf),
                     StreamCodecs.LONG.decode(schema, buf),
+                    StreamCodecs.INT.decode(schema, buf),
+                    StreamCodecs.BOOLEAN.decode(schema, buf),
+                    StreamCodecs.INT.decode(schema, buf),
+                    StreamCodecs.BOOLEAN.decode(schema, buf),
+                    StreamCodecs.INT.decode(schema, buf),
+                    StreamCodecs.INT.decode(schema, buf),
+                    StreamCodecs.INT.decode(schema, buf),
+                    StreamCodecs.BOOLEAN.decode(schema, buf),
+                    StreamCodecs.INT.decode(schema, buf),
+                    StreamCodecs.INT.decode(schema, buf),
+                    StreamCodecs.INT.decode(schema, buf),
+                    StreamCodecs.INT.decode(schema, buf),
+                    StreamCodecs.INT.decode(schema, buf),
+                    StreamCodecs.INT.decode(schema, buf),
                     StreamCodecs.INT.decode(schema, buf)
                 );
             }
@@ -140,6 +168,20 @@ public record S2CPathfindingNavDebugPayload(
                 StreamCodecs.INT.encode(schema, buf, value.surfaceSolidBitmap);
                 StreamCodecs.LONG.encode(schema, buf, value.lastPathComputeNanos);
                 StreamCodecs.INT.encode(schema, buf, value.lastPathComputeTick);
+                StreamCodecs.BOOLEAN.encode(schema, buf, value.pathPending);
+                StreamCodecs.INT.encode(schema, buf, value.currentTerrainType);
+                StreamCodecs.BOOLEAN.encode(schema, buf, value.hasTarget);
+                StreamCodecs.INT.encode(schema, buf, value.targetX);
+                StreamCodecs.INT.encode(schema, buf, value.targetY);
+                StreamCodecs.INT.encode(schema, buf, value.targetZ);
+                StreamCodecs.BOOLEAN.encode(schema, buf, value.hasBlockToBreak);
+                StreamCodecs.INT.encode(schema, buf, value.blockToBreakX);
+                StreamCodecs.INT.encode(schema, buf, value.blockToBreakY);
+                StreamCodecs.INT.encode(schema, buf, value.blockToBreakZ);
+                StreamCodecs.INT.encode(schema, buf, value.consecutiveFailures);
+                StreamCodecs.INT.encode(schema, buf, value.failureCooldownRemainingTicks);
+                StreamCodecs.INT.encode(schema, buf, value.stuckTimeoutTicks);
+                StreamCodecs.INT.encode(schema, buf, value.pathRecalculateIntervalTicks);
             }
         }
     );

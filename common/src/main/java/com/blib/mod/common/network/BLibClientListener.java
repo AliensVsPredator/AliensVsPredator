@@ -85,6 +85,7 @@ public final class BLibClientListener {
     }
 
     public static void handlePathfindingSearchDebug(S2CPathfindingSearchDebugPayload payload, Player player) {
+        PathfindingDebugState.INSTANCE.updateSearch(payload);
         PathfindingSearchDebugRenderer.INSTANCE.update(payload);
     }
 
