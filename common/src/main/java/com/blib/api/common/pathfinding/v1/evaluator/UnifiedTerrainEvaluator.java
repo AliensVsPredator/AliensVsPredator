@@ -14,6 +14,7 @@ import java.util.Set;
 import com.blib.api.common.pathfinding.v1.debug.PathRejectionReason;
 import com.blib.api.common.pathfinding.v1.debug.PathSearchDebugRecorder;
 import com.blib.api.common.pathfinding.v1.cache.TerrainClassificationCache;
+import com.blib.api.common.pathfinding.v1.node.PathBreakOrder;
 import com.blib.api.common.pathfinding.v1.node.PathBreakRequirement;
 import com.blib.api.common.pathfinding.v1.node.PathNode;
 import com.blib.api.common.pathfinding.v1.node.PathNodePool;
@@ -255,11 +256,12 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     }
 
     private int addVerticalBreakableNeighbors(PathNode node, PathNode[] neighbors, int count) {
-        mutablePos.set(node.getX(), node.getY() - 1, node.getZ());
-        var below = tryCreateBreakableNode(node, mutablePos.immutable());
+        for (int drop = 1; drop <= config.getMaxFallDistance() && count < neighbors.length; drop++) {
+            var below = tryCreateDownwardBreakableNode(node, drop);
 
-        if (below != null) {
-            neighbors[count++] = below;
+            if (below != null) {
+                neighbors[count++] = below;
+            }
         }
 
         return count;
@@ -601,6 +603,14 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     }
 
     private @Nullable PathNode tryCreateBreakableNode(@Nullable PathNode from, BlockPos pos) {
+        return tryCreateBreakableNode(from, pos, PathBreakOrder.BOTTOM_UP);
+    }
+
+    private @Nullable PathNode tryCreateBreakableNode(
+        @Nullable PathNode from,
+        BlockPos pos,
+        PathBreakOrder breakOrder
+    ) {
         var breakabilityEvaluator = config.getBreakabilityEvaluator();
 
         if (breakabilityEvaluator == null || !snapshotCosts.containsKey(TerrainType.BREAKABLE)) {
@@ -646,7 +656,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                 }
 
                 if (hasBreakableColumn) {
-                    breakRequirements.add(new PathBreakRequirement(bx, pos.getY(), bz, height));
+                    breakRequirements.add(new PathBreakRequirement(bx, pos.getY(), bz, height, breakOrder));
                 }
             }
         }
@@ -657,6 +667,78 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
         var node = nodePool.getOrCreate(pos.getX(), pos.getY(), pos.getZ(), TerrainType.BREAKABLE);
         setStableGround(node, pos.getX(), pos.getY(), pos.getZ());
+
+        return prepareNode(
+            node,
+            totalCost,
+            List.copyOf(breakRequirements)
+        );
+    }
+
+    private @Nullable PathNode tryCreateDownwardBreakableNode(PathNode from, int drop) {
+        var breakabilityEvaluator = config.getBreakabilityEvaluator();
+
+        if (breakabilityEvaluator == null || !snapshotCosts.containsKey(TerrainType.BREAKABLE)) {
+            reject(PathRejectionReason.BREAKING_DISABLED, from.getX(), from.getY() - drop, from.getZ());
+            return null;
+        }
+
+        var targetY = from.getY() - drop;
+
+        if (!hasStableSupport(from.getX(), targetY, from.getZ(), from)) {
+            reject(PathRejectionReason.UNSTABLE_SUPPORT, from.getX(), targetY, from.getZ());
+            return null;
+        }
+
+        var totalCost = 0.0f;
+        var hasBreakableBlock = false;
+        var breakRequirements = new ArrayList<PathBreakRequirement>();
+
+        for (int dx = 0; dx < footprintSize(); dx++) {
+            for (int dz = 0; dz < footprintSize(); dz++) {
+                var hasBreakableColumn = false;
+                var bx = from.getX() + dx;
+                var bz = from.getZ() + dz;
+
+                for (int dy = 0; dy < drop; dy++) {
+                    var by = targetY + dy;
+                    var checkState = blockAccessor.getBlockState(bx, by, bz);
+
+                    if (!blockAccessor.isSolid(checkState)) {
+                        continue;
+                    }
+
+                    clearancePos.set(bx, by, bz);
+                    var result = breakabilityEvaluator.evaluate(level, clearancePos, checkState);
+
+                    if (!result.canBreak()) {
+                        reject(PathRejectionReason.UNBREAKABLE_BLOCK, clearancePos);
+                        return null;
+                    }
+
+                    totalCost += result.cost();
+                    hasBreakableBlock = true;
+                    hasBreakableColumn = true;
+                }
+
+                if (hasBreakableColumn) {
+                    breakRequirements.add(new PathBreakRequirement(
+                        bx,
+                        targetY,
+                        bz,
+                        drop,
+                        PathBreakOrder.TOP_DOWN
+                    ));
+                }
+            }
+        }
+
+        if (!hasBreakableBlock) {
+            return null;
+        }
+
+        var node = nodePool.getOrCreate(from.getX(), targetY, from.getZ(), TerrainType.BREAKABLE);
+        setStableGround(node, from.getX(), targetY, from.getZ());
 
         return prepareNode(
             node,
