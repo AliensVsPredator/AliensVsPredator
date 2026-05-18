@@ -777,14 +777,20 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                     clearancePos.set(bx, by, bz);
 
                     if (breakabilityEvaluator == null || !snapshotCosts.containsKey(TerrainType.BREAKABLE)) {
-                        reject(PathRejectionReason.BREAKING_DISABLED, clearancePos);
+                        reject(
+                            blockedTraversalReason(from, toX, toZ, bx, bz, size, PathRejectionReason.BREAKING_DISABLED),
+                            clearancePos
+                        );
                         return TraversalClearance.BLOCKED;
                     }
 
                     var result = breakabilityEvaluator.evaluate(level, clearancePos, state);
 
                     if (!result.canBreak()) {
-                        reject(PathRejectionReason.UNBREAKABLE_BLOCK, clearancePos);
+                        reject(
+                            blockedTraversalReason(from, toX, toZ, bx, bz, size, PathRejectionReason.UNBREAKABLE_BLOCK),
+                            clearancePos
+                        );
                         return TraversalClearance.BLOCKED;
                     }
 
@@ -825,6 +831,34 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         return x >= bodyX && x < bodyX + size
             && y >= bodyY && y < bodyY + height
             && z >= bodyZ && z < bodyZ + size;
+    }
+
+    private PathRejectionReason blockedTraversalReason(
+        PathNode from,
+        int toX,
+        int toZ,
+        int x,
+        int z,
+        int size,
+        PathRejectionReason fallback
+    ) {
+        return isDiagonalCornerClearanceCell(from, toX, toZ, x, z, size)
+            ? PathRejectionReason.DIAGONAL_BLOCKED
+            : fallback;
+    }
+
+    private boolean isDiagonalCornerClearanceCell(PathNode from, int toX, int toZ, int x, int z, int size) {
+        if (Math.abs(toX - from.getX()) != 1 || Math.abs(toZ - from.getZ()) != 1) {
+            return false;
+        }
+
+        return !isInsideFootprint(from.getX(), from.getZ(), x, z, size)
+            && !isInsideFootprint(toX, toZ, x, z, size);
+    }
+
+    private boolean isInsideFootprint(int footprintX, int footprintZ, int x, int z, int size) {
+        return x >= footprintX && x < footprintX + size
+            && z >= footprintZ && z < footprintZ + size;
     }
 
     private boolean isStableDestinationSupport(
