@@ -22,7 +22,8 @@ public enum PathfindingFeature {
     FOOTPRINT_CLEARANCE(1 << 14, "Footprint Clearance"),
     ANY_ANGLE_SMOOTHING(1 << 15, "Any-Angle Smoothing"),
     STEPPED_FOOTPRINT_SUPPORT(1 << 16, "Stepped Footprint"),
-    DROP_DOWN_OPENINGS(1 << 17, "Drop Openings");
+    DROP_DOWN_OPENINGS(1 << 17, "Drop Openings"),
+    ENTITY_HITBOX_CLEARANCE(1 << 18, "Hitbox Clearance");
 
     private final int mask;
 

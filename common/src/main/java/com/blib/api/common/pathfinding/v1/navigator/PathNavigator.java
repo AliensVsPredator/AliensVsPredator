@@ -70,6 +70,10 @@ public final class PathNavigator {
 
     private int lastObservedNodeIndex = -1;
 
+    private int dropEntryNodeIndex = -1;
+
+    private boolean dropEntryReached;
+
     private int tickCount;
 
     private @Nullable CompletableFuture<@Nullable BLibPath> pendingPath;
@@ -94,6 +98,8 @@ public final class PathNavigator {
     private static final double WIDE_FOOTPRINT_REACH_XZ = 0.45;
 
     private static final double WAYPOINT_REACH_Y = 0.45;
+
+    private static final double DROP_ENTRY_MIN_REACH_XZ = 0.75;
 
     private static final double SHAPE_WAYPOINT_SAMPLE_STEP = 0.05;
 
@@ -555,7 +561,7 @@ public final class PathNavigator {
             return null;
         }
 
-        return nodeTargetCenter(currentPath.getCurrentNode(), lastEntityWidth, lastEntityHeight);
+        return currentNodeTargetCenter(currentPath.getCurrentNode(), lastEntityWidth, lastEntityHeight);
     }
 
     public boolean isNavigating() {
@@ -748,19 +754,29 @@ public final class PathNavigator {
 
         while (!currentPath.isDone()) {
             var waypoint = currentPath.getCurrentNode();
-            var waypointCenter = nodeTargetCenter(waypoint, entityWidth, entityHeight);
+            var waypointCenter = currentNodeTargetCenter(waypoint, entityWidth, entityHeight);
+            var awaitingDropEntry = isCurrentDropEntryWaypointPending(waypoint);
+            var activeReachXZ = awaitingDropEntry ? dropEntryReachXZ(entityWidth) : reachXZ;
 
             var dx = Math.abs(waypointCenter.x - entityX);
             var dy = Math.abs(waypointCenter.y - entityY);
             var dz = Math.abs(waypointCenter.z - entityZ);
 
-            var withinVerticalReach = dy <= reachY;
-            if (!withinVerticalReach && isDescendingSteppedFootprintWaypointWithinReach(currentPath.getCurrentNodeIndex(), entityY, reachY)) {
+            var withinVerticalReach = awaitingDropEntry ? entityY <= waypointCenter.y + reachY : dy <= reachY;
+            if (
+                !awaitingDropEntry
+                    && !withinVerticalReach
+                    && isDescendingSteppedFootprintWaypointWithinReach(currentPath.getCurrentNodeIndex(), entityY, reachY)
+            ) {
                 withinVerticalReach = true;
                 markFeatureUsed(PathfindingFeature.STEPPED_FOOTPRINT_SUPPORT);
             }
 
-            var withinReach = dx <= reachXZ && withinVerticalReach && dz <= reachXZ;
+            var withinReach = dx <= activeReachXZ && withinVerticalReach && dz <= activeReachXZ;
+            var enteredDropShaft = awaitingDropEntry
+                && entityY < waypointCenter.y - reachY
+                && dx <= entityWidth
+                && dz <= entityWidth;
             var skippedAhead = !withinReach
                 && features.pathSkipAhead()
                 && shouldSkipToNextNode(entityX, entityY, entityZ, entityWidth, entityHeight);
@@ -769,10 +785,17 @@ public final class PathNavigator {
                 markFeatureUsed(PathfindingFeature.PATH_SKIP_AHEAD);
             }
 
-            var shouldAdvance = withinReach || skippedAhead;
+            var shouldAdvance = withinReach || enteredDropShaft || skippedAhead;
 
             if (!shouldAdvance) {
                 break;
+            }
+
+            if (awaitingDropEntry) {
+                dropEntryReached = true;
+                markFeatureUsed(PathfindingFeature.DROP_DOWN_OPENINGS);
+                markProgress();
+                continue;
             }
 
             var previousTerrain = currentTerrain;
@@ -867,10 +890,14 @@ public final class PathNavigator {
         var y = from.getY();
         var terrain = from.getTerrainType();
 
+        if (from.hasDropEntryWaypoint()) {
+            return false;
+        }
+
         for (var index = fromIndex + 1; index <= toIndex; index++) {
             var node = currentPath.getNode(index);
 
-            if (node.getY() != y || node.getTerrainType() != terrain) {
+            if (node.hasDropEntryWaypoint() || node.getY() != y || node.getTerrainType() != terrain) {
                 return false;
             }
         }
@@ -925,6 +952,10 @@ public final class PathNavigator {
         }
 
         return reach;
+    }
+
+    private double dropEntryReachXZ(float entityWidth) {
+        return Math.max(DROP_ENTRY_MIN_REACH_XZ, entityWidth / 2.0d);
     }
 
     private double waypointReachY(float entityHeight) {
@@ -985,6 +1016,10 @@ public final class PathNavigator {
 
         var currentNode = currentPath.getCurrentNode();
         var nextNode = currentPath.getNode(nextIndex);
+
+        if (currentNode.hasDropEntryWaypoint() || nextNode.hasDropEntryWaypoint()) {
+            return false;
+        }
 
         if (currentNode.getY() != nextNode.getY() || isCornerWaypoint(currentPath.getCurrentNodeIndex(), nextIndex)) {
             return false;
@@ -1071,7 +1106,7 @@ public final class PathNavigator {
         float entityHeight
     ) {
         var currentIndex = currentPath.getCurrentNodeIndex();
-        var currentCenter = nodeTargetCenter(currentPath.getCurrentNode(), entityWidth, entityHeight);
+        var currentCenter = currentNodeTargetCenter(currentPath.getCurrentNode(), entityWidth, entityHeight);
         var distanceToCurrent = distanceSquared(entityX, entityY, entityZ, currentCenter);
         var distanceToNext = Double.MAX_VALUE;
 
@@ -1224,6 +1259,8 @@ public final class PathNavigator {
         lastDistanceToCurrentNode = Double.MAX_VALUE;
         lastDistanceToNextNode = Double.MAX_VALUE;
         lastObservedNodeIndex = -1;
+        dropEntryNodeIndex = -1;
+        dropEntryReached = false;
     }
 
     private void fireTransitionHandlers(@Nullable TerrainType from, TerrainType to) {
@@ -1276,6 +1313,40 @@ public final class PathNavigator {
         }
 
         return adjusted != null ? adjusted : center;
+    }
+
+    private Vec3 currentNodeTargetCenter(PathNode node, float entityWidth, float entityHeight) {
+        syncDropEntryTracking(node);
+
+        if (isCurrentDropEntryWaypointPending(node)) {
+            markFeatureUsed(PathfindingFeature.DROP_DOWN_OPENINGS);
+            return new Vec3(node.getDropEntryX(), node.getDropEntryY(), node.getDropEntryZ());
+        }
+
+        return nodeTargetCenter(node, entityWidth, entityHeight);
+    }
+
+    private void syncDropEntryTracking(PathNode node) {
+        if (currentPath == null || currentPath.isDone() || !node.hasDropEntryWaypoint()) {
+            dropEntryNodeIndex = -1;
+            dropEntryReached = false;
+            return;
+        }
+
+        var nodeIndex = currentPath.getCurrentNodeIndex();
+
+        if (dropEntryNodeIndex != nodeIndex) {
+            dropEntryNodeIndex = nodeIndex;
+            dropEntryReached = false;
+        }
+    }
+
+    private boolean isCurrentDropEntryWaypointPending(PathNode node) {
+        return currentPath != null
+            && !currentPath.isDone()
+            && node.hasDropEntryWaypoint()
+            && currentPath.getCurrentNodeIndex() == dropEntryNodeIndex
+            && !dropEntryReached;
     }
 
     private @Nullable Vec3 shapeAwareNodeCenter(PathNode node, float entityWidth, float entityHeight) {

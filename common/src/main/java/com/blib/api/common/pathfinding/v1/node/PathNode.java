@@ -28,6 +28,22 @@ public final class PathNode implements Comparable<PathNode> {
 
     private PathNode parent;
 
+    private boolean hasDropEntryWaypoint;
+
+    private double dropEntryX;
+
+    private double dropEntryY;
+
+    private double dropEntryZ;
+
+    private boolean hasPendingDropEntryWaypoint;
+
+    private double pendingDropEntryX;
+
+    private double pendingDropEntryY;
+
+    private double pendingDropEntryZ;
+
     private boolean closed;
 
     private boolean hasStableGround;
@@ -115,10 +131,22 @@ public final class PathNode implements Comparable<PathNode> {
 
     public void setPendingTraversal(float costMalus) {
         this.pendingCostMalus = costMalus;
+        this.hasPendingDropEntryWaypoint = false;
     }
 
     public void commitPendingTraversal() {
         this.costMalus = pendingCostMalus;
+
+        if (hasPendingDropEntryWaypoint) {
+            this.hasDropEntryWaypoint = true;
+            this.dropEntryX = pendingDropEntryX;
+            this.dropEntryY = pendingDropEntryY;
+            this.dropEntryZ = pendingDropEntryZ;
+        } else {
+            this.hasDropEntryWaypoint = false;
+        }
+
+        this.hasPendingDropEntryWaypoint = false;
     }
 
     public PathNode getParent() {
@@ -127,6 +155,29 @@ public final class PathNode implements Comparable<PathNode> {
 
     public void setParent(PathNode parent) {
         this.parent = parent;
+    }
+
+    public boolean hasDropEntryWaypoint() {
+        return hasDropEntryWaypoint;
+    }
+
+    public double getDropEntryX() {
+        return dropEntryX;
+    }
+
+    public double getDropEntryY() {
+        return dropEntryY;
+    }
+
+    public double getDropEntryZ() {
+        return dropEntryZ;
+    }
+
+    public void setPendingDropEntryWaypoint(double x, double y, double z) {
+        this.hasPendingDropEntryWaypoint = true;
+        this.pendingDropEntryX = x;
+        this.pendingDropEntryY = y;
+        this.pendingDropEntryZ = z;
     }
 
     public boolean isClosed() {
@@ -202,6 +253,8 @@ public final class PathNode implements Comparable<PathNode> {
         this.costMalus = 0;
         this.pendingCostMalus = 0;
         this.parent = null;
+        this.hasDropEntryWaypoint = false;
+        this.hasPendingDropEntryWaypoint = false;
         this.closed = false;
         this.hasStableGround = false;
         this.stableGroundXSize = 0;

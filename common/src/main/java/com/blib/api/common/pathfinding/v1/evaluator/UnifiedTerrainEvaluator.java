@@ -32,6 +32,8 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     private static final double STEPPED_TRANSITION_SAMPLE_INTERVAL = 0.25;
 
+    private static final double DROP_ENTRY_APPROACH_SAMPLE_INTERVAL = 0.25;
+
     private static final double COLLISION_EPSILON = 1.0E-7;
 
     private static final int[][] CARDINAL_OFFSETS = {
@@ -156,6 +158,10 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             count = appendGroundNeighbors(node, neighbors, count, DIAGONAL_OFFSETS);
         }
 
+        if (features.dropDownOpenings()) {
+            count = appendDropOpeningNeighbors(node, neighbors, count);
+        }
+
         return count;
     }
 
@@ -172,6 +178,18 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     private int appendGroundNeighbors(PathNode node, PathNode[] neighbors, int count, int[][] offsets) {
         for (var offset : offsets) {
             var neighbor = findGroundNeighbor(node, offset[0], offset[1]);
+
+            if (neighbor != null) {
+                neighbors[count++] = neighbor;
+            }
+        }
+
+        return count;
+    }
+
+    private int appendDropOpeningNeighbors(PathNode node, PathNode[] neighbors, int count) {
+        for (var offset : CARDINAL_OFFSETS) {
+            var neighbor = findDropOpeningNeighbor(node, offset[0], offset[1]);
 
             if (neighbor != null) {
                 neighbors[count++] = neighbor;
@@ -211,11 +229,6 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                 }
 
                 if (features.dropDownOpenings() && requiresDropOpening(from, steppedDown)) {
-                    if (hasDropDownTransitionClearance(from, steppedDown, dx, dz)) {
-                        markFeatureUsed(PathfindingFeature.DROP_DOWN_OPENINGS);
-                        return markMovementFeatureUsed(steppedDown, dx, dz, PathfindingFeature.STEP_DOWN);
-                    }
-
                     continue;
                 }
 
@@ -223,6 +236,32 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                     return markMovementFeatureUsed(steppedDown, dx, dz, PathfindingFeature.STEP_DOWN);
                 }
             }
+        }
+
+        return null;
+    }
+
+    private @Nullable PathNode findDropOpeningNeighbor(PathNode from, int dx, int dz) {
+        var horizontalDistance = dropOpeningHorizontalDistance();
+        var x = from.getX() + dx * horizontalDistance;
+        var z = from.getZ() + dz * horizontalDistance;
+        var firstDropDistance = Math.max(1, config.getMaxStepHeight() + 1);
+
+        for (var dropDistance = firstDropDistance; dropDistance <= config.getMaxFallDistance(); dropDistance++) {
+            var landing = tryCreateGroundNode(x, from.getY() - dropDistance, z);
+
+            if (landing == null) {
+                continue;
+            }
+
+            if (!hasDropDownTransitionClearance(from, landing, dx, dz)) {
+                continue;
+            }
+
+            landing.setPendingDropEntryWaypoint(nodeCenterX(landing.getX()), from.getY(), nodeCenterZ(landing.getZ()));
+            markFeatureUsed(PathfindingFeature.DROP_DOWN_OPENINGS);
+
+            return landing;
         }
 
         return null;
@@ -243,12 +282,42 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     }
 
     private boolean hasDropDownTransitionClearance(PathNode from, PathNode to, int dx, int dz) {
+        if (!isDropEntryApproachClear(from, to)) {
+            reject(PathRejectionReason.DROP_OPENING_BLOCKED, to.getX(), to.getY(), to.getZ());
+            return false;
+        }
+
         if (!isDropOpeningClear(to.getX(), from.getY(), to.getZ(), to.getY())) {
             reject(PathRejectionReason.DROP_OPENING_BLOCKED, to.getX(), to.getY(), to.getZ());
             return false;
         }
 
         return hasMovementClearance(from, to, dx, dz);
+    }
+
+    private boolean isDropEntryApproachClear(PathNode from, PathNode to) {
+        var startX = nodeCenterX(from.getX());
+        var startZ = nodeCenterZ(from.getZ());
+        var endX = nodeCenterX(to.getX());
+        var endZ = nodeCenterZ(to.getZ());
+        var dx = endX - startX;
+        var dz = endZ - startZ;
+        var distance = Math.sqrt(dx * dx + dz * dz);
+        var sampleCount = Math.max(1, (int) Math.ceil(distance / DROP_ENTRY_APPROACH_SAMPLE_INTERVAL));
+        var entityWidth = entityWidth();
+        var entityHeight = entityHeight();
+
+        for (var i = 1; i <= sampleCount; i++) {
+            var progress = i / (double) sampleCount;
+            var centerX = startX + dx * progress;
+            var centerZ = startZ + dz * progress;
+
+            if (!isEntityBoxClear(centerX, from.getY(), centerZ, entityWidth, entityHeight)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private boolean isDropOpeningClear(int x, int topY, int z, int landingY) {
@@ -262,11 +331,11 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     }
 
     private boolean hasDropVolumeClearance(int x, int y, int z) {
-        if (!usesFootprintClearance()) {
+        if (!usesEntityHitboxClearance()) {
             return isFeetOpen(x, y, z);
         }
 
-        markFeatureUsed(PathfindingFeature.FOOTPRINT_CLEARANCE);
+        markEntityBoxClearanceUsed();
 
         return isEntityBoxClear(nodeCenterX(x), y, nodeCenterZ(z), entityWidth(), entityHeight());
     }
@@ -480,8 +549,26 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         return Math.max(1, config.getEntityWidth());
     }
 
+    private int dropOpeningHorizontalDistance() {
+        return footprintCellWidth();
+    }
+
     private boolean usesFootprintClearance() {
         return features.footprintClearance() && footprintCellWidth() > 1;
+    }
+
+    private boolean usesEntityHitboxClearance() {
+        return features.entityHitboxClearance() || usesFootprintClearance();
+    }
+
+    private void markEntityBoxClearanceUsed() {
+        if (features.entityHitboxClearance()) {
+            markFeatureUsed(PathfindingFeature.ENTITY_HITBOX_CLEARANCE);
+        }
+
+        if (usesFootprintClearance()) {
+            markFeatureUsed(PathfindingFeature.FOOTPRINT_CLEARANCE);
+        }
     }
 
     private boolean usesSteppedFootprintSupport() {
@@ -520,11 +607,11 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     }
 
     private boolean hasNodeClearance(int x, int y, int z) {
-        if (!usesFootprintClearance()) {
+        if (!usesEntityHitboxClearance()) {
             return isFeetOpen(x, y, z);
         }
 
-        markFeatureUsed(PathfindingFeature.FOOTPRINT_CLEARANCE);
+        markEntityBoxClearanceUsed();
 
         return isEntityBoxClear(nodeCenterX(x), y, nodeCenterZ(z), entityWidth(), entityHeight());
     }
