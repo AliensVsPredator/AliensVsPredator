@@ -24,7 +24,8 @@ public enum PathfindingFeature {
     STEPPED_FOOTPRINT_SUPPORT(1 << 16, "Stepped Footprint"),
     DROP_DOWN_OPENINGS(1 << 17, "Drop Openings"),
     ENTITY_HITBOX_CLEARANCE(1 << 18, "Hitbox Clearance"),
-    CRAWL_THROUGH_GAPS(1 << 19, "Crawl Gaps");
+    CRAWL_THROUGH_GAPS(1 << 19, "Crawl Gaps"),
+    DESCENDING_STAIR_EDGE_REACH(1 << 20, "Stair Edge Reach");
 
     private final int mask;
 

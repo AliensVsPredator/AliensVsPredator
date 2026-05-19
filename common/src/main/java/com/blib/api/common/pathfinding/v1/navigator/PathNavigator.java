@@ -100,6 +100,8 @@ public final class PathNavigator {
 
     private static final double WAYPOINT_REACH_Y = 0.45;
 
+    private static final double DESCENDING_STAIR_EDGE_REACH_PROGRESS = 0.5;
+
     private static final double DROP_ENTRY_MIN_REACH_XZ = 0.75;
 
     private static final double SHAPE_WAYPOINT_SAMPLE_STEP = 0.05;
@@ -863,7 +865,19 @@ public final class PathNavigator {
                 && entityY < waypointCenter.y - reachY
                 && dx <= entityWidth
                 && dz <= entityWidth;
+            var descendingStairEdgeReached = !withinReach
+                && !awaitingDropEntry
+                && isDescendingStairEdgeWaypointReached(
+                    currentPath.getCurrentNodeIndex(),
+                    entityX,
+                    entityY,
+                    entityZ,
+                    entityWidth,
+                    entityHeight,
+                    reachY
+                );
             var skippedAhead = !withinReach
+                && !descendingStairEdgeReached
                 && features.pathSkipAhead()
                 && shouldSkipToNextNode(entityX, entityY, entityZ, entityWidth, entityHeight);
 
@@ -871,7 +885,11 @@ public final class PathNavigator {
                 markFeatureUsed(PathfindingFeature.PATH_SKIP_AHEAD);
             }
 
-            var shouldAdvance = withinReach || enteredDropShaft || skippedAhead;
+            if (descendingStairEdgeReached) {
+                markFeatureUsed(PathfindingFeature.DESCENDING_STAIR_EDGE_REACH);
+            }
+
+            var shouldAdvance = withinReach || enteredDropShaft || descendingStairEdgeReached || skippedAhead;
 
             if (!shouldAdvance) {
                 break;
@@ -1063,20 +1081,9 @@ public final class PathNavigator {
 
         var previousNode = currentPath.getNode(nodeIndex - 1);
         var node = currentPath.getNode(nodeIndex);
-        var stepDown = previousNode.getY() - node.getY();
 
-        if (stepDown <= 0 || stepDown > config.getEvaluatorConfig().getMaxStepHeight()) {
-            return false;
-        }
-
-        var dx = Math.abs(previousNode.getX() - node.getX());
-        var dz = Math.abs(previousNode.getZ() - node.getZ());
-
-        if (dx > 1 || dz > 1) {
-            return false;
-        }
-
-        return entityY >= node.getY() - reachY && entityY <= previousNode.getY() + reachY;
+        return isDescendingStepEdge(previousNode, node)
+            && isDescendingStepYWithinReach(previousNode, node, entityY, reachY);
     }
 
     private boolean usesSteppedFootprintSupport() {
@@ -1086,6 +1093,91 @@ public final class PathNavigator {
             && features.steppedFootprintSupport()
             && evaluatorConfig.getEntityWidth() > 1
             && evaluatorConfig.getMaxStepHeight() > 0;
+    }
+
+    private boolean isDescendingStairEdgeWaypointReached(
+        int nodeIndex,
+        double entityX,
+        double entityY,
+        double entityZ,
+        float entityWidth,
+        float entityHeight,
+        double reachY
+    ) {
+        if (!usesDescendingStairEdgeReach() || currentPath == null || nodeIndex <= 0) {
+            return false;
+        }
+
+        var previousNode = currentPath.getNode(nodeIndex - 1);
+        var node = currentPath.getNode(nodeIndex);
+
+        if (
+            !isDescendingStepEdge(previousNode, node)
+                || !isDescendingStepYWithinReach(previousNode, node, entityY, reachY)
+        ) {
+            return false;
+        }
+
+        var previousCenter = nodeTargetCenter(previousNode, entityWidth, entityHeight);
+        var nodeCenter = nodeTargetCenter(node, entityWidth, entityHeight);
+        var edgeX = nodeCenter.x - previousCenter.x;
+        var edgeZ = nodeCenter.z - previousCenter.z;
+        var edgeDistanceSquared = edgeX * edgeX + edgeZ * edgeZ;
+
+        if (edgeDistanceSquared <= COLLISION_EPSILON) {
+            return false;
+        }
+
+        var entityEdgeX = entityX - previousCenter.x;
+        var entityEdgeZ = entityZ - previousCenter.z;
+        var progress = (entityEdgeX * edgeX + entityEdgeZ * edgeZ) / edgeDistanceSquared;
+
+        if (progress < DESCENDING_STAIR_EDGE_REACH_PROGRESS) {
+            return false;
+        }
+
+        var clampedProgress = Math.max(0.0d, Math.min(1.0d, progress));
+        var closestX = previousCenter.x + edgeX * clampedProgress;
+        var closestZ = previousCenter.z + edgeZ * clampedProgress;
+        var lateralX = entityX - closestX;
+        var lateralZ = entityZ - closestZ;
+        var lateralTolerance = descendingStairEdgeLateralTolerance(entityWidth);
+
+        return lateralX * lateralX + lateralZ * lateralZ <= lateralTolerance * lateralTolerance;
+    }
+
+    private boolean usesDescendingStairEdgeReach() {
+        return features.descendingStairEdgeReach()
+            && features.stepDown()
+            && config.getEvaluatorConfig().getMaxStepHeight() > 0;
+    }
+
+    private boolean isDescendingStepEdge(PathNode previousNode, PathNode node) {
+        if (previousNode.hasDropEntryWaypoint() || node.hasDropEntryWaypoint()) {
+            return false;
+        }
+
+        var stepDown = previousNode.getY() - node.getY();
+
+        if (stepDown <= 0 || stepDown > config.getEvaluatorConfig().getMaxStepHeight()) {
+            return false;
+        }
+
+        var dx = Math.abs(previousNode.getX() - node.getX());
+        var dz = Math.abs(previousNode.getZ() - node.getZ());
+
+        return (dx != 0 || dz != 0) && dx <= 1 && dz <= 1;
+    }
+
+    private boolean isDescendingStepYWithinReach(PathNode previousNode, PathNode node, double entityY, double reachY) {
+        return entityY >= node.getY() - reachY && entityY <= previousNode.getY() + reachY;
+    }
+
+    private double descendingStairEdgeLateralTolerance(float entityWidth) {
+        var configuredWidth = Math.max(1.0d, config.getEvaluatorConfig().getEntityWidth());
+        var observedWidth = Math.max(configuredWidth, entityWidth);
+
+        return Math.max(waypointReachXZ(entityWidth), observedWidth / 2.0d + 0.25d);
     }
 
     private boolean usesCrawling() {

@@ -29,8 +29,6 @@ import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
  */
 public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
-    private static final double DIAGONAL_SWEEP_SAMPLE_INTERVAL = 0.125;
-
     private static final double STEPPED_TRANSITION_SAMPLE_INTERVAL = 0.25;
 
     private static final double DROP_ENTRY_APPROACH_SAMPLE_INTERVAL = 0.25;
@@ -356,10 +354,10 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     }
 
     private boolean hasMovementClearance(PathNode from, PathNode to, int dx, int dz) {
-        if (features.diagonalCornerClearance() && dx != 0 && dz != 0) {
+        if (features.diagonalCornerClearance() && hasDiagonalMovementComponent(from, to, dx, dz)) {
             markFeatureUsed(PathfindingFeature.DIAGONAL_CORNER_CLEARANCE);
 
-            if (hasFullBlockDiagonalCorner(from, to, dx, dz) || hasSameLevelSweptDiagonalCollision(from, to)) {
+            if (hasFullBlockDiagonalCorner(from, to, dx, dz) || hasSameLevelSweptDiagonalCollision(from, to, dx, dz)) {
                 reject(PathRejectionReason.DIAGONAL_CORNER_BLOCKED, to.getX(), to.getY(), to.getZ());
                 return false;
             }
@@ -373,14 +371,87 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         return true;
     }
 
-    private boolean hasFullBlockDiagonalCorner(PathNode from, PathNode to, int dx, int dz) {
-        var minY = Math.min(from.getY(), to.getY());
-        var maxY = Math.max(from.getY(), to.getY()) + (int) Math.ceil(movementHeight(from, to)) - 1;
+    private boolean hasDiagonalMovementComponent(PathNode from, PathNode to, int dx, int dz) {
+        var changedAxes = 0;
 
-        for (var y = minY; y <= maxY; y++) {
+        if (dx != 0) {
+            changedAxes++;
+        }
+
+        if (from.getY() != to.getY()) {
+            changedAxes++;
+        }
+
+        if (dz != 0) {
+            changedAxes++;
+        }
+
+        return changedAxes >= 2;
+    }
+
+    private boolean hasFullBlockDiagonalCorner(PathNode from, PathNode to, int dx, int dz) {
+        if (dx != 0 && dz != 0 && hasHorizontalFullBlockDiagonalCorner(from, to, dx, dz)) {
+            return true;
+        }
+
+        return hasTopHorizontalAxisFullBlockCorner(from, to, dx, dz);
+    }
+
+    private boolean hasHorizontalFullBlockDiagonalCorner(PathNode from, PathNode to, int dx, int dz) {
+        var entityHeight = movementHeight(from, to);
+        var minFeetY = Math.min(from.getY(), to.getY());
+        var maxHeadY = Math.max(from.getY(), to.getY()) + entityHeight;
+        var bodyMinY = (int) Math.floor(minFeetY);
+        var bodyMaxY = (int) Math.floor(maxHeadY - COLLISION_EPSILON);
+        var cornerMaxY = (int) Math.floor(maxHeadY + COLLISION_EPSILON);
+        var verticalCornerSpan = Math.max(1, (int) Math.ceil(entityHeight));
+        var sideAX = from.getX() + dx;
+        var sideAZ = from.getZ();
+        var sideBX = from.getX();
+        var sideBZ = from.getZ() + dz;
+
+        for (var sideAY = bodyMinY; sideAY <= cornerMaxY; sideAY++) {
+            if (!isFullCollisionBlock(sideAX, sideAY, sideAZ)) {
+                continue;
+            }
+
+            var minSideBY = Math.max(bodyMinY, sideAY - verticalCornerSpan);
+            var maxSideBY = Math.min(cornerMaxY, sideAY + verticalCornerSpan);
+
+            for (var sideBY = minSideBY; sideBY <= maxSideBY; sideBY++) {
+                if (
+                    isVerticalCardinalCorner(bodyMinY, bodyMaxY, sideAY, sideBY)
+                        && isFullCollisionBlock(sideBX, sideBY, sideBZ)
+                ) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private boolean hasTopHorizontalAxisFullBlockCorner(PathNode from, PathNode to, int dx, int dz) {
+        if (dx == 0 && dz == 0) {
+            return false;
+        }
+
+        var entityHeight = movementHeight(from, to);
+        var minFeetY = Math.min(from.getY(), to.getY());
+        var maxHeadY = Math.max(from.getY(), to.getY()) + entityHeight;
+        var bodyMinY = (int) Math.floor(minFeetY);
+        var bodyMaxY = (int) Math.floor(maxHeadY - COLLISION_EPSILON);
+        var minTopY = (int) Math.floor(Math.min(from.getY(), to.getY()) + entityHeight + COLLISION_EPSILON);
+        var maxTopY = (int) Math.floor(maxHeadY + COLLISION_EPSILON);
+
+        if (!hasFullBlockAtTopFace(from, to, minTopY, maxTopY)) {
+            return false;
+        }
+
+        for (var sideY = bodyMinY; sideY <= bodyMaxY; sideY++) {
             if (
-                isFullCollisionBlock(from.getX() + dx, y, from.getZ())
-                    && isFullCollisionBlock(from.getX(), y, from.getZ() + dz)
+                (dx != 0 && hasFullBlockAtHorizontalXFace(from, to, dx, sideY))
+                    || (dz != 0 && hasFullBlockAtHorizontalZFace(from, to, dz, sideY))
             ) {
                 return true;
             }
@@ -389,14 +460,68 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         return false;
     }
 
+    private boolean hasFullBlockAtTopFace(PathNode from, PathNode to, int minY, int maxY) {
+        var footprintWidth = footprintCellWidth();
+        var minX = Math.min(from.getX(), to.getX());
+        var minZ = Math.min(from.getZ(), to.getZ());
+        var maxX = Math.max(from.getX(), to.getX()) + footprintWidth - 1;
+        var maxZ = Math.max(from.getZ(), to.getZ()) + footprintWidth - 1;
+
+        for (var y = minY; y <= maxY; y++) {
+            for (var x = minX; x <= maxX; x++) {
+                for (var z = minZ; z <= maxZ; z++) {
+                    if (isFullCollisionBlock(x, y, z)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private boolean hasFullBlockAtHorizontalXFace(PathNode from, PathNode to, int dx, int y) {
+        var footprintWidth = footprintCellWidth();
+        var sideX = dx > 0 ? from.getX() + footprintWidth : from.getX() - 1;
+        var minZ = Math.min(from.getZ(), to.getZ());
+        var maxZ = Math.max(from.getZ(), to.getZ()) + footprintWidth - 1;
+
+        for (var z = minZ; z <= maxZ; z++) {
+            if (isFullCollisionBlock(sideX, y, z)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean hasFullBlockAtHorizontalZFace(PathNode from, PathNode to, int dz, int y) {
+        var footprintWidth = footprintCellWidth();
+        var sideZ = dz > 0 ? from.getZ() + footprintWidth : from.getZ() - 1;
+        var minX = Math.min(from.getX(), to.getX());
+        var maxX = Math.max(from.getX(), to.getX()) + footprintWidth - 1;
+
+        for (var x = minX; x <= maxX; x++) {
+            if (isFullCollisionBlock(x, y, sideZ)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isVerticalCardinalCorner(int bodyMinY, int bodyMaxY, int firstY, int secondY) {
+        return isBodyOverlappingY(bodyMinY, bodyMaxY, firstY) || isBodyOverlappingY(bodyMinY, bodyMaxY, secondY);
+    }
+
+    private boolean isBodyOverlappingY(int bodyMinY, int bodyMaxY, int y) {
+        return y >= bodyMinY && y <= bodyMaxY;
+    }
+
     private boolean isFullCollisionBlock(int x, int y, int z) {
         var state = blockAccessor.getBlockState(x, y, z);
 
         return blockAccessor.isCollisionShapeFullBlock(state, x, y, z);
-    }
-
-    private boolean hasSameLevelSweptDiagonalCollision(PathNode from, PathNode to) {
-        return from.getY() == to.getY() && !isSweptDiagonalShapeClear(from, to);
     }
 
     private boolean hasSteppedFootprintTransitionClearance(PathNode from, PathNode to) {
@@ -443,7 +568,11 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         return true;
     }
 
-    private boolean isSweptDiagonalShapeClear(PathNode from, PathNode to) {
+    private boolean hasSameLevelSweptDiagonalCollision(PathNode from, PathNode to, int dx, int dz) {
+        return dx != 0 && dz != 0 && from.getY() == to.getY() && hasSweptDiagonalCollision(from, to);
+    }
+
+    private boolean hasSweptDiagonalCollision(PathNode from, PathNode to) {
         var startX = nodeCenterX(from.getX());
         var startY = from.getY();
         var startZ = nodeCenterZ(from.getZ());
@@ -453,23 +582,114 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         var dx = endX - startX;
         var dy = endY - startY;
         var dz = endZ - startZ;
-        var distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
-        var sampleCount = Math.max(2, (int) Math.ceil(distance / DIAGONAL_SWEEP_SAMPLE_INTERVAL));
         var entityWidth = entityWidth();
         var entityHeight = movementHeight(from, to);
+        var startBox = entityBox(startX, startY, startZ, entityWidth, entityHeight);
+        var endBox = entityBox(endX, endY, endZ, entityWidth, entityHeight);
+        var sweepBounds = startBox.minmax(endBox);
 
-        for (var i = 1; i <= sampleCount; i++) {
-            var progress = i / (double) sampleCount;
-            var centerX = startX + dx * progress;
-            var feetY = startY + dy * progress;
-            var centerZ = startZ + dz * progress;
+        var minX = (int) Math.floor(sweepBounds.minX);
+        var minY = (int) Math.floor(sweepBounds.minY);
+        var minZ = (int) Math.floor(sweepBounds.minZ);
+        var maxX = (int) Math.floor(sweepBounds.maxX - COLLISION_EPSILON);
+        var maxY = (int) Math.floor(sweepBounds.maxY - COLLISION_EPSILON);
+        var maxZ = (int) Math.floor(sweepBounds.maxZ - COLLISION_EPSILON);
 
-            if (!isEntityBoxClear(centerX, feetY, centerZ, entityWidth, entityHeight)) {
-                return false;
+        for (var x = minX; x <= maxX; x++) {
+            for (var y = minY; y <= maxY; y++) {
+                for (var z = minZ; z <= maxZ; z++) {
+                    var state = blockAccessor.getBlockState(x, y, z);
+
+                    if (isDoorPassable(state)) {
+                        continue;
+                    }
+
+                    if (blockAccessor.isLiquid(state)) {
+                        return true;
+                    }
+
+                    var shape = blockAccessor.getCollisionShape(state, x, y, z);
+
+                    if (shape.isEmpty()) {
+                        continue;
+                    }
+
+                    var blockPos = new BlockPos(x, y, z);
+
+                    for (var blockBox : shape.toAabbs()) {
+                        if (sweptAabbIntersects(startBox, dx, dy, dz, blockBox.move(blockPos))) {
+                            return true;
+                        }
+                    }
+                }
             }
         }
 
-        return true;
+        return false;
+    }
+
+    private boolean sweptAabbIntersects(AABB movingBox, double dx, double dy, double dz, AABB staticBox) {
+        if (movingBox.intersects(staticBox)) {
+            return true;
+        }
+
+        var xSweep = sweepAxis(movingBox.minX, movingBox.maxX, staticBox.minX, staticBox.maxX, dx);
+        if (xSweep == null) {
+            return false;
+        }
+
+        var ySweep = sweepAxis(movingBox.minY, movingBox.maxY, staticBox.minY, staticBox.maxY, dy);
+        if (ySweep == null) {
+            return false;
+        }
+
+        var zSweep = sweepAxis(movingBox.minZ, movingBox.maxZ, staticBox.minZ, staticBox.maxZ, dz);
+        if (zSweep == null) {
+            return false;
+        }
+
+        var entryTime = Math.max(xSweep.entryTime(), Math.max(ySweep.entryTime(), zSweep.entryTime()));
+        var exitTime = Math.min(xSweep.exitTime(), Math.min(ySweep.exitTime(), zSweep.exitTime()));
+
+        return entryTime <= exitTime
+            && exitTime >= -COLLISION_EPSILON
+            && entryTime <= 1.0d + COLLISION_EPSILON;
+    }
+
+    private @Nullable AxisSweep sweepAxis(
+        double movingMin,
+        double movingMax,
+        double staticMin,
+        double staticMax,
+        double delta
+    ) {
+        if (Math.abs(delta) <= COLLISION_EPSILON) {
+            if (movingMax <= staticMin + COLLISION_EPSILON || movingMin >= staticMax - COLLISION_EPSILON) {
+                return null;
+            }
+
+            return AxisSweep.ALWAYS_OVERLAPPING;
+        }
+
+        if (delta > 0.0d) {
+            return new AxisSweep(
+                (staticMin - movingMax) / delta,
+                (staticMax - movingMin) / delta
+            );
+        }
+
+        return new AxisSweep(
+            (staticMax - movingMin) / delta,
+            (staticMin - movingMax) / delta
+        );
+    }
+
+    private record AxisSweep(double entryTime, double exitTime) {
+
+        private static final AxisSweep ALWAYS_OVERLAPPING = new AxisSweep(
+            Double.NEGATIVE_INFINITY,
+            Double.POSITIVE_INFINITY
+        );
     }
 
     private boolean isEntityBoxClear(double centerX, double feetY, double centerZ, double entityWidth, double entityHeight) {

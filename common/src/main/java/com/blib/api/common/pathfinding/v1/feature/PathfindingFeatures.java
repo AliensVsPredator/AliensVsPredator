@@ -24,7 +24,8 @@ public record PathfindingFeatures(
     boolean steppedFootprintSupport,
     boolean dropDownOpenings,
     boolean entityHitboxClearance,
-    boolean crawlThroughGaps
+    boolean crawlThroughGaps,
+    boolean descendingStairEdgeReach
 ) {
 
     public PathfindingFeatures(
@@ -78,6 +79,7 @@ public record PathfindingFeatures(
             true,
             true,
             true,
+            true,
             true
         );
     }
@@ -102,6 +104,7 @@ public record PathfindingFeatures(
         true,
         false,
         true,
+        true,
         true
     );
 
@@ -114,6 +117,7 @@ public record PathfindingFeatures(
         false,
         true,
         false,
+        true,
         true,
         true,
         true,
@@ -148,10 +152,12 @@ public record PathfindingFeatures(
         true,
         true,
         true,
+        true,
         true
     );
 
     public static final PathfindingFeatures LEGACY_PERMISSIVE = new PathfindingFeatures(
+        true,
         true,
         true,
         true,
@@ -208,6 +214,7 @@ public record PathfindingFeatures(
             case DROP_DOWN_OPENINGS -> dropDownOpenings;
             case ENTITY_HITBOX_CLEARANCE -> entityHitboxClearance;
             case CRAWL_THROUGH_GAPS -> crawlThroughGaps;
+            case DESCENDING_STAIR_EDGE_REACH -> descendingStairEdgeReach;
         };
     }
 
@@ -232,7 +239,8 @@ public record PathfindingFeatures(
             feature == PathfindingFeature.STEPPED_FOOTPRINT_SUPPORT ? enabled : steppedFootprintSupport,
             feature == PathfindingFeature.DROP_DOWN_OPENINGS ? enabled : dropDownOpenings,
             feature == PathfindingFeature.ENTITY_HITBOX_CLEARANCE ? enabled : entityHitboxClearance,
-            feature == PathfindingFeature.CRAWL_THROUGH_GAPS ? enabled : crawlThroughGaps
+            feature == PathfindingFeature.CRAWL_THROUGH_GAPS ? enabled : crawlThroughGaps,
+            feature == PathfindingFeature.DESCENDING_STAIR_EDGE_REACH ? enabled : descendingStairEdgeReach
         );
     }
 
@@ -257,7 +265,8 @@ public record PathfindingFeatures(
             enabled(mask, PathfindingFeature.STEPPED_FOOTPRINT_SUPPORT),
             enabled(mask, PathfindingFeature.DROP_DOWN_OPENINGS),
             enabled(mask, PathfindingFeature.ENTITY_HITBOX_CLEARANCE),
-            enabled(mask, PathfindingFeature.CRAWL_THROUGH_GAPS)
+            enabled(mask, PathfindingFeature.CRAWL_THROUGH_GAPS),
+            enabled(mask, PathfindingFeature.DESCENDING_STAIR_EDGE_REACH)
         );
     }
 
