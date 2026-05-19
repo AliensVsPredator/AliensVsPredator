@@ -22,6 +22,7 @@ import com.blib.api.common.pathfinding.v1.feature.PathfindingFeature;
 import com.blib.api.common.pathfinding.v1.feature.PathfindingFeatures;
 import com.blib.api.common.pathfinding.v1.feature.PathfindingProfile;
 import com.blib.api.common.pathfinding.v1.node.PathNode;
+import com.blib.api.common.pathfinding.v1.node.PathPosture;
 import com.blib.api.common.pathfinding.v1.path.BLibPath;
 import com.blib.api.common.pathfinding.v1.search.BLibPathFinder;
 import com.blib.api.common.pathfinding.v1.search.PathfindingTuning;
@@ -107,6 +108,8 @@ public final class PathNavigator {
 
     private static final double ANY_ANGLE_SMOOTHING_SAMPLE_INTERVAL = 0.25;
 
+    private static final double CRAWL_POSTURE_MIN_PREP_DISTANCE = 1.5;
+
     private static final double COLLISION_EPSILON = 1.0E-7;
 
     private @Nullable Set<TerrainType> excludedTerrains;
@@ -132,6 +135,14 @@ public final class PathNavigator {
     private int pendingFeaturesRevision;
 
     private int pathfindingFeatureUsageMask;
+
+    private double lastEntityX;
+
+    private double lastEntityY;
+
+    private double lastEntityZ;
+
+    private boolean hasLastEntityPosition;
 
     private float lastEntityWidth = 1.0f;
 
@@ -360,6 +371,10 @@ public final class PathNavigator {
         float entityHeight
     ) {
         tickCount++;
+        lastEntityX = entityX;
+        lastEntityY = entityY;
+        lastEntityZ = entityZ;
+        hasLastEntityPosition = true;
         lastEntityWidth = entityWidth;
         lastEntityHeight = entityHeight;
         checkPendingPath();
@@ -582,6 +597,77 @@ public final class PathNavigator {
 
     public boolean canOpenDoors() {
         return features.doorOpening() && config.getEvaluatorConfig().canOpenDoors();
+    }
+
+    /**
+     * Returns the posture required by the active waypoint. A null or completed path requires standing by default.
+     */
+    public PathPosture getCurrentRequiredPosture() {
+        if (currentPath == null || currentPath.isDone() || !usesCrawling()) {
+            return PathPosture.STANDING;
+        }
+
+        var posture = currentPath.getCurrentNode().getPosture();
+
+        if (posture.isCrawling()) {
+            markFeatureUsed(PathfindingFeature.CRAWL_THROUGH_GAPS);
+        }
+
+        return posture;
+    }
+
+    /**
+     * Returns the posture required by the active waypoint. Use
+     * {@link #getDesiredPosture(double, double, double)} when movement code wants near-entry crawl anticipation.
+     */
+    public PathPosture getDesiredPosture() {
+        if (currentPath == null || currentPath.isDone() || !usesCrawling()) {
+            return PathPosture.STANDING;
+        }
+
+        if (currentPath.getCurrentNode().requiresCrawling()) {
+            markFeatureUsed(PathfindingFeature.CRAWL_THROUGH_GAPS);
+            return PathPosture.CRAWLING;
+        }
+
+        return PathPosture.STANDING;
+    }
+
+    /**
+     * Returns the posture movement code should prefer right now, including a short distance-gated lookahead so the
+     * entity lowers its hitbox only when it is physically close to a crawl-only waypoint.
+     */
+    public PathPosture getDesiredPosture(double entityX, double entityY, double entityZ) {
+        var currentPosture = getDesiredPosture();
+
+        if (currentPosture.isCrawling() || currentPath == null || currentPath.isDone() || !usesCrawling()) {
+            return currentPosture;
+        }
+
+        var currentIndex = currentPath.getCurrentNodeIndex();
+        var lookahead = config.getEvaluatorConfig().getCrawlConfig().postureLookaheadNodes();
+        var endIndex = Math.min(currentPath.getNodeCount() - 1, currentIndex + lookahead);
+
+        for (var index = currentIndex + 1; index <= endIndex; index++) {
+            if (currentPath.getNode(index).requiresCrawling()) {
+                if (isNearCrawlPostureEntry(entityX, entityY, entityZ, currentPath.getNode(index))) {
+                    markFeatureUsed(PathfindingFeature.CRAWL_THROUGH_GAPS);
+                    return PathPosture.CRAWLING;
+                }
+
+                return PathPosture.STANDING;
+            }
+        }
+
+        return PathPosture.STANDING;
+    }
+
+    public boolean shouldCrawl() {
+        if (hasLastEntityPosition) {
+            return getDesiredPosture(lastEntityX, lastEntityY, lastEntityZ).isCrawling();
+        }
+
+        return getDesiredPosture().isCrawling();
     }
 
     public @Nullable BlockPos getTargetPos() {
@@ -889,6 +975,7 @@ public final class PathNavigator {
         var from = currentPath.getNode(fromIndex);
         var y = from.getY();
         var terrain = from.getTerrainType();
+        var posture = from.getPosture();
 
         if (from.hasDropEntryWaypoint()) {
             return false;
@@ -897,7 +984,12 @@ public final class PathNavigator {
         for (var index = fromIndex + 1; index <= toIndex; index++) {
             var node = currentPath.getNode(index);
 
-            if (node.hasDropEntryWaypoint() || node.getY() != y || node.getTerrainType() != terrain) {
+            if (
+                node.hasDropEntryWaypoint()
+                    || node.getY() != y
+                    || node.getTerrainType() != terrain
+                    || node.getPosture() != posture
+            ) {
                 return false;
             }
         }
@@ -996,6 +1088,32 @@ public final class PathNavigator {
             && evaluatorConfig.getMaxStepHeight() > 0;
     }
 
+    private boolean usesCrawling() {
+        return features.crawlThroughGaps() && config.getEvaluatorConfig().getCrawlConfig().enabled();
+    }
+
+    private boolean isNearCrawlPostureEntry(double entityX, double entityY, double entityZ, PathNode crawlNode) {
+        var crawlCenter = nodeCenter(crawlNode);
+        var dx = crawlCenter.x - entityX;
+        var dz = crawlCenter.z - entityZ;
+        var prepDistance = crawlPosturePrepDistance();
+
+        if (dx * dx + dz * dz > prepDistance * prepDistance) {
+            return false;
+        }
+
+        var verticalSlack = Math.max(1.0d, config.getEvaluatorConfig().getMaxStepHeight() + WAYPOINT_REACH_Y);
+
+        return Math.abs(crawlCenter.y - entityY) <= verticalSlack;
+    }
+
+    private double crawlPosturePrepDistance() {
+        var configuredWidth = Math.max(1.0d, config.getEvaluatorConfig().getEntityWidth());
+        var observedWidth = Math.max(configuredWidth, lastEntityWidth);
+
+        return Math.max(CRAWL_POSTURE_MIN_PREP_DISTANCE, observedWidth + 0.5d);
+    }
+
     /**
      * Checks whether the entity has already passed the current node and should skip ahead to the next one. Skip-ahead is
      * intentionally limited to straight, same-height runs. Corners and vertical transitions are real navigation
@@ -1018,6 +1136,10 @@ public final class PathNavigator {
         var nextNode = currentPath.getNode(nextIndex);
 
         if (currentNode.hasDropEntryWaypoint() || nextNode.hasDropEntryWaypoint()) {
+            return false;
+        }
+
+        if (currentNode.getPosture() != nextNode.getPosture()) {
             return false;
         }
 
@@ -1618,9 +1740,11 @@ public final class PathNavigator {
             fromX,
             fromY,
             fromZ,
+            from != null ? from.getPosture() : PathPosture.STANDING,
             to.getX(),
             to.getY(),
             to.getZ(),
+            to.getPosture(),
             targetPos.getX(),
             targetPos.getY(),
             targetPos.getZ()
@@ -1631,9 +1755,11 @@ public final class PathNavigator {
         int fromX,
         int fromY,
         int fromZ,
+        PathPosture fromPosture,
         int toX,
         int toY,
         int toZ,
+        PathPosture toPosture,
         int targetX,
         int targetY,
         int targetZ

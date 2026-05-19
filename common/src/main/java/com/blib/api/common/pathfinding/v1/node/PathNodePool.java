@@ -5,9 +5,9 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
 
 /**
- * Object pool for {@link PathNode} instances. Ensures that each (x, y, z, terrainType) combination maps to exactly one
- * node during a pathfinding search, avoiding duplicate allocations. Call {@link #reset()} between pathfinding calls to
- * clear the pool.
+ * Object pool for {@link PathNode} instances. Ensures that each (x, y, z, terrainType, posture) combination maps to
+ * exactly one node during a pathfinding search, avoiding duplicate allocations. Call {@link #reset()} between
+ * pathfinding calls to clear the pool.
  */
 public final class PathNodePool {
 
@@ -18,14 +18,18 @@ public final class PathNodePool {
     }
 
     public PathNode getOrCreate(int x, int y, int z, TerrainType terrainType) {
-        var key = packPosition(x, y, z, terrainType.ordinal());
+        return getOrCreate(x, y, z, terrainType, PathPosture.STANDING);
+    }
+
+    public PathNode getOrCreate(int x, int y, int z, TerrainType terrainType, PathPosture posture) {
+        var key = packPosition(x, y, z, terrainType.ordinal(), posture.ordinal());
         var existing = nodes.get(key);
 
         if (existing != null) {
             return existing;
         }
 
-        var node = new PathNode(x, y, z, terrainType);
+        var node = new PathNode(x, y, z, terrainType, posture);
         nodes.put(key, node);
 
         return node;
@@ -39,7 +43,11 @@ public final class PathNodePool {
         return nodes.size();
     }
 
-    private static long packPosition(int x, int y, int z, int terrainTypeOrdinal) {
-        return ((long) terrainTypeOrdinal & 0x7L) << 59 | ((long) x & 0x7FFFFL) << 40 | ((long) y & 0xFFFL) << 28 | ((long) z & 0xFFFFFFFL);
+    private static long packPosition(int x, int y, int z, int terrainTypeOrdinal, int postureOrdinal) {
+        return ((long) postureOrdinal & 0x1L) << 62
+            | ((long) terrainTypeOrdinal & 0x7L) << 59
+            | ((long) x & 0x7FFFFL) << 40
+            | ((long) y & 0xFFFL) << 28
+            | ((long) z & 0xFFFFFFFL);
     }
 }

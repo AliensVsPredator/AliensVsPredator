@@ -18,6 +18,8 @@ public final class PathNode implements Comparable<PathNode> {
 
     private final TerrainType terrainType;
 
+    private final PathPosture posture;
+
     private float gCost;
 
     private float hCost;
@@ -59,10 +61,15 @@ public final class PathNode implements Comparable<PathNode> {
     private int stableGroundZSize;
 
     public PathNode(int x, int y, int z, TerrainType terrainType) {
+        this(x, y, z, terrainType, PathPosture.STANDING);
+    }
+
+    public PathNode(int x, int y, int z, TerrainType terrainType, PathPosture posture) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.terrainType = terrainType;
+        this.posture = posture;
     }
 
     public float totalCost() {
@@ -99,6 +106,14 @@ public final class PathNode implements Comparable<PathNode> {
 
     public TerrainType getTerrainType() {
         return terrainType;
+    }
+
+    public PathPosture getPosture() {
+        return posture;
+    }
+
+    public boolean requiresCrawling() {
+        return posture.isCrawling();
     }
 
     public float getGCost() {
@@ -271,16 +286,20 @@ public final class PathNode implements Comparable<PathNode> {
             return false;
         }
 
-        return x == other.x && y == other.y && z == other.z && terrainType == other.terrainType;
+        return x == other.x
+            && y == other.y
+            && z == other.z
+            && terrainType == other.terrainType
+            && posture == other.posture;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(x, y, z, terrainType);
+        return Objects.hash(x, y, z, terrainType, posture);
     }
 
     @Override
     public String toString() {
-        return "PathNode[x=" + x + ", y=" + y + ", z=" + z + ", terrain=" + terrainType + "]";
+        return "PathNode[x=" + x + ", y=" + y + ", z=" + z + ", terrain=" + terrainType + ", posture=" + posture + "]";
     }
 }

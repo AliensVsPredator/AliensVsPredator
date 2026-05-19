@@ -23,7 +23,8 @@ public record PathfindingFeatures(
     boolean anyAngleSmoothing,
     boolean steppedFootprintSupport,
     boolean dropDownOpenings,
-    boolean entityHitboxClearance
+    boolean entityHitboxClearance,
+    boolean crawlThroughGaps
 ) {
 
     public PathfindingFeatures(
@@ -76,6 +77,7 @@ public record PathfindingFeatures(
             true,
             true,
             true,
+            true,
             true
         );
     }
@@ -99,6 +101,7 @@ public record PathfindingFeatures(
         true,
         true,
         false,
+        true,
         true
     );
 
@@ -111,6 +114,7 @@ public record PathfindingFeatures(
         false,
         true,
         false,
+        true,
         true,
         true,
         true,
@@ -143,10 +147,12 @@ public record PathfindingFeatures(
         true,
         true,
         true,
+        true,
         true
     );
 
     public static final PathfindingFeatures LEGACY_PERMISSIVE = new PathfindingFeatures(
+        true,
         true,
         true,
         true,
@@ -201,6 +207,7 @@ public record PathfindingFeatures(
             case STEPPED_FOOTPRINT_SUPPORT -> steppedFootprintSupport;
             case DROP_DOWN_OPENINGS -> dropDownOpenings;
             case ENTITY_HITBOX_CLEARANCE -> entityHitboxClearance;
+            case CRAWL_THROUGH_GAPS -> crawlThroughGaps;
         };
     }
 
@@ -224,7 +231,8 @@ public record PathfindingFeatures(
             feature == PathfindingFeature.ANY_ANGLE_SMOOTHING ? enabled : anyAngleSmoothing,
             feature == PathfindingFeature.STEPPED_FOOTPRINT_SUPPORT ? enabled : steppedFootprintSupport,
             feature == PathfindingFeature.DROP_DOWN_OPENINGS ? enabled : dropDownOpenings,
-            feature == PathfindingFeature.ENTITY_HITBOX_CLEARANCE ? enabled : entityHitboxClearance
+            feature == PathfindingFeature.ENTITY_HITBOX_CLEARANCE ? enabled : entityHitboxClearance,
+            feature == PathfindingFeature.CRAWL_THROUGH_GAPS ? enabled : crawlThroughGaps
         );
     }
 
@@ -248,7 +256,8 @@ public record PathfindingFeatures(
             enabled(mask, PathfindingFeature.ANY_ANGLE_SMOOTHING),
             enabled(mask, PathfindingFeature.STEPPED_FOOTPRINT_SUPPORT),
             enabled(mask, PathfindingFeature.DROP_DOWN_OPENINGS),
-            enabled(mask, PathfindingFeature.ENTITY_HITBOX_CLEARANCE)
+            enabled(mask, PathfindingFeature.ENTITY_HITBOX_CLEARANCE),
+            enabled(mask, PathfindingFeature.CRAWL_THROUGH_GAPS)
         );
     }
 

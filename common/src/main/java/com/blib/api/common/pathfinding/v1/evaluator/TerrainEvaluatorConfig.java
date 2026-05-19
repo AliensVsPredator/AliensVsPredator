@@ -40,6 +40,8 @@ public final class TerrainEvaluatorConfig {
 
     private final boolean canWalkOverFences;
 
+    private final PathCrawlConfig crawlConfig;
+
     private TerrainEvaluatorConfig(
         Map<TerrainType, Supplier<Float>> terrainCostSuppliers,
         TerrainClassifier terrainClassifier,
@@ -48,7 +50,8 @@ public final class TerrainEvaluatorConfig {
         int maxFallDistance,
         int maxStepHeight,
         boolean canOpenDoors,
-        boolean canWalkOverFences
+        boolean canWalkOverFences,
+        PathCrawlConfig crawlConfig
     ) {
         this.terrainCostSuppliers = Map.copyOf(terrainCostSuppliers);
         this.terrainClassifier = terrainClassifier;
@@ -58,6 +61,7 @@ public final class TerrainEvaluatorConfig {
         this.maxStepHeight = maxStepHeight;
         this.canOpenDoors = canOpenDoors;
         this.canWalkOverFences = canWalkOverFences;
+        this.crawlConfig = crawlConfig != null ? crawlConfig : PathCrawlConfig.DISABLED;
     }
 
     public static Builder builder() {
@@ -106,6 +110,10 @@ public final class TerrainEvaluatorConfig {
         return canWalkOverFences;
     }
 
+    public PathCrawlConfig getCrawlConfig() {
+        return crawlConfig;
+    }
+
     public static final class Builder {
 
         private final Map<TerrainType, Supplier<Float>> terrainCostSuppliers;
@@ -124,6 +132,8 @@ public final class TerrainEvaluatorConfig {
 
         private boolean canWalkOverFences;
 
+        private PathCrawlConfig crawlConfig;
+
         private Builder() {
             this.terrainCostSuppliers = new EnumMap<>(TerrainType.class);
             this.terrainClassifier = TerrainClassifiers.GROUND_ONLY;
@@ -131,6 +141,7 @@ public final class TerrainEvaluatorConfig {
             this.entityHeight = DEFAULT_ENTITY_HEIGHT;
             this.maxFallDistance = DEFAULT_MAX_FALL_DISTANCE;
             this.maxStepHeight = DEFAULT_MAX_STEP_HEIGHT;
+            this.crawlConfig = PathCrawlConfig.DISABLED;
         }
 
         public Builder addTerrain(TerrainType type, float cost) {
@@ -188,6 +199,16 @@ public final class TerrainEvaluatorConfig {
             return this;
         }
 
+        public Builder withCrawlConfig(PathCrawlConfig crawlConfig) {
+            this.crawlConfig = crawlConfig != null ? crawlConfig : PathCrawlConfig.DISABLED;
+            return this;
+        }
+
+        public Builder withCrawling(int crawlHeight) {
+            this.crawlConfig = PathCrawlConfig.enabled(crawlHeight);
+            return this;
+        }
+
         public TerrainEvaluatorConfig build() {
             if (terrainCostSuppliers.isEmpty()) {
                 terrainCostSuppliers.put(TerrainType.GROUND, () -> DEFAULT_COST);
@@ -201,7 +222,8 @@ public final class TerrainEvaluatorConfig {
                 maxFallDistance,
                 maxStepHeight,
                 canOpenDoors,
-                canWalkOverFences
+                canWalkOverFences,
+                crawlConfig
             );
         }
     }
