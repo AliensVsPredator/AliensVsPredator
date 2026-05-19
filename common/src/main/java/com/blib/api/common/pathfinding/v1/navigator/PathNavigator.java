@@ -61,6 +61,8 @@ public final class PathNavigator {
 
     private @Nullable BlockPos lastComputedTargetPos;
 
+    private @Nullable BlockPos lastComputedRawTargetPos;
+
     private @Nullable BlockPos lastProjectionRawTargetPos;
 
     private @Nullable BlockPos lastProjectionTargetPos;
@@ -121,6 +123,8 @@ public final class PathNavigator {
     private static final double CRAWL_POSTURE_MIN_PREP_DISTANCE = 1.5;
 
     private static final double MIN_TARGET_MOVE_DISTANCE_SQUARED = 9.0;
+
+    private static final double TARGET_PROJECTION_REUSE_DISTANCE_SQUARED = 1.0;
 
     private static final int TARGET_PROJECTION_MIN_VERTICAL_SCAN = 32;
 
@@ -210,6 +214,7 @@ public final class PathNavigator {
         }
 
         this.lastComputedTargetPos = searchTarget;
+        this.lastComputedRawTargetPos = rawTarget;
 
         if (!stuckReplan) {
             this.lastStuckReplannedEdge = null;
@@ -295,6 +300,7 @@ public final class PathNavigator {
         }
 
         this.lastComputedTargetPos = searchTarget;
+        this.lastComputedRawTargetPos = rawTarget;
         this.lastStuckReplannedEdge = null;
         preparePathFinder();
         markFeatureUsed(PathfindingFeature.ASYNC_PATHFINDING);
@@ -453,6 +459,7 @@ public final class PathNavigator {
         this.currentPath = null;
         this.rawTargetPos = null;
         this.targetPos = null;
+        this.lastComputedRawTargetPos = null;
         this.lastProjectionRawTargetPos = null;
         this.lastProjectionTargetPos = null;
         this.currentTerrain = null;
@@ -798,6 +805,12 @@ public final class PathNavigator {
             return rawTarget;
         }
 
+        if (!shouldProjectRawTarget(rawTarget)) {
+            lastProjectionRawTargetPos = rawTarget;
+            lastProjectionTargetPos = rawTarget;
+            return rawTarget;
+        }
+
         var reusedProjection = reuseStableProjection(rawTarget);
 
         if (reusedProjection != null) {
@@ -827,9 +840,9 @@ public final class PathNavigator {
             lastProjectionRawTargetPos == null
                 || lastProjectionTargetPos == null
                 || lastProjectionTargetPos.equals(lastProjectionRawTargetPos)
-                || horizontalDistanceSquared(rawTarget, lastProjectionRawTargetPos) >= MIN_TARGET_MOVE_DISTANCE_SQUARED
-                || rawTarget.getY() < lastProjectionTargetPos.getY()
-                || isProjectionTargetCandidate(rawTarget)
+                || rawTarget.getY() != lastProjectionRawTargetPos.getY()
+                || horizontalDistanceSquared(rawTarget, lastProjectionRawTargetPos)
+                    >= TARGET_PROJECTION_REUSE_DISTANCE_SQUARED
                 || !isProjectionTargetCandidate(lastProjectionTargetPos)
         ) {
             return null;
@@ -845,10 +858,6 @@ public final class PathNavigator {
     }
 
     private @Nullable BlockPos findGroundedTargetProjection(BlockPos entityPos, BlockPos rawTarget) {
-        if (isProjectionTargetCandidate(rawTarget)) {
-            return rawTarget;
-        }
-
         var radius = targetProjectionHorizontalRadius();
         var minY = Math.max(
             level.getMinBuildHeight(),
@@ -896,9 +905,12 @@ public final class PathNavigator {
         if (
             lastProjectionRawTargetPos != null
                 && lastProjectionTargetPos != null
+                && rawTarget.getY() == lastProjectionRawTargetPos.getY()
                 && lastProjectionTargetPos.getY() == projectedTarget.getY()
-                && horizontalDistanceSquared(rawTarget, lastProjectionRawTargetPos) < MIN_TARGET_MOVE_DISTANCE_SQUARED
-                && horizontalDistanceSquared(projectedTarget, lastProjectionTargetPos) < MIN_TARGET_MOVE_DISTANCE_SQUARED
+                && horizontalDistanceSquared(rawTarget, lastProjectionRawTargetPos)
+                    < TARGET_PROJECTION_REUSE_DISTANCE_SQUARED
+                && horizontalDistanceSquared(projectedTarget, lastProjectionTargetPos)
+                    < TARGET_PROJECTION_REUSE_DISTANCE_SQUARED
                 && isProjectionTargetCandidate(lastProjectionTargetPos)
         ) {
             lastProjectionRawTargetPos = rawTarget;
@@ -913,6 +925,31 @@ public final class PathNavigator {
 
     private boolean isProjectionTargetCandidate(BlockPos candidate) {
         return isGroundProjectionTarget(candidate) || isWaterProjectionTarget(candidate);
+    }
+
+    private boolean shouldProjectRawTarget(BlockPos rawTarget) {
+        return !isRawTargetGrounded(rawTarget) && !isRawTargetSwimmable(rawTarget);
+    }
+
+    private boolean isRawTargetGrounded(BlockPos rawTarget) {
+        var center = anchorCenter(rawTarget);
+
+        return hasSupportAt((int) Math.floor(center.x), rawTarget.getY(), (int) Math.floor(center.z));
+    }
+
+    private boolean isRawTargetSwimmable(BlockPos rawTarget) {
+        if (!features.waterPathfinding() || !isTerrainAllowed(TerrainType.WATER)) {
+            return false;
+        }
+
+        var center = anchorCenter(rawTarget);
+        var cursor = new BlockPos(
+            (int) Math.floor(center.x),
+            rawTarget.getY(),
+            (int) Math.floor(center.z)
+        );
+
+        return level.getBlockState(cursor).getFluidState().is(FluidTags.WATER);
     }
 
     private boolean isGroundProjectionTarget(BlockPos candidate) {
@@ -1710,7 +1747,8 @@ public final class PathNavigator {
         }
 
         var targetMoved = lastComputedTargetPos == null
-            || targetPos.distSqr(lastComputedTargetPos) >= MIN_TARGET_MOVE_DISTANCE_SQUARED;
+            || targetPos.distSqr(lastComputedTargetPos) >= MIN_TARGET_MOVE_DISTANCE_SQUARED
+            || hasRawTargetMovedForRecalculation();
 
         if (targetMoved) {
             if (tryReuseCurrentPathPrefix(targetPos)) {
@@ -1722,7 +1760,7 @@ public final class PathNavigator {
                 planner.clear();
             }
 
-            navigateTo(entityPos, targetPos);
+            navigateTo(entityPos, activeRawTargetPos());
 
             // Advance past any nodes the entity has already reached so the new
             // path doesn't briefly target the start node behind the entity.
@@ -1730,6 +1768,18 @@ public final class PathNavigator {
                 advanceWaypoints(entityX, entityY, entityZ, entityWidth, entityHeight);
             }
         }
+    }
+
+    private boolean hasRawTargetMovedForRecalculation() {
+        if (rawTargetPos == null || lastComputedRawTargetPos == null) {
+            return false;
+        }
+
+        var threshold = usesGroundedTargetProjection() && shouldProjectRawTarget(rawTargetPos)
+            ? TARGET_PROJECTION_REUSE_DISTANCE_SQUARED
+            : MIN_TARGET_MOVE_DISTANCE_SQUARED;
+
+        return rawTargetPos.distSqr(lastComputedRawTargetPos) >= threshold;
     }
 
     private boolean tryReuseCurrentPathPrefix(BlockPos target) {
@@ -1752,6 +1802,7 @@ public final class PathNavigator {
         currentPath = new BLibPath(reusedNodes, true);
         currentTerrain = currentPath.getCurrentNode().getTerrainType();
         lastComputedTargetPos = target;
+        lastComputedRawTargetPos = activeRawTargetPos();
         lastPathComputeTick = tickCount;
         lastPathComputeNanos = 0L;
         markFeatureUsed(PathfindingFeature.PATH_PREFIX_REUSE);

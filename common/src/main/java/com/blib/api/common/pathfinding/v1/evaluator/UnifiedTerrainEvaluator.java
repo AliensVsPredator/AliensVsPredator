@@ -188,7 +188,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     @Override
     public PathNode getStartNode(BlockPos entityPos) {
-        return getOrCreateResolvedNode(entityPos, config.getMaxFallDistance());
+        return getOrCreateStartNode(entityPos);
     }
 
     @Override
@@ -1400,6 +1400,18 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     private PathNode getOrCreateWaterNode(int x, int y, int z) {
         return nodePool.getOrCreate(x, y, z, TerrainType.WATER, PathPosture.STANDING);
+    }
+
+    private PathNode getOrCreateStartNode(BlockPos pos) {
+        var node = getPreferredNode(pos.getX(), pos.getY(), pos.getZ());
+
+        if (node != null) {
+            return node;
+        }
+
+        // Current-position starts must stay on the entity's actual anchor. Wide entities can be partially unsupported
+        // while standing at a ledge, and snapping this node downward removes the top-edge drop transition from A*.
+        return getOrCreateGroundNode(pos.getX(), pos.getY(), pos.getZ());
     }
 
     private PathNode getOrCreateResolvedNode(BlockPos pos, int maxStepDown) {
