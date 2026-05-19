@@ -156,7 +156,7 @@ public final class PathNavigator {
 
     private int pendingFeaturesRevision;
 
-    private int pathfindingFeatureUsageMask;
+    private long pathfindingFeatureUsageMask;
 
     private double lastEntityX;
 
@@ -751,9 +751,9 @@ public final class PathNavigator {
         return featuresRevision;
     }
 
-    public int consumePathfindingFeatureUsageMask() {
+    public long consumePathfindingFeatureUsageMask() {
         var mask = pathfindingFeatureUsageMask;
-        pathfindingFeatureUsageMask = 0;
+        pathfindingFeatureUsageMask = 0L;
 
         return mask;
     }
@@ -2231,11 +2231,15 @@ public final class PathNavigator {
             && Math.abs(left.z - right.z) <= COLLISION_EPSILON;
     }
 
+    public void markPathfindingFeatureUsed(PathfindingFeature feature) {
+        markFeatureUsage(feature.mask());
+    }
+
     private void markFeatureUsed(PathfindingFeature feature) {
         markFeatureUsage(feature.mask());
     }
 
-    private void markFeatureUsage(int mask) {
+    private void markFeatureUsage(long mask) {
         pathfindingFeatureUsageMask |= mask;
     }
 

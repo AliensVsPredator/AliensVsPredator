@@ -68,7 +68,7 @@ public final class BLibPathFinder {
 
     private @Nullable PathSearchSnapshot lastSearchSnapshot;
 
-    private int lastFeatureUsageMask;
+    private long lastFeatureUsageMask;
 
     // --- Pooled search data structures ---
     private final PriorityQueue<PathNode> openSet = new PriorityQueue<>();
@@ -130,9 +130,9 @@ public final class BLibPathFinder {
         return lastSearchSnapshot;
     }
 
-    public int consumeFeatureUsageMask() {
+    public long consumeFeatureUsageMask() {
         var mask = lastFeatureUsageMask;
-        lastFeatureUsageMask = 0;
+        lastFeatureUsageMask = 0L;
 
         return mask;
     }
@@ -333,7 +333,7 @@ public final class BLibPathFinder {
         @Nullable Set<Long> corridor,
         PathSearchMode mode
     ) {
-        lastFeatureUsageMask = 0;
+        lastFeatureUsageMask = 0L;
         var recorder = debugEnabled ? new PathSearchDebugRecorder() : null;
         var searchConfig = config;
         var activeTuning = tuning;
@@ -345,7 +345,7 @@ public final class BLibPathFinder {
             }
 
             var path = searchBlocksWithDiagnostics(startPos, targetPos, corridor, mode, recorder, searchConfig, activeTuning);
-            lastFeatureUsageMask = recorder != null ? recorder.featureUsageMask() : 0;
+            lastFeatureUsageMask = recorder != null ? recorder.featureUsageMask() : 0L;
 
             return path;
         } finally {

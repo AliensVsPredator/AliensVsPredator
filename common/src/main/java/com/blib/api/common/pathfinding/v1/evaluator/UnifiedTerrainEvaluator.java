@@ -229,7 +229,9 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             count = appendHorizontalPredecessorCandidates(node, predecessors, count, DIAGONAL_OFFSETS);
         }
 
-        count = appendWaterVerticalPredecessorCandidates(node, predecessors, count);
+        if (usesWaterVerticalSwim()) {
+            count = appendWaterVerticalPredecessorCandidates(node, predecessors, count);
+        }
 
         if (features.dropDownOpenings()) {
             count = appendDropOpeningPredecessorCandidates(node, predecessors, count);
@@ -259,7 +261,9 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             count = appendWaterNeighbors(node, neighbors, count, DIAGONAL_OFFSETS);
         }
 
-        count = appendWaterVerticalNeighbors(node, neighbors, count);
+        if (usesWaterVerticalSwim()) {
+            count = appendWaterVerticalNeighbors(node, neighbors, count);
+        }
 
         return count;
     }
@@ -276,6 +280,22 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     private boolean usesWaterPathfinding() {
         return features.waterPathfinding() && snapshotCosts.containsKey(TerrainType.WATER);
+    }
+
+    private boolean usesWaterEntry() {
+        return usesWaterPathfinding() && features.waterEntry();
+    }
+
+    private boolean usesWaterVerticalSwim() {
+        return usesWaterPathfinding() && features.waterVerticalSwim();
+    }
+
+    private boolean usesWaterSlopeSwim() {
+        return usesWaterPathfinding() && features.waterSlopeSwim();
+    }
+
+    private boolean usesWaterExit() {
+        return usesWaterPathfinding() && features.waterExit();
     }
 
     private boolean usesSearchCaching() {
@@ -324,7 +344,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     }
 
     private int appendWaterVerticalPredecessorCandidates(PathNode node, PathNode[] predecessors, int count) {
-        if (!usesWaterPathfinding()) {
+        if (!usesWaterVerticalSwim()) {
             return count;
         }
 
@@ -415,13 +435,29 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     }
 
     private int appendWaterVerticalNeighbors(PathNode node, PathNode[] neighbors, int count) {
-        var swimUp = tryWaterMovementNeighbor(node, node.getX(), node.getY() + 1, node.getZ(), 0, 0);
+        var swimUp = tryWaterMovementNeighbor(
+            node,
+            node.getX(),
+            node.getY() + 1,
+            node.getZ(),
+            0,
+            0,
+            PathfindingFeature.WATER_VERTICAL_SWIM
+        );
 
         if (swimUp != null) {
             neighbors[count++] = swimUp;
         }
 
-        var swimDown = tryWaterMovementNeighbor(node, node.getX(), node.getY() - 1, node.getZ(), 0, 0);
+        var swimDown = tryWaterMovementNeighbor(
+            node,
+            node.getX(),
+            node.getY() - 1,
+            node.getZ(),
+            0,
+            0,
+            PathfindingFeature.WATER_VERTICAL_SWIM
+        );
 
         if (swimDown != null) {
             neighbors[count++] = swimDown;
@@ -457,23 +493,27 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     private @Nullable PathNode findWaterTravelNeighbor(PathNode from, int dx, int dz) {
         var x = from.getX() + dx;
         var z = from.getZ() + dz;
-        var sameLevel = tryWaterMovementNeighbor(from, x, from.getY(), z, dx, dz);
+        var sameLevel = tryWaterMovementNeighbor(from, x, from.getY(), z, dx, dz, PathfindingFeature.WATER_PATHFINDING);
 
         if (sameLevel != null) {
             return sameLevel;
         }
 
-        var swimUp = tryWaterMovementNeighbor(from, x, from.getY() + 1, z, dx, dz);
+        if (!usesWaterSlopeSwim()) {
+            return null;
+        }
+
+        var swimUp = tryWaterMovementNeighbor(from, x, from.getY() + 1, z, dx, dz, PathfindingFeature.WATER_SLOPE_SWIM);
 
         if (swimUp != null) {
             return swimUp;
         }
 
-        return tryWaterMovementNeighbor(from, x, from.getY() - 1, z, dx, dz);
+        return tryWaterMovementNeighbor(from, x, from.getY() - 1, z, dx, dz, PathfindingFeature.WATER_SLOPE_SWIM);
     }
 
     private @Nullable PathNode findWaterExitNeighbor(PathNode from, int dx, int dz) {
-        if (dx == 0 && dz == 0) {
+        if (!usesWaterExit() || (dx == 0 && dz == 0)) {
             return null;
         }
 
@@ -511,17 +551,25 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             return null;
         }
 
-        return markWaterMovementFeatureUsed(ground, dx, dz);
+        return markWaterMovementFeatureUsed(ground, dx, dz, PathfindingFeature.WATER_EXIT);
     }
 
-    private @Nullable PathNode tryWaterMovementNeighbor(PathNode from, int x, int y, int z, int dx, int dz) {
+    private @Nullable PathNode tryWaterMovementNeighbor(
+        PathNode from,
+        int x,
+        int y,
+        int z,
+        int dx,
+        int dz,
+        PathfindingFeature feature
+    ) {
         var water = tryCreateWaterNode(x, y, z);
 
         if (water == null || !hasMovementClearance(from, water, dx, dz)) {
             return null;
         }
 
-        return markWaterMovementFeatureUsed(water, dx, dz);
+        return markWaterMovementFeatureUsed(water, dx, dz, feature);
     }
 
     private @Nullable PathNode findGroundNeighbor(PathNode from, int dx, int dz) {
@@ -603,20 +651,28 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     }
 
     private @Nullable PathNode findWaterEntryNeighbor(PathNode from, int dx, int dz) {
-        if (!usesWaterPathfinding()) {
+        if (!usesWaterEntry()) {
             return null;
         }
 
         var x = from.getX() + dx;
         var z = from.getZ() + dz;
-        var sameLevel = tryWaterMovementNeighbor(from, x, from.getY(), z, dx, dz);
+        var sameLevel = tryWaterMovementNeighbor(from, x, from.getY(), z, dx, dz, PathfindingFeature.WATER_ENTRY);
 
         if (sameLevel != null) {
             return sameLevel;
         }
 
         for (var stepDown = 1; stepDown <= config.getMaxFallDistance(); stepDown++) {
-            var steppedDown = tryWaterMovementNeighbor(from, x, from.getY() - stepDown, z, dx, dz);
+            var steppedDown = tryWaterMovementNeighbor(
+                from,
+                x,
+                from.getY() - stepDown,
+                z,
+                dx,
+                dz,
+                PathfindingFeature.WATER_ENTRY
+            );
 
             if (steppedDown != null) {
                 return steppedDown;
@@ -624,7 +680,15 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
 
         for (var stepUp = 1; stepUp <= config.getMaxStepHeight(); stepUp++) {
-            var steppedUp = tryWaterMovementNeighbor(from, x, from.getY() + stepUp, z, dx, dz);
+            var steppedUp = tryWaterMovementNeighbor(
+                from,
+                x,
+                from.getY() + stepUp,
+                z,
+                dx,
+                dz,
+                PathfindingFeature.WATER_ENTRY
+            );
 
             if (steppedUp != null) {
                 return steppedUp;
@@ -634,8 +698,9 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         return null;
     }
 
-    private PathNode markWaterMovementFeatureUsed(PathNode node, int dx, int dz) {
+    private PathNode markWaterMovementFeatureUsed(PathNode node, int dx, int dz, PathfindingFeature feature) {
         markFeatureUsed(PathfindingFeature.WATER_PATHFINDING);
+        markFeatureUsed(feature);
 
         if (dx != 0 && dz != 0) {
             markFeatureUsed(PathfindingFeature.DIAGONAL_MOVEMENT);

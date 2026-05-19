@@ -29,6 +29,13 @@ public record PathfindingFeatures(
     boolean crawlThroughGaps,
     boolean descendingStairEdgeReach,
     boolean waterPathfinding,
+    boolean waterEntry,
+    boolean waterVerticalSwim,
+    boolean waterSlopeSwim,
+    boolean waterExit,
+    boolean waterMovementAssist,
+    boolean waterExitBreach,
+    boolean waterStepUpPreLift,
     boolean searchCaching,
     boolean terrainPrecheck,
     boolean anyAngleSmoothingCache,
@@ -102,6 +109,13 @@ public record PathfindingFeatures(
             true,
             true,
             true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
             true
         );
     }
@@ -125,21 +139,21 @@ public record PathfindingFeatures(
         .with(PathfindingFeature.PATH_SKIP_AHEAD, false)
         .with(PathfindingFeature.SECTION_CORRIDOR, false)
         .with(PathfindingFeature.DROP_DOWN_OPENINGS, false)
-        .with(PathfindingFeature.WATER_PATHFINDING, false);
+        .withWaterFeatures(false);
 
     public static final PathfindingFeatures STAIRS_ONLY = LEGACY_PERMISSIVE
         .with(PathfindingFeature.DIAGONAL_MOVEMENT, false)
         .with(PathfindingFeature.PATH_SKIP_AHEAD, false)
         .with(PathfindingFeature.SECTION_CORRIDOR, false)
-        .with(PathfindingFeature.WATER_PATHFINDING, false);
+        .withWaterFeatures(false);
 
     public static final PathfindingFeatures BASIC_GROUND = LEGACY_PERMISSIVE
         .with(PathfindingFeature.DIAGONAL_MOVEMENT, false)
         .with(PathfindingFeature.SECTION_CORRIDOR, false)
-        .with(PathfindingFeature.WATER_PATHFINDING, false);
+        .withWaterFeatures(false);
 
-    public int toMask() {
-        var mask = 0;
+    public long toMask() {
+        var mask = 0L;
 
         for (var feature : PathfindingFeature.values()) {
             if (enabled(feature)) {
@@ -176,6 +190,13 @@ public record PathfindingFeatures(
             case CRAWL_THROUGH_GAPS -> crawlThroughGaps;
             case DESCENDING_STAIR_EDGE_REACH -> descendingStairEdgeReach;
             case WATER_PATHFINDING -> waterPathfinding;
+            case WATER_ENTRY -> waterEntry;
+            case WATER_VERTICAL_SWIM -> waterVerticalSwim;
+            case WATER_SLOPE_SWIM -> waterSlopeSwim;
+            case WATER_EXIT -> waterExit;
+            case WATER_MOVEMENT_ASSIST -> waterMovementAssist;
+            case WATER_EXIT_BREACH -> waterExitBreach;
+            case WATER_STEP_UP_PRE_LIFT -> waterStepUpPreLift;
             case SEARCH_CACHING -> searchCaching;
             case TERRAIN_PRECHECK -> terrainPrecheck;
             case ANY_ANGLE_SMOOTHING_CACHE -> anyAngleSmoothingCache;
@@ -213,6 +234,13 @@ public record PathfindingFeatures(
             feature == PathfindingFeature.CRAWL_THROUGH_GAPS ? enabled : crawlThroughGaps,
             feature == PathfindingFeature.DESCENDING_STAIR_EDGE_REACH ? enabled : descendingStairEdgeReach,
             feature == PathfindingFeature.WATER_PATHFINDING ? enabled : waterPathfinding,
+            feature == PathfindingFeature.WATER_ENTRY ? enabled : waterEntry,
+            feature == PathfindingFeature.WATER_VERTICAL_SWIM ? enabled : waterVerticalSwim,
+            feature == PathfindingFeature.WATER_SLOPE_SWIM ? enabled : waterSlopeSwim,
+            feature == PathfindingFeature.WATER_EXIT ? enabled : waterExit,
+            feature == PathfindingFeature.WATER_MOVEMENT_ASSIST ? enabled : waterMovementAssist,
+            feature == PathfindingFeature.WATER_EXIT_BREACH ? enabled : waterExitBreach,
+            feature == PathfindingFeature.WATER_STEP_UP_PRE_LIFT ? enabled : waterStepUpPreLift,
             feature == PathfindingFeature.SEARCH_CACHING ? enabled : searchCaching,
             feature == PathfindingFeature.TERRAIN_PRECHECK ? enabled : terrainPrecheck,
             feature == PathfindingFeature.ANY_ANGLE_SMOOTHING_CACHE ? enabled : anyAngleSmoothingCache,
@@ -224,7 +252,23 @@ public record PathfindingFeatures(
         );
     }
 
+    public PathfindingFeatures withWaterFeatures(boolean enabled) {
+        var current = this;
+
+        for (var feature : PathfindingFeature.values()) {
+            if (feature.category() == PathfindingFeature.Category.WATER) {
+                current = current.with(feature, enabled);
+            }
+        }
+
+        return current;
+    }
+
     public static PathfindingFeatures fromMask(int mask) {
+        return fromMask(Integer.toUnsignedLong(mask));
+    }
+
+    public static PathfindingFeatures fromMask(long mask) {
         return new PathfindingFeatures(
             enabled(mask, PathfindingFeature.SAME_LEVEL_MOVEMENT),
             enabled(mask, PathfindingFeature.DIAGONAL_MOVEMENT),
@@ -250,6 +294,13 @@ public record PathfindingFeatures(
             enabled(mask, PathfindingFeature.CRAWL_THROUGH_GAPS),
             enabled(mask, PathfindingFeature.DESCENDING_STAIR_EDGE_REACH),
             enabled(mask, PathfindingFeature.WATER_PATHFINDING),
+            enabled(mask, PathfindingFeature.WATER_ENTRY),
+            enabled(mask, PathfindingFeature.WATER_VERTICAL_SWIM),
+            enabled(mask, PathfindingFeature.WATER_SLOPE_SWIM),
+            enabled(mask, PathfindingFeature.WATER_EXIT),
+            enabled(mask, PathfindingFeature.WATER_MOVEMENT_ASSIST),
+            enabled(mask, PathfindingFeature.WATER_EXIT_BREACH),
+            enabled(mask, PathfindingFeature.WATER_STEP_UP_PRE_LIFT),
             enabled(mask, PathfindingFeature.SEARCH_CACHING),
             enabled(mask, PathfindingFeature.TERRAIN_PRECHECK),
             enabled(mask, PathfindingFeature.ANY_ANGLE_SMOOTHING_CACHE),
@@ -261,7 +312,7 @@ public record PathfindingFeatures(
         );
     }
 
-    private static boolean enabled(int mask, PathfindingFeature feature) {
+    private static boolean enabled(long mask, PathfindingFeature feature) {
         return (mask & feature.mask()) != 0;
     }
 }

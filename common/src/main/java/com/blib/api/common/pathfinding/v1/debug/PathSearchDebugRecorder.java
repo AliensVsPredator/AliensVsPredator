@@ -17,7 +17,7 @@ public final class PathSearchDebugRecorder {
 
     private final EnumMap<PathRejectionReason, MutableSummary> rejections = new EnumMap<>(PathRejectionReason.class);
 
-    private int featureUsageMask;
+    private long featureUsageMask;
 
     public void markFeatureUsed(PathfindingFeature feature) {
         featureUsageMask |= feature.mask();
@@ -48,7 +48,7 @@ public final class PathSearchDebugRecorder {
         return out;
     }
 
-    public int featureUsageMask() {
+    public long featureUsageMask() {
         return featureUsageMask;
     }
 

@@ -59,8 +59,8 @@ public record S2CPathfindingNavDebugPayload(
     int failureCooldownRemainingTicks,
     int stuckTimeoutTicks,
     int pathRecalculateIntervalTicks,
-    int pathfindingFeatureMask,
-    int pathfindingFeatureUsageMask,
+    long pathfindingFeatureMask,
+    long pathfindingFeatureUsageMask,
     int pathfindingProfileOrdinal,
     int pathfindingFeatureRevision,
     int maxSearchNodes,
@@ -129,8 +129,8 @@ public record S2CPathfindingNavDebugPayload(
                     StreamCodecs.INT.decode(schema, buf),
                     StreamCodecs.INT.decode(schema, buf),
                     StreamCodecs.INT.decode(schema, buf),
-                    StreamCodecs.INT.decode(schema, buf),
-                    StreamCodecs.INT.decode(schema, buf),
+                    StreamCodecs.LONG.decode(schema, buf),
+                    StreamCodecs.LONG.decode(schema, buf),
                     StreamCodecs.INT.decode(schema, buf),
                     StreamCodecs.INT.decode(schema, buf),
                     StreamCodecs.INT.decode(schema, buf),
@@ -193,8 +193,8 @@ public record S2CPathfindingNavDebugPayload(
                 StreamCodecs.INT.encode(schema, buf, value.failureCooldownRemainingTicks);
                 StreamCodecs.INT.encode(schema, buf, value.stuckTimeoutTicks);
                 StreamCodecs.INT.encode(schema, buf, value.pathRecalculateIntervalTicks);
-                StreamCodecs.INT.encode(schema, buf, value.pathfindingFeatureMask);
-                StreamCodecs.INT.encode(schema, buf, value.pathfindingFeatureUsageMask);
+                StreamCodecs.LONG.encode(schema, buf, value.pathfindingFeatureMask);
+                StreamCodecs.LONG.encode(schema, buf, value.pathfindingFeatureUsageMask);
                 StreamCodecs.INT.encode(schema, buf, value.pathfindingProfileOrdinal);
                 StreamCodecs.INT.encode(schema, buf, value.pathfindingFeatureRevision);
                 StreamCodecs.INT.encode(schema, buf, value.maxSearchNodes);

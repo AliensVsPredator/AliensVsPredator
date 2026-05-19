@@ -11,6 +11,7 @@ import net.minecraft.world.phys.Vec3;
 
 import com.blib.api.common.entity.v1.EntityUtil;
 import com.blib.api.common.pathfinding.v1.debug.PathDebugUtil;
+import com.blib.api.common.pathfinding.v1.movement.PathMovementController;
 import com.blib.api.common.pathfinding.v1.navigator.PathNavigator;
 import com.blib.api.common.pathfinding.v1.navigator.PathNavigatorUser;
 
@@ -106,13 +107,7 @@ public final class NeoMoveToPosAction {
             return Result.NO_PATH;
         }
 
-        actor.getMoveControl()
-            .setWantedPosition(
-                waypointCenter.x,
-                waypointCenter.y,
-                waypointCenter.z,
-                speedMultiplier
-            );
+        PathMovementController.follow(actor, navigator, waypointCenter, speedMultiplier);
 
         return Result.MOVING;
     }

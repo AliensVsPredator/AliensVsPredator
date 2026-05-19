@@ -129,12 +129,53 @@ public final class PathDebugUtil {
 
     private static @Nullable PathSearchSnapshot currentSearchSnapshot(PathNavigator navigator) {
         var snapshot = navigator.getLastSearchSnapshot();
+        var currentPath = navigator.getCurrentPath();
+
+        if (currentPath != null && currentPath.getNodeCount() > 0) {
+            if (snapshot == null || !snapshotMatchesCurrentPath(snapshot, currentPath)) {
+                return currentPathSnapshot(navigator);
+            }
+        }
 
         if (snapshot != null) {
             return snapshot;
         }
 
         return currentPathSnapshot(navigator);
+    }
+
+    private static boolean snapshotMatchesCurrentPath(PathSearchSnapshot snapshot, BLibPath path) {
+        if (snapshot.diagnostics().pathLength() != path.getNodeCount()) {
+            return false;
+        }
+
+        var snapshotPathNodes = new DebugNodeEntry[path.getNodeCount()];
+
+        for (var node : snapshot.nodes()) {
+            if (node.pathIndex() >= 0 && node.pathIndex() < snapshotPathNodes.length) {
+                snapshotPathNodes[node.pathIndex()] = node;
+            }
+        }
+
+        for (int i = 0; i < path.getNodeCount(); i++) {
+            var pathNode = path.getNode(i);
+            var snapshotNode = snapshotPathNodes[i];
+
+            if (snapshotNode == null) {
+                return false;
+            }
+
+            if (
+                snapshotNode.x() != pathNode.getX()
+                    || snapshotNode.y() != pathNode.getY()
+                    || snapshotNode.z() != pathNode.getZ()
+                    || snapshotNode.terrainType() != pathNode.getTerrainType().ordinal()
+            ) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static @Nullable PathSearchSnapshot currentPathSnapshot(PathNavigator navigator) {
