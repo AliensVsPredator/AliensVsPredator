@@ -18,7 +18,7 @@ public enum PathfindingFeature {
     DOOR_OPENING(1 << 10, "Door Opening"),
     ASYNC_PATHFINDING(1 << 11, "Async Search"),
     COLLISION_SHAPE_WAYPOINTS(1 << 12, "Shape Waypoints"),
-    DIAGONAL_CORNER_CLEARANCE(1 << 13, "Diagonal Clearance"),
+    HORIZONTAL_DIAGONAL_CLEARANCE(1 << 13, "Diag Horizontal"),
     FOOTPRINT_CLEARANCE(1 << 14, "Footprint Clearance"),
     ANY_ANGLE_SMOOTHING(1 << 15, "Any-Angle Smoothing"),
     STEPPED_FOOTPRINT_SUPPORT(1 << 16, "Stepped Footprint"),
@@ -32,7 +32,11 @@ public enum PathfindingFeature {
     ANY_ANGLE_SMOOTHING_CACHE(1 << 24, "Smoothing Cache"),
     FOOTPRINT_SCAN_CACHE(1 << 25, "Footprint Cache"),
     PATH_PREFIX_REUSE(1 << 26, "Path Reuse"),
-    GROUNDED_TARGET_PROJECTION(1 << 27, "Target Projection");
+    GROUNDED_TARGET_PROJECTION(1 << 27, "Target Projection"),
+    BIDIRECTIONAL_SEARCH(1 << 28, "Bidirectional"),
+    BALANCED_BIDIRECTIONAL_EXPANSION(1 << 29, "Balanced Bidir"),
+    VERTICAL_DIAGONAL_CLEARANCE(1 << 30, "Diag Vertical"),
+    DIAGONAL_SWEPT_SHAPE_CLEARANCE(1 << 31, "Diag Sweep");
 
     private final int mask;
 

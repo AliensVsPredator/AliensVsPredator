@@ -41,6 +41,22 @@ public interface TerrainEvaluator {
     int getNeighbors(PathNode node, PathNode[] neighbors);
 
     /**
+     * Returns true when this evaluator can safely generate reverse edges for bidirectional search. Reverse edges must
+     * preserve the same movement legality as {@link #getNeighbors(PathNode, PathNode[])}.
+     */
+    default boolean supportsBidirectionalSearch() {
+        return false;
+    }
+
+    /**
+     * Populates the predecessors array with nodes that can legally move forward into the given node. Implementations
+     * that do not support bidirectional search may leave this empty.
+     */
+    default int getPredecessors(PathNode node, PathNode[] predecessors) {
+        return 0;
+    }
+
+    /**
      * Returns the traversal cost multiplier for the given terrain type. Costs are snapshotted at {@link #prepare} time
      * for consistency within a search.
      */

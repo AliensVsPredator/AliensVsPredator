@@ -45,7 +45,7 @@ import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
  */
 public final class BLibPathFinder {
 
-    private static final int MAX_NEIGHBORS = 40;
+    private static final int MAX_NEIGHBORS = 256;
 
     private static final ExecutorService PATHFINDING_EXECUTOR = Executors.newFixedThreadPool(
         Math.max(1, Runtime.getRuntime().availableProcessors() / 2),
@@ -372,6 +372,21 @@ public final class BLibPathFinder {
         var resolvedStartPos = new BlockPos(startNode.getX(), startNode.getY(), startNode.getZ());
         var goalNode = evaluator.getGoalNode(resolvedStartPos, targetPos);
 
+        if (shouldUseBidirectionalSearch()) {
+            markFeatureUsed(recorder, PathfindingFeature.BIDIRECTIONAL_SEARCH);
+            return searchBlocksBidirectionalWithDiagnostics(
+                startPos,
+                targetPos,
+                corridor,
+                bidirectionalMode(mode),
+                recorder,
+                searchConfig,
+                activeTuning,
+                startNode,
+                goalNode
+            );
+        }
+
         startNode.setGCost(0);
         startNode.setHCost(heuristic(startNode, goalNode, searchConfig));
 
@@ -490,6 +505,386 @@ public final class BLibPathFinder {
             : null;
 
         return path;
+    }
+
+    private boolean shouldUseBidirectionalSearch() {
+        return features.bidirectionalSearch() && evaluator.supportsBidirectionalSearch();
+    }
+
+    private boolean shouldExpandForwardBidirectional(
+        PriorityQueue<SearchRecord> forwardOpenSet,
+        PriorityQueue<SearchRecord> backwardOpenSet,
+        int visitedCount
+    ) {
+        if (forwardOpenSet.isEmpty()) {
+            return false;
+        }
+
+        if (backwardOpenSet.isEmpty()) {
+            return true;
+        }
+
+        if (features.balancedBidirectionalExpansion()) {
+            return (visitedCount & 1) == 0;
+        }
+
+        return forwardOpenSet.peek().totalCost() <= backwardOpenSet.peek().totalCost();
+    }
+
+    private PathSearchMode bidirectionalMode(PathSearchMode mode) {
+        return switch (mode) {
+            case CORRIDOR -> PathSearchMode.BIDIRECTIONAL_CORRIDOR;
+            case DIRECT_FALLBACK -> PathSearchMode.BIDIRECTIONAL_DIRECT_FALLBACK;
+            case DIRECT -> PathSearchMode.BIDIRECTIONAL_DIRECT;
+            case BIDIRECTIONAL_DIRECT, BIDIRECTIONAL_CORRIDOR, BIDIRECTIONAL_DIRECT_FALLBACK -> mode;
+        };
+    }
+
+    private @Nullable BLibPath searchBlocksBidirectionalWithDiagnostics(
+        BlockPos startPos,
+        BlockPos targetPos,
+        @Nullable Set<Long> corridor,
+        PathSearchMode mode,
+        @Nullable PathSearchDebugRecorder recorder,
+        SearchConfig searchConfig,
+        PathfindingTuning activeTuning,
+        PathNode startNode,
+        PathNode goalNode
+    ) {
+        var forwardOpenSet = new PriorityQueue<SearchRecord>();
+        var backwardOpenSet = new PriorityQueue<SearchRecord>();
+        var forwardRecords = new HashMap<PathNode, SearchRecord>();
+        var backwardRecords = new HashMap<PathNode, SearchRecord>();
+        var forwardClosed = new HashSet<PathNode>();
+        var backwardClosed = new HashSet<PathNode>();
+
+        closedNodes.clear();
+
+        var startRecord = new SearchRecord(startNode, null, 0.0f, heuristic(startNode, goalNode, searchConfig));
+        var goalRecord = new SearchRecord(goalNode, null, 0.0f, heuristic(goalNode, startNode, searchConfig));
+
+        forwardRecords.put(startNode, startRecord);
+        backwardRecords.put(goalNode, goalRecord);
+        forwardOpenSet.add(startRecord);
+        backwardOpenSet.add(goalRecord);
+
+        if (startNode.equals(goalNode)) {
+            var nodes = materializePath(List.of(startNode), true, goalNode, searchConfig);
+            var path = nodes != null ? new BLibPath(nodes, true) : null;
+            lastSearchSnapshot = debugEnabled
+                ? buildSnapshot(
+                    closedNodes,
+                    path,
+                    corridor,
+                    0,
+                    startPos,
+                    targetPos,
+                    startNode,
+                    goalNode,
+                    startNode,
+                    mode,
+                    PathSearchTermination.GOAL_REACHED,
+                    recorder,
+                    searchConfig
+                )
+                : null;
+
+            return path;
+        }
+
+        if (features.balancedBidirectionalExpansion()) {
+            markFeatureUsed(recorder, PathfindingFeature.BALANCED_BIDIRECTIONAL_EXPANSION);
+        }
+
+        var visitedCount = 0;
+        var bestForwardRecord = startRecord;
+        BidirectionalMeet meet = null;
+
+        while (
+            !forwardOpenSet.isEmpty()
+                && !backwardOpenSet.isEmpty()
+                && visitedCount < searchConfig.maxSearchNodes()
+        ) {
+            var expandForward = shouldExpandForwardBidirectional(forwardOpenSet, backwardOpenSet, visitedCount);
+            var expanded = expandForward
+                ? expandBidirectionalSide(
+                    forwardOpenSet,
+                    forwardRecords,
+                    backwardRecords,
+                    forwardClosed,
+                    corridor,
+                    goalNode,
+                    true,
+                    recorder,
+                    searchConfig,
+                    activeTuning
+                )
+                : expandBidirectionalSide(
+                    backwardOpenSet,
+                    backwardRecords,
+                    forwardRecords,
+                    backwardClosed,
+                    corridor,
+                    startNode,
+                    false,
+                    recorder,
+                    searchConfig,
+                    activeTuning
+                );
+
+            if (expanded == null) {
+                continue;
+            }
+
+            visitedCount++;
+
+            if (expanded.forwardRecord() != null) {
+                bestForwardRecord = closerToGoal(expanded.forwardRecord(), bestForwardRecord, goalNode)
+                    ? expanded.forwardRecord()
+                    : bestForwardRecord;
+            }
+
+            if (expanded.meet() != null) {
+                meet = expanded.meet();
+                break;
+            }
+        }
+
+        BLibPath path = null;
+        var bestNode = bestForwardRecord.node();
+        var termination = PathSearchTermination.OPEN_SET_EXHAUSTED;
+
+        if (meet != null) {
+            var nodes = reconstructBidirectionalNodes(meet.forwardRecord(), meet.backwardRecord(), searchConfig);
+            nodes = materializePath(nodes, true, goalNode, searchConfig);
+            path = nodes != null ? new BLibPath(nodes, true) : null;
+            bestNode = meet.forwardRecord().node();
+            termination = PathSearchTermination.GOAL_REACHED;
+        } else {
+            if (visitedCount >= searchConfig.maxSearchNodes()) {
+                termination = PathSearchTermination.BUDGET_EXHAUSTED;
+            } else if (bestForwardRecord == startRecord) {
+                termination = PathSearchTermination.START_ONLY;
+            }
+
+            if (features.partialPathResults() && bestForwardRecord != startRecord) {
+                markFeatureUsed(recorder, PathfindingFeature.PARTIAL_PATH_RESULTS);
+                var nodes = reconstructForwardNodes(bestForwardRecord, searchConfig);
+                nodes = materializePath(nodes, false, goalNode, searchConfig);
+                path = nodes != null ? new BLibPath(nodes, false) : null;
+            }
+        }
+
+        lastSearchSnapshot = debugEnabled
+            ? buildSnapshot(
+                closedNodes,
+                path,
+                corridor,
+                visitedCount,
+                startPos,
+                targetPos,
+                startNode,
+                goalNode,
+                bestNode,
+                mode,
+                termination,
+                recorder,
+                searchConfig
+            )
+            : null;
+
+        return path;
+    }
+
+    private @Nullable BidirectionalExpansion expandBidirectionalSide(
+        PriorityQueue<SearchRecord> openSet,
+        HashMap<PathNode, SearchRecord> ownRecords,
+        HashMap<PathNode, SearchRecord> otherRecords,
+        HashSet<PathNode> ownClosed,
+        @Nullable Set<Long> corridor,
+        PathNode heuristicTarget,
+        boolean forward,
+        @Nullable PathSearchDebugRecorder recorder,
+        SearchConfig searchConfig,
+        PathfindingTuning activeTuning
+    ) {
+        while (!openSet.isEmpty()) {
+            var current = openSet.poll();
+
+            if (ownRecords.get(current.node()) != current) {
+                continue;
+            }
+
+            if (!ownClosed.add(current.node())) {
+                reject(recorder, PathRejectionReason.ALREADY_CLOSED, current.node());
+                continue;
+            }
+
+            if (debugEnabled) {
+                current.node().setGCost(current.gCost());
+                current.node().setHCost(current.hCost());
+                current.node().setClosed(true);
+                closedNodes.add(current.node());
+            }
+
+            var otherRecord = otherRecords.get(current.node());
+
+            if (otherRecord != null) {
+                return new BidirectionalExpansion(
+                    forward ? current : otherRecord,
+                    new BidirectionalMeet(forward ? current : otherRecord, forward ? otherRecord : current)
+                );
+            }
+
+            var neighborCount = forward
+                ? evaluator.getNeighbors(current.node(), neighborBuffer)
+                : evaluator.getPredecessors(current.node(), neighborBuffer);
+
+            for (int i = 0; i < neighborCount; i++) {
+                var neighbor = neighborBuffer[i];
+
+                if (ownClosed.contains(neighbor)) {
+                    reject(recorder, PathRejectionReason.ALREADY_CLOSED, neighbor);
+                    continue;
+                }
+
+                if (corridor != null && !SectionCorridorFinder.isInCorridor(neighbor, corridor)) {
+                    reject(recorder, PathRejectionReason.OUTSIDE_CORRIDOR, neighbor);
+                    continue;
+                }
+
+                var edgeCost = bidirectionalEdgeCost(current.node(), neighbor, forward);
+                var tentativeG = current.gCost() + edgeCost;
+                var existing = ownRecords.get(neighbor);
+
+                if (
+                    existing != null
+                        && tentativeG >= existing.gCost() - activeTuning.minImprovement()
+                ) {
+                    reject(recorder, PathRejectionReason.NOT_BETTER, neighbor);
+                    continue;
+                }
+
+                var nextRecord = new SearchRecord(
+                    neighbor,
+                    current,
+                    tentativeG,
+                    heuristic(neighbor, heuristicTarget, searchConfig)
+                );
+
+                ownRecords.put(neighbor, nextRecord);
+                openSet.add(nextRecord);
+
+                otherRecord = otherRecords.get(neighbor);
+
+                if (otherRecord != null) {
+                    return new BidirectionalExpansion(
+                        forward ? nextRecord : null,
+                        new BidirectionalMeet(forward ? nextRecord : otherRecord, forward ? otherRecord : nextRecord)
+                    );
+                }
+            }
+
+            return new BidirectionalExpansion(forward ? current : null, null);
+        }
+
+        return null;
+    }
+
+    private float bidirectionalEdgeCost(PathNode current, PathNode neighbor, boolean forward) {
+        if (forward) {
+            return current.distanceTo(neighbor) * evaluator.getTerrainCost(neighbor.getTerrainType())
+                + neighbor.getPendingCostMalus();
+        }
+
+        return neighbor.distanceTo(current) * evaluator.getTerrainCost(current.getTerrainType())
+            + current.getPendingCostMalus();
+    }
+
+    private boolean closerToGoal(SearchRecord candidate, SearchRecord currentBest, PathNode goalNode) {
+        return candidate.node().distanceSquaredTo(goalNode) < currentBest.node().distanceSquaredTo(goalNode);
+    }
+
+    private List<PathNode> reconstructBidirectionalNodes(
+        SearchRecord forwardMeet,
+        SearchRecord backwardMeet,
+        SearchConfig searchConfig
+    ) {
+        var nodes = reconstructForwardNodes(forwardMeet, searchConfig);
+        var current = backwardMeet.parent();
+
+        while (current != null && nodes.size() < searchConfig.maxPathLength()) {
+            nodes.add(current.node());
+            current = current.parent();
+        }
+
+        return nodes;
+    }
+
+    private List<PathNode> reconstructForwardNodes(SearchRecord endRecord, SearchConfig searchConfig) {
+        var nodes = new ArrayList<PathNode>();
+        var current = endRecord;
+
+        while (current != null && nodes.size() < searchConfig.maxPathLength()) {
+            nodes.add(current.node());
+            current = current.parent();
+        }
+
+        Collections.reverse(nodes);
+
+        return nodes;
+    }
+
+    private @Nullable List<PathNode> materializePath(
+        List<PathNode> nodes,
+        boolean reached,
+        PathNode goalNode,
+        SearchConfig searchConfig
+    ) {
+        if (nodes.isEmpty()) {
+            return null;
+        }
+
+        var materialized = new ArrayList<PathNode>(Math.min(nodes.size(), searchConfig.maxPathLength()));
+        var start = nodes.getFirst();
+
+        start.setParent(null);
+        start.setGCost(0.0f);
+        start.setHCost(heuristic(start, goalNode, searchConfig));
+        materialized.add(start);
+
+        var totalCost = 0.0f;
+
+        for (var index = 1; index < nodes.size() && materialized.size() < searchConfig.maxPathLength(); index++) {
+            var from = nodes.get(index - 1);
+            var to = nodes.get(index);
+            var neighborCount = evaluator.getNeighbors(from, neighborBuffer);
+            var committed = false;
+
+            for (var neighborIndex = 0; neighborIndex < neighborCount; neighborIndex++) {
+                var neighbor = neighborBuffer[neighborIndex];
+
+                if (!neighbor.equals(to)) {
+                    continue;
+                }
+
+                totalCost += from.distanceTo(neighbor) * evaluator.getTerrainCost(neighbor.getTerrainType())
+                    + neighbor.getPendingCostMalus();
+                neighbor.setParent(from);
+                neighbor.commitPendingTraversal();
+                neighbor.setGCost(totalCost);
+                neighbor.setHCost(heuristic(neighbor, goalNode, searchConfig));
+                materialized.add(neighbor);
+                committed = true;
+                break;
+            }
+
+            if (!committed) {
+                return reached ? null : materialized;
+            }
+        }
+
+        return materialized;
     }
 
     private PathSearchSnapshot buildSnapshot(
@@ -625,6 +1020,33 @@ public final class BLibPathFinder {
         var dz = (float) (to.getZ() - from.getZ());
 
         return (float) Math.sqrt(dx * dx + dy * dy + dz * dz) * searchConfig.heuristicWeight();
+    }
+
+    private record BidirectionalExpansion(
+        @Nullable SearchRecord forwardRecord,
+        @Nullable BidirectionalMeet meet
+    ) {}
+
+    private record BidirectionalMeet(
+        SearchRecord forwardRecord,
+        SearchRecord backwardRecord
+    ) {}
+
+    private record SearchRecord(
+        PathNode node,
+        @Nullable SearchRecord parent,
+        float gCost,
+        float hCost
+    ) implements Comparable<SearchRecord> {
+
+        private float totalCost() {
+            return gCost + hCost;
+        }
+
+        @Override
+        public int compareTo(SearchRecord other) {
+            return Float.compare(totalCost(), other.totalCost());
+        }
     }
 
     // --- Path post-processing pipeline ---

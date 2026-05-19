@@ -8,7 +8,10 @@ import com.just.codec.stream.StreamCodec;
 public enum PathSearchMode {
     DIRECT,
     CORRIDOR,
-    DIRECT_FALLBACK;
+    DIRECT_FALLBACK,
+    BIDIRECTIONAL_DIRECT,
+    BIDIRECTIONAL_CORRIDOR,
+    BIDIRECTIONAL_DIRECT_FALLBACK;
 
     public static final StreamCodec<PathSearchMode> CODEC = PathDebugCodecs.enumCodec(values());
 }

@@ -18,7 +18,9 @@ public record PathfindingFeatures(
     boolean doorOpening,
     boolean asyncPathfinding,
     boolean collisionShapeWaypoints,
-    boolean diagonalCornerClearance,
+    boolean horizontalDiagonalClearance,
+    boolean verticalDiagonalClearance,
+    boolean diagonalSweptShapeClearance,
     boolean footprintClearance,
     boolean anyAngleSmoothing,
     boolean steppedFootprintSupport,
@@ -32,7 +34,9 @@ public record PathfindingFeatures(
     boolean anyAngleSmoothingCache,
     boolean footprintScanCache,
     boolean pathPrefixReuse,
-    boolean groundedTargetProjection
+    boolean groundedTargetProjection,
+    boolean bidirectionalSearch,
+    boolean balancedBidirectionalExpansion
 ) {
 
     public PathfindingFeatures(
@@ -94,102 +98,13 @@ public record PathfindingFeatures(
             true,
             true,
             true,
+            true,
+            true,
+            true,
+            true,
             true
         );
     }
-
-    public static final PathfindingFeatures FLAT_ONLY = new PathfindingFeatures(
-        true,
-        false,
-        false,
-        false,
-        false,
-        false,
-        true,
-        false,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        false,
-        true,
-        true,
-        true,
-        false,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true
-    );
-
-    public static final PathfindingFeatures STAIRS_ONLY = new PathfindingFeatures(
-        true,
-        false,
-        true,
-        true,
-        true,
-        false,
-        true,
-        false,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        false,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true
-    );
-
-    public static final PathfindingFeatures BASIC_GROUND = new PathfindingFeatures(
-        true,
-        false,
-        true,
-        true,
-        true,
-        true,
-        true,
-        false,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        false,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true
-    );
 
     public static final PathfindingFeatures LEGACY_PERMISSIVE = new PathfindingFeatures(
         true,
@@ -199,28 +114,29 @@ public record PathfindingFeatures(
         true,
         true,
         true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
         true
     );
+
+    public static final PathfindingFeatures FLAT_ONLY = LEGACY_PERMISSIVE
+        .with(PathfindingFeature.DIAGONAL_MOVEMENT, false)
+        .with(PathfindingFeature.STEP_UP, false)
+        .with(PathfindingFeature.STEP_DOWN, false)
+        .with(PathfindingFeature.VERTICAL_TARGET_RESOLUTION, false)
+        .with(PathfindingFeature.PATH_SKIP_AHEAD, false)
+        .with(PathfindingFeature.SECTION_CORRIDOR, false)
+        .with(PathfindingFeature.DROP_DOWN_OPENINGS, false)
+        .with(PathfindingFeature.WATER_PATHFINDING, false);
+
+    public static final PathfindingFeatures STAIRS_ONLY = LEGACY_PERMISSIVE
+        .with(PathfindingFeature.DIAGONAL_MOVEMENT, false)
+        .with(PathfindingFeature.PATH_SKIP_AHEAD, false)
+        .with(PathfindingFeature.SECTION_CORRIDOR, false)
+        .with(PathfindingFeature.WATER_PATHFINDING, false);
+
+    public static final PathfindingFeatures BASIC_GROUND = LEGACY_PERMISSIVE
+        .with(PathfindingFeature.DIAGONAL_MOVEMENT, false)
+        .with(PathfindingFeature.SECTION_CORRIDOR, false)
+        .with(PathfindingFeature.WATER_PATHFINDING, false);
 
     public int toMask() {
         var mask = 0;
@@ -249,7 +165,9 @@ public record PathfindingFeatures(
             case DOOR_OPENING -> doorOpening;
             case ASYNC_PATHFINDING -> asyncPathfinding;
             case COLLISION_SHAPE_WAYPOINTS -> collisionShapeWaypoints;
-            case DIAGONAL_CORNER_CLEARANCE -> diagonalCornerClearance;
+            case HORIZONTAL_DIAGONAL_CLEARANCE -> horizontalDiagonalClearance;
+            case VERTICAL_DIAGONAL_CLEARANCE -> verticalDiagonalClearance;
+            case DIAGONAL_SWEPT_SHAPE_CLEARANCE -> diagonalSweptShapeClearance;
             case FOOTPRINT_CLEARANCE -> footprintClearance;
             case ANY_ANGLE_SMOOTHING -> anyAngleSmoothing;
             case STEPPED_FOOTPRINT_SUPPORT -> steppedFootprintSupport;
@@ -264,6 +182,8 @@ public record PathfindingFeatures(
             case FOOTPRINT_SCAN_CACHE -> footprintScanCache;
             case PATH_PREFIX_REUSE -> pathPrefixReuse;
             case GROUNDED_TARGET_PROJECTION -> groundedTargetProjection;
+            case BIDIRECTIONAL_SEARCH -> bidirectionalSearch;
+            case BALANCED_BIDIRECTIONAL_EXPANSION -> balancedBidirectionalExpansion;
         };
     }
 
@@ -282,7 +202,9 @@ public record PathfindingFeatures(
             feature == PathfindingFeature.DOOR_OPENING ? enabled : doorOpening,
             feature == PathfindingFeature.ASYNC_PATHFINDING ? enabled : asyncPathfinding,
             feature == PathfindingFeature.COLLISION_SHAPE_WAYPOINTS ? enabled : collisionShapeWaypoints,
-            feature == PathfindingFeature.DIAGONAL_CORNER_CLEARANCE ? enabled : diagonalCornerClearance,
+            feature == PathfindingFeature.HORIZONTAL_DIAGONAL_CLEARANCE ? enabled : horizontalDiagonalClearance,
+            feature == PathfindingFeature.VERTICAL_DIAGONAL_CLEARANCE ? enabled : verticalDiagonalClearance,
+            feature == PathfindingFeature.DIAGONAL_SWEPT_SHAPE_CLEARANCE ? enabled : diagonalSweptShapeClearance,
             feature == PathfindingFeature.FOOTPRINT_CLEARANCE ? enabled : footprintClearance,
             feature == PathfindingFeature.ANY_ANGLE_SMOOTHING ? enabled : anyAngleSmoothing,
             feature == PathfindingFeature.STEPPED_FOOTPRINT_SUPPORT ? enabled : steppedFootprintSupport,
@@ -296,7 +218,9 @@ public record PathfindingFeatures(
             feature == PathfindingFeature.ANY_ANGLE_SMOOTHING_CACHE ? enabled : anyAngleSmoothingCache,
             feature == PathfindingFeature.FOOTPRINT_SCAN_CACHE ? enabled : footprintScanCache,
             feature == PathfindingFeature.PATH_PREFIX_REUSE ? enabled : pathPrefixReuse,
-            feature == PathfindingFeature.GROUNDED_TARGET_PROJECTION ? enabled : groundedTargetProjection
+            feature == PathfindingFeature.GROUNDED_TARGET_PROJECTION ? enabled : groundedTargetProjection,
+            feature == PathfindingFeature.BIDIRECTIONAL_SEARCH ? enabled : bidirectionalSearch,
+            feature == PathfindingFeature.BALANCED_BIDIRECTIONAL_EXPANSION ? enabled : balancedBidirectionalExpansion
         );
     }
 
@@ -315,7 +239,9 @@ public record PathfindingFeatures(
             enabled(mask, PathfindingFeature.DOOR_OPENING),
             enabled(mask, PathfindingFeature.ASYNC_PATHFINDING),
             enabled(mask, PathfindingFeature.COLLISION_SHAPE_WAYPOINTS),
-            enabled(mask, PathfindingFeature.DIAGONAL_CORNER_CLEARANCE),
+            enabled(mask, PathfindingFeature.HORIZONTAL_DIAGONAL_CLEARANCE),
+            enabled(mask, PathfindingFeature.VERTICAL_DIAGONAL_CLEARANCE),
+            enabled(mask, PathfindingFeature.DIAGONAL_SWEPT_SHAPE_CLEARANCE),
             enabled(mask, PathfindingFeature.FOOTPRINT_CLEARANCE),
             enabled(mask, PathfindingFeature.ANY_ANGLE_SMOOTHING),
             enabled(mask, PathfindingFeature.STEPPED_FOOTPRINT_SUPPORT),
@@ -329,7 +255,9 @@ public record PathfindingFeatures(
             enabled(mask, PathfindingFeature.ANY_ANGLE_SMOOTHING_CACHE),
             enabled(mask, PathfindingFeature.FOOTPRINT_SCAN_CACHE),
             enabled(mask, PathfindingFeature.PATH_PREFIX_REUSE),
-            enabled(mask, PathfindingFeature.GROUNDED_TARGET_PROJECTION)
+            enabled(mask, PathfindingFeature.GROUNDED_TARGET_PROJECTION),
+            enabled(mask, PathfindingFeature.BIDIRECTIONAL_SEARCH),
+            enabled(mask, PathfindingFeature.BALANCED_BIDIRECTIONAL_EXPANSION)
         );
     }
 
