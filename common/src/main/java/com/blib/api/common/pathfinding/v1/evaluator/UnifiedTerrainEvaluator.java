@@ -1,5 +1,7 @@
 package com.blib.api.common.pathfinding.v1.evaluator;
 
+import it.unimi.dsi.fastutil.longs.Long2ByteOpenHashMap;
+import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.DoorBlock;
@@ -9,8 +11,10 @@ import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 
 import com.blib.api.common.pathfinding.v1.cache.TerrainClassificationCache;
 import com.blib.api.common.pathfinding.v1.debug.PathRejectionReason;
@@ -24,8 +28,8 @@ import com.blib.api.common.pathfinding.v1.node.PathPosture;
 import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
 
 /**
- * Minimal ground-only terrain evaluator. A ground node is valid when the feet cell is open and the block below it is
- * solid. Neighbor generation scans adjacent columns for same-level, step-up, and step-down/fall positions.
+ * Ground and water terrain evaluator. Ground nodes require open feet space and support below. Water nodes require a
+ * water volume and collision clearance, but do not require ground support.
  */
 public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
@@ -34,6 +38,10 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     private static final double DROP_ENTRY_APPROACH_SAMPLE_INTERVAL = 0.25;
 
     private static final double COLLISION_EPSILON = 1.0E-7;
+
+    private static final byte CACHE_FALSE = 1;
+
+    private static final byte CACHE_TRUE = 2;
 
     private static final int[][] CARDINAL_OFFSETS = {
         { -1, 0 },
@@ -57,6 +65,30 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     private final BlockAccessor blockAccessor;
 
+    private final Long2ByteOpenHashMap feetOpenCache;
+
+    private final Long2ByteOpenHashMap waterBlockCache;
+
+    private final Long2ByteOpenHashMap groundSupportCache;
+
+    private final Long2ByteOpenHashMap supportTopCache;
+
+    private final Long2ByteOpenHashMap fullCollisionBlockCache;
+
+    private final Long2ByteOpenHashMap footprintNodeSupportCache;
+
+    private final Long2ByteOpenHashMap waterFootprintCache;
+
+    private final Long2ByteOpenHashMap dropSupportCache;
+
+    private final Long2IntOpenHashMap supportTopSearchCache;
+
+    private final Map<EntityBoxClearanceKey, Boolean> entityBoxClearanceCache;
+
+    private final Map<FootprintScanKey, Boolean> steppedFootprintSupportCache;
+
+    private final Map<FootprintScanKey, Boolean> anySteppedFootprintSupportCache;
+
     private @Nullable PathSearchDebugRecorder debugRecorder;
 
     private PathfindingFeatures features = PathfindingProfile.LEGACY_PERMISSIVE.features();
@@ -70,6 +102,18 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         this.nodePool = new PathNodePool();
         this.snapshotCosts = new EnumMap<>(TerrainType.class);
         this.blockAccessor = new BlockAccessor();
+        this.feetOpenCache = new Long2ByteOpenHashMap();
+        this.waterBlockCache = new Long2ByteOpenHashMap();
+        this.groundSupportCache = new Long2ByteOpenHashMap();
+        this.supportTopCache = new Long2ByteOpenHashMap();
+        this.fullCollisionBlockCache = new Long2ByteOpenHashMap();
+        this.footprintNodeSupportCache = new Long2ByteOpenHashMap();
+        this.waterFootprintCache = new Long2ByteOpenHashMap();
+        this.dropSupportCache = new Long2ByteOpenHashMap();
+        this.supportTopSearchCache = new Long2IntOpenHashMap();
+        this.entityBoxClearanceCache = new HashMap<>();
+        this.steppedFootprintSupportCache = new HashMap<>();
+        this.anySteppedFootprintSupportCache = new HashMap<>();
     }
 
     @Override
@@ -115,43 +159,60 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     private void prepareCommon() {
         nodePool.reset();
         snapshotCosts.clear();
+        clearSearchCaches();
 
         for (var terrainType : config.getSupportedTerrains()) {
             snapshotCosts.put(terrainType, config.getCost(terrainType));
         }
     }
 
+    private void clearSearchCaches() {
+        feetOpenCache.clear();
+        waterBlockCache.clear();
+        groundSupportCache.clear();
+        supportTopCache.clear();
+        fullCollisionBlockCache.clear();
+        footprintNodeSupportCache.clear();
+        waterFootprintCache.clear();
+        dropSupportCache.clear();
+        supportTopSearchCache.clear();
+        entityBoxClearanceCache.clear();
+        steppedFootprintSupportCache.clear();
+        anySteppedFootprintSupportCache.clear();
+    }
+
     @Override
     public PathNode getStartNode(BlockPos entityPos) {
-        var resolvedPos = findStandablePosition(entityPos, config.getMaxFallDistance());
-
-        return getOrCreateResolvedGroundNode(resolvedPos);
+        return getOrCreateResolvedNode(entityPos, config.getMaxFallDistance());
     }
 
     @Override
     public PathNode getGoalNode(BlockPos targetPos) {
-        var resolvedPos = findStandablePosition(targetPos, 0);
-
-        return getOrCreateResolvedGroundNode(resolvedPos);
+        return getOrCreateResolvedNode(targetPos, 0);
     }
 
     @Override
     public PathNode getGoalNode(BlockPos startPos, BlockPos targetPos) {
         var maxStepDown = targetPos.getY() < startPos.getY() ? config.getMaxFallDistance() : 0;
-        var resolvedPos = findStandablePosition(targetPos, maxStepDown);
 
-        return getOrCreateResolvedGroundNode(resolvedPos);
+        return getOrCreateResolvedNode(targetPos, maxStepDown);
     }
 
     @Override
     public int getNeighbors(PathNode node, PathNode[] neighbors) {
-        if (node.getTerrainType() != TerrainType.GROUND || !snapshotCosts.containsKey(TerrainType.GROUND)) {
-            return 0;
+        if (node.getTerrainType() == TerrainType.GROUND && snapshotCosts.containsKey(TerrainType.GROUND)) {
+            return getGroundNeighbors(node, neighbors);
         }
 
-        var count = 0;
+        if (node.getTerrainType() == TerrainType.WATER && usesWaterPathfinding()) {
+            return getWaterNeighbors(node, neighbors);
+        }
 
-        count = appendGroundNeighbors(node, neighbors, count, CARDINAL_OFFSETS);
+        return 0;
+    }
+
+    private int getGroundNeighbors(PathNode node, PathNode[] neighbors) {
+        var count = appendGroundNeighbors(node, neighbors, 0, CARDINAL_OFFSETS);
 
         if (features.diagonalMovement()) {
             count = appendGroundNeighbors(node, neighbors, count, DIAGONAL_OFFSETS);
@@ -164,6 +225,18 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         return count;
     }
 
+    private int getWaterNeighbors(PathNode node, PathNode[] neighbors) {
+        var count = appendWaterNeighbors(node, neighbors, 0, CARDINAL_OFFSETS);
+
+        if (features.diagonalMovement()) {
+            count = appendWaterNeighbors(node, neighbors, count, DIAGONAL_OFFSETS);
+        }
+
+        count = appendWaterVerticalNeighbors(node, neighbors, count);
+
+        return count;
+    }
+
     @Override
     public float getTerrainCost(TerrainType terrainType) {
         return snapshotCosts.getOrDefault(terrainType, Float.MAX_VALUE);
@@ -172,6 +245,56 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     @Override
     public void cleanup() {
         blockAccessor.cleanup();
+    }
+
+    private boolean usesWaterPathfinding() {
+        return features.waterPathfinding() && snapshotCosts.containsKey(TerrainType.WATER);
+    }
+
+    private boolean usesSearchCaching() {
+        return features.searchCaching();
+    }
+
+    private boolean usesTerrainPrecheck() {
+        return features.terrainPrecheck();
+    }
+
+    private boolean usesFootprintScanCaching() {
+        return features.footprintScanCache();
+    }
+
+    private int appendWaterNeighbors(PathNode node, PathNode[] neighbors, int count, int[][] offsets) {
+        for (var offset : offsets) {
+            var groundExit = findWaterExitNeighbor(node, offset[0], offset[1]);
+
+            if (groundExit != null) {
+                neighbors[count++] = groundExit;
+            }
+
+            var waterTravel = findWaterTravelNeighbor(node, offset[0], offset[1]);
+
+            if (waterTravel != null) {
+                neighbors[count++] = waterTravel;
+            }
+        }
+
+        return count;
+    }
+
+    private int appendWaterVerticalNeighbors(PathNode node, PathNode[] neighbors, int count) {
+        var swimUp = tryWaterMovementNeighbor(node, node.getX(), node.getY() + 1, node.getZ(), 0, 0);
+
+        if (swimUp != null) {
+            neighbors[count++] = swimUp;
+        }
+
+        var swimDown = tryWaterMovementNeighbor(node, node.getX(), node.getY() - 1, node.getZ(), 0, 0);
+
+        if (swimDown != null) {
+            neighbors[count++] = swimDown;
+        }
+
+        return count;
     }
 
     private int appendGroundNeighbors(PathNode node, PathNode[] neighbors, int count, int[][] offsets) {
@@ -196,6 +319,76 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
 
         return count;
+    }
+
+    private @Nullable PathNode findWaterTravelNeighbor(PathNode from, int dx, int dz) {
+        var x = from.getX() + dx;
+        var z = from.getZ() + dz;
+        var sameLevel = tryWaterMovementNeighbor(from, x, from.getY(), z, dx, dz);
+
+        if (sameLevel != null) {
+            return sameLevel;
+        }
+
+        var swimUp = tryWaterMovementNeighbor(from, x, from.getY() + 1, z, dx, dz);
+
+        if (swimUp != null) {
+            return swimUp;
+        }
+
+        return tryWaterMovementNeighbor(from, x, from.getY() - 1, z, dx, dz);
+    }
+
+    private @Nullable PathNode findWaterExitNeighbor(PathNode from, int dx, int dz) {
+        if (dx == 0 && dz == 0) {
+            return null;
+        }
+
+        var x = from.getX() + dx;
+        var z = from.getZ() + dz;
+        var sameLevel = tryGroundExitNeighbor(from, x, from.getY(), z, dx, dz);
+
+        if (sameLevel != null) {
+            return sameLevel;
+        }
+
+        for (var stepUp = 1; stepUp <= config.getMaxStepHeight(); stepUp++) {
+            var steppedUp = tryGroundExitNeighbor(from, x, from.getY() + stepUp, z, dx, dz);
+
+            if (steppedUp != null) {
+                return steppedUp;
+            }
+        }
+
+        for (var stepDown = 1; stepDown <= config.getMaxFallDistance(); stepDown++) {
+            var steppedDown = tryGroundExitNeighbor(from, x, from.getY() - stepDown, z, dx, dz);
+
+            if (steppedDown != null) {
+                return steppedDown;
+            }
+        }
+
+        return null;
+    }
+
+    private @Nullable PathNode tryGroundExitNeighbor(PathNode from, int x, int y, int z, int dx, int dz) {
+        var ground = tryCreateGroundNode(x, y, z);
+
+        if (ground == null || !hasMovementClearance(from, ground, dx, dz)) {
+            return null;
+        }
+
+        return markWaterMovementFeatureUsed(ground, dx, dz);
+    }
+
+    private @Nullable PathNode tryWaterMovementNeighbor(PathNode from, int x, int y, int z, int dx, int dz) {
+        var water = tryCreateWaterNode(x, y, z);
+
+        if (water == null || !hasMovementClearance(from, water, dx, dz)) {
+            return null;
+        }
+
+        return markWaterMovementFeatureUsed(water, dx, dz);
     }
 
     private @Nullable PathNode findGroundNeighbor(PathNode from, int dx, int dz) {
@@ -237,7 +430,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             }
         }
 
-        return null;
+        return findWaterEntryNeighbor(from, dx, dz);
     }
 
     private @Nullable PathNode findDropOpeningNeighbor(PathNode from, int dx, int dz) {
@@ -268,6 +461,48 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     private PathNode markMovementFeatureUsed(PathNode node, int dx, int dz, PathfindingFeature feature) {
         markFeatureUsed(feature);
+
+        if (dx != 0 && dz != 0) {
+            markFeatureUsed(PathfindingFeature.DIAGONAL_MOVEMENT);
+        }
+
+        return node;
+    }
+
+    private @Nullable PathNode findWaterEntryNeighbor(PathNode from, int dx, int dz) {
+        if (!usesWaterPathfinding()) {
+            return null;
+        }
+
+        var x = from.getX() + dx;
+        var z = from.getZ() + dz;
+        var sameLevel = tryWaterMovementNeighbor(from, x, from.getY(), z, dx, dz);
+
+        if (sameLevel != null) {
+            return sameLevel;
+        }
+
+        for (var stepDown = 1; stepDown <= config.getMaxFallDistance(); stepDown++) {
+            var steppedDown = tryWaterMovementNeighbor(from, x, from.getY() - stepDown, z, dx, dz);
+
+            if (steppedDown != null) {
+                return steppedDown;
+            }
+        }
+
+        for (var stepUp = 1; stepUp <= config.getMaxStepHeight(); stepUp++) {
+            var steppedUp = tryWaterMovementNeighbor(from, x, from.getY() + stepUp, z, dx, dz);
+
+            if (steppedUp != null) {
+                return steppedUp;
+            }
+        }
+
+        return null;
+    }
+
+    private PathNode markWaterMovementFeatureUsed(PathNode node, int dx, int dz) {
+        markFeatureUsed(PathfindingFeature.WATER_PATHFINDING);
 
         if (dx != 0 && dz != 0) {
             markFeatureUsed(PathfindingFeature.DIAGONAL_MOVEMENT);
@@ -342,6 +577,20 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     private boolean hasDropSupportAt(int x, int supportTopY, int z) {
         var supportSize = usesFootprintClearance() ? footprintCellWidth() : 1;
 
+        if (usesFootprintScanCaching()) {
+            return cachedFootprintBoolean(
+                dropSupportCache,
+                x,
+                supportTopY,
+                z,
+                () -> hasDropSupportAtUncached(x, supportTopY, z, supportSize)
+            );
+        }
+
+        return hasDropSupportAtUncached(x, supportTopY, z, supportSize);
+    }
+
+    private boolean hasDropSupportAtUncached(int x, int supportTopY, int z, int supportSize) {
         for (var supportX = x; supportX < x + supportSize; supportX++) {
             for (var supportZ = z; supportZ < z + supportSize; supportZ++) {
                 if (hasSupportAtTop(supportX, supportTopY, supportZ)) {
@@ -369,6 +618,10 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
 
         return true;
+    }
+
+    private boolean movementAllowsLiquids(PathNode from, PathNode to) {
+        return from.getTerrainType() == TerrainType.WATER || to.getTerrainType() == TerrainType.WATER;
     }
 
     private boolean hasDiagonalMovementComponent(PathNode from, PathNode to, int dx, int dz) {
@@ -519,12 +772,24 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     }
 
     private boolean isFullCollisionBlock(int x, int y, int z) {
+        if (usesSearchCaching()) {
+            return cachedBlockBoolean(fullCollisionBlockCache, x, y, z, () -> isFullCollisionBlockUncached(x, y, z));
+        }
+
+        return isFullCollisionBlockUncached(x, y, z);
+    }
+
+    private boolean isFullCollisionBlockUncached(int x, int y, int z) {
         var state = blockAccessor.getBlockState(x, y, z);
 
         return blockAccessor.isCollisionShapeFullBlock(state, x, y, z);
     }
 
     private boolean hasSteppedFootprintTransitionClearance(PathNode from, PathNode to) {
+        if (to.getTerrainType() == TerrainType.WATER) {
+            return true;
+        }
+
         if (!usesSteppedFootprintSupport()) {
             return true;
         }
@@ -551,6 +816,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         var sampleCount = Math.max(1, (int) Math.ceil(distance / STEPPED_TRANSITION_SAMPLE_INTERVAL));
         var entityWidth = entityWidth();
         var entityHeight = movementHeight(from, to);
+        var allowLiquids = movementAllowsLiquids(from, to);
 
         for (var i = 1; i <= sampleCount; i++) {
             var progress = i / (double) sampleCount;
@@ -558,7 +824,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             var centerZ = startZ + dz * progress;
 
             if (
-                !isEntityBoxClear(centerX, feetY, centerZ, entityWidth, entityHeight)
+                !isEntityBoxClear(centerX, feetY, centerZ, entityWidth, entityHeight, allowLiquids)
                     || !hasAnySteppedFootprintSupport(centerX, feetY, centerZ)
             ) {
                 return false;
@@ -569,10 +835,13 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     }
 
     private boolean hasSameLevelSweptDiagonalCollision(PathNode from, PathNode to, int dx, int dz) {
-        return dx != 0 && dz != 0 && from.getY() == to.getY() && hasSweptDiagonalCollision(from, to);
+        return dx != 0
+            && dz != 0
+            && from.getY() == to.getY()
+            && hasSweptDiagonalCollision(from, to, movementAllowsLiquids(from, to));
     }
 
-    private boolean hasSweptDiagonalCollision(PathNode from, PathNode to) {
+    private boolean hasSweptDiagonalCollision(PathNode from, PathNode to, boolean allowLiquids) {
         var startX = nodeCenterX(from.getX());
         var startY = from.getY();
         var startZ = nodeCenterZ(from.getZ());
@@ -604,7 +873,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                         continue;
                     }
 
-                    if (blockAccessor.isLiquid(state)) {
+                    if (blockAccessor.isLiquid(state) && (!allowLiquids || !blockAccessor.isWater(state))) {
                         return true;
                     }
 
@@ -692,7 +961,68 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         );
     }
 
+    private record EntityBoxClearanceKey(
+        long centerX,
+        long feetY,
+        long centerZ,
+        long entityWidth,
+        long entityHeight,
+        boolean allowLiquids
+    ) {}
+
+    private record FootprintScanKey(
+        long centerX,
+        long feetY,
+        long centerZ,
+        boolean requireNominalSupport
+    ) {}
+
     private boolean isEntityBoxClear(double centerX, double feetY, double centerZ, double entityWidth, double entityHeight) {
+        return isEntityBoxClear(centerX, feetY, centerZ, entityWidth, entityHeight, false);
+    }
+
+    private boolean isEntityBoxClear(
+        double centerX,
+        double feetY,
+        double centerZ,
+        double entityWidth,
+        double entityHeight,
+        boolean allowLiquids
+    ) {
+        if (usesSearchCaching()) {
+            markFeatureUsed(PathfindingFeature.SEARCH_CACHING);
+
+            var key = new EntityBoxClearanceKey(
+                Double.doubleToLongBits(centerX),
+                Double.doubleToLongBits(feetY),
+                Double.doubleToLongBits(centerZ),
+                Double.doubleToLongBits(entityWidth),
+                Double.doubleToLongBits(entityHeight),
+                allowLiquids
+            );
+            var cached = entityBoxClearanceCache.get(key);
+
+            if (cached != null) {
+                return cached;
+            }
+
+            var clear = isEntityBoxClearUncached(centerX, feetY, centerZ, entityWidth, entityHeight, allowLiquids);
+            entityBoxClearanceCache.put(key, clear);
+
+            return clear;
+        }
+
+        return isEntityBoxClearUncached(centerX, feetY, centerZ, entityWidth, entityHeight, allowLiquids);
+    }
+
+    private boolean isEntityBoxClearUncached(
+        double centerX,
+        double feetY,
+        double centerZ,
+        double entityWidth,
+        double entityHeight,
+        boolean allowLiquids
+    ) {
         var entityBox = entityBox(centerX, feetY, centerZ, entityWidth, entityHeight);
 
         var minX = (int) Math.floor(entityBox.minX);
@@ -711,7 +1041,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                         continue;
                     }
 
-                    if (blockAccessor.isLiquid(state)) {
+                    if (blockAccessor.isLiquid(state) && (!allowLiquids || !blockAccessor.isWater(state))) {
                         return false;
                     }
 
@@ -848,17 +1178,54 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             return null;
         }
 
+        var supportPrechecked = false;
+        if (usesTerrainPrecheck()) {
+            var rejectionReason = precheckGroundNodeTerrain(x, y, z);
+
+            if (rejectionReason != null) {
+                reject(rejectionReason, x, y, z);
+                return null;
+            }
+
+            supportPrechecked = true;
+        }
+
         if (!hasNodeClearance(x, y, z, posture)) {
             reject(PathRejectionReason.NO_CLEARANCE, x, y, z);
             return null;
         }
 
-        if (!hasNodeSupport(x, y, z)) {
+        if (!supportPrechecked && !hasNodeSupport(x, y, z)) {
             reject(PathRejectionReason.UNSTABLE_SUPPORT, x, y, z);
             return null;
         }
 
         return getOrCreateGroundNode(x, y, z, posture);
+    }
+
+    private @Nullable PathNode tryCreateWaterNode(int x, int y, int z) {
+        if (!usesWaterPathfinding()) {
+            reject(PathRejectionReason.UNSUPPORTED_TERRAIN, x, y, z);
+            return null;
+        }
+
+        if (usesTerrainPrecheck()) {
+            markFeatureUsed(PathfindingFeature.TERRAIN_PRECHECK);
+        }
+
+        if (!hasWaterFootprint(x, y, z)) {
+            reject(PathRejectionReason.UNSUPPORTED_TERRAIN, x, y, z);
+            return null;
+        }
+
+        if (!hasWaterNodeClearance(x, y, z)) {
+            reject(PathRejectionReason.NO_CLEARANCE, x, y, z);
+            return null;
+        }
+
+        markFeatureUsed(PathfindingFeature.WATER_PATHFINDING);
+
+        return getOrCreateWaterNode(x, y, z);
     }
 
     private PathNode getOrCreateGroundNode(int x, int y, int z) {
@@ -879,14 +1246,72 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         return node;
     }
 
-    private PathNode getOrCreateResolvedGroundNode(BlockPos pos) {
-        var node = tryCreateGroundNode(pos.getX(), pos.getY(), pos.getZ());
+    private PathNode getOrCreateWaterNode(int x, int y, int z) {
+        return nodePool.getOrCreate(x, y, z, TerrainType.WATER, PathPosture.STANDING);
+    }
+
+    private PathNode getOrCreateResolvedNode(BlockPos pos, int maxStepDown) {
+        var node = getPreferredNode(pos.getX(), pos.getY(), pos.getZ());
 
         if (node != null) {
             return node;
         }
 
+        if (!features.verticalTargetResolution()) {
+            return getOrCreateGroundNode(pos.getX(), pos.getY(), pos.getZ());
+        }
+
+        for (int stepUp = 1; stepUp <= config.getMaxStepHeight(); stepUp++) {
+            var y = pos.getY() + stepUp;
+
+            node = getPreferredNode(pos.getX(), y, pos.getZ());
+
+            if (node != null) {
+                markFeatureUsed(PathfindingFeature.VERTICAL_TARGET_RESOLUTION);
+                return node;
+            }
+        }
+
+        for (int stepDown = 1; stepDown <= maxStepDown; stepDown++) {
+            var y = pos.getY() - stepDown;
+
+            node = getPreferredNode(pos.getX(), y, pos.getZ());
+
+            if (node != null) {
+                markFeatureUsed(PathfindingFeature.VERTICAL_TARGET_RESOLUTION);
+                return node;
+            }
+        }
+
         return getOrCreateGroundNode(pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    private @Nullable PathNode getPreferredNode(int x, int y, int z) {
+        var ground = tryCreateGroundNode(x, y, z);
+
+        if (ground != null) {
+            return ground;
+        }
+
+        if (!usesWaterPathfinding()) {
+            return null;
+        }
+
+        return tryCreateWaterNode(x, y, z);
+    }
+
+    private @Nullable PathRejectionReason precheckGroundNodeTerrain(int x, int y, int z) {
+        markFeatureUsed(PathfindingFeature.TERRAIN_PRECHECK);
+
+        if (!isFeetOpen(x, y, z)) {
+            return PathRejectionReason.NO_CLEARANCE;
+        }
+
+        if (!hasNodeSupport(x, y, z)) {
+            return PathRejectionReason.UNSTABLE_SUPPORT;
+        }
+
+        return null;
     }
 
     private boolean hasNodeClearance(int x, int y, int z, PathPosture posture) {
@@ -899,7 +1324,55 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         return isEntityBoxClear(nodeCenterX(x), y, nodeCenterZ(z), entityWidth(), entityHeight(posture));
     }
 
+    private boolean hasWaterNodeClearance(int x, int y, int z) {
+        if (usesEntityHitboxClearance(PathPosture.STANDING)) {
+            markEntityBoxClearanceUsed(PathPosture.STANDING);
+        }
+
+        return isEntityBoxClear(nodeCenterX(x), y, nodeCenterZ(z), entityWidth(), entityHeight(), true);
+    }
+
+    private boolean hasWaterFootprint(int x, int y, int z) {
+        var footprintWidth = usesFootprintClearance() ? footprintCellWidth() : 1;
+
+        if (usesFootprintClearance()) {
+            markFeatureUsed(PathfindingFeature.FOOTPRINT_CLEARANCE);
+        }
+
+        if (usesFootprintScanCaching()) {
+            return cachedFootprintBoolean(
+                waterFootprintCache,
+                x,
+                y,
+                z,
+                () -> hasWaterFootprintUncached(x, y, z, footprintWidth)
+            );
+        }
+
+        return hasWaterFootprintUncached(x, y, z, footprintWidth);
+    }
+
+    private boolean hasWaterFootprintUncached(int x, int y, int z, int footprintWidth) {
+        for (var waterX = x; waterX < x + footprintWidth; waterX++) {
+            for (var waterZ = z; waterZ < z + footprintWidth; waterZ++) {
+                if (!isWaterAt(waterX, y, waterZ)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
     private boolean isFeetOpen(int x, int y, int z) {
+        if (usesSearchCaching()) {
+            return cachedBlockBoolean(feetOpenCache, x, y, z, () -> isFeetOpenUncached(x, y, z));
+        }
+
+        return isFeetOpenUncached(x, y, z);
+    }
+
+    private boolean isFeetOpenUncached(int x, int y, int z) {
         var state = blockAccessor.getBlockState(x, y, z);
 
         if (isDoorPassable(state)) {
@@ -907,6 +1380,20 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
 
         return !blockAccessor.isSolid(state) && !blockAccessor.isLiquid(state);
+    }
+
+    private boolean isWaterAt(int x, int y, int z) {
+        if (usesSearchCaching()) {
+            return cachedBlockBoolean(waterBlockCache, x, y, z, () -> isWaterAtUncached(x, y, z));
+        }
+
+        return isWaterAtUncached(x, y, z);
+    }
+
+    private boolean isWaterAtUncached(int x, int y, int z) {
+        var state = blockAccessor.getBlockState(x, y, z);
+
+        return blockAccessor.isWater(state);
     }
 
     private boolean isDoorPassable(BlockState state) {
@@ -931,6 +1418,14 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     }
 
     private boolean hasGroundSupport(int x, int y, int z) {
+        if (usesSearchCaching()) {
+            return cachedBlockBoolean(groundSupportCache, x, y, z, () -> hasGroundSupportUncached(x, y, z));
+        }
+
+        return hasGroundSupportUncached(x, y, z);
+    }
+
+    private boolean hasGroundSupportUncached(int x, int y, int z) {
         var state = blockAccessor.getBlockState(x, y - 1, z);
 
         return blockAccessor.isSolid(state) && !blockAccessor.isLiquid(state);
@@ -945,6 +1440,23 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
         if (usesSteppedFootprintSupport()) {
             markFeatureUsed(PathfindingFeature.STEPPED_FOOTPRINT_SUPPORT);
+        }
+
+        if (usesFootprintScanCaching()) {
+            return cachedFootprintBoolean(
+                footprintNodeSupportCache,
+                x,
+                y,
+                z,
+                () -> hasFootprintNodeSupportUncached(x, y, z)
+            );
+        }
+
+        return hasFootprintNodeSupportUncached(x, y, z);
+    }
+
+    private boolean hasFootprintNodeSupportUncached(int x, int y, int z) {
+        if (usesSteppedFootprintSupport()) {
             return hasSteppedFootprintSupport(nodeCenterX(x), y, nodeCenterZ(z), true);
         }
 
@@ -964,6 +1476,26 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     }
 
     private boolean hasSteppedFootprintSupport(double centerX, double feetY, double centerZ, boolean requireNominalSupport) {
+        if (usesFootprintScanCaching()) {
+            return cachedFootprintScan(
+                steppedFootprintSupportCache,
+                centerX,
+                feetY,
+                centerZ,
+                requireNominalSupport,
+                () -> hasSteppedFootprintSupportUncached(centerX, feetY, centerZ, requireNominalSupport)
+            );
+        }
+
+        return hasSteppedFootprintSupportUncached(centerX, feetY, centerZ, requireNominalSupport);
+    }
+
+    private boolean hasSteppedFootprintSupportUncached(
+        double centerX,
+        double feetY,
+        double centerZ,
+        boolean requireNominalSupport
+    ) {
         var halfWidth = entityWidth() / 2.0d;
         var minX = (int) Math.floor(centerX - halfWidth + COLLISION_EPSILON);
         var minZ = (int) Math.floor(centerZ - halfWidth + COLLISION_EPSILON);
@@ -990,6 +1522,21 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     }
 
     private boolean hasAnySteppedFootprintSupport(double centerX, double feetY, double centerZ) {
+        if (usesFootprintScanCaching()) {
+            return cachedFootprintScan(
+                anySteppedFootprintSupportCache,
+                centerX,
+                feetY,
+                centerZ,
+                false,
+                () -> hasAnySteppedFootprintSupportUncached(centerX, feetY, centerZ)
+            );
+        }
+
+        return hasAnySteppedFootprintSupportUncached(centerX, feetY, centerZ);
+    }
+
+    private boolean hasAnySteppedFootprintSupportUncached(double centerX, double feetY, double centerZ) {
         // A wide body moving between one-deep stair treads can transiently overlap more columns than an endpoint node.
         // Endpoint nodes still require full stepped support; the sweep only needs a supporting tread under part of it.
         var halfWidth = entityWidth() / 2.0d;
@@ -1011,6 +1558,25 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     }
 
     private int findSupportTopY(int x, int feetY, int z) {
+        if (usesFootprintScanCaching()) {
+            markFeatureUsed(PathfindingFeature.FOOTPRINT_SCAN_CACHE);
+
+            var key = packBlockKey(x, feetY, z);
+
+            if (supportTopSearchCache.containsKey(key)) {
+                return supportTopSearchCache.get(key);
+            }
+
+            var supportTopY = findSupportTopYUncached(x, feetY, z);
+            supportTopSearchCache.put(key, supportTopY);
+
+            return supportTopY;
+        }
+
+        return findSupportTopYUncached(x, feetY, z);
+    }
+
+    private int findSupportTopYUncached(int x, int feetY, int z) {
         for (var supportTopY = feetY; supportTopY >= feetY - config.getMaxStepHeight(); supportTopY--) {
             if (hasSupportAtTop(x, supportTopY, z)) {
                 return supportTopY;
@@ -1021,6 +1587,14 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     }
 
     private boolean hasSupportAtTop(int x, int supportTopY, int z) {
+        if (usesSearchCaching()) {
+            return cachedBlockBoolean(supportTopCache, x, supportTopY, z, () -> hasSupportAtTopUncached(x, supportTopY, z));
+        }
+
+        return hasSupportAtTopUncached(x, supportTopY, z);
+    }
+
+    private boolean hasSupportAtTopUncached(int x, int supportTopY, int z) {
         var supportY = supportTopY - 1;
         var state = blockAccessor.getBlockState(x, supportY, z);
 
@@ -1053,38 +1627,76 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         return false;
     }
 
-    private BlockPos findStandablePosition(BlockPos pos, int maxStepDown) {
-        if (!features.verticalTargetResolution()) {
-            return pos;
+    private boolean cachedBlockBoolean(Long2ByteOpenHashMap cache, int x, int y, int z, BooleanSupplier loader) {
+        markFeatureUsed(PathfindingFeature.SEARCH_CACHING);
+
+        var key = packBlockKey(x, y, z);
+        var cached = cache.get(key);
+
+        if (cached == CACHE_TRUE) {
+            return true;
         }
 
-        if (isGroundStandable(pos.getX(), pos.getY(), pos.getZ())) {
-            return pos;
+        if (cached == CACHE_FALSE) {
+            return false;
         }
 
-        for (int stepUp = 1; stepUp <= config.getMaxStepHeight(); stepUp++) {
-            var y = pos.getY() + stepUp;
+        var value = loader.getAsBoolean();
+        cache.put(key, value ? CACHE_TRUE : CACHE_FALSE);
 
-            if (isGroundStandable(pos.getX(), y, pos.getZ())) {
-                markFeatureUsed(PathfindingFeature.VERTICAL_TARGET_RESOLUTION);
-                return new BlockPos(pos.getX(), y, pos.getZ());
-            }
-        }
-
-        for (int stepDown = 1; stepDown <= maxStepDown; stepDown++) {
-            var y = pos.getY() - stepDown;
-
-            if (isGroundStandable(pos.getX(), y, pos.getZ())) {
-                markFeatureUsed(PathfindingFeature.VERTICAL_TARGET_RESOLUTION);
-                return new BlockPos(pos.getX(), y, pos.getZ());
-            }
-        }
-
-        return pos;
+        return value;
     }
 
-    private boolean isGroundStandable(int x, int y, int z) {
-        return tryCreateGroundNode(x, y, z) != null;
+    private boolean cachedFootprintBoolean(Long2ByteOpenHashMap cache, int x, int y, int z, BooleanSupplier loader) {
+        markFeatureUsed(PathfindingFeature.FOOTPRINT_SCAN_CACHE);
+
+        var key = packBlockKey(x, y, z);
+        var cached = cache.get(key);
+
+        if (cached == CACHE_TRUE) {
+            return true;
+        }
+
+        if (cached == CACHE_FALSE) {
+            return false;
+        }
+
+        var value = loader.getAsBoolean();
+        cache.put(key, value ? CACHE_TRUE : CACHE_FALSE);
+
+        return value;
+    }
+
+    private boolean cachedFootprintScan(
+        Map<FootprintScanKey, Boolean> cache,
+        double centerX,
+        double feetY,
+        double centerZ,
+        boolean requireNominalSupport,
+        BooleanSupplier loader
+    ) {
+        markFeatureUsed(PathfindingFeature.FOOTPRINT_SCAN_CACHE);
+
+        var key = new FootprintScanKey(
+            Double.doubleToLongBits(centerX),
+            Double.doubleToLongBits(feetY),
+            Double.doubleToLongBits(centerZ),
+            requireNominalSupport
+        );
+        var cached = cache.get(key);
+
+        if (cached != null) {
+            return cached;
+        }
+
+        var value = loader.getAsBoolean();
+        cache.put(key, value);
+
+        return value;
+    }
+
+    private static long packBlockKey(int x, int y, int z) {
+        return BlockPos.asLong(x, y, z);
     }
 
     private void reject(PathRejectionReason reason, int x, int y, int z) {

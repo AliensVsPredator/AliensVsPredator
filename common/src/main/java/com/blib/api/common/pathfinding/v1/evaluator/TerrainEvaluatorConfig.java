@@ -40,6 +40,8 @@ public final class TerrainEvaluatorConfig {
 
     private final boolean canWalkOverFences;
 
+    private final boolean canFly;
+
     private final PathCrawlConfig crawlConfig;
 
     private TerrainEvaluatorConfig(
@@ -51,6 +53,7 @@ public final class TerrainEvaluatorConfig {
         int maxStepHeight,
         boolean canOpenDoors,
         boolean canWalkOverFences,
+        boolean canFly,
         PathCrawlConfig crawlConfig
     ) {
         this.terrainCostSuppliers = Map.copyOf(terrainCostSuppliers);
@@ -61,6 +64,7 @@ public final class TerrainEvaluatorConfig {
         this.maxStepHeight = maxStepHeight;
         this.canOpenDoors = canOpenDoors;
         this.canWalkOverFences = canWalkOverFences;
+        this.canFly = canFly;
         this.crawlConfig = crawlConfig != null ? crawlConfig : PathCrawlConfig.DISABLED;
     }
 
@@ -110,6 +114,10 @@ public final class TerrainEvaluatorConfig {
         return canWalkOverFences;
     }
 
+    public boolean canFly() {
+        return canFly;
+    }
+
     public PathCrawlConfig getCrawlConfig() {
         return crawlConfig;
     }
@@ -131,6 +139,8 @@ public final class TerrainEvaluatorConfig {
         private boolean canOpenDoors;
 
         private boolean canWalkOverFences;
+
+        private boolean canFly;
 
         private PathCrawlConfig crawlConfig;
 
@@ -199,6 +209,11 @@ public final class TerrainEvaluatorConfig {
             return this;
         }
 
+        public Builder withCanFly(boolean canFly) {
+            this.canFly = canFly;
+            return this;
+        }
+
         public Builder withCrawlConfig(PathCrawlConfig crawlConfig) {
             this.crawlConfig = crawlConfig != null ? crawlConfig : PathCrawlConfig.DISABLED;
             return this;
@@ -223,6 +238,7 @@ public final class TerrainEvaluatorConfig {
                 maxStepHeight,
                 canOpenDoors,
                 canWalkOverFences,
+                canFly,
                 crawlConfig
             );
         }

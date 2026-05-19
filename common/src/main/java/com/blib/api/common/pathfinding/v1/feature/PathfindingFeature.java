@@ -25,7 +25,14 @@ public enum PathfindingFeature {
     DROP_DOWN_OPENINGS(1 << 17, "Drop Openings"),
     ENTITY_HITBOX_CLEARANCE(1 << 18, "Hitbox Clearance"),
     CRAWL_THROUGH_GAPS(1 << 19, "Crawl Gaps"),
-    DESCENDING_STAIR_EDGE_REACH(1 << 20, "Stair Edge Reach");
+    DESCENDING_STAIR_EDGE_REACH(1 << 20, "Stair Edge Reach"),
+    WATER_PATHFINDING(1 << 21, "Water"),
+    SEARCH_CACHING(1 << 22, "Search Cache"),
+    TERRAIN_PRECHECK(1 << 23, "Terrain Precheck"),
+    ANY_ANGLE_SMOOTHING_CACHE(1 << 24, "Smoothing Cache"),
+    FOOTPRINT_SCAN_CACHE(1 << 25, "Footprint Cache"),
+    PATH_PREFIX_REUSE(1 << 26, "Path Reuse"),
+    GROUNDED_TARGET_PROJECTION(1 << 27, "Target Projection");
 
     private final int mask;
 

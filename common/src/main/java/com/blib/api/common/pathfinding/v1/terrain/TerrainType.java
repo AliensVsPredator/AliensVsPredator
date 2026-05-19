@@ -8,5 +8,10 @@ public enum TerrainType {
     /**
      * A passable feet position where the entity can stand. The block below is solid and the feet block is open.
      */
-    GROUND
+    GROUND,
+
+    /**
+     * A water volume the entity can swim through. Water nodes do not require ground support.
+     */
+    WATER
 }

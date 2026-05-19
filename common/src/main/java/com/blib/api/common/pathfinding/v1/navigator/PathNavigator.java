@@ -1,6 +1,7 @@
 package com.blib.api.common.pathfinding.v1.navigator;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.phys.AABB;
@@ -10,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -53,9 +55,15 @@ public final class PathNavigator {
 
     private @Nullable BLibPath currentPath;
 
+    private @Nullable BlockPos rawTargetPos;
+
     private @Nullable BlockPos targetPos;
 
     private @Nullable BlockPos lastComputedTargetPos;
+
+    private @Nullable BlockPos lastProjectionRawTargetPos;
+
+    private @Nullable BlockPos lastProjectionTargetPos;
 
     private @Nullable TerrainType currentTerrain;
 
@@ -112,6 +120,12 @@ public final class PathNavigator {
 
     private static final double CRAWL_POSTURE_MIN_PREP_DISTANCE = 1.5;
 
+    private static final double MIN_TARGET_MOVE_DISTANCE_SQUARED = 9.0;
+
+    private static final int TARGET_PROJECTION_MIN_VERTICAL_SCAN = 32;
+
+    private static final int TARGET_PROJECTION_MAX_VERTICAL_SCAN = 128;
+
     private static final double COLLISION_EPSILON = 1.0E-7;
 
     private @Nullable Set<TerrainType> excludedTerrains;
@@ -127,6 +141,8 @@ public final class PathNavigator {
     private boolean needsRepath;
 
     private @Nullable PathEdgeKey lastStuckReplannedEdge;
+
+    private final Set<AnyAngleSmoothingKey> anyAngleSmoothingFailures = new HashSet<>();
 
     private PathfindingFeatures features;
 
@@ -186,13 +202,14 @@ public final class PathNavigator {
         return navigateTo(entityPos, target, false);
     }
 
-    private boolean navigateTo(BlockPos entityPos, BlockPos target, boolean stuckReplan) {
-        if (!stuckReplan && isInFailureCooldown(target)) {
+    private boolean navigateTo(BlockPos entityPos, BlockPos rawTarget, boolean stuckReplan) {
+        var searchTarget = resolveAndStoreTarget(entityPos, rawTarget);
+
+        if (!stuckReplan && isInFailureCooldown(searchTarget)) {
             return false;
         }
 
-        this.targetPos = target;
-        this.lastComputedTargetPos = target;
+        this.lastComputedTargetPos = searchTarget;
 
         if (!stuckReplan) {
             this.lastStuckReplannedEdge = null;
@@ -204,9 +221,9 @@ public final class PathNavigator {
 
         if (shouldUsePlanner()) {
             markFeatureUsed(PathfindingFeature.SEGMENTED_PATH_PLANNING);
-            this.currentPath = planner.findPath(level, entityPos, target);
+            this.currentPath = planner.findPath(level, entityPos, searchTarget);
         } else {
-            this.currentPath = pathFinder.findPath(level, entityPos, target);
+            this.currentPath = pathFinder.findPath(level, entityPos, searchTarget);
         }
         markFeatureUsage(pathFinder.consumeFeatureUsageMask());
 
@@ -265,25 +282,26 @@ public final class PathNavigator {
      * {@link #isPathPending()} to check if an async computation is in progress. The path is automatically applied on
      * the next {@link #tick} call after the computation completes.
      */
-    public void navigateToAsync(BlockPos entityPos, BlockPos target) {
+    public void navigateToAsync(BlockPos entityPos, BlockPos rawTarget) {
         if (!features.asyncPathfinding()) {
-            navigateTo(entityPos, target);
+            navigateTo(entityPos, rawTarget);
             return;
         }
 
-        if (isInFailureCooldown(target)) {
+        var searchTarget = resolveAndStoreTarget(entityPos, rawTarget);
+
+        if (isInFailureCooldown(searchTarget)) {
             return;
         }
 
-        this.targetPos = target;
-        this.lastComputedTargetPos = target;
+        this.lastComputedTargetPos = searchTarget;
         this.lastStuckReplannedEdge = null;
         preparePathFinder();
         markFeatureUsed(PathfindingFeature.ASYNC_PATHFINDING);
 
         this.asyncStartNanos = System.nanoTime();
         this.pendingFeaturesRevision = featuresRevision;
-        this.pendingPath = pathFinder.findPathAsync(level, entityPos, target);
+        this.pendingPath = pathFinder.findPathAsync(level, entityPos, searchTarget);
     }
 
     /**
@@ -385,7 +403,7 @@ public final class PathNavigator {
             needsRepath = false;
 
             if (targetPos != null) {
-                navigateTo(entityAnchorPos(entityX, entityY, entityZ), targetPos);
+                navigateTo(entityAnchorPos(entityX, entityY, entityZ), activeRawTargetPos());
             }
         }
 
@@ -433,7 +451,10 @@ public final class PathNavigator {
         }
 
         this.currentPath = null;
+        this.rawTargetPos = null;
         this.targetPos = null;
+        this.lastProjectionRawTargetPos = null;
+        this.lastProjectionTargetPos = null;
         this.currentTerrain = null;
         this.needsRepath = false;
         this.lastStuckReplannedEdge = null;
@@ -751,15 +772,251 @@ public final class PathNavigator {
      * Updates the destination without forcing an immediate path recomputation. The navigator will recompute the path on
      * its next recalculation cycle using this updated target.
      */
-    public void updateTarget(BlockPos newTarget) {
-        this.targetPos = newTarget;
+    public void updateTarget(BlockPos newRawTarget) {
+        var entityPos = hasLastEntityPosition ? entityAnchorPos(lastEntityX, lastEntityY, lastEntityZ) : null;
+
+        this.rawTargetPos = newRawTarget;
+        this.targetPos = entityPos != null ? resolveSearchTarget(entityPos, newRawTarget) : newRawTarget;
     }
 
     /**
      * Updates the destination to an exact target center position without forcing an immediate path recomputation.
      */
     public void updateTarget(double targetX, double targetY, double targetZ) {
-        this.targetPos = targetAnchorPos(targetX, targetY, targetZ);
+        updateTarget(targetAnchorPos(targetX, targetY, targetZ));
+    }
+
+    private BlockPos resolveAndStoreTarget(BlockPos entityPos, BlockPos rawTarget) {
+        rawTargetPos = rawTarget;
+        targetPos = resolveSearchTarget(entityPos, rawTarget);
+
+        return targetPos;
+    }
+
+    private BlockPos resolveSearchTarget(BlockPos entityPos, BlockPos rawTarget) {
+        if (!usesGroundedTargetProjection()) {
+            return rawTarget;
+        }
+
+        var reusedProjection = reuseStableProjection(rawTarget);
+
+        if (reusedProjection != null) {
+            markFeatureUsed(PathfindingFeature.GROUNDED_TARGET_PROJECTION);
+            return reusedProjection;
+        }
+
+        var projectedTarget = findGroundedTargetProjection(entityPos, rawTarget);
+
+        if (projectedTarget == null) {
+            lastProjectionRawTargetPos = rawTarget;
+            lastProjectionTargetPos = rawTarget;
+            return rawTarget;
+        }
+
+        var stabilizedTarget = stabilizeProjectedTarget(rawTarget, projectedTarget);
+
+        if (!stabilizedTarget.equals(rawTarget)) {
+            markFeatureUsed(PathfindingFeature.GROUNDED_TARGET_PROJECTION);
+        }
+
+        return stabilizedTarget;
+    }
+
+    private @Nullable BlockPos reuseStableProjection(BlockPos rawTarget) {
+        if (
+            lastProjectionRawTargetPos == null
+                || lastProjectionTargetPos == null
+                || lastProjectionTargetPos.equals(lastProjectionRawTargetPos)
+                || horizontalDistanceSquared(rawTarget, lastProjectionRawTargetPos) >= MIN_TARGET_MOVE_DISTANCE_SQUARED
+                || rawTarget.getY() < lastProjectionTargetPos.getY()
+                || isProjectionTargetCandidate(rawTarget)
+                || !isProjectionTargetCandidate(lastProjectionTargetPos)
+        ) {
+            return null;
+        }
+
+        lastProjectionRawTargetPos = rawTarget;
+
+        return lastProjectionTargetPos;
+    }
+
+    private boolean usesGroundedTargetProjection() {
+        return features.groundedTargetProjection() && !config.getEvaluatorConfig().canFly();
+    }
+
+    private @Nullable BlockPos findGroundedTargetProjection(BlockPos entityPos, BlockPos rawTarget) {
+        if (isProjectionTargetCandidate(rawTarget)) {
+            return rawTarget;
+        }
+
+        var radius = targetProjectionHorizontalRadius();
+        var minY = Math.max(
+            level.getMinBuildHeight(),
+            rawTarget.getY() - targetProjectionVerticalScan(entityPos, rawTarget)
+        );
+
+        for (var y = rawTarget.getY(); y >= minY; y--) {
+            var candidate = findProjectionCandidateAtY(rawTarget.getX(), y, rawTarget.getZ(), radius);
+
+            if (candidate != null) {
+                return candidate;
+            }
+        }
+
+        return null;
+    }
+
+    private @Nullable BlockPos findProjectionCandidateAtY(int centerX, int y, int centerZ, int radius) {
+        for (var ring = 0; ring <= radius; ring++) {
+            for (var dx = -ring; dx <= ring; dx++) {
+                for (var dz = -ring; dz <= ring; dz++) {
+                    if (Math.max(Math.abs(dx), Math.abs(dz)) != ring) {
+                        continue;
+                    }
+
+                    var candidate = new BlockPos(centerX + dx, y, centerZ + dz);
+
+                    if (isProjectionTargetCandidate(candidate)) {
+                        return candidate;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private BlockPos stabilizeProjectedTarget(BlockPos rawTarget, BlockPos projectedTarget) {
+        if (projectedTarget.equals(rawTarget)) {
+            lastProjectionRawTargetPos = rawTarget;
+            lastProjectionTargetPos = projectedTarget;
+            return projectedTarget;
+        }
+
+        if (
+            lastProjectionRawTargetPos != null
+                && lastProjectionTargetPos != null
+                && lastProjectionTargetPos.getY() == projectedTarget.getY()
+                && horizontalDistanceSquared(rawTarget, lastProjectionRawTargetPos) < MIN_TARGET_MOVE_DISTANCE_SQUARED
+                && horizontalDistanceSquared(projectedTarget, lastProjectionTargetPos) < MIN_TARGET_MOVE_DISTANCE_SQUARED
+                && isProjectionTargetCandidate(lastProjectionTargetPos)
+        ) {
+            lastProjectionRawTargetPos = rawTarget;
+            return lastProjectionTargetPos;
+        }
+
+        lastProjectionRawTargetPos = rawTarget;
+        lastProjectionTargetPos = projectedTarget;
+
+        return projectedTarget;
+    }
+
+    private boolean isProjectionTargetCandidate(BlockPos candidate) {
+        return isGroundProjectionTarget(candidate) || isWaterProjectionTarget(candidate);
+    }
+
+    private boolean isGroundProjectionTarget(BlockPos candidate) {
+        if (!isTerrainAllowed(TerrainType.GROUND)) {
+            return false;
+        }
+
+        var center = anchorCenter(candidate);
+        var entityWidth = projectionEntityWidth();
+
+        if (!hasEntitySupport(center, entityWidth)) {
+            return false;
+        }
+
+        if (isEntityBoxClear(center, entityWidth, projectionEntityHeight(), false)) {
+            return true;
+        }
+
+        return usesCrawling()
+            && isEntityBoxClear(center, entityWidth, projectionCrawlHeight(), false);
+    }
+
+    private boolean isWaterProjectionTarget(BlockPos candidate) {
+        if (!features.waterPathfinding() || !isTerrainAllowed(TerrainType.WATER) || !hasWaterFootprint(candidate)) {
+            return false;
+        }
+
+        return isEntityBoxClear(anchorCenter(candidate), projectionEntityWidth(), projectionEntityHeight(), true);
+    }
+
+    private boolean isTerrainAllowed(TerrainType terrainType) {
+        return config.getEvaluatorConfig().getSupportedTerrains().contains(terrainType)
+            && (excludedTerrains == null || !excludedTerrains.contains(terrainType));
+    }
+
+    private boolean hasWaterFootprint(BlockPos candidate) {
+        var footprintWidth = projectionFootprintCellWidth();
+        var cursor = new BlockPos.MutableBlockPos();
+
+        for (var x = candidate.getX(); x < candidate.getX() + footprintWidth; x++) {
+            for (var z = candidate.getZ(); z < candidate.getZ() + footprintWidth; z++) {
+                cursor.set(x, candidate.getY(), z);
+
+                if (!level.getBlockState(cursor).getFluidState().is(FluidTags.WATER)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private int targetProjectionHorizontalRadius() {
+        return Math.min(3, Math.max(1, config.getEvaluatorConfig().getEntityWidth() + 1));
+    }
+
+    private int targetProjectionVerticalScan(BlockPos entityPos, BlockPos rawTarget) {
+        var configuredScan = Math.max(
+            TARGET_PROJECTION_MIN_VERTICAL_SCAN,
+            config.getEvaluatorConfig().getMaxFallDistance()
+        );
+        var entityDeltaScan = Math.abs(rawTarget.getY() - entityPos.getY())
+            + config.getEvaluatorConfig().getMaxFallDistance();
+
+        return Math.min(TARGET_PROJECTION_MAX_VERTICAL_SCAN, Math.max(configuredScan, entityDeltaScan));
+    }
+
+    private int projectionFootprintCellWidth() {
+        if (!features.footprintClearance()) {
+            return 1;
+        }
+
+        return Math.max(1, config.getEvaluatorConfig().getEntityWidth());
+    }
+
+    private float projectionEntityWidth() {
+        var configuredWidth = Math.max(1.0f, (float) config.getEvaluatorConfig().getEntityWidth());
+
+        return hasLastEntityPosition ? Math.max(configuredWidth, lastEntityWidth) : configuredWidth;
+    }
+
+    private float projectionEntityHeight() {
+        return Math.max(1.0f, (float) config.getEvaluatorConfig().getEntityHeight());
+    }
+
+    private float projectionCrawlHeight() {
+        return Math.max(1.0f, (float) config.getEvaluatorConfig().getCrawlConfig().crawlHeight());
+    }
+
+    private Vec3 anchorCenter(BlockPos anchorPos) {
+        var centerOffset = nodeCenterOffset();
+
+        return new Vec3(anchorPos.getX() + centerOffset, anchorPos.getY(), anchorPos.getZ() + centerOffset);
+    }
+
+    private double horizontalDistanceSquared(BlockPos left, BlockPos right) {
+        var dx = left.getX() - right.getX();
+        var dz = left.getZ() - right.getZ();
+
+        return dx * dx + dz * dz;
+    }
+
+    private BlockPos activeRawTargetPos() {
+        return rawTargetPos != null ? rawTargetPos : Objects.requireNonNull(targetPos, "targetPos");
     }
 
     private void setPathfindingFeaturesInternal(PathfindingFeatures features, @Nullable PathfindingProfile profile) {
@@ -981,12 +1238,64 @@ public final class PathNavigator {
             var targetCenter = nodeTargetCenter(currentPath.getNode(targetIndex), entityWidth, entityHeight);
             var terrain = currentPath.getNode(currentIndex).getTerrainType();
 
+            var cacheKey = anyAngleSmoothingKey(
+                currentIndex,
+                targetIndex,
+                entityX,
+                entityY,
+                entityZ,
+                targetCenter,
+                entityWidth,
+                entityHeight,
+                terrain
+            );
+
+            if (cacheKey != null && anyAngleSmoothingFailures.contains(cacheKey)) {
+                markFeatureUsed(PathfindingFeature.ANY_ANGLE_SMOOTHING_CACHE);
+                continue;
+            }
+
             if (canTraverseDirectly(entityX, entityY, entityZ, targetCenter, entityWidth, entityHeight, terrain)) {
                 return targetIndex;
+            }
+
+            if (cacheKey != null) {
+                markFeatureUsed(PathfindingFeature.ANY_ANGLE_SMOOTHING_CACHE);
+                anyAngleSmoothingFailures.add(cacheKey);
             }
         }
 
         return currentIndex;
+    }
+
+    private @Nullable AnyAngleSmoothingKey anyAngleSmoothingKey(
+        int currentIndex,
+        int targetIndex,
+        double entityX,
+        double entityY,
+        double entityZ,
+        Vec3 targetCenter,
+        float entityWidth,
+        float entityHeight,
+        TerrainType terrain
+    ) {
+        if (!features.anyAngleSmoothingCache()) {
+            return null;
+        }
+
+        return new AnyAngleSmoothingKey(
+            currentIndex,
+            targetIndex,
+            Double.doubleToLongBits(entityX),
+            Double.doubleToLongBits(entityY),
+            Double.doubleToLongBits(entityZ),
+            Double.doubleToLongBits(targetCenter.x),
+            Double.doubleToLongBits(targetCenter.y),
+            Double.doubleToLongBits(targetCenter.z),
+            Float.floatToIntBits(entityWidth),
+            Float.floatToIntBits(entityHeight),
+            terrain
+        );
     }
 
     private boolean isSmoothableNodeRange(int fromIndex, int toIndex) {
@@ -1041,10 +1350,11 @@ public final class PathNavigator {
                 entityY + dy * progress,
                 entityZ + dz * progress
             );
+            var allowLiquids = terrain == TerrainType.WATER;
 
             if (
-                !isEntityBoxClear(feetCenter, entityWidth, entityHeight)
-                    || !hasEntitySupport(feetCenter, entityWidth)
+                !isEntityBoxClear(feetCenter, entityWidth, entityHeight, allowLiquids)
+                    || (!allowLiquids && !hasEntitySupport(feetCenter, entityWidth))
                     || !hasExpectedTerrain(feetCenter, entityWidth, terrain)
             ) {
                 return false;
@@ -1380,10 +1690,8 @@ public final class PathNavigator {
             planner.clear();
         }
 
-        navigateTo(entityAnchorPos, targetPos, true);
+        navigateTo(entityAnchorPos, activeRawTargetPos(), true);
     }
-
-    private static final double MIN_TARGET_MOVE_DISTANCE_SQUARED = 9.0;
 
     private void checkRecalculate(
         BlockPos entityPos,
@@ -1405,6 +1713,11 @@ public final class PathNavigator {
             || targetPos.distSqr(lastComputedTargetPos) >= MIN_TARGET_MOVE_DISTANCE_SQUARED;
 
         if (targetMoved) {
+            if (tryReuseCurrentPathPrefix(targetPos)) {
+                advanceWaypoints(entityX, entityY, entityZ, entityWidth, entityHeight);
+                return;
+            }
+
             if (planner != null) {
                 planner.clear();
             }
@@ -1417,6 +1730,50 @@ public final class PathNavigator {
                 advanceWaypoints(entityX, entityY, entityZ, entityWidth, entityHeight);
             }
         }
+    }
+
+    private boolean tryReuseCurrentPathPrefix(BlockPos target) {
+        if (!features.pathPrefixReuse() || currentPath == null || currentPath.isDone() || !currentPath.isReached()) {
+            return false;
+        }
+
+        var targetIndex = findRemainingPathNodeIndex(target);
+
+        if (targetIndex < currentPath.getCurrentNodeIndex()) {
+            return false;
+        }
+
+        var reusedNodes = new ArrayList<PathNode>(targetIndex - currentPath.getCurrentNodeIndex() + 1);
+
+        for (var index = currentPath.getCurrentNodeIndex(); index <= targetIndex; index++) {
+            reusedNodes.add(currentPath.getNode(index));
+        }
+
+        currentPath = new BLibPath(reusedNodes, true);
+        currentTerrain = currentPath.getCurrentNode().getTerrainType();
+        lastComputedTargetPos = target;
+        lastPathComputeTick = tickCount;
+        lastPathComputeNanos = 0L;
+        markFeatureUsed(PathfindingFeature.PATH_PREFIX_REUSE);
+        resetProgressTracking();
+
+        return true;
+    }
+
+    private int findRemainingPathNodeIndex(BlockPos target) {
+        if (currentPath == null) {
+            return -1;
+        }
+
+        for (var index = currentPath.getCurrentNodeIndex(); index < currentPath.getNodeCount(); index++) {
+            var node = currentPath.getNode(index);
+
+            if (node.getX() == target.getX() && node.getY() == target.getY() && node.getZ() == target.getZ()) {
+                return index;
+            }
+        }
+
+        return -1;
     }
 
     private void advanceToNextSegment(double entityX, double entityY, double entityZ) {
@@ -1475,6 +1832,7 @@ public final class PathNavigator {
         lastObservedNodeIndex = -1;
         dropEntryNodeIndex = -1;
         dropEntryReached = false;
+        anyAngleSmoothingFailures.clear();
     }
 
     private void fireTransitionHandlers(@Nullable TerrainType from, TerrainType to) {
@@ -1511,7 +1869,7 @@ public final class PathNavigator {
     private Vec3 nodeTargetCenter(PathNode node, float entityWidth, float entityHeight) {
         var center = nodeCenter(node);
 
-        if (!features.collisionShapeWaypoints()) {
+        if (!features.collisionShapeWaypoints() || node.getTerrainType() == TerrainType.WATER) {
             return center;
         }
 
@@ -1586,6 +1944,10 @@ public final class PathNavigator {
     }
 
     private boolean isEntityBoxClear(Vec3 feetCenter, float entityWidth, float entityHeight) {
+        return isEntityBoxClear(feetCenter, entityWidth, entityHeight, false);
+    }
+
+    private boolean isEntityBoxClear(Vec3 feetCenter, float entityWidth, float entityHeight, boolean allowLiquids) {
         var halfWidth = entityWidth / 2.0d;
         var entityBox = new AABB(
             feetCenter.x - halfWidth,
@@ -1611,7 +1973,7 @@ public final class PathNavigator {
 
                     var state = level.getBlockState(cursor);
 
-                    if (state.liquid()) {
+                    if (state.liquid() && (!allowLiquids || !state.getFluidState().is(FluidTags.WATER))) {
                         return false;
                     }
 
@@ -1788,6 +2150,20 @@ public final class PathNavigator {
         double localX,
         double localZ,
         double distanceSquared
+    ) {}
+
+    private record AnyAngleSmoothingKey(
+        int currentIndex,
+        int targetIndex,
+        long entityX,
+        long entityY,
+        long entityZ,
+        long targetX,
+        long targetY,
+        long targetZ,
+        int entityWidth,
+        int entityHeight,
+        TerrainType terrain
     ) {}
 
     private double distanceSquared(double x, double y, double z, Vec3 target) {

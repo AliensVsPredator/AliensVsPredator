@@ -25,7 +25,14 @@ public record PathfindingFeatures(
     boolean dropDownOpenings,
     boolean entityHitboxClearance,
     boolean crawlThroughGaps,
-    boolean descendingStairEdgeReach
+    boolean descendingStairEdgeReach,
+    boolean waterPathfinding,
+    boolean searchCaching,
+    boolean terrainPrecheck,
+    boolean anyAngleSmoothingCache,
+    boolean footprintScanCache,
+    boolean pathPrefixReuse,
+    boolean groundedTargetProjection
 ) {
 
     public PathfindingFeatures(
@@ -80,6 +87,13 @@ public record PathfindingFeatures(
             true,
             true,
             true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
             true
         );
     }
@@ -105,6 +119,13 @@ public record PathfindingFeatures(
         false,
         true,
         true,
+        true,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
         true
     );
 
@@ -124,6 +145,13 @@ public record PathfindingFeatures(
         true,
         true,
         true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
         true,
         true,
         true,
@@ -153,10 +181,24 @@ public record PathfindingFeatures(
         true,
         true,
         true,
+        true,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
         true
     );
 
     public static final PathfindingFeatures LEGACY_PERMISSIVE = new PathfindingFeatures(
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
         true,
         true,
         true,
@@ -215,6 +257,13 @@ public record PathfindingFeatures(
             case ENTITY_HITBOX_CLEARANCE -> entityHitboxClearance;
             case CRAWL_THROUGH_GAPS -> crawlThroughGaps;
             case DESCENDING_STAIR_EDGE_REACH -> descendingStairEdgeReach;
+            case WATER_PATHFINDING -> waterPathfinding;
+            case SEARCH_CACHING -> searchCaching;
+            case TERRAIN_PRECHECK -> terrainPrecheck;
+            case ANY_ANGLE_SMOOTHING_CACHE -> anyAngleSmoothingCache;
+            case FOOTPRINT_SCAN_CACHE -> footprintScanCache;
+            case PATH_PREFIX_REUSE -> pathPrefixReuse;
+            case GROUNDED_TARGET_PROJECTION -> groundedTargetProjection;
         };
     }
 
@@ -240,7 +289,14 @@ public record PathfindingFeatures(
             feature == PathfindingFeature.DROP_DOWN_OPENINGS ? enabled : dropDownOpenings,
             feature == PathfindingFeature.ENTITY_HITBOX_CLEARANCE ? enabled : entityHitboxClearance,
             feature == PathfindingFeature.CRAWL_THROUGH_GAPS ? enabled : crawlThroughGaps,
-            feature == PathfindingFeature.DESCENDING_STAIR_EDGE_REACH ? enabled : descendingStairEdgeReach
+            feature == PathfindingFeature.DESCENDING_STAIR_EDGE_REACH ? enabled : descendingStairEdgeReach,
+            feature == PathfindingFeature.WATER_PATHFINDING ? enabled : waterPathfinding,
+            feature == PathfindingFeature.SEARCH_CACHING ? enabled : searchCaching,
+            feature == PathfindingFeature.TERRAIN_PRECHECK ? enabled : terrainPrecheck,
+            feature == PathfindingFeature.ANY_ANGLE_SMOOTHING_CACHE ? enabled : anyAngleSmoothingCache,
+            feature == PathfindingFeature.FOOTPRINT_SCAN_CACHE ? enabled : footprintScanCache,
+            feature == PathfindingFeature.PATH_PREFIX_REUSE ? enabled : pathPrefixReuse,
+            feature == PathfindingFeature.GROUNDED_TARGET_PROJECTION ? enabled : groundedTargetProjection
         );
     }
 
@@ -266,7 +322,14 @@ public record PathfindingFeatures(
             enabled(mask, PathfindingFeature.DROP_DOWN_OPENINGS),
             enabled(mask, PathfindingFeature.ENTITY_HITBOX_CLEARANCE),
             enabled(mask, PathfindingFeature.CRAWL_THROUGH_GAPS),
-            enabled(mask, PathfindingFeature.DESCENDING_STAIR_EDGE_REACH)
+            enabled(mask, PathfindingFeature.DESCENDING_STAIR_EDGE_REACH),
+            enabled(mask, PathfindingFeature.WATER_PATHFINDING),
+            enabled(mask, PathfindingFeature.SEARCH_CACHING),
+            enabled(mask, PathfindingFeature.TERRAIN_PRECHECK),
+            enabled(mask, PathfindingFeature.ANY_ANGLE_SMOOTHING_CACHE),
+            enabled(mask, PathfindingFeature.FOOTPRINT_SCAN_CACHE),
+            enabled(mask, PathfindingFeature.PATH_PREFIX_REUSE),
+            enabled(mask, PathfindingFeature.GROUNDED_TARGET_PROJECTION)
         );
     }
 

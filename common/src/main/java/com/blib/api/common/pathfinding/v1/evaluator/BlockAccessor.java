@@ -2,6 +2,7 @@ package com.blib.api.common.pathfinding.v1.evaluator;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.EmptyBlockGetter;
 import net.minecraft.world.level.LevelReader;
@@ -131,6 +132,10 @@ public final class BlockAccessor {
         var id = Block.BLOCK_STATE_REGISTRY.getId(state);
         ensurePropertyCached(state, id);
         return liquidCache[id];
+    }
+
+    public boolean isWater(BlockState state) {
+        return state.getFluidState().is(FluidTags.WATER);
     }
 
     public boolean isPassable(BlockState state) {
