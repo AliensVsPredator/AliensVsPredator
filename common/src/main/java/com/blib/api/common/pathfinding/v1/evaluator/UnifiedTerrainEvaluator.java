@@ -282,6 +282,12 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         return features.waterPathfinding() && snapshotCosts.containsKey(TerrainType.WATER);
     }
 
+    private boolean usesWaterSwimClearance() {
+        return usesWaterPathfinding()
+            && features.waterSwimClearance()
+            && config.getWaterConfig().enabled();
+    }
+
     private boolean usesWaterEntry() {
         return usesWaterPathfinding() && features.waterEntry();
     }
@@ -1320,6 +1326,10 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             return Math.max(1.0d, config.getCrawlConfig().crawlHeight());
         }
 
+        if (posture.isSwimming()) {
+            return Math.max(1.0d, config.getWaterConfig().swimHeight());
+        }
+
         return entityHeight();
     }
 
@@ -1327,6 +1337,11 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         if (from.requiresCrawling() || to.requiresCrawling()) {
             markFeatureUsed(PathfindingFeature.CRAWL_THROUGH_GAPS);
             return entityHeight(PathPosture.CRAWLING);
+        }
+
+        if (from.requiresSwimming() || to.requiresSwimming()) {
+            markFeatureUsed(PathfindingFeature.WATER_SWIM_CLEARANCE);
+            return entityHeight(PathPosture.SWIMMING);
         }
 
         return entityHeight();
@@ -1346,6 +1361,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     private boolean usesEntityHitboxClearance(PathPosture posture) {
         return posture.isCrawling()
+            || posture.isSwimming()
             || usesCrawling()
             || features.entityHitboxClearance()
             || usesFootprintClearance();
@@ -1366,6 +1382,10 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
         if (posture.isCrawling()) {
             markFeatureUsed(PathfindingFeature.CRAWL_THROUGH_GAPS);
+        }
+
+        if (posture.isSwimming()) {
+            markFeatureUsed(PathfindingFeature.WATER_SWIM_CLEARANCE);
         }
     }
 
@@ -1464,7 +1484,17 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     }
 
     private PathNode getOrCreateWaterNode(int x, int y, int z) {
-        return nodePool.getOrCreate(x, y, z, TerrainType.WATER, PathPosture.STANDING);
+        var posture = waterPosture();
+
+        if (posture.isSwimming()) {
+            markFeatureUsed(PathfindingFeature.WATER_SWIM_CLEARANCE);
+        }
+
+        return nodePool.getOrCreate(x, y, z, TerrainType.WATER, posture);
+    }
+
+    private PathPosture waterPosture() {
+        return usesWaterSwimClearance() ? PathPosture.SWIMMING : PathPosture.STANDING;
     }
 
     private PathNode getOrCreateStartNode(BlockPos pos) {
@@ -1554,11 +1584,13 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     }
 
     private boolean hasWaterNodeClearance(int x, int y, int z) {
-        if (usesEntityHitboxClearance(PathPosture.STANDING)) {
-            markEntityBoxClearanceUsed(PathPosture.STANDING);
+        var posture = waterPosture();
+
+        if (usesEntityHitboxClearance(posture)) {
+            markEntityBoxClearanceUsed(posture);
         }
 
-        return isEntityBoxClear(nodeCenterX(x), y, nodeCenterZ(z), entityWidth(), entityHeight(), true);
+        return isEntityBoxClear(nodeCenterX(x), y, nodeCenterZ(z), entityWidth(), entityHeight(posture), true);
     }
 
     private boolean hasWaterFootprint(int x, int y, int z) {

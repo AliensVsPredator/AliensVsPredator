@@ -633,14 +633,22 @@ public final class PathNavigator {
      * Returns the posture required by the active waypoint. A null or completed path requires standing by default.
      */
     public PathPosture getCurrentRequiredPosture() {
-        if (currentPath == null || currentPath.isDone() || !usesCrawling()) {
+        if (currentPath == null || currentPath.isDone()) {
             return PathPosture.STANDING;
         }
 
         var posture = currentPath.getCurrentNode().getPosture();
 
         if (posture.isCrawling()) {
+            if (!usesCrawling()) {
+                return PathPosture.STANDING;
+            }
+
             markFeatureUsed(PathfindingFeature.CRAWL_THROUGH_GAPS);
+        }
+
+        if (posture.isSwimming()) {
+            markFeatureUsed(PathfindingFeature.WATER_SWIM_CLEARANCE);
         }
 
         return posture;
@@ -651,13 +659,22 @@ public final class PathNavigator {
      * {@link #getDesiredPosture(double, double, double)} when movement code wants near-entry crawl anticipation.
      */
     public PathPosture getDesiredPosture() {
-        if (currentPath == null || currentPath.isDone() || !usesCrawling()) {
+        if (currentPath == null || currentPath.isDone()) {
             return PathPosture.STANDING;
         }
 
         if (currentPath.getCurrentNode().requiresCrawling()) {
+            if (!usesCrawling()) {
+                return PathPosture.STANDING;
+            }
+
             markFeatureUsed(PathfindingFeature.CRAWL_THROUGH_GAPS);
             return PathPosture.CRAWLING;
+        }
+
+        if (currentPath.getCurrentNode().requiresSwimming()) {
+            markFeatureUsed(PathfindingFeature.WATER_SWIM_CLEARANCE);
+            return PathPosture.SWIMMING;
         }
 
         return PathPosture.STANDING;
@@ -670,7 +687,13 @@ public final class PathNavigator {
     public PathPosture getDesiredPosture(double entityX, double entityY, double entityZ) {
         var currentPosture = getDesiredPosture();
 
-        if (currentPosture.isCrawling() || currentPath == null || currentPath.isDone() || !usesCrawling()) {
+        if (
+            currentPosture.isCrawling()
+                || currentPosture.isSwimming()
+                || currentPath == null
+                || currentPath.isDone()
+                || !usesCrawling()
+        ) {
             return currentPosture;
         }
 
@@ -1223,7 +1246,12 @@ public final class PathNavigator {
         float entityWidth,
         float entityHeight
     ) {
-        if (!features.anyAngleSmoothing() || currentPath == null || currentPath.isDone()) {
+        if (currentPath == null || currentPath.isDone()) {
+            return;
+        }
+
+        var smoothingFeature = anyAngleSmoothingFeatureFor(currentPath.getCurrentNode());
+        if (smoothingFeature == null) {
             return;
         }
 
@@ -1234,7 +1262,7 @@ public final class PathNavigator {
             return;
         }
 
-        markFeatureUsed(PathfindingFeature.ANY_ANGLE_SMOOTHING);
+        markAnyAngleSmoothingUsed(currentIndex, targetIndex, smoothingFeature);
 
         var previousTerrain = currentTerrain;
 
@@ -1251,6 +1279,38 @@ public final class PathNavigator {
                 fireTransitionHandlers(previousTerrain, newTerrain);
                 currentTerrain = newTerrain;
             }
+        }
+    }
+
+    private @Nullable PathfindingFeature anyAngleSmoothingFeatureFor(PathNode node) {
+        return switch (node.getTerrainType()) {
+            case GROUND -> features.anyAngleSmoothing() ? PathfindingFeature.ANY_ANGLE_SMOOTHING : null;
+            case WATER -> features.waterPathfinding() && features.waterAnyAngleSmoothing()
+                ? PathfindingFeature.WATER_ANY_ANGLE_SMOOTHING
+                : null;
+        };
+    }
+
+    private void markAnyAngleSmoothingUsed(int fromIndex, int toIndex, PathfindingFeature smoothingFeature) {
+        markFeatureUsed(smoothingFeature);
+
+        if (smoothingFeature != PathfindingFeature.WATER_ANY_ANGLE_SMOOTHING) {
+            return;
+        }
+
+        markFeatureUsed(PathfindingFeature.WATER_PATHFINDING);
+
+        var from = currentPath.getNode(fromIndex);
+        var to = currentPath.getNode(toIndex);
+
+        if (from.getY() == to.getY()) {
+            return;
+        }
+
+        if (from.getX() != to.getX() || from.getZ() != to.getZ()) {
+            markFeatureUsed(PathfindingFeature.WATER_SLOPE_SWIM);
+        } else {
+            markFeatureUsed(PathfindingFeature.WATER_VERTICAL_SWIM);
         }
     }
 
@@ -1337,13 +1397,21 @@ public final class PathNavigator {
 
     private boolean isSmoothableNodeRange(int fromIndex, int toIndex) {
         var from = currentPath.getNode(fromIndex);
-        var y = from.getY();
-        var terrain = from.getTerrainType();
-        var posture = from.getPosture();
 
         if (from.hasDropEntryWaypoint()) {
             return false;
         }
+
+        return switch (from.getTerrainType()) {
+            case GROUND -> isSmoothableGroundNodeRange(fromIndex, toIndex);
+            case WATER -> isSmoothableWaterNodeRange(fromIndex, toIndex);
+        };
+    }
+
+    private boolean isSmoothableGroundNodeRange(int fromIndex, int toIndex) {
+        var from = currentPath.getNode(fromIndex);
+        var y = from.getY();
+        var posture = from.getPosture();
 
         for (var index = fromIndex + 1; index <= toIndex; index++) {
             var node = currentPath.getNode(index);
@@ -1351,7 +1419,7 @@ public final class PathNavigator {
             if (
                 node.hasDropEntryWaypoint()
                     || node.getY() != y
-                    || node.getTerrainType() != terrain
+                    || node.getTerrainType() != TerrainType.GROUND
                     || node.getPosture() != posture
             ) {
                 return false;
@@ -1359,6 +1427,41 @@ public final class PathNavigator {
         }
 
         return true;
+    }
+
+    private boolean isSmoothableWaterNodeRange(int fromIndex, int toIndex) {
+        if (!features.waterPathfinding() || !features.waterAnyAngleSmoothing()) {
+            return false;
+        }
+
+        var from = currentPath.getNode(fromIndex);
+        var posture = from.getPosture();
+
+        for (var index = fromIndex + 1; index <= toIndex; index++) {
+            var node = currentPath.getNode(index);
+
+            if (
+                node.hasDropEntryWaypoint()
+                    || node.getTerrainType() != TerrainType.WATER
+                    || node.getPosture() != posture
+            ) {
+                return false;
+            }
+        }
+
+        return isWaterAnyAngleMovementAllowed(from, currentPath.getNode(toIndex));
+    }
+
+    private boolean isWaterAnyAngleMovementAllowed(PathNode from, PathNode to) {
+        if (from.getY() == to.getY()) {
+            return true;
+        }
+
+        if (from.getX() != to.getX() || from.getZ() != to.getZ()) {
+            return features.waterSlopeSwim();
+        }
+
+        return features.waterVerticalSwim();
     }
 
     private boolean canTraverseDirectly(

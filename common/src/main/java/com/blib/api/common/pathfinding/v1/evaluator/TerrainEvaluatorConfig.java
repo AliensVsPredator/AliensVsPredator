@@ -44,6 +44,8 @@ public final class TerrainEvaluatorConfig {
 
     private final PathCrawlConfig crawlConfig;
 
+    private final PathWaterConfig waterConfig;
+
     private TerrainEvaluatorConfig(
         Map<TerrainType, Supplier<Float>> terrainCostSuppliers,
         TerrainClassifier terrainClassifier,
@@ -54,7 +56,8 @@ public final class TerrainEvaluatorConfig {
         boolean canOpenDoors,
         boolean canWalkOverFences,
         boolean canFly,
-        PathCrawlConfig crawlConfig
+        PathCrawlConfig crawlConfig,
+        PathWaterConfig waterConfig
     ) {
         this.terrainCostSuppliers = Map.copyOf(terrainCostSuppliers);
         this.terrainClassifier = terrainClassifier;
@@ -66,6 +69,7 @@ public final class TerrainEvaluatorConfig {
         this.canWalkOverFences = canWalkOverFences;
         this.canFly = canFly;
         this.crawlConfig = crawlConfig != null ? crawlConfig : PathCrawlConfig.DISABLED;
+        this.waterConfig = waterConfig != null ? waterConfig : PathWaterConfig.DISABLED;
     }
 
     public static Builder builder() {
@@ -122,6 +126,10 @@ public final class TerrainEvaluatorConfig {
         return crawlConfig;
     }
 
+    public PathWaterConfig getWaterConfig() {
+        return waterConfig;
+    }
+
     public static final class Builder {
 
         private final Map<TerrainType, Supplier<Float>> terrainCostSuppliers;
@@ -144,6 +152,8 @@ public final class TerrainEvaluatorConfig {
 
         private PathCrawlConfig crawlConfig;
 
+        private PathWaterConfig waterConfig;
+
         private Builder() {
             this.terrainCostSuppliers = new EnumMap<>(TerrainType.class);
             this.terrainClassifier = TerrainClassifiers.GROUND_ONLY;
@@ -152,6 +162,7 @@ public final class TerrainEvaluatorConfig {
             this.maxFallDistance = DEFAULT_MAX_FALL_DISTANCE;
             this.maxStepHeight = DEFAULT_MAX_STEP_HEIGHT;
             this.crawlConfig = PathCrawlConfig.DISABLED;
+            this.waterConfig = PathWaterConfig.DISABLED;
         }
 
         public Builder addTerrain(TerrainType type, float cost) {
@@ -224,6 +235,16 @@ public final class TerrainEvaluatorConfig {
             return this;
         }
 
+        public Builder withWaterConfig(PathWaterConfig waterConfig) {
+            this.waterConfig = waterConfig != null ? waterConfig : PathWaterConfig.DISABLED;
+            return this;
+        }
+
+        public Builder withWaterSwimming(int swimHeight) {
+            this.waterConfig = PathWaterConfig.enabled(swimHeight);
+            return this;
+        }
+
         public TerrainEvaluatorConfig build() {
             if (terrainCostSuppliers.isEmpty()) {
                 terrainCostSuppliers.put(TerrainType.GROUND, () -> DEFAULT_COST);
@@ -239,7 +260,8 @@ public final class TerrainEvaluatorConfig {
                 canOpenDoors,
                 canWalkOverFences,
                 canFly,
-                crawlConfig
+                crawlConfig,
+                waterConfig
             );
         }
     }

@@ -5,10 +5,10 @@ package com.blib.api.common.pathfinding.v1.feature;
  * without changing the rest of the navigator.
  */
 public enum PathfindingFeature {
-    SAME_LEVEL_MOVEMENT(1L << 0, "Same Level"),
+    SAME_LEVEL_MOVEMENT(1L << 0, "Same Level", Category.GROUND),
     DIAGONAL_MOVEMENT(1L << 1, "Diagonal"),
-    STEP_UP(1L << 2, "Step Up"),
-    STEP_DOWN(1L << 3, "Step Down"),
+    STEP_UP(1L << 2, "Step Up", Category.GROUND),
+    STEP_DOWN(1L << 3, "Step Down", Category.GROUND),
     VERTICAL_TARGET_RESOLUTION(1L << 4, "Vertical Target"),
     PATH_SKIP_AHEAD(1L << 5, "Skip Ahead"),
     STUCK_REPLAN(1L << 6, "Stuck Replan"),
@@ -17,16 +17,17 @@ public enum PathfindingFeature {
     PARTIAL_PATH_RESULTS(1L << 9, "Partial Paths"),
     DOOR_OPENING(1L << 10, "Door Opening"),
     ASYNC_PATHFINDING(1L << 11, "Async Search"),
-    COLLISION_SHAPE_WAYPOINTS(1L << 12, "Shape Waypoints"),
+    COLLISION_SHAPE_WAYPOINTS(1L << 12, "Shape Waypoints", Category.GROUND),
     HORIZONTAL_DIAGONAL_CLEARANCE(1L << 13, "Diag Horizontal"),
     FOOTPRINT_CLEARANCE(1L << 14, "Footprint Clearance"),
-    ANY_ANGLE_SMOOTHING(1L << 15, "Any-Angle Smoothing"),
-    STEPPED_FOOTPRINT_SUPPORT(1L << 16, "Stepped Footprint"),
-    DROP_DOWN_OPENINGS(1L << 17, "Drop Openings"),
+    ANY_ANGLE_SMOOTHING(1L << 15, "Ground Smoothing", Category.GROUND),
+    STEPPED_FOOTPRINT_SUPPORT(1L << 16, "Stepped Footprint", Category.GROUND),
+    DROP_DOWN_OPENINGS(1L << 17, "Drop Openings", Category.GROUND),
     ENTITY_HITBOX_CLEARANCE(1L << 18, "Hitbox Clearance"),
-    CRAWL_THROUGH_GAPS(1L << 19, "Crawl Gaps"),
-    DESCENDING_STAIR_EDGE_REACH(1L << 20, "Stair Edge Reach"),
+    CRAWL_THROUGH_GAPS(1L << 19, "Crawl Gaps", Category.GROUND),
+    DESCENDING_STAIR_EDGE_REACH(1L << 20, "Stair Edge Reach", Category.GROUND),
     WATER_PATHFINDING(1L << 21, "Water Base", Category.WATER),
+    WATER_SWIM_CLEARANCE(1L << 40, "Swim Clearance", Category.WATER),
     SEARCH_CACHING(1L << 22, "Search Cache"),
     TERRAIN_PRECHECK(1L << 23, "Terrain Precheck"),
     ANY_ANGLE_SMOOTHING_CACHE(1L << 24, "Smoothing Cache"),
@@ -43,7 +44,8 @@ public enum PathfindingFeature {
     WATER_EXIT(1L << 35, "Water Exit", Category.WATER),
     WATER_MOVEMENT_ASSIST(1L << 36, "Movement Assist", Category.WATER),
     WATER_EXIT_BREACH(1L << 37, "Exit Breach", Category.WATER),
-    WATER_STEP_UP_PRE_LIFT(1L << 38, "Step-Up Pre-Lift", Category.WATER);
+    WATER_STEP_UP_PRE_LIFT(1L << 38, "Step-Up Pre-Lift", Category.WATER),
+    WATER_ANY_ANGLE_SMOOTHING(1L << 39, "Water Smoothing", Category.WATER);
 
     private final long mask;
 
@@ -75,6 +77,7 @@ public enum PathfindingFeature {
 
     public enum Category {
         GENERAL,
+        GROUND,
         WATER
     }
 }

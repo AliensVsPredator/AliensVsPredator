@@ -29,6 +29,7 @@ public record PathfindingFeatures(
     boolean crawlThroughGaps,
     boolean descendingStairEdgeReach,
     boolean waterPathfinding,
+    boolean waterSwimClearance,
     boolean waterEntry,
     boolean waterVerticalSwim,
     boolean waterSlopeSwim,
@@ -36,6 +37,7 @@ public record PathfindingFeatures(
     boolean waterMovementAssist,
     boolean waterExitBreach,
     boolean waterStepUpPreLift,
+    boolean waterAnyAngleSmoothing,
     boolean searchCaching,
     boolean terrainPrecheck,
     boolean anyAngleSmoothingCache,
@@ -86,6 +88,8 @@ public record PathfindingFeatures(
             pathSkipAhead,
             stuckReplan,
             sectionCorridor,
+            true,
+            true,
             true,
             true,
             true,
@@ -190,6 +194,7 @@ public record PathfindingFeatures(
             case CRAWL_THROUGH_GAPS -> crawlThroughGaps;
             case DESCENDING_STAIR_EDGE_REACH -> descendingStairEdgeReach;
             case WATER_PATHFINDING -> waterPathfinding;
+            case WATER_SWIM_CLEARANCE -> waterSwimClearance;
             case WATER_ENTRY -> waterEntry;
             case WATER_VERTICAL_SWIM -> waterVerticalSwim;
             case WATER_SLOPE_SWIM -> waterSlopeSwim;
@@ -197,6 +202,7 @@ public record PathfindingFeatures(
             case WATER_MOVEMENT_ASSIST -> waterMovementAssist;
             case WATER_EXIT_BREACH -> waterExitBreach;
             case WATER_STEP_UP_PRE_LIFT -> waterStepUpPreLift;
+            case WATER_ANY_ANGLE_SMOOTHING -> waterAnyAngleSmoothing;
             case SEARCH_CACHING -> searchCaching;
             case TERRAIN_PRECHECK -> terrainPrecheck;
             case ANY_ANGLE_SMOOTHING_CACHE -> anyAngleSmoothingCache;
@@ -234,6 +240,7 @@ public record PathfindingFeatures(
             feature == PathfindingFeature.CRAWL_THROUGH_GAPS ? enabled : crawlThroughGaps,
             feature == PathfindingFeature.DESCENDING_STAIR_EDGE_REACH ? enabled : descendingStairEdgeReach,
             feature == PathfindingFeature.WATER_PATHFINDING ? enabled : waterPathfinding,
+            feature == PathfindingFeature.WATER_SWIM_CLEARANCE ? enabled : waterSwimClearance,
             feature == PathfindingFeature.WATER_ENTRY ? enabled : waterEntry,
             feature == PathfindingFeature.WATER_VERTICAL_SWIM ? enabled : waterVerticalSwim,
             feature == PathfindingFeature.WATER_SLOPE_SWIM ? enabled : waterSlopeSwim,
@@ -241,6 +248,7 @@ public record PathfindingFeatures(
             feature == PathfindingFeature.WATER_MOVEMENT_ASSIST ? enabled : waterMovementAssist,
             feature == PathfindingFeature.WATER_EXIT_BREACH ? enabled : waterExitBreach,
             feature == PathfindingFeature.WATER_STEP_UP_PRE_LIFT ? enabled : waterStepUpPreLift,
+            feature == PathfindingFeature.WATER_ANY_ANGLE_SMOOTHING ? enabled : waterAnyAngleSmoothing,
             feature == PathfindingFeature.SEARCH_CACHING ? enabled : searchCaching,
             feature == PathfindingFeature.TERRAIN_PRECHECK ? enabled : terrainPrecheck,
             feature == PathfindingFeature.ANY_ANGLE_SMOOTHING_CACHE ? enabled : anyAngleSmoothingCache,
@@ -294,6 +302,7 @@ public record PathfindingFeatures(
             enabled(mask, PathfindingFeature.CRAWL_THROUGH_GAPS),
             enabled(mask, PathfindingFeature.DESCENDING_STAIR_EDGE_REACH),
             enabled(mask, PathfindingFeature.WATER_PATHFINDING),
+            enabled(mask, PathfindingFeature.WATER_SWIM_CLEARANCE),
             enabled(mask, PathfindingFeature.WATER_ENTRY),
             enabled(mask, PathfindingFeature.WATER_VERTICAL_SWIM),
             enabled(mask, PathfindingFeature.WATER_SLOPE_SWIM),
@@ -301,6 +310,7 @@ public record PathfindingFeatures(
             enabled(mask, PathfindingFeature.WATER_MOVEMENT_ASSIST),
             enabled(mask, PathfindingFeature.WATER_EXIT_BREACH),
             enabled(mask, PathfindingFeature.WATER_STEP_UP_PRE_LIFT),
+            enabled(mask, PathfindingFeature.WATER_ANY_ANGLE_SMOOTHING),
             enabled(mask, PathfindingFeature.SEARCH_CACHING),
             enabled(mask, PathfindingFeature.TERRAIN_PRECHECK),
             enabled(mask, PathfindingFeature.ANY_ANGLE_SMOOTHING_CACHE),

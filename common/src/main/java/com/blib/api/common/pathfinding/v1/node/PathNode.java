@@ -116,6 +116,10 @@ public final class PathNode implements Comparable<PathNode> {
         return posture.isCrawling();
     }
 
+    public boolean requiresSwimming() {
+        return posture.isSwimming();
+    }
+
     public float getGCost() {
         return gCost;
     }
