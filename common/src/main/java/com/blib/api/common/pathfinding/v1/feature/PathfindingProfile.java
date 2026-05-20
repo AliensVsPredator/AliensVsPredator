@@ -11,7 +11,8 @@ public enum PathfindingProfile {
     BASIC_GROUND("Basic Ground", PathfindingFeatures.BASIC_GROUND),
     FLAT_ONLY("Flat Only", PathfindingFeatures.FLAT_ONLY),
     STAIRS_ONLY("Stairs Only", PathfindingFeatures.STAIRS_ONLY),
-    LEGACY_PERMISSIVE("Legacy Permissive", PathfindingFeatures.LEGACY_PERMISSIVE);
+    LEGACY_PERMISSIVE("Legacy Permissive", PathfindingFeatures.LEGACY_PERMISSIVE),
+    EMPTY("Empty", PathfindingFeatures.EMPTY);
 
     private final String displayName;
 

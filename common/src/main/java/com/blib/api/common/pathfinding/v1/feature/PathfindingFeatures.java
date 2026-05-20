@@ -126,6 +126,8 @@ public record PathfindingFeatures(
         );
     }
 
+    public static final PathfindingFeatures EMPTY = PathfindingFeatures.fromMask(0L);
+
     public static final PathfindingFeatures LEGACY_PERMISSIVE = new PathfindingFeatures(
         true,
         true,
