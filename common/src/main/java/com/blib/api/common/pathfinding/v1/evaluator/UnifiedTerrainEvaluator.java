@@ -785,7 +785,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                     finishEdgeAttempt(false);
                 }
 
-                if (!sameLevelAccepted) {
+                if (!sameLevelAccepted && hasNodeSupport(x, from.getY(), z)) {
                     beginEdgeAttempt(from, x, from.getY(), z, PathEdgeDebugType.BLOCK_BREAKING);
                     var breakableSameLevel = tryCreateSameLevelBlockBreakingGroundNode(from, x, from.getY(), z, dx, dz);
                     if (breakableSameLevel != null && hasMovementClearance(from, breakableSameLevel, dx, dz)) {
