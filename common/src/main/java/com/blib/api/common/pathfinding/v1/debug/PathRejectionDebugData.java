@@ -12,7 +12,8 @@ import java.util.List;
 public record PathRejectionDebugData(
     PathRejectionReason reason,
     int count,
-    List<PathDebugBlockPos> samples
+    List<PathDebugBlockPos> samples,
+    List<PathRejectionEdgeDebugData> edgeBreakdown
 ) {
 
     public static final StreamCodec<PathRejectionDebugData> CODEC = RecordStreamCodec.of(
@@ -22,10 +23,21 @@ public record PathRejectionDebugData(
         PathRejectionDebugData::count,
         PathDebugBlockPos.CODEC.asList(),
         PathRejectionDebugData::samples,
+        PathRejectionEdgeDebugData.CODEC.asList(),
+        PathRejectionDebugData::edgeBreakdown,
         PathRejectionDebugData::new
     );
 
+    public PathRejectionDebugData(
+        PathRejectionReason reason,
+        int count,
+        List<PathDebugBlockPos> samples
+    ) {
+        this(reason, count, samples, List.of());
+    }
+
     public PathRejectionDebugData {
         samples = List.copyOf(samples);
+        edgeBreakdown = List.copyOf(edgeBreakdown);
     }
 }

@@ -28,6 +28,7 @@ import com.blib.api.common.pathfinding.v1.debug.PathSearchMode;
 import com.blib.api.common.pathfinding.v1.debug.PathSearchOutcome;
 import com.blib.api.common.pathfinding.v1.debug.PathSearchSnapshot;
 import com.blib.api.common.pathfinding.v1.debug.PathSearchTermination;
+import com.blib.api.common.pathfinding.v1.debug.PathSearchTimingPhase;
 import com.blib.api.common.pathfinding.v1.debug.StableGroundDebugEntry;
 import com.blib.api.common.pathfinding.v1.evaluator.TerrainEvaluator;
 import com.blib.api.common.pathfinding.v1.evaluator.UnifiedTerrainEvaluator;
@@ -373,9 +374,12 @@ public final class BLibPathFinder {
         SearchConfig searchConfig,
         PathfindingTuning activeTuning
     ) {
+        var totalStart = startTiming(recorder);
+        var nodeResolutionStart = startTiming(recorder);
         var startNode = evaluator.getStartNode(startPos);
         var resolvedStartPos = new BlockPos(startNode.getX(), startNode.getY(), startNode.getZ());
         var goalNode = evaluator.getGoalNode(resolvedStartPos, targetPos);
+        recordTiming(recorder, PathSearchTimingPhase.NODE_RESOLUTION, nodeResolutionStart);
 
         if (shouldUseBidirectionalSearch()) {
             markFeatureUsed(recorder, PathfindingFeature.BIDIRECTIONAL_SEARCH);
@@ -388,25 +392,32 @@ public final class BLibPathFinder {
                 searchConfig,
                 activeTuning,
                 startNode,
-                goalNode
+                goalNode,
+                totalStart
             );
         }
 
+        var setupStart = startTiming(recorder);
         startNode.setGCost(0);
         startNode.setHCost(heuristic(startNode, goalNode, searchConfig));
 
         openSet.clear();
         closedNodes.clear();
         openSet.add(startNode);
+        recordTiming(recorder, PathSearchTimingPhase.SEARCH_SETUP, setupStart);
 
         var visitedCount = 0;
         PathNode bestNode = startNode;
 
         while (!openSet.isEmpty() && visitedCount < searchConfig.maxSearchNodes()) {
+            var pollStart = startTiming(recorder);
             var current = openSet.poll();
+            recordTiming(recorder, PathSearchTimingPhase.OPEN_SET_POLL, pollStart);
 
+            var closedRecordStart = startTiming(recorder);
             if (current.isClosed()) {
                 reject(recorder, PathRejectionReason.ALREADY_CLOSED, current);
+                recordTiming(recorder, PathSearchTimingPhase.CLOSED_NODE_RECORD, closedRecordStart);
                 continue;
             }
 
@@ -420,9 +431,15 @@ public final class BLibPathFinder {
             }
 
             visitedCount++;
+            recordTiming(recorder, PathSearchTimingPhase.CLOSED_NODE_RECORD, closedRecordStart);
 
+            var goalTestStart = startTiming(recorder);
             if (current.equals(goalNode)) {
+                recordTiming(recorder, PathSearchTimingPhase.GOAL_TEST, goalTestStart);
+                var pathBuildStart = startTiming(recorder);
                 var path = buildPath(current, true, searchConfig);
+                recordTiming(recorder, PathSearchTimingPhase.PATH_BUILD, pathBuildStart);
+                recordTiming(recorder, PathSearchTimingPhase.TOTAL_SEARCH, totalStart);
                 lastSearchSnapshot = debugEnabled
                     ? buildSnapshot(
                         closedNodes,
@@ -443,44 +460,60 @@ public final class BLibPathFinder {
 
                 return path;
             }
+            recordTiming(recorder, PathSearchTimingPhase.GOAL_TEST, goalTestStart);
 
+            var bestNodeUpdateStart = startTiming(recorder);
             if (current.distanceSquaredTo(goalNode) < bestNode.distanceSquaredTo(goalNode)) {
                 bestNode = current;
             }
+            recordTiming(recorder, PathSearchTimingPhase.BEST_NODE_UPDATE, bestNodeUpdateStart);
 
+            var neighborGenerationStart = startTiming(recorder);
             var neighborCount = evaluator.getNeighbors(current, neighborBuffer);
+            recordTiming(recorder, PathSearchTimingPhase.NEIGHBOR_GENERATION, neighborGenerationStart);
 
             for (int i = 0; i < neighborCount; i++) {
                 var neighbor = neighborBuffer[i];
 
+                var filterStart = startTiming(recorder);
                 if (neighbor.isClosed()) {
                     reject(recorder, PathRejectionReason.ALREADY_CLOSED, neighbor);
                     rejectEdge(recorder, current, neighbor, PathRejectionReason.ALREADY_CLOSED, false);
+                    recordTiming(recorder, PathSearchTimingPhase.NEIGHBOR_FILTERING, filterStart);
                     continue;
                 }
 
                 if (corridor != null && !SectionCorridorFinder.isInCorridor(neighbor, corridor)) {
                     reject(recorder, PathRejectionReason.OUTSIDE_CORRIDOR, neighbor);
                     rejectEdge(recorder, current, neighbor, PathRejectionReason.OUTSIDE_CORRIDOR, false);
+                    recordTiming(recorder, PathSearchTimingPhase.NEIGHBOR_FILTERING, filterStart);
                     continue;
                 }
+                recordTiming(recorder, PathSearchTimingPhase.NEIGHBOR_FILTERING, filterStart);
 
+                var edgeCostStart = startTiming(recorder);
                 var edgeCost = current.distanceTo(neighbor) * evaluator.getTerrainCost(neighbor.getTerrainType())
                     + neighbor.getPendingCostMalus();
                 var tentativeG = current.getGCost() + edgeCost;
+                recordTiming(recorder, PathSearchTimingPhase.EDGE_COSTING, edgeCostStart);
 
+                var improvementFilterStart = startTiming(recorder);
                 if (neighbor.getGCost() > 0 && tentativeG >= neighbor.getGCost() - activeTuning.minImprovement()) {
                     reject(recorder, PathRejectionReason.NOT_BETTER, neighbor);
                     rejectEdge(recorder, current, neighbor, PathRejectionReason.NOT_BETTER, false);
+                    recordTiming(recorder, PathSearchTimingPhase.NEIGHBOR_FILTERING, improvementFilterStart);
                     continue;
                 }
+                recordTiming(recorder, PathSearchTimingPhase.NEIGHBOR_FILTERING, improvementFilterStart);
 
+                var queueUpdateStart = startTiming(recorder);
                 neighbor.setParent(current);
                 neighbor.commitPendingTraversal();
                 neighbor.setGCost(tentativeG);
                 neighbor.setHCost(heuristic(neighbor, goalNode, searchConfig));
                 openSet.add(neighbor);
                 recordOpenNode(recorder, neighbor, current, tentativeG, neighbor.getHCost(), false);
+                recordTiming(recorder, PathSearchTimingPhase.QUEUE_UPDATE, queueUpdateStart);
             }
         }
 
@@ -488,7 +521,9 @@ public final class BLibPathFinder {
 
         if (features.partialPathResults() && bestNode != startNode) {
             markFeatureUsed(recorder, PathfindingFeature.PARTIAL_PATH_RESULTS);
+            var pathBuildStart = startTiming(recorder);
             path = buildPath(bestNode, false, searchConfig);
+            recordTiming(recorder, PathSearchTimingPhase.PATH_BUILD, pathBuildStart);
         }
 
         var termination = visitedCount >= searchConfig.maxSearchNodes()
@@ -498,6 +533,7 @@ public final class BLibPathFinder {
             termination = PathSearchTermination.START_ONLY;
         }
 
+        recordTiming(recorder, PathSearchTimingPhase.TOTAL_SEARCH, totalStart);
         lastSearchSnapshot = debugEnabled
             ? buildSnapshot(
                 closedNodes,
@@ -561,8 +597,10 @@ public final class BLibPathFinder {
         SearchConfig searchConfig,
         PathfindingTuning activeTuning,
         PathNode startNode,
-        PathNode goalNode
+        PathNode goalNode,
+        long totalStart
     ) {
+        var setupStart = startTiming(recorder);
         var forwardOpenSet = new PriorityQueue<SearchRecord>();
         var backwardOpenSet = new PriorityQueue<SearchRecord>();
         var forwardRecords = new HashMap<PathNode, SearchRecord>();
@@ -579,10 +617,14 @@ public final class BLibPathFinder {
         backwardRecords.put(goalNode, goalRecord);
         forwardOpenSet.add(startRecord);
         backwardOpenSet.add(goalRecord);
+        recordTiming(recorder, PathSearchTimingPhase.SEARCH_SETUP, setupStart);
 
         if (startNode.equals(goalNode)) {
-            var nodes = materializePath(List.of(startNode), true, goalNode, searchConfig);
+            var materializeStart = startTiming(recorder);
+            var nodes = materializePath(List.of(startNode), true, goalNode, searchConfig, recorder);
+            recordTiming(recorder, PathSearchTimingPhase.PATH_MATERIALIZATION, materializeStart);
             var path = nodes != null ? new BLibPath(nodes, true) : null;
+            recordTiming(recorder, PathSearchTimingPhase.TOTAL_SEARCH, totalStart);
             lastSearchSnapshot = debugEnabled
                 ? buildSnapshot(
                     closedNodes,
@@ -616,7 +658,9 @@ public final class BLibPathFinder {
             (!forwardOpenSet.isEmpty() || !backwardOpenSet.isEmpty())
                 && visitedCount < searchConfig.maxSearchNodes()
         ) {
+            var directionSelectStart = startTiming(recorder);
             var expandForward = shouldExpandForwardBidirectional(forwardOpenSet, backwardOpenSet, visitedCount);
+            recordTiming(recorder, PathSearchTimingPhase.BIDIRECTIONAL_DIRECTION_SELECT, directionSelectStart);
             var expanded = expandForward
                 ? expandBidirectionalSide(
                     forwardOpenSet,
@@ -666,8 +710,12 @@ public final class BLibPathFinder {
         var termination = PathSearchTermination.OPEN_SET_EXHAUSTED;
 
         if (meet != null) {
+            var pathBuildStart = startTiming(recorder);
             var nodes = reconstructBidirectionalNodes(meet.forwardRecord(), meet.backwardRecord(), searchConfig);
-            nodes = materializePath(nodes, true, goalNode, searchConfig);
+            recordTiming(recorder, PathSearchTimingPhase.PATH_BUILD, pathBuildStart);
+            var materializeStart = startTiming(recorder);
+            nodes = materializePath(nodes, true, goalNode, searchConfig, recorder);
+            recordTiming(recorder, PathSearchTimingPhase.PATH_MATERIALIZATION, materializeStart);
             path = nodes != null ? new BLibPath(nodes, true) : null;
             bestNode = meet.forwardRecord().node();
             termination = PathSearchTermination.GOAL_REACHED;
@@ -680,12 +728,17 @@ public final class BLibPathFinder {
 
             if (features.partialPathResults() && bestForwardRecord != startRecord) {
                 markFeatureUsed(recorder, PathfindingFeature.PARTIAL_PATH_RESULTS);
+                var pathBuildStart = startTiming(recorder);
                 var nodes = reconstructForwardNodes(bestForwardRecord, searchConfig);
-                nodes = materializePath(nodes, false, goalNode, searchConfig);
+                recordTiming(recorder, PathSearchTimingPhase.PATH_BUILD, pathBuildStart);
+                var materializeStart = startTiming(recorder);
+                nodes = materializePath(nodes, false, goalNode, searchConfig, recorder);
+                recordTiming(recorder, PathSearchTimingPhase.PATH_MATERIALIZATION, materializeStart);
                 path = nodes != null ? new BLibPath(nodes, false) : null;
             }
         }
 
+        recordTiming(recorder, PathSearchTimingPhase.TOTAL_SEARCH, totalStart);
         lastSearchSnapshot = debugEnabled
             ? buildSnapshot(
                 closedNodes,
@@ -720,14 +773,18 @@ public final class BLibPathFinder {
         PathfindingTuning activeTuning
     ) {
         while (!openSet.isEmpty()) {
+            var pollStart = startTiming(recorder);
             var current = openSet.poll();
+            recordTiming(recorder, PathSearchTimingPhase.OPEN_SET_POLL, pollStart);
 
             if (ownRecords.get(current.node()) != current) {
                 continue;
             }
 
+            var closedRecordStart = startTiming(recorder);
             if (!ownClosed.add(current.node())) {
                 reject(recorder, PathRejectionReason.ALREADY_CLOSED, current.node());
+                recordTiming(recorder, PathSearchTimingPhase.CLOSED_NODE_RECORD, closedRecordStart);
                 continue;
             }
 
@@ -741,48 +798,64 @@ public final class BLibPathFinder {
                 current.node().setClosed(true);
                 closedNodes.add(current.node());
             }
+            recordTiming(recorder, PathSearchTimingPhase.CLOSED_NODE_RECORD, closedRecordStart);
 
+            var meetCheckStart = startTiming(recorder);
             var otherRecord = otherRecords.get(current.node());
 
             if (otherRecord != null) {
+                recordTiming(recorder, PathSearchTimingPhase.BIDIRECTIONAL_MEET_CHECK, meetCheckStart);
                 return new BidirectionalExpansion(
                     forward ? current : otherRecord,
                     new BidirectionalMeet(forward ? current : otherRecord, forward ? otherRecord : current)
                 );
             }
+            recordTiming(recorder, PathSearchTimingPhase.BIDIRECTIONAL_MEET_CHECK, meetCheckStart);
 
+            var neighborGenerationStart = startTiming(recorder);
             var neighborCount = forward
                 ? evaluator.getNeighbors(current.node(), neighborBuffer)
                 : evaluator.getPredecessors(current.node(), neighborBuffer);
+            recordTiming(recorder, PathSearchTimingPhase.NEIGHBOR_GENERATION, neighborGenerationStart);
 
             for (int i = 0; i < neighborCount; i++) {
                 var neighbor = neighborBuffer[i];
 
+                var filterStart = startTiming(recorder);
                 if (ownClosed.contains(neighbor)) {
                     reject(recorder, PathRejectionReason.ALREADY_CLOSED, neighbor);
                     rejectEdge(recorder, current.node(), neighbor, PathRejectionReason.ALREADY_CLOSED, !forward);
+                    recordTiming(recorder, PathSearchTimingPhase.NEIGHBOR_FILTERING, filterStart);
                     continue;
                 }
 
                 if (corridor != null && !SectionCorridorFinder.isInCorridor(neighbor, corridor)) {
                     reject(recorder, PathRejectionReason.OUTSIDE_CORRIDOR, neighbor);
                     rejectEdge(recorder, current.node(), neighbor, PathRejectionReason.OUTSIDE_CORRIDOR, !forward);
+                    recordTiming(recorder, PathSearchTimingPhase.NEIGHBOR_FILTERING, filterStart);
                     continue;
                 }
+                recordTiming(recorder, PathSearchTimingPhase.NEIGHBOR_FILTERING, filterStart);
 
+                var edgeCostStart = startTiming(recorder);
                 var edgeCost = bidirectionalEdgeCost(current.node(), neighbor, forward);
                 var tentativeG = current.gCost() + edgeCost;
                 var existing = ownRecords.get(neighbor);
+                recordTiming(recorder, PathSearchTimingPhase.EDGE_COSTING, edgeCostStart);
 
+                var improvementFilterStart = startTiming(recorder);
                 if (
                     existing != null
                         && tentativeG >= existing.gCost() - activeTuning.minImprovement()
                 ) {
                     reject(recorder, PathRejectionReason.NOT_BETTER, neighbor);
                     rejectEdge(recorder, current.node(), neighbor, PathRejectionReason.NOT_BETTER, !forward);
+                    recordTiming(recorder, PathSearchTimingPhase.NEIGHBOR_FILTERING, improvementFilterStart);
                     continue;
                 }
+                recordTiming(recorder, PathSearchTimingPhase.NEIGHBOR_FILTERING, improvementFilterStart);
 
+                var queueUpdateStart = startTiming(recorder);
                 var nextRecord = new SearchRecord(
                     neighbor,
                     current,
@@ -796,15 +869,19 @@ public final class BLibPathFinder {
                 if (!forward && recorder != null) {
                     recorder.recordAcceptedEdge(current.node(), neighbor, edgeType(current.node(), neighbor), true);
                 }
+                recordTiming(recorder, PathSearchTimingPhase.QUEUE_UPDATE, queueUpdateStart);
 
+                meetCheckStart = startTiming(recorder);
                 otherRecord = otherRecords.get(neighbor);
 
                 if (otherRecord != null) {
+                    recordTiming(recorder, PathSearchTimingPhase.BIDIRECTIONAL_MEET_CHECK, meetCheckStart);
                     return new BidirectionalExpansion(
                         forward ? nextRecord : null,
                         new BidirectionalMeet(forward ? nextRecord : otherRecord, forward ? otherRecord : nextRecord)
                     );
                 }
+                recordTiming(recorder, PathSearchTimingPhase.BIDIRECTIONAL_MEET_CHECK, meetCheckStart);
             }
 
             return new BidirectionalExpansion(forward ? current : null, null);
@@ -861,7 +938,8 @@ public final class BLibPathFinder {
         List<PathNode> nodes,
         boolean reached,
         PathNode goalNode,
-        SearchConfig searchConfig
+        SearchConfig searchConfig,
+        @Nullable PathSearchDebugRecorder recorder
     ) {
         if (nodes.isEmpty()) {
             return null;
@@ -924,6 +1002,7 @@ public final class BLibPathFinder {
         @Nullable PathSearchDebugRecorder recorder,
         SearchConfig searchConfig
     ) {
+        var snapshotStart = startTiming(recorder);
         var pathIndexByNode = new HashMap<PathNode, Integer>();
 
         if (path != null) {
@@ -951,6 +1030,7 @@ public final class BLibPathFinder {
         }
 
         var reached = path != null && path.isReached();
+        recordTiming(recorder, PathSearchTimingPhase.SNAPSHOT_BUILD, snapshotStart);
         var diagnostics = new PathSearchDebugData(
             mode,
             path == null ? PathSearchOutcome.FAILED : reached ? PathSearchOutcome.COMPLETE : PathSearchOutcome.PARTIAL,
@@ -965,7 +1045,8 @@ public final class BLibPathFinder {
             reached,
             corridor != null,
             corridor != null ? corridor.size() : 0,
-            recorder != null ? recorder.rejectionSummary() : List.of()
+            recorder != null ? recorder.rejectionSummary() : List.of(),
+            recorder != null ? recorder.timingSummary() : List.of()
         );
 
         return new PathSearchSnapshot(
@@ -1047,6 +1128,20 @@ public final class BLibPathFinder {
     private static void reject(@Nullable PathSearchDebugRecorder recorder, PathRejectionReason reason, PathNode node) {
         if (recorder != null) {
             recorder.reject(reason, node.getX(), node.getY(), node.getZ());
+        }
+    }
+
+    private static long startTiming(@Nullable PathSearchDebugRecorder recorder) {
+        return recorder != null ? recorder.startTiming() : 0L;
+    }
+
+    private static void recordTiming(
+        @Nullable PathSearchDebugRecorder recorder,
+        PathSearchTimingPhase phase,
+        long startNanos
+    ) {
+        if (recorder != null) {
+            recorder.recordTiming(phase, startNanos);
         }
     }
 

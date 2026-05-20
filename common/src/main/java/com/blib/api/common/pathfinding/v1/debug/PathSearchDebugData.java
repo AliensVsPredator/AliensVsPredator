@@ -26,7 +26,8 @@ public record PathSearchDebugData(
     boolean reached,
     boolean corridorUsed,
     int corridorSectionCount,
-    List<PathRejectionDebugData> rejections
+    List<PathRejectionDebugData> rejections,
+    List<PathSearchTimingEntry> timings
 ) {
 
     public static final StreamCodec<PathSearchDebugData> CODEC = StreamCodec.of(
@@ -48,7 +49,8 @@ public record PathSearchDebugData(
                     StreamCodecs.BOOLEAN.decode(schema, input),
                     StreamCodecs.BOOLEAN.decode(schema, input),
                     StreamCodecs.INT.decode(schema, input),
-                    PathRejectionDebugData.CODEC.asList().decode(schema, input)
+                    PathRejectionDebugData.CODEC.asList().decode(schema, input),
+                    PathSearchTimingEntry.CODEC.asList().decode(schema, input)
                 );
             }
         },
@@ -70,11 +72,48 @@ public record PathSearchDebugData(
                 StreamCodecs.BOOLEAN.encode(schema, output, value.corridorUsed);
                 StreamCodecs.INT.encode(schema, output, value.corridorSectionCount);
                 PathRejectionDebugData.CODEC.asList().encode(schema, output, value.rejections);
+                PathSearchTimingEntry.CODEC.asList().encode(schema, output, value.timings);
             }
         }
     );
 
+    public PathSearchDebugData(
+        PathSearchMode mode,
+        PathSearchOutcome outcome,
+        PathSearchTermination termination,
+        PathDebugBlockPos start,
+        PathDebugBlockPos requestedTarget,
+        PathDebugBlockPos resolvedGoal,
+        PathDebugBlockPos bestNode,
+        int visitedCount,
+        int maxSearchNodes,
+        int pathLength,
+        boolean reached,
+        boolean corridorUsed,
+        int corridorSectionCount,
+        List<PathRejectionDebugData> rejections
+    ) {
+        this(
+            mode,
+            outcome,
+            termination,
+            start,
+            requestedTarget,
+            resolvedGoal,
+            bestNode,
+            visitedCount,
+            maxSearchNodes,
+            pathLength,
+            reached,
+            corridorUsed,
+            corridorSectionCount,
+            rejections,
+            List.of()
+        );
+    }
+
     public PathSearchDebugData {
         rejections = List.copyOf(rejections);
+        timings = List.copyOf(timings);
     }
 }

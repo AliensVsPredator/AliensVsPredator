@@ -32,6 +32,8 @@ public final class PathSearchDebugRecorder {
 
     private final EnumMap<PathRejectionReason, MutableSummary> rejections = new EnumMap<>(PathRejectionReason.class);
 
+    private final EnumMap<PathSearchTimingPhase, MutableTiming> timings = new EnumMap<>(PathSearchTimingPhase.class);
+
     private final LinkedHashMap<String, PathOpenNodeDebugEntry> openNodes = new LinkedHashMap<>();
 
     private final Set<String> closedNodes = new HashSet<>();
@@ -52,6 +54,21 @@ public final class PathSearchDebugRecorder {
         featureUsageMask |= feature.mask();
     }
 
+    public long startTiming() {
+        return System.nanoTime();
+    }
+
+    public void recordTiming(PathSearchTimingPhase phase, long startNanos) {
+        recordTimingNanos(phase, Math.max(0L, System.nanoTime() - startNanos));
+    }
+
+    public void recordTimingNanos(PathSearchTimingPhase phase, long nanos) {
+        var timing = timings.computeIfAbsent(phase, ignored -> new MutableTiming());
+        timing.count++;
+        timing.totalNanos += nanos;
+        timing.maxNanos = Math.max(timing.maxNanos, nanos);
+    }
+
     public void reject(PathRejectionReason reason, BlockPos pos) {
         reject(reason, pos.getX(), pos.getY(), pos.getZ());
     }
@@ -60,6 +77,7 @@ public final class PathSearchDebugRecorder {
         var summary = rejections.computeIfAbsent(reason, ignored -> new MutableSummary());
         summary.count++;
         recordActiveEdgeRejection(reason);
+        recordActiveEdgeBreakdown(summary, x, y, z);
 
         if (summary.samples.size() < MAX_SAMPLES_PER_REASON) {
             summary.samples.add(new PathDebugBlockPos(x, y, z));
@@ -127,6 +145,8 @@ public final class PathSearchDebugRecorder {
         PathRejectionReason reason,
         boolean backward
     ) {
+        var summary = rejections.computeIfAbsent(reason, ignored -> new MutableSummary());
+        summary.recordEdge(type, pos(to));
         addEdgeAttempt(new PathEdgeDebugEntry(
             pos(from),
             pos(to),
@@ -219,7 +239,31 @@ public final class PathSearchDebugRecorder {
 
         var out = new ArrayList<PathRejectionDebugData>(rejections.size());
         for (var entry : rejections.entrySet()) {
-            out.add(new PathRejectionDebugData(entry.getKey(), entry.getValue().count, entry.getValue().samples));
+            out.add(new PathRejectionDebugData(
+                entry.getKey(),
+                entry.getValue().count,
+                entry.getValue().samples,
+                entry.getValue().edgeBreakdown()
+            ));
+        }
+        return out;
+    }
+
+    public List<PathSearchTimingEntry> timingSummary() {
+        if (timings.isEmpty()) {
+            return List.of();
+        }
+
+        var out = new ArrayList<PathSearchTimingEntry>(timings.size());
+        for (var entry : timings.entrySet()) {
+            out.add(
+                new PathSearchTimingEntry(
+                    entry.getKey(),
+                    entry.getValue().totalNanos,
+                    entry.getValue().count,
+                    entry.getValue().maxNanos
+                )
+            );
         }
         return out;
     }
@@ -257,6 +301,14 @@ public final class PathSearchDebugRecorder {
         }
     }
 
+    private void recordActiveEdgeBreakdown(MutableSummary summary, int x, int y, int z) {
+        if (activeEdgeAttempt == null) {
+            return;
+        }
+
+        summary.recordEdge(activeEdgeAttempt.type, new PathDebugBlockPos(x, y, z));
+    }
+
     private void addEdgeAttempt(PathEdgeDebugEntry entry) {
         if (edgeAttempts.size() < MAX_EDGE_ATTEMPTS) {
             edgeAttempts.add(entry);
@@ -285,6 +337,45 @@ public final class PathSearchDebugRecorder {
         int count;
 
         final List<PathDebugBlockPos> samples = new ArrayList<>(MAX_SAMPLES_PER_REASON);
+
+        final EnumMap<PathEdgeDebugType, MutableEdgeSummary> edgeBreakdown = new EnumMap<>(PathEdgeDebugType.class);
+
+        void recordEdge(PathEdgeDebugType edgeType, PathDebugBlockPos sample) {
+            var summary = edgeBreakdown.computeIfAbsent(edgeType, ignored -> new MutableEdgeSummary());
+            summary.count++;
+
+            if (summary.samples.size() < MAX_SAMPLES_PER_REASON) {
+                summary.samples.add(sample);
+            }
+        }
+
+        List<PathRejectionEdgeDebugData> edgeBreakdown() {
+            if (edgeBreakdown.isEmpty()) {
+                return List.of();
+            }
+
+            var out = new ArrayList<PathRejectionEdgeDebugData>(edgeBreakdown.size());
+            for (var entry : edgeBreakdown.entrySet()) {
+                out.add(new PathRejectionEdgeDebugData(entry.getKey(), entry.getValue().count, entry.getValue().samples));
+            }
+            return out;
+        }
+    }
+
+    private static final class MutableEdgeSummary {
+
+        int count;
+
+        final List<PathDebugBlockPos> samples = new ArrayList<>(MAX_SAMPLES_PER_REASON);
+    }
+
+    private static final class MutableTiming {
+
+        long totalNanos;
+
+        long maxNanos;
+
+        int count;
     }
 
     private static final class EdgeAttempt {
