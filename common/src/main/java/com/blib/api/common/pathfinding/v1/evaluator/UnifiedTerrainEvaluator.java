@@ -659,10 +659,14 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         if (features.stepDown()) {
             for (int stepDown = 1; stepDown <= config.getMaxFallDistance(); stepDown++) {
                 beginEdgeAttempt(from, x, from.getY() - stepDown, z, PathEdgeDebugType.STEP_DOWN);
-                var steppedDown = tryCreateGroundNode(x, from.getY() - stepDown, z);
+                var candidate = tryCreateStepDownGroundNode(x, from.getY() - stepDown, z);
+                var steppedDown = candidate.node();
 
                 if (steppedDown == null) {
                     finishEdgeAttempt(false);
+                    if (candidate.blocksFurtherStepDown()) {
+                        break;
+                    }
                     continue;
                 }
 
@@ -704,10 +708,14 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
         for (var dropDistance = firstDropDistance; dropDistance <= config.getMaxFallDistance(); dropDistance++) {
             beginEdgeAttempt(from, x, from.getY() - dropDistance, z, PathEdgeDebugType.DROP_OPENING);
-            var landing = tryCreateGroundNode(x, from.getY() - dropDistance, z);
+            var candidate = tryCreateStepDownGroundNode(x, from.getY() - dropDistance, z);
+            var landing = candidate.node();
 
             if (landing == null) {
                 finishEdgeAttempt(false);
+                if (candidate.blocksFurtherStepDown()) {
+                    break;
+                }
                 continue;
             }
 
@@ -750,10 +758,11 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
 
         for (var stepDown = 1; stepDown <= config.getMaxFallDistance(); stepDown++) {
+            var y = from.getY() - stepDown;
             var steppedDown = tryWaterMovementNeighbor(
                 from,
                 x,
-                from.getY() - stepDown,
+                y,
                 z,
                 dx,
                 dz,
@@ -762,6 +771,10 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
             if (steppedDown != null) {
                 return steppedDown;
+            }
+
+            if (isWaterEntryFallBlocked(x, y, z)) {
+                break;
             }
         }
 
@@ -906,7 +919,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         ) {
             markFeatureUsed(PathfindingFeature.VERTICAL_DIAGONAL_CLEARANCE);
 
-            if (hasTopHorizontalAxisFullBlockCorner(from, to, dx, dz)) {
+            if (hasVerticalFullBlockDiagonalCorner(from, to, dx, dz)) {
                 reject(PathRejectionReason.DIAGONAL_CORNER_BLOCKED, to.getX(), to.getY(), to.getZ());
                 return false;
             }
@@ -938,8 +951,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     private boolean isVerticalDiagonalTransition(PathNode from, PathNode to, int dx, int dz) {
         return from.getY() != to.getY()
-            && dx != 0
-            && dz != 0;
+            && (dx != 0 || dz != 0);
     }
 
     private boolean hasHorizontalFullBlockDiagonalCorner(PathNode from, PathNode to, int dx, int dz) {
@@ -974,6 +986,82 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
 
         return false;
+    }
+
+    private boolean hasVerticalFullBlockDiagonalCorner(PathNode from, PathNode to, int dx, int dz) {
+        return hasAxisAlignedVerticalFullBlockCorner(from, to, dx, dz)
+            || (dx != 0 && dz != 0 && hasTopHorizontalAxisFullBlockCorner(from, to, dx, dz));
+    }
+
+    private boolean hasAxisAlignedVerticalFullBlockCorner(PathNode from, PathNode to, int dx, int dz) {
+        if ((dx == 0) == (dz == 0)) {
+            return false;
+        }
+
+        // Reject X/Y or Z/Y corner cuts such as BX/AB, where the two full blocks pinch the diagonal descent/ascent.
+        var low = from.getY() < to.getY() ? from : to;
+        var high = from.getY() < to.getY() ? to : from;
+        var footprintWidth = footprintCellWidth();
+
+        if (dx != 0) {
+            return hasAxisAlignedVerticalXFullBlockCorner(low, high, footprintWidth);
+        }
+
+        return hasAxisAlignedVerticalZFullBlockCorner(low, high, footprintWidth);
+    }
+
+    private boolean hasAxisAlignedVerticalXFullBlockCorner(PathNode low, PathNode high, int footprintWidth) {
+        var lowCeilingX = low.getX() < high.getX() ? low.getX() : low.getX() + footprintWidth - 1;
+        var highFloorX = high.getX() > low.getX() ? high.getX() + footprintWidth - 1 : high.getX();
+        var minZ = Math.max(low.getZ(), high.getZ());
+        var maxZ = Math.min(low.getZ() + footprintWidth - 1, high.getZ() + footprintWidth - 1);
+
+        for (var y = low.getY(); y < high.getY(); y++) {
+            for (var z = minZ; z <= maxZ; z++) {
+                if (hasAxisAlignedVerticalCornerPair(lowCeilingX, y + 1, z, highFloorX, y, z)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private boolean hasAxisAlignedVerticalZFullBlockCorner(PathNode low, PathNode high, int footprintWidth) {
+        var lowCeilingZ = low.getZ() < high.getZ() ? low.getZ() : low.getZ() + footprintWidth - 1;
+        var highFloorZ = high.getZ() > low.getZ() ? high.getZ() + footprintWidth - 1 : high.getZ();
+        var minX = Math.max(low.getX(), high.getX());
+        var maxX = Math.min(low.getX() + footprintWidth - 1, high.getX() + footprintWidth - 1);
+
+        for (var y = low.getY(); y < high.getY(); y++) {
+            for (var x = minX; x <= maxX; x++) {
+                if (hasAxisAlignedVerticalCornerPair(x, y + 1, lowCeilingZ, x, y, highFloorZ)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private boolean hasAxisAlignedVerticalCornerPair(
+        int lowCeilingX,
+        int lowCeilingY,
+        int lowCeilingZ,
+        int highFloorX,
+        int highFloorY,
+        int highFloorZ
+    ) {
+        if (
+            !isFullCollisionBlock(lowCeilingX, lowCeilingY, lowCeilingZ)
+                || !isFullCollisionBlock(highFloorX, highFloorY, highFloorZ)
+        ) {
+            return false;
+        }
+
+        recordBlockingBlock(lowCeilingX, lowCeilingY, lowCeilingZ, PathRejectionReason.DIAGONAL_CORNER_BLOCKED);
+        recordBlockingBlock(highFloorX, highFloorY, highFloorZ, PathRejectionReason.DIAGONAL_CORNER_BLOCKED);
+        return true;
     }
 
     private boolean hasTopHorizontalAxisFullBlockCorner(PathNode from, PathNode to, int dx, int dz) {
@@ -1268,6 +1356,21 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         boolean requireNominalSupport
     ) {}
 
+    private record GroundCandidate(@Nullable PathNode node, boolean blocksFurtherStepDown) {
+
+        private static GroundCandidate accepted(PathNode node) {
+            return new GroundCandidate(node, false);
+        }
+
+        private static GroundCandidate openUnsupported() {
+            return new GroundCandidate(null, false);
+        }
+
+        private static GroundCandidate blocked() {
+            return new GroundCandidate(null, true);
+        }
+    }
+
     private record BlockBreakCandidate(PathBlockBreakPlan plan, float costMalus) {}
 
     private boolean isEntityBoxClear(double centerX, double feetY, double centerZ, double entityWidth, double entityHeight) {
@@ -1484,9 +1587,33 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     }
 
     private @Nullable PathNode tryCreateGroundNode(int x, int y, int z, PathPosture posture) {
+        return evaluateGroundCandidate(x, y, z, posture).node();
+    }
+
+    private GroundCandidate tryCreateStepDownGroundNode(int x, int y, int z) {
+        var standing = evaluateGroundCandidate(x, y, z, PathPosture.STANDING);
+
+        if (standing.node() != null || !usesCrawling()) {
+            return standing;
+        }
+
+        var crawling = evaluateGroundCandidate(x, y, z, PathPosture.CRAWLING);
+
+        if (crawling.node() != null) {
+            return crawling;
+        }
+
+        if (!standing.blocksFurtherStepDown() || !crawling.blocksFurtherStepDown()) {
+            return GroundCandidate.openUnsupported();
+        }
+
+        return GroundCandidate.blocked();
+    }
+
+    private GroundCandidate evaluateGroundCandidate(int x, int y, int z, PathPosture posture) {
         if (!snapshotCosts.containsKey(TerrainType.GROUND)) {
             reject(PathRejectionReason.UNSUPPORTED_TERRAIN, x, y, z);
-            return null;
+            return GroundCandidate.blocked();
         }
 
         var supportPrechecked = false;
@@ -1495,7 +1622,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
             if (rejectionReason != null) {
                 reject(rejectionReason, x, y, z);
-                return null;
+                return groundCandidateForRejection(rejectionReason);
             }
 
             supportPrechecked = true;
@@ -1503,15 +1630,23 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
         if (!hasNodeClearance(x, y, z, posture)) {
             reject(PathRejectionReason.NO_CLEARANCE, x, y, z);
-            return null;
+            return GroundCandidate.blocked();
         }
 
         if (!supportPrechecked && !hasNodeSupport(x, y, z)) {
             reject(PathRejectionReason.UNSTABLE_SUPPORT, x, y, z);
-            return null;
+            return GroundCandidate.openUnsupported();
         }
 
-        return getOrCreateGroundNode(x, y, z, posture);
+        return GroundCandidate.accepted(getOrCreateGroundNode(x, y, z, posture));
+    }
+
+    private GroundCandidate groundCandidateForRejection(PathRejectionReason rejectionReason) {
+        if (rejectionReason == PathRejectionReason.UNSTABLE_SUPPORT) {
+            return GroundCandidate.openUnsupported();
+        }
+
+        return GroundCandidate.blocked();
     }
 
     private @Nullable PathNode tryCreateSameLevelBlockBreakingGroundNode(
@@ -1522,11 +1657,16 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         int dx,
         int dz
     ) {
-        if (!usesGroundBlockBreaking() || from.getTerrainType() != TerrainType.GROUND || from.getY() != y) {
+        if (currentLevel == null || from.getTerrainType() != TerrainType.GROUND || from.getY() != y) {
             return null;
         }
 
         if (!isCardinalHorizontalMove(dx, dz)) {
+            return null;
+        }
+
+        if (!usesGroundBlockBreaking()) {
+            reject(PathRejectionReason.BLOCK_BREAK_DISABLED, x, y, z);
             return null;
         }
 
@@ -1600,15 +1740,20 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             return null;
         }
 
-        if (blockAccessor.isLiquid(state) || !blockAccessor.isSolid(state)) {
-            reject(PathRejectionReason.NO_CLEARANCE, x, y, z);
+        if (blockAccessor.isLiquid(state)) {
+            reject(PathRejectionReason.BLOCK_BREAK_LIQUID_BLOCKED, x, y, z);
+            return null;
+        }
+
+        if (!blockAccessor.isSolid(state)) {
+            reject(PathRejectionReason.CANDIDATE_REJECTED, x, y, z);
             return null;
         }
 
         var pos = new BlockPos(x, y, z);
 
         if (!breakConfig.canBreak(level, pos, state)) {
-            reject(PathRejectionReason.NO_CLEARANCE, x, y, z);
+            reject(blockBreakRejectionReason(level, pos, state, breakConfig), x, y, z);
             return null;
         }
 
@@ -1647,7 +1792,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                     }
 
                     if (blockAccessor.isLiquid(state)) {
-                        reject(PathRejectionReason.NO_CLEARANCE, nodeX, nodeY, nodeZ);
+                        reject(PathRejectionReason.BLOCK_BREAK_LIQUID_BLOCKED, nodeX, nodeY, nodeZ);
                         return null;
                     }
 
@@ -1664,12 +1809,12 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
                     }
 
                     if (blocks.size() >= breakConfig.maxBlocksPerEdge()) {
-                        reject(PathRejectionReason.NO_CLEARANCE, nodeX, nodeY, nodeZ);
+                        reject(PathRejectionReason.BLOCK_BREAK_LIMIT_EXCEEDED, nodeX, nodeY, nodeZ);
                         return null;
                     }
 
                     if (!breakConfig.canBreak(level, blockPos, state)) {
-                        reject(PathRejectionReason.NO_CLEARANCE, nodeX, nodeY, nodeZ);
+                        reject(blockBreakRejectionReason(level, blockPos, state, breakConfig), nodeX, nodeY, nodeZ);
                         return null;
                     }
 
@@ -1684,6 +1829,28 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
 
         return new BlockBreakCandidate(new PathBlockBreakPlan(blocks), costMalus);
+    }
+
+    private PathRejectionReason blockBreakRejectionReason(
+        LevelReader level,
+        BlockPos pos,
+        BlockState state,
+        PathBlockBreakingConfig breakConfig
+    ) {
+        if (!breakConfig.enabled() || breakConfig.maxBlocksPerEdge() <= 0) {
+            return PathRejectionReason.BLOCK_BREAK_DISABLED;
+        }
+
+        var hardness = state.getBlock().defaultDestroyTime();
+        if (hardness < 0.0f || hardness > breakConfig.maxHardness()) {
+            return PathRejectionReason.BLOCK_BREAK_UNBREAKABLE;
+        }
+
+        if (!breakConfig.breakPolicy().canBreak(level, pos, state)) {
+            return PathRejectionReason.BLOCK_BREAK_POLICY_REJECTED;
+        }
+
+        return PathRejectionReason.BLOCK_BREAK_POLICY_REJECTED;
     }
 
     private boolean intersectsEntityBox(List<AABB> blockBoxes, BlockPos blockPos, AABB entityBox) {
@@ -1891,6 +2058,44 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
 
         return true;
+    }
+
+    private boolean isWaterEntryFallBlocked(int x, int y, int z) {
+        var posture = waterPosture();
+
+        if (usesEntityHitboxClearance(posture)) {
+            markEntityBoxClearanceUsed(posture);
+            return !isEntityBoxClear(nodeCenterX(x), y, nodeCenterZ(z), entityWidth(), entityHeight(posture), true);
+        }
+
+        var footprintWidth = usesFootprintClearance() ? footprintCellWidth() : 1;
+
+        for (var waterX = x; waterX < x + footprintWidth; waterX++) {
+            for (var waterZ = z; waterZ < z + footprintWidth; waterZ++) {
+                if (!isWaterEntryFallCellPassable(waterX, y, waterZ)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isWaterEntryFallCellPassable(int x, int y, int z) {
+        var state = blockAccessor.getBlockState(x, y, z);
+
+        if (isDoorPassable(state)) {
+            return true;
+        }
+
+        var passable = !blockAccessor.isSolid(state)
+            && (!blockAccessor.isLiquid(state) || blockAccessor.isWater(state));
+
+        if (!passable) {
+            recordBlockingBlock(x, y, z, PathRejectionReason.NO_CLEARANCE);
+        }
+
+        return passable;
     }
 
     private boolean isFeetOpen(int x, int y, int z) {
