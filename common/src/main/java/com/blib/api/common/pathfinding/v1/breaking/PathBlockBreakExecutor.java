@@ -26,6 +26,7 @@ public final class PathBlockBreakExecutor {
         var level = actor.level();
 
         if (level.isClientSide()) {
+            // Block breaking is server-side only.
             return Result.IDLE;
         }
 
@@ -75,24 +76,27 @@ public final class PathBlockBreakExecutor {
             return Result.INVALIDATED;
         }
 
-        activeBlockPos = blockPos.immutable();
-        activeBlockState = blockState;
+        this.activeBlockPos = blockPos.immutable();
+        this.activeBlockState = blockState;
+
         holdAtBlock(actor, blockPos);
         navigator.markPathfindingFeatureUsed(PathfindingFeature.BLOCK_BREAKING);
         navigator.markPathProgress();
 
         var result = BlockBreakProgressManager.damage(level, blockPos, breakConfig.damagePerTick());
 
-        if (result == BlockBreakProgressManager.Result.NOT_DAMAGED) {
-            reset(level);
-            return Result.INVALIDATED;
-        }
+        switch (result) {
+            case DAMAGED -> {/* NO-OP */}
+            case DESTROYED -> {
+                clearActiveBlock();
 
-        if (result == BlockBreakProgressManager.Result.DESTROYED) {
-            clearActiveBlock();
-
-            if (firstBlockingBlock(level, plan) == null) {
-                return Result.IDLE;
+                if (firstBlockingBlock(level, plan) == null) {
+                    return Result.IDLE;
+                }
+            }
+            case NOT_DAMAGED -> {
+                reset(level);
+                return Result.INVALIDATED;
             }
         }
 

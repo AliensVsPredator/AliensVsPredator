@@ -12,6 +12,7 @@ import net.minecraft.world.phys.Vec3;
 import com.blib.api.common.entity.v1.EntityUtil;
 import com.blib.api.common.pathfinding.v1.breaking.PathBlockBreakExecutor;
 import com.blib.api.common.pathfinding.v1.debug.PathDebugUtil;
+import com.blib.api.common.pathfinding.v1.feature.PathfindingFeature;
 import com.blib.api.common.pathfinding.v1.movement.PathMovementController;
 import com.blib.api.common.pathfinding.v1.navigator.PathNavigator;
 import com.blib.api.common.pathfinding.v1.navigator.PathNavigatorUser;
@@ -55,6 +56,15 @@ public final class NeoMoveToPosAction {
         Vec3 targetPos,
         double speedMultiplier
     ) {
+        return perform(context, targetPos, speedMultiplier, false);
+    }
+
+    private static Result perform(
+        Action.Context<? extends PathfinderMob> context,
+        Vec3 targetPos,
+        double speedMultiplier,
+        boolean allowBlockBreaking
+    ) {
         var actor = context.getActor();
         var blackboard = context.getBlackboard(Blackboard.Scope.ACTION);
 
@@ -63,12 +73,18 @@ public final class NeoMoveToPosAction {
         }
 
         var navigator = navigatorUser.getPathNavigator();
+        var requestedFeatures = navigator.getDefaultPathfindingFeatures()
+            .with(PathfindingFeature.BLOCK_BREAKING, allowBlockBreaking);
 
-        if (actor instanceof Mob mob) {
-            navigator.setDebugCaptureEnabled(PathDebugUtil.hasDebugWatchers(mob));
-        } else {
-            navigator.setDebugCaptureEnabled(false);
+        if (
+            navigator.isNavigating()
+                && !navigator.getPathfindingFeatures().equals(requestedFeatures)
+        ) {
+            resetBlockBreakExecutor(actor, blackboard);
+            navigator.stop();
         }
+
+        navigator.setDebugCaptureEnabled(PathDebugUtil.hasDebugWatchers(actor));
 
         if (!navigator.isNavigating()) {
             var found = navigator.navigateTo(
@@ -77,7 +93,8 @@ public final class NeoMoveToPosAction {
                 actor.getZ(),
                 targetPos.x,
                 targetPos.y,
-                targetPos.z
+                targetPos.z,
+                requestedFeatures
             );
 
             if (!found) {
@@ -100,14 +117,13 @@ public final class NeoMoveToPosAction {
 
         var blockBreakResult = blockBreakExecutor(blackboard).tick(actor, navigator);
 
-        if (blockBreakResult == PathBlockBreakExecutor.Result.INVALIDATED) {
-            navigator.requestReplan();
+        switch (blockBreakResult) {
+            case BREAKING, IDLE -> { /* NO-OP */ }
+            case INVALIDATED -> navigator.requestReplan();
         }
 
-        if (actor instanceof Mob mob) {
-            PathDebugUtil.sendDebugSearchSnapshot(mob, navigator);
-            PathDebugUtil.sendDebugNavState(mob, navigator);
-        }
+        PathDebugUtil.sendDebugSearchSnapshot(actor, navigator);
+        PathDebugUtil.sendDebugNavState(actor, navigator);
 
         if (blockBreakResult != PathBlockBreakExecutor.Result.IDLE) {
             return Result.MOVING;
@@ -144,7 +160,7 @@ public final class NeoMoveToPosAction {
     }
 
     private static PathBlockBreakExecutor blockBreakExecutor(Blackboard blackboard) {
-        var executor = blackboard.getOrDefault(BLOCK_BREAK_EXECUTOR, (PathBlockBreakExecutor) null);
+        var executor = blackboard.getOrDefault(BLOCK_BREAK_EXECUTOR, null);
 
         if (executor == null) {
             executor = new PathBlockBreakExecutor();
@@ -155,16 +171,13 @@ public final class NeoMoveToPosAction {
     }
 
     private static void resetBlockBreakExecutor(PathfinderMob actor, Blackboard blackboard) {
-        var executor = blackboard.getOrDefault(BLOCK_BREAK_EXECUTOR, (PathBlockBreakExecutor) null);
+        var executor = blackboard.getOrDefault(BLOCK_BREAK_EXECUTOR, null);
 
         if (executor == null) {
             return;
         }
 
-        if (!actor.level().isClientSide()) {
-            executor.reset(actor.level());
-        }
-
+        executor.reset(actor.level());
         blackboard.set(BLOCK_BREAK_EXECUTOR, null);
     }
 

@@ -150,6 +150,10 @@ public final class PathNavigator {
 
     private PathfindingFeatures features;
 
+    private @Nullable PathfindingFeatures activePathfindingFeatures;
+
+    private @Nullable PathfindingFeatures pendingPathfindingFeatures;
+
     private @Nullable PathfindingProfile profile;
 
     private int featuresRevision;
@@ -203,10 +207,34 @@ public final class PathNavigator {
      * @return true if a path was found
      */
     public boolean navigateTo(BlockPos entityPos, BlockPos target) {
-        return navigateTo(entityPos, target, false);
+        return navigateToInternal(entityPos, target, null, false);
     }
 
-    private boolean navigateTo(BlockPos entityPos, BlockPos rawTarget, boolean stuckReplan) {
+    /**
+     * Plans a path with a feature set that applies only to this navigation request. Replans for this path reuse the same
+     * feature set until the navigator is stopped or another navigation request starts.
+     */
+    public boolean navigateTo(BlockPos entityPos, BlockPos target, PathfindingFeatures pathfindingFeatures) {
+        return navigateToInternal(
+            entityPos,
+            target,
+            Objects.requireNonNull(pathfindingFeatures, "pathfindingFeatures"),
+            false
+        );
+    }
+
+    private boolean navigateToInternal(
+        BlockPos entityPos,
+        BlockPos rawTarget,
+        @Nullable PathfindingFeatures pathfindingFeatures,
+        boolean stuckReplan
+    ) {
+        cancelPendingPath();
+
+        if (!stuckReplan) {
+            this.activePathfindingFeatures = pathfindingFeatures;
+        }
+
         var searchTarget = resolveAndStoreTarget(entityPos, rawTarget);
 
         if (!stuckReplan && isInFailureCooldown(searchTarget)) {
@@ -262,6 +290,26 @@ public final class PathNavigator {
     }
 
     /**
+     * Plans a path from the entity's current center position using a feature set that applies only to this navigation
+     * request.
+     *
+     * @return true if a path was found
+     */
+    public boolean navigateTo(
+        double entityX,
+        double entityY,
+        double entityZ,
+        BlockPos target,
+        PathfindingFeatures pathfindingFeatures
+    ) {
+        return navigateTo(
+            entityAnchorPos(entityX, entityY, entityZ),
+            target,
+            pathfindingFeatures
+        );
+    }
+
+    /**
      * Plans a path from the entity's current center position to an exact target center position. Both positions are
      * converted to footprint anchors with the same entity-width semantics.
      *
@@ -282,14 +330,61 @@ public final class PathNavigator {
     }
 
     /**
+     * Plans a path from the entity's current center position to an exact target center position using a feature set that
+     * applies only to this navigation request.
+     *
+     * @return true if a path was found
+     */
+    public boolean navigateTo(
+        double entityX,
+        double entityY,
+        double entityZ,
+        double targetX,
+        double targetY,
+        double targetZ,
+        PathfindingFeatures pathfindingFeatures
+    ) {
+        return navigateTo(
+            entityAnchorPos(entityX, entityY, entityZ),
+            targetAnchorPos(targetX, targetY, targetZ),
+            pathfindingFeatures
+        );
+    }
+
+    /**
      * Asynchronously plans a path to the target position. Chunk data is snapshotted and the terrain cache is
      * pre-populated on the calling thread, then the A* search runs on a background thread. Call
      * {@link #isPathPending()} to check if an async computation is in progress. The path is automatically applied on
      * the next {@link #tick} call after the computation completes.
      */
     public void navigateToAsync(BlockPos entityPos, BlockPos rawTarget) {
-        if (!features.asyncPathfinding() || features.blockBreaking()) {
-            navigateTo(entityPos, rawTarget);
+        navigateToAsyncInternal(entityPos, rawTarget, null);
+    }
+
+    /**
+     * Asynchronously plans a path using a feature set that applies only to this navigation request. Requests with block
+     * breaking enabled fall back to synchronous planning so the search uses live world block state.
+     */
+    public void navigateToAsync(BlockPos entityPos, BlockPos rawTarget, PathfindingFeatures pathfindingFeatures) {
+        navigateToAsyncInternal(
+            entityPos,
+            rawTarget,
+            Objects.requireNonNull(pathfindingFeatures, "pathfindingFeatures")
+        );
+    }
+
+    private void navigateToAsyncInternal(
+        BlockPos entityPos,
+        BlockPos rawTarget,
+        @Nullable PathfindingFeatures pathfindingFeatures
+    ) {
+        cancelPendingPath();
+        this.activePathfindingFeatures = pathfindingFeatures;
+
+        var searchFeatures = activePathfindingFeatures();
+
+        if (!searchFeatures.asyncPathfinding() || searchFeatures.blockBreaking()) {
+            navigateToInternal(entityPos, rawTarget, pathfindingFeatures, false);
             return;
         }
 
@@ -307,6 +402,7 @@ public final class PathNavigator {
 
         this.asyncStartNanos = System.nanoTime();
         this.pendingFeaturesRevision = featuresRevision;
+        this.pendingPathfindingFeatures = searchFeatures;
         this.pendingPath = pathFinder.findPathAsync(level, entityPos, searchTarget);
     }
 
@@ -316,6 +412,24 @@ public final class PathNavigator {
      */
     public void navigateToAsync(double entityX, double entityY, double entityZ, BlockPos target) {
         navigateToAsync(entityAnchorPos(entityX, entityY, entityZ), target);
+    }
+
+    /**
+     * Asynchronously plans a path from the entity's current center position using a feature set that applies only to this
+     * navigation request.
+     */
+    public void navigateToAsync(
+        double entityX,
+        double entityY,
+        double entityZ,
+        BlockPos target,
+        PathfindingFeatures pathfindingFeatures
+    ) {
+        navigateToAsync(
+            entityAnchorPos(entityX, entityY, entityZ),
+            target,
+            pathfindingFeatures
+        );
     }
 
     /**
@@ -336,6 +450,26 @@ public final class PathNavigator {
     }
 
     /**
+     * Asynchronously plans a path from the entity's current center position to an exact target center position using a
+     * feature set that applies only to this navigation request.
+     */
+    public void navigateToAsync(
+        double entityX,
+        double entityY,
+        double entityZ,
+        double targetX,
+        double targetY,
+        double targetZ,
+        PathfindingFeatures pathfindingFeatures
+    ) {
+        navigateToAsync(
+            entityAnchorPos(entityX, entityY, entityZ),
+            targetAnchorPos(targetX, targetY, targetZ),
+            pathfindingFeatures
+        );
+    }
+
+    /**
      * Returns true if an asynchronous path computation is in progress.
      */
     public boolean isPathPending() {
@@ -352,13 +486,19 @@ public final class PathNavigator {
 
         var searchFeatureUsage = pathFinder.consumeFeatureUsageMask();
 
-        if (pendingFeaturesRevision != featuresRevision) {
+        if (
+            pendingFeaturesRevision != featuresRevision
+                || !Objects.equals(pendingPathfindingFeatures, activePathfindingFeatures())
+        ) {
+            pendingPathfindingFeatures = null;
+
             if (targetPos != null) {
                 needsRepath = true;
             }
             return;
         }
 
+        pendingPathfindingFeatures = null;
         markFeatureUsage(searchFeatureUsage);
 
         this.currentPath = path;
@@ -409,7 +549,12 @@ public final class PathNavigator {
             needsRepath = false;
 
             if (targetPos != null) {
-                navigateTo(entityAnchorPos(entityX, entityY, entityZ), activeRawTargetPos());
+                navigateToInternal(
+                    entityAnchorPos(entityX, entityY, entityZ),
+                    activeRawTargetPos(),
+                    activePathfindingFeatures,
+                    false
+                );
             }
         }
 
@@ -451,10 +596,7 @@ public final class PathNavigator {
      * Stops navigation and clears the current path.
      */
     public void stop() {
-        if (pendingPath != null) {
-            pendingPath.cancel(false);
-            pendingPath = null;
-        }
+        cancelPendingPath();
 
         this.currentPath = null;
         this.rawTargetPos = null;
@@ -465,6 +607,7 @@ public final class PathNavigator {
         this.currentTerrain = null;
         this.needsRepath = false;
         this.lastStuckReplannedEdge = null;
+        this.activePathfindingFeatures = null;
         resetProgressTracking();
 
         if (planner != null) {
@@ -630,7 +773,7 @@ public final class PathNavigator {
     }
 
     public boolean canOpenDoors() {
-        return features.doorOpening() && config.getEvaluatorConfig().canOpenDoors();
+        return activePathfindingFeatures().doorOpening() && config.getEvaluatorConfig().canOpenDoors();
     }
 
     /**
@@ -767,6 +910,10 @@ public final class PathNavigator {
     }
 
     public PathfindingFeatures getPathfindingFeatures() {
+        return activePathfindingFeatures();
+    }
+
+    public PathfindingFeatures getDefaultPathfindingFeatures() {
         return features;
     }
 
@@ -881,7 +1028,7 @@ public final class PathNavigator {
     }
 
     private boolean usesGroundedTargetProjection() {
-        return features.groundedTargetProjection() && !config.getEvaluatorConfig().canFly();
+        return activePathfindingFeatures().groundedTargetProjection() && !config.getEvaluatorConfig().canFly();
     }
 
     private @Nullable BlockPos findGroundedTargetProjection(BlockPos entityPos, BlockPos rawTarget) {
@@ -965,7 +1112,7 @@ public final class PathNavigator {
     }
 
     private boolean isRawTargetSwimmable(BlockPos rawTarget) {
-        if (!features.waterPathfinding() || !isTerrainAllowed(TerrainType.WATER)) {
+        if (!activePathfindingFeatures().waterPathfinding() || !isTerrainAllowed(TerrainType.WATER)) {
             return false;
         }
 
@@ -1000,7 +1147,11 @@ public final class PathNavigator {
     }
 
     private boolean isWaterProjectionTarget(BlockPos candidate) {
-        if (!features.waterPathfinding() || !isTerrainAllowed(TerrainType.WATER) || !hasWaterFootprint(candidate)) {
+        if (
+            !activePathfindingFeatures().waterPathfinding()
+                || !isTerrainAllowed(TerrainType.WATER)
+                || !hasWaterFootprint(candidate)
+        ) {
             return false;
         }
 
@@ -1045,7 +1196,7 @@ public final class PathNavigator {
     }
 
     private int projectionFootprintCellWidth() {
-        if (!features.footprintClearance()) {
+        if (!activePathfindingFeatures().footprintClearance()) {
             return 1;
         }
 
@@ -1083,6 +1234,10 @@ public final class PathNavigator {
         return rawTargetPos != null ? rawTargetPos : Objects.requireNonNull(targetPos, "targetPos");
     }
 
+    private PathfindingFeatures activePathfindingFeatures() {
+        return activePathfindingFeatures != null ? activePathfindingFeatures : features;
+    }
+
     private void setPathfindingFeaturesInternal(PathfindingFeatures features, @Nullable PathfindingProfile profile) {
         if (this.features.equals(features) && Objects.equals(this.profile, profile)) {
             return;
@@ -1096,10 +1251,7 @@ public final class PathNavigator {
     }
 
     private void invalidateActivePathForReplan() {
-        if (pendingPath != null) {
-            pendingPath.cancel(false);
-            pendingPath = null;
-        }
+        cancelPendingPath();
 
         if (planner != null) {
             planner.clear();
@@ -1113,6 +1265,15 @@ public final class PathNavigator {
         if (targetPos != null) {
             needsRepath = true;
         }
+    }
+
+    private void cancelPendingPath() {
+        if (pendingPath != null) {
+            pendingPath.cancel(false);
+            pendingPath = null;
+        }
+
+        pendingPathfindingFeatures = null;
     }
 
     // --- Failure backoff ---
@@ -1199,7 +1360,7 @@ public final class PathNavigator {
                 );
             var skippedAhead = !withinReach
                 && !descendingStairEdgeReached
-                && features.pathSkipAhead()
+                && activePathfindingFeatures().pathSkipAhead()
                 && shouldSkipToNextNode(entityX, entityY, entityZ, entityWidth, entityHeight);
 
             if (skippedAhead) {
@@ -1287,9 +1448,11 @@ public final class PathNavigator {
     }
 
     private @Nullable PathfindingFeature anyAngleSmoothingFeatureFor(PathNode node) {
+        var activeFeatures = activePathfindingFeatures();
+
         return switch (node.getTerrainType()) {
-            case GROUND -> features.anyAngleSmoothing() ? PathfindingFeature.ANY_ANGLE_SMOOTHING : null;
-            case WATER -> features.waterPathfinding() && features.waterAnyAngleSmoothing()
+            case GROUND -> activeFeatures.anyAngleSmoothing() ? PathfindingFeature.ANY_ANGLE_SMOOTHING : null;
+            case WATER -> activeFeatures.waterPathfinding() && activeFeatures.waterAnyAngleSmoothing()
                 ? PathfindingFeature.WATER_ANY_ANGLE_SMOOTHING
                 : null;
         };
@@ -1380,7 +1543,7 @@ public final class PathNavigator {
         float entityHeight,
         TerrainType terrain
     ) {
-        if (!features.anyAngleSmoothingCache()) {
+        if (!activePathfindingFeatures().anyAngleSmoothingCache()) {
             return null;
         }
 
@@ -1434,7 +1597,9 @@ public final class PathNavigator {
     }
 
     private boolean isSmoothableWaterNodeRange(int fromIndex, int toIndex) {
-        if (!features.waterPathfinding() || !features.waterAnyAngleSmoothing()) {
+        var activeFeatures = activePathfindingFeatures();
+
+        if (!activeFeatures.waterPathfinding() || !activeFeatures.waterAnyAngleSmoothing()) {
             return false;
         }
 
@@ -1457,15 +1622,17 @@ public final class PathNavigator {
     }
 
     private boolean isWaterAnyAngleMovementAllowed(PathNode from, PathNode to) {
+        var activeFeatures = activePathfindingFeatures();
+
         if (from.getY() == to.getY()) {
             return true;
         }
 
         if (from.getX() != to.getX() || from.getZ() != to.getZ()) {
-            return features.waterSlopeSwim();
+            return activeFeatures.waterSlopeSwim();
         }
 
-        return features.waterVerticalSwim();
+        return activeFeatures.waterVerticalSwim();
     }
 
     private boolean canTraverseDirectly(
@@ -1543,8 +1710,10 @@ public final class PathNavigator {
     private boolean usesSteppedFootprintSupport() {
         var evaluatorConfig = config.getEvaluatorConfig();
 
-        return features.footprintClearance()
-            && features.steppedFootprintSupport()
+        var activeFeatures = activePathfindingFeatures();
+
+        return activeFeatures.footprintClearance()
+            && activeFeatures.steppedFootprintSupport()
             && evaluatorConfig.getEntityWidth() > 1
             && evaluatorConfig.getMaxStepHeight() > 0;
     }
@@ -1601,8 +1770,10 @@ public final class PathNavigator {
     }
 
     private boolean usesDescendingStairEdgeReach() {
-        return features.descendingStairEdgeReach()
-            && features.stepDown()
+        var activeFeatures = activePathfindingFeatures();
+
+        return activeFeatures.descendingStairEdgeReach()
+            && activeFeatures.stepDown()
             && config.getEvaluatorConfig().getMaxStepHeight() > 0;
     }
 
@@ -1635,7 +1806,7 @@ public final class PathNavigator {
     }
 
     private boolean usesCrawling() {
-        return features.crawlThroughGaps() && config.getEvaluatorConfig().getCrawlConfig().enabled();
+        return activePathfindingFeatures().crawlThroughGaps() && config.getEvaluatorConfig().getCrawlConfig().enabled();
     }
 
     private boolean isNearCrawlPostureEntry(double entityX, double entityY, double entityZ, PathNode crawlNode) {
@@ -1807,7 +1978,7 @@ public final class PathNavigator {
     }
 
     private void handleStuckEdge(BlockPos entityAnchorPos) {
-        if (!features.stuckReplan()) {
+        if (!activePathfindingFeatures().stuckReplan()) {
             recordFailure();
             stop();
             return;
@@ -1834,7 +2005,7 @@ public final class PathNavigator {
             planner.clear();
         }
 
-        navigateTo(entityAnchorPos, activeRawTargetPos(), true);
+        navigateToInternal(entityAnchorPos, activeRawTargetPos(), activePathfindingFeatures, true);
     }
 
     private void checkRecalculate(
@@ -1867,7 +2038,7 @@ public final class PathNavigator {
                 planner.clear();
             }
 
-            navigateTo(entityPos, activeRawTargetPos());
+            navigateToInternal(entityPos, activeRawTargetPos(), activePathfindingFeatures, false);
 
             // Advance past any nodes the entity has already reached so the new
             // path doesn't briefly target the start node behind the entity.
@@ -1890,7 +2061,12 @@ public final class PathNavigator {
     }
 
     private boolean tryReuseCurrentPathPrefix(BlockPos target) {
-        if (!features.pathPrefixReuse() || currentPath == null || currentPath.isDone() || !currentPath.isReached()) {
+        if (
+            !activePathfindingFeatures().pathPrefixReuse()
+                || currentPath == null
+                || currentPath.isDone()
+                || !currentPath.isReached()
+        ) {
             return false;
         }
 
@@ -1968,12 +2144,12 @@ public final class PathNavigator {
     }
 
     private void preparePathFinder() {
-        pathFinder.setFeatures(features);
+        pathFinder.setFeatures(activePathfindingFeatures());
         pathFinder.setExcludedTerrains(excludedTerrains);
     }
 
     private boolean shouldUsePlanner() {
-        return features.segmentedPathPlanning() && planner != null;
+        return activePathfindingFeatures().segmentedPathPlanning() && planner != null;
     }
 
     private void markProgress() {
@@ -2031,7 +2207,7 @@ public final class PathNavigator {
     private Vec3 nodeTargetCenter(PathNode node, float entityWidth, float entityHeight) {
         var center = nodeCenter(node);
 
-        if (!features.collisionShapeWaypoints() || node.getTerrainType() == TerrainType.WATER) {
+        if (!activePathfindingFeatures().collisionShapeWaypoints() || node.getTerrainType() == TerrainType.WATER) {
             return center;
         }
 
