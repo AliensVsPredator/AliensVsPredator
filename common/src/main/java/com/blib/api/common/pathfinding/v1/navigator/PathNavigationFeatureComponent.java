@@ -137,10 +137,31 @@ final class PathNavigationFeatureComponent implements PathNavigationFeatureContr
             return;
         }
 
+        var previousDefaultFeatures = this.defaultFeatures;
         this.defaultFeatures = features;
         this.profile = profile;
+        this.activePathfindingFeatures = rebaseActivePathfindingFeatures(previousDefaultFeatures, features);
         this.revision++;
         defaultFeaturesChangeConsumer.accept(features);
         activePathInvalidator.run();
+    }
+
+    private @Nullable PathfindingFeatures rebaseActivePathfindingFeatures(
+        PathfindingFeatures previousDefaultFeatures,
+        PathfindingFeatures nextDefaultFeatures
+    ) {
+        if (activePathfindingFeatures == null) {
+            return null;
+        }
+
+        var rebased = nextDefaultFeatures;
+
+        for (var feature : PathfindingFeature.values()) {
+            if (activePathfindingFeatures.enabled(feature) != previousDefaultFeatures.enabled(feature)) {
+                rebased = rebased.with(feature, activePathfindingFeatures.enabled(feature));
+            }
+        }
+
+        return rebased;
     }
 }

@@ -73,7 +73,7 @@ public final class PathNavigator implements PathNavigatorApi {
             config.getDefaultFeatures(),
             pathFinder::setFeatures,
             pathFinder::setDebugCaptureEnabled,
-            this::invalidateActivePathForReplan
+            this::invalidateActivePathForFeatureChange
         );
         this.postureView = new PathNavigationPostureComponent(
             config,
@@ -251,6 +251,10 @@ public final class PathNavigator implements PathNavigatorApi {
 
     private void invalidateActivePathForReplan() {
         planning.invalidateActivePathForReplan();
+    }
+
+    private void invalidateActivePathForFeatureChange() {
+        planning.invalidateActivePathForReplan(true);
     }
 
     private void detectStuck(

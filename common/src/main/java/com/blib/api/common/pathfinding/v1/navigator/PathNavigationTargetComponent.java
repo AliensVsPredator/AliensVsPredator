@@ -22,6 +22,8 @@ final class PathNavigationTargetComponent implements PathNavigationAnchorResolve
 
     private static final double TARGET_PROJECTION_REUSE_DISTANCE_SQUARED = 1.0;
 
+    private static final double ANCHOR_Y_EPSILON = 1.0E-5;
+
     private static final int TARGET_PROJECTION_MIN_VERTICAL_SCAN = 32;
 
     private static final int TARGET_PROJECTION_MAX_VERTICAL_SCAN = 128;
@@ -125,13 +127,21 @@ final class PathNavigationTargetComponent implements PathNavigationAnchorResolve
     public BlockPos entityAnchorPos(double entityX, double entityY, double entityZ) {
         var centerOffset = nodeCenterOffset();
 
-        return BlockPos.containing(entityX - centerOffset + 0.5, entityY, entityZ - centerOffset + 0.5);
+        return BlockPos.containing(
+            entityX - centerOffset + 0.5,
+            entityY + ANCHOR_Y_EPSILON,
+            entityZ - centerOffset + 0.5
+        );
     }
 
     public BlockPos targetAnchorPos(double targetX, double targetY, double targetZ) {
         var centerOffset = nodeCenterOffset();
 
-        return BlockPos.containing(targetX - centerOffset + 0.5, targetY, targetZ - centerOffset + 0.5);
+        return BlockPos.containing(
+            targetX - centerOffset + 0.5,
+            targetY + ANCHOR_Y_EPSILON,
+            targetZ - centerOffset + 0.5
+        );
     }
 
     private BlockPos resolveSearchTarget(BlockPos entityPos, BlockPos rawTarget) {

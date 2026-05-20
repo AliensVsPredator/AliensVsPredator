@@ -310,8 +310,16 @@ final class PathNavigationPlanningComponent {
     }
 
     void invalidateActivePathForReplan() {
+        invalidateActivePathForReplan(false);
+    }
+
+    void invalidateActivePathForReplan(boolean resetFailureCooldown) {
         cancelPendingPath();
         clearPlanner();
+
+        if (resetFailureCooldown) {
+            failureBackoff.resetFailureCooldown(state);
+        }
 
         progressTracker.clearStuckReplanHistory();
         resetProgressTracking();
@@ -360,7 +368,7 @@ final class PathNavigationPlanningComponent {
         var reusedPath = new BLibPath(reusedNodes, true);
         var terrain = reusedPath.getCurrentNode().getTerrainType();
         var entityStart = state.hasLastEntityPosition
-            ? BlockPos.containing(state.lastEntityX, state.lastEntityY, state.lastEntityZ)
+            ? targets.entityAnchorPos(state.lastEntityX, state.lastEntityY, state.lastEntityZ)
             : target;
         cancelPendingPath();
         state.replaceNavigatingPath(state.requestContext(entityStart, targets.activeRawTargetPos(), target), reusedPath, terrain);
@@ -572,7 +580,7 @@ final class PathNavigationPlanningComponent {
 
     private BlockPos anchorFromLastPosition() {
         return state.hasLastEntityPosition
-            ? BlockPos.containing(state.lastEntityX, state.lastEntityY, state.lastEntityZ)
+            ? targets.entityAnchorPos(state.lastEntityX, state.lastEntityY, state.lastEntityZ)
             : Objects.requireNonNullElse(state.currentSearchTarget(), BlockPos.ZERO);
     }
 
