@@ -13,7 +13,8 @@ public enum PathRejectionReason {
     NO_CLEARANCE,
     UNSTABLE_SUPPORT,
     DIAGONAL_CORNER_BLOCKED,
-    DROP_OPENING_BLOCKED;
+    DROP_OPENING_BLOCKED,
+    CANDIDATE_REJECTED;
 
     public static final StreamCodec<PathRejectionReason> CODEC = PathDebugCodecs.enumCodec(values());
 }

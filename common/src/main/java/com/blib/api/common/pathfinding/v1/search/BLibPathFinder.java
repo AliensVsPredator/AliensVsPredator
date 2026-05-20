@@ -19,6 +19,7 @@ import java.util.concurrent.Executors;
 
 import com.blib.api.common.pathfinding.v1.cache.TerrainClassificationCache;
 import com.blib.api.common.pathfinding.v1.debug.DebugNodeEntry;
+import com.blib.api.common.pathfinding.v1.debug.PathEdgeDebugType;
 import com.blib.api.common.pathfinding.v1.debug.PathDebugBlockPos;
 import com.blib.api.common.pathfinding.v1.debug.PathRejectionReason;
 import com.blib.api.common.pathfinding.v1.debug.PathSearchDebugData;
@@ -410,6 +411,9 @@ public final class BLibPathFinder {
             }
 
             current.setClosed(true);
+            if (recorder != null) {
+                recorder.recordClosedNode(current, false);
+            }
 
             if (debugEnabled) {
                 closedNodes.add(current);
@@ -451,11 +455,13 @@ public final class BLibPathFinder {
 
                 if (neighbor.isClosed()) {
                     reject(recorder, PathRejectionReason.ALREADY_CLOSED, neighbor);
+                    rejectEdge(recorder, current, neighbor, PathRejectionReason.ALREADY_CLOSED, false);
                     continue;
                 }
 
                 if (corridor != null && !SectionCorridorFinder.isInCorridor(neighbor, corridor)) {
                     reject(recorder, PathRejectionReason.OUTSIDE_CORRIDOR, neighbor);
+                    rejectEdge(recorder, current, neighbor, PathRejectionReason.OUTSIDE_CORRIDOR, false);
                     continue;
                 }
 
@@ -465,6 +471,7 @@ public final class BLibPathFinder {
 
                 if (neighbor.getGCost() > 0 && tentativeG >= neighbor.getGCost() - activeTuning.minImprovement()) {
                     reject(recorder, PathRejectionReason.NOT_BETTER, neighbor);
+                    rejectEdge(recorder, current, neighbor, PathRejectionReason.NOT_BETTER, false);
                     continue;
                 }
 
@@ -473,6 +480,7 @@ public final class BLibPathFinder {
                 neighbor.setGCost(tentativeG);
                 neighbor.setHCost(heuristic(neighbor, goalNode, searchConfig));
                 openSet.add(neighbor);
+                recordOpenNode(recorder, neighbor, current, tentativeG, neighbor.getHCost(), false);
             }
         }
 
@@ -605,8 +613,7 @@ public final class BLibPathFinder {
         BidirectionalMeet meet = null;
 
         while (
-            !forwardOpenSet.isEmpty()
-                && !backwardOpenSet.isEmpty()
+            (!forwardOpenSet.isEmpty() || !backwardOpenSet.isEmpty())
                 && visitedCount < searchConfig.maxSearchNodes()
         ) {
             var expandForward = shouldExpandForwardBidirectional(forwardOpenSet, backwardOpenSet, visitedCount);
@@ -724,6 +731,10 @@ public final class BLibPathFinder {
                 continue;
             }
 
+            if (recorder != null) {
+                recorder.recordClosedNode(current.node(), !forward);
+            }
+
             if (debugEnabled) {
                 current.node().setGCost(current.gCost());
                 current.node().setHCost(current.hCost());
@@ -749,11 +760,13 @@ public final class BLibPathFinder {
 
                 if (ownClosed.contains(neighbor)) {
                     reject(recorder, PathRejectionReason.ALREADY_CLOSED, neighbor);
+                    rejectEdge(recorder, current.node(), neighbor, PathRejectionReason.ALREADY_CLOSED, !forward);
                     continue;
                 }
 
                 if (corridor != null && !SectionCorridorFinder.isInCorridor(neighbor, corridor)) {
                     reject(recorder, PathRejectionReason.OUTSIDE_CORRIDOR, neighbor);
+                    rejectEdge(recorder, current.node(), neighbor, PathRejectionReason.OUTSIDE_CORRIDOR, !forward);
                     continue;
                 }
 
@@ -766,6 +779,7 @@ public final class BLibPathFinder {
                         && tentativeG >= existing.gCost() - activeTuning.minImprovement()
                 ) {
                     reject(recorder, PathRejectionReason.NOT_BETTER, neighbor);
+                    rejectEdge(recorder, current.node(), neighbor, PathRejectionReason.NOT_BETTER, !forward);
                     continue;
                 }
 
@@ -778,6 +792,10 @@ public final class BLibPathFinder {
 
                 ownRecords.put(neighbor, nextRecord);
                 openSet.add(nextRecord);
+                recordOpenNode(recorder, neighbor, current.node(), tentativeG, nextRecord.hCost(), !forward);
+                if (!forward && recorder != null) {
+                    recorder.recordAcceptedEdge(current.node(), neighbor, edgeType(current.node(), neighbor), true);
+                }
 
                 otherRecord = otherRecords.get(neighbor);
 
@@ -954,6 +972,11 @@ public final class BLibPathFinder {
             entries,
             collectStableGroundEntries(path),
             corridor != null ? List.copyOf(corridor) : List.<Long>of(),
+            recorder != null ? recorder.openNodeEntries() : List.of(),
+            recorder != null ? recorder.edgeAttemptEntries() : List.of(),
+            recorder != null ? recorder.clearanceBoxEntries() : List.of(),
+            recorder != null ? recorder.supportFootprintEntries() : List.of(),
+            recorder != null ? recorder.blockingBlockEntries() : List.of(),
             visitedCount,
             searchConfig.maxSearchNodes(),
             diagnostics
@@ -1025,6 +1048,51 @@ public final class BLibPathFinder {
         if (recorder != null) {
             recorder.reject(reason, node.getX(), node.getY(), node.getZ());
         }
+    }
+
+    private static void rejectEdge(
+        @Nullable PathSearchDebugRecorder recorder,
+        PathNode from,
+        PathNode to,
+        PathRejectionReason reason,
+        boolean backward
+    ) {
+        if (recorder != null) {
+            recorder.recordRejectedEdge(from, to, edgeType(from, to), reason, backward);
+        }
+    }
+
+    private static void recordOpenNode(
+        @Nullable PathSearchDebugRecorder recorder,
+        PathNode node,
+        PathNode parent,
+        float gCost,
+        float hCost,
+        boolean backward
+    ) {
+        if (recorder != null) {
+            recorder.recordOpenNode(node, parent, gCost, hCost, backward);
+        }
+    }
+
+    private static PathEdgeDebugType edgeType(PathNode from, PathNode to) {
+        if (to.requiresBlockBreaking()) {
+            return PathEdgeDebugType.BLOCK_BREAKING;
+        }
+
+        if (from.getTerrainType() == TerrainType.WATER || to.getTerrainType() == TerrainType.WATER) {
+            return from.getY() == to.getY() ? PathEdgeDebugType.WATER_TRAVEL : PathEdgeDebugType.WATER_VERTICAL;
+        }
+
+        if (to.getY() > from.getY()) {
+            return PathEdgeDebugType.STEP_UP;
+        }
+
+        if (to.getY() < from.getY()) {
+            return PathEdgeDebugType.STEP_DOWN;
+        }
+
+        return PathEdgeDebugType.SAME_LEVEL;
     }
 
     private static void markFeatureUsed(@Nullable PathSearchDebugRecorder recorder, PathfindingFeature feature) {

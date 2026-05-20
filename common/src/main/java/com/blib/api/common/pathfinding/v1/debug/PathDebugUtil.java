@@ -89,6 +89,11 @@ public final class PathDebugUtil {
             snapshot.nodes(),
             snapshot.stableGround(),
             snapshot.corridorKeys(),
+            snapshot.openNodes(),
+            snapshot.edgeAttempts(),
+            snapshot.clearanceBoxes(),
+            snapshot.supportFootprint(),
+            snapshot.blockingBlocks(),
             snapshot.visitedCount(),
             snapshot.maxSearchNodes(),
             snapshot.diagnostics()
@@ -120,6 +125,11 @@ public final class PathDebugUtil {
             snapshot.nodes(),
             snapshot.stableGround(),
             snapshot.corridorKeys(),
+            snapshot.openNodes(),
+            snapshot.edgeAttempts(),
+            snapshot.clearanceBoxes(),
+            snapshot.supportFootprint(),
+            snapshot.blockingBlocks(),
             snapshot.visitedCount(),
             snapshot.maxSearchNodes(),
             snapshot.diagnostics()
@@ -225,6 +235,11 @@ public final class PathDebugUtil {
             nodes,
             collectStableGroundEntries(path),
             List.of(),
+            List.of(),
+            List.of(),
+            List.of(),
+            List.of(),
+            List.of(),
             nodes.size(),
             navigator.getRuntimeConfig().getSearchConfig().maxSearchNodes(),
             diagnostics
@@ -308,6 +323,7 @@ public final class PathDebugUtil {
         var targetPos = state.getTargetPos();
         var featureControl = navigator.getFeatureControl();
         var runtimeConfig = navigator.getRuntimeConfig();
+        var defaultFeatures = featureControl.getDefaultPathfindingFeatures();
         var pathfindingProfile = featureControl.getPathfindingProfile();
         return new S2CPathfindingNavDebugPayload(
             mob.getId(),
@@ -350,7 +366,7 @@ public final class PathDebugUtil {
             state.getFailureCooldownRemainingTicks(),
             runtimeConfig.getStuckTimeoutInTicks(),
             runtimeConfig.getPathRecalculateIntervalInTicks(),
-            featureControl.getPathfindingFeatures().toMask(),
+            defaultFeatures.toMask(),
             featureControl.consumePathfindingFeatureUsageMask(),
             pathfindingProfile != null ? pathfindingProfile.ordinal() : -1,
             featureControl.getPathfindingFeaturesRevision(),

@@ -9,8 +9,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import com.blib.api.common.pathfinding.v1.debug.PathAabbDebugEntry;
+import com.blib.api.common.pathfinding.v1.debug.PathBlockDebugEntry;
 import com.blib.api.common.pathfinding.v1.debug.DebugNodeEntry;
+import com.blib.api.common.pathfinding.v1.debug.PathEdgeDebugEntry;
+import com.blib.api.common.pathfinding.v1.debug.PathOpenNodeDebugEntry;
 import com.blib.api.common.pathfinding.v1.debug.PathSearchDebugData;
+import com.blib.api.common.pathfinding.v1.debug.PathSupportDebugEntry;
 import com.blib.api.common.pathfinding.v1.debug.StableGroundDebugEntry;
 import com.blib.mod.BLib;
 
@@ -22,6 +27,11 @@ public record S2CPathfindingSearchDebugPayload(
     List<DebugNodeEntry> nodes,
     List<StableGroundDebugEntry> stableGround,
     List<Long> corridorKeys,
+    List<PathOpenNodeDebugEntry> openNodes,
+    List<PathEdgeDebugEntry> edgeAttempts,
+    List<PathAabbDebugEntry> clearanceBoxes,
+    List<PathSupportDebugEntry> supportFootprint,
+    List<PathBlockDebugEntry> blockingBlocks,
     int visitedCount,
     int maxSearchNodes,
     PathSearchDebugData diagnostics
@@ -40,6 +50,16 @@ public record S2CPathfindingSearchDebugPayload(
         S2CPathfindingSearchDebugPayload::stableGround,
         StreamCodecs.LONG.asList(),
         S2CPathfindingSearchDebugPayload::corridorKeys,
+        PathOpenNodeDebugEntry.CODEC.asList(),
+        S2CPathfindingSearchDebugPayload::openNodes,
+        PathEdgeDebugEntry.CODEC.asList(),
+        S2CPathfindingSearchDebugPayload::edgeAttempts,
+        PathAabbDebugEntry.CODEC.asList(),
+        S2CPathfindingSearchDebugPayload::clearanceBoxes,
+        PathSupportDebugEntry.CODEC.asList(),
+        S2CPathfindingSearchDebugPayload::supportFootprint,
+        PathBlockDebugEntry.CODEC.asList(),
+        S2CPathfindingSearchDebugPayload::blockingBlocks,
         StreamCodecs.INT,
         S2CPathfindingSearchDebugPayload::visitedCount,
         StreamCodecs.INT,
