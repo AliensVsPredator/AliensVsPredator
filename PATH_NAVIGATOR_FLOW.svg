@@ -1,0 +1,263 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1220" viewBox="0 0 1800 1220" role="img" aria-labelledby="title desc">
+  <title id="title">Current PathNavigator Flow</title>
+  <desc id="desc">Flow diagram of BLib PathNavigator command handling, planning, ticking, waypoint following, transitions, progress tracking, and shared navigation state.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#314256" />
+    </marker>
+    <marker id="arrow-soft" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#6e7c8f" />
+    </marker>
+    <style>
+      .bg { fill: #f7f9fc; }
+      .title { font: 700 34px Arial, Helvetica, sans-serif; fill: #172033; }
+      .subtitle { font: 400 17px Arial, Helvetica, sans-serif; fill: #506176; }
+      .lane-title { font: 700 18px Arial, Helvetica, sans-serif; fill: #2e3a4f; }
+      .box-title { font: 700 17px Arial, Helvetica, sans-serif; fill: #172033; }
+      .box-text { font: 400 14px Arial, Helvetica, sans-serif; fill: #34445b; }
+      .small { font: 400 12px Arial, Helvetica, sans-serif; fill: #53657a; }
+      .note-title { font: 700 15px Arial, Helvetica, sans-serif; fill: #172033; }
+      .note { font: 400 13px Arial, Helvetica, sans-serif; fill: #44546a; }
+      .panel { fill: #ffffff; stroke: #d7dee9; stroke-width: 1.4; rx: 10; }
+      .central { fill: #fffdf7; stroke: #d8b96c; stroke-width: 2; rx: 10; }
+      .api { fill: #edf7ff; stroke: #77aad1; stroke-width: 1.6; rx: 9; }
+      .planning { fill: #eef8f4; stroke: #74b79a; stroke-width: 1.6; rx: 9; }
+      .follow { fill: #fff3e9; stroke: #d79a5f; stroke-width: 1.6; rx: 9; }
+      .state { fill: #f3efff; stroke: #9886ce; stroke-width: 1.6; rx: 9; }
+      .support { fill: #f4f6f9; stroke: #a9b5c4; stroke-width: 1.4; rx: 9; }
+      .decision { fill: #ffffff; stroke: #7a8ba0; stroke-width: 1.5; }
+      .line { fill: none; stroke: #314256; stroke-width: 2.2; marker-end: url(#arrow); }
+      .soft-line { fill: none; stroke: #6e7c8f; stroke-width: 1.7; marker-end: url(#arrow-soft); }
+      .dashed { fill: none; stroke: #6e7c8f; stroke-width: 1.6; stroke-dasharray: 7 6; marker-end: url(#arrow-soft); }
+      .muted-line { fill: none; stroke: #b4becb; stroke-width: 1.3; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1800" height="1220" />
+
+  <text class="title" x="60" y="58">BLib PathNavigator Flow</text>
+  <text class="subtitle" x="60" y="86">Current structure after component extraction: PathNavigator wires components, delegates planning and following, and exposes state for external movement controllers.</text>
+
+  <rect class="panel" x="40" y="120" width="1720" height="1020" />
+
+  <text class="lane-title" x="85" y="165">Public command surface</text>
+  <text class="lane-title" x="510" y="165">PathNavigator orchestration</text>
+  <text class="lane-title" x="960" y="165">Planning and path production</text>
+  <text class="lane-title" x="1375" y="165">Tick-time path following</text>
+
+  <line class="muted-line" x1="440" y1="140" x2="440" y2="1120" />
+  <line class="muted-line" x1="900" y1="140" x2="900" y2="1120" />
+  <line class="muted-line" x1="1320" y1="140" x2="1320" y2="1120" />
+
+  <rect class="api" x="75" y="195" width="315" height="132" />
+  <text class="box-title" x="98" y="225">PathNavigationCommands</text>
+  <text class="box-text" x="98" y="253">
+    <tspan x="98" dy="0">Default coordinate overloads</tspan>
+    <tspan x="98" dy="20">use getAnchorResolver()</tspan>
+    <tspan x="98" dy="20">then create a BlockPos</tspan>
+    <tspan x="98" dy="20">PathNavigationRequest.</tspan>
+  </text>
+
+  <rect class="api" x="75" y="360" width="315" height="112" />
+  <text class="box-title" x="98" y="389">PathNavigatorApi</text>
+  <text class="box-text" x="98" y="417">
+    <tspan x="98" dy="0">getState()</tspan>
+    <tspan x="98" dy="20">getPostureView()</tspan>
+    <tspan x="98" dy="20">getFeatureControl()</tspan>
+    <tspan x="98" dy="20">getRuntimeConfig()</tspan>
+  </text>
+
+  <rect class="central" x="500" y="195" width="335" height="170" />
+  <text class="box-title" x="525" y="225">PathNavigator</text>
+  <text class="box-text" x="525" y="253">
+    <tspan x="525" dy="0">Constructs and wires components.</tspan>
+    <tspan x="525" dy="20">Concrete commands only handle</tspan>
+    <tspan x="525" dy="20">BlockPos navigateTo variants,</tspan>
+    <tspan x="525" dy="20">tick, stop, requestReplan,</tspan>
+    <tspan x="525" dy="20">and component getters.</tspan>
+  </text>
+
+  <path class="line" d="M390 260 C430 260 455 260 500 260" />
+  <path class="soft-line" d="M390 420 C435 420 455 350 500 332" />
+
+  <rect class="state" x="500" y="405" width="335" height="168" />
+  <text class="box-title" x="525" y="435">PathNavigationStateComponent</text>
+  <text class="box-text" x="525" y="463">
+    <tspan x="525" dy="0">Shared mutable navigation state:</tspan>
+    <tspan x="525" dy="20">currentPath, targetPos, terrain,</tspan>
+    <tspan x="525" dy="20">pendingPath, tick counters,</tspan>
+    <tspan x="525" dy="20">last entity position, metrics,</tspan>
+    <tspan x="525" dy="20">and read-only API state view.</tspan>
+  </text>
+
+  <rect class="support" x="500" y="610" width="335" height="166" />
+  <text class="box-title" x="525" y="640">Control Components</text>
+  <text class="box-text" x="525" y="668">
+    <tspan x="525" dy="0">FeatureControl: default and</tspan>
+    <tspan x="525" dy="20">per-request feature sets.</tspan>
+    <tspan x="525" dy="20">RuntimeConfig: search tuning,</tspan>
+    <tspan x="525" dy="20">excluded terrains, stuck timeout,</tspan>
+    <tspan x="525" dy="20">and recalculation interval.</tspan>
+  </text>
+
+  <rect class="support" x="500" y="815" width="335" height="120" />
+  <text class="box-title" x="525" y="845">Target and Anchor Resolver</text>
+  <text class="box-text" x="525" y="873">
+    <tspan x="525" dy="0">PathNavigationTargetComponent</tspan>
+    <tspan x="525" dy="20">converts centers to footprint</tspan>
+    <tspan x="525" dy="20">anchors, projects grounded targets,</tspan>
+    <tspan x="525" dy="20">and tracks raw/search target drift.</tspan>
+  </text>
+
+  <rect class="planning" x="955" y="195" width="325" height="176" />
+  <text class="box-title" x="980" y="225">PathNavigationPlanningComponent</text>
+  <text class="box-text" x="980" y="253">
+    <tspan x="980" dy="0">start() execution</tspan>
+    <tspan x="980" dy="20">cancels pending work, applies feature</tspan>
+    <tspan x="980" dy="20">override, resolve target, check</tspan>
+    <tspan x="980" dy="20">failure cooldown, prepare finder,</tspan>
+    <tspan x="980" dy="20">compute or queue path.</tspan>
+  </text>
+
+  <rect class="support" x="960" y="420" width="325" height="120" />
+  <text class="box-title" x="985" y="450">Path Search Stack</text>
+  <text class="box-text" x="985" y="478">
+    <tspan x="985" dy="0">BLibPathFinder +</tspan>
+    <tspan x="985" dy="20">UnifiedTerrainEvaluator.</tspan>
+    <tspan x="985" dy="20">SegmentedPathPlanner is used</tspan>
+    <tspan x="985" dy="20">when cache and feature allow it.</tspan>
+  </text>
+
+  <rect class="support" x="960" y="585" width="325" height="126" />
+  <text class="box-title" x="985" y="615">Failure Backoff</text>
+  <text class="box-text" x="985" y="643">
+    <tspan x="985" dy="0">PathNavigationFailureBackoff</tspan>
+    <tspan x="985" dy="20">suppresses repeated failed</tspan>
+    <tspan x="985" dy="20">searches until cooldown expires</tspan>
+    <tspan x="985" dy="20">or the computed target moved.</tspan>
+  </text>
+
+  <rect class="planning" x="960" y="760" width="325" height="142" />
+  <text class="box-title" x="985" y="790">Replanning Work</text>
+  <text class="box-text" x="985" y="818">
+    <tspan x="985" dy="0">checkPendingPath()</tspan>
+    <tspan x="985" dy="20">handleQueuedRepath()</tspan>
+    <tspan x="985" dy="20">advanceSegmentIfNeeded()</tspan>
+    <tspan x="985" dy="20">checkRecalculate()</tspan>
+    <tspan x="985" dy="20">replanAfterStuck()</tspan>
+  </text>
+
+  <rect class="follow" x="1370" y="195" width="325" height="176" />
+  <text class="box-title" x="1395" y="225">PathNavigationWaypointFollower</text>
+  <text class="box-text" x="1395" y="253">
+    <tspan x="1395" dy="0">advanceWaypoints() checks reach,</tspan>
+    <tspan x="1395" dy="20">drop-entry waypoints, descending</tspan>
+    <tspan x="1395" dy="20">stair edge reach, skip-ahead,</tspan>
+    <tspan x="1395" dy="20">collision-shape waypoint centers,</tspan>
+    <tspan x="1395" dy="20">and any-angle smoothing.</tspan>
+  </text>
+
+  <rect class="follow" x="1370" y="415" width="325" height="126" />
+  <text class="box-title" x="1395" y="445">Transition Dispatcher</text>
+  <text class="box-text" x="1395" y="473">
+    <tspan x="1395" dy="0">PathNavigationTransitionDispatcher</tspan>
+    <tspan x="1395" dy="20">receives terrain changes from</tspan>
+    <tspan x="1395" dy="20">the waypoint follower and invokes</tspan>
+    <tspan x="1395" dy="20">configured transition handlers.</tspan>
+  </text>
+
+  <rect class="follow" x="1370" y="590" width="325" height="142" />
+  <text class="box-title" x="1395" y="620">Progress Tracker</text>
+  <text class="box-text" x="1395" y="648">
+    <tspan x="1395" dy="0">PathNavigationProgressTracker</tspan>
+    <tspan x="1395" dy="20">observes path progress and stuck</tspan>
+    <tspan x="1395" dy="20">edges. It returns NONE, STOP,</tspan>
+    <tspan x="1395" dy="20">or REPLAN for PathNavigator</tspan>
+    <tspan x="1395" dy="20">to apply.</tspan>
+  </text>
+
+  <rect class="follow" x="1370" y="780" width="325" height="118" />
+  <text class="box-title" x="1395" y="810">External Movement</text>
+  <text class="box-text" x="1395" y="838">
+    <tspan x="1395" dy="0">PathNavigator does not move the</tspan>
+    <tspan x="1395" dy="20">entity directly. Callers read</tspan>
+    <tspan x="1395" dy="20">getState().getCurrentTargetCenter()</tspan>
+    <tspan x="1395" dy="20">and drive movement themselves.</tspan>
+  </text>
+
+  <path class="line" d="M835 270 C875 270 910 270 955 270" />
+  <path class="line" d="M1118 371 C1118 390 1118 402 1118 420" />
+  <path class="soft-line" d="M960 480 C900 480 875 488 835 488" />
+  <path class="soft-line" d="M960 642 C885 642 865 692 835 692" />
+  <path class="soft-line" d="M960 820 C895 820 875 860 835 875" />
+
+  <path class="line" d="M835 260 C1010 145 1240 145 1370 260" />
+  <path class="line" d="M835 220 C980 120 1420 120 1530 195" />
+  <path class="line" d="M836 212 C930 95 1425 95 1530 195" />
+
+  <path class="line" d="M1285 830 C1325 830 1335 670 1370 670" />
+  <path class="line" d="M1285 830 C1335 830 1328 292 1370 292" />
+  <path class="line" d="M1530 371 C1530 390 1530 398 1530 415" />
+  <path class="soft-line" d="M1530 541 C1530 565 1530 573 1530 590" />
+  <path class="dashed" d="M1530 732 C1530 748 1530 762 1530 780" />
+
+  <path class="soft-line" d="M667 365 C667 382 667 390 667 405" />
+  <path class="soft-line" d="M667 573 C667 592 667 596 667 610" />
+  <path class="soft-line" d="M667 776 C667 795 667 798 667 815" />
+
+  <rect class="decision" x="475" y="990" width="120" height="74" transform="rotate(45 535 1027)" />
+  <text class="box-title" x="498" y="1018">tick()</text>
+  <text class="small" x="488" y="1038">active path?</text>
+
+  <rect class="support" x="75" y="540" width="315" height="142" />
+  <text class="box-title" x="98" y="570">Command Entry Points</text>
+  <text class="box-text" x="98" y="598">
+    <tspan x="98" dy="0">navigateTo(...)</tspan>
+    <tspan x="98" dy="20">.withFeatures(...)</tspan>
+    <tspan x="98" dy="20">.start() returns a Result future</tspan>
+    <tspan x="98" dy="20">tick(...), stop()</tspan>
+    <tspan x="98" dy="20">requestReplan()</tspan>
+  </text>
+
+  <path class="line" d="M390 610 C455 610 450 280 500 280" />
+  <path class="line" d="M390 610 C450 610 450 1027 475 1027" />
+
+  <path class="line" d="M595 1027 C700 1027 850 970 960 850" />
+  <path class="line" d="M595 1027 C870 1035 1235 955 1370 845" />
+  <path class="soft-line" d="M595 1027 C780 1065 1220 865 1370 670" />
+
+  <rect class="support" x="75" y="730" width="315" height="126" />
+  <text class="box-title" x="98" y="760">Runtime Updates</text>
+  <text class="box-text" x="98" y="788">
+    <tspan x="98" dy="0">Feature and runtime config</tspan>
+    <tspan x="98" dy="20">changes call invalidateActivePath</tspan>
+    <tspan x="98" dy="20">so the next navigation cycle</tspan>
+    <tspan x="98" dy="20">uses fresh policy and tuning.</tspan>
+  </text>
+
+  <path class="line" d="M390 792 C440 792 455 700 500 695" />
+  <path class="soft-line" d="M835 695 C885 695 905 790 960 830" />
+
+  <rect class="state" x="75" y="910" width="315" height="142" />
+  <text class="box-title" x="98" y="940">Shared Output</text>
+  <text class="box-text" x="98" y="968">
+    <tspan x="98" dy="0">Consumers inspect PathNavigationState</tspan>
+    <tspan x="98" dy="20">for current target center, path status,</tspan>
+    <tspan x="98" dy="20">pending async status, posture, terrain,</tspan>
+    <tspan x="98" dy="20">feature usage, and debug snapshots.</tspan>
+  </text>
+
+  <path class="soft-line" d="M500 490 C445 520 430 940 390 980" />
+  <path class="dashed" d="M1370 840 C1130 960 640 980 390 980" />
+
+  <rect class="support" x="960" y="950" width="735" height="118" />
+  <text class="note-title" x="985" y="982">Main tick sequence</text>
+  <text class="note" x="985" y="1010">
+    <tspan x="985" dy="0">1. Store latest entity position and dimensions in state.</tspan>
+    <tspan x="985" dy="19">2. Planning applies pending async paths, queued replans, and segment advancement.</tspan>
+    <tspan x="985" dy="19">3. If a path is active, target component converts entity center to footprint anchor.</tspan>
+    <tspan x="985" dy="19">4. Waypoint follower advances/smooths, transition dispatcher fires terrain callbacks, progress tracker detects stuck state.</tspan>
+  </text>
+
+  <text class="small" x="60" y="1168">Generated for the current BLib PathNavigator component split. File: PATH_NAVIGATOR_FLOW.svg</text>
+</svg>
