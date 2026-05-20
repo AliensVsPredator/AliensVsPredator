@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import com.blib.api.common.block.v1.BlockBreakProgressManager;
 import com.blib.api.common.pathfinding.v1.evaluator.PathBlockBreakingConfig;
 import com.blib.api.common.pathfinding.v1.feature.PathfindingFeature;
-import com.blib.api.common.pathfinding.v1.navigator.PathNavigator;
+import com.blib.api.common.pathfinding.v1.navigator.PathNavigatorApi;
 import com.blib.api.common.pathfinding.v1.node.PathBlockBreakPlan;
 
 /**
@@ -22,7 +22,7 @@ public final class PathBlockBreakExecutor {
 
     private @Nullable BlockState activeBlockState;
 
-    public Result tick(PathfinderMob actor, PathNavigator navigator) {
+    public Result tick(PathfinderMob actor, PathNavigatorApi navigator) {
         var level = actor.level();
 
         if (level.isClientSide()) {
@@ -30,19 +30,21 @@ public final class PathBlockBreakExecutor {
             return Result.IDLE;
         }
 
-        var node = navigator.getCurrentNode();
+        var node = navigator.getState().getCurrentNode();
+
+        var featureControl = navigator.getFeatureControl();
 
         if (
             node == null
                 || !node.requiresBlockBreaking()
-                || !navigator.getPathfindingFeatures().blockBreaking()
+                || !featureControl.getPathfindingFeatures().blockBreaking()
         ) {
             reset(level);
             return Result.IDLE;
         }
 
         var plan = node.getBlockBreakPlan();
-        var breakConfig = navigator.getConfig().getEvaluatorConfig().getBlockBreakingConfig();
+        var breakConfig = navigator.getRuntimeConfig().getConfig().getEvaluatorConfig().getBlockBreakingConfig();
 
         if (!breakConfig.enabled() || breakConfig.damagePerTick() <= 0.0f) {
             reset(level);

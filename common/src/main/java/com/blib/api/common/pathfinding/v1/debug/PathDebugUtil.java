@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import com.blib.api.common.pathfinding.v1.navigator.PathNavigator;
+import com.blib.api.common.pathfinding.v1.navigator.PathNavigatorApi;
+import com.blib.api.common.pathfinding.v1.navigator.PathNavigationState;
 import com.blib.api.common.pathfinding.v1.node.PathNode;
 import com.blib.api.common.pathfinding.v1.path.BLibPath;
 import com.blib.mod.BLib;
@@ -71,7 +72,7 @@ public final class PathDebugUtil {
     /**
      * Sends the last A* search snapshot, or a current-path snapshot fallback, to players tracking this GOAP entity.
      */
-    public static void sendDebugSearchSnapshot(Mob mob, PathNavigator navigator) {
+    public static void sendDebugSearchSnapshot(Mob mob, PathNavigatorApi navigator) {
         var players = debugWatchers(mob);
         if (players.isEmpty()) {
             return;
@@ -102,12 +103,12 @@ public final class PathDebugUtil {
      * Sends the current pathfinding debug state to one player. Used when a player starts tracking an entity that may
      * already be mid-action, before the next GOAP movement tick has a chance to stream fresh data.
      */
-    public static void sendDebugState(ServerPlayer player, Mob mob, PathNavigator navigator) {
+    public static void sendDebugState(ServerPlayer player, Mob mob, PathNavigatorApi navigator) {
         sendDebugSearchSnapshot(player, mob, navigator);
         sendDebugNavState(player, mob, navigator);
     }
 
-    private static void sendDebugSearchSnapshot(ServerPlayer player, Mob mob, PathNavigator navigator) {
+    private static void sendDebugSearchSnapshot(ServerPlayer player, Mob mob, PathNavigatorApi navigator) {
         var snapshot = currentSearchSnapshot(navigator);
 
         if (snapshot == null) {
@@ -127,9 +128,10 @@ public final class PathDebugUtil {
         BLib.MOD.networking().sendToClient(player, payload);
     }
 
-    private static @Nullable PathSearchSnapshot currentSearchSnapshot(PathNavigator navigator) {
-        var snapshot = navigator.getLastSearchSnapshot();
-        var currentPath = navigator.getCurrentPath();
+    private static @Nullable PathSearchSnapshot currentSearchSnapshot(PathNavigatorApi navigator) {
+        var state = navigator.getState();
+        var snapshot = state.getLastSearchSnapshot();
+        var currentPath = state.getCurrentPath();
 
         if (currentPath != null && currentPath.getNodeCount() > 0) {
             if (snapshot == null || !snapshotMatchesCurrentPath(snapshot, currentPath)) {
@@ -178,8 +180,9 @@ public final class PathDebugUtil {
         return true;
     }
 
-    private static @Nullable PathSearchSnapshot currentPathSnapshot(PathNavigator navigator) {
-        var path = navigator.getCurrentPath();
+    private static @Nullable PathSearchSnapshot currentPathSnapshot(PathNavigatorApi navigator) {
+        var state = navigator.getState();
+        var path = state.getCurrentPath();
 
         if (path == null || path.getNodeCount() == 0) {
             return null;
@@ -193,7 +196,7 @@ public final class PathDebugUtil {
         var firstNode = path.getNode(0);
         var lastNode = path.getNode(path.getNodeCount() - 1);
         var start = new PathDebugBlockPos(firstNode.getX(), firstNode.getY(), firstNode.getZ());
-        var targetPos = navigator.getTargetPos();
+        var targetPos = state.getTargetPos();
         var requestedTarget = targetPos != null ? PathDebugBlockPos.of(targetPos) : new PathDebugBlockPos(
             lastNode.getX(),
             lastNode.getY(),
@@ -210,7 +213,7 @@ public final class PathDebugUtil {
             resolvedGoal,
             resolvedGoal,
             nodes.size(),
-            navigator.getSearchConfig().maxSearchNodes(),
+            navigator.getRuntimeConfig().getSearchConfig().maxSearchNodes(),
             path.getNodeCount(),
             reached,
             false,
@@ -223,7 +226,7 @@ public final class PathDebugUtil {
             collectStableGroundEntries(path),
             List.of(),
             nodes.size(),
-            navigator.getSearchConfig().maxSearchNodes(),
+            navigator.getRuntimeConfig().getSearchConfig().maxSearchNodes(),
             diagnostics
         );
     }
@@ -257,7 +260,7 @@ public final class PathDebugUtil {
     /**
      * Sends a rolling window of path nodes around the navigator's current position for the engine pathfinding panel.
      */
-    public static void sendDebugNavState(Mob mob, PathNavigator navigator) {
+    public static void sendDebugNavState(Mob mob, PathNavigatorApi navigator) {
         var players = debugWatchers(mob);
         if (players.isEmpty()) {
             return;
@@ -270,7 +273,7 @@ public final class PathDebugUtil {
         }
     }
 
-    private static void sendDebugNavState(ServerPlayer player, Mob mob, PathNavigator navigator) {
+    private static void sendDebugNavState(ServerPlayer player, Mob mob, PathNavigatorApi navigator) {
         BLib.MOD.networking().sendToClient(player, buildNavPayload(mob, navigator));
     }
 
@@ -298,11 +301,14 @@ public final class PathDebugUtil {
         int ticksOnCurrentNode,
         long lastPathComputeNanos,
         int lastPathComputeTick,
-        PathNavigator navigator
+        PathNavigatorApi navigator
     ) {
-        var currentTerrain = navigator.getCurrentTerrain();
-        var targetPos = navigator.getTargetPos();
-        var pathfindingProfile = navigator.getPathfindingProfile();
+        var state = navigator.getState();
+        var currentTerrain = state.getCurrentTerrain();
+        var targetPos = state.getTargetPos();
+        var featureControl = navigator.getFeatureControl();
+        var runtimeConfig = navigator.getRuntimeConfig();
+        var pathfindingProfile = featureControl.getPathfindingProfile();
         return new S2CPathfindingNavDebugPayload(
             mob.getId(),
             mob.getName().getString(),
@@ -334,38 +340,39 @@ public final class PathDebugUtil {
             surfaceBitmap,
             lastPathComputeNanos,
             lastPathComputeTick,
-            navigator.isPathPending(),
+            state.isPathPending(),
             currentTerrain != null ? currentTerrain.ordinal() : -1,
             targetPos != null,
             targetPos != null ? targetPos.getX() : 0,
             targetPos != null ? targetPos.getY() : 0,
             targetPos != null ? targetPos.getZ() : 0,
-            navigator.getConsecutiveFailures(),
-            navigator.getFailureCooldownRemainingTicks(),
-            navigator.getStuckTimeoutInTicks(),
-            navigator.getPathRecalculateIntervalInTicks(),
-            navigator.getPathfindingFeatures().toMask(),
-            navigator.consumePathfindingFeatureUsageMask(),
+            state.getConsecutiveFailures(),
+            state.getFailureCooldownRemainingTicks(),
+            runtimeConfig.getStuckTimeoutInTicks(),
+            runtimeConfig.getPathRecalculateIntervalInTicks(),
+            featureControl.getPathfindingFeatures().toMask(),
+            featureControl.consumePathfindingFeatureUsageMask(),
             pathfindingProfile != null ? pathfindingProfile.ordinal() : -1,
-            navigator.getPathfindingFeaturesRevision(),
-            navigator.getSearchConfig().maxSearchNodes(),
-            navigator.getSearchConfig().heuristicWeight(),
-            navigator.getSearchConfig().maxPathLength(),
-            navigator.getSearchConfig().elevationWeight(),
-            navigator.getPathfindingTuning().corridorDistanceThreshold(),
-            navigator.getPathfindingTuning().sectionSearchNodeBudget(),
-            navigator.getPathfindingTuning().corridorBufferRadius(),
-            navigator.getPathfindingTuning().asyncChunkMargin(),
-            navigator.getPathfindingTuning().minImprovement()
+            featureControl.getPathfindingFeaturesRevision(),
+            runtimeConfig.getSearchConfig().maxSearchNodes(),
+            runtimeConfig.getSearchConfig().heuristicWeight(),
+            runtimeConfig.getSearchConfig().maxPathLength(),
+            runtimeConfig.getSearchConfig().elevationWeight(),
+            runtimeConfig.getPathfindingTuning().corridorDistanceThreshold(),
+            runtimeConfig.getPathfindingTuning().sectionSearchNodeBudget(),
+            runtimeConfig.getPathfindingTuning().corridorBufferRadius(),
+            runtimeConfig.getPathfindingTuning().asyncChunkMargin(),
+            runtimeConfig.getPathfindingTuning().minImprovement()
         );
     }
 
-    private static S2CPathfindingNavDebugPayload buildNavPayload(Mob mob, PathNavigator navigator) {
-        var pathSnapshot = collectPathSnapshot(mob, navigator);
+    private static S2CPathfindingNavDebugPayload buildNavPayload(Mob mob, PathNavigatorApi navigator) {
+        var state = navigator.getState();
+        var pathSnapshot = collectPathSnapshot(mob, state);
         var move = collectMoveSnapshot(mob);
         var surfaceBitmap = computeSurfaceBitmap(mob);
-        var pathAge = navigator.getTickCount() - navigator.getLastPathComputeTick();
-        var ticksOnNode = navigator.getTickCount() - navigator.getLastProgressTick();
+        var pathAge = state.getTickCount() - state.getLastPathComputeTick();
+        var ticksOnNode = state.getTickCount() - state.getLastProgressTick();
         var delta = mob.getDeltaMovement();
         return buildPayload(
             mob,
@@ -377,16 +384,16 @@ public final class PathDebugUtil {
             surfaceBitmap,
             pathAge,
             ticksOnNode,
-            navigator.getLastPathComputeNanos(),
-            navigator.getLastPathComputeTick(),
+            state.getLastPathComputeNanos(),
+            state.getLastPathComputeTick(),
             navigator
         );
     }
 
-    private static PathSnapshot collectPathSnapshot(Mob mob, PathNavigator navigator) {
-        var path = navigator.getCurrentPath();
+    private static PathSnapshot collectPathSnapshot(Mob mob, PathNavigationState state) {
+        var path = state.getCurrentPath();
         var windowNodes = new ArrayList<DebugNodeEntry>();
-        var navigating = navigator.isNavigating();
+        var navigating = state.isNavigating();
 
         if (path == null) {
             return new PathSnapshot(windowNodes, 0, 0, 0, false, navigating, 0.0f, 0.0f);

@@ -5,11 +5,11 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.phys.Vec3;
 
 import com.blib.api.common.pathfinding.v1.feature.PathfindingFeature;
-import com.blib.api.common.pathfinding.v1.navigator.PathNavigator;
+import com.blib.api.common.pathfinding.v1.navigator.PathNavigatorApi;
 import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
 
 /**
- * Applies water-specific movement assist for {@link PathNavigator} waypoints.
+ * Applies water-specific movement assist for {@link PathNavigatorApi} waypoints.
  */
 public final class WaterPathMovementController {
 
@@ -55,7 +55,7 @@ public final class WaterPathMovementController {
 
     public static double resolveSpeedMultiplier(
         PathfinderMob actor,
-        PathNavigator navigator,
+        PathNavigatorApi navigator,
         double speedMultiplier
     ) {
         if (!shouldUseWaterMovementAssist(actor, navigator)) {
@@ -67,7 +67,7 @@ public final class WaterPathMovementController {
 
     public static void apply(
         PathfinderMob actor,
-        PathNavigator navigator,
+        PathNavigatorApi navigator,
         Vec3 waypointCenter,
         double speedMultiplier
     ) {
@@ -79,7 +79,7 @@ public final class WaterPathMovementController {
         var dy = waypointCenter.y - actor.getY();
         var dz = waypointCenter.z - actor.getZ();
         var horizontalDistanceSquared = dx * dx + dz * dz;
-        var features = navigator.getPathfindingFeatures();
+        var features = navigator.getFeatureControl().getPathfindingFeatures();
         var movementAssist = features.waterMovementAssist();
         var exitingWater = features.waterExitBreach() && isWaterExitMovement(actor, navigator, waypointCenter);
         var preLiftingWaterStepUp = features.waterStepUpPreLift() && isPreLiftingWaterStepUp(actor, navigator, waypointCenter);
@@ -145,20 +145,21 @@ public final class WaterPathMovementController {
         actor.setDeltaMovement(nextX, nextY, nextZ);
     }
 
-    private static boolean usesWaterPathMovement(PathfinderMob actor, PathNavigator navigator) {
-        return actor.isInWater() && navigator.getPathfindingFeatures().waterPathfinding();
+    private static boolean usesWaterPathMovement(PathfinderMob actor, PathNavigatorApi navigator) {
+        return actor.isInWater() && navigator.getFeatureControl().getPathfindingFeatures().waterPathfinding();
     }
 
-    private static boolean shouldUseWaterMovementAssist(PathfinderMob actor, PathNavigator navigator) {
-        return usesWaterPathMovement(actor, navigator) && navigator.getPathfindingFeatures().waterMovementAssist();
+    private static boolean shouldUseWaterMovementAssist(PathfinderMob actor, PathNavigatorApi navigator) {
+        return usesWaterPathMovement(actor, navigator)
+            && navigator.getFeatureControl().getPathfindingFeatures().waterMovementAssist();
     }
 
     private static boolean isWaterExitMovement(
         PathfinderMob actor,
-        PathNavigator navigator,
+        PathNavigatorApi navigator,
         Vec3 waypointCenter
     ) {
-        var currentNode = navigator.getCurrentNode();
+        var currentNode = navigator.getState().getCurrentNode();
 
         return currentNode != null
             && currentNode.getTerrainType() != TerrainType.WATER
@@ -167,14 +168,14 @@ public final class WaterPathMovementController {
 
     private static boolean isPreLiftingWaterStepUp(
         PathfinderMob actor,
-        PathNavigator navigator,
+        PathNavigatorApi navigator,
         Vec3 waypointCenter
     ) {
         if (actor.getY() >= waypointCenter.y - WATER_STEP_UP_READY_TOLERANCE) {
             return false;
         }
 
-        var path = navigator.getCurrentPath();
+        var path = navigator.getState().getCurrentPath();
 
         if (path == null || path.isDone()) {
             return false;

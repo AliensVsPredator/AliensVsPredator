@@ -3,10 +3,10 @@ package com.blib.api.common.pathfinding.v1.movement;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.phys.Vec3;
 
-import com.blib.api.common.pathfinding.v1.navigator.PathNavigator;
+import com.blib.api.common.pathfinding.v1.navigator.PathNavigatorApi;
 
 /**
- * Applies {@link PathNavigator} waypoints to Minecraft mob movement controls.
+ * Applies {@link PathNavigatorApi} waypoints to Minecraft mob movement controls.
  */
 public final class PathMovementController {
 
@@ -15,7 +15,7 @@ public final class PathMovementController {
      */
     public static void follow(
         PathfinderMob actor,
-        PathNavigator navigator,
+        PathNavigatorApi navigator,
         Vec3 waypointCenter,
         double speedMultiplier
     ) {

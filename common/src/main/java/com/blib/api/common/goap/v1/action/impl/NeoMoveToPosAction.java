@@ -14,11 +14,11 @@ import com.blib.api.common.pathfinding.v1.breaking.PathBlockBreakExecutor;
 import com.blib.api.common.pathfinding.v1.debug.PathDebugUtil;
 import com.blib.api.common.pathfinding.v1.feature.PathfindingFeature;
 import com.blib.api.common.pathfinding.v1.movement.PathMovementController;
-import com.blib.api.common.pathfinding.v1.navigator.PathNavigator;
+import com.blib.api.common.pathfinding.v1.navigator.PathNavigatorApi;
 import com.blib.api.common.pathfinding.v1.navigator.PathNavigatorUser;
 
 /**
- * GOAP action utility for pathfinding using BLib's {@link PathNavigator}. Requires the entity to implement
+ * GOAP action utility for pathfinding using BLib's {@link PathNavigatorApi}. Requires the entity to implement
  * {@link PathNavigatorUser}.
  * <p>
  * Unlike {@link MoveToPosAction} which delegates to Minecraft's vanilla PathNavigation, this action uses BLib's
@@ -73,20 +73,22 @@ public final class NeoMoveToPosAction {
         }
 
         var navigator = navigatorUser.getPathNavigator();
-        var requestedFeatures = navigator.getDefaultPathfindingFeatures()
+        var featureControl = navigator.getFeatureControl();
+        var requestedFeatures = featureControl.getDefaultPathfindingFeatures()
             .with(PathfindingFeature.BLOCK_BREAKING, allowBlockBreaking);
+        var navigatorState = navigator.getState();
 
         if (
-            navigator.isNavigating()
-                && !navigator.getPathfindingFeatures().equals(requestedFeatures)
+            navigatorState.isNavigating()
+                && !featureControl.getPathfindingFeatures().equals(requestedFeatures)
         ) {
             resetBlockBreakExecutor(actor, blackboard);
             navigator.stop();
         }
 
-        navigator.setDebugCaptureEnabled(PathDebugUtil.hasDebugWatchers(actor));
+        featureControl.setDebugCaptureEnabled(PathDebugUtil.hasDebugWatchers(actor));
 
-        if (!navigator.isNavigating()) {
+        if (!navigatorState.isNavigating()) {
             var found = navigator.navigateTo(
                 actor.getX(),
                 actor.getY(),
@@ -129,11 +131,11 @@ public final class NeoMoveToPosAction {
             return Result.MOVING;
         }
 
-        if (navigator.isDone()) {
+        if (navigatorState.isDone()) {
             return Result.FINISHED;
         }
 
-        var waypointCenter = navigator.getCurrentTargetCenter();
+        var waypointCenter = navigatorState.getCurrentTargetCenter();
 
         if (waypointCenter == null) {
             resetBlockBreakExecutor(actor, blackboard);
@@ -181,13 +183,13 @@ public final class NeoMoveToPosAction {
         blackboard.set(BLOCK_BREAK_EXECUTOR, null);
     }
 
-    private static void handleDoorInteractions(PathfinderMob actor, PathNavigator navigator, Blackboard blackboard) {
-        if (!navigator.canOpenDoors()) {
+    private static void handleDoorInteractions(PathfinderMob actor, PathNavigatorApi navigator, Blackboard blackboard) {
+        if (!navigator.getState().canOpenDoors()) {
             closeDoorIfTracked(actor, blackboard);
             return;
         }
 
-        var currentTarget = navigator.getCurrentTargetPos();
+        var currentTarget = navigator.getState().getCurrentTargetPos();
         if (currentTarget == null) {
             closeDoorIfTracked(actor, blackboard);
             return;
