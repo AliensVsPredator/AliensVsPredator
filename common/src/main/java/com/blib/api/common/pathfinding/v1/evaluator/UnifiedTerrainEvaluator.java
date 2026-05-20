@@ -658,8 +658,14 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
         if (features.stepDown()) {
             for (int stepDown = 1; stepDown <= config.getMaxFallDistance(); stepDown++) {
-                beginEdgeAttempt(from, x, from.getY() - stepDown, z, PathEdgeDebugType.STEP_DOWN);
-                var candidate = tryCreateStepDownGroundNode(x, from.getY() - stepDown, z);
+                var y = from.getY() - stepDown;
+
+                if (!hasNodeSupport(x, y, z) && isStepDownFallPassable(x, y, z)) {
+                    continue;
+                }
+
+                beginEdgeAttempt(from, x, y, z, PathEdgeDebugType.STEP_DOWN);
+                var candidate = tryCreateStepDownGroundNode(x, y, z);
                 var steppedDown = candidate.node();
 
                 if (steppedDown == null) {
@@ -1590,6 +1596,14 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
 
         return tryCreateGroundNode(x, y, z, PathPosture.CRAWLING);
+    }
+
+    private boolean isStepDownFallPassable(int x, int y, int z) {
+        if (hasNodeClearance(x, y, z, PathPosture.STANDING)) {
+            return true;
+        }
+
+        return usesCrawling() && hasNodeClearance(x, y, z, PathPosture.CRAWLING);
     }
 
     private @Nullable PathNode tryCreateGroundNode(int x, int y, int z, PathPosture posture) {
