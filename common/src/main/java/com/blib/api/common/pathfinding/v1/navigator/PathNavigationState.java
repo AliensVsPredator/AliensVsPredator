@@ -10,7 +10,7 @@ import com.blib.api.common.pathfinding.v1.path.BLibPath;
 import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
 
 /**
- * Read-only view of the active BLib path navigation state.
+ * Read-only compatibility projection of the active BLib path navigation state.
  */
 public interface PathNavigationState {
 

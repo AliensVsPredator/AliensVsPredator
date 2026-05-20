@@ -20,15 +20,17 @@ final class PathNavigationTransitionDispatcher {
     }
 
     void fireTransitionHandlers(@Nullable TerrainType from, TerrainType to) {
-        if (from == null) {
+        var activePath = state.activePath();
+
+        if (from == null || activePath == null) {
             return;
         }
 
         var handlers = config.getTransitionHandlers(from, to);
-        var transition = new TerrainTransition(from, to, state.currentPath.getCurrentNodeIndex());
+        var transition = new TerrainTransition(from, to, activePath.getCurrentNodeIndex());
 
         for (var handler : handlers) {
-            handler.onTransition(transition, state.currentPath);
+            handler.onTransition(transition, activePath);
         }
     }
 }

@@ -6,7 +6,6 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -64,19 +63,21 @@ final class PathNavigationTargetComponent implements PathNavigationAnchorResolve
     }
 
     BlockPos resolveAndStoreTarget(BlockPos entityPos, BlockPos rawTarget) {
-        state.rawTargetPos = rawTarget;
-        state.targetPos = resolveSearchTarget(entityPos, rawTarget);
-
-        return state.targetPos;
+        return resolveSearchTarget(entityPos, rawTarget);
     }
 
     void updateTarget(BlockPos newRawTarget) {
+        if (state.currentRequest() == null) {
+            return;
+        }
+
         var entityPos = state.hasLastEntityPosition
             ? entityAnchorPos(state.lastEntityX, state.lastEntityY, state.lastEntityZ)
             : null;
 
-        this.state.rawTargetPos = newRawTarget;
-        this.state.targetPos = entityPos != null ? resolveSearchTarget(entityPos, newRawTarget) : newRawTarget;
+        var searchTarget = entityPos != null ? resolveSearchTarget(entityPos, newRawTarget) : newRawTarget;
+
+        this.state.updateLifecycleTarget(newRawTarget, searchTarget);
     }
 
     void recordComputedTarget(BlockPos searchTarget, BlockPos rawTarget) {
@@ -89,8 +90,6 @@ final class PathNavigationTargetComponent implements PathNavigationAnchorResolve
     }
 
     void clearActiveTarget() {
-        state.rawTargetPos = null;
-        state.targetPos = null;
         lastComputedRawTargetPos = null;
         lastProjectionRawTargetPos = null;
         lastProjectionTargetPos = null;
@@ -102,17 +101,25 @@ final class PathNavigationTargetComponent implements PathNavigationAnchorResolve
     }
 
     boolean hasTargetMovedForRecalculation() {
-        if (state.targetPos == null) {
+        var searchTarget = state.currentSearchTarget();
+
+        if (searchTarget == null) {
             return false;
         }
 
         return lastComputedTargetPos == null
-            || state.targetPos.distSqr(lastComputedTargetPos) >= MIN_TARGET_MOVE_DISTANCE_SQUARED
+            || searchTarget.distSqr(lastComputedTargetPos) >= MIN_TARGET_MOVE_DISTANCE_SQUARED
             || hasRawTargetMovedForRecalculation();
     }
 
     BlockPos activeRawTargetPos() {
-        return state.rawTargetPos != null ? state.rawTargetPos : Objects.requireNonNull(state.targetPos, "targetPos");
+        var rawTarget = state.currentRawTarget();
+
+        if (rawTarget == null) {
+            throw new IllegalStateException("Path navigator has no active raw target");
+        }
+
+        return rawTarget;
     }
 
     public BlockPos entityAnchorPos(double entityX, double entityY, double entityZ) {
@@ -388,15 +395,17 @@ final class PathNavigationTargetComponent implements PathNavigationAnchorResolve
     }
 
     private boolean hasRawTargetMovedForRecalculation() {
-        if (state.rawTargetPos == null || lastComputedRawTargetPos == null) {
+        var rawTarget = state.currentRawTarget();
+
+        if (rawTarget == null || lastComputedRawTargetPos == null) {
             return false;
         }
 
-        var threshold = usesGroundedTargetProjection() && shouldProjectRawTarget(state.rawTargetPos)
+        var threshold = usesGroundedTargetProjection() && shouldProjectRawTarget(rawTarget)
             ? TARGET_PROJECTION_REUSE_DISTANCE_SQUARED
             : MIN_TARGET_MOVE_DISTANCE_SQUARED;
 
-        return state.rawTargetPos.distSqr(lastComputedRawTargetPos) >= threshold;
+        return rawTarget.distSqr(lastComputedRawTargetPos) >= threshold;
     }
 
     private PathfindingFeatures activePathfindingFeatures() {

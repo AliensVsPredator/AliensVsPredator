@@ -166,8 +166,9 @@ public final class PathNavigator implements PathNavigatorApi {
 
         // Advance to next segment if current path is done but route hasn't reached the final target.
         planning.advanceSegmentIfNeeded(entityX, entityY, entityZ);
+        state.refreshTerminalLifecycle();
 
-        if (state.currentPath == null || state.currentPath.isDone()) {
+        if (!state.hasActivePath()) {
             return;
         }
 
@@ -177,8 +178,9 @@ public final class PathNavigator implements PathNavigatorApi {
 
         // After waypoint advancement, check again for segment transition.
         planning.advanceSegmentIfNeeded(entityX, entityY, entityZ);
+        state.refreshTerminalLifecycle();
 
-        if (state.currentPath == null || state.currentPath.isDone()) {
+        if (!state.hasActivePath()) {
             return;
         }
 
@@ -192,12 +194,11 @@ public final class PathNavigator implements PathNavigatorApi {
     public void stop() {
         planning.stopPlanning();
 
-        this.state.currentPath = null;
         targets.clearActiveTarget();
-        this.state.currentTerrain = null;
         progressTracker.clearStuckReplanHistory();
         featureControl.clearActivePathfindingFeatures();
         resetProgressTracking();
+        state.enterIdle();
     }
 
     public void requestReplan() {
@@ -217,7 +218,7 @@ public final class PathNavigator implements PathNavigatorApi {
     }
 
     private @Nullable Vec3 resolveCurrentTargetCenter() {
-        if (state.currentPath == null || state.currentPath.isDone()) {
+        if (!state.hasActivePath()) {
             return null;
         }
 

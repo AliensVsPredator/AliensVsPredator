@@ -44,11 +44,13 @@ final class PathNavigationPostureComponent implements PathNavigationPostureView 
      */
     @Override
     public PathPosture getCurrentRequiredPosture() {
-        if (state.currentPath == null || state.currentPath.isDone()) {
+        var activePath = state.activePath();
+
+        if (activePath == null) {
             return PathPosture.STANDING;
         }
 
-        var posture = state.currentPath.getCurrentNode().getPosture();
+        var posture = activePath.getCurrentNode().getPosture();
 
         if (posture.isCrawling()) {
             if (!usesCrawling()) {
@@ -71,11 +73,13 @@ final class PathNavigationPostureComponent implements PathNavigationPostureView 
      */
     @Override
     public PathPosture getDesiredPosture() {
-        if (state.currentPath == null || state.currentPath.isDone()) {
+        var activePath = state.activePath();
+
+        if (activePath == null) {
             return PathPosture.STANDING;
         }
 
-        if (state.currentPath.getCurrentNode().requiresCrawling()) {
+        if (activePath.getCurrentNode().requiresCrawling()) {
             if (!usesCrawling()) {
                 return PathPosture.STANDING;
             }
@@ -84,7 +88,7 @@ final class PathNavigationPostureComponent implements PathNavigationPostureView 
             return PathPosture.CRAWLING;
         }
 
-        if (state.currentPath.getCurrentNode().requiresSwimming()) {
+        if (activePath.getCurrentNode().requiresSwimming()) {
             markFeatureUsed(PathfindingFeature.WATER_SWIM_CLEARANCE);
             return PathPosture.SWIMMING;
         }
@@ -99,24 +103,24 @@ final class PathNavigationPostureComponent implements PathNavigationPostureView 
     @Override
     public PathPosture getDesiredPosture(double entityX, double entityY, double entityZ) {
         var currentPosture = getDesiredPosture();
+        var activePath = state.activePath();
 
         if (
             currentPosture.isCrawling()
                 || currentPosture.isSwimming()
-                || state.currentPath == null
-                || state.currentPath.isDone()
+                || activePath == null
                 || !usesCrawling()
         ) {
             return currentPosture;
         }
 
-        var currentIndex = state.currentPath.getCurrentNodeIndex();
+        var currentIndex = activePath.getCurrentNodeIndex();
         var lookahead = config.getEvaluatorConfig().getCrawlConfig().postureLookaheadNodes();
-        var endIndex = Math.min(state.currentPath.getNodeCount() - 1, currentIndex + lookahead);
+        var endIndex = Math.min(activePath.getNodeCount() - 1, currentIndex + lookahead);
 
         for (var index = currentIndex + 1; index <= endIndex; index++) {
-            if (state.currentPath.getNode(index).requiresCrawling()) {
-                if (isNearCrawlPostureEntry(entityX, entityY, entityZ, state.currentPath.getNode(index))) {
+            if (activePath.getNode(index).requiresCrawling()) {
+                if (isNearCrawlPostureEntry(entityX, entityY, entityZ, activePath.getNode(index))) {
                     markFeatureUsed(PathfindingFeature.CRAWL_THROUGH_GAPS);
                     return PathPosture.CRAWLING;
                 }

@@ -59,15 +59,17 @@ final class PathNavigationProgressTracker {
         float entityWidth,
         float entityHeight
     ) {
-        if (state.targetPos == null || state.currentPath == null || state.currentPath.isDone()) {
+        var activePath = state.activePathContext();
+
+        if (activePath == null) {
             return StuckDecision.NONE;
         }
 
-        var progressed = observePathProgress(entityAnchorPos, entityX, entityY, entityZ, entityWidth, entityHeight);
+        var progressed = observePathProgress(activePath, entityAnchorPos, entityX, entityY, entityZ, entityWidth, entityHeight);
         var ticksSinceProgress = state.tickCount - state.lastProgressTick;
 
         if (!progressed && ticksSinceProgress >= stuckTimeoutSupplier.getAsInt()) {
-            return handleStuckEdge(entityAnchorPos);
+            return handleStuckEdge(activePath, entityAnchorPos);
         }
 
         return StuckDecision.NONE;
@@ -77,7 +79,8 @@ final class PathNavigationProgressTracker {
         state.lastProgressTick = state.tickCount;
         lastDistanceToCurrentNode = Double.MAX_VALUE;
         lastDistanceToNextNode = Double.MAX_VALUE;
-        lastObservedNodeIndex = state.currentPath != null ? state.currentPath.getCurrentNodeIndex() : -1;
+        var activePath = state.activePath();
+        lastObservedNodeIndex = activePath != null ? activePath.getCurrentNodeIndex() : -1;
     }
 
     void resetProgressTracking() {
@@ -92,6 +95,7 @@ final class PathNavigationProgressTracker {
     }
 
     private boolean observePathProgress(
+        PathNavigationLifecycle.ActivePathContext activePathContext,
         BlockPos entityAnchorPos,
         double entityX,
         double entityY,
@@ -99,17 +103,18 @@ final class PathNavigationProgressTracker {
         float entityWidth,
         float entityHeight
     ) {
-        var currentIndex = state.currentPath.getCurrentNodeIndex();
-        var currentCenter = waypointFollower.currentNodeTargetCenter(state.currentPath.getCurrentNode(), entityWidth, entityHeight);
+        var path = activePathContext.path();
+        var currentIndex = path.getCurrentNodeIndex();
+        var currentCenter = waypointFollower.currentNodeTargetCenter(path.getCurrentNode(), entityWidth, entityHeight);
         var distanceToCurrent = distanceSquared(entityX, entityY, entityZ, currentCenter);
         var distanceToNext = Double.MAX_VALUE;
 
-        if (currentIndex + 1 < state.currentPath.getNodeCount()) {
+        if (currentIndex + 1 < path.getNodeCount()) {
             distanceToNext = distanceSquared(
                 entityX,
                 entityY,
                 entityZ,
-                waypointFollower.nodeTargetCenter(state.currentPath.getNode(currentIndex + 1), entityWidth, entityHeight)
+                waypointFollower.nodeTargetCenter(path.getNode(currentIndex + 1), entityWidth, entityHeight)
             );
         }
 
@@ -123,7 +128,7 @@ final class PathNavigationProgressTracker {
             lastDistanceToCurrentNode = distanceToCurrent;
             lastDistanceToNextNode = distanceToNext;
 
-            var edge = currentEdgeKey(entityAnchorPos);
+            var edge = currentEdgeKey(activePathContext, entityAnchorPos);
             if (lastStuckReplannedEdge != null && edge != null && !lastStuckReplannedEdge.equals(edge)) {
                 lastStuckReplannedEdge = null;
             }
@@ -132,12 +137,15 @@ final class PathNavigationProgressTracker {
         return progressed;
     }
 
-    private StuckDecision handleStuckEdge(BlockPos entityAnchorPos) {
+    private StuckDecision handleStuckEdge(
+        PathNavigationLifecycle.ActivePathContext activePath,
+        BlockPos entityAnchorPos
+    ) {
         if (!activePathfindingFeatures().stuckReplan()) {
             return StuckDecision.STOP;
         }
 
-        var edge = currentEdgeKey(entityAnchorPos);
+        var edge = currentEdgeKey(activePath, entityAnchorPos);
 
         if (edge != null && edge.equals(lastStuckReplannedEdge)) {
             return StuckDecision.STOP;
@@ -145,23 +153,20 @@ final class PathNavigationProgressTracker {
 
         lastStuckReplannedEdge = edge;
 
-        if (state.targetPos == null) {
-            return StuckDecision.STOP;
-        }
-
         markFeatureUsed(PathfindingFeature.STUCK_REPLAN);
 
         return StuckDecision.REPLAN;
     }
 
-    private @Nullable PathEdgeKey currentEdgeKey(BlockPos entityAnchorPos) {
-        if (state.currentPath == null || state.currentPath.isDone() || state.targetPos == null) {
-            return null;
-        }
-
-        var currentIndex = state.currentPath.getCurrentNodeIndex();
-        var to = state.currentPath.getCurrentNode();
-        var from = currentIndex > 0 ? state.currentPath.getNode(currentIndex - 1) : null;
+    private PathEdgeKey currentEdgeKey(
+        PathNavigationLifecycle.ActivePathContext activePath,
+        BlockPos entityAnchorPos
+    ) {
+        var path = activePath.path();
+        var target = activePath.request().searchTarget();
+        var currentIndex = path.getCurrentNodeIndex();
+        var to = path.getCurrentNode();
+        var from = currentIndex > 0 ? path.getNode(currentIndex - 1) : null;
         var fromX = from != null ? from.getX() : entityAnchorPos.getX();
         var fromY = from != null ? from.getY() : entityAnchorPos.getY();
         var fromZ = from != null ? from.getZ() : entityAnchorPos.getZ();
@@ -175,9 +180,9 @@ final class PathNavigationProgressTracker {
             to.getY(),
             to.getZ(),
             to.getPosture(),
-            state.targetPos.getX(),
-            state.targetPos.getY(),
-            state.targetPos.getZ()
+            target.getX(),
+            target.getY(),
+            target.getZ()
         );
     }
 
