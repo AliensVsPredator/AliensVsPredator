@@ -488,8 +488,23 @@ public final class PathDebugUtil {
             node.getHCost(),
             node.getCostMalus(),
             -1,
-            parent
+            parent,
+            blockBreakPlan(node)
         );
+    }
+
+    private static List<PathDebugBlockPos> blockBreakPlan(PathNode node) {
+        if (!node.requiresBlockBreaking()) {
+            return List.of();
+        }
+
+        var blocks = new ArrayList<PathDebugBlockPos>(node.getBlockBreakPlan().size());
+
+        for (var block : node.getBlockBreakPlan().blocks()) {
+            blocks.add(new PathDebugBlockPos(block.getX(), block.getY(), block.getZ()));
+        }
+
+        return List.copyOf(blocks);
     }
 
     private PathDebugUtil() {

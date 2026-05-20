@@ -16,6 +16,7 @@ public record PathfindingFeatures(
     boolean segmentedPathPlanning,
     boolean partialPathResults,
     boolean doorOpening,
+    boolean blockBreaking,
     boolean asyncPathfinding,
     boolean collisionShapeWaypoints,
     boolean horizontalDiagonalClearance,
@@ -88,39 +89,40 @@ public record PathfindingFeatures(
             pathSkipAhead,
             stuckReplan,
             sectionCorridor,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true
+            true, // segmentedPathPlanning
+            true, // partialPathResults
+            true, // doorOpening
+            false, // blockBreaking
+            true, // asyncPathfinding
+            true, // collisionShapeWaypoints
+            true, // horizontalDiagonalClearance
+            true, // verticalDiagonalClearance
+            true, // diagonalSweptShapeClearance
+            true, // footprintClearance
+            true, // anyAngleSmoothing
+            true, // steppedFootprintSupport
+            true, // dropDownOpenings
+            true, // entityHitboxClearance
+            true, // crawlThroughGaps
+            true, // descendingStairEdgeReach
+            true, // waterPathfinding
+            true, // waterSwimClearance
+            true, // waterEntry
+            true, // waterVerticalSwim
+            true, // waterSlopeSwim
+            true, // waterExit
+            true, // waterMovementAssist
+            true, // waterExitBreach
+            true, // waterStepUpPreLift
+            true, // waterAnyAngleSmoothing
+            true, // searchCaching
+            true, // terrainPrecheck
+            true, // anyAngleSmoothingCache
+            true, // footprintScanCache
+            true, // pathPrefixReuse
+            true, // groundedTargetProjection
+            true, // bidirectionalSearch
+            true // balancedBidirectionalExpansion
         );
     }
 
@@ -181,6 +183,7 @@ public record PathfindingFeatures(
             case SEGMENTED_PATH_PLANNING -> segmentedPathPlanning;
             case PARTIAL_PATH_RESULTS -> partialPathResults;
             case DOOR_OPENING -> doorOpening;
+            case BLOCK_BREAKING -> blockBreaking;
             case ASYNC_PATHFINDING -> asyncPathfinding;
             case COLLISION_SHAPE_WAYPOINTS -> collisionShapeWaypoints;
             case HORIZONTAL_DIAGONAL_CLEARANCE -> horizontalDiagonalClearance;
@@ -227,6 +230,7 @@ public record PathfindingFeatures(
             feature == PathfindingFeature.SEGMENTED_PATH_PLANNING ? enabled : segmentedPathPlanning,
             feature == PathfindingFeature.PARTIAL_PATH_RESULTS ? enabled : partialPathResults,
             feature == PathfindingFeature.DOOR_OPENING ? enabled : doorOpening,
+            feature == PathfindingFeature.BLOCK_BREAKING ? enabled : blockBreaking,
             feature == PathfindingFeature.ASYNC_PATHFINDING ? enabled : asyncPathfinding,
             feature == PathfindingFeature.COLLISION_SHAPE_WAYPOINTS ? enabled : collisionShapeWaypoints,
             feature == PathfindingFeature.HORIZONTAL_DIAGONAL_CLEARANCE ? enabled : horizontalDiagonalClearance,
@@ -289,6 +293,7 @@ public record PathfindingFeatures(
             enabled(mask, PathfindingFeature.SEGMENTED_PATH_PLANNING),
             enabled(mask, PathfindingFeature.PARTIAL_PATH_RESULTS),
             enabled(mask, PathfindingFeature.DOOR_OPENING),
+            enabled(mask, PathfindingFeature.BLOCK_BREAKING),
             enabled(mask, PathfindingFeature.ASYNC_PATHFINDING),
             enabled(mask, PathfindingFeature.COLLISION_SHAPE_WAYPOINTS),
             enabled(mask, PathfindingFeature.HORIZONTAL_DIAGONAL_CLEARANCE),

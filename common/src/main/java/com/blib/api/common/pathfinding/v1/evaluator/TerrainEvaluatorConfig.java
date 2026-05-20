@@ -46,6 +46,8 @@ public final class TerrainEvaluatorConfig {
 
     private final PathWaterConfig waterConfig;
 
+    private final PathBlockBreakingConfig blockBreakingConfig;
+
     private TerrainEvaluatorConfig(
         Map<TerrainType, Supplier<Float>> terrainCostSuppliers,
         TerrainClassifier terrainClassifier,
@@ -57,7 +59,8 @@ public final class TerrainEvaluatorConfig {
         boolean canWalkOverFences,
         boolean canFly,
         PathCrawlConfig crawlConfig,
-        PathWaterConfig waterConfig
+        PathWaterConfig waterConfig,
+        PathBlockBreakingConfig blockBreakingConfig
     ) {
         this.terrainCostSuppliers = Map.copyOf(terrainCostSuppliers);
         this.terrainClassifier = terrainClassifier;
@@ -70,6 +73,7 @@ public final class TerrainEvaluatorConfig {
         this.canFly = canFly;
         this.crawlConfig = crawlConfig != null ? crawlConfig : PathCrawlConfig.DISABLED;
         this.waterConfig = waterConfig != null ? waterConfig : PathWaterConfig.DISABLED;
+        this.blockBreakingConfig = blockBreakingConfig != null ? blockBreakingConfig : PathBlockBreakingConfig.DISABLED;
     }
 
     public static Builder builder() {
@@ -130,6 +134,10 @@ public final class TerrainEvaluatorConfig {
         return waterConfig;
     }
 
+    public PathBlockBreakingConfig getBlockBreakingConfig() {
+        return blockBreakingConfig;
+    }
+
     public static final class Builder {
 
         private final Map<TerrainType, Supplier<Float>> terrainCostSuppliers;
@@ -154,6 +162,8 @@ public final class TerrainEvaluatorConfig {
 
         private PathWaterConfig waterConfig;
 
+        private PathBlockBreakingConfig blockBreakingConfig;
+
         private Builder() {
             this.terrainCostSuppliers = new EnumMap<>(TerrainType.class);
             this.terrainClassifier = TerrainClassifiers.GROUND_ONLY;
@@ -163,6 +173,7 @@ public final class TerrainEvaluatorConfig {
             this.maxStepHeight = DEFAULT_MAX_STEP_HEIGHT;
             this.crawlConfig = PathCrawlConfig.DISABLED;
             this.waterConfig = PathWaterConfig.DISABLED;
+            this.blockBreakingConfig = PathBlockBreakingConfig.DISABLED;
         }
 
         public Builder addTerrain(TerrainType type, float cost) {
@@ -245,6 +256,16 @@ public final class TerrainEvaluatorConfig {
             return this;
         }
 
+        public Builder withBlockBreakingConfig(PathBlockBreakingConfig blockBreakingConfig) {
+            this.blockBreakingConfig = blockBreakingConfig != null ? blockBreakingConfig : PathBlockBreakingConfig.DISABLED;
+            return this;
+        }
+
+        public Builder withBlockBreaking(PathBlockBreakPolicy breakPolicy) {
+            this.blockBreakingConfig = PathBlockBreakingConfig.enabled(breakPolicy);
+            return this;
+        }
+
         public TerrainEvaluatorConfig build() {
             if (terrainCostSuppliers.isEmpty()) {
                 terrainCostSuppliers.put(TerrainType.GROUND, () -> DEFAULT_COST);
@@ -261,7 +282,8 @@ public final class TerrainEvaluatorConfig {
                 canWalkOverFences,
                 canFly,
                 crawlConfig,
-                waterConfig
+                waterConfig,
+                blockBreakingConfig
             );
         }
     }

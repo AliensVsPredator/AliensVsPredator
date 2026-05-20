@@ -28,6 +28,10 @@ public final class PathNode implements Comparable<PathNode> {
 
     private float pendingCostMalus;
 
+    private PathBlockBreakPlan blockBreakPlan = PathBlockBreakPlan.EMPTY;
+
+    private PathBlockBreakPlan pendingBlockBreakPlan = PathBlockBreakPlan.EMPTY;
+
     private PathNode parent;
 
     private boolean hasDropEntryWaypoint;
@@ -149,12 +153,18 @@ public final class PathNode implements Comparable<PathNode> {
     }
 
     public void setPendingTraversal(float costMalus) {
+        setPendingTraversal(costMalus, PathBlockBreakPlan.EMPTY);
+    }
+
+    public void setPendingTraversal(float costMalus, PathBlockBreakPlan blockBreakPlan) {
         this.pendingCostMalus = costMalus;
+        this.pendingBlockBreakPlan = blockBreakPlan != null ? blockBreakPlan : PathBlockBreakPlan.EMPTY;
         this.hasPendingDropEntryWaypoint = false;
     }
 
     public void commitPendingTraversal() {
         this.costMalus = pendingCostMalus;
+        this.blockBreakPlan = pendingBlockBreakPlan;
 
         if (hasPendingDropEntryWaypoint) {
             this.hasDropEntryWaypoint = true;
@@ -166,6 +176,7 @@ public final class PathNode implements Comparable<PathNode> {
         }
 
         this.hasPendingDropEntryWaypoint = false;
+        this.pendingBlockBreakPlan = PathBlockBreakPlan.EMPTY;
     }
 
     public PathNode getParent() {
@@ -197,6 +208,18 @@ public final class PathNode implements Comparable<PathNode> {
         this.pendingDropEntryX = x;
         this.pendingDropEntryY = y;
         this.pendingDropEntryZ = z;
+    }
+
+    public PathBlockBreakPlan getBlockBreakPlan() {
+        return blockBreakPlan;
+    }
+
+    public boolean requiresBlockBreaking() {
+        return !blockBreakPlan.isEmpty();
+    }
+
+    public PathBlockBreakPlan getPendingBlockBreakPlan() {
+        return pendingBlockBreakPlan;
     }
 
     public boolean isClosed() {
@@ -271,6 +294,8 @@ public final class PathNode implements Comparable<PathNode> {
         this.hCost = 0;
         this.costMalus = 0;
         this.pendingCostMalus = 0;
+        this.blockBreakPlan = PathBlockBreakPlan.EMPTY;
+        this.pendingBlockBreakPlan = PathBlockBreakPlan.EMPTY;
         this.parent = null;
         this.hasDropEntryWaypoint = false;
         this.hasPendingDropEntryWaypoint = false;

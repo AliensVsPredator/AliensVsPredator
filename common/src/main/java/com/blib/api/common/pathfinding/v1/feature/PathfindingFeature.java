@@ -16,6 +16,7 @@ public enum PathfindingFeature {
     SEGMENTED_PATH_PLANNING(1L << 8, "Segmented Planning"),
     PARTIAL_PATH_RESULTS(1L << 9, "Partial Paths"),
     DOOR_OPENING(1L << 10, "Door Opening"),
+    BLOCK_BREAKING(1L << 41, "Block Breaking"),
     ASYNC_PATHFINDING(1L << 11, "Async Search"),
     COLLISION_SHAPE_WAYPOINTS(1L << 12, "Shape Waypoints", Category.GROUND),
     HORIZONTAL_DIAGONAL_CLEARANCE(1L << 13, "Diag Horizontal"),
