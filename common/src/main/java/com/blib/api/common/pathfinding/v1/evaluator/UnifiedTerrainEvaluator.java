@@ -751,7 +751,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
         var x = from.getX() + dx;
         var z = from.getZ() + dz;
-        var sameLevel = tryWaterMovementNeighbor(from, x, from.getY(), z, dx, dz, PathfindingFeature.WATER_ENTRY);
+        var sameLevel = tryWaterEntryNeighbor(from, x, from.getY(), z, dx, dz);
 
         if (sameLevel != null) {
             return sameLevel;
@@ -759,14 +759,13 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
         for (var stepDown = 1; stepDown <= config.getMaxFallDistance(); stepDown++) {
             var y = from.getY() - stepDown;
-            var steppedDown = tryWaterMovementNeighbor(
+            var steppedDown = tryWaterEntryNeighbor(
                 from,
                 x,
                 y,
                 z,
                 dx,
-                dz,
-                PathfindingFeature.WATER_ENTRY
+                dz
             );
 
             if (steppedDown != null) {
@@ -779,14 +778,13 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
 
         for (var stepUp = 1; stepUp <= config.getMaxStepHeight(); stepUp++) {
-            var steppedUp = tryWaterMovementNeighbor(
+            var steppedUp = tryWaterEntryNeighbor(
                 from,
                 x,
                 from.getY() + stepUp,
                 z,
                 dx,
-                dz,
-                PathfindingFeature.WATER_ENTRY
+                dz
             );
 
             if (steppedUp != null) {
@@ -795,6 +793,14 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
 
         return null;
+    }
+
+    private @Nullable PathNode tryWaterEntryNeighbor(PathNode from, int x, int y, int z, int dx, int dz) {
+        if (!hasWaterEntryCandidateFootprint(x, y, z)) {
+            return null;
+        }
+
+        return tryWaterMovementNeighbor(from, x, y, z, dx, dz, PathfindingFeature.WATER_ENTRY);
     }
 
     private PathNode markWaterMovementFeatureUsed(PathNode node, int dx, int dz, PathfindingFeature feature) {
@@ -2034,6 +2040,22 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         if (usesFootprintClearance()) {
             markFeatureUsed(PathfindingFeature.FOOTPRINT_CLEARANCE);
         }
+
+        if (usesFootprintScanCaching()) {
+            return cachedFootprintBoolean(
+                waterFootprintCache,
+                x,
+                y,
+                z,
+                () -> hasWaterFootprintUncached(x, y, z, footprintWidth)
+            );
+        }
+
+        return hasWaterFootprintUncached(x, y, z, footprintWidth);
+    }
+
+    private boolean hasWaterEntryCandidateFootprint(int x, int y, int z) {
+        var footprintWidth = usesFootprintClearance() ? footprintCellWidth() : 1;
 
         if (usesFootprintScanCaching()) {
             return cachedFootprintBoolean(
