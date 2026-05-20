@@ -83,77 +83,80 @@ public final class NeoMoveToPosAction {
         }
 
         var navigator = navigatorUser.getPathNavigator();
-        var featureControl = navigator.getFeatureControl();
-        var requestedFeatures = featureControl.getDefaultPathfindingFeatures()
-            .with(PathfindingFeature.BLOCK_BREAKING, allowBlockBreaking);
-        var navigatorState = navigator.getState();
 
-        if (
-            navigatorState.isNavigating()
-                && !featureControl.getPathfindingFeatures().equals(requestedFeatures)
-        ) {
-            resetBlockBreakExecutor(actor, blackboard);
-            navigator.stop();
-        }
+        try {
+            var featureControl = navigator.getFeatureControl();
+            var requestedFeatures = featureControl.getDefaultPathfindingFeatures()
+                .with(PathfindingFeature.BLOCK_BREAKING, allowBlockBreaking);
+            var navigatorState = navigator.getState();
 
-        featureControl.setDebugCaptureEnabled(PathDebugUtil.hasDebugWatchers(actor));
+            if (
+                navigatorState.isNavigating()
+                    && !featureControl.getPathfindingFeatures().equals(requestedFeatures)
+            ) {
+                resetBlockBreakExecutor(actor, blackboard);
+                navigator.stop();
+            }
 
-        if (!navigatorState.isNavigating()) {
-            var pathResult = navigator.navigateTo(
+            featureControl.setDebugCaptureEnabled(PathDebugUtil.hasDebugWatchers(actor));
+
+            if (!navigatorState.isNavigating()) {
+                var pathResult = navigator.navigateTo(
+                    actor.getX(),
+                    actor.getY(),
+                    actor.getZ(),
+                    targetPos.x,
+                    targetPos.y,
+                    targetPos.z
+                ).withFeatures(requestedFeatures).start().join();
+
+                if (pathResult.isErr()) {
+                    resetBlockBreakExecutor(actor, blackboard);
+                    return Result.NO_PATH;
+                }
+            } else {
+                navigator.updateTarget(targetPos.x, targetPos.y, targetPos.z);
+            }
+
+            navigator.tick(
                 actor.getX(),
                 actor.getY(),
                 actor.getZ(),
-                targetPos.x,
-                targetPos.y,
-                targetPos.z
-            ).withFeatures(requestedFeatures).start().join();
+                actor.getBbWidth(),
+                actor.getBbHeight()
+            );
 
-            if (pathResult.isErr()) {
+            handleDoorInteractions(actor, navigator, blackboard);
+
+            var blockBreakResult = blockBreakExecutor(blackboard).tick(actor, navigator);
+
+            switch (blockBreakResult) {
+                case BREAKING, IDLE -> { /* NO-OP */ }
+                case INVALIDATED -> navigator.requestReplan();
+            }
+
+            if (blockBreakResult != PathBlockBreakExecutor.Result.IDLE) {
+                return Result.MOVING;
+            }
+
+            if (navigatorState.isDone()) {
+                return Result.FINISHED;
+            }
+
+            var waypointCenter = navigatorState.getCurrentTargetCenter();
+
+            if (waypointCenter == null) {
                 resetBlockBreakExecutor(actor, blackboard);
                 return Result.NO_PATH;
             }
-        } else {
-            navigator.updateTarget(targetPos.x, targetPos.y, targetPos.z);
-        }
 
-        navigator.tick(
-            actor.getX(),
-            actor.getY(),
-            actor.getZ(),
-            actor.getBbWidth(),
-            actor.getBbHeight()
-        );
+            PathMovementController.follow(actor, navigator, waypointCenter, speedMultiplier);
 
-        handleDoorInteractions(actor, navigator, blackboard);
-
-        var blockBreakResult = blockBreakExecutor(blackboard).tick(actor, navigator);
-
-        switch (blockBreakResult) {
-            case BREAKING, IDLE -> { /* NO-OP */ }
-            case INVALIDATED -> navigator.requestReplan();
-        }
-
-        PathDebugUtil.sendDebugSearchSnapshot(actor, navigator);
-        PathDebugUtil.sendDebugNavState(actor, navigator);
-
-        if (blockBreakResult != PathBlockBreakExecutor.Result.IDLE) {
             return Result.MOVING;
+        } finally {
+            PathDebugUtil.sendDebugSearchSnapshot(actor, navigator);
+            PathDebugUtil.sendDebugNavState(actor, navigator);
         }
-
-        if (navigatorState.isDone()) {
-            return Result.FINISHED;
-        }
-
-        var waypointCenter = navigatorState.getCurrentTargetCenter();
-
-        if (waypointCenter == null) {
-            resetBlockBreakExecutor(actor, blackboard);
-            return Result.NO_PATH;
-        }
-
-        PathMovementController.follow(actor, navigator, waypointCenter, speedMultiplier);
-
-        return Result.MOVING;
     }
 
     /**
@@ -166,7 +169,10 @@ public final class NeoMoveToPosAction {
         resetBlockBreakExecutor(context.getActor(), blackboard);
 
         if (context.getActor() instanceof PathNavigatorUser navigatorUser) {
-            navigatorUser.getPathNavigator().stop();
+            var navigator = navigatorUser.getPathNavigator();
+            navigator.stop();
+            PathDebugUtil.sendDebugSearchSnapshot(context.getActor(), navigator);
+            PathDebugUtil.sendDebugNavState(context.getActor(), navigator);
         }
     }
 

@@ -9,6 +9,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.function.Consumer;
 
+import com.blib.api.common.pathfinding.v1.debug.PathDebugUtil;
 import com.blib.api.common.pathfinding.v1.navigator.PathNavigatorUser;
 
 /**
@@ -58,7 +59,10 @@ public final class NeoWanderAction {
 
     public static void onFinish(Action.Context<? extends PathfinderMob> context) {
         if (context.getActor() instanceof PathNavigatorUser navigatorUser) {
-            navigatorUser.getPathNavigator().stop();
+            var navigator = navigatorUser.getPathNavigator();
+            navigator.stop();
+            PathDebugUtil.sendDebugSearchSnapshot(context.getActor(), navigator);
+            PathDebugUtil.sendDebugNavState(context.getActor(), navigator);
         } else {
             context.getActor().getNavigation().stop();
         }
