@@ -46,7 +46,8 @@ public record PathfindingFeatures(
     boolean pathPrefixReuse,
     boolean groundedTargetProjection,
     boolean bidirectionalSearch,
-    boolean balancedBidirectionalExpansion
+    boolean balancedBidirectionalExpansion,
+    boolean parentEdgePruning
 ) {
 
     public PathfindingFeatures(
@@ -122,7 +123,8 @@ public record PathfindingFeatures(
             true, // pathPrefixReuse
             true, // groundedTargetProjection
             true, // bidirectionalSearch
-            true // balancedBidirectionalExpansion
+            true, // balancedBidirectionalExpansion
+            true // parentEdgePruning
         );
     }
 
@@ -216,6 +218,7 @@ public record PathfindingFeatures(
             case GROUNDED_TARGET_PROJECTION -> groundedTargetProjection;
             case BIDIRECTIONAL_SEARCH -> bidirectionalSearch;
             case BALANCED_BIDIRECTIONAL_EXPANSION -> balancedBidirectionalExpansion;
+            case PARENT_EDGE_PRUNING -> parentEdgePruning;
         };
     }
 
@@ -262,7 +265,8 @@ public record PathfindingFeatures(
             feature == PathfindingFeature.PATH_PREFIX_REUSE ? enabled : pathPrefixReuse,
             feature == PathfindingFeature.GROUNDED_TARGET_PROJECTION ? enabled : groundedTargetProjection,
             feature == PathfindingFeature.BIDIRECTIONAL_SEARCH ? enabled : bidirectionalSearch,
-            feature == PathfindingFeature.BALANCED_BIDIRECTIONAL_EXPANSION ? enabled : balancedBidirectionalExpansion
+            feature == PathfindingFeature.BALANCED_BIDIRECTIONAL_EXPANSION ? enabled : balancedBidirectionalExpansion,
+            feature == PathfindingFeature.PARENT_EDGE_PRUNING ? enabled : parentEdgePruning
         );
     }
 
@@ -325,7 +329,8 @@ public record PathfindingFeatures(
             enabled(mask, PathfindingFeature.PATH_PREFIX_REUSE),
             enabled(mask, PathfindingFeature.GROUNDED_TARGET_PROJECTION),
             enabled(mask, PathfindingFeature.BIDIRECTIONAL_SEARCH),
-            enabled(mask, PathfindingFeature.BALANCED_BIDIRECTIONAL_EXPANSION)
+            enabled(mask, PathfindingFeature.BALANCED_BIDIRECTIONAL_EXPANSION),
+            enabled(mask, PathfindingFeature.PARENT_EDGE_PRUNING)
         );
     }
 

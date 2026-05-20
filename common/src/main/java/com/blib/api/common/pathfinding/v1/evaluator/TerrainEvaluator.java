@@ -2,6 +2,7 @@ package com.blib.api.common.pathfinding.v1.evaluator;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
+import org.jetbrains.annotations.Nullable;
 
 import com.blib.api.common.pathfinding.v1.node.PathNode;
 import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
@@ -41,6 +42,14 @@ public interface TerrainEvaluator {
     int getNeighbors(PathNode node, PathNode[] neighbors);
 
     /**
+     * Populates the neighbors array while allowing implementations to prune the immediate reverse edge to the previous
+     * node. Implementations that do not use parent-aware pruning can ignore the previous node.
+     */
+    default int getNeighbors(PathNode node, @Nullable PathNode previous, PathNode[] neighbors) {
+        return getNeighbors(node, neighbors);
+    }
+
+    /**
      * Returns true when this evaluator can safely generate reverse edges for bidirectional search. Reverse edges must
      * preserve the same movement legality as {@link #getNeighbors(PathNode, PathNode[])}.
      */
@@ -54,6 +63,14 @@ public interface TerrainEvaluator {
      */
     default int getPredecessors(PathNode node, PathNode[] predecessors) {
         return 0;
+    }
+
+    /**
+     * Populates the predecessors array while allowing implementations to prune the immediate reverse edge to the
+     * previous node on this search side.
+     */
+    default int getPredecessors(PathNode node, @Nullable PathNode previous, PathNode[] predecessors) {
+        return getPredecessors(node, predecessors);
     }
 
     /**

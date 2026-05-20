@@ -37,6 +37,7 @@ public enum PathfindingFeature {
     GROUNDED_TARGET_PROJECTION(1L << 27, "Target Projection"),
     BIDIRECTIONAL_SEARCH(1L << 28, "Bidirectional"),
     BALANCED_BIDIRECTIONAL_EXPANSION(1L << 29, "Balanced Bidir"),
+    PARENT_EDGE_PRUNING(1L << 42, "Parent Pruning"),
     VERTICAL_DIAGONAL_CLEARANCE(1L << 30, "Diag Vertical"),
     DIAGONAL_SWEPT_SHAPE_CLEARANCE(1L << 31, "Diag Sweep"),
     WATER_ENTRY(1L << 32, "Water Entry", Category.WATER),

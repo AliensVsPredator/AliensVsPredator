@@ -469,7 +469,7 @@ public final class BLibPathFinder {
             recordTiming(recorder, PathSearchTimingPhase.BEST_NODE_UPDATE, bestNodeUpdateStart);
 
             var neighborGenerationStart = startTiming(recorder);
-            var neighborCount = evaluator.getNeighbors(current, neighborBuffer);
+            var neighborCount = getNeighbors(current, neighborBuffer);
             recordTiming(recorder, PathSearchTimingPhase.NEIGHBOR_GENERATION, neighborGenerationStart);
 
             for (int i = 0; i < neighborCount; i++) {
@@ -814,8 +814,8 @@ public final class BLibPathFinder {
 
             var neighborGenerationStart = startTiming(recorder);
             var neighborCount = forward
-                ? evaluator.getNeighbors(current.node(), neighborBuffer)
-                : evaluator.getPredecessors(current.node(), neighborBuffer);
+                ? getNeighbors(current, neighborBuffer)
+                : getPredecessors(current, neighborBuffer);
             recordTiming(recorder, PathSearchTimingPhase.NEIGHBOR_GENERATION, neighborGenerationStart);
 
             for (int i = 0; i < neighborCount; i++) {
@@ -1194,6 +1194,30 @@ public final class BLibPathFinder {
         if (recorder != null) {
             recorder.markFeatureUsed(feature);
         }
+    }
+
+    private int getNeighbors(PathNode current, PathNode[] neighbors) {
+        if (!features.parentEdgePruning() || current.getParent() == null) {
+            return evaluator.getNeighbors(current, neighbors);
+        }
+
+        return evaluator.getNeighbors(current, current.getParent(), neighbors);
+    }
+
+    private int getNeighbors(SearchRecord current, PathNode[] neighbors) {
+        if (!features.parentEdgePruning() || current.parent() == null) {
+            return evaluator.getNeighbors(current.node(), neighbors);
+        }
+
+        return evaluator.getNeighbors(current.node(), current.parent().node(), neighbors);
+    }
+
+    private int getPredecessors(SearchRecord current, PathNode[] predecessors) {
+        if (!features.parentEdgePruning() || current.parent() == null) {
+            return evaluator.getPredecessors(current.node(), predecessors);
+        }
+
+        return evaluator.getPredecessors(current.node(), current.parent().node(), predecessors);
     }
 
     private float heuristic(PathNode from, PathNode to, SearchConfig searchConfig) {
