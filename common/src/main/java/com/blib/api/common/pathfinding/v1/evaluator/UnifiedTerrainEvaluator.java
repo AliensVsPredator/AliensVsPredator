@@ -10,8 +10,10 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
@@ -22,6 +24,7 @@ import com.blib.api.common.pathfinding.v1.debug.PathSearchDebugRecorder;
 import com.blib.api.common.pathfinding.v1.feature.PathfindingFeature;
 import com.blib.api.common.pathfinding.v1.feature.PathfindingFeatures;
 import com.blib.api.common.pathfinding.v1.feature.PathfindingProfile;
+import com.blib.api.common.pathfinding.v1.node.PathBlockBreakPlan;
 import com.blib.api.common.pathfinding.v1.node.PathNode;
 import com.blib.api.common.pathfinding.v1.node.PathNodePool;
 import com.blib.api.common.pathfinding.v1.node.PathPosture;
@@ -97,6 +100,8 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     private PathfindingFeatures features = PathfindingProfile.LEGACY_PERMISSIVE.features();
 
+    private @Nullable LevelReader currentLevel;
+
     public UnifiedTerrainEvaluator(TerrainEvaluatorConfig config) {
         this(config, null);
     }
@@ -123,6 +128,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     @Override
     public void prepare(LevelReader level) {
+        currentLevel = level;
         blockAccessor.prepare(level);
         prepareCommon();
     }
@@ -132,6 +138,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
      * {@link #preloadChunk(int, int, ChunkAccess)} before the search starts. Block reads that miss the map return AIR.
      */
     public void prepareAsync() {
+        currentLevel = null;
         blockAccessor.prepareAsync();
         prepareCommon();
     }
@@ -218,7 +225,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     @Override
     public boolean supportsBidirectionalSearch() {
-        return true;
+        return !usesGroundBlockBreaking();
     }
 
     @Override
@@ -275,6 +282,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     @Override
     public void cleanup() {
+        currentLevel = null;
         blockAccessor.cleanup();
     }
 
@@ -310,6 +318,14 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     private boolean usesTerrainPrecheck() {
         return features.terrainPrecheck();
+    }
+
+    private boolean usesGroundBlockBreaking() {
+        return currentLevel != null
+            && features.blockBreaking()
+            && config.getBlockBreakingConfig().enabled()
+            && config.getBlockBreakingConfig().maxBlocksPerEdge() > 0
+            && snapshotCosts.containsKey(TerrainType.GROUND);
     }
 
     private boolean usesFootprintScanCaching() {
@@ -586,6 +602,16 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
             var sameLevel = tryCreateGroundNode(x, from.getY(), z);
             if (sameLevel != null && hasMovementClearance(from, sameLevel, dx, dz)) {
                 return markMovementFeatureUsed(sameLevel, dx, dz, PathfindingFeature.SAME_LEVEL_MOVEMENT);
+            }
+
+            var breakableSameLevel = tryCreateSameLevelBlockBreakingGroundNode(from, x, from.getY(), z, dx, dz);
+            if (breakableSameLevel != null && hasMovementClearance(from, breakableSameLevel, dx, dz)) {
+                return markMovementFeatureUsed(
+                    breakableSameLevel,
+                    dx,
+                    dz,
+                    PathfindingFeature.SAME_LEVEL_MOVEMENT
+                );
             }
         }
 
@@ -1200,6 +1226,8 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         boolean requireNominalSupport
     ) {}
 
+    private record BlockBreakCandidate(PathBlockBreakPlan plan, float costMalus) {}
+
     private boolean isEntityBoxClear(double centerX, double feetY, double centerZ, double entityWidth, double entityHeight) {
         return isEntityBoxClear(centerX, feetY, centerZ, entityWidth, entityHeight, false);
     }
@@ -1438,6 +1466,188 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
 
         return getOrCreateGroundNode(x, y, z, posture);
+    }
+
+    private @Nullable PathNode tryCreateSameLevelBlockBreakingGroundNode(
+        PathNode from,
+        int x,
+        int y,
+        int z,
+        int dx,
+        int dz
+    ) {
+        if (!usesGroundBlockBreaking() || from.getTerrainType() != TerrainType.GROUND || from.getY() != y) {
+            return null;
+        }
+
+        if (!isCardinalHorizontalMove(dx, dz)) {
+            return null;
+        }
+
+        if (!hasNodeSupport(x, y, z)) {
+            reject(PathRejectionReason.UNSTABLE_SUPPORT, x, y, z);
+            return null;
+        }
+
+        var posture = PathPosture.STANDING;
+        var candidate = collectGroundBlockBreakCandidate(x, y, z, posture);
+
+        if (candidate == null || candidate.plan().isEmpty()) {
+            return null;
+        }
+
+        var node = getOrCreateGroundNode(x, y, z, posture);
+        node.setPendingTraversal(candidate.costMalus(), candidate.plan());
+        markFeatureUsed(PathfindingFeature.BLOCK_BREAKING);
+
+        return node;
+    }
+
+    private boolean isCardinalHorizontalMove(int dx, int dz) {
+        return (dx == 0) != (dz == 0);
+    }
+
+    private @Nullable BlockBreakCandidate collectGroundBlockBreakCandidate(
+        int x,
+        int y,
+        int z,
+        PathPosture posture
+    ) {
+        var level = currentLevel;
+
+        if (level == null) {
+            return null;
+        }
+
+        var breakConfig = config.getBlockBreakingConfig();
+
+        if (!usesEntityHitboxClearance(posture)) {
+            return collectFeetBlockBreakCandidate(level, breakConfig, x, y, z);
+        }
+
+        markEntityBoxClearanceUsed(posture);
+
+        return collectEntityBoxBlockBreakCandidate(
+            level,
+            breakConfig,
+            nodeCenterX(x),
+            y,
+            nodeCenterZ(z),
+            entityWidth(),
+            entityHeight(posture),
+            x,
+            y,
+            z
+        );
+    }
+
+    private @Nullable BlockBreakCandidate collectFeetBlockBreakCandidate(
+        LevelReader level,
+        PathBlockBreakingConfig breakConfig,
+        int x,
+        int y,
+        int z
+    ) {
+        var state = blockAccessor.getBlockState(x, y, z);
+
+        if (isDoorPassable(state)) {
+            return null;
+        }
+
+        if (blockAccessor.isLiquid(state) || !blockAccessor.isSolid(state)) {
+            reject(PathRejectionReason.NO_CLEARANCE, x, y, z);
+            return null;
+        }
+
+        var pos = new BlockPos(x, y, z);
+
+        if (!breakConfig.canBreak(level, pos, state)) {
+            reject(PathRejectionReason.NO_CLEARANCE, x, y, z);
+            return null;
+        }
+
+        return new BlockBreakCandidate(PathBlockBreakPlan.of(pos), breakConfig.costFor(state));
+    }
+
+    private @Nullable BlockBreakCandidate collectEntityBoxBlockBreakCandidate(
+        LevelReader level,
+        PathBlockBreakingConfig breakConfig,
+        double centerX,
+        double feetY,
+        double centerZ,
+        double entityWidth,
+        double entityHeight,
+        int nodeX,
+        int nodeY,
+        int nodeZ
+    ) {
+        var entityBox = entityBox(centerX, feetY, centerZ, entityWidth, entityHeight);
+        var minX = (int) Math.floor(entityBox.minX);
+        var minY = (int) Math.floor(entityBox.minY);
+        var minZ = (int) Math.floor(entityBox.minZ);
+        var maxX = (int) Math.floor(entityBox.maxX - COLLISION_EPSILON);
+        var maxY = (int) Math.floor(entityBox.maxY - COLLISION_EPSILON);
+        var maxZ = (int) Math.floor(entityBox.maxZ - COLLISION_EPSILON);
+        var blocks = new ArrayList<BlockPos>();
+        var costMalus = 0.0f;
+
+        for (var x = minX; x <= maxX; x++) {
+            for (var y = minY; y <= maxY; y++) {
+                for (var z = minZ; z <= maxZ; z++) {
+                    var state = blockAccessor.getBlockState(x, y, z);
+
+                    if (isDoorPassable(state)) {
+                        continue;
+                    }
+
+                    if (blockAccessor.isLiquid(state)) {
+                        reject(PathRejectionReason.NO_CLEARANCE, nodeX, nodeY, nodeZ);
+                        return null;
+                    }
+
+                    var shape = blockAccessor.getCollisionShape(state, x, y, z);
+
+                    if (shape.isEmpty()) {
+                        continue;
+                    }
+
+                    var blockPos = new BlockPos(x, y, z);
+
+                    if (!intersectsEntityBox(shape.toAabbs(), blockPos, entityBox)) {
+                        continue;
+                    }
+
+                    if (blocks.size() >= breakConfig.maxBlocksPerEdge()) {
+                        reject(PathRejectionReason.NO_CLEARANCE, nodeX, nodeY, nodeZ);
+                        return null;
+                    }
+
+                    if (!breakConfig.canBreak(level, blockPos, state)) {
+                        reject(PathRejectionReason.NO_CLEARANCE, nodeX, nodeY, nodeZ);
+                        return null;
+                    }
+
+                    blocks.add(blockPos.immutable());
+                    costMalus += breakConfig.costFor(state);
+                }
+            }
+        }
+
+        if (blocks.isEmpty()) {
+            return null;
+        }
+
+        return new BlockBreakCandidate(new PathBlockBreakPlan(blocks), costMalus);
+    }
+
+    private boolean intersectsEntityBox(List<AABB> blockBoxes, BlockPos blockPos, AABB entityBox) {
+        for (var blockBox : blockBoxes) {
+            if (blockBox.move(blockPos).intersects(entityBox)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private @Nullable PathNode tryCreateWaterNode(int x, int y, int z) {

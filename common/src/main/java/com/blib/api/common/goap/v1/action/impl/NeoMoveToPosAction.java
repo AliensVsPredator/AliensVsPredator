@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.phys.Vec3;
 
 import com.blib.api.common.entity.v1.EntityUtil;
+import com.blib.api.common.pathfinding.v1.breaking.PathBlockBreakExecutor;
 import com.blib.api.common.pathfinding.v1.debug.PathDebugUtil;
 import com.blib.api.common.pathfinding.v1.movement.PathMovementController;
 import com.blib.api.common.pathfinding.v1.navigator.PathNavigator;
@@ -26,6 +27,10 @@ import com.blib.api.common.pathfinding.v1.navigator.PathNavigatorUser;
 public final class NeoMoveToPosAction {
 
     private static final StateKey<BlockPos> LAST_OPENED_DOOR_POS = StateKey.sensed("neo_last_opened_door_pos");
+
+    private static final StateKey<PathBlockBreakExecutor> BLOCK_BREAK_EXECUTOR = StateKey.sensed(
+        "neo_block_break_executor"
+    );
 
     /**
      * Result of a movement tick.
@@ -76,6 +81,7 @@ public final class NeoMoveToPosAction {
             );
 
             if (!found) {
+                resetBlockBreakExecutor(actor, blackboard);
                 return Result.NO_PATH;
             }
         } else {
@@ -92,9 +98,19 @@ public final class NeoMoveToPosAction {
 
         handleDoorInteractions(actor, navigator, blackboard);
 
+        var blockBreakResult = blockBreakExecutor(blackboard).tick(actor, navigator);
+
+        if (blockBreakResult == PathBlockBreakExecutor.Result.INVALIDATED) {
+            navigator.requestReplan();
+        }
+
         if (actor instanceof Mob mob) {
             PathDebugUtil.sendDebugSearchSnapshot(mob, navigator);
             PathDebugUtil.sendDebugNavState(mob, navigator);
+        }
+
+        if (blockBreakResult != PathBlockBreakExecutor.Result.IDLE) {
+            return Result.MOVING;
         }
 
         if (navigator.isDone()) {
@@ -104,6 +120,7 @@ public final class NeoMoveToPosAction {
         var waypointCenter = navigator.getCurrentTargetCenter();
 
         if (waypointCenter == null) {
+            resetBlockBreakExecutor(actor, blackboard);
             return Result.NO_PATH;
         }
 
@@ -116,11 +133,39 @@ public final class NeoMoveToPosAction {
      * Stops the navigator when the action finishes or is interrupted.
      */
     public static void onFinish(Action.Context<? extends PathfinderMob> context) {
-        closeDoorIfTracked(context.getActor(), context.getBlackboard(Blackboard.Scope.ACTION));
+        var blackboard = context.getBlackboard(Blackboard.Scope.ACTION);
+
+        closeDoorIfTracked(context.getActor(), blackboard);
+        resetBlockBreakExecutor(context.getActor(), blackboard);
 
         if (context.getActor() instanceof PathNavigatorUser navigatorUser) {
             navigatorUser.getPathNavigator().stop();
         }
+    }
+
+    private static PathBlockBreakExecutor blockBreakExecutor(Blackboard blackboard) {
+        var executor = blackboard.getOrDefault(BLOCK_BREAK_EXECUTOR, (PathBlockBreakExecutor) null);
+
+        if (executor == null) {
+            executor = new PathBlockBreakExecutor();
+            blackboard.set(BLOCK_BREAK_EXECUTOR, executor);
+        }
+
+        return executor;
+    }
+
+    private static void resetBlockBreakExecutor(PathfinderMob actor, Blackboard blackboard) {
+        var executor = blackboard.getOrDefault(BLOCK_BREAK_EXECUTOR, (PathBlockBreakExecutor) null);
+
+        if (executor == null) {
+            return;
+        }
+
+        if (!actor.level().isClientSide()) {
+            executor.reset(actor.level());
+        }
+
+        blackboard.set(BLOCK_BREAK_EXECUTOR, null);
     }
 
     private static void handleDoorInteractions(PathfinderMob actor, PathNavigator navigator, Blackboard blackboard) {

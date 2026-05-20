@@ -172,7 +172,11 @@ public final class BLibPathFinder {
      * @return a future that completes with the path (or null if no path found)
      */
     public CompletableFuture<@Nullable BLibPath> findPathAsync(LevelReader level, BlockPos startPos, BlockPos targetPos) {
-        if (!features.asyncPathfinding() || !(evaluator instanceof UnifiedTerrainEvaluator unifiedEvaluator)) {
+        if (
+            !features.asyncPathfinding()
+                || features.blockBreaking()
+                || !(evaluator instanceof UnifiedTerrainEvaluator unifiedEvaluator)
+        ) {
             return CompletableFuture.completedFuture(findPath(level, startPos, targetPos));
         }
 

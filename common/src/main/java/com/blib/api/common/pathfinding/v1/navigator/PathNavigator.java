@@ -288,7 +288,7 @@ public final class PathNavigator {
      * the next {@link #tick} call after the computation completes.
      */
     public void navigateToAsync(BlockPos entityPos, BlockPos rawTarget) {
-        if (!features.asyncPathfinding()) {
+        if (!features.asyncPathfinding() || features.blockBreaking()) {
             navigateTo(entityPos, rawTarget);
             return;
         }
@@ -535,6 +535,10 @@ public final class PathNavigator {
         this.pathRecalculateIntervalInTicks = nextPathRecalculateInterval;
         pathFinder.setSearchConfig(searchConfig);
         pathFinder.setTuning(pathfindingTuning);
+        invalidateActivePathForReplan();
+    }
+
+    public void requestReplan() {
         invalidateActivePathForReplan();
     }
 
@@ -1977,6 +1981,10 @@ public final class PathNavigator {
         lastDistanceToCurrentNode = Double.MAX_VALUE;
         lastDistanceToNextNode = Double.MAX_VALUE;
         lastObservedNodeIndex = currentPath != null ? currentPath.getCurrentNodeIndex() : -1;
+    }
+
+    public void markPathProgress() {
+        markProgress();
     }
 
     private void resetProgressTracking() {
