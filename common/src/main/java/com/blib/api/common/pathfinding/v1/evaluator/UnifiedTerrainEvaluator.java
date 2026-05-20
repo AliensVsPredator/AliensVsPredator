@@ -2,6 +2,7 @@ package com.blib.api.common.pathfinding.v1.evaluator;
 
 import it.unimi.dsi.fastutil.longs.Long2ByteOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
+import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.DoorBlock;
@@ -63,6 +64,12 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     private static final int REVERSE_NEIGHBOR_SCRATCH_SIZE = 256;
 
+    private static final int STEP_DOWN_SCAN_NO_LANDING = 0;
+
+    private static final int STEP_DOWN_SCAN_LANDING = 1;
+
+    private static final int STEP_DOWN_SCAN_BLOCKED = 2;
+
     private final TerrainEvaluatorConfig config;
 
     private final PathNodePool nodePool;
@@ -88,6 +95,8 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
     private final Long2ByteOpenHashMap dropSupportCache;
 
     private final Long2IntOpenHashMap supportTopSearchCache;
+
+    private final Long2LongOpenHashMap stepDownLandingScanCache;
 
     private final Map<EntityBoxClearanceKey, Boolean> entityBoxClearanceCache;
 
@@ -121,6 +130,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         this.waterFootprintCache = new Long2ByteOpenHashMap();
         this.dropSupportCache = new Long2ByteOpenHashMap();
         this.supportTopSearchCache = new Long2IntOpenHashMap();
+        this.stepDownLandingScanCache = new Long2LongOpenHashMap();
         this.entityBoxClearanceCache = new HashMap<>();
         this.steppedFootprintSupportCache = new HashMap<>();
         this.anySteppedFootprintSupportCache = new HashMap<>();
@@ -189,6 +199,7 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         waterFootprintCache.clear();
         dropSupportCache.clear();
         supportTopSearchCache.clear();
+        stepDownLandingScanCache.clear();
         entityBoxClearanceCache.clear();
         steppedFootprintSupportCache.clear();
         anySteppedFootprintSupportCache.clear();
@@ -657,31 +668,18 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
 
         if (features.stepDown()) {
-            for (int stepDown = 1; stepDown <= config.getMaxFallDistance(); stepDown++) {
-                var y = from.getY() - stepDown;
+            var stepDownScan = findStepDownLanding(from, x, z);
 
-                if (!hasNodeSupport(x, y, z) && isStepDownFallPassable(x, y, z)) {
-                    continue;
-                }
-
-                beginEdgeAttempt(from, x, y, z, PathEdgeDebugType.STEP_DOWN);
-                var candidate = tryCreateStepDownGroundNode(x, y, z);
+            if (stepDownScan.hasCandidate()) {
+                beginEdgeAttempt(from, x, stepDownScan.y(), z, PathEdgeDebugType.STEP_DOWN);
+                var candidate = tryCreateStepDownGroundNode(x, stepDownScan.y(), z);
                 var steppedDown = candidate.node();
 
                 if (steppedDown == null) {
                     finishEdgeAttempt(false);
-                    if (candidate.blocksFurtherStepDown()) {
-                        break;
-                    }
-                    continue;
-                }
-
-                if (features.dropDownOpenings() && requiresDropOpening(from, steppedDown)) {
+                } else if (features.dropDownOpenings() && requiresDropOpening(from, steppedDown)) {
                     finishEdgeAttempt(false);
-                    continue;
-                }
-
-                if (hasMovementClearance(from, steppedDown, dx, dz)) {
+                } else if (hasMovementClearance(from, steppedDown, dx, dz)) {
                     finishEdgeAttempt(true);
                     count = appendNeighbor(
                         neighbors,
@@ -695,6 +693,41 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         }
 
         return appendNeighbor(neighbors, count, findWaterEntryNeighbor(from, dx, dz));
+    }
+
+    private StepDownLandingScan findStepDownLanding(PathNode from, int x, int z) {
+        if (usesSearchCaching()) {
+            markFeatureUsed(PathfindingFeature.SEARCH_CACHING);
+
+            var key = packBlockKey(x, from.getY(), z);
+
+            if (stepDownLandingScanCache.containsKey(key)) {
+                return decodeStepDownLandingScan(stepDownLandingScanCache.get(key));
+            }
+
+            var scan = findStepDownLandingUncached(from, x, z);
+            stepDownLandingScanCache.put(key, encodeStepDownLandingScan(scan));
+
+            return scan;
+        }
+
+        return findStepDownLandingUncached(from, x, z);
+    }
+
+    private StepDownLandingScan findStepDownLandingUncached(PathNode from, int x, int z) {
+        for (int stepDown = 1; stepDown <= config.getMaxFallDistance(); stepDown++) {
+            var y = from.getY() - stepDown;
+
+            if (hasNodeSupport(x, y, z)) {
+                return StepDownLandingScan.landing(y);
+            }
+
+            if (!isStepDownFallPassable(x, y, z)) {
+                return StepDownLandingScan.blocked(y);
+            }
+        }
+
+        return StepDownLandingScan.noLanding();
     }
 
     private int appendNeighbor(PathNode[] neighbors, int count, @Nullable PathNode neighbor) {
@@ -1367,6 +1400,25 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
         long centerZ,
         boolean requireNominalSupport
     ) {}
+
+    private record StepDownLandingScan(int y, int type) {
+
+        private static StepDownLandingScan noLanding() {
+            return new StepDownLandingScan(Integer.MIN_VALUE, STEP_DOWN_SCAN_NO_LANDING);
+        }
+
+        private static StepDownLandingScan landing(int y) {
+            return new StepDownLandingScan(y, STEP_DOWN_SCAN_LANDING);
+        }
+
+        private static StepDownLandingScan blocked(int y) {
+            return new StepDownLandingScan(y, STEP_DOWN_SCAN_BLOCKED);
+        }
+
+        private boolean hasCandidate() {
+            return type != STEP_DOWN_SCAN_NO_LANDING;
+        }
+    }
 
     private record GroundCandidate(@Nullable PathNode node, boolean blocksFurtherStepDown) {
 
@@ -2480,6 +2532,17 @@ public final class UnifiedTerrainEvaluator implements TerrainEvaluator {
 
     private static long packBlockKey(int x, int y, int z) {
         return BlockPos.asLong(x, y, z);
+    }
+
+    private static long encodeStepDownLandingScan(StepDownLandingScan scan) {
+        return ((long) scan.type() << 32) | (scan.y() & 0xFFFFFFFFL);
+    }
+
+    private static StepDownLandingScan decodeStepDownLandingScan(long encoded) {
+        var type = (int) (encoded >>> 32);
+        var y = (int) encoded;
+
+        return new StepDownLandingScan(y, type);
     }
 
     private PathEdgeDebugType waterEdgeType(PathNode from, int y, PathfindingFeature feature) {
