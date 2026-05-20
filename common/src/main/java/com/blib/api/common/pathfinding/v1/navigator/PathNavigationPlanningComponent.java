@@ -5,6 +5,11 @@ import net.minecraft.world.level.LevelReader;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.CompletableFuture;
+
+import com.just.core.functional.result.Result;
 
 import com.blib.api.common.pathfinding.v1.feature.PathfindingFeature;
 import com.blib.api.common.pathfinding.v1.feature.PathfindingFeatures;
@@ -44,6 +49,12 @@ final class PathNavigationPlanningComponent {
 
     private boolean needsRepath;
 
+    private @Nullable BlockPos pendingEntityPos;
+
+    private @Nullable BlockPos pendingRawTarget;
+
+    private @Nullable BlockPos pendingSearchTarget;
+
     PathNavigationPlanningComponent(
         LevelReader level,
         PathNavigationStateComponent state,
@@ -70,7 +81,7 @@ final class PathNavigationPlanningComponent {
         this.progressResetter = progressResetter;
     }
 
-    boolean navigateTo(
+    Result<BLibPath, PathNavigationFailure> executeBlocking(
         BlockPos entityPos,
         BlockPos rawTarget,
         @Nullable PathfindingFeatures pathfindingFeatures,
@@ -92,7 +103,7 @@ final class PathNavigationPlanningComponent {
                     targets::hasComputedTargetMovedForFailureCooldown
                 )
         ) {
-            return false;
+            return Result.err(failureCooldown(entityPos, rawTarget, searchTarget));
         }
 
         targets.recordComputedTarget(searchTarget, rawTarget);
@@ -112,12 +123,11 @@ final class PathNavigationPlanningComponent {
             this.state.currentPath = pathFinder.findPath(level, entityPos, searchTarget);
         }
         featureControl.markFeatureUsage(pathFinder.consumeFeatureUsageMask());
-        applyComputedPath(System.nanoTime() - startNanos);
 
-        return state.currentPath != null;
+        return applyComputedPath(entityPos, rawTarget, searchTarget, System.nanoTime() - startNanos);
     }
 
-    void navigateToAsync(
+    CompletableFuture<Result<BLibPath, PathNavigationFailure>> executeAsync(
         BlockPos entityPos,
         BlockPos rawTarget,
         @Nullable PathfindingFeatures pathfindingFeatures
@@ -128,8 +138,7 @@ final class PathNavigationPlanningComponent {
         var searchFeatures = activePathfindingFeatures();
 
         if (!searchFeatures.asyncPathfinding() || searchFeatures.blockBreaking()) {
-            navigateTo(entityPos, rawTarget, pathfindingFeatures, false);
-            return;
+            return CompletableFuture.completedFuture(executeBlocking(entityPos, rawTarget, pathfindingFeatures, false));
         }
 
         var searchTarget = targets.resolveAndStoreTarget(entityPos, rawTarget);
@@ -141,7 +150,7 @@ final class PathNavigationPlanningComponent {
                 targets::hasComputedTargetMovedForFailureCooldown
             )
         ) {
-            return;
+            return CompletableFuture.completedFuture(Result.err(failureCooldown(entityPos, rawTarget, searchTarget)));
         }
 
         targets.recordComputedTarget(searchTarget, rawTarget);
@@ -151,7 +160,23 @@ final class PathNavigationPlanningComponent {
 
         this.asyncStartNanos = System.nanoTime();
         featureControl.setPendingPathfindingFeatures(searchFeatures);
-        this.state.pendingPath = pathFinder.findPathAsync(level, entityPos, searchTarget);
+        var pendingResult = new CompletableFuture<Result<BLibPath, PathNavigationFailure>>();
+        var pendingPath = pathFinder.findPathAsync(level, entityPos, searchTarget);
+        this.pendingEntityPos = entityPos;
+        this.pendingRawTarget = rawTarget;
+        this.pendingSearchTarget = searchTarget;
+        this.state.pendingPath = pendingPath;
+        this.state.pendingPathResult = pendingResult;
+        pendingPath.whenComplete((path, throwable) -> completeAsyncConstructionResult(
+            pendingResult,
+            entityPos,
+            rawTarget,
+            searchTarget,
+            path,
+            throwable
+        ));
+
+        return pendingResult;
     }
 
     void checkPendingPath() {
@@ -159,13 +184,30 @@ final class PathNavigationPlanningComponent {
             return;
         }
 
-        var path = state.pendingPath.join();
-        state.pendingPath = null;
+        var pendingPath = state.pendingPath;
+        var pendingResult = state.pendingPathResult;
+        var entityPos = pendingEntityPos;
+        var rawTarget = pendingRawTarget;
+        var searchTarget = pendingSearchTarget;
+        clearPendingPathReferences();
+
+        if (entityPos == null || rawTarget == null || searchTarget == null) {
+            featureControl.clearPendingPathfindingFeatures();
+            completePendingResult(pendingResult, Result.err(new PathNavigationFailure.Superseded()));
+            return;
+        }
+
+        var path = joinPendingPath(pendingPath, pendingResult, entityPos, rawTarget, searchTarget);
+
+        if (path == null && pendingPath.isCompletedExceptionally()) {
+            return;
+        }
 
         var searchFeatureUsage = pathFinder.consumeFeatureUsageMask();
 
         if (!featureControl.pendingPathfindingFeaturesMatchActive()) {
             featureControl.clearPendingPathfindingFeatures();
+            completePendingResult(pendingResult, Result.err(new PathNavigationFailure.Superseded()));
 
             if (state.targetPos != null) {
                 needsRepath = true;
@@ -177,7 +219,7 @@ final class PathNavigationPlanningComponent {
         featureControl.markFeatureUsage(searchFeatureUsage);
 
         this.state.currentPath = path;
-        applyComputedPath(System.nanoTime() - asyncStartNanos);
+        applyComputedPath(entityPos, rawTarget, searchTarget, System.nanoTime() - asyncStartNanos);
     }
 
     void handleQueuedRepath(double entityX, double entityY, double entityZ) {
@@ -188,7 +230,7 @@ final class PathNavigationPlanningComponent {
         needsRepath = false;
 
         if (state.targetPos != null) {
-            navigateTo(
+            executeBlocking(
                 targets.entityAnchorPos(entityX, entityY, entityZ),
                 targets.activeRawTargetPos(),
                 featureControl.activePathfindingFeaturesOverride(),
@@ -234,7 +276,7 @@ final class PathNavigationPlanningComponent {
 
             clearPlanner();
 
-            navigateTo(
+            executeBlocking(
                 entityPos,
                 targets.activeRawTargetPos(),
                 featureControl.activePathfindingFeaturesOverride(),
@@ -251,7 +293,7 @@ final class PathNavigationPlanningComponent {
 
     void replanAfterStuck(BlockPos entityAnchorPos) {
         clearPlanner();
-        navigateTo(
+        executeBlocking(
             entityAnchorPos,
             targets.activeRawTargetPos(),
             featureControl.activePathfindingFeaturesOverride(),
@@ -340,14 +382,21 @@ final class PathNavigationPlanningComponent {
         markFeatureUsed(PathfindingFeature.SEGMENTED_PATH_PLANNING);
         this.state.currentPath = planner.computeNextSegment(level, entityPos);
         featureControl.markFeatureUsage(pathFinder.consumeFeatureUsageMask());
-        applyComputedPath(System.nanoTime() - startNanos);
+        var searchTarget = state.targetPos != null ? state.targetPos : entityPos;
+        var rawTarget = state.rawTargetPos != null ? state.rawTargetPos : searchTarget;
+        applyComputedPath(entityPos, rawTarget, searchTarget, System.nanoTime() - startNanos);
 
         if (state.currentPath == null) {
             clearPlanner();
         }
     }
 
-    private void applyComputedPath(long pathComputeNanos) {
+    private Result<BLibPath, PathNavigationFailure> applyComputedPath(
+        BlockPos entityPos,
+        BlockPos rawTarget,
+        BlockPos searchTarget,
+        long pathComputeNanos
+    ) {
         this.state.lastPathComputeNanos = pathComputeNanos;
         this.state.lastPathComputeTick = state.tickCount;
         resetProgressTracking();
@@ -357,11 +406,104 @@ final class PathNavigationPlanningComponent {
 
             this.state.currentTerrain = startNode.getTerrainType();
             failureBackoff.resetFailureCooldown(state);
+
+            return Result.ok(state.currentPath);
         } else {
             this.state.currentPath = null;
             this.state.currentTerrain = null;
             failureBackoff.recordFailure(state);
+
+            return Result.err(new PathNavigationFailure.NoPathFound(entityPos, rawTarget, searchTarget));
         }
+    }
+
+    private @Nullable BLibPath joinPendingPath(
+        CompletableFuture<@Nullable BLibPath> pendingPath,
+        @Nullable CompletableFuture<Result<BLibPath, PathNavigationFailure>> pendingResult,
+        BlockPos entityPos,
+        BlockPos rawTarget,
+        BlockPos searchTarget
+    ) {
+        try {
+            return pendingPath.join();
+        } catch (CancellationException exception) {
+            featureControl.clearPendingPathfindingFeatures();
+            completePendingResult(pendingResult, Result.err(new PathNavigationFailure.Superseded()));
+            return null;
+        } catch (CompletionException exception) {
+            featureControl.clearPendingPathfindingFeatures();
+            var failure = new PathNavigationFailure.SearchFailed(
+                entityPos,
+                rawTarget,
+                searchTarget,
+                exception.getCause() != null ? exception.getCause() : exception
+            );
+            state.currentPath = null;
+            state.currentTerrain = null;
+            failureBackoff.recordFailure(state);
+            completePendingResult(pendingResult, Result.err(failure));
+
+            return null;
+        }
+    }
+
+    private void completeAsyncConstructionResult(
+        CompletableFuture<Result<BLibPath, PathNavigationFailure>> resultFuture,
+        BlockPos entityPos,
+        BlockPos rawTarget,
+        BlockPos searchTarget,
+        @Nullable BLibPath path,
+        @Nullable Throwable throwable
+    ) {
+        if (throwable instanceof CancellationException) {
+            resultFuture.complete(Result.err(new PathNavigationFailure.Superseded()));
+            return;
+        }
+
+        if (throwable instanceof CompletionException completionException && completionException.getCause() instanceof CancellationException) {
+            resultFuture.complete(Result.err(new PathNavigationFailure.Superseded()));
+            return;
+        }
+
+        if (throwable != null) {
+            var cause = throwable instanceof CompletionException completionException && completionException.getCause() != null
+                ? completionException.getCause()
+                : throwable;
+            resultFuture.complete(Result.err(new PathNavigationFailure.SearchFailed(entityPos, rawTarget, searchTarget, cause)));
+            return;
+        }
+
+        if (isUsableAsyncPath(path)) {
+            resultFuture.complete(Result.ok(path));
+        } else {
+            resultFuture.complete(Result.err(new PathNavigationFailure.NoPathFound(entityPos, rawTarget, searchTarget)));
+        }
+    }
+
+    private void completePendingResult(
+        @Nullable CompletableFuture<Result<BLibPath, PathNavigationFailure>> pendingResult,
+        Result<BLibPath, PathNavigationFailure> result
+    ) {
+        if (pendingResult != null) {
+            pendingResult.complete(result);
+        }
+    }
+
+    private PathNavigationFailure.InFailureCooldown failureCooldown(
+        BlockPos entityPos,
+        BlockPos rawTarget,
+        BlockPos searchTarget
+    ) {
+        return new PathNavigationFailure.InFailureCooldown(
+            entityPos,
+            rawTarget,
+            searchTarget,
+            state.getFailureCooldownRemainingTicks()
+        );
+    }
+
+    private boolean isUsableAsyncPath(@Nullable BLibPath path) {
+        return path != null && (path.isReached() || path.getNodeCount() > 1);
     }
 
     private boolean isUsablePath(@Nullable BLibPath path) {
@@ -387,10 +529,19 @@ final class PathNavigationPlanningComponent {
     private void cancelPendingPath() {
         if (state.pendingPath != null) {
             state.pendingPath.cancel(false);
-            state.pendingPath = null;
         }
 
+        completePendingResult(state.pendingPathResult, Result.err(new PathNavigationFailure.Superseded()));
+        clearPendingPathReferences();
         featureControl.clearPendingPathfindingFeatures();
+    }
+
+    private void clearPendingPathReferences() {
+        state.pendingPath = null;
+        state.pendingPathResult = null;
+        pendingEntityPos = null;
+        pendingRawTarget = null;
+        pendingSearchTarget = null;
     }
 
     private void clearPlanner() {

@@ -59,7 +59,17 @@ public final class NeoMoveToPosAction {
         return perform(context, targetPos, speedMultiplier, false);
     }
 
-    private static Result perform(
+    /**
+     * Performs one tick of pathfinding toward the target position with optional block-breaking path search enabled for
+     * this request.
+     *
+     * @param context            the GOAP action context
+     * @param targetPos          the position to navigate to
+     * @param speedMultiplier    movement speed multiplier
+     * @param allowBlockBreaking whether this path request may plan block-breaking edges
+     * @return the result of this tick
+     */
+    public static Result perform(
         Action.Context<? extends PathfinderMob> context,
         Vec3 targetPos,
         double speedMultiplier,
@@ -89,17 +99,16 @@ public final class NeoMoveToPosAction {
         featureControl.setDebugCaptureEnabled(PathDebugUtil.hasDebugWatchers(actor));
 
         if (!navigatorState.isNavigating()) {
-            var found = navigator.navigateTo(
+            var pathResult = navigator.navigateTo(
                 actor.getX(),
                 actor.getY(),
                 actor.getZ(),
                 targetPos.x,
                 targetPos.y,
-                targetPos.z,
-                requestedFeatures
-            );
+                targetPos.z
+            ).withFeatures(requestedFeatures).start().join();
 
-            if (!found) {
+            if (pathResult.isErr()) {
                 resetBlockBreakExecutor(actor, blackboard);
                 return Result.NO_PATH;
             }

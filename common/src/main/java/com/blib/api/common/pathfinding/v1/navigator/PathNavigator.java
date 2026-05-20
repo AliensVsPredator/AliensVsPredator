@@ -5,8 +5,6 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
-
 import com.blib.api.common.pathfinding.v1.cache.TerrainClassificationCache;
 import com.blib.api.common.pathfinding.v1.evaluator.UnifiedTerrainEvaluator;
 import com.blib.api.common.pathfinding.v1.feature.PathfindingFeature;
@@ -130,47 +128,11 @@ public final class PathNavigator implements PathNavigatorApi {
     }
 
     /**
-     * Plans a path to the target position and begins following it.
-     *
-     * @return true if a path was found
+     * Creates a navigation request for the target position. The request begins only when {@link PathNavigationRequest#start()}
+     * is called.
      */
-    public boolean navigateTo(BlockPos entityPos, BlockPos target) {
-        return planning.navigateTo(entityPos, target, null, false);
-    }
-
-    /**
-     * Plans a path with a feature set that applies only to this navigation request. Replans for this path reuse the same
-     * feature set until the navigator is stopped or another navigation request starts.
-     */
-    public boolean navigateTo(BlockPos entityPos, BlockPos target, PathfindingFeatures pathfindingFeatures) {
-        return planning.navigateTo(
-            entityPos,
-            target,
-            Objects.requireNonNull(pathfindingFeatures, "pathfindingFeatures"),
-            false
-        );
-    }
-
-    /**
-     * Asynchronously plans a path to the target position. Chunk data is snapshotted and the terrain cache is
-     * pre-populated on the calling thread, then the A* search runs on a background thread. Call
-     * {@link #getState()} to check if an async computation is in progress. The path is automatically applied on
-     * the next {@link #tick} call after the computation completes.
-     */
-    public void navigateToAsync(BlockPos entityPos, BlockPos rawTarget) {
-        planning.navigateToAsync(entityPos, rawTarget, null);
-    }
-
-    /**
-     * Asynchronously plans a path using a feature set that applies only to this navigation request. Requests with block
-     * breaking enabled fall back to synchronous planning so the search uses live world block state.
-     */
-    public void navigateToAsync(BlockPos entityPos, BlockPos rawTarget, PathfindingFeatures pathfindingFeatures) {
-        planning.navigateToAsync(
-            entityPos,
-            rawTarget,
-            Objects.requireNonNull(pathfindingFeatures, "pathfindingFeatures")
-        );
+    public PathNavigationRequest navigateTo(BlockPos entityPos, BlockPos target) {
+        return new PathNavigationRequestComponent(planning, entityPos, target, null);
     }
 
     /**

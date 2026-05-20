@@ -9,6 +9,8 @@ import java.util.function.BooleanSupplier;
 import java.util.function.LongSupplier;
 import java.util.function.Supplier;
 
+import com.just.core.functional.result.Result;
+
 import com.blib.api.common.pathfinding.v1.debug.PathSearchSnapshot;
 import com.blib.api.common.pathfinding.v1.node.PathNode;
 import com.blib.api.common.pathfinding.v1.path.BLibPath;
@@ -44,6 +46,8 @@ public final class PathNavigationStateComponent implements PathNavigationState {
     long lastPathComputeNanos;
 
     @Nullable CompletableFuture<@Nullable BLibPath> pendingPath;
+
+    @Nullable CompletableFuture<Result<BLibPath, PathNavigationFailure>> pendingPathResult;
 
     int consecutiveFailures;
 
