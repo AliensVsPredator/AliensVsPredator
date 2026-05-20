@@ -16,6 +16,7 @@ import java.util.List;
 
 import com.blib.api.common.pathfinding.v1.navigator.PathNavigatorApi;
 import com.blib.api.common.pathfinding.v1.navigator.PathNavigationState;
+import com.blib.api.common.pathfinding.v1.breaking.PathBlockBreakExecutor;
 import com.blib.api.common.pathfinding.v1.node.PathNode;
 import com.blib.api.common.pathfinding.v1.path.BLibPath;
 import com.blib.mod.BLib;
@@ -325,6 +326,8 @@ public final class PathDebugUtil {
         var runtimeConfig = navigator.getRuntimeConfig();
         var defaultFeatures = featureControl.getDefaultPathfindingFeatures();
         var pathfindingProfile = featureControl.getPathfindingProfile();
+        var blockBreakingConfig = runtimeConfig.getConfig().getEvaluatorConfig().getBlockBreakingConfig();
+        var blockBreakDebug = PathBlockBreakExecutor.debugStateFor(mob);
         return new S2CPathfindingNavDebugPayload(
             mob.getId(),
             mob.getName().getString(),
@@ -378,7 +381,17 @@ public final class PathDebugUtil {
             runtimeConfig.getPathfindingTuning().sectionSearchNodeBudget(),
             runtimeConfig.getPathfindingTuning().corridorBufferRadius(),
             runtimeConfig.getPathfindingTuning().asyncChunkMargin(),
-            runtimeConfig.getPathfindingTuning().minImprovement()
+            runtimeConfig.getPathfindingTuning().minImprovement(),
+            blockBreakingConfig.enabled(),
+            blockBreakingConfig.maxBlocksPerEdge(),
+            blockBreakingConfig.maxHardness(),
+            blockBreakingConfig.flatCostPerBlock(),
+            blockBreakingConfig.costPerHardness(),
+            blockBreakingConfig.damagePerTick(),
+            blockBreakDebug.result().ordinal(),
+            blockBreakDebug.activeBlock(),
+            blockBreakDebug.progress(),
+            blockBreakDebug.activeBlockInPlan()
         );
     }
 

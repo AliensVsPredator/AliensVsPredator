@@ -52,6 +52,12 @@ public class BlockBreakProgressManager {
         level.destroyBlockProgress(computeBlockPosHash(pos), pos, clampedProgress);
     }
 
+    public static float getProgress(BlockPos pos) {
+        var entry = BlockBreakProgressManager.BLOCK_BREAK_PROGRESS_MAP.get(pos.immutable());
+
+        return entry == null ? 0.0f : entry.getValue();
+    }
+
     // Damage progress is a value ranging from 0 to 9 (both ends inclusively).
     // All blocks also have a destruction time (in seconds).
     public static Result damage(Level level, BlockPos blockPos, float damage) {

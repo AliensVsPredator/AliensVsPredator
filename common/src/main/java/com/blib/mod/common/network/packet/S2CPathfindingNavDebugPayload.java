@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import com.blib.api.common.pathfinding.v1.debug.DebugNodeEntry;
+import com.blib.api.common.pathfinding.v1.debug.PathDebugBlockPos;
 import com.blib.mod.BLib;
 
 /**
@@ -71,7 +72,17 @@ public record S2CPathfindingNavDebugPayload(
     int sectionSearchNodeBudget,
     int corridorBufferRadius,
     int asyncChunkMargin,
-    float minImprovement
+    float minImprovement,
+    boolean blockBreakingConfigEnabled,
+    int blockBreakingMaxBlocksPerEdge,
+    float blockBreakingMaxHardness,
+    float blockBreakingFlatCostPerBlock,
+    float blockBreakingCostPerHardness,
+    float blockBreakingDamagePerTick,
+    int blockBreakExecutorState,
+    PathDebugBlockPos activeBlockBreakPos,
+    float activeBlockBreakProgress,
+    boolean activeBlockBreakInPlan
 ) implements CustomPacketPayload {
 
     public static final ResourceLocation PAYLOAD_ID = BLib.MOD.resources().createLocation("pathfinding_nav_debug");
@@ -79,6 +90,8 @@ public record S2CPathfindingNavDebugPayload(
     public static final Type<S2CPathfindingNavDebugPayload> TYPE = new Type<>(PAYLOAD_ID);
 
     private static final StreamCodec<List<DebugNodeEntry>> NODE_LIST_CODEC = DebugNodeEntry.CODEC.asList();
+
+    private static final StreamCodec<PathDebugBlockPos> BLOCK_POS_CODEC = PathDebugBlockPos.CODEC;
 
     public static final StreamCodec<S2CPathfindingNavDebugPayload> CODEC = StreamCodec.of(
         new StreamDecoder<>() {
@@ -141,7 +154,17 @@ public record S2CPathfindingNavDebugPayload(
                     StreamCodecs.INT.decode(schema, buf),
                     StreamCodecs.INT.decode(schema, buf),
                     StreamCodecs.INT.decode(schema, buf),
-                    StreamCodecs.FLOAT.decode(schema, buf)
+                    StreamCodecs.FLOAT.decode(schema, buf),
+                    StreamCodecs.BOOLEAN.decode(schema, buf),
+                    StreamCodecs.INT.decode(schema, buf),
+                    StreamCodecs.FLOAT.decode(schema, buf),
+                    StreamCodecs.FLOAT.decode(schema, buf),
+                    StreamCodecs.FLOAT.decode(schema, buf),
+                    StreamCodecs.FLOAT.decode(schema, buf),
+                    StreamCodecs.INT.decode(schema, buf),
+                    BLOCK_POS_CODEC.decode(schema, buf),
+                    StreamCodecs.FLOAT.decode(schema, buf),
+                    StreamCodecs.BOOLEAN.decode(schema, buf)
                 );
             }
         },
@@ -206,6 +229,16 @@ public record S2CPathfindingNavDebugPayload(
                 StreamCodecs.INT.encode(schema, buf, value.corridorBufferRadius);
                 StreamCodecs.INT.encode(schema, buf, value.asyncChunkMargin);
                 StreamCodecs.FLOAT.encode(schema, buf, value.minImprovement);
+                StreamCodecs.BOOLEAN.encode(schema, buf, value.blockBreakingConfigEnabled);
+                StreamCodecs.INT.encode(schema, buf, value.blockBreakingMaxBlocksPerEdge);
+                StreamCodecs.FLOAT.encode(schema, buf, value.blockBreakingMaxHardness);
+                StreamCodecs.FLOAT.encode(schema, buf, value.blockBreakingFlatCostPerBlock);
+                StreamCodecs.FLOAT.encode(schema, buf, value.blockBreakingCostPerHardness);
+                StreamCodecs.FLOAT.encode(schema, buf, value.blockBreakingDamagePerTick);
+                StreamCodecs.INT.encode(schema, buf, value.blockBreakExecutorState);
+                BLOCK_POS_CODEC.encode(schema, buf, value.activeBlockBreakPos);
+                StreamCodecs.FLOAT.encode(schema, buf, value.activeBlockBreakProgress);
+                StreamCodecs.BOOLEAN.encode(schema, buf, value.activeBlockBreakInPlan);
             }
         }
     );

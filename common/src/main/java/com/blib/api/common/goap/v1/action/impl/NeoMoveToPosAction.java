@@ -194,7 +194,7 @@ public final class NeoMoveToPosAction {
             return;
         }
 
-        executor.reset(actor.level());
+        executor.reset(actor);
         blackboard.set(BLOCK_BREAK_EXECUTOR, null);
     }
 
