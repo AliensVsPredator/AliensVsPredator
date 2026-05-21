@@ -655,7 +655,8 @@ public final class BLibPathFinder {
         BidirectionalMeet meet = null;
 
         while (
-            (!forwardOpenSet.isEmpty() || !backwardOpenSet.isEmpty())
+            !forwardOpenSet.isEmpty()
+                && !backwardOpenSet.isEmpty()
                 && visitedCount < searchConfig.maxSearchNodes()
         ) {
             var directionSelectStart = startTiming(recorder);
