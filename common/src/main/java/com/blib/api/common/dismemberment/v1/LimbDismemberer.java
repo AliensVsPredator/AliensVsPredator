@@ -271,7 +271,7 @@ public final class LimbDismemberer {
 
         var effectivePoseSelection = poseSelection == null ? LimbPoseSelection.random() : poseSelection;
         var resolvedPoseId = effectivePoseSelection.resolve(definition, entity.getRandom());
-        limb.configure(entity.getType(), sourceNbt, definition.id(), 20 * 30, resolvedPoseId);
+        limb.configure(entity.getType(), sourceNbt, definition.id(), DismemberedLimbEntity.DEFAULT_LIFETIME_TICKS, resolvedPoseId);
 
         var spawnOffset = definition.spawnOffsetProvider().apply(entity);
         var spawnPos = entity.position().add(spawnOffset);

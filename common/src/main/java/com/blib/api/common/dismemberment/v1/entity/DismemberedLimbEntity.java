@@ -75,17 +75,15 @@ public class DismemberedLimbEntity extends Entity {
         EntityDataSerializers.STRING
     );
 
-    private static final int DEFAULT_LIFETIME_TICKS = 20 * 30;
+    public static final int DEFAULT_LIFETIME_TICKS = 20 * 60 * 5;
 
     private static final float GRAVITY = 0.04F;
 
     private static final float DRAG = 0.98F;
 
-    private static final double ITEM_POP_UPWARD_VELOCITY = 0.2;
+    private static final double ITEM_POP_VERTICAL_VELOCITY = 0.2;
 
-    private static final double ITEM_POP_MAX_HORIZONTAL_VELOCITY = 0.5;
-
-    private static final double ITEM_POP_INHERITED_VELOCITY_SCALE = 0.25;
+    private static final double ITEM_POP_VELOCITY_SPREAD = 0.11485000171139836;
 
     private int lifetimeTicks = DEFAULT_LIFETIME_TICKS;
 
@@ -201,15 +199,11 @@ public class DismemberedLimbEntity extends Entity {
     }
 
     private Vec3 createItemPopVelocity() {
-        var speed = random.nextDouble() * ITEM_POP_MAX_HORIZONTAL_VELOCITY;
-        var angle = random.nextDouble() * Math.PI * 2.0;
-        var pop = new Vec3(
-            -Math.sin(angle) * speed,
-            ITEM_POP_UPWARD_VELOCITY,
-            Math.cos(angle) * speed
+        return new Vec3(
+            random.triangle(0.0, ITEM_POP_VELOCITY_SPREAD),
+            random.triangle(ITEM_POP_VERTICAL_VELOCITY, ITEM_POP_VELOCITY_SPREAD),
+            random.triangle(0.0, ITEM_POP_VELOCITY_SPREAD)
         );
-
-        return pop.add(getDeltaMovement().scale(ITEM_POP_INHERITED_VELOCITY_SCALE));
     }
 
     public @Nullable EntityType<?> getSourceEntityType() {
