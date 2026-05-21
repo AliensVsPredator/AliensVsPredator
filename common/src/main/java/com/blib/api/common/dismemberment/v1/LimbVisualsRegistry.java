@@ -6,6 +6,8 @@ import net.minecraft.world.entity.EntityType;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -26,6 +28,12 @@ public final class LimbVisualsRegistry {
     private static final Map<ResourceLocation, Map<ResourceLocation, LimbVisuals>> TIER1 = new ConcurrentHashMap<>();
 
     private static volatile Map<ResourceLocation, Map<ResourceLocation, LimbVisuals>> tier2 = Map.of();
+
+    private static volatile Map<ResourceLocation, ResourceLocation> tier2Parents = Map.of();
+
+    private static volatile Map<ResourceLocation, Map<ResourceLocation, LimbVisuals>> tier2Templates = Map.of();
+
+    private static volatile Map<ResourceLocation, ResourceLocation> tier2TemplateParents = Map.of();
 
     private LimbVisualsRegistry() {}
 
@@ -64,6 +72,44 @@ public final class LimbVisualsRegistry {
 
     @ApiStatus.Internal
     public static void replaceTier2(Map<ResourceLocation, Map<ResourceLocation, LimbVisuals>> next) {
-        tier2 = Map.copyOf(next);
+        replaceTier2(next, Map.of(), Map.of(), Map.of());
+    }
+
+    @ApiStatus.Internal
+    public static void replaceTier2(
+        Map<ResourceLocation, Map<ResourceLocation, LimbVisuals>> next,
+        Map<ResourceLocation, ResourceLocation> parents,
+        Map<ResourceLocation, Map<ResourceLocation, LimbVisuals>> templates,
+        Map<ResourceLocation, ResourceLocation> templateParents
+    ) {
+        tier2 = copyBuckets(next);
+        tier2Parents = Map.copyOf(parents);
+        tier2Templates = copyBuckets(templates);
+        tier2TemplateParents = Map.copyOf(templateParents);
+    }
+
+    @ApiStatus.Internal
+    public static Map<ResourceLocation, ResourceLocation> snapshotParents() {
+        return Map.copyOf(tier2Parents);
+    }
+
+    @ApiStatus.Internal
+    public static Map<ResourceLocation, Map<ResourceLocation, LimbVisuals>> snapshotTemplates() {
+        return copyBuckets(tier2Templates);
+    }
+
+    @ApiStatus.Internal
+    public static Map<ResourceLocation, ResourceLocation> snapshotTemplateParents() {
+        return Map.copyOf(tier2TemplateParents);
+    }
+
+    private static Map<ResourceLocation, Map<ResourceLocation, LimbVisuals>> copyBuckets(
+        Map<ResourceLocation, Map<ResourceLocation, LimbVisuals>> source
+    ) {
+        var out = new LinkedHashMap<ResourceLocation, Map<ResourceLocation, LimbVisuals>>();
+        for (var entry : source.entrySet()) {
+            out.put(entry.getKey(), Collections.unmodifiableMap(new LinkedHashMap<>(entry.getValue())));
+        }
+        return Collections.unmodifiableMap(out);
     }
 }

@@ -77,12 +77,13 @@ public abstract class LimbDefinitionDataProvider implements DataProvider {
         return "BLib Limb Definitions";
     }
 
-    private record File(Optional<ResourceLocation> parent, List<LimbDefinition> limbs) {
+    private record File(Optional<ResourceLocation> parent, List<LimbDefinition> limbs, boolean replace) {
 
         private static final Codec<File> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                 ResourceLocation.CODEC.optionalFieldOf("parent").forGetter(File::parent),
-                LimbDefinition.CODEC.listOf().optionalFieldOf("limbs", List.of()).forGetter(File::limbs)
+                LimbDefinition.CODEC.listOf().optionalFieldOf("limbs", List.of()).forGetter(File::limbs),
+                Codec.BOOL.optionalFieldOf("replace", false).forGetter(File::replace)
             ).apply(instance, File::new)
         );
 
@@ -97,6 +98,8 @@ public abstract class LimbDefinitionDataProvider implements DataProvider {
 
         private ResourceLocation parent;
 
+        private boolean replace = false;
+
         private final List<LimbDefinition> limbs = new ArrayList<>();
 
         private FileBuilder(ResourceLocation id) {
@@ -109,6 +112,11 @@ public abstract class LimbDefinitionDataProvider implements DataProvider {
 
         public FileBuilder parent(ResourceLocation parent) {
             this.parent = parent;
+            return this;
+        }
+
+        public FileBuilder replace(boolean replace) {
+            this.replace = replace;
             return this;
         }
 
@@ -133,7 +141,7 @@ public abstract class LimbDefinitionDataProvider implements DataProvider {
         }
 
         private File build() {
-            return new File(Optional.ofNullable(parent), limbs);
+            return new File(Optional.ofNullable(parent), limbs, replace);
         }
     }
 

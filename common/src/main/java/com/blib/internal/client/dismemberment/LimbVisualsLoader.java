@@ -2,17 +2,22 @@ package com.blib.internal.client.dismemberment;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,7 +37,7 @@ import com.blib.api.common.dismemberment.v1.LimbVisualsRegistry;
  * Mismatched halves (logic declared in {@code /data} but no entry here) leave the renderer with no rootBone / offsets /
  * scale to apply, which manifests as a blank limb fragment — the same graceful failure as a missing texture.
  */
-public final class LimbVisualsLoader extends SimpleJsonResourceReloadListener {
+public final class LimbVisualsLoader extends SimplePreparableReloadListener<Map<ResourceLocation, LimbVisualsLoader.File>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LimbVisualsLoader.class);
 
@@ -40,48 +45,70 @@ public final class LimbVisualsLoader extends SimpleJsonResourceReloadListener {
 
     private static final String DIRECTORY = "blib_limb_visuals";
 
-    /** Per-file shape: {@code { "parent": "<template_id>", "visuals": { "<limb_id>": {LimbVisuals...}, ... } }}. */
-    private record File(Optional<ResourceLocation> parent, Map<ResourceLocation, LimbVisuals> visuals) {
+    /** Per-file shape: {@code { "replace": false, "parent": "<template_id>", "visuals": { "<limb_id>": {LimbVisuals...}, ... } }}. */
+    private record DecodedFile(Optional<ResourceLocation> parent, Map<ResourceLocation, LimbVisuals> visuals, boolean replace) {
 
-        static final Codec<File> CODEC = RecordCodecBuilder.create(
+        static final Codec<DecodedFile> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
-                ResourceLocation.CODEC.optionalFieldOf("parent").forGetter(File::parent),
+                ResourceLocation.CODEC.optionalFieldOf("parent").forGetter(DecodedFile::parent),
                 Codec
                     .unboundedMap(ResourceLocation.CODEC, LimbVisuals.CODEC)
                     .optionalFieldOf("visuals", Map.of())
-                    .forGetter(File::visuals)
-            ).apply(instance, File::new)
+                    .forGetter(DecodedFile::visuals),
+                Codec.BOOL.optionalFieldOf("replace", false).forGetter(DecodedFile::replace)
+            ).apply(instance, DecodedFile::new)
         );
     }
 
-    public LimbVisualsLoader() {
-        super(GSON, DIRECTORY);
+    record File(Optional<ResourceLocation> parent, boolean parentSpecified, Map<ResourceLocation, LimbVisuals> visuals, boolean replace) {
+
+        File {
+            visuals = Collections.unmodifiableMap(new LinkedHashMap<>(visuals));
+        }
     }
 
     @Override
-    protected void apply(Map<ResourceLocation, JsonElement> jsonByPath, ResourceManager resourceManager, ProfilerFiller profiler) {
-        var parsedFiles = new LinkedHashMap<ResourceLocation, File>();
-        var templates = new LinkedHashMap<ResourceLocation, File>();
-        var next = new HashMap<ResourceLocation, Map<ResourceLocation, LimbVisuals>>();
-        for (var entry : jsonByPath.entrySet()) {
-            var fileId = entry.getKey();
-            var parsed = File.CODEC.parse(JsonOps.INSTANCE, entry.getValue());
-            var result = parsed.result();
-            if (result.isEmpty()) {
-                LOGGER.warn(
-                    "Failed to parse limb visuals for {}: {}",
-                    fileId,
-                    parsed.error().map(err -> err.message()).orElse("unknown error")
-                );
-                continue;
+    protected Map<ResourceLocation, File> prepare(ResourceManager resourceManager, ProfilerFiller profiler) {
+        var converter = FileToIdConverter.json(DIRECTORY);
+        var files = new LinkedHashMap<ResourceLocation, File>();
+        for (var entry : converter.listMatchingResourceStacks(resourceManager).entrySet()) {
+            var fileLocation = entry.getKey();
+            var fileId = converter.fileToId(fileLocation);
+            File merged = null;
+            for (var resource : entry.getValue()) {
+                var parsed = parseFile(fileId, fileLocation, resource);
+                if (parsed != null) {
+                    merged = mergeFiles(merged, parsed);
+                }
             }
-            parsedFiles.put(fileId, result.get());
+            if (merged != null) {
+                files.put(fileId, merged);
+            }
+        }
+        return files;
+    }
+
+    @Override
+    protected void apply(Map<ResourceLocation, File> parsedFiles, ResourceManager resourceManager, ProfilerFiller profiler) {
+        var templates = new LinkedHashMap<ResourceLocation, File>();
+        var parents = new LinkedHashMap<ResourceLocation, ResourceLocation>();
+        var templateParents = new LinkedHashMap<ResourceLocation, ResourceLocation>();
+        var next = new HashMap<ResourceLocation, Map<ResourceLocation, LimbVisuals>>();
+        for (var entry : parsedFiles.entrySet()) {
+            var fileId = entry.getKey();
+            var file = entry.getValue();
             if (!isEntityType(fileId)) {
-                templates.put(fileId, result.get());
+                templates.put(fileId, file);
+                file.parent().ifPresent(parent -> templateParents.put(fileId, parent));
+            } else {
+                file.parent().ifPresent(parent -> parents.put(fileId, parent));
             }
         }
 
         var resolvedTemplates = new HashMap<ResourceLocation, Map<ResourceLocation, LimbVisuals>>();
+        for (var templateId : templates.keySet()) {
+            resolveTemplate(templateId, templates, resolvedTemplates, new HashSet<>());
+        }
         for (var entry : parsedFiles.entrySet()) {
             var entityTypeId = entry.getKey();
             if (!isEntityType(entityTypeId)) {
@@ -95,7 +122,47 @@ public final class LimbVisualsLoader extends SimpleJsonResourceReloadListener {
                 next.put(entityTypeId, perEntity);
             }
         }
-        LimbVisualsRegistry.replaceTier2(next);
+        LimbVisualsRegistry.replaceTier2(next, parents, resolvedTemplates, templateParents);
+    }
+
+    private static File parseFile(ResourceLocation fileId, ResourceLocation fileLocation, Resource resource) {
+        try (var reader = resource.openAsReader()) {
+            JsonElement json = GsonHelper.fromJson(GSON, reader, JsonElement.class);
+            var parsed = DecodedFile.CODEC.parse(JsonOps.INSTANCE, json);
+            var result = parsed.result();
+            if (result.isEmpty()) {
+                LOGGER.warn(
+                    "Failed to parse limb visuals for {} from {} in pack {}: {}",
+                    fileId,
+                    fileLocation,
+                    resource.sourcePackId(),
+                    parsed.error().map(err -> err.message()).orElse("unknown error")
+                );
+                return null;
+            }
+            var decoded = result.get();
+            var parentSpecified = json != null && json.isJsonObject() && json.getAsJsonObject().has("parent");
+            return new File(decoded.parent(), parentSpecified, decoded.visuals(), decoded.replace());
+        } catch (IllegalArgumentException | IOException | JsonParseException e) {
+            LOGGER.warn("Failed to parse limb visuals for {} from {} in pack {}", fileId, fileLocation, resource.sourcePackId(), e);
+            return null;
+        }
+    }
+
+    private static File mergeFiles(File current, File patch) {
+        if (current == null || patch.replace()) {
+            return patch;
+        }
+
+        var visuals = new LinkedHashMap<ResourceLocation, LimbVisuals>();
+        visuals.putAll(current.visuals());
+        visuals.putAll(patch.visuals());
+        return new File(
+            patch.parentSpecified() ? patch.parent() : current.parent(),
+            current.parentSpecified() || patch.parentSpecified(),
+            visuals,
+            true
+        );
     }
 
     private static Map<ResourceLocation, LimbVisuals> resolveTemplate(

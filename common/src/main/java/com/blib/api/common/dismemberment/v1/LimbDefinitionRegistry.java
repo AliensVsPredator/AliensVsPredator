@@ -35,6 +35,12 @@ public final class LimbDefinitionRegistry {
 
     private static volatile Map<ResourceLocation, Map<ResourceLocation, LimbDefinition>> tier2 = Map.of();
 
+    private static volatile Map<ResourceLocation, ResourceLocation> tier2Parents = Map.of();
+
+    private static volatile Map<ResourceLocation, Map<ResourceLocation, LimbDefinition>> tier2Templates = Map.of();
+
+    private static volatile Map<ResourceLocation, ResourceLocation> tier2TemplateParents = Map.of();
+
     public static void register(BLibHolder<? extends EntityType<?>> entityTypeHolder, LimbDefinition limbDefinition) {
         register(entityTypeHolder.getResourceLocation(), limbDefinition);
     }
@@ -130,7 +136,20 @@ public final class LimbDefinitionRegistry {
      */
     @ApiStatus.Internal
     public static void replaceTier2(Map<ResourceLocation, Map<ResourceLocation, LimbDefinition>> next) {
-        tier2 = Map.copyOf(next);
+        replaceTier2(next, Map.of(), Map.of(), Map.of());
+    }
+
+    @ApiStatus.Internal
+    public static void replaceTier2(
+        Map<ResourceLocation, Map<ResourceLocation, LimbDefinition>> next,
+        Map<ResourceLocation, ResourceLocation> parents,
+        Map<ResourceLocation, Map<ResourceLocation, LimbDefinition>> templates,
+        Map<ResourceLocation, ResourceLocation> templateParents
+    ) {
+        tier2 = copyBuckets(next);
+        tier2Parents = Map.copyOf(parents);
+        tier2Templates = copyBuckets(templates);
+        tier2TemplateParents = Map.copyOf(templateParents);
     }
 
     /**
@@ -153,6 +172,31 @@ public final class LimbDefinitionRegistry {
             merged.computeIfAbsent(entry.getKey(), $ -> new LinkedHashMap<>()).putAll(entry.getValue());
         }
         return merged;
+    }
+
+    @ApiStatus.Internal
+    public static Map<ResourceLocation, ResourceLocation> snapshotParents() {
+        return Map.copyOf(tier2Parents);
+    }
+
+    @ApiStatus.Internal
+    public static Map<ResourceLocation, Map<ResourceLocation, LimbDefinition>> snapshotTemplates() {
+        return copyBuckets(tier2Templates);
+    }
+
+    @ApiStatus.Internal
+    public static Map<ResourceLocation, ResourceLocation> snapshotTemplateParents() {
+        return Map.copyOf(tier2TemplateParents);
+    }
+
+    private static Map<ResourceLocation, Map<ResourceLocation, LimbDefinition>> copyBuckets(
+        Map<ResourceLocation, Map<ResourceLocation, LimbDefinition>> source
+    ) {
+        var out = new LinkedHashMap<ResourceLocation, Map<ResourceLocation, LimbDefinition>>();
+        for (var entry : source.entrySet()) {
+            out.put(entry.getKey(), Collections.unmodifiableMap(new LinkedHashMap<>(entry.getValue())));
+        }
+        return Collections.unmodifiableMap(out);
     }
 
     private LimbDefinitionRegistry() {}

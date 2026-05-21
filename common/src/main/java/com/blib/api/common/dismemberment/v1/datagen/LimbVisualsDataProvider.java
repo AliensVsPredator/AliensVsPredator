@@ -76,7 +76,7 @@ public abstract class LimbVisualsDataProvider implements DataProvider {
         return "BLib Limb Visuals";
     }
 
-    private record File(Optional<ResourceLocation> parent, Map<ResourceLocation, LimbVisuals> visuals) {
+    private record File(Optional<ResourceLocation> parent, Map<ResourceLocation, LimbVisuals> visuals, boolean replace) {
 
         private static final Codec<File> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
@@ -84,7 +84,8 @@ public abstract class LimbVisualsDataProvider implements DataProvider {
                 Codec
                     .unboundedMap(ResourceLocation.CODEC, LimbVisuals.CODEC)
                     .optionalFieldOf("visuals", Map.of())
-                    .forGetter(File::visuals)
+                    .forGetter(File::visuals),
+                Codec.BOOL.optionalFieldOf("replace", false).forGetter(File::replace)
             ).apply(instance, File::new)
         );
 
@@ -99,6 +100,8 @@ public abstract class LimbVisualsDataProvider implements DataProvider {
 
         private ResourceLocation parent;
 
+        private boolean replace = false;
+
         private final Map<ResourceLocation, LimbVisuals> visuals = new LinkedHashMap<>();
 
         private FileBuilder(ResourceLocation id) {
@@ -111,6 +114,11 @@ public abstract class LimbVisualsDataProvider implements DataProvider {
 
         public FileBuilder parent(ResourceLocation parent) {
             this.parent = parent;
+            return this;
+        }
+
+        public FileBuilder replace(boolean replace) {
+            this.replace = replace;
             return this;
         }
 
@@ -131,7 +139,7 @@ public abstract class LimbVisualsDataProvider implements DataProvider {
         }
 
         private File build() {
-            return new File(Optional.ofNullable(parent), visuals);
+            return new File(Optional.ofNullable(parent), visuals, replace);
         }
     }
 

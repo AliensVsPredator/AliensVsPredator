@@ -20,12 +20,12 @@ import com.blib.mod.BLib;
  * data-pack reload to every online player, and on player join (delayed by 20 ticks so the connection is fully
  * established).
  * <p>
- * The wire format is a flat list of {@code (entityTypeId, [(limbId, categoryId, fatal, poses), ...])} entries — one
- * per entity type with at least one declared limb. The client repopulates {@code LimbDefinitionRegistry}'s tier-2 with
- * synthetic {@link com.blib.api.common.dismemberment.v1.LimbDefinition}s whose {@code spawnOffsetProvider} is a no-op
- * (clients never call it; the server computes the spawn position before the limb entity is created).
+ * The wire format carries resolved entity entries plus resolved template entries. The client repopulates
+ * {@code LimbDefinitionRegistry}'s tier-2 with synthetic
+ * {@link com.blib.api.common.dismemberment.v1.LimbDefinition}s whose {@code spawnOffsetProvider} is a no-op (clients
+ * never call it; the server computes the spawn position before the limb entity is created).
  */
-public record S2CLimbDefinitionsSyncPayload(List<EntityTypeLimbs> entries) implements CustomPacketPayload {
+public record S2CLimbDefinitionsSyncPayload(List<EntityTypeLimbs> entries, List<TemplateLimbs> templates) implements CustomPacketPayload {
 
     public static final ResourceLocation PAYLOAD_ID = BLib.MOD.resources().createLocation("limb_definitions_sync");
 
@@ -71,21 +71,43 @@ public record S2CLimbDefinitionsSyncPayload(List<EntityTypeLimbs> entries) imple
 
     public record EntityTypeLimbs(
         ResourceLocation entityTypeId,
+        String parentTemplateId,
         List<LimbEntry> limbs
     ) {
 
         public static final StreamCodec<EntityTypeLimbs> CODEC = RecordStreamCodec.of(
             BLibCodecs.Stream.RESOURCE_LOCATION,
             EntityTypeLimbs::entityTypeId,
+            StreamCodecs.STRING_UTF8,
+            EntityTypeLimbs::parentTemplateId,
             LimbEntry.CODEC.asList(),
             EntityTypeLimbs::limbs,
             EntityTypeLimbs::new
         );
     }
 
+    public record TemplateLimbs(
+        ResourceLocation templateId,
+        String parentTemplateId,
+        List<LimbEntry> limbs
+    ) {
+
+        public static final StreamCodec<TemplateLimbs> CODEC = RecordStreamCodec.of(
+            BLibCodecs.Stream.RESOURCE_LOCATION,
+            TemplateLimbs::templateId,
+            StreamCodecs.STRING_UTF8,
+            TemplateLimbs::parentTemplateId,
+            LimbEntry.CODEC.asList(),
+            TemplateLimbs::limbs,
+            TemplateLimbs::new
+        );
+    }
+
     public static final StreamCodec<S2CLimbDefinitionsSyncPayload> CODEC = RecordStreamCodec.of(
         EntityTypeLimbs.CODEC.asList(),
         S2CLimbDefinitionsSyncPayload::entries,
+        TemplateLimbs.CODEC.asList(),
+        S2CLimbDefinitionsSyncPayload::templates,
         S2CLimbDefinitionsSyncPayload::new
     );
 
@@ -97,6 +119,7 @@ public record S2CLimbDefinitionsSyncPayload(List<EntityTypeLimbs> entries) imple
     /** Build a payload from the current server-side {@link LimbDefinitionRegistry} merged snapshot. */
     public static S2CLimbDefinitionsSyncPayload snapshotFromRegistry() {
         var snapshot = LimbDefinitionRegistry.snapshotAll();
+        var parents = LimbDefinitionRegistry.snapshotParents();
         var entries = new ArrayList<EntityTypeLimbs>(snapshot.size());
         for (var bucket : snapshot.entrySet()) {
             var perEntity = new ArrayList<LimbEntry>(bucket.getValue().size());
@@ -104,8 +127,24 @@ public record S2CLimbDefinitionsSyncPayload(List<EntityTypeLimbs> entries) imple
                 var poses = def.poses().stream().map(PoseEntry::fromOption).toList();
                 perEntity.add(new LimbEntry(def.id(), def.category().id(), def.fatal(), poses));
             }
-            entries.add(new EntityTypeLimbs(bucket.getKey(), perEntity));
+            entries.add(new EntityTypeLimbs(bucket.getKey(), parentString(parents.get(bucket.getKey())), perEntity));
         }
-        return new S2CLimbDefinitionsSyncPayload(entries);
+
+        var templateSnapshot = LimbDefinitionRegistry.snapshotTemplates();
+        var templateParents = LimbDefinitionRegistry.snapshotTemplateParents();
+        var templates = new ArrayList<TemplateLimbs>(templateSnapshot.size());
+        for (var bucket : templateSnapshot.entrySet()) {
+            var perTemplate = new ArrayList<LimbEntry>(bucket.getValue().size());
+            for (var def : bucket.getValue().values()) {
+                var poses = def.poses().stream().map(PoseEntry::fromOption).toList();
+                perTemplate.add(new LimbEntry(def.id(), def.category().id(), def.fatal(), poses));
+            }
+            templates.add(new TemplateLimbs(bucket.getKey(), parentString(templateParents.get(bucket.getKey())), perTemplate));
+        }
+        return new S2CLimbDefinitionsSyncPayload(entries, templates);
+    }
+
+    private static String parentString(ResourceLocation parent) {
+        return parent == null ? "" : parent.toString();
     }
 }

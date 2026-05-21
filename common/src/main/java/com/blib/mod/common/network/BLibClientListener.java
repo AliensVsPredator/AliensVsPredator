@@ -50,6 +50,7 @@ public final class BLibClientListener {
     public static void handleLimbDefinitionsSync(S2CLimbDefinitionsSyncPayload payload, Player player) {
         var next =
             new LinkedHashMap<ResourceLocation, Map<ResourceLocation, LimbDefinition>>();
+        var parents = new LinkedHashMap<ResourceLocation, ResourceLocation>();
         for (var bucket : payload.entries()) {
             var perEntity = new LinkedHashMap<ResourceLocation, LimbDefinition>();
             for (var entry : bucket.limbs()) {
@@ -67,8 +68,39 @@ public final class BLibClientListener {
                 perEntity.put(entry.limbId(), def);
             }
             next.put(bucket.entityTypeId(), perEntity);
+            readResourceLocation(bucket.parentTemplateId()).ifPresent(parent -> parents.put(bucket.entityTypeId(), parent));
         }
-        LimbDefinitionRegistry.replaceTier2(next);
+
+        var templates =
+            new LinkedHashMap<ResourceLocation, Map<ResourceLocation, LimbDefinition>>();
+        var templateParents = new LinkedHashMap<ResourceLocation, ResourceLocation>();
+        for (var bucket : payload.templates()) {
+            var perTemplate = new LinkedHashMap<ResourceLocation, LimbDefinition>();
+            for (var entry : bucket.limbs()) {
+                var poses = entry.poses()
+                    .stream()
+                    .map(pose -> new LimbPoseOption(pose.id(), pose.weight()))
+                    .toList();
+                var def = new LimbDefinition(
+                    entry.limbId(),
+                    new LimbCategory(entry.categoryId()),
+                    SpawnFunctionRegistry.DEFAULT_PROVIDER,
+                    entry.fatal(),
+                    poses
+                );
+                perTemplate.put(entry.limbId(), def);
+            }
+            templates.put(bucket.templateId(), perTemplate);
+            readResourceLocation(bucket.parentTemplateId()).ifPresent(parent -> templateParents.put(bucket.templateId(), parent));
+        }
+        LimbDefinitionRegistry.replaceTier2(next, parents, templates, templateParents);
+    }
+
+    private static java.util.Optional<ResourceLocation> readResourceLocation(String value) {
+        if (value == null || value.isBlank()) {
+            return java.util.Optional.empty();
+        }
+        return java.util.Optional.ofNullable(ResourceLocation.tryParse(value));
     }
 
     public static void handleEntityDataSync(S2CEntityDataSyncPayload entityDataSyncPayload, Player player) {
