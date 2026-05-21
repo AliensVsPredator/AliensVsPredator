@@ -105,6 +105,10 @@ public record LimbDefinition(
 
         private Vec3 renderScale = LimbVisuals.DEFAULT_SCALE;
 
+        private Vec3 renderPivot = LimbVisuals.DEFAULT_PIVOT;
+
+        private boolean modelerTransform = false;
+
         private Function<LivingEntity, Vec3> spawnOffsetProvider = SpawnFunctionRegistry.DEFAULT_PROVIDER;
 
         private boolean fatal = false;
@@ -143,6 +147,16 @@ public record LimbDefinition(
 
         public Builder renderScale(Vec3 renderScale) {
             this.renderScale = Objects.requireNonNull(renderScale);
+            return this;
+        }
+
+        public Builder renderPivot(double x, double y, double z) {
+            return renderPivot(new Vec3(x, y, z));
+        }
+
+        public Builder renderPivot(Vec3 renderPivot) {
+            this.renderPivot = Objects.requireNonNull(renderPivot);
+            this.modelerTransform = true;
             return this;
         }
 
@@ -185,7 +199,7 @@ public record LimbDefinition(
          */
         public LimbDefinition build() {
             var definition = new LimbDefinition(id, category, spawnOffsetProvider, fatal);
-            var visuals = new LimbVisuals(rootBoneName, companionBoneNames, renderOffset, renderRotation, renderScale);
+            var visuals = new LimbVisuals(rootBoneName, companionBoneNames, renderOffset, renderRotation, renderScale, renderPivot, modelerTransform);
 
             LimbDefinitionRegistry.register(entityTypeId, definition);
             LimbVisualsRegistry.register(entityTypeId, id, visuals);

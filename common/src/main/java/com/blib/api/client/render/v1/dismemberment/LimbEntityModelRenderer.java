@@ -96,29 +96,35 @@ public class LimbEntityModelRenderer extends AzEntityModelRenderer<DismemberedLi
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(180f - animatable.getYRot()));
 
-        // Authored rotation around the limb's anchor. PoseStack composes right-to-left,
-        // so applying Z then Y then X here matches the geo bone Z*Y*X convention once the
-        // pivot translation below puts the bone anchor at the entity origin.
-        var renderRotation = visuals.renderRotation();
-        poseStack.mulPose(Axis.ZP.rotationDegrees((float) renderRotation.z));
-        poseStack.mulPose(Axis.YP.rotationDegrees((float) renderRotation.y));
-        poseStack.mulPose(Axis.XP.rotationDegrees((float) renderRotation.x));
-
-        // Authored scale around the limb anchor — applied after rotation so axes line up with the limb's local frame.
-        var renderScale = visuals.renderScale();
-        poseStack.scale((float) renderScale.x, (float) renderScale.y, (float) renderScale.z);
-
-        // Bedrock cube vertices are stored in absolute model-space coordinates, so
-        // when we render a single bone in isolation its geometry would draw at the
-        // height it occupied on the original entity. Translating by the bone's
-        // pivot puts the bone's anchor at the limb entity's origin; the
-        // user-supplied render offset then nudges it into the hitbox.
         var renderOffset = visuals.renderOffset();
-        poseStack.translate(
-            -rootBone.getPivotX() / 16f + renderOffset.x,
-            -rootBone.getPivotY() / 16f + renderOffset.y,
-            -rootBone.getPivotZ() / 16f + renderOffset.z
-        );
+        var renderRotation = visuals.renderRotation();
+        var renderScale = visuals.renderScale();
+        if (visuals.modelerTransform()) {
+            var renderPivot = visuals.renderPivot();
+            poseStack.translate(renderOffset.x, renderOffset.y, renderOffset.z);
+            poseStack.translate(renderPivot.x, renderPivot.y, renderPivot.z);
+            poseStack.mulPose(Axis.ZP.rotationDegrees((float) renderRotation.z));
+            poseStack.mulPose(Axis.YP.rotationDegrees((float) renderRotation.y));
+            poseStack.mulPose(Axis.XP.rotationDegrees((float) renderRotation.x));
+            poseStack.scale((float) renderScale.x, (float) renderScale.y, (float) renderScale.z);
+            poseStack.translate(
+                -renderPivot.x - rootBone.getPivotX() / 16f,
+                -renderPivot.y - rootBone.getPivotY() / 16f,
+                -renderPivot.z - rootBone.getPivotZ() / 16f
+            );
+        } else {
+            // Legacy limb visuals treat render_offset as a local post-scale translation. Keep that ordering for
+            // existing JSON that has no render_pivot field.
+            poseStack.mulPose(Axis.ZP.rotationDegrees((float) renderRotation.z));
+            poseStack.mulPose(Axis.YP.rotationDegrees((float) renderRotation.y));
+            poseStack.mulPose(Axis.XP.rotationDegrees((float) renderRotation.x));
+            poseStack.scale((float) renderScale.x, (float) renderScale.y, (float) renderScale.z);
+            poseStack.translate(
+                -rootBone.getPivotX() / 16f + renderOffset.x,
+                -rootBone.getPivotY() / 16f + renderOffset.y,
+                -rootBone.getPivotZ() / 16f + renderOffset.z
+            );
+        }
 
         if (!isReRender) {
             var animator = entityRendererPipeline.getRenderer().getAnimator();

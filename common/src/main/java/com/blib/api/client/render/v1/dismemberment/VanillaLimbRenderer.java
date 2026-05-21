@@ -67,17 +67,25 @@ public final class VanillaLimbRenderer {
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(180f - limb.getYRot()));
 
-        var renderRotation = visuals.renderRotation();
-        poseStack.mulPose(Axis.ZP.rotationDegrees((float) renderRotation.z));
-        poseStack.mulPose(Axis.YP.rotationDegrees((float) renderRotation.y));
-        poseStack.mulPose(Axis.XP.rotationDegrees((float) renderRotation.x));
-
-        // Authored scale applied around the limb anchor, before the offset translates the fragment into the hitbox.
-        var renderScale = visuals.renderScale();
-        poseStack.scale((float) renderScale.x, (float) renderScale.y, (float) renderScale.z);
-
         var renderOffset = visuals.renderOffset();
-        poseStack.translate(renderOffset.x, renderOffset.y, renderOffset.z);
+        var renderRotation = visuals.renderRotation();
+        var renderScale = visuals.renderScale();
+        if (visuals.modelerTransform()) {
+            var renderPivot = visuals.renderPivot();
+            poseStack.translate(renderOffset.x, renderOffset.y, renderOffset.z);
+            poseStack.translate(renderPivot.x, renderPivot.y, renderPivot.z);
+            poseStack.mulPose(Axis.ZP.rotationDegrees((float) renderRotation.z));
+            poseStack.mulPose(Axis.YP.rotationDegrees((float) renderRotation.y));
+            poseStack.mulPose(Axis.XP.rotationDegrees((float) renderRotation.x));
+            poseStack.scale((float) renderScale.x, (float) renderScale.y, (float) renderScale.z);
+            poseStack.translate(-renderPivot.x, -renderPivot.y, -renderPivot.z);
+        } else {
+            poseStack.mulPose(Axis.ZP.rotationDegrees((float) renderRotation.z));
+            poseStack.mulPose(Axis.YP.rotationDegrees((float) renderRotation.y));
+            poseStack.mulPose(Axis.XP.rotationDegrees((float) renderRotation.x));
+            poseStack.scale((float) renderScale.x, (float) renderScale.y, (float) renderScale.z);
+            poseStack.translate(renderOffset.x, renderOffset.y, renderOffset.z);
+        }
 
         // Vanilla entity models are authored upside-down relative to world axes;
         // LivingEntityRenderer applies this scale before rendering the model, so we
