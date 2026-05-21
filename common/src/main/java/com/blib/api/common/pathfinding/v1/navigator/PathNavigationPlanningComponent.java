@@ -93,11 +93,7 @@ final class PathNavigationPlanningComponent {
 
         if (
             !stuckReplan
-                && failureBackoff.isInFailureCooldown(
-                    state,
-                    searchTarget,
-                    targets::hasComputedTargetMovedForFailureCooldown
-                )
+                && failureBackoff.isInFailureCooldown(state, entityPos)
         ) {
             var failure = failureCooldown(request);
             state.completePlanningWithFailed(request, failure);
@@ -147,11 +143,7 @@ final class PathNavigationPlanningComponent {
         var request = state.requestContext(entityPos, rawTarget, searchTarget);
 
         if (
-            failureBackoff.isInFailureCooldown(
-                state,
-                searchTarget,
-                targets::hasComputedTargetMovedForFailureCooldown
-            )
+            failureBackoff.isInFailureCooldown(state, entityPos)
         ) {
             var failure = failureCooldown(request);
             state.enterPlanning(request, null, null, System.nanoTime(), activePath);
@@ -338,8 +330,8 @@ final class PathNavigationPlanningComponent {
         needsRepath = false;
     }
 
-    void recordFailure() {
-        failureBackoff.recordFailure(state);
+    void recordFailure(BlockPos entityStart) {
+        failureBackoff.recordFailure(state, entityStart);
     }
 
     private boolean tryReuseCurrentPathPrefix(BlockPos target) {
@@ -445,7 +437,7 @@ final class PathNavigationPlanningComponent {
                 request.searchTarget()
             );
             state.completePlanningWithFailed(request, failure);
-            failureBackoff.recordFailure(state);
+            failureBackoff.recordFailure(state, request.entityStart());
 
             return Result.err(failure);
         }
@@ -472,7 +464,7 @@ final class PathNavigationPlanningComponent {
                 exception.getCause() != null ? exception.getCause() : exception
             );
             state.completePlanningWithFailed(request, failure);
-            failureBackoff.recordFailure(state);
+            failureBackoff.recordFailure(state, request.entityStart());
             completePendingResult(pendingResult, Result.err(failure));
 
             return null;

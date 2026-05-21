@@ -4,8 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 
-import java.util.function.Predicate;
-
 /**
  * Owns failed-path cooldown timing and exponential failure backoff.
  */
@@ -14,6 +12,8 @@ final class PathNavigationFailureBackoff {
     private static final int BASE_FAILURE_COOLDOWN = 10;
 
     private static final int MAX_FAILURE_COOLDOWN = 200;
+
+    private static final double FAILURE_START_RESET_DISTANCE_SQUARED = 4.0;
 
     private static final long NANOS_PER_TICK = 50_000_000L;
 
@@ -27,15 +27,13 @@ final class PathNavigationFailureBackoff {
 
     boolean isInFailureCooldown(
         PathNavigationStateComponent state,
-        BlockPos target,
-        Predicate<BlockPos> computedTargetMovedPredicate
+        BlockPos entityStart
     ) {
         if (state.consecutiveFailures == 0) {
             return false;
         }
 
-        // Reset cooldown if target changed significantly.
-        if (computedTargetMovedPredicate.test(target)) {
+        if (hasMovedAwayFromFailedStart(state, entityStart)) {
             resetFailureCooldown(state);
             return false;
         }
@@ -43,8 +41,9 @@ final class PathNavigationFailureBackoff {
         return cooldownClock() - state.lastFailureTick < state.failureCooldownTicks;
     }
 
-    void recordFailure(PathNavigationStateComponent state) {
+    void recordFailure(PathNavigationStateComponent state, BlockPos entityStart) {
         state.consecutiveFailures++;
+        state.lastFailureEntityStart = entityStart;
         state.lastFailureTick = cooldownClock();
         var shift = Math.min(state.consecutiveFailures - 1, 30);
         state.failureCooldownTicks = Math.min(BASE_FAILURE_COOLDOWN * (1 << shift), MAX_FAILURE_COOLDOWN);
@@ -53,6 +52,7 @@ final class PathNavigationFailureBackoff {
     void resetFailureCooldown(PathNavigationStateComponent state) {
         state.consecutiveFailures = 0;
         state.failureCooldownTicks = 0;
+        state.lastFailureEntityStart = null;
     }
 
     long cooldownClock() {
@@ -61,5 +61,10 @@ final class PathNavigationFailureBackoff {
         }
 
         return (System.nanoTime() - createdNanos) / NANOS_PER_TICK;
+    }
+
+    private boolean hasMovedAwayFromFailedStart(PathNavigationStateComponent state, BlockPos entityStart) {
+        return state.lastFailureEntityStart != null
+            && entityStart.distSqr(state.lastFailureEntityStart) >= FAILURE_START_RESET_DISTANCE_SQUARED;
     }
 }

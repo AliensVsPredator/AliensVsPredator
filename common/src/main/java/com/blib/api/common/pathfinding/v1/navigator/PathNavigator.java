@@ -279,7 +279,7 @@ public final class PathNavigator implements PathNavigatorApi {
         }
 
         if (decision == PathNavigationProgressTracker.StuckDecision.STOP) {
-            planning.recordFailure();
+            planning.recordFailure(entityAnchorPos);
             stop();
             return;
         }

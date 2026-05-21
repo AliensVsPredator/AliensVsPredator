@@ -55,6 +55,8 @@ final class PathNavigationStateComponent implements PathNavigationState {
 
     long lastFailureTick;
 
+    @Nullable BlockPos lastFailureEntityStart;
+
     double lastEntityX;
 
     double lastEntityY;

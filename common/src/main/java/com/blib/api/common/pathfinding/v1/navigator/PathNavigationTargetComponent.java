@@ -97,11 +97,6 @@ final class PathNavigationTargetComponent implements PathNavigationAnchorResolve
         lastProjectionTargetPos = null;
     }
 
-    boolean hasComputedTargetMovedForFailureCooldown(BlockPos target) {
-        return lastComputedTargetPos != null
-            && target.distSqr(lastComputedTargetPos) >= MIN_TARGET_MOVE_DISTANCE_SQUARED;
-    }
-
     boolean hasTargetMovedForRecalculation() {
         var searchTarget = state.currentSearchTarget();
 
