@@ -81,6 +81,12 @@ public class DismemberedLimbEntity extends Entity {
 
     private static final float DRAG = 0.98F;
 
+    private static final double ITEM_POP_UPWARD_VELOCITY = 0.2;
+
+    private static final double ITEM_POP_MAX_HORIZONTAL_VELOCITY = 0.5;
+
+    private static final double ITEM_POP_INHERITED_VELOCITY_SCALE = 0.25;
+
     private int lifetimeTicks = DEFAULT_LIFETIME_TICKS;
 
     private int ageTicks = 0;
@@ -181,13 +187,29 @@ public class DismemberedLimbEntity extends Entity {
             return InteractionResult.PASS;
         }
 
-        var itemEntity = new ItemEntity(level(), getX(), getY(), getZ(), stack);
-        itemEntity.setDeltaMovement(getDeltaMovement());
+        var itemEntity = new ItemEntity(level(), getX(), getY() + itemPopYOffset(), getZ(), stack);
+        itemEntity.setDeltaMovement(createItemPopVelocity());
         itemEntity.setDefaultPickUpDelay();
         level().addFreshEntity(itemEntity);
         discard();
 
         return InteractionResult.SUCCESS;
+    }
+
+    private double itemPopYOffset() {
+        return Math.min(0.5, Math.max(0.1, getBbHeight() * 0.5));
+    }
+
+    private Vec3 createItemPopVelocity() {
+        var speed = random.nextDouble() * ITEM_POP_MAX_HORIZONTAL_VELOCITY;
+        var angle = random.nextDouble() * Math.PI * 2.0;
+        var pop = new Vec3(
+            -Math.sin(angle) * speed,
+            ITEM_POP_UPWARD_VELOCITY,
+            Math.cos(angle) * speed
+        );
+
+        return pop.add(getDeltaMovement().scale(ITEM_POP_INHERITED_VELOCITY_SCALE));
     }
 
     public @Nullable EntityType<?> getSourceEntityType() {
