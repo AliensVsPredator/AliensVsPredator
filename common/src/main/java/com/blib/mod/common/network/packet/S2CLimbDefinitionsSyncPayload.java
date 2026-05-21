@@ -12,6 +12,7 @@ import java.util.List;
 
 import com.blib.api.common.codec.v1.BLibCodecs;
 import com.blib.api.common.dismemberment.v1.LimbDefinitionRegistry;
+import com.blib.api.common.dismemberment.v1.LimbPoseOption;
 import com.blib.mod.BLib;
 
 /**
@@ -19,10 +20,10 @@ import com.blib.mod.BLib;
  * data-pack reload to every online player, and on player join (delayed by 20 ticks so the connection is fully
  * established).
  * <p>
- * The wire format is a flat list of {@code (entityTypeId, [(limbId, categoryId, fatal), ...])} entries — one per entity
- * type with at least one declared limb. The client repopulates {@code LimbDefinitionRegistry}'s tier-2 with synthetic
- * {@link com.blib.api.common.dismemberment.v1.LimbDefinition}s whose {@code spawnOffsetProvider} is a no-op (clients
- * never call it; the server computes the spawn position before the limb entity is created).
+ * The wire format is a flat list of {@code (entityTypeId, [(limbId, categoryId, fatal, poses), ...])} entries — one
+ * per entity type with at least one declared limb. The client repopulates {@code LimbDefinitionRegistry}'s tier-2 with
+ * synthetic {@link com.blib.api.common.dismemberment.v1.LimbDefinition}s whose {@code spawnOffsetProvider} is a no-op
+ * (clients never call it; the server computes the spawn position before the limb entity is created).
  */
 public record S2CLimbDefinitionsSyncPayload(List<EntityTypeLimbs> entries) implements CustomPacketPayload {
 
@@ -30,10 +31,29 @@ public record S2CLimbDefinitionsSyncPayload(List<EntityTypeLimbs> entries) imple
 
     public static final Type<S2CLimbDefinitionsSyncPayload> TYPE = new Type<>(PAYLOAD_ID);
 
+    public record PoseEntry(
+        String id,
+        int weight
+    ) {
+
+        public static final StreamCodec<PoseEntry> CODEC = RecordStreamCodec.of(
+            StreamCodecs.STRING_UTF8,
+            PoseEntry::id,
+            StreamCodecs.INT,
+            PoseEntry::weight,
+            PoseEntry::new
+        );
+
+        static PoseEntry fromOption(LimbPoseOption option) {
+            return new PoseEntry(option.id(), option.weight());
+        }
+    }
+
     public record LimbEntry(
         ResourceLocation limbId,
         ResourceLocation categoryId,
-        boolean fatal
+        boolean fatal,
+        List<PoseEntry> poses
     ) {
 
         public static final StreamCodec<LimbEntry> CODEC = RecordStreamCodec.of(
@@ -43,6 +63,8 @@ public record S2CLimbDefinitionsSyncPayload(List<EntityTypeLimbs> entries) imple
             LimbEntry::categoryId,
             StreamCodecs.BOOLEAN,
             LimbEntry::fatal,
+            PoseEntry.CODEC.asList(),
+            LimbEntry::poses,
             LimbEntry::new
         );
     }
@@ -79,7 +101,8 @@ public record S2CLimbDefinitionsSyncPayload(List<EntityTypeLimbs> entries) imple
         for (var bucket : snapshot.entrySet()) {
             var perEntity = new ArrayList<LimbEntry>(bucket.getValue().size());
             for (var def : bucket.getValue().values()) {
-                perEntity.add(new LimbEntry(def.id(), def.category().id(), def.fatal()));
+                var poses = def.poses().stream().map(PoseEntry::fromOption).toList();
+                perEntity.add(new LimbEntry(def.id(), def.category().id(), def.fatal(), poses));
             }
             entries.add(new EntityTypeLimbs(bucket.getKey(), perEntity));
         }

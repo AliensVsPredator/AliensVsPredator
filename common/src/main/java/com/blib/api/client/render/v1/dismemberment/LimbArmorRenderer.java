@@ -91,11 +91,12 @@ public final class LimbArmorRenderer {
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(180f - limb.getYRot()));
 
-        var renderOffset = visuals.renderOffset();
-        var renderRotation = visuals.renderRotation();
-        var renderScale = visuals.renderScale();
-        if (visuals.modelerTransform()) {
-            var renderPivot = visuals.renderPivot();
+        var selectedPose = visuals.poseOrDefault(limb.getPoseId());
+        var renderOffset = selectedPose.renderOffset();
+        var renderRotation = selectedPose.renderRotation();
+        var renderScale = selectedPose.renderScale();
+        if (selectedPose.modelerTransform()) {
+            var renderPivot = selectedPose.renderPivot();
             poseStack.translate(renderOffset.x, renderOffset.y, renderOffset.z);
             poseStack.translate(renderPivot.x, renderPivot.y, renderPivot.z);
             poseStack.mulPose(Axis.ZP.rotationDegrees((float) renderRotation.z));

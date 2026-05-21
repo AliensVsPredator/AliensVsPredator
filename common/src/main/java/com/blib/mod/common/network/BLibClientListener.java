@@ -11,6 +11,7 @@ import com.blib.api.common.data_sync.v1.model.DataUser;
 import com.blib.api.common.dismemberment.v1.LimbCategory;
 import com.blib.api.common.dismemberment.v1.LimbDefinition;
 import com.blib.api.common.dismemberment.v1.LimbDefinitionRegistry;
+import com.blib.api.common.dismemberment.v1.LimbPoseOption;
 import com.blib.api.common.dismemberment.v1.SpawnFunctionRegistry;
 import com.blib.internal.client.faction.ClientFactionCache;
 import com.blib.internal.client.territory.ClientTerritoryCache;
@@ -52,11 +53,16 @@ public final class BLibClientListener {
         for (var bucket : payload.entries()) {
             var perEntity = new LinkedHashMap<ResourceLocation, LimbDefinition>();
             for (var entry : bucket.limbs()) {
+                var poses = entry.poses()
+                    .stream()
+                    .map(pose -> new LimbPoseOption(pose.id(), pose.weight()))
+                    .toList();
                 var def = new LimbDefinition(
                     entry.limbId(),
                     new LimbCategory(entry.categoryId()),
                     SpawnFunctionRegistry.DEFAULT_PROVIDER,
-                    entry.fatal()
+                    entry.fatal(),
+                    poses
                 );
                 perEntity.put(entry.limbId(), def);
             }

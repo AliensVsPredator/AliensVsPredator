@@ -4,12 +4,16 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 
 import com.blib.api.common.registry.v1.BLibHolder;
@@ -22,6 +26,7 @@ import com.blib.api.common.registry.v1.BLibHolder;
  * <li>{@code spawnOffsetProvider} — server-side function computing the world-space offset where the detached limb
  * entity spawns; not serializable, registered separately in {@link SpawnFunctionRegistry}.</li>
  * <li>{@code fatal} — if true, detachment kills the source entity.</li>
+ * <li>{@code poses} — server-side pose ids and weights used when a limb is detached with a random pose.</li>
  * </ul>
  * Visual fields (root bone, companion bones, render offsets/rotations/scale) live on the client side in
  * {@link LimbVisuals}, paired by {@code id}. The Java {@link Builder} below configures both halves at once and writes
@@ -32,13 +37,38 @@ public record LimbDefinition(
     ResourceLocation id,
     LimbCategory category,
     Function<LivingEntity, Vec3> spawnOffsetProvider,
-    boolean fatal
+    boolean fatal,
+    List<LimbPoseOption> poses
 ) {
+
+    public LimbDefinition(
+        ResourceLocation id,
+        LimbCategory category,
+        Function<LivingEntity, Vec3> spawnOffsetProvider,
+        boolean fatal
+    ) {
+        this(id, category, spawnOffsetProvider, fatal, List.of());
+    }
 
     public LimbDefinition {
         Objects.requireNonNull(id, "LimbDefinition id must not be null");
         Objects.requireNonNull(category, "LimbDefinition category must not be null");
         Objects.requireNonNull(spawnOffsetProvider, "LimbDefinition spawnOffsetProvider must not be null");
+        Objects.requireNonNull(poses, "LimbDefinition poses must not be null");
+
+        Set<String> poseIds = new HashSet<>();
+        var copied = new ArrayList<LimbPoseOption>(poses.size());
+        for (var pose : poses) {
+            Objects.requireNonNull(pose, "LimbDefinition pose must not be null");
+            if (LimbPose.DEFAULT_ID.equals(pose.id())) {
+                throw new IllegalArgumentException("LimbDefinition poses must not include the implicit default pose");
+            }
+            if (!poseIds.add(pose.id())) {
+                throw new IllegalArgumentException("Duplicate LimbDefinition pose id: " + pose.id());
+            }
+            copied.add(pose);
+        }
+        poses = List.copyOf(copied);
     }
 
     /**
@@ -50,9 +80,69 @@ public record LimbDefinition(
         instance -> instance.group(
             ResourceLocation.CODEC.fieldOf("id").forGetter(LimbDefinition::id),
             LimbCategory.CODEC.fieldOf("category").forGetter(LimbDefinition::category),
-            Codec.BOOL.optionalFieldOf("fatal", false).forGetter(LimbDefinition::fatal)
-        ).apply(instance, (id, category, fatal) -> new LimbDefinition(id, category, SpawnFunctionRegistry.get(id), fatal))
+            Codec.BOOL.optionalFieldOf("fatal", false).forGetter(LimbDefinition::fatal),
+            LimbPoseOption.CODEC.listOf().optionalFieldOf("poses", List.of()).forGetter(LimbDefinition::poses)
+        ).apply(instance, (id, category, fatal, poses) -> new LimbDefinition(id, category, SpawnFunctionRegistry.get(id), fatal, poses))
     );
+
+    public boolean hasPose(String poseId) {
+        if (LimbPose.DEFAULT_ID.equals(poseId)) {
+            return true;
+        }
+        for (var pose : poses) {
+            if (pose.id().equals(poseId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<LimbPoseOption> allPoseOptions() {
+        var out = new ArrayList<LimbPoseOption>(poses.size() + 1);
+        out.add(new LimbPoseOption(LimbPose.DEFAULT_ID, LimbPose.DEFAULT_WEIGHT));
+        out.addAll(poses);
+        return List.copyOf(out);
+    }
+
+    public String selectRandomPoseId(RandomSource random) {
+        Objects.requireNonNull(random, "random");
+
+        long totalWeight = LimbPose.DEFAULT_WEIGHT;
+        for (var pose : poses) {
+            if (pose.selectable()) {
+                totalWeight += pose.weight();
+            }
+        }
+
+        if (totalWeight <= 0) {
+            return LimbPose.DEFAULT_ID;
+        }
+
+        var roll = randomRoll(random, totalWeight);
+        if (roll < LimbPose.DEFAULT_WEIGHT) {
+            return LimbPose.DEFAULT_ID;
+        }
+        roll -= LimbPose.DEFAULT_WEIGHT;
+
+        for (var pose : poses) {
+            if (!pose.selectable()) {
+                continue;
+            }
+            if (roll < pose.weight()) {
+                return pose.id();
+            }
+            roll -= pose.weight();
+        }
+
+        return LimbPose.DEFAULT_ID;
+    }
+
+    private static long randomRoll(RandomSource random, long bound) {
+        if (bound <= Integer.MAX_VALUE) {
+            return random.nextInt((int) bound);
+        }
+        return Math.floorMod(random.nextLong(), bound);
+    }
 
     /**
      * Build a limb against an entity type registered by id. Pre-binding-safe — call freely at mod-init before
@@ -109,6 +199,8 @@ public record LimbDefinition(
 
         private boolean modelerTransform = false;
 
+        private final List<LimbPose> poses = new ArrayList<>();
+
         private Function<LivingEntity, Vec3> spawnOffsetProvider = SpawnFunctionRegistry.DEFAULT_PROVIDER;
 
         private boolean fatal = false;
@@ -160,6 +252,20 @@ public record LimbDefinition(
             return this;
         }
 
+        public Builder pose(LimbPose pose) {
+            this.poses.add(Objects.requireNonNull(pose));
+            return this;
+        }
+
+        public Builder poses(List<LimbPose> poses) {
+            Objects.requireNonNull(poses, "poses");
+            this.poses.clear();
+            for (var pose : poses) {
+                this.poses.add(Objects.requireNonNull(pose));
+            }
+            return this;
+        }
+
         public Builder spawnOffset(double x, double y, double z) {
             var fixed = new Vec3(x, y, z);
             this.spawnOffsetProvider = $ -> fixed;
@@ -198,8 +304,18 @@ public record LimbDefinition(
          * is fine — the registries are now populated.
          */
         public LimbDefinition build() {
-            var definition = new LimbDefinition(id, category, spawnOffsetProvider, fatal);
-            var visuals = new LimbVisuals(rootBoneName, companionBoneNames, renderOffset, renderRotation, renderScale, renderPivot, modelerTransform);
+            var poseOptions = poses.stream().map(LimbPoseOption::fromPose).toList();
+            var definition = new LimbDefinition(id, category, spawnOffsetProvider, fatal, poseOptions);
+            var visuals = new LimbVisuals(
+                rootBoneName,
+                companionBoneNames,
+                renderOffset,
+                renderRotation,
+                renderScale,
+                renderPivot,
+                modelerTransform,
+                poses
+            );
 
             LimbDefinitionRegistry.register(entityTypeId, definition);
             LimbVisualsRegistry.register(entityTypeId, id, visuals);

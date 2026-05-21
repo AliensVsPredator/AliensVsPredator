@@ -33,12 +33,62 @@ public final class LimbDismemberer {
      * entity (if any).
      */
     public static Optional<DismemberedLimbEntity> detach(LivingEntity entity, ResourceLocation limbId) {
-        return detach(entity, limbId, null);
+        return detach(entity, limbId, LimbPoseSelection.random(), null);
     }
 
     public static Optional<DismemberedLimbEntity> detach(
         LivingEntity entity,
         ResourceLocation limbId,
+        @Nullable Consumer<DismemberedLimbEntity> limbConfigurer
+    ) {
+        return detach(entity, limbId, LimbPoseSelection.random(), limbConfigurer);
+    }
+
+    public static Optional<DismemberedLimbEntity> detachWithRandomPose(LivingEntity entity, ResourceLocation limbId) {
+        return detach(entity, limbId, LimbPoseSelection.random(), null);
+    }
+
+    public static Optional<DismemberedLimbEntity> detachWithRandomPose(
+        LivingEntity entity,
+        ResourceLocation limbId,
+        @Nullable Consumer<DismemberedLimbEntity> limbConfigurer
+    ) {
+        return detach(entity, limbId, LimbPoseSelection.random(), limbConfigurer);
+    }
+
+    public static Optional<DismemberedLimbEntity> detachWithDefaultPose(LivingEntity entity, ResourceLocation limbId) {
+        return detach(entity, limbId, LimbPoseSelection.defaultPose(), null);
+    }
+
+    public static Optional<DismemberedLimbEntity> detachWithDefaultPose(
+        LivingEntity entity,
+        ResourceLocation limbId,
+        @Nullable Consumer<DismemberedLimbEntity> limbConfigurer
+    ) {
+        return detach(entity, limbId, LimbPoseSelection.defaultPose(), limbConfigurer);
+    }
+
+    public static Optional<DismemberedLimbEntity> detachWithPose(
+        LivingEntity entity,
+        ResourceLocation limbId,
+        String poseId
+    ) {
+        return detach(entity, limbId, LimbPoseSelection.specific(poseId), null);
+    }
+
+    public static Optional<DismemberedLimbEntity> detachWithPose(
+        LivingEntity entity,
+        ResourceLocation limbId,
+        String poseId,
+        @Nullable Consumer<DismemberedLimbEntity> limbConfigurer
+    ) {
+        return detach(entity, limbId, LimbPoseSelection.specific(poseId), limbConfigurer);
+    }
+
+    public static Optional<DismemberedLimbEntity> detach(
+        LivingEntity entity,
+        ResourceLocation limbId,
+        @Nullable LimbPoseSelection poseSelection,
         @Nullable Consumer<DismemberedLimbEntity> limbConfigurer
     ) {
         if (entity.level().isClientSide) {
@@ -61,7 +111,7 @@ public final class LimbDismemberer {
             return Optional.empty();
         }
 
-        var spawned = Optional.ofNullable(spawnLimbEntity(entity, definition, limbConfigurer));
+        var spawned = Optional.ofNullable(spawnLimbEntity(entity, definition, poseSelection, limbConfigurer));
         applyFatalSideEffect(entity, definition);
         return spawned;
     }
@@ -73,6 +123,62 @@ public final class LimbDismemberer {
     public static Optional<DismemberedLimbEntity> detachFirstOfCategory(
         LivingEntity entity,
         LimbCategory category,
+        @Nullable Consumer<DismemberedLimbEntity> limbConfigurer
+    ) {
+        return detachFirstOfCategory(entity, category, LimbPoseSelection.random(), limbConfigurer);
+    }
+
+    public static Optional<DismemberedLimbEntity> detachFirstOfCategoryWithRandomPose(
+        LivingEntity entity,
+        LimbCategory category
+    ) {
+        return detachFirstOfCategory(entity, category, LimbPoseSelection.random(), null);
+    }
+
+    public static Optional<DismemberedLimbEntity> detachFirstOfCategoryWithRandomPose(
+        LivingEntity entity,
+        LimbCategory category,
+        @Nullable Consumer<DismemberedLimbEntity> limbConfigurer
+    ) {
+        return detachFirstOfCategory(entity, category, LimbPoseSelection.random(), limbConfigurer);
+    }
+
+    public static Optional<DismemberedLimbEntity> detachFirstOfCategoryWithDefaultPose(
+        LivingEntity entity,
+        LimbCategory category
+    ) {
+        return detachFirstOfCategory(entity, category, LimbPoseSelection.defaultPose(), null);
+    }
+
+    public static Optional<DismemberedLimbEntity> detachFirstOfCategoryWithDefaultPose(
+        LivingEntity entity,
+        LimbCategory category,
+        @Nullable Consumer<DismemberedLimbEntity> limbConfigurer
+    ) {
+        return detachFirstOfCategory(entity, category, LimbPoseSelection.defaultPose(), limbConfigurer);
+    }
+
+    public static Optional<DismemberedLimbEntity> detachFirstOfCategoryWithPose(
+        LivingEntity entity,
+        LimbCategory category,
+        String poseId
+    ) {
+        return detachFirstOfCategory(entity, category, LimbPoseSelection.specific(poseId), null);
+    }
+
+    public static Optional<DismemberedLimbEntity> detachFirstOfCategoryWithPose(
+        LivingEntity entity,
+        LimbCategory category,
+        String poseId,
+        @Nullable Consumer<DismemberedLimbEntity> limbConfigurer
+    ) {
+        return detachFirstOfCategory(entity, category, LimbPoseSelection.specific(poseId), limbConfigurer);
+    }
+
+    public static Optional<DismemberedLimbEntity> detachFirstOfCategory(
+        LivingEntity entity,
+        LimbCategory category,
+        @Nullable LimbPoseSelection poseSelection,
         @Nullable Consumer<DismemberedLimbEntity> limbConfigurer
     ) {
         if (entity.level().isClientSide) {
@@ -95,7 +201,7 @@ public final class LimbDismemberer {
                 continue;
             }
 
-            var spawned = Optional.ofNullable(spawnLimbEntity(entity, definition, limbConfigurer));
+            var spawned = Optional.ofNullable(spawnLimbEntity(entity, definition, poseSelection, limbConfigurer));
             applyFatalSideEffect(entity, definition);
             return spawned;
         }
@@ -149,6 +255,7 @@ public final class LimbDismemberer {
     private static @Nullable DismemberedLimbEntity spawnLimbEntity(
         LivingEntity entity,
         LimbDefinition definition,
+        @Nullable LimbPoseSelection poseSelection,
         @Nullable Consumer<DismemberedLimbEntity> limbConfigurer
     ) {
         var level = entity.level();
@@ -162,7 +269,9 @@ public final class LimbDismemberer {
         var sourceNbt = new CompoundTag();
         entity.saveWithoutId(sourceNbt);
 
-        limb.configure(entity.getType(), sourceNbt, definition.id(), 20 * 30);
+        var effectivePoseSelection = poseSelection == null ? LimbPoseSelection.random() : poseSelection;
+        var resolvedPoseId = effectivePoseSelection.resolve(definition, entity.getRandom());
+        limb.configure(entity.getType(), sourceNbt, definition.id(), 20 * 30, resolvedPoseId);
 
         var spawnOffset = definition.spawnOffsetProvider().apply(entity);
         var spawnPos = entity.position().add(spawnOffset);

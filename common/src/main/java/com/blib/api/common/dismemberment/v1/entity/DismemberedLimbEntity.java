@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import com.blib.api.common.dismemberment.v1.LimbDefinition;
 import com.blib.api.common.dismemberment.v1.LimbDefinitionRegistry;
 import com.blib.api.common.dismemberment.v1.LimbInteractionRegistry;
+import com.blib.api.common.dismemberment.v1.LimbPose;
 import com.blib.api.common.dismemberment.v1.LimbVisuals;
 import com.blib.api.common.dismemberment.v1.LimbVisualsRegistry;
 
@@ -48,6 +49,8 @@ public class DismemberedLimbEntity extends Entity {
 
     private static final String NBT_LIMB_ID = "LimbId";
 
+    private static final String NBT_POSE_ID = "PoseId";
+
     private static final String NBT_LIFETIME_TICKS = "LifetimeTicks";
 
     private static final String NBT_AGE_TICKS = "AgeTicks";
@@ -63,6 +66,11 @@ public class DismemberedLimbEntity extends Entity {
     );
 
     private static final EntityDataAccessor<String> LIMB_ID = SynchedEntityData.defineId(
+        DismemberedLimbEntity.class,
+        EntityDataSerializers.STRING
+    );
+
+    private static final EntityDataAccessor<String> POSE_ID = SynchedEntityData.defineId(
         DismemberedLimbEntity.class,
         EntityDataSerializers.STRING
     );
@@ -90,10 +98,21 @@ public class DismemberedLimbEntity extends Entity {
     }
 
     public void configure(EntityType<?> sourceEntityType, CompoundTag sourceNbt, ResourceLocation limbId, int lifetimeTicks) {
+        configure(sourceEntityType, sourceNbt, limbId, lifetimeTicks, LimbPose.DEFAULT_ID);
+    }
+
+    public void configure(
+        EntityType<?> sourceEntityType,
+        CompoundTag sourceNbt,
+        ResourceLocation limbId,
+        int lifetimeTicks,
+        String poseId
+    ) {
         var sourceTypeId = BuiltInRegistries.ENTITY_TYPE.getKey(sourceEntityType);
         entityData.set(SOURCE_ENTITY_TYPE, sourceTypeId.toString());
         entityData.set(SOURCE_NBT, sourceNbt);
         entityData.set(LIMB_ID, limbId.toString());
+        setPoseId(poseId);
         this.lifetimeTicks = Math.max(1, lifetimeTicks);
     }
 
@@ -102,6 +121,7 @@ public class DismemberedLimbEntity extends Entity {
         builder.define(SOURCE_ENTITY_TYPE, "");
         builder.define(SOURCE_NBT, new CompoundTag());
         builder.define(LIMB_ID, "");
+        builder.define(POSE_ID, LimbPose.DEFAULT_ID);
     }
 
     @Override
@@ -218,6 +238,14 @@ public class DismemberedLimbEntity extends Entity {
         return raw.isEmpty() ? null : ResourceLocation.tryParse(raw);
     }
 
+    public String getPoseId() {
+        return normalizedPoseId(entityData.get(POSE_ID));
+    }
+
+    public void setPoseId(String poseId) {
+        entityData.set(POSE_ID, normalizedPoseId(poseId));
+    }
+
     /**
      * Returns the {@link LimbDefinition} this limb was spawned from via a direct registry lookup. Returns {@code null}
      * if the source type or limb id is missing/unknown.
@@ -249,6 +277,16 @@ public class DismemberedLimbEntity extends Entity {
         return LimbVisualsRegistry.get(sourceType, limbId);
     }
 
+    /**
+     * Client-side helper: resolves this limb's selected visual pose from {@link #resolveVisuals()} and the synced pose
+     * id. The id is chosen once on the server when the limb spawns, so every client renders the same pose while still
+     * allowing resource reloads to update the authored transform data.
+     */
+    public @Nullable LimbPose resolvePose() {
+        var visuals = resolveVisuals();
+        return visuals == null ? null : visuals.poseOrDefault(getPoseId());
+    }
+
     public int getLifetimeTicks() {
         return lifetimeTicks;
     }
@@ -267,6 +305,7 @@ public class DismemberedLimbEntity extends Entity {
         entityData.set(SOURCE_ENTITY_TYPE, compoundTag.getString(NBT_SOURCE_ENTITY_TYPE));
         entityData.set(SOURCE_NBT, compoundTag.getCompound(NBT_SOURCE_NBT));
         entityData.set(LIMB_ID, compoundTag.getString(NBT_LIMB_ID));
+        setPoseId(compoundTag.contains(NBT_POSE_ID) ? compoundTag.getString(NBT_POSE_ID) : LimbPose.DEFAULT_ID);
         this.lifetimeTicks = compoundTag.contains(NBT_LIFETIME_TICKS)
             ? compoundTag.getInt(NBT_LIFETIME_TICKS)
             : DEFAULT_LIFETIME_TICKS;
@@ -280,7 +319,12 @@ public class DismemberedLimbEntity extends Entity {
         compoundTag.putString(NBT_SOURCE_ENTITY_TYPE, entityData.get(SOURCE_ENTITY_TYPE));
         compoundTag.put(NBT_SOURCE_NBT, entityData.get(SOURCE_NBT));
         compoundTag.putString(NBT_LIMB_ID, entityData.get(LIMB_ID));
+        compoundTag.putString(NBT_POSE_ID, getPoseId());
         compoundTag.putInt(NBT_LIFETIME_TICKS, lifetimeTicks);
         compoundTag.putInt(NBT_AGE_TICKS, ageTicks);
+    }
+
+    private static String normalizedPoseId(@Nullable String poseId) {
+        return poseId == null || poseId.isBlank() ? LimbPose.DEFAULT_ID : poseId.trim();
     }
 }
