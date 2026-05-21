@@ -211,11 +211,11 @@ public class AzAnimationTrack<T> extends AzAbstractAnimationTrack {
 
         return switch (onPropertiesChanged) {
             case RESTART -> sequence.equals(currentSequence);
-            case UPDATE_IN_PLACE -> sameAnimationNames(sequence, currentSequence);
+            case UPDATE_IN_PLACE -> sameRetunableSequence(sequence, currentSequence);
         };
     }
 
-    private static boolean sameAnimationNames(AzAnimationSequence a, AzAnimationSequence b) {
+    private static boolean sameRetunableSequence(AzAnimationSequence a, AzAnimationSequence b) {
         var aStages = a.stages();
         var bStages = b.stages();
 
@@ -224,7 +224,14 @@ public class AzAnimationTrack<T> extends AzAbstractAnimationTrack {
         }
 
         for (int i = 0; i < aStages.size(); i++) {
-            if (!aStages.get(i).name().equals(bStages.get(i).name())) {
+            var aStage = aStages.get(i);
+            var bStage = bStages.get(i);
+
+            if (!aStage.name().equals(bStage.name())) {
+                return false;
+            }
+
+            if (aStage.properties().playBehavior() != bStage.properties().playBehavior()) {
                 return false;
             }
         }

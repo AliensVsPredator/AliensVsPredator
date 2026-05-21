@@ -18,9 +18,9 @@ public enum OnPropertiesChanged {
     RESTART,
 
     /**
-     * Treat the dispatched sequence as the same sequence if the animation names match, ignoring per-stage property
-     * differences. The track keeps playing without restart; any track-level setters in the same command (e.g.
-     * {@code setSpeed}) still apply their changes.
+     * Treat the dispatched sequence as the same sequence if the animation names and play behaviors match, ignoring
+     * retunable per-stage property differences. The track keeps playing without restart; any track-level setters in the
+     * same command (e.g. {@code setSpeed}) still apply their changes.
      */
     UPDATE_IN_PLACE
 }
