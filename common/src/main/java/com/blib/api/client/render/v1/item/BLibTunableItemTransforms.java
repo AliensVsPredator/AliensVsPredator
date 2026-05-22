@@ -120,4 +120,21 @@ public class BLibTunableItemTransforms extends BLibItemTransforms {
 
         return base.getFixedWallOrNull();
     }
+
+    @Override
+    public @Nullable BLibTransform getFixedGroundOrNull() {
+        var override = BLibItemTransformOverrides.getGroundFixed(itemId, mode);
+
+        if (override != null) {
+            return override;
+        }
+
+        var base = baseSupplier.get();
+
+        if (base == null) {
+            return null;
+        }
+
+        return base.getFixedGroundOrNull();
+    }
 }

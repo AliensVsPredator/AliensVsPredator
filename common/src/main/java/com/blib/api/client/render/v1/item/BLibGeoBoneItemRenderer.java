@@ -2,6 +2,7 @@ package com.blib.api.client.render.v1.item;
 
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.UUID;
@@ -82,13 +83,13 @@ public class BLibGeoBoneItemRenderer extends AzItemRenderer {
         var displayContext = itemContext.getTransformType();
         var stack = context.animatable();
 
-        BLibTransform transform = null;
-
         // Short-circuit the blocking predicate when the debug `force-blocking` toggle is on so the user
         // can tune blocking-pose transforms (with gizmos / set-nudge commands) without physically holding
         // RMB. Otherwise the predicate runs as normal — typically `isBlocking` checks the player's use state.
         var blockingActive = config.blockingTransforms() != null
             && (BLibItemTransformOverrides.isForceBlockingEnabled() || config.isBlocking().test(stack));
+
+        BLibTransform transform = null;
 
         if (blockingActive) {
             transform = config.blockingTransforms().getOrNull(displayContext);
@@ -101,18 +102,31 @@ public class BLibGeoBoneItemRenderer extends AzItemRenderer {
             transform = config.idleTransforms().get(displayContext);
         }
 
-        // Wall-block override: callers (e.g., a block-entity renderer for a wall-mounted head) flip the
-        // RENDER_AS_WALL_BLOCK flag immediately before invoking the item-render pipeline, so the FIXED
-        // display context can resolve to a separately-tuned `fixedWall` transform. Floor placement and
-        // wall placement of the same item produce visually distinct poses, and trying to derive one from
-        // the other via a single rotation always sweeps around the bone pivot rather than the wall
-        // surface — so each gets its own slot. Falls through to the regular FIXED transform when the
-        // wall slot wasn't set.
-        if (displayContext == ItemDisplayContext.FIXED && BLibItemTransformOverrides.isRenderAsWallBlock()) {
-            var wallTransform = config.idleTransforms().getFixedWallOrNull();
+        // Fixed-surface overrides: callers flip one of these flags immediately before invoking the item-render
+        // pipeline, so the FIXED display context can resolve to separately-tuned item-frame, wall-block, and
+        // floor-block transforms. Surface placement changes translation and pivot behavior enough that a single
+        // rotation cannot reliably derive one from another.
+        if (displayContext == ItemDisplayContext.FIXED) {
+            if (BLibItemTransformOverrides.isRenderAsWallBlock()) {
+                var wallTransform = fixedSurfaceTransform(
+                    config,
+                    blockingActive,
+                    BLibItemTransforms::getFixedWallOrNull
+                );
 
-            if (wallTransform != null) {
-                transform = wallTransform;
+                if (wallTransform != null) {
+                    transform = wallTransform;
+                }
+            } else if (BLibItemTransformOverrides.isRenderAsGroundBlock()) {
+                var groundTransform = fixedSurfaceTransform(
+                    config,
+                    blockingActive,
+                    BLibItemTransforms::getFixedGroundOrNull
+                );
+
+                if (groundTransform != null) {
+                    transform = groundTransform;
+                }
             }
         }
 
@@ -128,6 +142,22 @@ public class BLibGeoBoneItemRenderer extends AzItemRenderer {
         // because we anchor *after* the rotation/scale on the matrix stack).
         transform.apply(poseStack);
         poseStack.translate(-pivot.x, -pivot.y, -pivot.z);
+    }
+
+    private static @Nullable BLibTransform fixedSurfaceTransform(
+        BLibGeoBoneItemRendererConfig config,
+        boolean blockingActive,
+        java.util.function.Function<BLibItemTransforms, @Nullable BLibTransform> getter
+    ) {
+        if (blockingActive && config.blockingTransforms() != null) {
+            var blocking = getter.apply(config.blockingTransforms());
+
+            if (blocking != null) {
+                return blocking;
+            }
+        }
+
+        return getter.apply(config.idleTransforms());
     }
 
     /**

@@ -21,25 +21,38 @@ public class BLibItemTransforms {
     /**
      * JSON shape matches the vanilla item-model {@code display} block (snake-case keys like
      * {@code thirdperson_righthand} — sourced from {@link ItemDisplayContext#getSerializedName()}). The
-     * {@code fixed_wall} key is a BLib extension that routes to {@link #fixedWall}. Empty maps decode to a
-     * builder-default (identity) transform set.
+     * {@code fixed_wall} and {@code fixed_ground} keys are BLib extensions that route to {@link #fixedWall} and
+     * {@link #fixedGround}. Empty maps decode to a builder-default (identity) transform set.
      */
     public static final Codec<BLibItemTransforms> CODEC = Codec.unboundedMap(Codec.STRING, BLibTransform.CODEC)
         .xmap(BLibItemTransforms::fromSerializedMap, BLibItemTransforms::toSerializedMap);
 
     private static final String FIXED_WALL_KEY = "fixed_wall";
 
+    private static final String FIXED_GROUND_KEY = "fixed_ground";
+
     private final Map<ItemDisplayContext, BLibTransform> transforms;
 
     private final @Nullable BLibTransform fixedWall;
 
+    private final @Nullable BLibTransform fixedGround;
+
     protected BLibItemTransforms(Map<ItemDisplayContext, BLibTransform> transforms) {
-        this(transforms, null);
+        this(transforms, null, null);
     }
 
     protected BLibItemTransforms(Map<ItemDisplayContext, BLibTransform> transforms, @Nullable BLibTransform fixedWall) {
+        this(transforms, fixedWall, null);
+    }
+
+    protected BLibItemTransforms(
+        Map<ItemDisplayContext, BLibTransform> transforms,
+        @Nullable BLibTransform fixedWall,
+        @Nullable BLibTransform fixedGround
+    ) {
         this.transforms = transforms;
         this.fixedWall = fixedWall;
+        this.fixedGround = fixedGround;
     }
 
     public BLibTransform get(ItemDisplayContext context) {
@@ -70,9 +83,19 @@ public class BLibItemTransforms {
     }
 
     /**
+     * The transform to use when this item is being rendered as a floor-placed fixed block. Returns {@code null} if no
+     * ground-specific transform was set — callers should fall back to the regular {@link ItemDisplayContext#FIXED}
+     * transform in that case.
+     */
+    public @Nullable BLibTransform getFixedGroundOrNull() {
+        return fixedGround;
+    }
+
+    /**
      * Decode a vanilla-style display-block map (keys = {@link ItemDisplayContext#getSerializedName()} plus the BLib
-     * {@code fixed_wall} extension) into a {@link BLibItemTransforms}. Unknown keys are ignored — vanilla's display
-     * block is small but stable, and silently skipping unrecognized perspectives keeps forward compatibility cheap.
+     * {@code fixed_wall}/{@code fixed_ground} extensions) into a {@link BLibItemTransforms}. Unknown keys are ignored
+     * — vanilla's display block is small but stable, and silently skipping unrecognized perspectives keeps forward
+     * compatibility cheap.
      */
     private static BLibItemTransforms fromSerializedMap(Map<String, BLibTransform> map) {
         var builder = builder();
@@ -83,6 +106,11 @@ public class BLibItemTransforms {
 
             if (FIXED_WALL_KEY.equals(key)) {
                 builder.fixedWall(transform);
+                continue;
+            }
+
+            if (FIXED_GROUND_KEY.equals(key)) {
+                builder.fixedGround(transform);
                 continue;
             }
 
@@ -115,6 +143,10 @@ public class BLibItemTransforms {
             out.put(FIXED_WALL_KEY, transforms.fixedWall);
         }
 
+        if (transforms.fixedGround != null) {
+            out.put(FIXED_GROUND_KEY, transforms.fixedGround);
+        }
+
         return out;
     }
 
@@ -131,6 +163,8 @@ public class BLibItemTransforms {
         private boolean mirrorThirdPerson = false;
 
         private @Nullable BLibTransform fixedWall = null;
+
+        private @Nullable BLibTransform fixedGround = null;
 
         private Builder() {}
 
@@ -159,6 +193,15 @@ public class BLibItemTransforms {
          */
         public Builder fixedWall(BLibTransform transform) {
             this.fixedWall = transform;
+            return this;
+        }
+
+        /**
+         * Set a separate transform for floor-block placement of this item. This is distinct from vanilla
+         * {@link ItemDisplayContext#FIXED} so item-frame and floor-block presentations can be tuned independently.
+         */
+        public Builder fixedGround(BLibTransform transform) {
+            this.fixedGround = transform;
             return this;
         }
 
@@ -231,7 +274,7 @@ public class BLibItemTransforms {
                 applyMirror(resolved, ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, ItemDisplayContext.THIRD_PERSON_LEFT_HAND);
             }
 
-            return new BLibItemTransforms(resolved, fixedWall);
+            return new BLibItemTransforms(resolved, fixedWall, fixedGround);
         }
 
         private static void applyMirror(Map<ItemDisplayContext, BLibTransform> map, ItemDisplayContext from, ItemDisplayContext to) {

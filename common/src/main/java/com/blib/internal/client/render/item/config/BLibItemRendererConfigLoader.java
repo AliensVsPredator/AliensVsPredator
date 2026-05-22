@@ -182,6 +182,16 @@ public final class BLibItemRendererConfigLoader extends SimpleJsonResourceReload
             builder.fixedWall(wall);
         }
 
+        var ground = child.getFixedGroundOrNull();
+
+        if (ground == null) {
+            ground = parent.getFixedGroundOrNull();
+        }
+
+        if (ground != null) {
+            builder.fixedGround(ground);
+        }
+
         return builder.build();
     }
 

@@ -36,6 +36,12 @@ public final class BLibItemTransformOverrides {
     private static final Map<ResourceLocation, EnumMap<BLibItemTransformMode, BLibTransform>> WALL_FIXED_OVERRIDES = new HashMap<>();
 
     /**
+     * Parallel override map for the ground-fixed slot (floor-placed block pose, distinct from vanilla item frame
+     * {@link ItemDisplayContext#FIXED}).
+     */
+    private static final Map<ResourceLocation, EnumMap<BLibItemTransformMode, BLibTransform>> GROUND_FIXED_OVERRIDES = new HashMap<>();
+
+    /**
      * Per-(item, mode) supplier that resolves the current base transforms. For Java-backed configs this is a fixed
      * supplier returning the constant {@link BLibItemTransforms} the user passed to
      * {@link BLibTunableItemTransforms#wrap(ResourceLocation, BLibItemTransformMode, BLibItemTransforms)} — a snapshot
@@ -68,6 +74,13 @@ public final class BLibItemTransformOverrides {
      */
     private static volatile boolean RENDER_AS_WALL_BLOCK = false;
 
+    /**
+     * Set by callers immediately before invoking the item-render pipeline when the item is being shown as a
+     * floor-placed fixed block. The geo-bone item renderer reads this flag in its prerender hook and substitutes the
+     * {@code fixedGround} transform for the regular {@link ItemDisplayContext#FIXED} one.
+     */
+    private static volatile boolean RENDER_AS_GROUND_BLOCK = false;
+
     private BLibItemTransformOverrides() {
         throw new UnsupportedOperationException();
     }
@@ -86,6 +99,14 @@ public final class BLibItemTransformOverrides {
 
     public static void setRenderAsWallBlock(boolean enabled) {
         RENDER_AS_WALL_BLOCK = enabled;
+    }
+
+    public static boolean isRenderAsGroundBlock() {
+        return RENDER_AS_GROUND_BLOCK;
+    }
+
+    public static void setRenderAsGroundBlock(boolean enabled) {
+        RENDER_AS_GROUND_BLOCK = enabled;
     }
 
     /**
@@ -226,6 +247,38 @@ public final class BLibItemTransformOverrides {
     }
 
     /**
+     * Effective ground-fixed transform — override if set, else base's ground slot, else {@code null}. Mirrors
+     * {@link #getModeValueOrNull} but for the ground-fixed slot.
+     */
+    public static @Nullable BLibTransform getGroundEffectiveOrNull(ResourceLocation itemId, BLibItemTransformMode mode) {
+        var override = getGroundFixed(itemId, mode);
+
+        if (override != null) {
+            return override;
+        }
+
+        var modeBases = BASES.get(itemId);
+
+        if (modeBases == null) {
+            return null;
+        }
+
+        var baseSupplier = modeBases.get(mode);
+
+        if (baseSupplier == null) {
+            return null;
+        }
+
+        var base = baseSupplier.get();
+
+        if (base == null) {
+            return null;
+        }
+
+        return base.getFixedGroundOrNull();
+    }
+
+    /**
      * Wall-fixed override for the given (item, mode), or {@code null} if no override has been set. Distinct from the
      * regular {@link #get} path because wall-fixed isn't context-keyed — there's only one wall pose per mode, so it
      * doesn't share the (item, mode, context) override map.
@@ -242,6 +295,24 @@ public final class BLibItemTransformOverrides {
 
     public static void setWallFixed(ResourceLocation itemId, BLibItemTransformMode mode, BLibTransform transform) {
         WALL_FIXED_OVERRIDES.computeIfAbsent(itemId, $ -> new EnumMap<>(BLibItemTransformMode.class))
+            .put(mode, transform);
+    }
+
+    /**
+     * Ground-fixed override for the given (item, mode), or {@code null} if no override has been set.
+     */
+    public static @Nullable BLibTransform getGroundFixed(ResourceLocation itemId, BLibItemTransformMode mode) {
+        var modeMap = GROUND_FIXED_OVERRIDES.get(itemId);
+
+        if (modeMap == null) {
+            return null;
+        }
+
+        return modeMap.get(mode);
+    }
+
+    public static void setGroundFixed(ResourceLocation itemId, BLibItemTransformMode mode, BLibTransform transform) {
+        GROUND_FIXED_OVERRIDES.computeIfAbsent(itemId, $ -> new EnumMap<>(BLibItemTransformMode.class))
             .put(mode, transform);
     }
 
@@ -278,6 +349,39 @@ public final class BLibItemTransformOverrides {
         return BLibTransform.IDENTITY;
     }
 
+    /**
+     * Effective ground-fixed transform — override if set, then base from the wrapped tunable transforms, then
+     * {@link BLibTransform#IDENTITY} as a final fallback.
+     */
+    public static BLibTransform getEffectiveGroundFixed(ResourceLocation itemId, BLibItemTransformMode mode) {
+        var override = getGroundFixed(itemId, mode);
+
+        if (override != null) {
+            return override;
+        }
+
+        var modeBases = BASES.get(itemId);
+
+        if (modeBases != null) {
+            var baseSupplier = modeBases.get(mode);
+
+            if (baseSupplier != null) {
+                var base = baseSupplier.get();
+
+                if (base != null) {
+                    var groundBase = base.getFixedGroundOrNull();
+
+                    if (groundBase != null) {
+                        return groundBase;
+                    }
+                }
+            }
+        }
+
+        return BLibTransform.IDENTITY;
+    }
+
+
     /** Returns the live override map for the given (item, mode), or an empty map if none is set. Read-only view. */
     public static Map<ItemDisplayContext, BLibTransform> snapshot(ResourceLocation itemId, BLibItemTransformMode mode) {
         var modeMap = OVERRIDES.get(itemId);
@@ -307,11 +411,18 @@ public final class BLibItemTransformOverrides {
         if (wallFixedModeMap != null) {
             wallFixedModeMap.remove(mode);
         }
+
+        var groundFixedModeMap = GROUND_FIXED_OVERRIDES.get(itemId);
+
+        if (groundFixedModeMap != null) {
+            groundFixedModeMap.remove(mode);
+        }
     }
 
     public static void clearAll(ResourceLocation itemId) {
         OVERRIDES.remove(itemId);
         WALL_FIXED_OVERRIDES.remove(itemId);
+        GROUND_FIXED_OVERRIDES.remove(itemId);
     }
 
     /** Items with at least one override in any mode. Used by command autocomplete. */
