@@ -101,7 +101,7 @@ public final class LimbHeldItemRenderer {
         var leftSnapshot = ArmSnapshot.capture(leftArm);
 
         poseStack.pushPose();
-        poseStack.mulPose(Axis.YP.rotationDegrees(180f - limb.getYRot()));
+        LimbRenderTransforms.applySourceTransform(poseStack, limb);
 
         var selectedPose = visuals.poseOrDefault(limb.getPoseId());
         var renderOffset = selectedPose.renderOffset();

@@ -51,6 +51,8 @@ public class DismemberedLimbEntity extends Entity {
 
     private static final String NBT_POSE_ID = "PoseId";
 
+    private static final String NBT_SOURCE_SCALE = "SourceScale";
+
     private static final String NBT_LIFETIME_TICKS = "LifetimeTicks";
 
     private static final String NBT_AGE_TICKS = "AgeTicks";
@@ -73,6 +75,11 @@ public class DismemberedLimbEntity extends Entity {
     private static final EntityDataAccessor<String> POSE_ID = SynchedEntityData.defineId(
         DismemberedLimbEntity.class,
         EntityDataSerializers.STRING
+    );
+
+    private static final EntityDataAccessor<Float> SOURCE_SCALE = SynchedEntityData.defineId(
+        DismemberedLimbEntity.class,
+        EntityDataSerializers.FLOAT
     );
 
     public static final int DEFAULT_LIFETIME_TICKS = 20 * 60 * 5;
@@ -112,11 +119,23 @@ public class DismemberedLimbEntity extends Entity {
         int lifetimeTicks,
         String poseId
     ) {
+        configure(sourceEntityType, sourceNbt, limbId, lifetimeTicks, poseId, 1.0F);
+    }
+
+    public void configure(
+        EntityType<?> sourceEntityType,
+        CompoundTag sourceNbt,
+        ResourceLocation limbId,
+        int lifetimeTicks,
+        String poseId,
+        float sourceScale
+    ) {
         var sourceTypeId = BuiltInRegistries.ENTITY_TYPE.getKey(sourceEntityType);
         entityData.set(SOURCE_ENTITY_TYPE, sourceTypeId.toString());
         entityData.set(SOURCE_NBT, sourceNbt);
         entityData.set(LIMB_ID, limbId.toString());
         setPoseId(poseId);
+        setSourceScale(sourceScale);
         this.lifetimeTicks = Math.max(1, lifetimeTicks);
     }
 
@@ -126,6 +145,7 @@ public class DismemberedLimbEntity extends Entity {
         builder.define(SOURCE_NBT, new CompoundTag());
         builder.define(LIMB_ID, "");
         builder.define(POSE_ID, LimbPose.DEFAULT_ID);
+        builder.define(SOURCE_SCALE, 1.0F);
     }
 
     @Override
@@ -262,6 +282,14 @@ public class DismemberedLimbEntity extends Entity {
         entityData.set(POSE_ID, normalizedPoseId(poseId));
     }
 
+    public float getSourceScale() {
+        return entityData.get(SOURCE_SCALE);
+    }
+
+    public void setSourceScale(float sourceScale) {
+        entityData.set(SOURCE_SCALE, normalizedSourceScale(sourceScale));
+    }
+
     /**
      * Returns the {@link LimbDefinition} this limb was spawned from via a direct registry lookup. Returns {@code null}
      * if the source type or limb id is missing/unknown.
@@ -322,6 +350,7 @@ public class DismemberedLimbEntity extends Entity {
         entityData.set(SOURCE_NBT, compoundTag.getCompound(NBT_SOURCE_NBT));
         entityData.set(LIMB_ID, compoundTag.getString(NBT_LIMB_ID));
         setPoseId(compoundTag.contains(NBT_POSE_ID) ? compoundTag.getString(NBT_POSE_ID) : LimbPose.DEFAULT_ID);
+        setSourceScale(compoundTag.contains(NBT_SOURCE_SCALE) ? compoundTag.getFloat(NBT_SOURCE_SCALE) : 1.0F);
         this.lifetimeTicks = compoundTag.contains(NBT_LIFETIME_TICKS)
             ? compoundTag.getInt(NBT_LIFETIME_TICKS)
             : DEFAULT_LIFETIME_TICKS;
@@ -336,11 +365,16 @@ public class DismemberedLimbEntity extends Entity {
         compoundTag.put(NBT_SOURCE_NBT, entityData.get(SOURCE_NBT));
         compoundTag.putString(NBT_LIMB_ID, entityData.get(LIMB_ID));
         compoundTag.putString(NBT_POSE_ID, getPoseId());
+        compoundTag.putFloat(NBT_SOURCE_SCALE, getSourceScale());
         compoundTag.putInt(NBT_LIFETIME_TICKS, lifetimeTicks);
         compoundTag.putInt(NBT_AGE_TICKS, ageTicks);
     }
 
     private static String normalizedPoseId(@Nullable String poseId) {
         return poseId == null || poseId.isBlank() ? LimbPose.DEFAULT_ID : poseId.trim();
+    }
+
+    private static float normalizedSourceScale(float sourceScale) {
+        return Float.isFinite(sourceScale) && sourceScale > 0.0F ? sourceScale : 1.0F;
     }
 }

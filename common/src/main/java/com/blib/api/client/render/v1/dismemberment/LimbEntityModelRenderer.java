@@ -94,7 +94,7 @@ public class LimbEntityModelRenderer extends AzEntityModelRenderer<DismemberedLi
 
         var poseStack = context.poseStack();
         poseStack.pushPose();
-        poseStack.mulPose(Axis.YP.rotationDegrees(180f - animatable.getYRot()));
+        LimbRenderTransforms.applySourceTransform(poseStack, animatable);
 
         var selectedPose = visuals.poseOrDefault(animatable.getPoseId());
         var renderOffset = selectedPose.renderOffset();

@@ -65,7 +65,7 @@ public final class VanillaLimbRenderer {
         var skipSet = computeSkipSet(limb);
 
         poseStack.pushPose();
-        poseStack.mulPose(Axis.YP.rotationDegrees(180f - limb.getYRot()));
+        LimbRenderTransforms.applySourceTransform(poseStack, limb);
 
         var selectedPose = visuals.poseOrDefault(limb.getPoseId());
         var renderOffset = selectedPose.renderOffset();
