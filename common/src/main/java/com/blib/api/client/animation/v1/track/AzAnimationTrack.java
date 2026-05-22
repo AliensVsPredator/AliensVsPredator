@@ -59,6 +59,8 @@ public class AzAnimationTrack<T> extends AzAbstractAnimationTrack {
 
     private final AzKeyframeManager<T> keyframeManager;
 
+    private final AzAnimationProperties defaultAnimationProperties;
+
     protected AzQueuedAnimation currentAnimation;
 
     private AzAnimationProperties animationProperties;
@@ -73,6 +75,7 @@ public class AzAnimationTrack<T> extends AzAbstractAnimationTrack {
 
         this.animator = animator;
         this.trackTimer = new AzAnimationTrackTimer<>(this);
+        this.defaultAnimationProperties = animationProperties;
         this.animationProperties = animationProperties;
 
         this.animationQueue = new AzAnimationQueue();
@@ -157,6 +160,7 @@ public class AzAnimationTrack<T> extends AzAbstractAnimationTrack {
             return;
         }
 
+        resetAnimationSpeed();
         animationQueue.addAll(animations);
         this.currentSequence = sequence;
         stateMachine.transition();
@@ -237,6 +241,10 @@ public class AzAnimationTrack<T> extends AzAbstractAnimationTrack {
         }
 
         return true;
+    }
+
+    private void resetAnimationSpeed() {
+        animationProperties = animationProperties.withAnimationSpeed(defaultAnimationProperties.animationSpeed());
     }
 
     public AzAnimationProperties animationProperties() {
