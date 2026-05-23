@@ -103,16 +103,6 @@ public class BLibModProperties {
                 );
             }
 
-            public static class Path {
-
-                private static final BLibPropertyKey.Parent PATH = RENDER.child("path");
-
-                public static final BLibModProperty<Boolean> ENABLED = new BLibModProperty<>(
-                    PATH.leaf("enabled", BLibPropertySerializers.BOOLEAN),
-                    false
-                );
-            }
-
             public static class SolidFace {
 
                 private static final BLibPropertyKey.Parent SOLID_FACE = RENDER.child("solid_face");

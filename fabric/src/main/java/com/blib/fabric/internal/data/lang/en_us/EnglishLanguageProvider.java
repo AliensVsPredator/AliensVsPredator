@@ -10,6 +10,7 @@ import java.util.concurrent.CompletableFuture;
 import com.blib.fabric.internal.data.lang.en_us.provider.EnUsBlockTagProvider;
 import com.blib.fabric.internal.data.lang.en_us.provider.EnUsEntityTypeTagProvider;
 import com.blib.fabric.internal.data.lang.en_us.provider.EnUsItemTagProvider;
+import com.blib.fabric.internal.data.lang.en_us.provider.EnUsKeybindingProvider;
 import com.blib.fabric.internal.data.lang.en_us.provider.EnUsTooltipProvider;
 
 @ApiStatus.Internal
@@ -28,5 +29,8 @@ public final class EnglishLanguageProvider extends FabricLanguageProvider {
         EnUsBlockTagProvider.CONSUMER.accept(builder);
         EnUsItemTagProvider.CONSUMER.accept(builder);
         EnUsEntityTypeTagProvider.CONSUMER.accept(builder);
+
+        // Keybindings
+        EnUsKeybindingProvider.CONSUMER.accept(builder);
     }
 }

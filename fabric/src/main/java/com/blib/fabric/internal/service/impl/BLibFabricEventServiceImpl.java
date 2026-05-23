@@ -2,15 +2,26 @@ package com.blib.fabric.internal.service.impl;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import com.blib.api.client.event.v1.BLibScreenInitEvent;
 import com.blib.api.common.event.v1.BLibBlockBreakEvent;
+import com.blib.api.common.event.v1.BLibChunkClaimAddedEvent;
+import com.blib.api.common.event.v1.BLibChunkClaimRemovedEvent;
+import com.blib.api.common.event.v1.BLibChunkLoadEvent;
 import com.blib.api.common.event.v1.BLibChunkSaveEvent;
 import com.blib.api.common.event.v1.BLibChunkUnloadEvent;
 import com.blib.api.common.event.v1.BLibCommonSetupEvent;
+import com.blib.api.common.event.v1.BLibEntityLoadEvent;
 import com.blib.api.common.event.v1.BLibEntityRemoveEvent;
 import com.blib.api.common.event.v1.BLibEntityTickEvent;
+import com.blib.api.common.event.v1.BLibFactionCreatedEvent;
+import com.blib.api.common.event.v1.BLibFactionDataChangedEvent;
+import com.blib.api.common.event.v1.BLibFactionMemberChangedEvent;
+import com.blib.api.common.event.v1.BLibFactionRelationshipChangedEvent;
 import com.blib.api.common.event.v1.BLibFactionRemoveEvent;
+import com.blib.api.common.event.v1.BLibFactionsLoadedEvent;
 import com.blib.api.common.event.v1.BLibLevelSaveEvent;
 import com.blib.api.common.event.v1.BLibLevelTickEvent;
+import com.blib.api.common.event.v1.BLibPlayerAdvancementAwardEvent;
 import com.blib.api.common.event.v1.BLibPlayerTrackingEntityEvent;
 import com.blib.api.common.event.v1.BLibServerLifecycleEvent;
 import com.blib.api.common.event.v1.BLibServerSaveEvent;
@@ -22,6 +33,24 @@ import com.blib.internal.service.BLibEventService;
 
 @ApiStatus.Internal
 public class BLibFabricEventServiceImpl implements BLibEventService {
+
+    @Override
+    public BLibEventListenerHandle<BLibChunkClaimAddedEvent> onChunkClaimAdded(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .onChunkClaimAdded();
+    }
+
+    @Override
+    public BLibEventListenerHandle<BLibChunkClaimRemovedEvent> onChunkClaimRemoved(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .onChunkClaimRemoved();
+    }
+
+    @Override
+    public BLibEventListenerHandle<BLibChunkLoadEvent> onChunkLoad(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .onChunkLoad();
+    }
 
     @Override
     public BLibEventListenerHandle<BLibChunkSaveEvent> onChunkSave(BLibMod mod) {
@@ -42,6 +71,12 @@ public class BLibFabricEventServiceImpl implements BLibEventService {
     }
 
     @Override
+    public BLibEventListenerHandle<BLibEntityLoadEvent> onEntityLoad(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .onEntityLoad();
+    }
+
+    @Override
     public BLibEventListenerHandle<BLibEntityRemoveEvent> onEntityRemove(BLibMod mod) {
         return BLibFabricModContainerLookup.INSTANCE.get(mod)
             .onEntityRemove();
@@ -54,15 +89,51 @@ public class BLibFabricEventServiceImpl implements BLibEventService {
     }
 
     @Override
+    public BLibEventListenerHandle<BLibFactionCreatedEvent> onFactionCreated(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .onFactionCreated();
+    }
+
+    @Override
+    public BLibEventListenerHandle<BLibFactionDataChangedEvent> onFactionDataChanged(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .onFactionDataChanged();
+    }
+
+    @Override
+    public BLibEventListenerHandle<BLibFactionMemberChangedEvent> onFactionMemberChanged(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .onFactionMemberChanged();
+    }
+
+    @Override
+    public BLibEventListenerHandle<BLibFactionRelationshipChangedEvent> onFactionRelationshipChanged(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .onFactionRelationshipChanged();
+    }
+
+    @Override
     public BLibEventListenerHandle<BLibFactionRemoveEvent> onFactionRemove(BLibMod mod) {
         return BLibFabricModContainerLookup.INSTANCE.get(mod)
             .onFactionRemove();
     }
 
     @Override
+    public BLibEventListenerHandle<BLibFactionsLoadedEvent> onFactionsLoaded(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .onFactionsLoaded();
+    }
+
+    @Override
     public BLibEventListenerHandle<BLibLevelSaveEvent> onLevelSave(BLibMod mod) {
         return BLibFabricModContainerLookup.INSTANCE.get(mod)
             .onLevelSave();
+    }
+
+    @Override
+    public BLibEventListenerHandle<BLibPlayerAdvancementAwardEvent> onPlayerAdvancementAward(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .onPlayerAdvancementAward();
     }
 
     @Override
@@ -81,6 +152,12 @@ public class BLibFabricEventServiceImpl implements BLibEventService {
     public BLibEventHandle<BLibLevelTickEvent> postLevelTick(BLibMod mod) {
         return BLibFabricModContainerLookup.INSTANCE.get(mod)
             .postLevelTick();
+    }
+
+    @Override
+    public BLibEventHandle<BLibScreenInitEvent> postScreenInit(BLibMod mod) {
+        return BLibFabricModContainerLookup.INSTANCE.get(mod)
+            .postScreenInit();
     }
 
     @Override

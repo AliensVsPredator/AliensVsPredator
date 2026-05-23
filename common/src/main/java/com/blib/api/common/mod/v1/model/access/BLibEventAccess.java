@@ -2,15 +2,26 @@ package com.blib.api.common.mod.v1.model.access;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import com.blib.api.client.event.v1.BLibScreenInitEvent;
 import com.blib.api.common.event.v1.BLibBlockBreakEvent;
+import com.blib.api.common.event.v1.BLibChunkClaimAddedEvent;
+import com.blib.api.common.event.v1.BLibChunkClaimRemovedEvent;
+import com.blib.api.common.event.v1.BLibChunkLoadEvent;
 import com.blib.api.common.event.v1.BLibChunkSaveEvent;
 import com.blib.api.common.event.v1.BLibChunkUnloadEvent;
 import com.blib.api.common.event.v1.BLibCommonSetupEvent;
+import com.blib.api.common.event.v1.BLibEntityLoadEvent;
 import com.blib.api.common.event.v1.BLibEntityRemoveEvent;
 import com.blib.api.common.event.v1.BLibEntityTickEvent;
+import com.blib.api.common.event.v1.BLibFactionCreatedEvent;
+import com.blib.api.common.event.v1.BLibFactionDataChangedEvent;
+import com.blib.api.common.event.v1.BLibFactionMemberChangedEvent;
+import com.blib.api.common.event.v1.BLibFactionRelationshipChangedEvent;
 import com.blib.api.common.event.v1.BLibFactionRemoveEvent;
+import com.blib.api.common.event.v1.BLibFactionsLoadedEvent;
 import com.blib.api.common.event.v1.BLibLevelSaveEvent;
 import com.blib.api.common.event.v1.BLibLevelTickEvent;
+import com.blib.api.common.event.v1.BLibPlayerAdvancementAwardEvent;
 import com.blib.api.common.event.v1.BLibPlayerTrackingEntityEvent;
 import com.blib.api.common.event.v1.BLibServerLifecycleEvent;
 import com.blib.api.common.event.v1.BLibServerSaveEvent;
@@ -29,6 +40,18 @@ public class BLibEventAccess {
         this.mod = mod;
     }
 
+    public BLibEventListenerHandle<BLibChunkClaimAddedEvent> onChunkClaimAdded() {
+        return BLibInternalServices.EVENT.onChunkClaimAdded(mod);
+    }
+
+    public BLibEventListenerHandle<BLibChunkClaimRemovedEvent> onChunkClaimRemoved() {
+        return BLibInternalServices.EVENT.onChunkClaimRemoved(mod);
+    }
+
+    public BLibEventListenerHandle<BLibChunkLoadEvent> onChunkLoad() {
+        return BLibInternalServices.EVENT.onChunkLoad(mod);
+    }
+
     public BLibEventListenerHandle<BLibChunkSaveEvent> onChunkSave() {
         return BLibInternalServices.EVENT.onChunkSave(mod);
     }
@@ -41,6 +64,10 @@ public class BLibEventAccess {
         return BLibInternalServices.EVENT.onCommonSetup(mod);
     }
 
+    public BLibEventListenerHandle<BLibEntityLoadEvent> onEntityLoad() {
+        return BLibInternalServices.EVENT.onEntityLoad(mod);
+    }
+
     public BLibEventListenerHandle<BLibEntityRemoveEvent> onEntityRemove() {
         return BLibInternalServices.EVENT.onEntityRemove(mod);
     }
@@ -49,12 +76,36 @@ public class BLibEventAccess {
         return BLibInternalServices.EVENT.onEntityTick(mod);
     }
 
+    public BLibEventListenerHandle<BLibFactionCreatedEvent> onFactionCreated() {
+        return BLibInternalServices.EVENT.onFactionCreated(mod);
+    }
+
+    public BLibEventListenerHandle<BLibFactionDataChangedEvent> onFactionDataChanged() {
+        return BLibInternalServices.EVENT.onFactionDataChanged(mod);
+    }
+
+    public BLibEventListenerHandle<BLibFactionMemberChangedEvent> onFactionMemberChanged() {
+        return BLibInternalServices.EVENT.onFactionMemberChanged(mod);
+    }
+
+    public BLibEventListenerHandle<BLibFactionRelationshipChangedEvent> onFactionRelationshipChanged() {
+        return BLibInternalServices.EVENT.onFactionRelationshipChanged(mod);
+    }
+
     public BLibEventListenerHandle<BLibFactionRemoveEvent> onFactionRemove() {
         return BLibInternalServices.EVENT.onFactionRemove(mod);
     }
 
+    public BLibEventListenerHandle<BLibFactionsLoadedEvent> onFactionsLoaded() {
+        return BLibInternalServices.EVENT.onFactionsLoaded(mod);
+    }
+
     public BLibEventListenerHandle<BLibLevelSaveEvent> onLevelSave() {
         return BLibInternalServices.EVENT.onLevelSave(mod);
+    }
+
+    public BLibEventListenerHandle<BLibPlayerAdvancementAwardEvent> onPlayerAdvancementAward() {
+        return BLibInternalServices.EVENT.onPlayerAdvancementAward(mod);
     }
 
     public BLibEventHandle<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity() {
@@ -67,6 +118,15 @@ public class BLibEventAccess {
 
     public BLibEventHandle<BLibLevelTickEvent> postLevelTick() {
         return BLibInternalServices.EVENT.postLevelTick(mod);
+    }
+
+    /**
+     * Fires after a {@link net.minecraft.client.gui.screens.Screen}'s {@code init()} completes — useful for injecting
+     * widgets into vanilla screens (e.g. an "Open BLib" button on the TitleScreen). Cross-loader wrapper around
+     * Fabric's {@code ScreenEvents.AFTER_INIT} and NeoForge's {@code ScreenEvent.Init.Post}.
+     */
+    public BLibEventHandle<BLibScreenInitEvent> postScreenInit() {
+        return BLibInternalServices.EVENT.postScreenInit(mod);
     }
 
     public BLibEventHandle<BLibBlockBreakEvent> preBlockBreak() {

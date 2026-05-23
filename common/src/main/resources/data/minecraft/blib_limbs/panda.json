@@ -1,0 +1,10 @@
+{
+  "limbs": [
+    { "id": "blib:panda_head", "category": "blib:head", "fatal": true },
+    { "id": "blib:panda_body", "category": "blib:head" },
+    { "id": "blib:panda_right_hind_leg",  "category": "blib:leg" },
+    { "id": "blib:panda_left_hind_leg",   "category": "blib:leg" },
+    { "id": "blib:panda_right_front_leg", "category": "blib:leg" },
+    { "id": "blib:panda_left_front_leg",  "category": "blib:leg" }
+  ]
+}

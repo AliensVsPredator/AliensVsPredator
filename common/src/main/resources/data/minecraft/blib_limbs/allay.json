@@ -1,0 +1,8 @@
+{
+  "limbs": [
+    { "id": "blib:allay_head",      "category": "blib:head", "fatal": true },
+    { "id": "blib:allay_body",      "category": "blib:head" },
+    { "id": "blib:allay_right_arm", "category": "blib:arm" },
+    { "id": "blib:allay_left_arm",  "category": "blib:arm" }
+  ]
+}

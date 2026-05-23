@@ -12,16 +12,15 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
-import com.blib.internal.client.animation.controller.keyframe.AzBoneAnimation;
-import com.blib.internal.client.animation.controller.keyframe.AzKeyframe;
-import com.blib.internal.client.animation.controller.keyframe.AzKeyframeStack;
 import com.blib.internal.client.animation.easing.AzEasingType;
 import com.blib.internal.client.animation.easing.AzEasingTypeLoader;
 import com.blib.internal.client.animation.easing.AzEasingTypes;
 import com.blib.internal.client.animation.primitive.AzBakedAnimation;
 import com.blib.internal.client.animation.primitive.AzBakedAnimations;
 import com.blib.internal.client.animation.primitive.AzKeyframes;
-import com.blib.internal.client.animation.primitive.AzLoopType;
+import com.blib.internal.client.animation.track.keyframe.AzBoneAnimation;
+import com.blib.internal.client.animation.track.keyframe.AzKeyframe;
+import com.blib.internal.client.animation.track.keyframe.AzKeyframeStack;
 import com.blib.internal.common.io.util.JsonUtil;
 import com.blib.internal.common.molang.MolangException;
 import com.blib.internal.common.molang.MolangParser;
@@ -192,7 +191,6 @@ public class AzBakedAnimationsJsonDeserializer implements JsonDeserializer<AzBak
         double length = animationObj.has("animation_length")
             ? GsonHelper.getAsDouble(animationObj, "animation_length") * 20d
             : -1;
-        AzLoopType loopType = AzLoopType.fromJson(animationObj.get("loop"));
         AzBoneAnimation[] boneAnimations = bakeBoneAnimations(
             GsonHelper.getAsJsonObject(animationObj, "bones", new JsonObject())
         );
@@ -201,7 +199,7 @@ public class AzBakedAnimationsJsonDeserializer implements JsonDeserializer<AzBak
         if (length == -1)
             length = calculateAnimationLength(boneAnimations);
 
-        return new AzBakedAnimation(name, length, loopType, boneAnimations, keyframes);
+        return new AzBakedAnimation(name, length, boneAnimations, keyframes);
     }
 
     private AzBoneAnimation[] bakeBoneAnimations(JsonObject bonesObj) throws MolangException {

@@ -1,13 +1,16 @@
 package com.blib.internal.common.faction;
 
-import com.just.core.functional.result.Result;
-import com.just.core.functional.tuple.Tuple2;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,22 +20,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import com.blib.api.common.faction.v1.Faction;
 import com.blib.api.common.faction.v1.FactionData;
-import com.blib.api.common.faction.v1.FactionDataError;
 import com.blib.api.common.faction.v1.FactionDataType;
 import com.blib.api.common.faction.v1.FactionManager;
 import com.blib.api.common.faction.v1.FactionMember;
-import com.blib.api.common.faction.v1.FactionRelationships;
+import com.blib.api.common.faction.v1.FactionMembership;
+import com.blib.api.common.faction.v1.RelationshipState;
 import com.blib.api.common.registry.v1.BLibBuiltInRegistries;
 import com.blib.api.common.registry.v1.BLibHolder;
+import com.blib.internal.common.entityreference.BLibEntityReferenceManager;
+import com.blib.internal.common.entityreference.EntityReferenceOwner;
 import com.blib.internal.common.event.BLibGlobalEvents;
 import com.blib.internal.common.faction.io.FactionDataIO;
-import com.blib.internal.common.faction.io.FactionRelationshipsIO;
+import com.blib.internal.common.faction.io.FactionIO;
+import com.blib.internal.common.faction.io.FactionMembershipIO;
+import com.blib.internal.common.faction.serializer.FactionRelationshipTableSerializer;
 import com.blib.internal.common.util.ShardManager;
+import com.blib.mod.BLib;
+import com.blib.mod.common.network.packet.S2CFactionMetadataSyncPayload;
 
 @ApiStatus.Internal
-public class BLibFactionManager implements FactionManager {
+public class BLibFactionManager implements FactionManager, EntityReferenceOwner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BLibFactionManager.class);
 
@@ -40,110 +51,82 @@ public class BLibFactionManager implements FactionManager {
 
     private static final int SHARD_SIZE = 1000;
 
-    private final Map<ResourceLocation, FactionData> data;
-
-    private final Map<ResourceLocation, ResourceLocation> factionIdToTypeId;
-
-    private final Map<ResourceLocation, FactionRelationships> relationships;
+    private final Map<ResourceLocation, Faction<?>> factions;
 
     private final FactionMemberIndex memberIndex;
+
+    private final FactionRelationshipTable relationshipTable;
 
     private final ShardManager<ResourceLocation> shardManager;
 
     private BLibFactionManager() {
-        this.data = new HashMap<>();
-        this.factionIdToTypeId = new HashMap<>();
-        this.relationships = new HashMap<>();
+        this.factions = new HashMap<>();
         this.memberIndex = new FactionMemberIndex();
+        this.relationshipTable = new FactionRelationshipTable();
         this.shardManager = new ShardManager<>(SHARD_SIZE);
     }
 
     @Override
-    public <T extends FactionData> Result<Tuple2<FactionRelationships, T>, FactionDataError> getOrCreate(
-        ResourceLocation id,
-        BLibHolder<FactionDataType<T>> type
-    ) {
-        var existingRel = relationships.get(id);
+    @SuppressWarnings("unchecked")
+    public <T extends FactionData> Faction<T> getOrCreate(ResourceLocation id, BLibHolder<FactionDataType<T>> type) {
+        var existing = factions.get(id);
 
-        if (existingRel != null) {
-            return getData(id, type).map(data -> new Tuple2<>(existingRel, data));
+        if (existing != null) {
+            return (Faction<T>) existing;
         }
 
         var typeId = type.getResourceLocation();
         var factionDataType = type.value();
 
-        var factionRelationships = new FactionRelationships(id);
+        var relationships = new FactionMembership(id);
         shardManager.assignShardIndex(id);
-        factionRelationships.markDirty();
+        relationships.markDirty();
 
-        var factionData = factionDataType.createInstance();
-        factionData.markDirty();
+        var modData = factionDataType.createInstance();
+        var defaultName = id.getPath();
+        var internalData = new BLibFactionData(defaultName, BLibFactionData.randomColor(), modData);
+        internalData.markDirty();
 
-        relationships.put(id, factionRelationships);
-        data.put(id, factionData);
-        factionIdToTypeId.put(id, typeId);
+        @SuppressWarnings("unchecked")
+        var faction = (Faction<T>) new Faction<>(id, typeId, relationships, internalData);
+        factions.put(id, faction);
+        fireFactionCreated(id);
 
-        return Result.ok(new Tuple2<>(factionRelationships, factionData));
+        return faction;
     }
 
-    public Result<FactionRelationships, FactionDataError> getOrCreateByTypeId(ResourceLocation id, ResourceLocation typeId) {
-        var existingRel = relationships.get(id);
+    public @Nullable Faction<?> getOrCreateByTypeId(ResourceLocation id, ResourceLocation typeId) {
+        var existing = factions.get(id);
 
-        if (existingRel != null) {
-            return Result.ok(existingRel);
+        if (existing != null) {
+            return existing;
         }
 
         var factionDataType = BLibBuiltInRegistries.FACTION_DATA_TYPES.get(typeId);
 
         if (factionDataType == null) {
-            return Result.err(new FactionDataError.UnknownType(id, null));
+            return null;
         }
 
-        var factionRelationships = new FactionRelationships(id);
+        var relationships = new FactionMembership(id);
         shardManager.assignShardIndex(id);
-        factionRelationships.markDirty();
+        relationships.markDirty();
 
-        var factionData = factionDataType.createInstance();
-        factionData.markDirty();
+        var modData = factionDataType.createInstance();
+        var defaultName = id.getPath();
+        var internalData = new BLibFactionData(defaultName, BLibFactionData.randomColor(), modData);
+        internalData.markDirty();
 
-        relationships.put(id, factionRelationships);
-        data.put(id, factionData);
-        factionIdToTypeId.put(id, typeId);
+        var faction = new Faction<>(id, typeId, relationships, internalData);
+        factions.put(id, faction);
+        fireFactionCreated(id);
 
-        return Result.ok(factionRelationships);
+        return faction;
     }
 
     @Override
-    public FactionRelationships getRelationships(ResourceLocation id) {
-        return relationships.computeIfAbsent(id, $ -> {
-            var factionRelationships = new FactionRelationships(id);
-            shardManager.assignShardIndex(id);
-            return factionRelationships;
-        });
-    }
-
-    @Override
-    public <T extends FactionData> Result<T, FactionDataError> getData(ResourceLocation id, BLibHolder<FactionDataType<T>> type) {
-        var storedTypeId = factionIdToTypeId.get(id);
-        var factionData = data.get(id);
-
-        if (storedTypeId == null) {
-            return Result.err(new FactionDataError.UnknownType(id, factionData));
-        }
-
-        if (!storedTypeId.equals(type.getResourceLocation())) {
-            return Result.err(new FactionDataError.TypeMismatch(type.getResourceLocation(), storedTypeId, factionData));
-        }
-
-        if (factionData == null) {
-            factionData = type.get().createInstance();
-            data.put(id, factionData);
-        }
-
-        @SuppressWarnings("unchecked")
-        var typedFactionData = (T) factionData;
-
-        return Result.ok(typedFactionData);
+    public @Nullable Faction<?> get(ResourceLocation id) {
+        return factions.get(id);
     }
 
     @Override
@@ -152,125 +135,316 @@ public class BLibFactionManager implements FactionManager {
     }
 
     @Override
-    public Set<ResourceLocation> getParentFactionIds(ResourceLocation subfactionId) {
-        return memberIndex.getParentFactionIds(subfactionId);
+    public Set<ResourceLocation> getFactionsByTag(TagKey<FactionDataType<?>> tag) {
+        return factions.values()
+            .stream()
+            .filter(faction -> faction.isType(tag))
+            .map(Faction::id)
+            .collect(Collectors.toUnmodifiableSet());
+    }
+
+    @Override
+    public RelationshipState getRelationship(ResourceLocation factionA, ResourceLocation factionB) {
+        return relationshipTable.getRelationship(factionA, factionB);
+    }
+
+    @Override
+    public void setRelationship(ResourceLocation factionA, ResourceLocation factionB, RelationshipState state) {
+        var oldState = relationshipTable.getRelationship(factionA, factionB);
+        relationshipTable.setRelationship(factionA, factionB, state);
+        if (oldState != state) {
+            for (var listener : BLibGlobalEvents.FACTION_RELATIONSHIP_CHANGED.listeners()) {
+                listener.invoke(factionA, factionB, oldState, state);
+            }
+        }
+    }
+
+    @Override
+    public Set<ResourceLocation> getFactionsWithState(ResourceLocation factionId, RelationshipState state) {
+        return relationshipTable.getFactionsWithState(factionId, state);
     }
 
     @Override
     public boolean remove(ResourceLocation id) {
-        var removedRelationships = relationships.remove(id);
+        var faction = factions.remove(id);
 
-        if (removedRelationships != null) {
-            memberIndex.removeFaction(id, removedRelationships);
-            shardManager.remove(id);
+        if (faction == null) {
+            return false;
         }
 
-        data.remove(id);
-        factionIdToTypeId.remove(id);
+        memberIndex.removeFaction(id, faction.membership());
+        relationshipTable.removeFaction(id);
+        // shardManager.remove auto-marks the shard dirty so the next save rewrites the shard file without the
+        // deleted entry. Otherwise the on-disk shard would keep the deleted faction's row and re-resurrect it on
+        // the next world load.
+        shardManager.remove(id);
 
-        if (removedRelationships != null) {
-            for (var listener : BLibGlobalEvents.FACTION_REMOVE.listeners()) {
-                listener.invoke(id);
-            }
+        for (var listener : BLibGlobalEvents.FACTION_REMOVE.listeners()) {
+            listener.invoke(id);
         }
 
-        return removedRelationships != null;
+        return true;
     }
 
     @Override
     public Collection<ResourceLocation> getAllIds() {
-        return Collections.unmodifiableCollection(relationships.keySet());
+        return Collections.unmodifiableCollection(factions.keySet());
     }
 
     @Override
     public boolean exists(ResourceLocation id) {
-        return relationships.containsKey(id);
+        return factions.containsKey(id);
     }
 
     public void load(MinecraftServer server) {
-        relationships.clear();
-        data.clear();
-        factionIdToTypeId.clear();
+        factions.clear();
         shardManager.clear();
 
-        FactionRelationshipsIO.loadAll(server, relationships, shardManager);
-        FactionDataIO.loadAll(server, relationships.keySet(), data, factionIdToTypeId);
+        var relationships = new HashMap<ResourceLocation, FactionMembership>();
+        var internalDataMap = new HashMap<ResourceLocation, BLibFactionData>();
+        var factionIdToTypeId = new HashMap<ResourceLocation, ResourceLocation>();
+
+        FactionMembershipIO.loadAll(server, relationships, shardManager);
+        FactionDataIO.loadAll(server, relationships.keySet(), internalDataMap, factionIdToTypeId);
+
+        for (var entry : relationships.entrySet()) {
+            var factionId = entry.getKey();
+            var rel = entry.getValue();
+            var typeId = factionIdToTypeId.get(factionId);
+
+            if (typeId == null) {
+                LOGGER.warn("Faction '{}' has no type ID, skipping", factionId);
+                continue;
+            }
+
+            var internalData = internalDataMap.getOrDefault(
+                factionId,
+                new BLibFactionData(factionId.getPath(), BLibFactionData.randomColor(), null)
+            );
+
+            factions.put(factionId, new Faction<>(factionId, typeId, rel, internalData));
+        }
 
         memberIndex.rebuild(relationships);
 
-        LOGGER.info("Loaded {} factions", relationships.size());
+        relationshipTable.clear();
+        loadRelationshipTable(server);
+
+        LOGGER.info("Loaded {} factions", factions.size());
     }
 
     public void save(MinecraftServer server) {
-        if (relationships.isEmpty()) {
-            return;
-        }
-
-        saveRelationships(server);
+        // Don't short-circuit on empty factions — pending deletion-shards still need to be rewritten if the last
+        // faction was just removed. Save sub-methods no-op when there's nothing to do.
+        saveMemberships(server);
         saveData(server);
+        saveRelationshipTable(server);
+        shardManager.clearDirty();
     }
 
     public void clear(MinecraftServer minecraftServer) {
-        relationships.clear();
-        data.clear();
-        factionIdToTypeId.clear();
+        factions.clear();
         memberIndex.clear();
+        relationshipTable.clear();
         shardManager.clear();
+    }
+
+    public void syncAllFactionMetadataToPlayer(ServerPlayer player) {
+        for (var faction : factions.values()) {
+            var payload = new S2CFactionMetadataSyncPayload(faction.id(), faction.name(), faction.color());
+            BLib.MOD.networking().sendToClient(player, payload);
+        }
+    }
+
+    public void syncFactionMetadataToAllClients(MinecraftServer server, Faction<?> faction) {
+        var payload = new S2CFactionMetadataSyncPayload(faction.id(), faction.name(), faction.color());
+        BLib.MOD.networking().sendToAllClients(server, payload);
+    }
+
+    public @Nullable FactionData getRawModData(ResourceLocation factionId) {
+        var faction = factions.get(factionId);
+
+        return faction != null ? faction.data() : null;
+    }
+
+    public @Nullable FactionMembership getMembership(ResourceLocation id) {
+        var faction = factions.get(id);
+
+        return faction != null ? faction.membership() : null;
+    }
+
+    @Override
+    public String id() {
+        return "factions";
+    }
+
+    @Override
+    public boolean referencesEntityUuid(UUID uuid) {
+        return !memberIndex.getFactionIds(uuid).isEmpty();
+    }
+
+    @Override
+    public Set<UUID> referencedEntityUuids() {
+        var uuids = new HashSet<UUID>();
+        for (var faction : factions.values()) {
+            for (var member : faction.membership().getMembers()) {
+                if (member instanceof FactionMember.Entity entityMember) {
+                    uuids.add(entityMember.uuid());
+                }
+            }
+        }
+        return Set.copyOf(uuids);
+    }
+
+    @Override
+    public void removeEntityReference(UUID uuid) {
+        var factionIds = Set.copyOf(memberIndex.getFactionIds(uuid));
+        if (factionIds.isEmpty()) {
+            return;
+        }
+
+        var member = FactionMember.entity(uuid);
+        for (var factionId : factionIds) {
+            var faction = factions.get(factionId);
+            if (faction != null) {
+                faction.membership().removeMember(member);
+            }
+        }
     }
 
     public void onMemberChanged(ResourceLocation factionId, FactionMember member, boolean added) {
         memberIndex.onMemberChanged(factionId, member, added);
-    }
 
-    private void saveRelationships(MinecraftServer server) {
-        Map<Integer, List<FactionRelationships>> shardToEntries = new HashMap<>();
-        Set<Integer> dirtyShards = new HashSet<>();
+        var faction = factions.get(factionId);
 
-        for (var entry : relationships.entrySet()) {
-            var factionId = entry.getKey();
-            var factionRelationships = entry.getValue();
-            var shardIndex = shardManager.getShardIndex(factionId);
-
-            shardToEntries.computeIfAbsent(shardIndex, k -> new ArrayList<>()).add(factionRelationships);
-
-            if (factionRelationships.isDirty()) {
-                dirtyShards.add(shardIndex);
+        if (faction != null && faction.data() != null) {
+            if (added) {
+                faction.data().onMemberAdded(member);
+            } else {
+                faction.data().onMemberRemoved(member);
             }
         }
 
-        for (var shardIndex : dirtyShards) {
-            var entriesInShard = shardToEntries.get(shardIndex);
-            FactionRelationshipsIO.saveShard(server, entriesInShard, shardIndex);
+        if (!added && member instanceof FactionMember.Entity entityMember && memberIndex.getFactionIds(entityMember.uuid()).isEmpty()) {
+            BLibEntityReferenceManager.INSTANCE.onEntityReferenceRemoved(entityMember.uuid());
         }
 
-        for (var factionRelationships : relationships.values()) {
-            factionRelationships.clearDirty();
+        fireFactionMemberChanged(factionId, member, added);
+    }
+
+    public void onEntityMemberAdded(
+        ResourceLocation factionId,
+        FactionMember member,
+        Entity entity
+    ) {
+        memberIndex.onMemberChanged(factionId, member, true);
+        BLibEntityReferenceManager.INSTANCE.onEntityReferenceAdded(entity);
+
+        var faction = factions.get(factionId);
+
+        if (faction != null && faction.data() != null) {
+            faction.data().onMemberAdded(member, entity);
+        }
+
+        fireFactionMemberChanged(factionId, member, true);
+    }
+
+    private void fireFactionCreated(ResourceLocation factionId) {
+        for (var listener : BLibGlobalEvents.FACTION_CREATED.listeners()) {
+            listener.invoke(factionId);
+        }
+    }
+
+    private void fireFactionMemberChanged(ResourceLocation factionId, FactionMember member, boolean added) {
+        for (var listener : BLibGlobalEvents.FACTION_MEMBER_CHANGED.listeners()) {
+            listener.invoke(factionId, member, added);
+        }
+    }
+
+    private void saveMemberships(MinecraftServer server) {
+        Map<Integer, List<FactionMembership>> shardToEntries = new HashMap<>();
+
+        // Propagate per-membership dirty into shard-level dirty; build the per-shard survivor list along the way.
+        for (var faction : factions.values()) {
+            var factionId = faction.id();
+            var relationships = faction.membership();
+            var shardIndex = shardManager.getShardIndex(factionId);
+
+            shardToEntries.computeIfAbsent(shardIndex, k -> new ArrayList<>()).add(relationships);
+
+            if (relationships.isDirty()) {
+                shardManager.markDirty(factionId);
+            }
+        }
+
+        var dirtyShards = List.copyOf(shardManager.dirtyShards());
+
+        for (var shardIndex : dirtyShards) {
+            // A shard with no surviving entries is still rewritten — the resulting empty file (or its deletion via
+            // FactionIO.writeCompressed's empty-tag branch) is the whole point of the dirty mark on deletion.
+            var entriesInShard = shardToEntries.getOrDefault(shardIndex, List.of());
+            FactionMembershipIO.saveShard(server, entriesInShard, shardIndex);
+        }
+
+        for (var faction : factions.values()) {
+            faction.membership().clearDirty();
         }
     }
 
     private void saveData(MinecraftServer server) {
         Map<Integer, List<ResourceLocation>> shardToFactionIds = new HashMap<>();
-        Set<Integer> dirtyShards = new HashSet<>();
+        Map<ResourceLocation, BLibFactionData> internalDataMap = new HashMap<>();
+        Map<ResourceLocation, ResourceLocation> typeIdMap = new HashMap<>();
 
-        for (var factionId : relationships.keySet()) {
+        for (var faction : factions.values()) {
+            var factionId = faction.id();
             var shardIndex = shardManager.getShardIndex(factionId);
 
             shardToFactionIds.computeIfAbsent(shardIndex, k -> new ArrayList<>()).add(factionId);
 
-            var factionData = data.get(factionId);
+            var internalData = faction.internalData();
+            internalDataMap.put(factionId, internalData);
+            typeIdMap.put(factionId, faction.typeId());
 
-            if (factionData != null && factionData.isDirty()) {
-                dirtyShards.add(shardIndex);
+            if (internalData.isDirty()) {
+                shardManager.markDirty(factionId);
             }
         }
 
-        for (int shardIndex : dirtyShards) {
-            var factionIdsInShard = shardToFactionIds.get(shardIndex);
-            FactionDataIO.saveShard(server, factionIdsInShard, data, factionIdToTypeId, shardIndex);
+        var dirtyShards = List.copyOf(shardManager.dirtyShards());
+
+        for (var shardIndex : dirtyShards) {
+            // Shards with no surviving factions in any namespace are effectively skipped — FactionDataIO writes one
+            // file per (namespace, shard) and iterates only namespaces with content. The stale on-disk file remains
+            // for those, but the load filter (knownFactionIds from memberships) skips its entries, so they don't
+            // resurrect.
+            var factionIdsInShard = shardToFactionIds.getOrDefault(shardIndex, List.of());
+            FactionDataIO.saveShard(server, factionIdsInShard, internalDataMap, typeIdMap, shardIndex);
         }
 
-        for (var factionData : data.values()) {
-            factionData.clearDirty();
+        for (var faction : factions.values()) {
+            faction.internalData().clearDirty();
         }
+    }
+
+    private void loadRelationshipTable(MinecraftServer server) {
+        var path = FactionIO.getRelationshipsPath(server);
+
+        if (!Files.exists(path)) {
+            return;
+        }
+
+        var tag = FactionIO.readCompressed(path);
+        FactionRelationshipTableSerializer.deserialize(tag, relationshipTable);
+    }
+
+    private void saveRelationshipTable(MinecraftServer server) {
+        if (!relationshipTable.isDirty()) {
+            return;
+        }
+
+        var tag = FactionRelationshipTableSerializer.serialize(relationshipTable);
+        FactionIO.writeCompressed(FactionIO.getRelationshipsPath(server), tag);
+        relationshipTable.clearDirty();
     }
 }

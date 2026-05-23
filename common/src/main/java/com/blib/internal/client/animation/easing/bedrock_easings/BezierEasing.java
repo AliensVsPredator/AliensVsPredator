@@ -6,9 +6,9 @@ import org.joml.Vector2d;
 
 import java.util.List;
 
-import com.blib.internal.client.animation.controller.keyframe.AzAnimationPoint;
 import com.blib.internal.client.animation.easing.AzEasingType;
 import com.blib.internal.client.animation.easing.AzEasingUtil;
+import com.blib.internal.client.animation.track.keyframe.AzAnimationPoint;
 import com.blib.internal.common.molang.math.IValue;
 
 public abstract class BezierEasing implements AzEasingType {

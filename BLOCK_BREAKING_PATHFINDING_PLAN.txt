@@ -1,0 +1,194 @@
+BLib Pathfinding Block Breaking Implementation Plan
+
+Goal
+Add opt-in block breaking for BLib pathfinder mobs in small, testable phases.
+Breaking should be modeled as a costly prerequisite for entering a normal
+ground or water node, not as a new terrain type. Search may propose a break
+plan, but server-side execution is the authority and must re-check policy.
+
+Phase 1: Model Breakable Edges Only
+
+Add the data model, but do not mutate the world yet.
+
+Work:
+- Add PathfindingFeature.BLOCK_BREAKING, default off.
+- Add PathBlockBreakingConfig to TerrainEvaluatorConfig.
+- Add a break-policy interface, such as:
+  boolean canBreak(LevelReader level, BlockPos pos, BlockState state).
+- Add pending and committed break metadata to PathNode, similar to the current
+  pending cost malus flow.
+
+Goal:
+The evaluator can describe an edge as reachable if a bounded list of blocks is
+removed, and A* can price that edge.
+
+Acceptance:
+- Existing pathfinding behaves identically when block breaking is disabled.
+- Debug output can show paths containing break-required edges.
+- No world mutation happens in this phase.
+
+Phase 2: Ground Same-Level Breaking
+
+Implement the narrowest useful break search.
+
+Scope:
+- Ground only.
+- Same-level cardinal movement only.
+- No diagonals, step-up, step-down, or water.
+- Only clear body, feet, and head obstruction blocks.
+- Never break the support block below the source or destination node.
+
+Likely implementation point:
+In UnifiedTerrainEvaluator.findGroundNeighbor(...), after normal same-level
+movement fails, ask a helper whether clearing a bounded set of blocks would make
+the destination ground node valid.
+
+Acceptance:
+- A mob can plan through a one-block wall.
+- It refuses bedrock and other unbreakable blocks.
+- It does not plan paths that destroy its floor or the destination support.
+- Open paths are preferred over breaking paths through break-cost malus.
+
+Phase 3: Execute Break Plans
+
+Add server-side execution.
+
+Work:
+- Add a PathBlockBreakExecutor or equivalent.
+- In NeoMoveToPosAction, after navigator.tick(...) and before normal movement,
+  check the current node's break plan.
+- If a break is pending, face or hold near the block, apply damage, and skip
+  normal movement for that tick.
+- Re-check the break policy every tick before applying damage.
+- Use BlockBreakProgressManager only behind the executor.
+
+Acceptance:
+- The mob pauses at the wall, shows progress, breaks the block, then continues.
+- If the block changes externally, progress resets and the navigator replans.
+- All world mutation happens on the server thread.
+
+Phase 4: Replan And Failure Behavior
+
+Make world changes and failures robust.
+
+Work:
+- When a break completes, invalidate the active path or force a fresh
+  classification/replan.
+- If a planned break becomes invalid, stop breaking and request a replan.
+- Prevent stuck detection from treating active breaking as failed movement.
+- Add retry/backoff for repeated failed break edges.
+
+Acceptance:
+- No infinite damage loop on protected or unbreakable blocks.
+- No stuck-abort while the mob is making break progress.
+- If another entity or player opens the route, the mob continues cleanly.
+
+Phase 5: Step-Up And Step-Down
+
+Extend edge generation after same-level ground breaking is stable.
+
+Scope:
+- Step-up breaking clears destination body volume without clearing support.
+- Step-down breaking clears destination body and transition volumes.
+- Diagonals remain disabled for breaking.
+
+Acceptance:
+- Mobs can dig through simple ledges without breaking their own footing.
+- They still prefer normal stairs and open terrain over digging.
+
+Phase 6: Wide Entity And Swept Clearance
+
+Support larger bodies and real movement volume.
+
+Work:
+- Collect obstruction blocks from the same footprint and swept-clearance rules
+  already used by UnifiedTerrainEvaluator.
+- Break plans must include all blocks in the entity footprint/body volume.
+- Keep maxBlocksPerEdge low and configurable.
+
+Acceptance:
+- 2-wide entities do not path through one-block holes unless the plan clears a
+  2-wide opening.
+- The break plan matches the same physical clearance rules as movement.
+
+Phase 7: Water Breaking
+
+Add water only after ground breaking is reliable.
+
+Initial rule:
+- Allow breaking obstruction blocks while the resulting node is already valid
+  WATER or GROUND.
+- Do not invent future water nodes unless fluid replacement is explicitly
+  simulated.
+- Replan after each break.
+
+Acceptance:
+- Aquatic mobs can clear fences, glass, or similar obstructions blocking a water
+  route.
+- They do not path through dry solid terrain as if it will become water.
+
+Phase 8: Diagonals And Smoothing
+
+Only enable breaking on diagonal edges when side-clearance rules are strict.
+
+Rules:
+- Diagonal breaking must clear the target volume and the corner-blocking side
+  volumes.
+- Any-angle smoothing must not skip over break-required nodes unless every
+  skipped break plan has already completed.
+
+Acceptance:
+- No diagonal corner clipping through partially broken walls.
+- Smoothing does not bypass required break pauses.
+
+Phase 9: Corridor And Long-Distance Search
+
+Leave section-corridor support late.
+
+Initial rule:
+- When BLOCK_BREAKING is enabled, disable section corridor or fall back to direct
+  block A* near obstacles.
+
+Final version:
+- Teach TerrainClassificationCache and SectionCorridorFinder about
+  destructibly passable sections with high cost.
+
+Acceptance:
+- Long-distance paths still work.
+- Breakable walls do not make the section corridor falsely report unreachable.
+
+Phase 10: Policy Integration
+
+Make it safe for real mods.
+
+The break policy should be caller-owned and checked at plan time and execution
+time. It should account for:
+- mob griefing rules
+- claimed territory
+- block hardness and tags
+- block entities
+- drops or no drops
+- mod-specific protected blocks
+- per-entity permissions
+
+Important contract:
+Pathfinding may propose a break; execution is the authority.
+
+Recommended Milestone Order
+
+1. Feature flag, config, and node metadata.
+2. Ground same-level planning, no mutation.
+3. Server-side break executor.
+4. Replan and stuck handling.
+5. Step-up and step-down.
+6. Wide entity swept clearance.
+7. Water.
+8. Diagonal and smoothing support.
+9. Corridor support.
+10. Debug UI and tuning polish.
+
+First Production-Usable Target
+
+Phases 1-4 with same-level ground breaking only. That gives a useful feature
+without needing to solve diagonals, water, wide-entity swept volume, or
+long-distance corridor correctness in the first pass.

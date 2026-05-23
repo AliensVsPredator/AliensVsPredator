@@ -1,0 +1,186 @@
+package com.blib.api.common.pathfinding.v1.navigator;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.blib.api.common.pathfinding.v1.evaluator.TerrainEvaluatorConfig;
+import com.blib.api.common.pathfinding.v1.feature.PathfindingFeatures;
+import com.blib.api.common.pathfinding.v1.feature.PathfindingProfile;
+import com.blib.api.common.pathfinding.v1.search.PathfindingTuning;
+import com.blib.api.common.pathfinding.v1.search.SearchConfig;
+import com.blib.api.common.pathfinding.v1.terrain.TerrainType;
+import com.blib.api.common.pathfinding.v1.transition.TerrainTransitionHandler;
+
+/**
+ * Configuration for a {@link PathNavigator}. Built via the {@link Builder}.
+ */
+public final class PathNavigatorConfig {
+
+    private final TerrainEvaluatorConfig evaluatorConfig;
+
+    private final SearchConfig searchConfig;
+
+    private final PathfindingTuning pathfindingTuning;
+
+    private final Map<TransitionKey, List<TerrainTransitionHandler>> transitionHandlers;
+
+    private final float waypointReachDistance;
+
+    private final int stuckTimeoutInTicks;
+
+    private final int pathRecalculateIntervalInTicks;
+
+    private final PathfindingFeatures defaultFeatures;
+
+    private PathNavigatorConfig(
+        TerrainEvaluatorConfig evaluatorConfig,
+        SearchConfig searchConfig,
+        PathfindingTuning pathfindingTuning,
+        Map<TransitionKey, List<TerrainTransitionHandler>> transitionHandlers,
+        float waypointReachDistance,
+        int stuckTimeoutInTicks,
+        int pathRecalculateIntervalInTicks,
+        PathfindingFeatures defaultFeatures
+    ) {
+        this.evaluatorConfig = evaluatorConfig;
+        this.searchConfig = searchConfig;
+        this.pathfindingTuning = pathfindingTuning;
+        this.transitionHandlers = Map.copyOf(transitionHandlers);
+        this.waypointReachDistance = waypointReachDistance;
+        this.stuckTimeoutInTicks = stuckTimeoutInTicks;
+        this.pathRecalculateIntervalInTicks = pathRecalculateIntervalInTicks;
+        this.defaultFeatures = defaultFeatures;
+    }
+
+    public static Builder builder(TerrainEvaluatorConfig evaluatorConfig) {
+        return new Builder(evaluatorConfig);
+    }
+
+    public TerrainEvaluatorConfig getEvaluatorConfig() {
+        return evaluatorConfig;
+    }
+
+    public SearchConfig getSearchConfig() {
+        return searchConfig;
+    }
+
+    public PathfindingTuning getPathfindingTuning() {
+        return pathfindingTuning;
+    }
+
+    public List<TerrainTransitionHandler> getTransitionHandlers(TerrainType from, TerrainType to) {
+        return transitionHandlers.getOrDefault(new TransitionKey(from, to), List.of());
+    }
+
+    public float getWaypointReachDistance() {
+        return waypointReachDistance;
+    }
+
+    public int getStuckTimeoutInTicks() {
+        return stuckTimeoutInTicks;
+    }
+
+    public int getPathRecalculateIntervalInTicks() {
+        return pathRecalculateIntervalInTicks;
+    }
+
+    public PathfindingFeatures getDefaultFeatures() {
+        return defaultFeatures;
+    }
+
+    private record TransitionKey(
+        TerrainType from,
+        TerrainType to
+    ) {}
+
+    public static final class Builder {
+
+        private static final float DEFAULT_WAYPOINT_REACH_DISTANCE = 1.0f;
+
+        private static final int DEFAULT_STUCK_TIMEOUT_IN_TICKS = 40;
+
+        private static final int DEFAULT_PATH_RECALCULATE_INTERVAL_IN_TICKS = 5;
+
+        private final TerrainEvaluatorConfig evaluatorConfig;
+
+        private final Map<TransitionKey, List<TerrainTransitionHandler>> transitionHandlers;
+
+        private SearchConfig searchConfig;
+
+        private PathfindingTuning pathfindingTuning;
+
+        private float waypointReachDistance;
+
+        private int stuckTimeoutInTicks;
+
+        private int pathRecalculateIntervalInTicks;
+
+        private PathfindingFeatures defaultFeatures;
+
+        private Builder(TerrainEvaluatorConfig evaluatorConfig) {
+            this.evaluatorConfig = evaluatorConfig;
+            this.transitionHandlers = new HashMap<>();
+            this.searchConfig = SearchConfig.DEFAULT;
+            this.pathfindingTuning = PathfindingTuning.DEFAULT;
+            this.waypointReachDistance = DEFAULT_WAYPOINT_REACH_DISTANCE;
+            this.stuckTimeoutInTicks = DEFAULT_STUCK_TIMEOUT_IN_TICKS;
+            this.pathRecalculateIntervalInTicks = DEFAULT_PATH_RECALCULATE_INTERVAL_IN_TICKS;
+            this.defaultFeatures = PathfindingProfile.LEGACY_PERMISSIVE.features();
+        }
+
+        public Builder withSearchConfig(SearchConfig config) {
+            this.searchConfig = config;
+            return this;
+        }
+
+        public Builder withPathfindingTuning(PathfindingTuning tuning) {
+            this.pathfindingTuning = tuning;
+            return this;
+        }
+
+        public Builder addTransitionHandler(TerrainType from, TerrainType to, TerrainTransitionHandler handler) {
+            transitionHandlers.computeIfAbsent(new TransitionKey(from, to), $ -> new ArrayList<>()).add(handler);
+            return this;
+        }
+
+        public Builder withWaypointReachDistance(float distance) {
+            this.waypointReachDistance = distance;
+            return this;
+        }
+
+        public Builder withStuckTimeoutInTicks(int ticks) {
+            this.stuckTimeoutInTicks = ticks;
+            return this;
+        }
+
+        public Builder withPathRecalculateIntervalInTicks(int ticks) {
+            this.pathRecalculateIntervalInTicks = ticks;
+            return this;
+        }
+
+        public Builder withPathfindingFeatures(PathfindingFeatures features) {
+            this.defaultFeatures = features;
+            return this;
+        }
+
+        public Builder withPathfindingProfile(PathfindingProfile profile) {
+            this.defaultFeatures = profile.features();
+            return this;
+        }
+
+        public PathNavigatorConfig build() {
+            return new PathNavigatorConfig(
+                evaluatorConfig,
+                searchConfig,
+                pathfindingTuning,
+                transitionHandlers,
+                waypointReachDistance,
+                stuckTimeoutInTicks,
+                pathRecalculateIntervalInTicks,
+                defaultFeatures
+            );
+        }
+    }
+}

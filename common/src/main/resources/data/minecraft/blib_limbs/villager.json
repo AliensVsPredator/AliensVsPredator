@@ -1,0 +1,9 @@
+{
+  "limbs": [
+    { "id": "blib:villager_head", "category": "blib:head", "fatal": true },
+    { "id": "blib:villager_body", "category": "blib:head" },
+    { "id": "blib:villager_arms", "category": "blib:arm" },
+    { "id": "blib:villager_right_leg", "category": "blib:leg" },
+    { "id": "blib:villager_left_leg", "category": "blib:leg" }
+  ]
+}

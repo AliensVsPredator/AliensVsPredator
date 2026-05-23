@@ -1,5 +1,6 @@
 package com.blib.api.common.faction.v1;
 
+import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.api.common.nbt.v1.model.NBTSerializable;
@@ -9,9 +10,21 @@ public abstract class FactionData implements NBTSerializable, Dirty {
 
     private boolean dirty;
 
+    public void onMemberAdded(FactionMember member) {}
+
+    public void onMemberAdded(FactionMember member, Entity entity) {
+        onMemberAdded(member);
+    }
+
+    public void onMemberRemoved(FactionMember member) {}
+
+    public void onMemberLoaded(Entity entity) {}
+
+    public void onMemberUnloaded(Entity entity) {}
+
     @Override
     public void markDirty() {
-        dirty = true;
+        this.dirty = true;
     }
 
     @Override

@@ -45,6 +45,8 @@ public abstract class AzRendererPipelineContext<K, T> {
 
     private VertexConsumer vertexConsumer;
 
+    private float cubeInflate;
+
     protected static final Map<ResourceLocation, IntIntPair> TEXTURE_DIMENSIONS_CACHE =
         new Object2ObjectOpenHashMap<>();
 
@@ -185,6 +187,14 @@ public abstract class AzRendererPipelineContext<K, T> {
 
     public ResourceLocation getTextureOverride() {
         return textureOverride;
+    }
+
+    public float cubeInflate() {
+        return cubeInflate;
+    }
+
+    public void setCubeInflate(float cubeInflate) {
+        this.cubeInflate = cubeInflate;
     }
 
     public IntIntPair computeTextureSize(ResourceLocation texture) {

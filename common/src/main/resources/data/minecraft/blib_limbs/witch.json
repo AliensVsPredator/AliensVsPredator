@@ -1,0 +1,9 @@
+{
+  "limbs": [
+    { "id": "blib:witch_head", "category": "blib:head", "fatal": true },
+    { "id": "blib:witch_body", "category": "blib:head" },
+    { "id": "blib:witch_arms", "category": "blib:arm" },
+    { "id": "blib:witch_right_leg", "category": "blib:leg" },
+    { "id": "blib:witch_left_leg", "category": "blib:leg" }
+  ]
+}

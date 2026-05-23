@@ -17,6 +17,7 @@ import com.blib.api.common.mod.v1.model.access.BLibRegistryAccess;
 import com.blib.api.common.mod.v1.model.access.BLibReputationAccess;
 import com.blib.api.common.mod.v1.model.access.BLibResourceAccess;
 import com.blib.api.common.mod.v1.model.access.BLibStorageAccess;
+import com.blib.api.common.mod.v1.model.access.BLibTerritoryAccess;
 import com.blib.internal.service.BLibInternalServices;
 
 public class BLibMod implements BLibModStateAccess {
@@ -39,7 +40,19 @@ public class BLibMod implements BLibModStateAccess {
 
     private final BLibStorageAccess storageAccess;
 
-    private final @Nullable Version version;
+    private final BLibTerritoryAccess territoryAccess;
+
+    /**
+     * Resolved lazily on first {@link #version()} call rather than in the constructor. Resolving eagerly forces the
+     * BLib mod-loader service to be ready at every site that touches a {@link BLibMod} instance — including
+     * {@link com.blib.mod.BLib#MOD}'s static initializer. On NeoForge, {@code MainTarget} is constructed early enough
+     * that {@code ModList.get()} returns {@code null} at that point, so any class that touches {@code BLib} (e.g.
+     * {@code BLib.LOGGER} from the MRT mixin) would NPE during {@code <clinit>}.
+     * <p>
+     * Re-resolved on each call until non-null is returned, so an early caller getting {@code null} doesn't permanently
+     * cache that — the next call after mod loading completes will pick up the real version.
+     */
+    private @Nullable Version version;
 
     private volatile BLibModState state;
 
@@ -53,7 +66,7 @@ public class BLibMod implements BLibModStateAccess {
         this.reputationAccess = new BLibReputationAccess(this);
         this.resourceAccess = new BLibResourceAccess(this);
         this.storageAccess = new BLibStorageAccess(this);
-        this.version = BLibAPI.getModVersion(id);
+        this.territoryAccess = new BLibTerritoryAccess(this);
         this.state = BLibModState.UNINITIALIZED;
     }
 
@@ -121,7 +134,14 @@ public class BLibMod implements BLibModStateAccess {
         return storageAccess;
     }
 
-    public @Nullable Version version() {
+    public BLibTerritoryAccess territory() {
+        return territoryAccess;
+    }
+
+    public synchronized @Nullable Version version() {
+        if (version == null) {
+            version = BLibAPI.getModVersion(id);
+        }
         return version;
     }
 

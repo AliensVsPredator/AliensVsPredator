@@ -14,6 +14,7 @@ import com.blib.api.common.mod.v1.BLibMod;
 import com.blib.api.common.registry.v1.BLibHolder;
 import com.blib.api.common.registry.v1.BLibRegistry;
 import com.blib.api.common.registry.v1.impl.BLibAzureLibIdentityRegistry;
+import com.blib.api.common.registry.v1.impl.BLibBrewingRegistry;
 import com.blib.api.common.registry.v1.impl.BLibCommandRegistry;
 import com.blib.api.common.registry.v1.impl.BLibCompostableRegistry;
 import com.blib.api.common.registry.v1.impl.BLibDecoratedPotPatternRegistry;
@@ -35,6 +36,10 @@ public class BLibRegistryAccess {
     public BLibRegistryAccess(BLibMod mod) {
         this.mod = mod;
         this.registryToRegistriesMap = new ConcurrentHashMap<>();
+    }
+
+    public BLibBrewingRegistry createBrewingRegistry() {
+        return new BLibBrewingRegistry(mod);
     }
 
     public BLibAzureLibIdentityRegistry createAzureLibIdentityRegistry() {

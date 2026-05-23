@@ -1,0 +1,26 @@
+package com.blib.api.common.faction.v1;
+
+import net.minecraft.world.entity.Entity;
+
+import java.util.UUID;
+
+public interface WritableFactionMembership extends ReadableFactionMembership {
+
+    boolean addMember(FactionMember member);
+
+    boolean removeMember(FactionMember member);
+
+    default boolean addEntity(UUID uuid) {
+        return addMember(FactionMember.entity(uuid));
+    }
+
+    boolean addEntity(Entity entity);
+
+    default boolean removeEntity(UUID uuid) {
+        return removeMember(FactionMember.entity(uuid));
+    }
+
+    default boolean removeEntity(Entity entity) {
+        return removeMember(FactionMember.entity(entity));
+    }
+}

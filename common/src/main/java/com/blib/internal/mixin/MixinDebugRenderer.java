@@ -5,7 +5,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.debug.DebugRenderer;
 import net.minecraft.client.renderer.debug.GoalSelectorDebugRenderer;
 import net.minecraft.client.renderer.debug.LightSectionDebugRenderer;
-import net.minecraft.client.renderer.debug.PathfindingRenderer;
 import net.minecraft.client.renderer.debug.StructureRenderer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -50,10 +49,6 @@ public class MixinDebugRenderer {
 
     @Shadow
     @Final
-    public PathfindingRenderer pathfindingRenderer;
-
-    @Shadow
-    @Final
     public LightSectionDebugRenderer skyLightSectionDebugRenderer;
 
     @Shadow
@@ -85,10 +80,6 @@ public class MixinDebugRenderer {
 
         if (!access.get(BLibModProperties.Debug.Render.ENABLED)) {
             return;
-        }
-
-        if (access.get(BLibModProperties.Debug.Render.Path.ENABLED)) {
-            pathfindingRenderer.render(poseStack, bufferSource, camX, camY, camZ);
         }
 
         if (access.get(BLibModProperties.Debug.Render.Goal.ENABLED)) {

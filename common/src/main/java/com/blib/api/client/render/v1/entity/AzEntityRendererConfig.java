@@ -18,6 +18,7 @@ import com.blib.api.client.render.v1.AzModelRenderer;
 import com.blib.api.client.render.v1.AzRendererConfig;
 import com.blib.api.client.render.v1.AzRendererPipeline;
 import com.blib.api.client.render.v1.AzRendererPipelineContext;
+import com.blib.api.client.render.v1.BoneVisibilityFilter;
 import com.blib.api.client.render.v1.entity.model.AzEntityModelRenderer;
 import com.blib.api.client.render.v1.entity.pipeline.AzEntityRendererPipeline;
 import com.blib.api.client.render.v1.entity.pipeline.AzEntityRendererPipelineContext;
@@ -46,7 +47,8 @@ public class AzEntityRendererConfig<T extends Entity> extends AzRendererConfig<U
         BiFunction<AzRendererPipeline<UUID, T>, AzLayerRenderer<UUID, T>, AzModelRenderer<UUID, T>> modelRendererProvider,
         Function<AzRendererPipeline<UUID, T>, AzRendererPipelineContext<UUID, T>> pipelineContextFunction,
         Function<AzBone, ResourceLocation> boneTextureOverrideProvider,
-        Function<AzBone, RenderType> boneRenderTypeOverrideProvider
+        Function<AzBone, RenderType> boneRenderTypeOverrideProvider,
+        BoneVisibilityFilter<T> boneVisibilityFilter
     ) {
         super(
             animatorProvider,
@@ -63,7 +65,8 @@ public class AzEntityRendererConfig<T extends Entity> extends AzRendererConfig<U
             scaleHeight,
             scaleWidth,
             boneTextureOverrideProvider,
-            boneRenderTypeOverrideProvider
+            boneRenderTypeOverrideProvider,
+            boneVisibilityFilter
         );
         this.deathMaxRotationProvider = deathMaxRotationProvider;
         this.shadowRadius = shadowRadius;
@@ -124,6 +127,11 @@ public class AzEntityRendererConfig<T extends Entity> extends AzRendererConfig<U
             Function<AzBone, ResourceLocation> boneTextureOverrideProvider
         ) {
             return (Builder<T>) super.setBoneTextureOverrideProvider(boneTextureOverrideProvider);
+        }
+
+        @Override
+        public Builder<T> setBoneVisibilityFilter(BoneVisibilityFilter<T> boneVisibilityFilter) {
+            return (Builder<T>) super.setBoneVisibilityFilter(boneVisibilityFilter);
         }
 
         @Override
@@ -257,7 +265,8 @@ public class AzEntityRendererConfig<T extends Entity> extends AzRendererConfig<U
                 baseConfig::modelRendererProvider,
                 baseConfig::pipelineContext,
                 baseConfig::boneTextureOverrideProvider,
-                baseConfig::boneRenderTypeOverrideProvider
+                baseConfig::boneRenderTypeOverrideProvider,
+                baseConfig.boneVisibilityFilter()
             );
         }
     }

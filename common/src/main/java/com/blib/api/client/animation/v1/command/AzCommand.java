@@ -1,62 +1,86 @@
 package com.blib.api.client.animation.v1.command;
 
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import com.blib.api.client.animation.v1.command.play_behavior.AzPlayBehavior;
-import com.blib.api.client.animation.v1.command.play_behavior.AzPlayBehaviors;
+import com.blib.api.BLibAPI;
+import com.blib.api.client.animation.v1.command.policy.AzDispatchMode;
 import com.blib.internal.client.animation.AzAnimatorAccessor;
-import com.blib.internal.client.animation.dispatch.AzDispatchSide;
 import com.blib.internal.client.animation.dispatch.command.action.AzAction;
-import com.blib.internal.common.codec.AzListStreamCodec;
-import com.blib.internal.service.BLibInternalServices;
-import com.blib.mod.BLib;
-import com.blib.mod.common.network.packet.S2CBlockEntityDispatchCommandPayload;
-import com.blib.mod.common.network.packet.S2CEntityDispatchCommandPayload;
-import com.blib.mod.common.network.packet.S2CItemStackDispatchCommandPayload;
-import com.blib.mod.common.registry.init.BLibDataComponents;
 
-public record AzCommand(List<AzAction> actions) {
+public record AzCommand<T>(List<AzAction<T>> actions) {
 
-    public static final StreamCodec<FriendlyByteBuf, AzCommand> CODEC = StreamCodec.composite(
-        new AzListStreamCodec<>(AzAction.CODEC),
-        AzCommand::actions,
-        AzCommand::new
-    );
-
-    public static AzRootCommandBuilder rootBuilder() {
-        return new AzRootCommandBuilder();
+    public AzCommand {
+        // Defensive copy: ensures the published action list is immutable and decoupled from any
+        // mutable list the caller (typically AzCommandBuilder) may continue to hold.
+        actions = List.copyOf(actions);
     }
 
-    public static AzControllerCommandBuilder controllerBuilder() {
-        return new AzControllerCommandBuilder();
+    private static final Logger LOGGER = LoggerFactory.getLogger(AzCommand.class);
+
+    private static final String SERVER_SIDE_DISPATCH_MESSAGE =
+        "AzCommand.dispatch() was called on the server for %s '%s'. "
+            + "Animation commands only work client-side. "
+            + "Use a data-synced flag or network packet to trigger animations from the server.";
+
+    private static final String SERVER_SIDE_DISPATCH_MESSAGE_LOG = SERVER_SIDE_DISPATCH_MESSAGE.replaceAll("%s", "{}");
+
+    /**
+     * Returns a fresh command builder with no dispatch mode set. Useful for set-only commands (e.g. {@code setSpeed}
+     * without any play action) or when the caller wants to set the mode explicitly via
+     * {@link AzCommandBuilder#dispatchMode(AzDispatchMode)}. Adding a play action to a builder with no mode set throws.
+     */
+    public static <T> AzCommandBuilder<T> builder() {
+        return new AzCommandBuilder<>();
     }
 
-    public static AzCommand compose(Collection<AzCommand> commands) {
+    /**
+     * Returns a command builder with {@link AzDispatchMode#REPLAY} pre-set.
+     */
+    public static <T> AzCommandBuilder<T> replay() {
+        return new AzCommandBuilder<T>().dispatchMode(AzDispatchMode.REPLAY);
+    }
+
+    /**
+     * Returns a command builder with {@link AzDispatchMode#PLAY_IF_NOT_PLAYING} pre-set.
+     */
+    public static <T> AzCommandBuilder<T> idempotent() {
+        return new AzCommandBuilder<T>().dispatchMode(AzDispatchMode.PLAY_IF_NOT_PLAYING);
+    }
+
+    /**
+     * Returns a command builder with {@link AzDispatchMode#ENQUEUE} pre-set.
+     */
+    public static <T> AzCommandBuilder<T> enqueueing() {
+        return new AzCommandBuilder<T>().dispatchMode(AzDispatchMode.ENQUEUE);
+    }
+
+    public static <T> AzCommand<T> compose(Collection<AzCommand<T>> commands) {
         if (commands.isEmpty()) {
             throw new IllegalArgumentException("Attempted to compose an empty collection of commands.");
         } else if (commands.size() == 1) {
             return commands.iterator().next();
         }
 
-        return new AzCommand(
+        return new AzCommand<>(
             commands.stream()
                 .flatMap(command -> command.actions().stream())
                 .toList()
         );
     }
 
-    public static AzCommand compose(AzCommand first, AzCommand second, AzCommand... others) {
-        var allCommands = new ArrayList<AzCommand>();
+    @SafeVarargs
+    public static <T> AzCommand<T> compose(AzCommand<T> first, AzCommand<T> second, AzCommand<T>... others) {
+        var allCommands = new ArrayList<AzCommand<T>>();
 
         allCommands.add(first);
         allCommands.add(second);
@@ -65,114 +89,49 @@ public record AzCommand(List<AzAction> actions) {
         return compose(allCommands);
     }
 
-    public static AzCommand create(String controllerName, String animationName) {
-        return create(controllerName, animationName, AzPlayBehaviors.PLAY_ONCE, 0F, 1F, 0F, 0F, 0F, false);
-    }
-
-    public static AzCommand create(String controllerName, String animationName, AzPlayBehavior playBehavior) {
-        return create(controllerName, animationName, playBehavior, 0F, 1F, 0F, 0F, 0F, false);
-    }
-
-    // TODO: Fix transition length overriding transition length on the base create method
-    public static AzCommand create(
-        String controllerName,
-        String animationName,
-        AzPlayBehavior playBehavior,
-        float startTickOffset,
-        float animationSpeed,
-        float transitionLength,
-        float freezeTickOffset,
-        float repeatXTimes,
-        boolean isReversing
-    ) {
-        return controllerBuilder()
-            .playSequence(
-                controllerName,
-                sequenceBuilder -> sequenceBuilder.queue(
-                    animationName,
-                    props -> props.withPlayBehavior(playBehavior)
-                )
-            )
-            .setFreezeTickOffset(controllerName, freezeTickOffset)
-            .setStartTickOffset(controllerName, startTickOffset)
-            .setSpeed(controllerName, animationSpeed)
-            .setRepeatAmount(controllerName, repeatXTimes)
-            .setReverseAnimation(controllerName, isReversing)
-            .build();
-    }
-
-    // TODO: Fix transition length overriding transition lenght on the base create method
-    public static AzCommand createRoot(
-        String animationName,
-        AzPlayBehavior playBehavior,
-        float startTickOffset,
-        float animationSpeed,
-        float transitionLength,
-        float freezeTickOffset,
-        float repeatXTimes,
-        boolean isReversing
-    ) {
-        return rootBuilder()
-            .playSequence(
-                sequenceBuilder -> sequenceBuilder.queue(
-                    animationName,
-                    props -> props.withPlayBehavior(playBehavior)
-                )
-            )
-            .setFreezeTickOffset(freezeTickOffset)
-            .setTransitionSpeed(transitionLength)
-            .setStartTickOffset(startTickOffset)
-            .setSpeed(animationSpeed)
-            .setRepeatAmount(repeatXTimes)
-            .setReverseAnimation(isReversing)
-            .build();
-    }
-
-    public void sendForEntity(Entity entity) {
-        if (entity.level().isClientSide()) {
-            dispatchFromClient(entity);
-        } else {
-            var entityId = entity.getId();
-            var payload = new S2CEntityDispatchCommandPayload(entityId, this);
-            BLibInternalServices.SERVER_NETWORKING.sendToAllClientsTrackingEntity(entity, payload);
+    public void dispatchForEntity(T entity) {
+        if (entity instanceof Entity mcEntity) {
+            validateClientSide(mcEntity.level(), "Entity", entity);
         }
+        dispatch(entity);
     }
 
-    public void sendForBlockEntity(BlockEntity entity) {
-        if (entity.getLevel().isClientSide()) {
-            dispatchFromClient(entity);
-        } else {
-            var entityBlockPos = entity.getBlockPos();
-            var payload = new S2CBlockEntityDispatchCommandPayload(entityBlockPos, this);
-            BLibInternalServices.SERVER_NETWORKING.sendToAllClientsTrackingChunk((ServerLevel) entity.getLevel(), entityBlockPos, payload);
-        }
-    }
+    public void dispatchForBlockEntity(T blockEntity) {
+        if (blockEntity instanceof BlockEntity mcBlockEntity) {
+            var level = mcBlockEntity.getLevel();
 
-    public void sendForItem(Entity entity, ItemStack itemStack) {
-        if (entity.level().isClientSide()) {
-            dispatchFromClient(entity);
-        } else {
-            var uuid = itemStack.get(BLibDataComponents.AZ_ID.get());
-
-            if (uuid == null) {
-                BLib.LOGGER.warn(
-                    "Could not find item stack UUID during dispatch. Did you forget to register an identity for the item? Item: {}, Item Stack: {}",
-                    itemStack.getItem(),
-                    itemStack
-                );
-                return;
+            if (level != null) {
+                validateClientSide(level, "BlockEntity", blockEntity);
             }
-
-            var payload = new S2CItemStackDispatchCommandPayload(uuid, this);
-            BLibInternalServices.SERVER_NETWORKING.sendToAllClientsTrackingEntity(entity, payload);
         }
+
+        dispatch(blockEntity);
     }
 
-    private <T> void dispatchFromClient(T animatable) {
-        var animator = AzAnimatorAccessor.getOrNull(animatable);
+    public void dispatchForItem(Entity entity, T itemStack) {
+        if (itemStack instanceof ItemStack stack) {
+            validateClientSide(entity.level(), "ItemStack", stack);
+        }
+        dispatch(itemStack);
+    }
+
+    private void dispatch(T animatable) {
+        var animator = AzAnimatorAccessor.<Object, T>getOrNull(animatable);
 
         if (animator != null) {
-            actions.forEach(action -> action.handle(AzDispatchSide.CLIENT, animator));
+            actions.forEach(action -> action.handle(animator));
         }
+    }
+
+    private void validateClientSide(Level level, String type, Object animatable) {
+        if (level.isClientSide()) {
+            return;
+        }
+
+        if (BLibAPI.isDevelopmentEnvironment()) {
+            throw new IllegalStateException(SERVER_SIDE_DISPATCH_MESSAGE.formatted(type, animatable));
+        }
+
+        LOGGER.warn(SERVER_SIDE_DISPATCH_MESSAGE_LOG, type, animatable);
     }
 }

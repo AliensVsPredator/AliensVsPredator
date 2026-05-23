@@ -4,8 +4,10 @@ import com.just.core.functional.option.Option;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -17,7 +19,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.BiConsumer;
 
 import com.blib.api.common.registry.v1.BLibHolder;
 import com.blib.api.common.storage.v1.DataStore;
@@ -51,6 +56,9 @@ class BLibChunkDataStoreManager {
     // When the count reaches 0, the region's cached data is released from memory.
     private final Map<ResourceKey<Level>, Map<Long, Integer>> regionRefCounts = new HashMap<>();
 
+    // Dirty cached region files: dimension -> namespace -> region key
+    private final Map<ResourceKey<Level>, Map<String, Set<Long>>> dirtyRegions = new HashMap<>();
+
     // ==================== Public Methods ====================
 
     @SuppressWarnings("unchecked")
@@ -59,31 +67,69 @@ class BLibChunkDataStoreManager {
             return Option.none();
         }
 
+        return getOrCreate(level, pos, type);
+    }
+
+    <T extends DataStore> Option<T> getOrCreatePersistent(
+        ServerLevel level,
+        ChunkPos pos,
+        BLibHolder<DataStoreType<T>> type
+    ) {
+        return getOrCreate(level, pos, type);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T extends DataStore> Option<T> getOrCreate(
+        ServerLevel level,
+        ChunkPos pos,
+        BLibHolder<DataStoreType<T>> type
+    ) {
         var levelKey = level.dimension();
         var id = type.getResourceLocation();
         var levelChunkStores = stores.computeIfAbsent(levelKey, k -> new HashMap<>());
         var isNewChunk = !levelChunkStores.containsKey(pos);
         var chunkDataStores = levelChunkStores.computeIfAbsent(pos, p -> new HashMap<>());
 
-        if (isNewChunk) {
+        if (isNewChunk && level.hasChunk(pos.x, pos.z)) {
             incrementRegionRefCount(levelKey, pos);
         }
 
         return Option.some((T) chunkDataStores.computeIfAbsent(id, k -> loadOrCreate(level, pos, type)));
     }
 
-    void saveChunk(ServerLevel level, ChunkPos pos) {
+    <T extends DataStore> void forEachStoredChunk(
+        ServerLevel level,
+        BLibHolder<DataStoreType<T>> type,
+        BiConsumer<ChunkPos, T> consumer
+    ) {
+        var id = type.getResourceLocation();
+        var folder = getRegionFolder(level, id.getNamespace());
+
+        if (!Files.isDirectory(folder)) {
+            return;
+        }
+
+        try (var paths = Files.list(folder)) {
+            paths
+                .filter(Files::isRegularFile)
+                .forEach(path -> loadStoredChunksFromRegion(level, type, consumer, path));
+        } catch (IOException e) {
+            LOGGER.error("Failed to list chunk data store region files in {}", folder, e);
+        }
+    }
+
+    boolean saveChunk(ServerLevel level, ChunkPos pos) {
         var levelKey = level.dimension();
         var levelChunkStores = stores.get(levelKey);
 
         if (levelChunkStores == null) {
-            return;
+            return false;
         }
 
         var chunkDataStores = levelChunkStores.get(pos);
 
         if (chunkDataStores == null || chunkDataStores.isEmpty()) {
-            return;
+            return false;
         }
 
         // Group stores by namespace and save to appropriate region files
@@ -102,8 +148,34 @@ class BLibChunkDataStoreManager {
             var namespace = entry.getKey();
             var namespacedStores = entry.getValue();
 
-            saveChunkToRegion(level, pos, namespace, namespacedStores);
+            saveChunkToRegionCache(level, pos, namespace, namespacedStores);
         }
+
+        return true;
+    }
+
+    void saveChunks(ServerLevel level, Iterable<ChunkPos> positions) {
+        var levelKey = level.dimension();
+        var levelChunkStores = stores.get(levelKey);
+
+        if (levelChunkStores == null || levelChunkStores.isEmpty()) {
+            return;
+        }
+
+        var byNamespaceAndRegion = new HashMap<String, Map<Long, Map<ChunkPos, Map<ResourceLocation, DataStore>>>>();
+
+        for (var pos : positions) {
+            var chunkStores = levelChunkStores.get(pos);
+
+            if (chunkStores == null || chunkStores.isEmpty()) {
+                continue;
+            }
+
+            addChunkStoresByNamespaceAndRegion(byNamespaceAndRegion, pos, chunkStores);
+        }
+
+        saveGroupedRegions(level, byNamespaceAndRegion);
+        flushDirtyRegions(level, regionKeys(byNamespaceAndRegion));
     }
 
     void saveAllForLevel(ServerLevel level) {
@@ -111,6 +183,7 @@ class BLibChunkDataStoreManager {
         var levelChunkStores = stores.get(levelKey);
 
         if (levelChunkStores == null || levelChunkStores.isEmpty()) {
+            flushDirtyRegionsForLevel(level);
             return;
         }
 
@@ -121,21 +194,36 @@ class BLibChunkDataStoreManager {
         for (var chunkEntry : levelChunkStores.entrySet()) {
             var pos = chunkEntry.getKey();
             var chunkStores = chunkEntry.getValue();
-            var regionKey = getRegionKey(pos);
-
-            for (var storeEntry : chunkStores.entrySet()) {
-                var id = storeEntry.getKey();
-                var store = storeEntry.getValue();
-
-                byNamespaceAndRegion
-                    .computeIfAbsent(id.getNamespace(), k -> new HashMap<>())
-                    .computeIfAbsent(regionKey, k -> new HashMap<>())
-                    .computeIfAbsent(pos, k -> new HashMap<>())
-                    .put(id, store);
-            }
+            addChunkStoresByNamespaceAndRegion(byNamespaceAndRegion, pos, chunkStores);
         }
 
-        // Save each region
+        saveGroupedRegions(level, byNamespaceAndRegion);
+        flushDirtyRegionsForLevel(level);
+    }
+
+    private static void addChunkStoresByNamespaceAndRegion(
+        Map<String, Map<Long, Map<ChunkPos, Map<ResourceLocation, DataStore>>>> byNamespaceAndRegion,
+        ChunkPos pos,
+        Map<ResourceLocation, DataStore> chunkStores
+    ) {
+        var regionKey = getRegionKey(pos);
+
+        for (var storeEntry : chunkStores.entrySet()) {
+            var id = storeEntry.getKey();
+            var store = storeEntry.getValue();
+
+            byNamespaceAndRegion
+                .computeIfAbsent(id.getNamespace(), k -> new HashMap<>())
+                .computeIfAbsent(regionKey, k -> new HashMap<>())
+                .computeIfAbsent(pos, k -> new HashMap<>())
+                .put(id, store);
+        }
+    }
+
+    private void saveGroupedRegions(
+        ServerLevel level,
+        Map<String, Map<Long, Map<ChunkPos, Map<ResourceLocation, DataStore>>>> byNamespaceAndRegion
+    ) {
         for (var namespaceEntry : byNamespaceAndRegion.entrySet()) {
             var namespace = namespaceEntry.getKey();
 
@@ -148,27 +236,164 @@ class BLibChunkDataStoreManager {
         }
     }
 
-    void onChunkUnload(ServerLevel level, ChunkPos pos) {
-        saveChunk(level, pos);
+    private static Map<String, Set<Long>> regionKeys(
+        Map<String, Map<Long, Map<ChunkPos, Map<ResourceLocation, DataStore>>>> byNamespaceAndRegion
+    ) {
+        var result = new HashMap<String, Set<Long>>();
+
+        for (var namespaceEntry : byNamespaceAndRegion.entrySet()) {
+            result.put(namespaceEntry.getKey(), Set.copyOf(namespaceEntry.getValue().keySet()));
+        }
+
+        return result;
+    }
+
+    void flushDirtyRegions(MinecraftServer server) {
+        for (var levelKey : Set.copyOf(dirtyRegions.keySet())) {
+            var level = server.getLevel(levelKey);
+
+            if (level == null) {
+                LOGGER.warn("Cannot flush dirty chunk store regions for unloaded dimension {}", levelKey.location());
+                continue;
+            }
+
+            flushDirtyRegionsForLevel(level);
+        }
+    }
+
+    private void flushDirtyRegionsForLevel(ServerLevel level) {
+        var levelKey = level.dimension();
+        var namespaces = dirtyRegions.get(levelKey);
+
+        if (namespaces == null || namespaces.isEmpty()) {
+            return;
+        }
+
+        var dirty = new HashMap<String, Set<Long>>();
+
+        for (var entry : namespaces.entrySet()) {
+            var regions = Set.copyOf(entry.getValue());
+            dirty.put(entry.getKey(), regions);
+        }
+
+        flushDirtyRegions(level, dirty);
+    }
+
+    private void flushDirtyRegions(ServerLevel level, Map<String, Set<Long>> regions) {
+        for (var namespaceEntry : regions.entrySet()) {
+            var namespace = namespaceEntry.getKey();
+
+            for (var regionKey : namespaceEntry.getValue()) {
+                flushDirtyRegion(level, namespace, regionKey);
+            }
+        }
+    }
+
+    private void flushDirtyRegion(ServerLevel level, String namespace, long regionKey) {
+        if (!isRegionDirty(level.dimension(), namespace, regionKey)) {
+            return;
+        }
+
+        var regionTag = getCachedRegion(level.dimension(), namespace, regionKey);
+
+        if (regionTag == null) {
+            LOGGER.warn(
+                "Dirty chunk store region {} namespace={} region={} had no cached data; skipping flush",
+                level.dimension().location(),
+                namespace,
+                formatRegionKey(regionKey)
+            );
+            clearRegionDirty(level.dimension(), namespace, regionKey);
+            return;
+        }
+
+        writeRegionToDisk(getRegionPath(level, namespace, regionKey), regionTag);
+        clearRegionDirty(level.dimension(), namespace, regionKey);
+    }
+
+    private CompoundTag getCachedRegion(ResourceKey<Level> levelKey, String namespace, long regionKey) {
+        var levelRegions = loadedRegions.get(levelKey);
+
+        if (levelRegions == null) {
+            return null;
+        }
+
+        var namespaceRegions = levelRegions.get(namespace);
+
+        if (namespaceRegions == null) {
+            return null;
+        }
+
+        return namespaceRegions.get(regionKey);
+    }
+
+    private void markRegionDirty(ResourceKey<Level> levelKey, String namespace, long regionKey) {
+        dirtyRegions
+            .computeIfAbsent(levelKey, k -> new HashMap<>())
+            .computeIfAbsent(namespace, k -> new HashSet<>())
+            .add(regionKey);
+    }
+
+    private boolean isRegionDirty(ResourceKey<Level> levelKey, String namespace, long regionKey) {
+        var namespaces = dirtyRegions.get(levelKey);
+
+        if (namespaces == null) {
+            return false;
+        }
+
+        var regions = namespaces.get(namespace);
+        return regions != null && regions.contains(regionKey);
+    }
+
+    private void clearRegionDirty(ResourceKey<Level> levelKey, String namespace, long regionKey) {
+        var namespaces = dirtyRegions.get(levelKey);
+
+        if (namespaces == null) {
+            return;
+        }
+
+        var regions = namespaces.get(namespace);
+
+        if (regions == null) {
+            return;
+        }
+
+        regions.remove(regionKey);
+
+        if (regions.isEmpty()) {
+            namespaces.remove(namespace);
+        }
+
+        if (namespaces.isEmpty()) {
+            dirtyRegions.remove(levelKey);
+        }
+    }
+
+    boolean onChunkUnload(ServerLevel level, ChunkPos pos) {
+        var saved = saveChunk(level, pos);
 
         var levelKey = level.dimension();
         var levelChunkStores = stores.get(levelKey);
 
         if (levelChunkStores != null && levelChunkStores.remove(pos) != null) {
-            decrementRegionRefCount(levelKey, pos);
+            decrementRegionRefCount(level, pos);
         }
+
+        return saved;
     }
 
     void clear() {
         stores.clear();
         loadedRegions.clear();
         regionRefCounts.clear();
+        dirtyRegions.clear();
     }
 
     void clearLevel(ResourceKey<Level> levelKey) {
         stores.remove(levelKey);
         loadedRegions.remove(levelKey);
         regionRefCounts.remove(levelKey);
+        dirtyRegions.remove(levelKey);
     }
 
     // ==================== Load/Save Helpers ====================
@@ -199,7 +424,7 @@ class BLibChunkDataStoreManager {
         return store;
     }
 
-    private void saveChunkToRegion(
+    private void saveChunkToRegionCache(
         ServerLevel level,
         ChunkPos pos,
         String namespace,
@@ -244,8 +469,7 @@ class BLibChunkDataStoreManager {
             .computeIfAbsent(namespace, k -> new HashMap<>())
             .put(regionKey, regionTag);
 
-        // Write to disk
-        writeRegionToDisk(getRegionPath(level, namespace, regionKey), regionTag);
+        markRegionDirty(levelKey, namespace, regionKey);
     }
 
     private void saveRegion(
@@ -289,8 +513,12 @@ class BLibChunkDataStoreManager {
             }
         }
 
-        // Write to disk
-        writeRegionToDisk(getRegionPath(level, namespace, regionKey), regionTag);
+        loadedRegions
+            .computeIfAbsent(level.dimension(), k -> new HashMap<>())
+            .computeIfAbsent(namespace, k -> new HashMap<>())
+            .put(regionKey, regionTag);
+
+        markRegionDirty(level.dimension(), namespace, regionKey);
     }
 
     private void writeRegionToDisk(Path path, CompoundTag regionTag) {
@@ -317,6 +545,48 @@ class BLibChunkDataStoreManager {
     }
 
     // ==================== Region Cache ====================
+
+    private <T extends DataStore> void loadStoredChunksFromRegion(
+        ServerLevel level,
+        BLibHolder<DataStoreType<T>> type,
+        BiConsumer<ChunkPos, T> consumer,
+        Path path
+    ) {
+        var regionKey = parseRegionKey(path.getFileName().toString());
+
+        if (regionKey == null) {
+            return;
+        }
+
+        var id = type.getResourceLocation();
+        var regionTag = getOrLoadRegionByKey(level, id.getNamespace(), regionKey);
+
+        if (regionTag == null || regionTag.isEmpty()) {
+            return;
+        }
+
+        for (var chunkKey : regionTag.getAllKeys()) {
+            if (REGION_SIZE_KEY.equals(chunkKey) || !regionTag.contains(chunkKey, Tag.TAG_COMPOUND)) {
+                continue;
+            }
+
+            var pos = parseChunkPos(regionKey, chunkKey);
+
+            if (pos == null) {
+                continue;
+            }
+
+            var chunkTag = regionTag.getCompound(chunkKey);
+
+            if (!chunkTag.contains(id.getPath(), Tag.TAG_COMPOUND)) {
+                continue;
+            }
+
+            var store = type.value().createInstance();
+            store.load(chunkTag.getCompound(id.getPath()));
+            consumer.accept(pos, store);
+        }
+    }
 
     private CompoundTag getOrLoadRegion(ServerLevel level, ChunkPos pos, String namespace) {
         return getOrLoadRegionByKey(level, namespace, getRegionKey(pos));
@@ -383,7 +653,8 @@ class BLibChunkDataStoreManager {
             .merge(regionKey, 1, Integer::sum);
     }
 
-    private void decrementRegionRefCount(ResourceKey<Level> levelKey, ChunkPos pos) {
+    private void decrementRegionRefCount(ServerLevel level, ChunkPos pos) {
+        var levelKey = level.dimension();
         var levelRefCounts = regionRefCounts.get(levelKey);
 
         if (levelRefCounts == null) {
@@ -400,8 +671,22 @@ class BLibChunkDataStoreManager {
             var levelRegions = loadedRegions.get(levelKey);
 
             if (levelRegions != null) {
-                for (var namespaceRegions : levelRegions.values()) {
-                    namespaceRegions.remove(regionKey);
+                for (var namespaceEntry : Set.copyOf(levelRegions.entrySet())) {
+                    var namespace = namespaceEntry.getKey();
+                    var namespaceRegions = namespaceEntry.getValue();
+
+                    if (namespaceRegions.containsKey(regionKey)) {
+                        flushDirtyRegion(level, namespace, regionKey);
+                        namespaceRegions.remove(regionKey);
+                    }
+
+                    if (namespaceRegions.isEmpty()) {
+                        levelRegions.remove(namespace);
+                    }
+                }
+
+                if (levelRegions.isEmpty()) {
+                    loadedRegions.remove(levelKey);
                 }
             }
 
@@ -429,12 +714,16 @@ class BLibChunkDataStoreManager {
         var rx = (int) (regionKey >> 32);
         var rz = (int) regionKey;
 
+        return getRegionFolder(level, namespace)
+            .resolve("r" + REGION_SIZE + "." + rx + "." + rz + ".nbt");
+    }
+
+    private Path getRegionFolder(ServerLevel level, String namespace) {
         return DataStoreIO.getBlibDataPath(level.getServer())
             .resolve(namespace)
             .resolve(LEVELS_FOLDER)
             .resolve(DataStoreIO.getDimensionFolder(level))
-            .resolve(CHUNKS_FOLDER)
-            .resolve("r" + REGION_SIZE + "." + rx + "." + rz + ".nbt");
+            .resolve(CHUNKS_FOLDER);
     }
 
     // ==================== Region Coordinate Helper Methods ====================
@@ -449,6 +738,35 @@ class BLibChunkDataStoreManager {
         return ((long) rx << 32) | (rz & 0xFFFFFFFFL);
     }
 
+    private static String formatRegionKey(long regionKey) {
+        return (int) (regionKey >> 32) + "," + (int) regionKey;
+    }
+
+    private static Long parseRegionKey(String fileName) {
+        var prefix = "r" + REGION_SIZE + ".";
+        var suffix = ".nbt";
+
+        if (!fileName.startsWith(prefix) || !fileName.endsWith(suffix)) {
+            return null;
+        }
+
+        var coordinates = fileName.substring(prefix.length(), fileName.length() - suffix.length());
+        var separator = coordinates.indexOf('.');
+
+        if (separator < 0) {
+            return null;
+        }
+
+        try {
+            var rx = Integer.parseInt(coordinates.substring(0, separator));
+            var rz = Integer.parseInt(coordinates.substring(separator + 1));
+
+            return ((long) rx << 32) | (rz & 0xFFFFFFFFL);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
     /**
      * Gets the chunk key for storage within a region file. Uses relative coordinates within the region (0-31, 0-31).
      */
@@ -457,5 +775,29 @@ class BLibChunkDataStoreManager {
         var relZ = pos.z & REGION_MASK;
 
         return relX + "," + relZ;
+    }
+
+    private static ChunkPos parseChunkPos(long regionKey, String chunkKey) {
+        var separator = chunkKey.indexOf(',');
+
+        if (separator < 0) {
+            return null;
+        }
+
+        try {
+            var relX = Integer.parseInt(chunkKey.substring(0, separator));
+            var relZ = Integer.parseInt(chunkKey.substring(separator + 1));
+
+            if (relX < 0 || relX > REGION_MASK || relZ < 0 || relZ > REGION_MASK) {
+                return null;
+            }
+
+            var rx = (int) (regionKey >> 32);
+            var rz = (int) regionKey;
+
+            return new ChunkPos((rx << REGION_SHIFT) + relX, (rz << REGION_SHIFT) + relZ);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 }

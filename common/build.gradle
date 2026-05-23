@@ -25,11 +25,12 @@ dependencies {
     annotationProcessor group: 'io.github.llamalad7', name: 'mixinextras-common', version: project.mixinextras_common_version
 
     // Manually added dependencies
-    compileOnly "com.just:just-codec:${project.just_codec_version}"
-    compileOnly "com.just:just-core:${project.just_core_version}"
-    compileOnly "com.just:just-goap:${project.just_goap_version}"
+    api "com.just:just-codec:${project.just_codec_version}"
+    api "com.just:just-core:${project.just_core_version}"
+    api "com.just:just-goap:${project.just_goap_version}"
 
     compileOnly "maven.modrinth:shoulder-surfing-reloaded:1.21.1-4.11.0+neoforge"
+    compileOnly "maven.modrinth:xaeros-world-map:neoforge-1.21.1-1.40.11"
     compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${project.jei_version}"
     compileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:${project.rei_version}"
     compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"

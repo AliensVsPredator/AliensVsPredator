@@ -93,17 +93,7 @@ public class AutoGlowingTexture extends AzAbstractTexture {
             BLib.LOGGER.warn("Resource failed to open for glowlayer meta: {}", this.glowLayer, e);
         }
 
-        NativeImage mask = glowImage;
-
-        if (mask == null) {
-            String expectedGlowmask = this.textureBase.toString().replace(".png", "_glowmask.png");
-            BLib.LOGGER.warn(
-                "Missing glowmask texture. Base texture: {}, Expected glowmask: {}",
-                this.textureBase,
-                expectedGlowmask
-            );
-            return null;
-        }
+        NativeImage mask = glowImage != null ? glowImage : copyImage(baseImage);
 
         boolean animated = originalTexture instanceof AnimatableTexture animatableTexture
             && animatableTexture
@@ -126,5 +116,11 @@ public class AutoGlowingTexture extends AzAbstractTexture {
                 uploadSimple(originalTexture.getId(), baseImage, blur, clamp);
             }
         };
+    }
+
+    private static NativeImage copyImage(NativeImage image) {
+        NativeImage copy = new NativeImage(image.getWidth(), image.getHeight(), true);
+        copy.copyFrom(image);
+        return copy;
     }
 }

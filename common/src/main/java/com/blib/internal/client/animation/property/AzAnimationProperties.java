@@ -6,16 +6,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 import com.blib.internal.client.animation.easing.AzEasingType;
-import com.blib.internal.client.animation.property.codec.AzAnimationPropertiesCodec;
 
 public class AzAnimationProperties {
 
-    public static final AzAnimationPropertiesCodec CODEC = new AzAnimationPropertiesCodec();
-
-    public static final AzAnimationProperties DEFAULT = new AzAnimationProperties(1D, null, 0F, 0D, 0D, 1D, false);
+    public static final AzAnimationProperties DEFAULT = new AzAnimationProperties(1D, null, 0F, 0D, 0D, false);
 
     public static final AzAnimationProperties EMPTY = new AzAnimationProperties(
-        null,
         null,
         null,
         null,
@@ -24,19 +20,17 @@ public class AzAnimationProperties {
         null
     );
 
-    protected @Nullable Double animationSpeed;
+    protected final @Nullable Double animationSpeed;
 
-    protected @Nullable AzEasingType easingType;
+    protected final @Nullable AzEasingType easingType;
 
-    protected @Nullable Float transitionLength;
+    protected final @Nullable Float transitionLength;
 
-    protected @Nullable Double startTickOffset;
+    protected final @Nullable Double startTickOffset;
 
-    protected @Nullable Double freezeTickOffset;
+    protected final @Nullable Double freezeTickOffset;
 
-    protected @Nullable Double repeatXTimes;
-
-    protected @Nullable Boolean isReversing;
+    protected final @Nullable Boolean isReversing;
 
     public AzAnimationProperties(
         @Nullable Double animationSpeed,
@@ -44,7 +38,6 @@ public class AzAnimationProperties {
         @Nullable Float transitionLength,
         @Nullable Double startTickOffset,
         @Nullable Double freezeTickOffset,
-        @Nullable Double repeatXTimes,
         @Nullable Boolean isReversing
     ) {
         this.animationSpeed = animationSpeed;
@@ -52,7 +45,6 @@ public class AzAnimationProperties {
         this.transitionLength = transitionLength;
         this.startTickOffset = startTickOffset;
         this.freezeTickOffset = freezeTickOffset;
-        this.repeatXTimes = repeatXTimes;
         this.isReversing = isReversing;
     }
 
@@ -76,101 +68,72 @@ public class AzAnimationProperties {
         return freezeTickOffset != null;
     }
 
-    public boolean hasRepeatXTimes() {
-        return repeatXTimes != null;
-    }
-
     public boolean hasReversing() {
         return isReversing != null;
     }
 
     public AzAnimationProperties withAnimationSpeed(double animationSpeed) {
-        this.animationSpeed = animationSpeed;
         return new AzAnimationProperties(
             animationSpeed,
             easingType,
             transitionLength,
             startTickOffset,
             freezeTickOffset,
-            repeatXTimes,
             isReversing
         );
     }
 
     public AzAnimationProperties withEasingType(@NotNull AzEasingType easingType) {
-        this.easingType = easingType;
         return new AzAnimationProperties(
             animationSpeed,
             easingType,
             transitionLength,
             startTickOffset,
             freezeTickOffset,
-            repeatXTimes,
             isReversing
         );
     }
 
     public AzAnimationProperties withTransitionLength(float transitionLength) {
-        this.transitionLength = transitionLength;
         return new AzAnimationProperties(
             animationSpeed,
             easingType,
             transitionLength,
             startTickOffset,
             freezeTickOffset,
-            repeatXTimes,
             isReversing
         );
     }
 
     public AzAnimationProperties withStartTickOffset(double startTickOffset) {
-        this.startTickOffset = startTickOffset;
         return new AzAnimationProperties(
             animationSpeed,
             easingType,
             transitionLength,
             startTickOffset,
             freezeTickOffset,
-            repeatXTimes,
             isReversing
         );
     }
 
     public AzAnimationProperties withFreezeTickOffset(double freezeTickOffset) {
-        this.freezeTickOffset = freezeTickOffset;
         return new AzAnimationProperties(
             animationSpeed,
             easingType,
             transitionLength,
             startTickOffset,
             freezeTickOffset,
-            repeatXTimes,
-            isReversing
-        );
-    }
-
-    public AzAnimationProperties withRepeatXTimes(double repeatXTimes) {
-        this.repeatXTimes = repeatXTimes;
-        return new AzAnimationProperties(
-            animationSpeed,
-            easingType,
-            transitionLength,
-            startTickOffset,
-            freezeTickOffset,
-            repeatXTimes,
             isReversing
         );
     }
 
     public AzAnimationProperties withShouldReverse(boolean isReversing) {
-        this.isReversing = isReversing;
         return new AzAnimationProperties(
             animationSpeed,
             easingType,
             transitionLength,
             startTickOffset,
             freezeTickOffset,
-            repeatXTimes,
             isReversing
         );
     }
@@ -195,10 +158,6 @@ public class AzAnimationProperties {
         return freezeTickOffset == null ? DEFAULT.freezeTickOffset() : freezeTickOffset;
     }
 
-    public double repeatXTimes() {
-        return repeatXTimes == null ? DEFAULT.repeatXTimes() : repeatXTimes;
-    }
-
     public boolean isReversing() {
         return isReversing == null ? DEFAULT.isReversing() : isReversing;
     }
@@ -219,10 +178,8 @@ public class AzAnimationProperties {
             && Objects.equals(transitionLength, that.transitionLength) && Objects.equals(
                 startTickOffset,
                 that.startTickOffset
-            ) && Objects.equals(freezeTickOffset, that.freezeTickOffset) && Objects.equals(
-                repeatXTimes,
-                that.repeatXTimes
-            ) && Objects.equals(isReversing, that.isReversing);
+            ) && Objects.equals(freezeTickOffset, that.freezeTickOffset)
+            && Objects.equals(isReversing, that.isReversing);
     }
 
     @Override
@@ -233,7 +190,6 @@ public class AzAnimationProperties {
             transitionLength,
             startTickOffset,
             freezeTickOffset,
-            repeatXTimes,
             isReversing
         );
     }

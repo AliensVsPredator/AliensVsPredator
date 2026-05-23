@@ -3,6 +3,7 @@ package com.blib.mod.common.command;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -11,6 +12,9 @@ import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.blib.api.common.property.v1.BLibPropertyContainer;
 import com.blib.api.common.property.v1.BLibPropertyContainerType;
@@ -55,7 +59,7 @@ public final class BLibPropertyCommands {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static com.mojang.brigadier.builder.RequiredArgumentBuilder<CommandSourceStack, ?> buildContainerArg() {
+    private static RequiredArgumentBuilder<CommandSourceStack, ?> buildContainerArg() {
         return Commands.argument("container", ResourceLocationArgument.id())
             .suggests(
                 (context, builder) -> SharedSuggestionProvider.suggestResource(
@@ -328,8 +332,8 @@ public final class BLibPropertyCommands {
         return BLibBuiltInRegistries.PROPERTY_CONTAINER_TYPES.get(location);
     }
 
-    private static java.util.List<BLibPropertySchema.Line.Property<?>> getPropertyLines(BLibPropertySchema schema) {
-        var result = new java.util.ArrayList<BLibPropertySchema.Line.Property<?>>();
+    private static List<BLibPropertySchema.Line.Property<?>> getPropertyLines(BLibPropertySchema schema) {
+        var result = new ArrayList<BLibPropertySchema.Line.Property<?>>();
 
         for (var line : schema.getLines()) {
             if (line instanceof BLibPropertySchema.Line.Property<?> property) {

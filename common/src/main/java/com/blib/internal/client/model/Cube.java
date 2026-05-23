@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import com.blib.internal.common.io.util.JsonUtil;
 
 public record Cube(
+    @Nullable String name,
     @Nullable Double inflate,
     @Nullable Boolean mirror,
     double[] origin,
@@ -21,6 +22,7 @@ public record Cube(
     public static JsonDeserializer<Cube> deserializer() throws JsonParseException {
         return (json, type, context) -> {
             JsonObject obj = json.getAsJsonObject();
+            String name = GsonHelper.getAsString(obj, "name", null);
             Double inflate = JsonUtil.getOptionalDouble(obj, "inflate");
             Boolean mirror = JsonUtil.getOptionalBoolean(obj, "mirror");
             double[] origin = JsonUtil.jsonArrayToDoubleArray(GsonHelper.getAsJsonArray(obj, "origin", null));
@@ -29,7 +31,7 @@ public record Cube(
             double[] size = JsonUtil.jsonArrayToDoubleArray(GsonHelper.getAsJsonArray(obj, "size", null));
             UVUnion uvUnion = GsonHelper.getAsObject(obj, "uv", null, context, UVUnion.class);
 
-            return new Cube(inflate, mirror, origin, pivot, rotation, size, uvUnion);
+            return new Cube(name, inflate, mirror, origin, pivot, rotation, size, uvUnion);
         };
     }
 }

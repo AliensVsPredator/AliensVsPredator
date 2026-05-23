@@ -16,6 +16,7 @@ import com.blib.api.client.model.v1.AzBone;
 import com.blib.api.client.render.v1.AzLayerRenderer;
 import com.blib.api.client.render.v1.AzModelRenderer;
 import com.blib.api.client.render.v1.AzRendererPipelineContext;
+import com.blib.api.client.render.v1.dismemberment.DismembermentBoneVisibilityFilter;
 import com.blib.api.client.render.v1.entity.pipeline.AzEntityRendererPipeline;
 import com.blib.internal.client.render.util.RenderUtil;
 
@@ -79,6 +80,17 @@ public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUI
 
     @Override
     public void renderRecursively(AzRendererPipelineContext<UUID, T> context, AzBone bone, boolean isReRender) {
+        // Always-on dismemberment hide first; see AzModelRenderer.renderRecursively for rationale.
+        if (DismembermentBoneVisibilityFilter.isDetachedBone(bone, context.animatable())) {
+            return;
+        }
+
+        var visibilityFilter = entityRendererPipeline.config().boneVisibilityFilter();
+
+        if (visibilityFilter != null && visibilityFilter.shouldHideBone(bone, context.animatable())) {
+            return;
+        }
+
         var buffer = context.vertexConsumer();
         var bufferSource = context.multiBufferSource();
         var entity = context.animatable();
@@ -213,4 +225,5 @@ public class AzEntityModelRenderer<T extends Entity> extends AzModelRenderer<UUI
             }
         }
     }
+
 }

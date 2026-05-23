@@ -7,7 +7,7 @@ import org.joml.Matrix4f;
 import java.util.UUID;
 
 import com.blib.api.BLibAPI;
-import com.blib.api.client.animation.v1.controller.AzAnimationController;
+import com.blib.api.client.animation.v1.track.AzAnimationTrack;
 import com.blib.api.client.model.v1.AzBone;
 import com.blib.api.client.render.v1.AzLayerRenderer;
 import com.blib.api.client.render.v1.AzModelRenderer;
@@ -93,10 +93,10 @@ public class AzItemModelRenderer extends AzModelRenderer<UUID, ItemStack> {
         var isArmBone = AzItemArmRenderUtil.isArmBone(bone) && !firstPerson;
 
         if (animator != null) {
-            // Check all animation controllers to see if any are playing
-            for (var controller : animator.getAnimationControllerContainer().getAll()) {
+            // Check all animation tracks to see if any are playing
+            for (var track : animator.getAnimationTrackContainer().getAll()) {
                 if (
-                    controller instanceof AzAnimationController<?> azController && azController.stateMachine()
+                    track instanceof AzAnimationTrack<?> azTrack && azTrack.stateMachine()
                         .isPlaying()
                 ) {
                     isAnimationPlaying = true;

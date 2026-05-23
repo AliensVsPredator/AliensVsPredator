@@ -1,0 +1,11 @@
+{
+  "limbs": [
+    { "id": "blib:wolf_head", "category": "blib:head", "fatal": true },
+    { "id": "blib:wolf_body", "category": "blib:head" },
+    { "id": "blib:wolf_right_hind_leg",  "category": "blib:leg" },
+    { "id": "blib:wolf_left_hind_leg",   "category": "blib:leg" },
+    { "id": "blib:wolf_right_front_leg", "category": "blib:leg" },
+    { "id": "blib:wolf_left_front_leg",  "category": "blib:leg" },
+    { "id": "blib:wolf_tail", "category": "blib:tail" }
+  ]
+}

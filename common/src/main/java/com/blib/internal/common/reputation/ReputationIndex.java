@@ -39,6 +39,11 @@ public class ReputationIndex {
         return incomingIndex.remove(target);
     }
 
+    public boolean hasIncoming(ReputationKey target) {
+        var set = incomingIndex.get(target);
+        return set != null && !set.isEmpty();
+    }
+
     public void rebuild(Map<ReputationKey, ReputationData> data) {
         incomingIndex.clear();
 

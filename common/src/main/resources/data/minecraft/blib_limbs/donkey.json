@@ -1,0 +1,11 @@
+{
+  "limbs": [
+    { "id": "blib:donkey_head", "category": "blib:head", "fatal": true },
+    { "id": "blib:donkey_body", "category": "blib:head" },
+    { "id": "blib:donkey_right_hind_leg",  "category": "blib:leg" },
+    { "id": "blib:donkey_left_hind_leg",   "category": "blib:leg" },
+    { "id": "blib:donkey_right_front_leg", "category": "blib:leg" },
+    { "id": "blib:donkey_left_front_leg",  "category": "blib:leg" },
+    { "id": "blib:donkey_tail", "category": "blib:tail" }
+  ]
+}

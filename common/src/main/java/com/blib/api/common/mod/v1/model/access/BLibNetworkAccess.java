@@ -1,5 +1,6 @@
 package com.blib.api.common.mod.v1.model.access;
 
+import com.just.core.functional.result.Result;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
@@ -9,6 +10,7 @@ import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.ApiStatus;
 
 import com.blib.api.common.mod.v1.BLibMod;
+import com.blib.api.common.network.v1.BLibSendError;
 import com.blib.internal.client.service.BLibInternalClientServices;
 import com.blib.internal.service.BLibInternalServices;
 
@@ -21,8 +23,14 @@ public class BLibNetworkAccess {
         this.mod = mod;
     }
 
-    public void sendToServer(CustomPacketPayload customPacketPayload) {
-        BLibInternalClientServices.CLIENT_NETWORKING.sendToServer(customPacketPayload);
+    /**
+     * Send a client → server packet. Returns {@link Result#ok} on success, or {@link Result#err} with a
+     * {@link BLibSendError} variant explaining why the send was skipped — currently {@link BLibSendError.NotConnected}
+     * when no server is reachable (e.g. engine workspace open from the title screen pre-world-load). Discarding the
+     * return is supported and was the original void-API behavior.
+     */
+    public Result<Void, BLibSendError> sendToServer(CustomPacketPayload customPacketPayload) {
+        return BLibInternalClientServices.CLIENT_NETWORKING.sendToServer(customPacketPayload);
     }
 
     public void sendToClient(ServerPlayer serverPlayer, CustomPacketPayload customPacketPayload) {

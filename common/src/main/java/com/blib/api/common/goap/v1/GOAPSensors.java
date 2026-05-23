@@ -1,19 +1,28 @@
 package com.blib.api.common.goap.v1;
 
-import com.just.goap.StateKey;
-import com.just.goap.sensor.Sensor;
-import com.just.goap.sensor.Sensors;
+import com.just.ai.goap.StateKey;
+import com.just.ai.goap.sensor.Compose;
+import com.just.ai.goap.sensor.Map;
+import com.just.ai.goap.sensor.Sensor;
+import com.just.ai.goap.sensor.Sensors;
+import com.just.core.functional.option.Option;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.item.ItemEntity;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.BiPredicate;
 
 import com.blib.api.common.entity.v1.BLibEntityPredicates;
+import com.blib.api.common.entity.v1.EntitySenseCacheUser;
 
 public class GOAPSensors {
+
+    public static final StateKey.Sensed<List<LivingEntity>> NEARBY_ATTACKABLE_TARGETS_KEY = StateKey.sensed("nearby_attackable_targets");
 
     public static final Sensor.Mono<LivingEntity, Integer> FIRE_RESISTANCE_REMAINING_TICKS = Sensors.map(
         StateKey.sensed("fire_resistance_remaining_ticks"),
@@ -79,6 +88,51 @@ public class GOAPSensors {
             .map(e -> (ItemEntity) e)
             .toList()
     );
+
+    public static Compose<Mob, List<LivingEntity>, List<LivingEntity>> NEAREST_ATTACKABLE_TARGETS = Sensors.compose(
+        NEARBY_ATTACKABLE_TARGETS_KEY,
+        StateKey.sensed("nearest_attackable_targets"),
+        (mob, nearbyAttackableTargets) -> nearbyAttackableTargets.stream()
+            .sorted(Comparator.comparingDouble(mob::distanceToSqr))
+            .toList()
+    );
+
+    public static Compose<Mob, List<LivingEntity>, Option<LivingEntity>> NEAREST_ATTACKABLE_TARGET = Sensors.compose(
+        NEAREST_ATTACKABLE_TARGETS.key(),
+        StateKey.sensed("nearest_attackable_target"),
+        (mob, nearestAttackableTargets) -> {
+            var targetOption = nearestAttackableTargets.stream()
+                .findFirst()
+                .<Option<LivingEntity>>map(Option::some)
+                .orElse(Option.none());
+
+            targetOption.ifSome(mob::setTarget);
+
+            return targetOption;
+        }
+    );
+
+    public static final Compose<Mob, Option<LivingEntity>, Boolean> HAS_ATTACK_TARGET = Sensors.compose(
+        NEAREST_ATTACKABLE_TARGET.key(),
+        StateKey.sensed("has_attack_target"),
+        (mob, attackTargetOption) -> attackTargetOption.isSome()
+    );
+
+    public static <T extends LivingEntity & EntitySenseCacheUser> Map<T, List<LivingEntity>> nearbyAttackableTargetsFactory(
+        BiPredicate<T, LivingEntity> targetPredicate
+    ) {
+        return Sensors.map(
+            NEARBY_ATTACKABLE_TARGETS_KEY,
+            entity -> entity.getEntitySenseCache()
+                .getByClass(LivingEntity.class)
+                .stream()
+                .filter(
+                    livingEntity -> BLibEntityPredicates.isAlive(livingEntity)
+                        && targetPredicate.test(entity, livingEntity)
+                )
+                .toList()
+        );
+    }
 
     private GOAPSensors() {
         throw new UnsupportedOperationException();

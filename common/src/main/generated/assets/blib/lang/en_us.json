@@ -1,4 +1,6 @@
 {
+  "key.blib.toggle_engine": "Toggle BLib Engine",
+  "key.categories.blib": "BLib",
   "tag.block.blib.should_not_be_destroyed": "Should Not Be Destroyed",
   "tag.entity_type.blib.humanoids": "Humanoids",
   "tag.entity_type.blib.nether_creatures": "Nether Creatures",

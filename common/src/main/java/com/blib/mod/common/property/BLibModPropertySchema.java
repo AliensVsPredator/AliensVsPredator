@@ -25,7 +25,7 @@ public class BLibModPropertySchema {
         )
         .addComment("Render entity goal selector debug info.")
         .addProperty(BLibModProperties.Debug.Render.Goal.ENABLED.key(), BLibModProperties.Debug.Render.Goal.ENABLED.defaultValue())
-        .addComment("Number of world state entries per page in the GOAP debug HUD.")
+        .addComment("Number of world state entries per page in the GOAP debug payload.")
         .addProperty(
             BLibModProperties.Debug.Render.Goap.WORLD_STATE_PAGE_SIZE.key(),
             BLibModProperties.Debug.Render.Goap.WORLD_STATE_PAGE_SIZE.defaultValue()
@@ -47,8 +47,6 @@ public class BLibModPropertySchema {
             BLibModProperties.Debug.Render.Neighbors.ENABLED.key(),
             BLibModProperties.Debug.Render.Neighbors.ENABLED.defaultValue()
         )
-        .addComment("Render entity pathfinding debug info.")
-        .addProperty(BLibModProperties.Debug.Render.Path.ENABLED.key(), BLibModProperties.Debug.Render.Path.ENABLED.defaultValue())
         .addComment("Render sky light section debug info.")
         .addProperty(BLibModProperties.Debug.Render.SkyLight.ENABLED.key(), BLibModProperties.Debug.Render.SkyLight.ENABLED.defaultValue())
         .addComment("Render solid face debug info.")

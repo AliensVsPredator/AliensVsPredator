@@ -11,15 +11,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import com.blib.api.common.reputation.v1.ReputationData;
 import com.blib.api.common.reputation.v1.ReputationKey;
 import com.blib.api.common.reputation.v1.ReputationManager;
+import com.blib.internal.common.entityreference.EntityReferenceOwner;
 import com.blib.internal.common.reputation.io.ReputationDataIO;
 import com.blib.internal.common.util.ShardManager;
 
 @ApiStatus.Internal
-public class BLibReputationManager implements ReputationManager {
+public class BLibReputationManager implements ReputationManager, EntityReferenceOwner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BLibReputationManager.class);
 
@@ -118,6 +120,34 @@ public class BLibReputationManager implements ReputationManager {
         return data.containsKey(reputationKey);
     }
 
+    @Override
+    public String id() {
+        return "reputations";
+    }
+
+    @Override
+    public boolean referencesEntityUuid(UUID uuid) {
+        var key = ReputationKey.entity(uuid);
+        return data.containsKey(key) || reputationIndex.hasIncoming(key);
+    }
+
+    @Override
+    public Set<UUID> referencedEntityUuids() {
+        var uuids = new HashSet<UUID>();
+        for (var entry : data.entrySet()) {
+            collectEntityUuid(entry.getKey(), uuids);
+            for (var target : entry.getValue().getAll().keySet()) {
+                collectEntityUuid(target, uuids);
+            }
+        }
+        return Set.copyOf(uuids);
+    }
+
+    @Override
+    public void removeEntityReference(UUID uuid) {
+        removeReputation(ReputationKey.entity(uuid));
+    }
+
     public void load(MinecraftServer server) {
         data.clear();
         reputationIndex.clear();
@@ -130,12 +160,10 @@ public class BLibReputationManager implements ReputationManager {
     }
 
     public void save(MinecraftServer server) {
-        if (data.isEmpty()) {
-            return;
-        }
-
+        // No empty short-circuit: a session that deleted every entry still needs to flush the deletion-dirty shards
+        // so their files get rewritten (or removed via ReputationIO's empty-tag → delete path). Otherwise the next
+        // load would resurrect everything from disk.
         Map<Integer, List<ReputationData>> shardToEntries = new HashMap<>();
-        Set<Integer> dirtyShards = new HashSet<>();
 
         for (var entry : data.entrySet()) {
             var reputationKey = entry.getKey();
@@ -145,24 +173,35 @@ public class BLibReputationManager implements ReputationManager {
             shardToEntries.computeIfAbsent(shardIndex, k -> new ArrayList<>()).add(reputationData);
 
             if (reputationData.isDirty()) {
-                dirtyShards.add(shardIndex);
+                shardManager.markDirty(reputationKey);
             }
         }
 
+        var dirtyShards = List.copyOf(shardManager.dirtyShards());
+
         for (var shardIndex : dirtyShards) {
-            var entriesInShard = shardToEntries.get(shardIndex);
+            // Shards with no surviving entries still get written — saveShard produces an empty rootTag in that case
+            // and ReputationIO.writeCompressed deletes the file, ensuring deleted entries don't survive on disk.
+            var entriesInShard = shardToEntries.getOrDefault(shardIndex, List.of());
             ReputationDataIO.saveShard(server, entriesInShard, shardIndex);
         }
 
         for (var reputationData : data.values()) {
             reputationData.clearDirty();
         }
+        shardManager.clearDirty();
     }
 
     public void clear(MinecraftServer server) {
         data.clear();
         reputationIndex.clear();
         shardManager.clear();
+    }
+
+    private static void collectEntityUuid(ReputationKey key, Set<UUID> uuids) {
+        if (key instanceof ReputationKey.Entity entityKey) {
+            uuids.add(entityKey.uuid());
+        }
     }
 
 }

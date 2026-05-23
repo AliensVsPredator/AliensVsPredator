@@ -1,9 +1,9 @@
 package com.blib.api.common.goap.v1;
 
-import com.just.goap.Agent;
-import com.just.goap.graph.Graph;
-import com.just.goap.plan.ReplanPolicies;
-import com.just.goap.plan.executor.impl.ConcurrentPlanExecutor;
+import com.just.ai.goap.Agent;
+import com.just.ai.goap.graph.Graph;
+import com.just.ai.goap.plan.ReplanPolicies;
+import com.just.ai.goap.plan.executor.impl.ConcurrentPlanExecutor;
 import net.minecraft.world.entity.LivingEntity;
 
 import java.util.function.UnaryOperator;

@@ -2,15 +2,26 @@ package com.blib.internal.service;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import com.blib.api.client.event.v1.BLibScreenInitEvent;
 import com.blib.api.common.event.v1.BLibBlockBreakEvent;
+import com.blib.api.common.event.v1.BLibChunkClaimAddedEvent;
+import com.blib.api.common.event.v1.BLibChunkClaimRemovedEvent;
+import com.blib.api.common.event.v1.BLibChunkLoadEvent;
 import com.blib.api.common.event.v1.BLibChunkSaveEvent;
 import com.blib.api.common.event.v1.BLibChunkUnloadEvent;
 import com.blib.api.common.event.v1.BLibCommonSetupEvent;
+import com.blib.api.common.event.v1.BLibEntityLoadEvent;
 import com.blib.api.common.event.v1.BLibEntityRemoveEvent;
 import com.blib.api.common.event.v1.BLibEntityTickEvent;
+import com.blib.api.common.event.v1.BLibFactionCreatedEvent;
+import com.blib.api.common.event.v1.BLibFactionDataChangedEvent;
+import com.blib.api.common.event.v1.BLibFactionMemberChangedEvent;
+import com.blib.api.common.event.v1.BLibFactionRelationshipChangedEvent;
 import com.blib.api.common.event.v1.BLibFactionRemoveEvent;
+import com.blib.api.common.event.v1.BLibFactionsLoadedEvent;
 import com.blib.api.common.event.v1.BLibLevelSaveEvent;
 import com.blib.api.common.event.v1.BLibLevelTickEvent;
+import com.blib.api.common.event.v1.BLibPlayerAdvancementAwardEvent;
 import com.blib.api.common.event.v1.BLibPlayerTrackingEntityEvent;
 import com.blib.api.common.event.v1.BLibServerLifecycleEvent;
 import com.blib.api.common.event.v1.BLibServerSaveEvent;
@@ -22,19 +33,39 @@ import com.blib.api.common.mod.v1.BLibMod;
 @ApiStatus.Internal
 public interface BLibEventService {
 
+    BLibEventListenerHandle<BLibChunkClaimAddedEvent> onChunkClaimAdded(BLibMod mod);
+
+    BLibEventListenerHandle<BLibChunkClaimRemovedEvent> onChunkClaimRemoved(BLibMod mod);
+
+    BLibEventListenerHandle<BLibChunkLoadEvent> onChunkLoad(BLibMod mod);
+
     BLibEventListenerHandle<BLibChunkSaveEvent> onChunkSave(BLibMod mod);
 
     BLibEventListenerHandle<BLibChunkUnloadEvent> onChunkUnload(BLibMod mod);
 
     BLibEventListenerHandle<BLibCommonSetupEvent> onCommonSetup(BLibMod mod);
 
+    BLibEventListenerHandle<BLibEntityLoadEvent> onEntityLoad(BLibMod mod);
+
     BLibEventListenerHandle<BLibEntityRemoveEvent> onEntityRemove(BLibMod mod);
 
     BLibEventListenerHandle<BLibEntityTickEvent> onEntityTick(BLibMod mod);
 
+    BLibEventListenerHandle<BLibFactionCreatedEvent> onFactionCreated(BLibMod mod);
+
+    BLibEventListenerHandle<BLibFactionDataChangedEvent> onFactionDataChanged(BLibMod mod);
+
+    BLibEventListenerHandle<BLibFactionMemberChangedEvent> onFactionMemberChanged(BLibMod mod);
+
+    BLibEventListenerHandle<BLibFactionRelationshipChangedEvent> onFactionRelationshipChanged(BLibMod mod);
+
     BLibEventListenerHandle<BLibFactionRemoveEvent> onFactionRemove(BLibMod mod);
 
+    BLibEventListenerHandle<BLibFactionsLoadedEvent> onFactionsLoaded(BLibMod mod);
+
     BLibEventListenerHandle<BLibLevelSaveEvent> onLevelSave(BLibMod mod);
+
+    BLibEventListenerHandle<BLibPlayerAdvancementAwardEvent> onPlayerAdvancementAward(BLibMod mod);
 
     BLibEventHandle<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity(BLibMod mod);
 
@@ -43,6 +74,8 @@ public interface BLibEventService {
     BLibEventHandle<BLibTagsUpdatedEvent> onTagsUpdated(BLibMod mod);
 
     BLibEventHandle<BLibLevelTickEvent> postLevelTick(BLibMod mod);
+
+    BLibEventHandle<BLibScreenInitEvent> postScreenInit(BLibMod mod);
 
     BLibEventHandle<BLibBlockBreakEvent> preBlockBreak(BLibMod mod);
 

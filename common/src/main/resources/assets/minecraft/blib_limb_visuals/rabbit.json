@@ -1,0 +1,11 @@
+{
+  "visuals": {
+    "blib:rabbit_head":            { "root_bone": "head" },
+    "blib:rabbit_body":            { "root_bone": "body",            "render_offset": [0.0, 0.25, 0.0],  "render_rotation": [90.0, 0.0, 0.0] },
+    "blib:rabbit_right_haunch":    { "root_bone": "right_haunch",    "render_offset": [0.0, 0.125, 0.0], "render_rotation": [90.0, 0.0, 0.0] },
+    "blib:rabbit_left_haunch":     { "root_bone": "left_haunch",     "render_offset": [0.0, 0.125, 0.0], "render_rotation": [90.0, 0.0, 0.0] },
+    "blib:rabbit_right_front_leg": { "root_bone": "right_front_leg", "render_offset": [0.0, 0.125, 0.0], "render_rotation": [90.0, 0.0, 0.0] },
+    "blib:rabbit_left_front_leg":  { "root_bone": "left_front_leg",  "render_offset": [0.0, 0.125, 0.0], "render_rotation": [90.0, 0.0, 0.0] },
+    "blib:rabbit_tail":            { "root_bone": "tail" }
+  }
+}

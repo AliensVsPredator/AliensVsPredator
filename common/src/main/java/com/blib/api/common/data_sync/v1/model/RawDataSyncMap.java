@@ -18,10 +18,8 @@ public record RawDataSyncMap(
             streamCodecSchema.writeVarInt(input, value.rawDataById.size());
 
             for (var entry : value.rawDataById.entrySet()) {
-                // Write the id
-                streamCodecSchema.writeByte(input, entry.getKey().byteValue());
-                // Write the byte record's length.
-                streamCodecSchema.writeByte(input, (byte) entry.getValue().length);
+                streamCodecSchema.writeVarInt(input, entry.getKey());
+                streamCodecSchema.writeVarInt(input, entry.getValue().length);
                 streamCodecSchema.writeBytes(input, entry.getValue());
             }
         }
@@ -32,11 +30,11 @@ public record RawDataSyncMap(
             var length = streamCodecSchema.readVarInt(input);
 
             for (var i = 0; i < length; i++) {
-                var id = streamCodecSchema.readByte(input);
-                var dataLength = streamCodecSchema.readByte(input);
+                var id = streamCodecSchema.readVarInt(input);
+                var dataLength = streamCodecSchema.readVarInt(input);
                 var data = streamCodecSchema.readBytes(input, dataLength);
 
-                rawDataById.put((int) id, data);
+                rawDataById.put(id, data);
             }
 
             return new RawDataSyncMap(rawDataById);

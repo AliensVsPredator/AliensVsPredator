@@ -8,8 +8,10 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRe
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.fabricmc.fabric.api.object.builder.v1.world.poi.PointOfInterestHelper;
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
+import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -22,6 +24,9 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -33,16 +38,27 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import com.blib.api.client.event.v1.BLibScreenInitEvent;
 import com.blib.api.common.entity.v1.spawning.BLibEntitySpawnData;
 import com.blib.api.common.event.v1.BLibBlockBreakEvent;
+import com.blib.api.common.event.v1.BLibChunkClaimAddedEvent;
+import com.blib.api.common.event.v1.BLibChunkClaimRemovedEvent;
+import com.blib.api.common.event.v1.BLibChunkLoadEvent;
 import com.blib.api.common.event.v1.BLibChunkSaveEvent;
 import com.blib.api.common.event.v1.BLibChunkUnloadEvent;
 import com.blib.api.common.event.v1.BLibCommonSetupEvent;
+import com.blib.api.common.event.v1.BLibEntityLoadEvent;
 import com.blib.api.common.event.v1.BLibEntityRemoveEvent;
 import com.blib.api.common.event.v1.BLibEntityTickEvent;
+import com.blib.api.common.event.v1.BLibFactionCreatedEvent;
+import com.blib.api.common.event.v1.BLibFactionDataChangedEvent;
+import com.blib.api.common.event.v1.BLibFactionMemberChangedEvent;
+import com.blib.api.common.event.v1.BLibFactionRelationshipChangedEvent;
 import com.blib.api.common.event.v1.BLibFactionRemoveEvent;
+import com.blib.api.common.event.v1.BLibFactionsLoadedEvent;
 import com.blib.api.common.event.v1.BLibLevelSaveEvent;
 import com.blib.api.common.event.v1.BLibLevelTickEvent;
+import com.blib.api.common.event.v1.BLibPlayerAdvancementAwardEvent;
 import com.blib.api.common.event.v1.BLibPlayerTrackingEntityEvent;
 import com.blib.api.common.event.v1.BLibServerLifecycleEvent;
 import com.blib.api.common.event.v1.BLibServerSaveEvent;
@@ -58,6 +74,7 @@ import com.blib.api.common.registry.v1.BLibHolder;
 import com.blib.fabric.internal.event.impl.BLibFabricLevelTickEvents;
 import com.blib.fabric.internal.event.impl.BLibFabricPlayerBlockBreakEvents;
 import com.blib.fabric.internal.event.impl.BLibFabricPlayerTrackingEntityEvents;
+import com.blib.fabric.internal.event.impl.BLibFabricScreenInitEvents;
 import com.blib.fabric.internal.event.impl.BLibFabricServerLifecycleEvents;
 import com.blib.fabric.internal.event.impl.BLibFabricTagsUpdatedEvents;
 import com.blib.internal.common.event.BLibGlobalEvents;
@@ -69,6 +86,8 @@ public class BLibFabricModContainer {
     private final BLibMod mod;
 
     private final List<NetworkHandler<?>> clientBoundPacketHandlers;
+
+    private final List<Runnable> deferredBrewingRecipeRegistrations;
 
     private final List<Runnable> deferredCompostableRegistrations;
 
@@ -84,19 +103,39 @@ public class BLibFabricModContainer {
 
     private final List<LiteralArgumentBuilder<CommandSourceStack>> literalArgumentBuilders;
 
+    private final BLibEventListenerHandle<BLibChunkClaimAddedEvent> onChunkClaimAdded;
+
+    private final BLibEventListenerHandle<BLibChunkClaimRemovedEvent> onChunkClaimRemoved;
+
+    private final BLibEventListenerHandle<BLibChunkLoadEvent> onChunkLoad;
+
     private final BLibEventListenerHandle<BLibChunkSaveEvent> onChunkSave;
 
     private final BLibEventListenerHandle<BLibChunkUnloadEvent> onChunkUnload;
 
     private final BLibEventListenerContainer<BLibCommonSetupEvent> onCommonSetup;
 
+    private final BLibEventListenerHandle<BLibEntityLoadEvent> onEntityLoad;
+
     private final BLibEventListenerHandle<BLibEntityRemoveEvent> onEntityRemove;
 
     private final BLibEventListenerHandle<BLibEntityTickEvent> onEntityTick;
 
+    private final BLibEventListenerHandle<BLibFactionCreatedEvent> onFactionCreated;
+
+    private final BLibEventListenerHandle<BLibFactionDataChangedEvent> onFactionDataChanged;
+
+    private final BLibEventListenerHandle<BLibFactionMemberChangedEvent> onFactionMemberChanged;
+
+    private final BLibEventListenerHandle<BLibFactionRelationshipChangedEvent> onFactionRelationshipChanged;
+
     private final BLibEventListenerHandle<BLibFactionRemoveEvent> onFactionRemove;
 
+    private final BLibEventListenerHandle<BLibFactionsLoadedEvent> onFactionsLoaded;
+
     private final BLibEventListenerHandle<BLibLevelSaveEvent> onLevelSave;
+
+    private final BLibEventListenerHandle<BLibPlayerAdvancementAwardEvent> onPlayerAdvancementAward;
 
     private final BLibEventHandle<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity;
 
@@ -105,6 +144,8 @@ public class BLibFabricModContainer {
     private final BLibEventHandle<BLibTagsUpdatedEvent> onTagsUpdated;
 
     private final BLibEventHandle<BLibLevelTickEvent> postLevelTick;
+
+    private final BLibEventHandle<BLibScreenInitEvent> postScreenInit;
 
     private final BLibEventHandle<BLibBlockBreakEvent> preBlockBreak;
 
@@ -121,6 +162,7 @@ public class BLibFabricModContainer {
     public BLibFabricModContainer(BLibMod mod) {
         this.mod = mod;
         this.clientBoundPacketHandlers = new ArrayList<>();
+        this.deferredBrewingRecipeRegistrations = new ArrayList<>();
         this.deferredCompostableRegistrations = new ArrayList<>();
         this.deferredEntityAttributeRegistrations = new ArrayList<>();
         this.deferredEntitySpawnDataRegistrations = new ArrayList<>();
@@ -128,17 +170,28 @@ public class BLibFabricModContainer {
         this.deferredRegistrations = new HashMap<>();
         this.deferredVillagerTradeRegistrations = new ArrayList<>();
         this.literalArgumentBuilders = new ArrayList<>();
+        this.onChunkClaimAdded = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.CHUNK_CLAIM_ADDED);
+        this.onChunkClaimRemoved = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.CHUNK_CLAIM_REMOVED);
+        this.onChunkLoad = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.CHUNK_LOAD);
         this.onChunkSave = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.CHUNK_SAVE);
         this.onChunkUnload = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.CHUNK_UNLOAD);
         this.onCommonSetup = BLibCommonSetupEvents.FACTORY.apply(mod);
+        this.onEntityLoad = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.ENTITY_LOAD);
         this.onEntityRemove = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.ENTITY_REMOVE);
         this.onEntityTick = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.ENTITY_TICK);
+        this.onFactionCreated = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.FACTION_CREATED);
+        this.onFactionDataChanged = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.FACTION_DATA_CHANGED);
+        this.onFactionMemberChanged = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.FACTION_MEMBER_CHANGED);
+        this.onFactionRelationshipChanged = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.FACTION_RELATIONSHIP_CHANGED);
         this.onFactionRemove = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.FACTION_REMOVE);
+        this.onFactionsLoaded = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.FACTIONS_LOADED);
         this.onLevelSave = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.LEVEL_SAVE);
+        this.onPlayerAdvancementAward = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.PLAYER_ADVANCEMENT_AWARD);
         this.onPlayerStartTrackingEntity = BLibFabricPlayerTrackingEntityEvents.FACTORY.apply(mod);
         this.onServerSave = new BLibGlobalOnlyEventHandle<>(mod, BLibGlobalEvents.SERVER_SAVE);
         this.onTagsUpdated = BLibFabricTagsUpdatedEvents.FACTORY.apply(mod);
         this.postLevelTick = BLibFabricLevelTickEvents.POST_FACTORY.apply(mod);
+        this.postScreenInit = BLibFabricScreenInitEvents.POST_FACTORY.apply(mod);
         this.preBlockBreak = BLibFabricPlayerBlockBreakEvents.FACTORY.apply(mod);
         this.preLevelTick = BLibFabricLevelTickEvents.PRE_FACTORY.apply(mod);
         this.serverStarted = BLibFabricServerLifecycleEvents.STARTED_FACTORY.apply(mod);
@@ -149,6 +202,18 @@ public class BLibFabricModContainer {
 
     public List<NetworkHandler<?>> getClientBoundPacketHandlers() {
         return clientBoundPacketHandlers;
+    }
+
+    public BLibEventListenerHandle<BLibChunkClaimAddedEvent> onChunkClaimAdded() {
+        return onChunkClaimAdded;
+    }
+
+    public BLibEventListenerHandle<BLibChunkClaimRemovedEvent> onChunkClaimRemoved() {
+        return onChunkClaimRemoved;
+    }
+
+    public BLibEventListenerHandle<BLibChunkLoadEvent> onChunkLoad() {
+        return onChunkLoad;
     }
 
     public BLibEventListenerHandle<BLibChunkSaveEvent> onChunkSave() {
@@ -163,6 +228,10 @@ public class BLibFabricModContainer {
         return onCommonSetup;
     }
 
+    public BLibEventListenerHandle<BLibEntityLoadEvent> onEntityLoad() {
+        return onEntityLoad;
+    }
+
     public BLibEventListenerHandle<BLibEntityRemoveEvent> onEntityRemove() {
         return onEntityRemove;
     }
@@ -171,12 +240,36 @@ public class BLibFabricModContainer {
         return onEntityTick;
     }
 
+    public BLibEventListenerHandle<BLibFactionCreatedEvent> onFactionCreated() {
+        return onFactionCreated;
+    }
+
+    public BLibEventListenerHandle<BLibFactionDataChangedEvent> onFactionDataChanged() {
+        return onFactionDataChanged;
+    }
+
+    public BLibEventListenerHandle<BLibFactionMemberChangedEvent> onFactionMemberChanged() {
+        return onFactionMemberChanged;
+    }
+
+    public BLibEventListenerHandle<BLibFactionRelationshipChangedEvent> onFactionRelationshipChanged() {
+        return onFactionRelationshipChanged;
+    }
+
     public BLibEventListenerHandle<BLibFactionRemoveEvent> onFactionRemove() {
         return onFactionRemove;
     }
 
+    public BLibEventListenerHandle<BLibFactionsLoadedEvent> onFactionsLoaded() {
+        return onFactionsLoaded;
+    }
+
     public BLibEventListenerHandle<BLibLevelSaveEvent> onLevelSave() {
         return onLevelSave;
+    }
+
+    public BLibEventListenerHandle<BLibPlayerAdvancementAwardEvent> onPlayerAdvancementAward() {
+        return onPlayerAdvancementAward;
     }
 
     public BLibEventHandle<BLibPlayerTrackingEntityEvent> onPlayerStartTrackingEntity() {
@@ -189,6 +282,10 @@ public class BLibFabricModContainer {
 
     public BLibEventHandle<BLibLevelTickEvent> postLevelTick() {
         return postLevelTick;
+    }
+
+    public BLibEventHandle<BLibScreenInitEvent> postScreenInit() {
+        return postScreenInit;
     }
 
     public BLibEventHandle<BLibBlockBreakEvent> preBlockBreak() {
@@ -277,6 +374,18 @@ public class BLibFabricModContainer {
         });
     }
 
+    /* package-private */ void deferBrewingRecipeRegistration(
+        Holder<Potion> input,
+        Supplier<? extends Item> ingredient,
+        Holder<Potion> output
+    ) {
+        deferredBrewingRecipeRegistrations.add(
+            () -> FabricBrewingRecipeRegistryBuilder.BUILD.register(
+                builder -> builder.registerPotionRecipe(input, Ingredient.of(ingredient.get()), output)
+            )
+        );
+    }
+
     /* package-private */ void deferCompostableRegistration(BLibHolder<? extends ItemLike> holder, float chance) {
         deferredCompostableRegistrations.add(() -> CompostingChanceRegistry.INSTANCE.add(holder.get(), chance));
     }
@@ -307,6 +416,8 @@ public class BLibFabricModContainer {
             .stream()
             .filter(registry -> !orderSensitiveRegistrySet.contains(registry))
             .forEach(this::runRegistrationsFor);
+        // Run brewing recipe registrations after primary registries are ran.
+        deferredBrewingRecipeRegistrations.forEach(Runnable::run);
         // Run compostable registrations after primary registries are ran.
         deferredCompostableRegistrations.forEach(Runnable::run);
         // Run furnace fuel registrations after primary registries are ran.

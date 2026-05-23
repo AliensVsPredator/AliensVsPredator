@@ -1,0 +1,10 @@
+{
+  "limbs": [
+    { "id": "blib:husk_head", "category": "blib:head", "fatal": true },
+    { "id": "blib:husk_body", "category": "blib:head" },
+    { "id": "blib:husk_right_arm", "category": "blib:arm" },
+    { "id": "blib:husk_left_arm", "category": "blib:arm" },
+    { "id": "blib:husk_right_leg", "category": "blib:leg" },
+    { "id": "blib:husk_left_leg", "category": "blib:leg" }
+  ]
+}

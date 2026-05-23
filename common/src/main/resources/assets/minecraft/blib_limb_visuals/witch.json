@@ -1,0 +1,9 @@
+{
+  "visuals": {
+    "blib:witch_head":      { "root_bone": "head" },
+    "blib:witch_body":      { "root_bone": "body",      "render_offset": [0.0, 0.25, 0.0],  "render_rotation": [90.0, 0.0, 0.0] },
+    "blib:witch_arms":      { "root_bone": "arms",      "render_offset": [0.0, 0.125, 0.0], "render_rotation": [90.0, 0.0, 0.0] },
+    "blib:witch_right_leg": { "root_bone": "right_leg", "render_offset": [0.0, 0.125, 0.0], "render_rotation": [90.0, 0.0, 0.0] },
+    "blib:witch_left_leg":  { "root_bone": "left_leg",  "render_offset": [0.0, 0.125, 0.0], "render_rotation": [90.0, 0.0, 0.0] }
+  }
+}

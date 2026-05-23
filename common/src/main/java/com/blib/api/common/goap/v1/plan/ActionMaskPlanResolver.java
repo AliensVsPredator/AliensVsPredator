@@ -1,8 +1,8 @@
 package com.blib.api.common.goap.v1.plan;
 
-import com.just.goap.plan.Plan;
-import com.just.goap.plan.executor.impl.ConcurrentPlanExecutor;
-import com.just.goap.state.ReadableWorldState;
+import com.just.ai.goap.plan.Plan;
+import com.just.ai.goap.plan.executor.impl.ConcurrentPlanExecutor;
+import com.just.ai.goap.state.ReadableWorldState;
 
 import java.util.Collections;
 import java.util.Set;

@@ -3,8 +3,6 @@ package com.blib.internal.common.storage;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import org.jetbrains.annotations.ApiStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,8 +15,6 @@ import com.blib.api.common.storage.v1.DataStoreType;
 
 @ApiStatus.Internal
 class BLibGlobalDataStoreManager {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(BLibGlobalDataStoreManager.class);
 
     private static final String GLOBAL_FOLDER = "global";
 

@@ -140,6 +140,85 @@ public record Color(int argbInt) {
         return 0xFF000000 | (r << 16) | (g << 8) | b;
     }
 
+    public static Color ofHSL(float hue, float saturation, float lightness) {
+        return ofOpaque(HSLtoARGB(hue, saturation, lightness));
+    }
+
+    /**
+     * HSL ↔ RGB. Distinct from HSB: lightness {@code 0 = black, 0.5 = full chroma, 1 = white}, whereas HSB brightness
+     * has {@code 1 = full chroma at S=1, 1 = white at S=0}. Standard formula from CSS-Color-3 / Wikipedia.
+     */
+    public static int HSLtoARGB(float hue, float saturation, float lightness) {
+        var h = hue - (float) Math.floor(hue);
+        var s = Math.max(0f, Math.min(1f, saturation));
+        var l = Math.max(0f, Math.min(1f, lightness));
+
+        if (s == 0f) {
+            var v = (int) (l * 255f + 0.5f);
+            return 0xFF000000 | (v << 16) | (v << 8) | v;
+        }
+
+        var q = l < 0.5f ? l * (1f + s) : l + s - l * s;
+        var p = 2f * l - q;
+        var r = hueToRgb(p, q, h + 1f / 3f);
+        var g = hueToRgb(p, q, h);
+        var b = hueToRgb(p, q, h - 1f / 3f);
+
+        var ri = (int) (r * 255f + 0.5f);
+        var gi = (int) (g * 255f + 0.5f);
+        var bi = (int) (b * 255f + 0.5f);
+        return 0xFF000000 | (ri << 16) | (gi << 8) | bi;
+    }
+
+    private static float hueToRgb(float p, float q, float t) {
+        if (t < 0f) {
+            t += 1f;
+        }
+        if (t > 1f) {
+            t -= 1f;
+        }
+        if (t < 1f / 6f) {
+            return p + (q - p) * 6f * t;
+        }
+        if (t < 1f / 2f) {
+            return q;
+        }
+        if (t < 2f / 3f) {
+            return p + (q - p) * (2f / 3f - t) * 6f;
+        }
+        return p;
+    }
+
+    /** Returns {h, s, l} each in [0, 1]. Ignores any alpha in {@code argb}. */
+    public static float[] ARGBtoHSL(int argb) {
+        var r = ((argb >> 16) & 0xFF) / 255f;
+        var g = ((argb >> 8) & 0xFF) / 255f;
+        var b = (argb & 0xFF) / 255f;
+
+        var max = Math.max(r, Math.max(g, b));
+        var min = Math.min(r, Math.min(g, b));
+        var l = (max + min) / 2f;
+
+        float h;
+        float s;
+        if (max == min) {
+            h = 0f;
+            s = 0f;
+        } else {
+            var d = max - min;
+            s = l > 0.5f ? d / (2f - max - min) : d / (max + min);
+            if (max == r) {
+                h = (g - b) / d + (g < b ? 6f : 0f);
+            } else if (max == g) {
+                h = (b - r) / d + 2f;
+            } else {
+                h = (r - g) / d + 4f;
+            }
+            h /= 6f;
+        }
+        return new float[] { h, s, l };
+    }
+
     public static Color ofHexString(String hexColor) {
         if (hexColor.startsWith("#")) {
             hexColor = hexColor.substring(1);

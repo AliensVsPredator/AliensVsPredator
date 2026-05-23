@@ -20,7 +20,10 @@ public record GOAPAgentDebugData(
     int graphGoalCount,
     int graphActionCount,
     List<String> graphSensorKeys,
-    Map<String, String> worldState
+    Map<String, String> worldState,
+    Map<String, String> agentBlackboard,
+    Map<String, String> graphBlackboard,
+    GOAPGraphDebugData graph
 ) {
 
     public static final StreamCodec<GOAPAgentDebugData> CODEC = RecordStreamCodec.of(
@@ -50,6 +53,12 @@ public record GOAPAgentDebugData(
         GOAPAgentDebugData::graphSensorKeys,
         StreamCodec.unboundedMap(StreamCodecs.STRING_UTF8, StreamCodecs.STRING_UTF8),
         GOAPAgentDebugData::worldState,
+        StreamCodec.unboundedMap(StreamCodecs.STRING_UTF8, StreamCodecs.STRING_UTF8),
+        GOAPAgentDebugData::agentBlackboard,
+        StreamCodec.unboundedMap(StreamCodecs.STRING_UTF8, StreamCodecs.STRING_UTF8),
+        GOAPAgentDebugData::graphBlackboard,
+        GOAPGraphDebugData.CODEC,
+        GOAPAgentDebugData::graph,
         GOAPAgentDebugData::new
     );
 }

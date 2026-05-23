@@ -1,0 +1,15 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "com.blib.internal.mixin.compat",
+  "refmap": "${mod_id}.refmap.json",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [],
+  "client": [
+    "xaero.MixinWorldMapSession_BLibHighlighter"
+  ],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 0
+  }
+}

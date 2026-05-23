@@ -7,6 +7,9 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.Collection;
+import java.util.function.BiConsumer;
+
 import com.blib.api.common.registry.v1.BLibHolder;
 import com.blib.api.common.storage.v1.DataStore;
 import com.blib.api.common.storage.v1.DataStoreType;
@@ -40,6 +43,22 @@ public class BLibDataStoreManager {
         return chunk.get(serverLevel, chunkPos, holder);
     }
 
+    public <T extends DataStore> Option<T> getOrCreatePersistentChunk(
+        ServerLevel serverLevel,
+        ChunkPos chunkPos,
+        BLibHolder<DataStoreType<T>> holder
+    ) {
+        return chunk.getOrCreatePersistent(serverLevel, chunkPos, holder);
+    }
+
+    public <T extends DataStore> void forEachStoredChunk(
+        ServerLevel serverLevel,
+        BLibHolder<DataStoreType<T>> holder,
+        BiConsumer<ChunkPos, T> consumer
+    ) {
+        chunk.forEachStoredChunk(serverLevel, holder, consumer);
+    }
+
     public void saveGlobalData(MinecraftServer minecraftServer) {
         global.save(minecraftServer);
     }
@@ -53,7 +72,12 @@ public class BLibDataStoreManager {
         chunk.saveChunk(serverLevel, chunkPos);
     }
 
+    public void saveChunkData(ServerLevel serverLevel, Collection<ChunkPos> chunkPositions) {
+        chunk.saveChunks(serverLevel, chunkPositions);
+    }
+
     public void onServerStopped(MinecraftServer minecraftServer) {
+        chunk.flushDirtyRegions(minecraftServer);
         global.clear();
         level.clear();
         chunk.clear();

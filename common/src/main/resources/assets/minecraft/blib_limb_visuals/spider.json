@@ -1,0 +1,13 @@
+{
+  "visuals": {
+    "blib:spider_head":                   { "root_bone": "head" },
+    "blib:spider_right_hind_leg":         { "root_bone": "right_hind_leg",         "render_offset": [0.0, 0.125, 0.0], "render_rotation": [90.0, 0.0, 0.0] },
+    "blib:spider_left_hind_leg":          { "root_bone": "left_hind_leg",          "render_offset": [0.0, 0.125, 0.0], "render_rotation": [90.0, 0.0, 0.0] },
+    "blib:spider_right_middle_hind_leg":  { "root_bone": "right_middle_hind_leg",  "render_offset": [0.0, 0.125, 0.0], "render_rotation": [90.0, 0.0, 0.0] },
+    "blib:spider_left_middle_hind_leg":   { "root_bone": "left_middle_hind_leg",   "render_offset": [0.0, 0.125, 0.0], "render_rotation": [90.0, 0.0, 0.0] },
+    "blib:spider_right_middle_front_leg": { "root_bone": "right_middle_front_leg", "render_offset": [0.0, 0.125, 0.0], "render_rotation": [90.0, 0.0, 0.0] },
+    "blib:spider_left_middle_front_leg":  { "root_bone": "left_middle_front_leg",  "render_offset": [0.0, 0.125, 0.0], "render_rotation": [90.0, 0.0, 0.0] },
+    "blib:spider_right_front_leg":        { "root_bone": "right_front_leg",        "render_offset": [0.0, 0.125, 0.0], "render_rotation": [90.0, 0.0, 0.0] },
+    "blib:spider_left_front_leg":         { "root_bone": "left_front_leg",         "render_offset": [0.0, 0.125, 0.0], "render_rotation": [90.0, 0.0, 0.0] }
+  }
+}
